@@ -154,7 +154,9 @@ describe('storage operations', () => {
 
 	it('reports failure when no files could be backed up', async () => {
 		const dependencies: StorageOperationDependencies = {
-			backup: jest.fn().mockResolvedValue({ uploaded: [], failed: [{ path: 'notes.md', error: 'Disconnected' }] }),
+			backup: jest
+				.fn()
+				.mockResolvedValue({ uploaded: [], failed: [{ path: 'notes.md', error: 'Disconnected' }] }),
 			restore: jest.fn(),
 			lock: (operation) => operation(),
 			preventSuspension: () => jest.fn(),
@@ -162,10 +164,12 @@ describe('storage operations', () => {
 		const Operations = await loadOperations();
 		const operations = new Operations(jest.fn(), dependencies);
 		const running = operations.backup('manual');
-		expect(await operations.wait(running.operationId)).toEqual(expect.objectContaining({ state: 'failed', transferred: 0, failed: 1, error: 'Disconnected' }));
+		expect(await operations.wait(running.operationId)).toEqual(
+			expect.objectContaining({ state: 'failed', transferred: 0, failed: 1, error: 'Disconnected' })
+		);
 	});
 
-		it('contains observer failures and still completes the operation', async () => {
+	it('contains observer failures and still completes the operation', async () => {
 		const dependencies: StorageOperationDependencies = {
 			backup: jest.fn().mockResolvedValue({ uploaded: ['one'], failed: [] }),
 			restore: jest.fn(),

@@ -18,7 +18,8 @@ export async function pullFiles(store: StorageObjectStore): Promise<StoragePullR
 	for (const root of paths) {
 		try {
 			await fs.mkdir(root, { recursive: true });
-			if ((await fs.lstat(root)).isSymbolicLink()) throw new Error('Selected folder is a symbolic link.');
+			if ((await fs.lstat(root)).isSymbolicLink())
+				throw new Error('Selected folder is a symbolic link.');
 			const prefix = storagePrefix(root);
 			const objects = (await store.list(prefix)).filter((item) => !item.key.endsWith('/'));
 			if (!objects.length) throw new Error(`No stored files were found in ${prefix}`);
@@ -26,15 +27,18 @@ export async function pullFiles(store: StorageObjectStore): Promise<StoragePullR
 				let temporary: string | undefined;
 				try {
 					const target = await storageTarget(root, item.key, prefix);
-					if (isProtectedStoragePath(target)) throw new Error('Download targets a protected application folder.');
+					if (isProtectedStoragePath(target))
+						throw new Error('Download targets a protected application folder.');
 					await fs.mkdir(path.dirname(target), { recursive: true });
 					temporary = `${target}.kucedr-${randomUUID()}.tmp`;
 					if (store.getFile) await store.getFile(item.key, temporary);
 					else {
-						if (item.size > STORAGE_MAX_OBJECT_BYTES) throw new Error('This storage does not support streamed file downloads.');
+						if (item.size > STORAGE_MAX_OBJECT_BYTES)
+							throw new Error('This storage does not support streamed file downloads.');
 						await fs.writeFile(temporary, await store.get(item.key), { flag: 'wx' });
 					}
-					if ((await fs.stat(temporary)).size !== item.size) throw new Error('Downloaded file size does not match storage.');
+					if ((await fs.stat(temporary)).size !== item.size)
+						throw new Error('Downloaded file size does not match storage.');
 					await fs.rename(temporary, target);
 					result.downloaded.push(item.key);
 				} catch (error) {

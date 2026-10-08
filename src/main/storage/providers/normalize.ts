@@ -18,7 +18,8 @@ export function normalizeStorageProvider(value: unknown): StorageProviderInput {
 			throw new Error(`Storage provider ${field} is required.`);
 		}
 	}
-	if (/[/\\?#\s]/.test(values.bucket)) throw new Error('Storage bucket must be a bucket name, without a path.');
+	if (/[/\\?#\s]/.test(values.bucket))
+		throw new Error('Storage bucket must be a bucket name, without a path.');
 	if (values.endpoint) {
 		let endpoint: URL;
 		try {
@@ -38,7 +39,10 @@ export function normalizeStorageProvider(value: unknown): StorageProviderInput {
 			);
 		}
 		const segments = endpoint.pathname.replace(/\/+$/, '').split('/');
-		if (segments.at(-1) === values.bucket || segments.at(-1) === encodeURIComponent(values.bucket)) {
+		if (
+			segments.at(-1) === values.bucket ||
+			segments.at(-1) === encodeURIComponent(values.bucket)
+		) {
 			endpoint.pathname = segments.slice(0, -1).join('/') || '/';
 			values.endpoint = endpoint.toString().replace(/\/$/, '');
 		}

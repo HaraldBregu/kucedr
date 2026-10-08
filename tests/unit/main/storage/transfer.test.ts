@@ -14,7 +14,15 @@ const uploadFile = jest.fn();
 jest.mock('node:fs', () => ({
 	existsSync: () => false,
 	realpathSync: (value: string) => value,
-	promises: { readFile, mkdir, lstat, writeFile, rename, rm, stat: jest.fn().mockResolvedValue({ size: 5 }) },
+	promises: {
+		readFile,
+		mkdir,
+		lstat,
+		writeFile,
+		rename,
+		rm,
+		stat: jest.fn().mockResolvedValue({ size: 5 }),
+	},
 }));
 jest.mock('node:crypto', () => ({ randomUUID: () => 'restore' }));
 jest.mock('../../../../src/main/storage/storage_store', () => ({ getStorageSettings }));

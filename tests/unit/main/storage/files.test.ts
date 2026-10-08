@@ -4,7 +4,9 @@ import path from 'node:path';
 
 const getStorageSettings = jest.fn();
 jest.mock('../../../../src/main/storage/storage_store', () => ({ getStorageSettings }));
-jest.mock('../../../../src/main/storage/storage_protected', () => ({ isProtectedStoragePath: () => false }));
+jest.mock('../../../../src/main/storage/storage_protected', () => ({
+	isProtectedStoragePath: () => false,
+}));
 
 import { pushFiles } from '../../../../src/main/storage/storage_push';
 import { pullFiles } from '../../../../src/main/storage/storage_pull';
@@ -29,14 +31,25 @@ beforeEach(async () => {
 			if (!value) throw new Error('Missing object');
 			return value;
 		},
-		put: async (key, value) => { objects.set(key, Buffer.from(value)); },
-		list: async (prefix = '') => [...objects].filter(([key]) => key.startsWith(prefix)).map(([key, data]) => ({ key, size: data.length, lastModified: undefined })),
-		putFile: async (key, file) => { objects.set(key, await fs.readFile(file)); },
-		getFile: async (key, file) => { await fs.writeFile(file, await store.get(key), { flag: 'wx' }); },
+		put: async (key, value) => {
+			objects.set(key, Buffer.from(value));
+		},
+		list: async (prefix = '') =>
+			[...objects]
+				.filter(([key]) => key.startsWith(prefix))
+				.map(([key, data]) => ({ key, size: data.length, lastModified: undefined })),
+		putFile: async (key, file) => {
+			objects.set(key, await fs.readFile(file));
+		},
+		getFile: async (key, file) => {
+			await fs.writeFile(file, await store.get(key), { flag: 'wx' });
+		},
 	};
 });
 
-afterEach(async () => { await fs.rm(directory, { recursive: true, force: true }); });
+afterEach(async () => {
+	await fs.rm(directory, { recursive: true, force: true });
+});
 
 it('uploads a plain folder tree and replaces the same object on subsequent uploads', async () => {
 	await fs.mkdir(path.join(root, 'invoices'));
@@ -54,7 +67,11 @@ it('downloads matching objects directly without creating recovery copies or remo
 	await fs.writeFile(path.join(root, 'notes.md'), 'local');
 	await fs.writeFile(path.join(root, 'unmatched.md'), 'keep');
 	objects.set('freelance/notes.md', Buffer.from('remote'));
-	expect(await pullFiles(store)).toEqual({ downloaded: ['freelance/notes.md'], skipped: [], failed: [] });
+	expect(await pullFiles(store)).toEqual({
+		downloaded: ['freelance/notes.md'],
+		skipped: [],
+		failed: [],
+	});
 	expect(await fs.readFile(path.join(root, 'notes.md'), 'utf8')).toBe('remote');
 	expect((await fs.readdir(root)).sort()).toEqual(['notes.md', 'unmatched.md']);
 });
@@ -94,12 +111,30 @@ it('rejects traversal and symbolic links during downloads', async () => {
 });
 
 it('rejects ambiguous selected folders with the same name', () => {
-	expect(() => normalizeStoragePaths(['/data/first/freelance', '/data/second/freelance'])).toThrow('different names');
+	expect(() => normalizeStoragePaths(['/data/first/freelance', '/data/second/freelance'])).toThrow(
+		'different names'
+	);
 });
 
 it('normalizes bucket-scoped endpoints to prevent duplicated bucket paths', () => {
-	const provider = { name: 'Storage', endpoint: 'https://objects.example.com/kucedr-app/', region: 'auto', bucket: 'kucedr-app', accessKeyId: 'access', secretAccessKey: 'secret', forcePathStyle: true };
+	const provider = {
+		name: 'Storage',
+		endpoint: 'https://objects.example.com/kucedr-app/',
+		region: 'auto',
+		bucket: 'kucedr-app',
+		accessKeyId: 'access',
+		secretAccessKey: 'secret',
+		forcePathStyle: true,
+	};
 	expect(normalizeStorageProvider(provider).endpoint).toBe('https://objects.example.com');
-	expect(normalizeStorageProvider({ ...provider, endpoint: 'https://objects.example.com/storage/v1/s3/kucedr-app' }).endpoint).toBe('https://objects.example.com/storage/v1/s3');
-	expect(normalizeStorageProvider({ ...provider, endpoint: 'https://objects.example.com/storage/v1/s3' }).endpoint).toBe('https://objects.example.com/storage/v1/s3');
+	expect(
+		normalizeStorageProvider({
+			...provider,
+			endpoint: 'https://objects.example.com/storage/v1/s3/kucedr-app',
+		}).endpoint
+	).toBe('https://objects.example.com/storage/v1/s3');
+	expect(
+		normalizeStorageProvider({ ...provider, endpoint: 'https://objects.example.com/storage/v1/s3' })
+			.endpoint
+	).toBe('https://objects.example.com/storage/v1/s3');
 });

@@ -86,9 +86,7 @@ export class StorageOperations {
 		return status;
 	}
 
-	private async execute(
-		running: StorageOperationStatus
-	): Promise<StorageOperationStatus> {
+	private async execute(running: StorageOperationStatus): Promise<StorageOperationStatus> {
 		let allowSuspension: (() => void) | undefined;
 		try {
 			allowSuspension = this.dependencies.preventSuspension();
