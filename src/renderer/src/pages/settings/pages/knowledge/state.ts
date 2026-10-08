@@ -111,7 +111,8 @@ export default function useKnowledge() {
 								? 'indexName'
 								: null;
 	const canIndex = !disabled && requirement === null;
-	const currentIndex = status?.index?.indexName === configuration?.indexName ? status.index : null;
+	const currentIndex =
+		status?.index && status.index.indexName === configuration?.indexName ? status.index : null;
 	const indexModelMatches =
 		currentIndex?.providerId === configuration?.embeddingProviderId &&
 		currentIndex?.modelId === configuration?.embeddingModelId;
