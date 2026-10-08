@@ -1247,7 +1247,7 @@
 			"presetEndpointHint": "Enter your endpoint using this format: {{endpoint}}",
 			"emptyTitle": "No storage connections",
 			"emptyDescription": "Add a bucket to configure your file storage.",
-			"endpointHint": "Optional for Amazon S3. Enter your endpoint for other S3 providers.",
+			"endpointHint": "Optional for Amazon S3. For other providers, use the service endpoint without the bucket name.",
 			"secretHint": "Leave blank to keep the saved secret key.",
 			"loadError": "Could not load storage connections.",
 			"saveError": "Could not save this storage connection.",
