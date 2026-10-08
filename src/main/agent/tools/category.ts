@@ -1,5 +1,5 @@
 export const toolCategoryRegistry = {
-	workspace: { label: 'Workspace', description: 'Read, edit, and run work in the workspace.' },
+	workspace: { label: 'Core', description: 'Read, edit, and run work in the workspace.' },
 	system: { label: 'System', description: 'Interact with the user and local device capabilities.' },
 	bootstrap: {
 		label: 'Bootstrap',
