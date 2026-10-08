@@ -101,11 +101,20 @@ describe('AgentIpc run ownership', () => {
 		const handler = (channel: string) =>
 			(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
 		try {
-			await expect(handler(AgentChannels.policyGet)(event, 'voice')).resolves.toEqual({ success: true, data: policy });
+			await expect(handler(AgentChannels.policyGet)(event, 'voice')).resolves.toEqual({
+				success: true,
+				data: policy,
+			});
 			expect(get).toHaveBeenLastCalledWith('voice');
-			await expect(handler(AgentChannels.policySet)(event, policy, 'voice')).resolves.toEqual({ success: true, data: policy });
+			await expect(handler(AgentChannels.policySet)(event, policy, 'voice')).resolves.toEqual({
+				success: true,
+				data: policy,
+			});
 			expect(set).toHaveBeenLastCalledWith(policy, 'voice');
-			await expect(handler(AgentChannels.policyReset)(event, 'voice')).resolves.toEqual({ success: true, data: policy });
+			await expect(handler(AgentChannels.policyReset)(event, 'voice')).resolves.toEqual({
+				success: true,
+				data: policy,
+			});
 			expect(reset).toHaveBeenLastCalledWith('voice');
 			await handler(AgentChannels.policyGet)(event);
 			expect(get).toHaveBeenLastCalledWith('chat');
@@ -113,7 +122,9 @@ describe('AgentIpc run ownership', () => {
 			expect(set).toHaveBeenLastCalledWith(policy, 'chat');
 			await handler(AgentChannels.policyReset)(event);
 			expect(reset).toHaveBeenLastCalledWith('chat');
-			await expect(handler(AgentChannels.policySet)(event, policy, 'unknown')).resolves.toMatchObject({ success: false });
+			await expect(
+				handler(AgentChannels.policySet)(event, policy, 'unknown')
+			).resolves.toMatchObject({ success: false });
 			expect(set).toHaveBeenCalledTimes(2);
 		} finally {
 			get.mockRestore();

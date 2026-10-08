@@ -147,12 +147,15 @@ describe('agent store permissions', () => {
 			tools: { read: { permission: 'deny' } },
 		});
 		const chat = getPermissions();
-		setPermissions({
-			read: { allow: ['/voice/**'], deny: [] },
-			write: { allow: [], deny: [] },
-			exec: { allow: [], deny: [] },
-			tools: { read: { permission: 'ask' } },
-		}, 'voice');
+		setPermissions(
+			{
+				read: { allow: ['/voice/**'], deny: [] },
+				write: { allow: [], deny: [] },
+				exec: { allow: [], deny: [] },
+				tools: { read: { permission: 'ask' } },
+			},
+			'voice'
+		);
 		expect(getPermissions('voice').read.allow).toEqual([workspaceRule, '/voice/**']);
 		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('ask');
 		expect(getPermissions()).toEqual(chat);
@@ -184,20 +187,21 @@ describe('agent store permissions', () => {
 	});
 
 	it.each(['ask', 'complete_bootstrap', 'update_identity', 'update_soul', 'update_user'])(
-		'keeps required system tool %s enabled', (toolId) => {
-		setAgentProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
+		'keeps required system tool %s enabled',
+		(toolId) => {
+			setAgentProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
 
-		expect(() =>
-			setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'ask' })
-		).toThrow('Required system tools cannot be disabled.');
-		expect(() =>
-			setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' })
-		).toThrow('Required system tools cannot be disabled.');
-		expect(getToolConfiguration('chat', { kind: 'builtin', id: toolId })).toEqual({
-			permission: 'allow',
-		});
-		expect(getToolProfile('chat').tools).not.toHaveProperty(toolId);
-		expect(getPermissions('chat').tools).not.toHaveProperty(toolId);
+			expect(() =>
+				setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'ask' })
+			).toThrow('Required system tools cannot be disabled.');
+			expect(() =>
+				setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' })
+			).toThrow('Required system tools cannot be disabled.');
+			expect(getToolConfiguration('chat', { kind: 'builtin', id: toolId })).toEqual({
+				permission: 'allow',
+			});
+			expect(getToolProfile('chat').tools).not.toHaveProperty(toolId);
+			expect(getPermissions('chat').tools).not.toHaveProperty(toolId);
 		}
 	);
 
