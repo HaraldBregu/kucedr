@@ -33,14 +33,12 @@ it.each([
 	expect(tool.alwaysAsk).toBeUndefined();
 });
 
-it.each([
-	createTaskTool,
-	updateTaskTool,
-	deleteTaskTool,
-	runTaskNowTool,
-])('%s uses its scoped permission without forced approval', (tool) => {
-	expect(tool.hardApproval).not.toBe(true);
-});
+it.each([createTaskTool, updateTaskTool, deleteTaskTool, runTaskNowTool])(
+	'%s uses its scoped permission without forced approval',
+	(tool) => {
+		expect(tool.hardApproval).not.toBe(true);
+	}
+);
 
 it.each([
 	['create_task', createTaskTool],
@@ -58,7 +56,9 @@ it('uses taskId in task tool inputs', () => {
 });
 
 it('explains task capabilities and example user requests to the model', () => {
-	expect(createTaskTool.description).toContain('Create and persist a reusable background agent task');
+	expect(createTaskTool.description).toContain(
+		'Create and persist a reusable background agent task'
+	);
 	expect(createTaskTool.description).toContain('New tasks are deliberately saved disabled');
 	expect(listTasksTool.description).toContain('Show my scheduled tasks');
 	expect(updateTaskTool.description).toContain('enable and disable scheduled execution');
