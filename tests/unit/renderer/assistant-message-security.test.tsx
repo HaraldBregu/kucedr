@@ -83,7 +83,7 @@ it('shows a failed MCP tool before its authorization request', () => {
 	);
 
 	const failedCall = screen.getByText('Search Gmail');
-	const authorization = screen.getByText('Authorize gmail');
+	const authorization = screen.getByText('Authorize Gmail');
 	expect(failedCall.compareDocumentPosition(authorization) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 	expect(container.querySelector('[aria-label="Failed"]')).toBeInTheDocument();
 	expect(screen.getByText('After authorization, Search Gmail will be retried automatically.')).toBeInTheDocument();
