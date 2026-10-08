@@ -76,7 +76,8 @@ export class LlmModel implements LlmAdapter {
 		this.openAIClientFactory = options.openAIClientFactory;
 		this.anthropicClientFactory = options.anthropicClientFactory;
 		this.reasoningEffortEnabled = options.reasoningEffortEnabled ?? false;
-		this.reasoningContentEnabled = options.reasoningContentEnabled ?? false;
+		this.reasoningContentEnabled =
+			options.reasoningContentEnabled ?? options.provider?.id.toLowerCase() === 'deepseek';
 		this.thinkingModeEnabled = options.thinkingModeEnabled ?? false;
 	}
 
