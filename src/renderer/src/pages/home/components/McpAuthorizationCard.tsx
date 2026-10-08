@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactElement } from 'react';
-import { Check, KeyRound } from 'lucide-react';
+import { KeyRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AgentToolPart, PendingUserInput } from '../context';
@@ -13,6 +13,7 @@ export function McpAuthorizationCard({
 }): ReactElement | null {
 	const [connecting, setConnecting] = useState(false);
 	const [cancelling, setCancelling] = useState(false);
+	const [submittedAuthorization, setSubmittedAuthorization] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const cancelled = useRef(false);
 	let output = tool.output;
@@ -36,14 +37,15 @@ export function McpAuthorizationCard({
 				: undefined;
 	if (
 		!serverId ||
+		submittedAuthorization ||
+		result?.status === 'authorized' ||
+		result?.status === 'already_authorized' ||
 		(!pending &&
-			result?.status !== 'authorized' &&
 			result?.status !== 'cancelled' &&
 			result?.status !== 'authorization_failed')
 	)
 		return null;
 	const serverName = typeof result?.serverName === 'string' ? result.serverName : serverId;
-	const authorized = result?.status === 'authorized';
 	const stopped = result?.status === 'cancelled';
 	const failed = result?.status === 'authorization_failed';
 
@@ -61,7 +63,7 @@ export function McpAuthorizationCard({
 		setConnecting(true);
 		try {
 			await window.mcp.oauthStart(serverId);
-			if (!cancelled.current) await respond('authorized');
+			if (!cancelled.current && (await respond('authorized'))) setSubmittedAuthorization(true);
 		} catch (cause) {
 			if (!cancelled.current) setError(cause instanceof Error ? cause.message : String(cause));
 		} finally {
@@ -89,24 +91,15 @@ export function McpAuthorizationCard({
 		<Card className="max-w-2xl gap-3 border-border/70 py-4">
 			<CardHeader className="px-4">
 				<CardTitle className="text-sm">
-					{authorized
-						? `${serverName} authorized`
-						: stopped
-							? 'Authorization cancelled'
+					{stopped
+						? 'Authorization cancelled'
 							: failed
 								? 'Authorization failed'
 								: `Authorize ${serverName}`}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-3 px-4 text-sm">
-				{authorized ? (
-					<div
-						role="status"
-						className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"
-					>
-						<Check className="size-4" /> Authorized
-					</div>
-				) : stopped ? (
+				{stopped ? (
 					<p className="text-muted-foreground">The request was cancelled.</p>
 				) : failed ? (
 					<p className="text-muted-foreground">No authorization was saved. Please try again.</p>
