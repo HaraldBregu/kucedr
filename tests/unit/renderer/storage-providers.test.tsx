@@ -96,9 +96,12 @@ it('allows connecting a generic S3 provider when no plugin is enabled', async ()
 	await user.type(screen.getByLabelText('Secret access key'), 'secret');
 	await user.click(screen.getByRole('button', { name: 'Save', exact: true }));
 	expect(await screen.findByText('My backup')).toBeInTheDocument();
-	expect(api.saveProvider).toHaveBeenCalledWith(expect.objectContaining({
-		bucket: 'backups', endpoint: 'https://s3.example.com',
-	}));
+	expect(api.saveProvider).toHaveBeenCalledWith(
+		expect.objectContaining({
+			bucket: 'backups',
+			endpoint: 'https://s3.example.com',
+		})
+	);
 });
 
 it('adds multiple independent S3 connections and retains existing entries', async () => {

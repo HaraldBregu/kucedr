@@ -117,7 +117,8 @@ const StoragePage: React.FC = () => {
 		? 'off'
 		: (SYNC_INTERVALS.find((interval) => interval.cron === storage.syncCronExpression)?.key ??
 			'custom');
-	const busy = settingsLoading || operationStatusLoading || operationStarting || Boolean(runningOperation);
+	const busy =
+		settingsLoading || operationStatusLoading || operationStarting || Boolean(runningOperation);
 	const controlsDisabled = busy || !selectedProvider;
 	const operationStatusKey = operationStatus
 		? operationStatus.state === 'running' && operationStatus.trigger === 'scheduled'
