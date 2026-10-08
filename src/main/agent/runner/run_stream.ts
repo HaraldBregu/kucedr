@@ -403,8 +403,8 @@ async function* loop(
 			} catch {
 				authorizationStatus = undefined;
 			}
-			if (authorizationStatus === 'cancelled' || authorizationStatus === 'authorization_failed') {
-				session.stopReason = 'cancelled';
+			if (authorizationStatus !== 'authorized' && authorizationStatus !== 'already_authorized') {
+				session.stopReason = authorizationStatus === 'cancelled' ? 'cancelled' : 'error';
 				yield { type: 'run_finished', result: toResult(session, 'success') };
 				return;
 			}
