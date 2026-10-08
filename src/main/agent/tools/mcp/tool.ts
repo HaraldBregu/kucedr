@@ -1,5 +1,6 @@
 import { callTool, type McpCallResult, type McpClient } from '../../../mcp';
 import { getMcpServers } from '../../../mcp';
+import { findMcpService } from '../../../mcp/manifest';
 import { UnauthorizedError } from '@modelcontextprotocol/sdk/client/auth.js';
 import { jsonTool } from '../tool';
 import type { JSONSchema } from '../../types';
@@ -48,11 +49,16 @@ export function mcpTool(
 				return text;
 			} catch (error) {
 				const message = error instanceof Error ? error.message : String(error);
-				if (error instanceof UnauthorizedError || message.includes('Connect this MCP server with OAuth in Settings.')) {
+				const server = getMcpServers()[serverId];
+				if (
+					server?.type === 'http' &&
+					(!findMcpService(server.url)?.oauth?.credentials_required || Boolean(server.client_id)) &&
+					(error instanceof UnauthorizedError || message.includes('Connect this MCP server with OAuth in Settings.'))
+				) {
 					return JSON.stringify({
 						status: 'authorization_required',
 						serverId,
-						serverName: getMcpServers()[serverId]?.name?.trim() || serverId,
+						serverName: server.name?.trim() || serverId,
 					});
 				}
 				throw error;
