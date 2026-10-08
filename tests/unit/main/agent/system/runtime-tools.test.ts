@@ -29,21 +29,27 @@ it('groups runtime tools by availability and category with descriptions and usag
 	);
 
 	expect(context).toContain('### Loaded tools');
-	expect(context).toContain('#### Workspace\n- `read` — Read a file.');
-	expect(context).toContain('#### Delegation\n- `subagent` — Delegate one independent task.');
-	expect(context).toContain('#### Discovery\n- `tool_search` — Find relevant tools.');
+	expect(context).toContain(
+		'#### Workspace\nRead, edit, and run work in the workspace.\n- `read` — Read a file.'
+	);
+	expect(context).toContain(
+		'#### Delegation\nDelegate and coordinate work with other agents.\n- `subagent` — Delegate one independent task.'
+	);
+	expect(context).toContain(
+		'#### Discovery\nFind tools that can be loaded on demand.\n- `tool_search` — Find relevant tools.'
+	);
 	expect(context).toContain('### Available through `tool_search`');
 	expect(context).toContain(
-		'#### System\n- `camera_recorder` — Record camera video. _(Explicit user request only.)_'
+		'#### System\nInteract with the user and local device capabilities.\n- `camera_recorder` — Record camera video. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
-		'#### Media\n- `create_image` — Generate images. _(Explicit user request only.)_'
+		'#### Media\nCreate and edit images, video, and audio.\n- `create_image` — Generate images. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
-		'#### Web\n- `search_web` — Search the web. _(Explicit user request only.)_'
+		'#### Web\nSearch, retrieve, and interact with web content.\n- `search_web` — Search the web. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
-		'#### Skills\n- `list_skills` — List skills. _(Explicit user request only.)_\n- `load_skill` — Load a skill. _(Explicit user request only.)_'
+		'#### Skills\nFind and load reusable instructions and capabilities.\n- `list_skills` — List skills. _(Explicit user request only.)_\n- `load_skill` — Load a skill. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
 		'Web access rule: Do not call `search_web`, `fetch_web_page`, or `use_web_browser` merely because the user asks about a person, organization, place, or topic.'
@@ -55,7 +61,7 @@ it('groups runtime tools by availability and category with descriptions and usag
 		'Do not ask for web permission again, offer a menu of possible searches instead of acting, or require another confirmation.'
 	);
 	expect(context).toContain(
-		'#### Integrations\n- `mcp__gmail__search_threads` — Search Gmail threads.'
+		'#### Integrations\nUse tools provided by connected services.\n- `mcp__gmail__search_threads` — Search Gmail threads.'
 	);
 	expect(context.match(/`read`/g)).toHaveLength(1);
 });

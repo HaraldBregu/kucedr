@@ -25,7 +25,7 @@ export function buildRuntimeTools(
 			const categoryTools = categories.get(category as ToolCategory);
 			return categoryTools
 				? [
-						`#### ${metadata.label}\n${categoryTools
+						`#### ${metadata.label}\n${metadata.description}\n${categoryTools
 							.map((tool) => {
 								const description =
 									tool.description?.trim() || 'No description provided by this tool.';
