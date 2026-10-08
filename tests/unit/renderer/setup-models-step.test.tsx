@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { SetupCompaction } from '../../../src/renderer/src/pages/start/components/SetupCompaction';
 import { SetupChatStep } from '../../../src/renderer/src/pages/start/components/SetupChatStep';
 import { SetupVoiceStep } from '../../../src/renderer/src/pages/start/components/SetupVoiceStep';
 import type { ModelServiceStateMap } from '../../../src/renderer/src/pages/start/setupTypes';
@@ -9,11 +10,21 @@ jest.mock('@/components/model-provider-select', () => ({
 	ModelProviderSelect: ({
 		buttonClassName,
 		idPrefix,
+		onChange,
+		disabled,
 	}: {
 		buttonClassName?: string;
 		idPrefix: string;
+		onChange: (providerId: string, modelId: string) => void;
+		disabled?: boolean;
 	}) => (
-		<button className={buttonClassName} data-testid={`${idPrefix}-select`} type="button">
+		<button
+			className={buttonClassName}
+			data-testid={`${idPrefix}-select`}
+			type="button"
+			disabled={disabled}
+			onClick={() => onChange('openai', 'test-model')}
+		>
 			Select model
 		</button>
 	),
@@ -63,6 +74,13 @@ const SERVICE_STATES: ModelServiceStateMap = {
 	audio: EMPTY_SERVICE,
 };
 
+beforeEach(() => {
+	window.agent = {
+		getCompactModel: jest.fn().mockResolvedValue({ providerId: '', modelId: '', options: {} }),
+		setCompactModel: jest.fn(async (value) => value),
+	} as never;
+});
+
 it('shows only chat and tool configuration on Chat assistant', () => {
 	render(
 		<SetupChatStep
@@ -75,6 +93,9 @@ it('shows only chat and tool configuration on Chat assistant', () => {
 	expect(screen.getByRole('heading', { name: 'Chat assistant' })).toBeInTheDocument();
 	const chat = screen.getByRole('region', { name: 'Chat Assistant' });
 	expect(within(chat).getByTestId('setup-assistant')).toHaveTextContent('LLM Model');
+	expect(within(chat).getByTestId('setup-compaction')).toHaveTextContent(
+		'Used to summarize older messages when you compact a conversation. When disabled, the Chat LLM is used.'
+	);
 	const tools = screen.getByRole('region', { name: 'Tools' });
 	for (const id of ['image', 'video', 'audio']) {
 		expect(within(tools).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
@@ -152,4 +173,36 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 		baseUrl: 'http://localhost:11434/api',
 		apiKey: 'ollama',
 	});
+});
+
+it('saves a compaction model and clears it when disabled', async () => {
+	const user = userEvent.setup();
+	render(<SetupCompaction modelGroups={[]} disabled={false} />);
+	const selector = screen.getByTestId('setup-compaction-select');
+	await waitFor(() => expect(selector).toBeEnabled());
+	expect(screen.queryByRole('button', { name: 'Disable' })).not.toBeInTheDocument();
+	await user.click(selector);
+	expect(window.agent.setCompactModel).toHaveBeenCalledWith({
+		providerId: 'openai',
+		modelId: 'test-model',
+		options: {},
+	});
+	await user.click(await screen.findByRole('button', { name: 'Disable' }));
+	expect(window.agent.setCompactModel).toHaveBeenLastCalledWith({
+		providerId: '',
+		modelId: '',
+		options: {},
+	});
+	await waitFor(() =>
+		expect(screen.queryByRole('button', { name: 'Disable' })).not.toBeInTheDocument()
+	);
+});
+
+it('restores an existing compaction model', async () => {
+	window.agent.getCompactModel = jest
+		.fn()
+		.mockResolvedValue({ providerId: 'openai', modelId: 'test-model', options: {} });
+	render(<SetupCompaction modelGroups={[]} disabled={false} />);
+	expect(await screen.findByRole('button', { name: 'Disable' })).toBeEnabled();
+	expect(window.agent.setCompactModel).not.toHaveBeenCalled();
 });
