@@ -3,7 +3,8 @@ export function addBasePrompt(prompt: string, now = new Date()): string {
 
 	prompt += '\n\n## Current UTC date and time';
 	prompt += `\n- ${now.toISOString()}`;
-	prompt += '\n- Use this UTC timestamp as the canonical clock. Interpret "now", "today", calendar dates, deadlines, and schedules in the timezone from the USER profile. If the USER profile has no timezone, use UTC and state that assumption when it matters.';
+	prompt +=
+		'\n- Use this UTC timestamp as the canonical clock. Interpret "now", "today", calendar dates, deadlines, and schedules in the timezone from the USER profile. If the USER profile has no timezone, use UTC and state that assumption when it matters.';
 
 	prompt += '\n\n## Voice';
 	prompt += '\n- Sound natural, direct, and human, not like a generic support script.';
