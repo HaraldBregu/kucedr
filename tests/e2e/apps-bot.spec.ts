@@ -134,12 +134,14 @@ test('production Apps search and Bot navigation work in Electron', async ({
 		await expect
 			.poll(() =>
 				app.evaluate(({ BrowserWindow }) =>
-					BrowserWindow.getAllWindows().some(
-						(window) => window.getTitle() === 'Orbit Notes' && window.isVisible()
-					)
+					BrowserWindow.getAllWindows().map((window) => ({
+						title: window.getTitle(),
+						visible: window.isVisible(),
+						url: window.webContents.getURL(),
+					}))
 				)
 			)
-			.toBe(true);
+			.toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Orbit Notes', visible: true })]));
 		await app.evaluate(({ BrowserWindow }) => {
 			BrowserWindow.getAllWindows()
 				.find((window) => window.getTitle() === 'Orbit Notes')
