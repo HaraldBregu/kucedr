@@ -649,3 +649,32 @@ it('shows a persisted index as ready after restart and retains its completion da
 	expect(screen.queryByText('Not indexed')).not.toBeInTheDocument();
 	expect(screen.getByText('settings.knowledge.lastRun')).toBeInTheDocument();
 });
+
+it('refreshes the authoritative configuration when another window changes Knowledge settings', async () => {
+	jest.useFakeTimers();
+	try {
+		render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
+		const selector = await screen.findByRole('combobox', { name: 'Embedding model' });
+		configuration = { ...configuration, embeddingProviderId: 'voyage', embeddingModelId: 'voyage-3' };
+		await act(async () => { jest.advanceTimersByTime(2_000); });
+		expect(selector).toHaveTextContent('Voyage / Voyage 3');
+		expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
+	} finally {
+		jest.useRealTimers();
+	}
+});
+
+it('reports a polling failure and clears it when current status can be read again', async () => {
+	jest.useFakeTimers();
+	try {
+		render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
+		await screen.findByRole('combobox', { name: 'Embedding model' });
+		agentApi.ragGetStatus.mockRejectedValueOnce(new Error('Cannot read indexing status'));
+		await act(async () => { jest.advanceTimersByTime(2_000); });
+		expect(screen.getByRole('alert')).toHaveTextContent('Cannot read indexing status');
+		await act(async () => { jest.advanceTimersByTime(2_000); });
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+	} finally {
+		jest.useRealTimers();
+	}
+});
