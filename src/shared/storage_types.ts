@@ -56,19 +56,6 @@ export interface StoragePullResult {
 	failed: StoragePushFailure[];
 }
 
-export interface StorageBackupSnapshot {
-	key: string;
-	folder: string;
-	createdAt: string;
-	files: number;
-	bytes: number;
-}
-
-export interface StorageRestoreInput {
-	snapshotKey: string;
-	path: string;
-}
-
 export type StorageOperation = 'backup' | 'restore';
 export type StorageOperationTrigger = 'manual' | 'scheduled';
 export type StorageOperationState = 'running' | 'succeeded' | 'partial' | 'failed';

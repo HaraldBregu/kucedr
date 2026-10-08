@@ -344,15 +344,11 @@ export const StorageChannels = {
 	removeProvider: 'storage:providers:remove',
 	getSettings: 'storage:settings:get',
 	saveSettings: 'storage:settings:save',
-	getVersionedStatus: 'storage:versioned:status',
-	setVersionedEnabled: 'storage:versioned:set-enabled',
-	listConflicts: 'storage:versioned:conflicts',
 	syncFolders: 'storage:sync-folders',
 	pickFolders: 'storage:pick-folders',
 	getOperationStatus: 'storage:operation-status:get',
 	operationStatusChanged: 'storage:operation-status:changed',
 	backup: 'storage:backup',
-	listSnapshots: 'storage:snapshots:list',
 	restore: 'storage:restore',
 } as const;
 

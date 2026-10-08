@@ -8,9 +8,6 @@ export const storage: StorageApi = {
 	removeProvider: (id) => typedInvokeUnwrap(StorageChannels.removeProvider, id),
 	getSettings: () => typedInvokeUnwrap(StorageChannels.getSettings),
 	saveSettings: (settings) => typedInvokeUnwrap(StorageChannels.saveSettings, settings),
-	getVersionedStatus: () => typedInvokeUnwrap(StorageChannels.getVersionedStatus),
-	setVersionedEnabled: (enabled) => typedInvokeUnwrap(StorageChannels.setVersionedEnabled, enabled),
-	listConflicts: () => typedInvokeUnwrap(StorageChannels.listConflicts),
 	syncFolders: () => typedInvokeUnwrap(StorageChannels.syncFolders),
 	pickFolders: () => typedInvokeUnwrap(StorageChannels.pickFolders),
 	getOperationStatus: () => typedInvokeUnwrap(StorageChannels.getOperationStatus),
@@ -18,7 +15,4 @@ export const storage: StorageApi = {
 	backup: () => typedInvokeUnwrap(StorageChannels.backup),
 	restore: (input) =>
 		input
-			? typedInvokeUnwrap(StorageChannels.restore, input)
-			: typedInvokeUnwrap(StorageChannels.restore),
-	listSnapshots: () => typedInvokeUnwrap(StorageChannels.listSnapshots),
 };

@@ -900,18 +900,6 @@ export interface StorageInvokeChannelMap {
 		args: [settings: import('./storage_types').StorageSyncSettings];
 		result: import('./storage_types').StorageSyncSettings;
 	};
-	[StorageChannels.getVersionedStatus]: {
-		args: [];
-		result: boolean;
-	};
-	[StorageChannels.setVersionedEnabled]: {
-		args: [enabled: boolean];
-		result: boolean;
-	};
-	[StorageChannels.listConflicts]: {
-		args: [];
-		result: import('./storage_types').StorageConflict[];
-	};
 	[StorageChannels.syncFolders]: {
 		args: [];
 		result: import('./storage_types').StorageSyncFolder[];
@@ -929,12 +917,8 @@ export interface StorageInvokeChannelMap {
 		result: import('./storage_types').StorageOperationStatus;
 	};
 	[StorageChannels.restore]: {
-		args: [input?: import('./storage_types').StorageRestoreInput];
-		result: import('./storage_types').StorageOperationStatus;
-	};
-	[StorageChannels.listSnapshots]: {
 		args: [];
-		result: import('./storage_types').StorageBackupSnapshot[];
+		result: import('./storage_types').StorageOperationStatus;
 	};
 }
 

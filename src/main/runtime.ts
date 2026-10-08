@@ -34,7 +34,6 @@ import { setupEventLogging, setupProcessSafetyNet } from './shared/error_reporte
 import { setupMemoryMonitor } from './shared/metrics';
 import { bootstrapServices, cleanup } from './bootstrap';
 import { startStorageSync, stopStorageSync } from './storage';
-import { startVersionedStorageWatch } from './storage/cloud/watch';
 import { startRagSchedule, stopRagSchedule } from './agent/knowledge/rag';
 import { CHANNEL_PROVIDER_IDS } from '../shared';
 import { AppChannels } from '../shared/ipc_channels_definitions';
@@ -197,9 +196,6 @@ app.whenReady().then(() => {
 	startStorageSync(logger, services.storageOperations);
 	services.cloudService.initialize();
 	const authInitialization = services.authService.initialize();
-	const stopVersionedStorageWatch = startVersionedStorageWatch(
-		services.authService, logger, services.storageOperations);
-	app.once('before-quit', stopVersionedStorageWatch);
 	const unsubscribeAuthLinks = authLinks.subscribe(async (url) => {
 		try {
 			await services.authService.handleDeepLink(url);

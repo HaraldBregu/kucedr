@@ -5,7 +5,6 @@ import type {
 	StorageOperationTrigger,
 	StoragePullResult,
 	StoragePushResult,
-	StorageRestoreInput,
 } from '../../shared/storage_types';
 import { describeStorageError } from './storage_error';
 
@@ -13,7 +12,7 @@ type StorageTransferResult = StoragePushResult | StoragePullResult;
 
 export interface StorageOperationDependencies {
 	backup: () => Promise<StoragePushResult>;
-	restore: (input?: StorageRestoreInput) => Promise<StoragePullResult>;
+	restore: () => Promise<StoragePullResult>;
 	lock: <T>(operation: () => Promise<T>) => Promise<T>;
 	preventSuspension: () => () => void;
 }
@@ -40,8 +39,8 @@ export class StorageOperations {
 		return this.start('backup', trigger);
 	}
 
-	restore(input?: StorageRestoreInput): StorageOperationStatus {
-		return this.start('restore', 'manual', input);
+	restore(): StorageOperationStatus {
+		return this.start('restore', 'manual');
 	}
 
 	wait(operationId: string): Promise<StorageOperationStatus | undefined> {
@@ -54,8 +53,7 @@ export class StorageOperations {
 
 	private start(
 		operation: StorageOperation,
-		trigger: StorageOperationTrigger,
-		input?: StorageRestoreInput
+		trigger: StorageOperationTrigger
 	): StorageOperationStatus {
 		const current = this.status;
 		if (current?.state === 'running') {
@@ -75,7 +73,7 @@ export class StorageOperations {
 			revision: ++this.revision,
 		};
 		this.publish(status);
-		const task = this.execute(status, input);
+		const task = this.execute(status);
 		this.tasks.set(status.operationId, task);
 		void task.then(
 			() => {
@@ -89,8 +87,7 @@ export class StorageOperations {
 	}
 
 	private async execute(
-		running: StorageOperationStatus,
-		input?: StorageRestoreInput
+		running: StorageOperationStatus
 	): Promise<StorageOperationStatus> {
 		let allowSuspension: (() => void) | undefined;
 		try {
@@ -98,7 +95,7 @@ export class StorageOperations {
 			const result: StorageTransferResult =
 				running.operation === 'backup'
 					? await this.dependencies.lock(this.dependencies.backup)
-					: await this.dependencies.lock(() => this.dependencies.restore(input));
+					: await this.dependencies.lock(this.dependencies.restore);
 			const transferred = 'uploaded' in result ? result.uploaded.length : result.downloaded.length;
 			return this.finish(running, result, transferred);
 		} catch (error) {

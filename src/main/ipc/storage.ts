@@ -14,28 +14,18 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
 import { storageProviders } from '../storage/providers';
-import type { AuthService } from '../cloud/service';
-import { loadCloudConfig } from '../cloud/config';
-import { configureVersionedStorage } from '../storage/cloud/configure';
-import { readStorageConfig } from '../storage/local/config';
-import { writeStorageConfig } from '../storage/local/config_write';
-import { openStorageState } from '../storage/local/state';
-import { listStorageConflicts } from '../storage/local/conflicts';
-import { listBackupSnapshots } from '../storage/snapshots';
-import { transferStorage } from '../storage/s3/transfer';
 
 export interface StorageIpcDeps {
 	appRegistry: AppRegistry;
 	storageOperations: StorageOperations;
 	windows: WindowContextManager;
-	authService: AuthService;
 }
 
 export class StorageIpc implements IpcModule<StorageIpcDeps> {
 	readonly name = 'storage';
 
 	register(
-		{ appRegistry, storageOperations, windows, authService }: StorageIpcDeps,
+		{ appRegistry, storageOperations, windows }: StorageIpcDeps,
 		_eventBus: EventBus
 	): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
@@ -85,46 +75,6 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 			rescheduleStorageSync();
 			return saved;
 		});
-		registerQueryWithEvent(StorageChannels.getVersionedStatus, async (event) => {
-			trusted.assert(event);
-			return (await readStorageConfig())?.sync.enabled ?? false;
-		});
-		registerCommandWithEvent(StorageChannels.setVersionedEnabled, async (event, enabled) => {
-			trusted.assert(event);
-			if (storageOperations.isRunning()) throw new Error('Wait for the current storage operation.');
-			if (typeof enabled !== 'boolean') throw new Error('Invalid storage mode.');
-			if (!enabled) {
-				const config = await readStorageConfig();
-				if (config)
-					await writeStorageConfig({ ...config, sync: { ...config.sync, enabled: false } });
-				return false;
-			}
-			if (!authService.getSignedInUserId())
-				throw new Error('Sign in before enabling cloud file sync.');
-			const cloud = loadCloudConfig();
-			if (!cloud) throw new Error('Supabase account services are unavailable.');
-			const settings = getStorageSettings();
-			if (!settings.paths.length) throw new Error('Select at least one folder to synchronize.');
-			await configureVersionedStorage(settings, cloud.url, true);
-			return true;
-		});
-		registerQueryWithEvent(StorageChannels.listConflicts, async (event) => {
-			trusted.assert(event);
-			const accountId = authService.getSignedInUserId();
-			const config = await readStorageConfig();
-			if (!accountId || !config?.sync.enabled) return [];
-			const database = openStorageState();
-			try {
-				return config.workspaces.flatMap((workspace) =>
-					listStorageConflicts(database, {
-						accountId,
-						workspaceId: workspace.id,
-					})
-				);
-			} finally {
-				database.close();
-			}
-		});
 		registerQueryWithEvent(StorageChannels.syncFolders, (event) => {
 			trusted.assert(event);
 			return syncFolders();
@@ -141,18 +91,9 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 			trusted.assert(event);
 			return storageOperations.backup('manual');
 		});
-		registerQueryWithEvent(StorageChannels.listSnapshots, (event) => {
+		registerCommandWithEvent(StorageChannels.restore, (event) => {
 			trusted.assert(event);
-			return transferStorage(
-				storageProviders.resolve(getStorageSettings().providerId),
-				listBackupSnapshots
-			);
-		});
-		registerCommandWithEvent(StorageChannels.restore, (event, input) => {
-			trusted.assert(event);
-			if (input && (typeof input.snapshotKey !== 'string' || typeof input.path !== 'string'))
-				throw new Error('Invalid restore selection.');
-			return storageOperations.restore(input);
+			return storageOperations.restore();
 		});
 	}
 }

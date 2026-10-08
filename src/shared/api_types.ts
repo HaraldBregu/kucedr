@@ -13,7 +13,6 @@ import type { ChannelCredentialSaveInput, ChannelCredentialSummary } from './cha
 import type { SearchEngineId, SearchEngineInput, SearchSettings } from './search_types';
 import type {
 	StorageOperationStatus,
-	StorageConflict,
 	StorageProvider,
 	StorageProviderInput,
 	StorageSyncFolder,
@@ -415,16 +414,12 @@ export interface StorageApi {
 	removeProvider: (id: string) => Promise<boolean>;
 	getSettings: () => Promise<StorageSyncSettings>;
 	saveSettings: (settings: StorageSyncSettings) => Promise<StorageSyncSettings>;
-	getVersionedStatus: () => Promise<boolean>;
-	setVersionedEnabled: (enabled: boolean) => Promise<boolean>;
-	listConflicts: () => Promise<StorageConflict[]>;
 	syncFolders: () => Promise<StorageSyncFolder[]>;
 	pickFolders: () => Promise<string[]>;
 	getOperationStatus: () => Promise<StorageOperationStatus | undefined>;
 	onOperationStatusChanged: (callback: (status: StorageOperationStatus) => void) => () => void;
 	backup: () => Promise<StorageOperationStatus>;
-	restore: (input?: import('./storage_types').StorageRestoreInput) => Promise<StorageOperationStatus>;
-	listSnapshots: () => Promise<import('./storage_types').StorageBackupSnapshot[]>;
+	restore: () => Promise<StorageOperationStatus>;
 }
 
 export interface DatabaseApi {
