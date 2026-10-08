@@ -49,6 +49,7 @@ it('holds the run until OAuth succeeds, then submits authorization', async () =>
 			{ questionId: 'mcp-authorization', answer: 'authorized' },
 		])
 	);
+	await waitFor(() => expect(screen.queryByRole('button', { name: 'Authorize' })).not.toBeInTheDocument());
 });
 
 it('cancels the run without waiting for OAuth', async () => {
@@ -88,11 +89,12 @@ it('shows OAuth errors and keeps the authorization action available', async () =
 	expect(screen.getByRole('button', { name: 'Authorize' })).toBeEnabled();
 });
 
-it('renders completed authorization and hides unrelated server statuses', () => {
+it('hides the card after authorization and for unrelated server statuses', () => {
 	const { rerender } = render(
 		<McpAuthorizationCard tool={{ ...tool, output: { status: 'authorized', serverId: 'gmail' } }} />
 	);
-	expect(screen.getByRole('status')).toHaveTextContent('Authorized');
+	expect(screen.queryByText(/authorized/i)).not.toBeInTheDocument();
+	expect(screen.queryByRole('button')).not.toBeInTheDocument();
 	rerender(
 		<McpAuthorizationCard tool={{ ...tool, output: { status: 'connected', serverId: 'gmail' } }} />
 	);
