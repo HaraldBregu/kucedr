@@ -74,7 +74,7 @@ describe('addToolsPrompt', () => {
 		const prompt = addToolsPrompt('base', [tool('read', 'Read a file'), tool('write')]);
 		expect(prompt).toContain('## Tools');
 		expect(prompt).toContain(
-			'### System\nInteract with the user and local device capabilities.'
+			'### System\nAsk the user for required input and work with local device capabilities such as the microphone, camera, and screen.'
 		);
 		expect(prompt).toContain('- `read` (read) — Read a file');
 		expect(prompt).toContain('- `write` (write)');

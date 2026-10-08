@@ -30,26 +30,26 @@ it('groups runtime tools by availability and category with descriptions and usag
 
 	expect(context).toContain('### Loaded tools');
 	expect(context).toContain(
-		'#### Core\nRead, edit, and run work in the workspace.\n- `read` — Read a file.'
+		'#### Core\nRead and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — Read a file.'
 	);
 	expect(context).toContain(
-		'#### Delegation\nDelegate and coordinate work with other agents.\n- `subagent` — Delegate one independent task.'
+		'#### Delegation\nDelegate independent work to subagents or connected remote agents and follow their progress.\n- `subagent` — Delegate one independent task.'
 	);
 	expect(context).toContain(
-		'#### Discovery\nFind tools that can be loaded on demand.\n- `tool_search` — Find relevant tools.'
+		'#### Discovery\nFind relevant tools that are available to load on demand for the current model turn.\n- `tool_search` — Find relevant tools.'
 	);
 	expect(context).toContain('### Available through `tool_search`');
 	expect(context).toContain(
-		'#### System\nInteract with the user and local device capabilities.\n- `camera_recorder` — Record camera video. _(Explicit user request only.)_'
+		'#### System\nAsk the user for required input and work with local device capabilities such as the microphone, camera, and screen.\n- `camera_recorder` — Record camera video. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
-		'#### Media\nCreate and edit images, video, and audio.\n- `create_image` — Generate images. _(Explicit user request only.)_'
+		'#### Media\nGenerate or edit images, create video, and produce audio or music from user instructions.\n- `create_image` — Generate images. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
-		'#### Web\nSearch, retrieve, and interact with web content.\n- `search_web` — Search the web. _(Explicit user request only.)_'
+		'#### Web\nSearch the internet, retrieve page content, and interact with websites in a controlled browser.\n- `search_web` — Search the web. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
-		'#### Skills\nFind and load reusable instructions and capabilities.\n- `list_skills` — List skills. _(Explicit user request only.)_\n- `load_skill` — Load a skill. _(Explicit user request only.)_'
+		'#### Skills\nList and load reusable instruction packages that provide specialized workflows and capabilities.\n- `list_skills` — List skills. _(Explicit user request only.)_\n- `load_skill` — Load a skill. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
 		'Web access rule: Do not call `search_web`, `fetch_web_page`, or `use_web_browser` merely because the user asks about a person, organization, place, or topic.'
@@ -61,7 +61,7 @@ it('groups runtime tools by availability and category with descriptions and usag
 		'Do not ask for web permission again, offer a menu of possible searches instead of acting, or require another confirmation.'
 	);
 	expect(context).toContain(
-		'#### Integrations\nUse tools provided by connected services.\n- `mcp__gmail__search_threads` — Search Gmail threads.'
+		'#### Integrations\nUse tools supplied by connected apps and external services, including authorized MCP servers.\n- `mcp__gmail__search_threads` — Search Gmail threads.'
 	);
 	expect(context.match(/`read`/g)).toHaveLength(1);
 });

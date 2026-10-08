@@ -1,19 +1,64 @@
 export const toolCategoryRegistry = {
-	workspace: { label: 'Core', description: 'Read, edit, and run work in the workspace.' },
-	system: { label: 'System', description: 'Interact with the user and local device capabilities.' },
+	workspace: {
+		label: 'Core',
+		description:
+			'Read and modify workspace files, run commands, manage processes, and undo or redo file operations.',
+	},
+	system: {
+		label: 'System',
+		description:
+			'Ask the user for required input and work with local device capabilities such as the microphone, camera, and screen.',
+	},
 	bootstrap: {
 		label: 'Bootstrap',
-		description: 'Read and update the assistant profile during initial setup.',
+		description:
+			'Read and update the assistant identity, personality, user profile, and health context during initial setup.',
 	},
-	media: { label: 'Media', description: 'Create and edit images, video, and audio.' },
-	task: { label: 'Tasks', description: 'Create, manage, and run scheduled tasks.' },
-	web: { label: 'Web', description: 'Search, retrieve, and interact with web content.' },
-	knowledge: { label: 'Knowledge', description: 'Search configured knowledge sources.' },
-	skill: { label: 'Skills', description: 'Find and load reusable instructions and capabilities.' },
-	discovery: { label: 'Discovery', description: 'Find tools that can be loaded on demand.' },
-	integration: { label: 'Integrations', description: 'Use tools provided by connected services.' },
-	delegation: { label: 'Delegation', description: 'Delegate and coordinate work with other agents.' },
-	goal: { label: 'Goals', description: 'Track and update long-running goals.' },
+	media: {
+		label: 'Media',
+		description:
+			'Generate or edit images, create video, and produce audio or music from user instructions.',
+	},
+	task: {
+		label: 'Tasks',
+		description:
+			'Create, inspect, update, delete, and immediately run scheduled background tasks.',
+	},
+	web: {
+		label: 'Web',
+		description:
+			'Search the internet, retrieve page content, and interact with websites in a controlled browser.',
+	},
+	knowledge: {
+		label: 'Knowledge',
+		description:
+			'Search configured knowledge sources for information relevant to the current request.',
+	},
+	skill: {
+		label: 'Skills',
+		description:
+			'List and load reusable instruction packages that provide specialized workflows and capabilities.',
+	},
+	discovery: {
+		label: 'Discovery',
+		description:
+			'Find relevant tools that are available to load on demand for the current model turn.',
+	},
+	integration: {
+		label: 'Integrations',
+		description:
+			'Use tools supplied by connected apps and external services, including authorized MCP servers.',
+	},
+	delegation: {
+		label: 'Delegation',
+		description:
+			'Delegate independent work to subagents or connected remote agents and follow their progress.',
+	},
+	goal: {
+		label: 'Goals',
+		description:
+			'Create and track long-running goals, update their plans, record evidence, and report completion or blockers.',
+	},
 } as const;
 
 export type ToolCategory = keyof typeof toolCategoryRegistry;
