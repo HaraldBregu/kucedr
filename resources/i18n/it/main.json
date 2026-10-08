@@ -1934,6 +1934,8 @@
 			"noResults": "Nessun risultato trovato.",
 			"retry": "Riprova",
 			"embeddingTitle": "Embedding",
+			"configureModels": "Configura modelli",
+			"configureDatabases": "Configura database",
 			"storageTitle": "Archiviazione",
 			"localDatabase": "SQLite locale",
 			"indexingTitle": "Indicizzazione",
