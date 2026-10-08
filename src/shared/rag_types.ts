@@ -15,4 +15,5 @@ export interface RagConfiguration {
 	scheduleEnabled: boolean;
 	cronExpression: string;
 	timezone?: string;
+	minimumScore?: number;
 }

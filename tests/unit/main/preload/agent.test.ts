@@ -54,3 +54,10 @@ it('validates and forwards a compact-session request', async () => {
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.compactSession, 'session-1');
 	expect(() => agent.compactSession(' ')).toThrow('Invalid assistant session id.');
 });
+
+it('queries and cancels background Knowledge indexing through typed channels', async () => {
+	await agent.ragGetStatus();
+	await agent.ragCancelIndex();
+	expect(invoke).toHaveBeenNthCalledWith(1, AgentChannels.ragGetStatus);
+	expect(invoke).toHaveBeenNthCalledWith(2, AgentChannels.ragCancelIndex);
+});

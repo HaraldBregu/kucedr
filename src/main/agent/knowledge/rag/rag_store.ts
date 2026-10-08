@@ -26,6 +26,7 @@ const DEFAULT_RAG_CONFIGURATION: RagConfiguration = {
 	scheduleEnabled: false,
 	cronExpression: '0 3 * * *',
 	timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+	minimumScore: 0,
 };
 
 const configurationListeners = new Set<() => void>();
@@ -94,6 +95,9 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 		(databaseId && !localDatabase && !supportsVectorDatabase(databaseProviderId, databaseId))
 	)
 		throw new Error('Select a supported Knowledge database.');
+	const minimumScore = configuration.minimumScore ?? 0;
+	if (!Number.isFinite(minimumScore) || minimumScore < 0 || minimumScore > 1)
+		throw new Error('Knowledge minimum similarity must be between 0 and 1.');
 	const saved = {
 		enabled: configuration.enabled === true,
 		indexName,
@@ -125,6 +129,7 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 		scheduleEnabled: configuration.scheduleEnabled === true,
 		cronExpression: cronExpression || DEFAULT_RAG_CONFIGURATION.cronExpression,
 		timezone,
+		minimumScore,
 	};
 	store.store = saved;
 	restrictSettingsFile(store.path);
