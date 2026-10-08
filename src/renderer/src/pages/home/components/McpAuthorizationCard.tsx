@@ -23,17 +23,15 @@ export function McpAuthorizationCard({
 		output && typeof output === 'object' && !Array.isArray(output)
 			? (output as { status?: unknown; serverId?: unknown; serverName?: unknown })
 			: undefined;
-	const validStatus = result?.status === 'authorization_required' || result?.status === 'connected';
+	const validStatus = result?.status === 'authorization_required';
 	const serverId = validStatus && typeof result.serverId === 'string' ? result.serverId : undefined;
 	useEffect(() => {
 		if (!serverId) return;
 		let cancelled = false;
 		void window.mcp
 			.oauthStatus(serverId)
-			.then(async (hasToken) => {
-				if (!hasToken) return;
-				const connection = await window.mcp.test(serverId);
-				if (!cancelled && connection.ok) setPhase('authorized');
+			.then((hasToken) => {
+				if (!cancelled && hasToken) setPhase('authorized');
 			})
 			.catch(() => undefined);
 		return () => {
@@ -43,7 +41,6 @@ export function McpAuthorizationCard({
 	if (!validStatus || !serverId) return null;
 	const serverName = typeof result.serverName === 'string' ? result.serverName : result.serverId;
 	const authorized = phase === 'authorized';
-	const connected = authorized || result.status === 'connected';
 
 	const authorize = async (): Promise<void> => {
 		setError(null);
@@ -61,25 +58,21 @@ export function McpAuthorizationCard({
 		<Card className="max-w-2xl gap-3 border-border/70 py-4">
 			<CardHeader className="px-4">
 				<CardTitle className="text-sm">
-					{authorized
-						? `${serverName} authorized`
-						: connected
-							? `${serverName} connected`
-							: `Authorize ${serverName}`}
+					{authorized ? `${serverName} authorized` : `Authorize ${serverName}`}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-3 px-4 text-sm">
 				<p className="text-muted-foreground">
-					{connected
-						? 'The MCP server is connected. You can continue in chat.'
-						: `Connect ${serverName} to use its tools in chat.`}
+					{authorized
+						? 'Authorization complete. You can continue in chat.'
+						: `Authorize ${serverName} to use its tools in chat.`}
 				</p>
-				{connected ? (
+				{authorized ? (
 					<div
 						role="status"
 						className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"
 					>
-						<Check className="size-4" /> {authorized ? 'Authorized' : 'Connected'}
+						<Check className="size-4" /> Authorized
 					</div>
 				) : (
 					<Button
