@@ -293,7 +293,7 @@
 				"configuration": "Configurazione"
 			},
 			"descriptions": {
-				"storage": "Backup dei file sul tuo provider di archiviazione",
+				"storage": "Carica e scarica file con il tuo provider di archiviazione",
 				"settings": "Info e aspetto dell'app",
 				"account": "Identità cloud e sessione",
 				"modelServices": "Setup servizi modello",

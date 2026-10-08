@@ -293,7 +293,7 @@
 				"configuration": "Configuration"
 			},
 			"descriptions": {
-				"storage": "Back up files to your storage provider",
+				"storage": "Upload and download files with your storage provider",
 				"settings": "App info and appearance",
 				"account": "Cloud identity and session",
 				"modelServices": "Model service setup",
