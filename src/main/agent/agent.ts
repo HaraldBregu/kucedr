@@ -232,6 +232,7 @@ export class Agent {
 
 		let response = '';
 		let result: SessionResult | undefined;
+		let timeoutTimer: ReturnType<typeof setTimeout> | undefined;
 		try {
 			if (controller.signal.aborted) return { text: '', stopReason: 'cancelled' };
 			const parsedGoalCommand =
@@ -339,10 +340,15 @@ export class Agent {
 				queueDelayMs: Date.now() - request.queuedAt,
 			});
 
-			const timeoutSignal = AbortSignal.timeout(10 * 60_000);
+			const timeoutController = new AbortController();
+			const startTimeout = (): void => {
+				clearTimeout(timeoutTimer);
+				timeoutTimer = setTimeout(() => timeoutController.abort(), 10 * 60_000);
+			};
+			startTimeout();
 			const runSignal = AbortSignal.any([
 				controller.signal,
-				timeoutSignal,
+				timeoutController.signal,
 				...(session.lease ? [session.lease.signal] : []),
 			]);
 			const events = stream(this.config, session, input, runSignal, {
@@ -357,6 +363,11 @@ export class Agent {
 
 			const streamingToolArgs = new Map<string, { name: string; argsText: string }>();
 			for await (const event of events) {
+				if (event.type === 'user_input_request' && event.questions.some((question) => question.id === 'mcp-authorization')) {
+					clearTimeout(timeoutTimer);
+				} else if (event.type === 'user_input_result') {
+					startTimeout();
+				}
 				if (event.type === 'model_call_delta') response += event.delta;
 				if (event.type === 'run_finished') {
 					result = event.result;
@@ -395,6 +406,7 @@ export class Agent {
 			const cause = toError(error, 'Agent request failed.');
 			throw cause;
 		} finally {
+			clearTimeout(timeoutTimer);
 			if (session.id && request.category === 'main')
 				await this.memory?.capture(session.id, session.messages).catch(() => undefined);
 			releaseSession(session);
