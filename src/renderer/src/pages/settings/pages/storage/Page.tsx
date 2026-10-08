@@ -200,7 +200,9 @@ const StoragePage: React.FC = () => {
 		setSyncStatus(null);
 		try {
 			if (!storage || !(await persistSettings(storage))) return;
-			applyOperationStatus(await (input ? window.storage.restore(input) : window.storage.restore()));
+			applyOperationStatus(
+				await (input ? window.storage.restore(input) : window.storage.restore())
+			);
 		} catch {
 			setError(t('settings.storage.errors.pull'));
 		} finally {
@@ -503,7 +505,14 @@ const StoragePage: React.FC = () => {
 						</div>
 					</details>
 
-					<Restore open={restoreOpen} onOpenChange={setRestoreOpen} disabled={controlsDisabled} versioned={versionedEnabled} hasFolders={storage.paths.length > 0} onRestore={(input) => void runRestore(input)} />
+					<Restore
+						open={restoreOpen}
+						onOpenChange={setRestoreOpen}
+						disabled={controlsDisabled}
+						versioned={versionedEnabled}
+						hasFolders={storage.paths.length > 0}
+						onRestore={(input) => void runRestore(input)}
+					/>
 				</>
 			) : null}
 		</SettingsPageShell>
