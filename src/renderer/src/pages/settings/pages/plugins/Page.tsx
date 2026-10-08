@@ -164,7 +164,7 @@ const PluginsPage = (): React.JSX.Element => {
 							onChange={(event) => setQuery(event.target.value)}
 							placeholder={t('settings.integrations.searchPlaceholder')}
 							aria-label={t('settings.integrations.search')}
-							className="px-9"
+							className="rounded-xl px-9"
 						/>
 						{query && (
 							<Button
