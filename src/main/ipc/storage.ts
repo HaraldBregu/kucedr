@@ -14,8 +14,6 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
 import { storageProviders } from '../storage/providers';
-import { getEnabledPluginProviders } from '../providers/providers_store';
-import { loadStorages } from '../models';
 import type { AuthService } from '../cloud/service';
 import { loadCloudConfig } from '../cloud/config';
 import { configureVersionedStorage } from '../storage/cloud/configure';
@@ -42,14 +40,6 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 		});
 		registerCommandWithEvent(StorageChannels.saveProvider, (event, input) => {
 			trusted.assert(event);
-			if (
-				!input?.id &&
-				!loadStorages().some((entry) =>
-					getEnabledPluginProviders().storage.includes(`${entry.provider.id}/${entry.id}`)
-				)
-			) {
-				throw new Error('Enable a storage provider in Plugins before adding a connection.');
-			}
 			if (
 				storageOperations.isRunning() &&
 				input?.id &&
