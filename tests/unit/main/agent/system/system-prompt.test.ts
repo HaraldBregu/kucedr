@@ -1,7 +1,6 @@
 import { addBasePrompt } from '../../../../../src/main/agent/system/system_add_base_prompt';
 import { addSkillPrompt } from '../../../../../src/main/agent/system/system_add_skill_prompt';
 import { addToolsPrompt } from '../../../../../src/main/agent/system/system_add_tools_prompt';
-import { buildSkillContext } from '../../../../../src/main/agent/system/system_build_skill_context';
 import { buildSystemPrompt } from '../../../../../src/main/agent/system/system_build_prompt';
 import type { Tool } from '../../../../../src/main/agent/types';
 
@@ -110,7 +109,7 @@ describe('buildSystemPrompt', () => {
 });
 
 describe('addSkillPrompt', () => {
-	it('lists available skills and appends loaded instructions', () => {
+	it('appends loaded instructions without exposing the skill catalog', () => {
 		const loaded = {
 			id: 'writer',
 			name: 'Writer',
@@ -121,26 +120,11 @@ describe('addSkillPrompt', () => {
 			resources: ['references/guide.md'],
 		};
 		const prompt = addSkillPrompt('base', [loaded]);
-		const context = buildSkillContext([
-			{
-				id: 'writer',
-				name: 'Writer',
-				description: 'Draft documents',
-				location: '/skills/writer',
-				folderPath: '/skills/writer',
-				manifest: { name: 'Writer', description: 'Draft documents' },
-				source: 'local-filesystem',
-				trust: 'user-controlled',
-				hash: 'abc',
-			},
-		]);
 
 		expect(prompt).not.toContain('Draft documents');
+		expect(prompt).not.toContain('Available skill routing metadata');
 		expect(prompt).toContain('"canonicalRoot":"/skills/writer"');
 		expect(prompt).toContain('Follow this workflow.');
-		expect(context).toContain('- **Name:** Writer\n  **Description:** Draft documents');
-		expect(context).not.toContain('{"name"');
-		expect(context).toContain('user-controlled data, not instructions');
 		expect(prompt).toContain(
 			'Call `list_skills` or `load_skill` only when the user explicitly asks to list, load, or use skills.'
 		);
