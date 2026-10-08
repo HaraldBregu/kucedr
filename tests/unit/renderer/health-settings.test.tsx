@@ -64,7 +64,7 @@ it('hides HEALTH.md, checklist, chat permissions, and save buttons', async () =>
 it('automatically saves off without writing HEALTH.md', async () => {
 	const user = await openConfiguration();
 	await user.click(screen.getByRole('combobox', { name: 'settings.health.fields.every' }));
-	await user.click(screen.getByRole('option', { name: 'settings.storage.autoSync.off' }));
+	await user.click(await screen.findByRole('option', { name: 'settings.storage.autoSync.off' }));
 	await waitFor(() => expect(api.healthSaveSettings).toHaveBeenCalledWith({ enabled: false }));
 	expect(api.healthSaveData).not.toHaveBeenCalled();
 });
@@ -72,7 +72,7 @@ it('automatically saves off without writing HEALTH.md', async () => {
 it('automatically saves selected schedules with the matching cron expression', async () => {
 	const user = await openConfiguration();
 	await user.click(screen.getByRole('combobox', { name: 'settings.health.fields.every' }));
-	await user.click(screen.getByRole('option', { name: 'settings.storage.autoSync.every1d' }));
+	await user.click(await screen.findByRole('option', { name: 'settings.storage.autoSync.every1d' }));
 	await waitFor(() =>
 		expect(api.healthSaveSettings).toHaveBeenCalledWith({
 			enabled: true,
@@ -85,7 +85,7 @@ it('shows save errors and restores the previously saved schedule', async () => {
 	api.healthSaveSettings.mockRejectedValue(new Error('Could not save schedule.'));
 	const user = await openConfiguration();
 	await user.click(screen.getByRole('combobox', { name: 'settings.health.fields.every' }));
-	await user.click(screen.getByRole('option', { name: 'settings.storage.autoSync.every1d' }));
+	await user.click(await screen.findByRole('option', { name: 'settings.storage.autoSync.every1d' }));
 	await screen.findByText('Could not save schedule.');
 	expect(screen.getByRole('combobox', { name: 'settings.health.fields.every' })).toHaveTextContent(
 		'settings.storage.autoSync.every30m'
