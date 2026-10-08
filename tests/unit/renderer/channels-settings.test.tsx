@@ -26,6 +26,7 @@ jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
 		'settings.tabs.channels': 'Channels',
 		'settings.channels.notConfigured': 'Not configured',
+		'settings.channels.configured': 'Configured',
 		'settings.channels.configuration': 'Configuration',
 		'settings.channels.configurationDescription':
 			'Configure the models and tools used by messaging channels.',
@@ -151,7 +152,7 @@ it('shows channel credentials, models and media configuration directly on Channe
 			<ChannelsPage />
 		</MemoryRouter>
 	);
-	expect(await screen.findByRole('heading', { name: 'Telegram' })).toBeInTheDocument();
+	expect(await screen.findByRole('heading', { name: 'Telegram Not configured' })).toBeInTheDocument();
 	expect(
 		screen.getByText('Message @BotFather, then paste the bot token here.')
 	).toBeInTheDocument();
