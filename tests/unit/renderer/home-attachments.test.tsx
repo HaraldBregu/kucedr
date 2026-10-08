@@ -342,9 +342,7 @@ describe('Home prompt attachments', () => {
 			'src',
 			'blob:prompt-preview'
 		);
-		expect(window.agent.readPromptFile).toHaveBeenCalledWith(
-			'/tmp/library/library-photo.png'
-		);
+		expect(window.agent.readPromptFile).toHaveBeenCalledWith('/tmp/library/library-photo.png');
 	});
 
 	it('keeps a queued image visible and Send enabled', async () => {

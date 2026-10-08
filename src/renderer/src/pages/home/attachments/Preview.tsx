@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react';
 import { FileImageIcon } from 'lucide-react';
 
-export function Preview({ file, path, name, mimeType }: { readonly file?: File; readonly path?: string; readonly name?: string; readonly mimeType?: string }): React.JSX.Element {
+export function Preview({
+	file,
+	path,
+	name,
+	mimeType,
+}: {
+	readonly file?: File;
+	readonly path?: string;
+	readonly name?: string;
+	readonly mimeType?: string;
+}): React.JSX.Element {
 	const [url, setUrl] = useState<string>();
 
 	useEffect(() => {
@@ -13,11 +23,14 @@ export function Preview({ file, path, name, mimeType }: { readonly file?: File; 
 			previewUrl = URL.createObjectURL(file);
 			setUrl(previewUrl);
 		} else if (path) {
-			void window.agent.readPromptFile(path).then((bytes) => {
-				if (!active) return;
-				previewUrl = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: mimeType }));
-				setUrl(previewUrl);
-			}).catch(() => undefined);
+			void window.agent
+				.readPromptFile(path)
+				.then((bytes) => {
+					if (!active) return;
+					previewUrl = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: mimeType }));
+					setUrl(previewUrl);
+				})
+				.catch(() => undefined);
 		}
 		return () => {
 			active = false;
