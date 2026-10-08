@@ -233,6 +233,32 @@ it('cancels a pending OAuth callback before retrying', async () => {
 	await Promise.all([firstAttempt, secondAttempt]);
 });
 
+it('invalidates a rejected token before forced chat authorization', async () => {
+	const mainFrame = {};
+	const sender = { id: 21, mainFrame };
+	jest.mocked(BrowserWindow.fromWebContents).mockReturnValue({ id: 1, webContents: sender } as never);
+	new McpIpc().register(
+		{ windows: { has: () => true }, apps: { has: () => false } } as never,
+		{} as never
+	);
+	jest.mocked(getMcpServers).mockReturnValue({
+		gmail: { type: 'http', url: 'https://generic.example/mcp' },
+	});
+	jest.mocked(startOauthCallbackServer).mockResolvedValue({
+		redirectUrl: 'http://127.0.0.1:3001/oauth/callback',
+		code: Promise.resolve('code'),
+		close: jest.fn(),
+	});
+	const invalidateCredentials = jest.fn();
+	jest.mocked(createOAuthProvider).mockReturnValue({ invalidateCredentials } as never);
+	jest.mocked(auth).mockResolvedValue('AUTHORIZED');
+	const handler = jest.mocked(ipcMain.handle).mock.calls.find(([channel]) => channel === McpChannels.oauthStart)![1];
+	const result = await handler({ sender, senderFrame: mainFrame } as never, 'gmail', true);
+	expect(result.success).toBe(true);
+	expect(invalidateCredentials).toHaveBeenCalledWith('tokens');
+	expect(invalidateCredentials.mock.invocationCallOrder[0]).toBeLessThan(jest.mocked(auth).mock.invocationCallOrder[0]);
+});
+
 it('reports whether OAuth credentials exist without returning them', async () => {
 	const mainFrame = {};
 	const sender = { id: 21, mainFrame };
