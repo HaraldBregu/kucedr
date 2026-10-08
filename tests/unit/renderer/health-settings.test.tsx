@@ -26,6 +26,7 @@ const api = {
 };
 
 beforeEach(() => {
+	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'agent', { configurable: true, value: api });
 	api.healthGetSettings.mockResolvedValue(settings);
 	api.healthSaveSettings.mockImplementation(async (patch) => ({ ...settings, ...patch }));
@@ -88,4 +89,19 @@ it('shows invalid cron errors while preserving the draft for correction', async 
 	fireEvent.blur(field);
 	await screen.findByText('Health schedule must be a valid cron expression.');
 	expect(field).toHaveValue('invalid');
+});
+
+it('shows cron scheduling separately while model settings are collapsed', async () => {
+	render(
+		<MemoryRouter>
+			<HealthPage />
+		</MemoryRouter>
+	);
+	await screen.findByRole('heading', { name: 'settings.health.fields.cronScheduling' });
+	expect(
+		screen.getByRole('switch', { name: 'settings.health.fields.enabled' })
+	).toBeInTheDocument();
+	expect(
+		screen.getByRole('textbox', { name: 'settings.health.fields.cronExpression' })
+	).toBeInTheDocument();
 });
