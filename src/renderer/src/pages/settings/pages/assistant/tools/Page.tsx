@@ -91,6 +91,7 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		icon: Globe,
 		tools: [
 			['Fetch web page', 'fetch_web_page', 'Retrieves and reads a web page by URL.'],
+			['Request MCP authorization', 'request_mcp_authorization', 'Shows an OAuth authorization button in chat for a configured MCP server.'],
 			[
 				'Use web browser',
 				'use_web_browser',

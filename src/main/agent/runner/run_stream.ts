@@ -24,6 +24,7 @@ import {
 	resolveContextMode,
 } from '../system';
 import { loadMcpTools } from '../tools/mcp/loader';
+import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
 import { listSkillsTool } from '../tools/skills/list_skills';
 import { loadSkillTool } from '../tools/skills/load_skill';
 import { subagentTool, subagentsTool } from '../tools/core/subagents';
@@ -224,6 +225,8 @@ async function* loop(
 			undoFileTool(session.runContext.fileHistory),
 			redoFileTool(session.runContext.fileHistory)
 		);
+		if (input.agentId === 'main' && input.type === 'default')
+			tools.push(requestMcpAuthorizationTool());
 	}
 	if (
 		!options.tools &&
@@ -325,6 +328,7 @@ async function* loop(
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
 				'get_goal',
+				'request_mcp_authorization',
 				'update_goal_plan',
 				'record_goal_evidence',
 				'request_goal_completion',
