@@ -9,6 +9,7 @@ it('groups runtime tools by availability and category with descriptions and usag
 	const subagent = candidate('subagent', 'Delegate one independent task.');
 	const camera = candidate('camera_recorder', 'Record camera video.');
 	const image = candidate('create_image', 'Generate images.');
+	const web = candidate('search_web', 'Search the web.');
 	const search = candidate('tool_search', 'Find relevant tools.');
 	const gmail = candidate('mcp__gmail__search_threads', 'Search Gmail threads.', {
 		kind: 'mcp',
@@ -18,7 +19,7 @@ it('groups runtime tools by availability and category with descriptions and usag
 
 	const context = buildRuntimeTools(
 		[read, subagent, search],
-		[read, subagent, camera, image, search, gmail, read]
+		[read, subagent, camera, image, web, search, gmail, read]
 	);
 
 	expect(context).toContain('### Loaded tools');
@@ -31,6 +32,15 @@ it('groups runtime tools by availability and category with descriptions and usag
 	);
 	expect(context).toContain(
 		'#### Media\n- `create_image` — Generate images. _(Explicit user request only.)_'
+	);
+	expect(context).toContain(
+		'#### Web\n- `search_web` — Search the web. _(Explicit user request only.)_'
+	);
+	expect(context).toContain(
+		'Web access rule: Do not call `search_web`, `fetch_web_page`, or `use_web_browser` merely because the user asks about a person, organization, place, or topic.'
+	);
+	expect(context).toContain(
+		'If an accurate answer requires current or external information and the user has not authorized web access, explain that a web search is needed, ask whether they want you to perform it, and wait for their response.'
 	);
 	expect(context).toContain(
 		'#### Integrations\n- `mcp__gmail__search_threads` — Search Gmail threads.'
