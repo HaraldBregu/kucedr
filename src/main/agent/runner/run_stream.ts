@@ -458,13 +458,18 @@ async function* loop(
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
 			const turnTools = synthesisOnly ? [] : (search?.active() ?? tools);
+			const eligibleTurnTools =
+				synthesisOnly || !turnTools.some((tool) => tool.id === TOOL_SEARCH_ID)
+					? turnTools
+					: tools;
 			let systemPrompt = await buildSystemPrompt(
 				config,
 				turnTools,
 				session.runContext.loadedSkills,
 				options.instructions,
 				contextMode,
-				turnTools.some((tool) => tool.id === 'load_skill')
+				turnTools.some((tool) => tool.id === 'load_skill'),
+				eligibleTurnTools
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt = [
@@ -487,13 +492,7 @@ async function* loop(
 			const workspaceContext = await buildWorkspaceContext(
 				config,
 				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core',
-				memoryContext,
-				turnTools,
-				synthesisOnly
-					? []
-					: turnTools.some((tool) => tool.id === TOOL_SEARCH_ID)
-						? tools
-						: turnTools
+				memoryContext
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			const runtimeContext = activeGoalContext;

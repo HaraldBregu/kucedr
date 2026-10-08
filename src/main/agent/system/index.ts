@@ -4,7 +4,6 @@ export { addSkillPrompt } from './system_add_skill_prompt';
 export { addToolsPrompt } from './system_add_tools_prompt';
 export { addWorkspacePrompt } from './system_add_workspace_prompt';
 export { buildLoadedSkillPrompt } from './system_build_loaded_skill_prompt';
-export { buildRuntimeTools } from './system_build_runtime_tools';
 export { buildSystemPrompt } from './system_build_prompt';
 export { buildWorkspaceContext } from './system_build_workspace_context';
 export { ensureWorkspaceFile } from './system_ensure_workspace_file';

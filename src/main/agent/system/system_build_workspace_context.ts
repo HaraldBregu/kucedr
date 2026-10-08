@@ -1,14 +1,12 @@
 import path from 'node:path';
-import type { Config, Tool } from '../types';
+import type { Config } from '../types';
 import { readBootstrap } from './system_read_bootstrap';
 import { profileStatus } from './system_profile_status';
 
 export async function buildWorkspaceContext(
 	config: Config,
 	scope: 'full' | 'core' = 'full',
-	memory = '',
-	_tools: readonly Tool[] = [],
-	_eligibleTools: readonly Tool[] = _tools
+	memory = ''
 ): Promise<string> {
 	const resolvedWorkspacePath = path.resolve(config.location);
 	const { profiles, missing } = await profileStatus(resolvedWorkspacePath);
