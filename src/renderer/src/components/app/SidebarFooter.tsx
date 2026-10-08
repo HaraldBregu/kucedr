@@ -69,7 +69,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 								<Avatar className="size-7 rounded-xl grayscale">
 									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
 									<AvatarFallback className="rounded-xl bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground">
-										{accountInitial}
+										<UserRound className="size-4" />
 									</AvatarFallback>
 								</Avatar>
 								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
