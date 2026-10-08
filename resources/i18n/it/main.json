@@ -1342,7 +1342,7 @@
 				"destinationHint": "Scegli una cartella locale, anche su un altro computer.",
 				"chooseDestination": "Scegli cartella di destinazione",
 				"title": "Ripristinare dallo storage?",
-				"description": "Ripristina l'ultimo backup riuscito nelle cartelle selezionate. I file locali corrispondenti vengono salvati in una cartella di recupero prima di essere sostituiti. Gli altri file locali vengono conservati.",
+				"description": "Ripristina un backup salvato. I file locali corrispondenti vengono salvati in una cartella di recupero prima di essere sostituiti. Gli altri file locali vengono conservati.",
 				"confirm": "Ripristina file"
 			},
 			"operation": {

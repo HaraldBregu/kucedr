@@ -1342,7 +1342,7 @@
 				"destinationHint": "Choose one local folder, including on a different computer.",
 				"chooseDestination": "Choose destination folder",
 				"title": "Restore from storage?",
-				"description": "Restore the latest successful backup into the selected folders. Matching local files are saved in a recovery folder before they are replaced. Other local files are kept.",
+				"description": "Restore a saved backup. Matching local files are saved in a recovery folder before they are replaced. Other local files are kept.",
 				"confirm": "Restore files"
 			},
 			"operation": {
