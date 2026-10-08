@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import KnowledgePage from '../../../src/renderer/src/pages/settings/pages/knowledge/Page';
 
@@ -92,6 +92,7 @@ jest.mock('react-i18next', () => {
 		'settings.knowledge.status.running': 'Indexing in progress',
 		'settings.knowledge.status.completed': 'Index up to date',
 		'settings.knowledge.status.failed': 'Indexing failed',
+		'settings.knowledge.status.stale': 'Rebuild required',
 		'settings.knowledge.cancel': 'Cancel',
 		'settings.knowledge.cancelling': 'Cancelling',
 		'settings.knowledge.retry': 'Retry',
@@ -100,6 +101,7 @@ jest.mock('react-i18next', () => {
 		'settings.knowledge.searching': 'Searching',
 		'settings.knowledge.minimumScore': 'Minimum similarity',
 		'settings.knowledge.modelChanged': 'Rebuild required',
+		'settings.knowledge.configurationChanged': 'The embedding service or source folders changed.',
 		'settings.modelServices.modelPlaceholder': 'Select model',
 		'settings.dataControls.title': 'Data management',
 		'settings.dataControls.export': 'Export',
@@ -444,6 +446,7 @@ it('saves schedule presets and supports a custom expression and timezone', async
 	);
 	fireEvent.click(screen.getByRole('option', { name: 'Custom schedule' }));
 	const cron = screen.getByLabelText('Cron expression');
+	await waitFor(() => expect(cron).toBeEnabled());
 	await user.clear(cron);
 	await user.type(cron, '0 8 * * 1');
 	await user.tab();

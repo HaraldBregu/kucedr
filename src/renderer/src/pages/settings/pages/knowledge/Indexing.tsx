@@ -120,6 +120,7 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 							onValueChange={(value) => {
 								if (value === 'custom') {
 									setCustomSchedule(true);
+									void save({ scheduleEnabled: true, cronExpression: cron });
 									return;
 								}
 								setCustomSchedule(false);

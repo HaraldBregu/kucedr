@@ -43,6 +43,10 @@ export default function Search({ knowledge }: { knowledge: KnowledgeState }): JS
 							disabled={disabled}
 							onChange={(event) => setMinimumScore(event.target.value)}
 							onBlur={() => {
+								if (!minimumScore.trim()) {
+									setMinimumScore(String(configuration?.minimumScore ?? 0));
+									return;
+								}
 								if (
 									minimumScore.trim() &&
 									Number(minimumScore) !== (configuration?.minimumScore ?? 0)
