@@ -2,6 +2,8 @@
 
 The Google provider manifest lists seven remote MCP services: Gmail, Calendar, Drive, Docs, Sheets, Maps, and Contacts. Gmail SMTP is a separate local server. Each service needs its own connection and a successful MCP **Test** before its tools are available in chat. The catalog entry alone does not prove that your Google account has authorized it.
 
+For permission-specific examples, see the [Gmail, Calendar, and Drive OAuth scope use cases](google-scopes.md).
+
 ## Connect a remote Google service
 
 1. Configure the Google OAuth environment and callback described in [Development](../DEVELOPMENT.md#mcp-oauth-callback-setup).
