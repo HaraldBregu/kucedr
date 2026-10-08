@@ -6,6 +6,7 @@ import {
 	BrainCircuit,
 	ChevronRight,
 	History,
+	Layers,
 	Mic,
 	Network,
 	ShieldCheck,
@@ -283,6 +284,7 @@ const AssistantPage: React.FC = () => {
 
 				<SettingsRow
 					title={t('settings.modelServices.compactModel')}
+					icon={Layers}
 					description={t('settings.modelServices.compactModelDescription')}
 					actions={
 						<ModelProviderSelect
