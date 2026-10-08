@@ -29,6 +29,7 @@ import { captureAccess } from '../permissions/capture_access';
 import { getToolConfiguration } from '../agent_store';
 import { isAgentToolAllowedForProfile, type AgentToolProfileId } from '../../../shared/agent_tools';
 import { getMcpOauth } from '../../mcp';
+import { mcpAuthorizationRequired } from './mcp_authorization_required';
 
 export interface ToolCallSecurityContext {
 	runId: string;
@@ -430,6 +431,7 @@ export async function* runToolCall(
 						);
 					}
 					output = limitToolOutput(output, tool.maxOutputBytes);
+					if (mcpAuthorizationRequired(tool, output)) isError = true;
 					if (toolCall.name === 'read' && state) rememberTool(context, state);
 					if (createsFile && state) rememberTool(context, state);
 				} finally {
