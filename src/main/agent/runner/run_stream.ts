@@ -336,6 +336,7 @@ async function* loop(
 		if (!bootstrap && (!options.tools || options.progressiveDiscovery === true)) {
 			const requiredIds = new Set([
 				'read', 'write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap', 'update_identity', 'update_soul', 'update_user',
+				'subagent', 'subagents',
 				...(input.interactionMode === 'plan' ? ['ask'] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),

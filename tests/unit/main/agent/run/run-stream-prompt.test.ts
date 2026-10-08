@@ -381,8 +381,8 @@ describe('run stream system prompt', () => {
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(systemPrompt).toContain('- **Name:** Alice');
-			expect(systemPrompt).toContain('### Loaded built-in\n- `alpha`');
-			expect(systemPrompt).toContain('### Loaded MCP\n- `mcp__demo__beta`');
+			expect(systemPrompt).toContain('#### System\n- `alpha` — Alpha tool');
+			expect(systemPrompt).toContain('#### Integrations\n- `mcp__demo__beta` — Beta tool');
 			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });
 			expect(
 				await fs.readFile(path.join(session.sessionsPath, session.folderName, 'SYSTEM.md'), 'utf8')
@@ -1293,8 +1293,9 @@ describe('run stream system prompt', () => {
 
 		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(['tool_search']);
 		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(['tool_search', 'bash']);
-		expect(runModelTurnMock.mock.calls[0][3]).toContain('### Available through tool_search\n- `bash`');
-		expect(runModelTurnMock.mock.calls[1][3]).toContain('### Loaded built-in\n- `tool_search`\n- `bash`');
+		expect(runModelTurnMock.mock.calls[0][3]).toContain('### Available through `tool_search`\n\n#### Core\n- `bash` —');
+		expect(runModelTurnMock.mock.calls[1][3]).toContain('#### Discovery\n- `tool_search` —');
+		expect(runModelTurnMock.mock.calls[1][3]).toContain('#### Core\n- `bash` —');
 		expect(session.toolCalls.find((call) => call.id === 'find-bash')?.result?.content).toContain('"selectedToolIds":["bash"]');
 		expect(execute).toHaveBeenCalledTimes(1);
 	});
