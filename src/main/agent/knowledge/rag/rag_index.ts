@@ -213,7 +213,8 @@ export async function indexRag(
 			} catch (cleanupError) {
 				throw new AggregateError(
 					[error, cleanupError],
-					'RAG indexing failed; its staging namespace cleanup also failed: ' + generation
+					'RAG indexing failed; its staging namespace cleanup also failed: ' + generation,
+					{ cause: error }
 				);
 			}
 		}

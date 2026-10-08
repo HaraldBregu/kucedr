@@ -24,7 +24,9 @@ export function readRagManifest(indexName?: string): RagManifest | undefined {
 				).content.toString('utf8')
 			) as RagManifest;
 			if (!indexName || manifest.indexName === indexName) return manifest;
-		} catch {}
+		} catch {
+			continue;
+		}
 	}
 	return undefined;
 }
