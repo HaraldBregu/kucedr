@@ -1308,6 +1308,11 @@ describe('run stream system prompt', () => {
 		expect(
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(['list_tasks', 'update_task']);
+		const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
+		expect(systemPrompt).toContain('#### Tasks');
+		expect(systemPrompt).not.toContain('Available through `tool_search`');
+		expect(systemPrompt).not.toContain('- `read`');
+		expect(systemPrompt).not.toContain('- `complete_bootstrap`');
 	});
 
 	it('activates a searched native tool for the next turn', async () => {

@@ -61,7 +61,7 @@ import { createBackgroundBrowser } from '../tools/web/browser/background';
 import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
-import { createToolSearch, type ToolSearch } from './run_discovery';
+import { createToolSearch, TOOL_SEARCH_ID, type ToolSearch } from './run_discovery';
 import path from 'node:path';
 import { agentLocation } from '../../shared/agent_location';
 import { profileStatus } from '../system/system_profile_status';
@@ -489,7 +489,11 @@ async function* loop(
 				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core',
 				memoryContext,
 				turnTools,
-				synthesisOnly ? [] : tools
+				synthesisOnly
+					? []
+					: turnTools.some((tool) => tool.id === TOOL_SEARCH_ID)
+						? tools
+						: turnTools
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			const runtimeContext = activeGoalContext;
