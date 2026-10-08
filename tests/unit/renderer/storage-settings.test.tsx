@@ -14,17 +14,17 @@ jest.mock('react-i18next', () => {
 		'settings.storage.description': 'Choose folders to back up securely.',
 		'settings.storage.provider.title': 'Storage',
 		'settings.storage.provider.description':
-			'Choose a saved Amazon S3 or S3-compatible provider for backups, restores, and version history.',
+			'Choose a saved Amazon S3 or S3-compatible provider.',
 		'settings.storage.provider.placeholder': 'Select storage provider',
 		'settings.storage.cancel': 'Cancel',
 		'settings.storage.sync.title': 'Backups',
 		'settings.storage.sync.description': 'Back up selected folders on a schedule',
 		'settings.storage.sync.addFolders': 'Add folders',
-		'settings.storage.sync.empty': 'No folders selected. Add folders to back up and sync.',
+		'settings.storage.sync.empty': 'Add folders to start uploading.',
 		'settings.storage.sync.folder': 'Selected folder',
 		'settings.storage.sync.removeFolder': 'Remove folder',
 		'settings.storage.syncSaved': 'Schedule saved',
-		'settings.storage.autoSync.interval': 'Backup interval',
+		'settings.storage.autoSync.interval': 'Upload interval',
 		'settings.storage.autoSync.sectionTitle': 'Automation',
 		'settings.storage.autoSync.sectionDescription':
 			'Configure when backups run automatically and customize the schedule with cron.',
@@ -35,14 +35,14 @@ jest.mock('react-i18next', () => {
 		'settings.storage.autoSync.cronExpression': 'Cron expression',
 		'settings.storage.autoSync.cronDescription': 'Five-field cron expression',
 		'settings.storage.folders.agent': 'Agent',
-		'settings.storage.backup': 'Back up now',
-		'settings.storage.restore': 'Restore from storage',
-		'settings.storage.restoreDialog.title': 'Restore selected data?',
+		'settings.storage.backup': 'Upload',
+		'settings.storage.restore': 'Download',
+		'settings.storage.restoreDialog.title': 'Download from storage?',
 		'settings.storage.restoreDialog.description': 'Matching local files will be overwritten.',
-		'settings.storage.restoreDialog.confirm': 'Restore selected data',
-		'settings.storage.operation.backup.running': 'Backup is running in the background…',
-		'settings.storage.operation.backup.succeeded': 'Backup completed',
-		'settings.storage.operation.backup.partial': 'Backed up files; some failed',
+		'settings.storage.restoreDialog.confirm': 'Download files',
+		'settings.storage.operation.backup.running': 'Upload is running in the background…',
+		'settings.storage.operation.backup.succeeded': 'Upload completed',
+		'settings.storage.operation.backup.partial': 'Uploaded files; some failed',
 		'settings.storage.errors.load': 'Could not load storage settings.',
 		'settings.storage.errors.pickFolders': 'Could not select folders.',
 		'settings.storage.errors.saveSync': 'Could not save the storage backup schedule.',
@@ -56,10 +56,6 @@ jest.mock('react-i18next', () => {
 const storageApi = {
 	listProviders: jest.fn(),
 	getSettings: jest.fn(),
-	getVersionedStatus: jest.fn(),
-	setVersionedEnabled: jest.fn(),
-	listConflicts: jest.fn(),
-	listSnapshots: jest.fn(),
 	saveSettings: jest.fn(),
 	syncFolders: jest.fn(),
 	pickFolders: jest.fn(),
@@ -106,10 +102,6 @@ beforeEach(() => {
 		},
 	]);
 	storageApi.getSettings.mockResolvedValue(settings);
-	storageApi.getVersionedStatus.mockResolvedValue(false);
-	storageApi.setVersionedEnabled.mockImplementation(async (enabled) => enabled);
-	storageApi.listConflicts.mockResolvedValue([]);
-	storageApi.listSnapshots.mockResolvedValue([]);
 	storageApi.saveSettings.mockImplementation(async (value) => value);
 	storageApi.syncFolders.mockResolvedValue([]);
 	storageApi.pickFolders.mockResolvedValue([]);
@@ -154,10 +146,10 @@ it('saves user-selected folders and a custom schedule with the selected storage 
 	await user.click(await screen.findByRole('combobox', { name: 'Storage' }));
 	await user.click(await screen.findByRole('option', { name: 'Archive' }));
 	await user.click(await screen.findByRole('button', { name: 'Add folders' }));
-	await user.click(screen.getByRole('combobox', { name: 'Backup interval' }));
+	await user.click(screen.getByRole('combobox', { name: 'Upload interval' }));
 	await user.click(await screen.findByRole('option', { name: 'Every day' }));
 	expect(screen.queryByLabelText('Cron expression')).not.toBeInTheDocument();
-	await user.click(screen.getByRole('combobox', { name: 'Backup interval' }));
+	await user.click(screen.getByRole('combobox', { name: 'Upload interval' }));
 	await user.click(await screen.findByRole('option', { name: 'Custom schedule' }));
 	await user.clear(screen.getByLabelText('Cron expression'));
 	await user.type(screen.getByLabelText('Cron expression'), '0 4 * * *');
@@ -173,7 +165,7 @@ it('saves user-selected folders and a custom schedule with the selected storage 
 	);
 	expect(
 		screen.getByText(
-			'Choose a saved Amazon S3 or S3-compatible provider for backups, restores, and version history.'
+			'Choose a saved Amazon S3 or S3-compatible provider.'
 		)
 	).toBeInTheDocument();
 });
@@ -189,7 +181,7 @@ it('lets users add and remove folders before selecting a provider', async () => 
 	);
 
 	expect(
-		await screen.findByText('No folders selected. Add folders to back up and sync.')
+		await screen.findByText('Add folders to start uploading.')
 	).toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'Add folders' }));
 	expect(await screen.findByText('/data/projects')).toBeInTheDocument();
@@ -221,7 +213,7 @@ it('backs up directly and confirms before restoring matching local files', async
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
+	await user.click(await screen.findByRole('button', { name: 'Upload' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledWith());
 	act(() => {
 		operationListener?.({
@@ -238,9 +230,9 @@ it('backs up directly and confirms before restoring matching local files', async
 		});
 	});
 
-	await user.click(screen.getByRole('button', { name: 'Restore from storage' }));
+	await user.click(screen.getByRole('button', { name: 'Download' }));
 	expect(screen.getByRole('dialog')).toHaveTextContent('Matching local files will be overwritten.');
-	await user.click(screen.getByRole('button', { name: 'Restore selected data' }));
+	await user.click(screen.getByRole('button', { name: 'Download files' }));
 	await waitFor(() => expect(storageApi.restore).toHaveBeenCalledWith());
 });
 
@@ -265,7 +257,7 @@ it('rehydrates a running backup after the page remounts', async () => {
 			<StoragePage />
 		</MemoryRouter>
 	);
-	expect(await screen.findByText('Backup is running in the background…')).toBeInTheDocument();
+	expect(await screen.findByText('Upload is running in the background…')).toBeInTheDocument();
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeDisabled();
 	first.unmount();
 	expect(unsubscribeOperationStatus).toHaveBeenCalledTimes(unsubscribeCount + 1);
@@ -313,7 +305,7 @@ it('keeps a newer completion event when the initial snapshot resolves late', asy
 		});
 	});
 
-	expect(await screen.findByText('Backup completed')).toBeInTheDocument();
+	expect(await screen.findByText('Upload completed')).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 });
 
@@ -341,7 +333,7 @@ it('shows a retry without editable defaults when settings cannot be loaded', asy
 
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not load storage settings.');
 	expect(screen.getByRole('button', { name: 'Try Again' })).toBeEnabled();
-	expect(screen.queryByRole('button', { name: 'Back up now' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Upload' })).not.toBeInTheDocument();
 	expect(container.querySelector('[aria-busy="true"]')).not.toBeInTheDocument();
 });
 
@@ -354,8 +346,8 @@ it.each([undefined, 'deleted'])(
 				<StoragePage />
 			</MemoryRouter>
 		);
-		expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
-		expect(screen.getByRole('button', { name: 'Restore from storage' })).toBeDisabled();
+		expect(await screen.findByRole('button', { name: 'Upload' })).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Download' })).toBeDisabled();
 		expect(screen.queryByRole('menuitem', { name: 'Save schedule' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('menuitem', { name: 'Cancel' })).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
@@ -381,7 +373,7 @@ it('keeps a newer completion event when the backup command resolves late', async
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
+	await user.click(await screen.findByRole('button', { name: 'Upload' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledWith());
 	act(() => {
 		operationListener?.({
@@ -411,7 +403,7 @@ it('keeps a newer completion event when the backup command resolves late', async
 		});
 	});
 
-	expect(await screen.findByText('Backup completed')).toBeInTheDocument();
+	expect(await screen.findByText('Upload completed')).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 });
 
@@ -440,6 +432,6 @@ it('announces partial backups as warnings', async () => {
 	});
 
 	const warning = await screen.findByRole('alert');
-	expect(warning).toHaveTextContent('Backed up files; some failed');
+	expect(warning).toHaveTextContent('Uploaded files; some failed');
 	expect(warning.firstElementChild).toHaveClass('text-amber-700');
 });
