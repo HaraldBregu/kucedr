@@ -115,20 +115,18 @@ it('shows the failed MCP call, waits for authorization, then retries the same ar
 	for await (const event of iterator) events.push(event);
 	expect(runMcp).toHaveBeenCalledTimes(2);
 	expect(runMcp).toHaveBeenNthCalledWith(2, { query: 'subject' }, expect.any(AbortSignal));
-	expect(session.toolCalls.map((call) => call.name)).toEqual([
-		mcp.id,
-		'request_mcp_authorization',
-		mcp.id,
-	]);
+	expect(session.toolCalls.map((call) => call.name)).toEqual([mcp.id]);
 	expect(
 		session.messages
 			.filter((message) => message.role === 'assistant')
-			.slice(0, 3)
+			.filter((message) => message.toolCalls?.length)
 			.map((message) => message.toolCalls?.map((call) => call.name))
-	).toEqual([[mcp.id], ['request_mcp_authorization'], [mcp.id]]);
-	expect(session.toolCalls[0].result?.isError).toBe(true);
-	expect(session.toolCalls[0].result?.content).toBe('Authentication required for Gmail.');
-	expect(session.toolCalls[2].result?.content).toBe('message found');
+	).toEqual([[mcp.id]]);
+	expect(session.toolCalls[0].result?.content).toBe('message found');
+	const attempts = events.filter((event) => event.type === 'tool_call_end' && event.toolName === mcp.id);
+	expect(attempts).toHaveLength(2);
+	expect(attempts[0]).toMatchObject({ isError: true, output: 'Authentication required for Gmail.' });
+	expect(attempts[1]).toMatchObject({ isError: undefined, output: 'message found' });
 	expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { text: 'Found it.' } });
 });
 
@@ -191,7 +189,7 @@ it('stops after cancellation without retrying the failed MCP call', async () => 
 	for await (const event of iterator) events.push(event);
 	expect(runMcp).toHaveBeenCalledTimes(1);
 	expect(runModelTurnMock).toHaveBeenCalledTimes(1);
-	expect(session.toolCalls.map((call) => call.name)).toEqual([mcp.id, 'request_mcp_authorization']);
+	expect(session.toolCalls.map((call) => call.name)).toEqual([mcp.id]);
 	expect(events.at(-1)).toMatchObject({
 		type: 'run_finished',
 		result: { stopReason: 'cancelled' },
