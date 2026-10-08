@@ -27,42 +27,32 @@ export function ImageGallery({
 	}
 
 	return (
-		<div
-			className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_4rem] gap-2"
-			aria-label="Generated images"
-		>
-			<div className="aspect-video min-w-0">
-				<img
-					src={toSource(selectedPath)}
-					alt={`Generated image ${index + 1} of ${paths.length}`}
-					className="size-full rounded-lg border border-border/50 object-cover"
-					onContextMenu={() => onContextMenu(selectedPath)}
-				/>
-			</div>
-			<div className="relative min-h-0">
-				<div
-					className="absolute inset-0 flex flex-col gap-2 overflow-y-auto"
-					aria-label="Choose generated image"
-				>
-					{paths.map((path, pathIndex) => (
-						<button
-							key={path}
-							type="button"
-							className={cn(
-								'shrink-0 overflow-hidden rounded-lg border bg-muted transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-								pathIndex === index
-									? 'border-border/50'
-									: 'border-border/50 brightness-50 hover:border-foreground/50 hover:brightness-75'
-							)}
-							aria-label={`Show generated image ${pathIndex + 1} of ${paths.length}`}
-							aria-pressed={pathIndex === index}
-							onClick={() => setSelectedIndex(pathIndex)}
-							onContextMenu={() => onContextMenu(path)}
-						>
-							<img src={toSource(path)} alt="" className="aspect-square w-full object-cover" />
-						</button>
-					))}
-				</div>
+		<div className="flex w-full min-w-0 flex-col items-start gap-2" aria-label="Generated images">
+			<img
+				src={toSource(selectedPath)}
+				alt={`Generated image ${index + 1} of ${paths.length}`}
+				className="h-auto max-w-full rounded-lg border border-border/50"
+				onContextMenu={() => onContextMenu(selectedPath)}
+			/>
+			<div className="flex max-w-full flex-wrap justify-start gap-2" aria-label="Choose generated image">
+				{paths.map((path, pathIndex) => (
+					<button
+						key={path}
+						type="button"
+						className={cn(
+							'aspect-square w-16 shrink-0 overflow-hidden rounded-lg border bg-muted transition-[filter] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+							pathIndex === index
+								? 'border-border/50'
+								: 'border-border/50 brightness-50 hover:border-foreground/50 hover:brightness-75'
+						)}
+						aria-label={`Show generated image ${pathIndex + 1} of ${paths.length}`}
+						aria-pressed={pathIndex === index}
+						onClick={() => setSelectedIndex(pathIndex)}
+						onContextMenu={() => onContextMenu(path)}
+					>
+						<img src={toSource(path)} alt="" className="size-full object-cover" />
+					</button>
+				))}
 			</div>
 		</div>
 	);
