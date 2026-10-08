@@ -9,6 +9,8 @@ const walkFiles = jest.fn();
 const putObject = jest.fn();
 const listObjects = jest.fn();
 const getObject = jest.fn();
+const uploadBackupFile = jest.fn();
+const preserveRestoreTarget = jest.fn();
 
 jest.mock('node:fs', () => ({
 	existsSync: () => false,
@@ -21,6 +23,8 @@ jest.mock('../../../../src/main/storage/storage_walk', () => ({ walkFiles }));
 jest.mock('../../../../src/main/storage/storage_put', () => ({ putObject }));
 jest.mock('../../../../src/main/storage/storage_list', () => ({ listObjects }));
 jest.mock('../../../../src/main/storage/storage_get', () => ({ getObject }));
+jest.mock('../../../../src/main/storage/upload', () => ({ uploadBackupFile }));
+jest.mock('../../../../src/main/storage/recovery', () => ({ preserveRestoreTarget }));
 jest.mock('../../../../src/main/storage/storage_prefix', () => ({
 	storagePrefix: () => 'kucedr/v1/agent/',
 }));
@@ -46,6 +50,7 @@ beforeEach(() => {
 	rm.mockResolvedValue(undefined);
 	putObject.mockResolvedValue(undefined);
 	getObject.mockResolvedValue(Buffer.from('cloud'));
+	uploadBackupFile.mockResolvedValue({ path: '', key: 'file', size: 5, sha256: 'a'.repeat(64) });
 });
 
 it('rejects a symbolic link selected as a backup root', async () => {
@@ -61,39 +66,29 @@ it('rejects a symbolic link selected as a backup root', async () => {
 
 it('backs up selected files within the Kucedr-owned prefix', async () => {
 	walkFiles.mockResolvedValue(['/data/agent/notes/today.md']);
-	const auth = {} as never;
+	const auth = { put: jest.fn() } as never;
 
 	await expect(pushFiles(auth)).resolves.toEqual({
 		uploaded: ['/data/agent/notes/today.md'],
 		failed: [],
 	});
-	expect(putObject).toHaveBeenCalledWith(
+	expect(uploadBackupFile).toHaveBeenCalledWith(
 		auth,
-		'kucedr/v1/agent/notes/today.md',
-		Buffer.from('hello')
+		'/data/agent/notes/today.md',
+		expect.stringMatching(/^kucedr\/v2\/agent\/files\/.+\/notes\/today.md$/)
 	);
 });
 
-it('rejects oversized local files before reading or uploading them', async () => {
+it('does not publish a snapshot when a selected file cannot be uploaded', async () => {
 	walkFiles.mockResolvedValue(['/data/agent/archive.bin']);
-	lstat
-		.mockResolvedValueOnce({
-			size: 0,
-			isDirectory: () => true,
-			isSymbolicLink: () => false,
-		})
-		.mockResolvedValueOnce({
-			size: STORAGE_MAX_OBJECT_BYTES + 1,
-			isDirectory: () => false,
-			isSymbolicLink: () => false,
-		});
+	uploadBackupFile.mockRejectedValueOnce(new Error('Upload failed'));
+	const auth = { put: jest.fn() };
 
-	await expect(pushFiles({} as never)).resolves.toMatchObject({
+	await expect(pushFiles(auth as never)).resolves.toMatchObject({
 		uploaded: [],
-		failed: [{ path: '/data/agent/archive.bin', error: expect.stringContaining('50 MiB') }],
+		failed: [{ path: '/data/agent/archive.bin', error: 'Upload failed' }],
 	});
-	expect(readFile).not.toHaveBeenCalled();
-	expect(putObject).not.toHaveBeenCalled();
+	expect(auth.put).not.toHaveBeenCalled();
 });
 
 it('restores cloud files without deleting unmatched local files', async () => {
