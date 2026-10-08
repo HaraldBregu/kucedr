@@ -16,14 +16,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { databases, mcps, storages } from '@/lib/providers';
@@ -35,6 +27,7 @@ import {
 } from '../../components';
 import { MicrosoftConnect } from './Connect';
 import CapabilityRow from './CapabilityRow';
+import Confirm from './Confirm';
 
 const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
@@ -206,33 +199,15 @@ const PluginsPage = (): React.JSX.Element => {
 				saving={savingId === selectedMicrosoft?.id}
 				error={error}
 			/>
-			<Dialog open={pendingRemoval !== null} onOpenChange={(open) => !open && setPendingRemoval(null)}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>{t('settings.integrations.confirmRemoveTitle')}</DialogTitle>
-						<DialogDescription>
-							{t('settings.integrations.confirmRemoveDescription', {
-								name: pendingRemoval?.name,
-							})}
-						</DialogDescription>
-					</DialogHeader>
-					<DialogFooter>
-						<Button type="button" variant="outline" onClick={() => setPendingRemoval(null)}>
-							{t('settings.integrations.cancel')}
-						</Button>
-						<Button
-							type="button"
-							variant="destructive"
-							onClick={() => {
-								pendingRemoval?.remove();
-								setPendingRemoval(null);
-							}}
-						>
-							{t('settings.integrations.confirmRemove')}
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
+			<Confirm
+				name={pendingRemoval?.name ?? ''}
+				open={pendingRemoval !== null}
+				onCancel={() => setPendingRemoval(null)}
+				onConfirm={() => {
+					pendingRemoval?.remove();
+					setPendingRemoval(null);
+				}}
+			/>
 
 			{providerSections.size > 0 ? (
 				<div className="-mx-4 space-y-8 pb-4">

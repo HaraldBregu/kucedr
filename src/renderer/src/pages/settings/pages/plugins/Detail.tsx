@@ -1,10 +1,17 @@
-import { ArrowLeft } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Button } from '@/components/ui/button';
 import { databases, mcps, storages } from '@/lib/providers';
-import { SettingsEmptyState, SettingsPageShell, SettingsSection } from '../../components';
+import {
+	SettingsEmptyState,
+	SettingsNotice,
+	SettingsPageShell,
+	SettingsSection,
+} from '../../components';
+import Confirm from './Confirm';
 
 export default function PluginDetailPage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -29,6 +36,50 @@ export default function PluginDetailPage(): React.JSX.Element {
 			: undefined;
 	const endpoint =
 		storage?.metadata.endpointTemplate ?? (entry && 'url' in entry ? entry.url : undefined);
+	const [enabled, setEnabled] = useState(false);
+	const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+	const [removing, setRemoving] = useState(false);
+	const [error, setError] = useState('');
+
+	useEffect(() => {
+		let cancelled = false;
+		void Promise.all([window.mcp.list(), window.provider.listEnabledPlugins()]).then(
+			([servers, enabledProviders]) => {
+				if (cancelled) return;
+				const id = `${providerId}/${entryId}`;
+				setEnabled(
+					kind === 'mcp'
+						? servers[entryId ?? '']?.enabled === true
+						: kind === 'database' || kind === 'storage'
+							? enabledProviders[kind].includes(id)
+							: false
+				);
+			},
+			(caught) => {
+				if (!cancelled) setError(caught instanceof Error ? caught.message : String(caught));
+			}
+		);
+		return () => {
+			cancelled = true;
+		};
+	}, [entryId, kind, providerId]);
+
+	const remove = async (): Promise<void> => {
+		if (!entry) return;
+		setRemoving(true);
+		setError('');
+		try {
+			if (kind === 'mcp') await window.mcp.delete(entry.id);
+			else if (kind === 'database' || kind === 'storage')
+				await window.provider.setPluginEnabled(kind, `${providerId}/${entryId}`, false);
+			setEnabled(false);
+			setConfirmRemoveOpen(false);
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setRemoving(false);
+		}
+	};
 
 	return (
 		<SettingsPageShell>
@@ -41,6 +92,7 @@ export default function PluginDetailPage(): React.JSX.Element {
 				<ArrowLeft className="size-4" />
 				{t('settings.integrations.title')}
 			</Button>
+			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{entry ? (
 				<>
 					<header className="mb-6 flex items-start gap-4 py-2">
@@ -57,13 +109,31 @@ export default function PluginDetailPage(): React.JSX.Element {
 							}
 							className="size-16 rounded-2xl border-0 bg-muted/50 p-2"
 						/>
-						<div className="min-w-0">
+						<div className="min-w-0 flex-1">
 							<h1 className="text-2xl font-medium leading-tight">{entry.name}</h1>
 							{entry.description && (
 								<p className="mt-2 text-sm text-muted-foreground">{entry.description}</p>
 							)}
 						</div>
+						{enabled && (
+							<Button
+								type="button"
+								variant="destructive"
+								disabled={removing}
+								onClick={() => setConfirmRemoveOpen(true)}
+							>
+								<Trash2 className="size-4" />
+								{t('settings.integrations.remove', { name: entry.name })}
+							</Button>
+						)}
 					</header>
+					<Confirm
+						name={entry.name}
+						open={confirmRemoveOpen}
+						disabled={removing}
+						onCancel={() => setConfirmRemoveOpen(false)}
+						onConfirm={() => void remove()}
+					/>
 					<SettingsSection title={t('settings.integrations.details')}>
 						<dl className="divide-y divide-border/60 rounded-xl bg-muted/30 px-4">
 							<div className="grid gap-1 py-3 sm:grid-cols-[10rem_1fr]">
