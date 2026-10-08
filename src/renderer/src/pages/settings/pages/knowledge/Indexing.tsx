@@ -55,9 +55,9 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 			? 'stale'
 			: currentIndex && status?.outcome === 'idle'
 				? 'completed'
-			: status?.outcome === 'completed' && !currentIndex
-				? 'idle'
-				: (status?.outcome ?? 'idle');
+				: status?.outcome === 'completed' && !currentIndex
+					? 'idle'
+					: (status?.outcome ?? 'idle');
 	const finishedAt = status?.finishedAt ?? currentIndex?.completedAt;
 	const format = { dateStyle: 'medium', timeStyle: 'short' } as const;
 	return (
@@ -73,7 +73,11 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 								: t('settings.knowledge.indexDescription')
 					}
 					icon={Clock3}
-					media={running ? <LoaderCircle className="size-5 animate-spin" aria-hidden="true" /> : undefined}
+					media={
+						running ? (
+							<LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+						) : undefined
+					}
 					actions={
 						running ? (
 							<Button
