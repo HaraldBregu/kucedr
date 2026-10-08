@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { getMcpServers } from '../../../mcp';
+import { findMcpService } from '../../../mcp/manifest';
 import { tool } from '../tool';
 
 export function requestMcpAuthorizationTool() {
@@ -16,6 +17,8 @@ export function requestMcpAuthorizationTool() {
 			const server = getMcpServers()[serverId];
 			if (!server || server.type !== 'http' || server.enabled === false)
 				throw new Error(`No enabled remote MCP server "${serverId}".`);
+			if (findMcpService(server.url)?.oauth?.credentials_required && !server.client_id)
+				throw new Error(`${serverId} requires a personal access token in MCP Settings.`);
 			return {
 				status: 'authorization_required' as const,
 				serverId,

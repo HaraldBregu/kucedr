@@ -201,7 +201,7 @@ export function AssistantMessage({
 	const skillTools = message.tools.filter(isSkillTool);
 	const questionTools = message.tools.filter((tool) => tool.type === 'ask');
 	const screenSourceTools = message.tools.filter((tool) => tool.type === 'select_screen_source');
-	const mcpAuthorizationTools = message.tools.filter((tool) => tool.type === 'request_mcp_authorization');
+	const mcpAuthorizationTools = message.tools.filter((tool) => tool.type === 'request_mcp_authorization' || tool.type.startsWith('mcp__'));
 	const otherTools = message.tools.filter(
 		(tool) => !isSkillTool(tool) && tool.type !== 'ask' && tool.type !== 'select_screen_source' && tool.type !== 'request_mcp_authorization'
 	);

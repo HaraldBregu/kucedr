@@ -1,4 +1,6 @@
 import { callTool, type McpCallResult, type McpClient } from '../../../mcp';
+import { getMcpServers } from '../../../mcp';
+import { UnauthorizedError } from '@modelcontextprotocol/sdk/client/auth.js';
 import { jsonTool } from '../tool';
 import type { JSONSchema } from '../../types';
 import type { McpApprovalPolicy } from '../../../../shared/mcp_types';
@@ -32,17 +34,29 @@ export function mcpTool(
 		parseInput,
 		schema,
 		execute: async (input, signal) => {
-			const connected = typeof client === 'function' ? await client() : client;
-			const result = (await callTool(
-				connected,
-				toolName,
-				input,
-				MCP_TOOL_TIMEOUT_MS,
-				signal
-			)) as McpCallResult;
-			const text = mcpOutputText(result);
-			if (result.isError) throw new Error(text || `MCP tool ${toolName} failed.`);
-			return text;
+			try {
+				const connected = typeof client === 'function' ? await client() : client;
+				const result = (await callTool(
+					connected,
+					toolName,
+					input,
+					MCP_TOOL_TIMEOUT_MS,
+					signal
+				)) as McpCallResult;
+				const text = mcpOutputText(result);
+				if (result.isError) throw new Error(text || `MCP tool ${toolName} failed.`);
+				return text;
+			} catch (error) {
+				const message = error instanceof Error ? error.message : String(error);
+				if (error instanceof UnauthorizedError || message.includes('Connect this MCP server with OAuth in Settings.')) {
+					return JSON.stringify({
+						status: 'authorization_required',
+						serverId,
+						serverName: getMcpServers()[serverId]?.name?.trim() || serverId,
+					});
+				}
+				throw error;
+			}
 		},
 	});
 }
