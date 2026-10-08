@@ -49,9 +49,6 @@ const settings = { paths: ['/data/agent'], syncEnabled: false, syncCronExpressio
 const storageApi = {
 	listProviders: jest.fn(),
 	getSettings: jest.fn(),
-	getVersionedStatus: jest.fn(),
-	listConflicts: jest.fn(),
-	listSnapshots: jest.fn(),
 	saveSettings: jest.fn(),
 	syncFolders: jest.fn(),
 	pickFolders: jest.fn(),
@@ -67,9 +64,6 @@ beforeEach(() => {
 	Object.defineProperty(window, 'storage', { configurable: true, value: storageApi });
 	storageApi.listProviders.mockResolvedValue(providers);
 	storageApi.getSettings.mockResolvedValue(settings);
-	storageApi.getVersionedStatus.mockResolvedValue(false);
-	storageApi.listConflicts.mockResolvedValue([]);
-	storageApi.listSnapshots.mockResolvedValue([]);
 	storageApi.saveSettings.mockImplementation(async (value) => value);
 	storageApi.syncFolders.mockResolvedValue([
 		{ key: 'agent', path: '/data/agent' },
@@ -98,9 +92,9 @@ it('shows the storage provider description beneath the title and before backup s
 	);
 	const title = screen.getByRole('heading', { name: 'Storage', exact: true });
 	const description = await screen.findByText(
-		'Choose a saved Amazon S3 or S3-compatible provider for backups, restores, and version history.'
+		'Choose a saved Amazon S3 or S3-compatible provider to upload and download files.'
 	);
-	const backup = screen.getByRole('heading', { name: 'Folders to back up' });
+	const backup = screen.getByRole('heading', { name: 'Folders' });
 	expect(
 		title.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING
 	).toBeTruthy();
@@ -124,11 +118,11 @@ it('keeps backup controls disabled when no providers exist', async () => {
 	);
 	expect(
 		await screen.findByText(
-			'Choose a saved Amazon S3 or S3-compatible provider for backups, restores, and version history.'
+			'Choose a saved Amazon S3 or S3-compatible provider to upload and download files.'
 		)
 	).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
-	expect(screen.getByRole('button', { name: 'Restore from storage' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Upload' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Download' })).toBeDisabled();
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeDisabled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
@@ -149,7 +143,7 @@ it('retries a failed provider load and restores the saved selection', async () =
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toHaveTextContent('Production files');
 	expect(
 		screen.getByText(
-			'Choose a saved Amazon S3 or S3-compatible provider for backups, restores, and version history.'
+			'Choose a saved Amazon S3 or S3-compatible provider to upload and download files.'
 		)
 	).toBeInTheDocument();
 });
@@ -163,8 +157,8 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 			<StoragePage />
 		</MemoryRouter>
 	);
-	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
-	expect(await screen.findByRole('alert')).toHaveTextContent('Could not save backup settings.');
+	await user.click(await screen.findByRole('button', { name: 'Upload' }));
+	expect(await screen.findByRole('alert')).toHaveTextContent('Could not save storage settings.');
 	expect(storageApi.backup).not.toHaveBeenCalled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
