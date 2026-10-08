@@ -317,19 +317,6 @@ function Tool({
 				/>
 				<CollapsibleContent>
 					<div className="mb-1 mt-0.5 space-y-2 rounded-md border border-border/50 bg-muted/20 p-2">
-						{displayTokens !== undefined && displayTokens > 0 && (
-							<div>
-								<h4 className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
-									Details
-								</h4>
-								<div className="flex items-center justify-between rounded-sm bg-muted/40 px-2 py-1.5 text-xs text-muted-foreground">
-									<span>Tokens</span>
-									<span className="tabular-nums">
-										{tokensAreEstimated ? '~' : ''}{displayTokens.toLocaleString()}
-									</span>
-								</div>
-							</div>
-						)}
 						<ToolInput input={input} />
 						<ToolOutput output={output} type={toolPart.type} />
 
@@ -349,8 +336,13 @@ function Tool({
 						)}
 
 						{toolCallId && (
-							<div className="truncate font-mono text-[10px] text-muted-foreground/60">
-								{toolCallId}
+							<div className="flex min-w-0 items-center justify-between gap-2 font-mono text-[10px] text-muted-foreground/60">
+								<span className="truncate">{toolCallId}</span>
+								{displayTokens !== undefined && displayTokens > 0 && (
+									<span className="shrink-0 tabular-nums">
+										{tokensAreEstimated ? '~' : ''}{displayTokens.toLocaleString()} tok
+									</span>
+								)}
 							</div>
 						)}
 					</div>
