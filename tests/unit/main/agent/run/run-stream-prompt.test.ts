@@ -453,9 +453,7 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt.match(/^## Tools$/gm)).toHaveLength(1);
 			expect(systemPrompt).not.toContain('### Loaded tools');
 			expect(systemPrompt).toContain('- `alpha` (Alpha) — Alpha tool _(Loaded.)_');
-			expect(systemPrompt).toContain(
-				'- `mcp__demo__beta` (Beta) — Beta tool _(Loaded.)_'
-			);
+			expect(systemPrompt).toContain('- `mcp__demo__beta` (Beta) — Beta tool _(Loaded.)_');
 			expect(
 				(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 			).toEqual(['alpha', 'mcp__demo__beta']);
@@ -506,7 +504,7 @@ describe('run stream system prompt', () => {
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
 			expect(systemPrompt).toContain(
-				"### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice"
+				'### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice'
 			);
 			expect(systemPrompt).toContain('# Agent runtime context');
 			expect(systemPrompt).toContain('### IDENTITY');
@@ -1357,11 +1355,7 @@ describe('run stream system prompt', () => {
 		const tools = ['read', 'complete_bootstrap', 'list_tasks', 'update_task'].map((id) =>
 			jsonTool({
 				id,
-				category: id.includes('task')
-					? 'task'
-					: id === 'complete_bootstrap'
-						? 'bootstrap'
-						: 'core',
+				category: id.includes('task') ? 'task' : id === 'complete_bootstrap' ? 'bootstrap' : 'core',
 				name: id,
 				description: `${id} description`,
 				schema: { type: 'object' },

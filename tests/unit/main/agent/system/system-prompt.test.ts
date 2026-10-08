@@ -100,11 +100,11 @@ describe('addToolsPrompt', () => {
 	});
 	it('shows loaded and discoverable tools in one section without duplicates', () => {
 		const read = tool('read', 'Read a file');
-		const prompt = addToolsPrompt('base', [read], [
-			read,
-			tool('write', 'Write a file'),
-			tool('mcp__notion__notion-search', 'Search Notion'),
-		]);
+		const prompt = addToolsPrompt(
+			'base',
+			[read],
+			[read, tool('write', 'Write a file'), tool('mcp__notion__notion-search', 'Search Notion')]
+		);
 
 		expect(prompt.match(/^## Tools$/gm)).toHaveLength(1);
 		expect(prompt).not.toContain('### Loaded tools');

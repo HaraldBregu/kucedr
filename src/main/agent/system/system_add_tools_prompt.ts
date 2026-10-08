@@ -9,9 +9,9 @@ export function addToolsPrompt(
 ): string {
 	const loaded = [...new Map(loadedTools.map((tool) => [tool.id, tool])).values()];
 	const loadedIds = new Set(loaded.map((tool) => tool.id));
-	const discoverable = [
-		...new Map(eligibleTools.map((tool) => [tool.id, tool])).values(),
-	].filter((tool) => !loadedIds.has(tool.id));
+	const discoverable = [...new Map(eligibleTools.map((tool) => [tool.id, tool])).values()].filter(
+		(tool) => !loadedIds.has(tool.id)
+	);
 	if (loaded.length === 0 && discoverable.length === 0) return prompt;
 
 	const tools = [...loaded, ...discoverable];
@@ -30,9 +30,7 @@ export function addToolsPrompt(
 			const availability = loadedIds.has(tool.id)
 				? ' _(Loaded.)_'
 				: ' _(Available through `tool_search`.)_';
-			const restriction = requiresExplicitRequest(tool)
-				? ' _(Explicit user request only.)_'
-				: '';
+			const restriction = requiresExplicitRequest(tool) ? ' _(Explicit user request only.)_' : '';
 			prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${availability}${restriction}`;
 		}
 	}
