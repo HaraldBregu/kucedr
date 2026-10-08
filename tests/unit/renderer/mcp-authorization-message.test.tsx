@@ -2,6 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { AssistantMessage } from '../../../src/renderer/src/pages/home/components/AssistantMessage';
 import type { AgentMessage } from '../../../src/renderer/src/pages/home/context';
 
+jest.mock('react-markdown', () => ({ defaultUrlTransform: (url: string) => url }));
+jest.mock('../../../src/renderer/src/components/prompt-kit/markdown', () => ({
+	Markdown: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 const authorization = JSON.stringify({
 	status: 'authorization_required',
 	serverId: 'gmail',
