@@ -41,13 +41,13 @@ export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSett
 		throw new Error('Invalid health enabled setting.');
 	}
 	if (schedule.cronExpression !== undefined) {
-		if (
-			typeof schedule.cronExpression !== 'string' ||
-			!cron.validate(schedule.cronExpression.trim())
-		) {
+		if (typeof schedule.cronExpression !== 'string') {
 			throw new Error('Health schedule must be a valid cron expression.');
 		}
 		schedule.cronExpression = schedule.cronExpression.trim().replace(/\s+/g, ' ');
+		if (!cron.validate(schedule.cronExpression)) {
+			throw new Error('Health schedule must be a valid cron expression.');
+		}
 	}
 	setAgentProfileDocument('health', { ...getAgentProfileDocument('health'), ...schedule });
 	if (providerId !== undefined || modelId !== undefined || modelOptions !== undefined) {

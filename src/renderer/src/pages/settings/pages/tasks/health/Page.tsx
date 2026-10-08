@@ -82,13 +82,10 @@ const HealthPage: React.FC = () => {
 		setSaving(true);
 		setSaved(false);
 		setError(null);
-		const activeHours = patch.activeHours;
-		const request = activeHours
-			? { ...patch, activeHours: activeHours.start && activeHours.end ? activeHours : undefined }
-			: patch;
 		void window.agent
-			.healthSaveSettings(request)
+			.healthSaveSettings(patch)
 			.then(() => {
+				if (patch.cronExpression !== undefined) setCronDraft(undefined);
 				setSaved(true);
 			})
 			.catch((err: unknown) => {
