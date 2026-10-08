@@ -11,6 +11,7 @@ jest.mock('../../../../src/main/storage/storage_protected', () => ({
 import { pushFiles } from '../../../../src/main/storage/storage_push';
 import { pullFiles } from '../../../../src/main/storage/storage_pull';
 import { normalizeStoragePaths } from '../../../../src/main/storage/storage_paths';
+import { transferRoots } from '../../../../src/main/storage/roots';
 import { normalizeStorageProvider } from '../../../../src/main/storage/providers/normalize';
 import type { StorageObjectStore } from '../../../../src/main/storage/remote';
 
@@ -111,9 +112,9 @@ it('rejects traversal and symbolic links during downloads', async () => {
 });
 
 it('rejects ambiguous selected folders with the same name', () => {
-	expect(() => normalizeStoragePaths(['/data/first/freelance', '/data/second/freelance'])).toThrow(
-		'different names'
-	);
+	const paths = ['/data/first/freelance', '/data/second/freelance'];
+	expect(normalizeStoragePaths(paths)).toEqual(paths);
+	expect(() => transferRoots(paths)).toThrow('different names');
 });
 
 it('normalizes bucket-scoped endpoints to prevent duplicated bucket paths', () => {

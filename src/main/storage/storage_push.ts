@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import type { StoragePushResult } from '../../shared/storage_types';
 import { describeStorageError } from './storage_error';
-import { normalizeStoragePaths } from './storage_paths';
+import { transferRoots } from './roots';
 import { storagePrefix } from './storage_prefix';
 import type { StorageObjectStore } from './remote';
 import { getStorageSettings } from './storage_store';
@@ -10,7 +10,7 @@ import { walkFiles } from './storage_walk';
 import { uploadFile } from './upload';
 
 export async function pushFiles(store: StorageObjectStore): Promise<StoragePushResult> {
-	const paths = normalizeStoragePaths(getStorageSettings().paths);
+	const paths = transferRoots(getStorageSettings().paths);
 	if (!paths.length) throw new Error('Select at least one folder to upload.');
 	const uploaded: string[] = [];
 	const failed: StoragePushResult['failed'] = [];

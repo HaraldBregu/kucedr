@@ -17,11 +17,5 @@ export function normalizeStoragePaths(value: unknown): string[] {
 		}
 		return resolved;
 	});
-	const unique = [...new Set(normalized)];
-	const names = unique.map((entry) => path.basename(entry));
-	if (new Set(names).size !== names.length)
-		throw new Error(
-			'Selected storage folders must have different names to avoid overwriting each other.'
-		);
-	return unique;
+	return [...new Set(normalized)];
 }
