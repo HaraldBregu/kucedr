@@ -16,7 +16,6 @@ import {
 	Mic,
 	Monitor,
 	PenLine,
-	Plug,
 	Sparkles,
 	Terminal,
 	Video,
@@ -30,6 +29,7 @@ import { CalendarIcon } from './calendar';
 import { DriveIcon } from './drive';
 import { formatDuration } from './duration';
 import { GmailIcon } from './gmail';
+import { McpIcon } from './mcp';
 import { isTaskToolType } from './task';
 import { estimateTokens } from './tokens';
 
@@ -73,7 +73,7 @@ function formatValue(value: unknown): string {
 	return String(value);
 }
 
-export function toolIcon(toolPart: ToolPart): ElementType<{ className?: string }> {
+export function toolIcon(toolPart: ToolPart): ElementType<{ className?: string; toolPart?: ToolPart }> {
 	const type = toolPart.type.toLowerCase();
 	const serviceId = toolPart.serviceId?.toLowerCase();
 	if (isTaskToolType(type)) return CalendarClock;
@@ -87,7 +87,7 @@ export function toolIcon(toolPart: ToolPart): ElementType<{ className?: string }
 		type.startsWith('mcp__gmail-smtp__')
 	)
 		return GmailIcon;
-	if (toolPart.serviceKind === 'mcp' || type.startsWith('mcp__')) return Plug;
+	if (toolPart.serviceKind === 'mcp' || type.startsWith('mcp__')) return McpIcon;
 	if (type === 'subagent' || type === 'subagents') return Bot;
 	if (type.includes('skill')) return Sparkles;
 	if (type === 'create_image') return Image;
@@ -290,6 +290,7 @@ function Tool({
 								{!hideIcon &&
 									createElement(kindIcon, {
 										className: 'size-3.5 shrink-0 text-muted-foreground/60',
+										...(kindIcon === McpIcon ? { toolPart } : {}),
 									})}
 								<span
 									className={cn(
