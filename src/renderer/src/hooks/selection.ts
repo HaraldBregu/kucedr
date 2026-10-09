@@ -1,21 +1,23 @@
-import { useCallback, useRef, type ForwardedRef } from 'react';
+import { useEffect, useImperativeHandle, useState, type ForwardedRef } from 'react';
 import { revealSelection } from '@/lib/selection';
 
 export function useSelection(ref: ForwardedRef<HTMLDivElement>) {
-	const frame = useRef<number | null>(null);
-	const observer = useRef<MutationObserver | null>(null);
-	return useCallback((element: HTMLDivElement | null) => {
-		if (typeof ref === 'function') ref(element);
-		else if (ref) ref.current = element;
-		observer.current?.disconnect();
-		if (frame.current !== null) cancelAnimationFrame(frame.current);
+	const [element, setElement] = useState<HTMLDivElement | null>(null);
+	useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(ref, () => element, [element]);
+	useEffect(() => {
 		if (!element) return;
+		let frame = 0;
 		const reveal = (): void => {
-			if (frame.current !== null) cancelAnimationFrame(frame.current);
-			frame.current = requestAnimationFrame(() => revealSelection(element));
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(() => revealSelection(element));
 		};
-		observer.current = new MutationObserver(reveal);
-		observer.current.observe(element, { attributes: true, attributeFilter: ['data-state'] });
+		const observer = new MutationObserver(reveal);
+		observer.observe(element, { attributes: true, attributeFilter: ['data-state'] });
 		reveal();
-	}, [ref]);
+		return () => {
+			observer.disconnect();
+			cancelAnimationFrame(frame);
+		};
+	}, [element]);
+	return setElement;
 }
