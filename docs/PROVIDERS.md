@@ -240,7 +240,7 @@ All 31 manifests were checked against official documentation. This update adds 1
 | GitHub | [Documentation](https://github.com/github/github-mcp-server) | Existing MCP integration; GitHub Models is a separate product. |
 | GitLab | [Documentation](https://docs.gitlab.com/user/model_context_protocol/mcp_server/) | Existing MCP integration; no inference catalog. |
 | Google DeepMind / Google | [Documentation](https://ai.google.dev/gemini-api/docs/models) | 20 additions; documented request contracts implemented. |
-| Ideogram | [Documentation](https://developer.ideogram.ai/api-reference/api-reference/generate) | 3 additions; documented request contracts implemented. |
+| Ideogram | [Documentation](https://developer.ideogram.ai/api-reference/images/generate/ideogram-4-5) | 3 additions; documented request contracts implemented. |
 | Jina AI | [Documentation](https://api.jina.ai/scalar) | 5 additions; documented request contracts implemented. |
 | Moonshot AI / Kimi | [Documentation](https://platform.kimi.ai/docs/models) | Current catalog already matches the documented API models. |
 | Kuaishou / Kling AI | [Documentation](https://kling.ai/document-api/api/video/3-0-omni/text-to-video) | 5 additions; documented request contracts implemented. |
