@@ -1,4 +1,5 @@
 import { normalizeProviderId } from '../../../../shared/provider_types';
+import { createGoogleRealtimeVoiceAdapter, GOOGLE_LIVE_MODELS } from './google';
 import {
 	OPENAI_REALTIME_VOICE_MODELS,
 	OPENAI_VOICE_MODELS,
@@ -26,6 +27,12 @@ const REALTIME_VOICE_ADAPTERS: Readonly<Record<string, RealtimeVoiceAdapterRegis
 		modelIds: XAI_REALTIME_VOICE_MODELS,
 		toolModelIds: XAI_REALTIME_VOICE_MODELS,
 		create: (provider) => new XAIRealtimeVoiceAdapter(provider),
+	},
+	google: {
+		defaultVoice: 'Kore',
+		modelIds: GOOGLE_LIVE_MODELS,
+		toolModelIds: GOOGLE_LIVE_MODELS,
+		create: createGoogleRealtimeVoiceAdapter,
 	},
 };
 

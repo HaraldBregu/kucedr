@@ -27,6 +27,8 @@ describe('realtime voice adapter factory', () => {
 			{ providerId: 'openai', modelId: 'gpt-realtime-2.1-mini' },
 			{ providerId: 'openai', modelId: 'gpt-live-1' },
 			{ providerId: 'xai', modelId: 'grok-voice-latest' },
+			{ providerId: 'google', modelId: 'gemini-3.8-live' },
+			{ providerId: 'google', modelId: 'gemini-3.8-live-extended-thinking' },
 		]);
 		expect(supportsRealtimeVoiceModel(' XAI ', 'grok-voice-latest')).toBe(true);
 		expect(supportsRealtimeVoiceTools('openai', 'gpt-realtime-2.1')).toBe(true);
@@ -42,7 +44,7 @@ describe('realtime voice adapter factory', () => {
 			XAIRealtimeVoiceAdapter
 		);
 		expect(() =>
-			buildRealtimeVoiceAdapter({ id: 'google', name: 'Google', apiKey: 'key' })
+			buildRealtimeVoiceAdapter({ id: 'unknown', name: 'Unknown', apiKey: 'key' })
 		).toThrow('not supported');
 	});
 });
