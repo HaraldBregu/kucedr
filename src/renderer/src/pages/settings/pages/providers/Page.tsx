@@ -129,6 +129,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					allCatalogItems(section).map((provider) => {
 						const current = currentEntries.find((entry) => entry.providerId === provider.id);
 						const savedApiKey = savedProviders.get(provider.id)?.apiKey ?? '';
+						const savedBaseUrl = savedProviders.get(provider.id)?.baseUrl ?? '';
+						const workspaceUrl = /\.maas\.aliyuncs\.com(?:\/|$)/i.test(savedBaseUrl) ? savedBaseUrl : '';
 						const saved = Boolean(savedApiKey.trim());
 
 						return {
@@ -137,8 +139,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							savedApiKey,
 							...(provider.id === 'qwen'
 								? {
-										baseUrl: current?.baseUrl ?? savedProviders.get(provider.id)?.baseUrl ?? '',
-										savedBaseUrl: savedProviders.get(provider.id)?.baseUrl ?? '',
+										baseUrl: current?.baseUrl ?? workspaceUrl,
+										savedBaseUrl: workspaceUrl,
 									}
 								: {}),
 							apiKeySaved: saved,
