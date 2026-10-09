@@ -188,12 +188,25 @@ describe('resolveToolPermission', () => {
 			...defaults,
 			write: { allow: [libraryRule], deny: [] },
 		};
-		expect(resolveToolPermission('use_web_browser', { action }, undefined, true, 'ask', trustedWrites)).toBe('allow');
-		expect(resolveToolPermission('use_web_browser', { action, directory: '/outside' }, undefined, true, 'ask', trustedWrites)).toBe('ask');
-		expect(resolveToolPermission('use_web_browser', { action }, undefined, true, 'ask', {
-			...trustedWrites,
-			write: { allow: [libraryRule], deny: [libraryRule] },
-		})).toBe('deny');
+		expect(
+			resolveToolPermission('use_web_browser', { action }, undefined, true, 'ask', trustedWrites)
+		).toBe('allow');
+		expect(
+			resolveToolPermission(
+				'use_web_browser',
+				{ action, directory: '/outside' },
+				undefined,
+				true,
+				'ask',
+				trustedWrites
+			)
+		).toBe('ask');
+		expect(
+			resolveToolPermission('use_web_browser', { action }, undefined, true, 'ask', {
+				...trustedWrites,
+				write: { allow: [libraryRule], deny: [libraryRule] },
+			})
+		).toBe('deny');
 		expect(builtinCapability('use_web_browser', { action })?.effects).toContain('write');
 	});
 });

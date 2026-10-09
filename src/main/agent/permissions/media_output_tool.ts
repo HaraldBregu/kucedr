@@ -8,6 +8,8 @@ const MEDIA_TOOLS = new Set([
 ]);
 
 export function isMediaOutputTool(toolName: string, args: Record<string, unknown>): boolean {
-	return MEDIA_TOOLS.has(toolName) ||
-		(toolName === 'use_web_browser' && (args.action === 'screenshot' || args.action === 'pdf'));
+	return (
+		MEDIA_TOOLS.has(toolName) ||
+		(toolName === 'use_web_browser' && (args.action === 'screenshot' || args.action === 'pdf'))
+	);
 }
