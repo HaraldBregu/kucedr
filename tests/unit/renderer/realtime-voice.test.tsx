@@ -1,5 +1,7 @@
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react';
 import { StrictMode, useEffect, type ReactNode } from 'react';
+import userEvent from '@testing-library/user-event';
+import { VoiceWindow } from '../../../src/renderer/src/components/voice-window';
 import { AssistantMessage } from '../../../src/renderer/src/pages/home/components/AssistantMessage';
 import { Provider, historyToChatMessages } from '../../../src/renderer/src/pages/home/context';
 import { useHomeAgentContext } from '../../../src/renderer/src/pages/home/context';
@@ -8,6 +10,17 @@ import type { AgentHistoryMessage } from '../../../src/shared/agent_types';
 import type { RealtimeVoiceEvent, RealtimeVoiceSession } from '../../../src/shared/realtime_voice';
 
 jest.mock('react-markdown', () => ({ defaultUrlTransform: (url: string) => url }));
+jest.mock('react-i18next', () => ({
+	useTranslation: () => ({
+		t: (key: string, options?: { action?: string; defaultValue?: string }) =>
+			options?.defaultValue ??
+			(key === 'toolPermission.title' ? `Allow ${options?.action}?` : key.split('.').at(-1)),
+	}),
+}));
+jest.mock('@/contexts', () => ({ useApp: () => ({ voiceAgentAppearance: 'orb-07' }) }));
+jest.mock('@/components/voice-agent-visual', () => ({
+	VoiceAgentVisual: () => <div aria-label="Voice Agent" />,
+}));
 jest.mock('@/components/prompt-kit/markdown', () => ({
 	Markdown: ({ children }: { children: ReactNode }) => <div>{children}</div>,
 }));
@@ -622,6 +635,77 @@ describe('useRealtimeVoice', () => {
 			pendingPermission: undefined,
 			tools: [expect.objectContaining({ toolCallId: 'call-1', state: 'output-available' })],
 		});
+	});
+
+	it('lets the standalone voice window approve a response-scoped tool request and clears completed approvals', async () => {
+		const user = userEvent.setup();
+		const close = jest.fn();
+		const respondToolPermission = jest.fn().mockResolvedValue(true);
+		Object.defineProperty(window, 'win', { configurable: true, value: { close } });
+		Object.defineProperty(window, 'agent', {
+			configurable: true,
+			value: { respondToolPermission },
+		});
+		api.startSession.mockResolvedValue(session);
+		render(
+			<StrictMode>
+				<VoiceWindow chatSessionId="chat-1" />
+			</StrictMode>
+		);
+		await waitFor(() => expect(api.startSession).toHaveBeenCalledTimes(1));
+		await waitFor(() => expect(screen.getByLabelText('Disable microphone')).toBeEnabled());
+		const request = {
+			type: 'tool_permission_request' as const,
+			sessionId: session.id,
+			agentId: 'main',
+			runId: `${session.id}:response-1`,
+			iteration: 0,
+			approvalId: 'standalone-approval',
+			toolCallId: 'standalone-call',
+			toolName: 'bash',
+			input: { command: 'pwd' },
+			inputFingerprint: 'standalone-fingerprint',
+			mode: 'ask' as const,
+			targets: ['/workspace'],
+			reason: 'host_execution' as const,
+			persistable: false,
+			allowOnce: true,
+			expiresAt: new Date(Date.now() + 60_000).toISOString(),
+		};
+		act(() => emit(request));
+		expect(screen.getByRole('alert')).toHaveTextContent('pwd');
+		await user.click(screen.getByRole('button', { name: 'allowOnce' }));
+		expect(respondToolPermission).toHaveBeenCalledWith(
+			{
+				approvalId: request.approvalId,
+				runId: request.runId,
+				toolName: request.toolName,
+				inputFingerprint: request.inputFingerprint,
+			},
+			'approve'
+		);
+		act(() =>
+			emit({
+				type: 'tool_call_result',
+				sessionId: session.id,
+				agentId: 'main',
+				runId: request.runId,
+				iteration: 0,
+				toolCallId: request.toolCallId,
+				toolName: request.toolName,
+				input: request.input,
+				output: '/workspace',
+				status: 'ok',
+			})
+		);
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+		expect(screen.getByLabelText('Voice Agent')).toBeInTheDocument();
+		act(() => emit({ ...request, approvalId: 'next-approval', toolCallId: 'next-call' }));
+		expect(screen.getByRole('button', { name: 'allowOnce' })).toBeEnabled();
+		await user.click(screen.getByRole('button', { name: 'End Voice' }));
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+		expect(api.stopSession).toHaveBeenCalledWith(session.id);
+		expect(close).toHaveBeenCalled();
 	});
 
 	it('restores persisted realtime image, audio, and video tool results', () => {

@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { modelsFor } from '@/lib/providers';
 import { HomeAgentContext } from '../context/context';
+import type { PendingToolPermission } from '../context/state';
 import type {
 	RealtimeVoiceEvent,
 	RealtimeVoiceState,
@@ -50,6 +51,7 @@ export function useRealtimeVoice({
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [requiresConfiguration, setRequiresConfiguration] = useState(false);
 	const [elapsedMs, setElapsedMs] = useState(0);
+	const [pendingPermission, setPendingPermission] = useState<PendingToolPermission>();
 	const {
 		analyser: captureAnalyser,
 		isMuted,
@@ -108,7 +110,10 @@ export function useRealtimeVoice({
 		stopClock();
 		stopCapture();
 		releasePlayback();
-		if (mountedRef.current) setElapsedMs(0);
+		if (mountedRef.current) {
+			setElapsedMs(0);
+			setPendingPermission(undefined);
+		}
 	}, [releasePlayback, stopCapture, stopClock]);
 
 	const closeSession = useCallback(
@@ -163,6 +168,12 @@ export function useRealtimeVoice({
 			if (event.sessionId !== sessionId) return;
 
 			if (isToolEvent(event)) {
+				if (event.type === 'tool_permission_request') setPendingPermission(event);
+				if (event.type === 'tool_call_result') {
+					setPendingPermission((pending) =>
+						pending?.toolCallId === event.toolCallId ? undefined : pending
+					);
+				}
 				dispatchChat({
 					type: 'apply_response_event',
 					event,
@@ -180,6 +191,7 @@ export function useRealtimeVoice({
 					setStatus(event.status);
 					return;
 				case 'input_speech_started':
+					setPendingPermission(undefined);
 					stopPlayback();
 					setStatus('listening');
 					return;
@@ -238,6 +250,7 @@ export function useRealtimeVoice({
 				case 'assistant_audio_done':
 					return;
 				case 'interrupted':
+					setPendingPermission(undefined);
 					stopPlayback();
 					dispatchChat({ type: 'complete_active', response: '', completedAtMs: Date.now() });
 					setStatus('listening');
@@ -269,6 +282,7 @@ export function useRealtimeVoice({
 
 		const startPromise = (async (): Promise<boolean> => {
 			errorLatchedRef.current = false;
+			setPendingPermission(undefined);
 			setErrorMessage(null);
 			setRequiresConfiguration(false);
 			pendingSessionEventsRef.current = [];
@@ -386,6 +400,7 @@ export function useRealtimeVoice({
 		isConfigured,
 		isMuted,
 		isSupported,
+		pendingPermission,
 		requiresConfiguration,
 		setMuted,
 		start,

@@ -6,6 +6,7 @@ import { TypingLoader } from '@/components/ui/loader';
 import { useApp } from '@/contexts';
 import { cn } from '@/lib/utils';
 import { useRealtimeVoice, type RealtimeVoiceUiStatus } from '@/pages/home/hooks/useRealtimeVoice';
+import { ToolPermissionCard } from '@/pages/home/components/ToolPermissionCard';
 
 function formatDuration(elapsedMs: number): string {
 	const totalSeconds = Math.max(0, Math.floor(elapsedMs / 1000));
@@ -58,12 +59,21 @@ export function VoiceWindow({
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
 				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
-					<VoiceAgentVisual
-						appearance={voiceAgentAppearance}
-						state={state}
-						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
-						size={208}
-					/>
+					{voice.pendingPermission ? (
+						<div className="h-full w-full overflow-y-auto p-3">
+							<ToolPermissionCard
+								key={voice.pendingPermission.approvalId}
+								permission={voice.pendingPermission}
+							/>
+						</div>
+					) : (
+						<VoiceAgentVisual
+							appearance={voiceAgentAppearance}
+							state={state}
+							level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
+							size={208}
+						/>
+					)}
 				</div>
 			</div>
 			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
