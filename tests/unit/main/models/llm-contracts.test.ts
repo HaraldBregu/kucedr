@@ -87,3 +87,17 @@ it.each([true, false])(
 		});
 	}
 );
+
+it('maps Cohere reasoning effort only on models with documented support', async () => {
+	const create = jest.fn().mockResolvedValue({ choices: [], usage: {} });
+	const model = new LlmModel({ openAIClientFactory: (spec) => {
+		expect(spec.baseURL).toBe('https://api.cohere.ai/compatibility/v1');
+		return { chat: { completions: { create } } } as never;
+	} });
+	for (const modelId of ['command-a-plus-05-2026', 'command-a-reasoning-08-2025', 'command-r-plus-08-2024']) {
+		for await (const _event of model.stream({ provider: { id: 'cohere', apiKey: 'key', baseURL: 'https://api.cohere.com/v2' }, model: modelId, effort: 'low', messages: [{ role: 'user', content: 'hello' }], maxTokens: 100, streaming: false })) {}
+	}
+	expect(create.mock.calls[0][0].reasoning_effort).toBe('high');
+	expect(create.mock.calls[1][0].reasoning_effort).toBe('high');
+	expect(create.mock.calls[2][0].reasoning_effort).toBeUndefined();
+});
