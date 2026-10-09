@@ -8,6 +8,111 @@
 	"icon_light_url": "/images/pika-light.svg",
 	"models": [
 		{
+			"id": "pika-music",
+			"name": "Pika Music",
+			"type": "text-to-audio-model",
+			"authentication": "api-key",
+			"url": "https://api.dev.pika.art",
+			"metadata": {
+				"documentationUrl": "https://dev.pika.art/models/pika/pika-audio/pika-music",
+				"documentationStatus": "verified",
+				"inputs": {
+					"mode": {
+						"type": "string",
+						"enum": [
+							"text_to_music",
+							"voice_conditioned_text_to_music",
+							"music_cover"
+						],
+						"default": "text_to_music"
+					},
+					"duration": {
+						"type": "number",
+						"minimum": 10,
+						"maximum": 360,
+						"default": 30
+					},
+					"lyrics": {
+						"type": "string"
+					},
+					"reference_audio": {
+						"type": "string"
+					},
+					"source_audio": {
+						"type": "string"
+					},
+					"voice_consent_attested": {
+						"type": "boolean",
+						"default": false
+					},
+					"rewrite_prompt": {
+						"type": "boolean",
+						"default": false
+					},
+					"seed": {
+						"type": "integer",
+						"default": -1
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "pika-sfx",
+			"name": "Pika SFX",
+			"type": "text-to-audio-model",
+			"authentication": "api-key",
+			"url": "https://api.dev.pika.art",
+			"metadata": {
+				"documentationUrl": "https://dev.pika.art/models/pika/pika-audio/pika-sfx",
+				"documentationStatus": "verified",
+				"inputs": {
+					"duration": {
+						"type": "number",
+						"minimum": 1,
+						"maximum": 20,
+						"default": 10
+					},
+					"seed": {
+						"type": "integer",
+						"default": -1
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "pika-speech",
+			"name": "Pika Speech",
+			"type": "text-to-speech-model",
+			"authentication": "api-key",
+			"url": "https://api.dev.pika.art",
+			"metadata": {
+				"documentationUrl": "https://dev.pika.art/models/pika/pika-audio/pika-speech",
+				"documentationStatus": "verified",
+				"inputs": {
+					"voice_preset": {
+						"type": "string",
+						"default": "calm_documentary_narrator"
+					},
+					"reference_audio": {
+						"type": "string"
+					},
+					"voice_consent_attested": {
+						"type": "boolean",
+						"default": false
+					},
+					"seed": {
+						"type": "integer",
+						"minimum": -1,
+						"maximum": 2147483647,
+						"default": -1
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
 			"id": "pika-2.5",
 			"name": "Pika 2.5",
 			"type": "text-to-video-model",
@@ -19,12 +124,17 @@
 				"inputs": {
 					"resolution": {
 						"type": "string",
-						"enum": ["720p", "1080p"],
+						"enum": [
+							"720p",
+							"1080p"
+						],
 						"default": "720p"
 					},
 					"duration_s": {
 						"type": "number",
-						"enum": [5],
+						"enum": [
+							5
+						],
 						"default": 5
 					},
 					"negative_prompt": {

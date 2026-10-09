@@ -8,6 +8,224 @@
 	"icon_light_url": "/images/kling.svg",
 	"models": [
 		{
+			"id": "kling-3.0",
+			"name": "Kling 3.0",
+			"type": "text-to-video-model",
+			"authentication": "api-key",
+			"url": "https://api-singapore.klingai.com",
+			"metadata": {
+				"documentationUrl": "https://kling.ai/document-api/api/video/3-0-omni/text-to-video",
+				"documentationStatus": "verified",
+				"inputs": {
+					"settings": {
+						"type": "object",
+						"properties": {
+							"resolution": {
+								"type": "string",
+								"enum": [
+									"720p",
+									"1080p",
+									"4k"
+								],
+								"default": "720p"
+							},
+							"aspect_ratio": {
+								"type": "string",
+								"enum": [
+									"16:9",
+									"9:16",
+									"1:1"
+								],
+								"default": "16:9"
+							},
+							"duration": {
+								"type": "integer",
+								"minimum": 3,
+								"maximum": 15,
+								"default": 5
+							},
+							"audio": {
+								"type": "string",
+								"enum": [
+									"native",
+									"off"
+								],
+								"default": "off"
+							},
+							"multi_shot": {
+								"type": "boolean",
+								"default": true
+							}
+						}
+					},
+					"options": {
+						"type": "object"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "kling-3.0-turbo",
+			"name": "Kling 3.0 Turbo",
+			"type": "text-to-video-model",
+			"authentication": "api-key",
+			"url": "https://api-singapore.klingai.com",
+			"metadata": {
+				"documentationUrl": "https://kling.ai/document-api/api/video/3-0-turbo/text-to-video",
+				"documentationStatus": "verified",
+				"inputs": {
+					"settings": {
+						"type": "object",
+						"properties": {
+							"resolution": {
+								"type": "string",
+								"enum": [
+									"720p",
+									"1080p"
+								],
+								"default": "720p"
+							},
+							"aspect_ratio": {
+								"type": "string",
+								"enum": [
+									"16:9",
+									"9:16",
+									"1:1"
+								],
+								"default": "16:9"
+							},
+							"duration": {
+								"type": "integer",
+								"minimum": 3,
+								"maximum": 15,
+								"default": 5
+							}
+						}
+					},
+					"options": {
+						"type": "object"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "kling-2.6",
+			"name": "Kling 2.6",
+			"type": "text-to-video-model",
+			"authentication": "api-key",
+			"url": "https://api-singapore.klingai.com",
+			"metadata": {
+				"documentationUrl": "https://kling.ai/document-api/api/video/2-6/text-to-video",
+				"documentationStatus": "verified",
+				"inputs": {
+					"settings": {
+						"type": "object",
+						"properties": {
+							"resolution": {
+								"type": "string",
+								"enum": [
+									"720p",
+									"1080p"
+								],
+								"default": "720p"
+							},
+							"aspect_ratio": {
+								"type": "string",
+								"enum": [
+									"16:9",
+									"9:16",
+									"1:1"
+								],
+								"default": "16:9"
+							},
+							"duration": {
+								"type": "integer",
+								"minimum": 3,
+								"maximum": 15,
+								"default": 5
+							},
+							"audio": {
+								"type": "string",
+								"enum": [
+									"native",
+									"off"
+								],
+								"default": "off"
+							}
+						}
+					},
+					"options": {
+						"type": "object"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "kling-v3",
+			"name": "Kling Image 3.0",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api-singapore.klingai.com",
+			"metadata": {
+				"documentationUrl": "https://kling.ai/document-api/api/image/3-0-omni/image-generation",
+				"documentationStatus": "verified",
+				"inputs": {
+					"resolution": {
+						"type": "string",
+						"enum": [
+							"1k",
+							"2k"
+						],
+						"default": "1k"
+					},
+					"aspect_ratio": {
+						"type": "string"
+					},
+					"n": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 9,
+						"default": 1
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "kling-v3-omni",
+			"name": "Kling Image 3.0 Omni",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api-singapore.klingai.com",
+			"metadata": {
+				"documentationUrl": "https://kling.ai/document-api/api/image/3-0-omni/image-omni",
+				"documentationStatus": "verified",
+				"inputs": {
+					"resolution": {
+						"type": "string",
+						"enum": [
+							"1k",
+							"2k"
+						],
+						"default": "1k"
+					},
+					"aspect_ratio": {
+						"type": "string"
+					},
+					"n": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 9,
+						"default": 1
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
 			"id": "kling-v2.5-turbo",
 			"name": "Kling v2.5 Turbo",
 			"type": "text-to-video-model",
@@ -38,11 +256,18 @@
 			"name": "Kling Audio",
 			"type": "text-to-audio-model",
 			"authentication": "api-key",
-			"url": "https://kling.ai",
+			"url": "https://api-singapore.klingai.com",
 			"metadata": {
-				"documentationUrl": "https://kling.ai",
-				"documentationStatus": "unverified",
-				"inputs": {}
+				"documentationUrl": "https://kling.ai/document-api/api/video/audio-generation/text-to-audio",
+				"documentationStatus": "verified",
+				"inputs": {
+					"duration": {
+						"type": "number",
+						"minimum": 3,
+						"maximum": 10,
+						"default": 5
+					}
+				}
 			},
 			"location": "remote"
 		}
