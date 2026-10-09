@@ -27,6 +27,10 @@ import { createQwenImageAdapter } from '../../../../src/main/models/adapters/tti
 import { createQwenVideoAdapter } from '../../../../src/main/models/adapters/ttv/ttv_qwen';
 import type { SttRealtimeEvent } from '../../../../src/shared/stt_transcription';
 
+beforeEach(() => {
+	jest.restoreAllMocks();
+});
+
 const provider = {
 	id: 'qwen',
 	name: 'Qwen',
