@@ -24,7 +24,8 @@ export function generatedMedia(tools: readonly AgentToolPart[]): GeneratedMedia[
 		else if (
 			tool.type === 'use_web_browser' &&
 			(tool.input as { action?: unknown } | undefined)?.action === 'screenshot'
-		) kind = 'image';
+		)
+			kind = 'image';
 		else if (recorder && record?.status === 'completed') {
 			kind = recorder[1] === 'microphone' ? 'audio' : 'video';
 		} else continue;
@@ -33,11 +34,12 @@ export function generatedMedia(tools: readonly AgentToolPart[]): GeneratedMedia[
 					.map((image) => (image as { path?: unknown } | null)?.path)
 					.filter((value): value is string => typeof value === 'string' && value.length > 0)
 			: [];
-		const paths = (images.length > 0
-			? images
-			: typeof record?.path === 'string' && record.path.length > 0
-				? [record.path]
-				: []
+		const paths = (
+			images.length > 0
+				? images
+				: typeof record?.path === 'string' && record.path.length > 0
+					? [record.path]
+					: []
 		).filter((file) => {
 			if (seen.has(file)) return false;
 			seen.add(file);
