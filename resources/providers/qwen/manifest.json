@@ -15,7 +15,7 @@
       "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
       "metadata": {
         "promptAttachments": [],
-        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model",
+        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-8-max",
         "documentationStatus": "verified",
         "inputs": {
           "temperature": {
@@ -25,7 +25,8 @@
             "type": "number"
           },
           "max_tokens": {
-            "type": "integer"
+            "type": "integer",
+            "maximum": 131072
           },
           "stop": {
             "type": "array"
@@ -54,7 +55,7 @@
           }
         },
         "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model"
+        "contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-8-max"
       },
       "location": "remote"
     },
@@ -66,7 +67,7 @@
       "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
       "metadata": {
         "promptAttachments": [],
-        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model",
+        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-8-max",
         "documentationStatus": "verified",
         "inputs": {
           "temperature": {
@@ -76,7 +77,8 @@
             "type": "number"
           },
           "max_tokens": {
-            "type": "integer"
+            "type": "integer",
+            "maximum": 131072
           },
           "stop": {
             "type": "array"
@@ -105,7 +107,7 @@
           }
         },
         "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model"
+        "contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-8-max"
       },
       "location": "remote"
     },
@@ -117,7 +119,7 @@
       "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
       "metadata": {
         "promptAttachments": [],
-        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model",
+        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-8-flash",
         "documentationStatus": "verified",
         "inputs": {
           "temperature": {
@@ -127,7 +129,8 @@
             "type": "number"
           },
           "max_tokens": {
-            "type": "integer"
+            "type": "integer",
+            "maximum": 131072
           },
           "stop": {
             "type": "array"
@@ -156,7 +159,7 @@
           }
         },
         "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model"
+        "contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-8-flash"
       },
       "location": "remote"
     },
@@ -168,7 +171,7 @@
       "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
       "metadata": {
         "promptAttachments": [],
-        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model",
+        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-plus",
         "documentationStatus": "verified",
         "inputs": {
           "temperature": {
@@ -178,7 +181,8 @@
             "type": "number"
           },
           "max_tokens": {
-            "type": "integer"
+            "type": "integer",
+            "maximum": 131072
           },
           "stop": {
             "type": "array"
@@ -207,7 +211,7 @@
           }
         },
         "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-generation-model"
+        "contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-plus"
       },
       "location": "remote"
     },
@@ -1473,6 +1477,176 @@
       "apiTypes": [
         "batch"
       ]
+    },
+    {
+      "id": "qwen-audio-3.0-asr-flash-streaming",
+      "name": "Qwen Audio 3.0 ASR Flash Streaming",
+      "type": "speech-to-text-model",
+      "authentication": "api-key",
+      "url": "wss://dashscope-intl.aliyuncs.com/api-ws/v1/inference",
+      "apiTypes": [
+        "stream"
+      ],
+      "realtime": true,
+      "sampleRate": 16000,
+      "metadata": {
+        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen-audio-asr-streaming-client-events",
+        "documentationStatus": "verified",
+        "inputs": {}
+      },
+      "location": "remote"
+    },
+    {
+      "id": "qwen-audio-3.1-asr-flash-streaming",
+      "name": "Qwen Audio 3.1 ASR Flash Streaming",
+      "type": "speech-to-text-model",
+      "authentication": "api-key",
+      "url": "wss://dashscope-intl.aliyuncs.com/api-ws/v1/inference",
+      "apiTypes": [
+        "stream"
+      ],
+      "realtime": true,
+      "sampleRate": 16000,
+      "metadata": {
+        "documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen-audio-asr-streaming-client-events",
+        "documentationStatus": "verified",
+        "inputs": {}
+      },
+      "location": "remote"
+    },
+    {
+      "id": "qwen-audio-3.0-tts-plus",
+      "name": "Qwen Audio 3.0 TTS Plus",
+      "type": "text-to-speech-model",
+      "authentication": "api-key",
+      "url": "https://dashscope.aliyuncs.com/api/v1",
+      "metadata": {
+        "documentationUrl": "https://help.aliyun.com/en/model-studio/qwen-audio-tts-http-api",
+        "documentationStatus": "verified",
+        "inputs": {
+          "voice": {
+            "type": "string",
+            "default": "longanlingxin"
+          },
+          "format": {
+            "type": "string",
+            "default": "mp3",
+            "enum": [
+              "mp3",
+              "pcm",
+              "wav",
+              "opus"
+            ]
+          },
+          "sample_rate": {
+            "type": "integer",
+            "enum": [
+              8000,
+              12000,
+              16000,
+              22050,
+              24000,
+              44100,
+              48000
+            ]
+          },
+          "volume": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "rate": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 2
+          },
+          "pitch": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 2
+          },
+          "instruction": {
+            "type": "string"
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "language_hints": {
+            "type": "array",
+            "maxItems": 1
+          }
+        }
+      },
+      "location": "remote"
+    },
+    {
+      "id": "qwen-audio-3.0-tts-flash",
+      "name": "Qwen Audio 3.0 TTS Flash",
+      "type": "text-to-speech-model",
+      "authentication": "api-key",
+      "url": "https://dashscope.aliyuncs.com/api/v1",
+      "metadata": {
+        "documentationUrl": "https://help.aliyun.com/en/model-studio/qwen-audio-tts-http-api",
+        "documentationStatus": "verified",
+        "inputs": {
+          "voice": {
+            "type": "string",
+            "default": "longanhuan_v3.6"
+          },
+          "format": {
+            "type": "string",
+            "default": "mp3",
+            "enum": [
+              "mp3",
+              "pcm",
+              "wav",
+              "opus"
+            ]
+          },
+          "sample_rate": {
+            "type": "integer",
+            "enum": [
+              8000,
+              12000,
+              16000,
+              22050,
+              24000,
+              44100,
+              48000
+            ]
+          },
+          "volume": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "rate": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 2
+          },
+          "pitch": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 2
+          },
+          "instruction": {
+            "type": "string"
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "language_hints": {
+            "type": "array",
+            "maxItems": 1
+          }
+        }
+      },
+      "location": "remote"
     }
   ],
   "mcp_servers": [],

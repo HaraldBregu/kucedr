@@ -6,6 +6,7 @@ import { createGoogleSpeechAdapter } from './tts_google';
 import { createMiniMaxSpeechAdapter } from './tts_minimax';
 import { createPikaSpeechAdapter } from './tts_pika';
 import { createMistralSpeechAdapter } from './tts_mistral';
+import { createQwenSpeechAdapter } from './tts_qwen';
 import { createOpenAISpeechAdapter } from './tts_openai';
 import { SpeechProviderUnsupportedError } from './tts_errors';
 import type { SpeechAdapter, SpeechProviderSpec } from './tts_types';
@@ -21,6 +22,7 @@ const SPEECH_ADAPTERS: Readonly<
 	pika: createPikaSpeechAdapter,
 	mistral: createMistralSpeechAdapter,
 	openai: createOpenAISpeechAdapter,
+	qwen: createQwenSpeechAdapter,
 };
 
 export function buildSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {

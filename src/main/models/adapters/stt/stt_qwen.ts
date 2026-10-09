@@ -1,3 +1,4 @@
+import { streaming } from './streaming';
 import { transcribe as transcribeQwen } from './qwen';
 import { speechToTextBaseUrl, realtimeSpeechToTextModelId } from '../../../models';
 import WebSocket from 'ws';
@@ -42,6 +43,7 @@ export function createQwenSttAdapter(provider: SttProviderSpec): SttAdapter {
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
+			if (/^qwen-audio-3\.[01]-asr-flash-streaming$/.test(request.modelId)) return streaming(provider, request, emit);
 			const socket = new WebSocket(qwenRealtimeUrl(provider.baseURL, request), {
 				headers: {
 					Authorization: `${QWEN_AUTH_SCHEME} ${provider.apiKey}`,
