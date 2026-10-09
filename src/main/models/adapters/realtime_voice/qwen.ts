@@ -117,7 +117,10 @@ export function createQwenRealtimeVoiceAdapter(
 								return;
 							}
 							if (event.type === 'conversation.item.create' && event.item.type === 'message') {
-								contexts.set(event.item.id ?? 'context', event.item.content[0].text);
+								contexts.set(
+									event.item.role === 'user' ? (event.item.id ?? 'context') : 'context',
+									event.item.content[0].text
+								);
 								send({
 									type: 'session.update',
 									session: { instructions: [instructions, ...contexts.values()].join('\n\n') },
