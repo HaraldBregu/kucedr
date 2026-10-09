@@ -111,7 +111,7 @@ describe('LlmModel non-streaming transport', () => {
 				{ type: 'tool_use', id: 'tool-1', name: 'lookup', input: { id: 1 } },
 			],
 			stop_reason: 'tool_use',
-			usage: { input_tokens: 4, output_tokens: 3 },
+			usage: { input_tokens: 4, cache_creation_input_tokens: 6, cache_read_input_tokens: 10, output_tokens: 3 },
 		});
 		const model = new LlmModel({
 			anthropicClientFactory: () => ({ messages: { create } }) as never,
@@ -174,7 +174,7 @@ describe('LlmModel non-streaming transport', () => {
 				expect.objectContaining({
 					type: 'model_call_end',
 					stopReason: 'tool_use',
-					usage: { inputTokens: 4, outputTokens: 3 },
+					usage: { inputTokens: 20, outputTokens: 3 },
 				}),
 			])
 		);

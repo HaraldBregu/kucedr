@@ -15,7 +15,7 @@ export function modelInputLimit(
 		inputs?.max_input_tokens ?? inputs?.input_token_limit ?? inputs?.maximum_input_tokens;
 	const contextContract =
 		inputs?.context_window ?? inputs?.context_length ?? inputs?.max_context_tokens;
-	const configuredInput = inputContract?.maximum ?? inputContract?.default;
+	const configuredInput = metadata?.maxInputTokens ?? inputContract?.maximum ?? inputContract?.default;
 	const configuredContext =
 		contextWindow ??
 		metadata?.contextWindow ??

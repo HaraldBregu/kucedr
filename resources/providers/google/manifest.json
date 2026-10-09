@@ -40,13 +40,10 @@
 					},
 					"response_format": {
 						"type": "object"
-					},
-					"max_input_tokens": {
-						"type": "integer",
-						"maximum": 1048576
 					}
 				},
 				"contextWindow": 1048576,
+				"maxInputTokens": 1048576,
 				"contextWindowDocumentationUrl": "https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview"
 			},
 			"location": "remote"
@@ -84,13 +81,10 @@
 					},
 					"response_format": {
 						"type": "object"
-					},
-					"max_input_tokens": {
-						"type": "integer",
-						"maximum": 1048576
 					}
 				},
 				"contextWindow": 1048576,
+				"maxInputTokens": 1048576,
 				"contextWindowDocumentationUrl": "https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite"
 			},
 			"location": "remote"
@@ -468,10 +462,7 @@
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
 				"google_fetch": true
 			},
 			"icon_dark_url": "/images/gmail.svg",
@@ -487,10 +478,7 @@
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
 				"google_fetch": true
 			},
 			"icon_dark_url": "/images/google-calendar.svg",
@@ -506,10 +494,7 @@
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
 				"google_fetch": true
 			},
 			"icon_dark_url": "/images/google-drive.svg",
@@ -525,10 +510,7 @@
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
 				"google_fetch": true
 			},
 			"icon_dark_url": "/images/google-docs.svg",
@@ -544,10 +526,7 @@
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
 				"google_fetch": true
 			},
 			"icon_dark_url": "/images/google-sheets.svg",
@@ -563,10 +542,7 @@
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
 				"google_fetch": true
 			},
 			"icon_dark_url": "/images/google-maps.svg",
@@ -587,10 +563,7 @@
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
 				"google_fetch": true
 			},
 			"icon_dark_url": "/images/google-contact.svg",

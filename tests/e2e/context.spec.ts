@@ -32,6 +32,7 @@ test('context ring follows real local usage, draft changes, model selection and 
 	if (!address || typeof address === 'string') throw new Error('Local test server unavailable');
 	const { app, page, userDataDir } = await launchApp();
 	try {
+		await expect(page).toHaveURL(/#\/?start$/);
 		await page.evaluate(async (baseUrl) => {
 			await window.provider.set({ kind: 'models', id: 'custom', apiKey: 'local-test', baseUrl });
 			await window.agent.setProvider({ id: 'ollama', name: 'Ollama', baseUrl });

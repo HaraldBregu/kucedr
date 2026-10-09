@@ -255,7 +255,21 @@ function readCatalog(): Catalog {
 				if (!existsSync(manifestPath)) continue;
 				const entry = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));
 				if (!entry) continue;
-				manifests.set(normalizeProviderId(entry.providerId), { entry, providerDir });
+				const previous = manifests.get(normalizeProviderId(entry.providerId))?.entry;
+				const models = entry.models?.map((model) => {
+					const defaults = previous?.models?.find((item) => item.id === model.id && item.type === model.type)?.metadata;
+					if (!model.metadata || !defaults) return model;
+					return {
+						...model,
+						metadata: {
+							...model.metadata,
+							contextWindow: model.metadata.contextWindow ?? defaults.contextWindow,
+							maxInputTokens: model.metadata.maxInputTokens ?? defaults.maxInputTokens,
+							contextWindowDocumentationUrl: model.metadata.contextWindowDocumentationUrl ?? defaults.contextWindowDocumentationUrl,
+						},
+					};
+				});
+				manifests.set(normalizeProviderId(entry.providerId), { entry: { ...entry, models }, providerDir });
 			} catch {
 				// ponytail: a provider dir mid-edit (malformed JSON) drops out until fixed
 			}

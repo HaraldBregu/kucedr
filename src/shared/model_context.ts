@@ -13,6 +13,7 @@ export function modelContextWindow(metadata: ModelMetadata | undefined): number 
 		metadata?.contextWindow ??
 		contract?.maximum ??
 		contract?.default ??
+		metadata?.maxInputTokens ??
 		input?.maximum ??
 		input?.default;
 	return typeof limit === 'number' && Number.isFinite(limit) && limit > 0

@@ -7,7 +7,7 @@ import type { ModelTurn } from './run_loop_types';
 import { setTimeout as wait } from 'node:timers/promises';
 import { isTransientModelError } from './run_is_transient_model_error';
 import { modelOutputLimit } from './run_model_output_limit';
-import { modelInputLimit } from './run_model_input_limit';
+import { modelInputLimit, MODEL_CONTEXT_SAFETY_TOKENS } from './run_model_input_limit';
 import { fitModelContext } from './run_model_context_budget';
 import type { KeyedLimiter } from '../limiter';
 import type { ExecutionBudget } from '../execution/budget';
@@ -42,7 +42,7 @@ export async function* runModelTurn(
 	const contextWindow = await resolveContextWindow(provider, modelId, modelOptions);
 	const outputLimit = modelOutputLimit(provider.id, modelId, modelOptions);
 	const maxTokens = contextWindow
-		? Math.min(outputLimit, Math.max(1, contextWindow - 1_024 - 2_048))
+		? Math.min(outputLimit, Math.max(1, contextWindow - MODEL_CONTEXT_SAFETY_TOKENS - 2_048))
 		: outputLimit;
 	const context = fitModelContext({
 		systemPrompt,
