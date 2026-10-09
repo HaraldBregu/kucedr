@@ -85,7 +85,10 @@ function resolveProvider(providerId: string, modelId: string): SpeechProviderSpe
 		apiKey: stored?.apiKey.trim() ?? '',
 		baseURL: stored?.baseUrl || defaults?.baseUrl || '',
 	};
-	if (providerId === 'qwen' && (!spec.baseURL || /^https:\/\/dashscope(?:-intl)?\.aliyuncs\.com(?:\/|$)/.test(spec.baseURL))) {
+	if (
+		providerId === 'qwen' &&
+		(!spec.baseURL || /^https:\/\/dashscope(?:-intl)?\.aliyuncs\.com(?:\/|$)/.test(spec.baseURL))
+	) {
 		spec.baseURL = findModel(providerId, 'text-to-speech', modelId)?.url || spec.baseURL;
 	}
 	if (!spec.apiKey) {

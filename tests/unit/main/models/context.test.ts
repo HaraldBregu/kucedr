@@ -11,7 +11,9 @@ it('covers every bundled chat model with a documented positive context limit', (
 	const root = path.resolve('resources/providers');
 	const expected = readdirSync(root).flatMap((providerId) => {
 		const manifest = JSON.parse(readFileSync(path.join(root, providerId, 'manifest.json'), 'utf8'));
-		return manifest.models.filter((model: { type: string }) => model.type === 'large-language-model').map((model: { id: string }) => `${providerId}/${model.id}`);
+		return manifest.models
+			.filter((model: { type: string }) => model.type === 'large-language-model')
+			.map((model: { id: string }) => `${providerId}/${model.id}`);
 	});
 	expect(models.map((model) => `${model.provider.id}/${model.id}`).sort()).toEqual(expected.sort());
 	expect(new Set(models.map((model) => model.provider.id)).size).toBe(12);
@@ -34,12 +36,10 @@ it('uses explicit Ollama num_ctx without contacting the server', async () => {
 it.each(['http://localhost:11434', 'http://localhost:11434/api'])(
 	'reads the effective loaded limit from %s',
 	async (baseURL) => {
-		const fetcher = jest
-			.spyOn(globalThis, 'fetch')
-			.mockResolvedValue({
-				ok: true,
-				json: async () => ({ models: [{ name: 'llama:latest', context_length: 4096 }] }),
-			} as Response);
+		const fetcher = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+			ok: true,
+			json: async () => ({ models: [{ name: 'llama:latest', context_length: 4096 }] }),
+		} as Response);
 		await expect(
 			resolveContextWindow({ id: 'ollama', apiKey: '', baseURL }, 'llama')
 		).resolves.toBe(4096);
