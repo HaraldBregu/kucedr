@@ -28,6 +28,7 @@ export type RealtimeVoiceAdapterEvent =
 	| { type: 'input_speech_stopped'; itemId: string }
 	| { type: 'user_transcript_update'; itemId: string; transcript: string }
 	| { type: 'user_transcript_final'; itemId: string; transcript: string }
+	| { type: 'tool_call_cancel'; callId: string }
 	| { type: 'tool_call_start'; callId: string; itemId: string; responseId: string; name: string }
 	| { type: 'assistant_transcript_delta'; itemId: string; responseId: string; delta: string }
 	| { type: 'assistant_transcript_final'; itemId: string; responseId: string; transcript: string }

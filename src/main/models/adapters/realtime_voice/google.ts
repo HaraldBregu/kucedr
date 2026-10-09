@@ -217,7 +217,10 @@ export function createGoogleRealtimeVoiceAdapter(
 							arguments: JSON.stringify(call.args ?? {}),
 						});
 					}
-					for (const id of event.toolCallCancellation?.ids ?? []) calls.delete(id);
+					for (const id of event.toolCallCancellation?.ids ?? []) {
+						calls.delete(id);
+						emit({ type: 'tool_call_cancel', callId: id });
+					}
 					if (content?.interrupted) {
 						generation += 1;
 						endResponse();

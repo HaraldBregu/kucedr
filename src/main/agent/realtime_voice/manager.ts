@@ -258,6 +258,10 @@ export class RealtimeVoiceManager {
 	): void {
 		if (active.closed || this.byId.get(active.info.id) !== active) return;
 		const sessionId = active.info.id;
+		if (event.type === 'tool_call_cancel') {
+			active.toolRuntime.cancel(event.callId);
+			return;
+		}
 		if ('responseId' in event && !active.toolRuntime.observe(event.responseId)) {
 			if (event.type === 'tool_call') active.toolRuntime.handle(event);
 			return;

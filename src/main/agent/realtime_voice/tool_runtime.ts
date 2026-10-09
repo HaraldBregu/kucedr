@@ -54,6 +54,7 @@ export class RealtimeVoiceToolRuntime {
 	private readonly arguments = new Map<string, string>();
 	private readonly pending = new Set<string>();
 	private readonly completed = new Set<string>();
+	private readonly controllers = new Map<string, AbortController>();
 	private tail = Promise.resolve();
 	private calls = 0;
 	private outputBytes = 0;
@@ -79,6 +80,12 @@ export class RealtimeVoiceToolRuntime {
 			response.controller.abort(new DOMException('Voice response interrupted.', 'AbortError'));
 			rejectPendingToolPermissions(response.runId);
 		}
+	}
+
+	cancel(callId: string): void {
+		const controller = this.controllers.get(callId) ?? new AbortController();
+		this.controllers.set(callId, controller);
+		controller.abort(new DOMException('Voice tool call cancelled.', 'AbortError'));
 	}
 
 	handle(event: ToolAdapterEvent): void {
@@ -120,12 +127,17 @@ export class RealtimeVoiceToolRuntime {
 			return;
 		}
 		if (this.pending.has(event.callId) || this.completed.has(event.callId)) return;
+		if (!this.controllers.has(event.callId)) this.controllers.set(event.callId, new AbortController());
 		this.pending.add(event.callId);
 		this.tail = this.tail.then(() => this.run(event)).catch(this.dependencies.onError);
 	}
 
 	private async run(event: Extract<ToolAdapterEvent, { type: 'tool_call' }>): Promise<void> {
-		const response = this.responses.get(event.responseId)!;
+		const parent = this.responses.get(event.responseId)!;
+		const response = {
+			...parent,
+			signal: AbortSignal.any([parent.signal, this.controllers.get(event.callId)!.signal]),
+		};
 		try {
 			const tool = this.dependencies.tools.find((candidate) => candidate.id === event.name);
 			const args = parseToolArgs(event.arguments);
