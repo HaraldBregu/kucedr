@@ -191,7 +191,10 @@ export interface CodingEventChannelMap {
 export interface AgentInvokeChannelMap {
 	[AgentChannels.send]: {
 		args: [message: string, options?: import('./agent_types').AgentRunOptions];
-		result: string;
+		result: {
+			text: string;
+			finished?: Extract<import('./agent_types').AgentResponseEvent, { type: 'run_finished' }>;
+		};
 	};
 	[AgentChannels.cancel]: { args: [runId: string]; result: boolean };
 	[AgentChannels.respondToolPermission]: {

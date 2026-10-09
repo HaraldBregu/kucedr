@@ -81,16 +81,25 @@ function sendAgent(
 	const runId = optionalTrimmedString(options?.runId) || crypto.randomUUID();
 	const runtimeOptions = normalizeAgentSendRuntimeOptions({ ...options, runId });
 
-	const offResponse = typedOn(AgentChannels.response, (event: AgentResponseEvent) => {
+	let finished = false;
+	const deliverEvent = (event: AgentResponseEvent): void => {
 		if (event.runId !== runId) return;
+		if (event.type === 'run_finished') {
+			if (finished) return;
+			finished = true;
+		}
 		onEvent?.(event);
-	});
+	};
+	const offResponse = typedOn(AgentChannels.response, deliverEvent);
 
 	return (
 		runtimeOptions
-			? typedInvokeUnwrap<string>(channel, message, runtimeOptions)
-			: typedInvokeUnwrap<string>(channel, message)
-	).finally(offResponse);
+			? typedInvokeUnwrap(channel, message, runtimeOptions)
+			: typedInvokeUnwrap(channel, message)
+	).then((result) => {
+		if (result.finished) deliverEvent(result.finished);
+		return result.text;
+	}).finally(offResponse);
 }
 
 export const agent: AgentApi = {

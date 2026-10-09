@@ -1,5 +1,6 @@
 import { authorizeRagDisclosure } from '../agent/knowledge/rag/disclosure';
 import { BrowserWindow, dialog, ipcMain, shell, type IpcMainInvokeEvent } from 'electron';
+import { randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { watch } from 'chokidar';
@@ -97,7 +98,10 @@ import { respondUserInput } from '../agent/user_input/user_input_pending';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import type { IpcResult } from '../../shared/ipc_types';
+import type { AgentInvokeChannelMap } from '../../shared/ipc_channels_types';
 import { AgentRenderer } from './core/agent_renderer';
+
+type AgentSendResult = AgentInvokeChannelMap[typeof AgentChannels.send]['result'];
 
 export interface AgentIpcDeps {
 	logger: LoggerService;
@@ -391,20 +395,31 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 
 		ipcMain.handle(
 			AgentChannels.send,
-			wrapIpcHandler(async (event, message: string, options?: unknown): Promise<string> => {
+			wrapIpcHandler(async (event, message: string, options?: unknown): Promise<AgentSendResult> => {
 				const window = renderer.assert(event);
-				return conversation.execute({
+				const runtimeOptions = normalizeAgentSendRuntimeOptions(options);
+				const runId = runtimeOptions.runId ?? randomUUID();
+				let finished: AgentSendResult['finished'];
+				const text = await conversation.execute({
 					type: 'text',
 					message,
 					agentId: 'main',
 					options: {
-						...normalizeAgentSendRuntimeOptions(options),
+						...runtimeOptions,
+						runId,
 						type: 'default',
 						windowId: window.id,
-						streamEvent: (responseEvent) =>
-							eventBus.sendTo(window.id, AgentChannels.response, responseEvent),
+						streamEvent: (responseEvent) => {
+							if (
+								responseEvent.type === 'run_finished' &&
+								responseEvent.agentId === 'main' &&
+								responseEvent.runId === runId
+							) finished = responseEvent;
+							eventBus.sendTo(window.id, AgentChannels.response, responseEvent);
+						},
 					},
 				});
+				return { text, ...(finished ? { finished } : {}) };
 			}, AgentChannels.send)
 		);
 

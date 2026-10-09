@@ -227,7 +227,7 @@ it('cancels the IPC UI run without interrupting the channel registry bot run', a
 	).resolves.toEqual({ success: true, data: true });
 	botRelease.resolve();
 	await replySent.promise;
-	await expect(uiResponse).resolves.toEqual({ success: true, data: '' });
+	await expect(uiResponse).resolves.toEqual({ success: true, data: { text: '' } });
 	expect(mockAdapterSend).toHaveBeenCalledWith(
 		expect.objectContaining({ content: { type: 'text', text: 'bot reply' } })
 	);
