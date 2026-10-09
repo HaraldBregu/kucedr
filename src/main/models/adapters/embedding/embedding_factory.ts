@@ -1,4 +1,5 @@
 import { createCohereEmbeddingAdapter } from './embedding_cohere';
+import { createGoogleEmbeddingAdapter } from './embedding_google';
 import { createJinaEmbeddingAdapter } from './embedding_jina';
 import { createNomicEmbeddingAdapter } from './embedding_nomic';
 import { createOpenAiEmbeddingAdapter } from './embedding_openai';
@@ -11,6 +12,7 @@ export function buildEmbeddingAdapter(provider: EmbeddingProviderSpec): Embeddin
 		return createOpenAiEmbeddingAdapter(provider);
 	}
 	if (provider.id === 'cohere') return createCohereEmbeddingAdapter(provider);
+	if (provider.id === 'google') return createGoogleEmbeddingAdapter(provider);
 	if (provider.id === 'voyage') return createVoyageEmbeddingAdapter(provider);
 	if (provider.id === 'nomic') return createNomicEmbeddingAdapter(provider);
 	if (provider.id === 'jina') return createJinaEmbeddingAdapter(provider);
