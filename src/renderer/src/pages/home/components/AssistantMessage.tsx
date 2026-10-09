@@ -20,51 +20,8 @@ import { ScreenSourceCard } from './ScreenSourceCard';
 import { McpAuthorizationCard } from './McpAuthorizationCard';
 import { parsePlanEnvelope } from './plan';
 import { ImageGallery } from './ImageGallery';
+import { generatedMedia } from './media';
 import { useTranslation } from 'react-i18next';
-
-type GeneratedMedia = { type: string; paths: string[] };
-
-function generatedMedia(tools: readonly AgentToolPart[]): GeneratedMedia[] {
-	return tools
-		.filter(
-			(tool) =>
-				(tool.type === 'create_image' ||
-					tool.type === 'create_video' ||
-					tool.type === 'create_sound') &&
-				tool.state === 'output-available'
-		)
-		.map((tool) => ({ type: tool.type, paths: imagePathsFromOutput(tool.output) }))
-		.filter(({ paths }) => paths.length > 0);
-}
-
-function isVideoPath(path: string): boolean {
-	return /\.(mp4|webm|mov|m4v|ogv)$/i.test(path);
-}
-
-function isAudioPath(path: string): boolean {
-	return /\.(mp3|wav|ogg|oga|m4a|flac|aac|opus)$/i.test(path);
-}
-
-// While streaming, tool.output is the structured result object; once the message
-// is rebuilt from persisted history it arrives as a JSON string, so accept both.
-function imagePathsFromOutput(output: unknown): string[] {
-	let value = output;
-	if (typeof value === 'string') {
-		try {
-			value = JSON.parse(value);
-		} catch {
-			return [];
-		}
-	}
-	const record = value as { images?: unknown; path?: unknown } | null | undefined;
-	const images = Array.isArray(record?.images)
-		? record.images
-				.map((image) => (image as { path?: unknown } | null)?.path)
-				.filter((path): path is string => typeof path === 'string' && path.length > 0)
-		: [];
-	if (images.length > 0) return images;
-	return typeof record?.path === 'string' && record.path.length > 0 ? [record.path] : [];
-}
 
 function isLocalImagePath(value: string): boolean {
 	return (
@@ -221,7 +178,7 @@ export function AssistantMessage({
 	const generated = generatedMedia(message.tools);
 	const mediaPaths = generated.flatMap(({ paths }) => paths);
 	const generatedImagePaths = generated
-		.filter(({ type }) => type === 'create_image')
+		.filter(({ kind }) => kind === 'image')
 		.flatMap(({ paths }) => paths);
 	const standaloneImagePaths =
 		generatedImagePaths.length > 1
@@ -233,15 +190,16 @@ export function AssistantMessage({
 			: displayContent;
 	const hasContent = markdownContent.trim().length > 0 || parsedPlan.kind === 'complete';
 	const standaloneMediaPaths = generated
-		.filter(({ type }) => type !== 'create_image')
-		.flatMap(({ paths }) => paths)
-		.filter((path) => !contentEmbedsImage(message.content, path));
+		.filter(({ kind }) => kind !== 'image')
+		.flatMap(({ kind, paths }) => paths.map((path) => ({ kind, path })))
+		.filter(({ path }) => !contentEmbedsImage(message.content, path));
 	const messageMarkdownComponents = {
 		...markdownComponents,
 		img: ({ src, alt }: { src?: string; alt?: string }) => {
 			const localPath = resolveLocalImagePath(src, mediaPaths);
+			const mediaKind = generated.find(({ paths }) => localPath && paths.includes(localPath))?.kind;
 			const safeSource = src && !isLocalImagePath(src) ? src : undefined;
-			if (localPath && isAudioPath(localPath)) {
+			if (localPath && mediaKind === 'audio') {
 				return (
 					<AudioPlayer
 						src={localResourceUrl(localPath)}
@@ -250,7 +208,7 @@ export function AssistantMessage({
 					/>
 				);
 			}
-			if (localPath && isVideoPath(localPath)) {
+			if (localPath && mediaKind === 'video') {
 				return (
 					<VideoPlayer
 						src={localResourceUrl(localPath)}
@@ -351,8 +309,8 @@ export function AssistantMessage({
 			)}
 			{standaloneMediaPaths.length > 0 && (
 				<div className="flex w-full flex-col gap-2">
-					{standaloneMediaPaths.map((path) => {
-						if (isAudioPath(path)) {
+					{standaloneMediaPaths.map(({ kind, path }) => {
+						if (kind === 'audio') {
 							return (
 								<AudioPlayer
 									key={path}
@@ -362,7 +320,7 @@ export function AssistantMessage({
 								/>
 							);
 						}
-						return isVideoPath(path) ? (
+						return kind === 'video' ? (
 							<VideoPlayer
 								key={path}
 								src={localResourceUrl(path)}

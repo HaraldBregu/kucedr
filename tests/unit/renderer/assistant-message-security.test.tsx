@@ -141,9 +141,9 @@ it('shows a generated image picker and switches its selected image', () => {
 		'src',
 		'local-resource://file/tmp/first.png'
 	);
-	expect(screen.getByRole('img', { name: 'Generated image 1 of 2' })).toHaveClass('object-cover');
-	expect(screen.getByLabelText('Generated images')).toHaveClass('grid-cols-[minmax(0,1fr)_4rem]');
-	expect(screen.getByLabelText('Choose generated image')).toHaveClass('overflow-y-auto');
+	expect(screen.getByRole('img', { name: 'Generated image 1 of 2' })).toHaveClass('object-contain');
+	expect(screen.getByLabelText('Generated images')).toHaveClass('flex');
+	expect(screen.getByLabelText('Choose generated image')).toHaveClass('flex-col');
 	fireEvent.click(screen.getByRole('button', { name: 'Show generated image 2 of 2' }));
 	expect(screen.getByRole('img', { name: 'Generated image 2 of 2' })).toHaveAttribute(
 		'src',
@@ -213,6 +213,114 @@ it('shows image pickers from restored tool output', () => {
 		'src',
 		'local-resource://file/tmp/first.png'
 	);
+});
+
+it.each(['live', 'restored'] as const)(
+	'renders library media and explicitly requested paths from %s tool outputs',
+	(mode) => {
+		const locations = ['/Users/test/.kucedr/library', '/Users/test/Chosen #à'];
+		const tools: AgentMessage['tools'] = locations.flatMap((directory, index) =>
+			['create_image', 'create_video', 'create_sound'].map((type) => {
+				const extension = type === 'create_image' ? 'png' : type === 'create_video' ? 'mp4' : 'wav';
+				const output = { path: `${directory}/media ${index}.${extension}` };
+				return {
+					toolCallId: `${type}-${index}`,
+					type,
+					state: 'output-available' as const,
+					output: mode === 'restored' ? JSON.stringify(output) : output,
+				};
+			})
+		);
+		render(<AssistantMessage message={message('', tools)} />);
+		expect(screen.getByRole('img', { name: 'Generated image 1 of 2' })).toHaveAttribute(
+			'src',
+			'local-resource://file/Users/test/.kucedr/library/media%200.png'
+		);
+		fireEvent.click(screen.getByRole('button', { name: 'Show generated image 2 of 2' }));
+		expect(screen.getByRole('img', { name: 'Generated image 2 of 2' })).toHaveAttribute(
+			'src',
+			'local-resource://file/Users/test/Chosen%20%23%C3%A0/media%201.png'
+		);
+		for (const [testId, extension] of [['generated-video', 'mp4'], ['generated-audio', 'wav']]) {
+			const players = screen.getAllByTestId(testId);
+			expect(players[0]).toHaveAttribute(
+				'data-src',
+				`local-resource://file/Users/test/.kucedr/library/media%200.${extension}`
+			);
+			expect(players[1]).toHaveAttribute(
+				'data-src',
+				`local-resource://file/Users/test/Chosen%20%23%C3%A0/media%201.${extension}`
+			);
+		}
+	}
+);
+
+it.each([
+	'microphone_recorder', 'microphone_recorder_status', 'microphone_recorder_stop',
+	'camera_recorder', 'camera_recorder_status', 'camera_recorder_stop',
+	'screen_recorder', 'screen_recorder_status', 'screen_recorder_stop',
+])('renders completed %s output with the correct WebM player', (type) => {
+	render(<AssistantMessage message={message('', [{
+		toolCallId: 'recording', type, state: 'output-available',
+		output: JSON.stringify({ path: '/Users/test/.kucedr/library/capture.webm', status: 'completed' }),
+	}])} />);
+	expect(screen.getByTestId(type.startsWith('microphone') ? 'generated-audio' : 'generated-video'))
+		.toHaveAttribute('data-src', 'local-resource://file/Users/test/.kucedr/library/capture.webm');
+});
+
+it('does not load unfinished, cancelled or failed recordings', () => {
+	const tools: AgentMessage['tools'] = ['selecting', 'recording', 'stopping', 'saving', 'cancelled', 'error']
+		.map((status) => ({
+			toolCallId: status, type: 'microphone_recorder_status', state: 'output-available',
+			output: { path: `/Users/test/.kucedr/library/${status}.webm`, status },
+		}));
+	tools.push({
+		toolCallId: 'failed', type: 'camera_recorder_status', state: 'output-error',
+		output: { path: '/Users/test/.kucedr/library/failed.webm', status: 'completed' },
+	});
+	render(<AssistantMessage message={message('', tools)} />);
+	expect(screen.queryByTestId('generated-audio')).not.toBeInTheDocument();
+	expect(screen.queryByTestId('generated-video')).not.toBeInTheDocument();
+});
+
+it('shows one player when recorder status and stop return the same completed file', () => {
+	render(<AssistantMessage message={message('', ['microphone_recorder_status', 'microphone_recorder_stop']
+		.map((type) => ({
+			toolCallId: type, type, state: 'output-available',
+			output: { path: '/Users/test/.kucedr/library/capture.webm', status: 'completed' },
+		})))} />);
+	expect(screen.getAllByTestId('generated-audio')).toHaveLength(1);
+});
+
+it('renders browser screenshots while keeping PDFs and unrelated tool paths out of the gallery', () => {
+	render(<AssistantMessage message={message('', [
+		{
+			toolCallId: 'screenshot', type: 'use_web_browser', state: 'output-available',
+			input: { action: 'screenshot' },
+			output: JSON.stringify({ targetId: 't1', path: '/Users/test/.kucedr/library/browser.png' }),
+		},
+		{
+			toolCallId: 'pdf', type: 'use_web_browser', state: 'output-available',
+			input: { action: 'pdf' }, output: { path: '/Users/test/.kucedr/library/browser.pdf' },
+		},
+		{
+			toolCallId: 'other', type: 'read_file', state: 'output-available',
+			output: { path: '/Users/test/private.png' },
+		},
+	])} />);
+	expect(screen.getAllByRole('img')).toHaveLength(1);
+	expect(screen.getByRole('img', { name: 'Generated image' })).toHaveAttribute(
+		'src', 'local-resource://file/Users/test/.kucedr/library/browser.png'
+	);
+});
+
+it('renders embedded microphone WebM as audio', () => {
+	render(<AssistantMessage message={message('![recording](/Users/test/.kucedr/library/capture.webm)', [{
+		toolCallId: 'recording', type: 'microphone_recorder_status', state: 'output-available',
+		output: { path: '/Users/test/.kucedr/library/capture.webm', status: 'completed' },
+	}])} />);
+	expect(screen.getAllByTestId('generated-audio')).toHaveLength(1);
+	expect(screen.queryByTestId('generated-video')).not.toBeInTheDocument();
 });
 
 it('shows long assistant content in full without an expand control', () => {
