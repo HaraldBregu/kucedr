@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { turnContext } from './context';
 import { realtimeVoiceCloseError } from './close';
 import { realtimeVoiceResponseError } from './response';
+import { realtimeVoiceTransportError } from './transport';
 import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../../../../shared/realtime_voice';
 import type {
 	RealtimeVoiceAdapter,
@@ -37,6 +38,7 @@ export class OpenAICompatibleRealtimeVoiceAdapter implements RealtimeVoiceAdapte
 		emit: RealtimeVoiceAdapterEventHandler,
 		signal?: AbortSignal
 	): Promise<RealtimeVoiceConnection> {
+		signal?.throwIfAborted();
 		if (!this.profile.modelIds.includes(request.modelId)) {
 			throw new Error(
 				`${this.profile.provider.name} realtime voice model is not supported: ${request.modelId}`
@@ -47,7 +49,8 @@ export class OpenAICompatibleRealtimeVoiceAdapter implements RealtimeVoiceAdapte
 			socket,
 			emit,
 			request.contextForTurn,
-			this.profile.provider.id === 'openai'
+			this.profile.provider.id === 'openai',
+			(error) => realtimeVoiceTransportError(error, this.profile.provider, request.modelId)
 		);
 		await connection.open(
 			this.profile.session(request),
@@ -77,7 +80,8 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		private readonly realtime: RealtimeVoiceSocket,
 		private readonly emit: RealtimeVoiceAdapterEventHandler,
 		private readonly contextForTurn: RealtimeVoiceAdapterRequest['contextForTurn'],
-		private readonly manualResponse: boolean
+		private readonly manualResponse: boolean,
+		private readonly transportError: (error: Error) => Error
 	) {}
 
 	open(
@@ -115,6 +119,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			timer.unref?.();
 
 			this.realtime.on('event', (event) => {
+				if (this.closed) return;
 				if (event.type === 'error') {
 					const error = new Error(event.error.message);
 					if (!settled) {
@@ -132,10 +137,12 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 				this.handleEvent(event);
 			});
 			this.realtime.on('error', (error) => {
+				if (this.closed || ('error' in error && error.error)) return;
+				const failure = this.transportError(error);
 				if (!settled) {
-					settle(error);
+					settle(failure);
 					void this.stop();
-				} else this.emit({ type: 'error', message: error.message });
+				} else this.emit({ type: 'error', message: failure.message });
 			});
 			this.realtime.socket.on('close', (code, reason) => {
 				const stopped = this.closed;
@@ -151,6 +158,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 				else this.emit({ type: 'closed' });
 			});
 			this.realtime.socket.on('open', () => {
+				if (this.closed) return;
 				this.realtime.send({ type: 'session.update', session });
 			});
 			signal?.addEventListener('abort', abort, { once: true });
@@ -172,7 +180,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 						: {
 								type: 'message',
 								role: 'assistant',
-								content: [{ type: 'output_text', text: message.text }],
+								content: [{ type: 'text', text: message.text }],
 							},
 			});
 		}
@@ -190,6 +198,8 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 	}
 
 	async interrupt(): Promise<void> {
+		this.generation += 1;
+		if (this.transcriptTimer) clearTimeout(this.transcriptTimer);
 		if (this.closed || !this.responseActive) return;
 		this.realtime.send({ type: 'response.cancel' });
 	}
@@ -272,6 +282,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 				tools.responseDone = true;
 				this.continueToolResponse(responseId, tools);
 			}
+			if (responseId && !tools) this.emit({ type: 'response_done', responseId });
 			return;
 		}
 		if (

@@ -266,6 +266,10 @@ export class RealtimeVoiceManager {
 			if (active.state !== 'speaking') this.setState(active, 'thinking');
 			return;
 		}
+		if (event.type === 'response_done') {
+			this.setState(active, 'listening');
+			return;
+		}
 		if (event.type === 'input_speech_started') {
 			active.toolRuntime.interrupt();
 			if (active.state === 'speaking' || active.state === 'thinking') {

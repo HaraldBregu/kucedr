@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { turnContext } from './context';
 import { realtimeVoiceCloseError } from './close';
+import { liveVoiceHistory } from './history';
+import { realtimeVoiceTransportError } from './transport';
 import WebSocket from 'ws';
 import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../../../../shared/realtime_voice';
 import type {
@@ -13,6 +15,7 @@ import type {
 
 const LIVE_URL = 'wss://api.openai.com/v1/live/sessions';
 const CONNECT_TIMEOUT_MS = 15_000;
+const TURN_PAUSE_MS = 1_200;
 
 interface LiveSocket {
 	readonly bufferedAmount: number;
@@ -38,6 +41,7 @@ export class OpenAILiveVoiceAdapter implements RealtimeVoiceAdapter {
 		emit: RealtimeVoiceAdapterEventHandler,
 		signal?: AbortSignal
 	): Promise<RealtimeVoiceConnection> {
+		signal?.throwIfAborted();
 		if (request.modelId !== 'gpt-live-1') {
 			throw new Error(
 				`${this.provider.name} Live voice model is not supported: ${request.modelId}`
@@ -46,7 +50,8 @@ export class OpenAILiveVoiceAdapter implements RealtimeVoiceAdapter {
 		const connection = new OpenAILiveVoiceConnection(
 			this.socketFactory(this.provider),
 			emit,
-			request.contextForTurn
+			request.contextForTurn,
+			(error) => realtimeVoiceTransportError(error, this.provider, request.modelId)
 		);
 		await connection.open(request, this.connectTimeoutMs, signal);
 		return connection;
@@ -60,13 +65,17 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 	private inputTurnActive = false;
 	private outputTranscript = '';
 	private outputTurn = 0;
+	private outputTurnActive = false;
+	private inputTimer?: ReturnType<typeof setTimeout>;
+	private outputTimer?: ReturnType<typeof setTimeout>;
 	private contextGeneration = 0;
 	private lastContext = '';
 
 	constructor(
 		private readonly socket: LiveSocket,
 		private readonly emit: RealtimeVoiceAdapterEventHandler,
-		private readonly contextForTurn: RealtimeVoiceAdapterRequest['contextForTurn']
+		private readonly contextForTurn: RealtimeVoiceAdapterRequest['contextForTurn'],
+		private readonly transportError: (error: Error) => Error
 	) {}
 
 	open(
@@ -97,11 +106,14 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			timer.unref?.();
 
 			this.socket.on('open', () => {
+				if (this.closed) return;
+				try {
 				this.send({
 					type: 'session.start',
 					session: {
 						model: request.modelId,
 						instructions: request.instructions,
+						input: liveVoiceHistory(request.history),
 						audio: {
 							format: { type: 'audio/pcm', rate: 24_000 },
 							output: { voice: request.voice.trim() || 'marin' },
@@ -109,8 +121,13 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 						delegation: { type: 'client' },
 					},
 				});
+				} catch (error) {
+					settle(error instanceof Error ? error : new Error(String(error)));
+					void this.stop();
+				}
 			});
 			this.socket.on('message', (data) => {
+				if (this.closed) return;
 				const event = parseLiveEvent(data);
 				if (!event) return;
 				if (event.type === 'error') {
@@ -122,21 +139,22 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 					return;
 				}
 				if (event.type === 'session.started') {
-					this.appendContext(
-						request.history
-							.slice(-20)
-							.map((message) => `${message.role}: ${message.text}`)
-							.join('\n')
-							.slice(-8000)
-					);
 					settle();
+				}
+				if (event.type === 'session.closed') {
+					if (!settled) settle(new Error('Live voice session closed before setup.'));
+					void this.stop();
+					return;
 				}
 				this.handle(event);
 			});
 			this.socket.on('error', (error) => {
-				const message = error instanceof Error ? error.message : 'Live voice connection failed.';
-				if (!settled) settle(new Error(message));
-				else this.emit({ type: 'error', message });
+				if (this.closed) return;
+				const failure = this.transportError(error instanceof Error ? error : new Error('Live voice connection failed.'));
+				if (!settled) {
+					settle(failure);
+					void this.stop();
+				} else this.emit({ type: 'error', message: failure.message });
 			});
 			this.socket.on('close', (code, reason) => {
 				const stopped = this.closed;
@@ -166,13 +184,19 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 		this.send({ type: 'session.input_audio.append', audio });
 	}
 
-	async interrupt(): Promise<void> {}
+	async interrupt(): Promise<void> {
+		if (this.closed || !this.outputTurnActive) return;
+		this.send({ type: 'session.instructions.append', delegation_id: null, event_id: randomUUID(), content: 'Stop speaking now and listen to the user. Respond to their next request normally.' });
+		this.finishOutputTurn();
+	}
 
 	async addToolResult(): Promise<void> {}
 
 	async stop(): Promise<void> {
 		if (this.closed) return;
 		this.closed = true;
+		if (this.inputTimer) clearTimeout(this.inputTimer);
+		if (this.outputTimer) clearTimeout(this.outputTimer);
 		this.socket.close(1000, 'Voice session stopped.');
 	}
 
@@ -211,6 +235,7 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 
 	private finishInputTurn(): void {
 		if (!this.inputTurnActive) return;
+		if (this.inputTimer) clearTimeout(this.inputTimer);
 		const itemId = this.inputItemId();
 		this.emit({ type: 'input_speech_stopped', itemId });
 		const transcript = this.inputTranscript.trim();
@@ -221,9 +246,11 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 	}
 
 	private finishOutputTurn(): void {
+		if (!this.outputTurnActive) return;
+		if (this.outputTimer) clearTimeout(this.outputTimer);
+		const itemId = this.outputItemId();
 		const transcript = this.outputTranscript.trim();
 		if (transcript) {
-			const itemId = this.outputItemId();
 			this.emit({
 				type: 'assistant_transcript_final',
 				itemId,
@@ -232,21 +259,33 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			});
 		}
 		this.outputTranscript = '';
+		this.outputTurnActive = false;
 		this.outputTurn += 1;
+		this.emit({ type: 'assistant_audio_done', itemId, responseId: itemId });
 	}
 
 	private handle(event: Record<string, unknown>): void {
 		if (event.type === 'session.input_transcript.delta' && typeof event.delta === 'string') {
 			if (!this.inputTurnActive) {
+				this.finishOutputTurn();
 				this.inputTurnActive = true;
 				this.emit({ type: 'input_speech_started', itemId: this.inputItemId() });
 			}
 			this.inputTranscript += event.delta;
+			if (this.inputTimer) clearTimeout(this.inputTimer);
+			this.inputTimer = setTimeout(() => this.finishInputTurn(), TURN_PAUSE_MS);
+			this.inputTimer.unref?.();
 			void this.refreshContext(this.inputTranscript);
 			return;
 		}
 		if (event.type === 'session.output_audio.delta' && typeof event.delta === 'string') {
+			const audio = Buffer.from(event.delta, 'base64');
+			if (audio.every((byte) => byte === 0)) return;
 			this.finishInputTurn();
+			this.outputTurnActive = true;
+			if (this.outputTimer) clearTimeout(this.outputTimer);
+			this.outputTimer = setTimeout(() => this.finishOutputTurn(), TURN_PAUSE_MS + audio.length / 48);
+			this.outputTimer.unref?.();
 			const itemId = this.outputItemId();
 			this.emit({
 				type: 'assistant_audio_delta',
@@ -256,19 +295,12 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			});
 			return;
 		}
-		if (event.type === 'session.output_audio.done') {
-			this.finishInputTurn();
-			const itemId = this.outputItemId();
-			this.finishOutputTurn();
-			this.emit({
-				type: 'assistant_audio_done',
-				itemId,
-				responseId: itemId,
-			});
-			return;
-		}
 		if (event.type === 'session.output_transcript.delta' && typeof event.delta === 'string') {
 			this.finishInputTurn();
+			this.outputTurnActive = true;
+			if (this.outputTimer) clearTimeout(this.outputTimer);
+			this.outputTimer = setTimeout(() => this.finishOutputTurn(), TURN_PAUSE_MS);
+			this.outputTimer.unref?.();
 			const itemId = this.outputItemId();
 			this.outputTranscript += event.delta;
 			this.emit({
