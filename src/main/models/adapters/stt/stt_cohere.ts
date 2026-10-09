@@ -12,6 +12,8 @@ export function createCohereSttAdapter(provider: SttProviderSpec): SttAdapter {
 				'language',
 				request.language ?? (request.modelId.includes('arabic') ? 'ar' : 'en')
 			);
+			if (typeof request.temperature === 'number')
+				form.append('temperature', String(request.temperature));
 			form.append('file', await createAudioFile(request.audio));
 			const response = await fetch(
 				new URL('audio/transcriptions', `${provider.baseURL ?? 'https://api.cohere.com/v2'}/`),
