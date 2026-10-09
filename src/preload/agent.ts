@@ -84,7 +84,7 @@ function sendAgent(
 	let finished = false;
 	const deliverEvent = (event: AgentResponseEvent): void => {
 		if (event.runId !== runId) return;
-		if (event.type === 'run_finished') {
+		if (event.type === 'run_finished' && event.agentId === 'main') {
 			if (finished) return;
 			finished = true;
 		}

@@ -43,6 +43,24 @@ it('delivers a streamed terminal event once even when it is also included in the
 	expect(callback).toHaveBeenCalledWith(finished);
 });
 
+it('does not let another agent terminal event suppress the main completion fallback', async () => {
+	const finished = {
+		type: 'run_finished',
+		agentId: 'main',
+		runId: 'reply-run',
+		stopReason: 'end_turn',
+		outputChars: 5,
+	};
+	const childFinished = { ...finished, agentId: 'child', stopReason: 'error' };
+	const callback = jest.fn();
+	invoke.mockImplementation(async () => {
+		on.mock.calls[0][1]({}, childFinished);
+		return { success: true, data: { text: 'reply', finished } };
+	});
+	await expect(agent.send('Hello', { runId: 'reply-run' }, callback)).resolves.toBe('reply');
+	expect(callback.mock.calls).toEqual([[childFinished], [finished]]);
+});
+
 it.each(['cancelled', 'timeout', 'error'])('preserves a %s terminal result with partial text', async (stopReason) => {
 	const finished = { type: 'run_finished', agentId: 'main', runId: 'reply-run', stopReason, outputChars: 7 };
 	const callback = jest.fn();
