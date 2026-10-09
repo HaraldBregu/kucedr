@@ -8,6 +8,459 @@
 	"icon_light_url": "/images/black-forest-labs-light.svg",
 	"models": [
 		{
+			"id": "flux-3-image",
+			"name": "FLUX 3 Image",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference/utility/generate-an-image-with-flux-3",
+				"documentationStatus": "verified",
+				"inputs": {
+					"images": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"maxItems": 10
+					},
+					"aspect_ratio": {
+						"type": "string",
+						"default": "auto"
+					},
+					"resolution": {
+						"type": "string",
+						"enum": [
+							"768sq",
+							"1k",
+							"1.5k",
+							"2k",
+							"4k"
+						],
+						"default": "1k"
+					},
+					"grounding": {
+						"type": "boolean",
+						"default": true
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 4,
+						"default": 2
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "flux-2-max",
+			"name": "FLUX.2 [max]",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-%5Bmax%5D",
+				"documentationStatus": "verified",
+				"inputs": {
+					"input_image": {
+						"type": "string"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"width": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"height": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"output_format": {
+						"type": "string",
+						"enum": [
+							"jpeg",
+							"png",
+							"webp"
+						],
+						"default": "jpeg"
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 5,
+						"default": 2
+					},
+					"input_image_2": {
+						"type": "string"
+					},
+					"input_image_3": {
+						"type": "string"
+					},
+					"input_image_4": {
+						"type": "string"
+					},
+					"input_image_5": {
+						"type": "string"
+					},
+					"input_image_6": {
+						"type": "string"
+					},
+					"input_image_7": {
+						"type": "string"
+					},
+					"input_image_8": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "flux-2-flex",
+			"name": "FLUX.2 [flex]",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-%5Bflex%5D",
+				"documentationStatus": "verified",
+				"inputs": {
+					"input_image": {
+						"type": "string"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"width": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"height": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"output_format": {
+						"type": "string",
+						"enum": [
+							"jpeg",
+							"png",
+							"webp"
+						],
+						"default": "jpeg"
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 5,
+						"default": 2
+					},
+					"input_image_2": {
+						"type": "string"
+					},
+					"input_image_3": {
+						"type": "string"
+					},
+					"input_image_4": {
+						"type": "string"
+					},
+					"input_image_5": {
+						"type": "string"
+					},
+					"input_image_6": {
+						"type": "string"
+					},
+					"input_image_7": {
+						"type": "string"
+					},
+					"input_image_8": {
+						"type": "string"
+					},
+					"guidance": {
+						"type": "number",
+						"minimum": 1.5,
+						"maximum": 10,
+						"default": 5
+					},
+					"steps": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 50,
+						"default": 50
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "flux-2-klein-9b",
+			"name": "FLUX.2 [klein] 9B",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-%5Bklein%5D-9b",
+				"documentationStatus": "verified",
+				"inputs": {
+					"input_image": {
+						"type": "string"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"width": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"height": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"output_format": {
+						"type": "string",
+						"enum": [
+							"jpeg",
+							"png",
+							"webp"
+						],
+						"default": "jpeg"
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 5,
+						"default": 2
+					},
+					"input_image_2": {
+						"type": "string"
+					},
+					"input_image_3": {
+						"type": "string"
+					},
+					"input_image_4": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "flux-2-klein-4b",
+			"name": "FLUX.2 [klein] 4B",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-%5Bklein%5D-4b",
+				"documentationStatus": "verified",
+				"inputs": {
+					"input_image": {
+						"type": "string"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"width": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"height": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"output_format": {
+						"type": "string",
+						"enum": [
+							"jpeg",
+							"png",
+							"webp"
+						],
+						"default": "jpeg"
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 5,
+						"default": 2
+					},
+					"input_image_2": {
+						"type": "string"
+					},
+					"input_image_3": {
+						"type": "string"
+					},
+					"input_image_4": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "flux-2-pro-preview",
+			"name": "FLUX.2 [pro] Preview",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-%5Bpro%5D-preview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"input_image": {
+						"type": "string"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"width": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"height": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"output_format": {
+						"type": "string",
+						"enum": [
+							"jpeg",
+							"png",
+							"webp"
+						],
+						"default": "jpeg"
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 5,
+						"default": 2
+					},
+					"input_image_2": {
+						"type": "string"
+					},
+					"input_image_3": {
+						"type": "string"
+					},
+					"input_image_4": {
+						"type": "string"
+					},
+					"input_image_5": {
+						"type": "string"
+					},
+					"input_image_6": {
+						"type": "string"
+					},
+					"input_image_7": {
+						"type": "string"
+					},
+					"input_image_8": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "flux-2-klein-9b-preview",
+			"name": "FLUX.2 [klein] 9B Preview",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-%5Bklein%5D-9b-preview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"input_image": {
+						"type": "string"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"width": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"height": {
+						"type": "integer",
+						"minimum": 64
+					},
+					"output_format": {
+						"type": "string",
+						"enum": [
+							"jpeg",
+							"png",
+							"webp"
+						],
+						"default": "jpeg"
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 5,
+						"default": 2
+					},
+					"input_image_2": {
+						"type": "string"
+					},
+					"input_image_3": {
+						"type": "string"
+					},
+					"input_image_4": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "flux-3-video",
+			"name": "FLUX 3 Video",
+			"type": "text-to-video-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference/utility/generate-a-video-with-flux-3",
+				"documentationStatus": "verified",
+				"inputs": {
+					"aspect_ratio": {
+						"type": "string",
+						"default": "auto"
+					},
+					"duration": {
+						"type": "integer",
+						"minimum": 5,
+						"maximum": 20
+					},
+					"resolution": {
+						"type": "string",
+						"enum": [
+							"hd",
+							"fhd",
+							"qhd",
+							"uhd"
+						],
+						"default": "hd"
+					},
+					"generate_audio": {
+						"type": "boolean",
+						"default": true
+					},
+					"draft": {
+						"type": "boolean",
+						"default": false
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 4,
+						"default": 2
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
 			"id": "FLUX.2",
 			"name": "FLUX.2",
 			"type": "text-to-image-model",
@@ -30,7 +483,10 @@
 					"output_format": {
 						"type": "string",
 						"default": "jpeg",
-						"enum": ["jpeg", "png"]
+						"enum": [
+							"jpeg",
+							"png"
+						]
 					},
 					"safety_tolerance": {
 						"type": "integer",
@@ -72,7 +528,10 @@
 					"output_format": {
 						"type": "string",
 						"default": "jpeg",
-						"enum": ["jpeg", "png"]
+						"enum": [
+							"jpeg",
+							"png"
+						]
 					},
 					"safety_tolerance": {
 						"type": "integer",
@@ -108,7 +567,10 @@
 					"output_format": {
 						"type": "string",
 						"default": "jpeg",
-						"enum": ["jpeg", "png"]
+						"enum": [
+							"jpeg",
+							"png"
+						]
 					},
 					"raw": {
 						"type": "boolean",

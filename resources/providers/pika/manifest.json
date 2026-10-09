@@ -8,6 +8,41 @@
 	"icon_light_url": "/images/pika-light.svg",
 	"models": [
 		{
+			"id": "pika-2.5",
+			"name": "Pika 2.5",
+			"type": "text-to-video-model",
+			"authentication": "api-key",
+			"url": "https://api.dev.pika.art",
+			"metadata": {
+				"documentationUrl": "https://dev.pika.art/models/pika/pika-2.5/text-to-video",
+				"documentationStatus": "verified",
+				"inputs": {
+					"resolution": {
+						"type": "string",
+						"enum": [
+							"720p",
+							"1080p"
+						],
+						"default": "720p"
+					},
+					"duration_s": {
+						"type": "number",
+						"enum": [
+							5
+						],
+						"default": 5
+					},
+					"negative_prompt": {
+						"type": "string"
+					},
+					"seed": {
+						"type": "integer"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
 			"id": "pika-2.2",
 			"name": "Pika 2.2",
 			"type": "text-to-video-model",

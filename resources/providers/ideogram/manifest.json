@@ -8,6 +8,127 @@
 	"icon_light_url": "/images/ideogram-light.svg",
 	"models": [
 		{
+			"id": "ideogram-4.5",
+			"name": "Ideogram 4.5",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.ideogram.ai",
+			"metadata": {
+				"documentationUrl": "https://developer.ideogram.ai/api-reference/images/generate/ideogram-4-5",
+				"documentationStatus": "verified",
+				"inputs": {
+					"magic_prompt": {
+						"type": "string",
+						"enum": [
+							"auto",
+							"on",
+							"off"
+						],
+						"default": "auto"
+					},
+					"size": {
+						"type": "string",
+						"default": "auto"
+					},
+					"quality": {
+						"type": "string",
+						"enum": [
+							"low",
+							"medium",
+							"high"
+						]
+					},
+					"seed": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 2147483647
+					},
+					"num_images": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 8,
+						"default": 1
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "ideogram-4.0",
+			"name": "Ideogram 4.0",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.ideogram.ai",
+			"metadata": {
+				"documentationUrl": "https://developer.ideogram.ai/v1/api-reference/generate-images/generate-v4",
+				"documentationStatus": "verified",
+				"inputs": {
+					"rendering_speed": {
+						"type": "string",
+						"enum": [
+							"TURBO",
+							"DEFAULT",
+							"QUALITY"
+						],
+						"default": "DEFAULT"
+					},
+					"resolution": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "p-image-ideogram",
+			"name": "P-Image Ideogram",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.ideogram.ai",
+			"metadata": {
+				"documentationUrl": "https://developer.ideogram.ai/v1/api-reference/generate-images/generate-p-image-ideogram",
+				"documentationStatus": "verified",
+				"inputs": {
+					"prompt_upsampling": {
+						"type": "string",
+						"enum": [
+							"AUTO",
+							"ON",
+							"OFF"
+						],
+						"default": "AUTO"
+					},
+					"quality": {
+						"type": "string",
+						"enum": [
+							"VERY_LOW",
+							"LOW",
+							"MEDIUM",
+							"HIGH",
+							"VERY_HIGH"
+						],
+						"default": "MEDIUM"
+					},
+					"resolution": {
+						"type": "string",
+						"enum": [
+							"1K",
+							"2K"
+						],
+						"default": "1K"
+					},
+					"aspect_ratio": {
+						"type": "string",
+						"default": "1x1"
+					},
+					"seed": {
+						"type": "integer"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
 			"id": "ideogram-3.0",
 			"name": "Ideogram 3.0",
 			"type": "text-to-image-model",
@@ -36,11 +157,20 @@
 					"rendering_speed": {
 						"type": "string",
 						"default": "DEFAULT",
-						"enum": ["FLASH", "TURBO", "DEFAULT", "QUALITY"]
+						"enum": [
+							"FLASH",
+							"TURBO",
+							"DEFAULT",
+							"QUALITY"
+						]
 					},
 					"magic_prompt": {
 						"type": "string",
-						"enum": ["AUTO", "ON", "OFF"]
+						"enum": [
+							"AUTO",
+							"ON",
+							"OFF"
+						]
 					},
 					"style_type": {
 						"type": "string",
