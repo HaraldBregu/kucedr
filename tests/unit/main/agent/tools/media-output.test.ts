@@ -19,7 +19,7 @@ jest.mock('../../../../../src/main/shared/library_location', () => ({
 jest.mock('../../../../../src/main/models/image', () => ({ createImage }));
 jest.mock('../../../../../src/main/models/video', () => ({ createVideo }));
 jest.mock('../../../../../src/main/models/sound', () => ({ createSound }));
-jest.mock('music-metadata', () => ({ parseFile }));
+jest.mock('music-metadata', () => ({ parseFile }), { virtual: true });
 
 import { createImageTool } from '../../../../../src/main/agent/tools/media/create_image';
 import { createVideoTool } from '../../../../../src/main/agent/tools/media/create_video';

@@ -30,6 +30,8 @@ it.each(['screenshot', 'pdf'] as const)(
 	async (action) => {
 		const screenshot = jest.fn(async () => Buffer.from('pixels'));
 		const page = Object.assign(new EventEmitter(), {
+			url: () => 'https://example.com/',
+			title: async () => 'Example',
 			screenshot,
 			locator: jest.fn(() => ({ screenshot })),
 			pdf: jest.fn(async () => Buffer.from('document')),
