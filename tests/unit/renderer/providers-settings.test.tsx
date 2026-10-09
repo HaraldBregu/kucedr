@@ -108,6 +108,37 @@ beforeEach(() => {
 });
 
 describe('Providers settings', () => {
+	it('saves a Qwen workspace gateway with the API key', async () => {
+		jest.mocked(actionableProviderCatalog).mockReturnValue([{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true }]);
+		const user = userEvent.setup();
+		render(<MemoryRouter><ProvidersPage section="models" /></MemoryRouter>);
+		const card = screen.getByRole('heading', { name: 'Qwen' }).closest('[data-slot="item"]')!;
+		await user.click(within(card as HTMLElement).getByRole('button', { name: 'Connect' }));
+		const workspace = screen.getByLabelText('Workspace URL');
+		await user.type(workspace, ' https://my-workspace.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1 ');
+		await user.type(screen.getByLabelText('Qwen API key'), ' saved-key ');
+		await user.click(screen.getByRole('button', { name: 'Save' }));
+		await waitFor(() => expect(window.provider.set).toHaveBeenCalledWith({ id: 'qwen', kind: 'models', apiKey: 'saved-key', baseUrl: 'https://my-workspace.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1' }));
+		expect(screen.queryByLabelText('Workspace URL')).not.toBeInTheDocument();
+	});
+
+	it('preserves the saved Qwen workspace URL when canceling an edit', async () => {
+		jest.mocked(actionableProviderCatalog).mockReturnValue([{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true }]);
+		const baseUrl = 'https://saved-workspace.cn-beijing.maas.aliyuncs.com/compatible-mode/v1';
+		jest.mocked(window.provider.list).mockResolvedValue([{ id: 'qwen', name: 'Qwen', apiKey: 'saved-key', baseUrl }]);
+		const user = userEvent.setup();
+		render(<MemoryRouter><ProvidersPage section="models" /></MemoryRouter>);
+		await user.click(await screen.findByRole('button', { name: 'Options for Qwen' }));
+		await user.click(await screen.findByRole('menuitem', { name: 'Edit API key' }));
+		expect(screen.getByLabelText('Workspace URL')).toHaveValue(baseUrl);
+		await user.clear(screen.getByLabelText('Workspace URL'));
+		await user.type(screen.getByLabelText('Workspace URL'), 'https://wrong.example.com');
+		await user.click(screen.getByRole('button', { name: 'common.cancel' }));
+		await user.click(screen.getByRole('button', { name: 'Options for Qwen' }));
+		await user.click(await screen.findByRole('menuitem', { name: 'Edit API key' }));
+		expect(screen.getByLabelText('Workspace URL')).toHaveValue(baseUrl);
+		expect(window.provider.set).not.toHaveBeenCalled();
+	});
 	it('removes the settings shell padding when embedded', () => {
 		const { container } = render(
 			<MemoryRouter>

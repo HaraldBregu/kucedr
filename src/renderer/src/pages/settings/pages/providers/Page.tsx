@@ -135,6 +135,10 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							providerId: provider.id,
 							apiKey: current?.apiKey || savedApiKey,
 							savedApiKey,
+							...(provider.id === 'qwen' ? {
+								baseUrl: current?.baseUrl ?? savedProviders.get(provider.id)?.baseUrl ?? '',
+								savedBaseUrl: savedProviders.get(provider.id)?.baseUrl ?? '',
+							} : {}),
 							apiKeySaved: saved,
 							editing: saved && !current?.savedApiKey ? false : (current?.editing ?? false),
 						};
@@ -211,12 +215,19 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setSavingProviderId(providerId);
 		setError(null);
 		try {
-			await window.provider.set({ id: providerId, apiKey, kind });
+			const baseUrl = providerId === 'qwen' ? entry.baseUrl?.trim() : undefined;
+			if (baseUrl) {
+				const endpoint = new URL(baseUrl);
+				if (endpoint.protocol !== 'https:' || !/^[a-z0-9][a-z0-9-]*\.(ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com$/i.test(endpoint.hostname))
+					throw new Error('Enter a Qwen workspace URL for Singapore, Beijing, or Hong Kong.');
+			}
+			await window.provider.set({ id: providerId, apiKey, kind, ...(baseUrl ? { baseUrl } : {}) });
 			updateProviderEntry(providerId, {
 				apiKey,
 				savedApiKey: apiKey,
 				apiKeySaved: true,
 				editing: false,
+				...(providerId === 'qwen' ? { baseUrl, savedBaseUrl: baseUrl } : {}),
 			});
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save provider API key.'));
@@ -270,6 +281,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					savedApiKey: '',
 					apiKeySaved: false,
 					editing: false,
+					...(providerId === 'qwen' ? { baseUrl: '', savedBaseUrl: '' } : {}),
 				});
 			}
 		} catch (err) {
@@ -361,10 +373,24 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					</p>
 				</ItemContent>
 				<ItemActions
-					className={cn('ml-auto flex-none justify-end gap-2', editing && 'w-full sm:w-auto')}
+					className={cn('ml-auto flex-none justify-end gap-2', editing && 'w-full sm:w-auto', editing && provider.id === 'qwen' && 'w-full flex-wrap sm:w-full')}
 				>
 					{editing && entry ? (
 						<>
+							{provider.id === 'qwen' && (
+								<div className="grid w-full gap-1.5">
+									<Label htmlFor="qwen-workspace-url">Workspace URL</Label>
+									<Input
+										id="qwen-workspace-url"
+										autoComplete="off"
+										className="h-8 min-w-0 text-xs"
+										disabled={savingThisProvider}
+										placeholder="https://{workspace}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"
+										value={entry.baseUrl ?? ''}
+										onChange={(event) => { updateProviderEntry(provider.id, { baseUrl: event.target.value }); setError(null); }}
+									/>
+								</div>
+							)}
 							<Input
 								aria-label={`${provider.name} API key`}
 								autoComplete="off"
@@ -391,7 +417,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								size="sm"
 								disabled={savingThisProvider}
 								onClick={() =>
-									updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, editing: false })
+									updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, baseUrl: entry.savedBaseUrl, editing: false })
 								}
 							>
 								{t('common.cancel')}

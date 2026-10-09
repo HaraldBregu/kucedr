@@ -12,6 +12,8 @@ export type ProviderSetupEntry = {
 	savedApiKey: string;
 	apiKeySaved: boolean;
 	editing: boolean;
+	baseUrl?: string;
+	savedBaseUrl?: string;
 };
 
 export type ProviderCatalogItem = {
