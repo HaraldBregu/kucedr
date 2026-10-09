@@ -9,9 +9,11 @@ export function liveVoiceHistory(history: readonly RealtimeVoiceHistoryMessage[]
 		const text = Buffer.from(message.text).subarray(-remaining).toString('utf8');
 		remaining -= Buffer.byteLength(text);
 		if (!text.trim()) continue;
-		selected.push(message.role === 'user'
-			? { type: 'message', role: 'user', content: [{ type: 'input_text', text }] }
-			: { type: 'message', role: 'assistant', content: [{ type: 'text', text }] });
+		selected.push(
+			message.role === 'user'
+				? { type: 'message', role: 'user', content: [{ type: 'input_text', text }] }
+				: { type: 'message', role: 'assistant', content: [{ type: 'text', text }] }
+		);
 	}
 	return selected.reverse();
 }

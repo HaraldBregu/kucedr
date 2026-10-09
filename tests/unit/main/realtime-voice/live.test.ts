@@ -43,7 +43,10 @@ describe('OpenAILiveVoiceAdapter', () => {
 				modelId: 'gpt-live-1',
 				voice: 'marin',
 				instructions: 'Help.',
-				history: [{ role: 'user', text: 'Earlier discussion.' }, { role: 'assistant', text: 'Earlier answer.' }],
+				history: [
+					{ role: 'user', text: 'Earlier discussion.' },
+					{ role: 'assistant', text: 'Earlier answer.' },
+				],
 				tools: [],
 				contextForTurn,
 			},
@@ -53,7 +56,11 @@ describe('OpenAILiveVoiceAdapter', () => {
 		socket.emit('message', JSON.stringify({ type: 'session.started' }));
 		await connecting;
 		expect(JSON.parse(socket.sent[0]).session.input).toEqual([
-			{ type: 'message', role: 'user', content: [{ type: 'input_text', text: 'Earlier discussion.' }] },
+			{
+				type: 'message',
+				role: 'user',
+				content: [{ type: 'input_text', text: 'Earlier discussion.' }],
+			},
 			{ type: 'message', role: 'assistant', content: [{ type: 'text', text: 'Earlier answer.' }] },
 		]);
 		socket.emit(
@@ -73,7 +80,14 @@ describe('OpenAILiveVoiceAdapter', () => {
 		jest.useFakeTimers();
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string; itemId?: string; transcript?: string }> = [];
-		const pending = new OpenAILiveVoiceAdapter({ id: 'openai', name: 'OpenAI', apiKey: 'key' }, () => socket, 1000).connect({ modelId: 'gpt-live-1', voice: 'marin', instructions: '', history: [], tools: [] }, (event) => events.push(event));
+		const pending = new OpenAILiveVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1000
+		).connect(
+			{ modelId: 'gpt-live-1', voice: 'marin', instructions: '', history: [], tools: [] },
+			(event) => events.push(event)
+		);
 		socket.emit('open');
 		socket.emit('message', JSON.stringify({ type: 'session.started' }));
 		const connection = await pending;
@@ -84,7 +98,13 @@ describe('OpenAILiveVoiceAdapter', () => {
 		}
 		expect(events.filter((event) => event.type === 'user_transcript_final')).toHaveLength(0);
 		await jest.advanceTimersByTimeAsync(2000);
-		expect(events.filter((event) => event.type === 'user_transcript_final')).toEqual([{ type: 'user_transcript_final', itemId: 'live-input-0', transcript: 'What is two plus two?' }]);
+		expect(events.filter((event) => event.type === 'user_transcript_final')).toEqual([
+			{
+				type: 'user_transcript_final',
+				itemId: 'live-input-0',
+				transcript: 'What is two plus two?',
+			},
+		]);
 		expect(events.filter((event) => event.type === 'assistant_audio_done')).toHaveLength(1);
 		await connection.stop();
 		jest.useRealTimers();
@@ -110,20 +130,32 @@ describe('OpenAILiveVoiceAdapter', () => {
 		socket.emit('message', JSON.stringify({ type: 'session.output_audio.delta', delta: 'AAA=' }));
 		expect(events).toEqual([]);
 		socket.emit('message', JSON.stringify({ type: 'session.output_audio.delta', delta: 'AQI=' }));
-		socket.emit('message', JSON.stringify({ type: 'session.output_transcript.delta', delta: 'Hello.' }));
+		socket.emit(
+			'message',
+			JSON.stringify({ type: 'session.output_transcript.delta', delta: 'Hello.' })
+		);
 		for (let index = 0; index < 20; index += 1) {
 			await jest.advanceTimersByTimeAsync(100);
 			socket.emit('message', JSON.stringify({ type: 'session.output_audio.delta', delta: 'AAA=' }));
 		}
 
 		expect(events).toContainEqual({
-				type: 'assistant_audio_delta',
-				itemId: 'live-output-0',
-				responseId: 'live-output-0',
-				audio: 'AQI=',
+			type: 'assistant_audio_delta',
+			itemId: 'live-output-0',
+			responseId: 'live-output-0',
+			audio: 'AQI=',
 		});
-		expect(events).toContainEqual({ type: 'assistant_audio_done', itemId: 'live-output-0', responseId: 'live-output-0' });
-		expect(events).toContainEqual({ type: 'assistant_transcript_final', itemId: 'live-output-0', responseId: 'live-output-0', transcript: 'Hello.' });
+		expect(events).toContainEqual({
+			type: 'assistant_audio_done',
+			itemId: 'live-output-0',
+			responseId: 'live-output-0',
+		});
+		expect(events).toContainEqual({
+			type: 'assistant_transcript_final',
+			itemId: 'live-output-0',
+			responseId: 'live-output-0',
+			transcript: 'Hello.',
+		});
 		expect(events.filter((event) => event.type === 'assistant_audio_done')).toHaveLength(1);
 		jest.useRealTimers();
 	});
@@ -175,19 +207,37 @@ describe('OpenAILiveVoiceAdapter', () => {
 	it('interrupts Live speech with the supported instruction command and closes after transport failure', async () => {
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string }> = [];
-		const adapter = new OpenAILiveVoiceAdapter({ id: 'openai', name: 'OpenAI', apiKey: 'key' }, () => socket, 1000);
-		const connecting = adapter.connect({ modelId: 'gpt-live-1', voice: 'cedar', instructions: '', history: [], tools: [] }, (event) => events.push(event));
+		const adapter = new OpenAILiveVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1000
+		);
+		const connecting = adapter.connect(
+			{ modelId: 'gpt-live-1', voice: 'cedar', instructions: '', history: [], tools: [] },
+			(event) => events.push(event)
+		);
 		socket.emit('open');
 		socket.emit('message', JSON.stringify({ type: 'session.started' }));
 		const connection = await connecting;
 		socket.emit('message', JSON.stringify({ type: 'session.output_audio.delta', delta: 'AQI=' }));
 		await connection.interrupt();
-		expect(JSON.parse(socket.sent.at(-1)!)).toMatchObject({ type: 'session.instructions.append', delegation_id: null, content: expect.stringContaining('Stop speaking') });
+		expect(JSON.parse(socket.sent.at(-1)!)).toMatchObject({
+			type: 'session.instructions.append',
+			delegation_id: null,
+			content: expect.stringContaining('Stop speaking'),
+		});
 		socket.emit('message', JSON.stringify({ type: 'session.closed' }));
 		expect(socket.closed).toBe(true);
 		expect(events).toContainEqual({ type: 'closed' });
 		const failing = new FakeLiveSocket();
-		const pending = new OpenAILiveVoiceAdapter({ id: 'openai', name: 'OpenAI', apiKey: 'key' }, () => failing, 1000).connect({ modelId: 'gpt-live-1', voice: '', instructions: '', history: [], tools: [] }, () => undefined);
+		const pending = new OpenAILiveVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => failing,
+			1000
+		).connect(
+			{ modelId: 'gpt-live-1', voice: '', instructions: '', history: [], tools: [] },
+			() => undefined
+		);
 		failing.emit('error', new Error('Unexpected server response: 401'));
 		await expect(pending).rejects.toThrow(/OpenAI.*API key.*401/);
 		expect(failing.closed).toBe(true);

@@ -14,7 +14,9 @@ describe('realtime voice adapter factory', () => {
 			const manifestPath = path.join(root, providerId, 'manifest.json');
 			if (!fs.existsSync(manifestPath)) return [];
 			const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-			return manifest.models.filter((model: { type: string }) => model.type === 'realtime-voice-model').map((model: { id: string }) => ({ providerId, modelId: model.id }));
+			return manifest.models
+				.filter((model: { type: string }) => model.type === 'realtime-voice-model')
+				.map((model: { id: string }) => ({ providerId, modelId: model.id }));
 		});
 		expect(realtimeVoiceModelRefs()).toEqual(expect.arrayContaining(catalog));
 		expect(realtimeVoiceModelRefs()).toHaveLength(catalog.length);

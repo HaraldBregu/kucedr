@@ -108,19 +108,19 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			this.socket.on('open', () => {
 				if (this.closed) return;
 				try {
-				this.send({
-					type: 'session.start',
-					session: {
-						model: request.modelId,
-						instructions: request.instructions,
-						input: liveVoiceHistory(request.history),
-						audio: {
-							format: { type: 'audio/pcm', rate: 24_000 },
-							output: { voice: request.voice.trim() || 'marin' },
+					this.send({
+						type: 'session.start',
+						session: {
+							model: request.modelId,
+							instructions: request.instructions,
+							input: liveVoiceHistory(request.history),
+							audio: {
+								format: { type: 'audio/pcm', rate: 24_000 },
+								output: { voice: request.voice.trim() || 'marin' },
+							},
+							delegation: { type: 'client' },
 						},
-						delegation: { type: 'client' },
-					},
-				});
+					});
 				} catch (error) {
 					settle(error instanceof Error ? error : new Error(String(error)));
 					void this.stop();
@@ -150,7 +150,9 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			});
 			this.socket.on('error', (error) => {
 				if (this.closed) return;
-				const failure = this.transportError(error instanceof Error ? error : new Error('Live voice connection failed.'));
+				const failure = this.transportError(
+					error instanceof Error ? error : new Error('Live voice connection failed.')
+				);
 				if (!settled) {
 					settle(failure);
 					void this.stop();
@@ -186,7 +188,12 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 
 	async interrupt(): Promise<void> {
 		if (this.closed || !this.outputTurnActive) return;
-		this.send({ type: 'session.instructions.append', delegation_id: null, event_id: randomUUID(), content: 'Stop speaking now and listen to the user. Respond to their next request normally.' });
+		this.send({
+			type: 'session.instructions.append',
+			delegation_id: null,
+			event_id: randomUUID(),
+			content: 'Stop speaking now and listen to the user. Respond to their next request normally.',
+		});
 		this.finishOutputTurn();
 	}
 
@@ -271,7 +278,11 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 				this.emit({ type: 'input_speech_started', itemId: this.inputItemId() });
 			}
 			this.inputTranscript += event.delta;
-			this.emit({ type: 'user_transcript_update', itemId: this.inputItemId(), transcript: this.inputTranscript });
+			this.emit({
+				type: 'user_transcript_update',
+				itemId: this.inputItemId(),
+				transcript: this.inputTranscript,
+			});
 			if (this.inputTimer) clearTimeout(this.inputTimer);
 			this.inputTimer = setTimeout(() => this.finishInputTurn(), TURN_PAUSE_MS);
 			this.inputTimer.unref?.();
@@ -285,7 +296,10 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			this.outputTurnActive = true;
 			if (!silent) {
 				if (this.outputTimer) clearTimeout(this.outputTimer);
-				this.outputTimer = setTimeout(() => this.finishOutputTurn(), TURN_PAUSE_MS + audio.length / 48);
+				this.outputTimer = setTimeout(
+					() => this.finishOutputTurn(),
+					TURN_PAUSE_MS + audio.length / 48
+				);
 				this.outputTimer.unref?.();
 			}
 			const itemId = this.outputItemId();
