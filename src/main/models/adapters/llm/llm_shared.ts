@@ -20,7 +20,7 @@ type ReasoningContentBlock = Extract<LlmContentBlock, { type: 'reasoning' }>;
 
 const SUPPORTED_IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
-export type LlmChatContentProfile = 'image-only' | 'reka';
+export type LlmChatContentProfile = 'image-only' | 'reka' | 'mistral';
 
 export function llmToTranscriptEntry(message: Message): LlmTranscriptEntry[] {
 	if (message.role === 'summary') {
@@ -135,8 +135,8 @@ function toAssistantContent(content: Message['content']): LlmContentBlock[] {
 		.map((block): LlmContentBlock | undefined => {
 			if (block.type === 'text' && typeof block.text === 'string')
 				return { type: 'text', text: block.text };
-			if (block.type === 'provider_item' && block.provider === 'openai') {
-				return { type: 'provider_item', provider: 'openai', item: block.item };
+			if (block.type === 'provider_item' && (block.provider === 'openai' || block.provider === 'anthropic' || block.provider === 'mistral')) {
+				return { type: 'provider_item', provider: block.provider, item: block.item };
 			}
 			if (block.type === 'provider_item' && block.provider === 'deepseek') {
 				return { type: 'reasoning', provider: 'deepseek', item: block.item };
@@ -286,11 +286,13 @@ export function llmBuildAnthropicMessages(
 		}
 		if (entry.role === 'assistant') {
 			const blocks: Array<
-				Anthropic.Messages.TextBlockParam | Anthropic.Messages.ToolUseBlockParam
+				Anthropic.Messages.ContentBlockParam
 			> = [];
 			for (const b of entry.content) {
 				if (b.type === 'text' && b.text) {
 					blocks.push({ type: 'text', text: b.text });
+				} else if (b.type === 'provider_item' && b.provider === 'anthropic') {
+					blocks.push(b.item as Anthropic.Messages.ContentBlockParam);
 				} else if (b.type === 'tool_use') {
 					blocks.push({
 						type: 'tool_use',
@@ -392,6 +394,10 @@ export function llmBuildChatMessages(
 				role: 'assistant',
 				content: text || null,
 			};
+			if (options.contentProfile === 'mistral') {
+				const chunks = entry.content.filter((block) => block.type === 'provider_item' && block.provider === 'mistral').map((block) => (block as Extract<LlmContentBlock, { type: 'provider_item' }>).item);
+				if (chunks.length) msg.content = chunks as unknown as OpenAI.ChatCompletionAssistantMessageParam['content'];
+			}
 			if (options.includeReasoningContent) {
 				const reasoningContent = entry.content
 					.filter(isDeepSeekReasoningBlock)

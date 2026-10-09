@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { content } from './content';
 import type { ModelReasoningEffort } from '../../../../shared/agent_types';
 import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
 import { llmBuildChatMessages, llmToDeepSeekReasoningEffort } from './llm_shared';
@@ -10,10 +11,10 @@ export async function* chat(
 		reasoningContentEnabled: boolean;
 		reasoningEffortEnabled: boolean;
 		thinkingModeEnabled: boolean;
-		contentProfile: 'image-only' | 'reka';
+		contentProfile: 'image-only' | 'reka' | 'mistral';
 	}
 ): AsyncIterable<LlmProviderEvent> {
-	const tools: OpenAI.ChatCompletionTool[] = req.tools.map((tool) => ({
+	const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map((tool) => ({
 		type: 'function',
 		function: {
 			name: tool.name,
@@ -48,7 +49,11 @@ export async function* chat(
 	const choice = response.choices[0];
 
 	yield { type: 'message_start' };
-	if (choice?.message.content) yield { type: 'text_delta', text: choice.message.content };
+	const text = content(choice?.message.content);
+	if (text) yield { type: 'text_delta', text };
+	if (options.contentProfile === 'mistral' && Array.isArray(choice?.message.content)) {
+		for (const item of choice.message.content) yield { type: 'reasoning_item', provider: 'mistral', item };
+	}
 	const reasoningContent = (choice?.message as { reasoning_content?: unknown } | undefined)
 		?.reasoning_content;
 	if (

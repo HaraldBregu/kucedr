@@ -1,4 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { content } from './content';
+import { options as requestOptions } from './options';
 import OpenAI from 'openai';
 import type {
 	FunctionTool,
@@ -485,7 +487,7 @@ export class LlmModel implements LlmAdapter {
 			}
 			return;
 		}
-		const tools: Anthropic.Messages.Tool[] = req.tools.map((t) => ({
+		const tools: Anthropic.Messages.Tool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map((t) => ({
 			name: t.name,
 			description: t.description,
 			input_schema: t.schema as Anthropic.Messages.Tool.InputSchema,
@@ -497,11 +499,12 @@ export class LlmModel implements LlmAdapter {
 		const usage = { inputTokens: 0, outputTokens: 0 };
 		let stopReason = 'end_turn';
 		const blockIndexToToolUseId = new Map<number, string>();
+		const thinkingBlocks = new Map<number, Anthropic.Messages.ThinkingBlock | Anthropic.Messages.RedactedThinkingBlock>();
 
 		try {
 			const stream = client.messages.stream(
 				{
-					...req.options,
+					...requestOptions(provider.id.toLowerCase(), req),
 					model: req.model,
 					system: req.system,
 					max_tokens: req.maxTokens,
@@ -515,6 +518,7 @@ export class LlmModel implements LlmAdapter {
 				if (!rawEvent || typeof rawEvent !== 'object') continue;
 				const event = rawEvent as Anthropic.Messages.RawMessageStreamEvent;
 				if (event.type === 'content_block_start') {
+					if (event.content_block.type === 'thinking' || event.content_block.type === 'redacted_thinking') thinkingBlocks.set(event.index, { ...event.content_block });
 					if (event.content_block.type === 'tool_use') {
 						blockIndexToToolUseId.set(event.index, event.content_block.id);
 						yield {
@@ -525,6 +529,11 @@ export class LlmModel implements LlmAdapter {
 					}
 				} else if (event.type === 'content_block_delta') {
 					const delta = event.delta;
+					const thinking = thinkingBlocks.get(event.index);
+					if (thinking?.type === 'thinking') {
+						if (delta.type === 'thinking_delta') thinking.thinking += delta.thinking;
+						if (delta.type === 'signature_delta') thinking.signature += delta.signature;
+					}
 					if (delta.type === 'text_delta') {
 						yield { type: 'text_delta', text: delta.text };
 					} else if (delta.type === 'input_json_delta') {
@@ -532,6 +541,8 @@ export class LlmModel implements LlmAdapter {
 						yield { type: 'tool_call_args_delta', id, jsonDelta: delta.partial_json };
 					}
 				} else if (event.type === 'content_block_stop') {
+					const thinking = thinkingBlocks.get(event.index);
+					if (thinking) yield { type: 'reasoning_item', provider: 'anthropic', item: thinking };
 					const id = blockIndexToToolUseId.get(event.index);
 					if (id) yield { type: 'tool_call_end', id };
 				} else if (event.type === 'message_delta') {
@@ -560,18 +571,18 @@ export class LlmModel implements LlmAdapter {
 			this.reasoningContentEnabled || provider.id.toLowerCase() === 'deepseek';
 		if (req.streaming === false) {
 			try {
-				yield* completeChat(client, req, {
+				yield* completeChat(client, { ...req, options: requestOptions(provider.id.toLowerCase(), req) }, {
 					reasoningContentEnabled,
 					reasoningEffortEnabled: this.reasoningEffortEnabled,
 					thinkingModeEnabled: this.thinkingModeEnabled,
-					contentProfile: provider.id.toLowerCase() === 'reka' ? 'reka' : 'image-only',
+					contentProfile: provider.id.toLowerCase() === 'reka' ? 'reka' : provider.id.toLowerCase() === 'mistral' ? 'mistral' : 'image-only',
 				});
 			} catch (error) {
 				this.throwProviderError(error);
 			}
 			return;
 		}
-		const tools: OpenAI.ChatCompletionTool[] = req.tools.map((t) => ({
+		const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map((t) => ({
 			type: 'function' as const,
 			function: {
 				name: t.name,
@@ -588,11 +599,11 @@ export class LlmModel implements LlmAdapter {
 
 		try {
 			const params: Record<string, unknown> = {
-				...req.options,
+				...requestOptions(provider.id.toLowerCase(), req),
 				model: req.model,
 				messages: llmBuildChatMessages(req.system, req.messages, {
 					includeReasoningContent: reasoningContentEnabled,
-					contentProfile: provider.id.toLowerCase() === 'reka' ? 'reka' : 'image-only',
+					contentProfile: provider.id.toLowerCase() === 'reka' ? 'reka' : provider.id.toLowerCase() === 'mistral' ? 'mistral' : 'image-only',
 				}),
 				tools: tools.length > 0 ? tools : undefined,
 				tool_choice: tools.length > 0 ? 'auto' : undefined,
@@ -632,8 +643,10 @@ export class LlmModel implements LlmAdapter {
 					yield { type: 'reasoning_item', provider: 'deepseek', item: reasoningContent };
 				}
 
-				if (delta.content) {
-					yield { type: 'text_delta', text: delta.content };
+				const text = content(delta.content);
+				if (text) yield { type: 'text_delta', text };
+				if (provider.id.toLowerCase() === 'mistral' && Array.isArray(delta.content)) {
+					for (const item of delta.content) yield { type: 'reasoning_item', provider: 'mistral', item };
 				}
 
 				if (delta.tool_calls) {

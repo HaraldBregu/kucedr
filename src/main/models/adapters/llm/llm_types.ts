@@ -26,7 +26,7 @@ export interface LlmResponse {
 export type LlmEvent =
 	| { type: 'model_call_start'; model: string; effort?: ModelReasoningEffort }
 	| { type: 'model_call_delta'; delta: string }
-	| { type: 'model_provider_item'; provider: 'openai' | 'deepseek'; item: unknown }
+	| { type: 'model_provider_item'; provider: 'openai' | 'deepseek' | 'anthropic' | 'mistral'; item: unknown }
 	| { type: 'model_tool_call_start'; id: string; name: string }
 	| { type: 'model_tool_call_args_delta'; id: string; jsonDelta: string }
 	| { type: 'model_tool_call_end'; id: string }
@@ -54,7 +54,7 @@ export interface LlmUsage {
 export type LlmProviderEvent =
 	| { type: 'message_start' }
 	| { type: 'response_created'; id: string }
-	| { type: 'reasoning_item'; provider?: 'openai' | 'deepseek'; item: unknown }
+	| { type: 'reasoning_item'; provider?: 'openai' | 'deepseek' | 'anthropic' | 'mistral'; item: unknown }
 	| { type: 'text_delta'; text: string }
 	| { type: 'tool_call_start'; id: string; name: string }
 	| { type: 'tool_call_args_delta'; id: string; jsonDelta: string }
@@ -92,8 +92,8 @@ export type LlmProviderEvent =
 
 export type LlmContentBlock =
 	| { type: 'text'; text: string }
-	| { type: 'reasoning'; provider: 'openai' | 'deepseek'; item: unknown }
-	| { type: 'provider_item'; provider: 'openai'; item: unknown }
+	| { type: 'reasoning'; provider: 'openai' | 'deepseek' | 'anthropic' | 'mistral'; item: unknown }
+	| { type: 'provider_item'; provider: 'openai' | 'anthropic' | 'mistral'; item: unknown }
 	| {
 			type: 'tool_use';
 			toolUseId: string;

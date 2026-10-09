@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { options } from './options';
 import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
 import { llmBuildAnthropicMessages } from './llm_shared';
 
@@ -14,7 +15,7 @@ export async function* anthropic(
 	}));
 	const response = await client.messages.create(
 		{
-			...req.options,
+			...options('anthropic', req),
 			model: req.model,
 			system: req.system,
 			max_tokens: req.maxTokens,
@@ -27,6 +28,10 @@ export async function* anthropic(
 
 	yield { type: 'message_start' };
 	for (const block of response.content) {
+		if (block.type === 'thinking' || block.type === 'redacted_thinking') {
+			yield { type: 'reasoning_item', provider: 'anthropic', item: block };
+			continue;
+		}
 		if (block.type === 'text' && block.text) {
 			yield { type: 'text_delta', text: block.text };
 			continue;
