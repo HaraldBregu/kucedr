@@ -17,7 +17,10 @@ const PDF_RULE = {
 };
 
 function expectedPromptAttachments(providerId: string, modelId: string): unknown[] {
-	if (providerId === 'cohere' && modelId === 'command-a-plus-05-2026')
+	if (
+		providerId === 'cohere' &&
+		['command-a-plus-05-2026', 'command-a-vision-07-2025'].includes(modelId)
+	)
 		return [
 			{
 				kind: 'image',

@@ -100,7 +100,7 @@ Names and IDs match the bundled manifests. Model metadata links to the official 
 | Provider | Cataloged models |
 | --- | --- |
 | Anthropic | Claude Fable 5.1 (`claude-fable-5-1`); Claude Opus 5.5 (`claude-opus-5-5`); Claude Sonnet 5.5 (`claude-sonnet-5-5`); Claude Haiku 5.5 (`claude-haiku-5-5`); Claude Opus 4.8 (`claude-opus-4-8`); Claude Fable 5 (`claude-fable-5`); Claude Opus 5 (`claude-opus-5`); Claude Sonnet 5 (`claude-sonnet-5`); Claude Opus 4.7 (`claude-opus-4-7`); Claude Sonnet 4.6 (`claude-sonnet-4-6`); Claude Haiku 4.5 20251001 (`claude-haiku-4-5-20251001`) |
-| Cohere | Command A+ (`command-a-plus-05-2026`); North Mini Code (`north-mini-code-1-0`) |
+| Cohere | Command A+ (`command-a-plus-05-2026`); Command A (`command-a-03-2025`); Command A Translate (`command-a-translate-08-2025`); Command A Reasoning (`command-a-reasoning-08-2025`); Command A Vision (`command-a-vision-07-2025`); North Small Translate (`north-small-translate-1-0`); North Mini Code (`north-mini-code-1-0`) |
 | DeepSeek | DeepSeek V4 Pro (`deepseek-v4-pro`); DeepSeek V4.1 Flash (`deepseek-flash`) |
 | Google DeepMind / Google | Gemini 3.8 Flash (`gemini-3.8-flash`); Gemini 3.7 Flash (`gemini-3.7-flash`); Gemini 3.6 Flash (`gemini-3.6-flash`); Gemini 3.5 Flash (`gemini-3.5-flash`); Gemini 3.5 Flash Lite (`gemini-3.5-flash-lite`); Gemini 3 Flash Preview (`gemini-3-flash-preview`); Gemini 3.1 Pro Preview (`gemini-3.1-pro-preview`); Gemini 3.1 Flash Lite (`gemini-3.1-flash-lite`) |
 | Moonshot AI / Kimi | Kimi K3 (`kimi-k3`); Kimi K2.7 Code (`kimi-k2.7-code`); Kimi K2.7 Code Highspeed (`kimi-k2.7-code-highspeed`); Kimi K2.6 (`kimi-k2.6`); Kimi K2.5 (`kimi-k2.5`) |
