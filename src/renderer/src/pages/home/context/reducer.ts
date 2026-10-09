@@ -251,17 +251,14 @@ function applyResponseEvent(
 
 	if (event.type === 'model_usage') {
 		const turnOutputTokens = event.usage?.outputTokens;
-		const nextState =
-			turnOutputTokens === undefined
-				? updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
-						...message, contextUsage: event.usage?.context ?? message.contextUsage, streamedChars: 0,
-					}))
-				: updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
-						...message,
-						contextUsage: event.usage?.context ?? message.contextUsage,
-						settledOutputTokens: (message.settledOutputTokens ?? 0) + turnOutputTokens,
-						streamedChars: 0,
-					}));
+		const nextState = turnOutputTokens === undefined && !event.usage?.context
+			? ensured.state
+			: updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
+				...message,
+				contextUsage: event.usage?.context ?? message.contextUsage,
+				settledOutputTokens: turnOutputTokens === undefined ? message.settledOutputTokens : (message.settledOutputTokens ?? 0) + turnOutputTokens,
+				streamedChars: 0,
+			}));
 		return { ...nextState, pendingTurnOutputTokens: turnOutputTokens };
 	}
 

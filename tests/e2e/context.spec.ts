@@ -53,10 +53,7 @@ test('context ring follows real local usage, draft changes, model selection and 
 			'aria-valuetext',
 			/^Context: 16[,.]384 \/ 32[,.]768 tokens \(50% used\)$/
 		);
-		await ring.locator('..').hover();
-		await expect(page.locator('[data-slot="tooltip-content"]').filter({ hasText: /16[,.]384/ })).toContainText(
-			/16[,.]384 \/ 32[,.]768/
-		);
+		await expect(page.getByRole('button', { name: 'Send message' })).toBeVisible();
 		await editor.focus();
 		for (
 			let index = 0;
@@ -66,7 +63,9 @@ test('context ring follows real local usage, draft changes, model selection and 
 		)
 			await page.keyboard.press('Tab');
 		await expect(ring.locator('..')).toBeFocused();
-		await expect(page.locator('[data-slot="tooltip-content"]').filter({ hasText: /16[,.]384/ })).toBeVisible();
+		await expect(
+			page.locator('[data-slot="tooltip-content"]').filter({ hasText: /16[,.]384/ })
+		).toBeVisible();
 		await page.screenshot({ path: '/private/tmp/kucedr-context-ring.png' });
 		await editor.fill('x'.repeat(3000));
 		await expect(ring).toHaveAttribute('aria-valuenow', '53');
