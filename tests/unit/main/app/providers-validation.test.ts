@@ -34,7 +34,10 @@ function expectedPromptAttachments(providerId: string, modelId: string): unknown
 		return [IMAGE_RULE];
 	if (providerId === 'reka' && ['glm5.3', 'deepseek4-flash', 'reka-flash-3'].includes(modelId))
 		return [];
-	if (providerId === 'xai' && modelId === 'grok-4.7')
+	if (
+		(providerId === 'xai' && modelId === 'grok-4.7') ||
+		(providerId === 'zai' && ['glm-5.3-flash', 'glm-5.3-flashx'].includes(modelId))
+	)
 		return [
 			{
 				kind: 'image',
