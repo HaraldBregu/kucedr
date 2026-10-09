@@ -1,3 +1,4 @@
+import { transcribe as transcribeQwen } from './qwen';
 import { speechToTextBaseUrl, realtimeSpeechToTextModelId } from '../../../models';
 import WebSocket from 'ws';
 import { SttProviderAuthError, SttProviderUnsupportedError } from './stt_errors';
@@ -30,7 +31,8 @@ export function createQwenSttAdapter(provider: SttProviderSpec): SttAdapter {
 	if (!provider.apiKey) throw new SttProviderAuthError(`${provider.name} API key not configured.`);
 
 	return {
-		async transcribe(_request: SttAdapterTranscriptionRequest): Promise<SttTranscriptionResult> {
+		async transcribe(request: SttAdapterTranscriptionRequest): Promise<SttTranscriptionResult> {
+			if (/^qwen-audio-3\.[01]-asr-flash$/.test(request.modelId)) return transcribeQwen(provider, request);
 			throw new SttProviderUnsupportedError(
 				`${provider.name} does not expose a batch speech-to-text adapter in this runtime.`
 			);

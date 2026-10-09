@@ -20,6 +20,7 @@ export function createQwenVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 
 	return {
 		async generate(request) {
+			const { media, ...parameters } = request.options ?? {};
 			const submitted = await requestJson<QwenTask>(
 				spec.name,
 				`${baseURL}/services/aigc/video-generation/video-synthesis`,
@@ -28,8 +29,8 @@ export function createQwenVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 					headers: { ...headers, 'X-DashScope-Async': 'enable' },
 					body: JSON.stringify({
 						model: request.modelId,
-						input: { prompt: request.prompt },
-						...(request.options ? { parameters: request.options } : {}),
+						input: { prompt: request.prompt, ...(media ? { media } : {}) },
+						parameters,
 					}),
 					signal: request.signal,
 				}

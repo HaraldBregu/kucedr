@@ -24,12 +24,15 @@ export function createQwenImageAdapter(spec: ImageProviderSpec): ImageAdapter {
 			if (
 				request.source &&
 				!request.modelId.includes('image-edit') &&
-				!/^qwen-image-[23]\.0/.test(request.modelId)
+				!/^qwen-image-[23]\.[01]/.test(request.modelId) &&
+				!request.modelId.startsWith('wan2.7-image')
 			) {
 				throw new ImageProviderUnsupportedError(
 					`${request.modelId} does not support source-image editing.`
 				);
 			}
+			const { image: images, ...parameters } = request.options ?? {};
+			const references = Array.isArray(images) ? images : typeof images === 'string' ? [images] : [];
 			const response = await requestJson<QwenResponse>(
 				spec.name,
 				`${baseURL}/services/aigc/multimodal-generation/generation`,
@@ -53,12 +56,13 @@ export function createQwenImageAdapter(spec: ImageProviderSpec): ImageAdapter {
 													},
 												]
 											: []),
+										...references.map((image) => ({ image })),
 										{ text: request.prompt },
 									],
 								},
 							],
 						},
-						...(request.options ? { parameters: request.options } : {}),
+						parameters,
 					}),
 					signal: request.signal,
 				}

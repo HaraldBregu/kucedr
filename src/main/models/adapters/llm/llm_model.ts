@@ -840,6 +840,7 @@ function isLlmRequest(request: LlmRequest | LlmStreamRequest): request is LlmReq
 }
 
 function llmBaseUrl(provider: LlmProviderSpec): string | undefined {
+	if (provider.id.toLowerCase() === 'cohere' && (!provider.baseURL || /^https:\/\/api\.cohere\.(?:com|ai)\/v[12]\/?$/.test(provider.baseURL))) return 'https://api.cohere.ai/compatibility/v1';
 	if (!['custom', 'ollama'].includes(provider.id.toLowerCase()) || !provider.baseURL)
 		return provider.baseURL;
 	return new URL('/v1', provider.baseURL).toString();
