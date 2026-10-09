@@ -1000,6 +1000,48 @@
 				}
 			},
 			"location": "remote"
+		},
+		{
+			"id": "gemini-3.8-live",
+			"name": "Gemini 3.8 Live",
+			"type": "realtime-voice-model",
+			"authentication": "api-key",
+			"url": "https://generativelanguage.googleapis.com/v1beta",
+			"location": "remote",
+			"sampleRate": 24000,
+			"metadata": {
+				"documentationUrl": "https://ai.google.dev/gemini-api/docs/models/gemini-3.8-live",
+				"documentationStatus": "verified",
+				"maxInputTokens": 131072,
+				"inputs": {
+					"voice": {
+						"type": "string",
+						"default": "Kore",
+						"enum": ["Kore", "Puck", "Charon", "Fenrir", "Aoede", "Leda", "Orus", "Zephyr"]
+					}
+				}
+			}
+		},
+		{
+			"id": "gemini-3.8-live-extended-thinking",
+			"name": "Gemini 3.8 Live Extended Thinking",
+			"type": "realtime-voice-model",
+			"authentication": "api-key",
+			"url": "https://generativelanguage.googleapis.com/v1beta",
+			"location": "remote",
+			"sampleRate": 24000,
+			"metadata": {
+				"documentationUrl": "https://ai.google.dev/gemini-api/docs/models/gemini-3.8-live-extended-thinking",
+				"documentationStatus": "verified",
+				"maxInputTokens": 131072,
+				"inputs": {
+					"voice": {
+						"type": "string",
+						"default": "Kore",
+						"enum": ["Kore", "Puck", "Charon", "Fenrir", "Aoede", "Leda", "Orus", "Zephyr"]
+					}
+				}
+			}
 		}
 	],
 	"mcp_servers": [
