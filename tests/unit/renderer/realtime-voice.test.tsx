@@ -317,8 +317,7 @@ describe('useRealtimeVoice', () => {
 		);
 		const onClosed = jest.fn();
 		const { result } = renderHook(
-			() =>
-				useRealtimeVoice({ chatSessionId: 'chat-1', onClosed, closeOnError: false }),
+			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed, closeOnError: false }),
 			{ wrapper }
 		);
 
