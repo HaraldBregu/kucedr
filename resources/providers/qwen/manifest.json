@@ -1610,6 +1610,102 @@
 				"contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-8-omni-flash"
 			},
 			"location": "remote"
+		},
+		{
+			"id": "qwen3.7-text-embedding",
+			"name": "Qwen3.7 Text Embedding",
+			"authentication": "api-key",
+			"type": "embedding-model",
+			"url": "https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/embeddings",
+			"metadata": {
+				"documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-embedding-synchronous-api",
+				"documentationStatus": "verified",
+				"contextWindow": 128000,
+				"contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-embedding-synchronous-api",
+				"inputs": {
+					"input": {
+						"type": "array",
+						"maxItems": 20,
+						"items": {
+							"type": "string"
+						}
+					},
+					"dimensions": {
+						"type": "integer",
+						"enum": [256, 512, 768, 1024, 1536, 2048, 2560],
+						"default": 1024
+					},
+					"encoding_format": {
+						"type": "string",
+						"enum": ["float"]
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "text-embedding-v4",
+			"name": "Text Embedding v4",
+			"authentication": "api-key",
+			"type": "embedding-model",
+			"url": "https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/embeddings",
+			"metadata": {
+				"documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-embedding-synchronous-api",
+				"documentationStatus": "verified",
+				"contextWindow": 8192,
+				"contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-embedding-synchronous-api",
+				"inputs": {
+					"input": {
+						"type": "array",
+						"maxItems": 10,
+						"items": {
+							"type": "string"
+						}
+					},
+					"dimensions": {
+						"type": "integer",
+						"enum": [64, 128, 256, 512, 768, 1024, 1536, 2048],
+						"default": 1024
+					},
+					"encoding_format": {
+						"type": "string",
+						"enum": ["float"]
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "text-embedding-v3",
+			"name": "Text Embedding v3",
+			"authentication": "api-key",
+			"type": "embedding-model",
+			"url": "https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/embeddings",
+			"metadata": {
+				"documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-embedding-synchronous-api",
+				"documentationStatus": "verified",
+				"contextWindow": 8192,
+				"contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/text-embedding-synchronous-api",
+				"inputs": {
+					"input": {
+						"type": "array",
+						"maxItems": 10,
+						"items": {
+							"type": "string"
+						}
+					},
+					"dimensions": {
+						"type": "integer",
+						"enum": [512, 768, 1024],
+						"default": 1024
+					},
+					"encoding_format": {
+						"type": "string",
+						"enum": ["float"]
+					}
+				}
+			},
+			"location": "remote"
 		}
 	],
 	"mcp_servers": [],
