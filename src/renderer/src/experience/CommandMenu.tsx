@@ -1,3 +1,4 @@
+import { playSound } from '@/lib/sounds/play';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -255,12 +256,14 @@ export function CommandMenu({
 
 			if (isSettingsShortcut) {
 				e.preventDefault();
+				playSound('navigate');
 				navigateTo('/settings/settings');
 				return;
 			}
 
 			if (isSearchShortcut && searchEnabled) {
 				e.preventDefault();
+				playSound('navigate');
 				setOpen(true);
 			}
 		};

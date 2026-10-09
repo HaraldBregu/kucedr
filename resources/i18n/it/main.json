@@ -451,6 +451,8 @@
 			"saveChanges": "Salva Modifiche"
 		},
 		"application": {
+			"soundFeedback": "Feedback sonoro",
+			"soundFeedbackDescription": "Riproduci suoni discreti per messaggi, attività dell’assistente e navigazione.",
 			"information": "Informazioni",
 			"actions": "Comportamento dell'applicazione",
 			"data": "Dati",

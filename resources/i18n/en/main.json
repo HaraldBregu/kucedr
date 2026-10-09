@@ -451,6 +451,8 @@
 			"saveChanges": "Save Changes"
 		},
 		"application": {
+			"soundFeedback": "Sound feedback",
+			"soundFeedbackDescription": "Play subtle sounds for messages, assistant activity and navigation.",
 			"information": "Information",
 			"actions": "Application Behavior",
 			"data": "Data",

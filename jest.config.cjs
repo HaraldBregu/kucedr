@@ -91,13 +91,13 @@ module.exports = {
 				'^@icons/(.*)$': '<rootDir>/src/renderer/src/components/icons/$1',
 				'^@shared$': '<rootDir>/src/shared/index.ts',
 				'^@shared/(.*)$': '<rootDir>/src/shared/$1',
-				'^@resources/(.*)\.(png|jpg|jpeg|gif|svg|webp|ico)$': '<rootDir>/tests/mocks/fileMock.ts',
+				'^@resources/(.*)\.(png|jpg|jpeg|gif|svg|webp|ico|ogg)$': '<rootDir>/tests/mocks/fileMock.ts',
 				'^@resources/(.*)$': '<rootDir>/resources/$1',
 				// Handle bare src/renderer/src imports used in some UI components
 				'^src/renderer/src/(.*)$': '<rootDir>/src/renderer/src/$1',
 				// Static asset stubs
 				'\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-				'\\.(png|jpg|jpeg|gif|svg|webp|ico)$': '<rootDir>/tests/mocks/fileMock.ts',
+				'\\.(png|jpg|jpeg|gif|svg|webp|ico|ogg)$': '<rootDir>/tests/mocks/fileMock.ts',
 			},
 			setupFiles: ['<rootDir>/tests/setup/polyfills.ts'],
 			setupFilesAfterEnv: ['<rootDir>/tests/setup/renderer.ts'],
