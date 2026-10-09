@@ -3,7 +3,8 @@ import { detectMimeType, requestJson } from './tti_shared';
 import type { ImageAdapter, ImageProviderSpec } from './tti_types';
 
 export function createOpenAIImageAdapter(provider: ImageProviderSpec): ImageAdapter {
-	if (!provider.apiKey) throw new ImageProviderAuthError(`${provider.name} API key not configured.`);
+	if (!provider.apiKey)
+		throw new ImageProviderAuthError(`${provider.name} API key not configured.`);
 	return {
 		supportsSource: true,
 		async generate(request) {
@@ -41,7 +42,8 @@ export function createOpenAIImageAdapter(provider: ImageProviderSpec): ImageAdap
 				{ method: 'POST', headers, body, signal: request.signal }
 			);
 			const base64 = response.data?.[0]?.b64_json;
-			if (!base64) throw new ImageProviderRequestError(`${provider.name}: response contained no image.`);
+			if (!base64)
+				throw new ImageProviderRequestError(`${provider.name}: response contained no image.`);
 			return { base64, mimeType: detectMimeType(base64) };
 		},
 	};

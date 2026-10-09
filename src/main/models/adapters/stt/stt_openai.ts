@@ -169,34 +169,38 @@ function createOpenAIRealtimeConnection(
 	socket.once('close', () => emitClosed());
 
 	socket.send(
-		JSON.stringify(request.modelId === 'gpt-live-transcribe' || request.modelId === 'gpt-transcribe' ? {
-			type: 'session.update',
-			session: {
-				type: 'transcription',
-				audio: {
-					input: {
-						format: { type: 'audio/pcm', rate: 24000 },
-						transcription: {
-							model: request.modelId,
-							...(request.language ? { languages: [request.language] } : {}),
-							...(request.prompt ? { prompt: request.prompt } : {}),
+		JSON.stringify(
+			request.modelId === 'gpt-live-transcribe' || request.modelId === 'gpt-transcribe'
+				? {
+						type: 'session.update',
+						session: {
+							type: 'transcription',
+							audio: {
+								input: {
+									format: { type: 'audio/pcm', rate: 24000 },
+									transcription: {
+										model: request.modelId,
+										...(request.language ? { languages: [request.language] } : {}),
+										...(request.prompt ? { prompt: request.prompt } : {}),
+									},
+									turn_detection: null,
+								},
+							},
 						},
-						turn_detection: null,
-					},
-				},
-			},
-		} : {
-			type: OPENAI_REALTIME_SESSION_UPDATE_EVENT,
-			session: {
-				input_audio_format: OPENAI_REALTIME_AUDIO_FORMAT,
-				input_audio_transcription: {
-					model: request.modelId,
-					...(request.language ? { language: request.language } : {}),
-					...(request.prompt ? { prompt: request.prompt } : {}),
-				},
-				turn_detection: null,
-			},
-		})
+					}
+				: {
+						type: OPENAI_REALTIME_SESSION_UPDATE_EVENT,
+						session: {
+							input_audio_format: OPENAI_REALTIME_AUDIO_FORMAT,
+							input_audio_transcription: {
+								model: request.modelId,
+								...(request.language ? { language: request.language } : {}),
+								...(request.prompt ? { prompt: request.prompt } : {}),
+							},
+							turn_detection: null,
+						},
+					}
+		)
 	);
 
 	return {
@@ -216,10 +220,7 @@ function createOpenAIRealtimeConnection(
 }
 
 function openAIRealtimeUrl(baseURL: string | undefined, modelId: string): string {
-	const url = new URL(
-		OPENAI_REALTIME_PATH,
-		`${baseURL ?? speechToTextBaseUrl('openai')}/`
-	);
+	const url = new URL(OPENAI_REALTIME_PATH, `${baseURL ?? speechToTextBaseUrl('openai')}/`);
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	if (modelId === 'gpt-live-transcribe' || modelId === 'gpt-transcribe') {
 		url.searchParams.set('intent', 'transcription');
