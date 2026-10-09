@@ -2,6 +2,8 @@ import { executionScope } from '../../../../../src/main/agent/execution/scope';
 import { recordingOwners } from '../../../../../src/main/agent/recordings/store';
 import type { Tool } from '../../../../../src/main/agent/types';
 import { desktopCapturer } from 'electron';
+import path from 'node:path';
+import os from 'node:os';
 const scope = {
 	ownerId: 'interactive:session',
 	source: 'interactive' as const,
@@ -19,8 +21,8 @@ jest.mock('../../../../../src/main/recorder', () => ({ microphone, camera, scree
 jest.mock('../../../../../src/main/shared/agent_location', () => ({
 	agentLocation: () => '/workspace',
 }));
-jest.mock('../../../../../src/main/shared/user_path', () => ({
-	resolveUserPath: () => '/workspace',
+jest.mock('../../../../../src/main/shared/library_location', () => ({
+	libraryLocation: () => '/library',
 }));
 
 import { cameraRecorderTool } from '../../../../../src/main/agent/tools/system/camera_recorder';
@@ -40,12 +42,12 @@ beforeEach(() => {
 	jest.mocked(desktopCapturer.getSources).mockResolvedValue([{ id: 'screen:1', name: 'Screen 1' }] as never);
 	for (const recorder of [microphone, camera, screen]) {
 		recordingOwners.delete(recorder as never);
-		recorder.start.mockReturnValue({
+		recorder.start.mockImplementation(({ url }: { url: string }) => ({
 			id,
-			url: '/workspace/capture.webm',
+			url,
 			status: 'recording',
 			duration: 1_000,
-		});
+		}));
 		recorder.get.mockReturnValue({
 			id,
 			url: '/workspace/capture.webm',
@@ -123,7 +125,7 @@ it.each([
 		id,
 		status: 'recording',
 	});
-	expect(screen.start).toHaveBeenCalledWith({ url: '/workspace/capture.webm', sourceId });
+	expect(screen.start).toHaveBeenCalledWith({ url: '/library/capture.webm', sourceId });
 });
 
 it('reports when no screen source is available', async () => {
@@ -148,7 +150,7 @@ it.each([
 		);
 
 		expect(recorder.start).toHaveBeenCalledWith({
-			url: '/workspace/capture.webm',
+			url: '/library/capture.webm',
 			...(_name === 'screen' ? { sourceId: 'screen:1' } : {}),
 		});
 	}
@@ -187,4 +189,25 @@ it.each([
 it('does not start recording without an execution owner', async () => {
 	await expect(cameraRecorderTool().run({ duration: 1 })).rejects.toThrow('owning session');
 	expect(camera.start).not.toHaveBeenCalled();
+});
+
+it.each([
+	['microphone', microphoneRecorderTool, microphone],
+	['camera', cameraRecorderTool, camera],
+	['screen', screenRecorderTool, screen],
+] as const)('honors requested destinations for %s recordings', async (name, create, recorder) => {
+	for (const [directory, target] of [
+		['captures', '/workspace/captures'],
+		['/Chosen # 雨', '/Chosen # 雨'],
+		['~/Movies', path.join(os.homedir(), 'Movies')],
+	]) {
+		await expect(ownedRun(create(), {
+			directory, filename: 'ignored/capture.webm', duration: 2,
+			...(name === 'screen' ? { sourceId: 'screen:1' } : {}),
+		})).resolves.toMatchObject({ path: path.join(target, 'capture.webm') });
+		expect(recorder.start).toHaveBeenLastCalledWith({
+			url: path.join(target, 'capture.webm'), duration: 2000,
+			...(name === 'screen' ? { sourceId: 'screen:1' } : {}),
+		});
+	}
 });

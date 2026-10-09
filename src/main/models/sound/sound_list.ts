@@ -21,9 +21,18 @@ export async function listSounds(): Promise<SoundFile[]> {
 			)
 			.map(async (entry) => {
 				const filePath = path.join(soundDir, entry.name);
+				if (path.extname(entry.name).toLowerCase() === '.webm') {
+					try {
+						const { parseFile } = await import('music-metadata');
+						const { format } = await parseFile(filePath, { skipCovers: true });
+						if (!format.hasAudio || format.hasVideo) return undefined;
+					} catch {
+						return undefined;
+					}
+				}
 				const stat = await fs.stat(filePath);
 				return { name: entry.name, path: filePath, createdAt: stat.birthtimeMs || stat.mtimeMs };
 			})
 	);
-	return files.sort((a, b) => b.createdAt - a.createdAt);
+	return files.filter((file): file is SoundFile => file !== undefined).sort((a, b) => b.createdAt - a.createdAt);
 }
