@@ -19,6 +19,8 @@ jest.mock('ws', () => {
 });
 
 describe('current OpenAI model contracts', () => {
+	afterEach(() => jest.restoreAllMocks());
+
 	it('generates GPT Image outputs with the selected format and quality', async () => {
 		const fetch = jest
 			.spyOn(globalThis, 'fetch')
