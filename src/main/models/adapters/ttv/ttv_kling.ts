@@ -46,7 +46,7 @@ export function createKlingVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 
 	return {
 		async generate(request) {
-			if (request.modelId === 'kling-3.0' || request.modelId === 'kling-3.0-turbo') {
+			if (['kling-3.0', 'kling-3.0-turbo', 'kling-2.6'].includes(request.modelId)) {
 				return generateKlingMedia(spec, `/text-to-video/${request.modelId}`, { ...request.options, prompt: request.prompt }, 'video', { auth: VideoProviderAuthError, request: VideoProviderRequestError }, request.signal);
 			}
 			if (!accessKey || !secretKey) throw new VideoProviderAuthError(`${spec.name} requires the API key in "accessKey:secretKey" format for legacy models.`);

@@ -9,7 +9,7 @@ export function createPikaSpeechAdapter(spec: SpeechProviderSpec): SpeechAdapter
 		async synthesize(request) {
 			const media = await generatePikaMedia(spec, 'pika/pika-audio/pika-speech', {
 				...request.options, script: request.text,
-				...(request.voice ? { voice_preset: request.voice } : {}),
+				voice_preset: request.voice ?? request.options?.voice_preset ?? 'calm_documentary_narrator',
 			}, { auth: SpeechProviderAuthError, request: SpeechProviderRequestError });
 			return speechResult(media.base64, media.mimeType, spec, request);
 		},

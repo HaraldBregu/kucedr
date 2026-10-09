@@ -25,7 +25,7 @@ export async function generatePikaMedia(
 		}
 		if (!job.id) throw new errors.request(`${provider.name}: generation was not accepted.`);
 		signal?.throwIfAborted();
-		await new Promise((resolve) => setTimeout(resolve, 5000));
+		if (attempt > 0) await new Promise((resolve) => setTimeout(resolve, 5000));
 		response = await fetch(`${baseURL}/v1/media/jobs/${encodeURIComponent(job.id)}`, { headers, signal });
 	}
 	throw new errors.request(`${provider.name}: generation timed out.`);
