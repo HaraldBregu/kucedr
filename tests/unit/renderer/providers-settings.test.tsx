@@ -109,15 +109,25 @@ beforeEach(() => {
 
 describe('Providers settings', () => {
 	it('rejects an unrelated Qwen gateway before saving credentials', async () => {
-		jest.mocked(actionableProviderCatalog).mockReturnValue([{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true }]);
+		jest
+			.mocked(actionableProviderCatalog)
+			.mockReturnValue([
+				{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true },
+			]);
 		const user = userEvent.setup();
-		render(<MemoryRouter><ProvidersPage section="models" /></MemoryRouter>);
+		render(
+			<MemoryRouter>
+				<ProvidersPage section="models" />
+			</MemoryRouter>
+		);
 		const card = screen.getByRole('heading', { name: 'Qwen' }).closest('[data-slot="item"]')!;
 		await user.click(within(card as HTMLElement).getByRole('button', { name: 'Connect' }));
 		await user.type(screen.getByLabelText('Workspace URL'), 'https://wrong.example.com');
 		await user.type(screen.getByLabelText('Qwen API key'), 'key');
 		await user.click(screen.getByRole('button', { name: 'Save' }));
-		expect(await screen.findByText('Enter a Qwen workspace URL for Singapore, Beijing, or Hong Kong.')).toBeInTheDocument();
+		expect(
+			await screen.findByText('Enter a Qwen workspace URL for Singapore, Beijing, or Hong Kong.')
+		).toBeInTheDocument();
 		expect(window.provider.set).not.toHaveBeenCalled();
 	});
 	it('saves a Qwen workspace gateway with the API key', async () => {

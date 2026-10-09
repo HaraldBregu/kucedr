@@ -130,7 +130,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						const current = currentEntries.find((entry) => entry.providerId === provider.id);
 						const savedApiKey = savedProviders.get(provider.id)?.apiKey ?? '';
 						const savedBaseUrl = savedProviders.get(provider.id)?.baseUrl ?? '';
-						const workspaceUrl = /\.maas\.aliyuncs\.com(?:\/|$)/i.test(savedBaseUrl) ? savedBaseUrl : '';
+						const workspaceUrl = /\.maas\.aliyuncs\.com(?:\/|$)/i.test(savedBaseUrl)
+							? savedBaseUrl
+							: '';
 						const saved = Boolean(savedApiKey.trim());
 
 						return {
