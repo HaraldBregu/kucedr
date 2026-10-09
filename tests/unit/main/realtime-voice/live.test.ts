@@ -69,6 +69,27 @@ describe('OpenAILiveVoiceAdapter', () => {
 		expect(JSON.parse(socket.sent[0]).session.instructions).toBe('Help.');
 	});
 
+	it('keeps a user question together when Live backchannels overlap the input transcript', async () => {
+		jest.useFakeTimers();
+		const socket = new FakeLiveSocket();
+		const events: Array<{ type: string; itemId?: string; transcript?: string }> = [];
+		const pending = new OpenAILiveVoiceAdapter({ id: 'openai', name: 'OpenAI', apiKey: 'key' }, () => socket, 1000).connect({ modelId: 'gpt-live-1', voice: 'marin', instructions: '', history: [], tools: [] }, (event) => events.push(event));
+		socket.emit('open');
+		socket.emit('message', JSON.stringify({ type: 'session.started' }));
+		const connection = await pending;
+		for (const delta of ['What is ', 'two ', 'plus two?']) {
+			socket.emit('message', JSON.stringify({ type: 'session.input_transcript.delta', delta }));
+			socket.emit('message', JSON.stringify({ type: 'session.output_audio.delta', delta: 'AQI=' }));
+			await jest.advanceTimersByTimeAsync(100);
+		}
+		expect(events.filter((event) => event.type === 'user_transcript_final')).toHaveLength(0);
+		await jest.advanceTimersByTimeAsync(2000);
+		expect(events.filter((event) => event.type === 'user_transcript_final')).toEqual([{ type: 'user_transcript_final', itemId: 'live-input-0', transcript: 'What is two plus two?' }]);
+		expect(events.filter((event) => event.type === 'assistant_audio_done')).toHaveLength(1);
+		await connection.stop();
+		jest.useRealTimers();
+	});
+
 	it('ignores continuous silent audio and completes spoken output without a server done event', async () => {
 		jest.useFakeTimers();
 		const socket = new FakeLiveSocket();

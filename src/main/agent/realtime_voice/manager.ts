@@ -307,6 +307,7 @@ export class RealtimeVoiceManager {
 		if (event.type === 'user_transcript_update') {
 			const transcript = event.transcript.trim();
 			if (transcript) {
+				active.conversation.beginUserTurn(event.itemId);
 				this.emit(active, {
 					type: 'user_turn',
 					sessionId,

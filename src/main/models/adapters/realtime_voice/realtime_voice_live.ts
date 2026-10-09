@@ -267,11 +267,11 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 	private handle(event: Record<string, unknown>): void {
 		if (event.type === 'session.input_transcript.delta' && typeof event.delta === 'string') {
 			if (!this.inputTurnActive) {
-				this.finishOutputTurn();
 				this.inputTurnActive = true;
 				this.emit({ type: 'input_speech_started', itemId: this.inputItemId() });
 			}
 			this.inputTranscript += event.delta;
+			this.emit({ type: 'user_transcript_update', itemId: this.inputItemId(), transcript: this.inputTranscript });
 			if (this.inputTimer) clearTimeout(this.inputTimer);
 			this.inputTimer = setTimeout(() => this.finishInputTurn(), TURN_PAUSE_MS);
 			this.inputTimer.unref?.();
@@ -280,12 +280,14 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 		}
 		if (event.type === 'session.output_audio.delta' && typeof event.delta === 'string') {
 			const audio = Buffer.from(event.delta, 'base64');
-			if (audio.every((byte) => byte === 0)) return;
-			this.finishInputTurn();
+			const silent = audio.every((byte) => byte === 0);
+			if (silent && !this.outputTurnActive) return;
 			this.outputTurnActive = true;
-			if (this.outputTimer) clearTimeout(this.outputTimer);
-			this.outputTimer = setTimeout(() => this.finishOutputTurn(), TURN_PAUSE_MS + audio.length / 48);
-			this.outputTimer.unref?.();
+			if (!silent) {
+				if (this.outputTimer) clearTimeout(this.outputTimer);
+				this.outputTimer = setTimeout(() => this.finishOutputTurn(), TURN_PAUSE_MS + audio.length / 48);
+				this.outputTimer.unref?.();
+			}
 			const itemId = this.outputItemId();
 			this.emit({
 				type: 'assistant_audio_delta',
@@ -296,7 +298,6 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			return;
 		}
 		if (event.type === 'session.output_transcript.delta' && typeof event.delta === 'string') {
-			this.finishInputTurn();
 			this.outputTurnActive = true;
 			if (this.outputTimer) clearTimeout(this.outputTimer);
 			this.outputTimer = setTimeout(() => this.finishOutputTurn(), TURN_PAUSE_MS);
