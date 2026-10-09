@@ -53,7 +53,7 @@ test('context ring follows real local usage, draft changes, model selection and 
 			'aria-valuetext',
 			/^Context: 16[,.]384 \/ 32[,.]768 tokens \(50% used\)$/
 		);
-		await ring.locator('..').focus();
+		await ring.locator('..').hover();
 		await expect(page.getByRole('tooltip')).toContainText(/16[,.]384 \/ 32[,.]768/);
 		await page.screenshot({ path: '/private/tmp/kucedr-context-ring.png' });
 		await editor.fill('x'.repeat(3000));
