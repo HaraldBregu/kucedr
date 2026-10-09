@@ -351,7 +351,7 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 	await expect(page).toHaveURL(/#\/home$/);
 });
 
-test('Workspace breadcrumbs browse folders and sibling files', async () => {
+test('Workspace breadcrumbs browse folders and sibling files', async ({ browserName: _browserName }, testInfo) => {
 	const longName = `${'very-long-file-name-'.repeat(9)}.md`;
 	await page.evaluate(async (name) => {
 		await window.agent.createWorkspaceDirectory('', 'CrumbPicker');
@@ -366,6 +366,15 @@ test('Workspace breadcrumbs browse folders and sibling files', async () => {
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
 	await workspace.getByText('CrumbPicker').click();
 	await workspace.getByRole('button', { name: 'one.md' }).click();
+	await page.getByRole('button', { name: 'Find in file', exact: true }).click();
+	const findInput = page.getByRole('textbox', { name: 'Find in file', exact: true });
+	await findInput.fill('one');
+	await findInput.press('ArrowLeft');
+	await expect(findInput).toBeFocused();
+	await expect(findInput).toHaveValue('one');
+	await expect(findInput).toHaveCSS('outline-style', 'none');
+	await page.screenshot({ path: testInfo.outputPath('workspace-find.png') });
+	await findInput.press('Escape');
 	await page.getByRole('button', { name: 'Browse CrumbPicker' }).click();
 	const folderTree = page.getByRole('tree', { name: 'Workspace files' });
 	await expect(folderTree.getByRole('treeitem', { name: 'one.md' })).toBeVisible();

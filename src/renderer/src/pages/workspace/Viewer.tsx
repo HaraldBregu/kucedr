@@ -127,7 +127,7 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 					<WorkspaceBreadcrumb entries={entries} path={file.path} onFileSelect={onFileSelect} />
 					{searchable ? findOpen ? (
 						<div role="search" className="ml-auto flex min-w-0 items-center gap-1">
-							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs sm:w-40" onChange={(event) => {
+							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-40" onChange={(event) => {
 								setFindQuery(event.target.value);
 								if (event.target.value) editorRef.current?.find(event.target.value, 'next');
 								else editorRef.current?.clearSearch();
