@@ -11,6 +11,7 @@ import {
 	MousePointerClick,
 	PanelTop,
 	SunMoon,
+	Volume2,
 	AppWindow,
 } from 'lucide-react';
 import { WINDOW_SIZES, type WindowSize } from '../../../../../../shared/window_size';
@@ -53,7 +54,7 @@ type TrayClickAction = (typeof TRAY_CLICK_ACTION_OPTIONS)[number]['value'];
 
 const SettingsPage: React.FC = () => {
 	const { t } = useTranslation();
-	const { language, setLanguage, theme, setTheme } = useApp();
+	const { language, setLanguage, theme, setTheme, soundFeedbackEnabled, setSoundFeedbackEnabled } = useApp();
 	const [trayEnabled, setTrayEnabled] = useState(true);
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
@@ -140,6 +141,19 @@ const SettingsPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.application.actions')}>
 				<SettingsPanel>
+					<SettingsRow
+						title={t('settings.application.soundFeedback')}
+						description={t('settings.application.soundFeedbackDescription')}
+						media={<Volume2 className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Switch
+								checked={soundFeedbackEnabled}
+								onCheckedChange={setSoundFeedbackEnabled}
+								aria-label={t('settings.application.soundFeedback')}
+							/>
+						}
+					/>
 					<SettingsRow
 						title={t('settings.application.menuBar')}
 						description={t('settings.application.menuBarDescription')}

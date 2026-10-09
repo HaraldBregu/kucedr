@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
 import type { AgentSessionSummary } from '@/lib/compat';
 import { cn } from '@/lib/utils';
+import { playSound } from '@/lib/sounds/play';
 
 interface HomeSidebarProps {
 	readonly refreshKey: string;
@@ -113,6 +114,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							className="px-2.5 text-sm"
 							aria-label={t('navigationBar.newChat', 'New chat')}
 							onClick={() => {
+								playSound('navigate');
 								setSessionId(crypto.randomUUID());
 								if (sessions.length === 0)
 									setSessionTitle?.(t('navigationBar.newChat', 'New chat'));

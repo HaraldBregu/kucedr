@@ -21,6 +21,7 @@ import {
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
 import type { AgentSessionSummary } from '@/lib/compat';
 import { revealSelection } from '@/lib/selection';
+import { playSound } from '@/lib/sounds/play';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
@@ -142,6 +143,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 							<DropdownMenuItem
 								className="gap-1 px-2 py-1 text-xs"
 								onSelect={() => {
+									playSound('navigate');
 									const newSessionId = crypto.randomUUID();
 									setSessionId(newSessionId);
 									setSessionTitle?.(newChatLabel, newSessionId);
@@ -203,7 +205,10 @@ export const NavigationBar = React.memo(function NavigationBar({
 						variant="ghost"
 						size="icon"
 						className="size-8 rounded-full"
-						onClick={openCommandMenu}
+						onClick={() => {
+							playSound('navigate');
+							openCommandMenu();
+						}}
 						aria-label={searchLabel}
 					>
 						<Search className="size-4" strokeWidth={1.8} />

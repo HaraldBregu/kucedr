@@ -5,6 +5,7 @@ import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base
 import { Badge } from '@/components/ui/badge';
 import { SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
+import { playSound } from '@/lib/sounds/play';
 import type { SettingsNavigationItem } from './navigation';
 
 interface GroupProps {
@@ -44,6 +45,7 @@ export function Group({ items, titleKey, activePath, className }: GroupProps): R
 						<SidebarMenuItem key={item.path}>
 							<Link
 								to={item.path}
+								onClick={() => playSound('navigate')}
 								data-active={isActive ? '' : undefined}
 								aria-current={isActive ? 'page' : undefined}
 								className={cn(

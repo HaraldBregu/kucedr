@@ -9,6 +9,8 @@ import React, {
 	type ReactNode,
 } from 'react';
 import i18n from '../i18n';
+import { configureSounds } from '@/lib/sounds/configure';
+import { playSound } from '@/lib/sounds/play';
 import type {
 	AppLanguage,
 	AppTheme,
@@ -27,6 +29,8 @@ export interface AppContextValue {
 	setLanguage: (language: AppLanguage) => void;
 	theme: AppTheme;
 	setTheme: (theme: AppTheme) => void;
+	soundFeedbackEnabled: boolean;
+	setSoundFeedbackEnabled: (enabled: boolean) => void;
 	voiceAgentAppearance: VoiceAgentAppearance;
 	setVoiceAgentAppearance: (appearance: VoiceAgentAppearance) => void;
 	resetState: () => void;
@@ -80,6 +84,7 @@ function applyTheme(theme: AppTheme): void {
 const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export function AppProvider({ children, initialState }: AppProviderProps): React.JSX.Element {
+	const [soundFeedbackEnabled, setSoundFeedbackEnabledState] = useState(false);
 	const [language, setLanguageState] = useState<AppLanguage>(
 		initialState?.language ?? readPersistedLanguage()
 	);
@@ -95,7 +100,17 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 	const hydrated = useRef(false);
 
 	const setLanguage = useCallback((next: AppLanguage) => setLanguageState(next), []);
-	const setTheme = useCallback((next: AppTheme) => setThemeState(next), []);
+	const setTheme = useCallback((next: AppTheme) => {
+		if (next === theme) return;
+		playSound('theme');
+		setThemeState(next);
+	}, [theme]);
+	const setSoundFeedbackEnabled = useCallback((enabled: boolean) => {
+		configureSounds(enabled);
+		setSoundFeedbackEnabledState(enabled);
+		void window.app.setSoundFeedbackEnabled(enabled);
+		if (enabled) playSound('navigate');
+	}, []);
 	const setVoiceAgentAppearance = useCallback(
 		(next: VoiceAgentAppearance) => setVoiceAgentAppearanceState(next),
 		[]
@@ -104,6 +119,22 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 		setLanguageState(readPersistedLanguage());
 		setThemeState(readPersistedTheme());
 		setVoiceAgentAppearanceState(readPersistedVoiceAgentAppearance());
+	}, []);
+
+	useEffect(() => {
+		let active = true;
+		const apply = (enabled: boolean): void => {
+			if (!active) return;
+			configureSounds(enabled);
+			setSoundFeedbackEnabledState(enabled);
+		};
+		const unsubscribe = window.app.onSoundFeedbackEnabledChanged(apply);
+		void window.app.getSoundFeedbackEnabled().then(apply);
+		return () => {
+			active = false;
+			unsubscribe();
+			configureSounds(false);
+		};
 	}, []);
 
 	useEffect(() => {
@@ -163,6 +194,8 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 			setLanguage,
 			theme,
 			setTheme,
+			soundFeedbackEnabled,
+			setSoundFeedbackEnabled,
 			voiceAgentAppearance,
 			setVoiceAgentAppearance,
 			resetState,
@@ -172,6 +205,8 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 			setLanguage,
 			theme,
 			setTheme,
+			soundFeedbackEnabled,
+			setSoundFeedbackEnabled,
 			voiceAgentAppearance,
 			setVoiceAgentAppearance,
 			resetState,
