@@ -89,13 +89,13 @@ describe('LLM attachment payload builders', () => {
 
 	it('rejects unsupported image MIME types instead of silently coercing them', () => {
 		const tiff = { type: 'image' as const, mimeType: 'image/tiff', base64: 'SUkq' };
-		expect(() => llmBuildResponseInput(transcript(gif as typeof image))).toThrow(
+		expect(() => llmBuildResponseInput(transcript(tiff as typeof image))).toThrow(
 			'unsupported image MIME type image/tiff'
 		);
-		expect(() => llmBuildAnthropicMessages(transcript(gif as typeof image))).toThrow(
+		expect(() => llmBuildAnthropicMessages(transcript(tiff as typeof image))).toThrow(
 			'unsupported image MIME type image/tiff'
 		);
-		expect(() => llmBuildChatMessages('', transcript(gif as typeof image))).toThrow(
+		expect(() => llmBuildChatMessages('', transcript(tiff as typeof image))).toThrow(
 			'unsupported image MIME type image/tiff'
 		);
 	});
