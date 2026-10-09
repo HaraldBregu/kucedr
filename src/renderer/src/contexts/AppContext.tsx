@@ -85,6 +85,7 @@ const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export function AppProvider({ children, initialState }: AppProviderProps): React.JSX.Element {
 	const [soundFeedbackEnabled, setSoundFeedbackEnabledState] = useState(false);
+	const soundPreferenceVersion = useRef(0);
 	const [language, setLanguageState] = useState<AppLanguage>(
 		initialState?.language ?? readPersistedLanguage()
 	);
@@ -106,6 +107,7 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 		setThemeState(next);
 	}, [theme]);
 	const setSoundFeedbackEnabled = useCallback((enabled: boolean) => {
+		soundPreferenceVersion.current += 1;
 		configureSounds(enabled);
 		setSoundFeedbackEnabledState(enabled);
 		void window.app.setSoundFeedbackEnabled(enabled);
@@ -123,13 +125,19 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 
 	useEffect(() => {
 		let active = true;
+		const version = soundPreferenceVersion.current;
 		const apply = (enabled: boolean): void => {
 			if (!active) return;
 			configureSounds(enabled);
 			setSoundFeedbackEnabledState(enabled);
 		};
-		const unsubscribe = window.app.onSoundFeedbackEnabledChanged(apply);
-		void window.app.getSoundFeedbackEnabled().then(apply);
+		const unsubscribe = window.app.onSoundFeedbackEnabledChanged((enabled) => {
+			soundPreferenceVersion.current += 1;
+			apply(enabled);
+		});
+		void window.app.getSoundFeedbackEnabled().then((enabled) => {
+			if (version === soundPreferenceVersion.current) apply(enabled);
+		});
 		return () => {
 			active = false;
 			unsubscribe();
