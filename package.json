@@ -128,7 +128,7 @@
 		"@tiptap/markdown": "^3.31.3",
 		"@tiptap/pm": "^3.31.3",
 		"@tiptap/react": "^3.31.3",
-		"@tiptap/starter-kit": "^3.31.3",
+		"@tiptap/starter-kit": "^3.31.4",
 		"@types/three": "^0.184.1",
 		"archiver": "^7.0.1",
 		"chokidar": "^5.0.0",
