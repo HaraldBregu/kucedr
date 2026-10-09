@@ -4,6 +4,7 @@ import { createDeepgramSpeechAdapter } from './tts_deepgram';
 import { createElevenLabsSpeechAdapter } from './tts_elevenlabs';
 import { createGoogleSpeechAdapter } from './tts_google';
 import { createMiniMaxSpeechAdapter } from './tts_minimax';
+import { createPikaSpeechAdapter } from './tts_pika';
 import { createMistralSpeechAdapter } from './tts_mistral';
 import { createOpenAISpeechAdapter } from './tts_openai';
 import { SpeechProviderUnsupportedError } from './tts_errors';
@@ -17,6 +18,7 @@ const SPEECH_ADAPTERS: Readonly<
 	elevenlabs: createElevenLabsSpeechAdapter,
 	google: createGoogleSpeechAdapter,
 	minimax: createMiniMaxSpeechAdapter,
+	pika: createPikaSpeechAdapter,
 	mistral: createMistralSpeechAdapter,
 	openai: createOpenAISpeechAdapter,
 };
