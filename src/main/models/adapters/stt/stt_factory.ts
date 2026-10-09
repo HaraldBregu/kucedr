@@ -3,6 +3,7 @@ import { createCohereSttAdapter } from './stt_cohere';
 import { normalizeProviderId } from '../../../../shared/provider_types';
 import { createDeepgramSttAdapter } from './stt_deepgram';
 import { createElevenLabsSttAdapter } from './stt_elevenlabs';
+import { createGoogleSttAdapter } from './stt_google';
 import { createMistralSttAdapter } from './stt_mistral';
 import { createOpenAISttAdapter } from './stt_openai';
 import { createQwenSttAdapter } from './stt_qwen';
@@ -14,6 +15,7 @@ const STT_ADAPTERS: Readonly<Record<string, (spec: SttProviderSpec) => SttAdapte
 	cartesia: createCartesiaSttAdapter,
 	cohere: createCohereSttAdapter,
 	deepgram: createDeepgramSttAdapter,
+	google: createGoogleSttAdapter,
 	elevenlabs: createElevenLabsSttAdapter,
 	mistral: createMistralSttAdapter,
 	openai: createOpenAISttAdapter,
