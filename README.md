@@ -1,20 +1,48 @@
-<p align="center">
-  <img src="resources/icons/icon.svg" alt="Kucedr logo" width="144" />
-</p>
-
 <h1 align="center">Kucedr</h1>
 
 <p align="center">
-  <strong>Your desktop AI copilot for everyday tasks.</strong>
+  <a href="https://www.kucedr.com/">
+    <img src="resources/readme/header.svg" alt="Kucedr — One personal assistant. Unlimited tools." width="1280" />
+  </a>
 </p>
 
-Kucedr is a cross-platform desktop AI assistant that turns conversations into actions. Type or speak a request, attach images or PDFs, and let the agent work with files, run commands, research the web, create media, or automate a recurring task.
+<p align="center">
+  Your personal AI assistant for writing, research, coding, and creative work.<br />
+  Bring your files, choose your models, and turn a conversation into action.
+</p>
 
-You choose the providers and models behind each AI capability. Kucedr keeps its settings,
-conversations, and workspace data on your machine. Model, database, and search keys are stored in local provider settings. Storage secret keys
-and persistent account sessions use secure device storage. Requests are sent only to the AI providers and connected services you configure.
+<p align="center">
+  <a href="https://github.com/HaraldBregu/kucedr/releases"><strong>Download</strong></a> ·
+  <a href="https://www.kucedr.com/">Website</a> ·
+  <a href="docs/README.md">Documentation</a> ·
+  <a href="CONTRIBUTING.md">Contributing</a> ·
+  <a href="SECURITY.md">Security</a>
+</p>
 
-Read the [documentation](docs/README.md) for the application guide, bundled apps, architecture, and development workflow.
+<p align="center">
+  <strong>macOS · Windows · Linux</strong><br />
+  Local profile · Your choice of AI providers · <a href="LICENSE">MIT license</a>
+</p>
+
+## Meet Kucedr
+
+Kucedr is a desktop AI assistant that brings conversation, tools, and your personal context into
+one workspace. Ask it to summarize a document, research a question, edit project files, or create
+images, audio, and video. Type or speak, attach files, and follow the agent's tool activity as it
+works through the task.
+
+Choose providers and models separately for chat, voice, and media. Shape the assistant with
+instructions, memory, and a searchable knowledge base; connect services through MCP; and schedule
+recurring tasks and health checks while Kucedr is running. Extend your workspace with focused apps,
+reusable skills, and compatible remote agents.
+
+Conversations, settings, memory, and workspace files live in your local Kucedr profile. A Kucedr
+account is optional for local use. Tasks that use external models or connected services send the
+required inputs to those services; selected folders can also be backed up or synchronized remotely.
+See [Control and Privacy](#control-and-privacy) for credential handling and data boundaries.
+
+Start with the [application guide](docs/APPLICATION.md), or explore the full
+[documentation index](docs/README.md).
 
 ## What Kucedr Can Do
 
@@ -34,12 +62,14 @@ Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces an
 
 ## Control and Privacy
 
-- Model, database, and search keys are stored as entered in local settings. Storage secret keys
-  and account sessions have separate secure-storage protections.
-- Prompts, attachments, and tool data may be sent to the providers, MCP servers, websites, or messaging channels you configure.
-- File writes, edits, patches, and command execution are governed by the agent permission policy.
+- Model, database, and search API keys are stored in plaintext in local provider settings.
+- Storage secret keys require secure device storage. MCP secrets, channel tokens, and account
+  sessions use encrypted device storage when available, with memory-only fallback for those secrets.
+- Prompts, attachments, and tool data may be sent to the providers, MCP servers, websites, or messaging channels you configure. Backup and version sync upload selected folder data to configured storage.
+- File writes, edits, patches, and command execution follow configured permissions and trusted
+  locations. MCP approval is configured per server; permitted actions may run without a new prompt.
 - Tool activity is streamed into the conversation so you can follow what the agent is doing.
-- Kucedr does not claim formal certification for regulated data.
+- Read the [security policy](SECURITY.md) for the implemented protections and their limits.
 
 ## Technology
 
@@ -50,6 +80,14 @@ Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces an
 
 ## Getting Started
 
+### Download the desktop app
+
+Choose a package for your operating system from [GitHub Releases](https://github.com/HaraldBregu/kucedr/releases).
+After launch, configure a model provider and select an assistant model. You can continue local-only
+without an account; provider usage may require your own credentials and incur charges.
+
+### Run from source
+
 Requirements: Node.js 22.19+ and npm 11.5.1+.
 
 ```bash
@@ -58,17 +96,20 @@ npm run dev
 ```
 
 The root install includes the Electron app, `@kucedr/sdk`, and `@kucedr/cli` through npm
-workspaces and one lockfile.
+workspaces and one lockfile. The manifest also declares a `website` workspace, but that
+directory is absent in this checkout; website scripts require it to be supplied separately.
 
 On first launch, follow the [Start Page Flow](docs/ui/START.md) to sign in or continue local-only,
 save a model-provider API key, and select the provider and model for the assistant. Search,
 database, speech, and media configuration are optional and can be completed later in Settings.
 Configure an S3-compatible provider and select folders for backup in **Settings → Storage**.
-Folder backup does not require account sign-in.
+Folder backup does not require account sign-in. Version history sync requires sign-in and a
+configured backend; see [Cloud file synchronization](docs/STORAGE_SYNC.md).
 See [Home UI](docs/ui/HOME.md) for the chat workspace's states and interactions.
 See [Settings UI](docs/ui/SETTINGS.md) for configuration navigation and behavior.
 
-For Linux environments that require Electron sandbox changes, run:
+If the normal development command cannot start on your Linux host, the following local-development
+command disables Electron's sandbox. Do not use this override for production distribution:
 
 ```bash
 npm run dev-linux
@@ -88,12 +129,17 @@ kucedr install package-one
 kucedr tui
 ```
 
-Inside the TUI, enter `/install package-one`. See
+The CLI validates and stores plugin packages, but the desktop runtime does not automatically
+activate contributions from the CLI install directory. See [Plugins](docs/PLUGINS.md) for supported
+runtime paths. Inside the TUI, enter `/install package-one`. See
 [`packages/cli/README.md`](packages/cli/README.md) for the command and plugin-install contracts.
 
 ## Quality Checks
 
-Run the main local checks before submitting changes:
+For documentation-only changes, check the touched Markdown with Prettier and verify relative links.
+See [Contributing](CONTRIBUTING.md#documentation-changes) for the workflow.
+
+For code changes, run the main local checks before submitting:
 
 ```bash
 npm run quality:check
@@ -127,7 +173,7 @@ If no matching Kucedr artifact has been published, the script reports that inste
 an older Friday release or an installer package.
 
 On Windows, download `Kucedr-Portable-<version>-x64.exe` and run it directly. It temporarily
-extracts its signed application files while Kucedr is running, but does not install shortcuts,
+extracts its application files while Kucedr is running, but does not install shortcuts,
 file associations, or uninstall records and does not require administrator access.
 
 On Linux, download the AppImage, mark it executable, and launch it. If AppImage mounting or FUSE
@@ -169,7 +215,8 @@ See [SECURITY.md](SECURITY.md) for the security policy and vulnerability reporti
 
 ## Releases
 
-The Electron app, SDK, and CLI are versioned and deployed independently from this repository.
+The Electron app, SDK, and CLI are versioned independently. Checked-in automated release workflows
+are currently disabled; follow the local release checks before publishing.
 See [Development, Testing, and Deployment](docs/DEVELOPMENT.md) for local setup, test
 commands, normal pushes, tag conventions, npm trusted publishing, desktop signing, and
 recovery procedures.

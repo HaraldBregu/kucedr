@@ -1,48 +1,97 @@
 # Security Policy
 
+Kucedr is a desktop AI assistant that can work with local files, execute commands, and connect to
+external services. This policy describes supported releases, private vulnerability reporting,
+and the security boundaries in the current application.
+
 ## Supported Versions
 
-| Version              | Supported |
-| -------------------- | --------- |
-| 1.x (latest release) | ✅        |
-| Older releases       | ❌        |
+Only the latest published desktop release receives security fixes. Older releases are unsupported;
+update before checking whether an issue is already fixed.
 
-Only the latest release receives security fixes.
+For SDK, CLI, and bundled MCP reports, include the affected package name and version alongside the
+desktop version. Find desktop builds on [GitHub Releases](https://github.com/HaraldBregu/kucedr/releases).
 
 ## Reporting a Vulnerability
 
-Please do **not** report security vulnerabilities through public GitHub issues.
+Email [harald.bregu@gmail.com](mailto:harald.bregu@gmail.com). Do not disclose vulnerabilities,
+credentials, or exploit details in public issues or pull requests.
 
-Instead, email **harald.bregu@gmail.com** with:
+Include:
 
-- A description of the vulnerability and its impact.
-- Steps to reproduce (proof of concept if possible).
-- The affected version, platform, and configuration.
+- A description of the issue, impact, and affected security boundary.
+- Desktop or package version, operating system, and relevant configuration.
+- Minimal reproduction steps or a proof of concept using disposable data.
+- Redacted logs or screenshots, if needed to demonstrate the result.
+- Whether the issue is reproducible on the latest release.
 
-You should receive an acknowledgment within a few days. Please allow a reasonable disclosure window for a fix to be developed and released before any public disclosure.
+Do not send live API keys, tokens, or private documents. The maintainer will review the report,
+request additional details if needed, and coordinate a fix and disclosure. Please allow time for
+that process before publishing exploit details.
 
 ## Scope
 
-Kucedr handles the following sensitive data locally on the user's machine:
+Reports about these repository components are in scope:
 
-- AI provider API keys
-- Connector credentials (for example, Google and Microsoft)
-- Channel configuration and secrets (e.g. bot tokens)
-- Agent conversation history and session data
-- Local workspace files
+- Electron sandbox, context isolation, navigation, preload, or IPC bypasses.
+- Unauthorized file access, path traversal, command execution, or permission bypasses.
+- Exposure or unauthorized use of provider credentials, MCP OAuth tokens, channel tokens, or account sessions.
+- Cross-app access to another app's data or privileged Coder and terminal APIs.
+- Unauthorized remote-agent or channel access, including allowlist bypasses.
+- Exposure of conversations, memory, Library files, Workspace data, or synchronized content.
+- Vulnerabilities in the SDK, CLI plugin handling, bundled MCP servers, or checked-in backend functions.
 
-Reports involving exposure, exfiltration, or unauthorized use of any of the above are in scope, as are Electron shell escapes (sandbox, context isolation, or IPC bypasses) and permission-check bypasses for tool or connector actions.
+For issues in an external provider or MCP service, report to that service as well. Include how
+Kucedr contributes to the issue when reporting it here.
 
-## Security Baseline
+## Credential Handling
 
-The application is built against the following hardening baseline:
+Credentials do not all use the same storage mechanism:
 
-- Renderer windows run with sandboxing, context isolation, disabled Node integration, and web security enabled; windows are created through `WindowFactory` to keep these defaults consistent.
-- Preload APIs expose narrow, typed IPC methods only.
-- Secrets are not committed, logged, rendered, or stored in plaintext where avoidable; API keys are not shown back in plain text after saving.
-- Tool and connector actions that write, delete, publish, or access private data must pass explicit permission checks; non-interactive runs deny permission-requiring actions by default.
-- Channels enforce per-channel access control (e.g. direct-message allowlists).
+| Data                                            | Current behavior                                                                                            |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Model, database, and search API keys            | Stored in plaintext in local provider settings under `~/.kucedr/providers/settings.json`                    |
+| Storage provider secret keys                    | Encrypted with Electron `safeStorage`; saving or opening them requires secure storage availability          |
+| MCP secrets and local-server environment values | Encrypted with `safeStorage` when available; otherwise retained in memory                                   |
+| Channel tokens                                  | Encrypted with `safeStorage` when available; otherwise retained in memory                                   |
+| Account sessions                                | Encrypted when secure storage is available; fall back to memory when it is unavailable or persistence fails |
 
-## Disclaimer
+The secure-storage availability check rejects Linux's `basic_text` backend. Memory-only secrets
+are not retained across app restarts. These protections depend on the operating system and do not
+protect against a compromised desktop account.
 
-Kucedr does not currently claim any formal regulated-data certification. Data sent to third-party AI providers or connected services is governed by those providers' own terms.
+Conversations, memory, settings, and workspace files are local data, not an encrypted vault.
+Protect the Kucedr profile, exported files, and backups accordingly. Do not include secrets in
+app-store JSON values, prompts, shared logs, or committed MCP manifests.
+
+## Execution and Integration Boundaries
+
+- Renderer windows created by `WindowFactory` use sandboxing, context isolation, disabled Node
+  integration, and web security. Preload exposes typed IPC methods; privileged handlers validate callers.
+- Agent reads, writes, edits, patches, and commands follow configured tool and directory permissions.
+  Trusted locations, prior authorization, or explicit allow rules can permit actions without another prompt.
+- Actions that resolve to `ask` are denied when a run has no interactive window. This does not prevent
+  background tasks from using actions already allowed by their configuration.
+- MCP approval follows each server's settings. Local stdio servers run as local processes, and remote
+  servers receive data supplied to their tools. Review servers and their approval settings before enabling them.
+- Channel access follows configured direct-message policies and group allowlists. An open direct-message
+  policy permits any sender; choose the access policy appropriate for your account.
+- Coder tools and native terminal processes can execute with the desktop user's authority. A project
+  working directory is not a security sandbox. See the [SDK boundaries](packages/sdk/README.md#whats-available).
+
+The renderer sandbox does not isolate every agent tool, installed app API, or local connector from
+the rest of the machine. Install trusted extensions and review permissions before enabling automation.
+
+## Data Sent to Services
+
+Local use does not require a Kucedr account. External model requests, embeddings, MCP calls,
+web browsing, and messaging can send task inputs or results to the configured services.
+Their retention and processing policies apply to that data.
+
+Folder backup and version history sync upload selected content to configured storage. Version sync
+also sends saved S3 credentials to the authenticated backend registration function for encrypted
+server storage. See [Cloud file synchronization](docs/STORAGE_SYNC.md) for the deployment and data flow.
+
+Kucedr does not claim formal certification for regulated data. See the
+[application guide](docs/APPLICATION.md) and [contribution requirements](CONTRIBUTING.md#security-requirements)
+for related workflows.

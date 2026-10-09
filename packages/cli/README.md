@@ -1,6 +1,8 @@
 # @kucedr/cli
 
-Command-line and terminal interface for Kucedr.
+Launch the Kucedr desktop assistant, install plugin packages, and use an interactive terminal interface.
+See the [project overview](../../README.md) for the desktop app and [Plugins](../../docs/PLUGINS.md)
+for extension capabilities and activation limits.
 
 ## Install
 
@@ -43,6 +45,16 @@ folder:
 <CLI data directory>/plugins/<plugin-id>/
 ```
 
+The CLI data directory defaults to:
+
+| Platform | Directory                                                   |
+| -------- | ----------------------------------------------------------- |
+| macOS    | `~/Library/Application Support/Kucedr`                      |
+| Windows  | `%APPDATA%/Kucedr`                                          |
+| Linux    | `$XDG_CONFIG_HOME/Kucedr`, or `~/.config/Kucedr` when unset |
+
+The desktop's personal profile is separate, under `~/.kucedr`.
+
 The manifest and every contributed file are validated before the staged directory is renamed into
 place. Existing plugins are left untouched unless `--force` is passed. The current desktop runtime
 does not scan this directory or activate its contributions, even after a restart. The CLI still
@@ -54,7 +66,8 @@ desktop executable is in a custom location, including a downloaded Linux AppImag
 
 ## Development
 
-Run these commands from the repository root:
+Repository development requires Node.js 22.19+ and npm 11.5.1+; see the
+[development guide](../../docs/DEVELOPMENT.md). Run these commands from the repository root:
 
 ```sh
 npm ci

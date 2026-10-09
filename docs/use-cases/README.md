@@ -1,5 +1,8 @@
 # Kucedr use-case tests
 
+These are manual acceptance scenarios for a running desktop application. Automated checks and
+setup commands are documented in [Development](../DEVELOPMENT.md).
+
 Use these scenarios to test the desktop app from the user's point of view. Each heading is a separate test with a setup step, a prompt or action, and an observable pass condition. Start with a [configured assistant](../APPLICATION.md#get-started), use a new chat for each scenario unless the steps say otherwise, and inspect the expanded tool activity instead of relying only on the final answer.
 
 Replace values in angle brackets with your own disposable test data. Record the selected model/provider, tool name, result or error, and saved output path when applicable. A model answer without the requested tool call does not pass a tool scenario. Provider credentials, network access, permissions, and usage charges can affect the result. See the [provider reference](../PROVIDERS.md) for executable models; catalog-only models are not pass candidates.

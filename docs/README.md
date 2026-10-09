@@ -1,6 +1,9 @@
 # Kucedr documentation
 
-Start here for the desktop application, its bundled apps, integrations, and development workflow.
+Kucedr brings conversations, creative work, coding, and connected services into a personal desktop
+AI workspace. Start here for the application, its bundled apps, integrations, and development workflow.
+For the product overview and download links, see the [project README](../README.md) and
+[Kucedr website](https://www.kucedr.com/).
 These guides describe the checked-in implementation; provider availability and operating-system permissions can affect what runs on a particular device.
 
 ## Use Kucedr

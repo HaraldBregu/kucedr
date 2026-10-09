@@ -1,6 +1,8 @@
 # @kucedr/sdk
 
-Typed client for app-data access in Kucedr.
+Build embedded apps that use Kucedr's typed data, workspace, model, and window APIs.
+See the [Apps guide](../../docs/APPS.md) for the host workflow and the
+[project overview](../../README.md) for Kucedr itself.
 
 This package exposes typed Kucedr APIs for embedded app windows and an optional HTTP client
 for a separately supplied compatible server.
@@ -22,7 +24,7 @@ and bearer token to `connect()`; close the client when finished with event subsc
 ## Usage inside Kucedr
 
 ```ts
-import { agent, app, coding, isKucedr, models, win, type AppThemeData } from '@kucedr/sdk';
+import { agent, app, isKucedr, models, win, type AppThemeData } from '@kucedr/sdk';
 
 if (!isKucedr()) throw new Error('Not running inside Kucedr');
 
@@ -62,25 +64,6 @@ await agent.renameWorkspaceEntry('notes/draft.md', 'idea.md');
 await agent.deleteWorkspaceFile('old.md');
 await agent.deleteWorkspaceDirectory('archive');
 
-const settings = await coding.getSettings();
-const projects = await coding.listProjects();
-const project = projects[0] ?? (await coding.addProject());
-if (!project) throw new Error('Choose a Coding project first.');
-const result = await coding.send(
-	{
-		projectId: project.id,
-		mode: 'agent',
-		input: 'Add focused tests for the current change.',
-	},
-	(event) => {
-		if (event.type === 'text-delta') console.log(event.delta);
-	}
-);
-const sessions = await coding.listSessions(project.id);
-const snapshot = await coding.getSession(project.id, result.sessionId);
-await coding.openProject(project.id);
-await coding.renameSession(project.id, result.sessionId, 'Focused tests');
-await coding.deleteSession(project.id, result.sessionId);
 const action = await win.showContextMenu([
 	{ type: 'role', role: 'copy' },
 	{ type: 'separator' },
@@ -146,8 +129,8 @@ Every `window` field is optional. Apps without window configuration keep these d
 | `resizable`   | `true`  | Allow the user to resize the window   |
 | `maximizable` | `true`  | Allow the user to maximize the window |
 
-Dimensions are positive integer device-independent pixels, at most `32768`. The outer height
-includes Kucedr's 48-pixel navigationbar. An explicit minimum cannot exceed its explicit initial
+Dimensions are positive integer device-independent pixels, at most `32768`. Apps start without a host navigationbar. Enabling it with `win.setNavigationBarOptions()`
+reserves 48 pixels of the window content height. An explicit minimum cannot exceed its explicit initial
 dimension. If an initial dimension is smaller than the default minimum, the omitted minimum
 is lowered to fit it.
 
@@ -179,33 +162,34 @@ is opened; close and reopen an existing app window to use the updated settings.
 
 - `app`: app data + settings APIs exposed by preload (`setTheme`, `getThemeData`, `getLanguage`, etc.)
 - `agent`: workspace APIs exposed by preload, including text reads, typed asset reads, and Markdown writes.
-- `coding`: embedded Pi coding-agent projects, persistent sessions, Agent/Shell runs, settings, authentication, streaming, and cancellation.
+- `coder` / `coding`: embedded Coder APIs for Pi, Codex, and Cline runtimes, projects, persistent
+  sessions, Agent/Shell runs, settings, authentication, streaming, and cancellation.
 - `models`: embedded model APIs for LLM text, embeddings, STT, TTS, realtime voice, image, audio, and video without exposing provider credentials.
-- `terminal`: embedded-only, owner-scoped PTY lifecycle, input, resize, output, and exit events.
+- `terminal`: trusted-host-only, owner-scoped PTY lifecycle, input, resize, output, and exit events.
 - `win`: embedded-only window APIs, including native context menus and window controls.
 - `connect()`: optional HTTP client for the app API and workspace agent APIs; it requires a separately supplied compatible server.
 - `isKucedr()`: host check for in-app mode.
 - `ping()`: validate API reachability in remote mode.
 
-`coding` is intentionally embedded-only. `addProject()` opens Kucedr's native folder picker, and all
-runs use an opaque main-owned project ID rather than accepting a filesystem path from an app.
-Agent conversations persist per project; Shell mode records non-interactive commands in the same
-session but is not a PTY. A project's directory is the default cwd, not a security sandbox: coding
-tools can execute with the desktop user's authority. Apps receive redacted agent-tool events
-and never receive provider credentials. Project opening and session mutation also resolve opaque IDs
-inside the main process. The registered Coding app may read and save non-secret runtime settings,
-list the Pi model catalog, and run Codex OAuth; other apps are rejected. Coding is not exposed by
-`connect()`.
+`coder` and its `coding` alias are embedded-only and available to trusted Kucedr host renderers
+and the registered Coder app (`coder`). Other installed apps are rejected for every Coder operation.
+Neither alias is exposed by `connect()`.
 
-`terminal` is also intentionally embedded-only and is authorized only for trusted Kucedr windows and
-the registered Coding app. It exposes the narrow preload bridge; shell selection, PTY ownership,
-and process lifecycle remain in the Electron main process. It is not exposed by `connect()`.
+`addProject()` opens the native folder picker; an explicit project-creation input can create an
+agent workspace. Subsequent project operations resolve main-owned IDs. Agent sessions persist per
+project; Shell mode records non-interactive commands and is separate from the PTY API. The project
+directory is the default working directory, not a security sandbox: coding tools can execute with
+the desktop user's authority. Apps receive redacted tool events rather than provider credentials.
+
+`terminal` is authorized only for trusted Kucedr host renderers. All installed app views, including
+the Coder app, are rejected. Shell selection, PTY ownership, and process lifecycle remain in the
+Electron main process. It is not exposed by `connect()`.
 
 App navigationbars are rendered by the Kucedr host. Embedded Apps can provide a centered title,
 left and right button descriptors, and optional sidebar state with
 `win.setNavigationBarOptions()`. Button IDs are returned through `win.onNavigationBarButtonClick()` so the
-app remains the owner of its application state. Passing `null` restores the manifest title and
-removes app-provided controls. Icons are selected from the exported
+app remains the owner of its application state. Passing `null` hides the app navigationbar and restores
+the full content area. Icons are selected from the exported
 `APP_NAVIGATION_BAR_BUTTON_ICONS` list; arbitrary markup is not accepted across the window boundary.
 Keep `sidebarWidth` at the expanded width and update `sidebarOpen` when showing or hiding it so the
 host navigationbar uses the same off-canvas transition as the app sidebar.

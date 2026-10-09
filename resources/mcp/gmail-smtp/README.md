@@ -2,7 +2,27 @@
 
 Local MCP server for sending email through Gmail SMTP.
 
-## Setup
+## Install in Kucedr
+
+Use Node.js 22.19+ and npm 11.5.1+. From the repository root, copy the package into Kucedr's local
+MCP directory and install its dependencies there. The commands below use a macOS/Linux shell
+and assume the destination does not already exist:
+
+```bash
+mkdir -p ~/.kucedr/mcp/servers
+cp -R resources/mcp/gmail-smtp ~/.kucedr/mcp/servers/gmail-smtp
+npm ci --prefix ~/.kucedr/mcp/servers/gmail-smtp
+```
+
+On Windows, place the folder under `%USERPROFILE%\.kucedr\mcp\servers\gmail-smtp` and run
+`npm ci` from that folder. The manifest launches `node --experimental-strip-types src/index.ts`;
+Node.js must be available to the desktop process.
+
+Open **Settings → MCP → Gmail SMTP Email**, enter the environment values below, and click **Test**.
+A successful test lists one `send_email` tool; it does not send email. The manifest requires
+approval before tool execution. Use a disposable recipient when testing an actual send.
+
+## Environment Values
 
 Configure the client that launches this server to provide:
 
@@ -38,3 +58,6 @@ Optional arguments:
 - `cc`
 - `bcc`
 - `reply_to`
+
+See the [application guide](../../../docs/APPLICATION.md#connect-external-capabilities) for MCP setup and
+[SECURITY.md](../../../SECURITY.md) for credential storage and approval boundaries.
