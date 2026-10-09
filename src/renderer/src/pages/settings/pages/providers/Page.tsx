@@ -135,10 +135,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							providerId: provider.id,
 							apiKey: current?.apiKey || savedApiKey,
 							savedApiKey,
-							...(provider.id === 'qwen' ? {
-								baseUrl: current?.baseUrl ?? savedProviders.get(provider.id)?.baseUrl ?? '',
-								savedBaseUrl: savedProviders.get(provider.id)?.baseUrl ?? '',
-							} : {}),
+							...(provider.id === 'qwen'
+								? {
+										baseUrl: current?.baseUrl ?? savedProviders.get(provider.id)?.baseUrl ?? '',
+										savedBaseUrl: savedProviders.get(provider.id)?.baseUrl ?? '',
+									}
+								: {}),
 							apiKeySaved: saved,
 							editing: saved && !current?.savedApiKey ? false : (current?.editing ?? false),
 						};
@@ -218,7 +220,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			const baseUrl = providerId === 'qwen' ? entry.baseUrl?.trim() : undefined;
 			if (baseUrl) {
 				const endpoint = new URL(baseUrl);
-				if (endpoint.protocol !== 'https:' || !/^[a-z0-9][a-z0-9-]*\.(ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com$/i.test(endpoint.hostname))
+				if (
+					endpoint.protocol !== 'https:' ||
+					!/^[a-z0-9][a-z0-9-]*\.(ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com$/i.test(
+						endpoint.hostname
+					)
+				)
 					throw new Error('Enter a Qwen workspace URL for Singapore, Beijing, or Hong Kong.');
 			}
 			await window.provider.set({ id: providerId, apiKey, kind, ...(baseUrl ? { baseUrl } : {}) });
@@ -373,7 +380,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					</p>
 				</ItemContent>
 				<ItemActions
-					className={cn('ml-auto flex-none justify-end gap-2', editing && 'w-full sm:w-auto', editing && provider.id === 'qwen' && 'w-full flex-wrap sm:w-full')}
+					className={cn(
+						'ml-auto flex-none justify-end gap-2',
+						editing && 'w-full sm:w-auto',
+						editing && provider.id === 'qwen' && 'w-full flex-wrap sm:w-full'
+					)}
 				>
 					{editing && entry ? (
 						<>
@@ -387,7 +398,10 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										disabled={savingThisProvider}
 										placeholder="https://{workspace}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"
 										value={entry.baseUrl ?? ''}
-										onChange={(event) => { updateProviderEntry(provider.id, { baseUrl: event.target.value }); setError(null); }}
+										onChange={(event) => {
+											updateProviderEntry(provider.id, { baseUrl: event.target.value });
+											setError(null);
+										}}
 									/>
 								</div>
 							)}
@@ -417,7 +431,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								size="sm"
 								disabled={savingThisProvider}
 								onClick={() =>
-									updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, baseUrl: entry.savedBaseUrl, editing: false })
+									updateProviderEntry(provider.id, {
+										apiKey: entry.savedApiKey,
+										baseUrl: entry.savedBaseUrl,
+										editing: false,
+									})
 								}
 							>
 								{t('common.cancel')}
