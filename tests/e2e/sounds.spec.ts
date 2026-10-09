@@ -157,6 +157,7 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 			fullPage: true,
 		});
 	} catch (error) {
+		console.log('Audio playback:', await page.evaluate(() => window.feedbackPlayback));
 		await page.screenshot({ path: testInfo.outputPath('failure.png'), fullPage: true });
 		await testInfo.attach('renderer-state', {
 			body: await page.locator('body').innerText(),
