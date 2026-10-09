@@ -17,17 +17,8 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					}
 				],
 				"documentationUrl": "https://docs.mistral.ai/api/",
@@ -78,17 +69,8 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					}
 				],
 				"documentationUrl": "https://docs.mistral.ai/api/",
@@ -96,14 +78,7 @@
 				"inputs": {
 					"reasoning_effort": {
 						"type": "string",
-						"enum": [
-							"none",
-							"minimal",
-							"low",
-							"medium",
-							"high",
-							"xhigh"
-						]
+						"enum": ["none", "minimal", "low", "medium", "high", "xhigh"]
 					},
 					"temperature": {
 						"type": "number",
@@ -189,9 +164,7 @@
 		{
 			"id": "voxtral-mini-latest",
 			"name": "Voxtral Mini 2602",
-			"apiTypes": [
-				"batch"
-			],
+			"apiTypes": ["batch"],
 			"type": "speech-to-text-model",
 			"authentication": "api-key",
 			"url": "https://api.mistral.ai/v1",
@@ -219,9 +192,7 @@
 		{
 			"id": "voxtral-mini-transcribe-realtime-2602",
 			"name": "Voxtral Mini Transcribe Realtime 2602",
-			"apiTypes": [
-				"stream"
-			],
+			"apiTypes": ["stream"],
 			"realtime": true,
 			"type": "speech-to-text-model",
 			"authentication": "api-key",
@@ -258,13 +229,7 @@
 					"response_format": {
 						"type": "string",
 						"default": "mp3",
-						"enum": [
-							"pcm",
-							"wav",
-							"mp3",
-							"flac",
-							"opus"
-						]
+						"enum": ["pcm", "wav", "mp3", "flac", "opus"]
 					},
 					"metadata": {
 						"type": "object"

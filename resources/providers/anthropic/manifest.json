@@ -17,26 +17,13 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": [
-							"application/pdf"
-						],
-						"extensions": [
-							".pdf"
-						]
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
 					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
@@ -69,10 +56,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"adaptive",
-									"disabled"
-								]
+								"enum": ["adaptive", "disabled"]
 							}
 						}
 					},
@@ -81,13 +65,7 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": [
-									"low",
-									"medium",
-									"high",
-									"xhigh",
-									"max"
-								]
+								"enum": ["low", "medium", "high", "xhigh", "max"]
 							}
 						}
 					},
@@ -116,26 +94,13 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": [
-							"application/pdf"
-						],
-						"extensions": [
-							".pdf"
-						]
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
 					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
@@ -168,10 +133,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"adaptive",
-									"disabled"
-								]
+								"enum": ["adaptive", "disabled"]
 							}
 						}
 					},
@@ -180,13 +142,7 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": [
-									"low",
-									"medium",
-									"high",
-									"xhigh",
-									"max"
-								]
+								"enum": ["low", "medium", "high", "xhigh", "max"]
 							}
 						}
 					},
@@ -215,26 +171,13 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": [
-							"application/pdf"
-						],
-						"extensions": [
-							".pdf"
-						]
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
 					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
@@ -267,10 +210,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"adaptive",
-									"disabled"
-								]
+								"enum": ["adaptive", "disabled"]
 							}
 						}
 					},
@@ -279,13 +219,7 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": [
-									"low",
-									"medium",
-									"high",
-									"xhigh",
-									"max"
-								]
+								"enum": ["low", "medium", "high", "xhigh", "max"]
 							}
 						}
 					},
@@ -314,26 +248,13 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": [
-							"application/pdf"
-						],
-						"extensions": [
-							".pdf"
-						]
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
 					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
@@ -366,10 +287,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"adaptive",
-									"disabled"
-								]
+								"enum": ["adaptive", "disabled"]
 							}
 						}
 					},
@@ -378,13 +296,7 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": [
-									"low",
-									"medium",
-									"high",
-									"xhigh",
-									"max"
-								]
+								"enum": ["low", "medium", "high", "xhigh", "max"]
 							}
 						}
 					},
@@ -413,26 +325,13 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": [
-							"application/pdf"
-						],
-						"extensions": [
-							".pdf"
-						]
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
 					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
@@ -465,11 +364,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"adaptive",
-									"enabled",
-									"disabled"
-								]
+								"enum": ["adaptive", "enabled", "disabled"]
 							},
 							"budget_tokens": {
 								"type": "integer",
@@ -482,12 +377,7 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": [
-									"low",
-									"medium",
-									"high",
-									"max"
-								]
+								"enum": ["low", "medium", "high", "max"]
 							}
 						}
 					},
@@ -516,26 +406,13 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": [
-							"application/pdf"
-						],
-						"extensions": [
-							".pdf"
-						]
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
 					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
@@ -568,10 +445,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"enabled",
-									"disabled"
-								]
+								"enum": ["enabled", "disabled"]
 							},
 							"budget_tokens": {
 								"type": "integer",

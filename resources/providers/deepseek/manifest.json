@@ -25,19 +25,13 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"enabled",
-									"disabled"
-								]
+								"enum": ["enabled", "disabled"]
 							}
 						}
 					},
 					"reasoning_effort": {
 						"type": "string",
-						"enum": [
-							"high",
-							"max"
-						]
+						"enum": ["high", "max"]
 					},
 					"max_tokens": {
 						"type": "integer",
@@ -100,19 +94,8 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/gif",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".gif",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/gif", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".gif", ".webp"]
 					}
 				],
 				"documentationUrl": "https://api-docs.deepseek.com/news/news260910/",
@@ -125,19 +108,13 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"enabled",
-									"disabled"
-								]
+								"enum": ["enabled", "disabled"]
 							}
 						}
 					},
 					"reasoning_effort": {
 						"type": "string",
-						"enum": [
-							"high",
-							"max"
-						]
+						"enum": ["high", "max"]
 					},
 					"max_tokens": {
 						"type": "integer",

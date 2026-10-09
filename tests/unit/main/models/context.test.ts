@@ -2,6 +2,8 @@ import { resolveContextWindow } from '../../../../src/main/models/context';
 import { loadModels } from '../../../../src/main/models';
 import { modelContextWindow } from '../../../../src/shared/model_context';
 
+afterEach(() => jest.restoreAllMocks());
+
 it('covers every bundled chat model with a documented positive context limit', () => {
 	const models = loadModels().filter((model) => model.type === 'llm');
 	expect(models).toHaveLength(40);

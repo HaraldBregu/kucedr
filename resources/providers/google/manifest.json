@@ -17,17 +17,8 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					}
 				],
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs/openai",
@@ -35,12 +26,7 @@
 				"inputs": {
 					"reasoning_effort": {
 						"type": "string",
-						"enum": [
-							"minimal",
-							"low",
-							"medium",
-							"high"
-						]
+						"enum": ["minimal", "low", "medium", "high"]
 					},
 					"temperature": {
 						"type": "number",
@@ -75,17 +61,8 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					}
 				],
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs/openai",
@@ -93,12 +70,7 @@
 				"inputs": {
 					"reasoning_effort": {
 						"type": "string",
-						"enum": [
-							"minimal",
-							"low",
-							"medium",
-							"high"
-						]
+						"enum": ["minimal", "low", "medium", "high"]
 					},
 					"temperature": {
 						"type": "number",
@@ -287,10 +259,7 @@
 					"imageSize": {
 						"type": "string",
 						"default": "1K",
-						"enum": [
-							"512",
-							"1K"
-						]
+						"enum": ["512", "1K"]
 					}
 				}
 			},
@@ -313,11 +282,7 @@
 					"imageSize": {
 						"type": "string",
 						"default": "1K",
-						"enum": [
-							"1K",
-							"2K",
-							"4K"
-						]
+						"enum": ["1K", "2K", "4K"]
 					}
 				}
 			},
@@ -336,18 +301,11 @@
 					"aspectRatio": {
 						"type": "string",
 						"default": "16:9",
-						"enum": [
-							"16:9",
-							"9:16"
-						]
+						"enum": ["16:9", "9:16"]
 					},
 					"durationSeconds": {
 						"type": "integer",
-						"enum": [
-							4,
-							6,
-							8
-						]
+						"enum": [4, 6, 8]
 					},
 					"resolution": {
 						"type": "string",
@@ -368,9 +326,7 @@
 					"numberOfVideos": {
 						"type": "integer",
 						"default": 1,
-						"enum": [
-							1
-						]
+						"enum": [1]
 					},
 					"image": {
 						"type": "object"
@@ -401,18 +357,11 @@
 					"aspectRatio": {
 						"type": "string",
 						"default": "16:9",
-						"enum": [
-							"16:9",
-							"9:16"
-						]
+						"enum": ["16:9", "9:16"]
 					},
 					"durationSeconds": {
 						"type": "integer",
-						"enum": [
-							4,
-							6,
-							8
-						]
+						"enum": [4, 6, 8]
 					},
 					"resolution": {
 						"type": "string",
@@ -433,9 +382,7 @@
 					"numberOfVideos": {
 						"type": "integer",
 						"default": 1,
-						"enum": [
-							1
-						]
+						"enum": [1]
 					},
 					"image": {
 						"type": "object"
@@ -517,9 +464,7 @@
 			"description": "Search email, manage messages, and organize your inbox.",
 			"authentication": "oauth2",
 			"url": "https://gmailmcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/gmail.modify"
-			],
+			"scopes": ["https://www.googleapis.com/auth/gmail.modify"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -538,9 +483,7 @@
 			"description": "Find events, manage calendars, and organize your schedule.",
 			"authentication": "oauth2",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/calendar"
-			],
+			"scopes": ["https://www.googleapis.com/auth/calendar"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -559,9 +502,7 @@
 			"description": "Search, organize, and manage your files in Google Drive.",
 			"authentication": "oauth2",
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/drive"
-			],
+			"scopes": ["https://www.googleapis.com/auth/drive"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -580,9 +521,7 @@
 			"description": "Read and edit documents while working in Google Docs.",
 			"authentication": "oauth2",
 			"url": "https://docsmcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/documents"
-			],
+			"scopes": ["https://www.googleapis.com/auth/documents"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -601,9 +540,7 @@
 			"description": "Read and update your spreadsheet data in Google Sheets.",
 			"authentication": "oauth2",
 			"url": "https://sheetsmcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/spreadsheets"
-			],
+			"scopes": ["https://www.googleapis.com/auth/spreadsheets"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -622,9 +559,7 @@
 			"description": "Find places, explore routes, and check local weather.",
 			"authentication": "oauth2",
 			"url": "https://mapstools.googleapis.com/mcp",
-			"scopes": [
-				"https://www.googleapis.com/auth/maps-platform.mapstools"
-			],
+			"scopes": ["https://www.googleapis.com/auth/maps-platform.mapstools"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",

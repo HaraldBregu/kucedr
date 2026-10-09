@@ -17,26 +17,13 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": [
-							"application/pdf"
-						],
-						"extensions": [
-							".pdf"
-						]
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
 					}
 				],
 				"documentationUrl": "https://docs.reka.ai/chat/models",
@@ -79,26 +66,13 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": [
-							"application/pdf"
-						],
-						"extensions": [
-							".pdf"
-						]
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
 					}
 				],
 				"documentationUrl": "https://docs.reka.ai/chat/models",

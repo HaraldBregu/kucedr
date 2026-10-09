@@ -37,10 +37,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"enabled",
-									"disabled"
-								]
+								"enum": ["enabled", "disabled"]
 							},
 							"clear_thinking": {
 								"type": "boolean"
@@ -107,10 +104,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"enabled",
-									"disabled"
-								]
+								"enum": ["enabled", "disabled"]
 							},
 							"clear_thinking": {
 								"type": "boolean"
@@ -177,10 +171,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"enabled",
-									"disabled"
-								]
+								"enum": ["enabled", "disabled"]
 							},
 							"clear_thinking": {
 								"type": "boolean"
