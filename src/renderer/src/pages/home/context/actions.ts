@@ -30,7 +30,12 @@ export type AgentChatAction =
 			content: string;
 			startedAtMs: number;
 	  }
-	| { type: 'apply_response_event'; event: AgentResponseEvent; receivedAtMs: number }
+	| {
+			type: 'apply_response_event';
+			event: AgentResponseEvent;
+			receivedAtMs: number;
+			messageRunId?: string;
+	  }
 	| { type: 'complete_active'; response: string; completedAtMs?: number }
 	| { type: 'cancel_active'; completedAtMs?: number }
 	| { type: 'error_active'; errorText: string; completedAtMs?: number }

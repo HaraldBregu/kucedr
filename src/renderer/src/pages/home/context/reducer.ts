@@ -114,16 +114,17 @@ function settleRunningTools(tools: readonly AgentToolPart[], failed = false): Ag
 function applyResponseEvent(
 	state: AgentChatState,
 	event: AgentResponseEvent,
-	receivedAtMs: number
+	receivedAtMs: number,
+	messageRunId = event.runId
 ): AgentChatState {
-	if (state.activeRunId && state.activeRunId !== event.runId) return state;
-	const ensured = ensureAgentForRun(state, event.runId);
-	if (ensured.message.runId && ensured.message.runId !== event.runId) return state;
+	if (state.activeRunId && state.activeRunId !== messageRunId) return state;
+	const ensured = ensureAgentForRun(state, messageRunId);
+	if (ensured.message.runId && ensured.message.runId !== messageRunId) return state;
 
 	if (event.type === 'run_state') {
 		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
 			...message,
-			runId: event.runId,
+			runId: messageRunId,
 			state: event.state,
 			errorText: event.state === 'error' ? (event.label ?? message.errorText) : message.errorText,
 			startedAtMs: message.startedAtMs ?? receivedAtMs,
@@ -162,11 +163,11 @@ function applyResponseEvent(
 
 	if (event.type === 'tool_permission_request') {
 		return updateAgentMessage(
-			{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: event.runId },
+			{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: messageRunId },
 			ensured.message.id,
 			(message) => ({
 				...message,
-				runId: event.runId,
+				runId: messageRunId,
 				pendingPermission: {
 					approvalId: event.approvalId,
 					runId: event.runId,
@@ -187,7 +188,7 @@ function applyResponseEvent(
 
 	if (event.type === 'user_input_request') {
 		return updateAgentMessage(
-			{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: event.runId },
+			{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: messageRunId },
 			ensured.message.id,
 			(message) => {
 				const tool = message.tools.find((candidate) => candidate.toolCallId === event.toolCallId);
@@ -267,11 +268,11 @@ function applyResponseEvent(
 	if (event.type === 'text_delta') {
 		if (!event.delta) return ensured.state;
 		return updateAgentMessage(
-			{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: event.runId },
+			{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: messageRunId },
 			ensured.message.id,
 			(message) => ({
 				...message,
-				runId: event.runId,
+				runId: messageRunId,
 				state: 'answering',
 				toolSelection: undefined,
 				content: message.content + event.delta,
@@ -290,11 +291,11 @@ function applyResponseEvent(
 	if (!tools) return ensured.state;
 
 	return updateAgentMessage(
-		{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: event.runId },
+		{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: messageRunId },
 		ensured.message.id,
 		(message) => ({
 			...message,
-			runId: event.runId,
+			runId: messageRunId,
 			state: 'using_tools',
 			tools,
 			pendingPermission:
@@ -520,7 +521,7 @@ export function agentChatReducer(state: AgentChatState, action: AgentChatAction)
 			};
 		}
 		case 'apply_response_event':
-			return applyResponseEvent(state, action.event, action.receivedAtMs);
+			return applyResponseEvent(state, action.event, action.receivedAtMs, action.messageRunId);
 		case 'complete_active': {
 			const current = activeAgent(state);
 			if (!current) {

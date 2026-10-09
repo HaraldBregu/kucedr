@@ -434,7 +434,7 @@ describe('useRealtimeVoice', () => {
 					type: 'tool_call_start',
 					sessionId: session.id,
 					agentId: 'main',
-					runId: session.id,
+					runId: `${session.id}:response-1`,
 					iteration: 0,
 					toolCallId,
 					toolName,
@@ -460,7 +460,7 @@ describe('useRealtimeVoice', () => {
 					type: 'tool_call_result',
 					sessionId: session.id,
 					agentId: 'main',
-					runId: session.id,
+					runId: `${session.id}:response-1`,
 					iteration: 0,
 					toolCallId,
 					toolName,
@@ -504,6 +504,68 @@ describe('useRealtimeVoice', () => {
 			'data-src',
 			'local-resource://file/tmp/generated-video.mp4'
 		);
+	});
+
+	it('correlates response-scoped tool approvals with the voice turn without changing approval identity', async () => {
+		api.startSession.mockResolvedValue(session);
+		const { result } = renderHook(
+			() => {
+				const voice = useRealtimeVoice({ chatSessionId: 'chat-1', onClosed: jest.fn() });
+				const { chatState } = useHomeAgentContext();
+				return { voice, chatState };
+			},
+			{ wrapper }
+		);
+		await act(async () => result.current.voice.start());
+		act(() => emit({ type: 'user_turn', sessionId: session.id, itemId: 'user-1' }));
+		const runId = `${session.id}:response-1`;
+		act(() =>
+			emit({
+				type: 'tool_permission_request',
+				sessionId: session.id,
+				agentId: 'main',
+				runId,
+				iteration: 0,
+				approvalId: 'approval-1',
+				toolCallId: 'call-1',
+				toolName: 'bash',
+				input: { command: 'pwd' },
+				inputFingerprint: 'fingerprint-1',
+				mode: 'ask',
+				targets: ['/workspace'],
+				persistable: false,
+				allowOnce: true,
+				expiresAt: new Date(Date.now() + 60_000).toISOString(),
+			})
+		);
+		const message = result.current.chatState.messages.findLast(
+			(candidate) => candidate.role === 'agent'
+		);
+		expect(message).toMatchObject({
+			runId: session.id,
+			pendingPermission: { approvalId: 'approval-1', runId, inputFingerprint: 'fingerprint-1' },
+		});
+		expect(result.current.chatState.activeRunId).toBe(session.id);
+		act(() =>
+			emit({
+				type: 'tool_call_result',
+				sessionId: session.id,
+				agentId: 'main',
+				runId,
+				iteration: 0,
+				toolCallId: 'call-1',
+				toolName: 'bash',
+				input: { command: 'pwd' },
+				output: '/workspace',
+				status: 'ok',
+			})
+		);
+		expect(
+			result.current.chatState.messages.findLast((candidate) => candidate.role === 'agent')
+		).toMatchObject({
+			pendingPermission: undefined,
+			tools: [expect.objectContaining({ toolCallId: 'call-1', state: 'output-available' })],
+		});
 	});
 
 	it('restores persisted realtime image, audio, and video tool results', () => {

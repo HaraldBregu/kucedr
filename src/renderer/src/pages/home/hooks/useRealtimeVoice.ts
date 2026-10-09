@@ -166,6 +166,7 @@ export function useRealtimeVoice({
 				dispatchChat({
 					type: 'apply_response_event',
 					event,
+					messageRunId: event.sessionId,
 					receivedAtMs: Date.now(),
 				});
 				return;
