@@ -141,6 +141,7 @@ export class RealtimeVoiceManager {
 						.join('\n')
 				)
 				.catch(() => '');
+			controller.signal.throwIfAborted();
 			const connection = await this.dependencies.createAdapter(provider).connect(
 				{
 					...adapterConfiguration,
@@ -261,6 +262,10 @@ export class RealtimeVoiceManager {
 			if (event.type === 'tool_call') active.toolRuntime.handle(event);
 			return;
 		}
+		if (event.type === 'response_started') {
+			if (active.state !== 'speaking') this.setState(active, 'thinking');
+			return;
+		}
 		if (event.type === 'input_speech_started') {
 			active.toolRuntime.interrupt();
 			if (active.state === 'speaking' || active.state === 'thinking') {
@@ -371,8 +376,11 @@ export class RealtimeVoiceManager {
 		active.controller.abort(new DOMException('Realtime voice session stopped.', 'AbortError'));
 		rejectPendingToolPermissions(active.info.id);
 		this.emit(active, { type: 'state', sessionId: active.info.id, status: 'ending' });
-		if (stopConnection) await active.connection?.stop();
-		this.emit(active, { type: 'closed', sessionId: active.info.id });
+		try {
+			if (stopConnection) await active.connection?.stop();
+		} finally {
+			this.emit(active, { type: 'closed', sessionId: active.info.id });
+		}
 	}
 }
 

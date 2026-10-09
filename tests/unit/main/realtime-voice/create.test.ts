@@ -82,5 +82,5 @@ it('starts voice with every eligible built-in tool', async () => {
 
 	expect(configuration.tools.map((tool) => tool.id)).toEqual(['read', 'write']);
 	expect(configuration.instructions).toContain('read, write');
-	expect(mockBuildWorkspaceContext).toHaveBeenCalledWith({ location: '/workspace' }, 'full', '', 'voice');
+	expect(mockBuildWorkspaceContext).toHaveBeenCalledWith({ location: '/workspace' }, 'full');
 });

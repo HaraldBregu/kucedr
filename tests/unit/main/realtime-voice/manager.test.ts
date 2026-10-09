@@ -95,7 +95,7 @@ describe('RealtimeVoiceManager', () => {
 				return connection;
 			},
 		}));
-		const events: Array<{ type: string; transcript?: string }> = [];
+		const events: Array<{ type: string; transcript?: string; status?: string }> = [];
 		const begunUserTurns: string[] = [];
 		const finalizedUserTurns: Array<{ itemId: string; transcript: string }> = [];
 		const assistantTurns: string[] = [];
@@ -134,12 +134,15 @@ describe('RealtimeVoiceManager', () => {
 			transcript: 'Hello there.',
 		});
 		adapterEmit({ type: 'response_started', responseId: 'response-2' });
+		expect(events.at(-1)).toEqual({ type: 'state', sessionId: session.id, status: 'thinking' });
 		adapterEmit({
 			type: 'assistant_audio_delta',
 			itemId: 'assistant-2',
 			responseId: 'response-2',
 			audio: 'AAAA',
 		});
+		adapterEmit({ type: 'response_started', responseId: 'response-2' });
+		expect(events.filter((event) => event.type === 'state').at(-1)?.status).toBe('speaking');
 		adapterEmit({ type: 'input_speech_started', itemId: 'user-2' });
 		adapterEmit({
 			type: 'assistant_transcript_final',
@@ -327,6 +330,64 @@ describe('RealtimeVoiceManager', () => {
 
 		expect(setupSignal?.aborted).toBe(true);
 		await expect(starting).rejects.toThrow('stopped');
+	});
+
+	it('does not open an adapter after being stopped during memory retrieval', async () => {
+		let resolveMemory = (_memory: string): void => undefined;
+		const memoryContext = jest.fn(
+			() => new Promise<string>((resolve) => (resolveMemory = resolve))
+		);
+		const connect = jest.fn(async () => new FakeConnection());
+		const manager = new RealtimeVoiceManager({
+			createAdapter: () => ({ connect }),
+			resolveConfiguration: async () => configuration,
+			memoryContext,
+			createConversation: () => ({
+				history: [],
+				beginUserTurn: () => undefined,
+				finalizeUserTurn: () => undefined,
+				addAssistantTranscript: () => undefined,
+				addToolCall: () => undefined,
+				addToolResult: () => undefined,
+			}),
+			resources: new KeyedMutex(),
+			emit: () => undefined,
+		});
+		const starting = manager.start(10, { chatSessionId: 'chat' });
+		for (let attempt = 0; attempt < 10 && !memoryContext.mock.calls.length; attempt += 1)
+			await Promise.resolve();
+		expect(memoryContext).toHaveBeenCalledTimes(1);
+		await manager.stopWindow(10);
+		resolveMemory('Remembered context');
+		await expect(starting).rejects.toThrow('stopped');
+		expect(connect).not.toHaveBeenCalled();
+	});
+
+	it('emits a terminal closed event even if adapter shutdown fails', async () => {
+		const connection = new FakeConnection();
+		connection.stop = async () => {
+			throw new Error('Shutdown failed.');
+		};
+		const events: Array<{ type: string; sessionId: string }> = [];
+		const manager = new RealtimeVoiceManager({
+			createAdapter: () => ({ connect: async () => connection }),
+			resolveConfiguration: async () => configuration,
+			createConversation: () => ({
+				history: [],
+				beginUserTurn: () => undefined,
+				finalizeUserTurn: () => undefined,
+				addAssistantTranscript: () => undefined,
+				addToolCall: () => undefined,
+				addToolResult: () => undefined,
+			}),
+			resources: new KeyedMutex(),
+			emit: (_windowId, event) => events.push(event),
+		});
+		const session = await manager.start(10, { chatSessionId: 'chat' });
+		await expect(manager.stop(10, session.id)).rejects.toThrow('Shutdown failed.');
+		expect(events.at(-1)).toEqual({ type: 'closed', sessionId: session.id });
+		await manager.stop(10, session.id);
+		expect(events.filter((event) => event.type === 'closed')).toHaveLength(1);
 	});
 
 	it('prepends transient context while starting a fresh voice session', async () => {
