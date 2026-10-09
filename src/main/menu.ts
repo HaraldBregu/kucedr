@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu as ElectronMenu } from 'electron';
+import { is } from '@electron-toolkit/utils';
 import { loadTranslations } from './i18n';
 import type { App } from './apps/app_index';
 import { openAppWindows } from './apps/app_render';
@@ -203,6 +204,7 @@ export class Menu {
 			},
 			{
 				label: m.developer,
+				visible: is.dev,
 				submenu: [
 					{
 						label: m.language,
