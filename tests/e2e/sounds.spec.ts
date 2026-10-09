@@ -72,13 +72,14 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 					type: 'text_delta',
 					delta: 'Sound check complete.',
 				});
-				event.sender.send('agent:response', {
+				const finished = {
 					...identity,
 					type: 'run_finished',
 					stopReason: 'end_turn',
 					outputChars: 21,
-				});
-				return { success: true, data: 'Sound check complete.' };
+				};
+				event.sender.send('agent:response', finished);
+				return { success: true, data: { text: 'Sound check complete.', finished } };
 			});
 		});
 		await page.getByRole('button', { name: 'New Chat', exact: true }).click();
@@ -97,7 +98,10 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 				page.evaluate(() => window.feedbackPlayback.filter((record) => record.ended).length)
 			)
 			.toBe(4);
-		await page.getByRole('button', { name: 'Settings', exact: true }).click();
+		await page
+			.locator('[data-slot="home-sidebar"] nav')
+			.getByRole('button', { name: 'Settings', exact: true })
+			.click();
 		await expect(page.getByRole('switch', { name: 'Sound feedback' })).toBeChecked();
 		await expect
 			.poll(() =>
