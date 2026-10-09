@@ -1,6 +1,9 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { NavigationBar } from '../../../src/renderer/src/components/app/navigationbar/NavigationBar';
+import userEvent from '@testing-library/user-event';
+import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
+import type { AgentSessionSummary } from '../../../src/shared/agent_types';
 
 jest.mock('@/contexts', () => ({
 	useApp: () => ({ theme: 'system', setTheme: jest.fn() }),
@@ -210,4 +213,37 @@ it('does not render route titles inside the navigationbar', () => {
 	);
 
 	expect(container.querySelector('[data-slot="navigationbar-content"]')).not.toBeInTheDocument();
+});
+
+it('reveals the active chat session after loading and when history reopens', async () => {
+	const user = userEvent.setup();
+	const scrollIntoView = jest.fn();
+	Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+	const sessions: AgentSessionSummary[] = [
+		{ id: 'recent', title: 'Recent session', category: 'chat', createdAtMs: 2 },
+		{ id: 'older', title: 'Selected session', category: 'chat', createdAtMs: 1 },
+	];
+	let finishLoading!: (sessions: AgentSessionSummary[]) => void;
+	const listSessions = jest.fn().mockResolvedValue(sessions).mockImplementationOnce(() => new Promise<AgentSessionSummary[]>((resolve) => { finishLoading = resolve; }));
+	Object.defineProperty(window, 'agent', { configurable: true, value: { listSessions } });
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<ChatSessionContext.Provider value={{ sessionId: 'older', setSessionId: jest.fn() }}>
+				<NavigationBar showWorkspace />
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
+	expect(screen.getByText('settings.chatHistory.loading')).toBeInTheDocument();
+	finishLoading(sessions);
+	let selected = await screen.findByRole('menuitem', { name: 'Selected session' });
+	await waitFor(() => expect(selected).toHaveFocus());
+	expect(selected).toHaveAttribute('aria-current', 'page');
+	expect(scrollIntoView.mock.contexts).toContain(selected);
+	await user.keyboard('{Escape}');
+	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
+	selected = await screen.findByRole('menuitem', { name: 'Selected session' });
+	await waitFor(() => expect(selected).toHaveFocus());
+	expect(scrollIntoView.mock.contexts).toContain(selected);
+	expect(listSessions).toHaveBeenCalledTimes(2);
 });

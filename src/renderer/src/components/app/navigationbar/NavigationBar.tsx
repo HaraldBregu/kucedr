@@ -1,5 +1,5 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import React, { useEffect, useState, type ReactNode } from 'react';
+import React, { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ChevronDown, Menu, MessageCircle, Moon, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
 import type { AgentSessionSummary } from '@/lib/compat';
+import { revealSelection } from '@/lib/selection';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
@@ -66,6 +67,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
 	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
 	const [chatSessionsLoadError, setChatSessionsLoadError] = useState(false);
+	const chatSessionsRef = useRef<HTMLDivElement>(null);
 
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
@@ -79,6 +81,9 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
 	const chatButtonVariant = isHome ? 'secondary' : 'ghost';
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
+	useEffect(() => {
+		if (!chatSessionsLoading && chatSessionsRef.current) revealSelection(chatSessionsRef.current);
+	}, [activeChatSessionId, chatSessions, chatSessionsLoading]);
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
@@ -151,7 +156,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 							</DropdownMenuItem>
 						</div>
 						<DropdownMenuSeparator />
-						<div className="max-h-56 overflow-y-auto">
+						<div ref={chatSessionsRef} className="max-h-56 overflow-y-auto">
 							{chatSessionsLoading ? (
 								<div className="px-2 py-3 text-sm text-muted-foreground">
 									{t('settings.chatHistory.loading')}
@@ -170,6 +175,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 								return (
 									<DropdownMenuItem
 										key={session.id}
+										aria-current={isActiveSession ? 'page' : undefined}
 										className={isActiveSession ? 'bg-accent text-accent-foreground' : undefined}
 										onSelect={() => {
 											setSessionId(session.id);

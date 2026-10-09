@@ -10,7 +10,10 @@ interface WorkspaceBreadcrumbTreeProps {
 }
 
 export function WorkspaceBreadcrumbTree({ entries, onFileSelect, selectedPath, level = 0 }: WorkspaceBreadcrumbTreeProps): React.JSX.Element {
-	const [expanded, setExpanded] = useState<Set<string>>(new Set());
+	const normalizedSelectedPath = selectedPath.replace(/\\/g, '/');
+	const selectedAncestors = entries.filter((entry) => entry.type === 'directory' && normalizedSelectedPath.startsWith(`${entry.path.replace(/\\/g, '/')}/`));
+	const [expanded, setExpanded] = useState<Set<string>>(() => new Set(selectedAncestors.map((entry) => entry.path)));
+	const hasSelection = selectedAncestors.length > 0 || entries.some((entry) => entry.path === selectedPath);
 	const onKeyDown = (event: KeyboardEvent<HTMLUListElement>): void => {
 		if (level !== 0) return;
 		const current = (event.target as HTMLElement).closest<HTMLButtonElement>('[role="treeitem"]');
@@ -39,7 +42,7 @@ export function WorkspaceBreadcrumbTree({ entries, onFileSelect, selectedPath, l
 				return (
 					<li key={entry.path} role="none">
 						<button
-							autoFocus={level === 0 && index === 0}
+							autoFocus={level === 0 && index === 0 && !hasSelection}
 							type="button"
 							role="treeitem"
 							aria-level={level + 1}

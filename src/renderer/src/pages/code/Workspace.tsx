@@ -21,7 +21,7 @@ export function WorkspaceSelector({ workspace, workspaces, onSelect }: Workspace
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start" className="max-h-80 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto">
-					{workspaces.map((item) => <DropdownMenuItem key={item.id} onSelect={() => onSelect(item.id)}><span className="min-w-0 flex-1 truncate">{item.name}</span>{item.id === workspace.id && <Check />}</DropdownMenuItem>)}
+					{workspaces.map((item) => <DropdownMenuItem key={item.id} aria-current={item.id === workspace.id ? 'page' : undefined} onSelect={() => onSelect(item.id)}><span className="min-w-0 flex-1 truncate">{item.name}</span>{item.id === workspace.id && <Check />}</DropdownMenuItem>)}
 				</DropdownMenuContent>
 			</DropdownMenu>
 			{!workspace.available && <p className="px-2.5 text-xs text-muted-foreground">{t('code.unavailable', 'Folder unavailable')}</p>}
