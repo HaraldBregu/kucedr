@@ -247,6 +247,63 @@ describe('useRealtimeVoice', () => {
 		unmount();
 	});
 
+	it('does not open the microphone after ending while playback setup is pending', async () => {
+		let resolvePlayback = (): void => undefined;
+		class DelayedAudioContext extends FakeAudioContext {
+			resume = jest.fn(() => new Promise<void>((resolve) => (resolvePlayback = resolve)));
+		}
+		Object.defineProperty(window, 'AudioContext', {
+			configurable: true,
+			value: DelayedAudioContext,
+		});
+		const { result } = renderHook(
+			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed: jest.fn() }),
+			{ wrapper }
+		);
+		let starting!: Promise<boolean>;
+		act(() => {
+			starting = result.current.start();
+		});
+		await act(async () => {
+			await Promise.resolve();
+			await Promise.resolve();
+		});
+		await act(async () => result.current.end());
+		await act(async () => {
+			resolvePlayback();
+			expect(await starting).toBe(false);
+		});
+		expect(navigator.mediaDevices.getUserMedia).not.toHaveBeenCalled();
+		expect(api.startSession).not.toHaveBeenCalled();
+		expect(result.current.status).toBe('idle');
+	});
+
+	it('keeps an ended session idle when its pending provider startup later fails', async () => {
+		let rejectStart!: (error: Error) => void;
+		api.startSession.mockReturnValue(
+			new Promise<RealtimeVoiceSession>((_resolve, reject) => {
+				rejectStart = reject;
+			})
+		);
+		const { result } = renderHook(
+			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed: jest.fn() }),
+			{ wrapper }
+		);
+		let starting!: Promise<boolean>;
+		act(() => {
+			starting = result.current.start();
+		});
+		await waitFor(() => expect(api.startSession).toHaveBeenCalledTimes(1));
+		await act(async () => result.current.end());
+		await act(async () => {
+			rejectStart(new Error('Provider startup failed.'));
+			expect(await starting).toBe(false);
+		});
+		expect(result.current.status).toBe('idle');
+		expect(result.current.errorMessage).toBeNull();
+		expect(track.stop).toHaveBeenCalled();
+	});
+
 	it('stays speaking until buffered playback finishes', async () => {
 		api.startSession.mockResolvedValue(session);
 		const { result } = renderHook(

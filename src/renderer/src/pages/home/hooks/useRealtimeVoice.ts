@@ -297,6 +297,7 @@ export function useRealtimeVoice({
 				if (startRunRef.current !== runId) return false;
 
 				await startPlayback();
+				if (startRunRef.current !== runId) return false;
 				await startCapture((audio) => {
 					const sessionId = sessionIdRef.current;
 					if (sessionId) {
@@ -332,6 +333,7 @@ export function useRealtimeVoice({
 				return true;
 			} catch (error) {
 				releaseAudio();
+				if (startRunRef.current !== runId || !mountedRef.current) return false;
 				const message = dictationErrorMessage(error);
 				errorLatchedRef.current = true;
 				setErrorMessage(message);
