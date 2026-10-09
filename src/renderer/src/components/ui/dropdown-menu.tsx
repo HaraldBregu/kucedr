@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { cn } from '@/lib/utils';
-import { revealSelection } from '@/lib/selection';
+import { useSelection } from '@/hooks/selection';
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
@@ -11,13 +11,7 @@ const DropdownMenuContent = React.forwardRef<
 	React.ElementRef<typeof DropdownMenuPrimitive.Content>,
 	React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => {
-	const frame = React.useRef<number | null>(null);
-	const contentRef = React.useCallback((element: HTMLDivElement | null) => {
-		if (typeof ref === 'function') ref(element);
-		else if (ref) ref.current = element;
-		if (frame.current !== null) cancelAnimationFrame(frame.current);
-		if (element) frame.current = requestAnimationFrame(() => revealSelection(element));
-	}, [ref]);
+	const contentRef = useSelection(ref);
 	return (
 	<DropdownMenuPrimitive.Portal>
 		<DropdownMenuPrimitive.Content
