@@ -1,6 +1,28 @@
-import { render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ModelProviderSelect } from '../../../src/renderer/src/components/model-provider-select';
+
+it.each([false, true])('reveals the current model when reopening (compact: %s)', async (compactPopover) => {
+	const scrollIntoView = jest.fn();
+	Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+	const user = userEvent.setup();
+	function Picker(): React.JSX.Element {
+		const [modelId, setModelId] = useState('a');
+		return <ModelProviderSelect idPrefix="reopen" providerGroups={[{ id: 'openai', models: [{ id: 'a', name: 'Model A' }, { id: 'b', name: 'Model B' }] }]} providerId="openai" modelId={modelId} onChange={(_, id) => setModelId(id)} buttonDropdown compactPopover={compactPopover} labels={{ label: 'Change model' }} />;
+	}
+	render(<Picker />);
+	await user.click(screen.getByRole('button', { name: 'Change model' }));
+	if (!compactPopover) await user.type(screen.getByRole('textbox'), 'Model B');
+	await user.click(screen.getByRole('menuitemradio', { name: /Model B/ }));
+	await user.click(screen.getByRole('button', { name: 'Change model' }));
+	const selected = screen.getByRole('menuitemradio', { name: /Model B/ });
+	expect(selected).toHaveAttribute('aria-checked', 'true');
+	expect(screen.getByRole('menuitemradio', { name: /Model A/ })).toBeInTheDocument();
+	await waitFor(() => expect(scrollIntoView.mock.contexts).toContain(selected));
+	if (compactPopover) expect(selected).toHaveFocus();
+	else expect(screen.getByRole('textbox')).toHaveFocus();
+});
 
 it('keeps an accessible selector name without rendering its field copy', () => {
 	render(
