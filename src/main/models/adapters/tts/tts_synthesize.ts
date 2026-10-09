@@ -87,7 +87,10 @@ function resolveProvider(providerId: string, modelId: string): SpeechProviderSpe
 	};
 	if (
 		providerId === 'qwen' &&
-		(!spec.baseURL || /^https:\/\/(?:dashscope(?:-intl)?\.aliyuncs\.com|[a-z0-9][a-z0-9-]*\.(?:ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com)(?:\/|$)/i.test(spec.baseURL))
+		(!spec.baseURL ||
+			/^https:\/\/(?:dashscope(?:-intl)?\.aliyuncs\.com|[a-z0-9][a-z0-9-]*\.(?:ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com)(?:\/|$)/i.test(
+				spec.baseURL
+			))
 	) {
 		spec.baseURL = findModel(providerId, 'text-to-speech', modelId)?.url || spec.baseURL;
 	}

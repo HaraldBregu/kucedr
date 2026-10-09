@@ -408,7 +408,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											setError(null);
 										}}
 									/>
-									<p id="qwen-workspace-help" className="text-xs text-muted-foreground">For embeddings, replace the workspace and region with your own.</p>
+									<p id="qwen-workspace-help" className="text-xs text-muted-foreground">
+										For embeddings, replace the workspace and region with your own.
+									</p>
 								</div>
 							)}
 							<Input
