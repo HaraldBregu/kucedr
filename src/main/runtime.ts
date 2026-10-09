@@ -207,7 +207,6 @@ app.whenReady().then(() => {
 	const stopWatchingApps = watchApps(
 		() => {
 			menuManager.create();
-			trayManager.updateContextMenu();
 		},
 		(error) => logger.error('Apps', 'App watcher failed', error)
 	);
