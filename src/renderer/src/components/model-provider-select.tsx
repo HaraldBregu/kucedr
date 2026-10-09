@@ -159,7 +159,6 @@ export function ModelProviderSelect({
 			>
 				{!compactPopover ? (
 					<Input
-						autoFocus
 						aria-label={t('settings.modelServices.searchModels')}
 						className="mb-1 h-8 text-xs"
 						placeholder={t('settings.modelServices.searchModels')}

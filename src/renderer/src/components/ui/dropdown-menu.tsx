@@ -10,7 +10,7 @@ const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 const DropdownMenuContent = React.forwardRef<
 	React.ElementRef<typeof DropdownMenuPrimitive.Content>,
 	React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 4, onOpenAutoFocus, ...props }, ref) => (
+>(({ className, sideOffset = 4, onEntryFocus, ...props }, ref) => (
 	<DropdownMenuPrimitive.Portal>
 		<DropdownMenuPrimitive.Content
 			ref={ref}
@@ -20,8 +20,8 @@ const DropdownMenuContent = React.forwardRef<
 				className
 			)}
 			{...props}
-			onOpenAutoFocus={(event) => {
-				onOpenAutoFocus?.(event);
+			onEntryFocus={(event) => {
+				onEntryFocus?.(event);
 				if (!event.defaultPrevented && revealSelection(event.target as HTMLElement)) event.preventDefault();
 			}}
 		/>
