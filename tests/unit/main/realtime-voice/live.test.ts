@@ -34,12 +34,28 @@ describe('OpenAILiveVoiceAdapter', () => {
 		jest.useFakeTimers();
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string }> = [];
-		const pending = new OpenAILiveVoiceAdapter({ id: 'openai', name: 'OpenAI', apiKey: 'key' }, () => socket, 1000).connect({ modelId: 'gpt-live-1', voice: 'marin', instructions: '', history: [], tools: [] }, (event) => events.push(event));
+		const pending = new OpenAILiveVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1000
+		).connect(
+			{ modelId: 'gpt-live-1', voice: 'marin', instructions: '', history: [], tools: [] },
+			(event) => events.push(event)
+		);
 		socket.emit('open');
 		socket.emit('message', JSON.stringify({ type: 'session.started' }));
 		const connection = await pending;
-		socket.emit('message', JSON.stringify({ type: 'session.output_audio.delta', delta: Buffer.alloc(240000, 1).toString('base64') }));
-		socket.emit('message', JSON.stringify({ type: 'session.output_transcript.delta', delta: 'A longer spoken answer.' }));
+		socket.emit(
+			'message',
+			JSON.stringify({
+				type: 'session.output_audio.delta',
+				delta: Buffer.alloc(240000, 1).toString('base64'),
+			})
+		);
+		socket.emit(
+			'message',
+			JSON.stringify({ type: 'session.output_transcript.delta', delta: 'A longer spoken answer.' })
+		);
 		await jest.advanceTimersByTimeAsync(1500);
 		expect(events.some((event) => event.type === 'assistant_audio_done')).toBe(false);
 		await jest.advanceTimersByTimeAsync(5000);

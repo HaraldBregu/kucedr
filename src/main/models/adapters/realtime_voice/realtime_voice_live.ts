@@ -317,7 +317,10 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 		if (event.type === 'session.output_transcript.delta' && typeof event.delta === 'string') {
 			this.outputTurnActive = true;
 			if (this.outputTimer) clearTimeout(this.outputTimer);
-			this.outputTimer = setTimeout(() => this.finishOutputTurn(), Math.max(TURN_PAUSE_MS, this.outputAudioEndMs + TURN_PAUSE_MS - Date.now()));
+			this.outputTimer = setTimeout(
+				() => this.finishOutputTurn(),
+				Math.max(TURN_PAUSE_MS, this.outputAudioEndMs + TURN_PAUSE_MS - Date.now())
+			);
 			this.outputTimer.unref?.();
 			const itemId = this.outputItemId();
 			this.outputTranscript += event.delta;
