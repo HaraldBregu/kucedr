@@ -25,7 +25,7 @@ export function createBflImageAdapter(spec: ImageProviderSpec): ImageAdapter {
 		supportsSource: true,
 		async generate(request) {
 			const endpoint = BFL_ENDPOINTS[request.modelId] ?? request.modelId;
-			if (request.source && endpoint !== 'flux-kontext-pro') {
+			if (request.source && !/^(flux-2-|flux-3-image|flux-kontext-)/.test(endpoint)) {
 				throw new ImageProviderUnsupportedError(
 					`${request.modelId} does not support source-image editing.`
 				);
@@ -36,7 +36,11 @@ export function createBflImageAdapter(spec: ImageProviderSpec): ImageAdapter {
 				body: JSON.stringify({
 					prompt: request.prompt,
 					...request.options,
-					...(request.source ? { input_image: request.source.base64 } : {}),
+					...(request.source
+						? endpoint === 'flux-3-image'
+							? { images: [request.source.base64, ...((request.options?.images as string[]) ?? [])] }
+							: { input_image: request.source.base64 }
+						: {}),
 				}),
 				signal: request.signal,
 			});

@@ -1,4 +1,5 @@
 import { normalizeProviderId } from '../../../../shared/provider_types';
+import { createBflVideoAdapter } from './ttv_bfl';
 import { createGoogleVideoAdapter } from './ttv_google';
 import { createKlingVideoAdapter } from './ttv_kling';
 import { createLumaVideoAdapter } from './ttv_luma';
@@ -13,6 +14,7 @@ import type { VideoAdapter, VideoProviderSpec } from './ttv_types';
 export function buildVideoAdapter(provider: VideoProviderSpec): VideoAdapter {
 	const id = normalizeProviderId(provider.id);
 	const spec = { ...provider, id };
+	if (id === 'black-forest-labs') return createBflVideoAdapter(spec);
 	if (id === 'google') return createGoogleVideoAdapter(spec);
 	if (id === 'kling') return createKlingVideoAdapter(spec);
 	if (id === 'luma') return createLumaVideoAdapter(spec);
