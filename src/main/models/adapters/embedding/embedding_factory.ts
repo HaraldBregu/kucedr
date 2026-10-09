@@ -8,7 +8,7 @@ import type { EmbeddingAdapter, EmbeddingProviderSpec } from './embedding_types'
 
 export function buildEmbeddingAdapter(provider: EmbeddingProviderSpec): EmbeddingAdapter {
 	// ponytail: self-hosted BGE-M3 servers speak the OpenAI embeddings shape.
-	if (provider.id === 'openai' || provider.id === 'bge') {
+	if (provider.id === 'openai' || provider.id === 'bge' || provider.id === 'mistral') {
 		return createOpenAiEmbeddingAdapter(provider);
 	}
 	if (provider.id === 'cohere') return createCohereEmbeddingAdapter(provider);

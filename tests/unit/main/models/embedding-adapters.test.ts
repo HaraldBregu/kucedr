@@ -12,7 +12,7 @@ beforeEach(() => {
 	global.fetch = jest.fn();
 });
 
-it.each(['openai', 'voyage', 'jina', 'bge'])(
+it.each(['openai', 'voyage', 'jina', 'bge', 'mistral'])(
 	'uses response indexes to keep %s embeddings aligned with input order',
 	async (providerId) => {
 		jest.mocked(global.fetch).mockResolvedValue(
@@ -66,6 +66,7 @@ it.each([
 	['nomic', 'document', { task_type: 'search_document', long_text_mode: 'mean' }],
 	['nomic', 'query', { task_type: 'search_query', long_text_mode: 'mean' }],
 	['openai', 'document', { encoding_format: 'float' }],
+	['mistral', 'document', { encoding_format: 'float' }],
 ] as const)(
 	'maps %s %s retrieval inputs without discarding long content',
 	async (providerId, inputType, expected) => {
