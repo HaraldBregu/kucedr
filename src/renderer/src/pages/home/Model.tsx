@@ -1,14 +1,45 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import { ModelProviderSelect, type ModelProviderGroup } from '@/components/model-provider-select';
 import { providerIdsFor, providerModels, providers } from '@/lib/providers';
+import { modelContextWindow } from '@shared/model_context';
+import type { HomeChatMessage } from './context/state';
+import { Context } from './Context';
 
-export function Model(): ReactElement {
+export function Model({
+	messages = [],
+	draft = '',
+	hasAttachments = false,
+}: {
+	messages?: readonly HomeChatMessage[];
+	draft?: string;
+	hasAttachments?: boolean;
+}): ReactElement {
 	const [groups, setGroups] = useState<ModelProviderGroup[]>([]);
 	const [providerId, setProviderId] = useState('');
 	const [modelId, setModelId] = useState('');
 	const [localProvider, setLocalProvider] =
 		useState<Awaited<ReturnType<NonNullable<typeof window.provider>['list']>>[number]>();
 	const [saving, setSaving] = useState(false);
+	const [localContextWindow, setLocalContextWindow] = useState<number>();
+	useEffect(() => {
+		let active = true;
+		setLocalContextWindow(undefined);
+		if (providerId === 'ollama')
+			void window.agent
+				.getContextWindow()
+				.then((value) => {
+					if (
+						active &&
+						value.modelId === modelId &&
+						['ollama', 'custom'].includes(value.providerId)
+					)
+						setLocalContextWindow(value.contextWindow);
+				})
+				.catch(() => undefined);
+		return () => {
+			active = false;
+		};
+	}, [providerId, modelId]);
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
@@ -88,6 +119,23 @@ export function Model(): ReactElement {
 				buttonClassName="h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground"
 				labels={{ label: 'Change model' }}
 			/>
+			{modelId ? (
+				<Context
+					providerId={providerId}
+					modelId={modelId}
+					contextWindow={
+						localContextWindow ??
+						modelContextWindow(
+							groups
+								.find((group) => group.id === providerId)
+								?.models.find((model) => model.id === modelId)?.metadata
+						)
+					}
+					messages={messages}
+					draft={draft}
+					hasAttachments={hasAttachments}
+				/>
+			) : null}
 			{error ? (
 				<span role="alert" className="text-[11px] text-destructive">
 					Model unavailable

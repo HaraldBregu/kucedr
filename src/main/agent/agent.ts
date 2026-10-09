@@ -363,7 +363,10 @@ export class Agent {
 
 			const streamingToolArgs = new Map<string, { name: string; argsText: string }>();
 			for await (const event of events) {
-				if (event.type === 'user_input_request' && event.questions.some((question) => question.id === 'mcp-authorization')) {
+				if (
+					event.type === 'user_input_request' &&
+					event.questions.some((question) => question.id === 'mcp-authorization')
+				) {
 					clearTimeout(timeoutTimer);
 				} else if (event.type === 'user_input_result') {
 					startTimeout();
@@ -760,6 +763,7 @@ function runtimeEventToAgentEvents(
 			},
 		];
 	}
+	if (event.type === 'context_usage') return [{ ...event, agentId, runId }];
 	if (event.type === 'model_call_end') {
 		return [{ type: 'model_usage', usage: event.usage, agentId, runId }];
 	}

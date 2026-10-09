@@ -12,6 +12,7 @@ import { fitModelContext } from './run_model_context_budget';
 import type { KeyedLimiter } from '../limiter';
 import type { ExecutionBudget } from '../execution/budget';
 import { retryAfterMs } from './run_retry_after';
+import { resolveContextWindow } from '../../models/context';
 
 export interface ModelTurnStream {
 	stream(request: LlmRequest): AsyncIterable<LlmEvent>;
@@ -39,6 +40,7 @@ export async function* runModelTurn(
 ): AsyncGenerator<RuntimeEvent, ModelTurn> {
 	const maxRetries = 2;
 	const maxTokens = modelOutputLimit(provider.id, modelId, modelOptions);
+	const contextWindow = await resolveContextWindow(provider, modelId, modelOptions);
 	const context = fitModelContext({
 		systemPrompt,
 		protectedSystemPrompt,
@@ -46,9 +48,18 @@ export async function* runModelTurn(
 		contextMessages,
 		messages,
 		tools,
-		maxInputTokens: modelInputLimit(provider.id, modelId, maxTokens),
+		maxInputTokens: modelInputLimit(provider.id, modelId, maxTokens, contextWindow),
 	});
 	onContextAccepted?.(context.systemPrompt);
+	const contextUsage = {
+		providerId: provider.id,
+		modelId,
+		inputTokens: context.estimatedTokens,
+		outputTokens: 0,
+		estimated: true,
+		contextWindow,
+	};
+	yield { type: 'context_usage', context: contextUsage };
 	for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
 		const attemptStartedAt = Date.now();
 		let firstTokenAt: number | undefined;
@@ -114,9 +125,22 @@ export async function* runModelTurn(
 				if (event.type === 'model_call_end') {
 					model = event.model;
 					stopReason = event.stopReason;
-					usage = event.usage;
+					usage = {
+						...event.usage,
+						context: {
+							...contextUsage,
+							inputTokens:
+								event.usage?.inputTokens && event.usage.inputTokens > 0
+									? event.usage.inputTokens
+									: context.estimatedTokens,
+							outputTokens:
+								event.usage?.outputTokens ?? Math.ceil(Buffer.byteLength(content, 'utf8') / 3),
+							estimated: !(event.usage?.inputTokens && event.usage.inputTokens > 0),
+						},
+					};
 					yield {
 						...event,
+						usage,
 						durationMs: Date.now() - attemptStartedAt,
 						...(firstTokenAt ? { firstTokenLatencyMs: firstTokenAt - attemptStartedAt } : {}),
 						retryCount: attempt,
@@ -150,7 +174,11 @@ export async function* runModelTurn(
 				throw error;
 			retryDelay = retryAfterMs(error) ?? Math.min(250 * 2 ** attempt, 2_000);
 		} finally {
-			settleUsage?.(usage ? { inputTokens: usage.inputTokens ?? 0, outputTokens: usage.outputTokens ?? 0 } : undefined);
+			settleUsage?.(
+				usage
+					? { inputTokens: usage.inputTokens ?? 0, outputTokens: usage.outputTokens ?? 0 }
+					: undefined
+			);
 			lease?.release();
 		}
 		if (retryDelay !== undefined) await wait(retryDelay, undefined, { signal });

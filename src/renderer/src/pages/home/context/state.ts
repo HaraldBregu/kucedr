@@ -1,4 +1,9 @@
-import type { AgentHistoryContentBlock, AgentRunState, AgentUserInputQuestion, AgentUserInputScope } from '@/lib/compat';
+import type {
+	AgentHistoryContentBlock,
+	AgentRunState,
+	AgentUserInputQuestion,
+	AgentUserInputScope,
+} from '@/lib/compat';
 import type { AgentToolPart } from './tool-parts';
 
 export type { AgentRunState, AgentToolPart };
@@ -57,6 +62,7 @@ export interface AgentMessage {
 	readonly errorText?: string;
 	readonly startedAtMs?: number;
 	readonly completedAtMs?: number;
+	readonly contextUsage?: import('@shared/agent_types').AgentContextUsage;
 	readonly inputTokens?: number;
 	readonly outputTokens?: number;
 	readonly settledOutputTokens?: number;

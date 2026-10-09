@@ -118,6 +118,7 @@ export const agent: AgentApi = {
 	): Promise<boolean> => {
 		return typedInvokeUnwrap(AgentChannels.respondUserInput, scope, answers);
 	},
+	getContextWindow: () => typedInvokeUnwrap(AgentChannels.getContextWindow),
 	getPromptInputCapabilities: (): Promise<AgentPromptInputCapabilities | null> => {
 		return typedInvokeUnwrap(AgentChannels.getPromptInputCapabilities);
 	},

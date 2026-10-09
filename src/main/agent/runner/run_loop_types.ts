@@ -5,9 +5,6 @@ export interface ModelTurn {
 	model: string;
 	stopReason?: string;
 	toolCalls: ToolCall[];
-	usage?: {
-		inputTokens?: number;
-		outputTokens?: number;
-	};
+	usage?: import('../../../shared/agent_types').AgentTokenUsage;
 	providerItems?: MessageContentBlock[];
 }

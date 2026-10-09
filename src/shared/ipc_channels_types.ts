@@ -208,6 +208,10 @@ export interface AgentInvokeChannelMap {
 		];
 		result: boolean;
 	};
+	[AgentChannels.getContextWindow]: {
+		args: [];
+		result: { providerId: string; modelId: string; contextWindow?: number };
+	};
 	[AgentChannels.getPromptInputCapabilities]: {
 		args: [];
 		result: import('./agent_types').AgentPromptInputCapabilities | null;

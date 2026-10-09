@@ -38,10 +38,8 @@ describe('runModelTurn', () => {
 			}
 			emitted.push(next.value);
 		}
-		expect(emitted.map((event) => event.type)).toEqual(['model_call_end']);
-		expect(turn.toolCalls).toEqual([
-			{ id: 'bash-call', name: 'bash', args: { command: 'pwd' } },
-		]);
+		expect(emitted.map((event) => event.type)).toEqual(['context_usage', 'model_call_end']);
+		expect(turn.toolCalls).toEqual([{ id: 'bash-call', name: 'bash', args: { command: 'pwd' } }]);
 	});
 
 	it('adds privacy-safe timing and retry counters to the terminal model event', async () => {

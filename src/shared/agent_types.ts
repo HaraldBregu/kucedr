@@ -132,7 +132,17 @@ export interface WorkspaceTreeEntry {
 	updatedAt?: string;
 }
 
+export interface AgentContextUsage {
+	providerId: string;
+	modelId: string;
+	inputTokens: number;
+	outputTokens: number;
+	estimated: boolean;
+	contextWindow?: number;
+}
+
 export interface AgentTokenUsage {
+	context?: AgentContextUsage;
 	inputTokens?: number;
 	outputTokens?: number;
 }
@@ -275,6 +285,7 @@ export type AgentRunStreamEvent =
 			model: string;
 			effort?: ModelReasoningEffort;
 	  }
+	| { type: 'context_usage'; context: AgentContextUsage }
 	| { type: 'model_usage'; usage?: AgentTokenUsage }
 	| { type: 'capability_resolution_start' }
 	| ({ type: 'capability_resolution_result' } & AgentCapabilityResolutionSummary)

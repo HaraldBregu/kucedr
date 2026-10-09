@@ -14,6 +14,7 @@ export type SessionCategory = AgentSessionCategory;
 export type SessionResultSubtype = 'success' | 'error_max_turns';
 
 export interface SessionUsage {
+	context?: import('../../../shared/agent_types').AgentContextUsage;
 	inputTokens: number;
 	outputTokens: number;
 }

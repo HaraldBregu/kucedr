@@ -52,6 +52,8 @@ import {
 	updateHealthSettings,
 } from '../health';
 import type { HealthSettings } from '../health/types';
+import { resolveContextWindow } from '../models/context';
+import { getResolvedProvider } from '../settings_store';
 import {
 	getModelId,
 	getModelOptions,
@@ -412,6 +414,24 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				const window = renderer.assert(event);
 				return respondUserInput(toUserInputScope(value), toUserInputAnswers(answers), window.id);
 			}, AgentChannels.respondUserInput)
+		);
+
+		ipcMain.handle(
+			AgentChannels.getContextWindow,
+			wrapAgentHandler(
+				mainAccess,
+				async () => {
+					const providerId = getProviderId();
+					const modelId = getModelId();
+					const contextWindow = await resolveContextWindow(
+						getResolvedProvider(providerId),
+						modelId,
+						getModelOptions()
+					);
+					return { providerId, modelId, contextWindow };
+				},
+				AgentChannels.getContextWindow
+			)
 		);
 
 		ipcMain.handle(

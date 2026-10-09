@@ -20,10 +20,7 @@ export interface LlmResponse {
 	toolCalls?: ToolCall[];
 	model?: string;
 	stopReason?: string;
-	usage?: {
-		inputTokens?: number;
-		outputTokens?: number;
-	};
+	usage?: import('../../../../shared/agent_types').AgentTokenUsage;
 }
 
 export type LlmEvent =
@@ -105,7 +102,8 @@ export type LlmContentBlock =
 	  };
 
 export type LlmToolResultBlock =
-	{ type: 'text'; text: string } | { type: 'image'; mimeType?: string; base64?: string };
+	| { type: 'text'; text: string }
+	| { type: 'image'; mimeType?: string; base64?: string };
 
 export type LlmUserContentBlock =
 	| { type: 'text'; text: string }
