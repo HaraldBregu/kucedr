@@ -127,7 +127,8 @@ export class RealtimeVoiceToolRuntime {
 			return;
 		}
 		if (this.pending.has(event.callId) || this.completed.has(event.callId)) return;
-		if (!this.controllers.has(event.callId)) this.controllers.set(event.callId, new AbortController());
+		if (!this.controllers.has(event.callId))
+			this.controllers.set(event.callId, new AbortController());
 		this.pending.add(event.callId);
 		this.tail = this.tail.then(() => this.run(event)).catch(this.dependencies.onError);
 	}
