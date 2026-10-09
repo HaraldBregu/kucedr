@@ -1,8 +1,6 @@
 import { EventEmitter } from 'node:events';
 import WebSocket from 'ws';
 import { createCartesiaSttAdapter } from '../../../../src/main/models/adapters/stt/stt_cartesia';
-import { createCartesiaSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_cartesia';
-import { createCohereSttAdapter } from '../../../../src/main/models/adapters/stt/stt_cohere';
 import { createDeepgramSttAdapter } from '../../../../src/main/models/adapters/stt/stt_deepgram';
 import { createElevenLabsSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_elevenlabs';
 import { createElevenLabsMusicAdapter } from '../../../../src/main/models/adapters/tta/tta_elevenlabs';
@@ -11,6 +9,7 @@ import { transcribe } from '../../../../src/main/models/adapters/stt/stt_transcr
 import { createEmbedding } from '../../../../src/main/models/embedding/embedding_create';
 
 jest.mock('ws', () => ({ __esModule: true, default: jest.fn() }));
+jest.mock('@mistralai/mistralai', () => ({ Mistral: jest.fn() }));
 jest.mock('../../../../src/main/settings_store', () => ({
 	getProvider: (id: string) => ({
 		id,
