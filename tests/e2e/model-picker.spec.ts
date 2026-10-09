@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { launchApp } from './helpers';
 import { closeApp } from './close';
 
-test('reopening a selected model keeps the search field fully visible', async (_fixtures, testInfo) => {
+test('reopening a selected model keeps the search field fully visible', async ({ browserName: _browserName }, testInfo) => {
 	test.setTimeout(60_000);
 	const { app, page, userDataDir } = await launchApp();
 	try {
