@@ -2,10 +2,11 @@ import { expect, test } from '@playwright/test';
 import { launchApp } from './helpers';
 import { closeApp } from './close';
 
-test('reopening a selected model keeps the search field fully visible', async ({}, testInfo) => {
+test('reopening a selected model keeps the search field fully visible', async (_fixtures, testInfo) => {
 	test.setTimeout(60_000);
 	const { app, page, userDataDir } = await launchApp();
 	try {
+		await expect(page.getByRole('button', { name: 'Get started', exact: true })).toBeVisible();
 		await page.evaluate(async () => {
 			await window.agent.setProvider({ id: 'openai', name: 'OpenAI', baseUrl: 'https://api.openai.com/v1' });
 			await window.agent.setModelId('gpt-5.6-luna');
