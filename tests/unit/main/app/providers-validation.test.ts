@@ -17,10 +17,7 @@ const PDF_RULE = {
 };
 
 function expectedPromptAttachments(providerId: string, modelId: string): unknown[] {
-	if (
-		providerId === 'cohere' &&
-		['command-a-plus-05-2026', 'command-a-vision-07-2025', 'c4ai-aya-vision-32b'].includes(modelId)
-	)
+	if (providerId === 'cohere' && modelId === 'command-a-plus-05-2026')
 		return [
 			{
 				kind: 'image',
@@ -32,8 +29,7 @@ function expectedPromptAttachments(providerId: string, modelId: string): unknown
 		];
 	if (providerId === 'reka' && ['qwen3.8-27b', 'glm5.3-flash', 'gemma4-26b'].includes(modelId))
 		return [IMAGE_RULE];
-	if (providerId === 'reka' && ['glm5.3', 'deepseek4-flash', 'reka-flash-3'].includes(modelId))
-		return [];
+	if (providerId === 'reka' && ['glm5.3', 'deepseek4-flash'].includes(modelId)) return [];
 	if (
 		(providerId === 'xai' && modelId === 'grok-4.7') ||
 		(providerId === 'zai' && ['glm-5.3-flash', 'glm-5.3-flashx'].includes(modelId))
