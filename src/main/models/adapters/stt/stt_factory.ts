@@ -5,6 +5,7 @@ import { createDeepgramSttAdapter } from './stt_deepgram';
 import { createElevenLabsSttAdapter } from './stt_elevenlabs';
 import { createGoogleSttAdapter } from './stt_google';
 import { createMistralSttAdapter } from './stt_mistral';
+import { createMiniMaxSttAdapter } from './stt_minimax';
 import { createOpenAISttAdapter } from './stt_openai';
 import { createQwenSttAdapter } from './stt_qwen';
 import { createXaiSttAdapter } from './stt_xai';
@@ -18,6 +19,7 @@ const STT_ADAPTERS: Readonly<Record<string, (spec: SttProviderSpec) => SttAdapte
 	google: createGoogleSttAdapter,
 	elevenlabs: createElevenLabsSttAdapter,
 	mistral: createMistralSttAdapter,
+	minimax: createMiniMaxSttAdapter,
 	openai: createOpenAISttAdapter,
 	qwen: createQwenSttAdapter,
 	xai: createXaiSttAdapter,

@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { VideoProviderAuthError, VideoProviderRequestError } from './ttv_errors';
 import { fetchVideoAsBase64, poll, requestJson } from './ttv_shared';
 import type { VideoAdapter, VideoProviderSpec } from './ttv_types';
+import { generateKlingMedia } from '../kling/generation';
 
 const KLING_BASE_URL = 'https://api-singapore.klingai.com';
 
@@ -32,7 +33,7 @@ function signJwt(accessKey: string, secretKey: string): string {
 export function createKlingVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 	// ponytail: Kling needs an access/secret pair; the single stored key uses "accessKey:secretKey".
 	const [accessKey, secretKey] = spec.apiKey.split(':');
-	if (!accessKey || !secretKey) {
+	if (!spec.apiKey) {
 		throw new VideoProviderAuthError(
 			`${spec.name} requires the API key in "accessKey:secretKey" format.`
 		);
@@ -45,6 +46,10 @@ export function createKlingVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 
 	return {
 		async generate(request) {
+			if (request.modelId === 'kling-3.0' || request.modelId === 'kling-3.0-turbo') {
+				return generateKlingMedia(spec, `/text-to-video/${request.modelId}`, { ...request.options, prompt: request.prompt }, 'video', { auth: VideoProviderAuthError, request: VideoProviderRequestError }, request.signal);
+			}
+			if (!accessKey || !secretKey) throw new VideoProviderAuthError(`${spec.name} requires the API key in "accessKey:secretKey" format for legacy models.`);
 			const submitted = await requestJson<KlingTask>(spec.name, `${baseURL}/v1/videos/text2video`, {
 				method: 'POST',
 				headers: buildHeaders(),

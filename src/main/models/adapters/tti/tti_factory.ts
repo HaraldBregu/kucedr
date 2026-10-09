@@ -2,6 +2,8 @@ import { normalizeProviderId } from '../../../../shared/provider_types';
 import { createBflImageAdapter } from './tti_bfl';
 import { createGoogleImageAdapter } from './tti_google';
 import { createIdeogramImageAdapter } from './tti_ideogram';
+import { createKlingImageAdapter } from './tti_kling';
+import { createMiniMaxImageAdapter } from './tti_minimax';
 import { createLumaImageAdapter } from './tti_luma';
 import { createOpenAIImageAdapter } from './tti_openai';
 import { createQwenImageAdapter } from './tti_qwen';
@@ -16,6 +18,8 @@ export function buildImageAdapter(provider: ImageProviderSpec): ImageAdapter {
 	if (id === 'black-forest-labs') return createBflImageAdapter(spec);
 	if (id === 'google') return createGoogleImageAdapter(spec);
 	if (id === 'ideogram') return createIdeogramImageAdapter(spec);
+	if (id === 'kling') return createKlingImageAdapter(spec);
+	if (id === 'minimax') return createMiniMaxImageAdapter(spec);
 	if (id === 'luma') return createLumaImageAdapter(spec);
 	if (id === 'openai') return createOpenAIImageAdapter(spec);
 	if (id === 'qwen') return createQwenImageAdapter(spec);
