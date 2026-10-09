@@ -53,7 +53,9 @@ export function VoiceWindow({
 				className="relative flex h-12 shrink-0 items-center justify-center select-none"
 				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
 			>
-				<span className="text-sm font-normal tracking-wide text-muted-foreground">Voice</span>
+				<span className="text-sm font-normal tracking-wide text-muted-foreground">
+					Voice
+				</span>
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
 				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
