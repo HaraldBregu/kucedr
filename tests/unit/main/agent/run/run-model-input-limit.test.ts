@@ -45,3 +45,8 @@ it('uses the conservative documented fallback when metadata is unavailable', () 
 		DEFAULT_MODEL_CONTEXT_TOKENS - 8_192 - MODEL_CONTEXT_SAFETY_TOKENS
 	);
 });
+
+it('uses a separate input limit without treating it as a provider request option', () => {
+	findModel.mockReturnValue({ metadata: { maxInputTokens: 100_000, contextWindow: 128_000, inputs: {} } });
+	expect(modelInputLimit('provider', 'model', 8_000)).toBe(100_000 - MODEL_CONTEXT_SAFETY_TOKENS);
+});

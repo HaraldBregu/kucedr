@@ -268,3 +268,11 @@ it.each([undefined, { inputTokens: 0, outputTokens: 0 }])('retains estimates whe
 	for await (const event of runModelTurn({ task: 'chat', message: 'hello' }, { id: 'test', apiKey: '' } as ResolvedProvider, 'model', 'system', [{ role: 'user', content: 'hello' }], [], new AbortController().signal, {}, { stream })) emitted.push(event);
 	expect(emitted.at(-1)).toMatchObject({ type: 'model_call_end', usage: { context: { estimated: true, inputTokens: expect.any(Number), outputTokens: 2 } } });
 });
+
+it('keeps input and output within a configured local context window', async () => {
+	const stream = jest.fn(async function* () {
+		yield { type: 'model_call_end' as const, model: 'local', usage: { inputTokens: 20, outputTokens: 1 } };
+	});
+	for await (const _event of runModelTurn({ task: 'chat', message: 'hello' }, { id: 'ollama', apiKey: '' } as ResolvedProvider, 'local', 'system', [{ role: 'user', content: 'hello' }], [], new AbortController().signal, { num_ctx: 4096 }, { stream })) void _event;
+	expect(stream).toHaveBeenCalledWith(expect.objectContaining({ maxTokens: 1024 }));
+});

@@ -130,3 +130,16 @@ it('caps the visual ring at 100 percent while retaining the full token count', (
 	expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
 	expect(screen.getByRole('button')).toHaveAccessibleName('Context: 500 / 400 tokens (100% used)');
 });
+
+it('preserves streamed output estimates when a legacy event has no context or provider usage', () => {
+	const current = { ...message, runId: 'r', streamedChars: 90 };
+	const next = agentChatReducer(
+		{ messages: [current], activeAgentId: 'a', activeRunId: 'r' },
+		{
+			type: 'apply_response_event',
+			receivedAtMs: 1,
+			event: { type: 'model_usage', agentId: 'voice', runId: 'r' },
+		}
+	);
+	expect(contextTokens(next.messages, 'openai', 'small', '').tokens).toBe(530);
+});
