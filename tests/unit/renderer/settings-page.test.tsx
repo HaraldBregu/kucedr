@@ -8,6 +8,8 @@ const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
 const mockSetWindowSize = jest.fn();
+const mockSetSoundFeedbackEnabled = jest.fn();
+let mockSoundFeedbackEnabled = true;
 let notifyTrayEnabled: (enabled: boolean) => void;
 let notifyKeepAwake: (enabled: boolean) => void;
 
@@ -21,6 +23,8 @@ jest.mock('@/contexts', () => ({
 		setLanguage: jest.fn(),
 		theme: 'system',
 		setTheme: mockSetTheme,
+		soundFeedbackEnabled: mockSoundFeedbackEnabled,
+		setSoundFeedbackEnabled: mockSetSoundFeedbackEnabled,
 	}),
 }));
 
@@ -31,6 +35,7 @@ beforeAll(() => {
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	mockSoundFeedbackEnabled = true;
 	mockSetKeepAwake.mockResolvedValue(undefined);
 	mockSetTrayClickAction.mockResolvedValue(undefined);
 	mockSetWindowSize.mockResolvedValue(undefined);
@@ -86,6 +91,35 @@ it('enables keep awake from Settings', async () => {
 
 	expect(mockSetKeepAwake).toHaveBeenCalledWith(true);
 	expect(keepAwake).toBeChecked();
+});
+
+it.each([true, false])('changes sound feedback from %s in Settings', async (enabled) => {
+	const user = userEvent.setup();
+	mockSoundFeedbackEnabled = enabled;
+	const { rerender } = render(
+		<MemoryRouter>
+			<SettingsPage />
+		</MemoryRouter>
+	);
+	const soundFeedback = await screen.findByRole('switch', {
+		name: 'settings.application.soundFeedback',
+		checked: enabled,
+	});
+
+	await user.click(soundFeedback);
+	expect(mockSetSoundFeedbackEnabled).toHaveBeenCalledTimes(1);
+	expect(mockSetSoundFeedbackEnabled.mock.calls[0][0]).toBe(!enabled);
+
+	mockSoundFeedbackEnabled = !enabled;
+	rerender(
+		<MemoryRouter>
+			<SettingsPage />
+		</MemoryRouter>
+	);
+	expect(screen.getByRole('switch', {
+		name: 'settings.application.soundFeedback',
+		checked: !enabled,
+	})).toBe(soundFeedback);
 });
 
 it('saves the configured tray icon click action from Settings', async () => {
