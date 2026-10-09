@@ -18,7 +18,8 @@ test('restored chat displays library media and custom destinations with working 
 		await copyFile(path.resolve('resources/icons/png/128x128.png'), customImage);
 		const screenshot = path.join(library, 'browser screenshot.png');
 		await page.screenshot({ path: screenshot });
-		const videoBytes = await page.evaluate(async () => {
+		await page.mouse.click(10, 10);
+		const mediaBytes = await page.evaluate(async () => {
 			const canvas = document.createElement('canvas');
 			canvas.width = 64;
 			canvas.height = 48;
@@ -28,18 +29,42 @@ test('restored chat displays library media and custom destinations with working 
 			const chunks: Blob[] = [];
 			recorder.ondataavailable = ({ data }) => chunks.push(data);
 			const stopped = new Promise<void>((resolve) => { recorder.onstop = () => resolve(); });
+			const audioContext = new AudioContext();
+			const tone = audioContext.createOscillator();
+			const gain = audioContext.createGain();
+			const destination = audioContext.createMediaStreamDestination();
+			tone.frequency.value = 440;
+			gain.gain.value = 0.02;
+			tone.connect(gain);
+			gain.connect(destination);
+			tone.start();
+			await audioContext.resume();
+			const audioRecorder = new MediaRecorder(destination.stream, { mimeType: 'audio/webm;codecs=opus' });
+			const audioChunks: Blob[] = [];
+			audioRecorder.ondataavailable = ({ data }) => audioChunks.push(data);
+			const audioStopped = new Promise<void>((resolve) => {
+				audioRecorder.onstop = () => resolve();
+			});
 			let frame = 0;
 			const timer = setInterval(() => {
 				context.fillStyle = frame++ % 2 === 0 ? '#60a5fa' : '#f59e0b';
 				context.fillRect(0, 0, canvas.width, canvas.height);
 			}, 100);
 			recorder.start();
+			audioRecorder.start();
 			await new Promise((resolve) => setTimeout(resolve, 1600));
 			recorder.stop();
-			await stopped;
+			audioRecorder.stop();
+			await Promise.all([stopped, audioStopped]);
 			clearInterval(timer);
 			stream.getTracks().forEach((track) => track.stop());
-			return Array.from(new Uint8Array(await new Blob(chunks).arrayBuffer()));
+			tone.stop();
+			destination.stream.getTracks().forEach((track) => track.stop());
+			await audioContext.close();
+			return {
+				video: Array.from(new Uint8Array(await new Blob(chunks).arrayBuffer())),
+				audio: Array.from(new Uint8Array(await new Blob(audioChunks).arrayBuffer())),
+			};
 		});
 		const audio = Buffer.alloc(44 + 16000 * 2);
 		audio.write('RIFF', 0);
@@ -70,10 +95,12 @@ test('restored chat displays library media and custom destinations with working 
 			{ name: 'screen_recorder_stop', path: path.join(custom, 'screen custom.webm'), mimeType: 'video/webm', status: 'completed' },
 		];
 		for (const fixture of fixtures) {
-			if (fixture.name === 'create_sound' || fixture.name.startsWith('microphone')) {
+			if (fixture.name === 'create_sound') {
 				await writeFile(fixture.path, audio);
+			} else if (fixture.name.startsWith('microphone')) {
+				await writeFile(fixture.path, Buffer.from(mediaBytes.audio));
 			} else if (fixture.mimeType === 'video/webm') {
-				await writeFile(fixture.path, Buffer.from(videoBytes));
+				await writeFile(fixture.path, Buffer.from(mediaBytes.video));
 			}
 		}
 		const sessionId = '33333333-3333-4333-8333-333333333333';
@@ -111,6 +138,11 @@ test('restored chat displays library media and custom destinations with working 
 			.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(128);
 		await expect(page.locator('video')).toHaveCount(4);
 		await expect(page.locator('audio')).toHaveCount(3);
+		const sounds = await page.evaluate(() => window.models.sound.listSounds());
+		expect(sounds.map(({ path }) => path).sort()).toEqual([
+			path.join(library, 'microphone #à.webm'),
+			path.join(library, 'sound #à.wav'),
+		].sort());
 		for (const player of await page.locator('video, audio').all()) {
 			await expect.poll(() => player.evaluate((element: HTMLMediaElement) => ({
 				loaded: element.readyState >= 1, error: element.error?.code ?? null,
