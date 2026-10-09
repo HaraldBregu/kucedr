@@ -21,6 +21,10 @@ jest.mock('../../../src/renderer/src/contexts/chat-session', () => ({
 
 beforeEach(() => {
 	mockSessionId = 'chat-one';
+	jest.mocked(playSound).mockClear();
+	mockDispatch.mockClear();
+	mockSetSessionId.mockClear();
+	send.mockReset();
 	send.mockImplementation((_prompt, options, callback) => {
 		runId = options.runId;
 		onEvent = callback;
@@ -33,6 +37,10 @@ beforeEach(() => {
 			cancel: jest.fn().mockResolvedValue(true),
 			getSessionSnapshot: jest.fn().mockResolvedValue({ messages: [] }),
 		},
+	});
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: { getPathForFile: jest.fn().mockReturnValue('') },
 	});
 });
 
@@ -125,9 +133,9 @@ it('does not play cues from history restoration or after navigating to another c
 	expect(jest.mocked(playSound).mock.calls).toEqual([['send']]);
 });
 
-it('plays navigation feedback for the new-chat keyboard shortcut', () => {
+it('plays navigation feedback for the new-chat keyboard shortcut', async () => {
 	renderHook(() => useHomeAgent({ setMode: jest.fn() }));
-	act(() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'n', metaKey: true })));
+	await act(async () => { window.dispatchEvent(new KeyboardEvent('keydown', { key: 'n', metaKey: true })); });
 	expect(playSound).toHaveBeenCalledWith('navigate');
 	expect(mockSetSessionId).toHaveBeenCalled();
 });
