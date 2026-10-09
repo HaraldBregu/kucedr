@@ -1,4 +1,8 @@
-import { ImageProviderAuthError, ImageProviderRequestError, ImageProviderUnsupportedError } from './tti_errors';
+import {
+	ImageProviderAuthError,
+	ImageProviderRequestError,
+	ImageProviderUnsupportedError,
+} from './tti_errors';
 import { fetchImageAsBase64, requestJson } from './tti_shared';
 import type { ImageAdapter, ImageProviderSpec } from './tti_types';
 
@@ -21,16 +25,28 @@ export function createIdeogramImageAdapter(spec: ImageProviderSpec): ImageAdapte
 		supportsSource: true,
 		async generate(request) {
 			if (request.source && request.modelId !== 'ideogram-4.5') {
-				throw new ImageProviderUnsupportedError(`${request.modelId} does not support source-image editing.`);
+				throw new ImageProviderUnsupportedError(
+					`${request.modelId} does not support source-image editing.`
+				);
 			}
 			const options = request.options ?? {};
-			const payload = { [request.modelId === 'ideogram-4.0' ? 'text_prompt' : 'prompt']: request.prompt, ...options };
+			const payload = {
+				[request.modelId === 'ideogram-4.0' ? 'text_prompt' : 'prompt']: request.prompt,
+				...options,
+			};
 			const form = request.source ? new FormData() : undefined;
 			if (form && request.source) {
 				for (const [key, value] of Object.entries(payload)) {
-					if (value !== undefined) form.set(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
+					if (value !== undefined)
+						form.set(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
 				}
-				form.append('images', new Blob([Buffer.from(request.source.base64, 'base64')], { type: request.source.mimeType }), 'source.png');
+				form.append(
+					'images',
+					new Blob([Buffer.from(request.source.base64, 'base64')], {
+						type: request.source.mimeType,
+					}),
+					'source.png'
+				);
 			}
 			const legacyModel = IDEOGRAM_LEGACY_MODELS[request.modelId];
 			const response = legacyModel
@@ -42,12 +58,16 @@ export function createIdeogramImageAdapter(spec: ImageProviderSpec): ImageAdapte
 						}),
 						signal: request.signal,
 					})
-				: await requestJson<IdeogramResponse>(spec.name, `${baseURL}${IDEOGRAM_ENDPOINTS[request.modelId] ?? '/v1/ideogram-v3/generate'}`, {
-						method: 'POST',
-						headers: form ? { 'Api-Key': spec.apiKey } : headers,
-						body: form ?? JSON.stringify(payload),
-						signal: request.signal,
-					});
+				: await requestJson<IdeogramResponse>(
+						spec.name,
+						`${baseURL}${IDEOGRAM_ENDPOINTS[request.modelId] ?? '/v1/ideogram-v3/generate'}`,
+						{
+							method: 'POST',
+							headers: form ? { 'Api-Key': spec.apiKey } : headers,
+							body: form ?? JSON.stringify(payload),
+							signal: request.signal,
+						}
+					);
 			const url = response.data?.[0]?.url;
 			if (!url) throw new ImageProviderRequestError(`${spec.name}: response contained no image.`);
 			return fetchImageAsBase64(url, request.signal);

@@ -8,7 +8,12 @@ const PIKA_ENDPOINTS: Record<string, string> = {
 };
 
 type PikaResponse = { video?: { url?: string } };
-type PikaJob = { id?: string; status?: string; output?: { video?: { url?: string } }; error?: string | { message?: string } };
+type PikaJob = {
+	id?: string;
+	status?: string;
+	output?: { video?: { url?: string } };
+	error?: string | { message?: string };
+};
 
 export function createPikaVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 	if (!spec.apiKey) throw new VideoProviderAuthError(`${spec.name} API key not configured.`);
@@ -17,18 +22,41 @@ export function createPikaVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 	return {
 		async generate(request) {
 			if (request.modelId === 'pika-2.5') {
-				const directBaseURL = spec.baseURL && !spec.baseURL.includes('fal.run') ? spec.baseURL.replace(/\/v1\/?$/, '') : 'https://api.dev.pika.art';
+				const directBaseURL =
+					spec.baseURL && !spec.baseURL.includes('fal.run')
+						? spec.baseURL.replace(/\/v1\/?$/, '')
+						: 'https://api.dev.pika.art';
 				const headers = { 'X-API-Key': spec.apiKey, 'Content-Type': 'application/json' };
-				const submitted = await requestJson<PikaJob>(spec.name, `${directBaseURL}/v1/media/pika/pika-2.5/text-to-video`, {
-					method: 'POST', headers, signal: request.signal,
-					body: JSON.stringify({ resolution: '720p', duration_s: 5, ...request.options, prompt: request.prompt }),
-				});
-				if (!submitted.id) throw new VideoProviderRequestError(`${spec.name}: generation was not accepted.`);
+				const submitted = await requestJson<PikaJob>(
+					spec.name,
+					`${directBaseURL}/v1/media/pika/pika-2.5/text-to-video`,
+					{
+						method: 'POST',
+						headers,
+						signal: request.signal,
+						body: JSON.stringify({
+							resolution: '720p',
+							duration_s: 5,
+							...request.options,
+							prompt: request.prompt,
+						}),
+					}
+				);
+				if (!submitted.id)
+					throw new VideoProviderRequestError(`${spec.name}: generation was not accepted.`);
 				const url = await poll(spec.name, 120, 5000, async () => {
-					const job = await requestJson<PikaJob>(spec.name, `${directBaseURL}/v1/media/jobs/${encodeURIComponent(submitted.id!)}`, { headers, signal: request.signal });
-					if (job.status === 'failed') throw new VideoProviderRequestError(`${spec.name}: generation failed. ${typeof job.error === 'string' ? job.error : job.error?.message ?? ''}`.trim());
+					const job = await requestJson<PikaJob>(
+						spec.name,
+						`${directBaseURL}/v1/media/jobs/${encodeURIComponent(submitted.id!)}`,
+						{ headers, signal: request.signal }
+					);
+					if (job.status === 'failed')
+						throw new VideoProviderRequestError(
+							`${spec.name}: generation failed. ${typeof job.error === 'string' ? job.error : (job.error?.message ?? '')}`.trim()
+						);
 					if (job.status !== 'completed') return undefined;
-					if (!job.output?.video?.url) throw new VideoProviderRequestError(`${spec.name}: result contained no video.`);
+					if (!job.output?.video?.url)
+						throw new VideoProviderRequestError(`${spec.name}: result contained no video.`);
 					return job.output.video.url;
 				});
 				return fetchVideoAsBase64(url, request.signal);

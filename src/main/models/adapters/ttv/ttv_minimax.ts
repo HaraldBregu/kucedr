@@ -32,10 +32,23 @@ export function createMinimaxVideoAdapter(spec: VideoProviderSpec): VideoAdapter
 				{
 					method: 'POST',
 					headers,
-					body: JSON.stringify(h3
-						? { model: request.modelId, resolution: '768P', duration: 5, ratio: '16:9', ...options,
-							content: [{ type: 'text', text: request.prompt }, ...(Array.isArray(content) ? content.filter((item) => item?.type !== 'text') : [])] }
-						: { model: request.modelId, prompt: request.prompt, ...request.options }),
+					body: JSON.stringify(
+						h3
+							? {
+									model: request.modelId,
+									resolution: '768P',
+									duration: 5,
+									ratio: '16:9',
+									...options,
+									content: [
+										{ type: 'text', text: request.prompt },
+										...(Array.isArray(content)
+											? content.filter((item) => item?.type !== 'text')
+											: []),
+									],
+								}
+							: { model: request.modelId, prompt: request.prompt, ...request.options }
+					),
 					signal: request.signal,
 				}
 			);
@@ -48,15 +61,21 @@ export function createMinimaxVideoAdapter(spec: VideoProviderSpec): VideoAdapter
 			const fileId = await poll(spec.name, 120, 5000, async () => {
 				const task = await requestJson<MinimaxTaskResponse>(
 					spec.name,
-					h3 ? `${taskBaseURL}/query/video_generation/${encodeURIComponent(submitted.task_id!)}` : `${baseURL}/query/video_generation?task_id=${submitted.task_id}`,
+					h3
+						? `${taskBaseURL}/query/video_generation/${encodeURIComponent(submitted.task_id!)}`
+						: `${baseURL}/query/video_generation?task_id=${submitted.task_id}`,
 					{ headers, signal: request.signal }
 				);
 				if (h3) {
 					if (task.task?.status === 'succeeded') {
-						if (!task.task.content?.url) throw new VideoProviderRequestError(`${spec.name}: result contained no video.`);
+						if (!task.task.content?.url)
+							throw new VideoProviderRequestError(`${spec.name}: result contained no video.`);
 						return task.task.content.url;
 					}
-					if (['failed', 'cancelled'].includes(task.task?.status ?? '')) throw new VideoProviderRequestError(`${spec.name}: generation failed. ${task.task?.error?.message ?? ''}`.trim());
+					if (['failed', 'cancelled'].includes(task.task?.status ?? ''))
+						throw new VideoProviderRequestError(
+							`${spec.name}: generation failed. ${task.task?.error?.message ?? ''}`.trim()
+						);
 					return undefined;
 				}
 				if (task.status === 'Success') {

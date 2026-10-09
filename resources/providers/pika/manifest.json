@@ -19,17 +19,12 @@
 				"inputs": {
 					"resolution": {
 						"type": "string",
-						"enum": [
-							"720p",
-							"1080p"
-						],
+						"enum": ["720p", "1080p"],
 						"default": "720p"
 					},
 					"duration_s": {
 						"type": "number",
-						"enum": [
-							5
-						],
+						"enum": [5],
 						"default": 5
 					},
 					"negative_prompt": {

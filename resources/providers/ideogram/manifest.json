@@ -19,11 +19,7 @@
 				"inputs": {
 					"magic_prompt": {
 						"type": "string",
-						"enum": [
-							"auto",
-							"on",
-							"off"
-						],
+						"enum": ["auto", "on", "off"],
 						"default": "auto"
 					},
 					"size": {
@@ -32,11 +28,7 @@
 					},
 					"quality": {
 						"type": "string",
-						"enum": [
-							"low",
-							"medium",
-							"high"
-						]
+						"enum": ["low", "medium", "high"]
 					},
 					"seed": {
 						"type": "integer",
@@ -65,11 +57,7 @@
 				"inputs": {
 					"rendering_speed": {
 						"type": "string",
-						"enum": [
-							"TURBO",
-							"DEFAULT",
-							"QUALITY"
-						],
+						"enum": ["TURBO", "DEFAULT", "QUALITY"],
 						"default": "DEFAULT"
 					},
 					"resolution": {
@@ -91,30 +79,17 @@
 				"inputs": {
 					"prompt_upsampling": {
 						"type": "string",
-						"enum": [
-							"AUTO",
-							"ON",
-							"OFF"
-						],
+						"enum": ["AUTO", "ON", "OFF"],
 						"default": "AUTO"
 					},
 					"quality": {
 						"type": "string",
-						"enum": [
-							"VERY_LOW",
-							"LOW",
-							"MEDIUM",
-							"HIGH",
-							"VERY_HIGH"
-						],
+						"enum": ["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"],
 						"default": "MEDIUM"
 					},
 					"resolution": {
 						"type": "string",
-						"enum": [
-							"1K",
-							"2K"
-						],
+						"enum": ["1K", "2K"],
 						"default": "1K"
 					},
 					"aspect_ratio": {
@@ -157,20 +132,11 @@
 					"rendering_speed": {
 						"type": "string",
 						"default": "DEFAULT",
-						"enum": [
-							"FLASH",
-							"TURBO",
-							"DEFAULT",
-							"QUALITY"
-						]
+						"enum": ["FLASH", "TURBO", "DEFAULT", "QUALITY"]
 					},
 					"magic_prompt": {
 						"type": "string",
-						"enum": [
-							"AUTO",
-							"ON",
-							"OFF"
-						]
+						"enum": ["AUTO", "ON", "OFF"]
 					},
 					"style_type": {
 						"type": "string",

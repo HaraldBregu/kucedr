@@ -38,14 +38,17 @@ export function createBflImageAdapter(spec: ImageProviderSpec): ImageAdapter {
 					...request.options,
 					...(request.source
 						? endpoint === 'flux-3-image'
-							? { images: [request.source.base64, ...((request.options?.images as string[]) ?? [])] }
+							? {
+									images: [request.source.base64, ...((request.options?.images as string[]) ?? [])],
+								}
 							: { input_image: request.source.base64 }
 						: {}),
 				}),
 				signal: request.signal,
 			});
 			const pollingUrl =
-				submitted.polling_url ?? `${baseURL}/get_result?id=${encodeURIComponent(submitted.id ?? '')}`;
+				submitted.polling_url ??
+				`${baseURL}/get_result?id=${encodeURIComponent(submitted.id ?? '')}`;
 
 			const sample = await poll(spec.name, 120, 2000, async () => {
 				const result = await requestJson<BflResultResponse>(spec.name, pollingUrl, {
