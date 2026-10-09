@@ -33,6 +33,176 @@
 				}
 			},
 			"location": "remote"
+		},
+		{
+			"id": "jina-embeddings-v4",
+			"name": "Jina Embeddings v4",
+			"type": "embedding-model",
+			"authentication": "api-key",
+			"url": "https://api.jina.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://api.jina.ai/scalar",
+				"documentationStatus": "verified",
+				"inputs": {
+					"task": {
+						"type": "string",
+						"enum": [
+							"retrieval.query",
+							"retrieval.passage",
+							"text-matching",
+							"classification",
+							"separation"
+						]
+					},
+					"dimensions": {
+						"type": "integer",
+						"minimum": 32
+					},
+					"truncate": {
+						"type": "boolean"
+					},
+					"embedding_type": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "jina-embeddings-v5-text-small",
+			"name": "Jina Embeddings v5 Text Small",
+			"type": "embedding-model",
+			"authentication": "api-key",
+			"url": "https://api.jina.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://api.jina.ai/scalar",
+				"documentationStatus": "verified",
+				"inputs": {
+					"task": {
+						"type": "string",
+						"enum": [
+							"retrieval.query",
+							"retrieval.passage",
+							"text-matching",
+							"classification",
+							"separation"
+						]
+					},
+					"dimensions": {
+						"type": "integer",
+						"minimum": 32
+					},
+					"truncate": {
+						"type": "boolean"
+					},
+					"embedding_type": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "jina-embeddings-v5-text-nano",
+			"name": "Jina Embeddings v5 Text Nano",
+			"type": "embedding-model",
+			"authentication": "api-key",
+			"url": "https://api.jina.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://api.jina.ai/scalar",
+				"documentationStatus": "verified",
+				"inputs": {
+					"task": {
+						"type": "string",
+						"enum": [
+							"retrieval.query",
+							"retrieval.passage",
+							"text-matching",
+							"classification",
+							"separation"
+						]
+					},
+					"dimensions": {
+						"type": "integer",
+						"minimum": 32
+					},
+					"truncate": {
+						"type": "boolean"
+					},
+					"embedding_type": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "jina-embeddings-v5-omni-small",
+			"name": "Jina Embeddings v5 Omni Small",
+			"type": "embedding-model",
+			"authentication": "api-key",
+			"url": "https://api.jina.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://api.jina.ai/scalar",
+				"documentationStatus": "verified",
+				"inputs": {
+					"task": {
+						"type": "string",
+						"enum": [
+							"retrieval.query",
+							"retrieval.passage",
+							"text-matching",
+							"classification",
+							"separation"
+						]
+					},
+					"dimensions": {
+						"type": "integer",
+						"minimum": 32
+					},
+					"truncate": {
+						"type": "boolean"
+					},
+					"embedding_type": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "jina-embeddings-v5-omni-nano",
+			"name": "Jina Embeddings v5 Omni Nano",
+			"type": "embedding-model",
+			"authentication": "api-key",
+			"url": "https://api.jina.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://api.jina.ai/scalar",
+				"documentationStatus": "verified",
+				"inputs": {
+					"task": {
+						"type": "string",
+						"enum": [
+							"retrieval.query",
+							"retrieval.passage",
+							"text-matching",
+							"classification",
+							"separation"
+						]
+					},
+					"dimensions": {
+						"type": "integer",
+						"minimum": 32
+					},
+					"truncate": {
+						"type": "boolean"
+					},
+					"embedding_type": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
 		}
 	],
 	"mcp_servers": [],

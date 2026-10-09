@@ -87,6 +87,41 @@
 			"location": "remote"
 		},
 		{
+			"id": "flux-general-multi",
+			"name": "Flux Multilingual",
+			"apiTypes": ["stream"],
+			"type": "speech-to-text-model",
+			"authentication": "api-key",
+			"url": "https://api.deepgram.com/v1",
+			"sampleRate": 24000,
+			"metadata": {
+				"documentationUrl": "https://developers.deepgram.com/reference/speech-to-text/listen-flux",
+				"documentationStatus": "verified",
+				"inputs": {
+					"language_hint": {
+						"type": "string",
+						"enum": ["en", "es", "fr", "de", "hi", "ru", "pt", "ja", "it", "nl"]
+					},
+					"eot_threshold": {
+						"type": "number"
+					},
+					"eot_timeout_ms": {
+						"type": "integer"
+					},
+					"eager_eot_threshold": {
+						"type": "number"
+					},
+					"encoding": {
+						"type": "string"
+					},
+					"sample_rate": {
+						"type": "integer"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
 			"id": "aura-2",
 			"name": "Aura 2",
 			"type": "text-to-speech-model",

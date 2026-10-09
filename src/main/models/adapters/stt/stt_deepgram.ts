@@ -1,4 +1,4 @@
-import { speechToTextBaseUrl, realtimeSpeechToTextModelId } from '../../../models';
+import { speechToTextBaseUrl } from '../../../models';
 import WebSocket from 'ws';
 import { createAudioFile } from './stt_audio';
 import { SttProviderAuthError, SttProviderRequestError } from './stt_errors';
@@ -99,6 +99,10 @@ export function createDeepgramSttAdapter(opts: DeepgramSttAdapterOptions): SttAd
 
 type DeepgramRealtimeResponse = {
 	type?: string;
+	event?: string;
+	transcript?: string;
+	turn_index?: number;
+	description?: string;
 	is_final?: boolean;
 	speech_final?: boolean;
 	channel?: {
@@ -138,8 +142,18 @@ function createDeepgramRealtimeConnection(
 			return;
 		}
 		if (data.type === 'TurnInfo') {
-			const transcript = data.channel?.alternatives?.[0]?.transcript;
+			const transcript = data.transcript;
 			if (!transcript) return;
+			if (data.event !== 'EndOfTurn') {
+				emit({
+					type: 'delta',
+					sessionId: request.sessionId,
+					itemId: `${request.sessionId}-${data.turn_index ?? 0}`,
+					contentIndex: 0,
+					delta: transcript,
+				});
+				return;
+			}
 			completedCount += 1;
 			emit({
 				type: 'completed',
@@ -204,22 +218,23 @@ function deepgramRealtimeUrl(
 	baseURL: string | undefined,
 	request: SttAdapterRealtimeStartRequest
 ): string {
-	const path =
-		request.modelId === realtimeSpeechToTextModelId('deepgram')
-			? DEEPGRAM_FLUX_LISTEN_PATH
-			: DEEPGRAM_LISTEN_PATH;
-	const url = new URL(
-		path,
-		`${baseURL ?? speechToTextBaseUrl('deepgram')}/`
-	);
+	const path = request.modelId.startsWith('flux-')
+		? DEEPGRAM_FLUX_LISTEN_PATH
+		: DEEPGRAM_LISTEN_PATH;
+	const url = new URL(path, `${baseURL ?? speechToTextBaseUrl('deepgram')}/`);
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	url.searchParams.set('model', request.modelId);
 	url.searchParams.set('encoding', DEEPGRAM_LINEAR16_ENCODING);
 	url.searchParams.set('sample_rate', String(request.sampleRate));
-	url.searchParams.set('channels', '1');
-	url.searchParams.set('interim_results', 'true');
-	url.searchParams.set('smart_format', 'true');
-	if (request.language) url.searchParams.set('language', request.language);
+	if (request.modelId.startsWith('flux-')) {
+		if (request.modelId === 'flux-general-multi' && request.language)
+			url.searchParams.set('language_hint', request.language);
+	} else {
+		url.searchParams.set('channels', '1');
+		url.searchParams.set('interim_results', 'true');
+		url.searchParams.set('smart_format', 'true');
+		if (request.language) url.searchParams.set('language', request.language);
+	}
 	return url.toString();
 }
 

@@ -1,3 +1,5 @@
+import { createCartesiaSttAdapter } from './stt_cartesia';
+import { createCohereSttAdapter } from './stt_cohere';
 import { normalizeProviderId } from '../../../../shared/provider_types';
 import { createDeepgramSttAdapter } from './stt_deepgram';
 import { createElevenLabsSttAdapter } from './stt_elevenlabs';
@@ -8,9 +10,9 @@ import { createXaiSttAdapter } from './stt_xai';
 import { SttProviderUnsupportedError } from './stt_errors';
 import type { SttAdapter, SttProviderSpec } from './stt_types';
 
-const STT_ADAPTERS: Readonly<
-	Record<string, (spec: SttProviderSpec) => SttAdapter>
-> = {
+const STT_ADAPTERS: Readonly<Record<string, (spec: SttProviderSpec) => SttAdapter>> = {
+	cartesia: createCartesiaSttAdapter,
+	cohere: createCohereSttAdapter,
 	deepgram: createDeepgramSttAdapter,
 	elevenlabs: createElevenLabsSttAdapter,
 	mistral: createMistralSttAdapter,

@@ -1,3 +1,4 @@
+import { synthesizeDialogue } from './dialogue';
 import { ensureSpeechResponseOk, responseAudioToBase64, speechResult } from './tts_audio';
 import type { SpeechAdapter, SpeechAdapterRequest, SpeechProviderSpec } from './tts_types';
 import type { SpeechSynthesisResult } from '../../../../shared/speech_types';
@@ -9,6 +10,8 @@ const ELEVENLABS_DEFAULT_VOICE_ID = '21m00Tcm4TlvDq8ikWAM';
 export function createElevenLabsSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
 	return {
 		async synthesize(request: SpeechAdapterRequest): Promise<SpeechSynthesisResult> {
+			if (['eleven_v4_turbo', 'eleven_v3_conversational'].includes(request.modelId))
+				return synthesizeDialogue(provider, request);
 			const {
 				voice_id: optionVoiceId,
 				output_format: outputFormat,
@@ -19,7 +22,11 @@ export function createElevenLabsSpeechAdapter(provider: SpeechProviderSpec): Spe
 			const voiceId =
 				request.voice ??
 				(typeof optionVoiceId === 'string' ? optionVoiceId : ELEVENLABS_DEFAULT_VOICE_ID);
-			const endpoint = new URL(`${ELEVENLABS_TTS_PATH}/${voiceId}`, `${provider.baseURL}/`);
+			const dialogue = request.modelId === 'eleven_v4';
+			const endpoint = new URL(
+				dialogue ? 'text-to-dialogue' : `${ELEVENLABS_TTS_PATH}/${voiceId}`,
+				`${provider.baseURL}/`
+			);
 			if (typeof outputFormat === 'string')
 				endpoint.searchParams.set('output_format', outputFormat);
 			if (typeof enableLogging === 'boolean') {
@@ -36,7 +43,9 @@ export function createElevenLabsSpeechAdapter(provider: SpeechProviderSpec): Spe
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					text: request.text,
+					...(dialogue
+						? { inputs: [{ text: request.text, voice_id: voiceId }] }
+						: { text: request.text }),
 					model_id: request.modelId,
 					...bodyOptions,
 				}),
