@@ -599,6 +599,9 @@ export interface AppApi extends AppStorageApi {
 	setKeepAwake: (enabled: boolean) => Promise<void>;
 	getKeepAwake: () => Promise<boolean>;
 	onKeepAwakeChanged: (callback: (enabled: boolean) => void) => () => void;
+	setSoundFeedbackEnabled: (enabled: boolean) => Promise<void>;
+	getSoundFeedbackEnabled: () => Promise<boolean>;
+	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void) => () => void;
 	setLanguage: (language: AppLanguage) => Promise<void>;
 	getLanguage: () => Promise<AppLanguage>;
 	setTheme: (theme: AppTheme) => Promise<void>;

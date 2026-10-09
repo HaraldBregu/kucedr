@@ -44,6 +44,8 @@ import {
 	setTrayClickAction as setStoredTrayClickAction,
 	getKeepAwake as getStoredKeepAwake,
 	setKeepAwake as setStoredKeepAwake,
+	getSoundFeedbackEnabled as getStoredSoundFeedbackEnabled,
+	setSoundFeedbackEnabled as setStoredSoundFeedbackEnabled,
 	getLanguage as getStoredLanguage,
 	setLanguage as setStoredLanguage,
 	getTheme as getStoredTheme,
@@ -608,6 +610,21 @@ export class AppIpc implements IpcModule {
 			wrapSimpleHandler(() => {
 				return getStoredKeepAwake();
 			}, AppChannels.getKeepAwake)
+		);
+
+		ipcMain.handle(
+			AppChannels.setSoundFeedbackEnabled,
+			wrapSimpleHandler((enabled: boolean) => {
+				setStoredSoundFeedbackEnabled(enabled);
+				eventBus.broadcast(AppChannels.soundFeedbackEnabledChanged, enabled);
+			}, AppChannels.setSoundFeedbackEnabled)
+		);
+
+		ipcMain.handle(
+			AppChannels.getSoundFeedbackEnabled,
+			wrapSimpleHandler(() => {
+				return getStoredSoundFeedbackEnabled();
+			}, AppChannels.getSoundFeedbackEnabled)
 		);
 
 		ipcMain.handle(

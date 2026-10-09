@@ -110,6 +110,15 @@ export const app: AppApi = {
 	onKeepAwakeChanged: (callback: (enabled: boolean) => void): (() => void) => {
 		return typedOn(AppChannels.keepAwakeChanged, callback);
 	},
+	setSoundFeedbackEnabled: (enabled: boolean): Promise<void> => {
+		return typedInvokeUnwrap(AppChannels.setSoundFeedbackEnabled, enabled);
+	},
+	getSoundFeedbackEnabled: (): Promise<boolean> => {
+		return typedInvokeUnwrap(AppChannels.getSoundFeedbackEnabled);
+	},
+	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void): (() => void) => {
+		return typedOn(AppChannels.soundFeedbackEnabledChanged, callback);
+	},
 	setLanguage: (language) => {
 		return typedInvokeUnwrap(AppChannels.setLanguage, language);
 	},

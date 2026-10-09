@@ -625,6 +625,14 @@ export interface AppInvokeChannelMap {
 		args: [language: import('./app_types').AppLanguage];
 		result: void;
 	};
+	[AppChannels.setSoundFeedbackEnabled]: {
+		args: [enabled: boolean];
+		result: void;
+	};
+	[AppChannels.getSoundFeedbackEnabled]: {
+		args: [];
+		result: boolean;
+	};
 	[AppChannels.getLanguage]: {
 		args: [];
 		result: import('./app_types').AppLanguage;
@@ -1388,6 +1396,7 @@ export interface AppEventChannelMap {
 	[AppChannels.modelsChanged]: { data: void };
 	[AppChannels.trayEnabledChanged]: { data: boolean };
 	[AppChannels.keepAwakeChanged]: { data: boolean };
+	[AppChannels.soundFeedbackEnabledChanged]: { data: boolean };
 	[AppChannels.themeModeChanged]: { data: import('./app_types').AppThemeData };
 	[AppChannels.voiceAgentAppearanceChanged]: {
 		data: import('./app_types').VoiceAgentAppearance;

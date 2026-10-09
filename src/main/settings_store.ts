@@ -35,6 +35,7 @@ export type AppSettingsState = {
 	trayEnabled: boolean;
 	trayClickAction: TrayClickAction;
 	keepAwake: boolean;
+	soundFeedbackEnabled: boolean;
 	language: AppLanguage;
 	theme: AppTheme;
 	windowSize: WindowSize;
@@ -49,6 +50,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	trayEnabled: true,
 	trayClickAction: 'toggle-chat',
 	keepAwake: false,
+	soundFeedbackEnabled: true,
 	language: 'en',
 	theme: 'system',
 	windowSize: '1200x800',
@@ -152,6 +154,15 @@ export function getKeepAwake(): boolean {
 
 export function setKeepAwake(enabled: boolean): void {
 	store.set('keepAwake', enabled);
+}
+
+export function getSoundFeedbackEnabled(): boolean {
+	return store.get('soundFeedbackEnabled');
+}
+
+export function setSoundFeedbackEnabled(enabled: boolean): void {
+	if (typeof enabled !== 'boolean') throw new Error('Invalid sound feedback setting.');
+	store.set('soundFeedbackEnabled', enabled);
 }
 
 export function getLanguage(): AppLanguage {
