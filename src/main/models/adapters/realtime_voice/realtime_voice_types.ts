@@ -12,6 +12,7 @@ export interface RealtimeVoiceHistoryMessage {
 }
 
 export interface RealtimeVoiceAdapterRequest {
+	options?: Record<string, unknown>;
 	contextForTurn?(transcript: string): Promise<string>;
 	modelId: string;
 	voice: string;

@@ -29,6 +29,7 @@ describe('realtime voice adapter factory', () => {
 			{ providerId: 'xai', modelId: 'grok-voice-latest' },
 			{ providerId: 'google', modelId: 'gemini-3.8-live' },
 			{ providerId: 'google', modelId: 'gemini-3.8-live-extended-thinking' },
+			{ providerId: 'qwen', modelId: 'qwen3.8-omni-flash-realtime' },
 		]);
 		expect(supportsRealtimeVoiceModel(' XAI ', 'grok-voice-latest')).toBe(true);
 		expect(supportsRealtimeVoiceTools('openai', 'gpt-realtime-2.1')).toBe(true);

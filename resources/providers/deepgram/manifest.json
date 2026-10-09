@@ -177,6 +177,96 @@
 				}
 			},
 			"location": "remote"
+		},
+		{
+			"id": "nova-3-medical",
+			"name": "Nova 3 Medical",
+			"apiTypes": ["batch", "stream"],
+			"type": "speech-to-text-model",
+			"authentication": "api-key",
+			"url": "https://api.deepgram.com/v1",
+			"sampleRate": 24000,
+			"metadata": {
+				"documentationUrl": "https://developers.deepgram.com/docs/models-languages-overview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"language": {
+						"type": "string",
+						"enum": ["en", "en-US", "en-AU", "en-CA", "en-GB", "en-IE", "en-IN", "en-NZ", "multi"]
+					},
+					"smart_format": {
+						"type": "boolean"
+					},
+					"punctuate": {
+						"type": "boolean"
+					},
+					"utterances": {
+						"type": "boolean"
+					},
+					"paragraphs": {
+						"type": "boolean"
+					},
+					"diarize_model": {
+						"type": "string",
+						"enum": ["latest", "v1", "v2"]
+					},
+					"keyterm": {
+						"type": "array"
+					},
+					"alternatives": {
+						"type": "integer"
+					},
+					"detect_language": {
+						"type": "boolean"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "nova-3-pharma",
+			"name": "Nova 3 Pharma",
+			"apiTypes": ["batch", "stream"],
+			"type": "speech-to-text-model",
+			"authentication": "api-key",
+			"url": "https://api.deepgram.com/v1",
+			"sampleRate": 24000,
+			"metadata": {
+				"documentationUrl": "https://developers.deepgram.com/docs/models-languages-overview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"language": {
+						"type": "string",
+						"enum": ["en", "en-US", "en-AU", "en-CA", "en-GB", "en-IE", "en-IN", "en-NZ"]
+					},
+					"smart_format": {
+						"type": "boolean"
+					},
+					"punctuate": {
+						"type": "boolean"
+					},
+					"utterances": {
+						"type": "boolean"
+					},
+					"paragraphs": {
+						"type": "boolean"
+					},
+					"diarize_model": {
+						"type": "string",
+						"enum": ["latest", "v1", "v2"]
+					},
+					"keyterm": {
+						"type": "array"
+					},
+					"alternatives": {
+						"type": "integer"
+					},
+					"detect_language": {
+						"type": "boolean"
+					}
+				}
+			},
+			"location": "remote"
 		}
 	],
 	"mcp_servers": [],

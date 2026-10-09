@@ -1,3 +1,4 @@
+import { createQwenRealtimeVoiceAdapter, QWEN_REALTIME_VOICE_MODELS } from './qwen';
 import { normalizeProviderId } from '../../../../shared/provider_types';
 import { createGoogleRealtimeVoiceAdapter, GOOGLE_LIVE_MODELS } from './google';
 import {
@@ -33,6 +34,12 @@ const REALTIME_VOICE_ADAPTERS: Readonly<Record<string, RealtimeVoiceAdapterRegis
 		modelIds: GOOGLE_LIVE_MODELS,
 		toolModelIds: GOOGLE_LIVE_MODELS,
 		create: createGoogleRealtimeVoiceAdapter,
+	},
+	qwen: {
+		defaultVoice: 'Tina',
+		modelIds: QWEN_REALTIME_VOICE_MODELS,
+		toolModelIds: QWEN_REALTIME_VOICE_MODELS,
+		create: createQwenRealtimeVoiceAdapter,
 	},
 };
 

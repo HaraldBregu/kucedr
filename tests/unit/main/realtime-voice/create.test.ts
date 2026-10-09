@@ -49,7 +49,7 @@ jest.mock('../../../../src/main/models', () => ({
 jest.mock('../../../../src/main/models/selection', () => ({
 	getProviderId: () => 'openai',
 	getModelId: () => 'gpt-realtime-2.1',
-	getOptions: () => ({}),
+	getOptions: () => ({ workspace_id: 'workspace-1', region: 'cn-beijing' }),
 }));
 jest.mock('../../../../src/main/models/adapters/realtime_voice', () => ({
 	buildRealtimeVoiceAdapter: jest.fn(),
@@ -82,5 +82,6 @@ it('starts voice with every eligible built-in tool', async () => {
 
 	expect(configuration.tools.map((tool) => tool.id)).toEqual(['read', 'write']);
 	expect(configuration.instructions).toContain('read, write');
+	expect(configuration.options).toEqual({ workspace_id: 'workspace-1', region: 'cn-beijing' });
 	expect(mockBuildWorkspaceContext).toHaveBeenCalledWith({ location: '/workspace' }, 'full');
 });

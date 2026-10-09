@@ -61,7 +61,8 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 				: (models.find((candidate) => candidate.default) ?? models[0]);
 			if (!model) throw new Error('Configured realtime voice model is not supported.');
 
-			const configuredVoice = getOptions('realtimeVoice').voice;
+			const options = getOptions('realtimeVoice');
+			const configuredVoice = options.voice;
 			const metadataVoice = model.metadata?.inputs.voice?.default;
 			const supportedVoices = (model.metadata?.inputs.voice?.enum ?? []).filter(
 				(value): value is string => typeof value === 'string'
@@ -89,6 +90,7 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 					apiKey,
 				},
 				modelId: model.id,
+				options,
 				voice,
 				instructions,
 				context: workspaceContext ? [{ role: 'user', text: workspaceContext }] : [],
