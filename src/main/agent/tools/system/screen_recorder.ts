@@ -5,7 +5,7 @@ import path from 'node:path';
 import { z } from 'zod';
 import { screen } from '../../../recorder';
 import { agentLocation } from '../../../shared/agent_location';
-import { resolveUserPath } from '../../../shared/user_path';
+import { mediaDirectory } from '../../../shared/media_directory';
 import type { Tool } from '../../types';
 import { tool } from '../tool';
 
@@ -42,7 +42,7 @@ export function screenRecorderTool(): Tool {
 				.string()
 				.optional()
 				.describe(
-					'Optional directory to save the recording in, relative to the agent workspace. ~ expands to the user home. Defaults to the agent workspace directory; only set it when the user asks for a specific location.'
+					'Optional directory to save the recording in, relative to the agent workspace. Absolute paths are supported and ~ expands to the user home. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location.'
 				),
 			filename: z
 				.string()
@@ -94,7 +94,7 @@ export function screenRecorderTool(): Tool {
 				throw new Error('The selected screen source is no longer available. Start again to choose a source.');
 			}
 			const owner = recordingOwner(screen);
-			const targetDir = resolveUserPath(directory ?? '.', agentLocation());
+			const targetDir = mediaDirectory(directory);
 			const url = path.join(targetDir, path.basename(filename ?? `screen-${Date.now()}.webm`));
 			const recording = screen.start({
 				url,

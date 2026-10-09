@@ -3,8 +3,7 @@ import { rememberRecording } from '../../recordings/remember';
 import path from 'node:path';
 import { z } from 'zod';
 import { microphone } from '../../../recorder';
-import { agentLocation } from '../../../shared/agent_location';
-import { resolveUserPath } from '../../../shared/user_path';
+import { mediaDirectory } from '../../../shared/media_directory';
 import type { Tool } from '../../types';
 import { tool } from '../tool';
 
@@ -28,7 +27,7 @@ export function microphoneRecorderTool(): Tool {
 				.string()
 				.optional()
 				.describe(
-					'Optional directory to save the recording in, relative to the agent workspace. ~ expands to the user home. Defaults to the agent workspace directory; only set it when the user asks for a specific location.'
+					'Optional directory to save the recording in, relative to the agent workspace. Absolute paths are supported and ~ expands to the user home. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location.'
 				),
 			filename: z
 				.string()
@@ -40,7 +39,7 @@ export function microphoneRecorderTool(): Tool {
 		execute: async ({ duration, directory, filename }, signal) => {
 			signal?.throwIfAborted();
 			const owner = recordingOwner(microphone);
-			const targetDir = resolveUserPath(directory ?? '.', agentLocation());
+			const targetDir = mediaDirectory(directory);
 			const url = path.join(targetDir, path.basename(filename ?? `microphone-${Date.now()}.webm`));
 			const recording = microphone.start({
 				url,

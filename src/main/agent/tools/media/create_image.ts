@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createImage } from '../../../models/image';
 import type { Tool } from '../../types';
-import { saveMedia } from './save';
+import { saveMedia } from '../../../shared/media';
 import { tool } from '../tool';
 
 export function createImageTool(): Tool {
@@ -10,7 +10,7 @@ export function createImageTool(): Tool {
 		category: 'media',
 		name: 'Create image',
 		description:
-			'Generate one to eight images from a text prompt using the configured text-to-image provider. Saves the images in your agent workspace directory and returns their absolute paths. The images are shown to the user automatically; if you reference one in markdown, use its returned path.',
+			'Generate one to eight images from a text prompt using the configured text-to-image provider. Saves the images in ~/.kucedr/library by default and returns their absolute paths. The images are shown to the user automatically; if you reference one in markdown, use its returned path.',
 		inputSchema: z.object({
 			prompt: z.string().min(1).describe('Text prompt describing the image to generate.'),
 			count: z
@@ -24,7 +24,7 @@ export function createImageTool(): Tool {
 				.string()
 				.optional()
 				.describe(
-					'Optional directory to save the image in, relative to the agent workspace. ~ expands to the user home. Defaults to the agent workspace directory; only set it when the user asks for a specific location.'
+					'Optional directory to save the image in, relative to the agent workspace. Absolute paths are supported and ~ expands to the user home. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location.'
 				),
 		}),
 		execute: async ({ prompt, count, directory }, signal) => {

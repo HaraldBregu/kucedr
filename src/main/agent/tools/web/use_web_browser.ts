@@ -1,8 +1,8 @@
-import os from 'node:os';
 import path from 'node:path';
 import { chromium, type BrowserContext, type Page } from 'playwright-core';
 import { z } from 'zod';
 import { userDataLocation } from '../../../shared/user_data_location';
+import { saveMedia } from '../../../shared/media';
 import { tool } from '../tool';
 import { runBrowserPageOperation } from './browser_abort';
 import { browserSession, type BrowserSession } from './browser/session';
@@ -164,10 +164,6 @@ async function tabList(signal?: AbortSignal): Promise<{ targetId: string; url: s
 	return list;
 }
 
-function tempFile(ext: string): string {
-	return path.join(os.tmpdir(), `browser-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`);
-}
-
 async function runAct(params: {
 	kind: (typeof ACT_KINDS)[number];
 	targetId?: string;
@@ -261,6 +257,9 @@ export const useWebBrowserTool = tool({
 		back: z.boolean().optional().describe('navigate: go back in history instead of to a url.'),
 		forward: z.boolean().optional().describe('navigate: go forward in history.'),
 		fullPage: z.boolean().optional().describe('screenshot: capture the full scrollable page.'),
+		directory: z.string().optional().describe(
+			'screenshot/pdf: directory to save the file in. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location. Relative paths resolve from the agent workspace; absolute paths and ~ are supported.'
+		),
 		limit: z.number().int().min(1).optional().describe('console: max messages to return.'),
 		maxChars: z.number().int().min(100).optional().describe('snapshot: max page text characters.'),
 		kind: z.enum(ACT_KINDS).optional().describe('act: interaction kind.'),
@@ -360,17 +359,18 @@ export const useWebBrowserTool = tool({
 			}
 			case 'screenshot': {
 				const { id, page } = getPage(params.targetId);
-				const file = tempFile('png');
-				await runBrowserPageOperation(page, signal, async () => {
-					if (params.ref) await page.locator(refSelector(params.ref)).screenshot({ path: file });
-					else await page.screenshot({ path: file, fullPage: params.fullPage });
-				});
+				const data = await runBrowserPageOperation(page, signal, () =>
+					params.ref
+						? page.locator(refSelector(params.ref)).screenshot()
+						: page.screenshot({ fullPage: params.fullPage })
+				);
+				const file = await saveMedia('browser', 'png', data.toString('base64'), params.directory, signal);
 				return JSON.stringify({ targetId: id, path: file });
 			}
 			case 'pdf': {
 				const { id, page } = getPage(params.targetId);
-				const file = tempFile('pdf');
-				await runBrowserPageOperation(page, signal, () => page.pdf({ path: file }));
+				const data = await runBrowserPageOperation(page, signal, () => page.pdf());
+				const file = await saveMedia('browser', 'pdf', data.toString('base64'), params.directory, signal);
 				return JSON.stringify({ targetId: id, path: file });
 			}
 			case 'console': {

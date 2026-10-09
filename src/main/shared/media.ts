@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { agentLocation } from '../../../shared/agent_location';
-import { resolveUserPath } from '../../../shared/user_path';
+import { randomUUID } from 'node:crypto';
+import { mediaDirectory } from './media_directory';
 
 export async function saveMedia(
 	prefix: string,
@@ -11,10 +11,10 @@ export async function saveMedia(
 	signal?: AbortSignal
 ): Promise<string> {
 	signal?.throwIfAborted();
-	const targetDir = resolveUserPath(directory ?? '.', agentLocation());
+	const targetDir = mediaDirectory(directory);
 	await fs.mkdir(targetDir, { recursive: true });
 	signal?.throwIfAborted();
-	const filePath = path.join(targetDir, `${prefix}-${Date.now()}.${extension}`);
+	const filePath = path.join(targetDir, `${prefix}-${Date.now()}-${randomUUID()}.${extension}`);
 	await fs.writeFile(filePath, Buffer.from(base64, 'base64'), { signal });
 	return filePath;
 }

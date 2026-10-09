@@ -14,7 +14,7 @@ jest.mock('../../../../../src/main/agent/agent_store', () => ({
 jest.mock('../../../../../src/main/models/image', () => ({ createImage }));
 jest.mock('../../../../../src/main/models/video', () => ({ createVideo }));
 jest.mock('../../../../../src/main/models/sound', () => ({ createSound }));
-jest.mock('../../../../../src/main/agent/tools/media/save', () => ({ saveMedia }));
+jest.mock('../../../../../src/main/shared/media', () => ({ saveMedia }));
 
 import { createImageTool } from '../../../../../src/main/agent/tools/media/create_image';
 import { createSoundTool } from '../../../../../src/main/agent/tools/media/create_sound';
