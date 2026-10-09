@@ -24,10 +24,8 @@ jest.mock('../../../../src/main/i18n', () => ({
 		startPersona: 'Start Voice Agent',
 		hidePersona: 'Hide Voice Agent',
 		showPersona: 'Show Voice Agent',
-		apps: 'Apps',
 		microphone: 'Microphone',
 		microphoneDefault: 'System default',
-		noApps: 'No apps',
 		quit: 'Quit',
 	}),
 }));
@@ -62,10 +60,6 @@ it('labels the main-window action as Show Chat Agent or Hide Chat Agent', () => 
 		isPersonaActive: () => false,
 		isPersonaVisible: () => false,
 		getTrayClickAction: () => 'toggle-chat',
-		getApps: () => [],
-		onOpenApp: jest.fn(),
-		getTasks: () => [],
-		onStartTask: jest.fn(),
 	});
 
 	tray.create();
@@ -91,10 +85,6 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 		isPersonaActive: () => false,
 		isPersonaVisible: () => false,
 		getTrayClickAction: () => 'toggle-chat',
-		getApps: () => [],
-		onOpenApp: jest.fn(),
-		getTasks: () => [],
-		onStartTask: jest.fn(),
 		getMicrophoneInputs: async () => [
 			{ id: 'built-in', label: 'Built-in microphone' },
 			{ id: 'usb', label: 'USB microphone' },
@@ -147,10 +137,6 @@ it('starts, hides, and shows the Voice Agent without ending its conversation', (
 		isPersonaActive: () => active,
 		isPersonaVisible: () => visible,
 		getTrayClickAction: () => 'toggle-chat',
-		getApps: () => [],
-		onOpenApp: jest.fn(),
-		getTasks: () => [],
-		onStartTask: jest.fn(),
 	});
 
 	tray.create();
@@ -201,10 +187,6 @@ it('activates, hides, and shows Voice Agent from the configured tray icon action
 		isPersonaActive: () => active,
 		isPersonaVisible: () => visible,
 		getTrayClickAction: () => action,
-		getApps: () => [],
-		onOpenApp: jest.fn(),
-		getTasks: () => [],
-		onStartTask: jest.fn(),
 	});
 
 	tray.create();
@@ -219,73 +201,4 @@ it('activates, hides, and shows Voice Agent from the configured tray icon action
 	expect(startPersona).toHaveBeenCalledTimes(1);
 	expect(hidePersona).toHaveBeenCalledTimes(1);
 	expect(showPersona).toHaveBeenCalledTimes(1);
-});
-
-it('lists tasks in the Tasks submenu and starts the selected task', () => {
-	const onStartTask = jest.fn();
-	const task = {
-		id: 'task-1',
-		name: 'Summarize inbox',
-		enabled: false,
-		prompt: 'Summarize my inbox.',
-		sessionIds: [],
-		createdAt: '2026-09-11T00:00:00.000Z',
-		updatedAt: '2026-09-11T00:00:00.000Z',
-	};
-	const tray = new Tray({
-		onToggleChat: jest.fn(),
-		onStartPersona: jest.fn(),
-		onHidePersona: jest.fn(),
-		onShowPersona: jest.fn(),
-		onQuit: jest.fn(),
-		isAppVisible: () => false,
-		isPersonaActive: () => false,
-		isPersonaVisible: () => false,
-		getTrayClickAction: () => 'toggle-chat',
-		getApps: () => [],
-		onOpenApp: jest.fn(),
-		getTasks: () => [task],
-		onStartTask,
-	});
-
-	tray.create();
-
-	const template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	const tasks = template.find((entry) => entry.label === 'Tasks');
-	expect(tasks?.submenu?.map((entry) => entry.label)).toEqual(['Summarize inbox']);
-	tasks?.submenu?.[0]?.click?.();
-	expect(onStartTask).toHaveBeenCalledWith(task);
-});
-
-it('truncates long task titles in the Tasks submenu', () => {
-	const task = {
-		id: 'task-1',
-		name: 'A'.repeat(49),
-		enabled: true,
-		prompt: 'Run the task.',
-		sessionIds: [],
-		createdAt: '2026-09-11T00:00:00.000Z',
-		updatedAt: '2026-09-11T00:00:00.000Z',
-	};
-	const tray = new Tray({
-		onToggleChat: jest.fn(),
-		onStartPersona: jest.fn(),
-		onHidePersona: jest.fn(),
-		onShowPersona: jest.fn(),
-		onQuit: jest.fn(),
-		isAppVisible: () => false,
-		isPersonaActive: () => false,
-		isPersonaVisible: () => false,
-		getTrayClickAction: () => 'toggle-chat',
-		getApps: () => [],
-		onOpenApp: jest.fn(),
-		getTasks: () => [task],
-		onStartTask: jest.fn(),
-	});
-
-	tray.create();
-
-	const template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	const taskItem = template.find((entry) => entry.label === 'Tasks')?.submenu?.[0];
-	expect(taskItem).toMatchObject({ label: `${'A'.repeat(47)}…`, toolTip: task.name });
 });
