@@ -5,7 +5,7 @@ import type { ResolvedProvider } from '../../../../../src/shared/provider_types'
 import { KeyedLimiter } from '../../../../../src/main/agent/limiter';
 
 describe('runModelTurn', () => {
-	it('keeps model-level tool calls out of the visible stream while retaining them for execution', async () => {
+	it('reports context alongside tool call events while retaining calls for execution', async () => {
 		const stream = jest.fn(() =>
 			(async function* () {
 				yield { type: 'model_tool_call_start' as const, id: 'bash-call', name: 'bash' };
@@ -38,8 +38,10 @@ describe('runModelTurn', () => {
 			}
 			emitted.push(next.value);
 		}
-		expect(emitted.map((event) => event.type)).toEqual(['context_usage', 'model_call_end']);
-		expect(turn.toolCalls).toEqual([{ id: 'bash-call', name: 'bash', args: { command: 'pwd' } }]);
+		expect(emitted.map((event) => event.type)).toEqual(['context_usage', 'model_tool_call_start', 'model_tool_call_args_delta', 'model_call_end']);
+		expect(turn.toolCalls).toEqual([
+			{ id: 'bash-call', name: 'bash', args: { command: 'pwd' } },
+		]);
 	});
 
 	it('adds privacy-safe timing and retry counters to the terminal model event', async () => {
@@ -159,6 +161,7 @@ describe('runModelTurn', () => {
 			{ stream } as ModelTurnStream
 		);
 
+		await expect(events.next()).resolves.toMatchObject({ value: { type: 'context_usage' } });
 		await expect(events.next()).rejects.toBe(error);
 		expect(stream).toHaveBeenCalledTimes(1);
 	});
@@ -211,6 +214,7 @@ describe('runModelTurn', () => {
 			{ stream } as ModelTurnStream
 		);
 
+		await expect(events.next()).resolves.toMatchObject({ value: { type: 'context_usage' } });
 		await expect(events.next()).rejects.toBe(error);
 		expect(stream).toHaveBeenCalledTimes(3);
 	});
@@ -239,6 +243,7 @@ describe('runModelTurn', () => {
 			true,
 			limiter
 		);
+		await expect(events.next()).resolves.toMatchObject({ value: { type: 'context_usage' } });
 		const pending = events.next();
 		blocker.release();
 

@@ -539,7 +539,7 @@ export class LlmModel implements LlmAdapter {
 					if (event.usage) usage.outputTokens = event.usage.output_tokens ?? usage.outputTokens;
 				} else if (event.type === 'message_start') {
 					if (event.message.usage) {
-						usage.inputTokens = event.message.usage.input_tokens ?? usage.inputTokens;
+						usage.inputTokens = (event.message.usage.input_tokens ?? 0) + (event.message.usage.cache_creation_input_tokens ?? 0) + (event.message.usage.cache_read_input_tokens ?? 0);
 						usage.outputTokens = event.message.usage.output_tokens ?? usage.outputTokens;
 					}
 				}

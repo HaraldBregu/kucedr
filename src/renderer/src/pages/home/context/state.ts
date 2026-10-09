@@ -1,9 +1,4 @@
-import type {
-	AgentHistoryContentBlock,
-	AgentRunState,
-	AgentUserInputQuestion,
-	AgentUserInputScope,
-} from '@/lib/compat';
+import type { AgentHistoryContentBlock, AgentRunState, AgentUserInputQuestion, AgentUserInputScope } from '@/lib/compat';
 import type { AgentToolPart } from './tool-parts';
 
 export type { AgentRunState, AgentToolPart };

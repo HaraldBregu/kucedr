@@ -5,7 +5,8 @@ export function modelContextWindow(metadata: ModelMetadata | undefined): number 
 		metadata?.inputs.context_window ??
 		metadata?.inputs.context_length ??
 		metadata?.inputs.max_context_tokens;
-	const limit = metadata?.contextWindow ?? contract?.maximum ?? contract?.default;
+	const input = metadata?.inputs.max_input_tokens ?? metadata?.inputs.input_token_limit ?? metadata?.inputs.maximum_input_tokens;
+	const limit = metadata?.contextWindow ?? contract?.maximum ?? contract?.default ?? input?.maximum ?? input?.default;
 	return typeof limit === 'number' && Number.isFinite(limit) && limit > 0
 		? Math.floor(limit)
 		: undefined;

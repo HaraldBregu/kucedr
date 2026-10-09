@@ -28,5 +28,5 @@ export function modelInputLimit(
 			: (typeof configuredContext === 'number' ? configuredContext : DEFAULT_MODEL_CONTEXT_TOKENS) -
 				maxOutputTokens -
 				MODEL_CONTEXT_SAFETY_TOKENS;
-	return Math.max(2_048, Math.min(1_000_000, Math.floor(available)));
+	return Math.max(256, Math.min(1_000_000, Math.floor(available)));
 }

@@ -421,8 +421,8 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			wrapAgentHandler(
 				mainAccess,
 				async () => {
-					const providerId = getProviderId();
-					const modelId = getModelId();
+					const providerId = getProviderId() ?? '';
+					const modelId = getModelId() ?? '';
 					const contextWindow = await resolveContextWindow(
 						getResolvedProvider(providerId),
 						modelId,

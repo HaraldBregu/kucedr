@@ -20,11 +20,7 @@ function isAgentMessage(message: HomeChatMessage): message is AgentMessage {
 	return message.role === 'agent' && message.type === 'agent';
 }
 
-function createUserMessage(
-	id: string,
-	content: string,
-	attachments: readonly UserAttachment[] = []
-): UserMessage {
+function createUserMessage(id: string, content: string, attachments: readonly UserAttachment[] = []): UserMessage {
 	return {
 		id,
 		role: 'user',
@@ -202,11 +198,7 @@ function applyResponseEvent(
 					...message,
 					state: 'awaiting_input',
 					tools: updateAgentToolPart(message.tools, event.toolCallId, {
-						type: mcpAuthorization
-							? 'request_mcp_authorization'
-							: screenSource
-								? 'select_screen_source'
-								: 'ask',
+						type: mcpAuthorization ? 'request_mcp_authorization' : screenSource ? 'select_screen_source' : 'ask',
 						state: 'input-available',
 						input: screenSource || mcpAuthorization ? tool?.input : { questions: event.questions },
 					}),
@@ -253,9 +245,7 @@ function applyResponseEvent(
 
 	if (event.type === 'context_usage') {
 		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
-			...message,
-			contextUsage: event.context,
-			streamedChars: 0,
+			...message, contextUsage: event.context, streamedChars: 0,
 		}));
 	}
 
@@ -263,7 +253,9 @@ function applyResponseEvent(
 		const turnOutputTokens = event.usage?.outputTokens;
 		const nextState =
 			turnOutputTokens === undefined
-				? ensured.state
+				? updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
+						...message, contextUsage: event.usage?.context ?? message.contextUsage, streamedChars: 0,
+					}))
 				: updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
 						...message,
 						contextUsage: event.usage?.context ?? message.contextUsage,
@@ -377,7 +369,7 @@ function addToolResultToMessages(
 export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatMessage[] {
 	const out: HomeChatMessage[] = [];
 	history.forEach((message, index) => {
-		if (message.role === 'tool') {
+	if (message.role === 'tool') {
 			const next = addToolResultToMessages(
 				out,
 				message.toolUseId,
@@ -579,10 +571,7 @@ export function agentChatReducer(state: AgentChatState, action: AgentChatAction)
 				tools: settleRunningTools(
 					message.pendingUserInput
 						? updateAgentToolPart(message.tools, message.pendingUserInput.toolCallId, {
-								type:
-									message.tools.find(
-										(tool) => tool.toolCallId === message.pendingUserInput?.toolCallId
-									)?.type ?? 'ask',
+								type: message.tools.find((tool) => tool.toolCallId === message.pendingUserInput?.toolCallId)?.type ?? 'ask',
 								state: 'output-error',
 								output: { status: 'interrupted', answers: [] },
 								outputText: JSON.stringify({ status: 'interrupted', answers: [] }),

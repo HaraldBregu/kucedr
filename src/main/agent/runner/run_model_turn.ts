@@ -39,8 +39,9 @@ export async function* runModelTurn(
 	requiredContextMessages: Message[] = []
 ): AsyncGenerator<RuntimeEvent, ModelTurn> {
 	const maxRetries = 2;
-	const maxTokens = modelOutputLimit(provider.id, modelId, modelOptions);
 	const contextWindow = await resolveContextWindow(provider, modelId, modelOptions);
+	const outputLimit = modelOutputLimit(provider.id, modelId, modelOptions);
+	const maxTokens = contextWindow ? Math.min(outputLimit, Math.max(1, contextWindow - 1_024 - 2_048)) : outputLimit;
 	const context = fitModelContext({
 		systemPrompt,
 		protectedSystemPrompt,
@@ -129,6 +130,7 @@ export async function* runModelTurn(
 						...event.usage,
 						context: {
 							...contextUsage,
+							contextWindow: contextWindow ?? await resolveContextWindow(provider, modelId, modelOptions),
 							inputTokens:
 								event.usage?.inputTokens && event.usage.inputTokens > 0
 									? event.usage.inputTokens

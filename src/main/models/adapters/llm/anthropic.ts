@@ -45,7 +45,7 @@ export async function* anthropic(
 		type: 'message_end',
 		stopReason: response.stop_reason ?? 'end_turn',
 		usage: {
-			inputTokens: response.usage.input_tokens,
+			inputTokens: response.usage.input_tokens + (response.usage.cache_creation_input_tokens ?? 0) + (response.usage.cache_read_input_tokens ?? 0),
 			outputTokens: response.usage.output_tokens,
 		},
 	};

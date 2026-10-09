@@ -20,7 +20,7 @@ export function Context({
 	hasAttachments: boolean;
 }): ReactElement {
 	const usage = contextTokens(messages, providerId, modelId, draft);
-	const limit = usage.contextWindow ?? contextWindow;
+	const limit = contextWindow ?? usage.contextWindow;
 	const percent = limit ? Math.min(100, Math.round((usage.tokens / limit) * 100)) : undefined;
 	const estimated = usage.estimated || hasAttachments;
 	const label = limit

@@ -102,8 +102,7 @@ export type LlmContentBlock =
 	  };
 
 export type LlmToolResultBlock =
-	| { type: 'text'; text: string }
-	| { type: 'image'; mimeType?: string; base64?: string };
+	{ type: 'text'; text: string } | { type: 'image'; mimeType?: string; base64?: string };
 
 export type LlmUserContentBlock =
 	| { type: 'text'; text: string }
