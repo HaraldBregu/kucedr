@@ -162,7 +162,7 @@ describe('XAIRealtimeVoiceAdapter', () => {
 				item: {
 					type: 'message',
 					role: 'assistant',
-					content: [{ type: 'output_text', text: 'Earlier answer.' }],
+					content: [{ type: 'text', text: 'Earlier answer.' }],
 				},
 			},
 		]);

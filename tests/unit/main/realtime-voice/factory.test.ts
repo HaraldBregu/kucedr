@@ -8,6 +8,17 @@ import {
 } from '../../../../src/main/models/adapters/realtime_voice';
 
 describe('realtime voice adapter factory', () => {
+	it('covers every realtime voice model in the bundled provider catalog', () => {
+		const root = path.resolve(__dirname, '../../../../resources/providers');
+		const catalog = fs.readdirSync(root).flatMap((providerId) => {
+			const manifestPath = path.join(root, providerId, 'manifest.json');
+			if (!fs.existsSync(manifestPath)) return [];
+			const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+			return manifest.models.filter((model: { type: string }) => model.type === 'realtime-voice-model').map((model: { id: string }) => ({ providerId, modelId: model.id }));
+		});
+		expect(realtimeVoiceModelRefs()).toEqual(expect.arrayContaining(catalog));
+		expect(realtimeVoiceModelRefs()).toHaveLength(catalog.length);
+	});
 	it('publishes the exact stable provider/model allow-list', () => {
 		expect(realtimeVoiceModelRefs()).toEqual([
 			{ providerId: 'openai', modelId: 'gpt-realtime-2.1' },
@@ -33,3 +44,5 @@ describe('realtime voice adapter factory', () => {
 		).toThrow('not supported');
 	});
 });
+import fs from 'node:fs';
+import path from 'node:path';

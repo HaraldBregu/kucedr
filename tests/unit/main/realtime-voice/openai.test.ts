@@ -51,6 +51,10 @@ class FakeSocket implements RealtimeVoiceSocket {
 	event(event: RealtimeVoiceServerEvent): void {
 		this.eventListeners.forEach((listener) => listener(event));
 	}
+
+	error(error: Error): void {
+		this.errorListeners.forEach((listener) => listener(error));
+	}
 }
 
 describe('OpenAIRealtimeVoiceAdapter', () => {
@@ -160,7 +164,7 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		expect(socket.sent.at(-1)).toEqual({ type: 'response.create' });
 	});
 
-	it('configures current Realtime audio events and forwards streamed output', async () => {
+	it.each(['gpt-realtime-2.1', 'gpt-realtime-2.1-mini'])('configures %s and forwards streamed output', async (modelId) => {
 		const socket = new FakeSocket();
 		const adapter = new OpenAIRealtimeVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
@@ -170,7 +174,7 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		const events: Array<{ type: string }> = [];
 		const connecting = adapter.connect(
 			{
-				modelId: 'gpt-realtime-2.1',
+				modelId,
 				voice: 'marin',
 				instructions: 'Help the user.',
 				history: [
@@ -196,7 +200,7 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		expect(socket.sent[0]).toMatchObject({
 			type: 'session.update',
 			session: {
-				model: 'gpt-realtime-2.1',
+				model: modelId,
 				audio: {
 					input: {
 						format: { type: 'audio/pcm', rate: 24_000 },
@@ -230,7 +234,7 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 				item: {
 					type: 'message',
 					role: 'assistant',
-					content: [{ type: 'output_text', text: 'Earlier answer.' }],
+					content: [{ type: 'text', text: 'Earlier answer.' }],
 				},
 			},
 		]);
@@ -280,6 +284,39 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 
 		socket.socket.bufferedAmount = 1_400_000;
 		await expect(connection.appendAudio('AAAA')).rejects.toThrow('transport queue is full');
+	});
+
+	it('reports SDK protocol errors once and gives actionable authentication failures', async () => {
+		const socket = new FakeSocket();
+		const events: Array<{ type: string; message?: string }> = [];
+		const adapter = new OpenAIRealtimeVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' }, () => socket, 1000
+		);
+		const connecting = adapter.connect(
+			{ modelId: 'gpt-realtime-2.1', voice: 'marin', instructions: '', history: [], tools: [] },
+			(event) => events.push(event)
+		);
+		socket.error(new Error('Unexpected server response: 401'));
+		await expect(connecting).rejects.toThrow(/OpenAI.*API key.*401/);
+		expect(events.filter((event) => event.type === 'error')).toHaveLength(0);
+
+		const next = new FakeSocket();
+		const pending = new OpenAIRealtimeVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' }, () => next, 1000
+		).connect(
+			{ modelId: 'gpt-realtime-2.1', voice: 'marin', instructions: '', history: [], tools: [] },
+			(event) => events.push(event)
+		);
+		next.open();
+		next.event({ type: 'session.updated' });
+		const connection = await pending;
+		const error = { message: 'Invalid command.', code: 'invalid_request' };
+		next.event({ type: 'error', error });
+		next.error(Object.assign(new Error('Invalid command. code=invalid_request'), { error }));
+		expect(events.filter((event) => event.type === 'error')).toEqual([
+			{ type: 'error', message: 'Invalid command.' },
+		]);
+		await connection.stop();
 	});
 
 	it('fails startup after the bounded connection timeout', async () => {
