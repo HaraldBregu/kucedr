@@ -51,10 +51,10 @@ test('context ring follows real local usage, draft changes, model selection and 
 		await expect(ring).toHaveAttribute('aria-valuenow', '50');
 		await expect(ring).toHaveAttribute(
 			'aria-valuetext',
-			'Context: 16,384 / 32,768 tokens (50% used)'
+			/^Context: 16[,.]384 \/ 32[,.]768 tokens \(50% used\)$/
 		);
 		await ring.locator('..').focus();
-		await expect(page.getByRole('tooltip')).toContainText('16,384 / 32,768');
+		await expect(page.getByRole('tooltip')).toContainText(/16[,.]384 \/ 32[,.]768/);
 		await page.screenshot({ path: '/private/tmp/kucedr-context-ring.png' });
 		await editor.fill('x'.repeat(3000));
 		await expect(ring).toHaveAttribute('aria-valuenow', '53');
@@ -70,7 +70,7 @@ test('context ring follows real local usage, draft changes, model selection and 
 			await window.agent.setModelId('gpt-5.4-mini');
 		});
 		await page.reload();
-		await expect(ring).toHaveAttribute('aria-valuetext', /400,000 tokens/);
+		await expect(ring).toHaveAttribute('aria-valuetext', /400[,.]000 tokens/);
 		await expect(ring).toHaveAttribute('aria-valuetext', /^Estimated context/);
 		await expect(page.getByText('This page crashed')).toHaveCount(0);
 	} finally {

@@ -11,6 +11,7 @@ import {
 	type ProviderManifest,
 	type PublicProvider,
 } from '../shared/provider_types';
+import { modelContextWindow } from '../shared/model_context';
 import type {
 	CatalogModel,
 	ModelCapability,
@@ -263,8 +264,8 @@ function readCatalog(): Catalog {
 						...model,
 						metadata: {
 							...model.metadata,
-							contextWindow: model.metadata.contextWindow ?? defaults.contextWindow,
-							maxInputTokens: model.metadata.maxInputTokens ?? defaults.maxInputTokens,
+							contextWindow: modelContextWindow(model.metadata) === undefined ? defaults.contextWindow : model.metadata.contextWindow,
+							maxInputTokens: model.metadata.maxInputTokens ?? (model.metadata.inputs.max_input_tokens || model.metadata.inputs.input_token_limit || model.metadata.inputs.maximum_input_tokens ? undefined : defaults.maxInputTokens),
 							contextWindowDocumentationUrl: model.metadata.contextWindowDocumentationUrl ?? defaults.contextWindowDocumentationUrl,
 						},
 					};
