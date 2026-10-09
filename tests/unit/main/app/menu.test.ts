@@ -24,6 +24,10 @@ type MenuEntry = {
 };
 
 describe('application menu', () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
 	it.each([true, false])('toggles feedback sounds from a persisted %s value', (initiallyEnabled) => {
 		let enabled = initiallyEnabled;
 		const onSoundFeedbackEnabledChange = jest.fn((next: boolean) => {
