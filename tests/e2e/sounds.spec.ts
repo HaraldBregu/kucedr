@@ -81,7 +81,7 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 				return { success: true, data: 'Sound check complete.' };
 			});
 		});
-		await page.getByRole('button', { name: 'New chat', exact: true }).click();
+		await page.getByRole('button', { name: 'New Chat', exact: true }).click();
 		await expect
 			.poll(() =>
 				page.evaluate(() => window.feedbackPlayback.filter((record) => record.ended).length)
