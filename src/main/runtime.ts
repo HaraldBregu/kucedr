@@ -238,10 +238,6 @@ app.whenReady().then(() => {
 		trayManager.updateLanguage(language);
 	});
 
-	eventBus.on('sound-feedback:changed', () => {
-		menuManager.create();
-	});
-
 	// Create main window
 	if (!mainWindow.getWindow()) mainWindow.create();
 

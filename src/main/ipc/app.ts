@@ -616,7 +616,8 @@ export class AppIpc implements IpcModule {
 			AppChannels.setSoundFeedbackEnabled,
 			wrapSimpleHandler((enabled: boolean) => {
 				setStoredSoundFeedbackEnabled(enabled);
-				eventBus.emit('sound-feedback:changed', { enabled });
+				const menuItem = Menu.getApplicationMenu()?.getMenuItemById('sound-feedback');
+				if (menuItem) menuItem.checked = enabled;
 				eventBus.broadcast(AppChannels.soundFeedbackEnabledChanged, enabled);
 			}, AppChannels.setSoundFeedbackEnabled)
 		);
