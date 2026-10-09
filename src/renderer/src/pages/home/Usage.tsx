@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import type { HomeChatMessage } from './context/state';
 import { contextTokens } from './tokens';
 
-export function Context({
+export function Usage({
 	providerId,
 	modelId,
 	contextWindow,

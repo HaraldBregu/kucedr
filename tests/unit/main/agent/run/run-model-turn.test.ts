@@ -257,3 +257,14 @@ describe('runModelTurn', () => {
 		for await (const _event of events) void _event;
 	});
 });
+
+
+it.each([undefined, { inputTokens: 0, outputTokens: 0 }])('retains estimates when provider usage is missing or initialized to zero', async (usage) => {
+	const stream = async function* () {
+		yield { type: 'model_call_delta' as const, delta: 'abcdef' };
+		yield { type: 'model_call_end' as const, model: 'model', usage };
+	};
+	const emitted = [];
+	for await (const event of runModelTurn({ task: 'chat', message: 'hello' }, { id: 'test', apiKey: '' } as ResolvedProvider, 'model', 'system', [{ role: 'user', content: 'hello' }], [], new AbortController().signal, {}, { stream })) emitted.push(event);
+	expect(emitted.at(-1)).toMatchObject({ type: 'model_call_end', usage: { context: { estimated: true, inputTokens: expect.any(Number), outputTokens: 2 } } });
+});

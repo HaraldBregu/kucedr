@@ -307,6 +307,11 @@ function applyResponseEvent(
 			runId: messageRunId,
 			state: 'using_tools',
 			tools,
+			contextUsage: event.type === 'tool_call_result' && message.contextUsage ? {
+				...message.contextUsage,
+				inputTokens: message.contextUsage.inputTokens + Math.min(2_048, Math.ceil(new TextEncoder().encode(event.outputText).length / 3)),
+				estimated: true,
+			} : message.contextUsage,
 			pendingPermission:
 				event.type === 'tool_call_result' &&
 				message.pendingPermission?.toolCallId === event.toolCallId

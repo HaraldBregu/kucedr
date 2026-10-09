@@ -3,7 +3,7 @@ import { ModelProviderSelect, type ModelProviderGroup } from '@/components/model
 import { providerIdsFor, providerModels, providers } from '@/lib/providers';
 import { modelContextWindow } from '@shared/model_context';
 import type { HomeChatMessage } from './context/state';
-import { Context } from './Context';
+import { Usage } from './Usage';
 
 export function Model({
 	messages = [],
@@ -120,15 +120,13 @@ export function Model({
 				labels={{ label: 'Change model' }}
 			/>
 			{modelId ? (
-				<Context
+				<Usage
 					providerId={providerId}
 					modelId={modelId}
 					contextWindow={
 						localContextWindow ??
 						modelContextWindow(
-							groups
-								.find((group) => group.id === providerId)
-								?.models.find((model) => model.id === modelId)?.metadata
+							providerModels(providerId, 'llm').find((model) => model.id === modelId)?.metadata
 						)
 					}
 					messages={messages}

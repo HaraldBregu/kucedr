@@ -16,7 +16,7 @@ export async function resolveContextWindow(
 		return Math.floor(configured);
 	if (!provider.baseURL) return undefined;
 	try {
-		const response = await fetch(new URL('ps', `${provider.baseURL.replace(/\/+$/, '')}/`), {
+		const response = await fetch(new URL('/api/ps', provider.baseURL), {
 			signal: AbortSignal.timeout(2_000),
 		});
 		if (response.ok) {
@@ -33,7 +33,7 @@ export async function resolveContextWindow(
 			)
 				return loaded.context_length;
 		}
-		const details = await fetch(new URL('show', `${provider.baseURL.replace(/\/+$/, '')}/`), {
+		const details = await fetch(new URL('/api/show', provider.baseURL), {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ model: modelId }),

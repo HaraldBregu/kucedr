@@ -41,7 +41,9 @@ export async function* runModelTurn(
 	const maxRetries = 2;
 	const contextWindow = await resolveContextWindow(provider, modelId, modelOptions);
 	const outputLimit = modelOutputLimit(provider.id, modelId, modelOptions);
-	const maxTokens = contextWindow ? Math.min(outputLimit, Math.max(1, contextWindow - 1_024 - 2_048)) : outputLimit;
+	const maxTokens = contextWindow
+		? Math.min(outputLimit, Math.max(1, contextWindow - 1_024 - 2_048))
+		: outputLimit;
 	const context = fitModelContext({
 		systemPrompt,
 		protectedSystemPrompt,
@@ -130,14 +132,27 @@ export async function* runModelTurn(
 						...event.usage,
 						context: {
 							...contextUsage,
-							contextWindow: contextWindow ?? await resolveContextWindow(provider, modelId, modelOptions),
+							contextWindow:
+								contextWindow ?? (await resolveContextWindow(provider, modelId, modelOptions)),
 							inputTokens:
 								event.usage?.inputTokens && event.usage.inputTokens > 0
 									? event.usage.inputTokens
 									: context.estimatedTokens,
 							outputTokens:
-								event.usage?.outputTokens ?? Math.ceil(Buffer.byteLength(content, 'utf8') / 3),
-							estimated: !(event.usage?.inputTokens && event.usage.inputTokens > 0),
+								event.usage?.outputTokens && event.usage.outputTokens > 0
+									? event.usage.outputTokens
+									: Math.ceil(
+											Buffer.byteLength(
+												content + [...pending.values()].map((call) => call.argsText).join(''),
+												'utf8'
+											) / 3
+										),
+							estimated: !(
+								event.usage?.inputTokens &&
+								event.usage.inputTokens > 0 &&
+								event.usage.outputTokens !== undefined &&
+								(event.usage.outputTokens > 0 || (!content && pending.size === 0))
+							),
 						},
 					};
 					yield {
