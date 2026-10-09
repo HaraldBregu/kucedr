@@ -32,17 +32,31 @@ export async function createEmbedding(
 		(request.modelId ?? getModelId('embedding'))?.trim() ||
 		providerModels(providerId, 'embedding')[0]?.id;
 	if (!modelId) throw new Error(`No embedding models available for provider: ${providerId}`);
-	const apiKey = getProvider(providerId)?.apiKey.trim() ?? '';
+	const stored = getProvider(providerId);
+	const apiKey = stored?.apiKey.trim() ?? '';
 	if (!apiKey && !provider.local) {
 		throw new Error(`${provider.name} API key not configured.`);
+	}
+	let baseURL = (provider.local && process.env.BGE_BASE_URL?.trim()) || provider.url;
+	if (providerId === 'qwen') {
+		const endpoint = new URL(stored?.baseUrl || 'https://dashscope-intl.aliyuncs.com');
+		if (
+			endpoint.protocol !== 'https:' ||
+			! /^[a-z0-9][a-z0-9-]*\.(ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com$/i.test(endpoint.hostname)
+		) {
+			throw new Error('Set the Qwen provider base URL to https://{workspace}.{region}.maas.aliyuncs.com/compatible-mode/v1 for embeddings.');
+		}
+		endpoint.pathname = '/compatible-mode/v1/embeddings';
+		endpoint.search = '';
+		endpoint.hash = '';
+		baseURL = endpoint.toString();
 	}
 
 	const embeddings = await generateEmbeddings({
 		providerId,
 		apiKey,
 		modelId,
-		// ponytail: self-hosted endpoint moves via BGE_BASE_URL; no settings field until asked.
-		baseURL: (provider.local && process.env.BGE_BASE_URL?.trim()) || provider.url,
+		baseURL,
 		texts,
 		inputType: request.inputType,
 		signal,

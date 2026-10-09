@@ -22,10 +22,14 @@ export async function generateEmbeddings(options: GenerateEmbeddingsOptions): Pr
 		baseURL: options.baseURL,
 	});
 	const embeddings: number[][] = [];
+	const batchSize =
+		options.providerId === 'qwen'
+			? options.modelId === 'qwen3.7-text-embedding' ? 20 : 10
+			: BATCH_SIZE;
 	let dimensions: number | undefined;
-	for (let start = 0; start < options.texts.length; start += BATCH_SIZE) {
+	for (let start = 0; start < options.texts.length; start += batchSize) {
 		options.signal?.throwIfAborted();
-		const texts = options.texts.slice(start, start + BATCH_SIZE);
+		const texts = options.texts.slice(start, start + batchSize);
 		const batch = await adapter.embed({
 			texts,
 			inputType: options.inputType ?? 'document',

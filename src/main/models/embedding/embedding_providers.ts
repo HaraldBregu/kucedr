@@ -12,5 +12,6 @@ export const EMBEDDING_PROVIDERS: Record<string, EmbeddingProvider> = {
 	mistral: { name: 'Mistral', url: 'https://api.mistral.ai/v1/embeddings' },
 	nomic: { name: 'Nomic', url: 'https://api-atlas.nomic.ai/v1/embedding/text' },
 	openai: { name: 'OpenAI', url: 'https://api.openai.com/v1/embeddings' },
+	qwen: { name: 'Qwen', url: '' },
 	voyage: { name: 'Voyage AI', url: 'https://api.voyageai.com/v1/embeddings' },
 };

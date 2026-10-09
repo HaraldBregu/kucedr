@@ -127,6 +127,22 @@ it('stops after cancellation between batches', async () => {
 	expect(global.fetch).toHaveBeenCalledTimes(1);
 });
 
+it.each([
+	['qwen3.7-text-embedding', [20, 20, 5]],
+	['text-embedding-v4', [10, 10, 10, 10, 5]],
+])('honors Qwen model %s batch limits and keeps input order', async (modelId, sizes) => {
+	jest.mocked(global.fetch).mockImplementation(async (_url, init) => {
+		const body = JSON.parse(String(init?.body));
+		return new Response(JSON.stringify({
+			model: modelId,
+			data: body.input.map((text: string, index: number) => ({ index, embedding: [Number(text) + 1] })),
+		}));
+	});
+	const embeddings = await generateEmbeddings({ ...options, providerId: 'qwen', modelId: String(modelId), texts: Array.from({ length: 45 }, (_, index) => String(index)) });
+	expect(jest.mocked(global.fetch).mock.calls.map(([, init]) => JSON.parse(String(init?.body)).input.length)).toEqual(sizes);
+	expect(embeddings.map(([value]) => value)).toEqual(Array.from({ length: 45 }, (_, index) => index + 1));
+});
+
 it('rejects dimensions that change between API batches', async () => {
 	jest.mocked(global.fetch).mockImplementation(async (_url, init) => {
 		const body = JSON.parse(String(init?.body));

@@ -98,3 +98,9 @@ it('does not call the embedding API for an already canceled request', async () =
 	);
 	expect(generateEmbeddings).not.toHaveBeenCalled();
 });
+
+it('requires the documented workspace gateway for Qwen embeddings', async () => {
+	getProvider.mockReturnValue({ apiKey: 'key', baseUrl: 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1' });
+	await expect(createEmbedding({ providerId: 'qwen', modelId: 'text-embedding-v4', texts: ['document'] })).rejects.toThrow('Set the Qwen provider base URL');
+	expect(generateEmbeddings).not.toHaveBeenCalled();
+});
