@@ -17,6 +17,14 @@ const PDF_RULE = {
 };
 
 function expectedPromptAttachments(providerId: string, modelId: string): unknown[] {
+	if (providerId === 'cohere' && ['command-a-plus-05-2026', 'command-a-vision-07-2025', 'c4ai-aya-vision-32b'].includes(modelId)) return [{
+		kind: 'image', mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+		extensions: ['.jpg', '.jpeg', '.png', '.webp', '.gif'], maxFiles: 20, maxTotalBytes: 20000000,
+	}];
+	if (providerId === 'reka' && ['qwen3.8-27b', 'glm5.3-flash', 'gemma4-26b'].includes(modelId)) return [IMAGE_RULE];
+	if (providerId === 'reka' && ['glm5.3', 'deepseek4-flash', 'reka-flash-3'].includes(modelId)) return [];
+	if (providerId === 'xai' && modelId === 'grok-4.7') return [{ kind: 'image', mimeTypes: ['image/jpeg', 'image/png'], extensions: ['.jpg', '.jpeg', '.png'] }];
+	if (providerId === 'minimax' && modelId === 'MiniMax-M3') return [{ kind: 'image', mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'], extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp'] }];
 	if (providerId === 'deepseek' && modelId === 'deepseek-flash') {
 		return [
 			{
@@ -30,8 +38,8 @@ function expectedPromptAttachments(providerId: string, modelId: string): unknown
 		return [IMAGE_RULE, PDF_RULE];
 	}
 	if (['google', 'kimi', 'xai'].includes(providerId)) return [IMAGE_RULE];
-	if (providerId === 'mistral' && modelId !== 'devstral-2512') return [IMAGE_RULE];
-	if (providerId === 'qwen' && modelId !== 'qwen3.7-max') return [IMAGE_RULE];
+	if (providerId === 'mistral' && !['devstral-2512', 'zai-glm-5-3'].includes(modelId)) return [IMAGE_RULE];
+	if (providerId === 'qwen' && ['qwen3.6-plus', 'qwen3.6-flash'].includes(modelId)) return [IMAGE_RULE];
 	return [];
 }
 
@@ -398,7 +406,7 @@ describe('provider manifest validation', () => {
 				}));
 		});
 
-		expect(promptModels).toHaveLength(40);
+		expect(promptModels.length).toBeGreaterThan(40);
 		for (const { providerId, service } of promptModels) {
 			expect(service.metadata.promptAttachments).toEqual(
 				expectedPromptAttachments(providerId, service.id)

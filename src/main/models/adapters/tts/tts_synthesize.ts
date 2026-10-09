@@ -6,6 +6,7 @@ import {
 } from '../../../../shared/speech_types';
 import {
 	defaultProviderId,
+	findModel,
 	loadProviders,
 	providerModels,
 	supportsCapability,
@@ -25,7 +26,7 @@ export async function synthesize(
 		normalized.providerId ?? configuredProviderId() ?? defaultProviderId('text-to-speech') ?? ''
 	);
 	const modelId = resolveModelId(providerId, normalized.modelId ?? configuredModelId(providerId));
-	const provider = resolveProvider(providerId);
+	const provider = resolveProvider(providerId, modelId);
 	return buildSpeechAdapter(provider).synthesize({
 		...normalized,
 		providerId,
@@ -75,7 +76,7 @@ function configuredModelId(providerId: string): string | undefined {
 		: undefined;
 }
 
-function resolveProvider(providerId: string): SpeechProviderSpec {
+function resolveProvider(providerId: string, modelId: string): SpeechProviderSpec {
 	const stored = getProvider(providerId);
 	const defaults = loadProviders().find((provider) => provider.id === providerId);
 	const spec: SpeechProviderSpec = {
@@ -84,6 +85,9 @@ function resolveProvider(providerId: string): SpeechProviderSpec {
 		apiKey: stored?.apiKey.trim() ?? '',
 		baseURL: stored?.baseUrl || defaults?.baseUrl || '',
 	};
+	if (providerId === 'qwen' && (!spec.baseURL || /^https:\/\/dashscope(?:-intl)?\.aliyuncs\.com(?:\/|$)/.test(spec.baseURL))) {
+		spec.baseURL = findModel(providerId, 'text-to-speech', modelId)?.url || spec.baseURL;
+	}
 	if (!spec.apiKey) {
 		throw new SpeechProviderAuthError(`${spec.name} API key not configured.`);
 	}
