@@ -1,20 +1,22 @@
-import { EventEmitter } from 'node:events';
 import { buildImageAdapter } from '../../../../src/main/models/adapters/tti/tti_factory';
 import { createOpenAISttAdapter } from '../../../../src/main/models/adapters/stt/stt_openai';
 import type OpenAI from 'openai';
 
-const sockets: MockSocket[] = [];
-class MockSocket extends EventEmitter {
-	static OPEN = 1;
-	readyState = 1;
-	send = jest.fn();
-	close = jest.fn();
-	constructor(readonly url: string) {
-		super();
-		sockets.push(this);
+const sockets: { url: string; send: jest.Mock; emit: (event: string, data: string) => void }[] = [];
+jest.mock('ws', () => {
+	const { EventEmitter } = jest.requireActual('node:events');
+	class MockSocket extends EventEmitter {
+		static OPEN = 1;
+		readyState = 1;
+		send = jest.fn();
+		close = jest.fn();
+		constructor(readonly url: string) {
+			super();
+			sockets.push(this);
+		}
 	}
-}
-jest.mock('ws', () => ({ __esModule: true, default: MockSocket }));
+	return { __esModule: true, default: MockSocket };
+});
 
 describe('current OpenAI model contracts', () => {
 	it('generates GPT Image outputs with the selected format and quality', async () => {
