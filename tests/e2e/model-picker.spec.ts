@@ -29,6 +29,10 @@ test('reopening a selected model keeps the search field fully visible', async ({
 			const dialog = page.getByRole('dialog');
 			await expect.poll(() => dialog.getByRole('menu').evaluate((menu) => menu.scrollTop)).toBeGreaterThan(0);
 			await expect.poll(() => dialog.evaluate((content) => getComputedStyle(content).opacity)).toBe('1');
+			const search = dialog.getByRole('textbox');
+			await search.press('ArrowLeft');
+			await expect(search).toBeFocused();
+			await expect(search).toHaveCSS('outline-style', 'none');
 			await page.screenshot({ path: testInfo.outputPath(`model-picker-${width}.png`) });
 			await expect.poll(() => dialog.evaluate((content) => content.scrollTop)).toBe(0);
 			expect(await dialog.evaluate((content) => {
