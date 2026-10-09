@@ -1,656 +1,566 @@
 {
-  "providerId": "mistral",
-  "providerName": "Mistral AI",
-  "authentication": "api-key",
-  "apiKeyUrl": "https://console.mistral.ai/api-keys",
-  "images_url": "/images",
-  "icon_dark_url": "/images/mistral.svg",
-  "icon_light_url": "/images/mistral.svg",
-  "models": [
-    {
-      "id": "zai-glm-5-3",
-      "name": "Z.ai GLM 5.3",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [],
-        "documentationUrl": "https://docs.mistral.ai/models/zai-glm-5-3",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer",
-            "maximum": 131072
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "reasoning_effort": {
-            "type": "string",
-            "enum": [
-              "low",
-              "high",
-              "max"
-            ]
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://docs.mistral.ai/models/zai-glm-5-3"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "mistral-large-4",
-      "name": "Mistral Large 4",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.mistral.ai/models/mistral-large-4-0",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "reasoning_effort": {
-            "type": "string",
-            "enum": [
-              "none",
-              "high"
-            ]
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://docs.mistral.ai/models/mistral-large-4-0"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "mistral-small-2603",
-      "name": "Mistral Small 4",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.mistral.ai/models/mistral-small-4-0-26-03",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "reasoning_effort": {
-            "type": "string",
-            "enum": [
-              "none",
-              "high"
-            ]
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.mistral.ai/models/mistral-small-4-0-26-03"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "ministral-14b-2512",
-      "name": "Ministral 3 14B",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.mistral.ai/models/ministral-3-14b-25-12",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.mistral.ai/models/ministral-3-14b-25-12"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "ministral-8b-2512",
-      "name": "Ministral 3 8B",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.mistral.ai/models/ministral-3-8b-25-12",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.mistral.ai/models/ministral-3-8b-25-12"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "ministral-3b-2512",
-      "name": "Ministral 3 3B",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.mistral.ai/models/ministral-3-3b-25-12",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.mistral.ai/models/ministral-3-3b-25-12"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "mistral-large-2512",
-      "name": "Mistral Large 2512",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.mistral.ai/api/",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 256000,
-        "contextWindowDocumentationUrl": "https://docs.mistral.ai/models/mistral-large-3-25-12"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "mistral-medium-3-5",
-      "name": "Mistral Medium 3.5",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.mistral.ai/api/",
-        "documentationStatus": "verified",
-        "inputs": {
-          "reasoning_effort": {
-            "type": "string",
-            "enum": [
-              "none",
-              "minimal",
-              "low",
-              "medium",
-              "high",
-              "xhigh"
-            ]
-          },
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/blob/main/config.json"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "devstral-2512",
-      "name": "Devstral 2512",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "promptAttachments": [],
-        "documentationUrl": "https://docs.mistral.ai/api/",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "min_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "random_seed": {
-            "type": "integer"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512/raw/main/config.json"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "voxtral-mini-latest",
-      "name": "Voxtral Mini 2602",
-      "apiTypes": [
-        "batch"
-      ],
-      "type": "speech-to-text-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "sampleRate": 16000,
-      "metadata": {
-        "documentationUrl": "https://docs.mistral.ai/api/",
-        "documentationStatus": "verified",
-        "inputs": {
-          "language": {
-            "type": "string"
-          },
-          "timestamp_granularities": {
-            "type": "array"
-          },
-          "diarize": {
-            "type": "boolean"
-          },
-          "context_bias": {
-            "type": "array"
-          }
-        }
-      },
-      "location": "remote"
-    },
-    {
-      "id": "voxtral-mini-transcribe-realtime-2602",
-      "name": "Voxtral Mini Transcribe Realtime 2602",
-      "apiTypes": [
-        "stream"
-      ],
-      "realtime": true,
-      "type": "speech-to-text-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "sampleRate": 16000,
-      "metadata": {
-        "documentationUrl": "https://docs.mistral.ai/api/",
-        "documentationStatus": "verified",
-        "inputs": {
-          "transcription_config": {
-            "type": "object"
-          }
-        }
-      },
-      "location": "remote"
-    },
-    {
-      "id": "voxtral-mini-tts-2603",
-      "name": "Voxtral Mini TTS 2603",
-      "type": "text-to-speech-model",
-      "authentication": "api-key",
-      "url": "https://api.mistral.ai/v1",
-      "metadata": {
-        "documentationUrl": "https://docs.mistral.ai/api/endpoint/audio/speech",
-        "documentationStatus": "verified",
-        "inputs": {
-          "voice_id": {
-            "type": "string",
-            "title": "Voice ID"
-          },
-          "ref_audio": {
-            "type": "string"
-          },
-          "response_format": {
-            "type": "string",
-            "default": "mp3",
-            "enum": [
-              "pcm",
-              "wav",
-              "mp3",
-              "flac",
-              "opus"
-            ]
-          },
-          "metadata": {
-            "type": "object"
-          },
-          "prompt_cache_key": {
-            "type": "string"
-          }
-        }
-      },
-      "location": "remote"
-    }
-  ],
-  "mcp_servers": [],
-  "databases": []
+	"providerId": "mistral",
+	"providerName": "Mistral AI",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://console.mistral.ai/api-keys",
+	"images_url": "/images",
+	"icon_dark_url": "/images/mistral.svg",
+	"icon_light_url": "/images/mistral.svg",
+	"models": [
+		{
+			"id": "zai-glm-5-3",
+			"name": "Z.ai GLM 5.3",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [],
+				"documentationUrl": "https://docs.mistral.ai/models/zai-glm-5-3",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer",
+						"maximum": 131072
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"reasoning_effort": {
+						"type": "string",
+						"enum": ["low", "high", "max"]
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/zai-glm-5-3"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "mistral-large-4",
+			"name": "Mistral Large 4",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.mistral.ai/models/mistral-large-4-0",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"reasoning_effort": {
+						"type": "string",
+						"enum": ["none", "high"]
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/mistral-large-4-0"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "mistral-small-2603",
+			"name": "Mistral Small 4",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.mistral.ai/models/mistral-small-4-0-26-03",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"reasoning_effort": {
+						"type": "string",
+						"enum": ["none", "high"]
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/mistral-small-4-0-26-03"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "ministral-14b-2512",
+			"name": "Ministral 3 14B",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.mistral.ai/models/ministral-3-14b-25-12",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/ministral-3-14b-25-12"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "ministral-8b-2512",
+			"name": "Ministral 3 8B",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.mistral.ai/models/ministral-3-8b-25-12",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/ministral-3-8b-25-12"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "ministral-3b-2512",
+			"name": "Ministral 3 3B",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.mistral.ai/models/ministral-3-3b-25-12",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/ministral-3-3b-25-12"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "mistral-large-2512",
+			"name": "Mistral Large 2512",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.mistral.ai/api/",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 256000,
+				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/mistral-large-3-25-12"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "mistral-medium-3-5",
+			"name": "Mistral Medium 3.5",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.mistral.ai/api/",
+				"documentationStatus": "verified",
+				"inputs": {
+					"reasoning_effort": {
+						"type": "string",
+						"enum": ["none", "minimal", "low", "medium", "high", "xhigh"]
+					},
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/blob/main/config.json"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "devstral-2512",
+			"name": "Devstral 2512",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"promptAttachments": [],
+				"documentationUrl": "https://docs.mistral.ai/api/",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"min_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"random_seed": {
+						"type": "integer"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512/raw/main/config.json"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "voxtral-mini-latest",
+			"name": "Voxtral Mini 2602",
+			"apiTypes": ["batch"],
+			"type": "speech-to-text-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"sampleRate": 16000,
+			"metadata": {
+				"documentationUrl": "https://docs.mistral.ai/api/",
+				"documentationStatus": "verified",
+				"inputs": {
+					"language": {
+						"type": "string"
+					},
+					"timestamp_granularities": {
+						"type": "array"
+					},
+					"diarize": {
+						"type": "boolean"
+					},
+					"context_bias": {
+						"type": "array"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "voxtral-mini-transcribe-realtime-2602",
+			"name": "Voxtral Mini Transcribe Realtime 2602",
+			"apiTypes": ["stream"],
+			"realtime": true,
+			"type": "speech-to-text-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"sampleRate": 16000,
+			"metadata": {
+				"documentationUrl": "https://docs.mistral.ai/api/",
+				"documentationStatus": "verified",
+				"inputs": {
+					"transcription_config": {
+						"type": "object"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "voxtral-mini-tts-2603",
+			"name": "Voxtral Mini TTS 2603",
+			"type": "text-to-speech-model",
+			"authentication": "api-key",
+			"url": "https://api.mistral.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.mistral.ai/api/endpoint/audio/speech",
+				"documentationStatus": "verified",
+				"inputs": {
+					"voice_id": {
+						"type": "string",
+						"title": "Voice ID"
+					},
+					"ref_audio": {
+						"type": "string"
+					},
+					"response_format": {
+						"type": "string",
+						"default": "mp3",
+						"enum": ["pcm", "wav", "mp3", "flac", "opus"]
+					},
+					"metadata": {
+						"type": "object"
+					},
+					"prompt_cache_key": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		}
+	],
+	"mcp_servers": [],
+	"databases": []
 }

@@ -487,19 +487,24 @@ export class LlmModel implements LlmAdapter {
 			}
 			return;
 		}
-		const tools: Anthropic.Messages.Tool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map((t) => ({
-			name: t.name,
-			description: t.description,
-			input_schema: t.schema as Anthropic.Messages.Tool.InputSchema,
-			...(t.inputExamples?.length ? { input_examples: [...t.inputExamples] } : {}),
-		}));
+		const tools: Anthropic.Messages.Tool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map(
+			(t) => ({
+				name: t.name,
+				description: t.description,
+				input_schema: t.schema as Anthropic.Messages.Tool.InputSchema,
+				...(t.inputExamples?.length ? { input_examples: [...t.inputExamples] } : {}),
+			})
+		);
 
 		yield { type: 'message_start' };
 
 		const usage = { inputTokens: 0, outputTokens: 0 };
 		let stopReason = 'end_turn';
 		const blockIndexToToolUseId = new Map<number, string>();
-		const thinkingBlocks = new Map<number, Anthropic.Messages.ThinkingBlock | Anthropic.Messages.RedactedThinkingBlock>();
+		const thinkingBlocks = new Map<
+			number,
+			Anthropic.Messages.ThinkingBlock | Anthropic.Messages.RedactedThinkingBlock
+		>();
 
 		try {
 			const stream = client.messages.stream(
@@ -518,7 +523,11 @@ export class LlmModel implements LlmAdapter {
 				if (!rawEvent || typeof rawEvent !== 'object') continue;
 				const event = rawEvent as Anthropic.Messages.RawMessageStreamEvent;
 				if (event.type === 'content_block_start') {
-					if (event.content_block.type === 'thinking' || event.content_block.type === 'redacted_thinking') thinkingBlocks.set(event.index, { ...event.content_block });
+					if (
+						event.content_block.type === 'thinking' ||
+						event.content_block.type === 'redacted_thinking'
+					)
+						thinkingBlocks.set(event.index, { ...event.content_block });
 					if (event.content_block.type === 'tool_use') {
 						blockIndexToToolUseId.set(event.index, event.content_block.id);
 						yield {
@@ -550,7 +559,10 @@ export class LlmModel implements LlmAdapter {
 					if (event.usage) usage.outputTokens = event.usage.output_tokens ?? usage.outputTokens;
 				} else if (event.type === 'message_start') {
 					if (event.message.usage) {
-						usage.inputTokens = (event.message.usage.input_tokens ?? 0) + (event.message.usage.cache_creation_input_tokens ?? 0) + (event.message.usage.cache_read_input_tokens ?? 0);
+						usage.inputTokens =
+							(event.message.usage.input_tokens ?? 0) +
+							(event.message.usage.cache_creation_input_tokens ?? 0) +
+							(event.message.usage.cache_read_input_tokens ?? 0);
 						usage.outputTokens = event.message.usage.output_tokens ?? usage.outputTokens;
 					}
 				}
@@ -571,25 +583,36 @@ export class LlmModel implements LlmAdapter {
 			this.reasoningContentEnabled || provider.id.toLowerCase() === 'deepseek';
 		if (req.streaming === false) {
 			try {
-				yield* completeChat(client, { ...req, options: requestOptions(provider.id.toLowerCase(), req) }, {
-					reasoningContentEnabled,
-					reasoningEffortEnabled: this.reasoningEffortEnabled,
-					thinkingModeEnabled: this.thinkingModeEnabled,
-					contentProfile: provider.id.toLowerCase() === 'reka' ? 'reka' : provider.id.toLowerCase() === 'mistral' ? 'mistral' : 'image-only',
-				});
+				yield* completeChat(
+					client,
+					{ ...req, options: requestOptions(provider.id.toLowerCase(), req) },
+					{
+						reasoningContentEnabled,
+						reasoningEffortEnabled: this.reasoningEffortEnabled,
+						thinkingModeEnabled: this.thinkingModeEnabled,
+						contentProfile:
+							provider.id.toLowerCase() === 'reka'
+								? 'reka'
+								: provider.id.toLowerCase() === 'mistral'
+									? 'mistral'
+									: 'image-only',
+					}
+				);
 			} catch (error) {
 				this.throwProviderError(error);
 			}
 			return;
 		}
-		const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map((t) => ({
-			type: 'function' as const,
-			function: {
-				name: t.name,
-				description: t.description,
-				parameters: t.schema as Record<string, unknown>,
-			},
-		}));
+		const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map(
+			(t) => ({
+				type: 'function' as const,
+				function: {
+					name: t.name,
+					description: t.description,
+					parameters: t.schema as Record<string, unknown>,
+				},
+			})
+		);
 
 		yield { type: 'message_start' };
 
@@ -603,7 +626,12 @@ export class LlmModel implements LlmAdapter {
 				model: req.model,
 				messages: llmBuildChatMessages(req.system, req.messages, {
 					includeReasoningContent: reasoningContentEnabled,
-					contentProfile: provider.id.toLowerCase() === 'reka' ? 'reka' : provider.id.toLowerCase() === 'mistral' ? 'mistral' : 'image-only',
+					contentProfile:
+						provider.id.toLowerCase() === 'reka'
+							? 'reka'
+							: provider.id.toLowerCase() === 'mistral'
+								? 'mistral'
+								: 'image-only',
 				}),
 				tools: tools.length > 0 ? tools : undefined,
 				tool_choice: tools.length > 0 ? 'auto' : undefined,
@@ -646,10 +674,15 @@ export class LlmModel implements LlmAdapter {
 				const text = content(delta.content);
 				if (text) yield { type: 'text_delta', text };
 				if (provider.id.toLowerCase() === 'mistral' && typeof delta.content === 'string') {
-					yield { type: 'reasoning_item', provider: 'mistral', item: { type: 'text', text: delta.content } };
+					yield {
+						type: 'reasoning_item',
+						provider: 'mistral',
+						item: { type: 'text', text: delta.content },
+					};
 				}
 				if (provider.id.toLowerCase() === 'mistral' && Array.isArray(delta.content)) {
-					for (const item of delta.content) yield { type: 'reasoning_item', provider: 'mistral', item };
+					for (const item of delta.content)
+						yield { type: 'reasoning_item', provider: 'mistral', item };
 				}
 
 				if (delta.tool_calls) {
@@ -840,7 +873,11 @@ function isLlmRequest(request: LlmRequest | LlmStreamRequest): request is LlmReq
 }
 
 function llmBaseUrl(provider: LlmProviderSpec): string | undefined {
-	if (provider.id.toLowerCase() === 'cohere' && (!provider.baseURL || /^https:\/\/api\.cohere\.(?:com|ai)\/v[12]\/?$/.test(provider.baseURL))) return 'https://api.cohere.ai/compatibility/v1';
+	if (
+		provider.id.toLowerCase() === 'cohere' &&
+		(!provider.baseURL || /^https:\/\/api\.cohere\.(?:com|ai)\/v[12]\/?$/.test(provider.baseURL))
+	)
+		return 'https://api.cohere.ai/compatibility/v1';
 	if (!['custom', 'ollama'].includes(provider.id.toLowerCase()) || !provider.baseURL)
 		return provider.baseURL;
 	return new URL('/v1', provider.baseURL).toString();

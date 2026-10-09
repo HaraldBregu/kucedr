@@ -32,7 +32,11 @@ export function createQwenImageAdapter(spec: ImageProviderSpec): ImageAdapter {
 				);
 			}
 			const { image: images, ...parameters } = request.options ?? {};
-			const references = Array.isArray(images) ? images : typeof images === 'string' ? [images] : [];
+			const references = Array.isArray(images)
+				? images
+				: typeof images === 'string'
+					? [images]
+					: [];
 			const response = await requestJson<QwenResponse>(
 				spec.name,
 				`${baseURL}/services/aigc/multimodal-generation/generation`,

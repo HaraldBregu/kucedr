@@ -14,14 +14,16 @@ export async function* chat(
 		contentProfile: 'image-only' | 'reka' | 'mistral';
 	}
 ): AsyncIterable<LlmProviderEvent> {
-	const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map((tool) => ({
-		type: 'function',
-		function: {
-			name: tool.name,
-			description: tool.description,
-			parameters: tool.schema as Record<string, unknown>,
-		},
-	}));
+	const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map(
+		(tool) => ({
+			type: 'function',
+			function: {
+				name: tool.name,
+				description: tool.description,
+				parameters: tool.schema as Record<string, unknown>,
+			},
+		})
+	);
 	const params: Record<string, unknown> = {
 		...req.options,
 		model: req.model,
@@ -52,7 +54,8 @@ export async function* chat(
 	const text = content(choice?.message.content);
 	if (text) yield { type: 'text_delta', text };
 	if (options.contentProfile === 'mistral' && Array.isArray(choice?.message.content)) {
-		for (const item of choice.message.content) yield { type: 'reasoning_item', provider: 'mistral', item };
+		for (const item of choice.message.content)
+			yield { type: 'reasoning_item', provider: 'mistral', item };
 	}
 	const reasoningContent = (choice?.message as { reasoning_content?: unknown } | undefined)
 		?.reasoning_content;

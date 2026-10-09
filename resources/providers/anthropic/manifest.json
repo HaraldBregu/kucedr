@@ -1,1066 +1,817 @@
 {
-  "providerId": "anthropic",
-  "providerName": "Anthropic",
-  "authentication": "api-key",
-  "apiKeyUrl": "https://console.anthropic.com/settings/keys",
-  "images_url": "/images",
-  "icon_dark_url": "/images/anthropic-dark.svg",
-  "icon_light_url": "/images/anthropic-light.svg",
-  "models": [
-    {
-      "id": "claude-fable-5-1",
-      "name": "Claude Fable 5.1",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/models/fable-5-1/overview",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true,
-            "maximum": 128000
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive"
-                ]
-              },
-              "display": {
-                "type": "string",
-                "enum": [
-                  "summarized",
-                  "omitted"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/fable-5-1/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-opus-5-5",
-      "name": "Claude Opus 5.5",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/models/opus-5-5/overview",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true,
-            "maximum": 128000
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive"
-                ]
-              },
-              "display": {
-                "type": "string",
-                "enum": [
-                  "summarized",
-                  "omitted"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-5-5/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-sonnet-5-5",
-      "name": "Claude Sonnet 5.5",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/models/sonnet-5-5/overview",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true,
-            "maximum": 128000
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive",
-                  "between_tools"
-                ]
-              },
-              "display": {
-                "type": "string",
-                "enum": [
-                  "summarized",
-                  "omitted"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/sonnet-5-5/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-haiku-5-5",
-      "name": "Claude Haiku 5.5",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/models/haiku-5-5/overview",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true,
-            "maximum": 128000
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive",
-                  "disabled"
-                ]
-              },
-              "display": {
-                "type": "string",
-                "enum": [
-                  "summarized",
-                  "omitted"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/haiku-5-5/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-opus-4-8",
-      "name": "Claude Opus 4.8",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/models/opus-4-8/overview",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true,
-            "maximum": 128000
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive",
-                  "disabled"
-                ]
-              },
-              "display": {
-                "type": "string",
-                "enum": [
-                  "summarized",
-                  "omitted"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-4-8/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-fable-5",
-      "name": "Claude Fable 5",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/api/messages",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true
-          },
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_k": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive",
-                  "disabled"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/fable-5/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-opus-5",
-      "name": "Claude Opus 5",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/api/messages",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true
-          },
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_k": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive",
-                  "disabled"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-5/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-sonnet-5",
-      "name": "Claude Sonnet 5",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/api/messages",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true
-          },
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_k": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive",
-                  "disabled"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/sonnet-5/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-opus-4-7",
-      "name": "Claude Opus 4.7",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/api/messages",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true
-          },
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_k": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive",
-                  "disabled"
-                ]
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "xhigh",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-4-7/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-sonnet-4-6",
-      "name": "Claude Sonnet 4.6",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/api/messages",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true
-          },
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_k": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "adaptive",
-                  "enabled",
-                  "disabled"
-                ]
-              },
-              "budget_tokens": {
-                "type": "integer",
-                "minimum": 1024
-              }
-            }
-          },
-          "output_config": {
-            "type": "object",
-            "properties": {
-              "effort": {
-                "type": "string",
-                "enum": [
-                  "low",
-                  "medium",
-                  "high",
-                  "max"
-                ]
-              }
-            }
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 1000000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/sonnet-4-6/overview"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "claude-haiku-4-5-20251001",
-      "name": "Claude Haiku 4.5 20251001",
-      "type": "large-language-model",
-      "authentication": "api-key",
-      "url": "https://api.anthropic.com",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://platform.claude.com/docs/en/api/messages",
-        "documentationStatus": "verified",
-        "inputs": {
-          "max_tokens": {
-            "type": "integer",
-            "minimum": 1,
-            "required": true
-          },
-          "temperature": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_p": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "top_k": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "stop_sequences": {
-            "type": "array"
-          },
-          "thinking": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "enabled",
-                  "disabled"
-                ]
-              },
-              "budget_tokens": {
-                "type": "integer",
-                "minimum": 1024
-              }
-            }
-          },
-          "output_config": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          },
-          "tool_choice": {
-            "type": "object"
-          },
-          "metadata": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 200000,
-        "contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/haiku-4-5/overview"
-      },
-      "location": "remote"
-    }
-  ],
-  "mcp_servers": [],
-  "databases": []
+	"providerId": "anthropic",
+	"providerName": "Anthropic",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://console.anthropic.com/settings/keys",
+	"images_url": "/images",
+	"icon_dark_url": "/images/anthropic-dark.svg",
+	"icon_light_url": "/images/anthropic-light.svg",
+	"models": [
+		{
+			"id": "claude-fable-5-1",
+			"name": "Claude Fable 5.1",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/models/fable-5-1/overview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true,
+						"maximum": 128000
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive"]
+							},
+							"display": {
+								"type": "string",
+								"enum": ["summarized", "omitted"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/fable-5-1/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-opus-5-5",
+			"name": "Claude Opus 5.5",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/models/opus-5-5/overview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true,
+						"maximum": 128000
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive"]
+							},
+							"display": {
+								"type": "string",
+								"enum": ["summarized", "omitted"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-5-5/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-sonnet-5-5",
+			"name": "Claude Sonnet 5.5",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/models/sonnet-5-5/overview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true,
+						"maximum": 128000
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive", "between_tools"]
+							},
+							"display": {
+								"type": "string",
+								"enum": ["summarized", "omitted"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/sonnet-5-5/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-haiku-5-5",
+			"name": "Claude Haiku 5.5",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/models/haiku-5-5/overview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true,
+						"maximum": 128000
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive", "disabled"]
+							},
+							"display": {
+								"type": "string",
+								"enum": ["summarized", "omitted"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/haiku-5-5/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-opus-4-8",
+			"name": "Claude Opus 4.8",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/models/opus-4-8/overview",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true,
+						"maximum": 128000
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive", "disabled"]
+							},
+							"display": {
+								"type": "string",
+								"enum": ["summarized", "omitted"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-4-8/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-fable-5",
+			"name": "Claude Fable 5",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true
+					},
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_k": {
+						"type": "integer",
+						"minimum": 1
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive", "disabled"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/fable-5/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-opus-5",
+			"name": "Claude Opus 5",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true
+					},
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_k": {
+						"type": "integer",
+						"minimum": 1
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive", "disabled"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-5/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-sonnet-5",
+			"name": "Claude Sonnet 5",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true
+					},
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_k": {
+						"type": "integer",
+						"minimum": 1
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive", "disabled"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/sonnet-5/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-opus-4-7",
+			"name": "Claude Opus 4.7",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true
+					},
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_k": {
+						"type": "integer",
+						"minimum": 1
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive", "disabled"]
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-4-7/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-sonnet-4-6",
+			"name": "Claude Sonnet 4.6",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true
+					},
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_k": {
+						"type": "integer",
+						"minimum": 1
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["adaptive", "enabled", "disabled"]
+							},
+							"budget_tokens": {
+								"type": "integer",
+								"minimum": 1024
+							}
+						}
+					},
+					"output_config": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "max"]
+							}
+						}
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/sonnet-4-6/overview"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "claude-haiku-4-5-20251001",
+			"name": "Claude Haiku 4.5 20251001",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.anthropic.com",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
+				"documentationStatus": "verified",
+				"inputs": {
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"required": true
+					},
+					"temperature": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_p": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1
+					},
+					"top_k": {
+						"type": "integer",
+						"minimum": 1
+					},
+					"stop_sequences": {
+						"type": "array"
+					},
+					"thinking": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["enabled", "disabled"]
+							},
+							"budget_tokens": {
+								"type": "integer",
+								"minimum": 1024
+							}
+						}
+					},
+					"output_config": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					},
+					"tool_choice": {
+						"type": "object"
+					},
+					"metadata": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 200000,
+				"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/haiku-4-5/overview"
+			},
+			"location": "remote"
+		}
+	],
+	"mcp_servers": [],
+	"databases": []
 }

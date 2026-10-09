@@ -135,7 +135,12 @@ function toAssistantContent(content: Message['content']): LlmContentBlock[] {
 		.map((block): LlmContentBlock | undefined => {
 			if (block.type === 'text' && typeof block.text === 'string')
 				return { type: 'text', text: block.text };
-			if (block.type === 'provider_item' && (block.provider === 'openai' || block.provider === 'anthropic' || block.provider === 'mistral')) {
+			if (
+				block.type === 'provider_item' &&
+				(block.provider === 'openai' ||
+					block.provider === 'anthropic' ||
+					block.provider === 'mistral')
+			) {
 				return { type: 'provider_item', provider: block.provider, item: block.item };
 			}
 			if (block.type === 'provider_item' && block.provider === 'deepseek') {
@@ -285,9 +290,7 @@ export function llmBuildAnthropicMessages(
 			continue;
 		}
 		if (entry.role === 'assistant') {
-			const blocks: Array<
-				Anthropic.Messages.ContentBlockParam
-			> = [];
+			const blocks: Array<Anthropic.Messages.ContentBlockParam> = [];
 			for (const b of entry.content) {
 				if (b.type === 'text' && b.text) {
 					blocks.push({ type: 'text', text: b.text });
@@ -395,8 +398,11 @@ export function llmBuildChatMessages(
 				content: text || null,
 			};
 			if (options.contentProfile === 'mistral') {
-				const chunks = entry.content.filter((block) => block.type === 'provider_item' && block.provider === 'mistral').map((block) => (block as Extract<LlmContentBlock, { type: 'provider_item' }>).item);
-				if (chunks.length) msg.content = chunks as unknown as OpenAI.ChatCompletionAssistantMessageParam['content'];
+				const chunks = entry.content
+					.filter((block) => block.type === 'provider_item' && block.provider === 'mistral')
+					.map((block) => (block as Extract<LlmContentBlock, { type: 'provider_item' }>).item);
+				if (chunks.length)
+					msg.content = chunks as unknown as OpenAI.ChatCompletionAssistantMessageParam['content'];
 			}
 			if (options.includeReasoningContent) {
 				const reasoningContent = entry.content

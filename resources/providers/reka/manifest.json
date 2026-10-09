@@ -1,404 +1,351 @@
 {
-  "providerId": "reka",
-  "providerName": "Reka AI",
-  "authentication": "api-key",
-  "apiKeyUrl": "https://platform.reka.ai/apikeys",
-  "images_url": "/images",
-  "icon_dark_url": "/images/reka-dark.svg",
-  "icon_light_url": "/images/reka-light.svg",
-  "models": [
-    {
-      "id": "qwen3.8-27b",
-      "name": "Qwen 3.8 27B",
-      "authentication": "api-key",
-      "type": "large-language-model",
-      "url": "https://api.reka.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.reka.ai/chat/models",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number"
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "stream": {
-            "type": "boolean"
-          },
-          "tools": {
-            "type": "array"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "glm5.3-flash",
-      "name": "GLM 5.3 Flash",
-      "authentication": "api-key",
-      "type": "large-language-model",
-      "url": "https://api.reka.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.reka.ai/chat/models",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number"
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "stream": {
-            "type": "boolean"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "glm5.3",
-      "name": "GLM 5.3",
-      "authentication": "api-key",
-      "type": "large-language-model",
-      "url": "https://api.reka.ai/v1",
-      "metadata": {
-        "promptAttachments": [],
-        "documentationUrl": "https://docs.reka.ai/chat/models",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number"
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "stream": {
-            "type": "boolean"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "gemma4-26b",
-      "name": "Gemma 4 26B",
-      "authentication": "api-key",
-      "type": "large-language-model",
-      "url": "https://api.reka.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.reka.ai/chat/models",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number"
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "stream": {
-            "type": "boolean"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "deepseek4-flash",
-      "name": "DeepSeek 4 Flash",
-      "authentication": "api-key",
-      "type": "large-language-model",
-      "url": "https://api.reka.ai/v1",
-      "metadata": {
-        "promptAttachments": [],
-        "documentationUrl": "https://docs.reka.ai/chat/models",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number"
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "stream": {
-            "type": "boolean"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          }
-        },
-        "contextWindow": 262144,
-        "contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "reka-flash-3",
-      "name": "Reka Flash 3",
-      "authentication": "api-key",
-      "type": "large-language-model",
-      "url": "https://api.reka.ai/v1",
-      "metadata": {
-        "promptAttachments": [],
-        "documentationUrl": "https://docs.reka.ai/chat/models",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number"
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "stream": {
-            "type": "boolean"
-          },
-          "response_format": {
-            "type": "object"
-          }
-        },
-        "contextWindow": 65536,
-        "contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "reka-flash",
-      "name": "Reka Flash",
-      "authentication": "api-key",
-      "type": "large-language-model",
-      "url": "https://api.reka.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.reka.ai/chat/models",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number"
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "stream": {
-            "type": "boolean"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          }
-        },
-        "contextWindow": 128000,
-        "contextWindowDocumentationUrl": "https://reka.ai/news/reka-flash-updates"
-      },
-      "location": "remote"
-    },
-    {
-      "id": "reka-edge-2603",
-      "name": "Reka Edge 2603",
-      "authentication": "api-key",
-      "type": "large-language-model",
-      "url": "https://api.reka.ai/v1",
-      "metadata": {
-        "promptAttachments": [
-          {
-            "kind": "image",
-            "mimeTypes": [
-              "image/jpeg",
-              "image/png",
-              "image/webp"
-            ],
-            "extensions": [
-              ".jpg",
-              ".jpeg",
-              ".png",
-              ".webp"
-            ]
-          },
-          {
-            "kind": "document",
-            "mimeTypes": [
-              "application/pdf"
-            ],
-            "extensions": [
-              ".pdf"
-            ]
-          }
-        ],
-        "documentationUrl": "https://docs.reka.ai/chat/models",
-        "documentationStatus": "verified",
-        "inputs": {
-          "temperature": {
-            "type": "number"
-          },
-          "top_p": {
-            "type": "number"
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "stop": {
-            "type": "array"
-          },
-          "stream": {
-            "type": "boolean"
-          },
-          "response_format": {
-            "type": "object"
-          },
-          "tools": {
-            "type": "array"
-          }
-        },
-        "contextWindow": 16384,
-        "contextWindowDocumentationUrl": "https://huggingface.co/RekaAI/reka-edge-2603/raw/main/config.json"
-      },
-      "location": "remote"
-    }
-  ],
-  "mcp_servers": [],
-  "databases": []
+	"providerId": "reka",
+	"providerName": "Reka AI",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://platform.reka.ai/apikeys",
+	"images_url": "/images",
+	"icon_dark_url": "/images/reka-dark.svg",
+	"icon_light_url": "/images/reka-light.svg",
+	"models": [
+		{
+			"id": "qwen3.8-27b",
+			"name": "Qwen 3.8 27B",
+			"authentication": "api-key",
+			"type": "large-language-model",
+			"url": "https://api.reka.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.reka.ai/chat/models",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number"
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"stream": {
+						"type": "boolean"
+					},
+					"tools": {
+						"type": "array"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "glm5.3-flash",
+			"name": "GLM 5.3 Flash",
+			"authentication": "api-key",
+			"type": "large-language-model",
+			"url": "https://api.reka.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.reka.ai/chat/models",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number"
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"stream": {
+						"type": "boolean"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "glm5.3",
+			"name": "GLM 5.3",
+			"authentication": "api-key",
+			"type": "large-language-model",
+			"url": "https://api.reka.ai/v1",
+			"metadata": {
+				"promptAttachments": [],
+				"documentationUrl": "https://docs.reka.ai/chat/models",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number"
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"stream": {
+						"type": "boolean"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "gemma4-26b",
+			"name": "Gemma 4 26B",
+			"authentication": "api-key",
+			"type": "large-language-model",
+			"url": "https://api.reka.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					}
+				],
+				"documentationUrl": "https://docs.reka.ai/chat/models",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number"
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"stream": {
+						"type": "boolean"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "deepseek4-flash",
+			"name": "DeepSeek 4 Flash",
+			"authentication": "api-key",
+			"type": "large-language-model",
+			"url": "https://api.reka.ai/v1",
+			"metadata": {
+				"promptAttachments": [],
+				"documentationUrl": "https://docs.reka.ai/chat/models",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number"
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"stream": {
+						"type": "boolean"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "reka-flash-3",
+			"name": "Reka Flash 3",
+			"authentication": "api-key",
+			"type": "large-language-model",
+			"url": "https://api.reka.ai/v1",
+			"metadata": {
+				"promptAttachments": [],
+				"documentationUrl": "https://docs.reka.ai/chat/models",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number"
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"stream": {
+						"type": "boolean"
+					},
+					"response_format": {
+						"type": "object"
+					}
+				},
+				"contextWindow": 65536,
+				"contextWindowDocumentationUrl": "https://docs.reka.ai/chat/models"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "reka-flash",
+			"name": "Reka Flash",
+			"authentication": "api-key",
+			"type": "large-language-model",
+			"url": "https://api.reka.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://docs.reka.ai/chat/models",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number"
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"stream": {
+						"type": "boolean"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					}
+				},
+				"contextWindow": 128000,
+				"contextWindowDocumentationUrl": "https://reka.ai/news/reka-flash-updates"
+			},
+			"location": "remote"
+		},
+		{
+			"id": "reka-edge-2603",
+			"name": "Reka Edge 2603",
+			"authentication": "api-key",
+			"type": "large-language-model",
+			"url": "https://api.reka.ai/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://docs.reka.ai/chat/models",
+				"documentationStatus": "verified",
+				"inputs": {
+					"temperature": {
+						"type": "number"
+					},
+					"top_p": {
+						"type": "number"
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"stop": {
+						"type": "array"
+					},
+					"stream": {
+						"type": "boolean"
+					},
+					"response_format": {
+						"type": "object"
+					},
+					"tools": {
+						"type": "array"
+					}
+				},
+				"contextWindow": 16384,
+				"contextWindowDocumentationUrl": "https://huggingface.co/RekaAI/reka-edge-2603/raw/main/config.json"
+			},
+			"location": "remote"
+		}
+	],
+	"mcp_servers": [],
+	"databases": []
 }

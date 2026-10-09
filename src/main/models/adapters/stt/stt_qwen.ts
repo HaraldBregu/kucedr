@@ -33,7 +33,8 @@ export function createQwenSttAdapter(provider: SttProviderSpec): SttAdapter {
 
 	return {
 		async transcribe(request: SttAdapterTranscriptionRequest): Promise<SttTranscriptionResult> {
-			if (/^qwen-audio-3\.[01]-asr-flash$/.test(request.modelId)) return transcribeQwen(provider, request);
+			if (/^qwen-audio-3\.[01]-asr-flash$/.test(request.modelId))
+				return transcribeQwen(provider, request);
 			throw new SttProviderUnsupportedError(
 				`${provider.name} does not expose a batch speech-to-text adapter in this runtime.`
 			);
@@ -43,7 +44,8 @@ export function createQwenSttAdapter(provider: SttProviderSpec): SttAdapter {
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
-			if (/^qwen-audio-3\.[01]-asr-flash-streaming$/.test(request.modelId)) return streaming(provider, request, emit);
+			if (/^qwen-audio-3\.[01]-asr-flash-streaming$/.test(request.modelId))
+				return streaming(provider, request, emit);
 			const socket = new WebSocket(qwenRealtimeUrl(provider.baseURL, request), {
 				headers: {
 					Authorization: `${QWEN_AUTH_SCHEME} ${provider.apiKey}`,
@@ -159,9 +161,7 @@ function qwenRealtimeUrl(
 	baseURL: string | undefined,
 	request: SttAdapterRealtimeStartRequest
 ): string {
-	const url = new URL(
-		baseURL ?? speechToTextBaseUrl('qwen')
-	);
+	const url = new URL(baseURL ?? speechToTextBaseUrl('qwen'));
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	url.searchParams.set('model', request.modelId || realtimeSpeechToTextModelId('qwen'));
 	return url.toString();
