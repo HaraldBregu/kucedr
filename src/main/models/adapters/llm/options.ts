@@ -2,7 +2,7 @@ import type { LlmStreamRequest } from './llm_types';
 
 export function options(provider: string, request: LlmStreamRequest): Record<string, unknown> {
 	const configured = { ...request.options };
-	if (provider === 'cohere' && request.effort) configured.reasoning_effort = request.effort === 'none' ? 'none' : 'high';
+	if (provider === 'cohere' && request.effort && /^command-a-(?:plus-05-2026|reasoning-08-2025)$/.test(request.model)) configured.reasoning_effort = request.effort === 'none' ? 'none' : 'high';
 	if (!request.effort) return configured;
 	if (provider === 'anthropic' && /^claude-(?:fable-5-1|opus-5-5|sonnet-5-5|haiku-5-5|opus-4-8)$/.test(request.model)) {
 		const output = configured.output_config as Record<string, unknown> | undefined;

@@ -39,8 +39,9 @@ export async function streaming(provider: SttProviderSpec, request: SttAdapterRe
 	});
 	socket.once('error', (error) => { rejectStarted(error); emit({ type: 'error', sessionId: request.sessionId, message: error.message }); });
 	socket.once('close', () => { rejectStarted(new Error('Qwen transcription connection closed.')); if (!closed) { closed = true; emit({ type: 'closed', sessionId: request.sessionId }); } });
-	await new Promise<void>((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+	socket.once('open', () => {
 	socket.send(JSON.stringify({ header: { action: 'run-task', task_id: taskId, streaming: 'duplex' }, payload: { task_group: 'audio', task: 'asr', function: 'recognition', model: request.modelId, parameters: { format: 'pcm', sample_rate: request.sampleRate, ...(request.language ? { language_hints: [request.language] } : {}) }, input: request.prompt ? { context: [{ role: 'user', content: [{ type: 'input_text', text: request.prompt }] }] } : {} } }));
+	});
 	await started;
 	return {
 		async appendAudio(audio) { socket.send(Buffer.from(audio, 'base64')); },
