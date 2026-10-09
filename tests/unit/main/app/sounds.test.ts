@@ -3,8 +3,8 @@ import {
 	setSoundFeedbackEnabled,
 } from '../../../../src/main/settings_store';
 
-it('enables feedback sounds by default', () => {
-	expect(getSoundFeedbackEnabled()).toBe(true);
+it('disables feedback sounds by default', () => {
+	expect(getSoundFeedbackEnabled()).toBe(false);
 });
 
 it('stores the preference when feedback sounds are disabled and enabled', () => {

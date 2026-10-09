@@ -54,13 +54,21 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 		});
 		await page.reload();
 		await expect(page).toHaveURL(/#\/home$/);
-		await expect.poll(() => page.evaluate(() => window.app.getSoundFeedbackEnabled())).toBe(true);
+		await expect.poll(() => page.evaluate(() => window.app.getSoundFeedbackEnabled())).toBe(false);
 		expect(
 			await app.evaluate(({ Menu }) => {
 				const item = Menu.getApplicationMenu()?.getMenuItemById('sound-feedback');
 				return item && { label: item.label, type: item.type, checked: item.checked };
 			})
-		).toEqual({ label: 'Sound feedback', type: 'checkbox', checked: true });
+		).toEqual({ label: 'Sound feedback', type: 'checkbox', checked: false });
+		await page.getByRole('button', { name: 'New Chat', exact: true }).click();
+		expect(await page.evaluate(() => window.feedbackPlayback.length)).toBe(0);
+		await app.evaluate(({ Menu }) => {
+			const item = Menu.getApplicationMenu()?.getMenuItemById('sound-feedback');
+			if (!item) throw new Error('Sound feedback menu item is missing');
+			item.click(item, undefined, {});
+		});
+		await expect.poll(() => page.evaluate(() => window.app.getSoundFeedbackEnabled())).toBe(true);
 		await app.evaluate(({ ipcMain }) => {
 			ipcMain.removeHandler('agent:send');
 			ipcMain.handle('agent:send', async (event, _message, options) => {

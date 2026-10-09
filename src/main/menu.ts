@@ -53,7 +53,7 @@ export class Menu {
 		};
 		const switchSoundFeedback = (): void => {
 			this.callbacks.onSoundFeedbackEnabledChange?.(
-				!(this.callbacks.getSoundFeedbackEnabled?.() ?? true)
+				!(this.callbacks.getSoundFeedbackEnabled?.() ?? false)
 			);
 			this.buildMenu();
 		};
@@ -159,7 +159,7 @@ export class Menu {
 						id: 'sound-feedback',
 						label: m.soundFeedback,
 						type: 'checkbox' as const,
-						checked: this.callbacks.getSoundFeedbackEnabled?.() ?? true,
+						checked: this.callbacks.getSoundFeedbackEnabled?.() ?? false,
 						click: switchSoundFeedback,
 					},
 					{

@@ -50,7 +50,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	trayEnabled: true,
 	trayClickAction: 'toggle-chat',
 	keepAwake: false,
-	soundFeedbackEnabled: true,
+	soundFeedbackEnabled: false,
 	language: 'en',
 	theme: 'system',
 	windowSize: '1200x800',
