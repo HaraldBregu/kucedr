@@ -116,6 +116,8 @@ describe('RealtimeVoiceManager', () => {
 
 		const session = await manager.start(7, { chatSessionId: 'chat' });
 		expect(createAdapter).toHaveBeenCalledWith(configuration.provider);
+		adapterEmit({ type: 'response_started', responseId: 'response-1' });
+		expect(events.at(-1)).toEqual({ type: 'state', sessionId: session.id, status: 'thinking' });
 		adapterEmit({ type: 'input_speech_stopped', itemId: 'user-1' });
 		adapterEmit({
 			type: 'user_transcript_final',
@@ -134,7 +136,7 @@ describe('RealtimeVoiceManager', () => {
 			transcript: 'Hello there.',
 		});
 		adapterEmit({ type: 'response_started', responseId: 'response-2' });
-		expect(events.at(-1)).toEqual({ type: 'state', sessionId: session.id, status: 'thinking' });
+		expect(events.filter((event) => event.type === 'state').at(-1)?.status).toBe('thinking');
 		adapterEmit({
 			type: 'assistant_audio_delta',
 			itemId: 'assistant-2',
