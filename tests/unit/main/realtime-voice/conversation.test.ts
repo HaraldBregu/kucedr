@@ -77,11 +77,9 @@ it('refines an existing final transcript after late user insertion without dupli
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-refined-'));
 	const location = path.join(temporaryRoot, 'agent');
 	const capture = jest.fn(async () => undefined);
-	const conversation = realtimeVoiceConversationFactory(
-		{ location },
-		undefined,
-		{ capture } as unknown as MemoryService
-	)(SESSION_ID, 'model');
+	const conversation = realtimeVoiceConversationFactory({ location }, undefined, {
+		capture,
+	} as unknown as MemoryService)(SESSION_ID, 'model');
 	try {
 		conversation.beginUserTurn('user-1');
 		conversation.addAssistantTranscript('Backchannel answer.');
@@ -96,7 +94,10 @@ it('refines an existing final transcript after late user insertion without dupli
 		expect(capture).toHaveBeenCalledTimes(captures);
 		const messages = loadMessagesBySessionId(conversation.persistenceSessionId!, location);
 		expect(messages.map((message) => message.role)).toEqual([
-			'user', 'assistant', 'user', 'assistant',
+			'user',
+			'assistant',
+			'user',
+			'assistant',
 		]);
 		expect(messages[0].content).toBe('First question.');
 		expect(messages[2].content).toBe('Hello, what is two plus two?');

@@ -107,17 +107,20 @@ describe('RealtimeVoiceManager', () => {
 			emit: (_windowId, event) => events.push(event),
 		});
 		await manager.start(1, { chatSessionId: 'chat' });
-		for (const transcript of ['Hello.', 'Hello, what is two plus two?', 'Hello, what is two plus two?']) {
+		for (const transcript of [
+			'Hello.',
+			'Hello, what is two plus two?',
+			'Hello, what is two plus two?',
+		]) {
 			emit({ type: 'user_transcript_final', itemId: 'user-1', transcript });
 		}
 		expect(finalizeUserTurn.mock.calls).toEqual([
 			['user-1', 'Hello.'],
 			['user-1', 'Hello, what is two plus two?'],
 		]);
-		expect(events.filter((event) => event.type === 'user_turn').map((event) => event.transcript)).toEqual([
-			'Hello.',
-			'Hello, what is two plus two?',
-		]);
+		expect(
+			events.filter((event) => event.type === 'user_turn').map((event) => event.transcript)
+		).toEqual(['Hello.', 'Hello, what is two plus two?']);
 		await manager.stopAll();
 	});
 
