@@ -44,9 +44,6 @@
 							"type": {
 								"type": "string",
 								"enum": ["enabled"]
-							},
-							"clear_thinking": {
-								"type": "boolean"
 							}
 						}
 					},
@@ -123,9 +120,6 @@
 							"type": {
 								"type": "string",
 								"enum": ["enabled"]
-							},
-							"clear_thinking": {
-								"type": "boolean"
 							}
 						}
 					},
@@ -196,9 +190,6 @@
 							"type": {
 								"type": "string",
 								"enum": ["enabled"]
-							},
-							"clear_thinking": {
-								"type": "boolean"
 							}
 						}
 					},
@@ -266,9 +257,6 @@
 							"type": {
 								"type": "string",
 								"enum": ["enabled", "disabled"]
-							},
-							"clear_thinking": {
-								"type": "boolean"
 							}
 						}
 					},
