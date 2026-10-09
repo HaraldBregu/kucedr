@@ -12,9 +12,15 @@
 			"name": "GLM-5.3 FlashX",
 			"authentication": "api-key",
 			"type": "large-language-model",
-			"url": "https://api.z.ai/api/coding/paas/v4",
+			"url": "https://api.z.ai/api/paas/v4",
 			"metadata": {
-				"promptAttachments": [],
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png"],
+						"extensions": [".jpg", ".jpeg", ".png"]
+					}
+				],
 				"documentationUrl": "https://docs.z.ai/guides/vlm/glm-5.3-flash",
 				"documentationStatus": "verified",
 				"inputs": {
@@ -51,16 +57,14 @@
 						"type": "array"
 					},
 					"tool_choice": {
-						"type": "object"
+						"type": "string",
+						"enum": ["auto"]
 					},
 					"stream": {
 						"type": "boolean"
 					},
 					"do_sample": {
 						"type": "boolean"
-					},
-					"repetition_penalty": {
-						"type": "number"
 					},
 					"response_format": {
 						"type": "object"
@@ -87,9 +91,15 @@
 			"name": "GLM-5.3 Flash",
 			"authentication": "api-key",
 			"type": "large-language-model",
-			"url": "https://api.z.ai/api/coding/paas/v4",
+			"url": "https://api.z.ai/api/paas/v4",
 			"metadata": {
-				"promptAttachments": [],
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png"],
+						"extensions": [".jpg", ".jpeg", ".png"]
+					}
+				],
 				"documentationUrl": "https://docs.z.ai/guides/vlm/glm-5.3-flash",
 				"documentationStatus": "verified",
 				"inputs": {
@@ -126,16 +136,14 @@
 						"type": "array"
 					},
 					"tool_choice": {
-						"type": "object"
+						"type": "string",
+						"enum": ["auto"]
 					},
 					"stream": {
 						"type": "boolean"
 					},
 					"do_sample": {
 						"type": "boolean"
-					},
-					"repetition_penalty": {
-						"type": "number"
 					},
 					"response_format": {
 						"type": "object"
@@ -162,7 +170,7 @@
 			"name": "GLM-5.3",
 			"authentication": "api-key",
 			"type": "large-language-model",
-			"url": "https://api.z.ai/api/coding/paas/v4",
+			"url": "https://api.z.ai/api/paas/v4",
 			"metadata": {
 				"promptAttachments": [],
 				"documentationUrl": "https://docs.z.ai/guides/llm/glm-5.3",
@@ -201,16 +209,14 @@
 						"type": "array"
 					},
 					"tool_choice": {
-						"type": "object"
+						"type": "string",
+						"enum": ["auto"]
 					},
 					"stream": {
 						"type": "boolean"
 					},
 					"do_sample": {
 						"type": "boolean"
-					},
-					"repetition_penalty": {
-						"type": "number"
 					},
 					"response_format": {
 						"type": "object"
@@ -273,16 +279,14 @@
 						"type": "array"
 					},
 					"tool_choice": {
-						"type": "object"
+						"type": "string",
+						"enum": ["auto"]
 					},
 					"stream": {
 						"type": "boolean"
 					},
 					"do_sample": {
 						"type": "boolean"
-					},
-					"repetition_penalty": {
-						"type": "number"
 					},
 					"response_format": {
 						"type": "object"
