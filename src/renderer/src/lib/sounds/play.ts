@@ -15,5 +15,7 @@ export function playSound(sound: FeedbackSound): void {
 		player.currentTime = 0;
 		soundState.lastPlayed.set(sound, now);
 		void player.play().catch(() => undefined);
-	} catch {}
+	} catch {
+		return;
+	}
 }
