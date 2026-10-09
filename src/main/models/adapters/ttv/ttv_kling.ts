@@ -47,13 +47,27 @@ export function createKlingVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 	return {
 		async generate(request) {
 			if (['kling-3.0', 'kling-3.0-turbo', 'kling-2.6'].includes(request.modelId)) {
-				return generateKlingMedia(spec, `/text-to-video/${request.modelId}`, { ...request.options, prompt: request.prompt }, 'video', { auth: VideoProviderAuthError, request: VideoProviderRequestError }, request.signal);
+				return generateKlingMedia(
+					spec,
+					`/text-to-video/${request.modelId}`,
+					{ ...request.options, prompt: request.prompt },
+					'video',
+					{ auth: VideoProviderAuthError, request: VideoProviderRequestError },
+					request.signal
+				);
 			}
-			if (!accessKey || !secretKey) throw new VideoProviderAuthError(`${spec.name} requires the API key in "accessKey:secretKey" format for legacy models.`);
+			if (!accessKey || !secretKey)
+				throw new VideoProviderAuthError(
+					`${spec.name} requires the API key in "accessKey:secretKey" format for legacy models.`
+				);
 			const submitted = await requestJson<KlingTask>(spec.name, `${baseURL}/v1/videos/text2video`, {
 				method: 'POST',
 				headers: buildHeaders(),
-				body: JSON.stringify({ model_name: request.modelId, prompt: request.prompt, ...request.options }),
+				body: JSON.stringify({
+					model_name: request.modelId,
+					prompt: request.prompt,
+					...request.options,
+				}),
 				signal: request.signal,
 			});
 			const taskId = submitted.data?.task_id;

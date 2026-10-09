@@ -19,11 +19,7 @@
 				"inputs": {
 					"mode": {
 						"type": "string",
-						"enum": [
-							"text_to_music",
-							"voice_conditioned_text_to_music",
-							"music_cover"
-						],
+						"enum": ["text_to_music", "voice_conditioned_text_to_music", "music_cover"],
 						"default": "text_to_music"
 					},
 					"duration": {
@@ -124,17 +120,12 @@
 				"inputs": {
 					"resolution": {
 						"type": "string",
-						"enum": [
-							"720p",
-							"1080p"
-						],
+						"enum": ["720p", "1080p"],
 						"default": "720p"
 					},
 					"duration_s": {
 						"type": "number",
-						"enum": [
-							5
-						],
+						"enum": [5],
 						"default": 5
 					},
 					"negative_prompt": {

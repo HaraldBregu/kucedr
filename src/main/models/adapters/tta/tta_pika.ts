@@ -6,7 +6,13 @@ export function createPikaMusicAdapter(spec: MusicProviderSpec): MusicAdapter {
 	if (!spec.apiKey) throw new MusicProviderAuthError(`${spec.name} API key not configured.`);
 	return {
 		async generate(request) {
-			return generatePikaMedia(spec, `pika/pika-audio/${request.modelId}`, { ...request.options, prompt: request.prompt }, { auth: MusicProviderAuthError, request: MusicProviderRequestError }, request.signal);
+			return generatePikaMedia(
+				spec,
+				`pika/pika-audio/${request.modelId}`,
+				{ ...request.options, prompt: request.prompt },
+				{ auth: MusicProviderAuthError, request: MusicProviderRequestError },
+				request.signal
+			);
 		},
 	};
 }

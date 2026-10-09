@@ -19,16 +19,7 @@
 				"inputs": {
 					"aspect_ratio": {
 						"type": "string",
-						"enum": [
-							"1:1",
-							"16:9",
-							"4:3",
-							"3:2",
-							"2:3",
-							"3:4",
-							"9:16",
-							"21:9"
-						],
+						"enum": ["1:1", "16:9", "4:3", "3:2", "2:3", "3:4", "9:16", "21:9"],
 						"default": "1:1"
 					},
 					"prompt_optimizer": {
@@ -104,19 +95,8 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": [
-							"image/jpeg",
-							"image/png",
-							"image/gif",
-							"image/webp"
-						],
-						"extensions": [
-							".jpg",
-							".jpeg",
-							".png",
-							".gif",
-							".webp"
-						]
+						"mimeTypes": ["image/jpeg", "image/png", "image/gif", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".gif", ".webp"]
 					}
 				],
 				"documentationUrl": "https://platform.minimax.io/docs/api-reference/text-openai-api",
@@ -127,10 +107,7 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": [
-									"adaptive",
-									"disabled"
-								]
+								"enum": ["adaptive", "disabled"]
 							}
 						}
 					},
@@ -154,10 +131,7 @@
 					},
 					"service_tier": {
 						"type": "string",
-						"enum": [
-							"standard",
-							"priority"
-						],
+						"enum": ["standard", "priority"],
 						"default": "standard"
 					}
 				},
@@ -220,10 +194,7 @@
 				"inputs": {
 					"resolution": {
 						"type": "string",
-						"enum": [
-							"768P",
-							"2K"
-						],
+						"enum": ["768P", "2K"],
 						"default": "768P"
 					},
 					"duration": {
@@ -234,14 +205,7 @@
 					},
 					"ratio": {
 						"type": "string",
-						"enum": [
-							"21:9",
-							"16:9",
-							"4:3",
-							"1:1",
-							"3:4",
-							"9:16"
-						],
+						"enum": ["21:9", "16:9", "4:3", "1:1", "3:4", "9:16"],
 						"default": "16:9"
 					},
 					"content": {
@@ -266,10 +230,7 @@
 				"inputs": {
 					"resolution": {
 						"type": "string",
-						"enum": [
-							"480P",
-							"768P"
-						],
+						"enum": ["480P", "768P"],
 						"default": "768P"
 					},
 					"duration": {
@@ -280,14 +241,7 @@
 					},
 					"ratio": {
 						"type": "string",
-						"enum": [
-							"21:9",
-							"16:9",
-							"4:3",
-							"1:1",
-							"3:4",
-							"9:16"
-						],
+						"enum": ["21:9", "16:9", "4:3", "1:1", "3:4", "9:16"],
 						"default": "16:9"
 					},
 					"content": {
@@ -436,45 +390,22 @@
 							"sample_rate": {
 								"type": "integer",
 								"default": 32000,
-								"enum": [
-									8000,
-									16000,
-									22050,
-									24000,
-									32000,
-									44100
-								]
+								"enum": [8000, 16000, 22050, 24000, 32000, 44100]
 							},
 							"bitrate": {
 								"type": "integer",
 								"default": 128000,
-								"enum": [
-									32000,
-									64000,
-									128000,
-									256000
-								]
+								"enum": [32000, 64000, 128000, 256000]
 							},
 							"format": {
 								"type": "string",
 								"default": "mp3",
-								"enum": [
-									"mp3",
-									"pcm",
-									"flac",
-									"wav",
-									"pcmu_raw",
-									"pcmu_wav",
-									"opus"
-								]
+								"enum": ["mp3", "pcm", "flac", "wav", "pcmu_raw", "pcmu_wav", "opus"]
 							},
 							"channel": {
 								"type": "integer",
 								"default": 1,
-								"enum": [
-									1,
-									2
-								]
+								"enum": [1, 2]
 							},
 							"force_cbr": {
 								"type": "boolean",
@@ -588,10 +519,7 @@
 					"subtitle_type": {
 						"type": "string",
 						"default": "sentence",
-						"enum": [
-							"sentence",
-							"word"
-						]
+						"enum": ["sentence", "word"]
 					}
 				}
 			},
@@ -651,45 +579,22 @@
 							"sample_rate": {
 								"type": "integer",
 								"default": 32000,
-								"enum": [
-									8000,
-									16000,
-									22050,
-									24000,
-									32000,
-									44100
-								]
+								"enum": [8000, 16000, 22050, 24000, 32000, 44100]
 							},
 							"bitrate": {
 								"type": "integer",
 								"default": 128000,
-								"enum": [
-									32000,
-									64000,
-									128000,
-									256000
-								]
+								"enum": [32000, 64000, 128000, 256000]
 							},
 							"format": {
 								"type": "string",
 								"default": "mp3",
-								"enum": [
-									"mp3",
-									"pcm",
-									"flac",
-									"wav",
-									"pcmu_raw",
-									"pcmu_wav",
-									"opus"
-								]
+								"enum": ["mp3", "pcm", "flac", "wav", "pcmu_raw", "pcmu_wav", "opus"]
 							},
 							"channel": {
 								"type": "integer",
 								"default": 1,
-								"enum": [
-									1,
-									2
-								]
+								"enum": [1, 2]
 							},
 							"force_cbr": {
 								"type": "boolean",
@@ -803,10 +708,7 @@
 					"subtitle_type": {
 						"type": "string",
 						"default": "sentence",
-						"enum": [
-							"sentence",
-							"word"
-						]
+						"enum": ["sentence", "word"]
 					}
 				}
 			},
@@ -825,18 +727,12 @@
 					"duration": {
 						"type": "integer",
 						"default": 6,
-						"enum": [
-							6,
-							10
-						]
+						"enum": [6, 10]
 					},
 					"resolution": {
 						"type": "string",
 						"default": "768P",
-						"enum": [
-							"768P",
-							"1080P"
-						]
+						"enum": ["768P", "1080P"]
 					},
 					"prompt_optimizer": {
 						"type": "boolean",
@@ -872,18 +768,12 @@
 					"duration": {
 						"type": "integer",
 						"default": 6,
-						"enum": [
-							6,
-							10
-						]
+						"enum": [6, 10]
 					},
 					"resolution": {
 						"type": "string",
 						"default": "768P",
-						"enum": [
-							"768P",
-							"1080P"
-						]
+						"enum": ["768P", "1080P"]
 					},
 					"prompt_optimizer": {
 						"type": "boolean",
