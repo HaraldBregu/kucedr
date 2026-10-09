@@ -189,8 +189,9 @@ export function ModelProviderSelect({
 								onClick={() => {
 									onChange(group.id, model.id);
 									setButtonOpen(false);
+									setModelSearch('');
 								}}
-								className="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
+								className="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent aria-checked:bg-accent aria-checked:text-accent-foreground"
 							>
 								<span className="flex min-w-0 flex-col items-start gap-0.5 leading-tight">
 									<span className="min-w-0 truncate whitespace-nowrap text-sm text-foreground capitalize">

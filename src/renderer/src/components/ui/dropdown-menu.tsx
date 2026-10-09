@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { cn } from '@/lib/utils';
+import { revealSelection } from '@/lib/selection';
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
@@ -9,7 +10,7 @@ const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 const DropdownMenuContent = React.forwardRef<
 	React.ElementRef<typeof DropdownMenuPrimitive.Content>,
 	React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
+>(({ className, sideOffset = 4, onOpenAutoFocus, ...props }, ref) => (
 	<DropdownMenuPrimitive.Portal>
 		<DropdownMenuPrimitive.Content
 			ref={ref}
@@ -19,6 +20,10 @@ const DropdownMenuContent = React.forwardRef<
 				className
 			)}
 			{...props}
+			onOpenAutoFocus={(event) => {
+				onOpenAutoFocus?.(event);
+				if (!event.defaultPrevented && revealSelection(event.target as HTMLElement)) event.preventDefault();
+			}}
 		/>
 	</DropdownMenuPrimitive.Portal>
 ));
