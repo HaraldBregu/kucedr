@@ -39,7 +39,9 @@ const id = '123e4567-e89b-12d3-a456-426614174000';
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	jest.mocked(desktopCapturer.getSources).mockResolvedValue([{ id: 'screen:1', name: 'Screen 1' }] as never);
+	jest
+		.mocked(desktopCapturer.getSources)
+		.mockResolvedValue([{ id: 'screen:1', name: 'Screen 1' }] as never);
 	for (const recorder of [microphone, camera, screen]) {
 		recordingOwners.delete(recorder as never);
 		recorder.start.mockImplementation(({ url }: { url: string }) => ({
@@ -83,7 +85,11 @@ it.each([
 
 		await ownedRun(
 			captureTool,
-			{ duration: 1, filename: 'capture.webm', ...(_name === 'screen' ? { sourceId: 'screen:1' } : {}) },
+			{
+				duration: 1,
+				filename: 'capture.webm',
+				...(_name === 'screen' ? { sourceId: 'screen:1' } : {}),
+			},
 			controller.signal
 		);
 		controller.abort();
@@ -114,19 +120,24 @@ it.each([
 	['full_screen', 'screen:1'],
 	['workspace', 'window:3'],
 	['application', 'window:2'],
-] as const)('starts the requested %s target without selecting a source', async (target, sourceId) => {
-	jest.mocked(desktopCapturer.getSources).mockResolvedValue([
-		{ id: 'screen:1', name: 'Display 1' },
-		{ id: 'window:2', name: 'Kucedr' },
-		{ id: 'window:3', name: 'Project workspace' },
-	] as never);
+] as const)(
+	'starts the requested %s target without selecting a source',
+	async (target, sourceId) => {
+		jest.mocked(desktopCapturer.getSources).mockResolvedValue([
+			{ id: 'screen:1', name: 'Display 1' },
+			{ id: 'window:2', name: 'Kucedr' },
+			{ id: 'window:3', name: 'Project workspace' },
+		] as never);
 
-	await expect(ownedRun(screenRecorderTool(), { target, filename: 'capture.webm' })).resolves.toMatchObject({
-		id,
-		status: 'recording',
-	});
-	expect(screen.start).toHaveBeenCalledWith({ url: '/library/capture.webm', sourceId });
-});
+		await expect(
+			ownedRun(screenRecorderTool(), { target, filename: 'capture.webm' })
+		).resolves.toMatchObject({
+			id,
+			status: 'recording',
+		});
+		expect(screen.start).toHaveBeenCalledWith({ url: '/library/capture.webm', sourceId });
+	}
+);
 
 it('reports when no screen source is available', async () => {
 	jest.mocked(desktopCapturer.getSources).mockResolvedValue([] as never);
@@ -144,10 +155,10 @@ it.each([
 ] as const)(
 	'starts an owned %s recording until explicitly stopped when duration is omitted',
 	async (_name, createTool, recorder) => {
-		await ownedRun(
-			createTool(),
-			{ filename: 'capture.webm', ...(_name === 'screen' ? { sourceId: 'screen:1' } : {}) }
-		);
+		await ownedRun(createTool(), {
+			filename: 'capture.webm',
+			...(_name === 'screen' ? { sourceId: 'screen:1' } : {}),
+		});
 
 		expect(recorder.start).toHaveBeenCalledWith({
 			url: '/library/capture.webm',
@@ -167,11 +178,22 @@ it.each([
 	expect(recorder.stop).toHaveBeenCalledWith(id);
 });
 
-
 it.each([
-	[microphoneRecorderTool, microphoneRecorderStatusTool, microphoneRecorderStopTool, microphone, {}],
+	[
+		microphoneRecorderTool,
+		microphoneRecorderStatusTool,
+		microphoneRecorderStopTool,
+		microphone,
+		{},
+	],
 	[cameraRecorderTool, cameraRecorderStatusTool, cameraRecorderStopTool, camera, {}],
-	[screenRecorderTool, screenRecorderStatusTool, screenRecorderStopTool, screen, { sourceId: 'screen:1' }],
+	[
+		screenRecorderTool,
+		screenRecorderStatusTool,
+		screenRecorderStopTool,
+		screen,
+		{ sourceId: 'screen:1' },
+	],
 ] as const)(
 	'prevents other sessions from inspecting or stopping owned recordings',
 	async (create, status, stop, recorder, input) => {
@@ -201,12 +223,17 @@ it.each([
 		['/Chosen # 雨', '/Chosen # 雨'],
 		['~/Movies', path.join(os.homedir(), 'Movies')],
 	]) {
-		await expect(ownedRun(create(), {
-			directory, filename: 'ignored/capture.webm', duration: 2,
-			...(name === 'screen' ? { sourceId: 'screen:1' } : {}),
-		})).resolves.toMatchObject({ path: path.join(target, 'capture.webm') });
+		await expect(
+			ownedRun(create(), {
+				directory,
+				filename: 'ignored/capture.webm',
+				duration: 2,
+				...(name === 'screen' ? { sourceId: 'screen:1' } : {}),
+			})
+		).resolves.toMatchObject({ path: path.join(target, 'capture.webm') });
 		expect(recorder.start).toHaveBeenLastCalledWith({
-			url: path.join(target, 'capture.webm'), duration: 2000,
+			url: path.join(target, 'capture.webm'),
+			duration: 2000,
 			...(name === 'screen' ? { sourceId: 'screen:1' } : {}),
 		});
 	}

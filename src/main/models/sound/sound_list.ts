@@ -16,8 +16,7 @@ export async function listSounds(): Promise<SoundFile[]> {
 	const files = await Promise.all(
 		entries
 			.filter(
-				(entry) =>
-					entry.isFile() && AUDIO_EXTENSIONS.has(path.extname(entry.name).toLowerCase())
+				(entry) => entry.isFile() && AUDIO_EXTENSIONS.has(path.extname(entry.name).toLowerCase())
 			)
 			.map(async (entry) => {
 				const filePath = path.join(soundDir, entry.name);
@@ -34,5 +33,7 @@ export async function listSounds(): Promise<SoundFile[]> {
 				return { name: entry.name, path: filePath, createdAt: stat.birthtimeMs || stat.mtimeMs };
 			})
 	);
-	return files.filter((file): file is SoundFile => file !== undefined).sort((a, b) => b.createdAt - a.createdAt);
+	return files
+		.filter((file): file is SoundFile => file !== undefined)
+		.sort((a, b) => b.createdAt - a.createdAt);
 }
