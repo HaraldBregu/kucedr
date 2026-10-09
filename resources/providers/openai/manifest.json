@@ -17,13 +17,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
@@ -34,11 +47,21 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["none", "low", "medium", "high", "xhigh", "max"]
+								"enum": [
+									"none",
+									"low",
+									"medium",
+									"high",
+									"xhigh",
+									"max"
+								]
 							},
 							"mode": {
 								"type": "string",
-								"enum": ["standard", "pro"]
+								"enum": [
+									"standard",
+									"pro"
+								]
 							}
 						}
 					},
@@ -47,11 +70,17 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
 			},
 			"location": "remote"
 		},
@@ -65,13 +94,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
@@ -82,11 +124,21 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["none", "low", "medium", "high", "xhigh", "max"]
+								"enum": [
+									"none",
+									"low",
+									"medium",
+									"high",
+									"xhigh",
+									"max"
+								]
 							},
 							"mode": {
 								"type": "string",
-								"enum": ["standard", "pro"]
+								"enum": [
+									"standard",
+									"pro"
+								]
 							}
 						}
 					},
@@ -95,11 +147,17 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
 			},
 			"location": "remote"
 		},
@@ -113,13 +171,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-luna",
@@ -130,11 +201,21 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["none", "low", "medium", "high", "xhigh", "max"]
+								"enum": [
+									"none",
+									"low",
+									"medium",
+									"high",
+									"xhigh",
+									"max"
+								]
 							},
 							"mode": {
 								"type": "string",
-								"enum": ["standard", "pro"]
+								"enum": [
+									"standard",
+									"pro"
+								]
 							}
 						}
 					},
@@ -143,11 +224,17 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
 			},
 			"location": "remote"
 		},
@@ -161,13 +248,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.5",
@@ -178,7 +278,13 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["none", "low", "medium", "high", "xhigh"]
+								"enum": [
+									"none",
+									"low",
+									"medium",
+									"high",
+									"xhigh"
+								]
 							}
 						}
 					},
@@ -187,11 +293,17 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.5"
 			},
 			"location": "remote"
 		},
@@ -205,13 +317,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.5-pro",
@@ -222,7 +347,11 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["medium", "high", "xhigh"]
+								"enum": [
+									"medium",
+									"high",
+									"xhigh"
+								]
 							}
 						}
 					},
@@ -231,11 +360,17 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.5-pro"
 			},
 			"location": "remote"
 		},
@@ -249,13 +384,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4",
@@ -266,7 +414,13 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["none", "low", "medium", "high", "xhigh"]
+								"enum": [
+									"none",
+									"low",
+									"medium",
+									"high",
+									"xhigh"
+								]
 							}
 						}
 					},
@@ -275,11 +429,17 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4"
 			},
 			"location": "remote"
 		},
@@ -293,13 +453,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4-pro",
@@ -310,7 +483,11 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["medium", "high", "xhigh"]
+								"enum": [
+									"medium",
+									"high",
+									"xhigh"
+								]
 							}
 						}
 					},
@@ -319,11 +496,17 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4-pro"
 			},
 			"location": "remote"
 		},
@@ -337,13 +520,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
@@ -354,7 +550,13 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["none", "low", "medium", "high", "xhigh"]
+								"enum": [
+									"none",
+									"low",
+									"medium",
+									"high",
+									"xhigh"
+								]
 							}
 						}
 					},
@@ -363,11 +565,17 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 400000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4-mini"
 			},
 			"location": "remote"
 		},
@@ -381,13 +589,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4-nano",
@@ -398,7 +619,13 @@
 						"properties": {
 							"effort": {
 								"type": "string",
-								"enum": ["none", "low", "medium", "high", "xhigh"]
+								"enum": [
+									"none",
+									"low",
+									"medium",
+									"high",
+									"xhigh"
+								]
 							}
 						}
 					},
@@ -407,18 +634,26 @@
 						"properties": {
 							"verbosity": {
 								"type": "string",
-								"enum": ["low", "medium", "high"]
+								"enum": [
+									"low",
+									"medium",
+									"high"
+								]
 							}
 						}
 					}
-				}
+				},
+				"contextWindow": 400000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4-nano"
 			},
 			"location": "remote"
 		},
 		{
 			"id": "gpt-4o-transcribe",
 			"name": "GPT-4o Transcribe",
-			"apiTypes": ["batch"],
+			"apiTypes": [
+				"batch"
+			],
 			"type": "speech-to-text-model",
 			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
@@ -436,7 +671,9 @@
 					},
 					"response_format": {
 						"type": "string",
-						"enum": ["json"]
+						"enum": [
+							"json"
+						]
 					},
 					"include": {
 						"type": "array"
@@ -454,7 +691,9 @@
 		{
 			"id": "gpt-4o-mini-transcribe",
 			"name": "GPT-4o Mini Transcribe",
-			"apiTypes": ["batch"],
+			"apiTypes": [
+				"batch"
+			],
 			"type": "speech-to-text-model",
 			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
@@ -472,7 +711,9 @@
 					},
 					"response_format": {
 						"type": "string",
-						"enum": ["json"]
+						"enum": [
+							"json"
+						]
 					},
 					"include": {
 						"type": "array"
@@ -490,7 +731,9 @@
 		{
 			"id": "gpt-realtime-whisper",
 			"name": "GPT Realtime Whisper",
-			"apiTypes": ["stream"],
+			"apiTypes": [
+				"stream"
+			],
 			"realtime": true,
 			"type": "speech-to-text-model",
 			"authentication": "api-key",
@@ -670,7 +913,14 @@
 					"response_format": {
 						"type": "string",
 						"default": "mp3",
-						"enum": ["mp3", "opus", "aac", "flac", "wav", "pcm"]
+						"enum": [
+							"mp3",
+							"opus",
+							"aac",
+							"flac",
+							"wav",
+							"pcm"
+						]
 					},
 					"speed": {
 						"type": "number",
@@ -719,7 +969,14 @@
 					"response_format": {
 						"type": "string",
 						"default": "mp3",
-						"enum": ["mp3", "opus", "aac", "flac", "wav", "pcm"]
+						"enum": [
+							"mp3",
+							"opus",
+							"aac",
+							"flac",
+							"wav",
+							"pcm"
+						]
 					},
 					"speed": {
 						"type": "number",
@@ -749,7 +1006,10 @@
 					},
 					"encoding_format": {
 						"type": "string",
-						"enum": ["float", "base64"]
+						"enum": [
+							"float",
+							"base64"
+						]
 					},
 					"user": {
 						"type": "string"
@@ -776,7 +1036,10 @@
 					},
 					"encoding_format": {
 						"type": "string",
-						"enum": ["float", "base64"]
+						"enum": [
+							"float",
+							"base64"
+						]
 					},
 					"user": {
 						"type": "string"

@@ -17,8 +17,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://docs.mistral.ai/api/",
@@ -53,7 +62,9 @@
 					"tool_choice": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 256000,
+				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/mistral-large-3-25-12"
 			},
 			"location": "remote"
 		},
@@ -67,8 +78,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://docs.mistral.ai/api/",
@@ -76,7 +96,14 @@
 				"inputs": {
 					"reasoning_effort": {
 						"type": "string",
-						"enum": ["none", "minimal", "low", "medium", "high", "xhigh"]
+						"enum": [
+							"none",
+							"minimal",
+							"low",
+							"medium",
+							"high",
+							"xhigh"
+						]
 					},
 					"temperature": {
 						"type": "number",
@@ -107,7 +134,9 @@
 					"tool_choice": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/blob/main/config.json"
 			},
 			"location": "remote"
 		},
@@ -151,14 +180,18 @@
 					"tool_choice": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512/raw/main/config.json"
 			},
 			"location": "remote"
 		},
 		{
 			"id": "voxtral-mini-latest",
 			"name": "Voxtral Mini 2602",
-			"apiTypes": ["batch"],
+			"apiTypes": [
+				"batch"
+			],
 			"type": "speech-to-text-model",
 			"authentication": "api-key",
 			"url": "https://api.mistral.ai/v1",
@@ -186,7 +219,9 @@
 		{
 			"id": "voxtral-mini-transcribe-realtime-2602",
 			"name": "Voxtral Mini Transcribe Realtime 2602",
-			"apiTypes": ["stream"],
+			"apiTypes": [
+				"stream"
+			],
 			"realtime": true,
 			"type": "speech-to-text-model",
 			"authentication": "api-key",
@@ -223,7 +258,13 @@
 					"response_format": {
 						"type": "string",
 						"default": "mp3",
-						"enum": ["pcm", "wav", "mp3", "flac", "opus"]
+						"enum": [
+							"pcm",
+							"wav",
+							"mp3",
+							"flac",
+							"opus"
+						]
 					},
 					"metadata": {
 						"type": "object"

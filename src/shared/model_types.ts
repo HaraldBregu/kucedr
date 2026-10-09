@@ -48,6 +48,7 @@ export interface ModelMetadata {
 	readonly documentationStatus?: 'verified' | 'unverified';
 	/** Provider-documented total input plus output context window. */
 	readonly contextWindow?: number;
+	readonly contextWindowDocumentationUrl?: string;
 	/** Provider-recommended output limit when the user has not configured one. */
 	readonly defaultOutputTokens?: number;
 	/** Native prompt attachments accepted by this exact model. */

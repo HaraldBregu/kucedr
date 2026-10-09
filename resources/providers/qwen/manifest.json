@@ -52,7 +52,9 @@
 					"response_format": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-7-max"
 			},
 			"location": "remote"
 		},
@@ -66,8 +68,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/",
@@ -107,7 +118,9 @@
 					"response_format": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-6-plus"
 			},
 			"location": "remote"
 		},
@@ -121,8 +134,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/",
@@ -162,14 +184,18 @@
 					"response_format": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://www.alibabacloud.com/help/en/model-studio/qwen3-6-flash"
 			},
 			"location": "remote"
 		},
 		{
 			"id": "qwen3-asr-flash-realtime",
 			"name": "Qwen3 ASR Flash Realtime",
-			"apiTypes": ["stream"],
+			"apiTypes": [
+				"stream"
+			],
 			"realtime": true,
 			"authentication": "api-key",
 			"type": "speech-to-text-model",
@@ -201,7 +227,9 @@
 						"minimum": 1,
 						"maximum": 1,
 						"default": 1,
-						"enum": [1]
+						"enum": [
+							1
+						]
 					},
 					"prompt_extend": {
 						"type": "boolean",
@@ -237,7 +265,9 @@
 						"minimum": 1,
 						"maximum": 1,
 						"default": 1,
-						"enum": [1]
+						"enum": [
+							1
+						]
 					},
 					"prompt_extend": {
 						"type": "boolean"
@@ -267,7 +297,10 @@
 					"duration": {
 						"type": "integer",
 						"default": 5,
-						"enum": [5, 10]
+						"enum": [
+							5,
+							10
+						]
 					},
 					"prompt_extend": {
 						"type": "boolean",
@@ -306,7 +339,9 @@
 					"duration": {
 						"type": "integer",
 						"default": 5,
-						"enum": [5]
+						"enum": [
+							5
+						]
 					},
 					"prompt_extend": {
 						"type": "boolean",

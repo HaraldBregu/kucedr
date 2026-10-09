@@ -17,8 +17,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://platform.kimi.ai/docs/api/chat",
@@ -26,7 +35,11 @@
 				"inputs": {
 					"reasoning_effort": {
 						"type": "string",
-						"enum": ["low", "high", "max"]
+						"enum": [
+							"low",
+							"high",
+							"max"
+						]
 					},
 					"temperature": {
 						"type": "number"
@@ -70,7 +83,9 @@
 					"user": {
 						"type": "string"
 					}
-				}
+				},
+				"contextWindow": 1048576,
+				"contextWindowDocumentationUrl": "https://huggingface.co/moonshotai/Kimi-K3/raw/main/config.json"
 			},
 			"location": "remote"
 		},
@@ -84,8 +99,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://platform.kimi.ai/docs/api/chat",
@@ -133,7 +157,9 @@
 					"user": {
 						"type": "string"
 					}
-				}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://platform.kimi.ai/docs/guide/kimi-k2-7-code-quickstart"
 			},
 			"location": "remote"
 		},
@@ -147,8 +173,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://platform.kimi.ai/docs/api/chat",
@@ -196,7 +231,9 @@
 					"user": {
 						"type": "string"
 					}
-				}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://platform.kimi.ai/docs/guide/kimi-k2-7-code-quickstart"
 			},
 			"location": "remote"
 		},
@@ -210,8 +247,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://platform.kimi.ai/docs/api/chat",
@@ -222,7 +268,10 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": ["enabled", "disabled"]
+								"enum": [
+									"enabled",
+									"disabled"
+								]
 							}
 						}
 					},
@@ -268,7 +317,9 @@
 					"user": {
 						"type": "string"
 					}
-				}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://huggingface.co/moonshotai/Kimi-K2.6/raw/main/config.json"
 			},
 			"location": "remote"
 		},
@@ -282,8 +333,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://platform.kimi.ai/docs/api/chat",
@@ -294,7 +354,10 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": ["enabled", "disabled"]
+								"enum": [
+									"enabled",
+									"disabled"
+								]
 							}
 						}
 					},
@@ -340,7 +403,9 @@
 					"user": {
 						"type": "string"
 					}
-				}
+				},
+				"contextWindow": 262144,
+				"contextWindowDocumentationUrl": "https://huggingface.co/moonshotai/Kimi-K2.5/raw/main/config.json"
 			},
 			"location": "remote"
 		}

@@ -17,8 +17,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://docs.x.ai/developers/models",
@@ -26,7 +35,12 @@
 				"inputs": {
 					"reasoning_effort": {
 						"type": "string",
-						"enum": ["none", "low", "medium", "high"]
+						"enum": [
+							"none",
+							"low",
+							"medium",
+							"high"
+						]
 					},
 					"temperature": {
 						"type": "number"
@@ -49,7 +63,9 @@
 					"tool_choice": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 1000000,
+				"contextWindowDocumentationUrl": "https://docs.x.ai/developers/models/grok-4.3"
 			},
 			"location": "remote"
 		},
@@ -63,8 +79,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://docs.x.ai/developers/models/grok-4.6",
@@ -72,7 +97,12 @@
 				"inputs": {
 					"reasoning_effort": {
 						"type": "string",
-						"enum": ["none", "low", "medium", "high"]
+						"enum": [
+							"none",
+							"low",
+							"medium",
+							"high"
+						]
 					},
 					"temperature": {
 						"type": "number"
@@ -95,7 +125,9 @@
 					"tool_choice": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 500000,
+				"contextWindowDocumentationUrl": "https://docs.x.ai/developers/models/grok-4.6"
 			},
 			"location": "remote"
 		},
@@ -109,8 +141,17 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					}
 				],
 				"documentationUrl": "https://docs.x.ai/developers/models",
@@ -137,14 +178,18 @@
 					"tool_choice": {
 						"type": "object"
 					}
-				}
+				},
+				"contextWindow": 256000,
+				"contextWindowDocumentationUrl": "https://docs.x.ai/developers/models/grok-build-0.1"
 			},
 			"location": "remote"
 		},
 		{
 			"id": "xai-stt-batch",
 			"name": "xAI STT Batch",
-			"apiTypes": ["batch"],
+			"apiTypes": [
+				"batch"
+			],
 			"authentication": "api-key",
 			"type": "speech-to-text-model",
 			"url": "https://api.x.ai/v1",
@@ -159,7 +204,9 @@
 		{
 			"id": "xai-stt-streaming",
 			"name": "xAI STT Streaming",
-			"apiTypes": ["stream"],
+			"apiTypes": [
+				"stream"
+			],
 			"realtime": true,
 			"authentication": "api-key",
 			"type": "speech-to-text-model",
@@ -243,7 +290,10 @@
 					"response_format": {
 						"type": "string",
 						"default": "url",
-						"enum": ["url", "b64_json"]
+						"enum": [
+							"url",
+							"b64_json"
+						]
 					},
 					"storage_options": {
 						"type": "object"
@@ -275,7 +325,10 @@
 					"response_format": {
 						"type": "string",
 						"default": "url",
-						"enum": ["url", "b64_json"]
+						"enum": [
+							"url",
+							"b64_json"
+						]
 					},
 					"storage_options": {
 						"type": "object"
@@ -307,7 +360,10 @@
 					"response_format": {
 						"type": "string",
 						"default": "url",
-						"enum": ["url", "b64_json"]
+						"enum": [
+							"url",
+							"b64_json"
+						]
 					},
 					"storage_options": {
 						"type": "object"
@@ -338,7 +394,11 @@
 					"resolution": {
 						"type": "string",
 						"default": "480p",
-						"enum": ["480p", "720p", "1080p"]
+						"enum": [
+							"480p",
+							"720p",
+							"1080p"
+						]
 					}
 				}
 			},

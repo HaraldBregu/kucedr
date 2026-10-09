@@ -37,7 +37,10 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": ["enabled", "disabled"]
+								"enum": [
+									"enabled",
+									"disabled"
+								]
 							},
 							"clear_thinking": {
 								"type": "boolean"
@@ -68,7 +71,9 @@
 					"user_id": {
 						"type": "string"
 					}
-				}
+				},
+				"contextWindow": 200000,
+				"contextWindowDocumentationUrl": "https://docs.z.ai/guides/llm/glm-5.1"
 			},
 			"location": "remote"
 		},
@@ -102,7 +107,10 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": ["enabled", "disabled"]
+								"enum": [
+									"enabled",
+									"disabled"
+								]
 							},
 							"clear_thinking": {
 								"type": "boolean"
@@ -133,7 +141,9 @@
 					"user_id": {
 						"type": "string"
 					}
-				}
+				},
+				"contextWindow": 200000,
+				"contextWindowDocumentationUrl": "https://docs.z.ai/guides/llm/glm-5"
 			},
 			"location": "remote"
 		},
@@ -167,7 +177,10 @@
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": ["enabled", "disabled"]
+								"enum": [
+									"enabled",
+									"disabled"
+								]
 							},
 							"clear_thinking": {
 								"type": "boolean"
@@ -198,7 +211,9 @@
 					"user_id": {
 						"type": "string"
 					}
-				}
+				},
+				"contextWindow": 200000,
+				"contextWindowDocumentationUrl": "https://docs.z.ai/guides/llm/glm-5-turbo"
 			},
 			"location": "remote"
 		}

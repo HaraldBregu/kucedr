@@ -17,13 +17,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://docs.reka.ai/chat/models",
@@ -50,7 +63,9 @@
 					"tools": {
 						"type": "array"
 					}
-				}
+				},
+				"contextWindow": 128000,
+				"contextWindowDocumentationUrl": "https://reka.ai/news/reka-flash-updates"
 			},
 			"location": "remote"
 		},
@@ -64,13 +79,26 @@
 				"promptAttachments": [
 					{
 						"kind": "image",
-						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
-						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+						"mimeTypes": [
+							"image/jpeg",
+							"image/png",
+							"image/webp"
+						],
+						"extensions": [
+							".jpg",
+							".jpeg",
+							".png",
+							".webp"
+						]
 					},
 					{
 						"kind": "document",
-						"mimeTypes": ["application/pdf"],
-						"extensions": [".pdf"]
+						"mimeTypes": [
+							"application/pdf"
+						],
+						"extensions": [
+							".pdf"
+						]
 					}
 				],
 				"documentationUrl": "https://docs.reka.ai/chat/models",
@@ -97,7 +125,9 @@
 					"tools": {
 						"type": "array"
 					}
-				}
+				},
+				"contextWindow": 16384,
+				"contextWindowDocumentationUrl": "https://huggingface.co/RekaAI/reka-edge-2603/raw/main/config.json"
 			},
 			"location": "remote"
 		}
