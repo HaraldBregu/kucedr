@@ -66,6 +66,7 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 	private outputTranscript = '';
 	private outputTurn = 0;
 	private outputTurnActive = false;
+	private outputAudioEndMs = 0;
 	private inputTimer?: ReturnType<typeof setTimeout>;
 	private outputTimer?: ReturnType<typeof setTimeout>;
 	private contextGeneration = 0;
@@ -267,6 +268,7 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 		}
 		this.outputTranscript = '';
 		this.outputTurnActive = false;
+		this.outputAudioEndMs = 0;
 		this.outputTurn += 1;
 		this.emit({ type: 'assistant_audio_done', itemId, responseId: itemId });
 	}
@@ -294,11 +296,12 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			const silent = audio.every((byte) => byte === 0);
 			if (silent && !this.outputTurnActive) return;
 			this.outputTurnActive = true;
+			this.outputAudioEndMs = Math.max(Date.now(), this.outputAudioEndMs) + audio.length / 48;
 			if (!silent) {
 				if (this.outputTimer) clearTimeout(this.outputTimer);
 				this.outputTimer = setTimeout(
 					() => this.finishOutputTurn(),
-					TURN_PAUSE_MS + audio.length / 48
+					Math.max(TURN_PAUSE_MS, this.outputAudioEndMs + TURN_PAUSE_MS - Date.now())
 				);
 				this.outputTimer.unref?.();
 			}
@@ -314,7 +317,7 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 		if (event.type === 'session.output_transcript.delta' && typeof event.delta === 'string') {
 			this.outputTurnActive = true;
 			if (this.outputTimer) clearTimeout(this.outputTimer);
-			this.outputTimer = setTimeout(() => this.finishOutputTurn(), TURN_PAUSE_MS);
+			this.outputTimer = setTimeout(() => this.finishOutputTurn(), Math.max(TURN_PAUSE_MS, this.outputAudioEndMs + TURN_PAUSE_MS - Date.now()));
 			this.outputTimer.unref?.();
 			const itemId = this.outputItemId();
 			this.outputTranscript += event.delta;

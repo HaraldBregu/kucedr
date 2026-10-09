@@ -317,6 +317,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		next.open();
 		next.event({ type: 'session.updated' });
 		const connection = await pending;
+		next.event({ type: 'response.created', response: { id: 'empty-response' } });
+		next.event({ type: 'response.done', response: { id: 'empty-response', status: 'completed' } });
+		expect(events).toContainEqual({ type: 'response_done', responseId: 'empty-response' });
 		const error = { message: 'Invalid command.', code: 'invalid_request' };
 		next.event({ type: 'error', error });
 		next.error(Object.assign(new Error('Invalid command. code=invalid_request'), { error }));

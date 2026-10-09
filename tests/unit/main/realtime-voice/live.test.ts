@@ -30,6 +30,23 @@ class FakeLiveSocket {
 }
 
 describe('OpenAILiveVoiceAdapter', () => {
+	it('keeps long queued audio active when its transcript follows the audio chunk', async () => {
+		jest.useFakeTimers();
+		const socket = new FakeLiveSocket();
+		const events: Array<{ type: string }> = [];
+		const pending = new OpenAILiveVoiceAdapter({ id: 'openai', name: 'OpenAI', apiKey: 'key' }, () => socket, 1000).connect({ modelId: 'gpt-live-1', voice: 'marin', instructions: '', history: [], tools: [] }, (event) => events.push(event));
+		socket.emit('open');
+		socket.emit('message', JSON.stringify({ type: 'session.started' }));
+		const connection = await pending;
+		socket.emit('message', JSON.stringify({ type: 'session.output_audio.delta', delta: Buffer.alloc(240000, 1).toString('base64') }));
+		socket.emit('message', JSON.stringify({ type: 'session.output_transcript.delta', delta: 'A longer spoken answer.' }));
+		await jest.advanceTimersByTimeAsync(1500);
+		expect(events.some((event) => event.type === 'assistant_audio_done')).toBe(false);
+		await jest.advanceTimersByTimeAsync(5000);
+		expect(events.filter((event) => event.type === 'assistant_audio_done')).toHaveLength(1);
+		await connection.stop();
+		jest.useRealTimers();
+	});
 	it('restores history and refreshes context from incoming transcripts outside instructions', async () => {
 		const socket = new FakeLiveSocket();
 		const contextForTurn = jest.fn(async () => 'User prefers concise answers.');
