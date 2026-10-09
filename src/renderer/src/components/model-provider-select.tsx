@@ -160,7 +160,7 @@ export function ModelProviderSelect({
 				{!compactPopover ? (
 					<Input
 						aria-label={t('settings.modelServices.searchModels')}
-						className="mb-1 h-8 shrink-0 text-xs"
+						className="mb-1 h-8 shrink-0 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0"
 						placeholder={t('settings.modelServices.searchModels')}
 						value={modelSearch}
 						onChange={(event) => setModelSearch(event.target.value)}
