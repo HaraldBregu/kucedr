@@ -85,7 +85,7 @@ export type RealtimeVoiceClientEvent =
 				| {
 						type: 'message';
 						role: 'assistant';
-						content: [{ type: 'text'; text: string }];
+						content: [{ type: 'output_text'; text: string }];
 				  };
 	  }
 	| { type: 'response.create' };

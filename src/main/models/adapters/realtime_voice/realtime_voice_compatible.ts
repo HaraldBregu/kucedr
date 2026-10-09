@@ -180,7 +180,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 						: {
 								type: 'message',
 								role: 'assistant',
-								content: [{ type: 'text', text: message.text }],
+								content: [{ type: 'output_text', text: message.text }],
 							},
 			});
 		}
