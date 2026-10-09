@@ -87,8 +87,10 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 				page.evaluate(() => window.feedbackPlayback.filter((record) => record.ended).length)
 			)
 			.toBe(1);
-		await page.getByPlaceholder('Ask anything').fill('Check the feedback sounds');
-		await page.getByPlaceholder('Ask anything').press('Enter');
+		await page
+			.getByRole('textbox', { name: 'Message your assistant' })
+			.fill('Check the feedback sounds');
+		await page.getByRole('textbox', { name: 'Message your assistant' }).press('Enter');
 		await expect(page.getByText('Sound check complete.', { exact: true })).toBeVisible();
 		await expect
 			.poll(() =>
@@ -117,6 +119,10 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 			)
 			.toBe(7);
 		const playback = await page.evaluate(() => window.feedbackPlayback);
+		await testInfo.attach('native-audio-playback', {
+			body: JSON.stringify(playback, null, 2),
+			contentType: 'application/json',
+		});
 		expect(playback.map((record) => path.basename(record.source).split('-')[0])).toEqual([
 			'click_001',
 			'pluck_001',
@@ -150,6 +156,13 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 			path: testInfo.outputPath('sound-feedback-settings.png'),
 			fullPage: true,
 		});
+	} catch (error) {
+		await page.screenshot({ path: testInfo.outputPath('failure.png'), fullPage: true });
+		await testInfo.attach('renderer-state', {
+			body: await page.locator('body').innerText(),
+			contentType: 'text/plain',
+		});
+		throw error;
 	} finally {
 		await closeApp(app, userDataDir);
 	}
