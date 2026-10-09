@@ -28,6 +28,7 @@ test('reopening a selected model keeps the search field fully visible', async ({
 			await trigger.click();
 			const dialog = page.getByRole('dialog');
 			await expect.poll(() => dialog.getByRole('menu').evaluate((menu) => menu.scrollTop)).toBeGreaterThan(0);
+			await expect.poll(() => dialog.evaluate((content) => getComputedStyle(content).opacity)).toBe('1');
 			await page.screenshot({ path: testInfo.outputPath(`model-picker-${width}.png`) });
 			await expect.poll(() => dialog.evaluate((content) => content.scrollTop)).toBe(0);
 			expect(await dialog.evaluate((content) => {

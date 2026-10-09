@@ -151,7 +151,7 @@ export function ModelProviderSelect({
 				align="end"
 				collisionPadding={12}
 				className={cn(
-					'max-w-[calc(100vw-2rem)] overflow-hidden p-1',
+					'flex max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1',
 					compactPopover
 						? 'max-h-60 w-56'
 						: 'max-h-[var(--radix-popover-content-available-height)] w-72'
@@ -160,7 +160,7 @@ export function ModelProviderSelect({
 				{!compactPopover ? (
 					<Input
 						aria-label={t('settings.modelServices.searchModels')}
-						className="mb-1 h-8 text-xs"
+						className="mb-1 h-8 shrink-0 text-xs"
 						placeholder={t('settings.modelServices.searchModels')}
 						value={modelSearch}
 						onChange={(event) => setModelSearch(event.target.value)}
@@ -170,7 +170,7 @@ export function ModelProviderSelect({
 					role="menu"
 					aria-label={accessibleLabel}
 					className={cn(
-						'min-w-0 overflow-y-auto',
+						'min-h-0 min-w-0 overflow-y-auto',
 						compactPopover
 							? 'max-h-56'
 							: 'max-h-[calc(var(--radix-popover-content-available-height)-2.5rem)]'
