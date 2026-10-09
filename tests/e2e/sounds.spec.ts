@@ -55,10 +55,12 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 		await page.reload();
 		await expect(page).toHaveURL(/#\/home$/);
 		await expect.poll(() => page.evaluate(() => window.app.getSoundFeedbackEnabled())).toBe(true);
-		expect(await app.evaluate(({ Menu }) => {
-			const item = Menu.getApplicationMenu()?.getMenuItemById('sound-feedback');
-			return item && { label: item.label, type: item.type, checked: item.checked };
-		})).toEqual({ label: 'Sound feedback', type: 'checkbox', checked: true });
+		expect(
+			await app.evaluate(({ Menu }) => {
+				const item = Menu.getApplicationMenu()?.getMenuItemById('sound-feedback');
+				return item && { label: item.label, type: item.type, checked: item.checked };
+			})
+		).toEqual({ label: 'Sound feedback', type: 'checkbox', checked: true });
 		await app.evaluate(({ ipcMain }) => {
 			ipcMain.removeHandler('agent:send');
 			ipcMain.handle('agent:send', async (event, _message, options) => {
@@ -144,20 +146,27 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 		await page.getByRole('switch', { name: 'Sound feedback' }).click();
 		await expect(page.getByRole('switch', { name: 'Sound feedback' })).not.toBeChecked();
 		await expect.poll(() => page.evaluate(() => window.app.getSoundFeedbackEnabled())).toBe(false);
-		expect(await app.evaluate(({ Menu }) =>
-			Menu.getApplicationMenu()?.getMenuItemById('sound-feedback')?.checked
-		)).toBe(false);
+		expect(
+			await app.evaluate(
+				({ Menu }) => Menu.getApplicationMenu()?.getMenuItemById('sound-feedback')?.checked
+			)
+		).toBe(false);
 		for (const enabled of [true, false]) {
 			await app.evaluate(({ Menu }) => {
 				const item = Menu.getApplicationMenu()?.getMenuItemById('sound-feedback');
 				if (!item) throw new Error('Sound feedback menu item is missing');
 				item.click(item, undefined, {});
 			});
-			await expect(page.getByRole('switch', { name: 'Sound feedback' })).toHaveAttribute('aria-checked', String(enabled));
+			await expect(page.getByRole('switch', { name: 'Sound feedback' })).toHaveAttribute(
+				'aria-checked',
+				String(enabled)
+			);
 			expect(await page.evaluate(() => window.app.getSoundFeedbackEnabled())).toBe(enabled);
-			expect(await app.evaluate(({ Menu }) =>
-				Menu.getApplicationMenu()?.getMenuItemById('sound-feedback')?.checked
-			)).toBe(enabled);
+			expect(
+				await app.evaluate(
+					({ Menu }) => Menu.getApplicationMenu()?.getMenuItemById('sound-feedback')?.checked
+				)
+			).toBe(enabled);
 		}
 		const settings = JSON.parse(
 			await readFile(path.join(userDataDir, 'settings/app.json'), 'utf8')
