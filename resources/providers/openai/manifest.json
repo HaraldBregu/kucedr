@@ -8,6 +8,370 @@
 	"icon_light_url": "/images/openai-light.svg",
 	"models": [
 		{
+			"id": "gpt-6-astra",
+			"name": "GPT-6 Astra",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.openai.com/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+				"documentationStatus": "verified",
+				"inputs": {
+					"reasoning": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							},
+							"mode": {
+								"type": "string",
+								"enum": ["standard", "pro"]
+							}
+						}
+					},
+					"text": {
+						"type": "object",
+						"properties": {
+							"verbosity": {
+								"type": "string",
+								"enum": ["low", "medium", "high"]
+							}
+						}
+					},
+					"max_output_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 128000
+					}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+				"maxInputTokens": 922000
+			},
+			"location": "remote"
+		},
+		{
+			"id": "gpt-6.1-sol",
+			"name": "GPT-6.1 Sol",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.openai.com/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+				"documentationStatus": "verified",
+				"inputs": {
+					"reasoning": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["low", "medium", "high", "xhigh", "max"]
+							},
+							"mode": {
+								"type": "string",
+								"enum": ["standard", "pro"]
+							}
+						}
+					},
+					"text": {
+						"type": "object",
+						"properties": {
+							"verbosity": {
+								"type": "string",
+								"enum": ["low", "medium", "high"]
+							}
+						}
+					},
+					"max_output_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 128000
+					}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+				"maxInputTokens": 922000
+			},
+			"location": "remote"
+		},
+		{
+			"id": "gpt-6-sol",
+			"name": "GPT-6 Sol",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.openai.com/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-6-sol",
+				"documentationStatus": "verified",
+				"inputs": {
+					"reasoning": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["none", "low", "medium", "high", "xhigh", "max"]
+							},
+							"mode": {
+								"type": "string",
+								"enum": ["standard", "pro"]
+							}
+						}
+					},
+					"text": {
+						"type": "object",
+						"properties": {
+							"verbosity": {
+								"type": "string",
+								"enum": ["low", "medium", "high"]
+							}
+						}
+					},
+					"max_output_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 128000
+					}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-6-sol",
+				"maxInputTokens": 922000
+			},
+			"location": "remote"
+		},
+		{
+			"id": "gpt-6-luna",
+			"name": "GPT-6 Luna",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.openai.com/v1",
+			"metadata": {
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
+					},
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
+				],
+				"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+				"documentationStatus": "verified",
+				"inputs": {
+					"reasoning": {
+						"type": "object",
+						"properties": {
+							"effort": {
+								"type": "string",
+								"enum": ["none", "low", "medium", "high", "xhigh", "max"]
+							},
+							"mode": {
+								"type": "string",
+								"enum": ["standard", "pro"]
+							}
+						}
+					},
+					"text": {
+						"type": "object",
+						"properties": {
+							"verbosity": {
+								"type": "string",
+								"enum": ["low", "medium", "high"]
+							}
+						}
+					},
+					"max_output_tokens": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 128000
+					}
+				},
+				"contextWindow": 1050000,
+				"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+				"maxInputTokens": 922000
+			},
+			"location": "remote"
+		},
+		{
+			"id": "gpt-transcribe",
+			"name": "GPT Transcribe",
+			"type": "speech-to-text-model",
+			"authentication": "api-key",
+			"url": "https://api.openai.com/v1",
+			"apiTypes": ["batch", "stream"],
+			"realtime": true,
+			"sampleRate": 24000,
+			"location": "remote",
+			"metadata": {
+				"documentationUrl": "https://developers.openai.com/api/docs/guides/speech-to-text",
+				"documentationStatus": "verified",
+				"inputs": {
+					"prompt": {
+						"type": "string"
+					},
+					"languages": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		{
+			"id": "gpt-live-transcribe",
+			"name": "GPT Live Transcribe",
+			"type": "speech-to-text-model",
+			"authentication": "api-key",
+			"url": "https://api.openai.com/v1",
+			"apiTypes": ["stream"],
+			"realtime": true,
+			"sampleRate": 24000,
+			"location": "remote",
+			"metadata": {
+				"documentationUrl": "https://developers.openai.com/api/docs/guides/realtime-transcription",
+				"documentationStatus": "verified",
+				"inputs": {
+					"prompt": {
+						"type": "string"
+					},
+					"languages": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		{
+			"id": "gpt-image-2.5-sunburst",
+			"name": "GPT Image 2.5 Sunburst",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.openai.com/v1",
+			"location": "remote",
+			"metadata": {
+				"documentationUrl": "https://developers.openai.com/api/docs/guides/image-generation",
+				"documentationStatus": "verified",
+				"inputs": {
+					"size": {
+						"type": "string",
+						"default": "auto",
+						"description": "WIDTHxHEIGHT or auto; multiples of 16, aspect ratio 1:3 to 3:1, edges at most 3840, 655360 to 8294400 pixels."
+					},
+					"quality": {
+						"type": "string",
+						"enum": ["low", "medium", "high", "xhigh", "max", "auto"],
+						"default": "auto"
+					},
+					"background": {
+						"type": "string",
+						"enum": ["auto", "opaque", "transparent"],
+						"default": "auto"
+					},
+					"output_format": {
+						"type": "string",
+						"enum": ["png", "jpeg", "webp"],
+						"default": "png"
+					},
+					"output_compression": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 100
+					},
+					"moderation": {
+						"type": "string",
+						"enum": ["auto", "low"],
+						"default": "auto"
+					}
+				}
+			}
+		},
+		{
+			"id": "gpt-image-2.5-flare",
+			"name": "GPT Image 2.5 Flare",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.openai.com/v1",
+			"location": "remote",
+			"metadata": {
+				"documentationUrl": "https://developers.openai.com/api/docs/guides/image-generation",
+				"documentationStatus": "verified",
+				"inputs": {
+					"size": {
+						"type": "string",
+						"default": "auto",
+						"description": "WIDTHxHEIGHT or auto; multiples of 16, aspect ratio 1:3 to 3:1, edges at most 3840, 655360 to 8294400 pixels."
+					},
+					"quality": {
+						"type": "string",
+						"enum": ["low", "medium", "high", "xhigh", "max", "auto"],
+						"default": "auto"
+					},
+					"background": {
+						"type": "string",
+						"enum": ["auto", "opaque", "transparent"],
+						"default": "auto"
+					},
+					"output_format": {
+						"type": "string",
+						"enum": ["png", "jpeg", "webp"],
+						"default": "png"
+					},
+					"output_compression": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 100
+					},
+					"moderation": {
+						"type": "string",
+						"enum": ["auto", "low"],
+						"default": "auto"
+					}
+				}
+			}
+		},
+		{
 			"id": "gpt-5.6-sol",
 			"name": "GPT-5.6 Sol",
 			"type": "large-language-model",
