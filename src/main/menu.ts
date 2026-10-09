@@ -1,14 +1,11 @@
 import { app, BrowserWindow, Menu as ElectronMenu } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import { loadTranslations } from './i18n';
-import type { App } from './apps/app_index';
 import { openAppWindows } from './apps/app_render';
 
 interface MenuManagerCallbacks {
 	onLanguageChange: (lng: string) => void;
 	onNewWindow: () => void;
-	getApps: () => App[];
-	onOpenApp: (app: App) => void;
 	onOpenAppDataFolder?: () => void;
 	onOpenDataFolder?: () => void;
 	getTrayEnabled?: () => boolean;
@@ -38,15 +35,6 @@ export class Menu {
 	private buildMenu(): void {
 		const isMac = process.platform === 'darwin';
 		const m = loadTranslations(this.currentLanguage, 'menu');
-
-		const apps = this.callbacks.getApps();
-		const appSubmenu =
-			apps.length > 0
-				? apps.map((app) => ({
-						label: app.title,
-						click: (): void => this.callbacks.onOpenApp(app),
-					}))
-				: [{ label: m.noApps || 'No apps', enabled: false }];
 
 		const switchLanguage = (lng: string): void => {
 			this.currentLanguage = lng;
@@ -188,10 +176,6 @@ export class Menu {
 						],
 					},
 				],
-			},
-			{
-				label: m.apps,
-				submenu: appSubmenu,
 			},
 			{
 				label: m.window,

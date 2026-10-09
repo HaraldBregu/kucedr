@@ -21,7 +21,7 @@ import type { AppLanguage } from '../shared/app_types';
 import { Menu } from './menu';
 import { setKeepAwake } from './keep_awake';
 import { userDataLocation } from './shared/user_data_location';
-import { destroyAllApps, ensureApps, listApps, loadApp, watchApps } from './apps/app_index';
+import { destroyAllApps, ensureApps, watchApps } from './apps/app_index';
 import { ShortcutManager } from './shortcuts';
 import { setupAppLifecycle } from './lifecycle';
 import {
@@ -148,8 +148,6 @@ const menuManager = new Menu({
 		logger.info('Menu', 'Creating new launcher window');
 		mainWindow.createAdditionalWindow();
 	},
-	getApps: () => listApps(),
-	onOpenApp: (app) => loadApp(windowFactory, app),
 	onOpenAppDataFolder: () => {
 		void shell.openPath(app.getPath('userData'));
 	},
