@@ -22,20 +22,12 @@
 						"properties": {
 							"resolution": {
 								"type": "string",
-								"enum": [
-									"720p",
-									"1080p",
-									"4k"
-								],
+								"enum": ["720p", "1080p", "4k"],
 								"default": "720p"
 							},
 							"aspect_ratio": {
 								"type": "string",
-								"enum": [
-									"16:9",
-									"9:16",
-									"1:1"
-								],
+								"enum": ["16:9", "9:16", "1:1"],
 								"default": "16:9"
 							},
 							"duration": {
@@ -46,10 +38,7 @@
 							},
 							"audio": {
 								"type": "string",
-								"enum": [
-									"native",
-									"off"
-								],
+								"enum": ["native", "off"],
 								"default": "off"
 							},
 							"multi_shot": {
@@ -80,19 +69,12 @@
 						"properties": {
 							"resolution": {
 								"type": "string",
-								"enum": [
-									"720p",
-									"1080p"
-								],
+								"enum": ["720p", "1080p"],
 								"default": "720p"
 							},
 							"aspect_ratio": {
 								"type": "string",
-								"enum": [
-									"16:9",
-									"9:16",
-									"1:1"
-								],
+								"enum": ["16:9", "9:16", "1:1"],
 								"default": "16:9"
 							},
 							"duration": {
@@ -125,35 +107,22 @@
 						"properties": {
 							"resolution": {
 								"type": "string",
-								"enum": [
-									"720p",
-									"1080p"
-								],
+								"enum": ["720p", "1080p"],
 								"default": "720p"
 							},
 							"aspect_ratio": {
 								"type": "string",
-								"enum": [
-									"16:9",
-									"9:16",
-									"1:1"
-								],
+								"enum": ["16:9", "9:16", "1:1"],
 								"default": "16:9"
 							},
 							"duration": {
 								"type": "integer",
-								"enum": [
-									5,
-									10
-								],
+								"enum": [5, 10],
 								"default": 5
 							},
 							"audio": {
 								"type": "string",
-								"enum": [
-									"native",
-									"off"
-								],
+								"enum": ["native", "off"],
 								"default": "off"
 							}
 						}
@@ -177,10 +146,7 @@
 				"inputs": {
 					"resolution": {
 						"type": "string",
-						"enum": [
-							"1k",
-							"2k"
-						],
+						"enum": ["1k", "2k"],
 						"default": "1k"
 					},
 					"aspect_ratio": {
@@ -208,10 +174,7 @@
 				"inputs": {
 					"resolution": {
 						"type": "string",
-						"enum": [
-							"1k",
-							"2k"
-						],
+						"enum": ["1k", "2k"],
 						"default": "1k"
 					},
 					"aspect_ratio": {
