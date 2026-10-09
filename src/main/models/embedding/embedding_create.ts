@@ -42,9 +42,13 @@ export async function createEmbedding(
 		const endpoint = new URL(stored?.baseUrl || 'https://dashscope-intl.aliyuncs.com');
 		if (
 			endpoint.protocol !== 'https:' ||
-			! /^[a-z0-9][a-z0-9-]*\.(ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com$/i.test(endpoint.hostname)
+			!/^[a-z0-9][a-z0-9-]*\.(ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com$/i.test(
+				endpoint.hostname
+			)
 		) {
-			throw new Error('Set the Qwen provider base URL to https://{workspace}.{region}.maas.aliyuncs.com/compatible-mode/v1 for embeddings.');
+			throw new Error(
+				'Set the Qwen provider base URL to https://{workspace}.{region}.maas.aliyuncs.com/compatible-mode/v1 for embeddings.'
+			);
 		}
 		endpoint.pathname = '/compatible-mode/v1/embeddings';
 		endpoint.search = '';

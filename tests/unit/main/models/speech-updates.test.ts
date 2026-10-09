@@ -273,7 +273,11 @@ it.each([
 	['cohere', 'embed-v5.0-pro', 'https://api.cohere.com/v2/embed'],
 	['mistral', 'codestral-embed-2505', 'https://api.mistral.ai/v1/embeddings'],
 	['jina', 'jina-embeddings-v5-omni-small', 'https://api.jina.ai/v1/embeddings'],
-	['qwen', 'qwen3.7-text-embedding', 'https://workspace-1.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/embeddings'],
+	[
+		'qwen',
+		'qwen3.7-text-embedding',
+		'https://workspace-1.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/embeddings',
+	],
 ])(
 	'routes selected %s embeddings independently of its saved chat URL',
 	async (providerId, modelId, endpoint) => {

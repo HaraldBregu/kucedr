@@ -24,7 +24,9 @@ export async function generateEmbeddings(options: GenerateEmbeddingsOptions): Pr
 	const embeddings: number[][] = [];
 	const batchSize =
 		options.providerId === 'qwen'
-			? options.modelId === 'qwen3.7-text-embedding' ? 20 : 10
+			? options.modelId === 'qwen3.7-text-embedding'
+				? 20
+				: 10
 			: BATCH_SIZE;
 	let dimensions: number | undefined;
 	for (let start = 0; start < options.texts.length; start += batchSize) {
