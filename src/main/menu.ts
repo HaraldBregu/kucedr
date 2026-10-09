@@ -12,6 +12,8 @@ interface MenuManagerCallbacks {
 	onTrayEnabledChange?: (enabled: boolean) => void;
 	getKeepAwake?: () => boolean;
 	onKeepAwakeChange?: (enabled: boolean) => void;
+	getSoundFeedbackEnabled?: () => boolean;
+	onSoundFeedbackEnabledChange?: (enabled: boolean) => void;
 	getTheme?: () => 'light' | 'dark' | 'system';
 	onThemeChange?: (theme: 'light' | 'dark' | 'system') => void;
 }
@@ -47,6 +49,12 @@ export class Menu {
 		};
 		const switchKeepAwake = (): void => {
 			this.callbacks.onKeepAwakeChange?.(!(this.callbacks.getKeepAwake?.() ?? false));
+			this.buildMenu();
+		};
+		const switchSoundFeedback = (): void => {
+			this.callbacks.onSoundFeedbackEnabledChange?.(
+				!(this.callbacks.getSoundFeedbackEnabled?.() ?? true)
+			);
 			this.buildMenu();
 		};
 		const switchTheme = (theme: 'light' | 'dark' | 'system'): void => {
@@ -146,6 +154,13 @@ export class Menu {
 						type: 'checkbox' as const,
 						checked: this.callbacks.getKeepAwake?.() ?? false,
 						click: switchKeepAwake,
+					},
+					{
+						id: 'sound-feedback',
+						label: m.soundFeedback,
+						type: 'checkbox' as const,
+						checked: this.callbacks.getSoundFeedbackEnabled?.() ?? true,
+						click: switchSoundFeedback,
 					},
 					{
 						label: m.theme,

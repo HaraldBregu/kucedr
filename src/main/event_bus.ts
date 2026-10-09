@@ -14,6 +14,7 @@ export interface AppEvents {
 	'window:closed': { windowId: number };
 	'tray:set-enabled': { enabled: boolean };
 	'language:changed': { language: import('../shared/app_types').AppLanguage };
+	'sound-feedback:changed': { enabled: boolean };
 	'channel:status': import('../shared').ChannelStatusEvent;
 	'channel:route': {
 		channel: import('../shared').ChannelType;

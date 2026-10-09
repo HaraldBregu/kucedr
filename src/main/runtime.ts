@@ -9,6 +9,8 @@ import {
 	getTrayClickAction,
 	getKeepAwake,
 	setKeepAwake as setStoredKeepAwake,
+	getSoundFeedbackEnabled,
+	setSoundFeedbackEnabled,
 	getLanguage,
 	setLanguage as setStoredLanguage,
 	getTheme,
@@ -167,6 +169,11 @@ const menuManager = new Menu({
 		setStoredKeepAwake(enabled);
 		eventBus.broadcast(AppChannels.keepAwakeChanged, enabled);
 	},
+	getSoundFeedbackEnabled,
+	onSoundFeedbackEnabledChange: (enabled) => {
+		setSoundFeedbackEnabled(enabled);
+		eventBus.broadcast(AppChannels.soundFeedbackEnabledChanged, enabled);
+	},
 	getTheme,
 	onThemeChange: (theme) => {
 		setStoredTheme(theme);
@@ -229,6 +236,10 @@ app.whenReady().then(() => {
 		const { language } = event.payload as { language: AppLanguage };
 		menuManager.updateLanguage(language);
 		trayManager.updateLanguage(language);
+	});
+
+	eventBus.on('sound-feedback:changed', () => {
+		menuManager.create();
 	});
 
 	// Create main window

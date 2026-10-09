@@ -8,18 +8,70 @@ jest.mock('../../../../src/main/i18n', () => ({
 		view: 'View',
 		back: 'Back',
 		forward: 'Forward',
+		settings: 'Settings',
+		soundFeedback: 'Sound feedback',
 	}),
 }));
 
 type MenuEntry = {
+	id?: string;
 	label?: string;
 	accelerator?: string;
 	type?: string;
+	checked?: boolean;
 	submenu?: MenuEntry[];
 	click?: () => void;
 };
 
 describe('application menu', () => {
+	it.each([true, false])('toggles feedback sounds from a persisted %s value', (initiallyEnabled) => {
+		let enabled = initiallyEnabled;
+		const onSoundFeedbackEnabledChange = jest.fn((next: boolean) => {
+			enabled = next;
+		});
+		const buildFromTemplate = ElectronMenu.buildFromTemplate as jest.Mock;
+		buildFromTemplate.mockImplementation((template: MenuEntry[]) => template);
+		new Menu({
+			onLanguageChange: jest.fn(),
+			onNewWindow: jest.fn(),
+			getSoundFeedbackEnabled: () => enabled,
+			onSoundFeedbackEnabledChange,
+		}).create();
+
+		const template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+		const soundFeedback = template.find((entry) => entry.label === 'Settings')?.submenu
+			?.find((entry) => entry.id === 'sound-feedback');
+		expect(soundFeedback).toMatchObject({
+			label: 'Sound feedback',
+			type: 'checkbox',
+			checked: initiallyEnabled,
+		});
+		soundFeedback?.click?.();
+
+		expect(onSoundFeedbackEnabledChange).toHaveBeenCalledWith(!initiallyEnabled);
+		const updatedTemplate = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+		expect(updatedTemplate.find((entry) => entry.label === 'Settings')?.submenu
+			?.find((entry) => entry.id === 'sound-feedback')?.checked).toBe(!initiallyEnabled);
+	});
+
+	it('refreshes the sound feedback checkbox from the shared preference', () => {
+		let enabled = true;
+		const buildFromTemplate = ElectronMenu.buildFromTemplate as jest.Mock;
+		buildFromTemplate.mockImplementation((template: MenuEntry[]) => template);
+		const menu = new Menu({
+			onLanguageChange: jest.fn(),
+			onNewWindow: jest.fn(),
+			getSoundFeedbackEnabled: () => enabled,
+		});
+		menu.create();
+		enabled = false;
+		menu.create();
+
+		const template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+		expect(template.find((entry) => entry.label === 'Settings')?.submenu
+			?.find((entry) => entry.id === 'sound-feedback')?.checked).toBe(false);
+	});
+
 	it('keeps the platform new-session shortcut available', () => {
 		const onNewWindow = jest.fn();
 		const buildFromTemplate = ElectronMenu.buildFromTemplate as jest.Mock;
