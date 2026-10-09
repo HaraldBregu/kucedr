@@ -73,6 +73,46 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 	}
 });
 
+it('refines an existing final transcript after late user insertion without duplicating or truncating messages', () => {
+	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-refined-'));
+	const location = path.join(temporaryRoot, 'agent');
+	const capture = jest.fn(async () => undefined);
+	const conversation = realtimeVoiceConversationFactory(
+		{ location },
+		undefined,
+		{ capture } as unknown as MemoryService
+	)(SESSION_ID, 'model');
+	try {
+		conversation.beginUserTurn('user-1');
+		conversation.addAssistantTranscript('Backchannel answer.');
+		conversation.finalizeUserTurn('user-2', 'Hello.');
+		conversation.beginUserTurn('user-2');
+		conversation.addAssistantTranscript('Second answer.');
+		conversation.finalizeUserTurn('user-1', 'First question.');
+		conversation.beginUserTurn('user-2');
+		conversation.finalizeUserTurn('user-2', 'Hello, what is two plus two?');
+		const captures = capture.mock.calls.length;
+		conversation.finalizeUserTurn('user-2', 'Hello, what is two plus two?');
+		expect(capture).toHaveBeenCalledTimes(captures);
+		const messages = loadMessagesBySessionId(conversation.persistenceSessionId!, location);
+		expect(messages.map((message) => message.role)).toEqual([
+			'user', 'assistant', 'user', 'assistant',
+		]);
+		expect(messages[0].content).toBe('First question.');
+		expect(messages[2].content).toBe('Hello, what is two plus two?');
+		expect(JSON.stringify(messages)).toContain('Second answer.');
+		expect(capture).toHaveBeenLastCalledWith(conversation.persistenceSessionId, [
+			expect.objectContaining({ role: 'user', content: 'First question.' }),
+			expect.objectContaining({ role: 'assistant' }),
+			expect.objectContaining({ role: 'user', content: 'Hello, what is two plus two?' }),
+			expect.objectContaining({ role: 'assistant' }),
+		]);
+	} finally {
+		conversation.dispose?.();
+		fs.rmSync(temporaryRoot, { recursive: true, force: true });
+	}
+});
+
 it('bounds replay to the latest 64 messages and 48,000 characters', () => {
 	const messages = Array.from({ length: 80 }, (_, index) => ({
 		role: index % 2 === 0 ? ('user' as const) : ('assistant' as const),

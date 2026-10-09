@@ -47,7 +47,7 @@ interface ActiveRealtimeVoiceSession {
 	toolRuntime: RealtimeVoiceToolRuntime;
 	inputTail: Promise<void>;
 	pendingInputCharacters: number;
-	finalUserTranscripts: Set<string>;
+	finalUserTranscripts: Map<string, string>;
 	finalTranscripts: Set<string>;
 	state: RealtimeVoiceState;
 	closed: boolean;
@@ -98,7 +98,7 @@ export class RealtimeVoiceManager {
 			conversation: this.dependencies.createConversation(chatSessionId, configuration.modelId),
 			inputTail: Promise.resolve(),
 			pendingInputCharacters: 0,
-			finalUserTranscripts: new Set(),
+			finalUserTranscripts: new Map(),
 			finalTranscripts: new Set(),
 			state: 'connecting',
 			closed: false,
@@ -293,8 +293,8 @@ export class RealtimeVoiceManager {
 		}
 		if (event.type === 'user_transcript_final') {
 			const transcript = event.transcript.trim();
-			if (!transcript || active.finalUserTranscripts.has(event.itemId)) return;
-			active.finalUserTranscripts.add(event.itemId);
+			if (!transcript || active.finalUserTranscripts.get(event.itemId) === transcript) return;
+			active.finalUserTranscripts.set(event.itemId, transcript);
 			active.conversation.finalizeUserTurn(event.itemId, transcript);
 			this.emit(active, {
 				type: 'user_turn',

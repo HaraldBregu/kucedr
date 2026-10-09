@@ -4,11 +4,12 @@ import {
 	createSessionState,
 	init,
 	insertUserMessage,
+	persist,
 	SessionCoordinator,
 	releaseSession,
 } from '../session';
 import { randomUUID } from 'node:crypto';
-import type { Config, ToolCall } from '../types';
+import type { Config, Message, ToolCall } from '../types';
 import type { RealtimeVoiceHistoryMessage } from '../../models/adapters/realtime_voice';
 import { realtimeVoiceHistory } from './history';
 import { loadMessagesBySessionId } from '../session/session_load_messages_by_session_id';
@@ -46,6 +47,7 @@ export function realtimeVoiceConversationFactory(
 		const state = createSessionState();
 		const voiceSessionId = randomUUID();
 		const pendingUserTurns = new Map<string, PendingUserTurn>();
+		const finalizedUserTurns = new Map<string, Message>();
 		init(
 			state,
 			config,
@@ -75,6 +77,7 @@ export function realtimeVoiceConversationFactory(
 			history: realtimeVoiceHistory(contextMessages),
 			beginUserTurn: (itemId) => {
 				if (state.lease && !state.lease.active) return;
+				if (finalizedUserTurns.has(itemId)) return;
 				const turn = pendingUserTurns.get(itemId) ?? {
 					index: state.messages.length,
 					begun: false,
@@ -84,6 +87,7 @@ export function realtimeVoiceConversationFactory(
 				pendingUserTurns.set(itemId, turn);
 				if (!turn.transcript) return;
 				insertUserMessage(state, turn.index, turn.transcript);
+				finalizedUserTurns.set(itemId, state.messages[turn.index]);
 				capture();
 				pendingUserTurns.delete(itemId);
 				for (const pending of pendingUserTurns.values()) {
@@ -92,6 +96,14 @@ export function realtimeVoiceConversationFactory(
 			},
 			finalizeUserTurn: (itemId, transcript) => {
 				if (state.lease && !state.lease.active) return;
+				const finalized = finalizedUserTurns.get(itemId);
+				if (finalized) {
+					if (finalized.content === transcript) return;
+					finalized.content = transcript;
+					persist(state);
+					capture();
+					return;
+				}
 				const turn = pendingUserTurns.get(itemId) ?? {
 					index: state.messages.length,
 					begun: false,
@@ -100,6 +112,7 @@ export function realtimeVoiceConversationFactory(
 				pendingUserTurns.set(itemId, turn);
 				if (!turn.begun) return;
 				insertUserMessage(state, turn.index, transcript);
+				finalizedUserTurns.set(itemId, state.messages[turn.index]);
 				capture();
 				pendingUserTurns.delete(itemId);
 				for (const pending of pendingUserTurns.values()) {

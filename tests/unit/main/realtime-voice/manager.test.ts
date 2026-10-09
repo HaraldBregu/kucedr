@@ -83,6 +83,44 @@ describe('RealtimeVoiceManager', () => {
 		});
 	});
 
+	it('accepts refined final transcripts for one user item and ignores exact duplicates', async () => {
+		let emit: RealtimeVoiceAdapterEventHandler = () => undefined;
+		const finalizeUserTurn = jest.fn();
+		const events: Array<{ type: string; transcript?: string }> = [];
+		const manager = new RealtimeVoiceManager({
+			createAdapter: () => ({
+				connect: async (_request, handler) => {
+					emit = handler;
+					return new FakeConnection();
+				},
+			}),
+			resolveConfiguration: async () => configuration,
+			createConversation: () => ({
+				history: [],
+				beginUserTurn: () => undefined,
+				finalizeUserTurn,
+				addAssistantTranscript: () => undefined,
+				addToolCall: () => undefined,
+				addToolResult: () => undefined,
+			}),
+			resources: new KeyedMutex(),
+			emit: (_windowId, event) => events.push(event),
+		});
+		await manager.start(1, { chatSessionId: 'chat' });
+		for (const transcript of ['Hello.', 'Hello, what is two plus two?', 'Hello, what is two plus two?']) {
+			emit({ type: 'user_transcript_final', itemId: 'user-1', transcript });
+		}
+		expect(finalizeUserTurn.mock.calls).toEqual([
+			['user-1', 'Hello.'],
+			['user-1', 'Hello, what is two plus two?'],
+		]);
+		expect(events.filter((event) => event.type === 'user_turn').map((event) => event.transcript)).toEqual([
+			'Hello.',
+			'Hello, what is two plus two?',
+		]);
+		await manager.stopAll();
+	});
+
 	it('replaces voice markers with final user transcripts while streaming UI events', async () => {
 		const connection = new FakeConnection();
 		let adapterEmit: RealtimeVoiceAdapterEventHandler = () => undefined;
