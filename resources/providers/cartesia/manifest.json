@@ -26,14 +26,9 @@
 						"required": true
 					},
 					"voice": {
-						"type": "object",
-						"required": true,
-						"properties": {
-							"id": {
-								"type": "string",
-								"title": "Voice ID"
-							}
-						}
+						"type": "string",
+						"title": "Voice ID",
+						"required": true
 					},
 					"output_format": {
 						"type": "object",
@@ -124,76 +119,18 @@
 								"minimum": 0.6,
 								"maximum": 1.5,
 								"default": 1
-							},
-							"emotion": {
-								"type": "string",
-								"enum": [
-									"neutral",
-									"happy",
-									"excited",
-									"enthusiastic",
-									"elated",
-									"euphoric",
-									"triumphant",
-									"amazed",
-									"surprised",
-									"flirtatious",
-									"curious",
-									"content",
-									"peaceful",
-									"serene",
-									"calm",
-									"grateful",
-									"affectionate",
-									"trust",
-									"sympathetic",
-									"anticipation",
-									"mysterious",
-									"angry",
-									"mad",
-									"outraged",
-									"frustrated",
-									"agitated",
-									"threatened",
-									"disgusted",
-									"contempt",
-									"envious",
-									"sarcastic",
-									"ironic",
-									"sad",
-									"dejected",
-									"melancholic",
-									"disappointed",
-									"hurt",
-									"guilty",
-									"bored",
-									"tired",
-									"rejected",
-									"nostalgic",
-									"wistful",
-									"apologetic",
-									"hesitant",
-									"insecure",
-									"confused",
-									"resigned",
-									"anxious",
-									"panicked",
-									"alarmed",
-									"scared",
-									"proud",
-									"confident",
-									"distant",
-									"skeptical",
-									"contemplative",
-									"determined"
-								]
 							}
 						}
 					},
-					"speed": {
+					"locale": {
+						"type": "string"
+					},
+					"accent": {
+						"type": "string"
+					},
+					"normalization": {
 						"type": "string",
-						"default": "normal",
-						"enum": ["slow", "normal", "fast"]
+						"default": "auto"
 					}
 				}
 			},

@@ -1,6 +1,7 @@
 import { EventEmitter } from 'node:events';
 import WebSocket from 'ws';
 import { createCartesiaSttAdapter } from '../../../../src/main/models/adapters/stt/stt_cartesia';
+import { createCartesiaSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_cartesia';
 import { createCohereSttAdapter } from '../../../../src/main/models/adapters/stt/stt_cohere';
 import { createDeepgramSttAdapter } from '../../../../src/main/models/adapters/stt/stt_deepgram';
 import { createElevenLabsSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_elevenlabs';
@@ -9,7 +10,12 @@ import { createElevenLabsMusicAdapter } from '../../../../src/main/models/adapte
 jest.mock('ws', () => ({ __esModule: true, default: jest.fn() }));
 
 const provider = { id: 'provider', name: 'Provider', apiKey: 'test-key' };
-const audio = { data: 'QQ==', mimeType: 'audio/wav', fileName: 'sample.wav' };
+const audio = {
+	data: 'QQ==',
+	mimeType: 'audio/wav',
+	fileName: 'sample.wav',
+	encoding: 'base64' as const,
+};
 const realtime = {
 	sessionId: 'session',
 	providerId: 'provider',
@@ -183,7 +189,7 @@ it('collects Eleven v4 Turbo websocket audio and waits for the final frame', asy
 	]);
 	socket.emit('message', Buffer.from(JSON.stringify({ audio: 'QQ==' })));
 	socket.emit('message', Buffer.from(JSON.stringify({ audio: 'Qg==', is_final: true })));
-	await expect(pending).resolves.toMatchObject({ base64: 'QUI=', mimeType: 'audio/mpeg' });
+	await expect(pending).resolves.toMatchObject({ audio: 'QUI=', mimeType: 'audio/mpeg' });
 });
 
 it('rejects truncated Eleven dialogue audio', async () => {
@@ -216,3 +222,25 @@ it.each(['music_v2', 'music_v2_5', 'eleven_text_to_sound_v2'])(
 		});
 	}
 );
+
+it('uses the current Sonic 3.6 version and direct voice ID contract', async () => {
+	jest.mocked(fetch).mockResolvedValue(new Response(Uint8Array.from([1])));
+	await createCartesiaSpeechAdapter({
+		...provider,
+		id: 'cartesia',
+		baseURL: 'https://api.cartesia.ai',
+	}).synthesize({
+		providerId: 'cartesia',
+		modelId: 'sonic-3.6',
+		text: 'Hello',
+		options: { voice: 'voice-1', locale: 'en-GB', normalization: 'auto' },
+	});
+	const init = jest.mocked(fetch).mock.calls[0]![1];
+	expect(init?.headers).toMatchObject({ 'Cartesia-Version': '2026-08-14' });
+	expect(JSON.parse(String(init?.body))).toMatchObject({
+		model_id: 'sonic-3.6',
+		voice: 'voice-1',
+		locale: 'en-GB',
+		normalization: 'auto',
+	});
+});

@@ -18,6 +18,7 @@ export function createCartesiaSpeechAdapter(provider: SpeechProviderSpec): Speec
 			} = request.options ?? {};
 			const voiceId =
 				request.voice ??
+				(typeof optionVoice === 'string' ? optionVoice : undefined) ??
 				(optionVoice && typeof optionVoice === 'object' && !Array.isArray(optionVoice)
 					? (optionVoice as Record<string, unknown>).id
 					: undefined);
@@ -45,16 +46,19 @@ export function createCartesiaSpeechAdapter(provider: SpeechProviderSpec): Speec
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${provider.apiKey}`,
-					'Cartesia-Version': CARTESIA_VERSION,
+					'Cartesia-Version': request.modelId.startsWith('sonic-3.6')
+						? '2026-08-14'
+						: CARTESIA_VERSION,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
 					model_id: request.modelId,
 					transcript: request.text,
-					voice: {
-						mode: 'id',
-						id: typeof voiceId === 'string' ? voiceId : CARTESIA_DEFAULT_VOICE_ID,
-					},
+					voice: request.modelId.startsWith('sonic-3.6')
+						? typeof voiceId === 'string'
+							? voiceId
+							: CARTESIA_DEFAULT_VOICE_ID
+						: { mode: 'id', id: typeof voiceId === 'string' ? voiceId : CARTESIA_DEFAULT_VOICE_ID },
 					...options,
 					output_format: outputFormat,
 				}),

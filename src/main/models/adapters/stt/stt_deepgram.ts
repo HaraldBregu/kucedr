@@ -49,7 +49,11 @@ export function createDeepgramSttAdapter(opts: DeepgramSttAdapterOptions): SttAd
 			);
 			endpoint.searchParams.set('model', request.modelId);
 			if (request.language) endpoint.searchParams.set('language', request.language);
-			if (request.prompt) endpoint.searchParams.set('keywords', request.prompt);
+			if (request.prompt)
+				endpoint.searchParams.set(
+					request.modelId.startsWith('nova-3') ? 'keyterm' : 'keywords',
+					request.prompt
+				);
 
 			const response = await fetcher(endpoint, {
 				method: 'POST',
@@ -135,6 +139,10 @@ function createDeepgramRealtimeConnection(
 		try {
 			data = JSON.parse(message) as DeepgramRealtimeResponse;
 		} catch {
+			return;
+		}
+		if (data.type === 'Error') {
+			emitError(data.description ?? 'Deepgram realtime transcription error.');
 			return;
 		}
 		if (data.type === 'CloseStream') {
@@ -227,6 +235,7 @@ function deepgramRealtimeUrl(
 	url.searchParams.set('encoding', DEEPGRAM_LINEAR16_ENCODING);
 	url.searchParams.set('sample_rate', String(request.sampleRate));
 	if (request.modelId.startsWith('flux-')) {
+		if (request.prompt) url.searchParams.set('keyterm', request.prompt);
 		if (request.modelId === 'flux-general-multi' && request.language)
 			url.searchParams.set('language_hint', request.language);
 	} else {
