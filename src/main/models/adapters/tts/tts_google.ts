@@ -23,7 +23,9 @@ export function createGoogleSpeechAdapter(provider: SpeechProviderSpec): SpeechA
 		async synthesize(request: SpeechAdapterRequest): Promise<SpeechSynthesisResult> {
 			const optionVoiceName = request.options?.voiceName;
 			const languageCode = request.options?.languageCode;
-			const multiSpeakerVoiceConfig = request.options?.multiSpeakerVoiceConfig;
+			const multiSpeakerVoiceConfig = request.options?.multiSpeakerVoiceConfig ?? request.options?.multiSpeakerVoiceConfig;
+			const currentTts = request.modelId.startsWith('gemini-3.8-');
+			const speechMetadata = request.options?.speechMetadata;
 			const multiSpeaker =
 				multiSpeakerVoiceConfig &&
 				typeof multiSpeakerVoiceConfig === 'object' &&
@@ -40,7 +42,7 @@ export function createGoogleSpeechAdapter(provider: SpeechProviderSpec): SpeechA
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					contents: [{ parts: [{ text: request.text }] }],
+					contents: [{ parts: [{ text: request.text, ...(currentTts && speechMetadata ? { speech_metadata: speechMetadata } : {}) }] }],
 					generationConfig: {
 						responseModalities: ['AUDIO'],
 						speechConfig: {
@@ -49,7 +51,7 @@ export function createGoogleSpeechAdapter(provider: SpeechProviderSpec): SpeechA
 								? { multiSpeakerVoiceConfig: multiSpeaker }
 								: {
 										voiceConfig: {
-											prebuiltVoiceConfig: { voiceName },
+											...(currentTts ? { voice: voiceName } : { prebuiltVoiceConfig: { voiceName } }),
 										},
 									}),
 						},
