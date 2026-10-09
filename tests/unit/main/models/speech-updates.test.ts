@@ -29,7 +29,8 @@ jest.mock('../../../../src/main/models/selection', () => ({
 	getProviderId: () => undefined,
 	getModelId: () => undefined,
 	setSelection: jest.fn(),
-	resolveOptions: (_kind: string, _provider: string, _model: string, overrides: unknown) => overrides,
+	resolveOptions: (_kind: string, _provider: string, _model: string, overrides: unknown) =>
+		overrides,
 }));
 
 const provider = { id: 'provider', name: 'Provider', apiKey: 'test-key' };
@@ -196,23 +197,28 @@ it('uses Text to Dialogue for Eleven v4 with the selected voice', async () => {
 it.each(['eleven_v4_turbo', 'eleven_v3_conversational'])(
 	'collects selected Eleven dialogue model %s through the application entry point',
 	async (modelId) => {
-	const pending = synthesize({
-		providerId: 'elevenlabs',
-		modelId,
-		text: 'Hello',
-		voice: 'voice-1',
-	});
-	socket.emit('open');
-	expect(new URL(String((WebSocket as unknown as jest.Mock).mock.calls[0]![0])).searchParams.get('model_id')).toBe(modelId);
-	expect(socket.send.mock.calls.map(([frame]) => JSON.parse(frame))).toEqual([
-		{ voices: ['voice-1'] },
-		{ inputs: [{ text: 'Hello', voice_id: 'voice-1' }] },
-		{ close_socket: true },
-	]);
-	socket.emit('message', Buffer.from(JSON.stringify({ audio: 'QQ==' })));
-	socket.emit('message', Buffer.from(JSON.stringify({ audio: 'Qg==', is_final: true })));
-	await expect(pending).resolves.toMatchObject({ audio: 'QUI=', mimeType: 'audio/mpeg' });
-});
+		const pending = synthesize({
+			providerId: 'elevenlabs',
+			modelId,
+			text: 'Hello',
+			voice: 'voice-1',
+		});
+		socket.emit('open');
+		expect(
+			new URL(String((WebSocket as unknown as jest.Mock).mock.calls[0]![0])).searchParams.get(
+				'model_id'
+			)
+		).toBe(modelId);
+		expect(socket.send.mock.calls.map(([frame]) => JSON.parse(frame))).toEqual([
+			{ voices: ['voice-1'] },
+			{ inputs: [{ text: 'Hello', voice_id: 'voice-1' }] },
+			{ close_socket: true },
+		]);
+		socket.emit('message', Buffer.from(JSON.stringify({ audio: 'QQ==' })));
+		socket.emit('message', Buffer.from(JSON.stringify({ audio: 'Qg==', is_final: true })));
+		await expect(pending).resolves.toMatchObject({ audio: 'QUI=', mimeType: 'audio/mpeg' });
+	}
+);
 
 it('rejects truncated Eleven dialogue audio', async () => {
 	const pending = createElevenLabsSpeechAdapter({
@@ -267,17 +273,28 @@ it.each([
 	['cohere', 'embed-v5.0-pro', 'https://api.cohere.com/v2/embed'],
 	['mistral', 'codestral-embed-2505', 'https://api.mistral.ai/v1/embeddings'],
 	['jina', 'jina-embeddings-v5-omni-small', 'https://api.jina.ai/v1/embeddings'],
-])('routes selected %s embeddings independently of its saved chat URL', async (providerId, modelId, endpoint) => {
-	jest.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({
-		model: modelId,
-		data: [{ index: 0, embedding: [0.1, 0.2] }],
-		embeddings: { float: [[0.1, 0.2]] },
-	})));
-	await expect(createEmbedding({ providerId, modelId, texts: ['A document'] })).resolves.toMatchObject({
-		providerId, modelId, embeddings: [[0.1, 0.2]],
-	});
-	const [url, init] = jest.mocked(fetch).mock.calls[0]!;
-	expect(String(url)).toBe(endpoint);
-	expect(init?.headers).toMatchObject({ Authorization: 'Bearer test-key' });
-	expect(JSON.parse(String(init?.body))).toMatchObject({ model: modelId });
-});
+])(
+	'routes selected %s embeddings independently of its saved chat URL',
+	async (providerId, modelId, endpoint) => {
+		jest.mocked(fetch).mockResolvedValue(
+			new Response(
+				JSON.stringify({
+					model: modelId,
+					data: [{ index: 0, embedding: [0.1, 0.2] }],
+					embeddings: { float: [[0.1, 0.2]] },
+				})
+			)
+		);
+		await expect(
+			createEmbedding({ providerId, modelId, texts: ['A document'] })
+		).resolves.toMatchObject({
+			providerId,
+			modelId,
+			embeddings: [[0.1, 0.2]],
+		});
+		const [url, init] = jest.mocked(fetch).mock.calls[0]!;
+		expect(String(url)).toBe(endpoint);
+		expect(init?.headers).toMatchObject({ Authorization: 'Bearer test-key' });
+		expect(JSON.parse(String(init?.body))).toMatchObject({ model: modelId });
+	}
+);
