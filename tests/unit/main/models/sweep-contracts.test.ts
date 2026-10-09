@@ -1,3 +1,5 @@
+jest.mock('@mistralai/mistralai', () => ({ Mistral: jest.fn() }));
+
 import { buildImageAdapter } from '../../../../src/main/models/adapters/tti/tti_factory';
 import { buildVideoAdapter } from '../../../../src/main/models/adapters/ttv/ttv_factory';
 import { buildSttAdapter } from '../../../../src/main/models/adapters/stt/stt_factory';
