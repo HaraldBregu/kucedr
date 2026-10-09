@@ -1,5 +1,3 @@
-<h1 align="center">Kucedr</h1>
-
 <p align="center">
   <a href="https://www.kucedr.com/">
     <img src="resources/readme/header.svg" alt="Kucedr — One personal assistant. Unlimited tools." width="1280" />
