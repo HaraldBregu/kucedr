@@ -3,6 +3,7 @@ import type { ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import type { AgentInteractionMode, ModelReasoningEffort } from '@/lib/compat';
 import type { AgentResponseEvent } from '@/lib/compat';
+import { playSound } from '@/lib/sounds/play';
 import { formatReplyMessage } from '@shared/reply';
 import { useHomeAgentContext, type AgentMessage } from '../context';
 import { expandTaskCommand, parseGoalCommand } from './commands';
@@ -213,6 +214,8 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				};
 				let response = '';
 				let resolvedSessionId = sessionId;
+				let thinkingSoundPlayed = false;
+				let responseSoundPlayed = false;
 				const onEvent = (event: AgentResponseEvent): void => {
 					if (event.agentId !== HOME_AGENT_ID) return;
 					if (event.type === 'run_started') {
@@ -222,11 +225,32 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 							resolvedSessionRef.current = { requestId, sessionId: event.sessionId };
 						}
 					}
+					if (
+						event.runId === runId &&
+						requestIdRef.current === requestId &&
+						(currentSessionIdRef.current === sessionId ||
+							currentSessionIdRef.current === resolvedSessionId)
+					) {
+						if (event.type === 'run_started' && !thinkingSoundPlayed) {
+							thinkingSoundPlayed = true;
+							playSound('thinking');
+						}
+						if (
+							event.type === 'run_finished' &&
+							event.stopReason === 'end_turn' &&
+							event.outputChars > 0 &&
+							!responseSoundPlayed
+						) {
+							responseSoundPlayed = true;
+							playSound('response');
+						}
+					}
 					if (event.type === 'text_delta') response += event.delta;
 					if (currentSessionIdRef.current === resolvedSessionId) {
 						dispatchChat({ type: 'apply_response_event', event, receivedAtMs: Date.now() });
 					}
 				};
+				playSound('send');
 				response = await agent.send(trimmed, runtimeOptions, onEvent);
 				if (activeRunIdRef.current === runId) activeRunIdRef.current = undefined;
 				requestActiveRef.current = false;
@@ -409,6 +433,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				event.key.toLowerCase() === 'n'
 			) {
 				event.preventDefault();
+				playSound('navigate');
 				setSessionId(crypto.randomUUID());
 				switchToTyping();
 				return;
