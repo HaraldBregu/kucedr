@@ -30,7 +30,7 @@ These tests cover separate stores. Workspace contains agent files; Library conta
 1. In **Settings → Library**, create a disposable folder and upload a small image, audio, video, or PDF that you own.
 2. Open its preview, switch between List and Collections if useful, and download the file.
 
-**Pass:** Preview and download show the imported file. Delete only the test import and folder afterward; Library does not automatically contain generated Workspace media.
+**Pass:** Preview and download show the imported file. Delete only the test import and folder afterward; generated media saved to the default location also appears in Library.
 
 ## Back up and restore a test folder
 

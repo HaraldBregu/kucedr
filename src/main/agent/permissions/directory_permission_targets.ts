@@ -1,27 +1,20 @@
 import path from 'node:path';
 import { realPath } from '../../shared/real_path';
-import { resolveUserPath } from '../../shared/user_path';
+import { mediaDirectory } from '../../shared/media_directory';
 import { taskStorePath } from '../../tasks/tasks_store';
 import { registry } from '../tools/core/process';
 import { toolPermissionTargets } from './tool_permission_targets';
 import { resolveExecRoots } from './resolve_exec_roots';
 import { fileHistoryTargets } from '../history/targets';
 import type { FileHistory } from '../history/types';
+import { isMediaOutputTool } from './media_output_tool';
 
 const AGENT_FILES: Record<string, string> = {
 	complete_bootstrap: 'BOOTSTRAP.md',
 };
-export const MEDIA_TOOLS = new Set([
-	'create_image',
-	'create_video',
-	'create_sound',
-	'microphone_recorder',
-	'camera_recorder',
-	'screen_recorder',
-]);
 const TASK_TOOLS = new Set(['create_task', 'update_task', 'delete_task', 'run_task_now']);
 export const TASK_MUTATION_TOOLS = new Set(['create_task', 'update_task', 'delete_task']);
-export function isWritePermissionTool(toolName: string, _args: Record<string, unknown>): boolean {
+export function isWritePermissionTool(toolName: string, args: Record<string, unknown>): boolean {
 	return (
 		toolName === 'write' ||
 		toolName === 'edit' ||
@@ -29,7 +22,7 @@ export function isWritePermissionTool(toolName: string, _args: Record<string, un
 		toolName === 'undo' ||
 		toolName === 'redo' ||
 		toolName in AGENT_FILES ||
-		MEDIA_TOOLS.has(toolName) ||
+		isMediaOutputTool(toolName, args) ||
 		TASK_TOOLS.has(toolName)
 	);
 }
@@ -57,9 +50,9 @@ export function directoryPermissionTargets(
 	}
 	const fileName = AGENT_FILES[toolName];
 	if (fileName) return [realPath(path.join(baseDir, fileName))];
-	if (MEDIA_TOOLS.has(toolName)) {
-		const directory = typeof args.directory === 'string' && args.directory ? args.directory : '.';
-		return [realPath(resolveUserPath(directory, baseDir))];
+	if (isMediaOutputTool(toolName, args)) {
+		const directory = typeof args.directory === 'string' ? args.directory : undefined;
+		return [realPath(mediaDirectory(directory, baseDir))];
 	}
 	if (TASK_TOOLS.has(toolName)) return [realPath(taskStorePath)];
 	if (toolName === 'load_skill') return [];

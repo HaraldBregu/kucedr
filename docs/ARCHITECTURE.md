@@ -73,7 +73,7 @@ Chromium state and crash dumps uses Electron's own platform-specific paths.
 | `sessions/`          | Conversation/session persistence                                           |
 | `skills/`            | Installed skill instructions                                               |
 | `apps/`              | Managed application files and per-app data                                 |
-| `library/`           | Library/media files                                                        |
+| `library/`           | Default generated media, recordings, browser screenshots/PDFs, and imported files |
 | `rag/vectors.sqlite` | Local RAG vectors and source records                                       |
 
 Model, database, and search API keys are stored as entered in `providers/settings.json`.

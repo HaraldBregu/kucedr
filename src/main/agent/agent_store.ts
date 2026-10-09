@@ -13,13 +13,14 @@ import type {
 } from '../../shared/agent_tools';
 import { isAgentToolConfigurable } from '../../shared/agent_tools';
 import { agentLocation } from '../shared/agent_location';
+import { libraryLocation } from '../shared/library_location';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
 import {
 	type PermissionBucket,
 	type PermissionKind,
 	type PermissionsSchema,
 } from './permissions/permissions_types';
-import { withWorkspacePermissions } from './permissions/with_workspace_permissions';
+import { withDefaultPermissions } from './permissions/with_default_permissions';
 import {
 	getAgentProfileDocument,
 	getCompactChatModel,
@@ -42,9 +43,10 @@ export type SearchEngineSettings = {
 
 export const AGENT_DIRECTORY = path.resolve(agentLocation());
 const workspacePattern = `${AGENT_DIRECTORY.replaceAll(path.sep, '/')}/**`;
+const libraryPattern = `${path.resolve(libraryLocation()).replaceAll(path.sep, '/')}/**`;
 const DEFAULT_AGENT_PERMISSIONS: PermissionsSchema = {
-	read: { allow: [workspacePattern], deny: [] },
-	write: { allow: [workspacePattern], deny: [] },
+	read: { allow: [workspacePattern, libraryPattern], deny: [] },
+	write: { allow: [workspacePattern, libraryPattern], deny: [] },
 	exec: { allow: [workspacePattern], deny: [] },
 };
 const RUNTIME_TOOL_KEYS = {
@@ -227,9 +229,10 @@ export function getToolConfiguration(
 }
 
 export function getPermissions(profileId: AgentToolProfileId = 'chat'): PermissionsSchema {
-	const permissions = withWorkspacePermissions(
+	const permissions = withDefaultPermissions(
 		normalizePermissionsSchema(getAgentProfilePermissions(profileId), DEFAULT_AGENT_PERMISSIONS),
-		workspacePattern
+		workspacePattern,
+		libraryPattern
 	);
 	return {
 		...permissions,
@@ -243,9 +246,10 @@ export function setPermissions(
 	const { tools, ...directoryPermissions } = permissions;
 	setAgentProfilePermissions(
 		profileId,
-		withWorkspacePermissions(
+		withDefaultPermissions(
 			normalizePermissionsSchema(directoryPermissions, DEFAULT_AGENT_PERMISSIONS),
-			workspacePattern
+			workspacePattern,
+			libraryPattern
 		)
 	);
 	if (tools) {

@@ -74,7 +74,9 @@ export function builtinCapability(
 			effects: ['list', 'log', 'poll'].includes(String(input.action)) ? ['read'] : ['execute'],
 		};
 	if (id === 'use_web_browser') {
-		const passive = ['status', 'tabs', 'snapshot', 'screenshot', 'console'].includes(
+		if (input.action === 'screenshot') return { effects: ['read', 'write'] };
+		if (input.action === 'pdf') return { effects: ['external', 'write'] };
+		const passive = ['status', 'tabs', 'snapshot', 'console'].includes(
 			String(input.action)
 		);
 		return { effects: passive ? ['read'] : ['external'] };

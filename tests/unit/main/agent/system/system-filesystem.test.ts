@@ -7,6 +7,7 @@ import { buildLoadedSkillPrompt } from '../../../../../src/main/agent/system/sys
 import { buildSystemPrompt } from '../../../../../src/main/agent/system/system_build_prompt';
 import { buildWorkspaceContext } from '../../../../../src/main/agent/system/system_build_workspace_context';
 import { workspacePath } from '../../../../../src/main/agent/system/system_workspace_path';
+import { libraryLocation } from '../../../../../src/main/shared/library_location';
 
 describe('agent filesystem prompt', () => {
 	let root: string;
@@ -16,6 +17,15 @@ describe('agent filesystem prompt', () => {
 		root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-agent-filesystem-'));
 		previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
 		process.env.KUCEDR_E2E_DATA_ROOT = path.join(root, 'profile');
+	});
+
+	it('directs media output to Library while keeping task files in the workspace', async () => {
+		const prompt = await buildSystemPrompt({ location: root });
+		expect(prompt).toContain(`Library by default: ${JSON.stringify(libraryLocation())}`);
+		expect(prompt).toContain('Leave their `directory` argument unset');
+		expect(prompt).toContain('only when the user asks for a specific save location');
+		expect(prompt).not.toContain('including generated images, video, and audio, goes here');
+		expect(prompt).not.toContain('so files land here');
 	});
 
 	afterEach(async () => {

@@ -2,6 +2,8 @@ import path from 'node:path';
 import { directoryPermissionTargets } from '../../../../../src/main/agent/permissions/directory_permission_targets';
 import { taskStorePath } from '../../../../../src/main/tasks/tasks_store';
 import { registry, type ProcessSession } from '../../../../../src/main/agent/tools/core/process';
+import { libraryLocation } from '../../../../../src/main/shared/library_location';
+import { realPath } from '../../../../../src/main/shared/real_path';
 
 const agentDir = path.resolve('/appdata/agent');
 
@@ -55,11 +57,11 @@ describe('directoryPermissionTargets', () => {
 	});
 
 	it('maps schedule changes to the shared cron store', () => {
-		expect(directoryPermissionTargets('create_task', {}, agentDir)).toEqual([taskStorePath]);
+		expect(directoryPermissionTargets('create_task', {}, agentDir)).toEqual([realPath(taskStorePath)]);
 	});
 
 	it('maps generated media and keeps skill activation path-independent', () => {
-		expect(directoryPermissionTargets('create_image', {}, agentDir)).toEqual([agentDir]);
+		expect(directoryPermissionTargets('create_image', {}, agentDir)).toEqual([realPath(libraryLocation())]);
 		expect(directoryPermissionTargets('create_sound', { directory: 'clips' }, agentDir)).toEqual([
 			path.join(agentDir, 'clips'),
 		]);
@@ -67,6 +69,23 @@ describe('directoryPermissionTargets', () => {
 			directoryPermissionTargets('camera_recorder', { directory: 'captures' }, agentDir)
 		).toEqual([path.join(agentDir, 'captures')]);
 		expect(directoryPermissionTargets('load_skill', { name: 'example' }, agentDir)).toEqual([]);
+	});
+
+	it.each(['create_image', 'create_video', 'create_sound', 'camera_recorder', 'microphone_recorder', 'screen_recorder'])(
+		'checks the default Library destination for %s',
+		(toolName) => {
+			expect(directoryPermissionTargets(toolName, {}, agentDir)).toEqual([realPath(libraryLocation())]);
+		}
+	);
+
+	it.each(['screenshot', 'pdf'])('checks browser %s output destinations', (action) => {
+		expect(directoryPermissionTargets('use_web_browser', { action }, agentDir)).toEqual([realPath(libraryLocation())]);
+		expect(directoryPermissionTargets('use_web_browser', { action, directory: 'captures' }, agentDir)).toEqual([path.join(agentDir, 'captures')]);
+		expect(directoryPermissionTargets('use_web_browser', { action, directory: '' }, agentDir)).toEqual([agentDir]);
+	});
+
+	it('does not assign a write target to other browser actions', () => {
+		expect(directoryPermissionTargets('use_web_browser', { action: 'snapshot' }, agentDir)).toEqual([]);
 	});
 
 	it('uses the originating exec workdir for process calls', () => {

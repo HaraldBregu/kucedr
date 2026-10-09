@@ -42,8 +42,10 @@ import {
 import { getAgentProfileDocument } from '../../../../../src/main/agent/agent_profiles';
 import { setAgentProfileTool } from '../../../../../src/main/agent/agent_profiles';
 import { resolveToolPermissionDetails } from '../../../../../src/main/agent/permissions/resolve_tool_permission';
+import { libraryLocation } from '../../../../../src/main/shared/library_location';
 
 const workspaceRule = `${AGENT_DIRECTORY.replaceAll('\\', '/')}/**`;
+const libraryRule = `${libraryLocation().replaceAll('\\', '/')}/**`;
 
 beforeEach(() => {
 	for (const profileId of ['chat', 'voice', 'health', 'tasks'] as const) {
@@ -76,23 +78,23 @@ describe('agent store permissions', () => {
 		}
 	);
 
-	it('trusts the workspace recursively for every filesystem capability', () => {
+	it('trusts the workspace for all filesystem capabilities and Library for reads and writes', () => {
 		expect(resetPermissions()).toMatchObject({
-			read: { allow: [workspaceRule], deny: [] },
-			write: { allow: [workspaceRule], deny: [] },
+			read: { allow: [workspaceRule, libraryRule], deny: [] },
+			write: { allow: [workspaceRule, libraryRule], deny: [] },
 			exec: { allow: [workspaceRule], deny: [] },
 			tools: {},
 		});
 	});
 
-	it('normalizes rules and never removes the workspace grant', () => {
+	it('normalizes rules and keeps the default workspace and Library grants', () => {
 		const saved = setPermissions({
 			read: { allow: [' /repo/** ', '/repo/**'], deny: [] },
 			write: { allow: [], deny: ['/blocked/**'] },
 			exec: { allow: [], deny: [] },
 		});
-		expect(saved.read.allow).toEqual([workspaceRule, '/repo/**']);
-		expect(saved.write.allow).toEqual([workspaceRule]);
+		expect(saved.read.allow).toEqual([workspaceRule, libraryRule, '/repo/**']);
+		expect(saved.write.allow).toEqual([workspaceRule, libraryRule]);
 		expect(saved.exec.allow).toEqual([workspaceRule]);
 	});
 
@@ -130,11 +132,11 @@ describe('agent store permissions', () => {
 			);
 
 			expect(getAgentProfileDocument(profileId)).toMatchObject({
-				permissions: { read: { allow: [workspaceRule, rule], deny: [] } },
+				permissions: { read: { allow: [workspaceRule, libraryRule, rule], deny: [] } },
 				tools: { read: { permission: 'ask' } },
 			});
 			expect(getPermissions('chat').read.allow).toEqual(
-				profileId === 'chat' ? [workspaceRule, rule] : [workspaceRule]
+				profileId === 'chat' ? [workspaceRule, libraryRule, rule] : [workspaceRule, libraryRule]
 			);
 		}
 	);
@@ -156,11 +158,11 @@ describe('agent store permissions', () => {
 			},
 			'voice'
 		);
-		expect(getPermissions('voice').read.allow).toEqual([workspaceRule, '/voice/**']);
+		expect(getPermissions('voice').read.allow).toEqual([workspaceRule, libraryRule, '/voice/**']);
 		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('ask');
 		expect(getPermissions()).toEqual(chat);
 		resetPermissions('voice');
-		expect(getPermissions('voice').read.allow).toEqual([workspaceRule]);
+		expect(getPermissions('voice').read.allow).toEqual([workspaceRule, libraryRule]);
 		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('allow');
 		expect(getPermissions()).toEqual(chat);
 	});
@@ -252,7 +254,7 @@ describe('agent store permissions', () => {
 	it('adds a rule without changing other buckets', () => {
 		addPermissionRule('exec', 'allow', '/repo/**');
 		expect(getPermissions().exec.allow).toEqual([workspaceRule, '/repo/**']);
-		expect(getPermissions().read.allow).toEqual([workspaceRule]);
+		expect(getPermissions().read.allow).toEqual([workspaceRule, libraryRule]);
 	});
 
 	it('preserves unrelated agent settings', () => {

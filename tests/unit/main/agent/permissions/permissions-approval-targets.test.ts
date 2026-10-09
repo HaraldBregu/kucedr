@@ -10,6 +10,10 @@ describe('toolApprovalTargets', () => {
 		]);
 	});
 
+	it.each(['screenshot', 'pdf'])('stores the selected browser %s output folder', (action) => {
+		expect(toolApprovalTargets('use_web_browser', { action, directory: '/workspace/captures' }, agentDir)).toEqual([path.resolve('/workspace/captures')]);
+	});
+
 	it('stores the containing folder for write and the declared exec roots', () => {
 		expect(toolApprovalTargets('write', { path: '/workspace/a.txt' }, agentDir)).toEqual([
 			path.resolve('/workspace'),

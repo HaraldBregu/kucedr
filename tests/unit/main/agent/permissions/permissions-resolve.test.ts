@@ -8,6 +8,9 @@ jest.mock('../../../../../src/main/agent/agent_store', () => ({
 import { createRunContext } from '../../../../../src/main/agent/context';
 import { resolveToolPermission } from '../../../../../src/main/agent/permissions/resolve_tool_permission';
 import type { PermissionsSchema } from '../../../../../src/main/agent/permissions/permissions_types';
+import { libraryLocation } from '../../../../../src/main/shared/library_location';
+import { realPath } from '../../../../../src/main/shared/real_path';
+import { builtinCapability } from '../../../../../src/main/agent/execution/capability';
 
 const defaults: PermissionsSchema = {
 	read: { allow: ['/outside/**'], deny: [] },
@@ -158,7 +161,7 @@ describe('resolveToolPermission', () => {
 	it('allows recorder output in trusted roots and asks outside them', () => {
 		const trustedWrites: PermissionsSchema = {
 			...defaults,
-			write: { allow: ['/appdata/agent/**'], deny: [] },
+			write: { allow: [`${realPath(libraryLocation())}/**`], deny: [] },
 		};
 
 		expect(
@@ -177,5 +180,20 @@ describe('resolveToolPermission', () => {
 				trustedWrites
 			)
 		).toBe('ask');
+	});
+
+	it.each(['screenshot', 'pdf'])('applies directory permissions to browser %s output', (action) => {
+		const libraryRule = `${realPath(libraryLocation())}/**`;
+		const trustedWrites: PermissionsSchema = {
+			...defaults,
+			write: { allow: [libraryRule], deny: [] },
+		};
+		expect(resolveToolPermission('use_web_browser', { action }, undefined, true, 'ask', trustedWrites)).toBe('allow');
+		expect(resolveToolPermission('use_web_browser', { action, directory: '/outside' }, undefined, true, 'ask', trustedWrites)).toBe('ask');
+		expect(resolveToolPermission('use_web_browser', { action }, undefined, true, 'ask', {
+			...trustedWrites,
+			write: { allow: [libraryRule], deny: [libraryRule] },
+		})).toBe('deny');
+		expect(builtinCapability('use_web_browser', { action })?.effects).toContain('write');
 	});
 });
