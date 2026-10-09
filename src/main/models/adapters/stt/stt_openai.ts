@@ -46,9 +46,10 @@ export function createOpenAISttAdapter(opts: OpenAISttAdapterOptions): SttAdapte
 					{
 						file,
 						model: request.modelId,
-						language: request.language,
+						...(request.modelId === 'gpt-transcribe'
+							? { languages: request.language ? [request.language] : undefined }
+							: { language: request.language, temperature: request.temperature }),
 						prompt: request.prompt,
-						temperature: request.temperature,
 					},
 					{ signal: request.signal }
 				);
@@ -84,7 +85,7 @@ export function createOpenAISttAdapter(opts: OpenAISttAdapterOptions): SttAdapte
 				);
 			}
 
-			const socket = new WebSocket(openAIRealtimeUrl(provider.baseURL), {
+			const socket = new WebSocket(openAIRealtimeUrl(provider.baseURL, request.modelId), {
 				headers: {
 					Authorization: `${OPENAI_REALTIME_AUTH_SCHEME} ${provider.apiKey}`,
 				},
@@ -168,7 +169,23 @@ function createOpenAIRealtimeConnection(
 	socket.once('close', () => emitClosed());
 
 	socket.send(
-		JSON.stringify({
+		JSON.stringify(request.modelId === 'gpt-live-transcribe' || request.modelId === 'gpt-transcribe' ? {
+			type: 'session.update',
+			session: {
+				type: 'transcription',
+				audio: {
+					input: {
+						format: { type: 'audio/pcm', rate: 24000 },
+						transcription: {
+							model: request.modelId,
+							...(request.language ? { languages: [request.language] } : {}),
+							...(request.prompt ? { prompt: request.prompt } : {}),
+						},
+						turn_detection: null,
+					},
+				},
+			},
+		} : {
 			type: OPENAI_REALTIME_SESSION_UPDATE_EVENT,
 			session: {
 				input_audio_format: OPENAI_REALTIME_AUDIO_FORMAT,
@@ -198,13 +215,17 @@ function createOpenAIRealtimeConnection(
 	};
 }
 
-function openAIRealtimeUrl(baseURL: string | undefined): string {
+function openAIRealtimeUrl(baseURL: string | undefined, modelId: string): string {
 	const url = new URL(
 		OPENAI_REALTIME_PATH,
 		`${baseURL ?? speechToTextBaseUrl('openai')}/`
 	);
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
-	url.searchParams.set('model', realtimeSpeechToTextModelId('openai'));
+	if (modelId === 'gpt-live-transcribe' || modelId === 'gpt-transcribe') {
+		url.searchParams.set('intent', 'transcription');
+	} else {
+		url.searchParams.set('model', realtimeSpeechToTextModelId('openai'));
+	}
 	return url.toString();
 }
 

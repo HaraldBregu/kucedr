@@ -3,6 +3,7 @@ import { createBflImageAdapter } from './tti_bfl';
 import { createGoogleImageAdapter } from './tti_google';
 import { createIdeogramImageAdapter } from './tti_ideogram';
 import { createLumaImageAdapter } from './tti_luma';
+import { createOpenAIImageAdapter } from './tti_openai';
 import { createQwenImageAdapter } from './tti_qwen';
 import { createStabilityImageAdapter } from './tti_stability';
 import { createXaiImageAdapter } from './tti_xai';
@@ -16,6 +17,7 @@ export function buildImageAdapter(provider: ImageProviderSpec): ImageAdapter {
 	if (id === 'google') return createGoogleImageAdapter(spec);
 	if (id === 'ideogram') return createIdeogramImageAdapter(spec);
 	if (id === 'luma') return createLumaImageAdapter(spec);
+	if (id === 'openai') return createOpenAIImageAdapter(spec);
 	if (id === 'qwen') return createQwenImageAdapter(spec);
 	if (id === 'stability-ai') return createStabilityImageAdapter(spec);
 	if (id === 'xai') return createXaiImageAdapter(spec);
