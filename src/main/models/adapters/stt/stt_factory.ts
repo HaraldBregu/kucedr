@@ -1,3 +1,4 @@
+import { createZaiSttAdapter } from './stt_zai';
 import { createCartesiaSttAdapter } from './stt_cartesia';
 import { createCohereSttAdapter } from './stt_cohere';
 import { normalizeProviderId } from '../../../../shared/provider_types';
@@ -21,6 +22,7 @@ const STT_ADAPTERS: Readonly<Record<string, (spec: SttProviderSpec) => SttAdapte
 	mistral: createMistralSttAdapter,
 	minimax: createMiniMaxSttAdapter,
 	openai: createOpenAISttAdapter,
+	zai: createZaiSttAdapter,
 	qwen: createQwenSttAdapter,
 	xai: createXaiSttAdapter,
 };

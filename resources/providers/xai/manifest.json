@@ -397,6 +397,57 @@
 				}
 			},
 			"location": "remote"
+		},
+		{
+			"id": "xai-tts",
+			"name": "Grok Text to Speech",
+			"authentication": "api-key",
+			"type": "text-to-speech-model",
+			"url": "https://api.x.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.x.ai/developers/model-capabilities/audio/text-to-speech",
+				"documentationStatus": "verified",
+				"inputs": {
+					"voice_id": {
+						"type": "string",
+						"default": "eve"
+					},
+					"language": {
+						"type": "string",
+						"default": "auto"
+					},
+					"speed": {
+						"type": "number",
+						"minimum": 0.7,
+						"maximum": 1.5
+					},
+					"output_format": {
+						"type": "object",
+						"properties": {
+							"codec": {
+								"type": "string",
+								"enum": ["mp3", "wav", "pcm", "mulaw", "alaw"]
+							},
+							"sample_rate": {
+								"type": "integer",
+								"enum": [8000, 16000, 22050, 24000, 44100, 48000]
+							},
+							"bit_rate": {
+								"type": "integer",
+								"enum": [32000, 64000, 96000, 128000, 192000]
+							}
+						}
+					},
+					"text_normalization": {
+						"type": "boolean"
+					},
+					"replace": {
+						"type": "object"
+					}
+				},
+				"defaultVoice": "eve"
+			},
+			"location": "remote"
 		}
 	],
 	"mcp_servers": [],

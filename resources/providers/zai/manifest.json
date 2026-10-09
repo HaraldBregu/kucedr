@@ -496,6 +496,134 @@
 				"contextWindowDocumentationUrl": "https://docs.z.ai/guides/llm/glm-5-turbo"
 			},
 			"location": "remote"
+		},
+		{
+			"id": "glm-image",
+			"name": "GLM Image",
+			"authentication": "api-key",
+			"type": "text-to-image-model",
+			"url": "https://api.z.ai/api/paas/v4",
+			"metadata": {
+				"documentationUrl": "https://docs.z.ai/api-reference/image/generate-image",
+				"documentationStatus": "verified",
+				"inputs": {
+					"quality": {
+						"type": "string",
+						"enum": ["hd", "standard"]
+					},
+					"size": {
+						"type": "string",
+						"enum": [
+							"1280x1280",
+							"1568x1056",
+							"1056x1568",
+							"1472x1088",
+							"1088x1472",
+							"1728x960",
+							"960x1728"
+						]
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "cogview-4-250304",
+			"name": "CogView 4",
+			"authentication": "api-key",
+			"type": "text-to-image-model",
+			"url": "https://api.z.ai/api/paas/v4",
+			"metadata": {
+				"documentationUrl": "https://docs.z.ai/api-reference/image/generate-image",
+				"documentationStatus": "verified",
+				"inputs": {
+					"quality": {
+						"type": "string",
+						"enum": ["hd", "standard"]
+					},
+					"size": {
+						"type": "string",
+						"enum": [
+							"1024x1024",
+							"768x1344",
+							"864x1152",
+							"1344x768",
+							"1152x864",
+							"1440x720",
+							"720x1440"
+						]
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "cogvideox-3",
+			"name": "CogVideoX 3",
+			"authentication": "api-key",
+			"type": "text-to-video-model",
+			"url": "https://api.z.ai/api/paas/v4",
+			"metadata": {
+				"documentationUrl": "https://docs.z.ai/api-reference/video/generate-video",
+				"documentationStatus": "verified",
+				"inputs": {
+					"quality": {
+						"type": "string",
+						"enum": ["speed", "quality"]
+					},
+					"with_audio": {
+						"type": "boolean"
+					},
+					"image_url": {
+						"type": "array",
+						"maxItems": 2,
+						"items": {
+							"type": "string"
+						}
+					},
+					"size": {
+						"type": "string",
+						"enum": [
+							"1280x720",
+							"720x1280",
+							"1024x1024",
+							"1920x1080",
+							"1080x1920",
+							"2048x1080",
+							"3840x2160"
+						]
+					},
+					"fps": {
+						"type": "integer",
+						"enum": [30, 60]
+					},
+					"duration": {
+						"type": "integer",
+						"enum": [5, 10]
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "glm-asr-2512",
+			"name": "GLM ASR 2512",
+			"authentication": "api-key",
+			"type": "speech-to-text-model",
+			"url": "https://api.z.ai/api/paas/v4",
+			"metadata": {
+				"documentationUrl": "https://docs.z.ai/api-reference/audio/audio-transcriptions",
+				"documentationStatus": "verified",
+				"inputs": {
+					"prompt": {
+						"type": "string",
+						"maxLength": 8000
+					}
+				},
+				"realtime": false,
+				"apiTypes": ["batch"]
+			},
+			"location": "remote"
 		}
 	],
 	"mcp_servers": [],

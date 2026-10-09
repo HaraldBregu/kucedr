@@ -1,3 +1,4 @@
+import { createZaiImageAdapter } from './tti_zai';
 import { normalizeProviderId } from '../../../../shared/provider_types';
 import { createBflImageAdapter } from './tti_bfl';
 import { createGoogleImageAdapter } from './tti_google';
@@ -24,6 +25,7 @@ export function buildImageAdapter(provider: ImageProviderSpec): ImageAdapter {
 	if (id === 'openai') return createOpenAIImageAdapter(spec);
 	if (id === 'qwen') return createQwenImageAdapter(spec);
 	if (id === 'stability-ai') return createStabilityImageAdapter(spec);
+	if (id === 'zai') return createZaiImageAdapter(spec);
 	if (id === 'xai') return createXaiImageAdapter(spec);
 	if (id === 'midjourney') {
 		throw new ImageProviderUnsupportedError('Midjourney does not expose a public API.');

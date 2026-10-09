@@ -1,3 +1,4 @@
+import { createXaiSpeechAdapter } from './tts_xai';
 import { normalizeProviderId } from '../../../../shared/provider_types';
 import { createCartesiaSpeechAdapter } from './tts_cartesia';
 import { createDeepgramSpeechAdapter } from './tts_deepgram';
@@ -20,6 +21,7 @@ const SPEECH_ADAPTERS: Readonly<Record<string, (spec: SpeechProviderSpec) => Spe
 	pika: createPikaSpeechAdapter,
 	mistral: createMistralSpeechAdapter,
 	openai: createOpenAISpeechAdapter,
+	xai: createXaiSpeechAdapter,
 	qwen: createQwenSpeechAdapter,
 };
 

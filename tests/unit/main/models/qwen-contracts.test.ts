@@ -5,7 +5,9 @@ const mockSockets: Array<{
 }> = [];
 jest.mock('ws', () => ({
 	__esModule: true,
-	default: class extends require('node:events').EventEmitter {
+	default: class
+		extends jest.requireActual<typeof import('node:events')>('node:events').EventEmitter
+	{
 		send = jest.fn((data: string | Buffer) => {
 			if (typeof data === 'string' && JSON.parse(data).header.action === 'run-task')
 				process.nextTick(() =>
