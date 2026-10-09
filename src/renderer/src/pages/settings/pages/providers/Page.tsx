@@ -397,6 +397,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									<Label htmlFor="qwen-workspace-url">Workspace URL</Label>
 									<Input
 										id="qwen-workspace-url"
+										aria-describedby="qwen-workspace-help"
 										autoComplete="off"
 										className="h-8 min-w-0 text-xs"
 										disabled={savingThisProvider}
@@ -407,6 +408,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											setError(null);
 										}}
 									/>
+									<p id="qwen-workspace-help" className="text-xs text-muted-foreground">For embeddings, replace the workspace and region with your own.</p>
 								</div>
 							)}
 							<Input

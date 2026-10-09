@@ -15,6 +15,8 @@ describe('regional speech models', () => {
 			'https://dashscope-intl.aliyuncs.com/compatible-mode/v1',
 			'https://dashscope.aliyuncs.com/api/v1',
 		],
+		['https://my-workspace.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1', 'https://dashscope.aliyuncs.com/api/v1'],
+		['https://my-workspace.cn-beijing.maas.aliyuncs.com/compatible-mode/v1', 'https://dashscope.aliyuncs.com/api/v1'],
 		['https://speech.example.test/custom', 'https://speech.example.test/custom'],
 	])(
 		'uses the documented regional URL while preserving custom endpoints for %s',
