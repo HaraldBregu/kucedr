@@ -249,8 +249,11 @@ describe('useRealtimeVoice', () => {
 
 	it('does not open the microphone after ending while playback setup is pending', async () => {
 		let resolvePlayback = (): void => undefined;
+		const resumePlayback = jest.fn(
+			() => new Promise<void>((resolve) => (resolvePlayback = resolve))
+		);
 		class DelayedAudioContext extends FakeAudioContext {
-			resume = jest.fn(() => new Promise<void>((resolve) => (resolvePlayback = resolve)));
+			resume = resumePlayback;
 		}
 		Object.defineProperty(window, 'AudioContext', {
 			configurable: true,
@@ -264,10 +267,7 @@ describe('useRealtimeVoice', () => {
 		act(() => {
 			starting = result.current.start();
 		});
-		await act(async () => {
-			await Promise.resolve();
-			await Promise.resolve();
-		});
+		await waitFor(() => expect(resumePlayback).toHaveBeenCalledTimes(1));
 		await act(async () => result.current.end());
 		await act(async () => {
 			resolvePlayback();
