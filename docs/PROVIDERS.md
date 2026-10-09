@@ -68,28 +68,28 @@ manifest.
 | Provider                                                                           | ID                  | Cataloged capabilities                                           | Runtime coverage                                                         |
 | ---------------------------------------------------------------------------------- | ------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | [Anthropic](https://console.anthropic.com/settings/keys) | `anthropic` | Chat | Available |
-| [Black Forest Labs](https://dashboard.bfl.ai) | `black-forest-labs` |  | Available |
+| [Black Forest Labs](https://dashboard.bfl.ai) | `black-forest-labs` | Image, Video | Available |
 | [Brave](https://api-dashboard.search.brave.com/app/keys)                           | `brave`             | Web search                                                       | Available                                                                |
-| [Cartesia](https://play.cartesia.ai/keys) | `cartesia` |  | Available |
-| [Cohere](https://dashboard.cohere.com/api-keys) | `cohere` | Chat | Available |
-| [Deepgram](https://console.deepgram.com) | `deepgram` |  | Available |
+| [Cartesia](https://play.cartesia.ai/keys) | `cartesia` | Speech to text, Text to speech | Available |
+| [Cohere](https://dashboard.cohere.com/api-keys) | `cohere` | Chat, Speech to text, Embeddings | Available |
+| [Deepgram](https://console.deepgram.com) | `deepgram` | Speech to text, Text to speech | Available |
 | [DeepSeek](https://platform.deepseek.com/api_keys) | `deepseek` | Chat | Available |
-| [ElevenLabs](https://elevenlabs.io/app/settings/api-keys) | `elevenlabs` |  | Available |
-| [Google](https://aistudio.google.com/apikey) | `google` | Chat | Mixed: existing Lyria Realtime is catalog only |
-| [Ideogram](https://ideogram.ai/manage-api) | `ideogram` |  | Available |
-| [Jina AI](https://jina.ai/api-dashboard) | `jina` |  | Available |
+| [ElevenLabs](https://elevenlabs.io/app/settings/api-keys) | `elevenlabs` | Speech to text, Text to speech, Audio | Available |
+| [Google](https://aistudio.google.com/apikey) | `google` | Chat, Speech to text, Text to speech, Realtime voice, Image, Video, Audio, Embeddings | Mixed: existing Lyria Realtime is catalog only |
+| [Ideogram](https://ideogram.ai/manage-api) | `ideogram` | Image | Available |
+| [Jina AI](https://jina.ai/api-dashboard) | `jina` | Embeddings | Available |
 | [Kimi](https://platform.moonshot.ai/console/api-keys) | `kimi` | Chat | Available |
-| [Kling AI](https://app.klingai.com/global/dev) | `kling` |  | Available |
-| [MiniMax](https://platform.minimax.io/user-center/basic-information/interface-key) | `minimax` | Chat | Available |
-| [Mistral AI](https://console.mistral.ai/api-keys) | `mistral` | Chat | Available |
-| [OpenAI](https://platform.openai.com/api-keys) | `openai` | Chat | Available |
-| [Pika](https://pika.art) | `pika` |  | Partial: existing Pika 2.2 requires fal.run |
+| [Kling AI](https://app.klingai.com/global/dev) | `kling` | Image, Video, Audio | Available |
+| [MiniMax](https://platform.minimax.io/user-center/basic-information/interface-key) | `minimax` | Chat, Speech to text, Text to speech, Image, Video, Audio | Available |
+| [Mistral AI](https://console.mistral.ai/api-keys) | `mistral` | Chat, Speech to text, Text to speech, Embeddings | Available |
+| [OpenAI](https://platform.openai.com/api-keys) | `openai` | Chat, Speech to text, Text to speech, Realtime voice, Image, Embeddings | Available |
+| [Pika](https://pika.art) | `pika` | Text to speech, Video, Audio | Partial: existing Pika 2.2 requires fal.run |
 | [Pinecone](https://app.pinecone.io)                                                | `pinecone`          | Vector database                                                  | RAG mirroring with the user's selected database and saved credentials    |
-| [Qwen and Wan](https://modelstudio.console.alibabacloud.com) | `qwen` | Chat | Available |
+| [Qwen and Wan](https://modelstudio.console.alibabacloud.com) | `qwen` | Chat, Speech to text, Text to speech, Realtime voice, Image, Video, Embeddings | Available |
 | [Reka AI](https://platform.reka.ai/apikeys) | `reka` | Chat | Available |
 | [Tavily](https://app.tavily.com/home)                                              | `tavily`            | Web search                                                       | Available                                                                |
-| [xAI](https://console.x.ai) | `xai` | Chat | Available |
-| [Z.ai](https://z.ai/manage-apikey/apikey-list) | `zai` | Chat | Available |
+| [xAI](https://console.x.ai) | `xai` | Chat, Speech to text, Text to speech, Realtime voice, Image, Video | Available |
+| [Z.ai](https://z.ai/manage-apikey/apikey-list) | `zai` | Chat, Speech to text, Image, Video | Available |
 
 ## Model and service catalog
 
@@ -116,36 +116,89 @@ Names and IDs match the bundled manifests. Model metadata links to the official 
 
 | Provider | Cataloged models |
 | --- | --- |
+| Cartesia | Ink 2 (`ink-2`); Ink Whisper (`ink-whisper`) |
+| Cohere | Cohere Transcribe (`cohere-transcribe-03-2026`); Cohere Transcribe Arabic (`cohere-transcribe-arabic-07-2026`) |
+| Deepgram | Nova 3 (`nova-3`); Flux (`flux-general-en`); Flux Multilingual (`flux-general-multi`); Nova 3 Medical (`nova-3-medical`); Nova 3 Pharma (`nova-3-pharma`) |
+| ElevenLabs | Scribe v2 (`scribe_v2`); Scribe v2 Medical (`scribe_v2_medical`); Scribe v2 Realtime (`scribe_v2_realtime`) |
+| Google DeepMind / Google | Gemini 3.5 Transcribe (`gemini-3.5-transcribe`) |
+| MiniMax | MiniMax ASR 1.0 (`asr-1.0`) |
+| Mistral AI | Voxtral Mini 2602 (`voxtral-mini-latest`); Voxtral Mini Transcribe Realtime 2602 (`voxtral-mini-transcribe-realtime-2602`) |
+| OpenAI | GPT Transcribe (`gpt-transcribe`); GPT Live Transcribe (`gpt-live-transcribe`); GPT-4o Transcribe (`gpt-4o-transcribe`); GPT-4o Mini Transcribe (`gpt-4o-mini-transcribe`); GPT Realtime Whisper (`gpt-realtime-whisper`) |
+| Alibaba / Qwen / Wan | Qwen3 ASR Flash Realtime (`qwen3-asr-flash-realtime`); Qwen Audio 3.0 ASR Flash (`qwen-audio-3.0-asr-flash`); Qwen Audio 3.1 ASR Flash (`qwen-audio-3.1-asr-flash`); Qwen Audio 3.0 ASR Flash Streaming (`qwen-audio-3.0-asr-flash-streaming`); Qwen Audio 3.1 ASR Flash Streaming (`qwen-audio-3.1-asr-flash-streaming`) |
+| xAI | xAI STT Batch (`xai-stt-batch`); xAI STT Streaming (`xai-stt-streaming`) |
+| Z.ai / Zhipu AI | GLM ASR 2512 (`glm-asr-2512`, batch) |
 
 ### Text to speech
 
 | Provider | Cataloged models |
 | --- | --- |
+| Cartesia | Sonic 3.6 (`sonic-3.6`); Sonic 3.5 (`sonic-3.5`); Sonic 3 (`sonic-3`) |
+| Deepgram | Aura 2 (`aura-2`) |
+| ElevenLabs | Eleven v3 (`eleven_v3`); Eleven Multilingual v2 (`eleven_multilingual_v2`); Eleven Flash v2.5 (`eleven_flash_v2_5`); Eleven Flash v2 (`eleven_flash_v2`); Eleven v4 (`eleven_v4`); Eleven v4 Turbo (`eleven_v4_turbo`); Eleven v3 Conversational (`eleven_v3_conversational`) |
+| Google DeepMind / Google | Gemini 3.8 Flash TTS (`gemini-3.8-flash-tts`); Gemini 3.8 Flash Lite TTS (`gemini-3.8-flash-lite-tts`); Gemini 3.1 Flash TTS Preview (`gemini-3.1-flash-tts-preview`) |
+| MiniMax | Speech 2.8 HD (`speech-2.8-hd`); Speech 2.8 Turbo (`speech-2.8-turbo`) |
+| Mistral AI | Voxtral Mini TTS 2603 (`voxtral-mini-tts-2603`) |
+| OpenAI | GPT-4o Mini TTS (`gpt-4o-mini-tts`); TTS-1 HD (`tts-1-hd`) |
+| Pika | Pika Speech (`pika-speech`) |
+| Alibaba / Qwen / Wan | Qwen Audio 3.0 TTS Plus (`qwen-audio-3.0-tts-plus`); Qwen Audio 3.0 TTS Flash (`qwen-audio-3.0-tts-flash`) |
+| xAI | Grok Text to Speech (`xai-tts`) |
 
 ### Realtime voice
 
 | Provider | Cataloged models |
 | --- | --- |
+| Google DeepMind / Google | Gemini 3.8 Live (`gemini-3.8-live`); Gemini 3.8 Live Extended Thinking (`gemini-3.8-live-extended-thinking`) |
+| OpenAI | GPT Realtime 2.1 (`gpt-realtime-2.1`); GPT Realtime 2.1 Mini (`gpt-realtime-2.1-mini`); GPT Live 1 (`gpt-live-1`) |
+| Alibaba / Qwen / Wan | Qwen 3.8 Omni Flash Realtime (`qwen3.8-omni-flash-realtime`) |
+| xAI | Grok Voice Latest (`grok-voice-latest`) |
 
 ### Image
 
 | Provider | Cataloged models |
 | --- | --- |
+| Black Forest Labs | FLUX 3 Image (`flux-3-image`); FLUX.2 [max] (`flux-2-max`); FLUX.2 [flex] (`flux-2-flex`); FLUX.2 [klein] 9B (`flux-2-klein-9b`); FLUX.2 [klein] 4B (`flux-2-klein-4b`); FLUX.2 [pro] Preview (`flux-2-pro-preview`); FLUX.2 [klein] 9B Preview (`flux-2-klein-9b-preview`); FLUX.2 (`FLUX.2`); FLUX.1 Kontext [pro] (`FLUX.1 Kontext [pro]`); FLUX1.1 [pro] Ultra (`FLUX1.1 [pro] Ultra`) |
+| Google DeepMind / Google | Nano Banana 2.1 (`gemini-nano-banana-2.1`); Nano Banana 2 (`gemini-3.1-flash-image`); Nano Banana 2 Lite (`gemini-3.1-flash-lite-image`); Nano Banana Pro (`gemini-3-pro-image`); Gemini 3.1 Flash Image Preview (`gemini-3.1-flash-image-preview`); Gemini 3 Pro Image Preview (`gemini-3-pro-image-preview`) |
+| Ideogram | Ideogram 4.5 (`ideogram-4.5`); Ideogram 4.0 (`ideogram-4.0`); P-Image Ideogram (`p-image-ideogram`); Ideogram 3.0 (`ideogram-3.0`); Ideogram 2a (`ideogram-2a`) |
+| Kuaishou / Kling AI | Kling Image 3.0 (`kling-v3`); Kling Image 3.0 Omni (`kling-v3-omni`) |
+| MiniMax | MiniMax Image 01 (`image-01`) |
+| OpenAI | GPT Image 2.5 Sunburst (`gpt-image-2.5-sunburst`); GPT Image 2.5 Flare (`gpt-image-2.5-flare`) |
+| Alibaba / Qwen / Wan | Qwen Image (`qwen-image`); Qwen Image Edit (`qwen-image-edit`); Qwen Image 3.0 Pro (`qwen-image-3.0-pro`); Qwen Image 3.0 (`qwen-image-3.0`); Qwen Image 2.1 Pro (`qwen-image-2.1-pro`); Qwen Image 2.0 Pro (`qwen-image-2.0-pro`); Qwen Image 2.0 (`qwen-image-2.0`); Qwen Image Max (`qwen-image-max`); Qwen Image Plus (`qwen-image-plus`); Qwen Image Edit Max (`qwen-image-edit-max`); Qwen Image Edit Plus (`qwen-image-edit-plus`); Wan2.7 Image Pro (`wan2.7-image-pro`); Wan2.7 Image (`wan2.7-image`) |
+| xAI | Grok Imagine Image (`grok-imagine-image`); Grok Imagine Image Quality (`grok-imagine-image-quality`); Grok Imagine Image 2.0 (`grok-imagine-image-2.0`) |
+| Z.ai / Zhipu AI | GLM Image (`glm-image`); CogView 4 (`cogview-4-250304`) |
 
 ### Video
 
 | Provider | Cataloged models |
 | --- | --- |
+| Black Forest Labs | FLUX 3 Video (`flux-3-video`) |
+| Google DeepMind / Google | Veo 3.1 Lite Preview (`veo-3.1-lite-generate-preview`); Gemini Omni Flash (`gemini-omni-1.1-flash`); Veo 3.1 (`veo-3.1`); Veo 3.1 Fast (`veo-3.1-fast`) |
+| Kuaishou / Kling AI | Kling 3.0 (`kling-3.0`); Kling 3.0 Turbo (`kling-3.0-turbo`); Kling 2.6 (`kling-2.6`); Kling v2.5 Turbo (`kling-v2.5-turbo`); Kling v2.1 Master (`kling-v2.1-master`) |
+| MiniMax | MiniMax H3 (`MiniMax-H3`); MiniMax H3 Max (`MiniMax-H3-Max`); Hailuo 2.3 (`MiniMax-Hailuo-2.3`); Hailuo 02 (`MiniMax-Hailuo-02`) |
+| Pika | Pika 2.5 (`pika-2.5`); Pika 2.2 (`pika-2.2`) |
+| Alibaba / Qwen / Wan | Wan 2.5 T2V (`wan2.5-t2v`); Wan 2.2 T2V Plus (`wan2.2-t2v-plus`); Wan 3.0 video (`wan3.0-video`); Wan 3.0 video prime (`wan3.0-video-prime`); HappyHorse  1.1 t2v (`happyhorse-1.1-t2v`); HappyHorse  1.1 i2v (`happyhorse-1.1-i2v`); HappyHorse  1.1 r2v (`happyhorse-1.1-r2v`) |
+| xAI | Grok Imagine Video 1.5 (`grok-imagine-video-1.5`) |
+| Z.ai / Zhipu AI | CogVideoX 3 (`cogvideox-3`) |
 
 ### Audio and sound effects
 
 | Provider | Cataloged models |
 | --- | --- |
+| ElevenLabs | Eleven Music (`eleven-music`); ElevenLabs Sound Effects (`elevenlabs-sound-effects`); Eleven Music v2 (`music_v2`); Eleven Music v2.5 (`music_v2_5`); Eleven Sound Effects v2 (`eleven_text_to_sound_v2`) |
+| Google DeepMind / Google | Lyria 3.5 (`lyria-3.5`); Lyria 3 Pro Preview (`lyria-3-pro-preview`); Lyria 3 Clip Preview (`lyria-3-clip-preview`); Lyria Realtime (`lyria-realtime`) |
+| Kuaishou / Kling AI | Kling Audio (`kling-audio`) |
+| MiniMax | Music 3.0 (`music-3.0`); Music 2.6 (`music-2.6`); Music Cover (`music-cover`) |
+| Pika | Pika Music (`pika-music`); Pika SFX (`pika-sfx`) |
 
 ### Embeddings
 
 | Provider | Cataloged models |
 | --- | --- |
+| Cohere | Embed v4 (`embed-v4.0`); Embed v5 Pro (`embed-v5.0-pro`); Embed v5 Fast (`embed-v5.0-fast`) |
+| Google DeepMind / Google | Gemini Embedding 2 (`gemini-embedding-2`); Gemini Embedding 001 (`gemini-embedding-001`) |
+| Jina AI | Jina Embeddings v3 (`jina-embeddings-v3`); Jina Embeddings v4 (`jina-embeddings-v4`); Jina Embeddings v5 Text Small (`jina-embeddings-v5-text-small`); Jina Embeddings v5 Text Nano (`jina-embeddings-v5-text-nano`); Jina Embeddings v5 Omni Small (`jina-embeddings-v5-omni-small`); Jina Embeddings v5 Omni Nano (`jina-embeddings-v5-omni-nano`) |
+| Mistral AI | Codestral Embed (`codestral-embed-2505`); Mistral Embed (`mistral-embed-2312`) |
+| OpenAI | Text Embedding 3 Large (`text-embedding-3-large`); Text Embedding 3 Small (`text-embedding-3-small`) |
+| Alibaba / Qwen / Wan | Qwen3.7 Text Embedding (`qwen3.7-text-embedding`); Text Embedding v4 (`text-embedding-v4`); Text Embedding v3 (`text-embedding-v3`) |
 
 Anthropic uses Messages, OpenAI uses Responses, and the other chat providers use their compatible Chat Completions endpoints. Cohere uses its dedicated compatibility URL. Native media, speech, realtime, and embedding factories route the other capabilities.
 
