@@ -76,7 +76,7 @@ it('loads media defaults, hides request content, and replaces options when the m
 		/>
 	);
 
-	await user.click(await screen.findByRole('button', { name: /Image.*Gemini Image/ }));
+	await user.click(await screen.findByRole('button', { name: /Image.*Image defaults/ }));
 	expect(screen.queryByText('prompt')).not.toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'Advanced' }));
 	expect(screen.getByText('aspectRatio')).toBeInTheDocument();
