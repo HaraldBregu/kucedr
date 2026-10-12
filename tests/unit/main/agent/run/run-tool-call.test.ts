@@ -43,6 +43,7 @@ describe('runToolCall', () => {
 			id: 'inspect',
 			name: 'Inspect',
 			description: 'run',
+			capability: { effects: ['read'] },
 			schema: { type: 'object' },
 			execute: run,
 		});
