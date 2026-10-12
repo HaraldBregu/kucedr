@@ -116,6 +116,8 @@ jobs:
           if-no-files-found: error
 
   release:
+    # Installers build on every main push; only a version tag publishes a release.
+    if: github.ref_type == 'tag'
     needs: [prepare, build]
     runs-on: ubuntu-latest
     permissions:
