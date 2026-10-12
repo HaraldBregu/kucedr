@@ -11,6 +11,7 @@ jest.mock('../../../../../src/main/agent/agent_store', () => ({
 	getModelOptions: jest.fn(() => ({})),
 	getProviderId: jest.fn(() => 'test-provider'),
 	getPermissions: jest.fn(() => ({ tools: {} })),
+	getToolConfiguration: jest.fn(() => ({ permission: 'allow' })),
 }));
 jest.mock('../../../../../src/main/agent/runner/run_model_turn', () => ({
 	runModelTurn: (...args: unknown[]) => mockRunModelTurn(...args),
