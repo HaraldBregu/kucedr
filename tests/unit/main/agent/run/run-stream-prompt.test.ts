@@ -855,6 +855,8 @@ describe('run stream system prompt', () => {
 	it.each(['microphone_recorder', 'camera_recorder', 'screen_recorder'])(
 		'summarizes after %s starts without allowing more tools',
 		async (id) => {
+			// camera_recorder defaults to 'ask', which a headless run can only deny.
+			setAgentProfileTool('chat', { kind: 'builtin', id }, { permission: 'allow' });
 			const recorder = jsonTool({
 				id,
 				category: 'system',
