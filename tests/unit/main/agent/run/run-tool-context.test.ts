@@ -25,6 +25,7 @@ const emptyPermissions = {
 	write: { allow: [], deny: [] },
 	exec: { allow: [], deny: [] },
 };
+const libraryPattern = `${path.resolve(libraryLocation()).replaceAll(path.sep, '/')}/**`;
 
 beforeEach(() => {
 	getPermissions.mockReset().mockReturnValue(emptyPermissions);
