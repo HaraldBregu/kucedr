@@ -139,8 +139,10 @@ jobs:
             dist/*.dmg
             dist/*.pkg
             dist/*.exe
+            dist/*.zip
             dist/*.AppImage
             dist/*.deb
+            dist/*.rpm
             dist/*.tar.gz
           if-no-files-found: error
 
