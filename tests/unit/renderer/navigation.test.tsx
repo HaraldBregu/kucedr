@@ -163,6 +163,14 @@ it.each([
 		</MemoryRouter>
 	);
 
+	// The layout shows a breadcrumb only for settings subroutes.
+	if (!path.slice('/settings/'.length).includes('/')) {
+		expect(
+			screen.queryByRole('navigation', { name: 'settings.breadcrumb.label' })
+		).not.toBeInTheDocument();
+		return;
+	}
+
 	const breadcrumb = screen.getByRole('navigation', { name: 'settings.breadcrumb.label' });
 	expect(within(breadcrumb).getByText(labelKey)).toBeInTheDocument();
 	if (path.startsWith('/settings/agent/')) {
