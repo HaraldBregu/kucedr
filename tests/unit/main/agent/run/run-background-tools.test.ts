@@ -36,6 +36,7 @@ it('distinguishes an omitted background allowlist from an explicit empty allowli
 				runId: 'background-run',
 				task: 'chat',
 				message: 'Do the work',
+				model: 'test-model',
 				agentId: 'tasks',
 				type: 'background',
 				contextMode: 'minimal',
