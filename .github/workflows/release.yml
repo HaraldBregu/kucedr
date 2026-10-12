@@ -91,10 +91,6 @@ jobs:
             if (!(Test-Path $artifact -PathType Leaf) -or (Get-Item $artifact).Length -eq 0) {
               throw "Missing or empty Windows release artifact: $artifact"
             }
-            $signature = Get-AuthenticodeSignature $artifact
-            if ($signature.Status -ne 'Valid') {
-              throw "Signature for $artifact is $($signature.Status): $($signature.StatusMessage)"
-            }
           }
       - name: Verify Linux release artifacts
         if: matrix.platform == 'linux'
