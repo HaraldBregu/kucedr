@@ -2,6 +2,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { realPath } from '../../../../../src/main/shared/real_path';
+import { libraryLocation } from '../../../../../src/main/shared/library_location';
 
 const getPermissions = jest.fn();
 const addPermissionRule = jest.fn();
