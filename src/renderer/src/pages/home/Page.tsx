@@ -52,6 +52,7 @@ import {
 	ChatContainerScrollAnchor,
 } from '@/components/ui/chat-container';
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
+import { LogoView } from '@/components/app/base/logo-view';
 import { PromptEditor } from '@/components/prompt-editor';
 import {
 	PromptInputAction,
