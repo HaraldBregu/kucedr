@@ -6,13 +6,6 @@ const mockRunModelTurn = jest.fn(async function* () {
 jest.mock('../../../../../src/main/settings_store', () => ({
 	getResolvedProvider: jest.fn(() => ({ id: 'test-provider', apiKey: 'key' })),
 }));
-jest.mock('../../../../../src/main/agent/agent_store', () => ({
-	getModelId: jest.fn(() => 'test-model'),
-	getModelOptions: jest.fn(() => ({})),
-	getProviderId: jest.fn(() => 'test-provider'),
-	getPermissions: jest.fn(() => ({ tools: {} })),
-	getToolConfiguration: jest.fn(() => ({ permission: 'allow' })),
-}));
 jest.mock('../../../../../src/main/agent/runner/run_model_turn', () => ({
 	runModelTurn: (...args: unknown[]) => mockRunModelTurn(...args),
 }));
