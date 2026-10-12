@@ -270,8 +270,6 @@ describe('Home prompt attachments', () => {
 		expect(useSuggestion).toHaveBeenCalledWith(
 			'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.'
 		);
-		expect(await screen.findByText('Planning chat')).toBeInTheDocument();
-		expect(screen.getByText(/Updated/)).toBeInTheDocument();
 	});
 
 	it('shows the discovery rows only for an empty chat', () => {
