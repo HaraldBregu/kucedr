@@ -52,7 +52,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	keepAwake: false,
 	soundFeedbackEnabled: false,
 	language: 'en',
-	theme: 'system',
+	theme: 'dark',
 	windowSize: '1200x800',
 	microphoneInputId: 'default',
 	voiceAgentAppearance: 'persona',
