@@ -178,6 +178,7 @@ function EmptyConversation(): ReactElement {
 	return (
 		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
 			<EmptyHeader className="max-w-lg gap-2">
+				<LogoView className="mx-auto size-12 rounded-xl" />
 				<EmptyTitle className="text-3xl font-bold leading-tight text-foreground">
 					{greeting}, how are you?
 				</EmptyTitle>
