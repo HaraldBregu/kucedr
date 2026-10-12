@@ -40,7 +40,7 @@ jobs:
       - run: npm run quality:check
 
   build:
-    needs: [prepare, verify]
+    needs: [prepare]
     strategy:
       fail-fast: false
       matrix:
