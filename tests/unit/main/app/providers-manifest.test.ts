@@ -294,10 +294,13 @@ describe('provider manifests', () => {
 		expect(
 			realtimeVoiceModels.map((model) => ({ id: model.id, providerId: model.provider.id }))
 		).toEqual([
+			{ id: 'gemini-3.8-live', providerId: 'google' },
+			{ id: 'gemini-3.8-live-extended-thinking', providerId: 'google' },
 			{ id: 'gpt-live-1', providerId: 'openai' },
 			{ id: 'gpt-realtime-2.1', providerId: 'openai' },
 			{ id: 'gpt-realtime-2.1-mini', providerId: 'openai' },
 			{ id: 'grok-voice-latest', providerId: 'xai' },
+			{ id: 'qwen3.8-omni-flash-realtime', providerId: 'qwen' },
 		]);
 		expect(realtimeVoiceModels).toEqual(
 			expect.arrayContaining([
