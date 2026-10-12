@@ -131,6 +131,7 @@ jobs:
           test -s "dist/Kucedr-${version}.AppImage"
           test -s "dist/Kucedr-${version}.tar.gz"
           test -s "dist/Kucedr-${version}.deb"
+          test -s "dist/Kucedr-${version}.rpm"
       - uses: actions/upload-artifact@v7
         with:
           name: kucedr-${{ needs.prepare.outputs.version }}-${{ matrix.platform }}
