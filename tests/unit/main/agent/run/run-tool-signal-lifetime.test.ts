@@ -10,6 +10,7 @@ it('clears the tool timeout while retaining parent-run cancellation after return
 			name: 'Background test',
 			description: 'test',
 			timeoutMs: 20,
+			capability: { effects: ['read'] },
 			schema: { type: 'object' },
 			execute: async (_input, signal) => {
 				receivedSignal = signal;
