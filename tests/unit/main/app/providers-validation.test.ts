@@ -30,9 +30,6 @@ function expectedPromptAttachments(providerId: string, modelId: string): unknown
 				maxTotalBytes: 20000000,
 			},
 		];
-	if (providerId === 'reka' && ['qwen3.8-27b', 'glm5.3-flash', 'gemma4-26b'].includes(modelId))
-		return [IMAGE_RULE];
-	if (providerId === 'reka' && ['glm5.3', 'deepseek4-flash'].includes(modelId)) return [];
 	if (
 		(providerId === 'xai' && modelId === 'grok-4.7') ||
 		(providerId === 'zai' && ['glm-5.3-flash', 'glm-5.3-flashx'].includes(modelId))

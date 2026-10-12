@@ -8,57 +8,6 @@
 	"icon_light_url": "/images/mistral.svg",
 	"models": [
 		{
-			"id": "zai-glm-5-3",
-			"name": "Z.ai GLM 5.3",
-			"type": "large-language-model",
-			"authentication": "api-key",
-			"url": "https://api.mistral.ai/v1",
-			"metadata": {
-				"promptAttachments": [],
-				"documentationUrl": "https://docs.mistral.ai/models/zai-glm-5-3",
-				"documentationStatus": "verified",
-				"inputs": {
-					"temperature": {
-						"type": "number",
-						"minimum": 0,
-						"maximum": 1
-					},
-					"top_p": {
-						"type": "number"
-					},
-					"max_tokens": {
-						"type": "integer",
-						"maximum": 131072
-					},
-					"min_tokens": {
-						"type": "integer"
-					},
-					"stop": {
-						"type": "array"
-					},
-					"random_seed": {
-						"type": "integer"
-					},
-					"response_format": {
-						"type": "object"
-					},
-					"tools": {
-						"type": "array"
-					},
-					"tool_choice": {
-						"type": "object"
-					},
-					"reasoning_effort": {
-						"type": "string",
-						"enum": ["low", "high", "max"]
-					}
-				},
-				"contextWindow": 1000000,
-				"contextWindowDocumentationUrl": "https://docs.mistral.ai/models/zai-glm-5-3"
-			},
-			"location": "remote"
-		},
-		{
 			"id": "mistral-large-4",
 			"name": "Mistral Large 4",
 			"type": "large-language-model",
