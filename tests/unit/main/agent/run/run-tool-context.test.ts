@@ -36,7 +36,7 @@ describe('media path approval', () => {
 		'runs %s in the workspace without an approval event',
 		async (name) => {
 			getPermissions.mockReturnValue({
-				...emptysPermissionsPlaceholder,
+				...emptyPermissions,
 				write: { allow: ['/appdata/agent/**', libraryPattern], deny: [] },
 			});
 			const run = jest.fn().mockResolvedValue('done');
