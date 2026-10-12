@@ -22,7 +22,7 @@ jobs:
         shell: bash
         run: |
           version="$(node -p "require('./package.json').version")"
-          if [[ "${GITHUB_REF_NAME}" != "v${version}" ]]; then
+          if [[ "${GITHUB_REF_TYPE}" == "tag" && "${GITHUB_REF_NAME}" != "v${version}" ]]; then
             echo "::error::Tag ${GITHUB_REF_NAME} does not match package version v${version}."
             exit 1
           fi
