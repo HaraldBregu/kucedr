@@ -236,8 +236,8 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation).queryByRole('link', { name: 'settings.overview.groups.mlModels' })
 	).not.toBeInTheDocument();
 	expect(
-		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.skills' })
-	).not.toBeInTheDocument();
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.skills' })
+	).toHaveAttribute('href', '/settings/skills');
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.coding.title' })
 	).not.toBeInTheDocument();
