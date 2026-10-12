@@ -109,7 +109,7 @@ it('hides application navigation during onboarding', () => {
 	expect(screen.queryByRole('button', { name: 'navigationBar.chat' })).not.toBeInTheDocument();
 });
 
-it('omits Account and Search icons on Home', () => {
+it('omits the Account icon but keeps Search on Home', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<NavigationBar showWorkspace />
@@ -117,7 +117,7 @@ it('omits Account and Search icons on Home', () => {
 	);
 
 	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'navigationBar.search' })).toBeInTheDocument();
 });
 
 it.each(['/home', '/settings/settings'])(
