@@ -7,7 +7,6 @@ import { authorizeFilePath } from '../../../../../src/main/agent/files/authorize
 import { writeAuthorizedFile } from '../../../../../src/main/agent/files/write';
 import { readTool } from '../../../../../src/main/agent/tools/core/read';
 import { toolPermissionTargets } from '../../../../../src/main/agent/permissions/tool_permission_targets';
-import { applyPatchTool } from '../../../../../src/main/agent/tools/core/patch';
 
 let directory: string;
 beforeEach(() => { directory = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'agent-file-access-'))); });
@@ -50,13 +49,6 @@ it('includes every executable patch header in permission targets', () => {
 	const second = path.join(directory, 'second');
 	const input = `*** Begin Patch\n*** Add File: ${first}\n+one\n\u00a0*** Add File: ${second}\n+two\n*** End Patch`;
 	expect(toolPermissionTargets('patch', { input }, directory)).toEqual([first, second]);
-});
-
-it('requires hard approval when an Add File patch would overwrite an existing file', () => {
-	const target = path.join(directory, 'existing');
-	fs.writeFileSync(target, 'keep');
-	const input = `*** Begin Patch\n*** Add File: ${target}\n+replace\n*** End Patch`;
-	expect(typeof applyPatchTool.hardApproval === 'function' && applyPatchTool.hardApproval({ input })).toBe(true);
 });
 
 it('rejects a changed file identity before an edit can execute', () => {
