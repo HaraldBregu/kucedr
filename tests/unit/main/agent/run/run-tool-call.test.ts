@@ -34,7 +34,7 @@ describe('runToolCall', () => {
 
 		await expect(pending).rejects.toThrow('cancelled');
 		expect(receivedSignal?.aborted).toBe(true);
-		expect(call.result).toBeUndefined();
+		expect(call.result).toMatchObject({ isError: true, content: expect.stringContaining('Cancelled') });
 	});
 
 	it('runs an allowed tool and records its result', async () => {
