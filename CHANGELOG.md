@@ -2,9 +2,9 @@
 
 All notable changes to this project are documented in this file.
 
-## [Unreleased] (1.1.0)
+## [1.2.0] - 2026-10-12
 
-Changes since [v1.0.2] (2026-07-26).
+Changes since [v1.0.2] (2026-07-26). Version 1.1.0 was never tagged; its changes ship here.
 
 ### Added
 
