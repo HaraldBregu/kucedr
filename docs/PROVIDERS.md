@@ -108,7 +108,7 @@ Names and IDs match the bundled manifests. Model metadata links to the official 
 | Mistral AI | Mistral Large 4 (`mistral-large-4`); Mistral Small 4 (`mistral-small-2603`); Ministral 3 14B (`ministral-14b-2512`); Ministral 3 8B (`ministral-8b-2512`); Ministral 3 3B (`ministral-3b-2512`); Mistral Large 2512 (`mistral-large-2512`); Mistral Medium 3.5 (`mistral-medium-3-5`); Devstral 2512 (`devstral-2512`) |
 | OpenAI | GPT-6 Astra (`gpt-6-astra`); GPT-6.1 Sol (`gpt-6.1-sol`); GPT-6 Sol (`gpt-6-sol`); GPT-6 Luna (`gpt-6-luna`); GPT-5.6 Sol (`gpt-5.6-sol`); GPT-5.6 Terra (`gpt-5.6-terra`); GPT-5.6 Luna (`gpt-5.6-luna`); GPT-5.5 (`gpt-5.5`); GPT-5.5 Pro (`gpt-5.5-pro`); GPT-5.4 (`gpt-5.4`); GPT-5.4 Pro (`gpt-5.4-pro`); GPT-5.4 Mini (`gpt-5.4-mini`); GPT-5.4 Nano (`gpt-5.4-nano`) |
 | Alibaba / Qwen / Wan | Qwen 3.8 Max (`qwen3.8-max`); Qwen 3.8 Max 0902 (`qwen3.8-max-0902`); Qwen 3.8 Flash (`qwen3.8-flash`); Qwen 3.7 Plus (`qwen3.7-plus`); Qwen 3.7 Flash (`qwen3.7-flash`); Qwen3.7 Max (`qwen3.7-max`); Qwen3.6 Plus (`qwen3.6-plus`); Qwen3.6 Flash (`qwen3.6-flash`); Qwen 3.8 Omni Flash (`qwen3.8-omni-flash`) |
-| Reka AI | Qwen 3.8 27B (`qwen3.8-27b`); GLM 5.3 Flash (`glm5.3-flash`); GLM 5.3 (`glm5.3`); Gemma 4 26B (`gemma4-26b`); DeepSeek 4 Flash (`deepseek4-flash`); Reka Flash (`reka-flash`); Reka Edge 2603 (`reka-edge-2603`) |
+| Reka AI | Reka Flash (`reka-flash`); Reka Edge 2603 (`reka-edge-2603`) |
 | xAI | Grok 4.7 (`grok-4.7`); Grok 4.3 (`grok-4.3`); Grok 4.6 (`grok-4.6`); Grok Build 0.1 (`grok-build-0.1`) |
 | Z.ai / Zhipu AI | GLM-5.3 FlashX (`glm-5.3-flashx`); GLM-5.3 Flash (`glm-5.3-flash`); GLM-5.3 (`glm-5.3`); GLM-5.2 (`glm-5.2`); GLM-5.1 (`glm-5.1`); GLM-5 (`glm-5`); GLM-5 Turbo (`glm-5-turbo`) |
 
