@@ -2,11 +2,14 @@ name: Release Electron app
 
 on:
   push:
+    branches: [main]
     tags: ['v*.*.*']
+  workflow_dispatch:
 
 concurrency:
   group: electron-release-${{ github.ref }}
-  cancel-in-progress: false
+  # Superseded branch builds are dropped; a release tag always runs to completion.
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
 
 permissions:
   contents: read
