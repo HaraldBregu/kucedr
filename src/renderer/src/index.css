@@ -4,6 +4,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@utility app-logo {
+	mask: url('@resources/icons/icon-clear.svg') center / contain no-repeat;
+}
+
 @utility no-scrollbar {
 	-ms-overflow-style: none;
 	scrollbar-width: none;
