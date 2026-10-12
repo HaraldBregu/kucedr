@@ -23,7 +23,17 @@ jest.mock('@/components/ui/select', () => ({
 }));
 
 jest.mock('@thilakbhat/heatmap-ui', () => ({
-	...jest.requireActual('@thilakbhat/heatmap-ui'),
+	// Mirrors the rolling period the real helper returns first.
+	calendarPeriods: (_values: unknown, { today }: { today: Date }) => [
+		{
+			key: 'rolling',
+			label: 'Last 12 months',
+			kind: 'rolling',
+			range: {
+				to: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+			},
+		},
+	],
 	CalendarHeatmap: ({ values, weeks, cellSize, to, shape, scale, colors, cellLabel, 'data-heatmap-theme': theme }: {
 		values: { date: string; value: number }[];
 		weeks: number;
