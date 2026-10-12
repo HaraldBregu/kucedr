@@ -55,6 +55,11 @@ Changes since [v1.0.2] (2026-07-26). Version 1.1.0 was never tagged; its changes
 - Simplified channel configuration around provider credentials and a single default channel.
 - Improved prompt editing, attachment handling, tool activity, permission prompts, message rendering, navigationbar behavior, audio/video players, and startup layout.
 - Updated English and Italian translations for the new and reorganized settings, providers, channels, storage, knowledge, and agent features.
+- Restructured the channels settings into a channel list and a single channel detail view.
+- Pruned the LLM catalogs to models with tool-calling support, trimming Cohere, Mistral, Reka, and retired Z.ai entries.
+- Replaced the light and dark logo images with a theme-aware masked logo and added it to the empty conversation state.
+- Moved generated-media saving into a shared main-process module and resolved media directories centrally.
+- Updated README, CONTRIBUTING, SECURITY, provider, package, and Supabase documentation.
 - Updated dependencies, including the Model Context Protocol SDK, `marked`, `node-cron`, PostCSS, and ts-jest.
 
 ### Fixed
