@@ -43,6 +43,10 @@ import {
 	setTaskConfiguration,
 } from '../../../../src/main/settings_store';
 import { getDatabaseConfiguration } from '../../../../src/main/database/database_store';
+import {
+	LOCAL_RAG_DATABASE_ID,
+	LOCAL_RAG_DATABASE_PROVIDER_ID,
+} from '../../../../src/shared/rag_types';
 import type { StoredProvider } from '../../../../src/shared/provider_types';
 import { storageProviders } from '../../../../src/main/storage/providers';
 
