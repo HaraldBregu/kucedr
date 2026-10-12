@@ -50,7 +50,7 @@ jobs:
             dist: npm run dist:mac
           - os: ubuntu-latest
             platform: linux
-            dist: npm run build && npx electron-builder --linux
+            dist: npm run dist:linux
           - os: windows-latest
             platform: windows
             dist: npm run dist:win
