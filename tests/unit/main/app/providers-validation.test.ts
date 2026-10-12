@@ -62,8 +62,7 @@ function expectedPromptAttachments(providerId: string, modelId: string): unknown
 		return [IMAGE_RULE, PDF_RULE];
 	}
 	if (['google', 'kimi', 'xai'].includes(providerId)) return [IMAGE_RULE];
-	if (providerId === 'mistral' && !['devstral-2512', 'zai-glm-5-3'].includes(modelId))
-		return [IMAGE_RULE];
+	if (providerId === 'mistral' && modelId !== 'devstral-2512') return [IMAGE_RULE];
 	if (providerId === 'qwen' && ['qwen3.6-plus', 'qwen3.6-flash'].includes(modelId))
 		return [IMAGE_RULE];
 	return [];
