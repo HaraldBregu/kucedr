@@ -1,13 +1,9 @@
 import { loadCloudConfig } from '../../../../src/main/cloud/config';
 
-const viteEnvironment = globalThis as typeof globalThis & {
-	__VITE_ENV__: Record<string, string | undefined>;
-};
 const originalUrl = process.env.SUPABASE_URL;
 const originalKey = process.env.SUPABASE_PUBLISHABLE_KEY;
 
 beforeEach(() => {
-	viteEnvironment.__VITE_ENV__ = {};
 	delete process.env.SUPABASE_URL;
 	delete process.env.SUPABASE_PUBLISHABLE_KEY;
 });

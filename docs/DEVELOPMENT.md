@@ -496,14 +496,19 @@ version. It builds on native macOS, Windows, and Linux runners. After every plat
 succeeds, it creates one GitHub Release containing DMG, PKG, macOS ZIP, NSIS EXE, portable
 EXE, DEB, RPM, AppImage, and tar.gz artifacts.
 
+Releases are published as GitHub pre-releases while Kucedr is in beta. The manifest version
+and tag stay plain semantic versions; only the GitHub Release carries the beta marker. Remove
+`prerelease: true` from `release.yml` for the first stable release.
+
 Verify:
 
 1. The `Release Electron app` workflow is green.
 2. The GitHub Release version and tag are correct.
-3. Every expected platform artifact is attached.
-4. macOS artifacts are signed and notarized.
-5. The Windows installer has a valid signature.
-6. Install and launch each artifact on its target operating system.
+3. The GitHub Release is marked as a pre-release.
+4. Every expected platform artifact is attached.
+5. macOS artifacts are signed and notarized.
+6. The Windows installer has a valid signature.
+7. Install and launch each artifact on its target operating system.
 
 ### Release the SDK
 

@@ -29,8 +29,3 @@ jobs:
       - run: npm run build:packages
       - run: npm pack --dry-run --workspace @kucedr/sdk
       - run: npm pack --dry-run --workspace @kucedr/cli
-      - run: npm run build:demo
-      - run: npm run build:coder
-      - run: npm run build:architect
-      - run: npm run build:videomaker
-      - run: npm run build:workspace

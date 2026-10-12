@@ -8,7 +8,13 @@ import pkg from './package.json';
 
 export default defineConfig({
 	main: {
-		envPrefix: ['MAIN_VITE_', 'VITE_'],
+		// Inline cloud config only when the build environment provides it, so local
+		// development keeps reading the root .env file at runtime.
+		define: Object.fromEntries(
+			['SUPABASE_URL', 'SUPABASE_PUBLISHABLE_KEY']
+				.filter((key) => process.env[key])
+				.map((key) => [`process.env.${key}`, JSON.stringify(process.env[key])])
+		),
 		plugins: [externalizeDepsPlugin()],
 		build: {
 			rollupOptions: {
