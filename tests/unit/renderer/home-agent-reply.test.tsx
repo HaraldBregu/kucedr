@@ -36,6 +36,10 @@ beforeEach(() => {
 			getSessionSnapshot: jest.fn().mockResolvedValue({ messages: [] }),
 		},
 	});
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: { getPathForFile: jest.fn().mockReturnValue('') },
+	});
 });
 
 it('resubmits an edited user message without adding it to the session twice', async () => {
