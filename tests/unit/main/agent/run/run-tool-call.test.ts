@@ -96,6 +96,7 @@ describe('runToolCall', () => {
 			id: 'inspect',
 			name: 'Inspect',
 			description: 'run',
+			capability: { effects: ['read'] },
 			schema: { type: 'object' },
 			execute: () => {
 				throw new Error('tool failed');
