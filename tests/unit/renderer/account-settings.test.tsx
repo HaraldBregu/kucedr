@@ -47,7 +47,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 	}) => (
 		<div data-testid="activity-heatmap" data-count={values.length} data-weeks={weeks}
 			data-cell-size={cellSize} data-to={to} data-shape={shape} data-scale={scale}
-			data-colors={colors.join(',')} data-heatmap-theme={theme}>
+			data-colors={colors?.join(',')} data-heatmap-theme={theme}>
 			{values.map((day) => <div key={day.date} className="heatmap__cell-slot" role="img" aria-label={cellLabel(day)} />)}
 		</div>
 	),
