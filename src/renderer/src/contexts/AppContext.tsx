@@ -62,7 +62,7 @@ function readPersistedTheme(): AppTheme {
 	} catch {
 		/* empty */
 	}
-	return 'system';
+	return 'dark';
 }
 
 function readPersistedVoiceAgentAppearance(): VoiceAgentAppearance {
