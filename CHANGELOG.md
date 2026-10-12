@@ -28,7 +28,19 @@ Changes since [v1.0.2] (2026-07-26). Version 1.1.0 was never tagged; its changes
 - Structured identity and user profiles with separate name and title fields, separate user pronouns, and generated `AGENTS.md` context from saved profiles.
 - Opt-in version-history file sync with local snapshots, immutable remote versions, and conflict-aware change tracking.
 - New settings pages for general preferences, persona, permissions, data, storage, apps, Library, Workspace, Knowledge, realtime voice, provider keys, and tasks.
-- Broader unit, integration, and end-to-end coverage for the agent runtime, permissions, sessions, providers, apps, channels, MCP, RAG, realtime voice, storage, settings, and media.
+- Provider manifests and catalogs for Black Forest Labs, Cartesia, Cohere, Deepgram, Ideogram, Jina, and Pika, plus expanded catalogs for Anthropic, Google, OpenAI, Qwen, Z.ai, Mistral, MiniMax, Kling, ElevenLabs, and xAI.
+- Speech-to-text adapters for Cartesia, Cohere, Google, MiniMax, Qwen, and Z.ai, with streaming transcription support.
+- Text-to-speech adapters for Pika, Qwen, and xAI, multi-speaker dialogue synthesis, and text-to-audio adapters for Google, Kling, MiniMax, and Pika.
+- Image adapters for Kling, MiniMax, OpenAI, and Z.ai, and video adapters for Black Forest Labs and Z.ai.
+- Google embeddings, ordered batch results, and embedding response validation.
+- Realtime voice support for Google and Qwen, including audio resampling, transport handling, and conversation history.
+- Sound feedback for messages, assistant activity, and navigation, with a menu toggle and a general settings preference.
+- Context usage reporting with per-model context limits and token accounting in the conversation view.
+- Health checks for scheduled tasks with status history and a dedicated health settings page.
+- Knowledge indexing status, progress, cancellation, sanitization, and validation, plus split Embedding, Indexing, Search, Sources, and Storage settings sections.
+- Onboarding steps for chat defaults, context compaction, media tools, voice, and per-service configuration.
+- Text selection handling, a navigationbar context menu, and media previews in settings rows.
+- Broader unit, integration, and end-to-end coverage for the agent runtime, permissions, sessions, providers, apps, channels, MCP, RAG, realtime voice, storage, settings, media, sounds, health, context usage, and model contracts.
 
 ### Changed
 
