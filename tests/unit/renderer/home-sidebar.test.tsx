@@ -411,7 +411,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
-it('shows Search, Settings and Get Help as sidebar items above the footer', async () => {
+it('shows Settings and Get Help as sidebar items above the footer', async () => {
 	const user = userEvent.setup();
 	listSessions.mockResolvedValue([]);
 
