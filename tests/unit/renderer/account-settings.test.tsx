@@ -41,7 +41,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		to: string;
 		shape: string;
 		scale: string;
-		colors: string[];
+		colors?: string[];
 		cellLabel: (day: { date: string; value: number }) => string;
 		'data-heatmap-theme'?: string;
 	}) => (
