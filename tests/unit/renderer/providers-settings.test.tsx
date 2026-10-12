@@ -370,7 +370,7 @@ it('keeps Connect and the API setup website available on model provider items', 
 	await user.click(within(openaiItem!).getByRole('button', { name: 'Open OpenAI API setup' }));
 	expect(window.app.openExternalUrl).toHaveBeenCalledWith('https://platform.openai.com/api-keys');
 	const connect = within(openaiItem!).getByRole('button', { name: 'Connect' });
-	expect(connect).toHaveClass('hover:bg-transparent', 'dark:hover:bg-transparent');
+	expect(connect).toHaveClass('hover:bg-muted', 'dark:hover:bg-muted/50');
 	await user.click(connect);
 	expect(within(openaiItem!).getByLabelText('OpenAI API key')).toBeInTheDocument();
 });
