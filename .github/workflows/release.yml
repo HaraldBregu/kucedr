@@ -65,39 +65,9 @@ jobs:
       - name: Install Linux packaging tools
         if: matrix.platform == 'linux'
         run: sudo apt-get update && sudo apt-get install -y rpm
-      - name: Configure macOS signing and notarization
-        if: matrix.platform == 'mac'
-        shell: bash
-        env:
-          MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
-          MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: |
-          : "${MAC_CSC_LINK:?MAC_CSC_LINK is required}"
-          : "${MAC_CSC_KEY_PASSWORD:?MAC_CSC_KEY_PASSWORD is required}"
-          : "${APPLE_ID:?APPLE_ID is required}"
-          : "${APPLE_APP_SPECIFIC_PASSWORD:?APPLE_APP_SPECIFIC_PASSWORD is required}"
-          : "${APPLE_TEAM_ID:?APPLE_TEAM_ID is required}"
-          echo "CSC_LINK=${MAC_CSC_LINK}" >> "$GITHUB_ENV"
-          echo "CSC_KEY_PASSWORD=${MAC_CSC_KEY_PASSWORD}" >> "$GITHUB_ENV"
-          echo "APPLE_ID=${APPLE_ID}" >> "$GITHUB_ENV"
-          echo "APPLE_APP_SPECIFIC_PASSWORD=${APPLE_APP_SPECIFIC_PASSWORD}" >> "$GITHUB_ENV"
-          echo "APPLE_TEAM_ID=${APPLE_TEAM_ID}" >> "$GITHUB_ENV"
-      - name: Configure Windows signing
-        if: matrix.platform == 'windows'
-        shell: bash
-        env:
-          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
-        run: |
-          : "${WIN_CSC_LINK:?WIN_CSC_LINK is required}"
-          : "${WIN_CSC_KEY_PASSWORD:?WIN_CSC_KEY_PASSWORD is required}"
-          echo "CSC_LINK=${WIN_CSC_LINK}" >> "$GITHUB_ENV"
-          echo "CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD}" >> "$GITHUB_ENV"
       - run: ${{ matrix.dist }}
         env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
       - name: Verify macOS release artifacts
