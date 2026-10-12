@@ -195,7 +195,7 @@
 		],
 		"signAndEditExecutable": true,
 		"artifactName": "${productName}.${ext}",
-		"forceCodeSigning": true,
+		"forceCodeSigning": false,
 		"signtoolOptions": {
 			"publisherName": "Kucedr Project"
 		},
