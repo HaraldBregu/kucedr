@@ -23,6 +23,7 @@ jest.mock('@/components/ui/select', () => ({
 }));
 
 jest.mock('@thilakbhat/heatmap-ui', () => ({
+	...jest.requireActual('@thilakbhat/heatmap-ui'),
 	CalendarHeatmap: ({ values, weeks, cellSize, to, shape, scale, colors, cellLabel, 'data-heatmap-theme': theme }: {
 		values: { date: string; value: number }[];
 		weeks: number;
