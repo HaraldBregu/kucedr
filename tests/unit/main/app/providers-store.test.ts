@@ -91,8 +91,8 @@ describe('providers in app settings', () => {
 
 		expect(getProvider('pinecone', 'databases')).toEqual(provider('pinecone', 'Pinecone'));
 		expect(getDatabaseConfiguration()).toEqual({
-			providerId: undefined,
-			databaseId: undefined,
+			providerId: LOCAL_RAG_DATABASE_PROVIDER_ID,
+			databaseId: LOCAL_RAG_DATABASE_ID,
 		});
 	});
 
