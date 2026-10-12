@@ -493,8 +493,8 @@ The root manifest version and tag must match exactly.
 
 The release workflow rejects a tag that does not equal `v` plus the root manifest
 version. It builds on native macOS, Windows, and Linux runners. After every platform
-succeeds, it creates one GitHub Release containing DMG, PKG, EXE, AppImage, and DEB
-artifacts.
+succeeds, it creates one GitHub Release containing DMG, PKG, macOS ZIP, NSIS EXE, portable
+EXE, DEB, RPM, AppImage, and tar.gz artifacts.
 
 Verify:
 
