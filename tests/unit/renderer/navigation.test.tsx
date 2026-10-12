@@ -215,7 +215,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(workspace).toBeInTheDocument();
 	expect(pageContainer).toHaveClass('pb-6');
 	expect(pageContainer).not.toHaveClass('pt-6', 'py-6');
-	expect(screen.getByRole('heading', { name: 'Settings page' })).toHaveClass('text-lg');
+	expect(screen.getByRole('heading', { name: 'Settings page' })).toHaveClass('text-3xl');
 	expect(returnToChat).toHaveAttribute('href', '/home');
 	expect(within(sidebar as HTMLElement).getAllByRole('link')[0]).toBe(returnToChat);
 	expect(
