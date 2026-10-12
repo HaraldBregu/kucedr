@@ -37,6 +37,9 @@ module.exports = {
 			moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 			moduleNameMapper: {
 				'^@earendil-works/pi-coding-agent$': '<rootDir>/tests/mocks/pi-coding-agent.ts',
+				// @cline/sdk publishes only an "import" export condition, which the CJS
+				// resolver can't match; substitute a CJS-compatible mock.
+				'^@cline/sdk$': '<rootDir>/tests/mocks/cline-sdk.ts',
 				'^node-pty$': '<rootDir>/tests/mocks/node-pty.ts',
 				'^shell-env$': '<rootDir>/tests/mocks/shell-env.ts',
 				'^electron$': '<rootDir>/tests/mocks/electron.ts',
