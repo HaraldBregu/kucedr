@@ -97,6 +97,16 @@ jobs:
           echo "CSC_LINK=${WIN_CSC_LINK}" >> "$GITHUB_ENV"
           echo "CSC_KEY_PASSWORD=${WIN_CSC_KEY_PASSWORD}" >> "$GITHUB_ENV"
       - run: ${{ matrix.dist }}
+      - name: Verify macOS release artifacts
+        if: matrix.platform == 'mac'
+        shell: bash
+        run: |
+          version='${{ needs.prepare.outputs.version }}'
+          for arch in x64 arm64; do
+            test -s "dist/Kucedr-${version}-${arch}.dmg"
+            test -s "dist/Kucedr-installer-${version}-${arch}.pkg"
+            test -s "dist/Kucedr-${version}-${arch}.zip"
+          done
       - name: Verify Windows release artifacts
         if: matrix.platform == 'windows'
         shell: pwsh
