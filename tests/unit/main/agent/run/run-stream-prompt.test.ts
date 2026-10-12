@@ -68,6 +68,7 @@ import { createSessionState } from '../../../../../src/main/agent/session';
 import type { Message, Tool } from '../../../../../src/main/agent/types';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { ExecutionBudget } from '../../../../../src/main/agent/execution/budget';
+import { setAgentProfileTool } from '../../../../../src/main/agent/agent_profiles';
 import * as authorizeModule from '../../../../../src/main/agent/tools/mcp/authorize';
 import * as mcpModule from '../../../../../src/main/mcp';
 
