@@ -9,6 +9,10 @@ describe('runToolCall', () => {
 	it('propagates cancellation to the tool and stops waiting', async () => {
 		const controller = new AbortController();
 		let receivedSignal: AbortSignal | undefined;
+		let started: () => void = () => undefined;
+		const executing = new Promise<void>((resolve) => {
+			started = resolve;
+		});
 		const tool = jsonTool({
 			id: 'search_web',
 			name: 'Search web',
@@ -16,6 +20,7 @@ describe('runToolCall', () => {
 			schema: { type: 'object' },
 			execute: (_input, signal) => {
 				receivedSignal = signal;
+				started();
 				return new Promise(() => undefined);
 			},
 		});
@@ -24,6 +29,7 @@ describe('runToolCall', () => {
 
 		expect((await events.next()).value).toMatchObject({ type: 'tool_call_start' });
 		const pending = events.next();
+		await executing;
 		controller.abort(new Error('cancelled'));
 
 		await expect(pending).rejects.toThrow('cancelled');
