@@ -268,15 +268,16 @@ npx --no-install electron .
 
 Build installers on the native target operating system:
 
-| Operating system | Command                                         | Output                              |
-| ---------------- | ----------------------------------------------- | ----------------------------------- |
-| Windows          | `npm run dist:win`                              | x64 NSIS and portable `.exe`        |
-| Windows          | `npm run dist:win:portable`                     | x64 portable `.exe` only            |
-| macOS            | `npm run dist:mac`                              | x64/arm64 `.dmg` and `.pkg`         |
-| macOS            | `npm run dist:mac:dmg`                          | x64/arm64 `.dmg` only               |
-| Linux            | `npm run dist:linux:appimage`                   | x64 `.AppImage`                     |
-| Linux            | `npm run dist:linux:portable`                   | x64 `.AppImage` and `.tar.gz`       |
-| Linux            | `npm run build && npx electron-builder --linux` | x64 `.AppImage`, `.tar.gz`, and DEB |
+| Operating system | Command                       | Output                                           |
+| ---------------- | ----------------------------- | ------------------------------------------------ |
+| Windows          | `npm run dist:win`            | x64 NSIS and portable `.exe`                     |
+| Windows          | `npm run dist:win:portable`   | x64 portable `.exe` only                         |
+| macOS            | `npm run dist:mac`            | x64/arm64 `.dmg`, `.pkg`, and portable `.zip`    |
+| macOS            | `npm run dist:mac:dmg`        | x64/arm64 `.dmg` only                            |
+| macOS            | `npm run dist:mac:portable`   | x64/arm64 portable `.zip` only                   |
+| Linux            | `npm run dist:linux`          | x64 `.deb`, `.rpm`, `.AppImage`, and `.tar.gz`   |
+| Linux            | `npm run dist:linux:appimage` | x64 `.AppImage`                                  |
+| Linux            | `npm run dist:linux:portable` | x64 `.AppImage` and `.tar.gz`                    |
 
 Artifacts are written to the root `dist/` directory. Local packaging never uploads because
 `electron-builder.json` sets `publish` to `null`.
