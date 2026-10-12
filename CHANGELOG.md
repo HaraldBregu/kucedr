@@ -84,7 +84,7 @@ Changes since [v1.0.2] (2026-07-26). Version 1.1.0 was never tagged; its changes
 - Legacy cron modules and tool names superseded by tasks.
 - Obsolete policy settings and policy modules superseded by permissions and sandbox controls.
 - Temporary Electron and Playwright driver scripts used during development.
-- The apps submenu from the application menu and the tray quick-chat entry.
+- The apps submenu from the application menu, and the apps and tasks submenus from the tray menu.
 - The combined setup models and setup search onboarding steps superseded by the per-service steps.
 
 [1.2.0]: https://github.com/HaraldBregu/kucedr/compare/v1.0.2...v1.2.0
