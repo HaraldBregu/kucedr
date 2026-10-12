@@ -440,9 +440,8 @@ it('shows Search, Settings and Get Help as sidebar items above the footer', asyn
 	expect(
 		screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })
 	).not.toBeInTheDocument();
-	const search = screen.getByRole('button', { name: 'navigationBar.search' });
-	expect(search.closest('[data-slot="sidebar-footer"]')).toBeNull();
-	expect(search.querySelectorAll('kbd')).toHaveLength(2);
+	// Search lives in the navigation bar, not the sidebar.
+	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	expect(accountMenu.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
 	await user.click(accountMenu);
