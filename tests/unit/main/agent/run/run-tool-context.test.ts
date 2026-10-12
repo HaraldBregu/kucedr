@@ -145,7 +145,12 @@ describe('exec path approval', () => {
 			1
 		);
 		await end;
-		expect(addPermissionRule).toHaveBeenCalledWith('exec', 'allow', `${path.resolve('/outside')}/**`);
+		expect(addPermissionRule).toHaveBeenCalledWith(
+			'exec',
+			'allow',
+			`${path.resolve('/outside')}/**`,
+			'chat'
+		);
 		expect(run).toHaveBeenCalledTimes(1);
 	});
 
