@@ -860,6 +860,7 @@ describe('run stream system prompt', () => {
 				category: 'system',
 				name: id,
 				description: id,
+				capability: { effects: ['sensor', 'write'] },
 				schema: { type: 'object' },
 				execute: () => ({ id: 'recording-1', status: 'recording' }),
 			});
