@@ -172,7 +172,7 @@ export class AuthService {
 					? this.accountMismatchError().message
 					: 'Sign-in could not be completed. Please try again.';
 			this.setState({ ...this.state, error });
-			throw new Error(error);
+			throw new Error(error, { cause });
 		} finally {
 			this.accountChangeAllowed = false;
 		}
