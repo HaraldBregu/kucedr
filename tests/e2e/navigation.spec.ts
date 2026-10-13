@@ -729,41 +729,37 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
 	});
 	const resources = [
-		{ name: 'Skills', path: 'skills', icon: 'sparkles' },
-		{ name: 'Tasks', path: 'tasks', icon: 'list-checks' },
-		{ name: 'MCP Servers', path: 'mcp', icon: 'plug-zap' },
-		{ name: 'Health', path: 'health', icon: 'heart-pulse' },
-		{ name: 'Permissions', path: 'permissions', icon: 'shield-check' },
-		{ name: 'Knowledge', path: 'rag', icon: 'book-open-text' },
+		{ name: /^Tools/, path: 'tools', icon: 'wrench' },
+		{ name: /^MCP tools/, path: 'mcp-tools', icon: 'network' },
+		{ name: /^Permissions/, path: 'permissions', icon: 'shield-check' },
 	];
 	for (const resource of resources) {
 		await page.evaluate(() => {
 			window.location.hash = '#/settings/agent';
 		});
-		const name = new RegExp(resource.name, 'i');
+		const name = resource.name;
 		const sidebarLink = page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name });
 		await expect(sidebarLink).toHaveCount(0);
-		const role = ['health', 'permissions', 'rag'].includes(resource.path) ? 'button' : 'link';
-		const pageLink = page.locator('[data-slot="settings-workspace"]').getByRole(role, { name });
+		const pageLink = page.locator('[data-slot="settings-workspace"]').getByRole('link', { name });
 		await expect(pageLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
 		await pageLink.click();
 		await expect(page).toHaveURL(new RegExp(`#/settings/agent/${resource.path}$`));
 		await expect(
 			page
 				.locator('[data-slot="settings-sidebar"]')
-				.getByRole('link', { name: 'Agent', exact: true })
+				.getByRole('link', { name: 'Chat', exact: true })
 		).toHaveAttribute('aria-current', 'page');
 		await expect(page.getByRole('heading', { name, level: 1 })).toBeVisible();
 		await page
-			.getByRole('navigation', { name: 'Settings navigation' })
-			.getByRole('link', { name: 'Agent', exact: true })
+			.locator('[data-slot="settings-sidebar"]')
+			.getByRole('link', { name: 'Chat', exact: true })
 			.click();
 	}
-	await expect(page.getByRole('heading', { name: 'Agent', exact: true })).toBeVisible();
-	await page
+	await expect(page.getByRole('heading', { name: 'Chat', exact: true, level: 1 })).toBeVisible();
+	const permissions = page
 		.locator('[data-slot="settings-workspace"]')
-		.getByRole('link', { name: /Skills/ })
-		.scrollIntoViewIfNeeded();
+		.getByRole('link', { name: /^Permissions/ });
+	await permissions.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('agent-desktop.png'), fullPage: true });
 	await app.evaluate(({ BrowserWindow }) => {
 		const window = BrowserWindow.getAllWindows()[0];
@@ -771,10 +767,7 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		window.setSize(390, 800);
 	});
 	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
-	const skills = page
-		.locator('[data-slot="settings-workspace"]')
-		.getByRole('link', { name: /Skills/ });
-	await skills.scrollIntoViewIfNeeded();
+	await permissions.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('agent-narrow.png'), fullPage: true });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
 		true
