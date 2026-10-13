@@ -198,7 +198,9 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 		this.finishOutputTurn();
 	}
 
-	async addToolResult(): Promise<void> {}
+	async addToolResult(): Promise<void> {
+		// This transport reports tool results through its own output turn.
+	}
 
 	async stop(): Promise<void> {
 		if (this.closed) return;

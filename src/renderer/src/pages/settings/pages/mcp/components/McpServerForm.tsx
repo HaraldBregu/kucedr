@@ -540,7 +540,7 @@ export function McpServerForm({
 
 			{type === 'stdio' && (
 				<p className="text-[13px] text-muted-foreground">
-					Saved local MCP commands run with your desktop account's privileges. Tool approvals apply
+					Saved local MCP commands run with your desktop account&apos;s privileges. Tool approvals apply
 					after the server launches.
 				</p>
 			)}

@@ -175,7 +175,7 @@ const McpDetailsPage: React.FC = () => {
 			{server.data.type === 'stdio' && (
 				<SettingsNotice>
 					Save, enable or test only local server commands you trust. They run with your desktop
-					account's privileges.
+					account&apos;s privileges.
 				</SettingsNotice>
 			)}
 			{error && (

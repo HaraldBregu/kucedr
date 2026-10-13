@@ -68,14 +68,17 @@ export const ShaderOrb = ({
 	const [paintedKey, setPaintedKey] = useState<string | null>(null);
 	const drive = useRef<OrbDrive>({ state });
 
-	drive.current.state = state;
-	drive.current.params = params;
-	drive.current.colors = colors;
-	drive.current.statePresets = statePresets;
-	drive.current.stateColors = stateColors;
-	drive.current.stateVolumes = stateVolumes;
-	drive.current.volumes = volumes;
-	drive.current.paused = paused;
+	// Commit after every render, before the renderer effect below starts the loop.
+	useEffect(() => {
+		drive.current.state = state;
+		drive.current.params = params;
+		drive.current.colors = colors;
+		drive.current.statePresets = statePresets;
+		drive.current.stateColors = stateColors;
+		drive.current.stateVolumes = stateVolumes;
+		drive.current.volumes = volumes;
+		drive.current.paused = paused;
+	});
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
