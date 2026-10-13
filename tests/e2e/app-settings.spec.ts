@@ -4,6 +4,8 @@ import path from 'node:path';
 import { launchApp } from './helpers';
 import { closeApp } from './close';
 
+const isLinux = process.platform === 'linux';
+
 test('uploaded app settings persist in manifests and control new windows', async ({
 	browserName: _browserName,
 }, testInfo) => {
