@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetupCompaction } from '../../../src/renderer/src/pages/start/components/SetupCompaction';

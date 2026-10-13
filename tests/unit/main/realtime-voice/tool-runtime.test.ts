@@ -6,7 +6,6 @@ import { respondToolPermission } from '../../../../src/main/agent/permissions';
 import { loadMessagesBySessionId } from '../../../../src/main/agent/session/session_load_messages_by_session_id';
 import { realtimeVoiceConversationFactory } from '../../../../src/main/agent/realtime_voice/conversation';
 import { RealtimeVoiceToolRuntime } from '../../../../src/main/agent/realtime_voice/tool_runtime';
-import { jsonTool } from '../../../../src/main/agent/tools/tool';
 import type { RealtimeVoiceConnection } from '../../../../src/main/models/adapters/realtime_voice';
 
 const CHAT_SESSION_ID = '11111111-1111-4111-8111-111111111111';

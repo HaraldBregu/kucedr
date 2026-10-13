@@ -6,15 +6,6 @@ const successfulTurn = async function* () {
 	yield* [];
 	return { content: 'done', model: 'test-model', toolCalls: [] };
 };
-const toolTurn = (toolIds: string[]) =>
-	async function* () {
-		yield* [];
-		return {
-			content: '',
-			model: 'test-model',
-			toolCalls: toolIds.map((name) => ({ id: `call-${name}`, name, args: {} })),
-		};
-	};
 const runModelTurnMock = jest.fn(successfulTurn);
 const appendRunMock = jest.fn();
 const closeMcpMock = jest.fn();

@@ -239,7 +239,6 @@ it('backs up directly and confirms before restoring matching local files', async
 });
 
 it('rehydrates a running backup after the page remounts', async () => {
-	const user = userEvent.setup();
 	storageApi.getSettings.mockResolvedValue({ ...settings, paths: ['/data/agent'] });
 	storageApi.getOperationStatus.mockResolvedValue({
 		operationId: 'backup-1',
