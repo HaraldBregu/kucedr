@@ -496,7 +496,7 @@ function PromptInput({
 													event.stopPropagation();
 													onVoiceEnd?.();
 												}}
-												className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white/70 backdrop-blur-sm transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 disabled:pointer-events-none disabled:opacity-50"
+												className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full border border-border bg-background/60 text-muted-foreground backdrop-blur-sm transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
 											>
 												<X className="size-4" strokeWidth={2.4} />
 											</button>
