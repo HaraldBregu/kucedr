@@ -81,8 +81,10 @@ test('uploaded app settings persist in manifests and control new windows', async
 		await expect
 			.poll(() =>
 				app.evaluate(({ BrowserWindow }) => {
-					const win = BrowserWindow.getAllWindows().find(
-						(item) => item.getTitle() === 'Window Demo'
+					// Match on the shell URL, not the title: window titles depend on a
+					// window manager, which the headless CI display does not provide.
+					const win = BrowserWindow.getAllWindows().find((item) =>
+						item.webContents.getURL().includes('app.html#app/Window%20Demo')
 					);
 					return (
 						win && {
@@ -139,8 +141,10 @@ test('uploaded app settings persist in manifests and control new windows', async
 		await expect
 			.poll(() =>
 				app.evaluate(({ BrowserWindow }) => {
-					const win = BrowserWindow.getAllWindows().find(
-						(item) => item.getTitle() === 'Window Demo'
+					// Match on the shell URL, not the title: window titles depend on a
+					// window manager, which the headless CI display does not provide.
+					const win = BrowserWindow.getAllWindows().find((item) =>
+						item.webContents.getURL().includes('app.html#app/Window%20Demo')
 					);
 					return win?.getSize();
 				})
