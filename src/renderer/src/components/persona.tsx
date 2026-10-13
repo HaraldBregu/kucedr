@@ -60,6 +60,11 @@ export function Persona({
 		const container = mountRef.current;
 		if (!container) return;
 
+		// Additive white reads as glow on dark; on light it burns out, so ink the
+		// lines and composite them normally instead.
+		const lineColor = isDark ? 0xffffff : 0x1c1917;
+		const lineBlending = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
+
 		const scene = new THREE.Scene();
 		const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -10, 10);
 		camera.position.z = 2;
