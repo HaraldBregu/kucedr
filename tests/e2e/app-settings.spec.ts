@@ -107,6 +107,7 @@ test('uploaded app settings persist in manifests and control new windows', async
 		});
 		page = await app.firstWindow();
 		await page.waitForLoadState('domcontentloaded');
+		await expect(page).toHaveURL(/#\/?start$/);
 		expect(await page.evaluate(() => window.apps.getSettings('window-demo'))).toMatchObject({
 			width: 1000,
 			height: 720,
