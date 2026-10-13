@@ -281,9 +281,11 @@ Build installers on the native target operating system:
 Artifacts are written to the root `dist/` directory. Local packaging never uploads because
 `electron-builder.json` sets `publish` to `null`.
 
-Production Windows packaging requires the signing certificate configured through
-`CSC_LINK` and `CSC_KEY_PASSWORD`. Production macOS packaging requires signing and
-notarization credentials. There are no development/staging distribution scripts in the current root manifest.
+Code signing is currently off: `electron-builder.json` sets macOS `notarize` to `false` and
+Windows `forceCodeSigning` to `false`, so beta installers are unsigned. Signing a build requires
+re-enabling those options and supplying `CSC_LINK` and `CSC_KEY_PASSWORD` (plus Apple
+notarization credentials for macOS). There are no development/staging distribution scripts in the
+current root manifest.
 
 Building `.rpm` locally requires the `rpm` tool on the build machine (`sudo apt-get install rpm`
 on Debian and Ubuntu).
