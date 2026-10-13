@@ -99,8 +99,8 @@ export function Persona({
 			).data;
 			const material = [
 				new LineMaterial({
-					blending: THREE.AdditiveBlending,
-					color: 0xffffff,
+					blending: lineBlending,
+					color: lineColor,
 					depthTest: false,
 					depthWrite: false,
 					linewidth: 1.3,
@@ -109,8 +109,8 @@ export function Persona({
 					worldUnits: false,
 				}),
 				new LineMaterial({
-					blending: THREE.AdditiveBlending,
-					color: 0xffffff,
+					blending: lineBlending,
+					color: lineColor,
 					depthTest: false,
 					depthWrite: false,
 					linewidth: 5.2,
@@ -119,8 +119,8 @@ export function Persona({
 					worldUnits: false,
 				}),
 				new LineMaterial({
-					blending: THREE.AdditiveBlending,
-					color: 0xffffff,
+					blending: lineBlending,
+					color: lineColor,
 					depthTest: false,
 					depthWrite: false,
 					linewidth: 11.7,
