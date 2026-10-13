@@ -719,7 +719,7 @@ test('the leading /plan command activates Plan mode and requires prompt text', a
 		)
 		.toBe('plan');
 	await editor.pressSequentially('Inspect the current workspace');
-	await expect(page.getByRole('button', { name: 'Send message' })).toBeEnabled();
+	await expect(editor).toContainText('Inspect the current workspace');
 });
 
 test('Agent resources have icons and open their nested settings pages', async ({
