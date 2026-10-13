@@ -58,7 +58,7 @@ export function VoiceWindow({
 				</span>
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
-				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] border border-border bg-neutral-950">
+				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] border border-border bg-card">
 					{voice.pendingPermission ? (
 						<div className="h-full w-full overflow-y-auto p-3">
 							<ToolPermissionCard
