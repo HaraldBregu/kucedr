@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import { tmpdir } from 'os';
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
+import { defineConfig, externalizeDepsPlugin, loadEnv } from 'electron-vite';
 import react from '@vitejs/plugin-react';
 import typegpuPlugin from 'unplugin-typegpu/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
