@@ -18,8 +18,10 @@ Do not put `SUPABASE_SECRET_KEY`, service-role keys, JWT signing keys, or databa
 in the application environment. Kucedr rejects secret-key prefixes at startup. The JWKS
 endpoint is derived by Supabase and does not need a separate application variable.
 
-Packaged builds read the same variables from the process environment; the root `.env` file is
-loaded in development only. Cloud sign-in stays disabled when either value is missing.
+`electron.vite.config.ts` inlines both values into the packaged main process at build time,
+preferring the build environment and falling back to the root `.env` file, because packaged
+builds never read `.env` at runtime. CI supplies them as the repository variables `SUPABASE_URL`
+and `SUPABASE_PUBLISHABLE_KEY`. Cloud sign-in stays disabled when either value is missing.
 
 Kucedr uses `@supabase/supabase-js`. Do not add `@supabase/server`; that package targets
 stateless HTTP servers and Edge Functions, not Electron's persistent main process.
