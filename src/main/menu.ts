@@ -102,7 +102,7 @@ export class Menu {
 					},
 					isMac
 						? { label: m.close, role: 'close' as const }
-						: { label: m.quit, role: 'quit' as const },
+						: { label: m.quit, role: 'quit' as const, accelerator: 'CmdOrCtrl+Q' },
 				],
 			},
 			{
