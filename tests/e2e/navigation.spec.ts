@@ -708,13 +708,14 @@ test('the leading /plan command activates Plan mode and requires prompt text', a
 	await page.getByRole('button', { name: 'Send message' }).click();
 	await expect(editor.locator('[data-plan-command]')).toHaveText('Plan');
 
-	const selectedSession = await page.evaluate(() => localStorage.getItem('chat-session-id'));
-	expect(selectedSession).toBeTruthy();
+	// 'home' is the default session id used until a chat is explicitly selected.
+	const selectedSession =
+		(await page.evaluate(() => localStorage.getItem('chat-session-id'))) ?? 'home';
 	await expect
 		.poll(() =>
 			page.evaluate((sessionId) => {
 				const modes = JSON.parse(localStorage.getItem('kucedr-interaction-modes') ?? '{}');
-				return modes[sessionId ?? ''];
+				return modes[sessionId];
 			}, selectedSession)
 		)
 		.toBe('plan');
