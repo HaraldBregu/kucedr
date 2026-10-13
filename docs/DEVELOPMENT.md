@@ -322,8 +322,8 @@ Reports are written to `coverage/`.
 
 ### Match the automated CI gate
 
-The stored `.github/workflows/ci.yml.disabled` definition is inactive. If explicitly restored
-to an enabled workflow, its verification commands include:
+`.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. Its
+verification commands are:
 
 ```sh
 npm ci
