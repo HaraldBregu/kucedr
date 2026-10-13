@@ -9,6 +9,7 @@ test('deleting a session removes its folder from the active data root', async ()
 	const deletedId = '11111111-1111-4111-8111-111111111111';
 	const keptId = '22222222-2222-4222-8222-222222222222';
 	try {
+		await expect(page).toHaveURL(/#\/?start$/);
 		for (const id of [deletedId, keptId]) {
 			const folder = path.join(userDataDir, 'sessions', id);
 			mkdirSync(folder, { recursive: true });
