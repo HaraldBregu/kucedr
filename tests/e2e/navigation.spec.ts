@@ -863,10 +863,10 @@ test('Database saves and reloads database credentials from Providers', async ({
 		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
 	});
 	await page.evaluate(() => {
-		window.location.hash = '#/settings/providers/models';
+		window.location.hash = '#/settings/providers';
 	});
-	const sidebar = page.locator('[data-slot="settings-sidebar"]');
-	const link = sidebar.getByRole('link', { name: 'Database', exact: true });
+	const workspace = page.locator('[data-slot="settings-workspace"]');
+	const link = workspace.getByRole('link', { name: /^Database/ });
 	await expect(link.locator('svg.lucide-database')).toBeVisible();
 	await link.click();
 	await expect(page).toHaveURL(/#\/settings\/providers\/database$/);
