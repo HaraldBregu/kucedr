@@ -147,7 +147,7 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 	);
 });
 
-test('the navbar keeps Workspace and opens Search from the sidebar', async () => {
+test('the navbar opens Search and Workspace keeps its sidebar footer', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
