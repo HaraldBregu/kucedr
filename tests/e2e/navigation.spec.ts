@@ -704,7 +704,9 @@ test('the leading /plan command activates Plan mode and requires prompt text', a
 	const editor = page.getByRole('textbox', { name: 'Message your assistant' });
 	await editor.pressSequentially('/plan');
 	await expect(editor.locator('[data-plan-command]')).toHaveText('Plan');
-	await expect(page.getByRole('button', { name: 'Send message' })).toBeDisabled();
+	// Submitting a bare /plan is a no-op: the draft survives instead of being sent.
+	await page.getByRole('button', { name: 'Send message' }).click();
+	await expect(editor.locator('[data-plan-command]')).toHaveText('Plan');
 
 	const selectedSession = await page.evaluate(() => localStorage.getItem('chat-session-id'));
 	expect(selectedSession).toBeTruthy();
