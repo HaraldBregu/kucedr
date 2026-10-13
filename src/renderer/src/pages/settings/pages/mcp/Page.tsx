@@ -108,6 +108,7 @@ const McpPage = (): React.JSX.Element => {
 								try {
 									await save(server.id, { ...server.data, enabled });
 								} catch {
+									// The row keeps its previous state when saving fails.
 								} finally {
 									setSavingId(null);
 								}

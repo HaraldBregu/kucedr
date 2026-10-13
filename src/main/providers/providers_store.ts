@@ -131,7 +131,9 @@ function migrateStorageProviders(): void {
 						}) as PersistedStorageProvider
 				),
 			};
-		} catch {}
+		} catch {
+			// Ignore an unreadable store and fall through to legacy migration.
+		}
 	}
 	const legacyPath = path.resolve(userDataLocation(), 'settings', 'storage.json');
 	if (
@@ -164,7 +166,9 @@ function migrateStorageProviders(): void {
 			restrictProviderPermissions(path.dirname(providersStore.path), providersStore.path);
 		}
 		unlinkSync(legacyPath);
-	} catch {}
+	} catch {
+		// Legacy cleanup is best effort.
+	}
 }
 
 function migrateLegacyProviders(): void {
@@ -203,7 +207,9 @@ function migrateLegacyProviders(): void {
 		} finally {
 			key.fill(0);
 		}
-	} catch {}
+	} catch {
+		// Legacy migration is best effort.
+	}
 }
 
 function openLegacyProvider(
