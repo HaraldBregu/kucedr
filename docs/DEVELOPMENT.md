@@ -231,8 +231,7 @@ Also verify formatting without rewriting files:
 npm run format:check
 ```
 
-The disabled CI definition includes this gate. Run it locally before submitting changes;
-there is currently no active CI workflow.
+The `CI` workflow runs this gate. Run it locally before submitting changes.
 
 ### Production build
 
