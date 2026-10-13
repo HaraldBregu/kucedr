@@ -234,7 +234,7 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 					return;
 				}
 				if (process.platform === 'darwin') {
-					let status: string = 'unknown';
+					let status: string;
 					try {
 						status = systemPreferences.getMediaAccessStatus('screen');
 					} catch {

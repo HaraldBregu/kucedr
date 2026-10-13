@@ -6,7 +6,7 @@ import { sessionsRoot } from './session_sessions_root';
 export function renameSession(sessionId: string, location: string, title: string): void {
 	const filePath = infoFile(sessionsRoot(location), sessionId);
 	if (!existsSync(filePath)) throw new Error('Assistant session not found.');
-	let info: Record<string, unknown> = {};
+	let info: Record<string, unknown>;
 	try {
 		info = JSON.parse(readFileSync(filePath, 'utf8')) as Record<string, unknown>;
 	} catch {

@@ -125,7 +125,6 @@ export async function* stream(
 			const event = { type: 'run_finished', result: toResult(session, 'success') } as const;
 			tryAppendRun(session, event);
 			yield event;
-			terminal = true;
 		}
 		if (!signal.aborted) throw error;
 		return;
@@ -141,7 +140,6 @@ export async function* stream(
 		const event = { type: 'run_finished', result: toResult(session, 'success') } as const;
 		tryAppendRun(session, event);
 		yield event;
-		terminal = true;
 	}
 }
 
