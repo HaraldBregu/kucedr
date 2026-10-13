@@ -43,6 +43,7 @@ export function Persona({
 	style,
 	...props
 }: PersonaProps): ReactElement {
+	const isDark = useIsDark();
 	const mountRef = useRef<HTMLDivElement>(null);
 	const stateRef = useRef(state);
 	const levelRef = useRef(Number.isFinite(level) ? THREE.MathUtils.clamp(level, 0, 1) : 0);
