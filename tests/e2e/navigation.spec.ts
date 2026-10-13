@@ -873,20 +873,24 @@ test('Database saves and reloads database credentials from Providers', async ({
 	await page.getByRole('button', { name: 'Connect', exact: true }).click();
 	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-test-key');
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
-	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
+	const options = page.getByRole('button', { name: 'Options for Pinecone' });
+	await expect(options).toBeVisible();
 	expect(await page.evaluate(() => window.provider.get('pinecone', 'databases'))).toMatchObject({
 		id: 'pinecone',
-		kind: 'databases',
-		configured: true,
+		apiKey: 'database-test-key',
 	});
 	expect(await page.evaluate(() => window.provider.get('pinecone', 'models'))).toBeUndefined();
 	await page.reload();
-	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
-	await page.getByRole('button', { name: 'Edit Pinecone API key' }).click();
+	await expect(options).toBeVisible();
+	await options.click();
+	await page.getByRole('menuitem', { name: 'Edit API key' }).click();
 	await expect(page.getByLabel('Pinecone API key', { exact: true })).toHaveValue('');
 	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-updated-key');
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
-	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
+	await expect(options).toBeVisible();
+	expect(await page.evaluate(() => window.provider.get('pinecone', 'databases'))).toMatchObject({
+		apiKey: 'database-updated-key',
+	});
 	await page.screenshot({ path: testInfo.outputPath('vector-db-desktop.png'), fullPage: true });
 	await app.evaluate(({ BrowserWindow }) => {
 		const win = BrowserWindow.getAllWindows()[0];
