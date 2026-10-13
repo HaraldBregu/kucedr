@@ -5,8 +5,8 @@ the monorepo.
 
 Kucedr contains three independently versioned products. The root manifest also declares a
 `website` workspace and website scripts, but this checkout has no `website` directory; those
-commands cannot be used until that workspace is supplied. All workflow files currently end in
-`.yml.disabled`, so automated CI and tag deployments described below are inactive:
+commands cannot be used until that workspace is supplied. `ci.yml` and `release.yml` are active;
+`npm-publish.yml.disabled` is still inactive, so npm deployments described below cannot run yet:
 
 | Product      | Manifest                    | Workspace name | Deployment destination |
 | ------------ | --------------------------- | -------------- | ---------------------- |
