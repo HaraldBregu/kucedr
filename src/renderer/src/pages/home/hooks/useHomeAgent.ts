@@ -435,7 +435,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				event.preventDefault();
 				playSound('navigate');
 				setSessionId(crypto.randomUUID());
-				switchToTyping();
+				window.dispatchEvent(new Event('kucedr:focus-chat-input'));
 				return;
 			}
 			if ((event.metaKey || event.ctrlKey) && event.key === '/') {
