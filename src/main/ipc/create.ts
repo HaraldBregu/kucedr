@@ -23,7 +23,7 @@ export async function createWorkspaceEntry(
 		else await fs.writeFile(targetPath, '', { flag: 'wx' });
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
-			throw new Error(`An item named "${normalizedName}" already exists.`);
+			throw new Error(`An item named "${normalizedName}" already exists.`, { cause: error });
 		}
 		throw error;
 	}
