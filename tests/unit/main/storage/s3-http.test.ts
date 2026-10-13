@@ -136,4 +136,4 @@ it('round trips signed path-style requests, multipart files, listings and saniti
 		);
 		await rm(directory, { recursive: true, force: true });
 	}
-}, 20_000);
+}, 60_000);

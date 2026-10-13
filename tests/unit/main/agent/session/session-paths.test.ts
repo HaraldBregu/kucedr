@@ -12,6 +12,7 @@ import { createSessionState } from '../../../../../src/main/agent/session/sessio
 import type { SessionState } from '../../../../../src/main/agent/session/session_types';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
+const FAKE_ROOT = '/kucedr-session-paths-absent';
 
 function stateWith(sessionsPath: string, folderName: string): SessionState {
 	return { ...createSessionState(), sessionsPath, folderName };
@@ -71,29 +72,33 @@ describe('sessionPath', () => {
 });
 
 describe('sessionDir / messagesFilePath / runFilePath', () => {
-	const state = stateWith('/root/sessions/main', SESSION_ID);
+	const state = stateWith(path.join(FAKE_ROOT, 'sessions/main'), SESSION_ID);
 	it('sessionDir joins sessionsPath and folderName', () => {
-		expect(sessionDir(state)).toBe(path.join('/root/sessions/main', SESSION_ID));
+		expect(sessionDir(state)).toBe(path.join(FAKE_ROOT, 'sessions/main', SESSION_ID));
 	});
 	it('messagesFilePath appends messages.json', () => {
 		expect(messagesFilePath(state)).toBe(
-			path.join('/root/sessions/main', SESSION_ID, 'messages.json')
+			path.join(FAKE_ROOT, 'sessions/main', SESSION_ID, 'messages.json')
 		);
 	});
 	it('runFilePath appends run.jsonl', () => {
-		expect(runFilePath(state)).toBe(path.join('/root/sessions/main', SESSION_ID, 'run.jsonl'));
+		expect(runFilePath(state)).toBe(
+			path.join(FAKE_ROOT, 'sessions/main', SESSION_ID, 'run.jsonl')
+		);
 	});
 });
 
 describe('legacyFilePath', () => {
 	it('sanitizes the id and appends .json', () => {
-		expect(legacyFilePath('/root', 'a/b')).toBe(path.join('/root', 'a_b.json'));
+		expect(legacyFilePath(FAKE_ROOT, 'a/b')).toBe(path.join(FAKE_ROOT, 'a_b.json'));
 	});
 });
 
 describe('messagesFile', () => {
 	it('builds the messages.json path for a UUID session id', () => {
-		expect(messagesFile('/root', SESSION_ID)).toBe(path.join('/root', SESSION_ID, 'messages.json'));
+		expect(messagesFile(FAKE_ROOT, SESSION_ID)).toBe(
+			path.join(FAKE_ROOT, SESSION_ID, 'messages.json')
+		);
 	});
 });
 
