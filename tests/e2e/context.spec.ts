@@ -66,7 +66,6 @@ test('context ring follows real local usage, draft changes, model selection and 
 		await expect(
 			page.locator('[data-slot="tooltip-content"]').filter({ hasText: /16[,.]384/ })
 		).toBeVisible();
-		await page.screenshot({ path: '/private/tmp/kucedr-context-ring.png' });
 		await editor.fill('x'.repeat(3000));
 		await expect(ring).toHaveAttribute('aria-valuenow', '53');
 		await editor.fill('');

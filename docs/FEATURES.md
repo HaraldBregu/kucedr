@@ -533,7 +533,7 @@ There are no bundled app source folders in this checkout. The built-in Workspace
 - The primary launcher is a transparent, frameless 440×600 window that closes to the tray.
 - macOS uses vibrancy and native traffic-light controls; Windows and Linux use custom window controls.
 - The tray toggles visibility and provides localized Show/Hide and Quit actions.
-- Native menus include New Window, standard editing commands, reload, window controls, English/Italian selection, developer console, and refresh.
+- Native menus include New Window, standard editing commands, reload, window controls, English/Italian selection, developer console, and refresh. On Windows and Linux the Quit item uses Ctrl+Q.
 - The app can open additional launcher windows.
 
 ## 7. Privacy, storage, and security

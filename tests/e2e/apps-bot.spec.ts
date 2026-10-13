@@ -158,6 +158,7 @@ test('production Apps search and Bot navigation work in Electron', async ({
 		await expect(
 			workspace.getByRole('heading', { name: 'Focus Timer', exact: true })
 		).toBeVisible();
+		await expect(workspace.getByRole('link', { name: /@orbit-notes/ })).toHaveCount(0);
 		await workspace.getByRole('button', { name: 'Open', exact: true }).click();
 		await expect
 			.poll(() =>

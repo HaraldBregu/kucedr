@@ -436,6 +436,9 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				playSound('navigate');
 				setSessionId(crypto.randomUUID());
 				switchToTyping();
+				// The direct focus above lands first; the event re-focuses once the new
+				// session's history has loaded, which otherwise steals focus back.
+				window.dispatchEvent(new Event('kucedr:focus-chat-input'));
 				return;
 			}
 			if ((event.metaKey || event.ctrlKey) && event.key === '/') {

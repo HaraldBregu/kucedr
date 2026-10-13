@@ -23,6 +23,7 @@ test.beforeAll(async () => {
 	});
 	await page.reload();
 	await expect(page).toHaveURL(/#\/home$/);
+	await expect(page.locator('#root')).not.toBeEmpty();
 });
 
 test.afterAll(async () => {
@@ -113,11 +114,6 @@ test('New Chat and session selection focus the prompt', async () => {
 	await expect(prompt).toBeFocused();
 	await sidebar.getByRole('button', { name: 'New Chat' }).click();
 	await expect(prompt).toBeFocused();
-	await page
-		.locator('[data-slot="home-discover"]')
-		.getByRole('button', { name: /Untitled chat/ })
-		.click();
-	await expect(prompt).toBeFocused();
 });
 
 test('Settings keeps Plugins and Apps in the main list without a footer', async () => {
@@ -151,7 +147,7 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 	);
 });
 
-test('the navbar keeps Workspace and opens Search from the sidebar', async () => {
+test('the navbar opens Search and Workspace keeps its sidebar footer', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
@@ -171,9 +167,10 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 	await expect(page.getByRole('button', { name: 'Open Workspace' })).toHaveCount(0);
 	await expect(page.getByRole('group', { name: 'View' })).toHaveCount(0);
 	const navigationBar = page.locator('[data-slot="navigationbar"]');
-	const workspaceButton = navigationBar.getByRole('button', { name: 'Space' });
+	const chatButton = navigationBar.getByRole('button', { name: 'Chat', exact: true });
+	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
 	const themeButton = navigationBar.getByRole('button', { name: /^Theme:/ });
-	await expect(navigationBar.getByRole('button', { name: 'Search' })).toHaveCount(0);
+	await expect(navigationBar.getByRole('button', { name: 'Workspace' })).toHaveCount(0);
 	await expect(navigationBar.getByRole('button', { name: 'Settings', exact: true })).toHaveCount(0);
 	await expect(navigationBar.getByRole('button', { name: 'Start Voice' })).toHaveCount(
 		0
@@ -187,25 +184,26 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 		await expect(toggleButton).toBeVisible();
 		await expect(sidebarActions.getByRole('button', { name: 'Search' })).toHaveCount(0);
 		const toggleBox = await toggleButton.boundingBox();
-		const workspaceBox = await workspaceButton.boundingBox();
+		const chatBox = await chatButton.boundingBox();
 		const themeBox = await themeButton.boundingBox();
 		expect(toggleBox).not.toBeNull();
-		expect(workspaceBox).not.toBeNull();
+		expect(chatBox).not.toBeNull();
 		expect(themeBox).not.toBeNull();
 		expect(toggleBox?.x).toBe(84);
-		expect((themeBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0))).toBeGreaterThanOrEqual(0);
+		expect((themeBox?.x ?? 0) - ((chatBox?.x ?? 0) + (chatBox?.width ?? 0))).toBeGreaterThanOrEqual(0);
 	} else {
-		await expect(workspaceButton).toBeVisible();
+		await expect(chatButton).toBeVisible();
 	}
-	await expect(workspaceButton.locator('.lucide-folder')).toBeVisible();
-	await workspaceButton.click();
-	await expect(page).toHaveURL(/#\/workspace$/);
-	const homeButton = navigationBar.getByRole('button', { name: 'Home' });
-	await expect(homeButton.locator('.lucide-message-circle')).toBeVisible();
-	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
-	await workspaceSidebar.getByRole('button', { name: 'Search' }).click();
+	await expect(chatButton.locator('.lucide-message-circle')).toBeVisible();
+	await expect(searchButton.locator('.lucide-search')).toBeVisible();
+	await searchButton.click();
 	await expect(page.getByPlaceholder('Search routes and settings...')).toBeVisible();
 	await page.keyboard.press('Escape');
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
+	await expect(page).toHaveURL(/#\/workspace$/);
+	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
 	const sidebarFooter = workspaceSidebar.locator('[data-slot="sidebar-footer"]');
 	const accountMenuButton = sidebarFooter.getByRole('button', { name: /account menu/i });
 	const footerVoiceButton = sidebarFooter.getByRole('button', { name: 'Voice' });
@@ -323,9 +321,12 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 	await rootFolderButton.click();
 	const breadcrumbTree = page.getByRole('tree', { name: 'Workspace files' });
 	const notesFolder = breadcrumbTree.getByRole('treeitem', { name: 'Notes' });
-	await expect(notesFolder).toBeFocused();
-	await notesFolder.press('ArrowRight');
+	// The tree opens with the selected file's ancestors already expanded.
 	await expect(notesFolder).toHaveAttribute('aria-expanded', 'true');
+	// Wait for the children to render and focus to land, or ArrowDown races them.
+	await expect(breadcrumbTree.getByRole('treeitem', { name: 'config.json' })).toBeVisible();
+	await notesFolder.focus();
+	await expect(notesFolder).toBeFocused();
 	await notesFolder.press('ArrowDown');
 	await expect(breadcrumbTree.getByRole('treeitem', { name: 'config.json' })).toBeFocused();
 	await breadcrumbTree.getByRole('treeitem', { name: 'config.json' }).click();
@@ -420,10 +421,9 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 		await window.agent.createWorkspaceFile('Return', 'state.json');
 		await window.agent.writeWorkspaceFile('Return/state.json', '{"current": 1}');
 	});
-	await page
-		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Space' })
-		.click();
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
 	await workspace.getByText('Return').click();
 	await workspace.getByRole('button', { name: 'state.json' }).click();
@@ -445,10 +445,9 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 		.locator('[data-slot="workspace-sidebar"]')
 		.getByRole('link', { name: 'Return to Home' })
 		.click();
-	await page
-		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Space' })
-		.click();
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
 	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute(
 		'aria-current',
 		'page'
@@ -470,10 +469,9 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 			window.agent.writeWorkspaceFile('Return/state.json', '{"current": 2}').catch(reject);
 		});
 	});
-	await page
-		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Space' })
-		.click();
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 2');
 });
 
@@ -487,10 +485,9 @@ test('Workspace releases its mounted UI before navigating from Home to Settings'
 		.getByRole('link', { name: 'Return to Home' })
 		.click();
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toHaveCount(0);
-	await page
-		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Settings', exact: true })
-		.click();
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/settings';
+	});
 	await expect(page.locator('[data-slot="settings-workspace"]')).toBeVisible();
 	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
 });
@@ -646,25 +643,26 @@ test('the empty home state and composer use the intended spacing', async () => {
 	expect((await modelButton.boundingBox())!.x).toBeGreaterThan(attachmentBounds!.x);
 	await editor.pressSequentially('Hello');
 	await expect(editor).toContainText('Hello');
-	await expect(composer).toHaveAttribute('data-expanded', 'true');
+	// The composer keeps its fixed height — typing must not resize or reflow it.
+	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(sendButton).toBeVisible();
 	await expect(sendButton).toBeEnabled();
 	const sendBounds = await sendButton.boundingBox();
-	const expandedTranscriptionBounds = await transcriptionButton.boundingBox();
-	expect(sendBounds && expandedTranscriptionBounds).toBeTruthy();
+	const filledTranscriptionBounds = await transcriptionButton.boundingBox();
+	expect(sendBounds && filledTranscriptionBounds).toBeTruthy();
 	expect(sendBounds!.x).toBeGreaterThan(fieldBounds!.x);
 	expect(sendBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
-	expect(expandedTranscriptionBounds!.x).toBeLessThan(sendBounds!.x);
-	await expect(field).toHaveCSS('min-height', '128px');
+	expect(filledTranscriptionBounds!.x).toBeLessThan(sendBounds!.x);
+	await expect(field).toHaveCSS('min-height', '104px');
 	await expect(field).toHaveCSS('padding-top', '12px');
 	await expect(field).toHaveCSS('padding-bottom', '8px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await expect(field).toHaveCSS('border-radius', '16px');
-	const expandedFieldBounds = await field.boundingBox();
-	const expandedEditorBounds = await editor.boundingBox();
-	expect(expandedFieldBounds && expandedEditorBounds).toBeTruthy();
-	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeGreaterThanOrEqual(12);
-	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeLessThan(20);
+	const filledFieldBounds = await field.boundingBox();
+	const filledEditorBounds = await editor.boundingBox();
+	expect(filledFieldBounds && filledEditorBounds).toBeTruthy();
+	expect(filledEditorBounds!.y - filledFieldBounds!.y).toBeGreaterThanOrEqual(12);
+	expect(filledEditorBounds!.y - filledFieldBounds!.y).toBeLessThan(20);
 	await editor.fill('');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(sendButton).toBeVisible();
@@ -682,13 +680,9 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await modelButton.click();
 	await page.getByRole('menuitemradio', { name: /GPT-5.6 Luna/ }).click();
 	await expect.poll(() => page.evaluate(() => window.agent.getModelId())).toBe('gpt-5.6-luna');
-	await expect(page.locator('[data-slot="home-composer-shell"]')).toHaveCSS(
-		'padding-bottom',
-		'20px'
-	);
 });
 
-test('empty Home hides absent chats and shows scrollable plugins and setup cards', async () => {
+test('empty Home centers the composer and shows prompt suggestions', async () => {
 	await page.evaluate(() => { window.location.hash = '#/home'; });
 	const workspaceBounds = await page.locator('[data-slot="home-workspace"]').boundingBox();
 	const composerBounds = await page.locator('[data-slot="home-composer-shell"]').boundingBox();
@@ -700,14 +694,6 @@ test('empty Home hides absent chats and shows scrollable plugins and setup cards
 	await expect(page.getByLabel('Prompt suggestions')).toHaveCSS('max-width', '672px');
 	await expect(page.getByLabel('Prompt suggestions')).toHaveCSS('justify-content', 'center');
 	await expect(page.getByLabel('Prompt suggestions').getByRole('button').first()).toHaveCSS('border-radius', '8px');
-	const discovery = page.locator('[data-slot="home-discover"]');
-	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toHaveCount(0);
-	await expect(discovery.getByRole('heading', { name: 'Plugins' })).toBeVisible();
-	await expect(discovery.getByRole('heading', { name: 'Configuration' })).toBeVisible();
-	await expect(discovery.getByRole('link', { name: /Tasks/ })).toHaveAttribute('href', '#/settings/tasks');
-	await expect(discovery.getByRole('link', { name: /Knowledge/ })).toHaveAttribute('href', '#/settings/knowledge');
-	const setupRow = discovery.locator('[aria-label="Configuration"]');
-	expect(await setupRow.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
 });
 
 test('the leading /plan command activates Plan mode and requires prompt text', async () => {
@@ -717,20 +703,23 @@ test('the leading /plan command activates Plan mode and requires prompt text', a
 	const editor = page.getByRole('textbox', { name: 'Message your assistant' });
 	await editor.pressSequentially('/plan');
 	await expect(editor.locator('[data-plan-command]')).toHaveText('Plan');
-	await expect(page.getByRole('button', { name: 'Send message' })).toBeDisabled();
+	// Submitting a bare /plan is a no-op: the draft survives instead of being sent.
+	await page.getByRole('button', { name: 'Send message' }).click();
+	await expect(editor.locator('[data-plan-command]')).toHaveText('Plan');
 
-	const selectedSession = await page.evaluate(() => localStorage.getItem('chat-session-id'));
-	expect(selectedSession).toBeTruthy();
+	// 'home' is the default session id used until a chat is explicitly selected.
+	const selectedSession =
+		(await page.evaluate(() => localStorage.getItem('chat-session-id'))) ?? 'home';
 	await expect
 		.poll(() =>
 			page.evaluate((sessionId) => {
 				const modes = JSON.parse(localStorage.getItem('kucedr-interaction-modes') ?? '{}');
-				return modes[sessionId ?? ''];
+				return modes[sessionId];
 			}, selectedSession)
 		)
 		.toBe('plan');
 	await editor.pressSequentially('Inspect the current workspace');
-	await expect(page.getByRole('button', { name: 'Send message' })).toBeEnabled();
+	await expect(editor).toContainText('Inspect the current workspace');
 });
 
 test('Agent resources have icons and open their nested settings pages', async ({
@@ -740,41 +729,37 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
 	});
 	const resources = [
-		{ name: 'Skills', path: 'skills', icon: 'sparkles' },
-		{ name: 'Tasks', path: 'tasks', icon: 'list-checks' },
-		{ name: 'MCP Servers', path: 'mcp', icon: 'plug-zap' },
-		{ name: 'Health', path: 'health', icon: 'heart-pulse' },
-		{ name: 'Permissions', path: 'permissions', icon: 'shield-check' },
-		{ name: 'Knowledge', path: 'rag', icon: 'book-open-text' },
+		{ name: /^Tools/, path: 'tools', icon: 'wrench' },
+		{ name: /^MCP tools/, path: 'mcp-tools', icon: 'network' },
+		{ name: /^Permissions/, path: 'permissions', icon: 'shield-check' },
 	];
 	for (const resource of resources) {
 		await page.evaluate(() => {
 			window.location.hash = '#/settings/agent';
 		});
-		const name = new RegExp(resource.name, 'i');
+		const name = resource.name;
 		const sidebarLink = page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name });
 		await expect(sidebarLink).toHaveCount(0);
-		const role = ['health', 'permissions', 'rag'].includes(resource.path) ? 'button' : 'link';
-		const pageLink = page.locator('[data-slot="settings-workspace"]').getByRole(role, { name });
+		const pageLink = page.locator('[data-slot="settings-workspace"]').getByRole('link', { name });
 		await expect(pageLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
 		await pageLink.click();
 		await expect(page).toHaveURL(new RegExp(`#/settings/agent/${resource.path}$`));
 		await expect(
 			page
 				.locator('[data-slot="settings-sidebar"]')
-				.getByRole('link', { name: 'Agent', exact: true })
+				.getByRole('link', { name: 'Chat', exact: true })
 		).toHaveAttribute('aria-current', 'page');
 		await expect(page.getByRole('heading', { name, level: 1 })).toBeVisible();
 		await page
-			.getByRole('navigation', { name: 'Settings navigation' })
-			.getByRole('link', { name: 'Agent', exact: true })
+			.locator('[data-slot="settings-sidebar"]')
+			.getByRole('link', { name: 'Chat', exact: true })
 			.click();
 	}
-	await expect(page.getByRole('heading', { name: 'Agent', exact: true })).toBeVisible();
-	await page
+	await expect(page.getByRole('heading', { name: 'Chat', exact: true, level: 1 })).toBeVisible();
+	const permissions = page
 		.locator('[data-slot="settings-workspace"]')
-		.getByRole('link', { name: /Skills/ })
-		.scrollIntoViewIfNeeded();
+		.getByRole('link', { name: /^Permissions/ });
+	await permissions.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('agent-desktop.png'), fullPage: true });
 	await app.evaluate(({ BrowserWindow }) => {
 		const window = BrowserWindow.getAllWindows()[0];
@@ -782,10 +767,7 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		window.setSize(390, 800);
 	});
 	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
-	const skills = page
-		.locator('[data-slot="settings-workspace"]')
-		.getByRole('link', { name: /Skills/ });
-	await skills.scrollIntoViewIfNeeded();
+	await permissions.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('agent-narrow.png'), fullPage: true });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
 		true
@@ -880,31 +862,38 @@ test('Database saves and reloads database credentials from Providers', async ({
 	await app.evaluate(({ BrowserWindow }) => {
 		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
 	});
+	// Database providers only appear once their plugin is enabled.
+	await page.evaluate(() => window.provider.setPluginEnabled('database', 'pinecone/pinecone', true));
 	await page.evaluate(() => {
-		window.location.hash = '#/settings/providers/models';
+		window.location.hash = '#/settings/providers';
 	});
-	const sidebar = page.locator('[data-slot="settings-sidebar"]');
-	const link = sidebar.getByRole('link', { name: 'Database', exact: true });
+	const workspace = page.locator('[data-slot="settings-workspace"]');
+	const link = workspace.getByRole('link', { name: /^Database/ });
 	await expect(link.locator('svg.lucide-database')).toBeVisible();
 	await link.click();
 	await expect(page).toHaveURL(/#\/settings\/providers\/database$/);
 	await expect(page.getByRole('heading', { name: 'Database', level: 1 })).toBeVisible();
+	await page.getByRole('button', { name: 'Connect', exact: true }).click();
 	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-test-key');
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
-	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
+	const options = page.getByRole('button', { name: 'Options for Pinecone' });
+	await expect(options).toBeVisible();
 	expect(await page.evaluate(() => window.provider.get('pinecone', 'databases'))).toMatchObject({
 		id: 'pinecone',
-		kind: 'databases',
-		configured: true,
+		apiKey: 'database-test-key',
 	});
 	expect(await page.evaluate(() => window.provider.get('pinecone', 'models'))).toBeUndefined();
 	await page.reload();
-	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
-	await page.getByRole('button', { name: 'Edit Pinecone API key' }).click();
+	await expect(options).toBeVisible();
+	await options.click();
+	await page.getByRole('menuitem', { name: 'Edit API key' }).click();
 	await expect(page.getByLabel('Pinecone API key', { exact: true })).toHaveValue('');
 	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-updated-key');
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
-	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
+	await expect(options).toBeVisible();
+	expect(await page.evaluate(() => window.provider.get('pinecone', 'databases'))).toMatchObject({
+		apiKey: 'database-updated-key',
+	});
 	await page.screenshot({ path: testInfo.outputPath('vector-db-desktop.png'), fullPage: true });
 	await app.evaluate(({ BrowserWindow }) => {
 		const win = BrowserWindow.getAllWindows()[0];

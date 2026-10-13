@@ -5,8 +5,8 @@ the monorepo.
 
 Kucedr contains three independently versioned products. The root manifest also declares a
 `website` workspace and website scripts, but this checkout has no `website` directory; those
-commands cannot be used until that workspace is supplied. All workflow files currently end in
-`.yml.disabled`, so automated CI and tag deployments described below are inactive:
+commands cannot be used until that workspace is supplied. `ci.yml` and `release.yml` are active;
+`npm-publish.yml.disabled` is still inactive, so npm deployments described below cannot run yet:
 
 | Product      | Manifest                    | Workspace name | Deployment destination |
 | ------------ | --------------------------- | -------------- | ---------------------- |
@@ -231,8 +231,7 @@ Also verify formatting without rewriting files:
 npm run format:check
 ```
 
-The disabled CI definition includes this gate. Run it locally before submitting changes;
-there is currently no active CI workflow.
+The `CI` workflow runs this gate. Run it locally before submitting changes.
 
 ### Production build
 
@@ -282,17 +281,19 @@ Build installers on the native target operating system:
 Artifacts are written to the root `dist/` directory. Local packaging never uploads because
 `electron-builder.json` sets `publish` to `null`.
 
-Production Windows packaging requires the signing certificate configured through
-`CSC_LINK` and `CSC_KEY_PASSWORD`. Production macOS packaging requires signing and
-notarization credentials. There are no development/staging distribution scripts in the current root manifest.
+Code signing is currently off: `electron-builder.json` sets macOS `notarize` to `false` and
+Windows `forceCodeSigning` to `false`, so beta installers are unsigned. Signing a build requires
+re-enabling those options and supplying `CSC_LINK` and `CSC_KEY_PASSWORD` (plus Apple
+notarization credentials for macOS). There are no development/staging distribution scripts in the
+current root manifest.
 
 Building `.rpm` locally requires the `rpm` tool on the build machine (`sudo apt-get install rpm`
 on Debian and Ubuntu).
 
-The Windows portable target is signed and runs as the current user. It extracts to a temporary
+The Windows portable target runs as the current user. It extracts to a temporary
 directory for the lifetime of the process, so enterprise policies that prohibit execution from
 temporary or user-writable locations still require an IT exception. The macOS `.zip` is the
-portable form of the signed and notarized `.app` bundle. The Linux archive is the
+portable form of the `.app` bundle. The Linux archive is the
 fallback when AppImage mounting or FUSE is unavailable. All portable formats keep application data
 in the user profile and require manual replacement for upgrades.
 
@@ -321,8 +322,8 @@ Reports are written to `coverage/`.
 
 ### Match the automated CI gate
 
-The stored `.github/workflows/ci.yml.disabled` definition is inactive. If explicitly restored
-to an enabled workflow, its verification commands include:
+`.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. Its
+verification commands are:
 
 ```sh
 npm ci
@@ -339,8 +340,8 @@ therefore does not necessarily mean a test failed; inspect the newest run.
 
 ## Push a normal change
 
-A normal branch push currently triggers no checked-in workflow. After CI is enabled, it can
-validate pushes without deploying products.
+Pull requests and pushes to `main` run `CI`, which validates the change without deploying any
+product. A push to a feature branch alone triggers nothing until a pull request exists.
 
 Create a branch:
 
@@ -366,39 +367,43 @@ git commit -m "describe the change"
 git push --set-upstream kucedr your-change
 ```
 
-Open a pull request and record the local checks run. Once the disabled CI workflow is enabled,
-wait for its latest run to pass before merging into `main`.
+Open a pull request and record the local checks run. Wait for the latest `CI` run to pass
+before merging into `main`.
 
 ## Deployment
 
-The disabled release definitions describe tag-driven deployment. These are release procedures
-for use after the workflows are explicitly enabled and their prerequisites verified; pushing
-a tag currently triggers none of them:
-
-| Tag          | Workflow               | Result                                |
-| ------------ | ---------------------- | ------------------------------------- |
-| `v1.2.3`     | `Release Electron app` | Signed installers in a GitHub Release |
-| `sdk-v1.2.3` | `Publish npm package`  | `@kucedr/sdk@1.2.3` on npm            |
-| `cli-v1.2.3` | `Publish npm package`  | `@kucedr/cli@1.2.3` on npm            |
+| Tag          | Workflow               | Result                                  |
+| ------------ | ---------------------- | --------------------------------------- |
+| `v1.2.3`     | `Release Electron app` | Unsigned installers in a GitHub Release |
+| `sdk-v1.2.3` | `Publish npm package`  | `@kucedr/sdk@1.2.3` on npm              |
+| `cli-v1.2.3` | `Publish npm package`  | `@kucedr/cli@1.2.3` on npm              |
 
 Versions are independent. Releasing the SDK does not release the CLI or Electron app.
-With the workflows enabled, a normal push to `main` runs CI only.
+
+`Release Electron app` also runs on every push to `main` and on manual dispatch: it builds and
+uploads installers as workflow artifacts, but only a `v*.*.*` tag publishes a GitHub Release.
+Superseded branch runs are cancelled; a tag run always finishes. `Publish npm package` is still
+stored as `npm-publish.yml.disabled` and must be enabled before any npm release tag is pushed.
 
 ### One-time GitHub and npm setup
 
-#### Electron signing
+#### Electron build configuration
 
-Configure these GitHub Actions secrets before creating an Electron release tag:
+The release build is unsigned. It sets `CSC_IDENTITY_AUTO_DISCOVERY=false` so a certificate in
+the runner keychain is never picked up, and no signing or notarization secrets are required.
+To ship signed installers, re-enable `notarize` and `forceCodeSigning` in
+`electron-builder.json` and add the certificate and Apple credentials as Actions secrets.
 
-| Platform           | Required secret                                            |
-| ------------------ | ---------------------------------------------------------- |
-| macOS signing      | `MAC_CSC_LINK`, `MAC_CSC_KEY_PASSWORD`                     |
-| macOS notarization | `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID` |
-| Windows signing    | `WIN_CSC_LINK`, `WIN_CSC_KEY_PASSWORD`                     |
+The build reads two repository variables and inlines them into the packaged main process:
 
-`MAC_CSC_LINK` and `WIN_CSC_LINK` may contain a supported secure URL or the appropriate
-base64-encoded certificate. The release workflow intentionally fails rather than publish
-an unsigned production installer.
+| Variable                    | Purpose                                   |
+| --------------------------- | ----------------------------------------- |
+| `SUPABASE_URL`              | Account and cloud-record backend URL      |
+| `SUPABASE_PUBLISHABLE_KEY`  | Public client key for that backend        |
+
+They are Actions **variables**, not secrets, because both values are public client values.
+Without them the installers build but cloud sign-in stays disabled. See
+[Supabase Adapter](SUPABASE.md).
 
 #### Initial npm publication
 
@@ -506,9 +511,8 @@ Verify:
 2. The GitHub Release version and tag are correct.
 3. The GitHub Release is marked as a pre-release.
 4. Every expected platform artifact is attached.
-5. macOS artifacts are signed and notarized.
-6. The Windows installer has a valid signature.
-7. Install and launch each artifact on its target operating system.
+5. Install and launch each artifact on its target operating system. Because the beta artifacts
+   are unsigned, macOS Gatekeeper and Windows SmartScreen warn on first launch.
 
 ### Release the SDK
 
@@ -640,9 +644,12 @@ Use the equivalent package name for the CLI.
 
 ### Electron signing fails
 
-Check that every required secret exists, certificate passwords are correct, certificates
-have not expired, and Apple notarization credentials belong to the signing team. Rerun the
-failed workflow only after fixing the secret or repository setting.
+Signing is disabled, so a signing failure means the build picked up a certificate anyway.
+Confirm `CSC_IDENTITY_AUTO_DISCOVERY=false` is still set on the `dist:*` step and that
+`notarize` and `forceCodeSigning` remain `false` in `electron-builder.json`. If signing was
+deliberately re-enabled, check that every required secret exists, certificate passwords are
+correct, certificates have not expired, and Apple notarization credentials belong to the
+signing team. Rerun the failed workflow only after fixing the secret or repository setting.
 
 ### `npm ci` reports a lockfile mismatch
 

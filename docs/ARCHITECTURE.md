@@ -123,5 +123,6 @@ storage policies independently of client checks; see [Supabase](SUPABASE.md) and
 
 Verify architecture changes across main services, shared contracts, preload bridges, IPC, and
 renderer consumers. Run the relevant tests and `npm run typecheck:app` for code changes.
-Documentation-only changes should verify source references and relative links. CI and release
-workflow definitions currently have `.yml.disabled` extensions and do not run automatically.
+Documentation-only changes should verify source references and relative links. The CI and
+Electron release workflows run automatically; the npm publish definition is still
+`.yml.disabled`.

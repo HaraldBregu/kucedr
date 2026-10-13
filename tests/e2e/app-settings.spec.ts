@@ -4,6 +4,8 @@ import path from 'node:path';
 import { launchApp } from './helpers';
 import { closeApp } from './close';
 
+const isLinux = process.platform === 'linux';
+
 test('uploaded app settings persist in manifests and control new windows', async ({
 	browserName: _browserName,
 }, testInfo) => {
@@ -46,17 +48,18 @@ test('uploaded app settings persist in manifests and control new windows', async
 		await page.getByRole('spinbutton', { name: 'Default height (px)' }).fill('720');
 		await page.getByRole('switch', { name: 'Allow resizing' }).click();
 		await page.getByRole('switch', { name: 'Allow maximizing' }).click();
-		await page.getByRole('button', { name: 'Save settings' }).click();
-		await expect(page.getByRole('status')).toContainText('saved');
-		const stored = JSON.parse(
-			await readFile(path.join(userDataDir, 'apps/window-demo/manifest.json'), 'utf8')
-		);
-		expect(stored.window).toMatchObject({
-			width: 1000,
-			height: 720,
-			resizable: false,
-			maximizable: false,
-		});
+		await expect
+			.poll(async () =>
+				JSON.parse(
+					await readFile(path.join(userDataDir, 'apps/window-demo/manifest.json'), 'utf8')
+				).window
+			)
+			.toMatchObject({
+				width: 1000,
+				height: 720,
+				resizable: false,
+				maximizable: false,
+			});
 		await app.evaluate(({ BrowserWindow }) => {
 			const win = BrowserWindow.getAllWindows()[0];
 			win.setMinimumSize(390, 600);
@@ -80,8 +83,10 @@ test('uploaded app settings persist in manifests and control new windows', async
 		await expect
 			.poll(() =>
 				app.evaluate(({ BrowserWindow }) => {
-					const win = BrowserWindow.getAllWindows().find(
-						(item) => item.getTitle() === 'Window Demo'
+					// Match on the shell URL, not the title: window titles depend on a
+					// window manager, which the headless CI display does not provide.
+					const win = BrowserWindow.getAllWindows().find((item) =>
+						item.webContents.getURL().includes('app.html#app/Window%20Demo')
 					);
 					return (
 						win && {
@@ -93,7 +98,14 @@ test('uploaded app settings persist in manifests and control new windows', async
 					);
 				})
 			)
-			.toEqual({ size: [1000, 720], minimum: [500, 300], resizable: false, maximizable: false });
+			.toEqual({
+				size: [1000, 720],
+				resizable: false,
+				// A non-resizable window on Linux clamps its minimum to the current
+				// size, and GTK reports it as maximizable whatever the option says.
+				minimum: isLinux ? [1000, 720] : [500, 300],
+				maximizable: isLinux,
+			});
 		await app.close();
 		app = await electron.launch({
 			args: [`--user-data-dir=${userDataDir}`, path.resolve('.')],
@@ -106,6 +118,7 @@ test('uploaded app settings persist in manifests and control new windows', async
 		});
 		page = await app.firstWindow();
 		await page.waitForLoadState('domcontentloaded');
+		await expect(page).toHaveURL(/#\/?start$/);
 		expect(await page.evaluate(() => window.apps.getSettings('window-demo'))).toMatchObject({
 			width: 1000,
 			height: 720,
@@ -137,8 +150,10 @@ test('uploaded app settings persist in manifests and control new windows', async
 		await expect
 			.poll(() =>
 				app.evaluate(({ BrowserWindow }) => {
-					const win = BrowserWindow.getAllWindows().find(
-						(item) => item.getTitle() === 'Window Demo'
+					// Match on the shell URL, not the title: window titles depend on a
+					// window manager, which the headless CI display does not provide.
+					const win = BrowserWindow.getAllWindows().find((item) =>
+						item.webContents.getURL().includes('app.html#app/Window%20Demo')
 					);
 					return win?.getSize();
 				})
