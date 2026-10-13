@@ -448,7 +448,7 @@ export function Persona({
 			renderer.dispose();
 			if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
 		};
-	}, []);
+	}, [isDark]);
 
 	return (
 		<div
