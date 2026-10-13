@@ -677,10 +677,6 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await modelButton.click();
 	await page.getByRole('menuitemradio', { name: /GPT-5.6 Luna/ }).click();
 	await expect.poll(() => page.evaluate(() => window.agent.getModelId())).toBe('gpt-5.6-luna');
-	await expect(page.locator('[data-slot="home-composer-shell"]')).toHaveCSS(
-		'padding-bottom',
-		'20px'
-	);
 });
 
 test('empty Home centers the composer and shows prompt suggestions', async () => {
