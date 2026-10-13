@@ -340,8 +340,8 @@ therefore does not necessarily mean a test failed; inspect the newest run.
 
 ## Push a normal change
 
-A normal branch push currently triggers no checked-in workflow. After CI is enabled, it can
-validate pushes without deploying products.
+Pull requests and pushes to `main` run `CI`, which validates the change without deploying any
+product. A push to a feature branch alone triggers nothing until a pull request exists.
 
 Create a branch:
 
