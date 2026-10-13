@@ -35,7 +35,7 @@ export async function installVerifiedDownload(
 			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
 			const existing = await fs.readFile(target);
 			if (createHash('sha256').update(existing).digest('hex') !== expectedHash) {
-				throw new Error('Cached blob failed SHA-256 verification.');
+				throw new Error('Cached blob failed SHA-256 verification.', { cause: error });
 			}
 		}
 		const dir = await fs.open(blobDir, 'r');

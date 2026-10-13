@@ -147,7 +147,7 @@ export class LoggerService implements Disposable {
 		try {
 			fs.mkdirSync(this.logDirectory, { recursive: true });
 		} catch (error) {
-			throw new Error(`Failed to create log directory: ${error}`);
+			throw new Error(`Failed to create log directory: ${error}`, { cause: error });
 		}
 	}
 

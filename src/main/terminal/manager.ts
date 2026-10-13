@@ -59,7 +59,7 @@ export class PtyManager {
 				});
 			} catch (error) {
 				const message = error instanceof Error ? error.message : String(error);
-				throw new Error(`Unable to start ${detectedShell.executable}: ${message}`);
+				throw new Error(`Unable to start ${detectedShell.executable}: ${message}`, { cause: error });
 			}
 
 			const createdAt = Date.now();

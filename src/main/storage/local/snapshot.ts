@@ -43,7 +43,7 @@ export async function saveLocalSnapshot(
 				if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
 				const existing = await fs.readFile(blobPath);
 				if (createHash('sha256').update(existing).digest('hex') !== hash) {
-					throw new Error('Local storage blob failed SHA-256 verification.');
+					throw new Error('Local storage blob failed SHA-256 verification.', { cause: error });
 				}
 			}
 			const dir = await fs.open(blobDir, 'r');
