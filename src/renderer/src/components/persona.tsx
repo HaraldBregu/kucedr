@@ -5,6 +5,7 @@ import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 
+import { useIsDark } from '@/hooks/use-is-dark';
 import { cn } from '@/lib/utils';
 
 export type PersonaState = 'idle' | 'listening' | 'thinking' | 'speaking';
