@@ -6,14 +6,16 @@ import typegpuPlugin from 'unplugin-typegpu/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import pkg from './package.json';
 
+const cloudEnv = { ...loadEnv('production', __dirname, 'SUPABASE_'), ...process.env };
+
 export default defineConfig({
 	main: {
-		// Inline cloud config only when the build environment provides it, so local
-		// development keeps reading the root .env file at runtime.
+		// Inline cloud config from the build environment, falling back to the root
+		// .env file so packaged builds (which never read .env) stay configured.
 		define: Object.fromEntries(
 			['SUPABASE_URL', 'SUPABASE_PUBLISHABLE_KEY']
-				.filter((key) => process.env[key])
-				.map((key) => [`process.env.${key}`, JSON.stringify(process.env[key])])
+				.filter((key) => cloudEnv[key])
+				.map((key) => [`process.env.${key}`, JSON.stringify(cloudEnv[key])])
 		),
 		plugins: [externalizeDepsPlugin()],
 		build: {
