@@ -683,7 +683,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	);
 });
 
-test('empty Home hides absent chats and shows scrollable plugins and setup cards', async () => {
+test('empty Home centers the composer and shows prompt suggestions', async () => {
 	await page.evaluate(() => { window.location.hash = '#/home'; });
 	const workspaceBounds = await page.locator('[data-slot="home-workspace"]').boundingBox();
 	const composerBounds = await page.locator('[data-slot="home-composer-shell"]').boundingBox();
