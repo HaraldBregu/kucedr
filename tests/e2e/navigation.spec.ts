@@ -23,6 +23,7 @@ test.beforeAll(async () => {
 	});
 	await page.reload();
 	await expect(page).toHaveURL(/#\/home$/);
+	await expect(page.locator('#root')).not.toBeEmpty();
 });
 
 test.afterAll(async () => {
