@@ -167,9 +167,10 @@ test('the navbar opens Search and Workspace keeps its sidebar footer', async () 
 	await expect(page.getByRole('button', { name: 'Open Workspace' })).toHaveCount(0);
 	await expect(page.getByRole('group', { name: 'View' })).toHaveCount(0);
 	const navigationBar = page.locator('[data-slot="navigationbar"]');
-	const workspaceButton = navigationBar.getByRole('button', { name: 'Space' });
+	const chatButton = navigationBar.getByRole('button', { name: 'Chat', exact: true });
+	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
 	const themeButton = navigationBar.getByRole('button', { name: /^Theme:/ });
-	await expect(navigationBar.getByRole('button', { name: 'Search' })).toHaveCount(0);
+	await expect(navigationBar.getByRole('button', { name: 'Workspace' })).toHaveCount(0);
 	await expect(navigationBar.getByRole('button', { name: 'Settings', exact: true })).toHaveCount(0);
 	await expect(navigationBar.getByRole('button', { name: 'Start Voice' })).toHaveCount(
 		0
@@ -183,25 +184,26 @@ test('the navbar opens Search and Workspace keeps its sidebar footer', async () 
 		await expect(toggleButton).toBeVisible();
 		await expect(sidebarActions.getByRole('button', { name: 'Search' })).toHaveCount(0);
 		const toggleBox = await toggleButton.boundingBox();
-		const workspaceBox = await workspaceButton.boundingBox();
+		const chatBox = await chatButton.boundingBox();
 		const themeBox = await themeButton.boundingBox();
 		expect(toggleBox).not.toBeNull();
-		expect(workspaceBox).not.toBeNull();
+		expect(chatBox).not.toBeNull();
 		expect(themeBox).not.toBeNull();
 		expect(toggleBox?.x).toBe(84);
-		expect((themeBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0))).toBeGreaterThanOrEqual(0);
+		expect((themeBox?.x ?? 0) - ((chatBox?.x ?? 0) + (chatBox?.width ?? 0))).toBeGreaterThanOrEqual(0);
 	} else {
-		await expect(workspaceButton).toBeVisible();
+		await expect(chatButton).toBeVisible();
 	}
-	await expect(workspaceButton.locator('.lucide-folder')).toBeVisible();
-	await workspaceButton.click();
-	await expect(page).toHaveURL(/#\/workspace$/);
-	const homeButton = navigationBar.getByRole('button', { name: 'Home' });
-	await expect(homeButton.locator('.lucide-message-circle')).toBeVisible();
-	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
-	await workspaceSidebar.getByRole('button', { name: 'Search' }).click();
+	await expect(chatButton.locator('.lucide-message-circle')).toBeVisible();
+	await expect(searchButton.locator('.lucide-search')).toBeVisible();
+	await searchButton.click();
 	await expect(page.getByPlaceholder('Search routes and settings...')).toBeVisible();
 	await page.keyboard.press('Escape');
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
+	await expect(page).toHaveURL(/#\/workspace$/);
+	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
 	const sidebarFooter = workspaceSidebar.locator('[data-slot="sidebar-footer"]');
 	const accountMenuButton = sidebarFooter.getByRole('button', { name: /account menu/i });
 	const footerVoiceButton = sidebarFooter.getByRole('button', { name: 'Voice' });
