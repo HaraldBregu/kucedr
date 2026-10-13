@@ -367,39 +367,43 @@ git commit -m "describe the change"
 git push --set-upstream kucedr your-change
 ```
 
-Open a pull request and record the local checks run. Once the disabled CI workflow is enabled,
-wait for its latest run to pass before merging into `main`.
+Open a pull request and record the local checks run. Wait for the latest `CI` run to pass
+before merging into `main`.
 
 ## Deployment
 
-The disabled release definitions describe tag-driven deployment. These are release procedures
-for use after the workflows are explicitly enabled and their prerequisites verified; pushing
-a tag currently triggers none of them:
-
-| Tag          | Workflow               | Result                                |
-| ------------ | ---------------------- | ------------------------------------- |
-| `v1.2.3`     | `Release Electron app` | Signed installers in a GitHub Release |
-| `sdk-v1.2.3` | `Publish npm package`  | `@kucedr/sdk@1.2.3` on npm            |
-| `cli-v1.2.3` | `Publish npm package`  | `@kucedr/cli@1.2.3` on npm            |
+| Tag          | Workflow               | Result                                  |
+| ------------ | ---------------------- | --------------------------------------- |
+| `v1.2.3`     | `Release Electron app` | Unsigned installers in a GitHub Release |
+| `sdk-v1.2.3` | `Publish npm package`  | `@kucedr/sdk@1.2.3` on npm              |
+| `cli-v1.2.3` | `Publish npm package`  | `@kucedr/cli@1.2.3` on npm              |
 
 Versions are independent. Releasing the SDK does not release the CLI or Electron app.
-With the workflows enabled, a normal push to `main` runs CI only.
+
+`Release Electron app` also runs on every push to `main` and on manual dispatch: it builds and
+uploads installers as workflow artifacts, but only a `v*.*.*` tag publishes a GitHub Release.
+Superseded branch runs are cancelled; a tag run always finishes. `Publish npm package` is still
+stored as `npm-publish.yml.disabled` and must be enabled before any npm release tag is pushed.
 
 ### One-time GitHub and npm setup
 
-#### Electron signing
+#### Electron build configuration
 
-Configure these GitHub Actions secrets before creating an Electron release tag:
+The release build is unsigned. It sets `CSC_IDENTITY_AUTO_DISCOVERY=false` so a certificate in
+the runner keychain is never picked up, and no signing or notarization secrets are required.
+To ship signed installers, re-enable `notarize` and `forceCodeSigning` in
+`electron-builder.json` and add the certificate and Apple credentials as Actions secrets.
 
-| Platform           | Required secret                                            |
-| ------------------ | ---------------------------------------------------------- |
-| macOS signing      | `MAC_CSC_LINK`, `MAC_CSC_KEY_PASSWORD`                     |
-| macOS notarization | `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID` |
-| Windows signing    | `WIN_CSC_LINK`, `WIN_CSC_KEY_PASSWORD`                     |
+The build reads two repository variables and inlines them into the packaged main process:
 
-`MAC_CSC_LINK` and `WIN_CSC_LINK` may contain a supported secure URL or the appropriate
-base64-encoded certificate. The release workflow intentionally fails rather than publish
-an unsigned production installer.
+| Variable                    | Purpose                                   |
+| --------------------------- | ----------------------------------------- |
+| `SUPABASE_URL`              | Account and cloud-record backend URL      |
+| `SUPABASE_PUBLISHABLE_KEY`  | Public client key for that backend        |
+
+They are Actions **variables**, not secrets, because both values are public client values.
+Without them the installers build but cloud sign-in stays disabled. See
+[Supabase Adapter](SUPABASE.md).
 
 #### Initial npm publication
 
