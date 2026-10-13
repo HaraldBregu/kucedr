@@ -486,7 +486,7 @@ function PromptInput({
 											initial={{ opacity: 0 }}
 											animate={{ opacity: 1 }}
 											transition={transition}
-											className="relative flex min-h-0 flex-1 items-center justify-center rounded-[1.35rem] bg-neutral-950"
+											className="relative flex min-h-0 flex-1 items-center justify-center rounded-[1.35rem] border border-border bg-card"
 										>
 											<button
 												type="button"
