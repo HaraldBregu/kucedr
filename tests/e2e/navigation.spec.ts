@@ -870,6 +870,7 @@ test('Database saves and reloads database credentials from Providers', async ({
 	await link.click();
 	await expect(page).toHaveURL(/#\/settings\/providers\/database$/);
 	await expect(page.getByRole('heading', { name: 'Database', level: 1 })).toBeVisible();
+	await page.getByRole('button', { name: 'Connect', exact: true }).click();
 	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-test-key');
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
