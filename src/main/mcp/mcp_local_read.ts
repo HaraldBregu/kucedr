@@ -13,7 +13,8 @@ export function readLocalMcpServer(directory: string): McpServerInfo {
 		throw new Error(
 			error instanceof SyntaxError
 				? 'mcp.json is not valid JSON.'
-				: 'Missing readable mcp.json manifest.'
+				: 'Missing readable mcp.json manifest.',
+			{ cause: error }
 		);
 	}
 	if (!value || typeof value !== 'object' || Array.isArray(value)) {
