@@ -61,7 +61,7 @@ const PersonaPage: React.FC = () => {
 				description={t('settings.voiceAgent.previewDescription')}
 			>
 				<SettingsPanel className="overflow-hidden">
-					<div className="flex min-h-96 flex-col items-center justify-center gap-4 bg-neutral-950 p-7">
+					<div className="flex min-h-96 flex-col items-center justify-center gap-4 bg-card p-7">
 						<VoiceAgentVisual
 							appearance={voiceAgentAppearance}
 							state={state}
