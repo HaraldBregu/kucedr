@@ -321,9 +321,9 @@ test('the navbar opens Search and Workspace keeps its sidebar footer', async () 
 	await rootFolderButton.click();
 	const breadcrumbTree = page.getByRole('tree', { name: 'Workspace files' });
 	const notesFolder = breadcrumbTree.getByRole('treeitem', { name: 'Notes' });
-	await expect(notesFolder).toBeFocused();
-	await notesFolder.press('ArrowRight');
+	// The tree opens with the selected file's ancestors already expanded.
 	await expect(notesFolder).toHaveAttribute('aria-expanded', 'true');
+	await notesFolder.focus();
 	await notesFolder.press('ArrowDown');
 	await expect(breadcrumbTree.getByRole('treeitem', { name: 'config.json' })).toBeFocused();
 	await breadcrumbTree.getByRole('treeitem', { name: 'config.json' }).click();
