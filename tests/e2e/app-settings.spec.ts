@@ -46,17 +46,18 @@ test('uploaded app settings persist in manifests and control new windows', async
 		await page.getByRole('spinbutton', { name: 'Default height (px)' }).fill('720');
 		await page.getByRole('switch', { name: 'Allow resizing' }).click();
 		await page.getByRole('switch', { name: 'Allow maximizing' }).click();
-		await page.getByRole('button', { name: 'Save settings' }).click();
-		await expect(page.getByRole('status')).toContainText('saved');
-		const stored = JSON.parse(
-			await readFile(path.join(userDataDir, 'apps/window-demo/manifest.json'), 'utf8')
-		);
-		expect(stored.window).toMatchObject({
-			width: 1000,
-			height: 720,
-			resizable: false,
-			maximizable: false,
-		});
+		await expect
+			.poll(async () =>
+				JSON.parse(
+					await readFile(path.join(userDataDir, 'apps/window-demo/manifest.json'), 'utf8')
+				).window
+			)
+			.toMatchObject({
+				width: 1000,
+				height: 720,
+				resizable: false,
+				maximizable: false,
+			});
 		await app.evaluate(({ BrowserWindow }) => {
 			const win = BrowserWindow.getAllWindows()[0];
 			win.setMinimumSize(390, 600);
