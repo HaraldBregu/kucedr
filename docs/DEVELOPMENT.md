@@ -290,10 +290,10 @@ current root manifest.
 Building `.rpm` locally requires the `rpm` tool on the build machine (`sudo apt-get install rpm`
 on Debian and Ubuntu).
 
-The Windows portable target is signed and runs as the current user. It extracts to a temporary
+The Windows portable target runs as the current user. It extracts to a temporary
 directory for the lifetime of the process, so enterprise policies that prohibit execution from
 temporary or user-writable locations still require an IT exception. The macOS `.zip` is the
-portable form of the signed and notarized `.app` bundle. The Linux archive is the
+portable form of the `.app` bundle. The Linux archive is the
 fallback when AppImage mounting or FUSE is unavailable. All portable formats keep application data
 in the user profile and require manual replacement for upgrades.
 
