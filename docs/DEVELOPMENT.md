@@ -511,9 +511,8 @@ Verify:
 2. The GitHub Release version and tag are correct.
 3. The GitHub Release is marked as a pre-release.
 4. Every expected platform artifact is attached.
-5. macOS artifacts are signed and notarized.
-6. The Windows installer has a valid signature.
-7. Install and launch each artifact on its target operating system.
+5. Install and launch each artifact on its target operating system. Because the beta artifacts
+   are unsigned, macOS Gatekeeper and Windows SmartScreen warn on first launch.
 
 ### Release the SDK
 
