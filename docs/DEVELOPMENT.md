@@ -644,9 +644,12 @@ Use the equivalent package name for the CLI.
 
 ### Electron signing fails
 
-Check that every required secret exists, certificate passwords are correct, certificates
-have not expired, and Apple notarization credentials belong to the signing team. Rerun the
-failed workflow only after fixing the secret or repository setting.
+Signing is disabled, so a signing failure means the build picked up a certificate anyway.
+Confirm `CSC_IDENTITY_AUTO_DISCOVERY=false` is still set on the `dist:*` step and that
+`notarize` and `forceCodeSigning` remain `false` in `electron-builder.json`. If signing was
+deliberately re-enabled, check that every required secret exists, certificate passwords are
+correct, certificates have not expired, and Apple notarization credentials belong to the
+signing team. Rerun the failed workflow only after fixing the secret or repository setting.
 
 ### `npm ci` reports a lockfile mismatch
 
