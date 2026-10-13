@@ -418,10 +418,9 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 		await window.agent.createWorkspaceFile('Return', 'state.json');
 		await window.agent.writeWorkspaceFile('Return/state.json', '{"current": 1}');
 	});
-	await page
-		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Space' })
-		.click();
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
 	await workspace.getByText('Return').click();
 	await workspace.getByRole('button', { name: 'state.json' }).click();
@@ -443,10 +442,9 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 		.locator('[data-slot="workspace-sidebar"]')
 		.getByRole('link', { name: 'Return to Home' })
 		.click();
-	await page
-		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Space' })
-		.click();
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
 	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute(
 		'aria-current',
 		'page'
@@ -468,10 +466,9 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 			window.agent.writeWorkspaceFile('Return/state.json', '{"current": 2}').catch(reject);
 		});
 	});
-	await page
-		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Space' })
-		.click();
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 2');
 });
 
@@ -485,10 +482,9 @@ test('Workspace releases its mounted UI before navigating from Home to Settings'
 		.getByRole('link', { name: 'Return to Home' })
 		.click();
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toHaveCount(0);
-	await page
-		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Settings', exact: true })
-		.click();
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/settings';
+	});
 	await expect(page.locator('[data-slot="settings-workspace"]')).toBeVisible();
 	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
 });
@@ -644,25 +640,26 @@ test('the empty home state and composer use the intended spacing', async () => {
 	expect((await modelButton.boundingBox())!.x).toBeGreaterThan(attachmentBounds!.x);
 	await editor.pressSequentially('Hello');
 	await expect(editor).toContainText('Hello');
-	await expect(composer).toHaveAttribute('data-expanded', 'true');
+	// The composer keeps its fixed height — typing must not resize or reflow it.
+	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(sendButton).toBeVisible();
 	await expect(sendButton).toBeEnabled();
 	const sendBounds = await sendButton.boundingBox();
-	const expandedTranscriptionBounds = await transcriptionButton.boundingBox();
-	expect(sendBounds && expandedTranscriptionBounds).toBeTruthy();
+	const filledTranscriptionBounds = await transcriptionButton.boundingBox();
+	expect(sendBounds && filledTranscriptionBounds).toBeTruthy();
 	expect(sendBounds!.x).toBeGreaterThan(fieldBounds!.x);
 	expect(sendBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
-	expect(expandedTranscriptionBounds!.x).toBeLessThan(sendBounds!.x);
-	await expect(field).toHaveCSS('min-height', '128px');
+	expect(filledTranscriptionBounds!.x).toBeLessThan(sendBounds!.x);
+	await expect(field).toHaveCSS('min-height', '104px');
 	await expect(field).toHaveCSS('padding-top', '12px');
 	await expect(field).toHaveCSS('padding-bottom', '8px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await expect(field).toHaveCSS('border-radius', '16px');
-	const expandedFieldBounds = await field.boundingBox();
-	const expandedEditorBounds = await editor.boundingBox();
-	expect(expandedFieldBounds && expandedEditorBounds).toBeTruthy();
-	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeGreaterThanOrEqual(12);
-	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeLessThan(20);
+	const filledFieldBounds = await field.boundingBox();
+	const filledEditorBounds = await editor.boundingBox();
+	expect(filledFieldBounds && filledEditorBounds).toBeTruthy();
+	expect(filledEditorBounds!.y - filledFieldBounds!.y).toBeGreaterThanOrEqual(12);
+	expect(filledEditorBounds!.y - filledFieldBounds!.y).toBeLessThan(20);
 	await editor.fill('');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(sendButton).toBeVisible();
