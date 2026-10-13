@@ -151,7 +151,7 @@ export async function readPluginManifest(directory: string): Promise<PluginManif
 		value = JSON.parse(await fs.readFile(manifestPath, 'utf8')) as unknown;
 	} catch (error) {
 		const message = error instanceof Error ? error.message : 'Unknown error';
-		throw new Error(`Could not read ${manifestPath}: ${message}`);
+		throw new Error(`Could not read ${manifestPath}: ${message}`, { cause: error });
 	}
 
 	const parsed = pluginManifestSchema.safeParse(value);
