@@ -96,7 +96,14 @@ test('uploaded app settings persist in manifests and control new windows', async
 					);
 				})
 			)
-			.toEqual({ size: [1000, 720], minimum: [500, 300], resizable: false, maximizable: false });
+			.toEqual({
+				size: [1000, 720],
+				resizable: false,
+				// A non-resizable window on Linux clamps its minimum to the current
+				// size, and GTK reports it as maximizable whatever the option says.
+				minimum: isLinux ? [1000, 720] : [500, 300],
+				maximizable: isLinux,
+			});
 		await app.close();
 		app = await electron.launch({
 			args: [`--user-data-dir=${userDataDir}`, path.resolve('.')],
