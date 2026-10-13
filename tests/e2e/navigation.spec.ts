@@ -863,6 +863,8 @@ test('Database saves and reloads database credentials from Providers', async ({
 	await app.evaluate(({ BrowserWindow }) => {
 		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
 	});
+	// Database providers only appear once their plugin is enabled.
+	await page.evaluate(() => window.provider.setPluginEnabled('database', 'pinecone/pinecone', true));
 	await page.evaluate(() => {
 		window.location.hash = '#/settings/providers';
 	});
