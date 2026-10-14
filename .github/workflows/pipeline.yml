@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -33,9 +33,9 @@ jobs:
       - run: npm pack --dry-run --workspace @kucedr/cli
 
   prepare:
-    # Installers are only built for main and release tags.
+    # Only main and its release tags go past verify.
     if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
-    needs: [check]
+    needs: [verify]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.release.outputs.version }}
@@ -52,6 +52,7 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
   build:
+    if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
     needs: [prepare]
     strategy:
       fail-fast: false
@@ -130,6 +131,7 @@ jobs:
   release:
     # Installers build on every main push; only a version tag publishes a release.
     if: github.ref_type == 'tag'
+
     needs: [prepare, build]
     runs-on: ubuntu-latest
     permissions:

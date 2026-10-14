@@ -5,7 +5,7 @@ the monorepo.
 
 Kucedr contains three independently versioned products. The root manifest also declares a
 `website` workspace and website scripts, but this checkout has no `website` directory; those
-commands cannot be used until that workspace is supplied. `ci.yml` and `release.yml` are active;
+commands cannot be used until that workspace is supplied. `pipeline.yml` is active;
 `npm-publish.yml.disabled` is still inactive, so npm deployments described below cannot run yet:
 
 | Product      | Manifest                    | Workspace name | Deployment destination |
@@ -322,8 +322,8 @@ Reports are written to `coverage/`.
 
 ### Match the automated CI gate
 
-`.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. Its
-verification commands are:
+`.github/workflows/pipeline.yml` runs on pull requests, pushes to `main` and `dev`, version
+tags, and manual dispatch. Its `verify` job verification commands are:
 
 ```sh
 npm ci
@@ -340,8 +340,9 @@ therefore does not necessarily mean a test failed; inspect the newest run.
 
 ## Push a normal change
 
-Pull requests and pushes to `main` run `CI`, which validates the change without deploying any
-product. A push to a feature branch alone triggers nothing until a pull request exists.
+Pull requests and pushes to `main` or `dev` run the `verify` job, which validates the change
+without deploying any product. A push to a feature branch alone triggers nothing until a pull
+request exists.
 
 Create a branch:
 
@@ -367,21 +368,22 @@ git commit -m "describe the change"
 git push --set-upstream kucedr your-change
 ```
 
-Open a pull request and record the local checks run. Wait for the latest `CI` run to pass
+Open a pull request and record the local checks run. Wait for the latest `Pipeline` run to pass
 before merging into `main`.
 
 ## Deployment
 
 | Tag          | Workflow               | Result                                  |
 | ------------ | ---------------------- | --------------------------------------- |
-| `v1.2.3`     | `Release Electron app` | Unsigned installers in a GitHub Release |
+| `v1.2.3`     | `Pipeline`             | Unsigned installers in a GitHub Release |
 | `sdk-v1.2.3` | `Publish npm package`  | `@kucedr/sdk@1.2.3` on npm              |
 | `cli-v1.2.3` | `Publish npm package`  | `@kucedr/cli@1.2.3` on npm              |
 
 Versions are independent. Releasing the SDK does not release the CLI or Electron app.
 
-`Release Electron app` also runs on every push to `main` and on manual dispatch: it builds and
-uploads installers as workflow artifacts, but only a `v*.*.*` tag publishes a GitHub Release.
+`Pipeline` runs its `prepare` and `build` jobs on every push to `main` and on manual dispatch
+after `verify` passes: they build and upload installers as workflow artifacts, but only a
+`v*.*.*` tag publishes a GitHub Release.
 Superseded branch runs are cancelled; a tag run always finishes. `Publish npm package` is still
 stored as `npm-publish.yml.disabled` and must be enabled before any npm release tag is pushed.
 
@@ -503,11 +505,11 @@ EXE, DEB, RPM, AppImage, and tar.gz artifacts.
 
 Releases are published as GitHub pre-releases while Kucedr is in beta. The manifest version
 and tag stay plain semantic versions; only the GitHub Release carries the beta marker. Remove
-`prerelease: true` from `release.yml` for the first stable release.
+`prerelease: true` from `pipeline.yml` for the first stable release.
 
 Verify:
 
-1. The `Release Electron app` workflow is green.
+1. The `Pipeline` workflow is green.
 2. The GitHub Release version and tag are correct.
 3. The GitHub Release is marked as a pre-release.
 4. Every expected platform artifact is attached.
