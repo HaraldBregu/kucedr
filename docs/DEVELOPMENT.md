@@ -322,8 +322,8 @@ Reports are written to `coverage/`.
 
 ### Match the automated CI gate
 
-`.github/workflows/pipeline.yml` runs on pull requests, pushes to `main` and `dev`, version
-tags, and manual dispatch. Its `verify` job verification commands are:
+`.github/workflows/pipeline.yml` runs on pull requests targeting `main`, pushes to `main`,
+version tags, and manual dispatch. Its `verify` job verification commands are:
 
 ```sh
 npm ci
@@ -340,9 +340,9 @@ therefore does not necessarily mean a test failed; inspect the newest run.
 
 ## Push a normal change
 
-Pull requests and pushes to `main` or `dev` run the `verify` job, which validates the change
-without deploying any product. A push to a feature branch alone triggers nothing until a pull
-request exists.
+Pull requests targeting `main` and pushes to `main` run the `verify` job, which validates the
+change without deploying any product. A push to a feature branch alone triggers nothing until
+a pull request exists.
 
 Create a branch:
 
