@@ -50,7 +50,17 @@ describe('provider manifests', () => {
 		const services = loadMcps();
 		expect(services.every((service) => Array.isArray(service.scopes))).toBe(true);
 		expect(services.find((service) => service.id === 'gmail')).toMatchObject({
-			scopes: ['https://www.googleapis.com/auth/gmail.modify'],
+			scopes: [
+				'https://www.googleapis.com/auth/gmail.drafts.create',
+				'https://www.googleapis.com/auth/gmail.send',
+				'https://www.googleapis.com/auth/gmail.compose',
+				'https://www.googleapis.com/auth/gmail.drafts',
+				'https://www.googleapis.com/auth/gmail.modify',
+				'https://www.googleapis.com/auth/gmail.drafts.readonly',
+				'https://www.googleapis.com/auth/gmail.readonly',
+				'https://www.googleapis.com/auth/gmail.metadata',
+				'https://www.googleapis.com/auth/gmail.settings.basic',
+			],
 			oauth: {
 				client_id_env: 'GOOGLE_CLIENT_ID',
 				client_secret_env: 'GOOGLE_CLIENT_SECRET',
