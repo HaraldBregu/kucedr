@@ -1,13 +1,14 @@
-name: Release Electron app
+name: Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
     tags: ['v*.*.*']
+  pull_request:
   workflow_dispatch:
 
 concurrency:
-  group: electron-release-${{ github.ref }}
+  group: pipeline-${{ github.ref }}
   # Superseded branch builds are dropped; a release tag always runs to completion.
   cancel-in-progress: ${{ github.ref_type != 'tag' }}
 
@@ -15,7 +16,26 @@ permissions:
   contents: read
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run quality:check
+      - run: npm run build
+      - run: xvfb-run -a npm run test:e2e
+      - run: npm run build:packages
+      - run: npm pack --dry-run --workspace @kucedr/sdk
+      - run: npm pack --dry-run --workspace @kucedr/cli
+
   prepare:
+    # Only main and its release tags go past verify.
+    if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
+    needs: [verify]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.release.outputs.version }}
@@ -31,18 +51,8 @@ jobs:
           fi
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npm run quality:check
-
   build:
+    if: github.ref_type == 'tag' || github.ref == 'refs/heads/main'
     needs: [prepare]
     strategy:
       fail-fast: false
@@ -121,6 +131,7 @@ jobs:
   release:
     # Installers build on every main push; only a version tag publishes a release.
     if: github.ref_type == 'tag'
+
     needs: [prepare, build]
     runs-on: ubuntu-latest
     permissions:
