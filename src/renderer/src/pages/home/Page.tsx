@@ -761,7 +761,7 @@ function PageContent(): ReactElement {
 			)}
 		>
 			{showEmptyConversation ? null : (
-				<div className="pointer-events-none absolute bottom-0 h-5 w-full max-w-4xl bg-background" />
+				<div className="pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-5 max-w-4xl bg-background" />
 			)}
 			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-4xl')}>
 				<RecorderErrorMessage
