@@ -377,7 +377,7 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'search',
+						path: 'websearch',
 						element: (
 							<SettingsRouteWrapper>
 								<ProvidersPage section="search" />
@@ -421,7 +421,7 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'search',
-								element: <Navigate to="/settings/search" replace />,
+								element: <Navigate to="/settings/websearch" replace />,
 							},
 							{
 								path: 'transcribe',

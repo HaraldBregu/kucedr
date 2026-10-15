@@ -253,7 +253,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const webSearchLink = within(generalGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.searchEngines',
 	});
-	expect(webSearchLink).toHaveAttribute('href', '/settings/search');
+	expect(webSearchLink).toHaveAttribute('href', '/settings/websearch');
 	expect(generalLinks.indexOf(modelsLink)).toBe(generalLinks.indexOf(storage) + 1);
 	expect(generalLinks.indexOf(webSearchLink)).toBe(generalLinks.indexOf(modelsLink) + 1);
 	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(webSearchLink) + 1);
@@ -423,7 +423,7 @@ it('places Channels and Remote Agents in Bot immediately above Extensions', () =
 	expect(within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.remoteAgent new' })).not.toBeInTheDocument();
 });
 
-it('places Providers directly after Storage without provider subpages in the sidebar', () => {
+it('places Models and Web Search between Storage and Providers without provider subpages in the sidebar', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/providers']}>
 			<Routes>

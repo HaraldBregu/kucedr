@@ -278,7 +278,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Search engines
 	{
-		path: '/settings/search',
+		path: '/settings/websearch',
 		labelKey: 'settings.tabs.searchEngines',
 		descriptionKey: 'settings.overview.descriptions.searchEngine',
 		keywords: 'web search provider api key',
@@ -378,7 +378,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Cpu,
 	},
 	{
-		path: '/settings/search',
+		path: '/settings/websearch',
 		labelKey: 'settings.tabs.searchEngines',
 		descriptionKey: 'settings.overview.descriptions.searchEngine',
 		icon: Globe,
