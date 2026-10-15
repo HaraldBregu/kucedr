@@ -101,7 +101,12 @@ export function ToolActivityGroup({
 	const groups = groupToolsByType(tools);
 
 	return (
-		<div className={cn('flex w-full max-w-2xl flex-col gap-1', className)}>
+		<div
+			className={cn(
+				'flex w-full max-w-2xl flex-col gap-1 [&>*]:border-b [&>*]:border-border/50 [&>*]:pb-1',
+				className
+			)}
+		>
 			{groups.map((group, index) =>
 				group.tools.length > 1 ? (
 					<ToolTypeSection key={group.tools[0].toolCallId} group={group} />
