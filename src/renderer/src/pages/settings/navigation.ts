@@ -286,7 +286,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	// Provider pages
 	{
 		path: '/settings/knowledge/providers',
-		labelKey: 'settings.tabs.databases',
+		labelKey: 'settings.tabs.providers',
 		descriptionKey: 'settings.overview.descriptions.databases',
 		keywords: 'database vector provider api key',
 	},
