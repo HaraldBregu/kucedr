@@ -728,7 +728,7 @@ it('links directly to embedding and database provider configuration', async () =
 	);
 	expect(await screen.findByRole('button', { name: 'Configure models' })).toHaveAttribute(
 		'href',
-		'/settings/providers/models'
+		'/settings/models'
 	);
 	expect(screen.getByRole('button', { name: 'Configure databases' })).toHaveAttribute(
 		'href',
