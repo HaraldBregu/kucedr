@@ -6,6 +6,7 @@ import {
 	Layers,
 	HardDrive,
 	Code2,
+	Cpu,
 	Folder,
 	HeartPulse,
 	Settings,
