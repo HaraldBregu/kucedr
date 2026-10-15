@@ -223,6 +223,19 @@ const StoragePage: React.FC = () => {
 				description={t('settings.overview.descriptions.storage')}
 			/>
 
+			<SettingsPanel>
+				<Link to="/settings/storage/providers" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.tabs.providers')}
+						description={t('settings.storageProviders.description')}
+						media={<Server className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+			</SettingsPanel>
+
 			{error && (
 				<div className="flex flex-wrap items-center gap-2">
 					<SettingsNotice className="min-w-0 flex-1" variant="destructive" icon={AlertTriangle}>
