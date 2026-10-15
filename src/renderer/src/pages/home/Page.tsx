@@ -892,9 +892,9 @@ function PageContent(): ReactElement {
 										onReply={agent.replyToMessage}
 										onImplement={agent.implementPlan}
 									/>
-									<ChatContainerScrollAnchor className="h-4" />
+									<ChatContainerScrollAnchor className="h-[var(--composer-height,7rem)]" />
 								</ChatContainerContent>
-								<div className="pointer-events-none absolute inset-x-0 bottom-4 z-30 flex justify-center">
+								<div className="pointer-events-none absolute inset-x-0 bottom-[var(--composer-height,6rem)] z-30 flex justify-center">
 									<ScrollButton
 										type="button"
 										aria-label="Scroll to latest"
