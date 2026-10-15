@@ -761,9 +761,9 @@ function PageContent(): ReactElement {
 			)}
 		>
 			{showEmptyConversation ? null : (
-				<div className="pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-4xl bg-background" />
+				<div className="pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background" />
 			)}
-			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-4xl')}>
+			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl')}>
 				<RecorderErrorMessage
 					message={voiceErrorMessage}
 					actionLabel={voiceErrorAction?.label}
@@ -847,7 +847,12 @@ function PageContent(): ReactElement {
 							</PromptInputActions>
 						}
 					/>
-					<p className="relative mt-1.5 text-[11px] text-muted-foreground">
+					<p
+					className={cn(
+						'relative mt-1.5 text-[11px] text-muted-foreground',
+						showEmptyConversation && 'text-center'
+					)}
+				>
 						Kucedr can make mistakes. Check important info.
 					</p>
 				</div>
@@ -877,7 +882,7 @@ function PageContent(): ReactElement {
 					</span>
 					{showEmptyConversation ? (
 						<div className="flex min-h-[calc(50dvh+7rem)] w-full shrink-0 flex-col justify-end gap-4 pb-6 pt-10">
-							<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4">
+							<div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4">
 								<EmptyConversation />
 							</div>
 							{composer}
@@ -893,7 +898,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className="mx-auto min-h-full w-full max-w-4xl gap-5 px-4 pt-6">
+								<ChatContainerContent className="mx-auto min-h-full w-full max-w-3xl gap-5 px-4 pt-6">
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
