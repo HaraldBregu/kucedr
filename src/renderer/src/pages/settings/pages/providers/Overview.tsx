@@ -16,12 +16,6 @@ const PROVIDER_ITEMS = [
 		descriptionKey: 'settings.overview.descriptions.databases',
 		icon: Database,
 	},
-	{
-		path: '/settings/providers/storage',
-		labelKey: 'settings.tabs.storage',
-		descriptionKey: 'settings.storageProviders.description',
-		icon: HardDrive,
-	},
 ] as const;
 
 export default function ProvidersOverviewPage(): React.JSX.Element {
