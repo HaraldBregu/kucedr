@@ -99,7 +99,7 @@ it('uses distinct icons for Library and Knowledge', () => {
 	);
 });
 
-it('places Library and Workspace below Providers without Code in the general sidebar group', () => {
+it('places Library and Workspace in the Data sidebar section below the general group without Code', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/settings']}>
 			<Routes>
@@ -111,16 +111,19 @@ it('places Library and Workspace below Providers without Code in the general sid
 	);
 
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const providers = within(navigation).getByRole('link', { name: 'settings.tabs.providers' });
-	const library = within(navigation).getByRole('link', { name: 'library.title' });
-	const group = providers.closest('[data-slot="split-pane-group"]');
-	const links = within(group as HTMLElement).getAllByRole('link');
+	const general = within(navigation)
+		.getByRole('link', { name: 'settings.tabs.providers' })
+		.closest('[data-slot="split-pane-group"]');
+	const data = within(navigation)
+		.getByText('settings.overview.groups.data')
+		.closest('[data-slot="split-pane-group"]');
+	const links = within(data as HTMLElement).getAllByRole('link');
 
-	expect(library.closest('[data-slot="split-pane-group"]')).toBe(group);
-	expect(links.indexOf(library)).toBe(links.indexOf(providers) + 1);
-	const workspace = within(group as HTMLElement).getByRole('link', { name: 'settings.workspace.title' });
-	expect(workspace).toHaveAttribute('href', '/settings/workspace');
-	expect(links.indexOf(workspace)).toBe(links.indexOf(library) + 1);
+	expect(data?.previousElementSibling).toBe(general);
+	expect(links.map((link) => link.getAttribute('href'))).toEqual([
+		'/settings/library',
+		'/settings/workspace',
+	]);
 	expect(within(navigation).queryByRole('button', { name: /navigationBar.code/ })).not.toBeInTheDocument();
 });
 
