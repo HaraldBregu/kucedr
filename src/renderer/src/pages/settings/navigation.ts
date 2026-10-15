@@ -268,13 +268,14 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.modelServices.toolsDescription',
 		keywords: 'channel tools permissions allow deny ask',
 	},
-	// Provider pages
+	// Models
 	{
-		path: '/settings/providers/models',
+		path: '/settings/models',
 		labelKey: 'settings.overview.groups.mlModels',
 		descriptionKey: 'settings.overview.descriptions.providers',
 		keywords: 'models llm provider api keys',
 	},
+	// Provider pages
 	{
 		path: '/settings/providers/search',
 		labelKey: 'settings.tabs.searchEngines',
