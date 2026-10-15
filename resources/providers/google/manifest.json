@@ -1080,7 +1080,11 @@
 			"description": "Search email, manage messages, and organize your inbox.",
 			"authentication": "oauth2",
 			"url": "https://gmailmcp.googleapis.com/mcp/v1",
-			"scopes": ["https://www.googleapis.com/auth/gmail.readonly"],
+			"scopes": [
+				"https://www.googleapis.com/auth/gmail.readonly",
+				"https://www.googleapis.com/auth/gmail.compose",
+				"https://www.googleapis.com/auth/gmail.modify"
+			],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -1099,7 +1103,12 @@
 			"description": "Find events, manage calendars, and organize your schedule.",
 			"authentication": "oauth2",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
-			"scopes": ["https://www.googleapis.com/auth/calendar"],
+			"scopes": [
+				"https://www.googleapis.com/auth/calendar.calendarlist.readonly",
+				"https://www.googleapis.com/auth/calendar.events.freebusy",
+				"https://www.googleapis.com/auth/calendar.events.readonly",
+				"https://www.googleapis.com/auth/calendar.events"
+			],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -1118,7 +1127,10 @@
 			"description": "Search, organize, and manage your files in Google Drive.",
 			"authentication": "oauth2",
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
-			"scopes": ["https://www.googleapis.com/auth/drive"],
+			"scopes": [
+				"https://www.googleapis.com/auth/drive.readonly",
+				"https://www.googleapis.com/auth/drive.file"
+			],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -1132,63 +1144,6 @@
 			"icon_light_url": "/images/google-drive.svg"
 		},
 		{
-			"id": "google-docs",
-			"name": "Google Docs",
-			"description": "Read and edit documents while working in Google Docs.",
-			"authentication": "oauth2",
-			"url": "https://docsmcp.googleapis.com/mcp/v1",
-			"scopes": ["https://www.googleapis.com/auth/documents"],
-			"oauth": {
-				"client_id_env": "GOOGLE_CLIENT_ID",
-				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
-				"google_fetch": true
-			},
-			"icon_dark_url": "/images/google-docs.svg",
-			"icon_light_url": "/images/google-docs.svg"
-		},
-		{
-			"id": "google-sheets",
-			"name": "Google Sheets",
-			"description": "Read and update your spreadsheet data in Google Sheets.",
-			"authentication": "oauth2",
-			"url": "https://sheetsmcp.googleapis.com/mcp/v1",
-			"scopes": ["https://www.googleapis.com/auth/spreadsheets"],
-			"oauth": {
-				"client_id_env": "GOOGLE_CLIENT_ID",
-				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
-				"google_fetch": true
-			},
-			"icon_dark_url": "/images/google-sheets.svg",
-			"icon_light_url": "/images/google-sheets.svg"
-		},
-		{
-			"id": "google-maps",
-			"name": "Google Maps",
-			"description": "Find places, explore routes, and check local weather.",
-			"authentication": "oauth2",
-			"url": "https://mapstools.googleapis.com/mcp",
-			"scopes": ["https://www.googleapis.com/auth/maps-platform.mapstools"],
-			"oauth": {
-				"client_id_env": "GOOGLE_CLIENT_ID",
-				"client_secret_env": "GOOGLE_CLIENT_SECRET",
-				"authorization_params": {
-					"access_type": "offline",
-					"prompt": "consent select_account"
-				},
-				"google_fetch": true
-			},
-			"icon_dark_url": "/images/google-maps.svg",
-			"icon_light_url": "/images/google-maps.svg"
-		},
-		{
 			"id": "google-contacts",
 			"name": "Google Contacts",
 			"description": "Find people, manage contacts, and browse directories.",
@@ -1197,8 +1152,7 @@
 			"scopes": [
 				"https://www.googleapis.com/auth/directory.readonly",
 				"https://www.googleapis.com/auth/userinfo.profile",
-				"https://www.googleapis.com/auth/contacts.readonly",
-				"https://www.googleapis.com/auth/contacts"
+				"https://www.googleapis.com/auth/contacts.readonly"
 			],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
