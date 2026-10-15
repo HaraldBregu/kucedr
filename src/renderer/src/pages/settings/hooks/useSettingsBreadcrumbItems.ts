@@ -123,13 +123,6 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t(assistantSubpageLabelKey) },
 		];
 	}
-	const providerSubpageLabelKey = PROVIDER_SUBPAGE_LABEL_KEYS[location.pathname];
-	if (providerSubpageLabelKey) {
-		return [
-			{ label: t('settings.tabs.providers'), path: '/settings/providers' },
-			{ label: t(providerSubpageLabelKey) },
-		];
-	}
 
 	const serviceItem = SETTINGS_MODEL_SERVICE_ITEMS.find((item) => item.path === location.pathname);
 	if (serviceItem) {
