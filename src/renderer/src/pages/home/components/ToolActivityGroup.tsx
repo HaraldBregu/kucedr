@@ -71,7 +71,7 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 								{isRunning ? <TextShimmer>{label}</TextShimmer> : <span>{label}</span>}
 							</span>
 							{hasDuration && (
-								<span className="shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
+								<span className="ml-auto shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
 									{formatDuration(durationMs)}
 								</span>
 							)}
