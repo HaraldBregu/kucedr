@@ -780,76 +780,77 @@ function PageContent(): ReactElement {
 				>
 					<PromptEditor
 						placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
-					ariaLabel="Message your assistant"
-					value={agent.input}
-					expanded={false}
-					onValueChange={agent.setInput}
-					onPlanCommandChange={(active) => {
-						setPlanCommandActive(active);
-						agent.setInteractionMode(active ? 'plan' : 'default');
-					}}
-					onGoalCommandChange={setGoalCommandActive}
-					isLoading={agent.isLoading}
-					maxHeight={360}
-					onSubmit={() => void submitPrompt()}
-					textareaRef={agent.inputRef}
-					header={
-						agent.replyTo ? (
-							<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
-						) : undefined
-					}
-					leadingAction={
-						voiceMode === 'dictation' ? undefined : (
-							<AttachmentButton
-								disabled={attachmentDisabled}
-								onLibrarySelect={() => setLibraryPickerOpen(true)}
-							/>
-						)
-					}
-					voiceMode={voiceMode === 'dictation' ? voiceMode : null}
-					voiceElapsedMs={activeVoiceElapsedMs}
-					voiceMuted={activeVoiceMuted}
-					voiceMediaStream={activeVoiceStream}
-					voiceAnalyser={null}
-					voiceStatus={activeDictationMode === 'record' ? 'Recording' : 'Listening'}
-					voiceWaveformActive={true}
-					onVoiceMutedChange={activeVoiceSetMuted}
-					onVoiceCancel={() => void cancelDictation()}
-					onVoiceConfirm={() => void confirmDictation()}
-					onFilesChange={(files) => {
-						setAttachments((current) => [...current, ...filesToAttachments(files)]);
-					}}
-					wrapperClassName="max-w-none"
-					detachedControls
-					footerContent={
-						<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-							<StableModel
-								messages={agent.chatState.messages}
-								draft={agent.input}
-								hasAttachments={attachments.length > 0}
-							/>
-						</div>
-					}
-					className="w-full"
-					inputClassName={cn(
-						planCommandActive && 'plan-prompt-frame',
-						goalCommandActive && 'goal-prompt-frame'
-					)}
-					trailingAction={
-						<PromptInputActions className="justify-end gap-1.5">
-							<VoiceButton
-								onVoiceModeRequest={() => void startDictation()}
-								disabled={voiceBusy || agent.isLoading}
-								disabledReason={voiceButtonDisabledReason}
-								mode={voiceButtonMode}
-							/>
-							<SubmitButton isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
-						</PromptInputActions>
-					}
-				/>
-				<p className="relative mt-1.5 text-center text-[11px] text-muted-foreground">
-					Kucedr can make mistakes. Check important info.
-				</p>
+						ariaLabel="Message your assistant"
+						value={agent.input}
+						expanded={false}
+						onValueChange={agent.setInput}
+						onPlanCommandChange={(active) => {
+							setPlanCommandActive(active);
+							agent.setInteractionMode(active ? 'plan' : 'default');
+						}}
+						onGoalCommandChange={setGoalCommandActive}
+						isLoading={agent.isLoading}
+						maxHeight={360}
+						onSubmit={() => void submitPrompt()}
+						textareaRef={agent.inputRef}
+						header={
+							agent.replyTo ? (
+								<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
+							) : undefined
+						}
+						leadingAction={
+							voiceMode === 'dictation' ? undefined : (
+								<AttachmentButton
+									disabled={attachmentDisabled}
+									onLibrarySelect={() => setLibraryPickerOpen(true)}
+								/>
+							)
+						}
+						voiceMode={voiceMode === 'dictation' ? voiceMode : null}
+						voiceElapsedMs={activeVoiceElapsedMs}
+						voiceMuted={activeVoiceMuted}
+						voiceMediaStream={activeVoiceStream}
+						voiceAnalyser={null}
+						voiceStatus={activeDictationMode === 'record' ? 'Recording' : 'Listening'}
+						voiceWaveformActive={true}
+						onVoiceMutedChange={activeVoiceSetMuted}
+						onVoiceCancel={() => void cancelDictation()}
+						onVoiceConfirm={() => void confirmDictation()}
+						onFilesChange={(files) => {
+							setAttachments((current) => [...current, ...filesToAttachments(files)]);
+						}}
+						wrapperClassName="max-w-none"
+						detachedControls
+						footerContent={
+							<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
+								<StableModel
+									messages={agent.chatState.messages}
+									draft={agent.input}
+									hasAttachments={attachments.length > 0}
+								/>
+							</div>
+						}
+						className="w-full"
+						inputClassName={cn(
+							planCommandActive && 'plan-prompt-frame',
+							goalCommandActive && 'goal-prompt-frame'
+						)}
+						trailingAction={
+							<PromptInputActions className="justify-end gap-1.5">
+								<VoiceButton
+									onVoiceModeRequest={() => void startDictation()}
+									disabled={voiceBusy || agent.isLoading}
+									disabledReason={voiceButtonDisabledReason}
+									mode={voiceButtonMode}
+								/>
+								<SubmitButton isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
+							</PromptInputActions>
+						}
+					/>
+					<p className="relative mt-1.5 text-center text-[11px] text-muted-foreground">
+						Kucedr can make mistakes. Check important info.
+					</p>
+				</div>
 			</div>
 		</div>
 	);
