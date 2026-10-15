@@ -31,6 +31,7 @@ import {
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
+	SettingsPanel,
 	SettingsRow,
 	SettingsSection,
 } from '../../components';
