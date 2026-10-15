@@ -20,14 +20,6 @@ export function SidebarItems(): React.JSX.Element {
 						<span>{t('settings.title')}</span>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
-				<SidebarMenuItem>
-					<SidebarMenuButton
-						onClick={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}
-					>
-						<CircleHelp className="size-4 shrink-0" />
-						<span>{t('settings.sidebar.help')}</span>
-					</SidebarMenuButton>
-				</SidebarMenuItem>
 			</SidebarMenu>
 		</nav>
 	);
