@@ -377,6 +377,14 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'search',
+						element: (
+							<SettingsRouteWrapper>
+								<ProvidersPage section="search" />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
 						path: 'providers',
 						children: [
 							{
