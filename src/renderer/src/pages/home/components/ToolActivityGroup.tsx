@@ -1,5 +1,4 @@
 import { useState, type ReactElement } from 'react';
-import { ChevronDown } from 'lucide-react';
 import { useNow } from '@/components/hooks/use-now';
 import { formatDuration } from '@/components/prompt-kit/duration';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
