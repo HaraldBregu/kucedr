@@ -444,7 +444,10 @@ it('places Models and Web Search between Storage and Providers without provider 
 	});
 
 	expect(providers).toHaveAttribute('href', '/settings/providers');
-	expect(links.indexOf(providers)).toBe(links.indexOf(storage) + 1);
+	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(providers)).map((link) => link.getAttribute('href'))).toEqual([
+		'/settings/models',
+		'/settings/websearch',
+	]);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',
