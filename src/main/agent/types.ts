@@ -23,6 +23,7 @@ export interface ToolCall {
 	name: string;
 	args: Record<string, unknown>;
 	result?: ToolResult;
+	durationMs?: number;
 }
 
 export interface JSONSchema {
