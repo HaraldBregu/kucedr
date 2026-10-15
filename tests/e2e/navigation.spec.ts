@@ -49,6 +49,8 @@ const routes = [
 	'/settings/channels',
 	'/settings/plugins',
 	'/settings/skills',
+	'/settings/models',
+	'/settings/websearch',
 	'/settings/providers',
 	'/settings/providers/database',
 	'/settings/mcp',
