@@ -198,7 +198,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												aria-current={isActive ? 'page' : undefined}
 												className={cn(
 													SPLIT_ITEM_CLASS,
-													'h-7 min-w-0 flex-1',
+													'h-7 min-w-0 flex-1 text-muted-foreground',
 													isActive && SPLIT_ITEM_ACTIVE_CLASS
 												)}
 												data-run-status={session.runStatus}
