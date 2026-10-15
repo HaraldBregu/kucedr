@@ -843,7 +843,7 @@ function PageContent(): ReactElement {
 						</PromptInputActions>
 					}
 				/>
-				<p className="mt-1.5 text-center text-[11px] text-muted-foreground">
+				<p className="relative mt-1.5 text-center text-[11px] text-muted-foreground">
 					Kucedr can make mistakes. Check important info.
 				</p>
 			</div>
