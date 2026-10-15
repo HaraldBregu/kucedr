@@ -70,12 +70,6 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 									{formatDuration(durationMs)}
 								</span>
 							)}
-							<ChevronDown
-								className={cn(
-									'size-3 shrink-0 transition-transform duration-200',
-									isOpen && 'rotate-180'
-								)}
-							/>
 						</div>
 					</Button>
 				}
