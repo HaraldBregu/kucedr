@@ -289,6 +289,7 @@
 				"services": "Application",
 				"assistant": "Agents",
 				"brain": "Brain",
+				"data": "Data",
 				"bot": "Bot",
 				"extensions": "Extensions",
 				"configuration": "Configuration"
