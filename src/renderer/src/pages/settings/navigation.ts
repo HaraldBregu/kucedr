@@ -8,6 +8,7 @@ import {
 	Code2,
 	Cpu,
 	Folder,
+	Globe,
 	HeartPulse,
 	Settings,
 	Library,
