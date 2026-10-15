@@ -11,12 +11,6 @@ import {
 
 const PROVIDER_ITEMS = [
 	{
-		path: '/settings/providers/search',
-		labelKey: 'settings.tabs.searchEngines',
-		descriptionKey: 'settings.overview.descriptions.searchEngine',
-		icon: Search,
-	},
-	{
 		path: '/settings/providers/database',
 		labelKey: 'settings.tabs.databases',
 		descriptionKey: 'settings.overview.descriptions.databases',
