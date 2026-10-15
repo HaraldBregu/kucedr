@@ -140,7 +140,7 @@ it.each([
 	['/settings/websearch', 'settings.tabs.searchEngines'],
 	['/settings/providers', 'settings.tabs.providers'],
 	['/settings/providers/database', 'settings.tabs.databases'],
-	['/settings/providers/storage', 'settings.tabs.storage'],
+	['/settings/storage/providers', 'settings.tabs.providers'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/plugins', 'settings.tabs.plugins'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {

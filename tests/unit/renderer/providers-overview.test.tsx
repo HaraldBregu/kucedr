@@ -14,12 +14,11 @@ it('keeps every provider category visible even when no plugins are enabled', () 
 	);
 
 	expect(screen.getByRole('heading', { name: 'settings.tabs.providers' })).toBeInTheDocument();
-	for (const [name, path] of [
-		['settings.tabs.databases', '/settings/providers/database'],
-		['settings.tabs.storage', '/settings/providers/storage'],
-	] as const) {
-		expect(screen.getByText(name).closest('a')).toHaveAttribute('href', path);
-	}
+	expect(screen.getByText('settings.tabs.databases').closest('a')).toHaveAttribute(
+		'href',
+		'/settings/providers/database'
+	);
+	expect(screen.queryByText('settings.tabs.storage')).not.toBeInTheDocument();
 	expect(screen.queryByText('settings.overview.groups.mlModels')).not.toBeInTheDocument();
 	expect(screen.queryByText('settings.tabs.searchEngines')).not.toBeInTheDocument();
 });
