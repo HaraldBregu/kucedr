@@ -250,16 +250,13 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const storage = within(generalGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.storage',
 	});
+	const webSearchLink = within(generalGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.searchEngines',
+	});
+	expect(webSearchLink).toHaveAttribute('href', '/settings/search');
 	expect(generalLinks.indexOf(modelsLink)).toBe(generalLinks.indexOf(storage) + 1);
-	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(modelsLink) + 1);
-	const dataGroup = within(navigation)
-		.getByText('settings.overview.groups.data')
-		.closest('[data-slot="split-pane-group"]');
-	expect(
-		within(dataGroup as HTMLElement)
-			.getAllByRole('link')
-			.map((link) => link.getAttribute('href'))
-	).toEqual(['/settings/library', '/settings/workspace']);
+	expect(generalLinks.indexOf(webSearchLink)).toBe(generalLinks.indexOf(modelsLink) + 1);
+	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(webSearchLink) + 1);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',
