@@ -38,7 +38,7 @@ const initialComponents: Partial<Components> = {
 			return (
 				<span
 					className={cn(
-						'rounded border border-border/60 bg-muted px-1 py-0.5 font-mono text-[0.85em] text-foreground',
+						'rounded border border-border/60 bg-accent px-1 py-0.5 font-mono text-[0.85em] text-accent-foreground',
 						className
 					)}
 					{...props}
