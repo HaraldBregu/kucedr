@@ -288,11 +288,24 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'storage',
-						element: (
-							<SettingsRouteWrapper>
-								<StoragePage />
-							</SettingsRouteWrapper>
-						),
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<StoragePage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'providers',
+								element: (
+									<SettingsRouteWrapper>
+										<StorageProvidersPage />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
 					},
 					{
 						path: 'settings',
