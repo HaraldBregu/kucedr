@@ -62,7 +62,7 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 						className="p-0! h-auto w-full justify-start rounded-md bg-transparent! py-1 font-normal text-muted-foreground transition-colors hover:bg-transparent hover:text-foreground"
 					>
 						<div className="flex w-full min-w-0 items-center gap-1.5">
-							<span className="flex min-w-0 items-baseline gap-1 truncate text-xs font-medium">
+							<span className="flex min-w-0 items-baseline gap-1 truncate text-sm font-medium">
 								{isRunning ? <TextShimmer>{label}</TextShimmer> : <span>{label}</span>}
 							</span>
 							{hasDuration && (
