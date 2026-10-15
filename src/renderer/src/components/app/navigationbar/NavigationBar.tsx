@@ -80,7 +80,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const searchLabel = t('navigationBar.search');
 	const chatHistoryLabel = t('settings.chatHistory.title');
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
-	const chatButtonVariant = isHome ? 'secondary' : 'ghost';
+	const chatButtonVariant = isHome || isSettings ? 'secondary' : 'ghost';
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
 	useEffect(() => {
 		if (!chatSessionsLoading && chatSessionsRef.current) revealSelection(chatSessionsRef.current);
