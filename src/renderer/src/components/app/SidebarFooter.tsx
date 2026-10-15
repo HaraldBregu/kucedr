@@ -76,8 +76,9 @@ export function AppSidebarFooter(): React.JSX.Element {
 						</DropdownMenuTrigger>
 						<Button
 							type="button"
+							variant="ghost"
 							size="icon"
-							className="absolute right-2 top-2 z-10"
+							className="absolute right-2 top-2 z-10 shrink-0 rounded-lg hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
 							aria-label={t('settings.tabs.voice')}
 							title={voiceError ?? t('settings.tabs.voice')}
 							onClick={() => {
