@@ -112,7 +112,7 @@ it('places Library and Workspace in the Data sidebar section below the general g
 
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
 	const general = within(navigation)
-		.getByRole('link', { name: 'settings.tabs.providers' })
+		.getByRole('link', { name: 'settings.tabs.account' })
 		.closest('[data-slot="split-pane-group"]');
 	const data = within(navigation)
 		.getByText('settings.overview.groups.data')
