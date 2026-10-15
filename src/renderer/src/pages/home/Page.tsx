@@ -760,12 +760,7 @@ function PageContent(): ReactElement {
 				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
 			)}
 		>
-			<div
-				className={cn(
-					'mx-auto w-full bg-background',
-					showEmptyConversation ? 'max-w-2xl' : 'max-w-4xl'
-				)}
-			>
+			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-4xl')}>
 				<RecorderErrorMessage
 					message={voiceErrorMessage}
 					actionLabel={voiceErrorAction?.label}
