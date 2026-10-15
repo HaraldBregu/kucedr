@@ -26,6 +26,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useNow } from '@/components/hooks/use-now';
 import { cn } from '@/lib/utils';
 import { CalendarIcon } from './calendar';
+import { ContactsIcon } from './contacts';
 import { DriveIcon } from './drive';
 import { formatDuration } from './duration';
 import { GmailIcon } from './gmail';
