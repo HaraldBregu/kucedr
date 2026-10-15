@@ -83,6 +83,8 @@ export function toolIcon(
 	if (serviceId === 'google-calendar' || type.startsWith('mcp__google-calendar__'))
 		return CalendarIcon;
 	if (serviceId === 'google-drive' || type.startsWith('mcp__google-drive__')) return DriveIcon;
+	if (serviceId === 'google-contacts' || type.startsWith('mcp__google-contacts__'))
+		return ContactsIcon;
 	if (
 		serviceId === 'gmail' ||
 		serviceId === 'gmail-smtp' ||
