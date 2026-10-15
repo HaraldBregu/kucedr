@@ -21,4 +21,5 @@ it('keeps every provider category visible even when no plugins are enabled', () 
 		expect(screen.getByText(name).closest('a')).toHaveAttribute('href', path);
 	}
 	expect(screen.queryByText('settings.overview.groups.mlModels')).not.toBeInTheDocument();
+	expect(screen.queryByText('settings.tabs.searchEngines')).not.toBeInTheDocument();
 });
