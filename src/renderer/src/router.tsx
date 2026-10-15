@@ -369,6 +369,14 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'models',
+						element: (
+							<SettingsRouteWrapper>
+								<ProvidersPage section="models" />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
 						path: 'providers',
 						children: [
 							{
@@ -381,11 +389,7 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'models',
-								element: (
-									<SettingsRouteWrapper>
-										<ProvidersPage section="models" />
-									</SettingsRouteWrapper>
-								),
+								element: <Navigate to="/settings/models" replace />,
 							},
 							{
 								path: 'database',
