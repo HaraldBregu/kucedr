@@ -44,7 +44,10 @@ export class WindowFactory {
 		// Use path.resolve to ensure absolute path for preload
 		// Output as .js (CommonJS) for Electron preload compatibility
 		this.preloadPath = path.resolve(app.getAppPath(), 'out/preload/index.js');
-		this.iconPath = path.resolve(resourceRoot(), 'resources/icons/icon.png');
+		this.iconPath = path.resolve(
+			resourceRoot(),
+			process.platform === 'win32' ? 'resources/icons/win/icon.ico' : 'resources/icons/icon.png'
+		);
 		this.logger?.info('WindowFactory', `Preload path: ${this.preloadPath}`);
 		this.logger?.info('WindowFactory', `Preload file exists: ${existsSync(this.preloadPath)}`);
 	}
