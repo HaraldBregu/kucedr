@@ -374,6 +374,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Server,
 	},
 	{
+		path: '/settings/models',
+		labelKey: 'settings.overview.groups.mlModels',
+		descriptionKey: 'settings.overview.descriptions.providers',
+		icon: Cpu,
+	},
+	{
 		path: '/settings/library',
 		labelKey: 'library.title',
 		descriptionKey: 'settings.overview.descriptions.library',
