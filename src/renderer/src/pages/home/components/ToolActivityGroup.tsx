@@ -65,6 +65,7 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 						<div className="flex min-w-0 items-center gap-1.5">
 							{createElement(kindIcon, {
 								className: 'size-3.5 shrink-0 text-muted-foreground/60',
+								...(kindIcon === McpIcon ? { toolPart: group.tools[0] } : {}),
 							})}
 							<span className="flex min-w-0 items-baseline gap-1 truncate text-xs font-medium">
 								{isRunning ? <TextShimmer>{label}</TextShimmer> : <span>{label}</span>}
