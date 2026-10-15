@@ -63,10 +63,6 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 						className="p-0! h-auto w-full justify-start rounded-md bg-transparent! py-1 font-normal text-muted-foreground transition-colors hover:bg-transparent hover:text-foreground"
 					>
 						<div className="flex w-full min-w-0 items-center gap-1.5">
-							{!hidesIcon(group.type) &&
-								createElement(kindIcon, {
-									className: 'size-3.5 shrink-0 text-muted-foreground/60',
-								})}
 							<span className="flex min-w-0 items-baseline gap-1 truncate text-xs font-medium">
 								{isRunning ? <TextShimmer>{label}</TextShimmer> : <span>{label}</span>}
 							</span>
