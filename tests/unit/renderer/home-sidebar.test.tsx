@@ -198,12 +198,12 @@ it.each<[AuthState, string]>([
 		['settings.tabs.account', '/settings/account'],
 		['settings.tabs.storage', '/settings/storage'],
 		['settings.sidebar.chatSettings', '/settings/agent'],
-		['settings.tabs.providers', '/settings/providers'],
 		['settings.tabs.apps', '/settings/apps'],
 	].forEach(([name, href]) => {
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
 	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.settings' })).not.toBeInTheDocument();
+	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.providers' })).not.toBeInTheDocument();
 	expect(
 		within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })
 	).not.toBeInTheDocument();

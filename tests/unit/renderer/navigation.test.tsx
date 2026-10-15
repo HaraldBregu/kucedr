@@ -138,7 +138,6 @@ it.each([
 	['/settings/mcp', 'settings.tabs.mcp'],
 	['/settings/models', 'settings.overview.groups.mlModels'],
 	['/settings/websearch', 'settings.tabs.searchEngines'],
-	['/settings/providers', 'settings.tabs.providers'],
 	['/settings/knowledge/providers', 'settings.tabs.providers'],
 	['/settings/storage/providers', 'settings.tabs.providers'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
@@ -152,10 +151,6 @@ it.each([
 		path === '/settings/knowledge/providers'
 	) {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
-	} else if (path.startsWith('/settings/providers/')) {
-		expect(SETTINGS_NAVIGATION).toContainEqual(
-			expect.objectContaining({ path: '/settings/providers', labelKey: 'settings.tabs.providers' })
-		);
 	} else {
 		expect(SETTINGS_NAVIGATION).toContainEqual(expect.objectContaining({ path, labelKey }));
 	}
@@ -214,9 +209,6 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const assistantGroup = within(navigation)
 		.getByText('settings.overview.groups.assistant')
 		.closest('[data-slot="split-pane-group"]');
-	const providersLink = within(generalGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.providers',
-	});
 
 	expect(sidebar).toBeInTheDocument();
 	expect(workspace).toBeInTheDocument();
@@ -249,7 +241,9 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.coding.title' })
 	).not.toBeInTheDocument();
-	expect(providersLink).toHaveAttribute('href', '/settings/providers');
+	expect(
+		within(generalGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.providers' })
+	).not.toBeInTheDocument();
 	const generalLinks = within(generalGroup as HTMLElement).getAllByRole('link');
 	const storage = within(generalGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.storage',
@@ -260,7 +254,6 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(webSearchLink).toHaveAttribute('href', '/settings/websearch');
 	expect(generalLinks.indexOf(modelsLink)).toBe(generalLinks.indexOf(storage) + 1);
 	expect(generalLinks.indexOf(webSearchLink)).toBe(generalLinks.indexOf(modelsLink) + 1);
-	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(webSearchLink) + 1);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',
@@ -427,9 +420,9 @@ it('places Channels and Remote Agents in Bot immediately above Extensions', () =
 	expect(within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.remoteAgent new' })).not.toBeInTheDocument();
 });
 
-it('places Models and Web Search between Storage and Providers without provider subpages in the sidebar', () => {
+it('places Models and Web Search after Storage without a Providers entry in the sidebar', () => {
 	render(
-		<MemoryRouter initialEntries={['/settings/providers']}>
+		<MemoryRouter initialEntries={['/settings/storage']}>
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
 					<Route path="*" element={<SettingsPageHeader title="Settings page" />} />
@@ -443,12 +436,11 @@ it('places Models and Web Search between Storage and Providers without provider 
 	expect(storage).toHaveAttribute('href', '/settings/storage');
 	const group = storage.closest('[data-slot="split-pane-group"]');
 	const links = within(group as HTMLElement).getAllByRole('link');
-	const providers = within(group as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.providers',
-	});
 
-	expect(providers).toHaveAttribute('href', '/settings/providers');
-	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(providers)).map((link) => link.getAttribute('href'))).toEqual([
+	expect(
+		within(group as HTMLElement).queryByRole('link', { name: 'settings.tabs.providers' })
+	).not.toBeInTheDocument();
+	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(storage) + 3).map((link) => link.getAttribute('href'))).toEqual([
 		'/settings/models',
 		'/settings/websearch',
 	]);

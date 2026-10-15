@@ -131,15 +131,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	}
 
 	const serviceItem = SETTINGS_MODEL_SERVICE_ITEMS.find((item) => item.path === location.pathname);
-	if (serviceItem) {
-		if (serviceItem.path.startsWith('/settings/providers/')) {
-			return [
-				{ label: t('settings.tabs.providers'), path: '/settings/providers' },
-				{ label: t(serviceItem.labelKey) },
-			];
-		}
-		return [{ label: t(serviceItem.labelKey) }];
-	}
+	if (serviceItem) return [{ label: t(serviceItem.labelKey) }];
 
 	if (mcpDetailMatch) {
 		return [
