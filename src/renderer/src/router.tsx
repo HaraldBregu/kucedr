@@ -426,11 +426,7 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'storage',
-								element: (
-									<SettingsRouteWrapper>
-										<StorageProvidersPage />
-									</SettingsRouteWrapper>
-								),
+								element: <Navigate to="/settings/storage/providers" replace />,
 							},
 							{
 								path: 'search',
