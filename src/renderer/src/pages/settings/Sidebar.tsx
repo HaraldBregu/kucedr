@@ -21,6 +21,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				'/settings/settings',
 				'/settings/storage',
 				'/settings/models',
+				'/settings/search',
 				'/settings/providers',
 			].includes(item.path)
 		),
