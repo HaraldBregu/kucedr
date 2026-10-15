@@ -139,7 +139,7 @@ it.each([
 	['/settings/models', 'settings.overview.groups.mlModels'],
 	['/settings/websearch', 'settings.tabs.searchEngines'],
 	['/settings/providers', 'settings.tabs.providers'],
-	['/settings/providers/database', 'settings.tabs.databases'],
+	['/settings/knowledge/providers', 'settings.tabs.providers'],
 	['/settings/storage/providers', 'settings.tabs.providers'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/plugins', 'settings.tabs.plugins'],
@@ -147,7 +147,9 @@ it.each([
 	if (
 		path === '/settings/settings/persona' ||
 		path === '/settings/agent/tools' ||
-		path === '/settings/agent/mcp-tools'
+		path === '/settings/agent/mcp-tools' ||
+		path === '/settings/storage/providers' ||
+		path === '/settings/knowledge/providers'
 	) {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else if (path.startsWith('/settings/providers/')) {

@@ -115,7 +115,7 @@ it('includes every canonical static settings subpage', () => {
 		'/settings/channels/tools',
 		'/settings/models',
 		'/settings/websearch',
-		'/settings/providers/database',
+		'/settings/knowledge/providers',
 		'/settings/storage/providers',
 		'/settings/voice/history',
 		'/settings/voice/tools',

@@ -52,7 +52,7 @@ const routes = [
 	'/settings/models',
 	'/settings/websearch',
 	'/settings/providers',
-	'/settings/providers/database',
+	'/settings/knowledge/providers',
 	'/settings/mcp',
 	'/settings/mcp/missing',
 	'/settings/providers/transcribe',

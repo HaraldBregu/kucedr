@@ -732,7 +732,7 @@ it('links directly to embedding and database provider configuration', async () =
 	);
 	expect(screen.getByRole('button', { name: 'Configure databases' })).toHaveAttribute(
 		'href',
-		'/settings/providers/database'
+		'/settings/knowledge/providers'
 	);
 });
 
