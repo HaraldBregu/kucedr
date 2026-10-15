@@ -62,6 +62,12 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.voiceAgent.title') },
 		];
 	}
+	if (location.pathname === '/settings/storage/providers') {
+		return [
+			{ label: t('settings.tabs.storage'), path: '/settings/storage' },
+			{ label: t('settings.tabs.providers') },
+		];
+	}
 	if (location.pathname === '/settings/voice/history') {
 		return [
 			{ label: t('settings.tabs.voice'), path: '/settings/voice' },
