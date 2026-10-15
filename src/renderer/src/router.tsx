@@ -48,7 +48,6 @@ const PluginDetailPage = lazy(() => import('./pages/settings/pages/plugins/Detai
 const SkillsPage = lazy(() => import('./pages/settings/pages/skills/Page'));
 const SkillDetailsPage = lazy(() => import('./pages/settings/pages/skills/details/Page'));
 const ProvidersPage = lazy(() => import('./pages/settings/pages/providers/Page'));
-const ProvidersOverviewPage = lazy(() => import('./pages/settings/pages/providers/Overview'));
 const StorageProvidersPage = lazy(() => import('./pages/settings/pages/storage/providers/Page'));
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
 const RemoteAgentPage = lazy(() => import('./pages/settings/pages/remote-agent/Page'));
@@ -396,43 +395,6 @@ const routes: RouteObject[] = [
 								<ProvidersPage section="search" />
 							</SettingsRouteWrapper>
 						),
-					},
-					{
-						path: 'providers',
-						children: [
-							{
-								index: true,
-								element: (
-									<SettingsRouteWrapper>
-										<ProvidersOverviewPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'models',
-								element: <Navigate to="/settings/models" replace />,
-							},
-							{
-								path: 'database',
-								element: <Navigate to="/settings/knowledge/providers" replace />,
-							},
-							{
-								path: 'databases',
-								element: <Navigate to="/settings/knowledge/providers" replace />,
-							},
-							{
-								path: 'storage',
-								element: <Navigate to="/settings/storage/providers" replace />,
-							},
-							{
-								path: 'search',
-								element: <Navigate to="/settings/websearch" replace />,
-							},
-							{
-								path: 'transcribe',
-								element: <Navigate to="/settings/agent" replace />,
-							},
-						],
 					},
 					{
 						path: 'knowledge',

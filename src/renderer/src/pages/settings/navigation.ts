@@ -384,12 +384,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Globe,
 	},
 	{
-		path: '/settings/providers',
-		labelKey: 'settings.tabs.providers',
-		descriptionKey: 'settings.overview.descriptions.providers',
-		icon: Server,
-	},
-	{
 		path: '/settings/library',
 		labelKey: 'library.title',
 		descriptionKey: 'settings.overview.descriptions.library',

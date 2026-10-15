@@ -22,7 +22,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				'/settings/storage',
 				'/settings/models',
 				'/settings/websearch',
-				'/settings/providers',
 			].includes(item.path)
 		),
 	},

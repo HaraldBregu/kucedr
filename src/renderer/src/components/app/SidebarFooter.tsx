@@ -6,7 +6,6 @@ import {
 	LogOut,
 	MessageCircle,
 	Plug,
-	Server,
 	UserRound,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -48,7 +47,6 @@ export function AppSidebarFooter(): React.JSX.Element {
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
 		{ path: '/settings/storage', label: t('settings.tabs.storage'), icon: HardDrive },
 		{ path: '/settings/agent', label: t('settings.sidebar.chatSettings'), icon: MessageCircle },
-		{ path: '/settings/providers', label: t('settings.tabs.providers'), icon: Server },
 		{ path: '/settings/library', label: t('library.title'), icon: Library },
 		{ path: '/settings/plugins', label: t('settings.tabs.plugins'), icon: Plug },
 		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
