@@ -413,11 +413,7 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'search',
-								element: (
-									<SettingsRouteWrapper>
-										<ProvidersPage section="search" />
-									</SettingsRouteWrapper>
-								),
+								element: <Navigate to="/settings/search" replace />,
 							},
 							{
 								path: 'transcribe',
