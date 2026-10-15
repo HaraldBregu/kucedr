@@ -3,7 +3,6 @@ import { ChevronDown } from 'lucide-react';
 import { useNow } from '@/components/hooks/use-now';
 import { formatDuration } from '@/components/prompt-kit/duration';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
-import { McpIcon } from '@/components/prompt-kit/mcp';
 import { isTaskToolType } from '@/components/prompt-kit/task';
 import { Tool, toolIcon } from '@/components/prompt-kit/tool';
 import { Button } from '@/components/ui/button';
@@ -66,7 +65,6 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 						<div className="flex min-w-0 items-center gap-1.5">
 							{createElement(kindIcon, {
 								className: 'size-3.5 shrink-0 text-muted-foreground/60',
-								...(kindIcon === McpIcon ? { toolPart: group.tools[0] } : {}),
 							})}
 							<span className="flex min-w-0 items-baseline gap-1 truncate text-xs font-medium">
 								{isRunning ? <TextShimmer>{label}</TextShimmer> : <span>{label}</span>}
