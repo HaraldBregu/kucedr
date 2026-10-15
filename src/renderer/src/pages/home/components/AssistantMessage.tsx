@@ -340,7 +340,7 @@ export function AssistantMessage({
 						data-slot="assistant-message-content"
 						className={cn(
 							'relative min-w-0 max-w-full',
-							hasTools && 'mt-2 border-t border-border/50 pt-3'
+							hasTools && 'border-t border-border/50 pt-3'
 						)}
 					>
 						{parsedPlan.kind === 'complete' ? (
