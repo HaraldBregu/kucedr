@@ -18,7 +18,6 @@ const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 };
 
 const PROVIDER_SUBPAGE_LABEL_KEYS: Record<string, string> = {
-	'/settings/providers/search': 'settings.tabs.searchEngines',
 	'/settings/providers/database': 'settings.tabs.databases',
 	'/settings/providers/storage': 'settings.tabs.storage',
 };
