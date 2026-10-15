@@ -17,6 +17,7 @@ import {
 	Plug,
 	PlugZap,
 	RadioTower,
+	Search,
 	Server,
 	ShieldCheck,
 	Sparkles,
