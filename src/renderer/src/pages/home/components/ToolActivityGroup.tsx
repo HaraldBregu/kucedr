@@ -42,7 +42,6 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 	const [isOpen, setIsOpen] = useState(false);
 	const isRunning = group.tools.some(isToolRunning);
 	const label = toolGroupLabel(group.type, group.tools);
-	const kindIcon = toolIcon(group.tools[0]);
 	const hasLiveTool = group.tools.some(isLiveTool);
 	const now = useNow(hasLiveTool);
 	const hasDuration = hasLiveTool || group.tools.some((tool) => tool.durationMs !== undefined);
