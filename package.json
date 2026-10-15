@@ -68,7 +68,6 @@
 		"dist:linux": "cross-env NODE_ENV=production npm run typecheck:app && electron-vite build && electron-builder --linux --x64",
 		"dist:linux:appimage": "cross-env NODE_ENV=production npm run build && electron-builder --linux AppImage --x64",
 		"dist:linux:portable": "cross-env NODE_ENV=production npm run build && electron-builder --linux AppImage tar.gz --x64",
-		"postinstall": "electron-builder install-app-deps",
 		"clean": "rimraf dist out && rimraf node_modules/.cache/electron && rimraf node_modules/.cache/electron-builder",
 		"test": "jest --config jest.config.cjs",
 		"test:main": "jest --config jest.config.cjs --selectProjects main",
