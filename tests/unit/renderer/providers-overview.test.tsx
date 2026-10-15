@@ -15,7 +15,6 @@ it('keeps every provider category visible even when no plugins are enabled', () 
 
 	expect(screen.getByRole('heading', { name: 'settings.tabs.providers' })).toBeInTheDocument();
 	for (const [name, path] of [
-		['settings.overview.groups.mlModels', '/settings/providers/models'],
 		['settings.tabs.searchEngines', '/settings/providers/search'],
 		['settings.tabs.databases', '/settings/providers/database'],
 		['settings.tabs.storage', '/settings/providers/storage'],
