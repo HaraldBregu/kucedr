@@ -247,7 +247,16 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const storage = within(generalGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.storage',
 	});
-	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(storage) + 1);
+	expect(generalLinks.indexOf(modelsLink)).toBe(generalLinks.indexOf(storage) + 1);
+	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(modelsLink) + 1);
+	const dataGroup = within(navigation)
+		.getByText('settings.overview.groups.data')
+		.closest('[data-slot="split-pane-group"]');
+	expect(
+		within(dataGroup as HTMLElement)
+			.getAllByRole('link')
+			.map((link) => link.getAttribute('href'))
+	).toEqual(['/settings/library', '/settings/workspace']);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',
