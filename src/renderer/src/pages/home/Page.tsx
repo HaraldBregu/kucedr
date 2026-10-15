@@ -756,7 +756,7 @@ function PageContent(): ReactElement {
 			ref={composerRef}
 			data-slot="home-composer-shell"
 			className={cn(
-				'z-20 flex justify-center px-4',
+				'z-20 flex justify-center bg-background px-4',
 				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
 			)}
 		>
