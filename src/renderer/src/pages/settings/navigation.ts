@@ -370,16 +370,22 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: HardDrive,
 	},
 	{
-		path: '/settings/providers',
-		labelKey: 'settings.tabs.providers',
-		descriptionKey: 'settings.overview.descriptions.providers',
-		icon: Server,
-	},
-	{
 		path: '/settings/models',
 		labelKey: 'settings.overview.groups.mlModels',
 		descriptionKey: 'settings.overview.descriptions.providers',
 		icon: Cpu,
+	},
+	{
+		path: '/settings/search',
+		labelKey: 'settings.tabs.searchEngines',
+		descriptionKey: 'settings.overview.descriptions.searchEngine',
+		icon: Search,
+	},
+	{
+		path: '/settings/providers',
+		labelKey: 'settings.tabs.providers',
+		descriptionKey: 'settings.overview.descriptions.providers',
+		icon: Server,
 	},
 	{
 		path: '/settings/library',
