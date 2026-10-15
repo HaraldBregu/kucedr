@@ -37,7 +37,7 @@ Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
 	value: jest.fn(),
 });
 
-it.each(['/home', '/home/session/1', '/workspace', '/settings', '/settings/providers/models'])(
+it.each(['/home', '/home/session/1', '/workspace', '/settings', '/settings/models'])(
 	'opens command search on %s',
 	(path) => {
 		render(

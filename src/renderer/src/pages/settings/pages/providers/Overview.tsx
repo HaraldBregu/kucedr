@@ -9,14 +9,12 @@ import {
 	SettingsRow,
 } from '../../components';
 
-const PROVIDER_ITEMS = [
-	{
-		path: '/settings/providers/database',
-		labelKey: 'settings.tabs.databases',
-		descriptionKey: 'settings.overview.descriptions.databases',
-		icon: Database,
-	},
-] as const;
+const PROVIDER_ITEMS: readonly {
+	path: string;
+	labelKey: string;
+	descriptionKey: string;
+	icon: LucideIcon;
+}[] = [];
 
 export default function ProvidersOverviewPage(): React.JSX.Element {
 	const { t } = useTranslation();
