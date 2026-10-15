@@ -52,6 +52,7 @@
 		"build": "cross-env NODE_ENV=production npm run typecheck && electron-vite build",
 		"build:website": "npm run build --workspace website",
 		"build:icons": "node scripts/icons.mjs",
+		"build:icons:win": "node scripts/icons-win.mjs",
 		"build:packages": "npm run build --workspaces --if-present",
 		"build:all": "npm run build && npm run build:packages",
 		"build:dev": "cross-env NODE_ENV=development npm run typecheck && electron-vite build --mode development",
