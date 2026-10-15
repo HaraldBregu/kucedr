@@ -37,7 +37,10 @@ const initialComponents: Partial<Components> = {
 		if (isInline) {
 			return (
 				<span
-					className={cn('rounded-sm bg-primary-foreground px-1 font-mono text-sm', className)}
+					className={cn(
+						'rounded border border-border/60 bg-muted px-1 py-0.5 font-mono text-[0.85em] text-foreground',
+						className
+					)}
 					{...props}
 				>
 					{children}
