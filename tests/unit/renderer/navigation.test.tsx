@@ -136,6 +136,8 @@ it.each([
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
 	['/settings/mcp', 'settings.tabs.mcp'],
+	['/settings/models', 'settings.overview.groups.mlModels'],
+	['/settings/websearch', 'settings.tabs.searchEngines'],
 	['/settings/providers', 'settings.tabs.providers'],
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
