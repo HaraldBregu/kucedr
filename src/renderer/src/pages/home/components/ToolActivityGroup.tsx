@@ -86,7 +86,7 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 				}
 			/>
 			<CollapsibleContent>
-				<div className="flex flex-col gap-1 pl-3">
+				<div className="flex flex-col gap-1">
 					{group.tools.map((tool, index) => (
 						<Tool
 							key={tool.toolCallId}
