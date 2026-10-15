@@ -436,11 +436,24 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'knowledge',
-						element: (
-							<SettingsRouteWrapper>
-								<KnowledgePage />
-							</SettingsRouteWrapper>
-						),
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<KnowledgePage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'providers',
+								element: (
+									<SettingsRouteWrapper>
+										<ProvidersPage section="databases" />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
 					},
 					{
 						path: 'knowledge-base',
