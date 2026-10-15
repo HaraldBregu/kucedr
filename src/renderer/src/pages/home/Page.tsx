@@ -545,14 +545,9 @@ function PageContent(): ReactElement {
 		visibleMessages.length === 0 && !agent.isLoading && !agent.historyLoading;
 	const showPromptSuggestions = showEmptyConversation && voiceMode === null;
 	useLayoutEffect(() => {
-		const workspace = workspaceRef.current;
 		const composer = composerRef.current;
-		if (!workspace || !composer) return;
+		if (!composer) return;
 		const updateSpacing = (): void => {
-			workspace.style.setProperty(
-				'--composer-height',
-				`${composer.getBoundingClientRect().height}px`
-			);
 			const scrollState = chatScrollRef.current?.state;
 			if (scrollState?.isAtBottom) scrollState.scrollTop = scrollState.calculatedTargetScrollTop;
 		};
@@ -761,8 +756,8 @@ function PageContent(): ReactElement {
 			ref={composerRef}
 			data-slot="home-composer-shell"
 			className={cn(
-				'z-20 flex w-full shrink-0 justify-center px-4',
-				showEmptyConversation || 'pb-5 pt-3'
+				'z-20 flex justify-center px-4',
+				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
 			)}
 		>
 			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-4xl')}>
