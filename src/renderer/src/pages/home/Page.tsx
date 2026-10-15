@@ -761,8 +761,8 @@ function PageContent(): ReactElement {
 			ref={composerRef}
 			data-slot="home-composer-shell"
 			className={cn(
-				'z-20 flex justify-center px-4',
-				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
+				'z-20 flex w-full shrink-0 justify-center px-4',
+				showEmptyConversation || 'pb-5 pt-3'
 			)}
 		>
 			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-4xl')}>
