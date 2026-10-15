@@ -104,7 +104,8 @@ const PluginsPage = (): React.JSX.Element => {
 		setError('');
 		try {
 			setEnabledProviders(await window.provider.setPluginEnabled(kind, id, enabled));
-			if (enabled) navigate(`/settings/providers/${kind}`);
+			if (enabled)
+				navigate(kind === 'storage' ? '/settings/storage/providers' : `/settings/providers/${kind}`);
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {
