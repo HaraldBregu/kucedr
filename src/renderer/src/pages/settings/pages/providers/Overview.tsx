@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight, Database, HardDrive, Search, Server } from 'lucide-react';
+import { ChevronRight, Database, HardDrive, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
