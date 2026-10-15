@@ -61,7 +61,7 @@ export default function Provider({
 							variant="outline"
 							size="sm"
 							nativeButton={false}
-							render={<Link to="/settings/providers/storage" />}
+							render={<Link to="/settings/storage/providers" />}
 						>
 							{t('settings.storageProviders.add')}
 						</Button>
