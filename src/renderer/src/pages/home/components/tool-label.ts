@@ -130,7 +130,7 @@ function groupVerbs(type: string): GroupVerbs {
 	if (t === 'use_web_browser' || t === 'fetch_web_page' || t === 'search_web') {
 		return { running: 'Browsing', done: 'Browsed', noun: 'page' };
 	}
-	if (t.startsWith('mcp__')) return { running: 'Calling', done: 'Called', noun: 'tool' };
+	if (t.startsWith('mcp__')) return { running: 'Using', done: 'Used', noun: 'tool' };
 	return { running: 'Running', done: 'Ran', noun: 'tool' };
 }
 
