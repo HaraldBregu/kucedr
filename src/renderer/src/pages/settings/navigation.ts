@@ -381,7 +381,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/settings/search',
 		labelKey: 'settings.tabs.searchEngines',
 		descriptionKey: 'settings.overview.descriptions.searchEngine',
-		icon: Search,
+		icon: Globe,
 	},
 	{
 		path: '/settings/providers',
