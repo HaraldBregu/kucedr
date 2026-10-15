@@ -774,8 +774,12 @@ function PageContent(): ReactElement {
 						<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
 					</div>
 				) : null}
-				<PromptEditor
-					placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
+				<div
+					data-slot="home-composer-container"
+					className="relative flex flex-col bg-background"
+				>
+					<PromptEditor
+						placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
 					ariaLabel="Message your assistant"
 					value={agent.input}
 					expanded={false}
