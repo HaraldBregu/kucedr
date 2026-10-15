@@ -476,7 +476,7 @@ export async function* runToolCall(
 		input: canonicalInput,
 		output,
 		isError,
-		durationMs: Date.now() - startedAtMs,
+		durationMs: toolCall.durationMs,
 		...(permissionOutcome ? { permissionOutcome } : {}),
 	};
 }
