@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import {
 	AudioWaveform,
 	ChevronRight,
-	CircleHelp,
 	Coffee,
 	FolderOpen,
 	Languages,
