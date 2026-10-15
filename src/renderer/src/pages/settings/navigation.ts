@@ -276,13 +276,14 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.overview.descriptions.providers',
 		keywords: 'models llm provider api keys',
 	},
-	// Provider pages
+	// Search engines
 	{
-		path: '/settings/providers/search',
+		path: '/settings/search',
 		labelKey: 'settings.tabs.searchEngines',
 		descriptionKey: 'settings.overview.descriptions.searchEngine',
 		keywords: 'web search provider api key',
 	},
+	// Provider pages
 	{
 		path: '/settings/providers/database',
 		labelKey: 'settings.tabs.databases',
