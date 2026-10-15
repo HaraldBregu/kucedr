@@ -232,9 +232,10 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(SETTINGS_NAVIGATION).not.toContainEqual(
 		expect.objectContaining({ path: '/settings/agent/models' })
 	);
-	expect(
-		within(navigation).queryByRole('link', { name: 'settings.overview.groups.mlModels' })
-	).not.toBeInTheDocument();
+	const modelsLink = within(generalGroup as HTMLElement).getByRole('link', {
+		name: 'settings.overview.groups.mlModels',
+	});
+	expect(modelsLink).toHaveAttribute('href', '/settings/models');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.skills' })
 	).toHaveAttribute('href', '/settings/skills');
