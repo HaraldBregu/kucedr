@@ -17,10 +17,6 @@ const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/mcp-tools': 'settings.modelServices.agentTools.mcp.title',
 };
 
-const PROVIDER_SUBPAGE_LABEL_KEYS: Record<string, string> = {
-	'/settings/providers/database': 'settings.tabs.databases',
-};
-
 function formatAppLabel(appId: string): string {
 	return appId
 		.split(/[-_\s]+/)
