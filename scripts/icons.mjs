@@ -80,36 +80,6 @@ const trayTemplate = await sharp(trayTemplatePixels, {
 
 await writeFile(path.join(macOutputDirectory, 'trayTemplate.png'), trayTemplate);
 
-const icoSizes = pngSizes.filter((size) => size <= 256);
-const icoHeader = Buffer.alloc(6);
-const icoDirectory = Buffer.alloc(icoSizes.length * 16);
-const icoImages = icoSizes.map((size) => rendered.get(size));
-let icoOffset = icoHeader.length + icoDirectory.length;
-
-icoHeader.writeUInt16LE(0, 0);
-icoHeader.writeUInt16LE(1, 2);
-icoHeader.writeUInt16LE(icoSizes.length, 4);
-
-for (const [index, size] of icoSizes.entries()) {
-	const image = icoImages[index];
-	const entryOffset = index * 16;
-
-	icoDirectory.writeUInt8(size === 256 ? 0 : size, entryOffset);
-	icoDirectory.writeUInt8(size === 256 ? 0 : size, entryOffset + 1);
-	icoDirectory.writeUInt8(0, entryOffset + 2);
-	icoDirectory.writeUInt8(0, entryOffset + 3);
-	icoDirectory.writeUInt16LE(1, entryOffset + 4);
-	icoDirectory.writeUInt16LE(32, entryOffset + 6);
-	icoDirectory.writeUInt32LE(image.length, entryOffset + 8);
-	icoDirectory.writeUInt32LE(icoOffset, entryOffset + 12);
-	icoOffset += image.length;
-}
-
-await writeFile(
-	path.join(root, 'resources/icons/win/icon.ico'),
-	Buffer.concat([icoHeader, icoDirectory, ...icoImages])
-);
-
 const icnsRepresentations = [
 	['icp4', 16],
 	['icp5', 32],
