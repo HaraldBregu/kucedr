@@ -304,7 +304,7 @@ function Tool({
 								</span>
 								<StatusIcon state={state} />
 								{displayDurationMs !== undefined && (
-									<span className="shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
+									<span className="ml-auto shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
 										{formatDuration(displayDurationMs)}
 									</span>
 								)}
