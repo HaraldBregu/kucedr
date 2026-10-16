@@ -1,5 +1,6 @@
 import type { BrowserWindow, WebContents } from 'electron';
 import { WindowChannels } from '../shared/ipc_channels_definitions';
+import { attachTextMenu } from './text_menu';
 
 export function attachWindowHandlers(
 	win: BrowserWindow,
