@@ -911,7 +911,7 @@ function PageContent(): ReactElement {
 									/>
 									<ChatContainerScrollAnchor className="h-[var(--composer-height,7rem)]" />
 								</ChatContainerContent>
-								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+1.5rem)] z-30 flex justify-center">
+								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+3rem)] z-30 flex justify-center">
 									<ScrollButton
 										type="button"
 										aria-label="Scroll to latest"
