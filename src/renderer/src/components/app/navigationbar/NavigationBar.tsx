@@ -217,20 +217,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 		<NavigationBarProvider value={{ isMac, isFullScreen }}>
 			<NavigationBarContainer
 				className={className}
-				onContextMenu={(event) => {
-					if (event.target instanceof Element && event.target.closest('button, a')) {
-						return;
-					}
-
-					event.preventDefault();
-					void window.win
-						.showContextMenu(
-							navigationBarMenuItems.map((item) => ({ id: item.path, label: item.label }))
-						)
-						.then((path) => {
-							if (path) navigate(path);
-						});
-				}}
 			>
 				{/* ── Left: platform menu + nav buttons ── */}
 				<NavigationBarLeftContainer
