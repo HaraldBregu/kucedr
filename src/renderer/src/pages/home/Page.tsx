@@ -915,7 +915,7 @@ function PageContent(): ReactElement {
 									<ScrollButton
 										type="button"
 										aria-label="Scroll to latest"
-										className="pointer-events-auto"
+										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
 									/>
 								</div>
 							</ChatContainerRoot>
