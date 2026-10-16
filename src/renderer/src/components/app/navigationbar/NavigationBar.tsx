@@ -85,11 +85,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	useEffect(() => {
 		if (!chatSessionsLoading && chatSessionsRef.current) revealSelection(chatSessionsRef.current);
 	}, [activeChatSessionId, chatSessions, chatSessionsLoading]);
-	const navigationBarMenuItems = [
-		{ path: '/settings/settings', label: t('settings.tabs.settings') },
-		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
-		{ path: '/settings/apps', label: t('settings.tabs.apps') },
-	];
 	const chatNavigationButton = (
 		<Button
 			type="button"
