@@ -909,7 +909,7 @@ function PageContent(): ReactElement {
 										onReply={agent.replyToMessage}
 										onImplement={agent.implementPlan}
 									/>
-									<ChatContainerScrollAnchor className="h-[var(--composer-height,7rem)]" />
+									<ChatContainerScrollAnchor className="h-[calc(var(--composer-height,7rem)+3rem)]" />
 								</ChatContainerContent>
 								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+3rem)] z-30 flex justify-center">
 									<ScrollButton
