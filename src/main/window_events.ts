@@ -5,7 +5,10 @@ export function attachWindowHandlers(
 	win: BrowserWindow,
 	contents: WebContents[] = [win.webContents]
 ): void {
-	for (const webContents of contents) webContents.on('update-target-url', () => {});
+	for (const webContents of contents) {
+		webContents.on('update-target-url', () => {});
+		attachTextMenu(webContents);
+	}
 
 	const send = (channel: string, value: boolean): void => {
 		for (const webContents of contents) {
