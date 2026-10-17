@@ -57,6 +57,8 @@ export function toolPartLabel(tool: AgentToolPart): string {
 	if (tool.displayName) return tool.displayName;
 
 	const mcp = mcpParts(tool.type);
+	const google = googleService(tool);
+	if (mcp && google) return `${google.name} · ${mcp.tool}`;
 	if (mcp) return `${mcp.server.charAt(0).toUpperCase()}${mcp.server.slice(1)} · ${mcp.tool}`;
 
 	const input = isRecord(tool.input) ? tool.input : {};
