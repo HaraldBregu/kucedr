@@ -80,7 +80,7 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 							key={tool.toolCallId}
 							toolPart={tool}
 							label={toolPartLabel(tool)}
-							hideIcon
+							hideIcon={!googleService(tool)}
 							className="mt-0"
 							style={staggerStyle(index)}
 						/>
