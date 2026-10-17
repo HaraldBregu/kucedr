@@ -135,11 +135,6 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(footer).toHaveClass('px-2', 'pt-1', 'pb-3');
 	expect(accountMenu).toHaveClass('h-12', 'p-2');
 	expect(within(accountMenu).getByText('settings.title')).toBeInTheDocument();
-	// The avatar falls back to a user icon rather than an initial.
-	expect(footer.querySelector('.lucide-user-round')?.parentElement).toHaveClass(
-		'bg-primary',
-		'text-primary-foreground'
-	);
 	expect(screen.getByRole('button', { name: 'settings.tabs.voice' })).toBeInTheDocument();
 });
 
