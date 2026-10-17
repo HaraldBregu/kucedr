@@ -1,6 +1,7 @@
 import { useState, type ReactElement } from 'react';
 import { useNow } from '@/components/hooks/use-now';
 import { formatDuration } from '@/components/prompt-kit/duration';
+import { googleService } from '@/components/prompt-kit/google';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { isTaskToolType } from '@/components/prompt-kit/task';
 import { Tool } from '@/components/prompt-kit/tool';
