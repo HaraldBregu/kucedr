@@ -87,7 +87,7 @@ match the manifest `id`. All ids use lowercase kebab-case.
 | `skills` | `skills_list.ts` and `skills_resolve_folder.ts` also scan plugin `skills/` folders. | No |
 | `mcpServers` | Merged into the MCP catalog in `src/main/mcp`. Credentials go through the existing MCP settings flow. | Separate process or remote server |
 | `languages` | Loaded by `src/main/i18n.ts` as extra locale JSON. | No |
-| `themes` | Loaded by the theme loader as theme JSON. | No |
+| `themes` | There is no custom-theme loader yet; only light/dark exist (`nativeTheme`). This needs a small new loader that applies theme JSON as CSS variables in the renderer. Build it last. | No |
 | `channels` | Not loaded in v1. These are executable `.mjs` files, see section 9. | — |
 
 A provider that needs more than OpenAI-compatible chat, such as a custom request format, should
