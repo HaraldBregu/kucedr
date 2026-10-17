@@ -79,16 +79,8 @@ export function toolIcon(
 	const type = toolPart.type.toLowerCase();
 	const serviceId = toolPart.serviceId?.toLowerCase();
 	if (isTaskToolType(type)) return CalendarClock;
-	if (serviceId === 'google-calendar' || type.startsWith('mcp__google-calendar__'))
-		return CalendarIcon;
-	if (serviceId === 'google-drive' || type.startsWith('mcp__google-drive__')) return DriveIcon;
-	if (
-		serviceId === 'gmail' ||
-		serviceId === 'gmail-smtp' ||
-		type.startsWith('mcp__gmail__') ||
-		type.startsWith('mcp__gmail-smtp__')
-	)
-		return GmailIcon;
+	const google = googleService(toolPart);
+	if (google) return google.icon;
 	if (toolPart.serviceKind === 'mcp' || type.startsWith('mcp__')) return McpIcon;
 	if (type === 'subagent' || type === 'subagents') return Bot;
 	if (type.includes('skill')) return Sparkles;
