@@ -1,3 +1,4 @@
+import { googleService } from '@/components/prompt-kit/google';
 import { TASK_TOOL_LABELS } from '@/components/prompt-kit/task';
 import type { AgentToolPart } from '../context';
 
