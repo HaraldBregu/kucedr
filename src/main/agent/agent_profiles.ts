@@ -13,6 +13,7 @@ import {
 } from '../../shared/agent_tools';
 import { userDataLocation } from '../shared/user_data_location';
 import { healthRoot } from '../health/root';
+import { getMcpToolPermission } from '../mcp/mcp_tool_permission';
 
 type AgentProfileStore = {
 	llm?: AgentMediaModelSettings;
@@ -295,7 +296,9 @@ export function getAgentProfileTool(
 	const profile = read(profileId);
 	return tool.kind === 'builtin'
 		? (profile.tools[tool.id] ?? DEFAULT_TOOL_SETTINGS[tool.id] ?? DEFAULT_TOOL)
-		: (profile.mcpTools[tool.serverId]?.[tool.toolName] ?? DEFAULT_TOOL);
+		: (profile.mcpTools[tool.serverId]?.[tool.toolName] ?? {
+				permission: getMcpToolPermission(tool.serverId, tool.toolName) ?? DEFAULT_TOOL.permission,
+			});
 }
 
 export function agentProfileStorePath(profileId: AgentToolProfileId): string {

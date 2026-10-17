@@ -188,6 +188,7 @@ export const McpChannels = {
 	openRoot: 'mcp:local:open',
 	test: 'mcp:test',
 	catalog: 'mcp:catalog',
+	setToolPermission: 'mcp:tool:permission',
 	oauthStatus: 'mcp:oauth:status',
 	oauthStart: 'mcp:oauth:start',
 } as const;

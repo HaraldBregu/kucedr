@@ -111,7 +111,9 @@ export default function Mcp({ settings, disabled, onChange }: McpProps): React.J
 								{result?.ok &&
 									result.tools.map((name) => {
 										const settingsForTool = settings[server.id]?.[name] ?? {
-											permission: 'allow' as const,
+											permission:
+												result.toolDetails?.find((tool) => tool.name === name)?.permission ??
+												('allow' as const),
 										};
 										const tool: AgentToolReference = {
 											kind: 'mcp',

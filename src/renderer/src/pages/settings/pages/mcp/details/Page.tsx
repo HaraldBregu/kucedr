@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, FlaskConical, Plug, RefreshCw } from 'lucide-react';
-import type { McpData, McpServerInfo, McpTestResult } from '@shared/mcp_types';
+import type { McpData, McpServerInfo, McpTestResult, McpToolDetail } from '@shared/mcp_types';
 import { Button } from '@/components/ui/button';
 import {
 	Dialog,
@@ -19,9 +19,12 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
+	SettingsRow,
 	SettingsSection,
 } from '../../../components';
+import type { AgentToolPermission } from '@shared/agent_tools';
 import { McpServerForm } from '../components/McpServerForm';
+import { ToolPermissionControl } from '../../assistant/tools/Permission';
 
 const McpDetailsPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -34,14 +37,19 @@ const McpDetailsPage: React.FC = () => {
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 	const [testResult, setTestResult] = useState<McpTestResult>();
+	const [tools, setTools] = useState<readonly McpToolDetail[]>([]);
 	const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
 
 	const load = useCallback(async (): Promise<void> => {
 		setLoading(true);
 		setError('');
 		try {
-			const registry = await window.mcp.registry();
+			const [registry, catalog] = await Promise.all([
+				window.mcp.registry(),
+				window.mcp.catalog(id),
+			]);
 			setServer(registry.servers.find((entry) => entry.id === id) ?? null);
+			setTools(catalog?.toolDetails ?? []);
 		} catch (caught) {
 			setServer(null);
 			setError(caught instanceof Error ? caught.message : String(caught));
@@ -70,6 +78,7 @@ const McpDetailsPage: React.FC = () => {
 				const registry = await window.mcp.registry();
 				setServer(registry.servers.find((entry) => entry.id === serverId) ?? null);
 			}
+			setTools((await window.mcp.catalog(serverId))?.toolDetails ?? []);
 			setSuccess('MCP server saved.');
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
@@ -84,7 +93,9 @@ const McpDetailsPage: React.FC = () => {
 		setTesting(true);
 		setError('');
 		try {
-			setTestResult(await window.mcp.test(server.id));
+			const result = await window.mcp.test(server.id);
+			setTestResult(result);
+			if (result.ok) setTools(result.toolDetails ?? []);
 		} catch (caught) {
 			setTestResult({
 				ok: false,
@@ -95,6 +106,22 @@ const McpDetailsPage: React.FC = () => {
 			});
 		} finally {
 			setTesting(false);
+		}
+	};
+
+	const setPermission = async (
+		toolName: string,
+		permission: AgentToolPermission
+	): Promise<void> => {
+		if (!server) return;
+		setError('');
+		try {
+			await window.mcp.setToolPermission(server.id, toolName, permission);
+			setTools((current) =>
+				current.map((tool) => (tool.name === toolName ? { ...tool, permission } : tool))
+			);
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
 		}
 	};
 
@@ -261,27 +288,35 @@ const McpDetailsPage: React.FC = () => {
 						variant={testResult.ok ? 'default' : 'destructive'}
 						icon={testResult.ok ? undefined : AlertTriangle}
 					>
-						{testResult.ok ? (
-							<span className="grid gap-2">
-								<span>
-									{testResult.toolCount} tool{testResult.toolCount === 1 ? '' : 's'} ·{' '}
-									{testResult.durationMs} ms
-								</span>
-								<span className="grid gap-1">
-									{(testResult.toolDetails ?? testResult.tools.map((name) => ({ name }))).map(
-										(tool) => (
-											<span key={tool.name}>
-												<span className="font-medium text-foreground">{tool.name}</span>
-												{tool.description && ` · ${tool.description}`}
-											</span>
-										)
-									)}
-								</span>
-							</span>
-						) : (
-							testResult.error || 'Unable to connect.'
-						)}
+						{testResult.ok
+							? `${testResult.toolCount} tool${testResult.toolCount === 1 ? '' : 's'} · ${testResult.durationMs} ms`
+							: testResult.error || 'Unable to connect.'}
 					</SettingsNotice>
+				)}
+			</SettingsSection>
+
+			<SettingsSection title="Tools" description="Default permission for each tool on this server.">
+				{tools.length === 0 && (
+					<SettingsNotice>No tools loaded yet. Run Test to load them.</SettingsNotice>
+				)}
+				{tools.length > 0 && (
+					<SettingsPanel>
+						{tools.map((tool) => (
+							<SettingsRow
+								key={tool.name}
+								title={tool.name}
+								description={tool.description}
+								actions={
+									<ToolPermissionControl
+										name={tool.name}
+										value={tool.permission ?? 'ask'}
+										disabled={saving}
+										onChange={(permission) => void setPermission(tool.name, permission)}
+									/>
+								}
+							/>
+						))}
+					</SettingsPanel>
 				)}
 			</SettingsSection>
 		</SettingsPageShell>

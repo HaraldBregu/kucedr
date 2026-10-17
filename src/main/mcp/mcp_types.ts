@@ -5,6 +5,7 @@ import type {
 	OAuthTokens,
 } from '@modelcontextprotocol/sdk/shared/auth.js';
 import type { McpData } from '../../shared/mcp_types';
+import type { AgentToolPermission } from '../../shared/agent_tools';
 
 export type McpClient = Client;
 
@@ -37,7 +38,10 @@ export type McpStoreSchema = {
 	readonly localEnvironments: Record<string, string>;
 };
 
-export type McpToolCatalogSchema = Record<string, { identity: string; tools: Tool[] }>;
+export type McpToolCatalogSchema = Record<
+	string,
+	{ identity: string; tools: Tool[]; permissions?: Record<string, AgentToolPermission> }
+>;
 
 export type McpOAuthStorage = {
 	load: () => McpOAuthState;

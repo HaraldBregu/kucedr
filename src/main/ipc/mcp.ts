@@ -13,6 +13,8 @@ import {
 	getMcpOauth,
 	getMcpServers,
 	getMcpToolCatalog,
+	mcpToolDetails,
+	setMcpToolPermission,
 	importLocalMcpServers,
 	listConfiguredMcpServers,
 	listMcpRegistry,
@@ -25,6 +27,7 @@ import {
 	type McpOAuthStorage,
 } from '../mcp';
 import type { McpData, McpOAuthStart, McpSettings } from '../../shared/mcp_types';
+import type { AgentToolPermission } from '../../shared/agent_tools';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
 import type { AppRegistry } from '../apps/app_registry';
@@ -230,11 +233,10 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 
 		registerQueryWithEvent(McpChannels.catalog, (event, id: string) => {
 			trusted.assert(event);
-			const tools = getMcpToolCatalog(resolveMcpId(id));
+			const serverId = resolveMcpId(id);
+			const tools = getMcpToolCatalog(serverId);
 			if (!tools) return undefined;
-			const toolDetails = tools
-				.map((tool) => ({ name: tool.name, description: tool.description }))
-				.sort((a, b) => a.name.localeCompare(b.name));
+			const toolDetails = mcpToolDetails(serverId, tools);
 			return {
 				ok: true,
 				tools: toolDetails.map((tool) => tool.name),
@@ -243,6 +245,14 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				durationMs: 0,
 			};
 		});
+
+		registerCommandWithEvent(
+			McpChannels.setToolPermission,
+			(event, id: string, toolName: string, permission: AgentToolPermission) => {
+				trusted.assert(event);
+				setMcpToolPermission(resolveMcpId(id), toolName, permission);
+			}
+		);
 
 		registerQueryWithEvent(McpChannels.oauthStatus, (event, id: string) => {
 			trusted.assert(event);

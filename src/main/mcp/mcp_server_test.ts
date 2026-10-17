@@ -4,6 +4,7 @@ import { connect } from './mcp_client_connect';
 import { listTools } from './mcp_client_list_tools';
 import { getMcpServers } from './mcp_store';
 import { saveMcpToolCatalog } from './mcp_catalog_save';
+import { mcpToolDetails } from './mcp_tool_details';
 import type { McpClient } from './mcp_types';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 
@@ -27,9 +28,7 @@ export async function testMcpServer(id: string): Promise<McpTestResult> {
 			if (cursor) cursors.add(cursor);
 		} while (cursor);
 		saveMcpToolCatalog(id, tools);
-		const toolDetails = tools
-			.map((tool) => ({ name: tool.name, description: tool.description }))
-			.sort((a, b) => a.name.localeCompare(b.name));
+		const toolDetails = mcpToolDetails(id, tools);
 		return {
 			ok: true,
 			tools: toolDetails.map((tool) => tool.name),

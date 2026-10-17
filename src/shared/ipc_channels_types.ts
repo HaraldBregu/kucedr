@@ -540,6 +540,10 @@ export interface McpInvokeChannelMap {
 		args: [id: string];
 		result: import('./mcp_types').McpTestResult | undefined;
 	};
+	[McpChannels.setToolPermission]: {
+		args: [id: string, toolName: string, permission: import('./agent_tools').AgentToolPermission];
+		result: void;
+	};
 	[McpChannels.oauthStatus]: { args: [id: string]; result: boolean };
 	[McpChannels.oauthStart]: {
 		args: [id: string, force?: boolean];
