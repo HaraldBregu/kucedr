@@ -16,7 +16,6 @@ export function SidebarItems(): React.JSX.Element {
 						playSound('navigate');
 						navigate('/settings/settings');
 					}}>
-						<Settings className="size-4 shrink-0" />
 						<span>{t('settings.title')}</span>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
