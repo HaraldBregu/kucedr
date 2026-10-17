@@ -1,4 +1,3 @@
-import { Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { playSound } from '@/lib/sounds/play';
