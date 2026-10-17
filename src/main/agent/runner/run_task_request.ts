@@ -5,7 +5,11 @@ export function requestedTaskTools(message: string): string[] {
 	if (!/\b(task|tasks|automation|automations|schedule|scheduled|schdeuled)\b/u.test(normalized))
 		return [];
 	if (/\b(delete|remove)\b/u.test(normalized)) return ['list_tasks', 'delete_task'];
-	if (/\b(enable|disable|pause|update|change|edit|rename|reschedule)\w*\b/u.test(normalized))
+	if (
+		/\b(enable|disable|activat|deactivat|turn on|turn off|resume|pause|update|change|edit|rename|reschedule)\w*\b/u.test(
+			normalized
+		)
+	)
 		return ['list_tasks', 'update_task'];
 	if (
 		/\b(run|start|execute|test)\b/u.test(normalized) &&
