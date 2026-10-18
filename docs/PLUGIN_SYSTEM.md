@@ -201,10 +201,14 @@ VS Code makes the same choice with its webviews.
   archive.
 - Plugin servers default to `require_approval: "always"` unless the user changes it.
 
-### 5.4 Models
+### 5.4 Providers (models, databases, web search, storage, remote MCP)
 
-`models/<provider-id>/manifest.json` uses the existing provider manifest format, with one entry
-per model. `readCatalog()` adds `pluginDirs('models')` to its directory list.
+`providers/<provider-id>/manifest.json` uses the existing provider manifest format. One manifest
+can declare any of `models`, `databases`, `web_search`, `storages`, and `mcp_servers`, exactly as
+bundled providers do. `readCatalog()` adds `pluginDirs('providers')` to its directory list, so every
+catalog API returns plugin entries as well (see section 6).
+
+The rest of this section covers models.
 
 **Remote models** (`"location": "remote"`): API models of any type the catalog supports
 (`large-language-model`, speech to text, text to speech, image, video, audio, and embeddings).
