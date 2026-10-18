@@ -177,7 +177,7 @@
 	"devDependencies": {
 		"@electron-toolkit/eslint-config-ts": "^4.0.0",
 		"@electron-toolkit/tsconfig": "^1.0.1",
-		"@playwright/test": "^1.58.2",
+		"@playwright/test": "^1.64.0",
 		"@tailwindcss/postcss": "^4.2.2",
 		"@testing-library/dom": "^10.4.2",
 		"@testing-library/jest-dom": "^7.0.1",
