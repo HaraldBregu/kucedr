@@ -264,6 +264,60 @@ section 11.
 `skills_list.ts` and `skills_resolve_folder.ts` also scan `pluginDirs('skills')`. Each skill must
 contain `SKILL.md` and pass the existing `validateSkill()` and `validateSkillPackage()` checks.
 
+### 5.6 Listing APIs return plugin contributions
+
+The UI keeps calling the same APIs it calls today. No new "plugin models" or "plugin MCP" endpoints
+are added. Each existing list function also reads enabled plugins, so the UI receives bundled,
+user, and plugin entries in one list.
+
+| UI API (IPC channel) | Main function | Plugin source added |
+| --- | --- | --- |
+| `AppChannels.models` | `loadModels()` (`src/main/models.ts`) | `providers/*/manifest.json` → `models` |
+| `AppChannels.databases` | `loadDatabases()` | `providers/*/manifest.json` → `databases` |
+| `AppChannels.webSearches` | `loadWebSearches()` | `providers/*/manifest.json` → `web_search` |
+| `AppChannels.storages` | `loadStorages()` | `providers/*/manifest.json` → `storages` |
+| `AppChannels.mcps` | `loadMcps()` | `providers/*/manifest.json` → `mcp_servers` (remote catalog services) |
+| MCP server list (`src/main/ipc/mcp.ts`) | `mcp_local_list.ts` via `mcpLocalDiscoveryRoots()` | `mcp_servers/*/mcp.json` (stdio and http servers) |
+| `SkillsChannels.list` | `skills.list()` (`skills_list.ts`) | `skills/*/SKILL.md` |
+| Apps list (`src/main/ipc/apps.ts`) | `listApps()` | `apps/*` |
+| Provider lookups (`ipc/provider.ts`, `ipc/agent.ts`) | `loadProviders()`, `findModel()`, `modelsFor()`, and the rest | Same catalog, so plugin providers resolve everywhere |
+| `plugins:extensions` (new) | `plugins_extensions.ts` | `contributes.extensions`, grouped by slot |
+
+How it works:
+
+1. **One change covers all five catalog APIs.** `loadModels`, `loadDatabases`, `loadWebSearches`,
+   `loadStorages`, and `loadMcps` all come from `readCatalog()`. That function's directory loop
+   becomes:
+
+   ```ts
+   for (const directory of [bundledProvidersDir(), ...pluginDirs('providers'), providersDir()]) {
+   ```
+
+   Plugins load after bundled providers and before the user's `~/.kucedr/providers`, so user
+   overrides still win.
+2. **Local MCP servers:** `mcpLocalDiscoveryRoots()` returns
+   `[localRoot, ...pluginDirs('mcp_servers'), workspaceRoot]`.
+3. **Skills and apps** scan `pluginDirs('skills')` and `pluginDirs('apps')` after their own roots.
+4. **Entries are tagged with their source.** `PublicProvider` (shared by every catalog entry
+   through `entry.provider`), `McpServerInfo`, `SkillInfo`, and the app list item get an optional
+   field:
+
+   ```ts
+   readonly plugin?: { readonly id: string; readonly name: string };
+   ```
+
+   The field is absent for bundled and user entries. The UI can show a "from Acme Tools" badge and
+   filter by plugin without another request. `McpServerInfo.source` gets a new value, `'plugin'`,
+   next to `'configured'` and `'local'`.
+5. **Disabled or unavailable plugins are left out.** `pluginDirs()` only returns enabled,
+   available plugins, so their entries disappear from every list at once.
+6. **Ids can't collide.** A plugin provider id that matches a bundled provider id is rejected at
+   install. MCP server, skill, and app ids are namespaced as `<plugin-id>.<id>`.
+7. **Lists stay fresh.** On `plugins:changed`, the main process calls `refreshProviderCatalog()`,
+   clears the MCP, skill, and app caches, and fires the same change events those lists already use
+   (the `watchModels` `onChange` callback). Open screens refresh without a restart. `watchModels()`
+   also watches `pluginsRoot()`, so plugins edited on disk during development reload too.
+
 ## 6. Main-process module: `src/main/plugins/`
 
 Following the `src/main/apps/` style, each file holds one function:
