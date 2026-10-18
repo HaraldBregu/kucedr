@@ -125,7 +125,7 @@ Rules:
 			}
 		],
 		"mcpServers": [{ "id": "acme-crm", "path": "mcp_servers/acme-crm" }],
-		"models": [{ "id": "acme", "path": "models/acme" }],
+		"providers": [{ "id": "acme", "path": "providers/acme" }],
 		"skills": [{ "id": "summarizer", "path": "skills/summarizer" }]
 	},
 	"permissions": ["network:https://api.acme.test", "agent.prompt"]
