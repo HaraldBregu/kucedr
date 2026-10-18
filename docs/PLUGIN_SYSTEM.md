@@ -496,7 +496,11 @@ Build each of these only when a real plugin needs it.
      - the app opens in its own window;
      - the panel appears in the workspace and follows the theme;
      - the MCP tools appear in the agent's tool list;
-     - both models appear in Settings → Providers → Models;
+     - both models come back from `AppChannels.models` and appear in Settings → Providers →
+       Models with a "from Acme Tools" badge;
+     - the database comes back from `AppChannels.databases` and appears in Settings → Providers →
+       Database;
+     - disabling the plugin removes them from both responses without a restart;
      - the skill appears in Skills.
   2. **Download the local model:** progress is shown, and the model then answers a chat through
      Ollama. With Ollama stopped, it shows "Requires Ollama" instead of an error.
