@@ -6,6 +6,6 @@
 	"description": "Local MCP server for sending email through Gmail SMTP.",
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.32.1",
-		"zod": "^4.6.5"
+		"zod": "^4.6.7"
 	}
 }
