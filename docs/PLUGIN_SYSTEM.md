@@ -474,7 +474,9 @@ Build each of these only when a real plugin needs it.
    `npm run typecheck`.
 2. Add the `src/main/plugins/` core (root, list, enabled, dirs, install, upload, download,
    remove) and the IPC handlers.
-3. Connect the loaders: models in `readCatalog()`, apps, `mcpLocalDiscoveryRoots()`, and skills.
+3. Connect the listing APIs (section 5.6): `readCatalog()` (models, databases, web search,
+   storage, and remote MCP), `mcpLocalDiscoveryRoots()`, skills, and apps. Add the `plugin` source
+   tag and refresh on `plugins:changed`.
 4. Build the Settings → Plugins Installed list, Upload, Install from URL, and the confirmation
    dialog.
 5. Add the config form generated from `configSchema` and `uiHints`.
