@@ -2,96 +2,262 @@
 
 Status: proposal. Nothing in this document is implemented yet.
 
-This document plans how the Kucedr desktop app installs and loads plugins. A plugin can add model
-providers, UI, and new functionality. Users install plugins from a remote URL or by uploading a
-folder or archive in the app. The CLI is not part of this plan.
+This document plans how the Kucedr desktop app installs, loads, and distributes plugins. A plugin is
+one package that can contain five kinds of contributions:
+
+| Kind | What it adds | Where it runs |
+| --- | --- | --- |
+| **apps** | Standalone HTML/JS/CSS apps opened in their own window | Sandboxed app window |
+| **extensions** | HTML/JS/CSS UI placed inside Kucedr's own screens (sidebar, panel, toolbar, settings, composer) | Sandboxed frame inside the host UI |
+| **mcp_servers** | Agent tools served over MCP: local stdio servers or remote http servers | Separate process, or remote |
+| **models** | Remote API models (LLM, speech, image, video, embeddings) and local model files | Remote API, or local through Ollama |
+| **skills** | `SKILL.md` instruction packages for the agent | No code |
+
+Users install plugins from the in-app catalog, from an https URL, or by uploading a folder or `.tgz`
+archive. The CLI is not part of this plan.
 
 ## 1. Goals and non-goals
 
 Goals:
 
-- Install a plugin from an https URL (`.tgz`, including npm registry tarball URLs) or by uploading
-  a local folder or `.tgz`.
-- Plugins can contribute model providers, apps (UI), skills, MCP servers, languages, and themes.
-- Users can enable, disable, and remove plugins without restarting the app.
-- A broken or malicious plugin cannot compromise the main process.
+- Browse, install, update, enable, disable, and remove plugins from Settings → Plugins, with no
+  restart.
+- Support the five contribution kinds above.
+- Make sure a broken or malicious plugin can't compromise the main process or read other plugins'
+  data.
 
 Non-goals for v1:
 
-- Running plugin JavaScript in the Electron main process. This is never allowed, see section 8.
-- A plugin marketplace, signing, or auto-update. See section 9.
+- Running plugin JavaScript in the main process or in Kucedr's own renderer. See section 9.
+- Letting anyone publish without review, paid plugins, or ratings. See section 11.
 
 ## 2. What already exists
 
-Most of the building blocks are already in the codebase. The plugin system mostly connects them.
-
 | Need | Existing piece |
 | --- | --- |
-| Manifest format | Manifest v4 zod schema in `packages/cli/src/manifest.ts` (`pluginManifestSchema`, `readPluginManifest`), entry checks in `entries.ts`, path safety in `pluginpath.ts`. The layout is documented in [PLUGINS.md](PLUGINS.md). |
-| Model providers | `readCatalog()` in `src/main/models.ts` reads provider manifests from `resources/providers` and `~/.kucedr/providers/<id>/`. |
-| Running unknown providers | `streamProvider()` in `src/main/models/adapters/llm/llm_model.ts` falls back to OpenAI-compatible chat for any provider id it doesn't recognize, so a provider can be added with JSON only. |
-| UI | Sandboxed HTML apps in `~/.kucedr/apps/<id>`, handled by `src/main/apps/*` (`appsRoot`, `appDirectory`, `AppRegistry`, `app_manifest_validate`). |
-| New agent functionality | Skills in `src/main/agent/skills/*` (`skillsRoot`) and MCP servers in `src/main/mcp/*`. |
-| Atomic install | `src/main/agent/skills/skills_import.ts`: copy to a staging folder, validate, then rename. |
-| Per-plugin enabled state | `getEnabledPluginProviders` and `setPluginProviderEnabled` in `src/main/providers/providers_store.ts` (electron-store). |
-| Settings UI | `src/renderer/src/pages/settings/pages/plugins/` (currently lists built-in integrations). |
+| Manifest validation | Manifest v4 zod schema in `packages/cli/src/manifest.ts` (`pluginManifestSchema`), entry checks in `entries.ts`, and path safety in `pluginpath.ts`. Section 4 extends this. |
+| Remote models | `readCatalog()` in `src/main/models.ts` reads provider manifests from `resources/providers` and `~/.kucedr/providers/<id>/`. |
+| Running unknown providers | `streamProvider()` in `src/main/models/adapters/llm/llm_model.ts` falls back to OpenAI-compatible chat for any provider id it doesn't recognize. |
+| Local models | The `ollama` provider (`resources/providers/ollama`) plus `ModelLocation = 'remote' \| 'local'` in `src/shared/provider_types.ts`. |
+| Apps | `src/main/apps/*` (`appsRoot`, `appDirectory`, `AppRegistry`, `app_manifest_validate`, and `render` in `app_render.ts`). |
+| MCP servers | Local stdio servers are folders with `mcp.json` (see `resources/mcp/configured-demo-server`), read by `readLocalMcpServer()` and discovered through `mcpLocalDiscoveryRoots()` in `src/main/mcp/mcp_local_root.ts`. |
+| Skills | `src/main/agent/skills/*` (`skillsRoot`, `skills_list.ts`, `skills_resolve_folder.ts`). |
+| Atomic install | `src/main/agent/skills/skills_import.ts`: copy into a staging folder, validate, then rename. |
+| Settings UI | `src/renderer/src/pages/settings/pages/plugins/` (today it lists built-in integrations). |
 
-What's missing:
+What's missing: the plugin installer, loading `~/.kucedr/plugins/*`, extension slots, local model
+downloads, the catalog, and the management UI.
 
-1. Installing plugins from inside the desktop app.
-2. The desktop loading `~/.kucedr/plugins/*`.
-3. A UI for managing installed plugins.
+## 3. Layout
 
-## 3. Architecture
+Plugins are installed in `path.join(userDataLocation(), 'plugins')`, which is `~/.kucedr/plugins`.
+Each plugin keeps every contribution kind in its own folder:
 
 ```text
- Install (URL / upload)                    ~/.kucedr/plugins/<plugin-id>/
- ──────────────────────►  stage → validate → rename ──► manifest.json
-                                                         providers/<id>/manifest.json
-                                                         apps/<id>/index.html
-                                                         skills/<id>/SKILL.md
-                                                         languages/<locale>.json
-                                                         themes/<id>.json
-
- Existing loaders also scan the matching subfolder of every enabled plugin:
-   readCatalog()     ← pluginDirs('providers')
-   app list/dir      ← pluginDirs('apps')
-   skills list       ← pluginDirs('skills')
-   MCP catalog       ← manifest.contributes.mcpServers
-   i18n / themes     ← manifest.contributes.languages / themes
+~/.kucedr/plugins/<plugin-id>/
+  manifest.json
+  icon.png
+  apps/<app-id>/
+    index.html
+    *.js, *.css, assets/
+  extensions/<extension-id>/
+    index.html
+    *.js, *.css
+  mcp_servers/<server-id>/
+    mcp.json                 same format as resources/mcp/*/mcp.json
+    server.mjs, ...          stdio servers only
+  models/<provider-id>/
+    manifest.json            same format as resources/providers/*/manifest.json
+    images/
+  skills/<skill-id>/
+    SKILL.md
 ```
 
 Rules:
 
+- The folder name must match the manifest `id`. All ids use lowercase kebab-case.
 - **Plugins stay in their own folder.** Their files are never copied into `~/.kucedr/apps`,
-  `providers`, or `skills`. Uninstalling a plugin deletes one folder and leaves nothing behind.
-- **Loaders get extra roots.** Each existing loader keeps its logic and also reads the plugin
-  folders. There is no second, parallel registry.
-- **Declarative only.** The manifest says what a plugin contributes. Kucedr decides how to run it.
+  `providers`, `mcp`, or `skills`. Uninstalling a plugin deletes one folder.
+- **Loaders get extra roots.** Each existing loader keeps its logic and also scans the matching
+  folder of every enabled plugin. There is no second registry.
+- **Ids are namespaced.** Inside Kucedr, contributions are referred to as
+  `<plugin-id>.<contribution-id>` so they can't collide with user content or other plugins.
 
-## 4. Plugin location and layout
+## 4. Manifest (schema version 5)
 
-Plugins are installed under `path.join(userDataLocation(), 'plugins')`, which is
-`~/.kucedr/plugins`. Because this uses `userDataLocation()`, the `KUCEDR_E2E_DATA_ROOT` override
-also applies to plugins.
+```json
+{
+	"schemaVersion": 5,
+	"id": "acme-tools",
+	"name": "Acme Tools",
+	"version": "1.0.0",
+	"description": "Acme models, dashboard, and CRM tools.",
+	"author": "Acme",
+	"icon": "icon.png",
+	"minAppVersion": "1.3.0",
+	"configSchema": {
+		"type": "object",
+		"additionalProperties": false,
+		"properties": {
+			"workspace": { "type": "string" },
+			"apiKey": { "type": "string" }
+		}
+	},
+	"uiHints": {
+		"workspace": { "label": "Workspace", "placeholder": "acme-team" },
+		"apiKey": { "label": "API key", "sensitive": true }
+	},
+	"contributes": {
+		"apps": [
+			{
+				"id": "dashboard",
+				"title": "Acme Dashboard",
+				"entry": "apps/dashboard/index.html"
+			}
+		],
+		"extensions": [
+			{
+				"id": "crm-panel",
+				"title": "Acme CRM",
+				"slot": "panel",
+				"entry": "extensions/crm-panel/index.html"
+			}
+		],
+		"mcpServers": [{ "id": "acme-crm", "path": "mcp_servers/acme-crm" }],
+		"models": [{ "id": "acme", "path": "models/acme" }],
+		"skills": [{ "id": "summarizer", "path": "skills/summarizer" }]
+	},
+	"permissions": ["network:https://api.acme.test", "agent.prompt"]
+}
+```
 
-The layout and manifest stay as in [PLUGINS.md](PLUGINS.md) (manifest v4). The folder name must
-match the manifest `id`. All ids use lowercase kebab-case.
+Field rules:
 
-## 5. Contribution points
+- `schemaVersion`, `id`, `name`, and `version` are required.
+- `configSchema` and `uiHints` are optional. When present, Settings → Plugins renders the
+  plugin's settings form from them, so plugins never ship settings UI code. Fields marked
+  `sensitive` are saved in the existing credential store and are never written into the plugin
+  folder. (The idea comes from OpenClaw's `openclaw.plugin.json`.)
+- `minAppVersion` blocks installing a plugin built for a newer Kucedr.
+- `permissions` lists what the plugin's apps and extensions may do through the bridge in
+  section 9. They are shown to the user before install, and anything not listed is denied.
+- Every `entry` and `path` must pass `isPluginPath` and resolve to a file or folder inside the
+  plugin.
 
-| Contribution | How it loads | Runs code? |
+The schema moves from `packages/cli/src` to `src/shared/plugin/` (`manifest.ts`, `entries.ts`,
+`pluginpath.ts`) so the desktop uses the same validation.
+
+## 5. Contribution kinds
+
+### 5.1 Apps
+
+Apps are standalone apps opened in their own window. They load through the existing apps pipeline:
+`app_list.ts` and `appDirectory()` also look in `pluginDirs('apps')`. They render with `render()`
+in `app_render.ts`, and `AppRegistry` tracks them under the id `<plugin-id>.<app-id>`. Apps keep
+the existing app sandbox and per-app storage. JS and CSS are loaded only from the app's own folder
+(see the CSP in section 9).
+
+### 5.2 Extensions
+
+An extension is plugin UI that appears *inside* Kucedr's screens, not in its own window. Each
+extension picks one **slot**:
+
+| Slot | Where it appears | Typical use |
 | --- | --- | --- |
-| `providers` | Added to the directory list in `readCatalog()`. Unknown ids run through the OpenAI-compatible chat adapter. Credentials stay in the provider settings store and never go in the manifest. | No |
-| `apps` (UI) | `app_list.ts` and `appDirectory()` also look in plugin `apps/` folders. Ids are namespaced as `<plugin-id>.<app-id>` so they cannot collide with user apps. They render in the existing sandboxed app view and use `AppRegistry`. | Sandboxed renderer only |
-| `skills` | `skills_list.ts` and `skills_resolve_folder.ts` also scan plugin `skills/` folders. | No |
-| `mcpServers` | Merged into the MCP catalog in `src/main/mcp`. Credentials go through the existing MCP settings flow. | Separate process or remote server |
-| `languages` | Loaded by `src/main/i18n.ts` as extra locale JSON. | No |
-| `themes` | There is no custom-theme loader yet; only light/dark exist (`nativeTheme`). This needs a small new loader that applies theme JSON as CSS variables in the renderer. Build it last. | No |
-| `channels` | Not loaded in v1. These are executable `.mjs` files, see section 9. | — |
+| `sidebar` | A new item in the main navigation that opens a full page | Dashboards, browsers |
+| `panel` | A side panel in the workspace, next to the conversation | CRM records, previews |
+| `toolbar` | A button in the conversation toolbar that opens a popover | Quick actions |
+| `composer` | An action in the message composer's attachment/actions menu | Insert content into the prompt |
+| `settings` | A page under Settings → Plugins → *plugin* | Advanced settings beyond `configSchema` |
 
-A provider that needs more than OpenAI-compatible chat, such as a custom request format, should
-come as an MCP server in v1, or wait for the code host in section 9.
+How an extension renders:
+
+- Kucedr owns the slot's frame: the nav item, panel header, button, and icon. These use the
+  existing shadcn components and take `title` and `icon` from the manifest.
+- The slot body is the extension's `index.html`, loaded in a **sandboxed iframe** from the
+  `kucedr-plugin://<plugin-id>/extensions/<extension-id>/` protocol. The iframe has no preload,
+  no Node, and no access to `window.api`. Each plugin gets its own origin, so plugins can't read
+  each other's storage.
+- The extension talks to Kucedr only through the `postMessage` bridge in section 9, limited to the
+  plugin's declared `permissions`.
+- The host sends theme tokens (CSS variables for colors, radius, and font) on load and whenever the
+  theme changes, so extensions match light and dark mode.
+
+Extension JS is never injected straight into Kucedr's renderer. That renderer has `window.api`,
+which gives full access to the app's IPC, so injected plugin code would control the whole app.
+VS Code makes the same choice with its webviews.
+
+### 5.3 MCP servers
+
+- **Local (stdio):** `mcp_servers/<id>/mcp.json` uses the existing local MCP format (`command`,
+  `args`, `cwd`, `env`, `require_approval`). Add `pluginDirs('mcp_servers')` to
+  `mcpLocalDiscoveryRoots()`, and they're read by `readLocalMcpServer()` like any other local
+  server. They run as separate processes, as they do today.
+- **Remote (http):** `mcp.json` with `"type": "http"` and a `url`. These are merged into the MCP
+  catalog. OAuth and tokens go through the existing MCP settings flow.
+- The plugin installer copies files exactly as they are and never runs `npm install` or lifecycle
+  scripts. A stdio server must be bundled: one `.mjs` file, or its `node_modules` included in the
+  archive.
+- Plugin servers default to `require_approval: "always"` unless the user changes it.
+
+### 5.4 Models
+
+`models/<provider-id>/manifest.json` uses the existing provider manifest format, with one entry
+per model. `readCatalog()` adds `pluginDirs('models')` to its directory list.
+
+**Remote models** (`"location": "remote"`): API models of any type the catalog supports
+(`large-language-model`, speech to text, text to speech, image, video, audio, and embeddings).
+Unknown provider ids run through the OpenAI-compatible adapter. Credentials come from the
+provider settings or from `sensitive` fields in `configSchema`. They are never stored in the
+manifest.
+
+**Local models** (`"location": "local"`): model weights that the plugin points to. They are
+downloaded after install and run locally. In v1 they run through **Ollama**, which the app already
+supports, so Kucedr doesn't bundle its own inference runtime. A local model declares a `source`:
+
+```json
+{
+	"id": "acme-small",
+	"name": "Acme Small 3B",
+	"type": "large-language-model",
+	"location": "local",
+	"source": {
+		"ollama": "acme/small:3b"
+	}
+}
+```
+
+or, for raw weights:
+
+```json
+{
+	"source": {
+		"url": "https://huggingface.co/acme/small-gguf/resolve/main/small-q4.gguf",
+		"sha256": "…",
+		"sizeBytes": 2147483648,
+		"format": "gguf"
+	}
+}
+```
+
+Install flow for local models:
+
+1. Installing the plugin does **not** download weights. The model shows as "Not downloaded" in
+   Settings → Providers → Models, with its size.
+2. When the user clicks **Download**:
+   - an `ollama` source calls Ollama's `/api/pull`;
+   - a `url` source downloads to `~/.kucedr/models/<plugin-id>/<model-id>/`, with resume and a
+     progress bar, checks `sha256`, and then registers the file with Ollama through `/api/create`.
+3. If Ollama isn't running, the model shows "Requires Ollama" with a link, and no error is raised.
+4. Removing the plugin offers to delete its downloaded weights, which are often several GB.
+
+Running ONNX models (embeddings, speech) directly in the app without Ollama is deferred. See
+section 11.
+
+### 5.5 Skills
+
+`skills_list.ts` and `skills_resolve_folder.ts` also scan `pluginDirs('skills')`. Each skill must
+contain `SKILL.md` and pass the existing `validateSkill()` and `validateSkillPackage()` checks.
 
 ## 6. Main-process module: `src/main/plugins/`
 
@@ -100,97 +266,184 @@ Following the `src/main/apps/` style, each file holds one function:
 | File | Responsibility |
 | --- | --- |
 | `plugins_root.ts` | `pluginsRoot()` returns `path.join(userDataLocation(), 'plugins')`. |
-| `plugins_list.ts` | Reads `<root>/<id>/manifest.json` with the shared schema and skips any that are invalid or have a mismatched id. |
-| `plugins_enabled.ts` | Stores the set of enabled plugin ids in electron-store. New installs start enabled. |
-| `plugins_dirs.ts` | `pluginDirs(kind)` returns the existing `<plugin>/<kind>` folders of enabled plugins. All loaders call this one function. |
-| `plugins_install.ts` | Takes a source folder: copy to `<root>/.install-<uuid>/`, validate the manifest and entries, then rename to `<root>/<id>`. Re-installing the same id replaces the old version. If anything fails, the staging folder is deleted. |
-| `plugins_upload.ts` | Opens a dialog for a folder or `.tgz` file, extracts the archive if needed, and calls install. |
-| `plugins_download.ts` | Downloads an https `.tgz` with `fetch` and a size cap, extracts it to a temp folder, then calls install. |
-| `plugins_remove.ts` | Deletes `<root>/<id>` and its enabled entry. |
+| `plugins_list.ts` | Reads each `<root>/<id>/manifest.json` with the shared schema. A plugin that fails validation is listed as **unavailable**, with the reason, instead of being skipped. The other plugins keep loading. |
+| `plugins_enabled.ts` | Stores enabled plugin ids in electron-store. New installs start enabled. |
+| `plugins_dirs.ts` | `pluginDirs(kind)` returns the `<plugin>/<kind>` folders of enabled, available plugins. All loaders call this one function. |
+| `plugins_install.ts` | Takes a source folder, copies it to `<root>/.install-<uuid>/`, validates the manifest, entries, `minAppVersion`, and per-kind checks, then renames it to `<root>/<id>`. Re-installing the same id replaces the old version. If anything fails, the staging folder is deleted. |
+| `plugins_upload.ts` | Opens a picker for a folder or `.tgz`, extracts the archive if needed, then installs. |
+| `plugins_download.ts` | Downloads an https `.tgz` with `fetch` and a size cap, checks `integrity` when one is given, extracts it to a temp folder, then installs. |
+| `plugins_remove.ts` | Deletes `<root>/<id>` and its enabled entry, and optionally its downloaded model weights. |
+| `plugins_catalog.ts` | Fetches and caches the catalog `index.json` (section 10). |
+| `plugins_config.ts` | Reads and writes plugin config values; `sensitive` values go to the credential store. |
+| `plugins_protocol.ts` | Serves `kucedr-plugin://<plugin-id>/...` from the plugin folder and rejects any path that escapes it. |
+| `models_download.ts` | Downloads local model weights through Ollama pull, or by URL plus a `sha256` check. |
 
-The manifest code (`pluginManifestSchema`, `readPluginManifest`, `validatePluginEntries`,
-`isPluginPath`) moves from `packages/cli/src` to `src/shared/plugin/`. The CLI re-exports it, so
-there is a single source of truth.
+Archives are extracted with `tar` (already used by the CLI; add it to the root `dependencies`).
+Extraction rejects symlinks and entries that escape the target folder. npm tarballs unpack into
+`package/`, and install uses that folder when present. The desktop never shells out to `npm`.
 
-Archives are extracted with the `tar` package, which the CLI already uses; it gets added to the
-root `dependencies`. The desktop does not shell out to `npm`, because end users may not have it.
-npm tarballs unpack into a `package/` folder, and install uses that folder when present.
+After an install, removal, enable toggle, or config change, the module emits `plugins:changed` on
+`src/main/event_bus.ts`. The model, app, MCP, skill, and extension-slot lists then refresh without
+a restart.
 
-After an install, removal, or enable toggle, the plugin module emits a `plugins:changed` event on
-`src/main/event_bus.ts`. The provider, app, skill, and MCP catalogs then refresh, and so does the
-renderer, without a restart.
+## 7. IPC and preload
 
-## 7. IPC, preload, and UI
-
-IPC handlers follow the existing pattern in `src/main/ipc/mcp.ts`, `src/preload/mcp.ts`, and
+These follow the existing pattern in `src/main/ipc/mcp.ts`, `src/preload/mcp.ts`, and
 `src/shared/ipc_channels_*`:
 
 | Channel | Purpose |
 | --- | --- |
-| `plugins:list` | Lists installed plugins with their manifest, enabled state, and contributions. |
-| `plugins:install-url` | Installs from an https URL. |
+| `plugins:list` | Lists installed plugins with their manifest, enabled state, availability, and contributions. |
+| `plugins:catalog` | Returns the remote catalog with an `installed` / `update available` state for each entry. |
+| `plugins:install-url` | Installs from an https URL (used by catalog installs too). |
 | `plugins:upload` | Opens the picker and installs the selection. |
 | `plugins:remove` | Uninstalls a plugin. |
 | `plugins:set-enabled` | Enables or disables a plugin. |
+| `plugins:config-get` / `plugins:config-set` | Reads and writes values for the `configSchema` form. |
+| `plugins:extensions` | Lists enabled extensions grouped by slot, for the renderer to mount. |
+| `models:download` / `models:download-progress` | Downloads a local model and streams its progress. |
 
-UI: add an **Installed** section to `settings/pages/plugins/`, using the existing shadcn components
-and that page's existing patterns:
+## 8. UI (Settings → Plugins)
 
-- A list of installed plugins showing name, version, description, an enable switch, and a remove
-  button.
-- **Install from URL** (an input and a button) and **Upload** (opens the picker).
-- Before installing, a confirmation listing what the plugin will add (providers, apps, skills, MCP
-  servers). The page's `Confirm.tsx` can be reused for this.
+Use the existing shadcn components and the patterns already on the plugins page:
 
-## 8. Security model
+- **Browse:** catalog cards showing icon, name, author, description, the kinds the plugin
+  contains, and an **Install** or **Update** button.
+- **Installed:** a list of installed plugins showing version, an enable switch, and a remove
+  button. Unavailable plugins show the reason they couldn't be loaded.
+- **Plugin detail:** the plugin's contributions, its permissions, and the settings form generated
+  from `configSchema` and `uiHints`.
+- **Install from URL** and **Upload** buttons.
+- **Install confirmation:** before every install, a dialog lists what the plugin adds and the
+  permissions it requests (reuse `Confirm.tsx`).
 
-- **No plugin code in the main process, ever.** In v1, code runs only where it is already
-  isolated: app HTML in the sandboxed app view, and MCP servers in their own process or remotely.
-  This is the VS Code model (manifest contribution points plus process isolation). The Obsidian
-  model, where plugin code runs in-process with full access, is avoided.
-- **Paths are validated.** Every manifest entry passes `isPluginPath`: no absolute paths, no
-  `..`, no backslashes. After resolving, each entry must be a regular file inside the plugin
-  folder. Archive extraction rejects symlinks and entries that escape the target folder.
-- **Downloads are https only**, with a size cap, extracted into a temp folder, and validated before
-  anything reaches `~/.kucedr/plugins`.
-- **Manifests carry no secrets.** Credentials stay in the existing provider and MCP settings
-  stores.
-- **Users approve each install** after seeing what the plugin contributes.
+Extension slot hosts, each a small component that mounts the sandboxed iframe:
 
-## 9. Later phases
+| Slot | Where the host component goes |
+| --- | --- |
+| `sidebar` | Main navigation |
+| `panel` | Workspace page |
+| `toolbar` | Conversation toolbar |
+| `composer` | Composer actions menu |
+| `settings` | Plugin detail page |
+
+## 9. Security model
+
+- **No plugin code in the main process or in Kucedr's renderer, ever.** Code runs only where it's
+  isolated:
+  - apps in a sandboxed window;
+  - extensions in a sandboxed iframe with a per-plugin origin;
+  - stdio MCP servers in their own process;
+  - local models inside Ollama.
+- **The bridge is narrow.** Apps and extensions call the host with
+  `postMessage({ id, method, params })`. The host checks each call against the plugin's declared
+  `permissions` and rejects anything not listed. Initial methods:
+
+  | Method | Permission | Purpose |
+  | --- | --- | --- |
+  | `theme.get` | none | Returns theme tokens; updates are pushed too. |
+  | `config.get` | none | Returns the plugin's own non-sensitive config. |
+  | `storage.get` / `storage.set` | none | Per-plugin key-value storage. |
+  | `composer.insert` | `composer.insert` | Inserts text into the message composer. |
+  | `agent.prompt` | `agent.prompt` | Sends a prompt to the agent; the user sees it in the conversation. |
+  | `mcp.call` | `mcp.call` | Calls a tool on one of the plugin's *own* MCP servers. |
+  | `app.open` | none | Opens one of the plugin's own apps. |
+
+- **Network is opt-in.** Plugin pages get the CSP `default-src 'self' kucedr-plugin:`. Each
+  `network:<origin>` permission adds that origin to `connect-src`.
+- **Paths are validated** on install and when serving files: no absolute paths, no `..`, no
+  backslashes, no symlinks.
+- **Downloads are https only**, size-capped, and checked against `integrity` / `sha256` when given.
+- **Manifests carry no secrets.** Credentials stay in the existing provider, MCP, and plugin
+  credential stores.
+- **Users approve each install** after seeing its contributions and permissions.
+
+## 10. Distribution
+
+Plugin packages are hosted on **npm**. The list of plugins is a static catalog file in a GitHub
+repo.
+
+- **Packages:** each plugin is published as an npm package (for example `@kucedr/plugin-acme`)
+  whose tarball has the layout in section 3. npm provides free hosting, versioning, a fixed
+  tarball URL per version, and a SHA-512 `integrity` hash.
+- **Catalog:** a public `kucedr-plugins` GitHub repo holds `index.json`, served from GitHub Pages
+  or `raw.githubusercontent.com`. Plugin authors open a pull request to be listed, which doubles
+  as the review step. The catalog URL is a single constant in `plugins_catalog.ts`.
+
+```json
+{
+	"schemaVersion": 1,
+	"plugins": [
+		{
+			"id": "acme-tools",
+			"name": "Acme Tools",
+			"description": "Acme models, dashboard, and CRM tools.",
+			"author": "Acme",
+			"icon": "https://…/icon.png",
+			"version": "1.0.0",
+			"minAppVersion": "1.3.0",
+			"url": "https://registry.npmjs.org/@acme/kucedr-tools/-/kucedr-tools-1.0.0.tgz",
+			"integrity": "sha512-…",
+			"contains": ["apps", "extensions", "mcp_servers", "models", "skills"]
+		}
+	]
+}
+```
+
+- **Updates:** an update is available when the catalog `version` is newer than the installed one.
+  Updating reinstalls through the same atomic path, and the plugin's config is kept.
+- **Install from URL and Upload** stay available for private or development plugins. Those
+  installs show an "Unlisted source" warning in the confirmation dialog.
+
+## 11. Later phases
 
 Build each of these only when a real plugin needs it.
 
-1. **Code plugins.** Custom provider adapters and channel `.mjs` files run in one Electron
-   `utilityProcess` per plugin, talking over a narrow MessagePort API (for example,
-   `provider.stream(request)` returning an event stream). They never run in main. Build this when a
-   real plugin can't be expressed as a declarative provider or MCP server.
-2. **Registry index.** A JSON index of published plugins that the Settings page can browse, with
-   the same install path as URL install.
-3. **Integrity and signing.** Check a manifest `integrity` hash, or sign packages, before
-   installing third-party plugins at scale.
-4. **Updates.** Compare the installed `version` against the registry and re-install through the
-   same atomic install path.
+1. **A built-in local runtime.** Run ONNX or GGUF models directly (for example with
+   `onnxruntime-node` or `node-llama-cpp` in a `utilityProcess`), so local embeddings and speech
+   work without Ollama.
+2. **Background code.** Plugin JS that runs without UI (custom provider adapters, hooks), in one
+   `utilityProcess` per plugin with the same permission-checked bridge. Until then, MCP servers
+   cover tools.
+3. **Self-serve publishing.** A Supabase `plugins` table plus a storage bucket, with download
+   counts and moderation, once outside authors outgrow pull requests.
+4. **Signing.** Signed packages and a publisher identity for third-party plugins at scale.
 
-## 10. Implementation order
+## 12. Implementation order
 
-1. Move the manifest schema to `src/shared/plugin/`. Verify with `npm run typecheck`.
-2. Add `src/main/plugins/*` (root, list, enabled, dirs, install, upload, download, remove).
-3. Connect `pluginDirs()` to the provider, app, skill, MCP, language, and theme loaders.
-4. Add the IPC handlers, preload API, and the shared channel definitions.
-5. Add the Installed section to Settings → Plugins.
-6. Update [PLUGINS.md](PLUGINS.md) to describe the desktop install flow.
+1. Move the manifest schema to `src/shared/plugin/` and add schema v5. Verify with
+   `npm run typecheck`.
+2. Add the `src/main/plugins/` core (root, list, enabled, dirs, install, upload, download,
+   remove) and the IPC handlers.
+3. Connect the loaders: models in `readCatalog()`, apps, `mcpLocalDiscoveryRoots()`, and skills.
+4. Build the Settings → Plugins Installed list, Upload, Install from URL, and the confirmation
+   dialog.
+5. Add the config form generated from `configSchema` and `uiHints`.
+6. Add the `kucedr-plugin://` protocol, the postMessage bridge, and the extension slot hosts
+   (start with `panel` and `sidebar`).
+7. Add local model downloads (Ollama pull, then URL plus `sha256`).
+8. Add the catalog: `plugins_catalog.ts`, the Browse tab, and updates.
+9. Update [PLUGINS.md](PLUGINS.md) to describe schema v5 and the desktop flow.
 
-## 11. Verification
+## 13. Verification
 
 - `npm run typecheck && npm run lint`.
-- Build a sample `acme-tools` plugin with one OpenAI-compatible provider, one HTML app, one skill,
-  and one MCP server. Then:
-  1. Upload the folder: the provider appears in Settings → Providers → Models, the app opens from
-     the apps list, and the skill appears in Skills.
-  2. Pack it with `tar czf`, serve it locally (or use an npm tarball URL), and install from the
-     URL: the result is the same. A second install replaces the first.
-  3. Disable it and its contributions disappear. Remove it and its folder is gone.
-  4. A malformed manifest, an entry containing `../`, or an archive with a symlink is rejected,
-     and nothing is left in `~/.kucedr/plugins`.
+- Build a sample `acme-tools` plugin containing one app, one `panel` extension, one stdio MCP
+  server, one remote model plus one Ollama local model, and one skill. Then:
+  1. **Upload it:**
+     - the app opens in its own window;
+     - the panel appears in the workspace and follows the theme;
+     - the MCP tools appear in the agent's tool list;
+     - both models appear in Settings → Providers → Models;
+     - the skill appears in Skills.
+  2. **Download the local model:** progress is shown, and the model then answers a chat through
+     Ollama. With Ollama stopped, it shows "Requires Ollama" instead of an error.
+  3. **Test the bridge:** a `composer.insert` call from the extension works when declared and is
+     rejected when the permission is removed. `fetch` to an undeclared origin is blocked by CSP.
+  4. **Install from the catalog:** after publishing a test `index.json`, Install and then Update
+     both work. Changing `integrity` makes the install fail.
+  5. **Disable and remove:** disabling removes every contribution, and removing deletes the
+     folder (and the weights, if confirmed).
+  6. **Reject bad packages:** a malformed manifest, a `../` entry, a symlink in the archive, or a
+     newer `minAppVersion` is rejected, and nothing is left in `~/.kucedr/plugins`.
 - Run `npm run dev` and check the whole flow end to end.
