@@ -130,6 +130,7 @@ export function agentToolPartFromHistoryBlock(
 		type: block.toolName,
 		state: 'input-available',
 		input: block.toolArgs ?? {},
+		durationMs: block.durationMs,
 		outputTokens,
 	};
 }

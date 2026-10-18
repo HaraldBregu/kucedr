@@ -80,16 +80,11 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const searchLabel = t('navigationBar.search');
 	const chatHistoryLabel = t('settings.chatHistory.title');
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
-	const chatButtonVariant = isHome ? 'secondary' : 'ghost';
+	const chatButtonVariant = isHome || isSettings ? 'secondary' : 'ghost';
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
 	useEffect(() => {
 		if (!chatSessionsLoading && chatSessionsRef.current) revealSelection(chatSessionsRef.current);
 	}, [activeChatSessionId, chatSessions, chatSessionsLoading]);
-	const navigationBarMenuItems = [
-		{ path: '/settings/settings', label: t('settings.tabs.settings') },
-		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
-		{ path: '/settings/apps', label: t('settings.tabs.apps') },
-	];
 	const chatNavigationButton = (
 		<Button
 			type="button"
@@ -222,20 +217,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 		<NavigationBarProvider value={{ isMac, isFullScreen }}>
 			<NavigationBarContainer
 				className={className}
-				onContextMenu={(event) => {
-					if (event.target instanceof Element && event.target.closest('button, a')) {
-						return;
-					}
-
-					event.preventDefault();
-					void window.win
-						.showContextMenu(
-							navigationBarMenuItems.map((item) => ({ id: item.path, label: item.label }))
-						)
-						.then((path) => {
-							if (path) navigate(path);
-						});
-				}}
 			>
 				{/* ── Left: platform menu + nav buttons ── */}
 				<NavigationBarLeftContainer

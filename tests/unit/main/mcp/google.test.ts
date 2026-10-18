@@ -50,9 +50,9 @@ it('requests full Drive access for all Drive MCP tools', () => {
 	expect(mcpOAuthOptions(url).authorizationParams?.scope).toBe('https://www.googleapis.com/auth/drive');
 });
 
-it('requests the scope needed for all Gmail MCP tools', () => {
+it('requests read-only access for Gmail MCP', () => {
 	const scopes = findMcpService('https://gmailmcp.googleapis.com/mcp/v1')?.scopes;
-	expect(scopes).toEqual(['https://www.googleapis.com/auth/gmail.modify']);
+	expect(scopes).toEqual(['https://www.googleapis.com/auth/gmail.readonly']);
 });
 
 it('requests full Calendar access for Calendar MCP', () => {

@@ -17,13 +17,6 @@ const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/mcp-tools': 'settings.modelServices.agentTools.mcp.title',
 };
 
-const PROVIDER_SUBPAGE_LABEL_KEYS: Record<string, string> = {
-	'/settings/providers/models': 'settings.overview.groups.mlModels',
-	'/settings/providers/search': 'settings.tabs.searchEngines',
-	'/settings/providers/database': 'settings.tabs.databases',
-	'/settings/providers/storage': 'settings.tabs.storage',
-};
-
 function formatAppLabel(appId: string): string {
 	return appId
 		.split(/[-_\s]+/)
@@ -63,6 +56,18 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		return [
 			{ label: t('settings.tabs.settings'), path: '/settings/settings' },
 			{ label: t('settings.voiceAgent.title') },
+		];
+	}
+	if (location.pathname === '/settings/storage/providers') {
+		return [
+			{ label: t('settings.tabs.storage'), path: '/settings/storage' },
+			{ label: t('settings.tabs.providers') },
+		];
+	}
+	if (location.pathname === '/settings/knowledge/providers') {
+		return [
+			{ label: t('settings.knowledge.title'), path: '/settings/knowledge' },
+			{ label: t('settings.tabs.providers') },
 		];
 	}
 	if (location.pathname === '/settings/voice/history') {
@@ -124,24 +129,9 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t(assistantSubpageLabelKey) },
 		];
 	}
-	const providerSubpageLabelKey = PROVIDER_SUBPAGE_LABEL_KEYS[location.pathname];
-	if (providerSubpageLabelKey) {
-		return [
-			{ label: t('settings.tabs.providers'), path: '/settings/providers' },
-			{ label: t(providerSubpageLabelKey) },
-		];
-	}
 
 	const serviceItem = SETTINGS_MODEL_SERVICE_ITEMS.find((item) => item.path === location.pathname);
-	if (serviceItem) {
-		if (serviceItem.path.startsWith('/settings/providers/')) {
-			return [
-				{ label: t('settings.tabs.providers'), path: '/settings/providers' },
-				{ label: t(serviceItem.labelKey) },
-			];
-		}
-		return [{ label: t(serviceItem.labelKey) }];
-	}
+	if (serviceItem) return [{ label: t(serviceItem.labelKey) }];
 
 	if (mcpDetailMatch) {
 		return [

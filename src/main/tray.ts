@@ -40,7 +40,9 @@ export class Tray {
 		const iconPath =
 			process.platform === 'darwin'
 				? path.join(resourceRoot(), 'resources/icons/mac/trayTemplate.png')
-				: path.join(resourceRoot(), 'resources/icons/png/32x32.png');
+				: process.platform === 'win32'
+					? path.join(resourceRoot(), 'resources/icons/win/icon.ico')
+					: path.join(resourceRoot(), 'resources/icons/png/32x32.png');
 		const icon = nativeImage.createFromPath(
 			iconPath
 		).resize({ width: 16, height: 16 });

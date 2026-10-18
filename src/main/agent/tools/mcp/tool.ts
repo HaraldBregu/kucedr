@@ -30,7 +30,7 @@ export function mcpTool(
 		policy: { kind: 'mcp', serverId, toolName },
 		capability: {
 			effects: readOnly ? ['read'] : ['external'],
-			approval: approval === 'always' || (approval !== 'never' && !readOnly),
+			approval: approval === 'always',
 		},
 		timeoutMs: MCP_TOOL_TIMEOUT_MS,
 		maxOutputBytes: MCP_MAX_OUTPUT_BYTES,

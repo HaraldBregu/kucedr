@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { AlertTriangle, ChevronRight, RefreshCw, Server } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -30,6 +31,18 @@ export default function KnowledgePage(): JSX.Element {
 				title={t('settings.knowledge.title')}
 				description={t('settings.knowledge.description')}
 			/>
+			<SettingsPanel>
+				<Link to="/settings/knowledge/providers" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.tabs.providers')}
+						description={t('settings.overview.descriptions.databases')}
+						media={<Server className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+			</SettingsPanel>
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					<div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2">

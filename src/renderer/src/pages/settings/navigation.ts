@@ -6,7 +6,9 @@ import {
 	Layers,
 	HardDrive,
 	Code2,
+	Cpu,
 	Folder,
+	Globe,
 	HeartPulse,
 	Settings,
 	Library,
@@ -16,7 +18,6 @@ import {
 	Plug,
 	PlugZap,
 	RadioTower,
-	Server,
 	ShieldCheck,
 	Sparkles,
 	UserRound,
@@ -267,28 +268,30 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.modelServices.toolsDescription',
 		keywords: 'channel tools permissions allow deny ask',
 	},
-	// Provider pages
+	// Models
 	{
-		path: '/settings/providers/models',
+		path: '/settings/models',
 		labelKey: 'settings.overview.groups.mlModels',
 		descriptionKey: 'settings.overview.descriptions.providers',
 		keywords: 'models llm provider api keys',
 	},
+	// Search engines
 	{
-		path: '/settings/providers/search',
+		path: '/settings/websearch',
 		labelKey: 'settings.tabs.searchEngines',
 		descriptionKey: 'settings.overview.descriptions.searchEngine',
 		keywords: 'web search provider api key',
 	},
+	// Provider pages
 	{
-		path: '/settings/providers/database',
-		labelKey: 'settings.tabs.databases',
+		path: '/settings/knowledge/providers',
+		labelKey: 'settings.tabs.providers',
 		descriptionKey: 'settings.overview.descriptions.databases',
 		keywords: 'database vector provider api key',
 	},
 	{
-		path: '/settings/providers/storage',
-		labelKey: 'settings.tabs.storage',
+		path: '/settings/storage/providers',
+		labelKey: 'settings.tabs.providers',
 		descriptionKey: 'settings.storageProviders.description',
 		keywords: 'storage s3 bucket provider',
 	},
@@ -368,10 +371,16 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: HardDrive,
 	},
 	{
-		path: '/settings/providers',
-		labelKey: 'settings.tabs.providers',
+		path: '/settings/models',
+		labelKey: 'settings.overview.groups.mlModels',
 		descriptionKey: 'settings.overview.descriptions.providers',
-		icon: Server,
+		icon: Cpu,
+	},
+	{
+		path: '/settings/websearch',
+		labelKey: 'settings.tabs.searchEngines',
+		descriptionKey: 'settings.overview.descriptions.searchEngine',
+		icon: Globe,
 	},
 	{
 		path: '/settings/library',

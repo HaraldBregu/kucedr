@@ -6,7 +6,6 @@ import {
 	LogOut,
 	MessageCircle,
 	Plug,
-	Server,
 	UserRound,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -48,7 +47,6 @@ export function AppSidebarFooter(): React.JSX.Element {
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
 		{ path: '/settings/storage', label: t('settings.tabs.storage'), icon: HardDrive },
 		{ path: '/settings/agent', label: t('settings.sidebar.chatSettings'), icon: MessageCircle },
-		{ path: '/settings/providers', label: t('settings.tabs.providers'), icon: Server },
 		{ path: '/settings/library', label: t('library.title'), icon: Library },
 		{ path: '/settings/plugins', label: t('settings.tabs.plugins'), icon: Plug },
 		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
@@ -63,14 +61,8 @@ export function AppSidebarFooter(): React.JSX.Element {
 							<SidebarMenuButton
 								size="lg"
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-								className="pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								className="h-10 pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
-								<Avatar className="size-7 rounded-xl grayscale">
-									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-									<AvatarFallback className="rounded-xl bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground">
-										<UserRound className="size-4" />
-									</AvatarFallback>
-								</Avatar>
 								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
 									{accountItem.title}
 								</span>
@@ -80,7 +72,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							type="button"
 							variant="ghost"
 							size="icon"
-							className="absolute right-2 top-2 z-10 shrink-0 rounded-lg hover:bg-sidebar-primary hover:text-sidebar-primary-foreground focus-visible:bg-sidebar-primary focus-visible:text-sidebar-primary-foreground"
+							className="absolute right-2 top-1 z-10 shrink-0 rounded-lg hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
 							aria-label={t('settings.tabs.voice')}
 							title={voiceError ?? t('settings.tabs.voice')}
 							onClick={() => {

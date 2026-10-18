@@ -49,12 +49,11 @@ const routes = [
 	'/settings/channels',
 	'/settings/plugins',
 	'/settings/skills',
-	'/settings/providers',
-	'/settings/providers/database',
+	'/settings/models',
+	'/settings/websearch',
+	'/settings/knowledge/providers',
 	'/settings/mcp',
 	'/settings/mcp/missing',
-	'/settings/providers/transcribe',
-	'/settings/providers/search',
 	'/settings/agent/rag',
 	'/settings/tasks',
 	'/settings/agent',
@@ -856,7 +855,7 @@ test('Channels configures credentials and models directly on the channel page', 
 	);
 });
 
-test('Database saves and reloads database credentials from Providers', async ({
+test('Database saves and reloads database credentials from Knowledge providers', async ({
 	browserName: _browserName,
 }, testInfo) => {
 	await app.evaluate(({ BrowserWindow }) => {
@@ -865,13 +864,11 @@ test('Database saves and reloads database credentials from Providers', async ({
 	// Database providers only appear once their plugin is enabled.
 	await page.evaluate(() => window.provider.setPluginEnabled('database', 'pinecone/pinecone', true));
 	await page.evaluate(() => {
-		window.location.hash = '#/settings/providers';
+		window.location.hash = '#/settings/knowledge';
 	});
 	const workspace = page.locator('[data-slot="settings-workspace"]');
-	const link = workspace.getByRole('link', { name: /^Database/ });
-	await expect(link.locator('svg.lucide-database')).toBeVisible();
-	await link.click();
-	await expect(page).toHaveURL(/#\/settings\/providers\/database$/);
+	await workspace.getByRole('link', { name: /^Providers/ }).click();
+	await expect(page).toHaveURL(/#\/settings\/knowledge\/providers$/);
 	await expect(page.getByRole('heading', { name: 'Database', level: 1 })).toBeVisible();
 	await page.getByRole('button', { name: 'Connect', exact: true }).click();
 	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-test-key');

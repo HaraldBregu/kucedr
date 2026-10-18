@@ -25,10 +25,8 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useNow } from '@/components/hooks/use-now';
 import { cn } from '@/lib/utils';
-import { CalendarIcon } from './calendar';
-import { DriveIcon } from './drive';
 import { formatDuration } from './duration';
-import { GmailIcon } from './gmail';
+import { googleService } from './google';
 import { McpIcon } from './mcp';
 import { isTaskToolType } from './task';
 import { estimateTokens } from './tokens';
@@ -77,18 +75,9 @@ export function toolIcon(
 	toolPart: ToolPart
 ): ElementType<{ className?: string; toolPart?: ToolPart }> {
 	const type = toolPart.type.toLowerCase();
-	const serviceId = toolPart.serviceId?.toLowerCase();
 	if (isTaskToolType(type)) return CalendarClock;
-	if (serviceId === 'google-calendar' || type.startsWith('mcp__google-calendar__'))
-		return CalendarIcon;
-	if (serviceId === 'google-drive' || type.startsWith('mcp__google-drive__')) return DriveIcon;
-	if (
-		serviceId === 'gmail' ||
-		serviceId === 'gmail-smtp' ||
-		type.startsWith('mcp__gmail__') ||
-		type.startsWith('mcp__gmail-smtp__')
-	)
-		return GmailIcon;
+	const google = googleService(toolPart);
+	if (google) return google.icon;
 	if (toolPart.serviceKind === 'mcp' || type.startsWith('mcp__')) return McpIcon;
 	if (type === 'subagent' || type === 'subagents') return Bot;
 	if (type.includes('skill')) return Sparkles;
@@ -304,7 +293,7 @@ function Tool({
 								</span>
 								<StatusIcon state={state} />
 								{displayDurationMs !== undefined && (
-									<span className="shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
+									<span className="ml-auto shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
 										{formatDuration(displayDurationMs)}
 									</span>
 								)}

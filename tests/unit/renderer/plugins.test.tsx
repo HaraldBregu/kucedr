@@ -317,7 +317,7 @@ it('opens plugin details from rows while keeping add buttons separate', async ()
 			true
 		)
 	);
-	expect(navigate).toHaveBeenLastCalledWith('/settings/providers/storage');
+	expect(navigate).toHaveBeenLastCalledWith('/settings/storage/providers');
 });
 
 it('removes an enabled storage provider from Plugins', async () => {

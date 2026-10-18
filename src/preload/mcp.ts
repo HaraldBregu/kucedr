@@ -40,6 +40,9 @@ export const mcp: McpApi = {
 	catalog: (id: string) => {
 		return typedInvokeUnwrap(McpChannels.catalog, id);
 	},
+	setToolPermission: (id, toolName, permission) => {
+		return typedInvokeUnwrap(McpChannels.setToolPermission, id, toolName, permission);
+	},
 	oauthStatus: (id: string) => {
 		return typedInvokeUnwrap(McpChannels.oauthStatus, id);
 	},

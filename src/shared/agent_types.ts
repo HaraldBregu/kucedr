@@ -157,6 +157,7 @@ export type AgentHistoryContentBlock =
 			toolUseId: string;
 			toolName: string;
 			toolArgs?: unknown;
+			durationMs?: number;
 	  }
 	| {
 			type: 'attachment';

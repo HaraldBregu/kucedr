@@ -4,7 +4,8 @@ export function createGoogleMcpFetch(fetchImplementation: typeof fetch = fetch):
 	const boundedFetch = createMcpFetch(fetchImplementation);
 	return async (input, init): Promise<Response> => {
 		const response = await boundedFetch(input, init);
-		if (response.ok || typeof init?.body !== 'string') return response;
+		// ponytail: 401 must reach the SDK or the OAuth flow never starts
+		if (response.ok || response.status === 401 || typeof init?.body !== 'string') return response;
 
 		let request: { method?: unknown };
 		try {

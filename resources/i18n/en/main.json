@@ -289,6 +289,7 @@
 				"services": "Application",
 				"assistant": "Agents",
 				"brain": "Brain",
+				"data": "Data",
 				"bot": "Bot",
 				"extensions": "Extensions",
 				"configuration": "Configuration"
@@ -335,7 +336,7 @@
 			"searchEngine": "Search engine",
 			"databases": "Database",
 			"storage": "Storage",
-			"searchEngines": "Search Engine",
+			"searchEngines": "Web Search",
 			"media": "Media",
 			"devices": "Devices",
 			"tools": "Tools",

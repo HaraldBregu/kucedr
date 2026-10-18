@@ -99,7 +99,7 @@ it('uses distinct icons for Library and Knowledge', () => {
 	);
 });
 
-it('places Library and Workspace below Providers without Code in the general sidebar group', () => {
+it('places Library and Workspace in the Data sidebar section below the general group without Code', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/settings']}>
 			<Routes>
@@ -111,16 +111,19 @@ it('places Library and Workspace below Providers without Code in the general sid
 	);
 
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const providers = within(navigation).getByRole('link', { name: 'settings.tabs.providers' });
-	const library = within(navigation).getByRole('link', { name: 'library.title' });
-	const group = providers.closest('[data-slot="split-pane-group"]');
-	const links = within(group as HTMLElement).getAllByRole('link');
+	const general = within(navigation)
+		.getByRole('link', { name: 'settings.tabs.account' })
+		.closest('[data-slot="split-pane-group"]');
+	const data = within(navigation)
+		.getByText('settings.overview.groups.data')
+		.closest('[data-slot="split-pane-group"]');
+	const links = within(data as HTMLElement).getAllByRole('link');
 
-	expect(library.closest('[data-slot="split-pane-group"]')).toBe(group);
-	expect(links.indexOf(library)).toBe(links.indexOf(providers) + 1);
-	const workspace = within(group as HTMLElement).getByRole('link', { name: 'settings.workspace.title' });
-	expect(workspace).toHaveAttribute('href', '/settings/workspace');
-	expect(links.indexOf(workspace)).toBe(links.indexOf(library) + 1);
+	expect(data?.previousElementSibling).toBe(general);
+	expect(links.map((link) => link.getAttribute('href'))).toEqual([
+		'/settings/library',
+		'/settings/workspace',
+	]);
 	expect(within(navigation).queryByRole('button', { name: /navigationBar.code/ })).not.toBeInTheDocument();
 });
 
@@ -133,22 +136,21 @@ it.each([
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
 	['/settings/mcp', 'settings.tabs.mcp'],
-	['/settings/providers', 'settings.tabs.providers'],
-	['/settings/providers/database', 'settings.tabs.databases'],
-	['/settings/providers/storage', 'settings.tabs.storage'],
+	['/settings/models', 'settings.overview.groups.mlModels'],
+	['/settings/websearch', 'settings.tabs.searchEngines'],
+	['/settings/knowledge/providers', 'settings.tabs.providers'],
+	['/settings/storage/providers', 'settings.tabs.providers'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/plugins', 'settings.tabs.plugins'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
 	if (
 		path === '/settings/settings/persona' ||
 		path === '/settings/agent/tools' ||
-		path === '/settings/agent/mcp-tools'
+		path === '/settings/agent/mcp-tools' ||
+		path === '/settings/storage/providers' ||
+		path === '/settings/knowledge/providers'
 	) {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
-	} else if (path.startsWith('/settings/providers/')) {
-		expect(SETTINGS_NAVIGATION).toContainEqual(
-			expect.objectContaining({ path: '/settings/providers', labelKey: 'settings.tabs.providers' })
-		);
 	} else {
 		expect(SETTINGS_NAVIGATION).toContainEqual(expect.objectContaining({ path, labelKey }));
 	}
@@ -207,9 +209,6 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const assistantGroup = within(navigation)
 		.getByText('settings.overview.groups.assistant')
 		.closest('[data-slot="split-pane-group"]');
-	const providersLink = within(generalGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.providers',
-	});
 
 	expect(sidebar).toBeInTheDocument();
 	expect(workspace).toBeInTheDocument();
@@ -232,21 +231,29 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(SETTINGS_NAVIGATION).not.toContainEqual(
 		expect.objectContaining({ path: '/settings/agent/models' })
 	);
-	expect(
-		within(navigation).queryByRole('link', { name: 'settings.overview.groups.mlModels' })
-	).not.toBeInTheDocument();
+	const modelsLink = within(generalGroup as HTMLElement).getByRole('link', {
+		name: 'settings.overview.groups.mlModels',
+	});
+	expect(modelsLink).toHaveAttribute('href', '/settings/models');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.skills' })
 	).toHaveAttribute('href', '/settings/skills');
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.coding.title' })
 	).not.toBeInTheDocument();
-	expect(providersLink).toHaveAttribute('href', '/settings/providers');
+	expect(
+		within(generalGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.providers' })
+	).not.toBeInTheDocument();
 	const generalLinks = within(generalGroup as HTMLElement).getAllByRole('link');
 	const storage = within(generalGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.storage',
 	});
-	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(storage) + 1);
+	const webSearchLink = within(generalGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.searchEngines',
+	});
+	expect(webSearchLink).toHaveAttribute('href', '/settings/websearch');
+	expect(generalLinks.indexOf(modelsLink)).toBe(generalLinks.indexOf(storage) + 1);
+	expect(generalLinks.indexOf(webSearchLink)).toBe(generalLinks.indexOf(modelsLink) + 1);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',
@@ -413,9 +420,9 @@ it('places Channels and Remote Agents in Bot immediately above Extensions', () =
 	expect(within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.remoteAgent new' })).not.toBeInTheDocument();
 });
 
-it('places Providers directly after Storage without provider subpages in the sidebar', () => {
+it('places Models and Web Search after Storage without a Providers entry in the sidebar', () => {
 	render(
-		<MemoryRouter initialEntries={['/settings/providers']}>
+		<MemoryRouter initialEntries={['/settings/storage']}>
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
 					<Route path="*" element={<SettingsPageHeader title="Settings page" />} />
@@ -429,12 +436,14 @@ it('places Providers directly after Storage without provider subpages in the sid
 	expect(storage).toHaveAttribute('href', '/settings/storage');
 	const group = storage.closest('[data-slot="split-pane-group"]');
 	const links = within(group as HTMLElement).getAllByRole('link');
-	const providers = within(group as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.providers',
-	});
 
-	expect(providers).toHaveAttribute('href', '/settings/providers');
-	expect(links.indexOf(providers)).toBe(links.indexOf(storage) + 1);
+	expect(
+		within(group as HTMLElement).queryByRole('link', { name: 'settings.tabs.providers' })
+	).not.toBeInTheDocument();
+	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(storage) + 3).map((link) => link.getAttribute('href'))).toEqual([
+		'/settings/models',
+		'/settings/websearch',
+	]);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',

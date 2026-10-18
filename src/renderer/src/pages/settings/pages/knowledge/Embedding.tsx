@@ -33,7 +33,7 @@ export default function Embedding({ knowledge }: { knowledge: KnowledgeState }):
 					size="sm"
 					disabled={disabled}
 					nativeButton={false}
-					render={<Link to="/settings/providers/models" />}
+					render={<Link to="/settings/models" />}
 				>
 					{t('settings.knowledge.configureModels')}
 				</Button>

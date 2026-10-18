@@ -20,6 +20,25 @@ it('normalizes a non-successful tools list response containing a JSON-RPC result
 	expect(await response.json()).toEqual({ jsonrpc: '2.0', id: 1, result: { tools: [] } });
 });
 
+it('preserves an unauthorized tools list response so OAuth can start', async () => {
+	const fetchImplementation = jest.fn().mockResolvedValue(
+		new Response(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { tools: [] } }), {
+			status: 401,
+			headers: { 'content-type': 'application/json' },
+		})
+	);
+
+	const response = await createGoogleMcpFetch(fetchImplementation)(
+		'https://gmailmcp.googleapis.com/mcp/v1',
+		{
+			method: 'POST',
+			body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
+		}
+	);
+
+	expect(response.status).toBe(401);
+});
+
 it('preserves genuine tools list errors', async () => {
 	const fetchImplementation = jest.fn().mockResolvedValue(
 		new Response(JSON.stringify({ jsonrpc: '2.0', id: 1, error: { code: -32603 } }), {

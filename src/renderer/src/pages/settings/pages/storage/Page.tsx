@@ -1,6 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, Download, FolderSync, Plus, Trash2, Upload } from 'lucide-react';
+import {
+	AlertTriangle,
+	ChevronRight,
+	Download,
+	FolderSync,
+	Plus,
+	Server,
+	Trash2,
+	Upload,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,6 +31,7 @@ import {
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
+	SettingsPanel,
 	SettingsRow,
 	SettingsSection,
 } from '../../components';
@@ -222,6 +233,19 @@ const StoragePage: React.FC = () => {
 				title={t('settings.tabs.storage')}
 				description={t('settings.overview.descriptions.storage')}
 			/>
+
+			<SettingsPanel>
+				<Link to="/settings/storage/providers" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.tabs.providers')}
+						description={t('settings.storageProviders.description')}
+						media={<Server className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+			</SettingsPanel>
 
 			{error && (
 				<div className="flex flex-wrap items-center gap-2">

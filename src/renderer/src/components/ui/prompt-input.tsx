@@ -447,7 +447,7 @@ function PromptInput({
 							data-expanded={isPromptExpanded}
 							data-voice-mode={voiceMode ?? undefined}
 							className={cn(
-								'relative cursor-text border border-border/60 bg-card/95 text-foreground shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
+								'relative cursor-text border border-border/60 bg-card text-foreground shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
 								detached && 'border-transparent bg-transparent shadow-none focus-within:ring-0',
 								detached
 									? 'rounded-[24px]'
@@ -518,7 +518,7 @@ function PromptInput({
 											{detached ? (
 												<PromptInputField
 													header={header}
-													className={cn('min-h-[104px]', inputClassName)}
+													className={cn('min-h-[98px]', inputClassName)}
 													controls={
 														<PromptInputControls
 														leadingAction={isDictationMode ? undefined : leadingAction}

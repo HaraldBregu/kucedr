@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import StorageProvidersPage from '../../../src/renderer/src/pages/settings/pages/providers/storage/Page';
+import StorageProvidersPage from '../../../src/renderer/src/pages/settings/pages/storage/providers/Page';
 import type { StorageProvider, StorageProviderInput } from '../../../src/shared/storage_types';
 import mockTranslations from '../../../resources/i18n/en/main.json';
 

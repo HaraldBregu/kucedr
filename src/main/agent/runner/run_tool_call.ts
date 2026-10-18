@@ -465,6 +465,8 @@ export async function* runToolCall(
 		...(authorizationRequired ? { authorizationRequired } : {}),
 	};
 
+	toolCall.durationMs = Date.now() - startedAtMs;
+
 	security.budget?.observeOutput(Buffer.byteLength(formatToolOutput(output), 'utf8'));
 	security.budget?.outcomes.set(toolCall.id, structuredClone(toolCall));
 	yield {
@@ -474,7 +476,7 @@ export async function* runToolCall(
 		input: canonicalInput,
 		output,
 		isError,
-		durationMs: Date.now() - startedAtMs,
+		durationMs: toolCall.durationMs,
 		...(permissionOutcome ? { permissionOutcome } : {}),
 	};
 }

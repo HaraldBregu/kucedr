@@ -135,11 +135,6 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(footer).toHaveClass('px-2', 'pt-1', 'pb-3');
 	expect(accountMenu).toHaveClass('h-12', 'p-2');
 	expect(within(accountMenu).getByText('settings.title')).toBeInTheDocument();
-	// The avatar falls back to a user icon rather than an initial.
-	expect(footer.querySelector('.lucide-user-round')?.parentElement).toHaveClass(
-		'bg-primary',
-		'text-primary-foreground'
-	);
 	expect(screen.getByRole('button', { name: 'settings.tabs.voice' })).toBeInTheDocument();
 });
 
@@ -198,12 +193,12 @@ it.each<[AuthState, string]>([
 		['settings.tabs.account', '/settings/account'],
 		['settings.tabs.storage', '/settings/storage'],
 		['settings.sidebar.chatSettings', '/settings/agent'],
-		['settings.tabs.providers', '/settings/providers'],
 		['settings.tabs.apps', '/settings/apps'],
 	].forEach(([name, href]) => {
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
 	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.settings' })).not.toBeInTheDocument();
+	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.providers' })).not.toBeInTheDocument();
 	expect(
 		within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })
 	).not.toBeInTheDocument();
@@ -415,7 +410,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
-it('shows Settings and Get Help as sidebar items above the footer', async () => {
+it('shows Settings as a sidebar item above the footer', async () => {
 	const user = userEvent.setup();
 	listSessions.mockResolvedValue([]);
 
@@ -440,7 +435,7 @@ it('shows Settings and Get Help as sidebar items above the footer', async () => 
 
 	await screen.findByText('settings.chatHistory.empty');
 	expect(screen.getByRole('button', { name: 'settings.title', exact: true }).closest('[data-slot="sidebar-footer"]')).toBeNull();
-	expect(screen.getByRole('button', { name: 'settings.sidebar.help' }).closest('[data-slot="sidebar-footer"]')).toBeNull();
+	expect(screen.queryByRole('button', { name: 'settings.sidebar.help' })).not.toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })
 	).not.toBeInTheDocument();
@@ -455,8 +450,6 @@ it('shows Settings and Get Help as sidebar items above the footer', async () => 
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.storage' }).querySelector('.lucide-hard-drive')).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.sidebar.chatSettings' }).querySelector('.lucide-message-circle')).toBeInTheDocument();
 	await user.keyboard('{Escape}');
-	await user.click(screen.getByRole('button', { name: 'settings.sidebar.help' }));
-	expect(openExternalUrl).toHaveBeenCalledWith('https://www.kucedr.com/help');
 	await user.click(screen.getByRole('button', { name: 'settings.title', exact: true }));
 	expect(screen.getByText('Settings page')).toBeInTheDocument();
 });

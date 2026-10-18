@@ -1,3 +1,4 @@
+import { googleService } from '@/components/prompt-kit/google';
 import { TASK_TOOL_LABELS } from '@/components/prompt-kit/task';
 import type { AgentToolPart } from '../context';
 
@@ -57,6 +58,8 @@ export function toolPartLabel(tool: AgentToolPart): string {
 	if (tool.displayName) return tool.displayName;
 
 	const mcp = mcpParts(tool.type);
+	const google = googleService(tool);
+	if (mcp && google) return `${google.name} · ${mcp.tool}`;
 	if (mcp) return `${mcp.server.charAt(0).toUpperCase()}${mcp.server.slice(1)} · ${mcp.tool}`;
 
 	const input = isRecord(tool.input) ? tool.input : {};
@@ -130,7 +133,7 @@ function groupVerbs(type: string): GroupVerbs {
 	if (t === 'use_web_browser' || t === 'fetch_web_page' || t === 'search_web') {
 		return { running: 'Browsing', done: 'Browsed', noun: 'page' };
 	}
-	if (t.startsWith('mcp__')) return { running: 'Calling', done: 'Called', noun: 'tool' };
+	if (t.startsWith('mcp__')) return { running: 'Using', done: 'Used', noun: 'tool' };
 	return { running: 'Running', done: 'Ran', noun: 'tool' };
 }
 

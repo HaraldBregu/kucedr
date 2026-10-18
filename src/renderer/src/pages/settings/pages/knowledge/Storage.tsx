@@ -39,7 +39,7 @@ export default function Storage({ knowledge }: { knowledge: KnowledgeState }): J
 					size="sm"
 					disabled={disabled}
 					nativeButton={false}
-					render={<Link to="/settings/providers/database" />}
+					render={<Link to="/settings/knowledge/providers" />}
 				>
 					{t('settings.knowledge.configureDatabases')}
 				</Button>

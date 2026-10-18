@@ -545,14 +545,10 @@ function PageContent(): ReactElement {
 		visibleMessages.length === 0 && !agent.isLoading && !agent.historyLoading;
 	const showPromptSuggestions = showEmptyConversation && voiceMode === null;
 	useLayoutEffect(() => {
-		const workspace = workspaceRef.current;
 		const composer = composerRef.current;
-		if (!workspace || !composer) return;
+		if (!composer) return;
 		const updateSpacing = (): void => {
-			workspace.style.setProperty(
-				'--composer-height',
-				`${composer.getBoundingClientRect().height}px`
-			);
+			workspaceRef.current?.style.setProperty('--composer-height', `${composer.offsetHeight}px`);
 			const scrollState = chatScrollRef.current?.state;
 			if (scrollState?.isAtBottom) scrollState.scrollTop = scrollState.calculatedTargetScrollTop;
 		};
@@ -765,7 +761,10 @@ function PageContent(): ReactElement {
 				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
 			)}
 		>
-			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-4xl')}>
+			{showEmptyConversation ? null : (
+				<div className="pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background" />
+			)}
+			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl')}>
 				<RecorderErrorMessage
 					message={voiceErrorMessage}
 					actionLabel={voiceErrorAction?.label}
@@ -776,75 +775,88 @@ function PageContent(): ReactElement {
 						<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
 					</div>
 				) : null}
-				<PromptEditor
-					placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
-					ariaLabel="Message your assistant"
-					value={agent.input}
-					expanded={false}
-					onValueChange={agent.setInput}
-					onPlanCommandChange={(active) => {
-						setPlanCommandActive(active);
-						agent.setInteractionMode(active ? 'plan' : 'default');
-					}}
-					onGoalCommandChange={setGoalCommandActive}
-					isLoading={agent.isLoading}
-					maxHeight={360}
-					onSubmit={() => void submitPrompt()}
-					textareaRef={agent.inputRef}
-					header={
-						agent.replyTo ? (
-							<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
-						) : undefined
-					}
-					leadingAction={
-						voiceMode === 'dictation' ? undefined : (
-							<AttachmentButton
-								disabled={attachmentDisabled}
-								onLibrarySelect={() => setLibraryPickerOpen(true)}
-							/>
-						)
-					}
-					voiceMode={voiceMode === 'dictation' ? voiceMode : null}
-					voiceElapsedMs={activeVoiceElapsedMs}
-					voiceMuted={activeVoiceMuted}
-					voiceMediaStream={activeVoiceStream}
-					voiceAnalyser={null}
-					voiceStatus={activeDictationMode === 'record' ? 'Recording' : 'Listening'}
-					voiceWaveformActive={true}
-					onVoiceMutedChange={activeVoiceSetMuted}
-					onVoiceCancel={() => void cancelDictation()}
-					onVoiceConfirm={() => void confirmDictation()}
-					onFilesChange={(files) => {
-						setAttachments((current) => [...current, ...filesToAttachments(files)]);
-					}}
-					wrapperClassName="max-w-none"
-					detachedControls
-					footerContent={
-						<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-							<StableModel
-								messages={agent.chatState.messages}
-								draft={agent.input}
-								hasAttachments={attachments.length > 0}
-							/>
-						</div>
-					}
-					className="w-full"
-					inputClassName={cn(
-						planCommandActive && 'plan-prompt-frame',
-						goalCommandActive && 'goal-prompt-frame'
+				<div data-slot="home-composer-container" className="relative flex flex-col bg-background">
+				{showEmptyConversation ? null : (
+					<div className="pointer-events-none absolute inset-x-0 bottom-full h-12 bg-gradient-to-b from-transparent to-background" />
+				)}
+					<PromptEditor
+						placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
+						ariaLabel="Message your assistant"
+						value={agent.input}
+						expanded={false}
+						onValueChange={agent.setInput}
+						onPlanCommandChange={(active) => {
+							setPlanCommandActive(active);
+							agent.setInteractionMode(active ? 'plan' : 'default');
+						}}
+						onGoalCommandChange={setGoalCommandActive}
+						isLoading={agent.isLoading}
+						maxHeight={360}
+						onSubmit={() => void submitPrompt()}
+						textareaRef={agent.inputRef}
+						header={
+							agent.replyTo ? (
+								<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
+							) : undefined
+						}
+						leadingAction={
+							voiceMode === 'dictation' ? undefined : (
+								<AttachmentButton
+									disabled={attachmentDisabled}
+									onLibrarySelect={() => setLibraryPickerOpen(true)}
+								/>
+							)
+						}
+						voiceMode={voiceMode === 'dictation' ? voiceMode : null}
+						voiceElapsedMs={activeVoiceElapsedMs}
+						voiceMuted={activeVoiceMuted}
+						voiceMediaStream={activeVoiceStream}
+						voiceAnalyser={null}
+						voiceStatus={activeDictationMode === 'record' ? 'Recording' : 'Listening'}
+						voiceWaveformActive={true}
+						onVoiceMutedChange={activeVoiceSetMuted}
+						onVoiceCancel={() => void cancelDictation()}
+						onVoiceConfirm={() => void confirmDictation()}
+						onFilesChange={(files) => {
+							setAttachments((current) => [...current, ...filesToAttachments(files)]);
+						}}
+						wrapperClassName="max-w-none"
+						detachedControls
+						footerContent={
+							<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
+								<StableModel
+									messages={agent.chatState.messages}
+									draft={agent.input}
+									hasAttachments={attachments.length > 0}
+								/>
+							</div>
+						}
+						className="w-full"
+						inputClassName={cn(
+							planCommandActive && 'plan-prompt-frame',
+							goalCommandActive && 'goal-prompt-frame'
+						)}
+						trailingAction={
+							<PromptInputActions className="justify-end gap-1.5">
+								<VoiceButton
+									onVoiceModeRequest={() => void startDictation()}
+									disabled={voiceBusy || agent.isLoading}
+									disabledReason={voiceButtonDisabledReason}
+									mode={voiceButtonMode}
+								/>
+								<SubmitButton isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
+							</PromptInputActions>
+						}
+					/>
+					<p
+					className={cn(
+						'relative mt-1.5 px-4 text-[11px] text-muted-foreground',
+						showEmptyConversation && 'text-center'
 					)}
-					trailingAction={
-						<PromptInputActions className="justify-end gap-1.5">
-							<VoiceButton
-								onVoiceModeRequest={() => void startDictation()}
-								disabled={voiceBusy || agent.isLoading}
-								disabledReason={voiceButtonDisabledReason}
-								mode={voiceButtonMode}
-							/>
-							<SubmitButton isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
-						</PromptInputActions>
-					}
-				/>
+				>
+						Kucedr can make mistakes. Check important info.
+					</p>
+				</div>
 			</div>
 		</div>
 	);
@@ -871,7 +883,7 @@ function PageContent(): ReactElement {
 					</span>
 					{showEmptyConversation ? (
 						<div className="flex min-h-[calc(50dvh+7rem)] w-full shrink-0 flex-col justify-end gap-4 pb-6 pt-10">
-							<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4">
+							<div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4">
 								<EmptyConversation />
 							</div>
 							{composer}
@@ -887,7 +899,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className="mx-auto min-h-full w-full max-w-4xl gap-5 px-4 pt-6">
+								<ChatContainerContent className="mx-auto min-h-full w-full max-w-3xl gap-5 px-4 pt-6">
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
@@ -897,13 +909,13 @@ function PageContent(): ReactElement {
 										onReply={agent.replyToMessage}
 										onImplement={agent.implementPlan}
 									/>
-									<ChatContainerScrollAnchor className="h-[var(--composer-height,7rem)]" />
+									<ChatContainerScrollAnchor className="h-[calc(var(--composer-height,7rem)+3rem)]" />
 								</ChatContainerContent>
-								<div className="pointer-events-none absolute inset-x-0 bottom-[var(--composer-height,6rem)] z-30 flex justify-center">
+								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+0.75rem)] z-30 flex justify-center">
 									<ScrollButton
 										type="button"
 										aria-label="Scroll to latest"
-										className="pointer-events-auto"
+										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
 									/>
 								</div>
 							</ChatContainerRoot>

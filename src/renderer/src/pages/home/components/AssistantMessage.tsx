@@ -338,7 +338,10 @@ export function AssistantMessage({
 					<div
 						id={`assistant-message-${message.id}-content`}
 						data-slot="assistant-message-content"
-					className="relative min-w-0 max-w-full"
+						className={cn(
+							'relative min-w-0 max-w-full',
+							hasTools && 'border-t border-border/50 pt-3'
+						)}
 					>
 						{parsedPlan.kind === 'complete' ? (
 							<Card className="w-full gap-4 border-info/30 py-4">

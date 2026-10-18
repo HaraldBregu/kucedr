@@ -1,10 +1,10 @@
-import { createElement, useState, type ReactElement } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { useState, type ReactElement } from 'react';
 import { useNow } from '@/components/hooks/use-now';
 import { formatDuration } from '@/components/prompt-kit/duration';
+import { googleService } from '@/components/prompt-kit/google';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { isTaskToolType } from '@/components/prompt-kit/task';
-import { Tool, toolIcon } from '@/components/prompt-kit/tool';
+import { Tool } from '@/components/prompt-kit/tool';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
@@ -42,7 +42,6 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 	const [isOpen, setIsOpen] = useState(false);
 	const isRunning = group.tools.some(isToolRunning);
 	const label = toolGroupLabel(group.type, group.tools);
-	const kindIcon = toolIcon(group.tools[0]);
 	const hasLiveTool = group.tools.some(isLiveTool);
 	const now = useNow(hasLiveTool);
 	const hasDuration = hasLiveTool || group.tools.some((tool) => tool.durationMs !== undefined);
@@ -62,36 +61,27 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 						variant="ghost"
 						className="p-0! h-auto w-full justify-start rounded-md bg-transparent! py-1 font-normal text-muted-foreground transition-colors hover:bg-transparent hover:text-foreground"
 					>
-						<div className="flex min-w-0 items-center gap-1.5">
-							{createElement(kindIcon, {
-								className: 'size-3.5 shrink-0 text-muted-foreground/60',
-							})}
-							<span className="flex min-w-0 items-baseline gap-1 truncate text-xs font-medium">
+						<div className="flex w-full min-w-0 items-center gap-1.5">
+							<span className="flex min-w-0 items-baseline gap-1 truncate text-sm font-medium">
 								{isRunning ? <TextShimmer>{label}</TextShimmer> : <span>{label}</span>}
 							</span>
 							{hasDuration && (
-								<span className="shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
+								<span className="ml-auto shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
 									{formatDuration(durationMs)}
 								</span>
 							)}
-							<ChevronDown
-								className={cn(
-									'size-3 shrink-0 transition-transform duration-200',
-									isOpen && 'rotate-180'
-								)}
-							/>
 						</div>
 					</Button>
 				}
 			/>
 			<CollapsibleContent>
-				<div className="flex flex-col gap-1 pl-3">
+				<div className="flex flex-col gap-1">
 					{group.tools.map((tool, index) => (
 						<Tool
 							key={tool.toolCallId}
 							toolPart={tool}
 							label={toolPartLabel(tool)}
-							hideIcon
+							hideIcon={!googleService(tool)}
 							className="mt-0"
 							style={staggerStyle(index)}
 						/>

@@ -376,6 +376,11 @@ export interface McpApi {
 	openRoot: () => Promise<void>;
 	test: (id: string) => Promise<McpTestResult>;
 	catalog: (id: string) => Promise<McpTestResult | undefined>;
+	setToolPermission: (
+		id: string,
+		toolName: string,
+		permission: import('./agent_tools').AgentToolPermission
+	) => Promise<void>;
 	oauthStatus: (id: string) => Promise<boolean>;
 	oauthStart: (id: string, force?: boolean) => Promise<McpOAuthStart>;
 }

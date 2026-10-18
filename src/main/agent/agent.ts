@@ -690,6 +690,7 @@ function toHistoryContentBlocks(message: Message): AgentHistoryContentBlock[] {
 			toolUseId: toolCall.id,
 			toolName: toolCall.name,
 			toolArgs: toolCall.args,
+			...(typeof toolCall.durationMs === 'number' ? { durationMs: toolCall.durationMs } : {}),
 		});
 	}
 

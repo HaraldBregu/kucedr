@@ -48,8 +48,7 @@ const PluginDetailPage = lazy(() => import('./pages/settings/pages/plugins/Detai
 const SkillsPage = lazy(() => import('./pages/settings/pages/skills/Page'));
 const SkillDetailsPage = lazy(() => import('./pages/settings/pages/skills/details/Page'));
 const ProvidersPage = lazy(() => import('./pages/settings/pages/providers/Page'));
-const ProvidersOverviewPage = lazy(() => import('./pages/settings/pages/providers/Overview'));
-const StorageProvidersPage = lazy(() => import('./pages/settings/pages/providers/storage/Page'));
+const StorageProvidersPage = lazy(() => import('./pages/settings/pages/storage/providers/Page'));
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
 const RemoteAgentPage = lazy(() => import('./pages/settings/pages/remote-agent/Page'));
 const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Page'));
@@ -288,11 +287,24 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'storage',
-						element: (
-							<SettingsRouteWrapper>
-								<StoragePage />
-							</SettingsRouteWrapper>
-						),
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<StoragePage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'providers',
+								element: (
+									<SettingsRouteWrapper>
+										<StorageProvidersPage />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
 					},
 					{
 						path: 'settings',
@@ -369,65 +381,41 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'providers',
+						path: 'models',
+						element: (
+							<SettingsRouteWrapper>
+								<ProvidersPage section="models" />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
+						path: 'websearch',
+						element: (
+							<SettingsRouteWrapper>
+								<ProvidersPage section="search" />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
+						path: 'knowledge',
 						children: [
 							{
 								index: true,
 								element: (
 									<SettingsRouteWrapper>
-										<ProvidersOverviewPage />
+										<KnowledgePage />
 									</SettingsRouteWrapper>
 								),
 							},
 							{
-								path: 'models',
-								element: (
-									<SettingsRouteWrapper>
-										<ProvidersPage section="models" />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'database',
+								path: 'providers',
 								element: (
 									<SettingsRouteWrapper>
 										<ProvidersPage section="databases" />
 									</SettingsRouteWrapper>
 								),
 							},
-							{
-								path: 'databases',
-								element: <Navigate to="/settings/providers/database" replace />,
-							},
-							{
-								path: 'storage',
-								element: (
-									<SettingsRouteWrapper>
-										<StorageProvidersPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'search',
-								element: (
-									<SettingsRouteWrapper>
-										<ProvidersPage section="search" />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'transcribe',
-								element: <Navigate to="/settings/agent" replace />,
-							},
 						],
-					},
-					{
-						path: 'knowledge',
-						element: (
-							<SettingsRouteWrapper>
-								<KnowledgePage />
-							</SettingsRouteWrapper>
-						),
 					},
 					{
 						path: 'knowledge-base',

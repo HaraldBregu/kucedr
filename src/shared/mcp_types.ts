@@ -69,10 +69,16 @@ export type McpLocalImportResult = {
 	readonly skipped: readonly McpLocalImportSkipped[];
 };
 
+export type McpToolDetail = {
+	readonly name: string;
+	readonly description?: string;
+	readonly permission?: import('./agent_tools').AgentToolPermission;
+};
+
 export type McpTestResult = {
 	readonly ok: boolean;
 	readonly tools: readonly string[];
-	readonly toolDetails?: readonly { readonly name: string; readonly description?: string }[];
+	readonly toolDetails?: readonly McpToolDetail[];
 	readonly toolCount: number;
 	readonly durationMs: number;
 	readonly error?: string;

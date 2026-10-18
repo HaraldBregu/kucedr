@@ -20,10 +20,16 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				'/settings/account',
 				'/settings/settings',
 				'/settings/storage',
-				'/settings/providers',
-				'/settings/library',
-				'/settings/workspace',
+				'/settings/models',
+				'/settings/websearch',
 			].includes(item.path)
+		),
+	},
+	{
+		id: 'data',
+		titleKey: 'settings.overview.groups.data',
+		items: SETTINGS_NAVIGATION.filter((item) =>
+			['/settings/library', '/settings/workspace'].includes(item.path)
 		),
 	},
 	{
