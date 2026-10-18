@@ -8,7 +8,7 @@
 	},
 	"description": "Your desktop AI copilot for everyday tasks",
 	"author": "Harald Bregu <harald.bregu@gmail.com>",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"private": true,
 	"workspaces": [
 		"packages/sdk",
