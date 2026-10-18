@@ -490,7 +490,8 @@ Build each of these only when a real plugin needs it.
 
 - `npm run typecheck && npm run lint`.
 - Build a sample `acme-tools` plugin containing one app, one `panel` extension, one stdio MCP
-  server, one remote model plus one Ollama local model, and one skill. Then:
+  server, a provider with one remote model, one Ollama local model, and one database, and one
+  skill. Then:
   1. **Upload it:**
      - the app opens in its own window;
      - the panel appears in the workspace and follows the theme;
