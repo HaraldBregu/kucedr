@@ -389,7 +389,7 @@ repo.
 			"minAppVersion": "1.3.0",
 			"url": "https://registry.npmjs.org/@acme/kucedr-tools/-/kucedr-tools-1.0.0.tgz",
 			"integrity": "sha512-…",
-			"contains": ["apps", "extensions", "mcp_servers", "models", "skills"]
+			"contains": ["apps", "extensions", "mcp_servers", "providers", "skills"]
 		}
 	]
 }
