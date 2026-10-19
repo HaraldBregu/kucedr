@@ -201,12 +201,49 @@ VS Code makes the same choice with its webviews.
   archive.
 - Plugin servers default to `require_approval: "always"` unless the user changes it.
 
-### 5.4 Providers (models, databases, web search, storage, remote MCP)
+### 5.4 Providers (models, vector databases, web search, storage, remote MCP)
 
 `providers/<provider-id>/manifest.json` uses the existing provider manifest format. One manifest
-can declare any of `models`, `databases`, `web_search`, `storages`, and `mcp_servers`, exactly as
-bundled providers do. `readCatalog()` adds `pluginDirs('providers')` to its directory list, so every
-catalog API returns plugin entries as well (see section 5.6).
+can declare any of `models`, `vector_databases`, `web_search`, `storage`, and `mcp_servers`,
+exactly as bundled providers do. `readCatalog()` adds `pluginDirs('providers')` to its directory
+list, so every catalog API returns plugin entries as well (see section 5.6).
+
+#### Vector databases only
+
+Kucedr uses databases only to store and search embeddings (RAG and knowledge). The manifest key
+`databases` is therefore renamed to **`vector_databases`**, for plugins and bundled providers alike:
+
+```json
+{
+	"vector_databases": [
+		{
+			"id": "pinecone",
+			"name": "Pinecone Vector Database",
+			"description": "Store and search vector embeddings in Pinecone.",
+			"url": "https://api.pinecone.io",
+			"authentication": "api-key"
+		}
+	]
+}
+```
+
+- **No `type` field.** Every entry is a vector database, so `DATABASE_TYPES`
+  (`'vector' | 'sql' | 'nosql'`) and the per-entry type check in
+  `src/shared/providers/validation.ts` are removed.
+- **Validation:** `parseProviderManifest()` accepts `vector_databases` and rejects the old
+  `databases` key with a clear error ("use vector_databases"). A plugin that ships `databases` is
+  shown as unavailable instead of half-loading.
+- **Runtime:** a vector database is executable only if it has an adapter in
+  `src/main/database/vector_adapters.ts` (Pinecone today). Entries without one are still listed,
+  but marked catalog-only, as `docs/PROVIDERS.md` does for models. Plugins can't ship vector
+  database adapters until code plugins exist (section 11).
+- **Renames:** the manifest key, `ProviderManifestDatabase` → `ProviderManifestVectorDatabase`,
+  `loadDatabases()` → `loadVectorDatabases()`, `AppChannels.databases` →
+  `AppChannels.vectorDatabases`, and the matching renderer calls (`lib/providers.ts`, Settings →
+  Providers, Settings → Knowledge). Bundled manifests that have `"databases": []` change to
+  `"vector_databases": []`, or drop the key.
+- **Not renamed:** the stored credentials section (`StoredProviderKind 'databases'` in
+  `providers_store.ts`) keeps its name. Users' saved API keys keep working with no data migration.
 
 The rest of this section covers models.
 
