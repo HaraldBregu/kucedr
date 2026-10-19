@@ -68,7 +68,7 @@ Each plugin keeps every contribution kind in its own folder:
     server.mjs, ...          stdio servers only
   providers/<provider-id>/
     manifest.json            same format as resources/providers/*/manifest.json
-                             (models, databases, web_search, storages, mcp_servers)
+                             (models, vector_databases, web_search, storage, mcp_servers)
     images/
   skills/<skill-id>/
     SKILL.md
