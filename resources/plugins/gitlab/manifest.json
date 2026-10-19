@@ -5,5 +5,20 @@
 	"version": "1.0.0",
 	"description": "GitLab provider for Kucedr.",
 	"author": "Kucedr",
-	"icon": "icon.svg"
+	"icon": "gitlab.svg",
+	"authentication": "oauth2",
+	"icon_dark_url": "/assets/gitlab.svg",
+	"icon_light_url": "/assets/gitlab.svg",
+	"mcp_servers": [
+		{
+			"id": "gitlab",
+			"name": "GitLab",
+			"description": "Browse projects, manage issues, and review merge requests.",
+			"authentication": "oauth2",
+			"url": "https://gitlab.com/api/v4/mcp",
+			"scopes": [
+				"mcp"
+			]
+		}
+	]
 }

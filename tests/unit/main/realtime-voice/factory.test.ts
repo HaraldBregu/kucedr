@@ -9,12 +9,12 @@ import {
 
 describe('realtime voice adapter factory', () => {
 	it('covers every realtime voice model in the bundled provider catalog', () => {
-		const root = path.resolve(__dirname, '../../../../resources/plugins/*/providers');
+		const root = path.resolve(__dirname, '../../../../resources/plugins');
 		const catalog = fs.readdirSync(root).flatMap((providerId) => {
 			const manifestPath = path.join(root, providerId, 'manifest.json');
 			if (!fs.existsSync(manifestPath)) return [];
 			const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-			return manifest.models
+			return (manifest.models ?? [])
 				.filter((model: { type: string }) => model.type === 'realtime-voice-model')
 				.map((model: { id: string }) => ({ providerId, modelId: model.id }));
 		});

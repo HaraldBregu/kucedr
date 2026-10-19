@@ -5,5 +5,21 @@
 	"version": "1.0.0",
 	"description": "GitHub provider for Kucedr.",
 	"author": "Kucedr",
-	"icon": "icon.svg"
+	"icon": "github-light.svg",
+	"authentication": "oauth2",
+	"icon_dark_url": "/assets/github-dark.svg",
+	"icon_light_url": "/assets/github-light.svg",
+	"mcp_servers": [
+		{
+			"id": "github",
+			"name": "GitHub",
+			"description": "Manage repositories, issues, and pull requests on GitHub.",
+			"authentication": "oauth2",
+			"url": "https://api.githubcopilot.com/mcp/",
+			"scopes": [],
+			"oauth": {
+				"credentials_required": true
+			}
+		}
+	]
 }

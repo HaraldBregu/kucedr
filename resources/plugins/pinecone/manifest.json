@@ -5,5 +5,19 @@
 	"version": "1.0.0",
 	"description": "Pinecone provider for Kucedr.",
 	"author": "Kucedr",
-	"icon": "icon.svg"
+	"icon": "pinecone-light.svg",
+	"authentication": "api-key",
+	"icon_dark_url": "/assets/pinecone-dark.svg",
+	"icon_light_url": "/assets/pinecone-light.svg",
+	"apiKeyUrl": "https://app.pinecone.io",
+	"instructions": "Create an API key in the Pinecone console: https://docs.pinecone.io/guides/projects/manage-api-keys",
+	"vector_databases": [
+		{
+			"id": "pinecone",
+			"name": "Pinecone Vector Database",
+			"description": "Store and search vector embeddings in Pinecone.",
+			"url": "https://api.pinecone.io",
+			"authentication": "api-key"
+		}
+	]
 }

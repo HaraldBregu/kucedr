@@ -29,6 +29,18 @@ export const pluginManifestSchema = z
 		author: z.string().trim().min(1).optional(),
 		minAppVersion: pluginVersionSchema.optional(),
 		icon: iconSchema,
+		// ponytail: provider services are checked by validateProviderManifest()
+		authentication: z.unknown().optional(),
+		apiKeyUrl: z.unknown().optional(),
+		icon_dark_url: z.unknown().optional(),
+		icon_light_url: z.unknown().optional(),
+		instructions: z.unknown().optional(),
+		models: z.unknown().optional(),
+		mcp_servers: z.unknown().optional(),
+		vector_databases: z.unknown().optional(),
+		web_search: z.unknown().optional(),
+		storage: z.unknown().optional(),
+		bots: z.unknown().optional(),
 	})
 	.strict();
 

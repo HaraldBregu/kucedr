@@ -5,5 +5,109 @@
 	"version": "1.0.0",
 	"description": "Microsoft provider for Kucedr.",
 	"author": "Kucedr",
-	"icon": "icon.svg"
+	"icon": "microsoft.svg",
+	"authentication": "oauth2",
+	"icon_dark_url": "/assets/microsoft.svg",
+	"icon_light_url": "/assets/microsoft.svg",
+	"mcp_servers": [
+		{
+			"id": "microsoft-learn",
+			"name": "Microsoft Learn",
+			"description": "Search Microsoft documentation and code samples.",
+			"authentication": "none",
+			"url": "https://learn.microsoft.com/api/mcp",
+			"scopes": []
+		},
+		{
+			"id": "microsoft-mail",
+			"name": "Outlook Mail",
+			"description": "Read, send, and manage email.",
+			"authentication": "oauth2",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_MailTools",
+			"scopes": [],
+			"icon_dark_url": "/assets/microsoft-outlook.svg",
+			"icon_light_url": "/assets/microsoft-outlook.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
+		},
+		{
+			"id": "microsoft-calendar",
+			"name": "Outlook Calendar",
+			"description": "Manage events and availability.",
+			"authentication": "oauth2",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_CalendarTools",
+			"scopes": [],
+			"icon_dark_url": "/assets/outlook-calendar.svg",
+			"icon_light_url": "/assets/outlook-calendar.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
+		},
+		{
+			"id": "microsoft-teams",
+			"name": "Microsoft Teams",
+			"description": "Work with chats, channels, and messages.",
+			"authentication": "oauth2",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_TeamsServer",
+			"scopes": [],
+			"icon_dark_url": "/assets/microsoft-teams.svg",
+			"icon_light_url": "/assets/microsoft-teams.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
+		},
+		{
+			"id": "microsoft-onedrive",
+			"name": "OneDrive",
+			"description": "Find and manage personal files.",
+			"authentication": "oauth2",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_OneDriveRemoteServer",
+			"scopes": [],
+			"icon_dark_url": "/assets/microsoft-onedrive.svg",
+			"icon_light_url": "/assets/microsoft-onedrive.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
+		},
+		{
+			"id": "microsoft-sharepoint",
+			"name": "SharePoint",
+			"description": "Work with sites, lists, and files.",
+			"authentication": "oauth2",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_SharePointRemoteServer",
+			"scopes": [],
+			"icon_dark_url": "/assets/microsoft-sharepoint.svg",
+			"icon_light_url": "/assets/microsoft-sharepoint.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
+		},
+		{
+			"id": "microsoft-word",
+			"name": "Microsoft Word",
+			"description": "Create and read documents.",
+			"authentication": "oauth2",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_WordServer",
+			"scopes": [],
+			"icon_dark_url": "/assets/microsoft-word.svg",
+			"icon_light_url": "/assets/microsoft-word.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
+		},
+		{
+			"id": "microsoft-search",
+			"name": "Microsoft 365 Search",
+			"description": "Find content across Microsoft 365.",
+			"authentication": "oauth2",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_M365Copilot",
+			"scopes": [],
+			"icon_dark_url": "/assets/microsoft-365-copilot.svg",
+			"icon_light_url": "/assets/microsoft-365-copilot.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
+		}
+	]
 }

@@ -3,12 +3,12 @@ import path from 'node:path';
 import { PLUGIN_KINDS, type PluginKind } from '../../shared/plugin_types';
 import { mcpServersFileIds } from './plugins_mcp_file_ids';
 
-/** Contribution ids per kind: the folders under `<kind>/`, plus the keys of `mcp/servers.json`. */
+/** Contribution ids per kind: the folders under `<kind>/`, plus the keys of `mcp/servers.json`. Providers come from the manifest. */
 export function pluginContents(directory: string): Record<PluginKind, string[]> {
-	const contents = Object.fromEntries(
+	return Object.fromEntries(
 		PLUGIN_KINDS.map((kind) => {
 			const kindDirectory = path.join(directory, kind);
-			if (!existsSync(kindDirectory)) return [kind, []];
+			if (kind === 'providers' || !existsSync(kindDirectory)) return [kind, []];
 			const ids: string[] = [];
 			for (const entry of readdirSync(kindDirectory, { withFileTypes: true })) {
 				if (entry.name.startsWith('.')) continue;
@@ -27,10 +27,4 @@ export function pluginContents(directory: string): Record<PluginKind, string[]> 
 			return [kind, ids.sort()];
 		})
 	) as Record<PluginKind, string[]>;
-	if (Object.values(contents).every((ids) => ids.length === 0)) {
-		throw new Error(
-			'A plugin must contain at least one app, extension, MCP server, provider, or skill.'
-		);
-	}
-	return contents;
 }

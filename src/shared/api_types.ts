@@ -595,7 +595,7 @@ export interface AppApi extends AppStorageApi {
 		providerId: string,
 		modelId: string
 	) => Promise<void>;
-	/** Fires when resources/plugins/<id>/providers changes on disk; returns an unsubscribe function. */
+	/** Fires when ~/.kucedr/providers changes on disk; returns an unsubscribe function. */
 	onModelsChanged: (callback: () => void) => () => void;
 	getPathForFile: (file: File) => string;
 	openAppDataFolder: () => Promise<void>;

@@ -21,7 +21,7 @@ import type {
 import { userDataLocation } from './shared/user_data_location';
 import { parseProviderManifest } from '../shared/providers/validation';
 import { resolveMcpEndpoint } from './mcp/endpoint';
-import { pluginDirs } from './plugins/plugins_dirs';
+import { pluginProviders } from './plugins/plugins_providers';
 import type { PluginSource } from '../shared/plugin_types';
 
 interface Catalog {
@@ -251,43 +251,62 @@ function readCatalog(): Catalog {
 		{ entry: ProviderManifest; providerDir: string; plugin?: PluginSource }
 	>();
 
-	// Built-in providers come from the core plugin; ~/.kucedr/providers loads last so user overrides win.
-	const roots: { directory: string; plugin?: PluginSource }[] = [
-		...pluginDirs('providers'),
-		{ directory: providersDir() },
-	];
-	for (const { directory, plugin } of roots) {
-		if (!existsSync(directory)) continue;
-		for (const dirent of readdirSync(directory, { withFileTypes: true })) {
-			if (!dirent.isDirectory()) continue;
-			try {
-				const providerDir = path.join(directory, dirent.name);
-				const manifestPath = path.join(providerDir, 'manifest.json');
-				if (!existsSync(manifestPath)) continue;
-				const entry = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));
-				if (!entry) continue;
-				const previous = manifests.get(normalizeProviderId(entry.providerId))?.entry;
-				const models = entry.models?.map((model) => {
-					const defaults = previous?.models?.find((item) => item.id === model.id && item.type === model.type)?.metadata;
-					if (!model.metadata || !defaults) return model;
-					return {
-						...model,
-						metadata: {
-							...model.metadata,
-							contextWindow: modelContextWindow(model.metadata) === undefined ? defaults.contextWindow : model.metadata.contextWindow,
-							maxInputTokens: model.metadata.maxInputTokens ?? (model.metadata.inputs.max_input_tokens || model.metadata.inputs.input_token_limit || model.metadata.inputs.maximum_input_tokens ? undefined : defaults.maxInputTokens),
-							contextWindowDocumentationUrl: model.metadata.contextWindowDocumentationUrl ?? defaults.contextWindowDocumentationUrl,
-						},
-					};
-				});
-				manifests.set(normalizeProviderId(entry.providerId), {
-					entry: { ...entry, models },
+	// Built-in providers are plugins; ~/.kucedr/providers loads last so user overrides win.
+	const userDir = providersDir();
+	const sources: { providerDir: string; read: () => unknown; plugin?: PluginSource }[] = [
+		...pluginProviders().map(({ directory, manifest, plugin }) => ({
+			providerDir: directory,
+			read: () => manifest,
+			plugin,
+		})),
+		...(existsSync(userDir) ? readdirSync(userDir, { withFileTypes: true }) : [])
+			.filter((dirent) => dirent.isDirectory())
+			.map((dirent) => {
+				const providerDir = path.join(userDir, dirent.name);
+				return {
 					providerDir,
-					plugin,
-				});
-			} catch {
-				// ponytail: a provider dir mid-edit (malformed JSON) drops out until fixed
-			}
+					read: () => JSON.parse(readFileSync(path.join(providerDir, 'manifest.json'), 'utf-8')),
+				};
+			}),
+	];
+	for (const { providerDir, read, plugin } of sources) {
+		try {
+			const entry = parseProviderManifest(read());
+			if (!entry) continue;
+			const previous = manifests.get(normalizeProviderId(entry.providerId))?.entry;
+			const models = entry.models?.map((model) => {
+				const defaults = previous?.models?.find(
+					(item) => item.id === model.id && item.type === model.type
+				)?.metadata;
+				if (!model.metadata || !defaults) return model;
+				return {
+					...model,
+					metadata: {
+						...model.metadata,
+						contextWindow:
+							modelContextWindow(model.metadata) === undefined
+								? defaults.contextWindow
+								: model.metadata.contextWindow,
+						maxInputTokens:
+							model.metadata.maxInputTokens ??
+							(model.metadata.inputs.max_input_tokens ||
+							model.metadata.inputs.input_token_limit ||
+							model.metadata.inputs.maximum_input_tokens
+								? undefined
+								: defaults.maxInputTokens),
+						contextWindowDocumentationUrl:
+							model.metadata.contextWindowDocumentationUrl ??
+							defaults.contextWindowDocumentationUrl,
+					},
+				};
+			});
+			manifests.set(normalizeProviderId(entry.providerId), {
+				entry: { ...entry, models },
+				providerDir,
+				plugin,
+			});
+		} catch {
+			// ponytail: a provider dir mid-edit (malformed JSON) drops out until fixed
 		}
 	}
 

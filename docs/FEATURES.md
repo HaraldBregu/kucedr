@@ -597,7 +597,7 @@ The main implementation areas behind this reference are:
 - [Apps](../src/main/apps/)
 - [Storage sync](../src/renderer/src/pages/settings/pages/storage/)
 - [Account and cloud architecture](CLOUD.md)
-- [Provider catalog declarations](../resources/plugins/*/providers/)
+- [Provider catalog declarations](../resources/plugins/)
 - [Provider catalog loader](../src/main/models.ts)
 - [Speech-to-text adapters](../src/main/models/adapters/stt/)
 - [Text-to-speech adapters](../src/main/models/adapters/tts/)

@@ -5,5 +5,19 @@
 	"version": "1.0.0",
 	"description": "Cloudflare provider for Kucedr.",
 	"author": "Kucedr",
-	"icon": "icon.svg"
+	"icon": "cloudflare.svg",
+	"authentication": "api-key",
+	"icon_dark_url": "/assets/cloudflare.svg",
+	"icon_light_url": "/assets/cloudflare.svg",
+	"storage": {
+		"id": "cloudflare-r2",
+		"name": "Cloudflare R2",
+		"description": "Store files in a Cloudflare R2 bucket through its S3 endpoint.",
+		"authentication": "s3-access-key",
+		"metadata": {
+			"protocol": "s3",
+			"region": "auto",
+			"endpointTemplate": "https://{accountId}.r2.cloudflarestorage.com"
+		}
+	}
 }

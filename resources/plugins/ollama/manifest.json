@@ -5,5 +5,8 @@
 	"version": "1.0.0",
 	"description": "Ollama provider for Kucedr.",
 	"author": "Kucedr",
-	"icon": "icon.svg"
+	"icon": "ollama-light.svg",
+	"authentication": "none",
+	"icon_dark_url": "/assets/ollama-dark.svg",
+	"icon_light_url": "/assets/ollama-light.svg"
 }

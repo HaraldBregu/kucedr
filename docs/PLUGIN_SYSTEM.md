@@ -38,9 +38,9 @@ Non-goals for v1:
 | Need | Existing piece |
 | --- | --- |
 | Manifest validation | Manifest v4 zod schema in `packages/cli/src/manifest.ts` (`pluginManifestSchema`), entry checks in `entries.ts`, and path safety in `pluginpath.ts`. Section 4 extends this. |
-| Remote models | `readCatalog()` in `src/main/models.ts` reads provider manifests from `resources/plugins/*/providers` and `~/.kucedr/providers/<id>/`. |
+| Remote models | `readCatalog()` in `src/main/models.ts` reads providers from built-in plugin manifests (`resources/plugins/<id>/manifest.json`) and `~/.kucedr/providers/<id>/`. |
 | Running unknown providers | `streamProvider()` in `src/main/models/adapters/llm/llm_model.ts` falls back to OpenAI-compatible chat for any provider id it doesn't recognize. |
-| Local models | The `ollama` provider (`resources/plugins/ollama/providers/ollama`) plus `ModelLocation = 'remote' \| 'local'` in `src/shared/provider_types.ts`. |
+| Local models | The `ollama` provider (`resources/plugins/ollama`) plus `ModelLocation = 'remote' \| 'local'` in `src/shared/provider_types.ts`. |
 | Apps | `src/main/apps/*` (`appsRoot`, `appDirectory`, `AppRegistry`, `app_manifest_validate`, and `render` in `app_render.ts`). |
 | MCP servers | Local stdio servers are folders with `mcp.json` (see `resources/plugins/kucedr/mcp/configured-demo-server`), read by `readLocalMcpServer()` and discovered through `mcpLocalDiscoveryRoots()` in `src/main/mcp/mcp_local_root.ts`. |
 | Skills | `src/main/agent/skills/*` (`skillsRoot`, `skills_list.ts`, `skills_resolve_folder.ts`). |
@@ -62,16 +62,17 @@ Plugins load from two folders:
   extensions, MCP servers, and skills. It can't be disabled, removed, or replaced by an installed
   plugin with the same id.
 - **Provider plugins:** each built-in provider is its own plugin,
-  `resources/plugins/<provider-id>/providers/<provider-id>/`, so it can be disabled like any
-  other built-in plugin.
+  `resources/plugins/<provider-id>/`. Its services sit in the plugin `manifest.json` and its
+  images in `assets/`, so it can be disabled like any other built-in plugin.
 
 An installed plugin overrides a built-in plugin with the same id. Each plugin keeps every
 contribution kind in its own folder:
 
 ```text
 ~/.kucedr/plugins/<plugin-id>/
-  manifest.json              plugin info only
-  assets/                    images and other data, including the plugin icon
+  manifest.json              plugin info, plus provider services (models, mcp_servers,
+                             vector_databases, web_search, storage, bots) when it is a provider
+  assets/                    images and other data, including the plugin and provider icons
   apps/<app-id>/
     manifest.json
     index.html
@@ -85,10 +86,6 @@ contribution kind in its own folder:
     <server-id>/
       mcp.json               same format as resources/plugins/kucedr/mcp/*/mcp.json
     server.mjs, ...          stdio servers only
-  providers/<provider-id>/
-    manifest.json            same format as resources/plugins/*/providers/*/manifest.json
-                             (models, vector_databases, web_search, storage, mcp_servers)
-    images/
   skills/<skill-id>/
     SKILL.md
 ```
@@ -255,10 +252,13 @@ A plugin's `mcp/` folder holds its servers in two forms. A server's id is its fo
 
 ### 5.4 Providers (models, vector databases, web search, storage, remote MCP)
 
-`providers/<provider-id>/manifest.json` uses the existing provider manifest format. One manifest
-can declare any of `models`, `vector_databases`, `web_search`, `storage`, and `mcp_servers`,
-exactly as bundled providers do. `readCatalog()` adds `pluginDirs('providers')` to its directory
-list, so every catalog API returns plugin entries as well (see section 5.6).
+A plugin is a provider when its own `manifest.json` has provider fields: `authentication`,
+`apiKeyUrl`, `icon_dark_url`, `icon_light_url`, `instructions`, and any of `models`,
+`vector_databases`, `web_search`, `storage`, `mcp_servers`, and `bots`. The provider id is the
+plugin `id` and its name is the plugin `title`. Icon paths point into `assets/`
+(`"/assets/acme-light.svg"`). `pluginProvider()` checks the fields with
+`validateProviderManifest()`, and `readCatalog()` reads `pluginProviders()`, so every catalog API
+returns plugin entries as well (see section 5.6).
 
 #### Vector databases only
 
@@ -361,11 +361,11 @@ user, and plugin entries in one list.
 
 | UI API (IPC channel) | Main function | Plugin source added |
 | --- | --- | --- |
-| `AppChannels.models` | `loadModels()` (`src/main/models.ts`) | `providers/*/manifest.json` → `models` |
-| `AppChannels.vectorDatabases` | `loadVectorDatabases()` | `providers/*/manifest.json` → `vector_databases` |
-| `AppChannels.webSearches` | `loadWebSearches()` | `providers/*/manifest.json` → `web_search` |
-| `AppChannels.storages` | `loadStorages()` | `providers/*/manifest.json` → `storage` |
-| `AppChannels.mcps` | `loadMcps()` | `providers/*/manifest.json` → `mcp_servers` (remote catalog services) |
+| `AppChannels.models` | `loadModels()` (`src/main/models.ts`) | plugin `manifest.json` → `models` |
+| `AppChannels.vectorDatabases` | `loadVectorDatabases()` | plugin `manifest.json` → `vector_databases` |
+| `AppChannels.webSearches` | `loadWebSearches()` | plugin `manifest.json` → `web_search` |
+| `AppChannels.storages` | `loadStorages()` | plugin `manifest.json` → `storage` |
+| `AppChannels.mcps` | `loadMcps()` | plugin `manifest.json` → `mcp_servers` (remote catalog services) |
 | MCP server list (`src/main/ipc/mcp.ts`) | `mcp_local_list.ts` via `mcpLocalDiscoveryRoots()` | `mcp/*/mcp.json` (stdio) and `mcp/servers.json` (stdio and http) |
 | `SkillsChannels.list` | `skills.list()` (`skills_list.ts`) | `skills/*/SKILL.md` |
 | Apps list (`src/main/ipc/apps.ts`) | `listApps()` | `apps/*` |
@@ -379,7 +379,7 @@ How it works:
    becomes:
 
    ```ts
-   for (const directory of [...pluginDirs('providers'), providersDir()]) {
+   const sources = [...pluginProviders(), ...userProviderDirs(providersDir())];
    ```
 
    The built-in providers arrive through their own built-in plugins like any other plugin's. The user's

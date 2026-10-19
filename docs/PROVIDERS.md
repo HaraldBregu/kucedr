@@ -1,6 +1,6 @@
 # Provider Reference
 
-Kucedr ships 31 provider manifests under `resources/plugins/*/providers`. This page inventories the 23
+Kucedr ships 31 provider manifests as built-in plugins under `resources/plugins/<id>/manifest.json`. This page inventories the 23
 model, search, and database providers, their cataloged services, and whether the current runtime
 can execute each service.
 
@@ -224,7 +224,7 @@ Choose **Local SQLite** in **Settings → Knowledge** to index without a remote 
 
 ## Official documentation audit: October 9, 2026
 
-All 31 manifests were checked against official documentation. This update adds 155 model/service IDs across 18 model providers, including runtime adapters and factory registrations where needed. Provider-specific documentation links live beside the request metadata in each [manifest](../resources/plugins/*/providers).
+All 31 manifests were checked against official documentation. This update adds 155 model/service IDs across 18 model providers, including runtime adapters and factory registrations where needed. Provider-specific documentation links live beside the request metadata in each [manifest](../resources/plugins).
 
 | Provider | Official source | Audit result |
 | --- | --- | --- |
@@ -290,7 +290,7 @@ runtime factory; adding only a manifest makes the service catalog only.
 
 ## Source of truth
 
-- Built-in declarations: [`resources/plugins/*/providers`](../resources/plugins/*/providers)
+- Built-in declarations: [`resources/plugins`](../resources/plugins)
 - Manifest schema and validation: [`src/shared/providers/validation.ts`](../src/shared/providers/validation.ts)
 - Catalog loading and local overrides: [`src/main/models.ts`](../src/main/models.ts)
 - Runtime adapters: [`src/main/models/adapters`](../src/main/models/adapters)

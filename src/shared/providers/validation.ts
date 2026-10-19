@@ -98,9 +98,9 @@ export function validateProviderManifest(value: unknown): string[] {
 	for (const field of ['icon_dark_url', 'icon_light_url'] as const) {
 		if (
 			manifest[field] !== undefined &&
-			(!isNonEmptyString(manifest[field]) || !manifest[field].startsWith('/images/'))
+			(!isNonEmptyString(manifest[field]) || !/^\/(?:images|assets)\//.test(manifest[field]))
 		) {
-			errors.push(`manifest.json: "${field}" must be an /images/ path when present.`);
+			errors.push(`manifest.json: "${field}" must be an /images/ or /assets/ path when present.`);
 		}
 	}
 	if (manifest.services !== undefined)
@@ -207,9 +207,9 @@ export function validateProviderManifest(value: unknown): string[] {
 			for (const field of ['icon_dark_url', 'icon_light_url'] as const) {
 				if (
 					entry[field] !== undefined &&
-					(!isNonEmptyString(entry[field]) || !entry[field].startsWith('/images/'))
+					(!isNonEmptyString(entry[field]) || !/^\/(?:images|assets)\//.test(entry[field]))
 				) {
-					errors.push(`${itemPath}.${field} must be an /images/ path when present.`);
+					errors.push(`${itemPath}.${field} must be an /images/ or /assets/ path when present.`);
 				}
 			}
 			if (key === 'models') {

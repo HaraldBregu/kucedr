@@ -42,7 +42,7 @@ export type PublicProvider = Omit<Provider, 'apiKey'> & {
 };
 export type ProviderInput = Provider;
 
-/** A model in resources/plugins/<id>/providers/<id>/manifest.json. */
+/** A model in resources/plugins/<id>/manifest.json. */
 export interface CatalogEntryModel extends ProviderModel {
 	readonly type: ModelCapability;
 	readonly location: ModelLocation;
@@ -135,7 +135,7 @@ export interface ProviderManifestBotCredential {
 	readonly required: boolean;
 }
 
-/** A non-model service in resources/plugins/<id>/providers/<id>/manifest.json. */
+/** A non-model service in resources/plugins/<id>/manifest.json. */
 export interface CatalogEntryService {
 	readonly id: string;
 	readonly name: string;
@@ -163,7 +163,7 @@ export interface CatalogStorage extends ProviderManifestStorage {
 	readonly provider: PublicProvider;
 }
 
-/** One web search service in resources/plugins/<id>/providers/<id>/manifest.json. */
+/** One web search service in resources/plugins/<id>/manifest.json. */
 export interface CatalogEntryWebSearch extends CatalogEntryService {
 	readonly type: 'web-search';
 	readonly url: string;
@@ -174,7 +174,7 @@ export interface CatalogWebSearch extends CatalogEntryWebSearch {
 	readonly provider: PublicProvider;
 }
 
-/** Provider definition stored in resources/plugins/<id>/providers/<id>/manifest.json. */
+/** Provider definition stored in resources/plugins/<id>/manifest.json. */
 export interface ProviderManifest {
 	readonly providerId: string;
 	readonly providerName: string;

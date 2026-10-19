@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import {
@@ -6,24 +6,14 @@ import {
 	type CatalogService,
 	type PublicProvider,
 } from '../../shared/provider_types';
-import { parseProviderManifest } from '../../shared/providers/validation';
 import { isChannelId } from '../../shared/channels_definitions';
-import { pluginDirs } from '../plugins/plugins_dirs';
+import { pluginProviders } from '../plugins/plugins_providers';
 
 export function loadChannels(): readonly CatalogService[] {
-	const channelDirectories = pluginDirs('providers').flatMap(({ directory }) =>
-		readdirSync(directory, { withFileTypes: true })
-			.filter((dirent) => dirent.isDirectory())
-			.map((dirent) => path.join(directory, dirent.name))
-	);
-
 	const channels: CatalogService[] = [];
-	for (const channelDirectory of channelDirectories) {
+	for (const { directory: channelDirectory, manifest } of pluginProviders()) {
 		try {
-			const manifestPath = path.join(channelDirectory, 'manifest.json');
-			if (!existsSync(manifestPath)) continue;
-			const manifest = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));
-			if (!manifest || !isChannelId(normalizeProviderId(manifest.providerId))) continue;
+			if (!isChannelId(normalizeProviderId(manifest.providerId))) continue;
 
 			const darkIconPath = manifest.icon_dark_url
 				? path.resolve(channelDirectory, manifest.icon_dark_url.replace(/^\/+/, ''))

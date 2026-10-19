@@ -6,18 +6,17 @@ plugin overrides a built-in one with the same id.
 
 Every folder is packaged into the app. `kucedr/` is the core plugin: it holds Kucedr's
 built-in apps, extensions, MCP servers, and skills, and it can't be disabled, removed, or replaced.
-Every other folder is one built-in provider as its own plugin (`<id>/providers/<id>/`), which can be
-disabled.
+Every other folder is one built-in provider as its own plugin, which can be disabled. A provider
+plugin is just `manifest.json` (plugin info plus its services) and `assets/` (its images).
 
 ```text
 <plugin-id>/
-  manifest.json               plugin info only
-  assets/                     images and other data (the plugin icon lives here)
+  manifest.json               plugin info, plus provider services when it is a provider
+  assets/                     images and other data (plugin and provider icons live here)
   apps/<app-id>/              manifest.json + index.html, js, css
   extensions/<extension-id>/  manifest.json + index.html, js, css, optional icon
   mcp/servers.json            optional: server configs keyed by id (stdio or http)
   mcp/<server-id>/            mcp.json (+ server files, stdio only)
-  providers/<provider-id>/    manifest.json (models, vector_databases, web_search, storage, mcp_servers)
   skills/<skill-id>/          SKILL.md
 ```
 

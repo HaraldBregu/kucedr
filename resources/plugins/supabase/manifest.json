@@ -5,5 +5,19 @@
 	"version": "1.0.0",
 	"description": "Supabase provider for Kucedr.",
 	"author": "Kucedr",
-	"icon": "icon.svg"
+	"icon": "supabase.svg",
+	"authentication": "api-key",
+	"icon_dark_url": "/assets/supabase.svg",
+	"icon_light_url": "/assets/supabase.svg",
+	"storage": {
+		"id": "supabase-storage",
+		"name": "Supabase Storage",
+		"description": "Store files in a Supabase Storage bucket through its S3 endpoint.",
+		"authentication": "s3-access-key",
+		"metadata": {
+			"protocol": "s3",
+			"endpointTemplate": "https://{projectRef}.storage.supabase.co/storage/v1/s3",
+			"forcePathStyle": true
+		}
+	}
 }

@@ -1,13 +1,10 @@
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import path from 'node:path';
 import type { ReadPlugin } from './plugins_read';
-import { normalizeProviderId } from '../../shared/provider_types';
-import { validateProviderManifest } from '../../shared/providers/validation';
 import { readAppManifestFromDirectory } from '../apps/app_read';
 import { listLocalMcpServers } from '../mcp/mcp_local_list';
 import { validateSkill } from '../agent/skills/skills_validate';
 import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
-import { scanPlugins } from './plugins_scan';
 
 /** Install-time checks that each contribution is readable by the loader that will serve it. */
 export function validatePluginContents(directory: string, manifest: ReadPlugin): void {
@@ -31,26 +28,6 @@ export function validatePluginContents(directory: string, manifest: ReadPlugin):
 	if (manifest.contributes.mcp.length > 0) {
 		const [problem] = listLocalMcpServers(path.join(directory, 'mcp')).diagnostics;
 		if (problem) throw new Error(`mcp/${problem.name}: ${problem.error}`);
-	}
-	for (const id of manifest.contributes.providers) {
-		let value: unknown;
-		try {
-			value = JSON.parse(
-				readFileSync(path.join(directory, 'providers', id, 'manifest.json'), 'utf8')
-			);
-		} catch (error) {
-			throw new Error(`providers/${id} needs a valid manifest.json.`, { cause: error });
-		}
-		const errors = validateProviderManifest(value);
-		if (errors.length > 0) throw new Error(`providers/${id}: ${errors.join(' ')}`);
-		const providerId = normalizeProviderId((value as { providerId: string }).providerId);
-		if (providerId !== id) throw new Error(`providers/${id}: providerId must be "${id}".`);
-		const builtIn = scanPlugins().find(
-			(plugin) => plugin.builtIn && plugin.manifest?.contributes.providers.includes(id)
-		);
-		if (builtIn && builtIn.id !== manifest.id) {
-			throw new Error(`providers/${id}: a built-in provider already uses this id.`);
-		}
 	}
 	for (const id of manifest.contributes.skills) {
 		const validation = validateSkill(path.join(directory, 'skills', id));

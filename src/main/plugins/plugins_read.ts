@@ -7,15 +7,18 @@ import {
 	type PluginManifest,
 } from '../../shared/plugin_manifest';
 import type { PluginKind } from '../../shared/plugin_types';
+import type { ProviderManifest } from '../../shared/provider_types';
 import { assertIcon } from './plugins_assert_icon';
 import { assertNoLinks } from './plugins_assert_no_links';
 import { pluginContents } from './plugins_contents';
+import { pluginProvider } from './plugins_provider';
 import { readPluginExtension } from './plugins_read_extension';
 import { compareVersions } from './plugins_version_compare';
 
 export type ReadPlugin = PluginManifest & {
 	readonly contributes: Record<PluginKind, string[]>;
 	readonly extensions: (ExtensionManifest & { readonly id: string })[];
+	readonly provider?: ProviderManifest;
 };
 
 export function readPlugin(
@@ -48,10 +51,16 @@ export function readPlugin(
 	}
 	assertNoLinks(directory);
 	if (manifest.icon) assertIcon(path.join(directory, 'assets'), manifest.icon);
-	const contributes = pluginContents(directory);
+	const provider = pluginProvider(manifest);
+	const contributes = { ...pluginContents(directory), providers: provider ? [manifest.id] : [] };
+	if (Object.values(contributes).every((ids) => ids.length === 0)) {
+		throw new Error(
+			'A plugin must contain at least one app, extension, MCP server, provider, or skill.'
+		);
+	}
 	const extensions = contributes.extensions.map((id) => ({
 		id,
 		...readPluginExtension(directory, id),
 	}));
-	return { ...manifest, contributes, extensions };
+	return { ...manifest, contributes, extensions, ...(provider && { provider }) };
 }

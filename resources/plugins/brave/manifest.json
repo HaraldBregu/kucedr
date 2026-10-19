@@ -5,5 +5,56 @@
 	"version": "1.0.0",
 	"description": "Brave provider for Kucedr.",
 	"author": "Kucedr",
-	"icon": "icon.svg"
+	"icon": "brave.svg",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys",
+	"icon_dark_url": "/assets/brave.svg",
+	"icon_light_url": "/assets/brave.svg",
+	"web_search": [
+		{
+			"id": "brave-web-search",
+			"name": "Brave Web Search",
+			"url": "https://api.search.brave.com/res/v1/web/search",
+			"authentication": "api-key",
+			"metadata": {
+				"documentationUrl": "https://api.search.brave.com/app/documentation/web-search/get-started",
+				"documentationStatus": "verified",
+				"inputs": {
+					"q": {
+						"type": "string",
+						"required": true
+					},
+					"count": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 20
+					},
+					"offset": {
+						"type": "integer"
+					},
+					"country": {
+						"type": "string"
+					},
+					"search_lang": {
+						"type": "string"
+					},
+					"ui_lang": {
+						"type": "string"
+					},
+					"freshness": {
+						"type": "string"
+					},
+					"safesearch": {
+						"type": "string"
+					},
+					"result_filter": {
+						"type": "string"
+					},
+					"goggles": {
+						"type": "array"
+					}
+				}
+			}
+		}
+	]
 }

@@ -539,7 +539,7 @@ export class AppIpc implements IpcModule {
 			}, AppChannels.setChannelModelSelection)
 		);
 
-		// Re-read the catalog and tell renderers when resources/plugins/*/providers changes on disk
+		// Re-read the catalog and tell renderers when ~/.kucedr/providers changes on disk
 		watchModels(() => eventBus.broadcast(AppChannels.modelsChanged));
 
 		ipcMain.handle(
