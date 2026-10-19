@@ -8,7 +8,7 @@
 	"icon_light_url": "/images/telegram.svg",
 	"models": [],
 	"mcp_servers": [],
-	"databases": [],
+	"vector_databases": [],
 	"bots": [
 		{
 			"id": "telegram-bot",

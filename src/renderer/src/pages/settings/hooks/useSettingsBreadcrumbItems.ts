@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useMatch } from 'react-router-dom';
-import { databases, mcps, storages } from '@/lib/providers';
+import { mcps, storages, vectorDatabases } from '@/lib/providers';
 import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from '../navigation';
 import { getSystemMedia } from '../pages/settings/media/media';
 
@@ -146,7 +146,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			kind === 'mcp'
 				? mcps()
 				: kind === 'database'
-					? databases()
+					? vectorDatabases()
 					: kind === 'storage'
 						? storages()
 						: [];

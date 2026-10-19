@@ -103,6 +103,11 @@
 					"!sounds/**",
 					"!svgs/**"
 				]
+			},
+			{
+				"from": "./plugins",
+				"to": "plugins",
+				"filter": ["**/*", "!README.md", "!example/**"]
 			}
 		]
 	},
@@ -156,6 +161,11 @@
 					"!sounds/**",
 					"!svgs/**"
 				]
+			},
+			{
+				"from": "./plugins",
+				"to": "plugins",
+				"filter": ["**/*", "!README.md", "!example/**"]
 			}
 		]
 	},
@@ -212,6 +222,11 @@
 					"!sounds/**",
 					"!svgs/**"
 				]
+			},
+			{
+				"from": "./plugins",
+				"to": "plugins",
+				"filter": ["**/*", "!README.md", "!example/**"]
 			}
 		]
 	},

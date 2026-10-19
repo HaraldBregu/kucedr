@@ -16,5 +16,5 @@
 			"scopes": ["mcp"]
 		}
 	],
-	"databases": []
+	"vector_databases": []
 }

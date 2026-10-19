@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Button } from '@/components/ui/button';
-import { databases, mcps, storages } from '@/lib/providers';
+import { mcps, storages, vectorDatabases } from '@/lib/providers';
 import {
 	SettingsEmptyState,
 	SettingsNotice,
@@ -25,7 +25,7 @@ export default function PluginDetailPage(): React.JSX.Element {
 		kind === 'mcp'
 			? mcps()
 			: kind === 'database'
-				? databases()
+				? vectorDatabases()
 				: kind === 'storage'
 					? storages()
 					: [];

@@ -206,5 +206,5 @@
 		}
 	],
 	"mcp_servers": [],
-	"databases": []
+	"vector_databases": []
 }

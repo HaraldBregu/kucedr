@@ -1,4 +1,6 @@
 import path from 'node:path';
+import fs from 'node:fs';
+import { pluginDirs } from '../../plugins/plugins_dirs';
 import { skillsRoot } from './skills_root';
 
 export function resolveSkillFolder(id: string): string {
@@ -9,5 +11,9 @@ export function resolveSkillFolder(id: string): string {
 	if (path.dirname(folder) !== path.resolve(skillsRoot)) {
 		throw new Error(`Skill id "${id}" escapes the skills root.`);
 	}
-	return folder;
+	if (fs.existsSync(folder)) return folder;
+	const plugin = pluginDirs('skills').find((entry) =>
+		fs.existsSync(path.join(entry.directory, id))
+	);
+	return plugin ? path.join(plugin.directory, id) : folder;
 }

@@ -1,14 +1,14 @@
 const getProvider = jest.fn();
-const loadDatabases = jest.fn();
+const loadVectorDatabases = jest.fn();
 jest.mock('../../../../src/main/settings_store', () => ({ getProvider }));
-jest.mock('../../../../src/main/models', () => ({ loadDatabases }));
+jest.mock('../../../../src/main/models', () => ({ loadVectorDatabases }));
 
 import { selectedVectorDatabaseConnection } from '../../../../src/main/database/vector_connection';
 
 beforeEach(() => {
 	jest.clearAllMocks();
 	getProvider.mockReturnValue({ apiKey: ' user-database-key ' });
-	loadDatabases.mockReturnValue([
+	loadVectorDatabases.mockReturnValue([
 		{
 			id: 'pinecone',
 			name: 'Pinecone Vector Database',

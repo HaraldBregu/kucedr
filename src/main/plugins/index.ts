@@ -1,0 +1,11 @@
+export { pluginDirs } from './plugins_dirs';
+export type { PluginDirectory } from './plugins_dirs';
+export { pluginOwner } from './plugins_owner';
+export { listPlugins } from './plugins_list';
+export { installPlugin } from './plugins_install';
+export { downloadPlugin } from './plugins_download';
+export { uploadPlugin } from './plugins_upload';
+export { removePlugin } from './plugins_remove';
+export { setPluginEnabled } from './plugins_set_enabled';
+export { refreshPlugins } from './plugins_scan';
+export { watchPlugins } from './plugins_watch';

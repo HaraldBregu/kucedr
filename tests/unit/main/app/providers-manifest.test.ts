@@ -1,5 +1,5 @@
 import {
-	loadDatabases,
+	loadVectorDatabases,
 	loadMcps,
 	loadModels,
 	loadStorages,
@@ -28,7 +28,7 @@ describe('provider manifests', () => {
 				}),
 			])
 		);
-		expect(loadDatabases()).toContainEqual(
+		expect(loadVectorDatabases()).toContainEqual(
 			expect.objectContaining({ id: 'pinecone', type: 'vector' })
 		);
 	});
@@ -111,7 +111,7 @@ describe('provider manifests', () => {
 			(model) => model.provider.id === 'openai' && model.type === 'realtime-voice'
 		);
 		const providersById = new Map(
-			[...loadModels(), ...loadDatabases(), ...loadWebSearches()].map(
+			[...loadModels(), ...loadVectorDatabases(), ...loadWebSearches()].map(
 				(model) => [model.provider.id, model.provider] as const
 			)
 		);
@@ -332,7 +332,7 @@ describe('provider manifests', () => {
 				}),
 			])
 		);
-		expect(loadDatabases()).toEqual([
+		expect(loadVectorDatabases()).toEqual([
 			expect.objectContaining({
 				id: 'pinecone',
 				name: 'Pinecone Vector Database',
@@ -342,7 +342,7 @@ describe('provider manifests', () => {
 			}),
 		]);
 		expect(namesAreAlphabetical(loadModels())).toBe(true);
-		expect(namesAreAlphabetical(loadDatabases())).toBe(true);
+		expect(namesAreAlphabetical(loadVectorDatabases())).toBe(true);
 		expect(namesAreAlphabetical(loadWebSearches())).toBe(true);
 	});
 });

@@ -7,7 +7,7 @@
 	"icon_light_url": "/images/supabase.svg",
 	"models": [],
 	"mcp_servers": [],
-	"databases": [],
+	"vector_databases": [],
 	"storage": {
 		"id": "supabase-storage",
 		"name": "Supabase Storage",

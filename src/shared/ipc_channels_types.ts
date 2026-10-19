@@ -42,6 +42,7 @@ import {
 	McpChannels,
 	DriveChannels,
 	SkillsChannels,
+	PluginsChannels,
 	LibraryChannels,
 	StorageChannels,
 	DatabaseChannels,
@@ -509,6 +510,20 @@ export interface A2aInvokeChannelMap {
 	};
 }
 
+export interface PluginsInvokeChannelMap {
+	[PluginsChannels.list]: { args: []; result: import('./plugin_types').PluginInfo[] };
+	[PluginsChannels.installUrl]: {
+		args: [url: string];
+		result: import('./plugin_types').PluginInfo;
+	};
+	[PluginsChannels.upload]: {
+		args: [];
+		result: import('./plugin_types').PluginInfo | undefined;
+	};
+	[PluginsChannels.remove]: { args: [id: string]; result: void };
+	[PluginsChannels.setEnabled]: { args: [id: string, enabled: boolean]; result: void };
+}
+
 export interface McpInvokeChannelMap {
 	[McpChannels.list]: { args: []; result: import('./mcp_types').McpSettings };
 	[McpChannels.get]: { args: [id: string]; result: import('./mcp_types').McpSettings };
@@ -720,7 +735,7 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: import('./model_types').CatalogModel[];
 	};
-	[AppChannels.databases]: {
+	[AppChannels.vectorDatabases]: {
 		args: [];
 		result: import('./provider_types').CatalogService[];
 	};
@@ -1374,6 +1389,7 @@ export interface InvokeChannelMap
 		RecorderInvokeChannelMap,
 		TaskInvokeChannelMap,
 		SkillsInvokeChannelMap,
+		PluginsInvokeChannelMap,
 		LibraryInvokeChannelMap,
 		A2aInvokeChannelMap,
 		McpInvokeChannelMap,

@@ -7,7 +7,7 @@ jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({
 	saveRagConfiguration,
 }));
 jest.mock('../../../../src/main/models', () => ({
-	loadDatabases: () => [
+	loadVectorDatabases: () => [
 		{
 			id: 'pinecone',
 			name: 'Pinecone',

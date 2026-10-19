@@ -31,6 +31,7 @@ import type {
 } from './mcp_types';
 import type { DriveCreateInput, DriveFile, DriveSyncResult, DriveUpdateInput } from './drive_types';
 import type { App, AppImportResult } from './installed_app_types';
+import type { PluginInfo } from './plugin_types';
 import type { TaskRuntime, TaskSchedule, TaskScheduledTask } from '../main/tasks/tasks_types';
 import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
@@ -363,6 +364,14 @@ export interface SkillsApi {
 	getRoot: () => Promise<string>;
 }
 
+export interface PluginsApi {
+	list: () => Promise<PluginInfo[]>;
+	installUrl: (url: string) => Promise<PluginInfo>;
+	upload: () => Promise<PluginInfo | undefined>;
+	remove: (id: string) => Promise<void>;
+	setEnabled: (id: string, enabled: boolean) => Promise<void>;
+}
+
 export interface McpApi {
 	list: () => Promise<McpSettings>;
 	get: (id: string) => Promise<McpSettings>;
@@ -575,7 +584,7 @@ export interface ModelsApi {
 
 export interface AppApi extends AppStorageApi {
 	models: () => Promise<CatalogModel[]>;
-	databases: () => Promise<CatalogService[]>;
+	vectorDatabases: () => Promise<CatalogService[]>;
 	storages: () => Promise<CatalogStorage[]>;
 	webSearches: () => Promise<CatalogWebSearch[]>;
 	mcps: () => Promise<CatalogService[]>;

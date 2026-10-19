@@ -1,10 +1,11 @@
 import type { McpRegistry, McpServerInfo } from '../../shared/mcp_types';
 import { listConfiguredMcpServers } from './mcp_configured_list';
 import { listLocalMcpServers } from './mcp_local_list';
-import { mcpLocalRoot } from './mcp_local_root';
+import { mcpServerRoots } from './mcp_server_roots';
+import { pluginOwner } from '../plugins/plugins_owner';
 
 export function listMcpRegistry(): McpRegistry {
-	const local = listLocalMcpServers(mcpLocalRoot());
+	const local = listLocalMcpServers(mcpServerRoots());
 	const configured = new Map<string, McpServerInfo>();
 	for (const [id, data] of Object.entries(listConfiguredMcpServers())) {
 		configured.set(id, { id, source: 'configured', data });
@@ -18,7 +19,8 @@ export function listMcpRegistry(): McpRegistry {
 			});
 			continue;
 		}
-		configured.set(server.id, server);
+		const plugin = server.path ? pluginOwner(server.path) : undefined;
+		configured.set(server.id, plugin ? { ...server, plugin } : server);
 	}
 	return {
 		servers: [...configured.values()].sort((a, b) => a.id.localeCompare(b.id)),

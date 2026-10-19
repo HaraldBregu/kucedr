@@ -16,5 +16,5 @@
 			"scopes": []
 		}
 	],
-	"databases": []
+	"vector_databases": []
 }

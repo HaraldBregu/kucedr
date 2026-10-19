@@ -275,8 +275,8 @@ Provider plugins use the same folder shape. See [Kucedr plugins](PLUGINS.md) for
 layout.
 
 A provider manifest requires `providerId` and `providerName`. It declares capabilities in
-`models`, `mcp_servers`, `databases`, `web_search`, `bots`, or `storage`; the former `services` field
-is rejected. Entries in the array capabilities require `id`, `name`, and `url`, with additional
+`models`, `mcp_servers`, `vector_databases`, `web_search`, `bots`, or `storage`; the former
+`services` and `databases` fields are rejected. Entries in the array capabilities require `id`, `name`, and `url`, with additional
 fields depending on the capability. Optional provider fields include `apiKeyUrl`, authentication,
 and icon paths. Model entries declare their type, authentication, location, and prompt attachment
 metadata where applicable. Use the [manifest validator](../src/shared/providers/validation.ts) and

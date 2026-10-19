@@ -85,7 +85,7 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('../../../src/renderer/src/lib/providers', () => ({
 	mcps: () => catalog,
-	databases: () => [
+	vectorDatabases: () => [
 		{
 			id: 'pinecone',
 			name: 'Pinecone Vector Database',

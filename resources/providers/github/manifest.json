@@ -17,5 +17,5 @@
 			"oauth": { "credentials_required": true }
 		}
 	],
-	"databases": []
+	"vector_databases": []
 }

@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
-import { databases, mcps, storages } from '@/lib/providers';
+import { mcps, storages, vectorDatabases } from '@/lib/providers';
 import {
 	SettingsEmptyState,
 	SettingsNotice,
@@ -28,6 +28,7 @@ import {
 import { MicrosoftConnect } from './Connect';
 import CapabilityRow from './CapabilityRow';
 import Confirm from './Confirm';
+import Installed from './Installed';
 
 const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
@@ -46,7 +47,7 @@ const PluginsPage = (): React.JSX.Element => {
 		readonly remove: () => void;
 	} | null>(null);
 	const catalog = mcps();
-	const databaseCatalog = databases();
+	const databaseCatalog = vectorDatabases();
 	const storageCatalog = storages();
 	const plugins = [
 		...catalog.map((entry) => ({ kind: 'mcp' as const, entry })),
@@ -188,6 +189,7 @@ const PluginsPage = (): React.JSX.Element => {
 					</div>
 				}
 			/>
+			<Installed />
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			<MicrosoftConnect
 				service={selectedMicrosoft}

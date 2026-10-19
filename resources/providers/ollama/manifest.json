@@ -7,5 +7,5 @@
 	"icon_light_url": "/images/ollama-light.svg",
 	"models": [],
 	"mcp_servers": [],
-	"databases": []
+	"vector_databases": []
 }

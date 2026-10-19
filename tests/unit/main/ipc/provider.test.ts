@@ -48,7 +48,7 @@ jest.mock('../../../../src/main/channels', () => ({
 
 jest.mock('../../../../src/main/models', () => ({
 	loadProviders: () => [{ id: 'openai', name: 'OpenAI', baseUrl: 'https://api.openai.com/v1' }],
-	loadDatabases: () => [
+	loadVectorDatabases: () => [
 		{
 			id: 'pinecone',
 			provider: { id: 'pinecone', name: 'Pinecone', baseUrl: '' },

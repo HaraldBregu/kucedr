@@ -31,8 +31,8 @@ export const app: AppApi = {
 	models: () => {
 		return typedInvokeUnwrap(AppChannels.models);
 	},
-	databases: () => {
-		return typedInvokeUnwrap(AppChannels.databases);
+	vectorDatabases: () => {
+		return typedInvokeUnwrap(AppChannels.vectorDatabases);
 	},
 	storages: () => {
 		return typedInvokeUnwrap(AppChannels.storages);

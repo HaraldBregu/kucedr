@@ -20,7 +20,7 @@ import {
 } from '../channels';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
-import { loadDatabases, loadProviders } from '../models';
+import { loadProviders, loadVectorDatabases } from '../models';
 import { loadStorages } from '../models';
 import { getEnabledPluginProviders, setPluginProviderEnabled } from '../providers/providers_store';
 import { deleteProvider, getProvider, listProviders, setProvider } from '../settings_store';
@@ -65,7 +65,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 				throw new Error('Invalid plugin provider kind.');
 			if (typeof id !== 'string' || typeof enabled !== 'boolean')
 				throw new Error('Invalid plugin provider state.');
-			const catalog = kind === 'database' ? loadDatabases() : loadStorages();
+			const catalog = kind === 'database' ? loadVectorDatabases() : loadStorages();
 			if (!catalog.some((entry) => `${entry.provider.id}/${entry.id}` === id)) {
 				throw new Error('Unknown plugin provider.');
 			}
@@ -132,7 +132,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			if (!provider) throw new Error('Unknown provider.');
 			return { id, name: provider.name, apiKey, baseUrl: provider.baseUrl };
 		}
-		const services = loadDatabases().filter((entry) => entry.provider.id === id);
+		const services = loadVectorDatabases().filter((entry) => entry.provider.id === id);
 		const service = services[0];
 		if (!service) throw new Error('Unknown database provider.');
 		if (

@@ -156,6 +156,14 @@ export const SkillsChannels = {
 	getRoot: 'skills:get-root',
 } as const;
 
+export const PluginsChannels = {
+	list: 'plugins:list',
+	installUrl: 'plugins:install-url',
+	upload: 'plugins:upload',
+	remove: 'plugins:remove',
+	setEnabled: 'plugins:set-enabled',
+} as const;
+
 export const LibraryChannels = {
 	list: 'library:list',
 	add: 'library:add',
@@ -251,7 +259,7 @@ export const AppChannels = {
 	showVideoContextMenu: 'app:show-video-context-menu',
 	showAudioContextMenu: 'app:show-audio-context-menu',
 	models: 'app:models',
-	databases: 'app:databases',
+	vectorDatabases: 'app:vector-databases',
 	storages: 'app:storages',
 	webSearches: 'app:web-searches',
 	mcps: 'app:mcps',

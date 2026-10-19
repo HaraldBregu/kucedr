@@ -21,7 +21,7 @@ let storageCatalog: readonly CatalogStorage[] = [];
 export async function loadModels(): Promise<void> {
 	[catalog, databaseCatalog, webSearchCatalog, mcpCatalog, storageCatalog] = await Promise.all([
 		window.app.models(),
-		window.app.databases(),
+		window.app.vectorDatabases(),
 		window.app.webSearches(),
 		window.app.mcps(),
 		window.app.storages(),
@@ -49,7 +49,7 @@ export function providers(): readonly PublicProvider[] {
 	return uniqueProviders(catalog);
 }
 
-export function databases(): readonly CatalogService[] {
+export function vectorDatabases(): readonly CatalogService[] {
 	return databaseCatalog;
 }
 

@@ -1,0 +1,10 @@
+{
+	"id": "example-text-tools",
+	"name": "Example Text Tools",
+	"type": "stdio",
+	"command": "node",
+	"args": ["server.mjs"],
+	"cwd": ".",
+	"require_approval": "always",
+	"enabled": true
+}

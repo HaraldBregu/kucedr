@@ -5,6 +5,7 @@ import { readAppManifestFromDirectory } from './app_read';
 import { appsRoot } from './app_root';
 import { debugAppPaths } from './app_debug_paths';
 import type { App } from './app_types';
+import { pluginDirs } from '../plugins/plugins_dirs';
 
 export function listApps(appLocation?: string): App[] {
 	const root = appsRoot(appLocation);
@@ -53,6 +54,29 @@ export function listApps(appLocation?: string): App[] {
 					? `kucedr-app://${id}/${manifest.metadata.image}`
 					: undefined;
 			apps.push({ id, ...manifest, debugPath: directory, ...(imageUrl && { imageUrl }) });
+		}
+		for (const { directory: root, plugin } of pluginDirs('apps')) {
+			for (const folder of readdirSync(root, { withFileTypes: true })) {
+				const id = folder.name;
+				if (!folder.isDirectory() || !isAppId(id) || apps.some((app) => app.id === id)) continue;
+				const directory = path.join(root, id);
+				const manifest = readAppManifestFromDirectory(directory);
+				if (!manifest) continue;
+				const entry = path.join(directory, ...manifest.metadata.entry.split('/'));
+				try {
+					if (!statSync(entry).isFile()) continue;
+				} catch {
+					continue;
+				}
+				const image = manifest.metadata.image
+					? path.join(directory, ...manifest.metadata.image.split('/'))
+					: undefined;
+				const imageUrl =
+					image && existsSync(image) && statSync(image).isFile()
+						? `kucedr-app://${id}/${manifest.metadata.image}`
+						: undefined;
+				apps.push({ id, ...manifest, plugin, ...(imageUrl && { imageUrl }) });
+			}
 		}
 	}
 	return apps.sort((left, right) => left.id.localeCompare(right.id));

@@ -9,14 +9,13 @@
 	"instructions": "Create an API key in the Pinecone console: https://docs.pinecone.io/guides/projects/manage-api-keys",
 	"models": [],
 	"mcp_servers": [],
-	"databases": [
+	"vector_databases": [
 		{
 			"id": "pinecone",
 			"name": "Pinecone Vector Database",
 			"description": "Store and search vector embeddings in Pinecone.",
 			"url": "https://api.pinecone.io",
-			"authentication": "api-key",
-			"type": "vector"
+			"authentication": "api-key"
 		}
 	]
 }

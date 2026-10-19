@@ -22,10 +22,12 @@ import { userDataLocation } from './shared/user_data_location';
 import { parseProviderManifest } from '../shared/providers/validation';
 import { resourceRoot } from './shared/resource_root';
 import { resolveMcpEndpoint } from './mcp/endpoint';
+import { pluginDirs } from './plugins/plugins_dirs';
+import type { PluginSource } from '../shared/plugin_types';
 
 interface Catalog {
 	readonly models: readonly CatalogModel[];
-	readonly databases: readonly CatalogService[];
+	readonly vectorDatabases: readonly CatalogService[];
 	readonly webSearches: readonly CatalogWebSearch[];
 	readonly mcps: readonly CatalogService[];
 	readonly storages: readonly CatalogStorage[];
@@ -46,9 +48,9 @@ export function loadModels(): readonly CatalogModel[] {
 	return loadCatalog().models;
 }
 
-/** Every database across ~/.kucedr/providers/<id>/manifest.json. */
-export function loadDatabases(): readonly CatalogService[] {
-	return loadCatalog().databases;
+/** Every vector database across bundled, plugin, and ~/.kucedr/providers manifests. */
+export function loadVectorDatabases(): readonly CatalogService[] {
+	return loadCatalog().vectorDatabases;
 }
 
 /** Every web search provider across ~/.kucedr/providers/<id>/manifest.json. */
@@ -212,9 +214,13 @@ function iconUrl(providerDir: string, iconPath: string | undefined): string | un
 	return `local-resource://file${pathToFileURL(filePath).pathname}`;
 }
 
-function toPublicProvider(entry: ProviderManifest, providerDir: string): PublicProvider {
+function toPublicProvider(
+	entry: ProviderManifest,
+	providerDir: string,
+	plugin: PluginSource | undefined
+): PublicProvider {
 	const baseUrl =
-		[...(entry.models ?? []), ...(entry.mcp_servers ?? []), ...(entry.databases ?? [])].find(
+		[...(entry.models ?? []), ...(entry.mcp_servers ?? []), ...(entry.vector_databases ?? [])].find(
 			(service) => service.url?.startsWith('http')
 		)?.url ?? '';
 	const iconDarkUrl = iconUrl(providerDir, entry.icon_dark_url);
@@ -227,6 +233,7 @@ function toPublicProvider(entry: ProviderManifest, providerDir: string): PublicP
 		...(entry.apiKeyUrl ? { apiKeyUrl: entry.apiKeyUrl } : {}),
 		...(iconDarkUrl ? { iconDarkUrl } : {}),
 		...(iconLightUrl ? { iconLightUrl } : {}),
+		...(plugin ? { plugin } : {}),
 	};
 }
 
@@ -240,13 +247,22 @@ function bundledProvidersDir(): string {
 
 function readCatalog(): Catalog {
 	const models: CatalogModel[] = [];
-	const databases: CatalogService[] = [];
+	const vectorDatabases: CatalogService[] = [];
 	const webSearches: CatalogWebSearch[] = [];
 	const mcps: CatalogService[] = [];
 	const storages: CatalogStorage[] = [];
-	const manifests = new Map<string, { entry: ProviderManifest; providerDir: string }>();
+	const manifests = new Map<
+		string,
+		{ entry: ProviderManifest; providerDir: string; plugin?: PluginSource }
+	>();
 
-	for (const directory of [bundledProvidersDir(), providersDir()]) {
+	// Plugins load after bundled providers and before ~/.kucedr/providers, so user overrides win.
+	const roots: { directory: string; plugin?: PluginSource }[] = [
+		{ directory: bundledProvidersDir() },
+		...pluginDirs('providers'),
+		{ directory: providersDir() },
+	];
+	for (const { directory, plugin } of roots) {
 		if (!existsSync(directory)) continue;
 		for (const dirent of readdirSync(directory, { withFileTypes: true })) {
 			if (!dirent.isDirectory()) continue;
@@ -270,21 +286,31 @@ function readCatalog(): Catalog {
 						},
 					};
 				});
-				manifests.set(normalizeProviderId(entry.providerId), { entry: { ...entry, models }, providerDir });
+				manifests.set(normalizeProviderId(entry.providerId), {
+					entry: { ...entry, models },
+					providerDir,
+					plugin,
+				});
 			} catch {
 				// ponytail: a provider dir mid-edit (malformed JSON) drops out until fixed
 			}
 		}
 	}
 
-	for (const { entry, providerDir } of manifests.values()) {
-		const provider = toPublicProvider(entry, providerDir);
+	for (const { entry, providerDir, plugin } of manifests.values()) {
+		const provider = toPublicProvider(entry, providerDir, plugin);
 		const modelEntries = (entry.models ?? []).flatMap((model): CatalogEntryModel[] => {
 			const type = toModelCapability(model.type);
 			return type ? [{ ...model, type }] : [];
 		});
 		models.push(...modelEntries.map((model) => ({ ...model, provider })));
-		databases.push(...(entry.databases ?? []).map((database) => ({ ...database, provider })));
+		vectorDatabases.push(
+			...(entry.vector_databases ?? []).map((database) => ({
+				...database,
+				type: 'vector',
+				provider,
+			}))
+		);
 		webSearches.push(
 			...(entry.web_search ?? []).map(
 				(search): CatalogEntryWebSearch & { provider: PublicProvider } => ({
@@ -308,7 +334,7 @@ function readCatalog(): Catalog {
 
 	return {
 		models: models.sort(compareByName),
-		databases: databases.sort(compareByName),
+		vectorDatabases: vectorDatabases.sort(compareByName),
 		webSearches: webSearches.sort(compareByName),
 		mcps: mcps.sort(compareByName),
 		storages: storages.sort(compareByName),

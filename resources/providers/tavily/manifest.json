@@ -8,7 +8,7 @@
 	"icon_light_url": "/images/tavily.svg",
 	"models": [],
 	"mcp_servers": [],
-	"databases": [],
+	"vector_databases": [],
 	"web_search": [
 		{
 			"id": "tavily-web-search",

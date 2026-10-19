@@ -1,4 +1,4 @@
-import { loadDatabases } from '../models';
+import { loadVectorDatabases } from '../models';
 import { pineconeVectorDatabase } from './vector_pinecone';
 import type { VectorDatabaseAdapter, VectorDatabaseService } from './vector_types';
 
@@ -6,7 +6,7 @@ const adapters: readonly VectorDatabaseAdapter[] = [pineconeVectorDatabase];
 
 export function listVectorDatabases(): readonly VectorDatabaseService[] {
 	return adapters.flatMap((adapter) => {
-		const catalog = loadDatabases().find(
+		const catalog = loadVectorDatabases().find(
 			(entry) =>
 				entry.provider.id === adapter.service.providerId && entry.id === adapter.service.databaseId
 		);

@@ -1,9 +1,9 @@
 import type { ModelCapability, ModelMetadata, ProviderModel } from './model_types';
+import type { PluginSource } from './plugin_types';
 
 export type AuthenticationType = 'api-key' | 'oauth2' | 'none';
 export type StorageAuthenticationType = 's3-access-key';
 export type ModelLocation = 'remote' | 'local';
-export type DatabaseType = 'vector' | 'sql' | 'nosql';
 
 export type PluginProviderKind = 'database' | 'storage';
 
@@ -36,7 +36,10 @@ export interface Provider {
 	readonly apiConfiguration?: ProviderApiConfiguration;
 }
 
-export type PublicProvider = Omit<Provider, 'apiKey'>;
+export type PublicProvider = Omit<Provider, 'apiKey'> & {
+	/** Set when an installed plugin contributes this provider. */
+	readonly plugin?: PluginSource;
+};
 export type ProviderInput = Provider;
 
 /** A model in resources/providers/<id>/manifest.json. */
@@ -89,10 +92,10 @@ export interface ProviderManifestMcpServer {
 	readonly icon_light_url?: string;
 }
 
-export interface ProviderManifestDatabase {
+export interface ProviderManifestVectorDatabase {
 	readonly id: string;
 	readonly name: string;
-	readonly type: DatabaseType;
+	readonly description?: string;
 	readonly url: string;
 	readonly authentication: AuthenticationType;
 }
@@ -185,7 +188,7 @@ export interface ProviderManifest {
 	readonly icon_light_url?: string;
 	readonly models?: readonly ProviderManifestModel[];
 	readonly mcp_servers?: readonly ProviderManifestMcpServer[];
-	readonly databases?: readonly ProviderManifestDatabase[];
+	readonly vector_databases?: readonly ProviderManifestVectorDatabase[];
 	readonly storage?: ProviderManifestStorage;
 	readonly web_search?: readonly ProviderManifestWebSearch[];
 	readonly bots?: readonly ProviderManifestBot[];

@@ -1,4 +1,4 @@
-import { databaseProviders, databases } from '@/lib/providers';
+import { databaseProviders, vectorDatabases } from '@/lib/providers';
 import { getProviderApiConfigurationUrl } from '@shared/provider_types';
 import type { ProviderCatalogItem } from '../../../start/setupTypes';
 
@@ -7,7 +7,7 @@ export function databaseCatalog(enabledIds?: readonly string[]): readonly Provid
 		.filter(
 			(provider) =>
 				enabledIds === undefined ||
-				databases().some(
+				vectorDatabases().some(
 					(entry) =>
 						entry.provider.id === provider.id &&
 						enabledIds.includes(`${entry.provider.id}/${entry.id}`)
@@ -16,7 +16,7 @@ export function databaseCatalog(enabledIds?: readonly string[]): readonly Provid
 		.map((provider) => ({
 			id: provider.id,
 			name: provider.name,
-			capabilities: databases()
+			capabilities: vectorDatabases()
 				.filter((entry) => entry.provider.id === provider.id)
 				.map((entry) => `${entry.name} (${entry.type})`)
 				.join(' - '),

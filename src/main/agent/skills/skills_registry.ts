@@ -8,6 +8,7 @@ import { skillsRoot } from './skills_root';
 import { readSkill } from './skills_read';
 import { scanSkillFolders } from './scan';
 import { validateSkill } from './skills_validate';
+import { pluginDirs } from '../../plugins/plugins_dirs';
 
 export interface SkillRegistryOptions {
 	projectRoot?: string;
@@ -19,10 +20,11 @@ export function createSkillRegistrySnapshot(
 ): SkillRegistrySnapshot {
 	const skills: SkillInfo[] = [];
 	const diagnostics: SkillDiagnostic[] = [];
-	const names = new Map<string, { name: string; scope: 'project' | 'user' }>();
+	const names = new Map<string, { name: string; scope: 'project' | 'user' | 'plugin' }>();
 	const sources = [
 		...(options.projectRoot ? [{ root: options.projectRoot, scope: 'project' as const }] : []),
 		{ root: options.userRoot ?? skillsRoot, scope: 'user' as const },
+		...pluginDirs('skills').map((entry) => ({ root: entry.directory, scope: 'plugin' as const })),
 	];
 	for (const source of sources) {
 		for (const folder of scanSkillFolders(source.root)) {

@@ -1,4 +1,5 @@
 import type { AppWindowSettings } from './app_window_settings';
+import type { PluginSource } from './plugin_types';
 
 export type AppMetadata = {
 	version: string;
@@ -20,6 +21,8 @@ export type App = AppManifest & {
 	id: string;
 	imageUrl?: string;
 	debugPath?: string;
+	/** Set when an installed plugin contributes this app. */
+	plugin?: PluginSource;
 };
 
 export interface AppImportSkipped {

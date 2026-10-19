@@ -7,7 +7,7 @@
 	"icon_light_url": "/images/cloudflare.svg",
 	"models": [],
 	"mcp_servers": [],
-	"databases": [],
+	"vector_databases": [],
 	"storage": {
 		"id": "cloudflare-r2",
 		"name": "Cloudflare R2",

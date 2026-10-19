@@ -3,7 +3,7 @@ import { getMcpServersState, setMcpServersState } from './mcp_store_state';
 import { splitRecord } from './mcp_split_record';
 import type { McpOAuthState, McpRecord } from './mcp_types';
 import { listLocalMcpServers } from './mcp_local_list';
-import { mcpLocalRoot } from './mcp_local_root';
+import { mcpServerRoots } from './mcp_server_roots';
 import { mergeMcpRecord } from './mcp_record_merge';
 import { mcpCatalogIdentity } from './mcp_catalog_identity';
 import { clearMcpToolCatalog } from './mcp_catalog_clear';
@@ -13,7 +13,7 @@ export function getMcpServers(): McpSettings {
 	for (const record of getMcpServersState()) {
 		servers[record.id] = splitRecord(record).data;
 	}
-	for (const server of listLocalMcpServers(mcpLocalRoot()).servers) {
+	for (const server of listLocalMcpServers(mcpServerRoots()).servers) {
 		if (!servers[server.id]) servers[server.id] = server.data;
 	}
 	return servers;

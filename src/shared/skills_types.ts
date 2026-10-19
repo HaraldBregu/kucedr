@@ -1,3 +1,5 @@
+import type { PluginSource } from './plugin_types';
+
 export type SkillSource = 'local-filesystem';
 
 export type SkillTrust = 'user-controlled';
@@ -22,6 +24,8 @@ export interface SkillInfo {
 	manifest: SkillManifest;
 	source: SkillSource;
 	trust: SkillTrust;
+	/** Set when an installed plugin contributes this skill. */
+	plugin?: PluginSource;
 	hash: string;
 	diagnostics?: SkillDiagnostic[];
 	structure?: SkillStructureInfo;

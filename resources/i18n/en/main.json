@@ -395,7 +395,31 @@
 			"empty": "No plugins available",
 			"emptyDescription": "No plugins were found in the provider catalog.",
 			"noResults": "No plugins found",
-			"noResultsDescription": "Try a different plugin or provider name."
+			"noResultsDescription": "Try a different plugin or provider name.",
+			"installed": {
+				"title": "Installed",
+				"description": "Plugins add apps, MCP servers, providers, and skills to Kucedr.",
+				"upload": "Upload",
+				"urlLabel": "Plugin URL",
+				"urlPlaceholder": "https://registry.npmjs.org/…/plugin-1.0.0.tgz",
+				"install": "Install",
+				"installing": "Installing…",
+				"installed": "{{name}} installed.",
+				"empty": "No plugins installed",
+				"builtIn": "Built-in",
+				"unavailable": "Unavailable",
+				"enable": "Enable {{name}}",
+				"kinds": {
+					"apps_one": "{{count}} app",
+					"apps_other": "{{count}} apps",
+					"mcp_servers_one": "{{count}} MCP server",
+					"mcp_servers_other": "{{count}} MCP servers",
+					"providers_one": "{{count}} provider",
+					"providers_other": "{{count}} providers",
+					"skills_one": "{{count}} skill",
+					"skills_other": "{{count}} skills"
+				}
+			}
 		},
 		"breadcrumb": {
 			"label": "Settings navigation",

@@ -157,15 +157,14 @@ describe('provider manifest validation', () => {
 		).toContainEqual(expect.stringContaining('mcp_servers[0].icon_dark_url'));
 	});
 
-	it('requires typed database arrays and validates storage presets', () => {
+	it('requires vector database arrays and validates storage presets', () => {
 		const manifest = {
 			providerId: 'acme',
 			providerName: 'Acme',
-			databases: [
+			vector_databases: [
 				{
 					id: 'db',
 					name: 'Database',
-					type: 'sql',
 					authentication: 'api-key',
 					url: 'https://db.acme.test',
 				},
@@ -179,14 +178,11 @@ describe('provider manifest validation', () => {
 		};
 		expect(validateProviderManifest(manifest)).toEqual([]);
 		expect(
-			validateProviderManifest({ ...manifest, databases: { ...manifest.databases[0] } })
-		).toContainEqual(expect.stringContaining('"databases" must be an array'));
+			validateProviderManifest({ ...manifest, vector_databases: { ...manifest.vector_databases[0] } })
+		).toContainEqual(expect.stringContaining('"vector_databases" must be an array'));
 		expect(
-			validateProviderManifest({
-				...manifest,
-				databases: [{ ...manifest.databases[0], type: 'unknown' }],
-			})
-		).toContainEqual(expect.stringContaining('databases[0].type'));
+			validateProviderManifest({ ...manifest, databases: manifest.vector_databases })
+		).toContainEqual(expect.stringContaining('use "vector_databases"'));
 		expect(
 			validateProviderManifest({
 				...manifest,
@@ -421,7 +417,7 @@ describe('provider manifest validation', () => {
 				[
 					...manifest.models,
 					...manifest.mcp_servers,
-					...manifest.databases,
+					...(manifest.vector_databases ?? []),
 					...(manifest.web_search ?? []),
 				].every(
 					(service: { authentication?: string }) =>

@@ -28,7 +28,7 @@ jest.mock('../../../src/renderer/src/lib/providers', () => ({
 			},
 		},
 	],
-	databases: () => [
+	vectorDatabases: () => [
 		{
 			id: 'pinecone',
 			name: 'Pinecone Vector Database',

@@ -13,6 +13,7 @@ import { models } from './models';
 import { provider } from './provider';
 import { search } from './search';
 import { skills } from './skills';
+import { plugins } from './plugins';
 import { library } from './library';
 import { storage } from './storage';
 import { database } from './database';
@@ -35,6 +36,7 @@ export { models } from './models';
 export { provider } from './provider';
 export { search } from './search';
 export { skills } from './skills';
+export { plugins } from './plugins';
 export { library } from './library';
 export { storage } from './storage';
 export { database } from './database';
@@ -56,6 +58,7 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('recorder', recorder);
 		contextBridge.exposeInMainWorld('tasks', tasks);
 		contextBridge.exposeInMainWorld('skills', skills);
+		contextBridge.exposeInMainWorld('plugins', plugins);
 		contextBridge.exposeInMainWorld('library', library);
 		contextBridge.exposeInMainWorld('mcp', mcp);
 		contextBridge.exposeInMainWorld('drive', drive);
@@ -91,6 +94,8 @@ if (process.contextIsolated) {
 	globalThis.tasks = tasks;
 	// @ts-ignore (define in dts)
 	globalThis.skills = skills;
+	// @ts-ignore (define in dts)
+	globalThis.plugins = plugins;
 	// @ts-ignore (define in dts)
 	globalThis.library = library;
 	// @ts-ignore (define in dts)

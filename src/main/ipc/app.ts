@@ -58,10 +58,10 @@ import {
 } from '../settings_store';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
 import {
-	loadDatabases,
 	loadMcps,
 	loadModels,
 	loadStorages,
+	loadVectorDatabases,
 	loadWebSearches,
 	providersDir,
 	refreshProviderCatalog,
@@ -488,10 +488,10 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
-			AppChannels.databases,
+			AppChannels.vectorDatabases,
 			wrapSimpleHandler(() => {
-				return [...loadDatabases()];
-			}, AppChannels.databases)
+				return [...loadVectorDatabases()];
+			}, AppChannels.vectorDatabases)
 		);
 
 		ipcMain.handle(

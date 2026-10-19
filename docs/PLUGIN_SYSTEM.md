@@ -1,6 +1,8 @@
 # Plugin system strategy
 
-Status: proposal. Nothing in this document is implemented yet.
+Status: steps 1–5 of section 12 are implemented (the manifest, install from an upload or URL, the
+`vector_databases` rename, plugin entries in the listing APIs, and the Installed list). The rest is
+still a proposal.
 
 This document plans how the Kucedr desktop app installs, loads, and distributes plugins. A plugin is
 one package that can contain five kinds of contributions:
@@ -50,8 +52,16 @@ downloads, the catalog, and the management UI.
 
 ## 3. Layout
 
-Plugins are installed in `path.join(userDataLocation(), 'plugins')`, which is `~/.kucedr/plugins`.
-Each plugin keeps every contribution kind in its own folder:
+Plugins load from two folders:
+
+- **Installed:** `path.join(userDataLocation(), 'plugins')`, which is `~/.kucedr/plugins`.
+  Settings → Plugins installs here.
+- **Built-in:** `plugins/` in the repo, shipped as `<resources>/plugins` (`bundledPluginsRoot()`).
+  These can be disabled but not removed. `plugins/example/` is a dev-only template and is excluded
+  from packaging.
+
+An installed plugin overrides a built-in plugin with the same id. Each plugin keeps every
+contribution kind in its own folder:
 
 ```text
 ~/.kucedr/plugins/<plugin-id>/
@@ -81,10 +91,15 @@ Rules:
   `providers`, `mcp`, or `skills`. Uninstalling a plugin deletes one folder.
 - **Loaders get extra roots.** Each existing loader keeps its logic and also scans the matching
   folder of every enabled plugin. There is no second registry.
-- **Ids are namespaced.** Inside Kucedr, contributions are referred to as
-  `<plugin-id>.<contribution-id>` so they can't collide with user content or other plugins.
+- **Contribution ids are folder names.** Each contribution lives in `<kind>/<id>/`, and every
+  folder under a kind must be declared in `contributes`. Ids aren't namespaced. When a user app,
+  skill, or MCP server has the same id as a plugin's, the user's wins; between plugins, the first
+  by plugin id wins.
+- **No symlinks.** A plugin containing a link is rejected.
 
 ## 4. Manifest (schema version 5)
+
+Implemented today (`src/shared/plugin_manifest.ts`):
 
 ```json
 {
@@ -94,8 +109,21 @@ Rules:
 	"version": "1.0.0",
 	"description": "Acme models, dashboard, and CRM tools.",
 	"author": "Acme",
-	"icon": "icon.png",
 	"minAppVersion": "1.3.0",
+	"contributes": {
+		"apps": [{ "id": "dashboard" }],
+		"mcp_servers": [{ "id": "acme-crm" }],
+		"providers": [{ "id": "acme" }],
+		"skills": [{ "id": "summarizer" }]
+	}
+}
+```
+
+Planned additions (later steps) keep the same shape:
+
+```json
+{
+	"icon": "icon.png",
 	"configSchema": {
 		"type": "object",
 		"additionalProperties": false,
@@ -109,24 +137,7 @@ Rules:
 		"apiKey": { "label": "API key", "sensitive": true }
 	},
 	"contributes": {
-		"apps": [
-			{
-				"id": "dashboard",
-				"title": "Acme Dashboard",
-				"entry": "apps/dashboard/index.html"
-			}
-		],
-		"extensions": [
-			{
-				"id": "crm-panel",
-				"title": "Acme CRM",
-				"slot": "panel",
-				"entry": "extensions/crm-panel/index.html"
-			}
-		],
-		"mcpServers": [{ "id": "acme-crm", "path": "mcp_servers/acme-crm" }],
-		"providers": [{ "id": "acme", "path": "providers/acme" }],
-		"skills": [{ "id": "summarizer", "path": "skills/summarizer" }]
+		"extensions": [{ "id": "crm-panel", "title": "Acme CRM", "slot": "panel" }]
 	},
 	"permissions": ["network:https://api.acme.test", "agent.prompt"]
 }
@@ -134,7 +145,9 @@ Rules:
 
 Field rules:
 
-- `schemaVersion`, `id`, `name`, and `version` are required.
+- `schemaVersion`, `id`, `name`, `version`, and `description` are required, and at least one
+  contribution is required. Unknown keys are rejected.
+- Contributions declare only an `id`. The folder is always `<kind>/<id>/`.
 - `configSchema` and `uiHints` are optional. When present, Settings → Plugins renders the
   plugin's settings form from them, so plugins never ship settings UI code. Fields marked
   `sensitive` are saved in the existing credential store and are never written into the plugin
@@ -142,11 +155,15 @@ Field rules:
 - `minAppVersion` blocks installing a plugin built for a newer Kucedr.
 - `permissions` lists what the plugin's apps and extensions may do through the bridge in
   section 9. They are shown to the user before install, and anything not listed is denied.
-- Every `entry` and `path` must pass `isPluginPath` and resolve to a file or folder inside the
-  plugin.
+- On install, each contribution must also be readable by its loader (`validatePluginContents()`):
+  - an app needs a valid app `manifest.json` and entry file;
+  - an MCP server needs a valid `mcp.json`;
+  - a provider needs a valid provider manifest whose `providerId` equals the folder name and isn't
+    a built-in provider id;
+  - a skill needs a valid `SKILL.md`.
 
-The schema moves from `packages/cli/src` to `src/shared/plugin/` (`manifest.ts`, `entries.ts`,
-`pluginpath.ts`) so the desktop uses the same validation.
+The desktop schema lives in `src/shared/plugin_manifest.ts`. The CLI keeps its own v4 schema in
+`packages/cli/src/manifest.ts`, because the CLI is out of scope.
 
 ## 5. Contribution kinds
 
@@ -344,16 +361,18 @@ How it works:
    ```
 
    The field is absent for bundled and user entries. The UI can show a "from Acme Tools" badge and
-   filter by plugin without another request. `McpServerInfo.source` gets a new value, `'plugin'`,
-   next to `'configured'` and `'local'`.
+   filter by plugin without another request. Plugin MCP servers keep `source: 'local'` and add
+   the `plugin` field.
 5. **Disabled or unavailable plugins are left out.** `pluginDirs()` only returns enabled,
    available plugins, so their entries disappear from every list at once.
-6. **Ids can't collide.** A plugin provider id that matches a bundled provider id is rejected at
-   install. MCP server, skill, and app ids are namespaced as `<plugin-id>.<id>`.
-7. **Lists stay fresh.** On `plugins:changed`, the main process calls `refreshProviderCatalog()`,
-   clears the MCP, skill, and app caches, and fires the same change events those lists already use
-   (the `watchModels` `onChange` callback). Open screens refresh without a restart. `watchModels()`
-   also watches `pluginsRoot()`, so plugins edited on disk during development reload too.
+6. **Ids:** a plugin provider id that matches a bundled provider id is rejected at install. For
+   apps, skills, and MCP servers, user entries win over plugin entries with the same id. Deleting
+   a plugin's app or skill from its own settings page is refused; disable or remove the plugin
+   instead.
+7. **Lists stay fresh.** After an install, removal, or toggle, `PluginsIpc` refreshes the plugin
+   scan cache and the provider catalog, then broadcasts `AppChannels.modelsChanged`. MCP, skill,
+   and app lists are read fresh on each call. `watchPlugins()` watches both plugin folders, so
+   plugins edited on disk during development reload too.
 
 ## 6. Main-process module: `src/main/plugins/`
 
@@ -507,18 +526,17 @@ Build each of these only when a real plugin needs it.
 
 ## 12. Implementation order
 
-1. Move the manifest schema to `src/shared/plugin/` and add schema v5. Verify with
-   `npm run typecheck`.
-2. Add the `src/main/plugins/` core (root, list, enabled, dirs, install, upload, download,
+1. ✅ Add the schema v5 manifest in `src/shared/plugin_manifest.ts`.
+2. ✅ Add the `src/main/plugins/` core (root, list, enabled, dirs, install, upload, download,
    remove) and the IPC handlers.
-3. Rename `databases` to `vector_databases` (section 5.4) in the manifest key, validation, types,
+3. ✅ Rename `databases` to `vector_databases` (section 5.4) in the manifest key, validation, types,
    `loadVectorDatabases()`, `AppChannels.vectorDatabases`, bundled manifests, and the renderer.
    Verify with `npm run typecheck`, and confirm Pinecone still connects in Settings → Knowledge.
-4. Connect the listing APIs (section 5.6): `readCatalog()` (models, vector databases, web search,
+4. ✅ Connect the listing APIs (section 5.6): `readCatalog()` (models, vector databases, web search,
    storage, and remote MCP), `mcpLocalDiscoveryRoots()`, skills, and apps. Add the `plugin` source
    tag and refresh on `plugins:changed`.
-5. Build the Settings → Plugins Installed list, Upload, Install from URL, and the confirmation
-   dialog.
+5. ✅ Build the Settings → Plugins Installed list (enable switch, remove), Upload, and Install from
+   URL. The install confirmation dialog listing contributions is still to do.
 6. Add the config form generated from `configSchema` and `uiHints`.
 7. Add the `kucedr-plugin://` protocol, the postMessage bridge, and the extension slot hosts
    (start with `panel` and `sidebar`).

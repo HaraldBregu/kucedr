@@ -395,7 +395,31 @@
 			"empty": "Nessun plugin disponibile",
 			"emptyDescription": "Nessun plugin trovato nel catalogo provider.",
 			"noResults": "Nessun plugin trovato",
-			"noResultsDescription": "Prova un nome di plugin o provider diverso."
+			"noResultsDescription": "Prova un nome di plugin o provider diverso.",
+			"installed": {
+				"title": "Installati",
+				"description": "I plugin aggiungono app, server MCP, provider e skill a Kucedr.",
+				"upload": "Carica",
+				"urlLabel": "URL del plugin",
+				"urlPlaceholder": "https://registry.npmjs.org/…/plugin-1.0.0.tgz",
+				"install": "Installa",
+				"installing": "Installazione…",
+				"installed": "{{name}} installato.",
+				"empty": "Nessun plugin installato",
+				"builtIn": "Integrato",
+				"unavailable": "Non disponibile",
+				"enable": "Attiva {{name}}",
+				"kinds": {
+					"apps_one": "{{count}} app",
+					"apps_other": "{{count}} app",
+					"mcp_servers_one": "{{count}} server MCP",
+					"mcp_servers_other": "{{count}} server MCP",
+					"providers_one": "{{count}} provider",
+					"providers_other": "{{count}} provider",
+					"skills_one": "{{count}} skill",
+					"skills_other": "{{count}} skill"
+				}
+			}
 		},
 		"breadcrumb": {
 			"label": "Navigazione impostazioni",

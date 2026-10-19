@@ -1,0 +1,15 @@
+{
+	"schemaVersion": 5,
+	"id": "example",
+	"name": "Example",
+	"version": "1.0.0",
+	"description": "Template plugin with one app, MCP server, provider, and skill.",
+	"author": "Kucedr",
+	"minAppVersion": "1.2.0",
+	"contributes": {
+		"apps": [{ "id": "notes" }],
+		"mcp_servers": [{ "id": "text-tools" }],
+		"providers": [{ "id": "example-provider" }],
+		"skills": [{ "id": "release-notes" }]
+	}
+}

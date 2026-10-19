@@ -1,4 +1,5 @@
 import { MCP_APPROVAL_POLICIES } from './mcp_definitions';
+import type { PluginSource } from './plugin_types';
 
 export type McpApprovalPolicy = (typeof MCP_APPROVAL_POLICIES)[number];
 
@@ -45,6 +46,8 @@ export type McpServerInfo = {
 	readonly data: McpData;
 	readonly path?: string;
 	readonly diagnostic?: string;
+	/** Set when an installed plugin contributes this server. */
+	readonly plugin?: PluginSource;
 };
 
 export type McpLocalDiagnostic = {
