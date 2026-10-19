@@ -10,7 +10,7 @@ one package that can contain five kinds of contributions:
 | **apps** | Standalone HTML/JS/CSS apps opened in their own window | Sandboxed app window |
 | **extensions** | HTML/JS/CSS UI placed inside Kucedr's own screens (sidebar, panel, toolbar, settings, composer) | Sandboxed frame inside the host UI |
 | **mcp_servers** | Agent tools served over MCP: local stdio servers or remote http servers | Separate process, or remote |
-| **providers** | Provider manifests: models (remote API models and local model files), databases, web search, storage, and remote MCP services | Remote API, or local through Ollama |
+| **providers** | Provider manifests: models (remote API models and local model files), vector databases, web search, storage, and remote MCP services | Remote API, or local through Ollama |
 | **skills** | `SKILL.md` instruction packages for the agent | No code |
 
 Users install plugins from the in-app catalog, from an https URL, or by uploading a folder or `.tgz`
