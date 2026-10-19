@@ -6,7 +6,7 @@ import { listTools } from '../../../../src/main/mcp/mcp_client_list_tools';
 import { readLocalMcpServer } from '../../../../src/main/mcp/mcp_local_read';
 import type { McpClient } from '../../../../src/main/mcp/mcp_types';
 
-const directory = path.resolve('resources/mcp/resend');
+const directory = path.resolve('resources/plugins/kucedr/mcp/resend');
 const resend = readLocalMcpServer(directory);
 
 describe('resend MCP server', () => {

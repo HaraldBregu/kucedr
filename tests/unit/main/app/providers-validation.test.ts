@@ -4,6 +4,7 @@ import {
 	parseProviderManifest,
 	validateProviderManifest,
 } from '../../../../src/shared/providers/validation';
+import { pluginProvider } from '../../../../src/main/plugins/plugins_provider';
 
 const IMAGE_RULE = {
 	kind: 'image',
@@ -401,22 +402,25 @@ describe('provider manifest validation', () => {
 	});
 
 	it('declares the expected attachment contract for every bundled prompt model', () => {
-		const providersDirectory = join(process.cwd(), 'resources', 'providers');
-		const manifests = readdirSync(providersDirectory, { withFileTypes: true })
+		const pluginsDirectory = join(process.cwd(), 'resources', 'plugins');
+		const manifests = readdirSync(pluginsDirectory, { withFileTypes: true })
 			.filter(
 				(entry) =>
-					entry.isDirectory() && existsSync(join(providersDirectory, entry.name, 'manifest.json'))
+					entry.isDirectory() && existsSync(join(pluginsDirectory, entry.name, 'manifest.json'))
 			)
 			.map((entry) =>
-				JSON.parse(readFileSync(join(providersDirectory, entry.name, 'manifest.json'), 'utf8'))
-			);
+				pluginProvider(
+					JSON.parse(readFileSync(join(pluginsDirectory, entry.name, 'manifest.json'), 'utf8'))
+				)
+			)
+			.filter((manifest) => manifest !== undefined) as any[];
 		const promptModels = manifests.flatMap((manifest) => {
 			expect(validateProviderManifest(manifest)).toEqual([]);
 			expect(manifest.authentication).toMatch(/^(api-key|oauth2|none)$/);
 			expect(
 				[
-					...manifest.models,
-					...manifest.mcp_servers,
+					...(manifest.models ?? []),
+					...(manifest.mcp_servers ?? []),
 					...(manifest.vector_databases ?? []),
 					...(manifest.web_search ?? []),
 				].every(
@@ -426,7 +430,7 @@ describe('provider manifest validation', () => {
 						service.authentication === 'none'
 				)
 			).toBe(true);
-			return manifest.models
+			return (manifest.models ?? [])
 				.filter((service: { type: string }) =>
 					['large-language-model', 'research-chat-model'].includes(service.type)
 				)

@@ -25,7 +25,7 @@ describe('local MCP registry', () => {
 	it('derives local and workspace discovery roots', () => {
 		expect(mcpLocalDiscoveryRoots('/app-data')).toEqual([
 			path.resolve('/app-data', 'mcp', 'servers'),
-			path.resolve(process.cwd(), 'resources', 'mcp'),
+			path.resolve(process.cwd(), 'resources', 'plugins', 'kucedr', 'mcp'),
 		]);
 	});
 

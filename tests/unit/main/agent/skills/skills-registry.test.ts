@@ -3,6 +3,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { createSkillRegistrySnapshot } from '../../../../../src/main/agent/skills/skills_registry';
 
+jest.mock('../../../../../src/main/plugins/plugins_dirs', () => ({
+	pluginDirs: () => [],
+}));
+
 function writeSkill(root: string, relativePath: string, name: string, description = name): string {
 	const folder = path.join(root, relativePath, name);
 	fs.mkdirSync(folder, { recursive: true });

@@ -9,6 +9,7 @@ jest.mock('../../../../src/main/shared/user_data_location', () => ({
 
 import { findModel } from '../../../../src/main/models';
 import { modelContextWindow } from '../../../../src/shared/model_context';
+import { pluginProvider } from '../../../../src/main/plugins/plugins_provider';
 
 beforeEach(() => {
 	catalogDirectory = mkdtempSync(path.join(tmpdir(), 'kucedr-catalog-context-'));
@@ -20,10 +21,10 @@ afterEach(() => rmSync(catalogDirectory, { recursive: true, force: true }));
 it.each([undefined, 8192])(
 	'fills missing user-catalog limits while respecting an explicit %s token limit',
 	(limit) => {
-		const manifest = JSON.parse(
-			readFileSync(path.resolve('resources/plugins/openai/manifest.json'), 'utf8')
-		);
-		const model = manifest.models.find((item: { id: string }) => item.id === 'gpt-5.4-mini');
+		const manifest = pluginProvider(
+			JSON.parse(readFileSync(path.resolve('resources/plugins/openai/manifest.json'), 'utf8'))
+		)!;
+		const model: any = manifest.models!.find((item: { id: string }) => item.id === 'gpt-5.4-mini');
 		delete model.metadata.contextWindow;
 		delete model.metadata.contextWindowDocumentationUrl;
 		if (limit) model.metadata.inputs.context_window = { maximum: limit };

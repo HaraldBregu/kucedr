@@ -6,7 +6,7 @@ import { listTools } from '../../../../src/main/mcp/mcp_client_list_tools';
 import { readLocalMcpServer } from '../../../../src/main/mcp/mcp_local_read';
 import type { McpClient } from '../../../../src/main/mcp/mcp_types';
 
-const directory = path.resolve('resources/mcp/configured-demo-server');
+const directory = path.resolve('resources/plugins/kucedr/mcp/configured-demo-server');
 const demo = readLocalMcpServer(directory);
 
 describe('configured demo MCP server', () => {

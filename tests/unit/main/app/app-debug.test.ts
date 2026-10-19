@@ -7,6 +7,9 @@ const userData = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-debug-user-'));
 jest.mock('../../../../src/main/shared/user_data_location', () => ({
 	userDataLocation: () => userData,
 }));
+jest.mock('../../../../src/main/plugins/plugins_dirs', () => ({
+	pluginDirs: () => [],
+}));
 
 import { addDebugApp } from '../../../../src/main/apps/app_debug_add';
 import { debugAppsStore } from '../../../../src/main/apps/app_debug_store';
