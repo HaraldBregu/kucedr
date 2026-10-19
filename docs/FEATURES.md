@@ -287,7 +287,7 @@ Each discovered local server lives in its own folder and contains an `mcp.json` 
 
 The folder name is used as the ID when `id` is omitted. IDs use lowercase letters, numbers, and single hyphens. Relative `cwd` values are resolved from the package folder; omitting `cwd` also runs the command from that folder. Kucedr rescans the directory whenever settings or an agent run reads the MCP registry, so adding or removing a valid folder does not require an app restart. Explicitly configured servers take precedence over a discovered package with the same ID, and malformed or duplicate local packages are reported in Settings instead of preventing other servers from loading.
 
-A dependency-free package with three sample tools is available at `resources/mcp/demo-server`. In a source checkout, Kucedr discovers it from `resources/mcp`; otherwise copy the folder to `~/.kucedr/mcp/servers/kucedr-demo` and test it in Settings.
+A dependency-free package with three sample tools ships in the core plugin at `resources/plugins/bootstrap-kucedr/mcp/demo-server`; test it in Settings.
 
 When an MCP server is authenticated or tested, Kucedr saves its complete tool catalog locally. Existing enabled servers without a saved catalog are listed once in the background after upgrade. Agent runs search these saved definitions without connecting to servers or calling `tools/list`; a selected tool connects to its server when executed. Use **Test** in MCP settings to refresh a catalog after the server changes its tools.
 
@@ -597,7 +597,7 @@ The main implementation areas behind this reference are:
 - [Apps](../src/main/apps/)
 - [Storage sync](../src/renderer/src/pages/settings/pages/storage/)
 - [Account and cloud architecture](CLOUD.md)
-- [Provider catalog declarations](../resources/providers/)
+- [Provider catalog declarations](../resources/plugins/bootstrap-kucedr/providers/)
 - [Provider catalog loader](../src/main/models.ts)
 - [Speech-to-text adapters](../src/main/models/adapters/stt/)
 - [Text-to-speech adapters](../src/main/models/adapters/tts/)

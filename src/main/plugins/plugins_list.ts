@@ -1,23 +1,36 @@
-import { PLUGIN_KINDS, type PluginInfo, type PluginKind } from '../../shared/plugin_types';
+import path from 'node:path';
+import {
+	CORE_PLUGIN_ID,
+	PLUGIN_KINDS,
+	type PluginInfo,
+	type PluginKind,
+} from '../../shared/plugin_types';
+import { pluginIcon } from './plugins_icon';
 import { scanPlugins } from './plugins_scan';
 import { pluginsStore } from './plugins_store';
 
 export function listPlugins(): PluginInfo[] {
 	const disabled = new Set(pluginsStore.get('disabled'));
-	return scanPlugins().map(({ id, builtIn, manifest, error }) => ({
+	return scanPlugins().map(({ id, directory, builtIn, manifest, error }) => ({
 		id,
-		name: manifest?.name ?? id,
+		name: manifest?.title ?? id,
 		...(manifest && {
 			version: manifest.version,
 			description: manifest.description,
 			...(manifest.author && { author: manifest.author }),
+			...(manifest.icon && { icon: pluginIcon(path.join(directory, manifest.icon)) }),
 		}),
 		builtIn,
+		core: builtIn && id === CORE_PLUGIN_ID,
 		enabled: !disabled.has(id),
 		...(error && { error }),
-		contributes: Object.fromEntries(
-			PLUGIN_KINDS.map((kind) => [kind, manifest?.contributes[kind].map((item) => item.id) ?? []])
-		) as Record<PluginKind, string[]>,
-		extensions: manifest?.contributes.extensions ?? [],
+		contributes:
+			manifest?.contributes ??
+			(Object.fromEntries(PLUGIN_KINDS.map((kind) => [kind, []])) as Record<PluginKind, string[]>),
+		extensions:
+			manifest?.extensions.map(({ icon, ...extension }) => ({
+				...extension,
+				...(icon && { icon: pluginIcon(path.join(directory, 'extensions', extension.id, icon)) }),
+			})) ?? [],
 	}));
 }

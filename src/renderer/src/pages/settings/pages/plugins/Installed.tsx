@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { MoreHorizontal, Trash2, Upload } from 'lucide-react';
+import { MoreHorizontal, Plug, Trash2, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PLUGIN_KINDS, type PluginInfo } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,8 +12,6 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
-import { Switch } from '@/components/ui/switch';
 import { SettingsNotice, SettingsSection } from '../../components';
 import Confirm from './Confirm';
 
@@ -108,68 +107,87 @@ export default function Installed(): React.JSX.Element {
 					{t('settings.integrations.installed.empty')}
 				</p>
 			) : (
-				<div className="-mx-4 grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
+				<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 					{plugins.map((plugin) => (
-						<Item
-							key={plugin.id}
-							variant="ghost"
-							size="md"
-							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2"
-						>
-							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-								<ItemTitle className="min-w-0 max-w-full gap-2 truncate text-sm font-medium leading-tight">
-									{plugin.name}
-									{plugin.version && (
-										<span className="text-xs font-normal text-muted-foreground">
-											{plugin.version}
-										</span>
-									)}
-									{plugin.builtIn && (
-										<Badge variant="secondary">
-											{t('settings.integrations.installed.builtIn')}
-										</Badge>
-									)}
-									{plugin.error && (
-										<Badge variant="destructive">
-											{t('settings.integrations.installed.unavailable')}
-										</Badge>
-									)}
-								</ItemTitle>
-								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-									{plugin.error ?? summary(plugin)}
-								</p>
-							</ItemContent>
-							<ItemActions className="ml-auto flex-none justify-end">
-								<Switch
-									checked={plugin.enabled}
-									disabled={busy || Boolean(plugin.error)}
-									onCheckedChange={(enabled) =>
-										void run(() => window.plugins.setEnabled(plugin.id, enabled))
-									}
-									aria-label={t('settings.integrations.installed.enable', { name: plugin.name })}
-								/>
-								{!plugin.builtIn && (
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												disabled={busy}
-												aria-label={t('settings.integrations.options', { name: plugin.name })}
-											>
-												<MoreHorizontal className="size-4" />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end">
-											<DropdownMenuItem onSelect={() => setPendingRemoval(plugin)}>
-												<Trash2 />
-												{t('settings.integrations.remove', { name: plugin.name })}
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
+						<Card key={plugin.id} size="sm">
+							<CardHeader className="flex items-start gap-3">
+								{plugin.icon ? (
+									<img
+										src={plugin.icon}
+										alt=""
+										className="size-10 shrink-0 rounded-xl object-cover"
+									/>
+								) : (
+									<div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground">
+										<Plug className="size-5" aria-hidden="true" />
+									</div>
 								)}
-							</ItemActions>
-						</Item>
+								<div className="flex min-w-0 flex-1 flex-col gap-1">
+									<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
+										<span className="truncate">{plugin.name}</span>
+										{plugin.version && (
+											<span className="text-xs font-normal text-muted-foreground">
+												{plugin.version}
+											</span>
+										)}
+										{plugin.builtIn && (
+											<Badge variant="secondary">
+												{t('settings.integrations.installed.builtIn')}
+											</Badge>
+										)}
+										{plugin.error && (
+											<Badge variant="destructive">
+												{t('settings.integrations.installed.unavailable')}
+											</Badge>
+										)}
+									</CardTitle>
+									<CardDescription>{plugin.error ?? plugin.description}</CardDescription>
+								</div>
+								<div className="flex shrink-0 items-center gap-1">
+									{!plugin.core && (
+										<Button
+											type="button"
+											size="sm"
+											variant={plugin.enabled ? 'outline' : 'default'}
+											disabled={busy || Boolean(plugin.error)}
+											onClick={() =>
+												void run(() => window.plugins.setEnabled(plugin.id, !plugin.enabled))
+											}
+										>
+											{plugin.enabled
+												? t('settings.integrations.installed.disable')
+												: t('settings.integrations.installed.enableAction')}
+										</Button>
+									)}
+									{!plugin.builtIn && (
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button
+													variant="ghost"
+													size="icon-sm"
+													disabled={busy}
+													aria-label={t('settings.integrations.options', { name: plugin.name })}
+												>
+													<MoreHorizontal className="size-4" />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent align="end">
+												<DropdownMenuItem onSelect={() => setPendingRemoval(plugin)}>
+													<Trash2 />
+													{t('settings.integrations.remove', { name: plugin.name })}
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+									)}
+								</div>
+							</CardHeader>
+							<CardContent className="flex flex-col gap-1 pl-16! text-xs text-muted-foreground">
+								{!plugin.error && <p>{summary(plugin)}</p>}
+								{plugin.author && (
+									<p>{t('settings.integrations.installed.author', { author: plugin.author })}</p>
+								)}
+							</CardContent>
+						</Card>
 					))}
 				</div>
 			)}

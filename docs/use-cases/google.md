@@ -61,7 +61,7 @@ After **Test** lists suitable Maps tools, prompt: “Using Google Maps, find `<P
 
 ## Gmail SMTP: send to yourself
 
-1. Set up the separate [Gmail SMTP MCP server](../../resources/mcp/gmail-smtp/README.md) with your Gmail address and app password, then **Test** it in MCP settings. It is not the remote Gmail OAuth server.
+1. Set up the separate [Gmail SMTP MCP server](../../resources/plugins/bootstrap-kucedr/mcp/gmail-smtp/README.md) with your Gmail address and app password, then **Test** it in MCP settings. It is not the remote Gmail OAuth server.
 2. Prompt: “Use Gmail SMTP `send_email` to send one plain-text message from `<SELF_EMAIL>` to `<SELF_EMAIL>` with subject `Kucedr SMTP <RUN>` and body `Disposable SMTP test <RUN>`. Report the tool result; do not send to anyone else.”
 
 **Pass:** `send_email` executes once and the message arrives in your own inbox. The remote Gmail MCP catalog used in the first Gmail scenario has no send tool.

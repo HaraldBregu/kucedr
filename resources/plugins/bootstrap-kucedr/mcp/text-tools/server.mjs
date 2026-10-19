@@ -32,7 +32,7 @@ const handle = (message) => {
 			result: {
 				protocolVersion: message.params?.protocolVersion ?? '2025-06-18',
 				capabilities: { tools: { listChanged: false } },
-				serverInfo: { name: 'example-text-tools', version: '1.0.0' },
+				serverInfo: { name: 'text-tools', version: '1.0.0' },
 			},
 		});
 	} else if (message.method === 'ping') {

@@ -31,7 +31,7 @@ name must match the manifest `id`.
 A plugin keeps each contribution kind in its own folder. The `apps/`, `skills/`, and
 `providers/` folders are the standardized layout: app entries must live under `apps/`,
 skill paths under `skills/`, and each provider is a folder under `providers/` shaped like the
-built-in `resources/providers/<id>/` catalog:
+built-in `resources/plugins/bootstrap-kucedr/providers/<id>/` catalog:
 
 ```text
 <plugin-id>/

@@ -38,13 +38,13 @@ updates:
     open-pull-requests-limit: 5
 
   - package-ecosystem: npm
-    directory: /resources/mcp/gmail-smtp
+    directory: /resources/plugins/bootstrap-kucedr/mcp/gmail-smtp
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
 
   - package-ecosystem: npm
-    directory: /resources/mcp/resend
+    directory: /resources/plugins/bootstrap-kucedr/mcp/resend
     schedule:
       interval: weekly
     open-pull-requests-limit: 5

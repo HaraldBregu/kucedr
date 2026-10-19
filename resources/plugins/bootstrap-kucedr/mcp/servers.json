@@ -1,0 +1,9 @@
+{
+	"deepwiki": {
+		"name": "DeepWiki",
+		"type": "http",
+		"url": "https://mcp.deepwiki.com/mcp",
+		"require_approval": "always",
+		"enabled": true
+	}
+}

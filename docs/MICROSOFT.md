@@ -5,7 +5,7 @@ Teams, OneDrive, SharePoint, Word, and Microsoft 365 Search. One client app regi
 serve all seven connections. Microsoft Learn needs no app registration or credentials.
 
 This guide covers the Microsoft endpoints already bundled in
-[`resources/providers/microsoft/manifest.json`](../resources/providers/microsoft/manifest.json).
+[`resources/plugins/bootstrap-kucedr/providers/microsoft/manifest.json`](../resources/plugins/bootstrap-kucedr/providers/microsoft/manifest.json).
 Microsoft currently classifies these application-specific servers as preview integrations for
 backward compatibility and recommends consolidated Work IQ MCP for new projects. See the
 [Microsoft compatibility notice](https://learn.microsoft.com/en-us/microsoft-copilot-studio/mcp-word-tools).

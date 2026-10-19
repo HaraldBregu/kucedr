@@ -1,15 +1,14 @@
 import { existsSync, readdirSync } from 'node:fs';
 import path from 'node:path';
-import type { PluginManifest } from '../../shared/plugin_manifest';
 import { bundledPluginsRoot } from './plugins_bundled_root';
 import { pluginsRoot } from './plugins_root';
-import { readPlugin } from './plugins_read';
+import { readPlugin, type ReadPlugin } from './plugins_read';
 
 export interface ScannedPlugin {
 	readonly id: string;
 	readonly directory: string;
 	readonly builtIn: boolean;
-	readonly manifest?: PluginManifest;
+	readonly manifest?: ReadPlugin;
 	readonly error?: string;
 }
 

@@ -39,7 +39,9 @@ export default function ExtensionsPage(): React.JSX.Element {
 				title={t('settings.extensions.title')}
 				description={t('settings.extensions.description')}
 			/>
-			{error && <SettingsNotice variant="destructive">{t('settings.extensions.loadError')}</SettingsNotice>}
+			{error && (
+				<SettingsNotice variant="destructive">{t('settings.extensions.loadError')}</SettingsNotice>
+			)}
 			{entries === null ? (
 				!error && (
 					<SettingsPanel>
@@ -61,15 +63,23 @@ export default function ExtensionsPage(): React.JSX.Element {
 							size="md"
 							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2"
 						>
+							{entry.icon ? (
+								<img src={entry.icon} alt="" className="size-10 shrink-0 rounded-xl object-cover" />
+							) : (
+								<div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground">
+									<LayoutPanelLeft className="size-5" aria-hidden="true" />
+								</div>
+							)}
 							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
 								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
 									{entry.title}
 								</ItemTitle>
 								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-									{entry.plugin.name}
+									{entry.description}
 								</p>
 							</ItemContent>
-							<ItemActions className="ml-auto flex-none">
+							<ItemActions className="ml-auto flex-none gap-2">
+								<span className="text-xs text-muted-foreground">{entry.plugin.name}</span>
 								<Badge variant="secondary">{t(`settings.extensions.slots.${entry.slot}`)}</Badge>
 							</ItemActions>
 						</Item>

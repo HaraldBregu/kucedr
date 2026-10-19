@@ -1,16 +1,19 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
-import type { PluginManifest } from '../../shared/plugin_manifest';
+import type { ReadPlugin } from './plugins_read';
 import { normalizeProviderId } from '../../shared/provider_types';
 import { validateProviderManifest } from '../../shared/providers/validation';
 import { readAppManifestFromDirectory } from '../apps/app_read';
-import { readLocalMcpServer } from '../mcp/mcp_local_read';
+import { listLocalMcpServers } from '../mcp/mcp_local_list';
 import { validateSkill } from '../agent/skills/skills_validate';
-import { resourceRoot } from '../shared/resource_root';
+import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
+import { coreProvidersDir } from './plugins_core_providers_dir';
 
 /** Install-time checks that each contribution is readable by the loader that will serve it. */
-export function validatePluginContents(directory: string, manifest: PluginManifest): void {
-	for (const { id } of manifest.contributes.apps) {
+export function validatePluginContents(directory: string, manifest: ReadPlugin): void {
+	if (manifest.id === CORE_PLUGIN_ID)
+		throw new Error(`"${CORE_PLUGIN_ID}" is reserved for Kucedr.`);
+	for (const id of manifest.contributes.apps) {
 		const folder = path.join(directory, 'apps', id);
 		const app = readAppManifestFromDirectory(folder);
 		if (!app) throw new Error(`apps/${id} needs a valid app manifest.json.`);
@@ -19,22 +22,17 @@ export function validatePluginContents(directory: string, manifest: PluginManife
 			throw new Error(`apps/${id}: entry ${app.metadata.entry} does not exist.`);
 		}
 	}
-	for (const { id } of manifest.contributes.extensions) {
+	for (const id of manifest.contributes.extensions) {
 		const entry = path.join(directory, 'extensions', id, 'index.html');
 		if (!existsSync(entry) || !statSync(entry).isFile()) {
 			throw new Error(`extensions/${id} needs an index.html.`);
 		}
 	}
-	for (const { id } of manifest.contributes.mcp_servers) {
-		try {
-			readLocalMcpServer(path.join(directory, 'mcp_servers', id));
-		} catch (error) {
-			throw new Error(`mcp_servers/${id}: ${error instanceof Error ? error.message : error}`, {
-				cause: error,
-			});
-		}
+	if (manifest.contributes.mcp.length > 0) {
+		const [problem] = listLocalMcpServers(path.join(directory, 'mcp')).diagnostics;
+		if (problem) throw new Error(`mcp/${problem.name}: ${problem.error}`);
 	}
-	for (const { id } of manifest.contributes.providers) {
+	for (const id of manifest.contributes.providers) {
 		let value: unknown;
 		try {
 			value = JSON.parse(
@@ -47,12 +45,12 @@ export function validatePluginContents(directory: string, manifest: PluginManife
 		if (errors.length > 0) throw new Error(`providers/${id}: ${errors.join(' ')}`);
 		const providerId = normalizeProviderId((value as { providerId: string }).providerId);
 		if (providerId !== id) throw new Error(`providers/${id}: providerId must be "${id}".`);
-		// ponytail: bundled provider folders are named by provider id
-		if (existsSync(path.join(resourceRoot(), 'resources/providers', id))) {
+		// ponytail: core provider folders are named by provider id
+		if (existsSync(path.join(coreProvidersDir(), id))) {
 			throw new Error(`providers/${id}: a built-in provider already uses this id.`);
 		}
 	}
-	for (const { id } of manifest.contributes.skills) {
+	for (const id of manifest.contributes.skills) {
 		const validation = validateSkill(path.join(directory, 'skills', id));
 		if (!validation.valid) {
 			throw new Error(

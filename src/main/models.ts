@@ -20,7 +20,6 @@ import type {
 } from '../shared/model_types';
 import { userDataLocation } from './shared/user_data_location';
 import { parseProviderManifest } from '../shared/providers/validation';
-import { resourceRoot } from './shared/resource_root';
 import { resolveMcpEndpoint } from './mcp/endpoint';
 import { pluginDirs } from './plugins/plugins_dirs';
 import type { PluginSource } from '../shared/plugin_types';
@@ -241,10 +240,6 @@ export function providersDir(): string {
 	return path.join(userDataLocation(), 'providers');
 }
 
-function bundledProvidersDir(): string {
-	return path.join(resourceRoot(), 'resources/providers');
-}
-
 function readCatalog(): Catalog {
 	const models: CatalogModel[] = [];
 	const vectorDatabases: CatalogService[] = [];
@@ -256,9 +251,8 @@ function readCatalog(): Catalog {
 		{ entry: ProviderManifest; providerDir: string; plugin?: PluginSource }
 	>();
 
-	// Plugins load after bundled providers and before ~/.kucedr/providers, so user overrides win.
+	// Built-in providers come from the core plugin; ~/.kucedr/providers loads last so user overrides win.
 	const roots: { directory: string; plugin?: PluginSource }[] = [
-		{ directory: bundledProvidersDir() },
 		...pluginDirs('providers'),
 		{ directory: providersDir() },
 	];

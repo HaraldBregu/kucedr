@@ -8,10 +8,10 @@ import {
 } from '../../shared/provider_types';
 import { parseProviderManifest } from '../../shared/providers/validation';
 import { isChannelId } from '../../shared/channels_definitions';
-import { resourceRoot } from '../shared/resource_root';
+import { coreProvidersDir } from '../plugins/plugins_core_providers_dir';
 
 export function loadChannels(): readonly CatalogService[] {
-	const directory = path.join(resourceRoot(), 'resources/providers');
+	const directory = coreProvidersDir();
 	if (!existsSync(directory)) return [];
 
 	const channels: CatalogService[] = [];

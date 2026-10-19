@@ -11,7 +11,7 @@ one package that can contain five kinds of contributions:
 | --- | --- | --- |
 | **apps** | Standalone HTML/JS/CSS apps opened in their own window | Sandboxed app window |
 | **extensions** | HTML/JS/CSS UI placed inside Kucedr's own screens (sidebar, panel, toolbar, settings, composer) | Sandboxed frame inside the host UI |
-| **mcp_servers** | Agent tools served over MCP: local stdio servers or remote http servers | Separate process, or remote |
+| **mcp** | Agent tools served over MCP: local stdio servers or remote http servers | Separate process, or remote |
 | **providers** | Provider manifests: models (remote API models and local model files), vector databases, web search, storage, and remote MCP services | Remote API, or local through Ollama |
 | **skills** | `SKILL.md` instruction packages for the agent | No code |
 
@@ -38,11 +38,11 @@ Non-goals for v1:
 | Need | Existing piece |
 | --- | --- |
 | Manifest validation | Manifest v4 zod schema in `packages/cli/src/manifest.ts` (`pluginManifestSchema`), entry checks in `entries.ts`, and path safety in `pluginpath.ts`. Section 4 extends this. |
-| Remote models | `readCatalog()` in `src/main/models.ts` reads provider manifests from `resources/providers` and `~/.kucedr/providers/<id>/`. |
+| Remote models | `readCatalog()` in `src/main/models.ts` reads provider manifests from `resources/plugins/bootstrap-kucedr/providers` and `~/.kucedr/providers/<id>/`. |
 | Running unknown providers | `streamProvider()` in `src/main/models/adapters/llm/llm_model.ts` falls back to OpenAI-compatible chat for any provider id it doesn't recognize. |
-| Local models | The `ollama` provider (`resources/providers/ollama`) plus `ModelLocation = 'remote' \| 'local'` in `src/shared/provider_types.ts`. |
+| Local models | The `ollama` provider (`resources/plugins/bootstrap-kucedr/providers/ollama`) plus `ModelLocation = 'remote' \| 'local'` in `src/shared/provider_types.ts`. |
 | Apps | `src/main/apps/*` (`appsRoot`, `appDirectory`, `AppRegistry`, `app_manifest_validate`, and `render` in `app_render.ts`). |
-| MCP servers | Local stdio servers are folders with `mcp.json` (see `resources/mcp/configured-demo-server`), read by `readLocalMcpServer()` and discovered through `mcpLocalDiscoveryRoots()` in `src/main/mcp/mcp_local_root.ts`. |
+| MCP servers | Local stdio servers are folders with `mcp.json` (see `resources/plugins/bootstrap-kucedr/mcp/configured-demo-server`), read by `readLocalMcpServer()` and discovered through `mcpLocalDiscoveryRoots()` in `src/main/mcp/mcp_local_root.ts`. |
 | Skills | `src/main/agent/skills/*` (`skillsRoot`, `skills_list.ts`, `skills_resolve_folder.ts`). |
 | Atomic install | `src/main/agent/skills/skills_import.ts`: copy into a staging folder, validate, then rename. |
 | Settings UI | `src/renderer/src/pages/settings/pages/plugins/` (today it lists built-in integrations). |
@@ -56,9 +56,11 @@ Plugins load from two folders:
 
 - **Installed:** `path.join(userDataLocation(), 'plugins')`, which is `~/.kucedr/plugins`.
   Settings → Plugins installs here.
-- **Built-in:** `plugins/` in the repo, shipped as `<resources>/plugins` (`bundledPluginsRoot()`).
-  These can be disabled but not removed. `plugins/example/` is a dev-only template and is excluded
-  from packaging.
+- **Built-in:** `resources/plugins/` in the repo, shipped with the rest of `resources/`
+  (`bundledPluginsRoot()`). These can be disabled but not removed.
+- **Core plugin:** `resources/plugins/bootstrap-kucedr/` (`CORE_PLUGIN_ID`) ships all of Kucedr's
+  own providers in its `providers/` folder. It can't be disabled, removed, or replaced by an
+  installed plugin with the same id, so the built-in providers are always there.
 
 An installed plugin overrides a built-in plugin with the same id. Each plugin keeps every
 contribution kind in its own folder:
@@ -72,12 +74,14 @@ contribution kind in its own folder:
     *.js, *.css, assets/
   extensions/<extension-id>/
     index.html
-    *.js, *.css
-  mcp_servers/<server-id>/
-    mcp.json                 same format as resources/mcp/*/mcp.json
+    *.js, *.css, icon.svg
+  mcp/
+    servers.json             optional: server configs keyed by server id (stdio or http)
+    <server-id>/
+      mcp.json               same format as resources/plugins/bootstrap-kucedr/mcp/*/mcp.json
     server.mjs, ...          stdio servers only
   providers/<provider-id>/
-    manifest.json            same format as resources/providers/*/manifest.json
+    manifest.json            same format as resources/plugins/bootstrap-kucedr/providers/*/manifest.json
                              (models, vector_databases, web_search, storage, mcp_servers)
     images/
   skills/<skill-id>/
@@ -105,14 +109,24 @@ Implemented today (`src/shared/plugin_manifest.ts`):
 {
 	"schemaVersion": 5,
 	"id": "acme-tools",
-	"name": "Acme Tools",
+	"title": "Acme Tools",
 	"version": "1.0.0",
 	"description": "Acme models, dashboard, and CRM tools.",
 	"author": "Acme",
 	"minAppVersion": "1.3.0",
+	"icon": "icon.png",
 	"contributes": {
 		"apps": [{ "id": "dashboard" }],
-		"mcp_servers": [{ "id": "acme-crm" }],
+		"extensions": [
+			{
+				"id": "crm-panel",
+				"title": "Acme CRM",
+				"description": "Acme records for the current conversation.",
+				"slot": "panel",
+				"icon": "icon.svg"
+			}
+		],
+		"mcp": [{ "id": "acme-crm" }, { "id": "acme-search" }],
 		"providers": [{ "id": "acme" }],
 		"skills": [{ "id": "summarizer" }]
 	}
@@ -123,7 +137,6 @@ Planned additions (later steps) keep the same shape:
 
 ```json
 {
-	"icon": "icon.png",
 	"configSchema": {
 		"type": "object",
 		"additionalProperties": false,
@@ -136,30 +149,31 @@ Planned additions (later steps) keep the same shape:
 		"workspace": { "label": "Workspace", "placeholder": "acme-team" },
 		"apiKey": { "label": "API key", "sensitive": true }
 	},
-	"contributes": {
-		"extensions": [{ "id": "crm-panel", "title": "Acme CRM", "slot": "panel" }]
-	},
 	"permissions": ["network:https://api.acme.test", "agent.prompt"]
 }
 ```
 
 Field rules:
 
-- `schemaVersion`, `id`, `name`, `version`, and `description` are required, and at least one
+- `schemaVersion`, `id`, `title`, `version`, and `description` are required, and at least one
   contribution is required. Unknown keys are rejected.
-- Contributions declare only an `id`, except extensions, which also declare a `title` and a
-  `slot`. The folder is always `<kind>/<id>/`.
+- Contributions declare only an `id`, except extensions, which also declare a `title`, a
+  `description`, a `slot`, and optionally an `icon`. The folder is always `<kind>/<id>/`.
 - `configSchema` and `uiHints` are optional. When present, Settings → Plugins renders the
   plugin's settings form from them, so plugins never ship settings UI code. Fields marked
   `sensitive` are saved in the existing credential store and are never written into the plugin
   folder. (The idea comes from OpenClaw's `openclaw.plugin.json`.)
+- `icon` is an optional png, svg, jpg, or webp file (256 KB max) in the plugin folder. An
+  extension's `icon` is the same, inside its own folder. Settings shows them, and plugins without
+  one get a default icon.
 - `minAppVersion` blocks installing a plugin built for a newer Kucedr.
 - `permissions` lists what the plugin's apps and extensions may do through the bridge in
   section 9. They are shown to the user before install, and anything not listed is denied.
 - On install, each contribution must also be readable by its loader (`validatePluginContents()`):
   - an app needs a valid app `manifest.json` and entry file;
   - an extension needs an `index.html`;
-  - an MCP server needs a valid `mcp.json`;
+  - every `mcp` id needs either a folder `mcp/<id>/` with a valid `mcp.json` or an entry in
+    `mcp/servers.json`, but not both;
   - a provider needs a valid provider manifest whose `providerId` equals the folder name and isn't
     a built-in provider id;
   - a skill needs a valid `SKILL.md`.
@@ -209,12 +223,27 @@ VS Code makes the same choice with its webviews.
 
 ### 5.3 MCP servers
 
-- **Local (stdio):** `mcp_servers/<id>/mcp.json` uses the existing local MCP format (`command`,
-  `args`, `cwd`, `env`, `require_approval`). Add `pluginDirs('mcp_servers')` to
-  `mcpLocalDiscoveryRoots()`, and they're read by `readLocalMcpServer()` like any other local
-  server. They run as separate processes, as they do today.
-- **Remote (http):** `mcp.json` with `"type": "http"` and a `url`. These are merged into the MCP
-  catalog. OAuth and tokens go through the existing MCP settings flow.
+A plugin's `mcp/` folder holds its servers in two forms. Each server id is listed in
+`contributes.mcp`.
+
+- **Server folders:** `mcp/<id>/mcp.json` uses the existing local MCP format (`command`, `args`,
+  `cwd`, `env`, `require_approval`), next to the server's own files. Folders support stdio only,
+  as they do in `~/.kucedr/mcp/servers`.
+- **`mcp/servers.json`:** one file with any number of servers, keyed by server id. Each value
+  uses the same fields as `mcp.json`, plus `"type": "http"` with a `url` for remote servers
+  (https, or http on loopback). A stdio entry's `cwd` is relative to `mcp/`.
+
+  ```json
+  {
+  	"acme-search": { "type": "http", "url": "https://mcp.acme.test/mcp", "name": "Acme Search" },
+  	"acme-cli": { "command": "node", "args": ["acme-crm/server.mjs", "--cli"] }
+  }
+  ```
+
+- Both are read by `listLocalMcpServers()` (`mcp_servers_file_entries.ts` for `servers.json`),
+  which `mcpLocalDiscoveryRoots()` points at `pluginDirs('mcp')`. Plugin servers keep
+  `source: 'local'` and run as separate processes, as local servers do today. OAuth sign-in for
+  remote plugin servers is not supported yet.
 - The plugin installer copies files exactly as they are and never runs `npm install` or lifecycle
   scripts. A stdio server must be bundled: one `.mjs` file, or its `node_modules` included in the
   archive.
@@ -333,7 +362,7 @@ user, and plugin entries in one list.
 | `AppChannels.webSearches` | `loadWebSearches()` | `providers/*/manifest.json` → `web_search` |
 | `AppChannels.storages` | `loadStorages()` | `providers/*/manifest.json` → `storage` |
 | `AppChannels.mcps` | `loadMcps()` | `providers/*/manifest.json` → `mcp_servers` (remote catalog services) |
-| MCP server list (`src/main/ipc/mcp.ts`) | `mcp_local_list.ts` via `mcpLocalDiscoveryRoots()` | `mcp_servers/*/mcp.json` (stdio and http servers) |
+| MCP server list (`src/main/ipc/mcp.ts`) | `mcp_local_list.ts` via `mcpLocalDiscoveryRoots()` | `mcp/*/mcp.json` (stdio) and `mcp/servers.json` (stdio and http) |
 | `SkillsChannels.list` | `skills.list()` (`skills_list.ts`) | `skills/*/SKILL.md` |
 | Apps list (`src/main/ipc/apps.ts`) | `listApps()` | `apps/*` |
 | Provider lookups (`ipc/provider.ts`, `ipc/agent.ts`) | `loadProviders()`, `findModel()`, `modelsFor()`, and the rest | Same catalog, so plugin providers resolve everywhere |
@@ -346,13 +375,13 @@ How it works:
    becomes:
 
    ```ts
-   for (const directory of [bundledProvidersDir(), ...pluginDirs('providers'), providersDir()]) {
+   for (const directory of [...pluginDirs('providers'), providersDir()]) {
    ```
 
-   Plugins load after bundled providers and before the user's `~/.kucedr/providers`, so user
-   overrides still win.
+   The built-in providers arrive through the core plugin like any other plugin's. The user's
+   `~/.kucedr/providers` loads last, so user overrides still win.
 2. **Local MCP servers:** `mcpLocalDiscoveryRoots()` returns
-   `[localRoot, ...pluginDirs('mcp_servers'), workspaceRoot]`.
+   `[localRoot, ...pluginDirs('mcp'), workspaceRoot]`.
 3. **Skills and apps** scan `pluginDirs('skills')` and `pluginDirs('apps')` after their own roots.
 4. **Entries are tagged with their source.** `PublicProvider` (shared by every catalog entry
    through `entry.provider`), `McpServerInfo`, `SkillInfo`, and the app list item get an optional
@@ -367,7 +396,7 @@ How it works:
    the `plugin` field.
 5. **Disabled or unavailable plugins are left out.** `pluginDirs()` only returns enabled,
    available plugins, so their entries disappear from every list at once.
-6. **Ids:** a plugin provider id that matches a bundled provider id is rejected at install. For
+6. **Ids:** a plugin provider id that matches a core provider id is rejected at install. For
    apps, skills, and MCP servers, user entries win over plugin entries with the same id. Deleting
    a plugin's app or skill from its own settings page is refused; disable or remove the plugin
    instead.
@@ -493,7 +522,7 @@ repo.
 	"plugins": [
 		{
 			"id": "acme-tools",
-			"name": "Acme Tools",
+			"title": "Acme Tools",
 			"description": "Acme models, dashboard, and CRM tools.",
 			"author": "Acme",
 			"icon": "https://…/icon.png",
@@ -501,7 +530,7 @@ repo.
 			"minAppVersion": "1.3.0",
 			"url": "https://registry.npmjs.org/@acme/kucedr-tools/-/kucedr-tools-1.0.0.tgz",
 			"integrity": "sha512-…",
-			"contains": ["apps", "extensions", "mcp_servers", "providers", "skills"]
+			"contains": ["apps", "extensions", "mcp", "providers", "skills"]
 		}
 	]
 }

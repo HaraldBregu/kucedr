@@ -7,10 +7,5 @@ export function mcpLocalRoot(location = userDataLocation()): string {
 }
 
 export function mcpLocalDiscoveryRoots(location = userDataLocation()): readonly string[] {
-	const localRoot = mcpLocalRoot(location);
-	const workspaceRoot = path.resolve(process.cwd(), 'resources', 'mcp');
-	const pluginRoots = pluginDirs('mcp_servers').map((entry) => entry.directory);
-	return localRoot === workspaceRoot
-		? [localRoot, ...pluginRoots]
-		: [localRoot, ...pluginRoots, workspaceRoot];
+	return [mcpLocalRoot(location), ...pluginDirs('mcp').map((entry) => entry.directory)];
 }

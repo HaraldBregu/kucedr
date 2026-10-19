@@ -9,7 +9,7 @@ import {
 
 describe('realtime voice adapter factory', () => {
 	it('covers every realtime voice model in the bundled provider catalog', () => {
-		const root = path.resolve(__dirname, '../../../../resources/providers');
+		const root = path.resolve(__dirname, '../../../../resources/plugins/bootstrap-kucedr/providers');
 		const catalog = fs.readdirSync(root).flatMap((providerId) => {
 			const manifestPath = path.join(root, providerId, 'manifest.json');
 			if (!fs.existsSync(manifestPath)) return [];

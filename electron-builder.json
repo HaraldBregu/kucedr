@@ -5,9 +5,6 @@
 	"files": [
 		"out/**",
 		"resources/**",
-		"!resources/mcp/gmail-smtp/**",
-		"!resources/mcp/resend/**",
-		"!resources/skills/**",
 		"!resources/sounds/**",
 		"!resources/svgs/**"
 	],
@@ -99,15 +96,11 @@
 					"**/*",
 					"!mcp/gmail-smtp/**",
 					"!mcp/resend/**",
+					"!plugins/README.md",
 					"!skills/**",
 					"!sounds/**",
 					"!svgs/**"
 				]
-			},
-			{
-				"from": "./plugins",
-				"to": "plugins",
-				"filter": ["**/*", "!README.md", "!example/**"]
 			}
 		]
 	},
@@ -157,15 +150,11 @@
 					"**/*",
 					"!mcp/gmail-smtp/**",
 					"!mcp/resend/**",
+					"!plugins/README.md",
 					"!skills/**",
 					"!sounds/**",
 					"!svgs/**"
 				]
-			},
-			{
-				"from": "./plugins",
-				"to": "plugins",
-				"filter": ["**/*", "!README.md", "!example/**"]
 			}
 		]
 	},
@@ -218,15 +207,11 @@
 					"**/*",
 					"!mcp/gmail-smtp/**",
 					"!mcp/resend/**",
+					"!plugins/README.md",
 					"!skills/**",
 					"!sounds/**",
 					"!svgs/**"
 				]
-			},
-			{
-				"from": "./plugins",
-				"to": "plugins",
-				"filter": ["**/*", "!README.md", "!example/**"]
 			}
 		]
 	},

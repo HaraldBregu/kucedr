@@ -1,4 +1,7 @@
-export const PLUGIN_KINDS = ['apps', 'extensions', 'mcp_servers', 'providers', 'skills'] as const;
+export const PLUGIN_KINDS = ['apps', 'extensions', 'mcp', 'providers', 'skills'] as const;
+
+/** The built-in plugin that ships Kucedr's own providers; it can't be disabled or replaced. */
+export const CORE_PLUGIN_ID = 'bootstrap-kucedr';
 
 export type PluginKind = (typeof PLUGIN_KINDS)[number];
 
@@ -11,7 +14,10 @@ export interface PluginSource {
 export interface PluginExtension {
 	readonly id: string;
 	readonly title: string;
+	readonly description: string;
 	readonly slot: string;
+	/** The extension's icon as a data URL. */
+	readonly icon?: string;
 }
 
 export interface PluginInfo {
@@ -20,7 +26,10 @@ export interface PluginInfo {
 	readonly version?: string;
 	readonly description?: string;
 	readonly author?: string;
+	/** The plugin's icon as a data URL. */
+	readonly icon?: string;
 	readonly builtIn: boolean;
+	readonly core: boolean;
 	readonly enabled: boolean;
 	/** Why the plugin could not be loaded; its contributions are hidden while set. */
 	readonly error?: string;

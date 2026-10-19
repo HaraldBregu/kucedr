@@ -1,6 +1,6 @@
 {
-	"id": "example-text-tools",
-	"name": "Example Text Tools",
+	"id": "text-tools",
+	"name": "Text Tools",
 	"type": "stdio",
 	"command": "node",
 	"args": ["server.mjs"],

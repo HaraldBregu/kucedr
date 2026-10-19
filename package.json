@@ -59,7 +59,7 @@
 		"build:staging": "cross-env NODE_ENV=staging npm run typecheck && electron-vite build --mode staging",
 		"lint": "eslint .",
 		"quality:audit:report": "npm audit || true",
-		"quality:audit": "npm run quality:audit:report && npm audit --prefix resources/mcp/gmail-smtp && npm audit --prefix resources/mcp/resend",
+		"quality:audit": "npm run quality:audit:report && npm audit --prefix resources/plugins/bootstrap-kucedr/mcp/gmail-smtp && npm audit --prefix resources/plugins/bootstrap-kucedr/mcp/resend",
 		"quality:check": "npm run quality:audit && npm run typecheck && npm run lint && npm run test:main && npm run test:renderer && npm run test:packages",
 		"dist:win": "cross-env NODE_ENV=production npm run typecheck:app && electron-vite build && electron-builder --win --x64",
 		"dist:win:portable": "cross-env NODE_ENV=production npm run build && electron-builder --win portable --x64",
