@@ -1,0 +1,350 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { ArrowLeft, Plug, Trash2 } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { CatalogModel } from '@shared/model_types';
+import type { PluginInfo } from '@shared/plugin_types';
+import type { CatalogService, CatalogStorage, CatalogWebSearch } from '@shared/provider_types';
+import type { App } from '@shared/installed_app_types';
+import type { McpServerInfo } from '@shared/mcp_types';
+import type { SkillInfo } from '@shared/skills_types';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+	SettingsEmptyState,
+	SettingsLoadingRows,
+	SettingsNotice,
+	SettingsPageShell,
+	SettingsPanel,
+	SettingsRow,
+	SettingsSection,
+	SettingsValue,
+} from '../../components';
+import Confirm from './Confirm';
+
+interface Contents {
+	readonly models: readonly CatalogModel[];
+	readonly mcps: readonly CatalogService[];
+	readonly vectorDatabases: readonly CatalogService[];
+	readonly webSearches: readonly CatalogWebSearch[];
+	readonly storages: readonly CatalogStorage[];
+	readonly apps: readonly App[];
+	readonly servers: readonly McpServerInfo[];
+	readonly skills: readonly SkillInfo[];
+}
+
+interface Row {
+	readonly key: string;
+	readonly title: string;
+	readonly description?: string;
+	readonly badge?: string;
+}
+
+export default function PluginPage(): React.JSX.Element {
+	const { t } = useTranslation();
+	const navigate = useNavigate();
+	const { pluginId } = useParams<{ pluginId: string }>();
+	const [plugin, setPlugin] = useState<PluginInfo | null | undefined>(undefined);
+	const [contents, setContents] = useState<Contents | null>(null);
+	const [busy, setBusy] = useState(false);
+	const [error, setError] = useState('');
+	const [confirming, setConfirming] = useState(false);
+
+	const load = useCallback(async (): Promise<void> => {
+		const [plugins, models, mcps, vectorDatabases, webSearches, storages, apps, registry, skills] =
+			await Promise.all([
+				window.plugins.list(),
+				window.app.models(),
+				window.app.mcps(),
+				window.app.vectorDatabases(),
+				window.app.webSearches(),
+				window.app.storages(),
+				window.apps.list(),
+				window.mcp.registry(),
+				window.skills.list(),
+			]);
+		const owned = <T extends { readonly provider: { readonly plugin?: { readonly id: string } } }>(
+			entries: readonly T[]
+		): T[] => entries.filter((entry) => entry.provider.plugin?.id === pluginId);
+		setPlugin(plugins.find((item) => item.id === pluginId) ?? null);
+		setContents({
+			models: owned(models),
+			mcps: owned(mcps),
+			vectorDatabases: owned(vectorDatabases),
+			webSearches: owned(webSearches),
+			storages: owned(storages),
+			apps: apps.filter((app) => app.plugin?.id === pluginId),
+			servers: registry.servers.filter((server) => server.plugin?.id === pluginId),
+			skills: skills.filter((skill) => skill.plugin?.id === pluginId),
+		});
+	}, [pluginId]);
+
+	useEffect(() => {
+		load().catch((caught) => setError(caught instanceof Error ? caught.message : String(caught)));
+	}, [load]);
+
+	const run = async (action: () => Promise<void>, after?: () => void): Promise<void> => {
+		setBusy(true);
+		setError('');
+		try {
+			await action();
+			if (after) after();
+			else await load();
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setBusy(false);
+		}
+	};
+
+	const back = (
+		<Button
+			variant="ghost"
+			size="sm"
+			className="w-fit"
+			onClick={() => navigate('/settings/plugins')}
+		>
+			<ArrowLeft className="size-4" />
+			{t('settings.integrations.title')}
+		</Button>
+	);
+
+	if (plugin === undefined || !contents) {
+		return (
+			<SettingsPageShell>
+				{back}
+				{error ? (
+					<SettingsNotice variant="destructive">{error}</SettingsNotice>
+				) : (
+					<SettingsPanel>
+						<SettingsLoadingRows rows={3} />
+					</SettingsPanel>
+				)}
+			</SettingsPageShell>
+		);
+	}
+
+	if (plugin === null) {
+		return (
+			<SettingsPageShell>
+				{back}
+				<SettingsEmptyState
+					icon={Plug}
+					title={t('settings.integrations.plugin.notFound')}
+					description={t('settings.integrations.plugin.notFoundDescription')}
+				/>
+			</SettingsPageShell>
+		);
+	}
+
+	const details: Row[] = [
+		{ key: 'id', title: t('settings.integrations.plugin.id'), badge: plugin.id },
+		...(plugin.version
+			? [{ key: 'version', title: t('settings.integrations.plugin.version'), badge: plugin.version }]
+			: []),
+		...(plugin.author
+			? [{ key: 'author', title: t('settings.integrations.plugin.author'), badge: plugin.author }]
+			: []),
+		{
+			key: 'source',
+			title: t('settings.integrations.plugin.source'),
+			badge: plugin.builtIn
+				? t('settings.integrations.installed.builtInTitle')
+				: t('settings.integrations.installed.downloadedTitle'),
+		},
+		{
+			key: 'status',
+			title: t('settings.integrations.plugin.status'),
+			description: plugin.core ? t('settings.integrations.plugin.core') : undefined,
+			badge: plugin.error
+				? t('settings.integrations.installed.unavailable')
+				: plugin.enabled
+					? t('settings.integrations.plugin.enabled')
+					: t('settings.integrations.plugin.disabled'),
+		},
+	];
+
+	const sections: { key: string; title: string; rows: Row[] }[] = [
+		{
+			key: 'models',
+			title: t('settings.integrations.plugin.models'),
+			rows: contents.models.map((model) => ({
+				key: `${model.type}/${model.id}`,
+				title: model.name,
+				description: model.id,
+				badge: t(`settings.integrations.plugin.capabilities.${model.type}`),
+			})),
+		},
+		{
+			key: 'remoteMcp',
+			title: t('settings.integrations.plugin.remoteMcp'),
+			rows: contents.mcps.map((service) => ({
+				key: service.id,
+				title: service.name,
+				description: service.description ?? service.url,
+			})),
+		},
+		{
+			key: 'vectorDatabases',
+			title: t('settings.integrations.plugin.vectorDatabases'),
+			rows: contents.vectorDatabases.map((service) => ({
+				key: service.id,
+				title: service.name,
+				description: service.description,
+			})),
+		},
+		{
+			key: 'webSearch',
+			title: t('settings.integrations.plugin.webSearch'),
+			rows: contents.webSearches.map((service) => ({
+				key: service.id,
+				title: service.name,
+				description: service.description,
+			})),
+		},
+		{
+			key: 'storage',
+			title: t('settings.integrations.plugin.storage'),
+			rows: contents.storages.map((service) => ({
+				key: service.id,
+				title: service.name,
+				description: service.description,
+			})),
+		},
+		{
+			key: 'apps',
+			title: t('settings.integrations.plugin.apps'),
+			rows: contents.apps.map((app) => ({
+				key: app.id,
+				title: app.title,
+				description: app.description,
+				badge: app.metadata.version,
+			})),
+		},
+		{
+			key: 'extensions',
+			title: t('settings.integrations.plugin.extensions'),
+			rows: plugin.extensions.map((extension) => ({
+				key: extension.id,
+				title: extension.title,
+				description: extension.description,
+				badge: t(`settings.extensions.slots.${extension.slot}`),
+			})),
+		},
+		{
+			key: 'mcp',
+			title: t('settings.integrations.plugin.mcp'),
+			rows: contents.servers.map((server) => ({
+				key: server.id,
+				title: server.data.name ?? server.id,
+				description: server.diagnostic ?? server.id,
+				badge: server.data.type,
+			})),
+		},
+		{
+			key: 'skills',
+			title: t('settings.integrations.plugin.skills'),
+			rows: contents.skills.map((skill) => ({
+				key: skill.id,
+				title: skill.name,
+				description: skill.description,
+			})),
+		},
+	].filter((section) => section.rows.length > 0);
+
+	return (
+		<SettingsPageShell>
+			{back}
+			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
+			<header className="mb-6 flex items-start gap-4 py-2">
+				{plugin.icon ? (
+					<img src={plugin.icon} alt="" className="size-14 shrink-0 object-contain" />
+				) : (
+					<div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground">
+						<Plug className="size-7" aria-hidden="true" />
+					</div>
+				)}
+				<div className="min-w-0 flex-1">
+					<h1 className="flex flex-wrap items-center gap-2 text-3xl font-normal leading-9 text-foreground">
+						{plugin.name}
+						{plugin.error && (
+							<Badge variant="destructive">{t('settings.integrations.installed.unavailable')}</Badge>
+						)}
+					</h1>
+					<p className="mt-1.5 max-w-2xl text-base leading-5 text-muted-foreground">
+						{plugin.error ?? plugin.description}
+					</p>
+				</div>
+				<div className="flex shrink-0 items-center gap-1.5">
+					{!plugin.core && (
+						<Button
+							type="button"
+							size="sm"
+							variant={plugin.enabled ? 'outline' : 'default'}
+							disabled={busy || Boolean(plugin.error)}
+							onClick={() => void run(() => window.plugins.setEnabled(plugin.id, !plugin.enabled))}
+						>
+							{plugin.enabled
+								? t('settings.integrations.installed.disable')
+								: t('settings.integrations.installed.enableAction')}
+						</Button>
+					)}
+					{!plugin.builtIn && (
+						<Button
+							type="button"
+							size="sm"
+							variant="outline"
+							disabled={busy}
+							onClick={() => setConfirming(true)}
+						>
+							<Trash2 />
+							{t('settings.integrations.plugin.remove')}
+						</Button>
+					)}
+				</div>
+			</header>
+			<div className="flex flex-col gap-8 pb-8">
+				<SettingsSection title={t('settings.integrations.plugin.details')}>
+					<SettingsPanel>
+						{details.map((row) => (
+							<SettingsRow key={row.key} title={row.title} description={row.description}>
+								{row.badge && <SettingsValue mono={row.key === 'id'}>{row.badge}</SettingsValue>}
+							</SettingsRow>
+						))}
+					</SettingsPanel>
+				</SettingsSection>
+				{!plugin.enabled && !plugin.error ? (
+					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
+				) : (
+					sections.map((section) => (
+						<SettingsSection
+							key={section.key}
+							title={`${section.title} · ${section.rows.length}`}
+						>
+							<SettingsPanel>
+								{section.rows.map((row) => (
+									<SettingsRow key={row.key} title={row.title} description={row.description}>
+										{row.badge && <SettingsValue>{row.badge}</SettingsValue>}
+									</SettingsRow>
+								))}
+							</SettingsPanel>
+						</SettingsSection>
+					))
+				)}
+			</div>
+			<Confirm
+				name={plugin.name}
+				open={confirming}
+				disabled={busy}
+				onCancel={() => setConfirming(false)}
+				onConfirm={() => {
+					setConfirming(false);
+					void run(
+						() => window.plugins.remove(plugin.id),
+						() => navigate('/settings/plugins')
+					);
+				}}
+			/>
+		</SettingsPageShell>
+	);
+}

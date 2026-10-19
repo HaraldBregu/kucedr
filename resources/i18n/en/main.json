@@ -399,6 +399,11 @@
 			"noResults": "No plugins found",
 			"noResultsDescription": "Try a different plugin or provider name.",
 			"installed": {
+				"builtInTitle": "Built-in",
+				"builtInDescription": "Plugins that ship with Kucedr.",
+				"builtInEmpty": "No built-in plugins",
+				"downloadedTitle": "Downloaded",
+				"downloadedDescription": "Plugins you installed. They add apps, extensions, MCP servers, providers, and skills.",
 				"title": "Installed",
 				"description": "Plugins add apps, extensions, MCP servers, providers, and skills to Kucedr.",
 				"upload": "Upload",
@@ -408,23 +413,9 @@
 				"installing": "Installing…",
 				"installed": "{{name}} installed.",
 				"empty": "No plugins installed",
-				"builtIn": "Built-in",
 				"unavailable": "Unavailable",
 				"enableAction": "Enable",
-				"disable": "Disable",
-				"author": "By {{author}}",
-				"kinds": {
-					"apps_one": "{{count}} app",
-					"apps_other": "{{count}} apps",
-					"extensions_one": "{{count}} extension",
-					"extensions_other": "{{count}} extensions",
-					"mcp_one": "{{count}} MCP server",
-					"mcp_other": "{{count}} MCP servers",
-					"providers_one": "{{count}} provider",
-					"providers_other": "{{count}} providers",
-					"skills_one": "{{count}} skill",
-					"skills_other": "{{count}} skills"
-				}
+				"disable": "Disable"
 			}
 		},
 		"breadcrumb": {

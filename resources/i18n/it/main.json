@@ -399,6 +399,11 @@
 			"noResults": "Nessun plugin trovato",
 			"noResultsDescription": "Prova un nome di plugin o provider diverso.",
 			"installed": {
+				"builtInTitle": "Integrati",
+				"builtInDescription": "Plugin inclusi in Kucedr.",
+				"builtInEmpty": "Nessun plugin integrato",
+				"downloadedTitle": "Scaricati",
+				"downloadedDescription": "Plugin che hai installato. Aggiungono app, estensioni, server MCP, provider e skill.",
 				"title": "Installati",
 				"description": "I plugin aggiungono app, estensioni, server MCP, provider e skill a Kucedr.",
 				"upload": "Carica",
@@ -408,23 +413,9 @@
 				"installing": "Installazione…",
 				"installed": "{{name}} installato.",
 				"empty": "Nessun plugin installato",
-				"builtIn": "Integrato",
 				"unavailable": "Non disponibile",
 				"enableAction": "Attiva",
-				"disable": "Disattiva",
-				"author": "Di {{author}}",
-				"kinds": {
-					"apps_one": "{{count}} app",
-					"apps_other": "{{count}} app",
-					"extensions_one": "{{count}} estensione",
-					"extensions_other": "{{count}} estensioni",
-					"mcp_one": "{{count}} server MCP",
-					"mcp_other": "{{count}} server MCP",
-					"providers_one": "{{count}} provider",
-					"providers_other": "{{count}} provider",
-					"skills_one": "{{count}} skill",
-					"skills_other": "{{count}} skill"
-				}
+				"disable": "Disattiva"
 			}
 		},
 		"breadcrumb": {
