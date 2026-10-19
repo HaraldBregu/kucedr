@@ -3,7 +3,7 @@
 	"id": "black-forest-labs",
 	"title": "Black Forest Labs",
 	"version": "1.0.0",
-	"description": "Black Forest Labs provider for Kucedr.",
+	"description": "FLUX models for image generation and editing, plus video.",
 	"author": "Kucedr",
 	"icon": "black-forest-labs-light.svg",
 	"authentication": "api-key",

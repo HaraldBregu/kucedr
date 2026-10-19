@@ -3,7 +3,7 @@
 	"id": "deepseek",
 	"title": "DeepSeek",
 	"version": "1.0.0",
-	"description": "DeepSeek provider for Kucedr.",
+	"description": "DeepSeek chat and reasoning models.",
 	"author": "Kucedr",
 	"icon": "deepseek.svg",
 	"authentication": "api-key",

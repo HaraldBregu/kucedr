@@ -3,7 +3,7 @@
 	"id": "microsoft",
 	"title": "Microsoft",
 	"version": "1.0.0",
-	"description": "Microsoft provider for Kucedr.",
+	"description": "Microsoft 365 MCP servers for Outlook, Teams, OneDrive, SharePoint, Word, and Learn.",
 	"author": "Kucedr",
 	"icon": "microsoft.svg",
 	"authentication": "oauth2",

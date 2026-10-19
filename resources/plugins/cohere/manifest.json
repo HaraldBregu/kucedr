@@ -3,7 +3,7 @@
 	"id": "cohere",
 	"title": "Cohere",
 	"version": "1.0.0",
-	"description": "Cohere provider for Kucedr.",
+	"description": "Command chat models, embeddings, and speech-to-text.",
 	"author": "Kucedr",
 	"icon": "cohere.svg",
 	"authentication": "api-key",

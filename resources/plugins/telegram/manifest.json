@@ -3,7 +3,7 @@
 	"id": "telegram",
 	"title": "Telegram",
 	"version": "1.0.0",
-	"description": "Telegram provider for Kucedr.",
+	"description": "Chat with your assistant through a Telegram bot.",
 	"author": "Kucedr",
 	"icon": "telegram.svg",
 	"authentication": "api-key",

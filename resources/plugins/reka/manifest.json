@@ -3,7 +3,7 @@
 	"id": "reka",
 	"title": "Reka AI",
 	"version": "1.0.0",
-	"description": "Reka AI provider for Kucedr.",
+	"description": "Reka multimodal chat models.",
 	"author": "Kucedr",
 	"icon": "reka-light.svg",
 	"authentication": "api-key",

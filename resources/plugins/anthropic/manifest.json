@@ -3,7 +3,7 @@
 	"id": "anthropic",
 	"title": "Anthropic",
 	"version": "1.0.0",
-	"description": "Anthropic provider for Kucedr.",
+	"description": "Claude chat models for writing, coding, and analysis.",
 	"author": "Kucedr",
 	"icon": "anthropic-light.svg",
 	"authentication": "api-key",

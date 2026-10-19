@@ -3,7 +3,7 @@
 	"id": "qwen",
 	"title": "Alibaba / Qwen / Wan",
 	"version": "1.0.0",
-	"description": "Alibaba / Qwen / Wan provider for Kucedr.",
+	"description": "Qwen models for chat, images, video, speech, and embeddings.",
 	"author": "Kucedr",
 	"icon": "qwen-light.svg",
 	"authentication": "api-key",

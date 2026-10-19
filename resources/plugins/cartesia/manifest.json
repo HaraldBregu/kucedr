@@ -3,7 +3,7 @@
 	"id": "cartesia",
 	"title": "Cartesia",
 	"version": "1.0.0",
-	"description": "Cartesia provider for Kucedr.",
+	"description": "Low-latency speech-to-text and text-to-speech voices.",
 	"author": "Kucedr",
 	"icon": "cartesia-light.svg",
 	"authentication": "api-key",

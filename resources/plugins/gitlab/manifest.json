@@ -3,7 +3,7 @@
 	"id": "gitlab",
 	"title": "GitLab",
 	"version": "1.0.0",
-	"description": "GitLab provider for Kucedr.",
+	"description": "GitLab MCP server for projects, issues, and merge requests.",
 	"author": "Kucedr",
 	"icon": "gitlab.svg",
 	"authentication": "oauth2",

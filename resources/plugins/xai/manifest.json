@@ -3,7 +3,7 @@
 	"id": "xai",
 	"title": "xAI",
 	"version": "1.0.0",
-	"description": "xAI provider for Kucedr.",
+	"description": "Grok models for chat, images, video, and voice.",
 	"author": "Kucedr",
 	"icon": "xai-light.svg",
 	"authentication": "api-key",

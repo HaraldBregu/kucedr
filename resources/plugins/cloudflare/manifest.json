@@ -3,7 +3,7 @@
 	"id": "cloudflare",
 	"title": "Cloudflare",
 	"version": "1.0.0",
-	"description": "Cloudflare provider for Kucedr.",
+	"description": "Cloudflare R2 object storage for files.",
 	"author": "Kucedr",
 	"icon": "cloudflare.svg",
 	"authentication": "api-key",

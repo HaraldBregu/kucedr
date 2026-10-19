@@ -3,7 +3,7 @@
 	"id": "jina",
 	"title": "Jina AI",
 	"version": "1.0.0",
-	"description": "Jina AI provider for Kucedr.",
+	"description": "Embedding models for search and retrieval.",
 	"author": "Kucedr",
 	"icon": "jina-light.svg",
 	"authentication": "api-key",

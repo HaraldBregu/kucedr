@@ -3,7 +3,7 @@
 	"id": "ollama",
 	"title": "Ollama",
 	"version": "1.0.0",
-	"description": "Ollama provider for Kucedr.",
+	"description": "Run open models locally on your machine.",
 	"author": "Kucedr",
 	"icon": "ollama-light.svg",
 	"authentication": "none",

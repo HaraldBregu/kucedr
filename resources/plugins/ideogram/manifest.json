@@ -3,7 +3,7 @@
 	"id": "ideogram",
 	"title": "Ideogram",
 	"version": "1.0.0",
-	"description": "Ideogram provider for Kucedr.",
+	"description": "Image generation with accurate text rendering.",
 	"author": "Kucedr",
 	"icon": "ideogram-light.svg",
 	"authentication": "api-key",

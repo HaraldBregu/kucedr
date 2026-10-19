@@ -3,7 +3,7 @@
 	"id": "pinecone",
 	"title": "Pinecone",
 	"version": "1.0.0",
-	"description": "Pinecone provider for Kucedr.",
+	"description": "Pinecone vector database for knowledge search.",
 	"author": "Kucedr",
 	"icon": "pinecone-light.svg",
 	"authentication": "api-key",

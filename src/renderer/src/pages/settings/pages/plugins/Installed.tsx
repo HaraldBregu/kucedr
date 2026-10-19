@@ -109,7 +109,7 @@ export default function Installed(): React.JSX.Element {
 			) : (
 				<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 					{plugins.map((plugin) => (
-						<Card key={plugin.id} size="sm">
+						<Card key={plugin.id} size="sm" className="h-36">
 							<CardHeader className="flex items-start gap-3">
 								{plugin.icon ? (
 									<img
@@ -141,7 +141,9 @@ export default function Installed(): React.JSX.Element {
 											</Badge>
 										)}
 									</CardTitle>
-									<CardDescription>{plugin.error ?? plugin.description}</CardDescription>
+									<CardDescription className="line-clamp-2">
+										{plugin.error ?? plugin.description}
+									</CardDescription>
 								</div>
 								<div className="flex shrink-0 items-center gap-1">
 									{!plugin.core && (
@@ -181,8 +183,8 @@ export default function Installed(): React.JSX.Element {
 									)}
 								</div>
 							</CardHeader>
-							<CardContent className="flex flex-col gap-1 pl-16! text-xs text-muted-foreground">
-								{!plugin.error && <p>{summary(plugin)}</p>}
+							<CardContent className="mt-auto flex flex-col gap-1 pl-16! text-xs text-muted-foreground">
+								{!plugin.error && <p className="truncate">{summary(plugin)}</p>}
 								{plugin.author && (
 									<p>{t('settings.integrations.installed.author', { author: plugin.author })}</p>
 								)}

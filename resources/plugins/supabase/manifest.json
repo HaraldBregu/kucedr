@@ -3,7 +3,7 @@
 	"id": "supabase",
 	"title": "Supabase",
 	"version": "1.0.0",
-	"description": "Supabase provider for Kucedr.",
+	"description": "Supabase Storage for files.",
 	"author": "Kucedr",
 	"icon": "supabase.svg",
 	"authentication": "api-key",

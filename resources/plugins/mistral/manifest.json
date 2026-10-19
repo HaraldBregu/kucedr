@@ -3,7 +3,7 @@
 	"id": "mistral",
 	"title": "Mistral AI",
 	"version": "1.0.0",
-	"description": "Mistral AI provider for Kucedr.",
+	"description": "Mistral chat models, embeddings, and voice.",
 	"author": "Kucedr",
 	"icon": "mistral.svg",
 	"authentication": "api-key",

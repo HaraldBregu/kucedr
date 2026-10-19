@@ -3,7 +3,7 @@
 	"id": "github",
 	"title": "GitHub",
 	"version": "1.0.0",
-	"description": "GitHub provider for Kucedr.",
+	"description": "GitHub MCP server for repositories, issues, and pull requests.",
 	"author": "Kucedr",
 	"icon": "github-light.svg",
 	"authentication": "oauth2",

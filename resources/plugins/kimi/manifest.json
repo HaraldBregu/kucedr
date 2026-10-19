@@ -3,7 +3,7 @@
 	"id": "kimi",
 	"title": "Moonshot AI / Kimi",
 	"version": "1.0.0",
-	"description": "Moonshot AI / Kimi provider for Kucedr.",
+	"description": "Kimi chat models from Moonshot AI with long context.",
 	"author": "Kucedr",
 	"icon": "kimi.svg",
 	"authentication": "api-key",

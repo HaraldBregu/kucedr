@@ -3,7 +3,7 @@
 	"id": "tavily",
 	"title": "Tavily",
 	"version": "1.0.0",
-	"description": "Tavily provider for Kucedr.",
+	"description": "Tavily web search built for AI agents.",
 	"author": "Kucedr",
 	"icon": "tavily.svg",
 	"authentication": "api-key",

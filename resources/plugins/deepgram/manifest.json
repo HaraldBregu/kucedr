@@ -3,7 +3,7 @@
 	"id": "deepgram",
 	"title": "Deepgram",
 	"version": "1.0.0",
-	"description": "Deepgram provider for Kucedr.",
+	"description": "Fast speech-to-text transcription and text-to-speech.",
 	"author": "Kucedr",
 	"icon": "deepgram.svg",
 	"authentication": "api-key",

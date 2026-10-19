@@ -3,7 +3,7 @@
 	"id": "minimax",
 	"title": "MiniMax",
 	"version": "1.0.0",
-	"description": "MiniMax provider for Kucedr.",
+	"description": "MiniMax chat, video, image, speech, and music models.",
 	"author": "Kucedr",
 	"icon": "minimax.svg",
 	"authentication": "api-key",

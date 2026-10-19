@@ -3,7 +3,7 @@
 	"id": "kling",
 	"title": "Kuaishou / Kling AI",
 	"version": "1.0.0",
-	"description": "Kuaishou / Kling AI provider for Kucedr.",
+	"description": "Kling video, image, and audio generation.",
 	"author": "Kucedr",
 	"icon": "kling.svg",
 	"authentication": "api-key",

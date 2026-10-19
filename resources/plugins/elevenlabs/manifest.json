@@ -3,7 +3,7 @@
 	"id": "elevenlabs",
 	"title": "ElevenLabs",
 	"version": "1.0.0",
-	"description": "ElevenLabs provider for Kucedr.",
+	"description": "Lifelike voices, transcription, and sound effects.",
 	"author": "Kucedr",
 	"icon": "elevenlabs-light.svg",
 	"authentication": "api-key",

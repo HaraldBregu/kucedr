@@ -3,7 +3,7 @@
 	"id": "pika",
 	"title": "Pika",
 	"version": "1.0.0",
-	"description": "Pika provider for Kucedr.",
+	"description": "Pika video generation with sound effects and voice.",
 	"author": "Kucedr",
 	"icon": "pika-light.svg",
 	"authentication": "api-key",
