@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "deepseek",
+	"title": "DeepSeek",
+	"version": "1.0.0",
+	"description": "DeepSeek provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

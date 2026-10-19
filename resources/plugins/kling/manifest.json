@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "kling",
+	"title": "Kuaishou / Kling AI",
+	"version": "1.0.0",
+	"description": "Kuaishou / Kling AI provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

@@ -21,7 +21,7 @@ it.each([undefined, 8192])(
 	'fills missing user-catalog limits while respecting an explicit %s token limit',
 	(limit) => {
 		const manifest = JSON.parse(
-			readFileSync(path.resolve('resources/plugins/bootstrap-kucedr/providers/openai/manifest.json'), 'utf8')
+			readFileSync(path.resolve('resources/plugins/openai/providers/openai/manifest.json'), 'utf8')
 		);
 		const model = manifest.models.find((item: { id: string }) => item.id === 'gpt-5.4-mini');
 		delete model.metadata.contextWindow;

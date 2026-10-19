@@ -18,7 +18,7 @@ export function listPlugins(): PluginInfo[] {
 			version: manifest.version,
 			description: manifest.description,
 			...(manifest.author && { author: manifest.author }),
-			...(manifest.icon && { icon: pluginIcon(path.join(directory, manifest.icon)) }),
+			...(manifest.icon && { icon: pluginIcon(path.join(directory, 'assets', manifest.icon)) }),
 		}),
 		builtIn,
 		core: builtIn && id === CORE_PLUGIN_ID,
@@ -26,7 +26,10 @@ export function listPlugins(): PluginInfo[] {
 		...(error && { error }),
 		contributes:
 			manifest?.contributes ??
-			(Object.fromEntries(PLUGIN_KINDS.map((kind) => [kind, []])) as Record<PluginKind, string[]>),
+			(Object.fromEntries(PLUGIN_KINDS.map((kind) => [kind, [] as string[]])) as Record<
+				PluginKind,
+				string[]
+			>),
 		extensions:
 			manifest?.extensions.map(({ icon, ...extension }) => ({
 				...extension,

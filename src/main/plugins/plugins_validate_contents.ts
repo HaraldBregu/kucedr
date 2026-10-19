@@ -7,7 +7,7 @@ import { readAppManifestFromDirectory } from '../apps/app_read';
 import { listLocalMcpServers } from '../mcp/mcp_local_list';
 import { validateSkill } from '../agent/skills/skills_validate';
 import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
-import { coreProvidersDir } from './plugins_core_providers_dir';
+import { scanPlugins } from './plugins_scan';
 
 /** Install-time checks that each contribution is readable by the loader that will serve it. */
 export function validatePluginContents(directory: string, manifest: ReadPlugin): void {
@@ -45,8 +45,10 @@ export function validatePluginContents(directory: string, manifest: ReadPlugin):
 		if (errors.length > 0) throw new Error(`providers/${id}: ${errors.join(' ')}`);
 		const providerId = normalizeProviderId((value as { providerId: string }).providerId);
 		if (providerId !== id) throw new Error(`providers/${id}: providerId must be "${id}".`);
-		// ponytail: core provider folders are named by provider id
-		if (existsSync(path.join(coreProvidersDir(), id))) {
+		const builtIn = scanPlugins().find(
+			(plugin) => plugin.builtIn && plugin.manifest?.contributes.providers.includes(id)
+		);
+		if (builtIn && builtIn.id !== manifest.id) {
 			throw new Error(`providers/${id}: a built-in provider already uses this id.`);
 		}
 	}

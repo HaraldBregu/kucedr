@@ -8,17 +8,18 @@ import {
 } from '../../shared/provider_types';
 import { parseProviderManifest } from '../../shared/providers/validation';
 import { isChannelId } from '../../shared/channels_definitions';
-import { coreProvidersDir } from '../plugins/plugins_core_providers_dir';
+import { pluginDirs } from '../plugins/plugins_dirs';
 
 export function loadChannels(): readonly CatalogService[] {
-	const directory = coreProvidersDir();
-	if (!existsSync(directory)) return [];
+	const channelDirectories = pluginDirs('providers').flatMap(({ directory }) =>
+		readdirSync(directory, { withFileTypes: true })
+			.filter((dirent) => dirent.isDirectory())
+			.map((dirent) => path.join(directory, dirent.name))
+	);
 
 	const channels: CatalogService[] = [];
-	for (const dirent of readdirSync(directory, { withFileTypes: true })) {
-		if (!dirent.isDirectory()) continue;
+	for (const channelDirectory of channelDirectories) {
 		try {
-			const channelDirectory = path.join(directory, dirent.name);
 			const manifestPath = path.join(channelDirectory, 'manifest.json');
 			if (!existsSync(manifestPath)) continue;
 			const manifest = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));

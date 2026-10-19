@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "telegram",
+	"title": "Telegram",
+	"version": "1.0.0",
+	"description": "Telegram provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

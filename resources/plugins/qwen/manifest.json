@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "qwen",
+	"title": "Alibaba / Qwen / Wan",
+	"version": "1.0.0",
+	"description": "Alibaba / Qwen / Wan provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

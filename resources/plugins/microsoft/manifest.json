@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "microsoft",
+	"title": "Microsoft",
+	"version": "1.0.0",
+	"description": "Microsoft provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

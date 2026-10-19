@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "ollama",
+	"title": "Ollama",
+	"version": "1.0.0",
+	"description": "Ollama provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

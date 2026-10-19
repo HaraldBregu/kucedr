@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "supabase",
+	"title": "Supabase",
+	"version": "1.0.0",
+	"description": "Supabase provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

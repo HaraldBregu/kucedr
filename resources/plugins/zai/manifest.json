@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "zai",
+	"title": "Z.ai / Zhipu AI",
+	"version": "1.0.0",
+	"description": "Z.ai / Zhipu AI provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

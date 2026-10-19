@@ -1,0 +1,5 @@
+{
+	"title": "Word counter",
+	"description": "Counts the words in pasted text.",
+	"slot": "panel"
+}

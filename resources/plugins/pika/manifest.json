@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "pika",
+	"title": "Pika",
+	"version": "1.0.0",
+	"description": "Pika provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

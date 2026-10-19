@@ -8,7 +8,7 @@ afterEach(() => jest.restoreAllMocks());
 
 it('covers every bundled chat model with a documented positive context limit', () => {
 	const models = loadModels().filter((model) => model.type === 'llm');
-	const root = path.resolve('resources/plugins/bootstrap-kucedr/providers');
+	const root = path.resolve('resources/plugins/*/providers');
 	const expected = readdirSync(root).flatMap((providerId) => {
 		const manifest = JSON.parse(readFileSync(path.join(root, providerId, 'manifest.json'), 'utf8'));
 		return manifest.models

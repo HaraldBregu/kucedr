@@ -1,7 +1,7 @@
 import { loadChannels } from '../../../../src/main/channels/catalog';
 
 describe('channel manifests', () => {
-	it('loads channel services and icons from resources/plugins/bootstrap-kucedr/providers', () => {
+	it('loads channel services and icons from resources/plugins/*/providers', () => {
 		const channels = loadChannels();
 
 		expect(channels.map((channel) => channel.provider.id)).toEqual(['telegram']);
@@ -22,9 +22,9 @@ describe('channel manifests', () => {
 				provider: expect.objectContaining({
 					id: 'telegram',
 					name: 'Telegram',
-					iconDarkUrl: expect.stringContaining('/resources/plugins/bootstrap-kucedr/providers/telegram/images/telegram.svg'),
+					iconDarkUrl: expect.stringContaining('/resources/plugins/telegram/providers/telegram/images/telegram.svg'),
 					iconLightUrl: expect.stringContaining(
-						'/resources/plugins/bootstrap-kucedr/providers/telegram/images/telegram.svg'
+						'/resources/plugins/telegram/providers/telegram/images/telegram.svg'
 					),
 				}),
 			})

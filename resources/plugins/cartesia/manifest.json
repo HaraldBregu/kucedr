@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "cartesia",
+	"title": "Cartesia",
+	"version": "1.0.0",
+	"description": "Cartesia provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

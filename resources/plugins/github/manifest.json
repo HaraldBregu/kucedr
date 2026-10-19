@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "github",
+	"title": "GitHub",
+	"version": "1.0.0",
+	"description": "GitHub provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

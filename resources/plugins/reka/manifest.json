@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "reka",
+	"title": "Reka AI",
+	"version": "1.0.0",
+	"description": "Reka AI provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

@@ -47,7 +47,7 @@ export function readPlugin(
 		throw new Error(`Requires Kucedr ${manifest.minAppVersion} or newer.`);
 	}
 	assertNoLinks(directory);
-	if (manifest.icon) assertIcon(directory, manifest.icon);
+	if (manifest.icon) assertIcon(path.join(directory, 'assets'), manifest.icon);
 	const contributes = pluginContents(directory);
 	const extensions = contributes.extensions.map((id) => ({
 		id,

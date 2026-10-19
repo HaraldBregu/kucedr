@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "pinecone",
+	"title": "Pinecone",
+	"version": "1.0.0",
+	"description": "Pinecone provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

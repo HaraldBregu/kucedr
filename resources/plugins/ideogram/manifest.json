@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "ideogram",
+	"title": "Ideogram",
+	"version": "1.0.0",
+	"description": "Ideogram provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

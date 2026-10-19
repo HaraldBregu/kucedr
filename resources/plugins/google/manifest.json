@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "google",
+	"title": "Google DeepMind / Google",
+	"version": "1.0.0",
+	"description": "Google DeepMind / Google provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

@@ -77,8 +77,8 @@ describe('provider manifests', () => {
 		for (const [id, icon] of icons) {
 			const service = services.find((entry) => entry.id === id);
 			expect(service?.url).toContain('/tenants/{tenantId}/servers/');
-			expect(service?.iconDarkUrl).toContain(`/resources/plugins/bootstrap-kucedr/providers/microsoft/images/${icon}`);
-			expect(service?.iconLightUrl).toContain(`/resources/plugins/bootstrap-kucedr/providers/microsoft/images/${icon}`);
+			expect(service?.iconDarkUrl).toContain(`/resources/plugins/microsoft/providers/microsoft/images/${icon}`);
+			expect(service?.iconLightUrl).toContain(`/resources/plugins/microsoft/providers/microsoft/images/${icon}`);
 		}
 	});
 
@@ -193,69 +193,69 @@ describe('provider manifests', () => {
 		]) {
 			const service = integrations.find((entry) => entry.id === id);
 			const iconName = id === 'google-contacts' ? 'google-contact' : id;
-			expect(service?.iconDarkUrl).toContain(`/resources/plugins/bootstrap-kucedr/providers/google/images/${iconName}.svg`);
-			expect(service?.iconLightUrl).toContain(`/resources/plugins/bootstrap-kucedr/providers/google/images/${iconName}.svg`);
+			expect(service?.iconDarkUrl).toContain(`/resources/plugins/google/providers/google/images/${iconName}.svg`);
+			expect(service?.iconLightUrl).toContain(`/resources/plugins/google/providers/google/images/${iconName}.svg`);
 		}
 		expect(integrations.find((service) => service.id === 'gitlab')?.iconLightUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/gitlab/images/gitlab.svg'
+			'/resources/plugins/gitlab/providers/gitlab/images/gitlab.svg'
 		);
 		expect(
 			integrations.find((service) => service.id === 'microsoft-learn')?.iconLightUrl
-		).toContain('/resources/plugins/bootstrap-kucedr/providers/microsoft/images/microsoft.svg');
+		).toContain('/resources/plugins/microsoft/providers/microsoft/images/microsoft.svg');
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
 			expect.objectContaining({
-				iconDarkUrl: expect.stringContaining('/resources/plugins/bootstrap-kucedr/providers/github/images/github-dark.svg'),
+				iconDarkUrl: expect.stringContaining('/resources/plugins/github/providers/github/images/github-dark.svg'),
 				iconLightUrl: expect.stringContaining(
-					'/resources/plugins/bootstrap-kucedr/providers/github/images/github-light.svg'
+					'/resources/plugins/github/providers/github/images/github-light.svg'
 				),
 			})
 		);
-		expect(google?.provider.iconDarkUrl).toContain('/resources/plugins/bootstrap-kucedr/providers/google/images/google.svg');
+		expect(google?.provider.iconDarkUrl).toContain('/resources/plugins/google/providers/google/images/google.svg');
 		expect(
 			integrations.find((service) => service.id === 'notion')?.provider.iconLightUrl
-		).toContain('/resources/plugins/bootstrap-kucedr/providers/notion/images/notion.svg');
+		).toContain('/resources/plugins/notion/providers/notion/images/notion.svg');
 		expect(openAi?.provider.iconDarkUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/openai/images/openai-dark.svg'
+			'/resources/plugins/openai/providers/openai/images/openai-dark.svg'
 		);
 		expect(openAi?.provider.iconLightUrl).toMatch(/^local-resource:\/\/file/);
 		expect(openAi?.provider.iconLightUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/openai/images/openai-light.svg'
+			'/resources/plugins/openai/providers/openai/images/openai-light.svg'
 		);
 		expect(providersById.get('reka')?.iconDarkUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/reka/images/reka-dark.svg'
+			'/resources/plugins/reka/providers/reka/images/reka-dark.svg'
 		);
 		expect(providersById.get('reka')?.iconLightUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/reka/images/reka-light.svg'
+			'/resources/plugins/reka/providers/reka/images/reka-light.svg'
 		);
 		expect(providersById.get('pika')?.iconDarkUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/pika/images/pika-dark.svg'
+			'/resources/plugins/pika/providers/pika/images/pika-dark.svg'
 		);
 		expect(providersById.get('pika')?.iconLightUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/pika/images/pika-light.svg'
+			'/resources/plugins/pika/providers/pika/images/pika-light.svg'
 		);
 		expect(providersById.get('jina')?.iconDarkUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/jina/images/jina-dark.svg'
+			'/resources/plugins/jina/providers/jina/images/jina-dark.svg'
 		);
 		expect(providersById.get('jina')?.iconLightUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/jina/images/jina-light.svg'
+			'/resources/plugins/jina/providers/jina/images/jina-light.svg'
 		);
 		expect(providersById.get('deepgram')?.iconDarkUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/deepgram/images/deepgram.svg'
+			'/resources/plugins/deepgram/providers/deepgram/images/deepgram.svg'
 		);
 		expect(providersById.get('deepgram')?.iconLightUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/deepgram/images/deepgram.svg'
+			'/resources/plugins/deepgram/providers/deepgram/images/deepgram.svg'
 		);
 		expect(providersById.get('brave')?.iconDarkUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/brave/images/brave.svg'
+			'/resources/plugins/brave/providers/brave/images/brave.svg'
 		);
 		expect(providersById.get('brave')?.iconLightUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/brave/images/brave.svg'
+			'/resources/plugins/brave/providers/brave/images/brave.svg'
 		);
 		expect(providersById.get('tavily')?.iconDarkUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/tavily/images/tavily.svg'
+			'/resources/plugins/tavily/providers/tavily/images/tavily.svg'
 		);
 		expect(providersById.get('tavily')?.iconLightUrl).toContain(
-			'/resources/plugins/bootstrap-kucedr/providers/tavily/images/tavily.svg'
+			'/resources/plugins/tavily/providers/tavily/images/tavily.svg'
 		);
 		expect(providersById.get('pinecone')).toEqual(
 			expect.objectContaining({
@@ -263,10 +263,10 @@ describe('provider manifests', () => {
 				name: 'Pinecone',
 				apiKeyUrl: 'https://app.pinecone.io',
 				iconDarkUrl: expect.stringContaining(
-					'/resources/plugins/bootstrap-kucedr/providers/pinecone/images/pinecone-dark.svg'
+					'/resources/plugins/pinecone/providers/pinecone/images/pinecone-dark.svg'
 				),
 				iconLightUrl: expect.stringContaining(
-					'/resources/plugins/bootstrap-kucedr/providers/pinecone/images/pinecone-light.svg'
+					'/resources/plugins/pinecone/providers/pinecone/images/pinecone-light.svg'
 				),
 			})
 		);

@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "tavily",
+	"title": "Tavily",
+	"version": "1.0.0",
+	"description": "Tavily provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

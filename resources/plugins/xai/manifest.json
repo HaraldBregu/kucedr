@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "xai",
+	"title": "xAI",
+	"version": "1.0.0",
+	"description": "xAI provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

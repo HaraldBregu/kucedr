@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "black-forest-labs",
+	"title": "Black Forest Labs",
+	"version": "1.0.0",
+	"description": "Black Forest Labs provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "elevenlabs",
+	"title": "ElevenLabs",
+	"version": "1.0.0",
+	"description": "ElevenLabs provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

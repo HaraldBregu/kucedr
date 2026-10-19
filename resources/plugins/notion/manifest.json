@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "notion",
+	"title": "Notion",
+	"version": "1.0.0",
+	"description": "Notion provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

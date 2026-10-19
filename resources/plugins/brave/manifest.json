@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "brave",
+	"title": "Brave",
+	"version": "1.0.0",
+	"description": "Brave provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

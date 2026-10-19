@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "cohere",
+	"title": "Cohere",
+	"version": "1.0.0",
+	"description": "Cohere provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

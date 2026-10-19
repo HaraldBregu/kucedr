@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "openai",
+	"title": "OpenAI",
+	"version": "1.0.0",
+	"description": "OpenAI provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

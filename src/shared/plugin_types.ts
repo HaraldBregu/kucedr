@@ -1,7 +1,7 @@
 export const PLUGIN_KINDS = ['apps', 'extensions', 'mcp', 'providers', 'skills'] as const;
 
-/** The built-in plugin that ships Kucedr's own providers; it can't be disabled or replaced. */
-export const CORE_PLUGIN_ID = 'bootstrap-kucedr';
+/** The built-in plugin that ships Kucedr's own apps, MCP servers, and skills; it can't be disabled or replaced. */
+export const CORE_PLUGIN_ID = 'kucedr';
 
 export type PluginKind = (typeof PLUGIN_KINDS)[number];
 

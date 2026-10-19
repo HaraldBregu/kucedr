@@ -6,7 +6,7 @@ import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
-import googleIcon from '@resources/plugins/bootstrap-kucedr/providers/google/images/google.svg';
+import googleIcon from '@resources/plugins/google/providers/google/images/google.svg';
 
 type Mode = 'signIn' | 'signUp' | 'forgot';
 

@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "minimax",
+	"title": "MiniMax",
+	"version": "1.0.0",
+	"description": "MiniMax provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

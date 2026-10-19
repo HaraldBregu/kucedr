@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "kimi",
+	"title": "Moonshot AI / Kimi",
+	"version": "1.0.0",
+	"description": "Moonshot AI / Kimi provider for Kucedr.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}
