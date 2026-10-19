@@ -310,7 +310,7 @@ user, and plugin entries in one list.
 | UI API (IPC channel) | Main function | Plugin source added |
 | --- | --- | --- |
 | `AppChannels.models` | `loadModels()` (`src/main/models.ts`) | `providers/*/manifest.json` → `models` |
-| `AppChannels.databases` | `loadDatabases()` | `providers/*/manifest.json` → `databases` |
+| `AppChannels.vectorDatabases` | `loadVectorDatabases()` | `providers/*/manifest.json` → `vector_databases` |
 | `AppChannels.webSearches` | `loadWebSearches()` | `providers/*/manifest.json` → `web_search` |
 | `AppChannels.storages` | `loadStorages()` | `providers/*/manifest.json` → `storages` |
 | `AppChannels.mcps` | `loadMcps()` | `providers/*/manifest.json` → `mcp_servers` (remote catalog services) |
