@@ -314,6 +314,7 @@
 				"health": "Periodic health checks",
 				"permissions": "Tool permissions and path rules",
 				"apps": "Installed apps",
+				"extensions": "Plugin UI shown inside Kucedr",
 				"knowledge": "Index your documents for search and grounded answers.",
 				"plugins": "Installable app plugins",
 				"configurationDescription": "Configure models, storage, and integrations"
@@ -350,6 +351,7 @@
 			"developer": "Developer",
 			"skills": "Skills",
 			"apps": "Apps",
+			"extensions": "Extensions",
 			"plugins": "Plugins",
 			"knowledge": "Knowledge"
 		},
@@ -412,6 +414,8 @@
 				"kinds": {
 					"apps_one": "{{count}} app",
 					"apps_other": "{{count}} apps",
+					"extensions_one": "{{count}} extension",
+					"extensions_other": "{{count}} extensions",
 					"mcp_servers_one": "{{count}} MCP server",
 					"mcp_servers_other": "{{count}} MCP servers",
 					"providers_one": "{{count}} provider",
@@ -1691,6 +1695,20 @@
 				"loadError": "Unable to load window settings.",
 				"saveError": "Unable to save window settings. Try again.",
 				"invalid": "Enter whole numbers from 1 to 32768. Minimum dimensions cannot exceed default dimensions."
+			}
+		},
+		"extensions": {
+			"title": "Installed extensions",
+			"description": "UI that plugins add to Kucedr screens. Turn a plugin on or off in Plugins.",
+			"empty": "No extensions",
+			"emptyDescription": "Install a plugin that contains extensions from Plugins.",
+			"loadError": "Unable to load extensions.",
+			"slots": {
+				"sidebar": "Sidebar",
+				"panel": "Panel",
+				"toolbar": "Toolbar",
+				"composer": "Composer",
+				"settings": "Settings"
 			}
 		},
 		"plugins": {

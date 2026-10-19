@@ -4,6 +4,7 @@ import {
 	Brain,
 	Bot,
 	Layers,
+	LayoutPanelLeft,
 	HardDrive,
 	Code2,
 	Cpu,
@@ -455,6 +456,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.apps',
 		descriptionKey: 'settings.overview.descriptions.apps',
 		icon: Layers,
+	},
+	{
+		path: '/settings/extensions',
+		labelKey: 'settings.tabs.extensions',
+		descriptionKey: 'settings.overview.descriptions.extensions',
+		icon: LayoutPanelLeft,
 	},
 	{
 		path: '/settings/channels',

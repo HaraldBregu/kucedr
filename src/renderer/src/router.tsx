@@ -61,6 +61,7 @@ const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page
 const McpToolsPage = lazy(() => import('./pages/settings/pages/assistant/mcptools/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
+const ExtensionsPage = lazy(() => import('./pages/settings/pages/extensions/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
 
 function ModelServiceLegacyRedirect(): React.JSX.Element {
@@ -653,6 +654,14 @@ const routes: RouteObject[] = [
 					{
 						path: 'speech-to-text',
 						element: <Navigate to="/settings/agent" replace />,
+					},
+					{
+						path: 'extensions',
+						element: (
+							<SettingsRouteWrapper>
+								<ExtensionsPage />
+							</SettingsRouteWrapper>
+						),
 					},
 					{
 						path: 'apps',

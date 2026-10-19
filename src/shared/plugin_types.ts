@@ -1,4 +1,4 @@
-export const PLUGIN_KINDS = ['apps', 'mcp_servers', 'providers', 'skills'] as const;
+export const PLUGIN_KINDS = ['apps', 'extensions', 'mcp_servers', 'providers', 'skills'] as const;
 
 export type PluginKind = (typeof PLUGIN_KINDS)[number];
 
@@ -6,6 +6,12 @@ export type PluginKind = (typeof PLUGIN_KINDS)[number];
 export interface PluginSource {
 	readonly id: string;
 	readonly name: string;
+}
+
+export interface PluginExtension {
+	readonly id: string;
+	readonly title: string;
+	readonly slot: string;
 }
 
 export interface PluginInfo {
@@ -19,4 +25,5 @@ export interface PluginInfo {
 	/** Why the plugin could not be loaded; its contributions are hidden while set. */
 	readonly error?: string;
 	readonly contributes: Readonly<Record<PluginKind, readonly string[]>>;
+	readonly extensions: readonly PluginExtension[];
 }

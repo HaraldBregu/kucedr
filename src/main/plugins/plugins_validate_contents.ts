@@ -19,6 +19,12 @@ export function validatePluginContents(directory: string, manifest: PluginManife
 			throw new Error(`apps/${id}: entry ${app.metadata.entry} does not exist.`);
 		}
 	}
+	for (const { id } of manifest.contributes.extensions) {
+		const entry = path.join(directory, 'extensions', id, 'index.html');
+		if (!existsSync(entry) || !statSync(entry).isFile()) {
+			throw new Error(`extensions/${id} needs an index.html.`);
+		}
+	}
 	for (const { id } of manifest.contributes.mcp_servers) {
 		try {
 			readLocalMcpServer(path.join(directory, 'mcp_servers', id));

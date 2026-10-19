@@ -10,6 +10,7 @@ Every folder except `example/` is packaged into the app. `example/` is a dev-onl
 <plugin-id>/
   manifest.json
   apps/<app-id>/              manifest.json + index.html, js, css
+  extensions/<extension-id>/  index.html, js, css (shown in a host UI slot)
   mcp_servers/<server-id>/    mcp.json (+ server files for stdio)
   providers/<provider-id>/    manifest.json (models, vector_databases, web_search, storage, mcp_servers)
   skills/<skill-id>/          SKILL.md
@@ -27,6 +28,7 @@ Every folder except `example/` is packaged into the app. `example/` is a dev-onl
 	"minAppVersion": "1.2.0",
 	"contributes": {
 		"apps": [{ "id": "notes" }],
+		"extensions": [{ "id": "word-counter", "title": "Word counter", "slot": "panel" }],
 		"mcp_servers": [{ "id": "text-tools" }],
 		"providers": [{ "id": "example-provider" }],
 		"skills": [{ "id": "release-notes" }]
@@ -40,6 +42,8 @@ Rules:
   folder under a kind must be declared in `contributes`.
 - Plugins can't contain symlinks, and stdio MCP servers must be bundled (Kucedr never runs
   `npm install`).
+- An extension's `slot` is one of `sidebar`, `panel`, `toolbar`, `composer`, or `settings`.
+  Extensions don't render yet.
 - A provider id can't reuse a built-in provider id.
 
 See [docs/PLUGIN_SYSTEM.md](../docs/PLUGIN_SYSTEM.md) for the full design.

@@ -147,7 +147,8 @@ Field rules:
 
 - `schemaVersion`, `id`, `name`, `version`, and `description` are required, and at least one
   contribution is required. Unknown keys are rejected.
-- Contributions declare only an `id`. The folder is always `<kind>/<id>/`.
+- Contributions declare only an `id`, except extensions, which also declare a `title` and a
+  `slot`. The folder is always `<kind>/<id>/`.
 - `configSchema` and `uiHints` are optional. When present, Settings → Plugins renders the
   plugin's settings form from them, so plugins never ship settings UI code. Fields marked
   `sensitive` are saved in the existing credential store and are never written into the plugin
@@ -157,6 +158,7 @@ Field rules:
   section 9. They are shown to the user before install, and anything not listed is denied.
 - On install, each contribution must also be readable by its loader (`validatePluginContents()`):
   - an app needs a valid app `manifest.json` and entry file;
+  - an extension needs an `index.html`;
   - an MCP server needs a valid `mcp.json`;
   - a provider needs a valid provider manifest whose `providerId` equals the folder name and isn't
     a built-in provider id;
@@ -539,7 +541,8 @@ Build each of these only when a real plugin needs it.
    URL. The install confirmation dialog listing contributions is still to do.
 6. Add the config form generated from `configSchema` and `uiHints`.
 7. Add the `kucedr-plugin://` protocol, the postMessage bridge, and the extension slot hosts
-   (start with `panel` and `sidebar`).
+   (start with `panel` and `sidebar`). Extensions can already be declared, validated, and listed,
+   but they don't render yet.
 8. Add local model downloads (Ollama pull, then URL plus `sha256`).
 9. Add the catalog: `plugins_catalog.ts`, the Browse tab, and updates.
 10. Update [PLUGINS.md](PLUGINS.md) to describe schema v5 and the desktop flow, and

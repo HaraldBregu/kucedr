@@ -18,5 +18,6 @@ export function listPlugins(): PluginInfo[] {
 		contributes: Object.fromEntries(
 			PLUGIN_KINDS.map((kind) => [kind, manifest?.contributes[kind].map((item) => item.id) ?? []])
 		) as Record<PluginKind, string[]>,
+		extensions: manifest?.contributes.extensions ?? [],
 	}));
 }

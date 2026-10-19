@@ -314,6 +314,7 @@
 				"health": "Controlli salute periodici",
 				"permissions": "Permessi strumenti e regole di percorso",
 				"apps": "App installate",
+				"extensions": "Interfacce dei plugin dentro Kucedr",
 				"knowledge": "Indicizza i documenti per cercare risposte basate sui file.",
 				"plugins": "Plugin installabili",
 				"configurationDescription": "Configura modelli, archiviazione e integrazioni"
@@ -350,6 +351,7 @@
 			"developer": "Sviluppatore",
 			"skills": "Abilità",
 			"apps": "App",
+			"extensions": "Estensioni",
 			"plugins": "Plugin",
 			"knowledge": "Knowledge"
 		},
@@ -412,6 +414,8 @@
 				"kinds": {
 					"apps_one": "{{count}} app",
 					"apps_other": "{{count}} app",
+					"extensions_one": "{{count}} estensione",
+					"extensions_other": "{{count}} estensioni",
 					"mcp_servers_one": "{{count}} server MCP",
 					"mcp_servers_other": "{{count}} server MCP",
 					"providers_one": "{{count}} provider",
@@ -1691,6 +1695,20 @@
 				"loadError": "Impossibile caricare le impostazioni della finestra.",
 				"saveError": "Impossibile salvare le impostazioni della finestra. Riprova.",
 				"invalid": "Inserisci numeri interi da 1 a 32768. Le dimensioni minime non possono superare quelle predefinite."
+			}
+		},
+		"extensions": {
+			"title": "Estensioni installate",
+			"description": "Interfacce che i plugin aggiungono alle schermate di Kucedr. Attiva o disattiva un plugin in Plugin.",
+			"empty": "Nessuna estensione",
+			"emptyDescription": "Installa da Plugin un plugin che contiene estensioni.",
+			"loadError": "Impossibile caricare le estensioni.",
+			"slots": {
+				"sidebar": "Barra laterale",
+				"panel": "Pannello",
+				"toolbar": "Barra strumenti",
+				"composer": "Compositore",
+				"settings": "Impostazioni"
 			}
 		},
 		"plugins": {

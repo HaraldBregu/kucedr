@@ -6,12 +6,24 @@ const idSchema = z
 export const pluginVersionSchema = z
 	.string()
 	.regex(/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/, 'Versions must be semver.');
+const uniqueIds = (items: { id: string }[]) =>
+	new Set(items.map((item) => item.id)).size === items.length;
 const contributionsSchema = z
 	.array(z.object({ id: idSchema }).strict())
 	.default([])
-	.refine((items) => new Set(items.map((item) => item.id)).size === items.length, {
-		message: 'Contribution ids must be unique.',
-	});
+	.refine(uniqueIds, { message: 'Contribution ids must be unique.' });
+const extensionsSchema = z
+	.array(
+		z
+			.object({
+				id: idSchema,
+				title: z.string().trim().min(1),
+				slot: z.enum(['sidebar', 'panel', 'toolbar', 'composer', 'settings']),
+			})
+			.strict()
+	)
+	.default([])
+	.refine(uniqueIds, { message: 'Contribution ids must be unique.' });
 
 export const pluginManifestSchema = z
 	.object({
@@ -25,13 +37,15 @@ export const pluginManifestSchema = z
 		contributes: z
 			.object({
 				apps: contributionsSchema,
+				extensions: extensionsSchema,
 				mcp_servers: contributionsSchema,
 				providers: contributionsSchema,
 				skills: contributionsSchema,
 			})
 			.strict()
 			.refine((groups) => Object.values(groups).some((items) => items.length > 0), {
-				message: 'A plugin must contribute at least one app, MCP server, provider, or skill.',
+				message:
+					'A plugin must contribute at least one app, extension, MCP server, provider, or skill.',
 			}),
 	})
 	.strict();

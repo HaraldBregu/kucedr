@@ -67,7 +67,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'extensions',
 		titleKey: 'settings.overview.groups.extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/plugins', '/settings/apps'].includes(item.path)
+			['/settings/plugins', '/settings/apps', '/settings/extensions'].includes(item.path)
 		),
 	},
 ] as const;
