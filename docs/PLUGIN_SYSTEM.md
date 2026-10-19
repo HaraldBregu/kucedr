@@ -517,20 +517,21 @@ Build each of these only when a real plugin needs it.
 4. Connect the listing APIs (section 5.6): `readCatalog()` (models, vector databases, web search,
    storage, and remote MCP), `mcpLocalDiscoveryRoots()`, skills, and apps. Add the `plugin` source
    tag and refresh on `plugins:changed`.
-4. Build the Settings → Plugins Installed list, Upload, Install from URL, and the confirmation
+5. Build the Settings → Plugins Installed list, Upload, Install from URL, and the confirmation
    dialog.
-5. Add the config form generated from `configSchema` and `uiHints`.
-6. Add the `kucedr-plugin://` protocol, the postMessage bridge, and the extension slot hosts
+6. Add the config form generated from `configSchema` and `uiHints`.
+7. Add the `kucedr-plugin://` protocol, the postMessage bridge, and the extension slot hosts
    (start with `panel` and `sidebar`).
-7. Add local model downloads (Ollama pull, then URL plus `sha256`).
-8. Add the catalog: `plugins_catalog.ts`, the Browse tab, and updates.
-9. Update [PLUGINS.md](PLUGINS.md) to describe schema v5 and the desktop flow.
+8. Add local model downloads (Ollama pull, then URL plus `sha256`).
+9. Add the catalog: `plugins_catalog.ts`, the Browse tab, and updates.
+10. Update [PLUGINS.md](PLUGINS.md) to describe schema v5 and the desktop flow, and
+    [PROVIDERS.md](PROVIDERS.md) to use `vector_databases`.
 
 ## 13. Verification
 
 - `npm run typecheck && npm run lint`.
 - Build a sample `acme-tools` plugin containing one app, one `panel` extension, one stdio MCP
-  server, a provider with one remote model, one Ollama local model, and one database, and one
+  server, a provider with one remote model, one Ollama local model, and one vector database, and one
   skill. Then:
   1. **Upload it:**
      - the app opens in its own window;

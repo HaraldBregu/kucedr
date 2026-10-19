@@ -13,7 +13,6 @@ const MODEL_SERVICE_TYPES = [
 ] as const;
 
 const AUTHENTICATION_TYPES = ['api-key', 'oauth2', 'none'] as const;
-const DATABASE_TYPES = ['vector', 'sql', 'nosql'] as const;
 const MODEL_LOCATIONS = ['remote', 'local'] as const;
 
 const PROMPT_MODEL_SERVICE_TYPES = ['large-language-model', 'research-chat-model'] as const;
@@ -106,7 +105,9 @@ export function validateProviderManifest(value: unknown): string[] {
 	}
 	if (manifest.services !== undefined)
 		errors.push('manifest.json: "services" has been replaced by capability fields.');
-	for (const key of ['models', 'mcp_servers', 'databases', 'web_search', 'bots'] as const) {
+	if (manifest.databases !== undefined)
+		errors.push('manifest.json: "databases" has been renamed; use "vector_databases".');
+	for (const key of ['models', 'mcp_servers', 'vector_databases', 'web_search', 'bots'] as const) {
 		const entries = manifest[key];
 		if (entries === undefined) continue;
 		if (!Array.isArray(entries)) {
@@ -236,12 +237,6 @@ export function validateProviderManifest(value: unknown): string[] {
 							...validatePromptAttachments(attachments, `${itemPath}.metadata.promptAttachments`)
 						);
 				}
-			}
-			if (
-				key === 'databases' &&
-				!DATABASE_TYPES.includes(entry.type as (typeof DATABASE_TYPES)[number])
-			) {
-				errors.push(`${itemPath}.type must be one of ${DATABASE_TYPES.join(', ')}.`);
 			}
 		});
 	}
