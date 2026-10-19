@@ -538,8 +538,9 @@ Build each of these only when a real plugin needs it.
      - the MCP tools appear in the agent's tool list;
      - both models come back from `AppChannels.models` and appear in Settings → Providers →
        Models with a "from Acme Tools" badge;
-     - the database comes back from `AppChannels.databases` and appears in Settings → Providers →
-       Database;
+     - the vector database comes back from `AppChannels.vectorDatabases` and appears in
+       Settings → Providers → Database;
+     - a plugin manifest that uses the old `databases` key is shown as unavailable;
      - disabling the plugin removes them from both responses without a restart;
      - the skill appears in Skills.
   2. **Download the local model:** progress is shown, and the model then answers a chat through
