@@ -322,7 +322,7 @@ user, and plugin entries in one list.
 
 How it works:
 
-1. **One change covers all five catalog APIs.** `loadModels`, `loadDatabases`, `loadWebSearches`,
+1. **One change covers all five catalog APIs.** `loadModels`, `loadVectorDatabases`, `loadWebSearches`,
    `loadStorages`, and `loadMcps` all come from `readCatalog()`. That function's directory loop
    becomes:
 
