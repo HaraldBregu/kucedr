@@ -511,7 +511,10 @@ Build each of these only when a real plugin needs it.
    `npm run typecheck`.
 2. Add the `src/main/plugins/` core (root, list, enabled, dirs, install, upload, download,
    remove) and the IPC handlers.
-3. Connect the listing APIs (section 5.6): `readCatalog()` (models, databases, web search,
+3. Rename `databases` to `vector_databases` (section 5.4) in the manifest key, validation, types,
+   `loadVectorDatabases()`, `AppChannels.vectorDatabases`, bundled manifests, and the renderer.
+   Verify with `npm run typecheck`, and confirm Pinecone still connects in Settings → Knowledge.
+4. Connect the listing APIs (section 5.6): `readCatalog()` (models, vector databases, web search,
    storage, and remote MCP), `mcpLocalDiscoveryRoots()`, skills, and apps. Add the `plugin` source
    tag and refresh on `plugins:changed`.
 4. Build the Settings → Plugins Installed list, Upload, Install from URL, and the confirmation
