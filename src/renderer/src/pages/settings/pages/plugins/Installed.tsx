@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MoreHorizontal, Plug, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PluginInfo } from '@shared/plugin_types';
@@ -16,6 +17,7 @@ import Confirm from './Confirm';
 
 export default function Installed({ query = '' }: { readonly query?: string }): React.JSX.Element {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [plugins, setPlugins] = useState<PluginInfo[]>([]);
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
@@ -85,7 +87,23 @@ export default function Installed({ query = '' }: { readonly query?: string }): 
 					) : (
 						<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 							{group.plugins.map((plugin) => (
-								<Card key={plugin.id} size="sm" className="h-24">
+								<Card
+									key={plugin.id}
+									size="sm"
+									role="link"
+									tabIndex={0}
+									className="h-24 cursor-pointer hover:bg-muted/50 focus-visible:bg-muted/50"
+									onClick={() => navigate(`/settings/plugins/${plugin.id}`)}
+									onKeyDown={(event) => {
+										if (
+											event.target === event.currentTarget &&
+											(event.key === 'Enter' || event.key === ' ')
+										) {
+											event.preventDefault();
+											navigate(`/settings/plugins/${plugin.id}`);
+										}
+									}}
+								>
 									<CardHeader className="flex items-start gap-3">
 										{plugin.icon ? (
 											<img src={plugin.icon} alt="" className="size-10 shrink-0 object-contain" />
@@ -112,7 +130,11 @@ export default function Installed({ query = '' }: { readonly query?: string }): 
 												{plugin.error ?? plugin.description}
 											</CardDescription>
 										</div>
-										<div className="flex shrink-0 items-center gap-1">
+										<div
+											className="flex shrink-0 items-center gap-1"
+											onClick={(event) => event.stopPropagation()}
+											onKeyDown={(event) => event.stopPropagation()}
+										>
 											{!plugin.core && (
 												<Button
 													type="button"

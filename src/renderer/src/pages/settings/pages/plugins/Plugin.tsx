@@ -140,7 +140,13 @@ export default function PluginPage(): React.JSX.Element {
 	const details: Row[] = [
 		{ key: 'id', title: t('settings.integrations.plugin.id'), badge: plugin.id },
 		...(plugin.version
-			? [{ key: 'version', title: t('settings.integrations.plugin.version'), badge: plugin.version }]
+			? [
+					{
+						key: 'version',
+						title: t('settings.integrations.plugin.version'),
+						badge: plugin.version,
+					},
+				]
 			: []),
 		...(plugin.author
 			? [{ key: 'author', title: t('settings.integrations.plugin.author'), badge: plugin.author }]
@@ -268,7 +274,9 @@ export default function PluginPage(): React.JSX.Element {
 					<h1 className="flex flex-wrap items-center gap-2 text-3xl font-normal leading-9 text-foreground">
 						{plugin.name}
 						{plugin.error && (
-							<Badge variant="destructive">{t('settings.integrations.installed.unavailable')}</Badge>
+							<Badge variant="destructive">
+								{t('settings.integrations.installed.unavailable')}
+							</Badge>
 						)}
 					</h1>
 					<p className="mt-1.5 max-w-2xl text-base leading-5 text-muted-foreground">
@@ -317,10 +325,7 @@ export default function PluginPage(): React.JSX.Element {
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
 				) : (
 					sections.map((section) => (
-						<SettingsSection
-							key={section.key}
-							title={`${section.title} · ${section.rows.length}`}
-						>
+						<SettingsSection key={section.key} title={`${section.title} · ${section.rows.length}`}>
 							<SettingsPanel>
 								{section.rows.map((row) => (
 									<SettingsRow key={row.key} title={row.title} description={row.description}>
