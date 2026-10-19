@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { MoreHorizontal, Plug, Trash2, Upload } from 'lucide-react';
+import { MoreHorizontal, Plug, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PLUGIN_KINDS, type PluginInfo } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
@@ -11,17 +11,14 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import { SettingsNotice, SettingsSection } from '../../components';
 import Confirm from './Confirm';
 
-export default function Installed(): React.JSX.Element {
+export default function Installed({ query = '' }: { readonly query?: string }): React.JSX.Element {
 	const { t } = useTranslation();
 	const [plugins, setPlugins] = useState<PluginInfo[]>([]);
-	const [url, setUrl] = useState('');
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
-	const [notice, setNotice] = useState('');
 	const [pendingRemoval, setPendingRemoval] = useState<PluginInfo | null>(null);
 
 	const load = useCallback(async (): Promise<void> => {
@@ -32,14 +29,11 @@ export default function Installed(): React.JSX.Element {
 		load().catch((caught) => setError(caught instanceof Error ? caught.message : String(caught)));
 	}, [load]);
 
-	const run = async (action: () => Promise<PluginInfo | void | undefined>): Promise<void> => {
+	const run = async (action: () => Promise<void>): Promise<void> => {
 		setBusy(true);
 		setError('');
-		setNotice('');
 		try {
-			const installed = await action();
-			if (installed)
-				setNotice(t('settings.integrations.installed.installed', { name: installed.name }));
+			await action();
 			await load();
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
@@ -47,6 +41,15 @@ export default function Installed(): React.JSX.Element {
 			setBusy(false);
 		}
 	};
+
+	const normalizedQuery = query.trim().toLocaleLowerCase();
+	const visible = plugins.filter(
+		(plugin) =>
+			!normalizedQuery ||
+			[plugin.name, plugin.description ?? '', plugin.id].some((value) =>
+				value.toLocaleLowerCase().includes(normalizedQuery)
+			)
+	);
 
 	const summary = (plugin: PluginInfo): string =>
 		PLUGIN_KINDS.filter((kind) => plugin.contributes[kind].length > 0)
@@ -61,61 +64,25 @@ export default function Installed(): React.JSX.Element {
 		<SettingsSection
 			title={t('settings.integrations.installed.title')}
 			description={t('settings.integrations.installed.description')}
-			action={
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					disabled={busy}
-					onClick={() => void run(() => window.plugins.upload())}
-				>
-					<Upload />
-					{t('settings.integrations.installed.upload')}
-				</Button>
-			}
 			className="pb-8"
 		>
-			<form
-				className="flex gap-2"
-				onSubmit={(event) => {
-					event.preventDefault();
-					void run(async () => {
-						const installed = await window.plugins.installUrl(url);
-						setUrl('');
-						return installed;
-					});
-				}}
-			>
-				<Input
-					type="url"
-					value={url}
-					onChange={(event) => setUrl(event.target.value)}
-					placeholder={t('settings.integrations.installed.urlPlaceholder')}
-					aria-label={t('settings.integrations.installed.urlLabel')}
-					disabled={busy}
-				/>
-				<Button type="submit" size="sm" disabled={busy || !url.trim()}>
-					{busy
-						? t('settings.integrations.installed.installing')
-						: t('settings.integrations.installed.install')}
-				</Button>
-			</form>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
-			{notice && <SettingsNotice autoDismiss>{notice}</SettingsNotice>}
-			{plugins.length === 0 ? (
+			{visible.length === 0 ? (
 				<p className="px-3 py-2 text-xs text-muted-foreground">
-					{t('settings.integrations.installed.empty')}
+					{normalizedQuery
+						? t('settings.integrations.noResults')
+						: t('settings.integrations.installed.empty')}
 				</p>
 			) : (
 				<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-					{plugins.map((plugin) => (
+					{visible.map((plugin) => (
 						<Card key={plugin.id} size="sm" className="h-36">
 							<CardHeader className="flex items-start gap-3">
 								{plugin.icon ? (
 									<img
 										src={plugin.icon}
 										alt=""
-										className="size-10 shrink-0 rounded-xl object-cover"
+										className="size-10 shrink-0 object-contain"
 									/>
 								) : (
 									<div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground">
