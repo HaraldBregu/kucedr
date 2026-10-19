@@ -312,7 +312,7 @@ user, and plugin entries in one list.
 | `AppChannels.models` | `loadModels()` (`src/main/models.ts`) | `providers/*/manifest.json` → `models` |
 | `AppChannels.vectorDatabases` | `loadVectorDatabases()` | `providers/*/manifest.json` → `vector_databases` |
 | `AppChannels.webSearches` | `loadWebSearches()` | `providers/*/manifest.json` → `web_search` |
-| `AppChannels.storages` | `loadStorages()` | `providers/*/manifest.json` → `storages` |
+| `AppChannels.storages` | `loadStorages()` | `providers/*/manifest.json` → `storage` |
 | `AppChannels.mcps` | `loadMcps()` | `providers/*/manifest.json` → `mcp_servers` (remote catalog services) |
 | MCP server list (`src/main/ipc/mcp.ts`) | `mcp_local_list.ts` via `mcpLocalDiscoveryRoots()` | `mcp_servers/*/mcp.json` (stdio and http servers) |
 | `SkillsChannels.list` | `skills.list()` (`skills_list.ts`) | `skills/*/SKILL.md` |
