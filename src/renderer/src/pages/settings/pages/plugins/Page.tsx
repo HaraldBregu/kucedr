@@ -48,14 +48,19 @@ const PluginsPage = (): React.JSX.Element => {
 				</SettingsNotice>
 			)}
 			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
-			<SettingsUpload
-				title={t('settings.integrations.dropTitle')}
-				description={t('settings.integrations.dropDescription')}
-				busy={uploading}
-				busyLabel={t('settings.integrations.uploading')}
-				onUpload={(paths) => void handleUpload(paths)}
+			<Installed
+				key={version}
+				upload={
+					<SettingsUpload
+						title={t('settings.integrations.addTitle')}
+						description={t('settings.integrations.dropTitle')}
+						busy={uploading}
+						busyLabel={t('settings.integrations.uploading')}
+						onUpload={(paths) => void handleUpload(paths)}
+						className="h-22 flex-row items-center gap-3 px-4 py-0 text-left"
+					/>
+				}
 			/>
-			<Installed key={version} />
 		</SettingsPageShell>
 	);
 };

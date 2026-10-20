@@ -455,9 +455,9 @@ export function CommandMenu({
 				onValueChange={(value) => setCategory(value as Category)}
 				className="border-b px-2 py-1.5"
 			>
-				<TabsList className="group-data-horizontal/tabs:h-7">
+				<TabsList className="bg-muted/50 group-data-horizontal/tabs:h-7 dark:bg-muted">
 					{CATEGORIES.map((value) => (
-						<TabsTrigger key={value} value={value} className="px-2 text-xs">
+						<TabsTrigger key={value} value={value} className="px-2 text-xs data-active:bg-popover">
 							{t(`command.categories.${value}`)}
 						</TabsTrigger>
 					))}

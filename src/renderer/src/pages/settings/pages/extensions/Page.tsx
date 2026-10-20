@@ -74,7 +74,9 @@ export default function ExtensionsPage(): React.JSX.Element {
 				setErrorMessage(result.skipped.map(({ name, reason }) => `${name}: ${reason}`).join('\n'));
 			}
 		} catch (error) {
-			setErrorMessage(error instanceof Error ? error.message : t('settings.extensions.uploadError'));
+			setErrorMessage(
+				error instanceof Error ? error.message : t('settings.extensions.uploadError')
+			);
 		} finally {
 			setBusy(false);
 		}
@@ -139,6 +141,14 @@ export default function ExtensionsPage(): React.JSX.Element {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+							<SettingsUpload
+								title={t('settings.extensions.addTitle')}
+								description={t('settings.extensions.dropTitle')}
+								busy={busy}
+								busyLabel={t('settings.extensions.uploading')}
+								onUpload={(paths) => void handleImport(paths)}
+								className="h-22 flex-row items-center gap-3 px-4 py-0 text-left"
+							/>
 							{visibleEntries.map((entry) => (
 								<Card key={`${entry.plugin?.id ?? ''}/${entry.id}`} size="sm" className="h-22">
 									<CardHeader className="flex items-start gap-3">

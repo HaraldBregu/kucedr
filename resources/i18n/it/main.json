@@ -458,6 +458,7 @@
 				"enableAction": "Attiva",
 				"disable": "Disattiva"
 			},
+			"addTitle": "Carica un nuovo plugin",
 			"dropTitle": "Trascina qui una cartella plugin o un archivio .tgz o fai clic per sfogliare",
 			"dropDescription": "Un plugin può includere app, estensioni, server MCP, provider e skill.",
 			"uploading": "Caricamento...",
@@ -1678,6 +1679,7 @@
 			"uploading": "Caricamento...",
 			"uploaded": "{{count}} app installata/e. Saltate {{skipped}}.",
 			"uploadError": "Impossibile installare l'app.",
+			"addTitle": "Carica una nuova app",
 			"dropTitle": "Trascina qui le cartelle delle app o fai clic per sfogliare",
 			"empty": "Nessuna app installata",
 			"emptyDescription": "Aggiungi una cartella app che contiene manifest.json e il file di ingresso.",
@@ -1721,6 +1723,8 @@
 			"search": "Cerca",
 			"categories": {
 				"all": "Tutte",
+				"builtIn": "Integrati",
+				"downloaded": "Scaricati",
 				"game": "Gioco",
 				"utility": "Utilità"
 			}
@@ -1732,6 +1736,7 @@
 			"emptyDescription": "Aggiungi una cartella di estensione che contiene manifest.json e index.html.",
 			"loadError": "Impossibile caricare le estensioni.",
 			"installed": "Estensioni installate",
+			"addTitle": "Carica una nuova estensione",
 			"dropTitle": "Trascina qui le cartelle delle estensioni o fai clic per sfogliare",
 			"uploading": "Caricamento...",
 			"uploaded": "Caricate {{count}} estensioni.",

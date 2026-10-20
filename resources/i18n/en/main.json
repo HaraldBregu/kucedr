@@ -458,6 +458,7 @@
 				"enableAction": "Enable",
 				"disable": "Disable"
 			},
+			"addTitle": "Upload a new plugin",
 			"dropTitle": "Drop a plugin folder or .tgz archive here or click to browse",
 			"dropDescription": "A plugin can bundle apps, extensions, MCP servers, providers, and skills.",
 			"uploading": "Uploading...",
@@ -1678,6 +1679,7 @@
 			"uploading": "Uploading...",
 			"uploaded": "Uploaded {{count}} app(s). Skipped {{skipped}}.",
 			"uploadError": "Unable to install the app.",
+			"addTitle": "Upload a new app",
 			"dropTitle": "Drop app folders here or click to browse",
 			"empty": "No apps installed",
 			"emptyDescription": "Add an app folder that contains a manifest.json and entry file.",
@@ -1721,6 +1723,8 @@
 			"search": "Search",
 			"categories": {
 				"all": "All",
+				"builtIn": "Built-in",
+				"downloaded": "Downloaded",
 				"game": "Game",
 				"utility": "Utility"
 			}
@@ -1732,6 +1736,7 @@
 			"emptyDescription": "Add an extension folder that contains a manifest.json and index.html.",
 			"loadError": "Unable to load extensions.",
 			"installed": "Installed extensions",
+			"addTitle": "Upload a new extension",
 			"dropTitle": "Drop extension folders here or click to browse",
 			"uploading": "Uploading...",
 			"uploaded": "Uploaded {{count}} extension(s).",

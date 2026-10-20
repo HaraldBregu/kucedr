@@ -128,13 +128,15 @@ const AppsPage: React.FC = () => {
 
 			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 
-			<SettingsUpload
-				title={t('settings.apps.dropTitle')}
-				description={t('settings.apps.emptyDescription')}
-				busy={importing}
-				busyLabel={t('settings.apps.uploading')}
-				onUpload={(paths) => void handleImport(paths)}
-			/>
+			{!loading && apps.length === 0 && (
+				<SettingsUpload
+					title={t('settings.apps.dropTitle')}
+					description={t('settings.apps.emptyDescription')}
+					busy={importing}
+					busyLabel={t('settings.apps.uploading')}
+					onUpload={(paths) => void handleImport(paths)}
+				/>
+			)}
 
 			{(loading || apps.length > 0) && (
 				<section className="-mx-4 pb-4" aria-labelledby="installed-apps-title">
@@ -156,6 +158,14 @@ const AppsPage: React.FC = () => {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
+							<SettingsUpload
+								title={t('settings.apps.addTitle')}
+								description={t('settings.apps.dropTitle')}
+								busy={importing}
+								busyLabel={t('settings.apps.uploading')}
+								onUpload={(paths) => void handleImport(paths)}
+								className="h-22 flex-row items-center gap-3 px-4 py-0 text-left"
+							/>
 							{visibleApps.map((app) => (
 								<Item
 									key={app.id}
