@@ -168,8 +168,7 @@ printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
 - Keys are server ids, and values use the same fields as `mcp.json`.
 - `type: "http"` needs a `url`: https, or http on `localhost` or `127.0.0.1` only.
 - A stdio entry's `cwd` and paths are relative to `mcp/`.
-- OAuth sign-in isn't supported for remote plugin servers, so use servers that need no sign-in, or
-  a key the user enters.
+- OAuth sign-in isn't supported for remote plugin servers, so use servers that need no sign-in.
 
 ## Checklist
 

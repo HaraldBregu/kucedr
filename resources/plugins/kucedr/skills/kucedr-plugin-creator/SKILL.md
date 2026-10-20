@@ -64,132 +64,20 @@ the plugin manifest.
 - Unknown keys are rejected. Leave out keys with nothing in them instead of writing `[]` or `""`.
 - The plugin must contain at least one contribution.
 
-## Provider fields
+## Building each part
 
-A plugin becomes a provider when its manifest has provider fields. The provider id is the plugin
-`id`, and its name is the plugin `title`.
+Read the guide for each part the plugin needs before writing it. Each guide gives the steps, the
+exact file format, a complete working example, and a checklist.
 
-```json
-{
-	"schemaVersion": 5,
-	"id": "acme",
-	"title": "Acme",
-	"version": "1.0.0",
-	"description": "Acme chat models.",
-	"icon": "acme-light.svg",
-	"iconDark": "acme-dark.svg",
-	"authentication": "api-key",
-	"apiKeyUrl": "https://acme.test/keys",
-	"icon_dark_url": "/assets/acme-dark.svg",
-	"icon_light_url": "/assets/acme-light.svg",
-	"models": [
-		{
-			"id": "acme-chat-1",
-			"name": "Acme Chat 1",
-			"type": "large-language-model",
-			"authentication": "api-key",
-			"url": "https://api.acme.test/v1",
-			"location": "remote",
-			"metadata": {
-				"documentationUrl": "https://docs.acme.test/models",
-				"contextWindow": 128000,
-				"inputs": { "temperature": { "type": "number" }, "max_tokens": { "type": "integer" } }
-			}
-		}
-	]
-}
-```
+| Part | Guide | In short |
+| --- | --- | --- |
+| Provider (models and services) | [references/providers.md](references/providers.md) | Provider fields go in the plugin `manifest.json`, and the icons go in `assets/`. The provider id is the plugin `id`. |
+| App | [references/apps.md](references/apps.md) | `apps/<id>/manifest.json` plus an `.html` entry. It opens in its own sandboxed window. |
+| Extension | [references/extensions.md](references/extensions.md) | `extensions/<id>/manifest.json` plus `index.html`. It's shown in place of the chat, sandboxed, with no network access or inline scripts. |
+| MCP server | [references/mcp.md](references/mcp.md) | `mcp/<id>/mcp.json` with a bundled stdio server, or entries in `mcp/servers.json`. Servers start off. |
+| Skill | [references/skills.md](references/skills.md) | `skills/<name>/SKILL.md`. Its frontmatter `name` matches the folder, and the `description` says when to use it. |
 
-- `authentication` is `api-key`, `oauth2`, or `none`. Add `apiKeyUrl` for api-key providers.
-- Icon paths start with `/assets/` and point to files in `assets/`.
-- Model `type` is one of `large-language-model`, `research-chat-model`, `speech-to-text-model`,
-  `text-to-speech-model`, `realtime-voice-model`, `text-to-image-model`, `text-to-video-model`,
-  `text-to-audio-model`, or `embedding-model`. `location` is `remote` or `local`.
-- Services in other fields use the same `id`, `name`, `url`, `authentication`, and `metadata`
-  shape: `vector_databases`, `web_search`, `mcp_servers` (remote MCP services the user can add),
-  `bots`, and `storage` (one object, not a list).
-- An unknown provider id is sent to an OpenAI-compatible chat API, so a JSON-only plugin works for
-  any OpenAI-compatible service.
-- Copy the closest built-in provider as a starting point: in a Kucedr checkout, see
-  `resources/plugins/<provider>/manifest.json` (for example `deepseek`, `brave`, or `pinecone`).
-  The full rules are in `src/shared/providers/validation.ts`.
-- Document only parameters that the provider's own documentation confirms.
-
-## Apps
-
-`apps/<app-id>/manifest.json`:
-
-```json
-{
-	"title": "Acme Dashboard",
-	"description": "Account usage and status.",
-	"metadata": { "version": "1.0.0", "category": "productivity", "entry": "index.html" }
-}
-```
-
-`title`, `description`, `metadata.version`, `metadata.category`, and `metadata.entry` are
-required, and the entry file must exist. For apps that use the `@kucedr/sdk` bridge, follow the
-`kucedr-app-creator` skill and ship only the built output.
-
-## Extensions
-
-`extensions/<extension-id>/manifest.json`:
-
-```json
-{
-	"title": "Word counter",
-	"description": "Counts the words in pasted text.",
-	"slot": "panel",
-	"icon": "icon.svg"
-}
-```
-
-- `slot` is `sidebar`, `panel`, `toolbar`, `composer`, or `settings`. Today every extension is
-  listed in the home sidebar and opens in place of the chat.
-- `index.html` is required. It loads in a sandboxed iframe with no network access: bundle every
-  script, style, image, and font in the extension folder and reference them with relative paths.
-  Inline styles work; inline scripts don't.
-- The optional `icon` is a file in the extension folder (same rules as the plugin icon).
-
-## MCP servers
-
-- **Local stdio server:** `mcp/<server-id>/mcp.json` next to the server's files.
-
-  ```json
-  {
-  	"id": "acme-files",
-  	"name": "Acme Files",
-  	"type": "stdio",
-  	"command": "node",
-  	"args": ["server.mjs"],
-  	"cwd": ".",
-  	"require_approval": "always"
-  }
-  ```
-
-- **Several servers in one file:** `mcp/servers.json` maps ids to the same fields. It also accepts
-  remote servers, `{ "type": "http", "url": "https://..." }` (https, or http on localhost).
-- An id is either a folder or a `servers.json` key, never both.
-- Bundle stdio servers completely: one `.mjs` file, or the server with its `node_modules`.
-  Kucedr never runs `npm install`, and plugins can't contain symlinks, so install with
-  `npm install --no-bin-links` (or add `bin-links=false` to the server's `.npmrc`).
-- Plugin servers start disabled. The user turns them on in Settings → MCP servers.
-- OAuth sign-in isn't supported for remote plugin servers.
-
-## Skills
-
-`skills/<skill-id>/SKILL.md` with frontmatter whose `name` matches the folder:
-
-```markdown
----
-name: release-notes
-description: What the skill does and when the agent should use it.
----
-
-# Release notes
-
-Instructions for the agent.
-```
+Work in this order: plugin manifest and icons, then each part, then validation and packaging.
 
 ## Validate before handing it over
 
