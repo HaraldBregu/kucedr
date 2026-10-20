@@ -61,7 +61,7 @@ the plugin manifest.
 - `id` uses lowercase kebab-case and must match the folder name.
 - `icon` and `iconDark` are file names in `assets/`: png, svg, jpg, or webp, 256 KB at most.
   `iconDark` is shown in dark mode, so make it light-coloured when `icon` is dark.
-- Unknown keys are rejected, and so are empty values: drop a key instead of writing `[]` or `""`.
+- Unknown keys are rejected. Leave out keys with nothing in them instead of writing `[]` or `""`.
 - The plugin must contain at least one contribution.
 
 ## Provider fields
