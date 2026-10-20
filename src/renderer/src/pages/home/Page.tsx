@@ -51,7 +51,7 @@ import {
 	ChatContainerRoot,
 	ChatContainerScrollAnchor,
 } from '@/components/ui/chat-container';
-import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
+import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 import { LogoView } from '@/components/app/base/logo-view';
 import { PromptEditor } from '@/components/prompt-editor';
 import {
@@ -804,14 +804,6 @@ function PageContent(): ReactElement {
 							</PromptInputActions>
 						}
 					/>
-					<p
-					className={cn(
-						'relative mt-1.5 px-4 text-[11px] text-muted-foreground',
-						showEmptyConversation && 'text-center'
-					)}
-				>
-						Kucedr can make mistakes. Check important info.
-					</p>
 				</div>
 			</div>
 		</div>
