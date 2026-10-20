@@ -1,3 +1,4 @@
+import { Plug, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { playSound } from '@/lib/sounds/play';
@@ -15,7 +16,17 @@ export function SidebarItems(): React.JSX.Element {
 						playSound('navigate');
 						navigate('/settings/settings');
 					}}>
+						<Settings className="size-4 shrink-0" strokeWidth={1.8} />
 						<span>{t('settings.title')}</span>
+					</SidebarMenuButton>
+				</SidebarMenuItem>
+				<SidebarMenuItem>
+					<SidebarMenuButton onClick={() => {
+						playSound('navigate');
+						navigate('/settings/plugins');
+					}}>
+						<Plug className="size-4 shrink-0" strokeWidth={1.8} />
+						<span>{t('settings.tabs.plugins')}</span>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
 			</SidebarMenu>
