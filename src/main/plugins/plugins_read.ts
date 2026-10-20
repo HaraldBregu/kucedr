@@ -11,7 +11,6 @@ import type { ProviderManifest } from '../../shared/provider_types';
 import { assertIcon } from './plugins_assert_icon';
 import { assertNoLinks } from './plugins_assert_no_links';
 import { pluginContents } from './plugins_contents';
-import { pluginIcon } from './plugins_icon';
 import { pluginProvider } from './plugins_provider';
 import { readPluginExtension } from './plugins_read_extension';
 import { compareVersions } from './plugins_version_compare';
