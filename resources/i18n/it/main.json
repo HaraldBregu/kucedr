@@ -2925,6 +2925,7 @@
 		"deny": "Nega",
 		"trustLocation": "Rendi attendibile questa posizione",
 		"allowOnce": "Consenti una volta",
+		"allowAlways": "Consenti sempre",
 		"expired": "Questa richiesta di autorizzazione è scaduta o non è più attiva.",
 		"responseFailed": "Impossibile registrare la risposta.",
 		"actions": {

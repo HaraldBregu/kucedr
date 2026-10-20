@@ -26,7 +26,7 @@ import { executionScope, type ExecutionScope } from '../execution/scope';
 import { authorizedPaths } from '../permissions/access';
 import type { ExecutionBudget } from '../execution/budget';
 import { captureAccess } from '../permissions/capture_access';
-import { getToolConfiguration } from '../agent_store';
+import { getToolConfiguration, setToolProfileTool } from '../agent_store';
 import { isAgentToolAllowedForProfile, type AgentToolProfileId } from '../../../shared/agent_tools';
 import { getMcpOauth } from '../../mcp';
 import { mcpAuthorizationRequired } from './mcp_authorization_required';
@@ -290,6 +290,8 @@ export async function* runToolCall(
 				persistable: false,
 			};
 		}
+		const mcpPolicy = tool.policy?.kind === 'mcp' && !hardApproval ? tool.policy : undefined;
+		const persistable = resolution.persistable || Boolean(mcpPolicy);
 		let permission = resolution.mode;
 		if (security.interactionMode === 'plan' && permission === 'ask') permission = 'deny';
 
@@ -313,7 +315,7 @@ export async function* runToolCall(
 				mode: 'ask',
 				targets: resolution.approvalTargets,
 				reason: resolution.reason ?? 'outside_trusted_location',
-				persistable: resolution.persistable,
+				persistable,
 				allowOnce,
 				expiresAt: new Date(expiresAtMs).toISOString(),
 				inputFingerprint: fingerprint,
@@ -331,10 +333,17 @@ export async function* runToolCall(
 			);
 			const effectiveDecision =
 				(decision === 'approve' && !allowOnce) ||
-				(decision === 'approve_always' && !resolution.persistable)
+				(decision === 'approve_always' && !persistable)
 					? 'reject'
 					: decision;
 			permissionOutcome = effectiveDecision;
+			if (effectiveDecision === 'approve_always' && mcpPolicy) {
+				const profile = security.toolProfile ?? 'chat';
+				setToolProfileTool(profile, mcpPolicy, {
+					...getToolConfiguration(profile, mcpPolicy),
+					permission: 'allow',
+				});
+			}
 			if (effectiveDecision === 'approve_always' && resolution.persistable && resolution.kind) {
 				for (const target of resolution.approvalTargets) {
 					addPermissionRule(

@@ -31,11 +31,6 @@ export function PromptInputControls({
 				)}
 			>
 				{content}
-				{isLoading ? (
-					<div role="status" aria-label="Kucedr is responding" className="text-muted-foreground">
-						<CircularLoader size="sm" />
-					</div>
-				) : null}
 				{trailingAction}
 			</div>
 		</div>

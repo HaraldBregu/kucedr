@@ -18,7 +18,9 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
+	SettingsSection,
 } from '../../components';
+import { DataControls } from '../../components/data';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import { initialModelConfigurationState } from '../../components/model-configuration-state';
 
@@ -164,6 +166,9 @@ export default function MemoryPage(): React.JSX.Element {
 							}
 						/>
 					</SettingsPanel>
+					<SettingsSection title={t('settings.dataControls.title')}>
+						<DataControls kinds={['memory']} />
+					</SettingsSection>
 				</fieldset>
 			)}
 		</SettingsPageShell>

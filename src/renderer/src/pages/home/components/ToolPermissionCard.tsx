@@ -116,7 +116,7 @@ export function ToolPermissionCard({
 			<CardFooter className="flex flex-wrap justify-end gap-2">
 				<Button type="button" variant="ghost" size="sm" disabled={responding} onClick={() => respond('reject')}>{t('toolPermission.deny')}</Button>
 				{permission.persistable && (
-					<Button type="button" variant="outline" size="sm" disabled={responding} onClick={() => respond('approve_always')}>{t('toolPermission.trustLocation')}</Button>
+					<Button type="button" variant="outline" size="sm" disabled={responding} onClick={() => respond('approve_always')}>{t(permission.targets.length > 0 ? 'toolPermission.trustLocation' : 'toolPermission.allowAlways')}</Button>
 				)}
 				{permission.allowOnce && (
 					<Button type="button" size="sm" disabled={responding} onClick={() => respond('approve')}>{t('toolPermission.allowOnce')}</Button>

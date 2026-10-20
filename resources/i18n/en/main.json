@@ -2925,6 +2925,7 @@
 		"deny": "Deny",
 		"trustLocation": "Trust this location",
 		"allowOnce": "Allow once",
+		"allowAlways": "Allow always",
 		"expired": "This permission request expired or is no longer active.",
 		"responseFailed": "Could not record your response.",
 		"actions": {
