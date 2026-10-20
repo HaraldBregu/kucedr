@@ -93,7 +93,7 @@ export default function Installed({ query = '' }: { readonly query?: string }): 
 									size="sm"
 									role="link"
 									tabIndex={0}
-									className="h-24 cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
+									className="h-22 cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
 									onClick={() => navigate(`/settings/plugins/${plugin.id}`)}
 									onKeyDown={(event) => {
 										if (
