@@ -1,0 +1,7 @@
+{
+	"title": "Space Invaders",
+	"description": "The classic arcade shooter. Arrow keys or A/D to move, space to fire, P to pause.",
+	"slot": "panel",
+	"category": "game",
+	"icon": "icon.svg"
+}

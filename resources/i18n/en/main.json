@@ -1708,6 +1708,14 @@
 				"invalid": "Enter whole numbers from 1 to 32768. Minimum dimensions cannot exceed default dimensions."
 			}
 		},
+		"filter": {
+			"search": "Search",
+			"categories": {
+				"all": "All",
+				"game": "Game",
+				"utility": "Utility"
+			}
+		},
 		"extensions": {
 			"title": "Extensions",
 			"description": "UI added to Kucedr screens, imported on its own or provided by plugins.",

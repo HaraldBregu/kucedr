@@ -1708,6 +1708,14 @@
 				"invalid": "Inserisci numeri interi da 1 a 32768. Le dimensioni minime non possono superare quelle predefinite."
 			}
 		},
+		"filter": {
+			"search": "Cerca",
+			"categories": {
+				"all": "Tutte",
+				"game": "Gioco",
+				"utility": "Utilità"
+			}
+		},
 		"extensions": {
 			"title": "Estensioni",
 			"description": "Interfacce aggiunte alle schermate di Kucedr, importate da sole o fornite dai plugin.",

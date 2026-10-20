@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { PluginExtension, PluginInfo } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
 	SettingsLoadingRows,
 	SettingsNotice,
@@ -107,72 +107,61 @@ export default function ExtensionsPage(): React.JSX.Element {
 				onUpload={(paths) => void handleImport(paths)}
 			/>
 
-			<section className="-mx-4 pb-4" aria-labelledby="installed-extensions-title">
-				<h2 id="installed-extensions-title" className="mb-2 px-3 text-sm font-medium">
-					{t('settings.extensions.installed')}
-				</h2>
-				{entries === null ? (
-					<SettingsPanel>
-						<SettingsLoadingRows rows={2} />
-					</SettingsPanel>
-				) : entries.length === 0 ? (
-					<p className="px-3 text-xs text-muted-foreground">{t('settings.extensions.empty')}</p>
-				) : (
-					<div className="grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
-						{entries.map((entry) => (
-							<Item
-								key={`${entry.plugin?.id ?? ''}/${entry.id}`}
-								variant="ghost"
-								size="md"
-								className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2"
-							>
-								{entry.icon ? (
-									<img
-										src={entry.icon}
-										alt=""
-										className="size-10 shrink-0 rounded-2xl bg-muted/50 object-contain p-2.5"
-									/>
-								) : (
-									<div
-										aria-hidden="true"
-										className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground"
-									>
-										<LayoutPanelLeft className="size-5" />
-									</div>
-								)}
-								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-									<ItemTitle className="min-w-0 max-w-full gap-1.5 text-sm font-medium leading-tight">
-										<h3 className="truncate">{entry.title}</h3>
-										<Badge variant="secondary" className="shrink-0 text-[10px] leading-none">
-											{t(`settings.extensions.slots.${entry.slot}`)}
-										</Badge>
-									</ItemTitle>
-									<p className="max-w-full truncate text-[11px] leading-tight text-muted-foreground">
-										{entry.plugin?.name ?? `@${entry.id}`}
-									</p>
-									<p className="line-clamp-2 text-xs leading-4 text-muted-foreground">
-										{entry.description}
-									</p>
-								</ItemContent>
-								{!entry.plugin && (
-									<ItemActions className="ml-auto flex-none justify-end">
-										<Button
-											type="button"
-											variant="ghost"
-											size="icon-sm"
-											disabled={busy}
-											onClick={() => void handleRemove(entry.id)}
-											aria-label={t('settings.extensions.remove', { name: entry.title })}
-										>
-											<Trash2 className="size-3.5" />
-										</Button>
-									</ItemActions>
-								)}
-							</Item>
-						))}
-					</div>
-				)}
-			</section>
+			{(entries === null || entries.length > 0) && (
+				<section className="pb-4" aria-labelledby="installed-extensions-title">
+					<h2 id="installed-extensions-title" className="mb-2 text-sm font-medium">
+						{t('settings.extensions.installed')}
+					</h2>
+					{entries === null ? (
+						<SettingsPanel>
+							<SettingsLoadingRows rows={2} />
+						</SettingsPanel>
+					) : (
+						<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+							{entries.map((entry) => (
+								<Card key={`${entry.plugin?.id ?? ''}/${entry.id}`} size="sm" className="h-22">
+									<CardHeader className="flex items-start gap-3">
+										{entry.icon ? (
+											<img src={entry.icon} alt="" className="size-8 shrink-0 object-contain" />
+										) : (
+											<div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground">
+												<LayoutPanelLeft className="size-1/2" aria-hidden="true" />
+											</div>
+										)}
+										<div className="flex min-w-0 flex-1 flex-col gap-1">
+											<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
+												<span className="truncate">{entry.title}</span>
+												<span className="text-xs font-normal text-muted-foreground">
+													{entry.plugin?.name ?? `@${entry.id}`}
+												</span>
+												<Badge variant="secondary">
+													{t(`settings.extensions.slots.${entry.slot}`)}
+												</Badge>
+											</CardTitle>
+											<CardDescription className="line-clamp-2">
+												{entry.description}
+											</CardDescription>
+										</div>
+										{!entry.plugin && (
+											<Button
+												type="button"
+												variant="ghost"
+												size="icon-sm"
+												className="shrink-0"
+												disabled={busy}
+												onClick={() => void handleRemove(entry.id)}
+												aria-label={t('settings.extensions.remove', { name: entry.title })}
+											>
+												<Trash2 className="size-4" />
+											</Button>
+										)}
+									</CardHeader>
+								</Card>
+							))}
+						</div>
+					)}
+				</section>
+			)}
 		</SettingsPageShell>
 	);
 }

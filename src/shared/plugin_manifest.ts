@@ -15,6 +15,7 @@ export const extensionManifestSchema = z
 		title: z.string().trim().min(1),
 		description: z.string().trim().min(1),
 		slot: z.enum(['sidebar', 'panel', 'toolbar', 'composer', 'settings']),
+		category: z.string().trim().min(1).default('utility'),
 		icon: iconSchema,
 	})
 	.strict();

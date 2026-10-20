@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+    <!--
+      Added to the home screen, the game opens without the browser's bars: the only way to get
+      the whole screen on iPhone, where Safari has no fullscreen API for web pages.
+    -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Lunar Lander" />
+    <title>Lunar Lander</title>
+    <script type="module" crossorigin src="./game.js"></script>
+    <link rel="stylesheet" crossorigin href="./game.css">
+  </head>
+  <body>
+    <!-- Touching the screen is the START button (a coin, on the attract screen). -->
+    <canvas id="screen" width="1044" height="800" data-key="Enter">
+      Serve un browser con supporto a Canvas.
+    </canvas>
+    <!--
+      The cabinet's lit buttons, under the screen: the four missions (each one is SELECT, which
+      walks through them), START, the coin slot and the record kept by this browser. main.ts
+      lights them every frame.
+    -->
+    <div id="cabinet" class="cabinet">
+      <div class="lamps">
+        <button type="button" class="lamp" data-mission="training" data-key="Tab">TRAINING</button>
+        <button type="button" class="lamp" data-mission="cadet" data-key="Tab">CADET</button>
+        <button type="button" class="lamp" data-mission="prime" data-key="Tab">PRIME</button>
+        <button type="button" class="lamp" data-mission="command" data-key="Tab">COMMAND</button>
+        <button type="button" id="start" class="lamp lamp-start" data-key="Enter">START</button>
+        <button type="button" class="lamp lamp-coin" data-key="KeyC">MONETA</button>
+      </div>
+      <p class="record">RECORD <span id="record">0000</span></p>
+    </div>
+    <!--
+      Control panel, only on touch screens (see style.css): rotation and ABORT for the left
+      thumb, the thrust lever for the right one, as on the cabinet.
+    -->
+    <div id="touch-panel" class="panel">
+      <div class="pad pad-move">
+        <!-- The virtual joystick: shown instead of the arrows when tuning.config.ts asks for it. -->
+        <div class="stick" data-joystick="left-right" aria-hidden="true">
+          <div class="stick-base"><div class="stick-knob"></div></div>
+        </div>
+        <button
+          type="button"
+          class="key key-arrow"
+          data-key="ArrowLeft"
+          aria-label="Ruota a sinistra"
+        >
+          ⟲
+        </button>
+        <button
+          type="button"
+          class="key key-arrow"
+          data-key="ArrowRight"
+          aria-label="Ruota a destra"
+        >
+          ⟳
+        </button>
+      </div>
+      <div class="pad pad-abort">
+        <button type="button" class="key key-abort" data-key="Space">ABORT</button>
+      </div>
+      <!-- The lever stays where the finger leaves it, like the real one: up is more thrust. -->
+      <div class="pad pad-lever">
+        <div
+          id="lever"
+          class="lever"
+          role="slider"
+          aria-label="Leva della spinta"
+          aria-orientation="vertical"
+          aria-valuemin="0"
+          aria-valuemax="255"
+          aria-valuenow="0"
+        >
+          <span class="lever-knob"></span>
+        </div>
+      </div>
+      <!-- Shown by main.ts only where the browser can go fullscreen. -->
+      <div class="pad pad-view">
+        <button type="button" id="fullscreen" class="key key-small" hidden>SCHERMO INTERO</button>
+      </div>
+      <div class="pad pad-system">
+        <button type="button" class="key key-small" data-key="KeyM">AUDIO</button>
+      </div>
+      <p class="rotate-hint">Gira il telefono: si gioca meglio in orizzontale.</p>
+    </div>
+  </body>
+</html>

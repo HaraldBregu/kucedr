@@ -16,6 +16,7 @@ export interface PluginExtension {
 	readonly title: string;
 	readonly description: string;
 	readonly slot: string;
+	readonly category: string;
 	/** The extension's icon as a data URL. */
 	readonly icon?: string;
 }

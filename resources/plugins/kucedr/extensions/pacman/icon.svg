@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 19" width="114" height="120" shape-rendering="crispEdges" role="img" aria-label="Pac-Man">
+  <!-- Pac-Man, copied pixel by pixel from sprite $2E of the sprite ROM, with the colors of palette 9. -->
+  <rect width="18" height="19" rx="1.5" fill="#000"/>
+  <path fill="#ffff00" d="M7 3h5v1h-5zM5 4h9v1h-9zM4 5h11v1h-11zM4 6h11v1h-11zM3 7h10v1h-10zM3 8h7v1h-7zM3 9h4v1h-4zM3 10h7v1h-7zM3 11h10v1h-10zM4 12h11v1h-11zM4 13h11v1h-11zM5 14h9v1h-9zM7 15h5v1h-5z"/>
+  <path fill="#ffb8ae" d="M14 9h2v1h-2z"/>
+</svg>

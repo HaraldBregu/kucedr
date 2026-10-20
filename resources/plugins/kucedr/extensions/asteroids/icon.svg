@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 120" width="120" height="96" role="img" aria-label="Asteroids">
+  <!-- The first rock of the vector ROM ($11E6), the ship and a shot, drawn as glowing beam lines. -->
+  <defs>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="150" height="120" rx="15" fill="#000"/>
+  <g fill="none" stroke="#f4f7ff" stroke-width="2.5" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M95 52L111 36L127 52L119 68L127 84L103 100L79 100L63 84L63 52L79 36Z"/>
+    <path d="M38 34L49 68L43 62L33 62L27 68Z"/>
+  </g>
+  <circle cx="38" cy="20" r="2.5" fill="#f4f7ff" filter="url(#glow)"/>
+</svg>

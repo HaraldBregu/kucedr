@@ -124,88 +124,88 @@ const AppsPage: React.FC = () => {
 				onUpload={(paths) => void handleImport(paths)}
 			/>
 
-			<section className="-mx-4 pb-4" aria-labelledby="installed-apps-title">
-				<h2 id="installed-apps-title" className="mb-2 px-3 text-sm font-medium">
-					{t('settings.apps.title')}
-				</h2>
-				{loading ? (
-					<SettingsPanel>
-						<SettingsLoadingRows rows={2} />
-					</SettingsPanel>
-				) : apps.length === 0 ? (
-					<p className="px-3 text-xs text-muted-foreground">{t('settings.apps.empty')}</p>
-				) : (
-					<div className="grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
-						{apps.map((app) => (
-							<Item
-								key={app.id}
-								role="link"
-								tabIndex={0}
-								variant="ghost"
-								size="md"
-								className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
-								onClick={() => navigate(`/settings/apps/${encodeURIComponent(app.id)}`)}
-								onKeyDown={(event) => {
-									if (
-										event.target === event.currentTarget &&
-										(event.key === 'Enter' || event.key === ' ')
-									) {
-										event.preventDefault();
-										navigate(`/settings/apps/${encodeURIComponent(app.id)}`);
-									}
-								}}
-							>
-								{app.imageUrl ? (
-									<img
-										src={app.imageUrl}
-										alt=""
-										className="size-10 shrink-0 rounded-2xl bg-muted/50 object-contain p-2.5"
-									/>
-								) : (
-									<div
-										aria-hidden="true"
-										className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground"
-									>
-										<Blocks className="size-5" />
-									</div>
-								)}
-								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-									<ItemTitle className="min-w-0 max-w-full gap-1.5 text-sm font-medium leading-tight">
-										<h3 className="truncate">{app.title}</h3>
-										{import.meta.env.DEV && app.debugPath && (
-											<Badge variant="outline" className="shrink-0 text-[10px] leading-none">
-												{t('settings.apps.debug.badge')}
-											</Badge>
-										)}
-									</ItemTitle>
-									<p className="max-w-full truncate text-[11px] leading-tight text-muted-foreground">
-										{app.handle ?? `@${app.id}`}
-									</p>
-									<p className="line-clamp-2 text-xs leading-4 text-muted-foreground">
-										{app.description}
-									</p>
-								</ItemContent>
-								<ItemActions className="ml-auto flex-none justify-end">
-									<Button
-										type="button"
-										variant="outline"
-										size="xs"
-										disabled={importing || openingAppId === app.id}
-										onClick={(event) => {
-											event.stopPropagation();
-											void handleOpen(app.id);
-										}}
-										onKeyDown={(event) => event.stopPropagation()}
-									>
-										<ExternalLink className="size-3" />
-										{t('settings.apps.open')}
-									</Button>
-								</ItemActions>
-							</Item>
-						))}
-					</div>
-				)}
-			</section>
+			{(loading || apps.length > 0) && (
+				<section className="-mx-4 pb-4" aria-labelledby="installed-apps-title">
+					<h2 id="installed-apps-title" className="mb-2 px-3 text-sm font-medium">
+						{t('settings.apps.title')}
+					</h2>
+					{loading ? (
+						<SettingsPanel>
+							<SettingsLoadingRows rows={2} />
+						</SettingsPanel>
+					) : (
+						<div className="grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
+							{apps.map((app) => (
+								<Item
+									key={app.id}
+									role="link"
+									tabIndex={0}
+									variant="ghost"
+									size="md"
+									className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+									onClick={() => navigate(`/settings/apps/${encodeURIComponent(app.id)}`)}
+									onKeyDown={(event) => {
+										if (
+											event.target === event.currentTarget &&
+											(event.key === 'Enter' || event.key === ' ')
+										) {
+											event.preventDefault();
+											navigate(`/settings/apps/${encodeURIComponent(app.id)}`);
+										}
+									}}
+								>
+									{app.imageUrl ? (
+										<img
+											src={app.imageUrl}
+											alt=""
+											className="size-10 shrink-0 rounded-2xl bg-muted/50 object-contain p-2.5"
+										/>
+									) : (
+										<div
+											aria-hidden="true"
+											className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground"
+										>
+											<Blocks className="size-5" />
+										</div>
+									)}
+									<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
+										<ItemTitle className="min-w-0 max-w-full gap-1.5 text-sm font-medium leading-tight">
+											<h3 className="truncate">{app.title}</h3>
+											{import.meta.env.DEV && app.debugPath && (
+												<Badge variant="outline" className="shrink-0 text-[10px] leading-none">
+													{t('settings.apps.debug.badge')}
+												</Badge>
+											)}
+										</ItemTitle>
+										<p className="max-w-full truncate text-[11px] leading-tight text-muted-foreground">
+											{app.handle ?? `@${app.id}`}
+										</p>
+										<p className="line-clamp-2 text-xs leading-4 text-muted-foreground">
+											{app.description}
+										</p>
+									</ItemContent>
+									<ItemActions className="ml-auto flex-none justify-end">
+										<Button
+											type="button"
+											variant="outline"
+											size="xs"
+											disabled={importing || openingAppId === app.id}
+											onClick={(event) => {
+												event.stopPropagation();
+												void handleOpen(app.id);
+											}}
+											onKeyDown={(event) => event.stopPropagation()}
+										>
+											<ExternalLink className="size-3" />
+											{t('settings.apps.open')}
+										</Button>
+									</ItemActions>
+								</Item>
+							))}
+						</div>
+					)}
+				</section>
+			)}
 		</SettingsPageShell>
 	);
 };

@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Space Invaders</title>
+		<style>
+			html, body { margin: 0; height: 100%; background: #111; color: #eee; font: 14px system-ui, sans-serif; }
+			body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+			canvas { background: #000; border: 1px solid #333; max-width: 100%; }
+		</style>
+	</head>
+	<body>
+		<div id="hud">Score: 0 · Lives: 3</div>
+		<canvas id="board" width="480" height="420" tabindex="0"></canvas>
+		<div>Arrows / A D to move · Space to fire · P to pause · Enter to restart</div>
+		<script src="invaders.js"></script>
+	</body>
+</html>

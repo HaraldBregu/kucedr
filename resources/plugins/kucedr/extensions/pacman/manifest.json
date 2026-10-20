@@ -1,0 +1,6 @@
+{
+	"title": "Pac-Man",
+	"description": "Namco, 1980. C to insert a coin, Enter to start, arrows to move, M for sound.",
+	"slot": "panel",
+	"icon": "icon.svg"
+}

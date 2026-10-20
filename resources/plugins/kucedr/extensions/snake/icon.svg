@@ -1,1 +1,2 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3c3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h8a4 4 0 0 0 0-8H8a2 2 0 0 1 0-4h10"/><circle cx="18" cy="6" r="1.5" fill="#3c3"/><rect x="16" y="15" width="4" height="4" fill="#e33" stroke="#e33"/></svg>
+<!-- "snake" from Pixelarticons, Copyright (c) 2019 Gerrit Halfmann, MIT License: https://github.com/halfmage/pixelarticons/blob/master/LICENSE -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#3c3" d="M4 20h16v2H2v-4h2zM8 8h4v4h2V4h2v8h2v4h2V8h2v12h-2v-2H4v-4h2v2h10v-2H6v-2h4v-2H6V8H4V6h2V4h2zm-4 2H2V8h2zm0-4H2V4h2zm8 0h-2V4H8V2h6v2h-2z"/></svg>
