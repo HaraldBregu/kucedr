@@ -82,8 +82,9 @@ export class AppsIpc implements IpcModule<AppsIpcDeps> {
 		});
 		registerCommandWithEvent(
 			AppsChannels.import,
-			async (event): Promise<AppImportResult | undefined> => {
+			async (event, paths?: string[]): Promise<AppImportResult | undefined> => {
 				const window = trusted.assert(event);
+				if (paths?.length) return importApps(paths);
 				const result = await dialog.showOpenDialog(window, {
 					title: 'Select app folder(s)',
 					properties: ['openDirectory', 'multiSelections'],

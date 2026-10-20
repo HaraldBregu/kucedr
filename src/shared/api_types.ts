@@ -459,7 +459,7 @@ export interface AppsApi {
 	open: (appId: string) => Promise<void>;
 	openRoot: () => Promise<void>;
 	delete: (appId: string) => Promise<boolean>;
-	import: () => Promise<AppImportResult | undefined>;
+	import: (paths?: string[]) => Promise<AppImportResult | undefined>;
 	addDebug: (folderPath: string) => Promise<App>;
 	selectDebugPath: () => Promise<string | undefined>;
 }
