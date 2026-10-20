@@ -110,15 +110,15 @@ export default function Installed({ query = '' }: { readonly query?: string }): 
 										<div className="flex min-w-0 flex-1 flex-col gap-1">
 											<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
 												<span className="truncate">{plugin.name}</span>
-												{plugin.version && (
-													<span className="text-xs font-normal text-muted-foreground">
-														{plugin.version}
-													</span>
-												)}
 												{plugin.error && (
 													<Badge variant="destructive">
 														{t('settings.integrations.installed.unavailable')}
 													</Badge>
+												)}
+												{plugin.version && (
+													<span className="ml-auto shrink-0 text-xs font-normal text-muted-foreground">
+														{plugin.version}
+													</span>
 												)}
 											</CardTitle>
 											<CardDescription className="line-clamp-2">
