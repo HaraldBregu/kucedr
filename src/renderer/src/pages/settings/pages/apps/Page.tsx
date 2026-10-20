@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Blocks, ExternalLink, Upload } from 'lucide-react';
+import { AlertTriangle, Blocks, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
-import { cn } from '@/lib/utils';
 import type { App } from '../../../../../../shared/installed_app_types';
 import {
 	SettingsLoadingRows,
@@ -14,6 +13,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 } from '../../components';
+import { SettingsUpload } from '../../components/upload';
 
 function getErrorMessage(error: unknown, fallback: string): string {
 	if (error instanceof Error && error.message.trim().length > 0) {
@@ -28,7 +28,6 @@ const AppsPage: React.FC = () => {
 	const [apps, setApps] = useState<App[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [importing, setImporting] = useState(false);
-	const [dragging, setDragging] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
@@ -117,36 +116,13 @@ const AppsPage: React.FC = () => {
 
 			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 
-			<button
-				type="button"
-				disabled={importing}
-				onClick={() => void handleImport()}
-				onDragOver={(event) => {
-					event.preventDefault();
-					setDragging(true);
-				}}
-				onDragLeave={() => setDragging(false)}
-				onDrop={(event) => {
-					event.preventDefault();
-					setDragging(false);
-					const paths = Array.from(event.dataTransfer.files).map((file) =>
-						window.app.getPathForFile(file)
-					);
-					if (paths.length > 0) void handleImport(paths);
-				}}
-				className={cn(
-					'flex w-full flex-col items-center gap-2 rounded-2xl border border-dashed px-6 py-8 text-center outline-none transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
-					dragging && 'border-primary bg-muted/50'
-				)}
-			>
-				<div className="flex size-10 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground">
-					<Upload className="size-5" aria-hidden="true" />
-				</div>
-				<span className="text-sm font-medium">
-					{importing ? t('settings.apps.uploading') : t('settings.apps.dropTitle')}
-				</span>
-				<span className="text-xs text-muted-foreground">{t('settings.apps.emptyDescription')}</span>
-			</button>
+			<SettingsUpload
+				title={t('settings.apps.dropTitle')}
+				description={t('settings.apps.emptyDescription')}
+				busy={importing}
+				busyLabel={t('settings.apps.uploading')}
+				onUpload={(paths) => void handleImport(paths)}
+			/>
 
 			<section className="-mx-4 pb-4" aria-labelledby="installed-apps-title">
 				<h2 id="installed-apps-title" className="mb-2 px-3 text-sm font-medium">
