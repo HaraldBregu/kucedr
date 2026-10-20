@@ -72,8 +72,7 @@ export default function ExtensionsPage(): React.JSX.Element {
 		setBusy(true);
 		setErrorMessage('');
 		try {
-			await window.plugins.removeExtension(id);
-			await load();
+			if (await window.plugins.removeExtension(id)) await load();
 		} catch (error) {
 			setErrorMessage(error instanceof Error ? error.message : String(error));
 		} finally {

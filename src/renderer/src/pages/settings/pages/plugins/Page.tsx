@@ -1,51 +1,61 @@
 import React, { useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { SettingsPageHeader, SettingsPageShell } from '../../components';
+import { SettingsNotice, SettingsPageHeader, SettingsPageShell } from '../../components';
+import { SettingsUpload } from '../../components/upload';
 import Installed from './Installed';
 
 const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
-	const [query, setQuery] = useState('');
+	const [uploading, setUploading] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
+	const [successMessage, setSuccessMessage] = useState('');
+	const [version, setVersion] = useState(0);
+
+	const handleUpload = async (paths?: string[]): Promise<void> => {
+		setUploading(true);
+		setErrorMessage('');
+		setSuccessMessage('');
+		try {
+			// ponytail: one plugin per drop; the rest of a multi-drop is ignored
+			const installed = await window.plugins.upload(paths?.[0]);
+			if (installed) {
+				setSuccessMessage(t('settings.integrations.uploaded', { name: installed.name }));
+				setVersion((current) => current + 1);
+			}
+		} catch (error) {
+			setErrorMessage(
+				error instanceof Error ? error.message : t('settings.integrations.uploadError')
+			);
+		} finally {
+			setUploading(false);
+		}
+	};
 
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.integrations.title')}
 				description={t('settings.integrations.description')}
-				action={
-					<div className="relative w-full sm:w-64">
-						<Search
-							className="pointer-events-none absolute left-3 top-1/2 z-10 size-4 -translate-y-1/2 text-muted-foreground"
-							aria-hidden="true"
-						/>
-						<Input
-							type="text"
-							role="searchbox"
-							value={query}
-							onChange={(event) => setQuery(event.target.value)}
-							placeholder={t('settings.integrations.searchPlaceholder')}
-							aria-label={t('settings.integrations.search')}
-							className="rounded-xl px-9"
-						/>
-						{query && (
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon-sm"
-								className="absolute right-1 top-1/2 -translate-y-1/2 hover:bg-transparent dark:hover:bg-transparent"
-								onClick={() => setQuery('')}
-								aria-label={t('settings.integrations.clearSearch')}
-							>
-								<X className="size-4" aria-hidden="true" />
-							</Button>
-						)}
-					</div>
-				}
 			/>
-			<Installed query={query} />
+			{errorMessage && (
+				<SettingsNotice
+					variant="destructive"
+					icon={AlertTriangle}
+					className="whitespace-pre-wrap break-words"
+				>
+					{errorMessage}
+				</SettingsNotice>
+			)}
+			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
+			<SettingsUpload
+				title={t('settings.integrations.dropTitle')}
+				description={t('settings.integrations.dropDescription')}
+				busy={uploading}
+				busyLabel={t('settings.integrations.uploading')}
+				onUpload={(paths) => void handleUpload(paths)}
+			/>
+			<Installed key={version} />
 		</SettingsPageShell>
 	);
 };

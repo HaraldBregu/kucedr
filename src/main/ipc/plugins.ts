@@ -65,9 +65,21 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			});
 			return result.canceled ? undefined : plugins.importExtensions(result.filePaths);
 		});
-		registerCommandWithEvent(PluginsChannels.removeExtension, (event, id: string) => {
-			trusted.assert(event);
-			return plugins.removeExtension(id);
+		registerCommandWithEvent(PluginsChannels.removeExtension, async (event, id: string) => {
+			const window = trusted.assert(event);
+			const result = await dialog.showMessageBox(window, {
+				type: 'warning',
+				title: 'Remove Extension',
+				buttons: ['Cancel', 'Remove Extension'],
+				cancelId: 0,
+				defaultId: 0,
+				noLink: true,
+				message: `Remove “${id}”?`,
+				detail: 'This deletes the extension folder from Kucedr. You can import it again later.',
+			});
+			if (result.response !== 1) return false;
+			await plugins.removeExtension(id);
+			return true;
 		});
 	}
 }

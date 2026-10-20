@@ -372,7 +372,7 @@ export interface PluginsApi {
 	setEnabled: (id: string, enabled: boolean) => Promise<void>;
 	listExtensions: () => Promise<PluginExtension[]>;
 	importExtensions: (paths?: string[]) => Promise<ExtensionImportResult | undefined>;
-	removeExtension: (id: string) => Promise<void>;
+	removeExtension: (id: string) => Promise<boolean>;
 }
 
 export interface McpApi {

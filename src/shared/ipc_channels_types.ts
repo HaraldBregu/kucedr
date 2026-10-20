@@ -530,7 +530,7 @@ export interface PluginsInvokeChannelMap {
 		args: [paths?: string[]];
 		result: import('./plugin_types').ExtensionImportResult | undefined;
 	};
-	[PluginsChannels.removeExtension]: { args: [id: string]; result: void };
+	[PluginsChannels.removeExtension]: { args: [id: string]; result: boolean };
 }
 
 export interface McpInvokeChannelMap {
