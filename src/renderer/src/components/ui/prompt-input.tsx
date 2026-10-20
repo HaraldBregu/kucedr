@@ -539,7 +539,6 @@ function PromptInput({
 																/>
 															) : trailingAction
 														}
-														isLoading={isDictationMode ? false : isLoading}
 														fillActions={isDictationMode}
 													/>
 											}
