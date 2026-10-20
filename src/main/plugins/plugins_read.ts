@@ -11,6 +11,7 @@ import type { ProviderManifest } from '../../shared/provider_types';
 import { assertIcon } from './plugins_assert_icon';
 import { assertNoLinks } from './plugins_assert_no_links';
 import { pluginContents } from './plugins_contents';
+import { pluginIcon } from './plugins_icon';
 import { pluginProvider } from './plugins_provider';
 import { readPluginExtension } from './plugins_read_extension';
 import { compareVersions } from './plugins_version_compare';
@@ -59,13 +60,9 @@ export function readPlugin(
 			'A plugin must contain at least one app, extension, MCP server, provider, or skill.'
 		);
 	}
-	const extensions = contributes.extensions.map((id) => {
-		const { icon, ...extension } = readPluginExtension(directory, id);
-		return {
-			id,
-			...extension,
-			...(icon && { icon: pluginIcon(path.join(directory, 'extensions', id, icon)) }),
-		};
-	});
+	const extensions = contributes.extensions.map((id) => ({
+		id,
+		...readPluginExtension(directory, id),
+	}));
 	return { ...manifest, contributes, extensions, ...(provider && { provider }) };
 }
