@@ -358,9 +358,6 @@
 		"integrations": {
 			"title": "Plugins",
 			"description": "Connect the services Kucedr can use on your behalf.",
-			"search": "Search plugins",
-			"searchPlaceholder": "Search plugins...",
-			"clearSearch": "Clear plugin search",
 			"databaseType": "{{type}} database",
 			"storageType": "S3-compatible storage",
 			"details": "Details",
@@ -451,7 +448,12 @@
 				"unavailable": "Unavailable",
 				"enableAction": "Enable",
 				"disable": "Disable"
-			}
+			},
+			"dropTitle": "Drop a plugin folder or .tgz archive here or click to browse",
+			"dropDescription": "A plugin can bundle apps, extensions, MCP servers, providers, and skills.",
+			"uploading": "Uploading...",
+			"uploaded": "Installed {{name}}.",
+			"uploadError": "Unable to install the plugin."
 		},
 		"breadcrumb": {
 			"label": "Settings navigation",
@@ -1707,11 +1709,17 @@
 			}
 		},
 		"extensions": {
-			"title": "Installed extensions",
-			"description": "UI that plugins add to Kucedr screens. Turn a plugin on or off in Plugins.",
+			"title": "Extensions",
+			"description": "UI added to Kucedr screens, imported on its own or provided by plugins.",
 			"empty": "No extensions",
-			"emptyDescription": "Install a plugin that contains extensions from Plugins.",
+			"emptyDescription": "Add an extension folder that contains a manifest.json and index.html.",
 			"loadError": "Unable to load extensions.",
+			"installed": "Installed extensions",
+			"dropTitle": "Drop extension folders here or click to browse",
+			"uploading": "Uploading...",
+			"uploaded": "Uploaded {{count}} extension(s).",
+			"uploadError": "Unable to install the extension.",
+			"remove": "Remove {{name}}",
 			"slots": {
 				"sidebar": "Sidebar",
 				"panel": "Panel",

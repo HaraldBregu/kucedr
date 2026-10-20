@@ -32,19 +32,19 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const [editingTitle, setEditingTitle] = useState('');
 	const [compactingSessionId, setCompactingSessionId] = useState<string>();
 	const [pendingAction, setPendingAction] = useState<{ action: 'clear' | 'compact'; id: string; title: string }>();
-	const [extensions, setExtensions] = useState<(PluginExtension & { pluginId: string })[]>([]);
+	const [extensions, setExtensions] = useState<(PluginExtension & { pluginId?: string })[]>([]);
 
 	useEffect(() => {
-		void window.plugins
-			.list()
-			.then((plugins) =>
-				setExtensions(
-					plugins
+		void Promise.all([window.plugins.list(), window.plugins.listExtensions()])
+			.then(([plugins, standalone]) =>
+				setExtensions([
+					...standalone,
+					...plugins
 						.filter((plugin) => plugin.enabled && !plugin.error)
 						.flatMap((plugin) =>
 							plugin.extensions.map((extension) => ({ ...extension, pluginId: plugin.id }))
-						)
-				)
+						),
+				])
 			)
 			.catch(() => setExtensions([]));
 	}, []);
@@ -144,7 +144,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					{extensions.map((extension) => (
-						<SidebarMenuItem key={`${extension.pluginId}/${extension.id}`}>
+						<SidebarMenuItem key={`${extension.pluginId ?? ''}/${extension.id}`}>
 							<SidebarMenuButton
 								type="button"
 								className="px-2.5 text-sm"

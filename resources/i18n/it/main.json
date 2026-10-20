@@ -358,9 +358,6 @@
 		"integrations": {
 			"title": "Plugin",
 			"description": "Collega i servizi che Kucedr può usare per tuo conto.",
-			"search": "Cerca plugin",
-			"searchPlaceholder": "Cerca plugin...",
-			"clearSearch": "Cancella ricerca plugin",
 			"databaseType": "Database {{type}}",
 			"storageType": "Archiviazione compatibile con S3",
 			"details": "Dettagli",
@@ -451,7 +448,12 @@
 				"unavailable": "Non disponibile",
 				"enableAction": "Attiva",
 				"disable": "Disattiva"
-			}
+			},
+			"dropTitle": "Trascina qui una cartella plugin o un archivio .tgz o fai clic per sfogliare",
+			"dropDescription": "Un plugin può includere app, estensioni, server MCP, provider e skill.",
+			"uploading": "Caricamento...",
+			"uploaded": "{{name}} installato.",
+			"uploadError": "Impossibile installare il plugin."
 		},
 		"breadcrumb": {
 			"label": "Navigazione impostazioni",
@@ -1707,11 +1709,17 @@
 			}
 		},
 		"extensions": {
-			"title": "Estensioni installate",
-			"description": "Interfacce che i plugin aggiungono alle schermate di Kucedr. Attiva o disattiva un plugin in Plugin.",
+			"title": "Estensioni",
+			"description": "Interfacce aggiunte alle schermate di Kucedr, importate da sole o fornite dai plugin.",
 			"empty": "Nessuna estensione",
-			"emptyDescription": "Installa da Plugin un plugin che contiene estensioni.",
+			"emptyDescription": "Aggiungi una cartella di estensione che contiene manifest.json e index.html.",
 			"loadError": "Impossibile caricare le estensioni.",
+			"installed": "Estensioni installate",
+			"dropTitle": "Trascina qui le cartelle delle estensioni o fai clic per sfogliare",
+			"uploading": "Caricamento...",
+			"uploaded": "Caricate {{count}} estensioni.",
+			"uploadError": "Impossibile installare l'estensione.",
+			"remove": "Rimuovi {{name}}",
 			"slots": {
 				"sidebar": "Barra laterale",
 				"panel": "Pannello",

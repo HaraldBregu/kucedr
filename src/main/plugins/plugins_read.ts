@@ -59,9 +59,13 @@ export function readPlugin(
 			'A plugin must contain at least one app, extension, MCP server, provider, or skill.'
 		);
 	}
-	const extensions = contributes.extensions.map((id) => ({
-		id,
-		...readPluginExtension(directory, id),
-	}));
+	const extensions = contributes.extensions.map((id) => {
+		const { icon, ...extension } = readPluginExtension(directory, id);
+		return {
+			id,
+			...extension,
+			...(icon && { icon: pluginIcon(path.join(directory, 'extensions', id, icon)) }),
+		};
+	});
 	return { ...manifest, contributes, extensions, ...(provider && { provider }) };
 }

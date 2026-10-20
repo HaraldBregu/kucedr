@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 
 export interface OpenExtension {
-	readonly pluginId: string;
+	/** Absent for extensions imported on their own. */
+	readonly pluginId?: string;
 	readonly id: string;
 	readonly title: string;
 }
@@ -34,9 +35,13 @@ export function ExtensionPage({ extension, onClose }: ExtensionPageProps): React
 				</Button>
 			</header>
 			<iframe
-				key={`${extension.pluginId}/${extension.id}`}
+				key={`${extension.pluginId ?? ''}/${extension.id}`}
 				title={extension.title}
-				src={`kucedr-plugin://${extension.pluginId}/${extension.id}/index.html`}
+				src={
+					extension.pluginId
+						? `kucedr-plugin://${extension.pluginId}/${extension.id}/index.html`
+						: `kucedr-extension://${extension.id}/index.html`
+				}
 				sandbox="allow-scripts"
 				className="min-h-0 w-full flex-1 border-0 bg-white"
 			/>
