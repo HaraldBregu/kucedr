@@ -24,7 +24,7 @@ import {
 	TableIcon,
 	X,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { LibraryFile } from '../../../../shared/library_types';
 import { workspaceFileType } from '../../../../shared/workspace';
 import { PageContainer, Split } from '@/components/app/base/page';
@@ -502,7 +502,10 @@ function PageContent(): ReactElement {
 	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
-	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(null);
+	const location = useLocation();
+	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(
+		(location.state as { openExtension?: OpenExtension } | null)?.openExtension ?? null
+	);
 
 	useEffect(() => {
 		const open = (event: Event): void =>
@@ -881,6 +884,7 @@ function PageContent(): ReactElement {
 				sidebar={
 					<StableHomeSidebar
 						refreshKey={`${chatSessionId}:${visibleMessages.length}:${agent.isLoading}`}
+						openExtension={openExtension}
 					/>
 				}
 			>

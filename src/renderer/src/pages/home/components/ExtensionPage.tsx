@@ -8,6 +8,8 @@ export interface OpenExtension {
 	readonly pluginId?: string;
 	readonly id: string;
 	readonly title: string;
+	/** The extension's icon as a data URL. */
+	readonly icon?: string;
 }
 
 interface ExtensionPageProps {

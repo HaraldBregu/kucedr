@@ -111,13 +111,15 @@ export default function ExtensionsPage(): React.JSX.Element {
 
 			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 
-			<SettingsUpload
-				title={t('settings.extensions.dropTitle')}
-				description={t('settings.extensions.emptyDescription')}
-				busy={busy}
-				busyLabel={t('settings.extensions.uploading')}
-				onUpload={(paths) => void handleImport(paths)}
-			/>
+			{entries?.length === 0 && (
+				<SettingsUpload
+					title={t('settings.extensions.dropTitle')}
+					description={t('settings.extensions.emptyDescription')}
+					busy={busy}
+					busyLabel={t('settings.extensions.uploading')}
+					onUpload={(paths) => void handleImport(paths)}
+				/>
+			)}
 
 			{(entries === null || entries.length > 0) && (
 				<section className="pb-4" aria-labelledby="installed-extensions-title">

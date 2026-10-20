@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Settings, type LucideIcon } from 'lucide-react';
+import { AppWindow, Home, LayoutPanelLeft, Puzzle, Settings, type LucideIcon } from 'lucide-react';
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -14,11 +14,20 @@ import {
 	CommandSeparator,
 	CommandShortcut,
 } from '@/components/ui/command';
+import { cn } from '@/lib/utils';
+import { Empty, EmptyDescription, EmptyHeader } from '@/components/ui/empty';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
 	SETTINGS_DETAIL_ITEMS,
 	SETTINGS_NAVIGATION,
 	type SettingsDetailItem,
 } from '@/pages/settings/navigation';
+import type { OpenExtension } from '@/pages/home/components/ExtensionPage';
+import type { App } from '@shared/installed_app_types';
+import type { PluginInfo } from '@shared/plugin_types';
+
+const CATEGORIES = ['all', 'routes', 'apps', 'extensions', 'plugins', 'other'] as const;
+type Category = (typeof CATEGORIES)[number];
 
 interface AppRouteItem {
 	readonly id: string;
@@ -186,6 +195,46 @@ function CommandMenuItem({
 	);
 }
 
+function ImageMenuItem({
+	title,
+	description,
+	icon,
+	iconDark,
+	fallbackIcon: FallbackIcon,
+	onSelect,
+}: {
+	readonly title: string;
+	readonly description?: string;
+	readonly icon?: string;
+	readonly iconDark?: string;
+	readonly fallbackIcon: LucideIcon;
+	readonly onSelect: () => void;
+}): React.JSX.Element {
+	return (
+		<CommandItem
+			value={[title, description].filter(Boolean).join(' ')}
+			keywords={toKeywords(title, description)}
+			onSelect={onSelect}
+		>
+			{icon ? (
+				<>
+					<img
+						src={icon}
+						alt=""
+						className={cn('size-4 object-contain', iconDark && 'dark:hidden')}
+					/>
+					{iconDark ? (
+						<img src={iconDark} alt="" className="hidden size-4 object-contain dark:block" />
+					) : null}
+				</>
+			) : (
+				<FallbackIcon className="size-4" aria-hidden="true" />
+			)}
+			<span className="min-w-0 flex-1 truncate">{title}</span>
+		</CommandItem>
+	);
+}
+
 interface CommandMenuProps {
 	readonly open?: boolean;
 	readonly onOpenChange?: (open: boolean) => void;
@@ -200,13 +249,23 @@ export function CommandMenu({
 	const { t } = useTranslation();
 	const [internalOpen, setInternalOpen] = useState(false);
 	const [search, setSearch] = useState('');
+	const [category, setCategory] = useState<Category>('all');
+	const [extensions, setExtensions] = useState<
+		(OpenExtension & { readonly description: string; readonly icon?: string })[]
+	>([]);
+	const [plugins, setPlugins] = useState<PluginInfo[]>([]);
+	const [apps, setApps] = useState<App[]>([]);
 	const listRef = useRef<HTMLDivElement>(null);
 	const { visibleItems, searchOnlyItems } = useMemo(() => buildCommandItems(t), [t]);
-	const allItems = useMemo(
-		() => [...visibleItems, ...searchOnlyItems],
-		[visibleItems, searchOnlyItems]
-	);
 	const isSearching = search.trim().length >= MIN_SEARCH_LENGTH;
+	const routeItems = visibleItems.slice(
+		0,
+		TOP_LEVEL_ROUTES.length + SETTINGS_NAVIGATION.filter((item) => !item.comingSoon).length
+	);
+	const otherItems = [
+		...visibleItems.slice(routeItems.length),
+		...(isSearching ? searchOnlyItems : []),
+	];
 	const searchEnabled =
 		location.pathname === '/home' ||
 		location.pathname.startsWith('/home/') ||
@@ -234,7 +293,10 @@ export function CommandMenu({
 	const handleOpenChange = useCallback(
 		(nextOpen: boolean) => {
 			setOpen(nextOpen);
-			if (!nextOpen) setSearch('');
+			if (!nextOpen) {
+				setSearch('');
+				setCategory('all');
+			}
 		},
 		[setOpen]
 	);
@@ -245,6 +307,110 @@ export function CommandMenu({
 			navigate(path);
 		},
 		[navigate, setOpen]
+	);
+
+	const openExtension = useCallback(
+		(extension: OpenExtension) => {
+			setOpen(false);
+			if (location.pathname === '/home') {
+				window.dispatchEvent(
+					new CustomEvent<OpenExtension>('kucedr:open-extension', { detail: extension })
+				);
+				return;
+			}
+			navigate('/home', { state: { openExtension: extension } });
+		},
+		[location.pathname, navigate, setOpen]
+	);
+
+	useEffect(() => {
+		if (!open) return;
+		void Promise.all([window.plugins.list(), window.plugins.listExtensions()])
+			.then(([nextPlugins, standalone]) => {
+				setPlugins(nextPlugins);
+				setExtensions([
+					...standalone,
+					...nextPlugins
+						.filter((plugin) => plugin.enabled && !plugin.error)
+						.flatMap((plugin) =>
+							plugin.extensions.map((extension) => ({ ...extension, pluginId: plugin.id }))
+						),
+				]);
+			})
+			.catch(() => {
+				setPlugins([]);
+				setExtensions([]);
+			});
+		void window.apps
+			.list()
+			.then(setApps)
+			.catch(() => setApps([]));
+	}, [open]);
+
+	const sections = [
+		{
+			category: 'routes',
+			items: routeItems.map((item) => (
+				<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
+			)),
+		},
+		{
+			category: 'apps',
+			items: apps.map((app) => (
+				<ImageMenuItem
+					key={app.id}
+					title={app.title}
+					description={app.description}
+					icon={app.imageUrl}
+					fallbackIcon={AppWindow}
+					onSelect={() => {
+						setOpen(false);
+						void window.apps.open(app.id);
+					}}
+				/>
+			)),
+		},
+		{
+			category: 'extensions',
+			items: extensions.map((extension) => (
+				<ImageMenuItem
+					key={`${extension.pluginId ?? ''}/${extension.id}`}
+					title={extension.title}
+					description={extension.description}
+					icon={extension.icon}
+					fallbackIcon={LayoutPanelLeft}
+					onSelect={() =>
+						openExtension({
+							pluginId: extension.pluginId,
+							id: extension.id,
+							title: extension.title,
+						})
+					}
+				/>
+			)),
+		},
+		{
+			category: 'plugins',
+			items: plugins.map((plugin) => (
+				<ImageMenuItem
+					key={plugin.id}
+					title={plugin.name}
+					description={plugin.description}
+					icon={plugin.icon}
+					iconDark={plugin.iconDark}
+					fallbackIcon={Puzzle}
+					onSelect={() => navigateTo(`/settings/plugins/${plugin.id}`)}
+				/>
+			)),
+		},
+		{
+			category: 'other',
+			items: otherItems.map((item) => (
+				<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
+			)),
+		},
+	].filter(
+		(section) => (category === 'all' || category === section.category) && section.items.length > 0
 	);
 
 	useEffect(() => {
@@ -284,21 +450,37 @@ export function CommandMenu({
 				onValueChange={setSearch}
 				placeholder={t('command.placeholder')}
 			/>
-			<CommandList ref={listRef}>
-				<CommandEmpty>{t('command.empty')}</CommandEmpty>
-				<CommandGroup heading={t('command.suggestions')}>
-					{visibleItems.slice(0, TOP_LEVEL_ROUTES.length).map((item) => (
-						<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
+			<Tabs
+				value={category}
+				onValueChange={(value) => setCategory(value as Category)}
+				className="border-b px-2 py-1.5"
+			>
+				<TabsList className="group-data-horizontal/tabs:h-7">
+					{CATEGORIES.map((value) => (
+						<TabsTrigger key={value} value={value} className="px-2 text-xs">
+							{t(`command.categories.${value}`)}
+						</TabsTrigger>
 					))}
-				</CommandGroup>
-				<CommandSeparator />
-				<CommandGroup heading={t('command.settings')}>
-					{(isSearching ? allItems : visibleItems)
-						.slice(TOP_LEVEL_ROUTES.length)
-						.map((item) => (
-							<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
-						))}
-				</CommandGroup>
+				</TabsList>
+			</Tabs>
+			<CommandList ref={listRef}>
+				{sections.length === 0 ? (
+					<Empty className="border-0 py-6">
+						<EmptyHeader>
+							<EmptyDescription className="text-xs">{t('command.emptyCategory')}</EmptyDescription>
+						</EmptyHeader>
+					</Empty>
+				) : (
+					<CommandEmpty>{t('command.empty')}</CommandEmpty>
+				)}
+				{sections.map((section, index) => (
+					<React.Fragment key={section.category}>
+						{index > 0 ? <CommandSeparator /> : null}
+						<CommandGroup heading={t(`command.categories.${section.category}`)}>
+							{section.items}
+						</CommandGroup>
+					</React.Fragment>
+				))}
 			</CommandList>
 		</CommandDialog>
 	);

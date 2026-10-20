@@ -2,7 +2,13 @@ import React from 'react';
 import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 
 interface SettingsFilterProps {
 	readonly query: string;
@@ -20,11 +26,13 @@ export function SettingsFilter({
 	onCategoryChange,
 }: SettingsFilterProps): React.JSX.Element {
 	const { t } = useTranslation();
+	const label = (value: string): string =>
+		t(`settings.filter.categories.${value}`, { defaultValue: value });
 	return (
-		<div className="mb-3 flex flex-col gap-2">
-			<div className="relative">
+		<div className="mb-3 flex items-center gap-2">
+			<div className="relative flex-1">
 				<Search
-					className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+					className="pointer-events-none absolute top-1/2 left-2.5 z-10 size-4 -translate-y-1/2 text-muted-foreground"
 					aria-hidden="true"
 				/>
 				<Input
@@ -32,28 +40,22 @@ export function SettingsFilter({
 					value={query}
 					placeholder={t('settings.filter.search')}
 					aria-label={t('settings.filter.search')}
-					className="pl-8"
+					className="h-8 pl-8"
 					onChange={(event) => onQueryChange(event.target.value)}
 				/>
 			</div>
-			<ToggleGroup
-				type="single"
-				value={category}
-				className="flex-wrap justify-start gap-1"
-				onValueChange={(value) => onCategoryChange(value || 'all')}
-			>
-				{['all', ...categories].map((value) => (
-					<ToggleGroupItem
-						key={value}
-						value={value}
-						variant="outline"
-						size="sm"
-						className="px-3 text-xs"
-					>
-						{t(`settings.filter.categories.${value}`, { defaultValue: value })}
-					</ToggleGroupItem>
-				))}
-			</ToggleGroup>
+			<Select value={category} onValueChange={(value) => onCategoryChange(value ?? 'all')}>
+				<SelectTrigger className="w-36 shrink-0" aria-label={label('all')}>
+					<SelectValue>{label(category)}</SelectValue>
+				</SelectTrigger>
+				<SelectContent>
+					{['all', ...categories].map((value) => (
+						<SelectItem key={value} value={value}>
+							{label(value)}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
 		</div>
 	);
 }

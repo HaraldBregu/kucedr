@@ -85,9 +85,18 @@
 	"command": {
 		"label": "Ricerca pagine",
 		"placeholder": "Cerca pagine e impostazioni...",
-		"empty": "Nessuna pagina o impostazione corrispondente.",
+		"empty": "Nessun risultato trovato.",
+		"emptyCategory": "Nessun elemento in questa categoria.",
 		"suggestions": "Suggerimenti",
 		"settings": "Impostazioni",
+		"categories": {
+			"all": "Tutto",
+			"routes": "Pagine",
+			"apps": "App",
+			"extensions": "Estensioni",
+			"plugins": "Plugin",
+			"other": "Altro"
+		},
 		"routes": {
 			"home": {
 				"title": "Home",

@@ -12,16 +12,16 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui
 import { Skeleton } from '@/components/ui/skeleton';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
 import type { AgentSessionSummary } from '@/lib/compat';
-import type { PluginExtension } from '@shared/plugin_types';
-import type { OpenExtension } from './components/ExtensionPage';
 import { cn } from '@/lib/utils';
 import { playSound } from '@/lib/sounds/play';
+import type { OpenExtension } from './components/ExtensionPage';
 
 interface HomeSidebarProps {
 	readonly refreshKey: string;
+	readonly openExtension: OpenExtension | null;
 }
 
-export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
+export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
@@ -32,22 +32,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const [editingTitle, setEditingTitle] = useState('');
 	const [compactingSessionId, setCompactingSessionId] = useState<string>();
 	const [pendingAction, setPendingAction] = useState<{ action: 'clear' | 'compact'; id: string; title: string }>();
-	const [extensions, setExtensions] = useState<(PluginExtension & { pluginId?: string })[]>([]);
-
-	useEffect(() => {
-		void Promise.all([window.plugins.list(), window.plugins.listExtensions()])
-			.then(([plugins, standalone]) =>
-				setExtensions([
-					...standalone,
-					...plugins
-						.filter((plugin) => plugin.enabled && !plugin.error)
-						.flatMap((plugin) =>
-							plugin.extensions.map((extension) => ({ ...extension, pluginId: plugin.id }))
-						),
-				])
-			)
-			.catch(() => setExtensions([]));
-	}, []);
 
 	useEffect(() => {
 		let active = true;
@@ -143,30 +127,22 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							<span className="truncate">{t('navigationBar.newChat', 'New Chat')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
-					{extensions.map((extension) => (
-						<SidebarMenuItem key={`${extension.pluginId ?? ''}/${extension.id}`}>
+					{openExtension && (
+						<SidebarMenuItem>
 							<SidebarMenuButton
 								type="button"
-								className="px-2.5 text-sm"
-								title={extension.description}
-								onClick={() => {
-									playSound('navigate');
-									window.dispatchEvent(
-										new CustomEvent<OpenExtension>('kucedr:open-extension', {
-											detail: { pluginId: extension.pluginId, id: extension.id, title: extension.title },
-										})
-									);
-								}}
+								className={cn('px-2.5 text-sm', SPLIT_ITEM_ACTIVE_CLASS)}
+								aria-current="page"
 							>
-								{extension.icon ? (
-									<img src={extension.icon} alt="" className="size-4 shrink-0 object-contain" />
+								{openExtension.icon ? (
+									<img src={openExtension.icon} alt="" className="size-4 shrink-0 object-contain" />
 								) : (
 									<LayoutPanelLeft className="size-4 shrink-0" />
 								)}
-								<span className="truncate">{extension.title}</span>
+								<span className="truncate">{openExtension.title}</span>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
-					))}
+					)}
 				</SidebarMenu>
 			</header>
 			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>
