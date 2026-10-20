@@ -6,6 +6,7 @@ import {
 	LogOut,
 	MessageCircle,
 	Plug,
+	Settings,
 	UserRound,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -42,6 +43,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 		title: authenticatedUser ? t('settings.tabs.account') : t('settings.title'),
 		description: authenticatedUser?.email ?? t('settings.sidebar.summary'),
 		avatarPath: authenticatedUser?.avatarPath,
+		icon: authenticatedUser ? UserRound : Settings,
 	};
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
@@ -63,6 +65,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
 								className="h-10 pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
+								<accountItem.icon className="size-4 shrink-0" strokeWidth={1.8} />
 								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
 									{accountItem.title}
 								</span>

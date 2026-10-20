@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, Blocks, ExternalLink } from 'lucide-react';
@@ -13,6 +13,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 } from '../../components';
+import { SettingsFilter } from '../../components/filter';
 import { SettingsUpload } from '../../components/upload';
 
 function getErrorMessage(error: unknown, fallback: string): string {
@@ -31,6 +32,17 @@ const AppsPage: React.FC = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
+	const [query, setQuery] = useState('');
+	const [category, setCategory] = useState('all');
+	const categories = useMemo(
+		() => [...new Set(apps.map((app) => app.metadata.category))].sort(),
+		[apps]
+	);
+	const visibleApps = apps.filter(
+		(app) =>
+			(category === 'all' || app.metadata.category === category) &&
+			`${app.title} ${app.description}`.toLowerCase().includes(query.trim().toLowerCase())
+	);
 
 	const loadApps = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -129,13 +141,22 @@ const AppsPage: React.FC = () => {
 					<h2 id="installed-apps-title" className="mb-2 px-3 text-sm font-medium">
 						{t('settings.apps.title')}
 					</h2>
+					<div className="px-3">
+						<SettingsFilter
+							query={query}
+							onQueryChange={setQuery}
+							categories={categories}
+							category={category}
+							onCategoryChange={setCategory}
+						/>
+					</div>
 					{loading ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
-							{apps.map((app) => (
+							{visibleApps.map((app) => (
 								<Item
 									key={app.id}
 									role="link"

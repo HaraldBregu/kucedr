@@ -1,6 +1,0 @@
-{
-	"title": "Lunar Lander",
-	"description": "Atari, 1979. C for fuel, Tab to pick a mission, Enter to start, arrows to steer and thrust, space to abort, M for sound.",
-	"slot": "panel",
-	"icon": "icon.svg"
-}

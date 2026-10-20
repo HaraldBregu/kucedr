@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Arcade</title>
+		<style>
+			html, body { margin: 0; height: 100%; background: #000; color: #fff; font: 16px ui-monospace, Menlo, monospace; overflow: hidden; }
+			.screen { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center; }
+			[hidden] { display: none !important; }
+			h1 { margin: 0; font-size: 40px; letter-spacing: 6px; color: #ff3; }
+			.blink { animation: blink 1s steps(1) infinite; color: #3c3; }
+			@keyframes blink { 50% { visibility: hidden; } }
+			.credits { color: #3cf; }
+			.hint { color: #888; font-size: 13px; }
+			ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; min-width: 280px; }
+			li { display: flex; align-items: center; gap: 12px; padding: 8px 14px; border: 2px solid transparent; cursor: pointer; }
+			li[aria-selected="true"] { border-color: #ff3; color: #ff3; }
+			li img { width: 28px; height: 28px; object-fit: contain; image-rendering: pixelated; }
+		</style>
+	</head>
+	<body>
+		<section id="attract" class="screen">
+			<h1>ARCADE</h1>
+			<div class="blink">INSERT COIN</div>
+			<div class="credits">CREDITS <span class="count">0</span></div>
+			<div class="hint">C to insert a coin · Enter to continue</div>
+		</section>
+		<section id="select" class="screen" hidden>
+			<h1>SELECT GAME</h1>
+			<ul id="games" role="listbox" aria-label="Games"></ul>
+			<div class="credits">CREDITS <span class="count">0</span></div>
+			<div class="hint">↑ ↓ to choose · Enter to play (1 credit) · C for coins · Esc to go back<br />In game: Esc returns here</div>
+		</section>
+		<script src="arcade.js"></script>
+	</body>
+</html>

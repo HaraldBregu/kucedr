@@ -1,6 +1,0 @@
-{
-	"title": "Breakout",
-	"description": "Atari, 1976. Move the paddle to break the wall. M for sound, V for color.",
-	"slot": "panel",
-	"icon": "icon.svg"
-}

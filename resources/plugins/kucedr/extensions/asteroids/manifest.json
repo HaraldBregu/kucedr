@@ -1,6 +1,0 @@
-{
-	"title": "Asteroids",
-	"description": "Atari, 1979. Arrows to turn and thrust, space to fire, Enter for a new game, M for sound.",
-	"slot": "panel",
-	"icon": "icon.svg"
-}

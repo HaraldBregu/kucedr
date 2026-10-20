@@ -1,7 +1,0 @@
-{
-	"title": "Snake",
-	"description": "The classic Snake game. Arrow keys or WASD to move, space to pause.",
-	"slot": "panel",
-	"category": "game",
-	"icon": "icon.svg"
-}

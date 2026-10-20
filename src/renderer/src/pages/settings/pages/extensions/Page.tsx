@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, LayoutPanelLeft, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PluginExtension, PluginInfo } from '@shared/plugin_types';
@@ -12,6 +12,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 } from '../../components';
+import { SettingsFilter } from '../../components/filter';
 import { SettingsUpload } from '../../components/upload';
 
 type Entry = PluginExtension & { readonly plugin?: PluginInfo };
@@ -22,6 +23,17 @@ export default function ExtensionsPage(): React.JSX.Element {
 	const [busy, setBusy] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
+	const [query, setQuery] = useState('');
+	const [category, setCategory] = useState('all');
+	const categories = useMemo(
+		() => [...new Set((entries ?? []).map((entry) => entry.category))].sort(),
+		[entries]
+	);
+	const visibleEntries = (entries ?? []).filter(
+		(entry) =>
+			(category === 'all' || entry.category === category) &&
+			`${entry.title} ${entry.description}`.toLowerCase().includes(query.trim().toLowerCase())
+	);
 
 	const load = useCallback(async (): Promise<void> => {
 		try {
@@ -112,13 +124,20 @@ export default function ExtensionsPage(): React.JSX.Element {
 					<h2 id="installed-extensions-title" className="mb-2 text-sm font-medium">
 						{t('settings.extensions.installed')}
 					</h2>
+					<SettingsFilter
+						query={query}
+						onQueryChange={setQuery}
+						categories={categories}
+						category={category}
+						onCategoryChange={setCategory}
+					/>
 					{entries === null ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-							{entries.map((entry) => (
+							{visibleEntries.map((entry) => (
 								<Card key={`${entry.plugin?.id ?? ''}/${entry.id}`} size="sm" className="h-22">
 									<CardHeader className="flex items-start gap-3">
 										{entry.icon ? (

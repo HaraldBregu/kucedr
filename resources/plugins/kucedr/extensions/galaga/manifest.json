@@ -1,6 +1,0 @@
-{
-	"title": "Galaga",
-	"description": "Namco, 1981. C to insert a coin, arrows to move, space or Z to fire, M for sound.",
-	"slot": "panel",
-	"icon": "icon.svg"
-}

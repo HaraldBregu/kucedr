@@ -1,6 +1,0 @@
-{
-	"title": "Space Invaders",
-	"description": "Taito, 1978. C to insert a coin and start, arrows to move, space to fire, M for sound, V for color.",
-	"slot": "panel",
-	"icon": "icon.svg"
-}
