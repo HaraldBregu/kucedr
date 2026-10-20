@@ -6,13 +6,11 @@ export function PromptInputControls({
 	leadingAction,
 	content,
 	trailingAction,
-	isLoading,
 	fillActions = false,
 }: {
 	readonly leadingAction?: ReactNode;
 	readonly content?: ReactNode;
 	readonly trailingAction?: ReactNode;
-	readonly isLoading: boolean;
 	readonly fillActions?: boolean;
 }): React.JSX.Element {
 	return (
