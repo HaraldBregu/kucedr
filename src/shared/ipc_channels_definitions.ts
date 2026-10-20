@@ -162,6 +162,9 @@ export const PluginsChannels = {
 	upload: 'plugins:upload',
 	remove: 'plugins:remove',
 	setEnabled: 'plugins:set-enabled',
+	listExtensions: 'plugins:list-extensions',
+	importExtensions: 'plugins:import-extensions',
+	removeExtension: 'plugins:remove-extension',
 } as const;
 
 export const LibraryChannels = {

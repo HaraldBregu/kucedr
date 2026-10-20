@@ -1,9 +1,7 @@
-import { net } from 'electron';
-import fs from 'node:fs/promises';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { scanPlugins } from './plugins_scan';
 import { pluginsStore } from './plugins_store';
+import { serveExtensionFile } from './plugins_extension_serve';
 
 /** Serves `kucedr-plugin://<plugin-id>/<extension-id>/<file>` from an enabled plugin's extension folder. */
 export async function handleExtensionResource(request: Request): Promise<Response> {
@@ -19,20 +17,11 @@ export async function handleExtensionResource(request: Request): Promise<Respons
 		) {
 			return new Response(null, { status: 403 });
 		}
-		const root = await fs.realpath(path.join(plugin.directory, 'extensions', extensionId));
-		const target = await fs.realpath(path.resolve(root, ...rest));
-		const relative = path.relative(root, target);
-		if (!relative || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
-			return new Response(null, { status: 403 });
-		}
-		const file = await net.fetch(pathToFileURL(target).toString(), { headers: request.headers });
-		const headers = new Headers(file.headers);
-		// ponytail: no network for extensions until the permissions bridge exists
-		headers.set(
-			'Content-Security-Policy',
-			"default-src 'none'; script-src kucedr-plugin:; style-src kucedr-plugin: 'unsafe-inline'; img-src kucedr-plugin: data:; font-src kucedr-plugin: data:"
+		return await serveExtensionFile(
+			path.join(plugin.directory, 'extensions', extensionId),
+			rest,
+			request
 		);
-		return new Response(file.body, { status: file.status, headers });
 	} catch {
 		return new Response(null, { status: 404 });
 	}

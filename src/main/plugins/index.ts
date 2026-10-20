@@ -9,3 +9,6 @@ export { removePlugin } from './plugins_remove';
 export { setPluginEnabled } from './plugins_set_enabled';
 export { refreshPlugins } from './plugins_scan';
 export { watchPlugins } from './plugins_watch';
+export { listExtensions } from './plugins_extensions_list';
+export { importExtensions } from './plugins_extensions_import';
+export { removeExtension } from './plugins_extensions_remove';

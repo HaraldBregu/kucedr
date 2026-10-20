@@ -9,13 +9,22 @@ export const plugins: PluginsApi = {
 	installUrl: (url: string) => {
 		return typedInvokeUnwrap(PluginsChannels.installUrl, url);
 	},
-	upload: () => {
-		return typedInvokeUnwrap(PluginsChannels.upload);
+	upload: (path) => {
+		return typedInvokeUnwrap(PluginsChannels.upload, path);
 	},
 	remove: (id: string) => {
 		return typedInvokeUnwrap(PluginsChannels.remove, id);
 	},
 	setEnabled: (id: string, enabled: boolean) => {
 		return typedInvokeUnwrap(PluginsChannels.setEnabled, id, enabled);
+	},
+	listExtensions: () => {
+		return typedInvokeUnwrap(PluginsChannels.listExtensions);
+	},
+	importExtensions: (paths) => {
+		return typedInvokeUnwrap(PluginsChannels.importExtensions, paths);
+	},
+	removeExtension: (id: string) => {
+		return typedInvokeUnwrap(PluginsChannels.removeExtension, id);
 	},
 };

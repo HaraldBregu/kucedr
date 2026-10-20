@@ -517,11 +517,20 @@ export interface PluginsInvokeChannelMap {
 		result: import('./plugin_types').PluginInfo;
 	};
 	[PluginsChannels.upload]: {
-		args: [];
+		args: [path?: string];
 		result: import('./plugin_types').PluginInfo | undefined;
 	};
 	[PluginsChannels.remove]: { args: [id: string]; result: void };
 	[PluginsChannels.setEnabled]: { args: [id: string, enabled: boolean]; result: void };
+	[PluginsChannels.listExtensions]: {
+		args: [];
+		result: import('./plugin_types').PluginExtension[];
+	};
+	[PluginsChannels.importExtensions]: {
+		args: [paths?: string[]];
+		result: import('./plugin_types').ExtensionImportResult | undefined;
+	};
+	[PluginsChannels.removeExtension]: { args: [id: string]; result: void };
 }
 
 export interface McpInvokeChannelMap {

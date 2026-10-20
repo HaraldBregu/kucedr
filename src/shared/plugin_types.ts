@@ -20,6 +20,11 @@ export interface PluginExtension {
 	readonly icon?: string;
 }
 
+export interface ExtensionImportResult {
+	readonly imported: string[];
+	readonly skipped: { readonly name: string; readonly reason: string }[];
+}
+
 export interface PluginInfo {
 	readonly id: string;
 	readonly name: string;

@@ -1,3 +1,4 @@
+import { dialog } from 'electron';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
@@ -35,9 +36,9 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			changed();
 			return installed;
 		});
-		registerCommandWithEvent(PluginsChannels.upload, async (event) => {
+		registerCommandWithEvent(PluginsChannels.upload, async (event, path?: string) => {
 			trusted.assert(event);
-			const installed = await plugins.uploadPlugin();
+			const installed = await plugins.uploadPlugin(path);
 			if (installed) changed();
 			return installed;
 		});
@@ -50,6 +51,23 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			trusted.assert(event);
 			plugins.setPluginEnabled(id, enabled);
 			changed();
+		});
+		registerQueryWithEvent(PluginsChannels.listExtensions, (event) => {
+			trusted.assert(event);
+			return plugins.listExtensions();
+		});
+		registerCommandWithEvent(PluginsChannels.importExtensions, async (event, paths?: string[]) => {
+			const window = trusted.assert(event);
+			if (paths?.length) return plugins.importExtensions(paths);
+			const result = await dialog.showOpenDialog(window, {
+				title: 'Select extension folder(s)',
+				properties: ['openDirectory', 'multiSelections'],
+			});
+			return result.canceled ? undefined : plugins.importExtensions(result.filePaths);
+		});
+		registerCommandWithEvent(PluginsChannels.removeExtension, (event, id: string) => {
+			trusted.assert(event);
+			return plugins.removeExtension(id);
 		});
 	}
 }

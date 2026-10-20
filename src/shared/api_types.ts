@@ -31,7 +31,7 @@ import type {
 } from './mcp_types';
 import type { DriveCreateInput, DriveFile, DriveSyncResult, DriveUpdateInput } from './drive_types';
 import type { App, AppImportResult } from './installed_app_types';
-import type { PluginInfo } from './plugin_types';
+import type { ExtensionImportResult, PluginExtension, PluginInfo } from './plugin_types';
 import type { TaskRuntime, TaskSchedule, TaskScheduledTask } from '../main/tasks/tasks_types';
 import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
@@ -367,9 +367,12 @@ export interface SkillsApi {
 export interface PluginsApi {
 	list: () => Promise<PluginInfo[]>;
 	installUrl: (url: string) => Promise<PluginInfo>;
-	upload: () => Promise<PluginInfo | undefined>;
+	upload: (path?: string) => Promise<PluginInfo | undefined>;
 	remove: (id: string) => Promise<void>;
 	setEnabled: (id: string, enabled: boolean) => Promise<void>;
+	listExtensions: () => Promise<PluginExtension[]>;
+	importExtensions: (paths?: string[]) => Promise<ExtensionImportResult | undefined>;
+	removeExtension: (id: string) => Promise<void>;
 }
 
 export interface McpApi {

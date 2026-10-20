@@ -1,0 +1,9 @@
+{
+	"schemaVersion": 5,
+	"id": "kucedr",
+	"title": "Kucedr",
+	"version": "1.0.0",
+	"description": "Core plugin with the built-in apps, extensions, MCP servers, and skills.",
+	"author": "Kucedr",
+	"icon": "icon.svg"
+}

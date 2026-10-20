@@ -20,11 +20,13 @@ import type { AppRegistry } from './apps/app_registry';
 import { isAppId } from './apps/app_id';
 import { appDirectory } from './apps/app_directory';
 import { handleExtensionResource } from './plugins/plugins_extension_resource';
+import { handleStandaloneExtensionResource } from './plugins/plugins_extensions_resource';
 
 const LOCAL_RESOURCE_SCHEME = 'local-resource';
 export const APP_RESOURCE_SCHEME = 'kucedr-app';
 export const APP_SESSION_PARTITION = 'persist:kucedr-apps';
 const PLUGIN_RESOURCE_SCHEME = 'kucedr-plugin';
+const EXTENSION_RESOURCE_SCHEME = 'kucedr-extension';
 
 export function registerLocalResourceProtocolScheme(): void {
 	protocol.registerSchemesAsPrivileged([
@@ -40,6 +42,10 @@ export function registerLocalResourceProtocolScheme(): void {
 		},
 		{
 			scheme: PLUGIN_RESOURCE_SCHEME,
+			privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true },
+		},
+		{
+			scheme: EXTENSION_RESOURCE_SCHEME,
 			privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true },
 		},
 		{
@@ -128,6 +134,7 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 	protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
 	appSession.protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
 	protocol.handle(PLUGIN_RESOURCE_SCHEME, handleExtensionResource);
+	protocol.handle(EXTENSION_RESOURCE_SCHEME, handleStandaloneExtensionResource);
 }
 
 export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
