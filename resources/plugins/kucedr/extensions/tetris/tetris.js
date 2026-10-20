@@ -28,6 +28,7 @@ function reset() {
 	over = paused = false;
 	started = true;
 	clearing = null;
+	lastDrop = performance.now();
 	spawn();
 	music.start();
 }
