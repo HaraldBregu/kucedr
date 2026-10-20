@@ -104,15 +104,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		switchToTyping();
 	}, [switchToTyping]);
 
-	const useSuggestion = useCallback(
-		(prompt: string): void => {
-			setInput(prompt);
-			setMode('chat');
-			window.requestAnimationFrame(focusInput);
-		},
-		[focusInput, setMode]
-	);
-
 	const stopResponse = useCallback((): void => {
 		const runId = activeRunIdRef.current;
 		activeRunIdRef.current = undefined;
@@ -467,6 +458,5 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		setInput,
 		setInteractionMode,
 		switchToTyping,
-		useSuggestion,
 	};
 }

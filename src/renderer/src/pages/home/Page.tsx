@@ -60,7 +60,6 @@ import {
 	usePromptInput,
 	type PromptInputVoiceMode,
 } from '@/components/ui/prompt-input';
-import { PromptSuggestion } from '@/components/ui/prompt-suggestion';
 import { ScrollButton } from '@/components/ui/scroll-button';
 import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
@@ -90,35 +89,6 @@ import { Model } from './Model';
 
 const StableHomeSidebar = memo(HomeSidebar);
 const StableModel = memo(Model);
-
-const promptSuggestions = [
-	{
-		label: 'Plan my day',
-		prompt: 'Every morning at 9, summarize my day and send me the highlights.',
-	},
-	{
-		label: 'Rain sound',
-		prompt: 'Create the sound of rain on a window.',
-	},
-	{
-		label: 'Create an image',
-		prompt:
-			'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.',
-	},
-	{
-		label: 'Video',
-		prompt: 'Create a five-second video of ocean waves.',
-	},
-	{
-		label: 'Brainstorm project ideas',
-		prompt:
-			'Give me ten practical ideas for a weekend project I could finish with basic tools and a small budget.',
-	},
-	{
-		label: 'Draft a thank-you',
-		prompt: 'Write a friendly reply thanking a colleague for their help.',
-	},
-] as const;
 
 function attachmentId(): string {
 	if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
@@ -184,38 +154,8 @@ function EmptyConversation(): ReactElement {
 				<EmptyTitle className="text-3xl font-bold leading-tight text-foreground">
 					{greeting}, how are you?
 				</EmptyTitle>
-				<EmptyDescription className="max-w-lg text-sm/relaxed">
-					I&apos;m your assistant. What can I do for you?
-				</EmptyDescription>
 			</EmptyHeader>
 		</Empty>
-	);
-}
-
-function PromptSuggestions({
-	onUseSuggestion,
-}: {
-	readonly onUseSuggestion: (prompt: string) => void;
-}): ReactElement {
-	return (
-		<div
-			className="mx-auto flex w-full max-w-2xl justify-center gap-1.5 overflow-x-auto px-4 pb-2"
-			aria-label="Prompt suggestions"
-		>
-			{promptSuggestions.map((suggestion) => (
-				<PromptSuggestion
-					key={suggestion.label}
-					type="button"
-					variant="outline"
-					size="sm"
-					className="h-8 shrink-0 whitespace-nowrap rounded-lg border-border/70 bg-card/95 px-2.5 text-[11px] font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
-					aria-label={suggestion.prompt}
-					onClick={() => onUseSuggestion(suggestion.prompt)}
-				>
-					{suggestion.label}
-				</PromptSuggestion>
-			))}
-		</div>
 	);
 }
 
@@ -560,7 +500,6 @@ function PageContent(): ReactElement {
 	);
 	const showEmptyConversation =
 		visibleMessages.length === 0 && !agent.isLoading && !agent.historyLoading;
-	const showPromptSuggestions = showEmptyConversation && voiceMode === null;
 	useLayoutEffect(() => {
 		const composer = composerRef.current;
 		if (!composer) return;
@@ -909,11 +848,6 @@ function PageContent(): ReactElement {
 								<EmptyConversation />
 							</div>
 							{composer}
-							{showPromptSuggestions ? (
-								<div className="mx-auto w-full">
-									<PromptSuggestions onUseSuggestion={agent.useSuggestion} />
-								</div>
-							) : null}
 						</div>
 					) : (
 						<>

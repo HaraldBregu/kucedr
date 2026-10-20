@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactElement } from 'react';
 import { ModelProviderSelect, type ModelProviderGroup } from '@/components/model-provider-select';
 import { providerIdsFor, providerModels, providers } from '@/lib/providers';
 import { modelContextWindow } from '@shared/model_context';
+import { welcomeMessage } from './context';
 import type { HomeChatMessage } from './context/state';
 import { Usage } from './Usage';
 
@@ -119,7 +120,7 @@ export function Model({
 				buttonClassName="h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground"
 				labels={{ label: 'Change model' }}
 			/>
-			{modelId ? (
+			{modelId && messages.some((message) => message.id !== welcomeMessage.id) ? (
 				<Usage
 					providerId={providerId}
 					modelId={modelId}
