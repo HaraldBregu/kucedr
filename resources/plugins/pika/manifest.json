@@ -6,6 +6,7 @@
 	"description": "Pika video generation with sound effects and voice.",
 	"author": "Kucedr",
 	"icon": "pika-light.svg",
+	"iconDark": "pika-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://pika.art",
 	"icon_dark_url": "/assets/pika-dark.svg",

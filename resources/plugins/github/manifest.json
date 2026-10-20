@@ -6,6 +6,7 @@
 	"description": "GitHub MCP server for repositories, issues, and pull requests.",
 	"author": "Kucedr",
 	"icon": "github-light.svg",
+	"iconDark": "github-dark.svg",
 	"authentication": "oauth2",
 	"icon_dark_url": "/assets/github-dark.svg",
 	"icon_light_url": "/assets/github-light.svg",

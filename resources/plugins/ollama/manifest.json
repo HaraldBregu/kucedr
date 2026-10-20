@@ -6,6 +6,7 @@
 	"description": "Run open models locally on your machine.",
 	"author": "Kucedr",
 	"icon": "ollama-light.svg",
+	"iconDark": "ollama-dark.svg",
 	"authentication": "none",
 	"icon_dark_url": "/assets/ollama-dark.svg",
 	"icon_light_url": "/assets/ollama-light.svg"

@@ -1,9 +1,0 @@
-{
-	"title": "Notes",
-	"description": "A scratchpad that keeps its text between sessions.",
-	"metadata": {
-		"version": "1.0.0",
-		"category": "productivity",
-		"entry": "index.html"
-	}
-}

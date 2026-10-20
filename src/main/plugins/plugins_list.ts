@@ -19,6 +19,9 @@ export function listPlugins(): PluginInfo[] {
 			description: manifest.description,
 			...(manifest.author && { author: manifest.author }),
 			...(manifest.icon && { icon: pluginIcon(path.join(directory, 'assets', manifest.icon)) }),
+			...(manifest.iconDark && {
+				iconDark: pluginIcon(path.join(directory, 'assets', manifest.iconDark)),
+			}),
 		}),
 		builtIn,
 		core: builtIn && id === CORE_PLUGIN_ID,

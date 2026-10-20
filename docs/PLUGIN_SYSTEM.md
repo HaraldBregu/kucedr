@@ -245,6 +245,8 @@ A plugin's `mcp/` folder holds its servers in two forms. A server's id is its fo
   which `mcpLocalDiscoveryRoots()` points at `pluginDirs('mcp')`. Plugin servers keep
   `source: 'local'` and run as separate processes, as local servers do today. OAuth sign-in for
   remote plugin servers is not supported yet.
+- Plugin servers start disabled, whatever their `enabled` says (`mcp_plugin_disabled.ts`). Turning
+  one on saves the user's own copy of its config, which then takes precedence.
 - The plugin installer copies files exactly as they are and never runs `npm install` or lifecycle
   scripts. A stdio server must be bundled: one `.mjs` file, or its `node_modules` included in the
   archive.
@@ -573,9 +575,11 @@ Build each of these only when a real plugin needs it.
 5. ✅ Build the Settings → Plugins Installed list (enable switch, remove), Upload, and Install from
    URL. The install confirmation dialog listing contributions is still to do.
 6. Add the config form generated from `configSchema` and `uiHints`.
-7. Add the `kucedr-plugin://` protocol, the postMessage bridge, and the extension slot hosts
-   (start with `panel` and `sidebar`). Extensions can already be declared, validated, and listed,
-   but they don't render yet.
+7. Add the postMessage bridge and the remaining extension slot hosts. Done so far: the
+   `kucedr-plugin://<plugin-id>/<extension-id>/` protocol (`plugins_extension_resource.ts`, enabled
+   plugins only, with a CSP that blocks network access), and every extension is listed in the home
+   sidebar under New chat and opens in place of the chat (`ExtensionPage`) in a sandboxed iframe,
+   whatever its `slot`.
 8. Add local model downloads (Ollama pull, then URL plus `sha256`).
 9. Add the catalog: `plugins_catalog.ts`, the Browse tab, and updates.
 10. Update [PLUGINS.md](PLUGINS.md) to describe schema v5 and the desktop flow, and

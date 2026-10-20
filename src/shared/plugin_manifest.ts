@@ -29,6 +29,7 @@ export const pluginManifestSchema = z
 		author: z.string().trim().min(1).optional(),
 		minAppVersion: pluginVersionSchema.optional(),
 		icon: iconSchema,
+		iconDark: iconSchema,
 		// ponytail: provider services are checked by validateProviderManifest()
 		authentication: z.unknown().optional(),
 		apiKeyUrl: z.unknown().optional(),

@@ -6,6 +6,7 @@
 	"description": "Reka multimodal chat models.",
 	"author": "Kucedr",
 	"icon": "reka-light.svg",
+	"iconDark": "reka-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://platform.reka.ai/apikeys",
 	"icon_dark_url": "/assets/reka-dark.svg",

@@ -6,6 +6,7 @@
 	"description": "Image generation with accurate text rendering.",
 	"author": "Kucedr",
 	"icon": "ideogram-light.svg",
+	"iconDark": "ideogram-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://ideogram.ai/manage-api",
 	"icon_dark_url": "/assets/ideogram-dark.svg",

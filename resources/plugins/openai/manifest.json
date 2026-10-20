@@ -6,6 +6,7 @@
 	"description": "GPT models for chat, images, speech, realtime voice, and embeddings.",
 	"author": "Kucedr",
 	"icon": "openai-light.svg",
+	"iconDark": "openai-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://platform.openai.com/api-keys",
 	"icon_dark_url": "/assets/openai-dark.svg",

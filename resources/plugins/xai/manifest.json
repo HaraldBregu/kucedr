@@ -6,6 +6,7 @@
 	"description": "Grok models for chat, images, video, and voice.",
 	"author": "Kucedr",
 	"icon": "xai-light.svg",
+	"iconDark": "xai-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://console.x.ai",
 	"icon_dark_url": "/assets/xai-dark.svg",

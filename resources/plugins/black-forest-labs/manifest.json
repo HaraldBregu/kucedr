@@ -6,6 +6,7 @@
 	"description": "FLUX models for image generation and editing, plus video.",
 	"author": "Kucedr",
 	"icon": "black-forest-labs-light.svg",
+	"iconDark": "black-forest-labs-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://dashboard.bfl.ai",
 	"icon_dark_url": "/assets/black-forest-labs-dark.svg",

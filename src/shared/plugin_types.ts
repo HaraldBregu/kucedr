@@ -28,6 +28,8 @@ export interface PluginInfo {
 	readonly author?: string;
 	/** The plugin's icon as a data URL. */
 	readonly icon?: string;
+	/** The icon shown in dark mode, as a data URL. */
+	readonly iconDark?: string;
 	readonly builtIn: boolean;
 	readonly core: boolean;
 	readonly enabled: boolean;

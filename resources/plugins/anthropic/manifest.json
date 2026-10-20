@@ -6,6 +6,7 @@
 	"description": "Claude chat models for writing, coding, and analysis.",
 	"author": "Kucedr",
 	"icon": "anthropic-light.svg",
+	"iconDark": "anthropic-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://console.anthropic.com/settings/keys",
 	"icon_dark_url": "/assets/anthropic-dark.svg",

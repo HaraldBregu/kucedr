@@ -4,6 +4,7 @@ import { splitRecord } from './mcp_split_record';
 import type { McpOAuthState, McpRecord } from './mcp_types';
 import { listLocalMcpServers } from './mcp_local_list';
 import { mcpServerRoots } from './mcp_server_roots';
+import { pluginServerDisabled } from './mcp_plugin_disabled';
 import { mergeMcpRecord } from './mcp_record_merge';
 import { mcpCatalogIdentity } from './mcp_catalog_identity';
 import { clearMcpToolCatalog } from './mcp_catalog_clear';
@@ -14,7 +15,7 @@ export function getMcpServers(): McpSettings {
 		servers[record.id] = splitRecord(record).data;
 	}
 	for (const server of listLocalMcpServers(mcpServerRoots()).servers) {
-		if (!servers[server.id]) servers[server.id] = server.data;
+		if (!servers[server.id]) servers[server.id] = pluginServerDisabled(server).data;
 	}
 	return servers;
 }

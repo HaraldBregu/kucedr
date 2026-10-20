@@ -19,10 +19,12 @@ import type { LoggerService } from './shared';
 import type { AppRegistry } from './apps/app_registry';
 import { isAppId } from './apps/app_id';
 import { appDirectory } from './apps/app_directory';
+import { handleExtensionResource } from './plugins/plugins_extension_resource';
 
 const LOCAL_RESOURCE_SCHEME = 'local-resource';
 export const APP_RESOURCE_SCHEME = 'kucedr-app';
 export const APP_SESSION_PARTITION = 'persist:kucedr-apps';
+const PLUGIN_RESOURCE_SCHEME = 'kucedr-plugin';
 
 export function registerLocalResourceProtocolScheme(): void {
 	protocol.registerSchemesAsPrivileged([
@@ -35,6 +37,10 @@ export function registerLocalResourceProtocolScheme(): void {
 				supportFetchAPI: true,
 				stream: true,
 			},
+		},
+		{
+			scheme: PLUGIN_RESOURCE_SCHEME,
+			privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true },
 		},
 		{
 			scheme: APP_RESOURCE_SCHEME,
@@ -121,6 +127,7 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 	};
 	protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
 	appSession.protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
+	protocol.handle(PLUGIN_RESOURCE_SCHEME, handleExtensionResource);
 }
 
 export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {

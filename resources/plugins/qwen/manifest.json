@@ -6,6 +6,7 @@
 	"description": "Qwen models for chat, images, video, speech, and embeddings.",
 	"author": "Kucedr",
 	"icon": "qwen-light.svg",
+	"iconDark": "qwen-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://modelstudio.console.alibabacloud.com",
 	"icon_dark_url": "/assets/qwen-dark.svg",

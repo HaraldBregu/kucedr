@@ -58,7 +58,8 @@ Rules:
 - Plugins can't contain symlinks, and stdio MCP servers must be bundled (Kucedr never runs
   `npm install`).
 - An extension's `slot` is one of `sidebar`, `panel`, `toolbar`, `composer`, or `settings`.
-  Extensions don't render yet.
+  For now every extension is listed in the home sidebar and opens in place of the chat in a
+  sandboxed frame. It has no network access.
 - A provider id can't reuse a built-in provider id.
 
 See [docs/PLUGIN_SYSTEM.md](../../docs/PLUGIN_SYSTEM.md) for the full design.

@@ -6,6 +6,7 @@
 	"description": "Embedding models for search and retrieval.",
 	"author": "Kucedr",
 	"icon": "jina-light.svg",
+	"iconDark": "jina-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://jina.ai/api-dashboard",
 	"icon_dark_url": "/assets/jina-dark.svg",

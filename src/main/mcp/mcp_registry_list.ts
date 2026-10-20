@@ -2,7 +2,7 @@ import type { McpRegistry, McpServerInfo } from '../../shared/mcp_types';
 import { listConfiguredMcpServers } from './mcp_configured_list';
 import { listLocalMcpServers } from './mcp_local_list';
 import { mcpServerRoots } from './mcp_server_roots';
-import { pluginOwner } from '../plugins/plugins_owner';
+import { pluginServerDisabled } from './mcp_plugin_disabled';
 
 export function listMcpRegistry(): McpRegistry {
 	const local = listLocalMcpServers(mcpServerRoots());
@@ -19,8 +19,7 @@ export function listMcpRegistry(): McpRegistry {
 			});
 			continue;
 		}
-		const plugin = server.path ? pluginOwner(server.path) : undefined;
-		configured.set(server.id, plugin ? { ...server, plugin } : server);
+		configured.set(server.id, pluginServerDisabled(server));
 	}
 	return {
 		servers: [...configured.values()].sort((a, b) => a.id.localeCompare(b.id)),

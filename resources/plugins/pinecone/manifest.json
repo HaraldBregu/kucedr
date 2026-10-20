@@ -6,6 +6,7 @@
 	"description": "Pinecone vector database for knowledge search.",
 	"author": "Kucedr",
 	"icon": "pinecone-light.svg",
+	"iconDark": "pinecone-dark.svg",
 	"authentication": "api-key",
 	"icon_dark_url": "/assets/pinecone-dark.svg",
 	"icon_light_url": "/assets/pinecone-light.svg",

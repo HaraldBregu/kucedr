@@ -85,6 +85,7 @@ import { attachmentPath } from './attachments/path';
 import { readDraftAttachments } from './attachments/read';
 import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
+import { ExtensionPage, type OpenExtension } from './components/ExtensionPage';
 import { Model } from './Model';
 
 const StableHomeSidebar = memo(HomeSidebar);
@@ -501,6 +502,19 @@ function PageContent(): ReactElement {
 	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
+	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(null);
+
+	useEffect(() => {
+		const open = (event: Event): void =>
+			setOpenExtension((event as CustomEvent<OpenExtension>).detail);
+		const close = (): void => setOpenExtension(null);
+		window.addEventListener('kucedr:open-extension', open);
+		window.addEventListener('kucedr:focus-chat-input', close);
+		return () => {
+			window.removeEventListener('kucedr:open-extension', open);
+			window.removeEventListener('kucedr:focus-chat-input', close);
+		};
+	}, []);
 	const [attachmentsSessionId, setAttachmentsSessionId] = useState<string | null>(null);
 	useEffect(() => {
 		let active = true;
@@ -870,11 +884,15 @@ function PageContent(): ReactElement {
 					/>
 				}
 			>
+				{openExtension && (
+					<ExtensionPage extension={openExtension} onClose={() => setOpenExtension(null)} />
+				)}
 				<div
 					ref={workspaceRef}
 					data-slot="home-workspace"
 					className={cn(
 						'relative flex min-h-0 flex-1 flex-col bg-background text-foreground',
+						openExtension && 'hidden',
 						showEmptyConversation && 'overflow-y-auto'
 					)}
 				>

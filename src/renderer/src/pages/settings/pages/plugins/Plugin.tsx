@@ -21,6 +21,7 @@ import {
 	SettingsValue,
 } from '../../components';
 import Confirm from './Confirm';
+import PluginIcon from './PluginIcon';
 
 interface Contents {
 	readonly models: readonly CatalogModel[];
@@ -263,13 +264,7 @@ export default function PluginPage(): React.JSX.Element {
 			{back}
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			<header className="mb-6 flex items-start gap-4 py-2">
-				{plugin.icon ? (
-					<img src={plugin.icon} alt="" className="size-14 shrink-0 object-contain" />
-				) : (
-					<div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground">
-						<Plug className="size-7" aria-hidden="true" />
-					</div>
-				)}
+				<PluginIcon plugin={plugin} className="size-14" />
 				<div className="min-w-0 flex-1">
 					<h1 className="flex flex-wrap items-center gap-2 text-3xl font-normal leading-9 text-foreground">
 						{plugin.name}
@@ -284,7 +279,7 @@ export default function PluginPage(): React.JSX.Element {
 					</p>
 				</div>
 				<div className="flex shrink-0 items-center gap-1.5">
-					{!plugin.core && (
+					{!plugin.builtIn && (
 						<Button
 							type="button"
 							size="sm"

@@ -6,6 +6,7 @@
 	"description": "Lifelike voices, transcription, and sound effects.",
 	"author": "Kucedr",
 	"icon": "elevenlabs-light.svg",
+	"iconDark": "elevenlabs-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://elevenlabs.io/app/settings/api-keys",
 	"icon_dark_url": "/assets/elevenlabs-dark.svg",

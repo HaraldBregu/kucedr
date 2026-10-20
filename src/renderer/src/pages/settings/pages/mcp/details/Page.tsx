@@ -23,6 +23,7 @@ import {
 	SettingsSection,
 } from '../../../components';
 import type { AgentToolPermission } from '@shared/agent_tools';
+import { catalogServer } from '../catalog_server';
 import { McpServerForm } from '../components/McpServerForm';
 import { ToolPermissionControl } from '../../assistant/tools/Permission';
 
@@ -39,16 +40,21 @@ const McpDetailsPage: React.FC = () => {
 	const [testResult, setTestResult] = useState<McpTestResult>();
 	const [tools, setTools] = useState<readonly McpToolDetail[]>([]);
 	const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+	const [saved, setSaved] = useState(false);
 
 	const load = useCallback(async (): Promise<void> => {
 		setLoading(true);
 		setError('');
 		try {
-			const [registry, catalog] = await Promise.all([
+			const [registry, catalog, services] = await Promise.all([
 				window.mcp.registry(),
 				window.mcp.catalog(id),
+				window.app.mcps(),
 			]);
-			setServer(registry.servers.find((entry) => entry.id === id) ?? null);
+			const configured = registry.servers.find((entry) => entry.id === id);
+			const service = services.find((entry) => entry.id === id);
+			setSaved(Boolean(configured));
+			setServer(configured ?? (service ? catalogServer(service) : null));
 			setTools(catalog?.toolDetails ?? []);
 		} catch (caught) {
 			setServer(null);
@@ -77,6 +83,7 @@ const McpDetailsPage: React.FC = () => {
 				await window.mcp.upsert(serverId, data);
 				const registry = await window.mcp.registry();
 				setServer(registry.servers.find((entry) => entry.id === serverId) ?? null);
+				setSaved(true);
 			}
 			setTools((await window.mcp.catalog(serverId))?.toolDetails ?? []);
 			setSuccess('MCP server saved.');
@@ -126,7 +133,7 @@ const McpDetailsPage: React.FC = () => {
 	};
 
 	const remove = async (): Promise<void> => {
-		if (!server || server.source !== 'configured') return;
+		if (!server || server.source !== 'configured' || !saved) return;
 		setSaving(true);
 		setError('');
 		try {
@@ -189,7 +196,11 @@ const McpDetailsPage: React.FC = () => {
 					<div className="flex items-center">
 						<Switch
 							checked={server.data.enabled !== false}
-							disabled={saving || testing}
+							disabled={
+								saving ||
+								testing ||
+								(server.data.type === 'http' && server.data.url.includes('{tenantId}'))
+							}
 							onCheckedChange={(enabled) =>
 								void save(server.id, { ...server.data, enabled }).catch(() => undefined)
 							}
@@ -199,6 +210,13 @@ const McpDetailsPage: React.FC = () => {
 				}
 			/>
 
+			{!saved && (
+				<SettingsNotice>
+					{server.data.type === 'http' && server.data.url.includes('{tenantId}')
+						? 'Provided by a plugin. Replace {tenantId} in the URL with your tenant ID, add the client ID, then save to add it.'
+						: 'Provided by a plugin and not added yet. Turn it on or save the configuration to add it.'}
+				</SettingsNotice>
+			)}
 			{server.data.type === 'stdio' && (
 				<SettingsNotice>
 					Save, enable or test only local server commands you trust. They run with your desktop
@@ -234,7 +252,7 @@ const McpDetailsPage: React.FC = () => {
 						variant="outline"
 						size="sm"
 						onClick={() => void test()}
-						disabled={testing || saving}
+						disabled={testing || saving || !saved}
 					>
 						{testing ? (
 							<RefreshCw className="size-3.5 animate-spin" />
@@ -243,7 +261,7 @@ const McpDetailsPage: React.FC = () => {
 						)}
 						{testing ? 'Testing' : 'Test'}
 					</Button>
-					{server.source === 'configured' && (
+					{server.source === 'configured' && saved && (
 						<Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
 							<Button
 								type="button"

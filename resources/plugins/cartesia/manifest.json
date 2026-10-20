@@ -6,6 +6,7 @@
 	"description": "Low-latency speech-to-text and text-to-speech voices.",
 	"author": "Kucedr",
 	"icon": "cartesia-light.svg",
+	"iconDark": "cartesia-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://play.cartesia.ai/keys",
 	"icon_dark_url": "/assets/cartesia-dark.svg",

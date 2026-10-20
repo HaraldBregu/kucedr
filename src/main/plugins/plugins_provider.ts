@@ -13,6 +13,7 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 		author: _author,
 		minAppVersion: _minAppVersion,
 		icon: _icon,
+		iconDark: _iconDark,
 		...fields
 	} = manifest;
 	if (Object.keys(fields).length === 0) return undefined;

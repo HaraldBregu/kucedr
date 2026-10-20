@@ -1,15 +1,8 @@
 import React from 'react';
-import { MoreHorizontal } from 'lucide-react';
 import type { McpServerInfo } from '@shared/mcp_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
-import { Button } from '@/components/ui/button';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Switch } from '@/components/ui/switch';
 import { mcps } from '@/lib/providers';
 
 export function McpServerRow({
@@ -55,23 +48,12 @@ export function McpServerRow({
 				</p>
 			</ItemContent>
 			<ItemActions className="relative z-10 ml-auto flex-none justify-end">
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							disabled={saving}
-							aria-label={`Options for ${title}`}
-						>
-							<MoreHorizontal className="size-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuItem onSelect={() => void onEnabledChange(!enabled)}>
-							{enabled ? 'Disable server' : 'Enable server'}
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<Switch
+					checked={enabled}
+					disabled={saving}
+					onCheckedChange={(checked) => void onEnabledChange(checked)}
+					aria-label={`${enabled ? 'Disable' : 'Enable'} ${title}`}
+				/>
 			</ItemActions>
 			<button
 				type="button"

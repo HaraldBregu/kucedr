@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MoreHorizontal, Plug, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PluginInfo } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SettingsNotice, SettingsSection } from '../../components';
 import Confirm from './Confirm';
+import PluginIcon from './PluginIcon';
 
 export default function Installed({ query = '' }: { readonly query?: string }): React.JSX.Element {
 	const { t } = useTranslation();
@@ -105,13 +106,7 @@ export default function Installed({ query = '' }: { readonly query?: string }): 
 									}}
 								>
 									<CardHeader className="flex items-start gap-3">
-										{plugin.icon ? (
-											<img src={plugin.icon} alt="" className="size-10 shrink-0 object-contain" />
-										) : (
-											<div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground">
-												<Plug className="size-5" aria-hidden="true" />
-											</div>
-										)}
+										<PluginIcon plugin={plugin} className="size-10" />
 										<div className="flex min-w-0 flex-1 flex-col gap-1">
 											<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
 												<span className="truncate">{plugin.name}</span>
@@ -135,7 +130,7 @@ export default function Installed({ query = '' }: { readonly query?: string }): 
 											onClick={(event) => event.stopPropagation()}
 											onKeyDown={(event) => event.stopPropagation()}
 										>
-											{!plugin.core && (
+											{!plugin.builtIn && (
 												<Button
 													type="button"
 													size="sm"

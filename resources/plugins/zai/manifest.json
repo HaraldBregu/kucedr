@@ -6,6 +6,7 @@
 	"description": "GLM chat models, plus image, video, and speech-to-text.",
 	"author": "Kucedr",
 	"icon": "zai-light.svg",
+	"iconDark": "zai-dark.svg",
 	"authentication": "api-key",
 	"apiKeyUrl": "https://z.ai/manage-apikey/apikey-list",
 	"icon_dark_url": "/assets/zai-dark.svg",
