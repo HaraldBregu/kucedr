@@ -244,26 +244,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 													}
 													if (action === 'clear' || action === 'compact')
 														setPendingAction({ action, id: session.id, title });
-													if (action === 'delete') {
-																if (
-																	!window.confirm(
-																		t('settings.chatHistory.confirmDeleteSession', { title })
-																	)
-																)
-																	return;
-																setActionError('');
-																void window.agent
-																	.deleteSession(session.id)
-																	.then(() => {
-																		setSessions((current) =>
-																			current.filter((item) => item.id !== session.id)
-																		);
-																		if (isActive) setSessionId(crypto.randomUUID());
-																	})
-																	.catch(() =>
-																		setActionError(t('settings.chatHistory.errors.delete'))
-																	);
-															}
+													if (action === 'delete') deleteSession(session.id, title, isActive);
 														});
 												}}
 											>
