@@ -4,6 +4,14 @@
 	"title": "xAI",
 	"version": "1.0.0",
 	"description": "Grok models for chat, images, video, and voice.",
+	"categories": [
+		"LLM",
+		"IMAGE",
+		"VIDEO",
+		"TTS",
+		"STT",
+		"REALTIME"
+	],
 	"author": "Kucedr",
 	"icon": "xai-light.svg",
 	"iconDark": "xai-dark.svg",

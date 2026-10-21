@@ -4,6 +4,10 @@
 	"title": "Black Forest Labs",
 	"version": "1.0.0",
 	"description": "FLUX models for image generation and editing, plus video.",
+	"categories": [
+		"IMAGE",
+		"VIDEO"
+	],
 	"author": "Kucedr",
 	"icon": "black-forest-labs-light.svg",
 	"iconDark": "black-forest-labs-dark.svg",

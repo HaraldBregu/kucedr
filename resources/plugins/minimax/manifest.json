@@ -4,6 +4,14 @@
 	"title": "MiniMax",
 	"version": "1.0.0",
 	"description": "MiniMax chat, video, image, speech, and music models.",
+	"categories": [
+		"LLM",
+		"IMAGE",
+		"VIDEO",
+		"AUDIO",
+		"TTS",
+		"STT"
+	],
 	"author": "Kucedr",
 	"icon": "minimax.svg",
 	"authentication": "api-key",

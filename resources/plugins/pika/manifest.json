@@ -4,6 +4,11 @@
 	"title": "Pika",
 	"version": "1.0.0",
 	"description": "Pika video generation with sound effects and voice.",
+	"categories": [
+		"VIDEO",
+		"AUDIO",
+		"TTS"
+	],
 	"author": "Kucedr",
 	"icon": "pika-light.svg",
 	"iconDark": "pika-dark.svg",

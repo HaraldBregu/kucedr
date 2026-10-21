@@ -29,13 +29,16 @@ plugin is just `manifest.json` (plugin info plus its services) and `assets/` (it
 	"title": "Acme Tools",
 	"version": "1.0.0",
 	"description": "What the plugin adds.",
+	"categories": ["LLM", "TTS"],
 	"author": "Acme",
 	"minAppVersion": "1.2.0",
 	"icon": "icon.svg"
 }
 ```
 
-`icon` is a png, svg, jpg, or webp file in `assets/` (256 KB max).
+`icon` is a png, svg, jpg, or webp file in `assets/` (256 KB max). `categories` are free-form
+labels (e.g. `LLM`, `TTS`, `DATABASE`); the Plugins settings filter lists every category the
+installed plugins use.
 
 Contributions are found from their folders, and each one is described by its own file. An
 extension's `manifest.json`:

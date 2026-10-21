@@ -4,6 +4,12 @@
 	"title": "Mistral AI",
 	"version": "1.0.0",
 	"description": "Mistral chat models, embeddings, and voice.",
+	"categories": [
+		"LLM",
+		"TTS",
+		"STT",
+		"EMBEDDING"
+	],
 	"author": "Kucedr",
 	"icon": "mistral.svg",
 	"authentication": "api-key",

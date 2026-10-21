@@ -4,6 +4,9 @@
 	"title": "Pinecone",
 	"version": "1.0.0",
 	"description": "Pinecone vector database for knowledge search.",
+	"categories": [
+		"DATABASE"
+	],
 	"author": "Kucedr",
 	"icon": "pinecone-light.svg",
 	"iconDark": "pinecone-dark.svg",

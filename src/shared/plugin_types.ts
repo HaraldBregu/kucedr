@@ -31,6 +31,7 @@ export interface PluginInfo {
 	readonly name: string;
 	readonly version?: string;
 	readonly description?: string;
+	readonly categories: readonly string[];
 	readonly author?: string;
 	/** The plugin's icon as a data URL. */
 	readonly icon?: string;

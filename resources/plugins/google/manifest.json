@@ -4,6 +4,17 @@
 	"title": "Google",
 	"version": "1.0.0",
 	"description": "Gemini models for chat, images, video, speech, and embeddings, plus Gmail, Calendar, Drive, and Contacts.",
+	"categories": [
+		"LLM",
+		"IMAGE",
+		"VIDEO",
+		"AUDIO",
+		"TTS",
+		"STT",
+		"REALTIME",
+		"EMBEDDING",
+		"MCP"
+	],
 	"author": "Kucedr",
 	"icon": "google.svg",
 	"authentication": "api-key",

@@ -4,6 +4,10 @@
 	"title": "Deepgram",
 	"version": "1.0.0",
 	"description": "Fast speech-to-text transcription and text-to-speech.",
+	"categories": [
+		"TTS",
+		"STT"
+	],
 	"author": "Kucedr",
 	"icon": "deepgram.svg",
 	"authentication": "api-key",

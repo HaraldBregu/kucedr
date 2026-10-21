@@ -4,6 +4,9 @@
 	"title": "GitHub",
 	"version": "1.0.0",
 	"description": "GitHub MCP server for repositories, issues, and pull requests.",
+	"categories": [
+		"MCP"
+	],
 	"author": "Kucedr",
 	"icon": "github-light.svg",
 	"iconDark": "github-dark.svg",

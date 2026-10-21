@@ -4,6 +4,9 @@
 	"title": "Supabase",
 	"version": "1.0.0",
 	"description": "Supabase Storage for files.",
+	"categories": [
+		"STORAGE"
+	],
 	"author": "Kucedr",
 	"icon": "supabase.svg",
 	"authentication": "api-key",

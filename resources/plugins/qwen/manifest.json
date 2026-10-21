@@ -4,6 +4,15 @@
 	"title": "Alibaba / Qwen / Wan",
 	"version": "1.0.0",
 	"description": "Qwen models for chat, images, video, speech, and embeddings.",
+	"categories": [
+		"LLM",
+		"IMAGE",
+		"VIDEO",
+		"TTS",
+		"STT",
+		"REALTIME",
+		"EMBEDDING"
+	],
 	"author": "Kucedr",
 	"icon": "qwen-light.svg",
 	"iconDark": "qwen-dark.svg",

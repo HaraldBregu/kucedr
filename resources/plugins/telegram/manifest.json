@@ -4,6 +4,9 @@
 	"title": "Telegram",
 	"version": "1.0.0",
 	"description": "Chat with your assistant through a Telegram bot.",
+	"categories": [
+		"BOT"
+	],
 	"author": "Kucedr",
 	"icon": "telegram.svg",
 	"authentication": "api-key",

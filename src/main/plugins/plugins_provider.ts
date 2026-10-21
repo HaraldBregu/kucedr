@@ -10,6 +10,7 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 		title,
 		version: _version,
 		description: _description,
+		categories: _categories,
 		author: _author,
 		minAppVersion: _minAppVersion,
 		icon: _icon,

@@ -4,6 +4,9 @@
 	"title": "DeepSeek",
 	"version": "1.0.0",
 	"description": "DeepSeek chat and reasoning models.",
+	"categories": [
+		"LLM"
+	],
 	"author": "Kucedr",
 	"icon": "deepseek.svg",
 	"authentication": "api-key",

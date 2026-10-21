@@ -4,6 +4,9 @@
 	"title": "Tavily",
 	"version": "1.0.0",
 	"description": "Tavily web search built for AI agents.",
+	"categories": [
+		"SEARCH"
+	],
 	"author": "Kucedr",
 	"icon": "tavily.svg",
 	"authentication": "api-key",

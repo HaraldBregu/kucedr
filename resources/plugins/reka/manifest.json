@@ -4,6 +4,9 @@
 	"title": "Reka AI",
 	"version": "1.0.0",
 	"description": "Reka multimodal chat models.",
+	"categories": [
+		"LLM"
+	],
 	"author": "Kucedr",
 	"icon": "reka-light.svg",
 	"iconDark": "reka-dark.svg",

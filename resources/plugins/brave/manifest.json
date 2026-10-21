@@ -4,6 +4,9 @@
 	"title": "Brave",
 	"version": "1.0.0",
 	"description": "Brave Search for private, independent web results.",
+	"categories": [
+		"SEARCH"
+	],
 	"author": "Kucedr",
 	"icon": "brave.svg",
 	"authentication": "api-key",

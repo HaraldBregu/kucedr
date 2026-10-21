@@ -4,6 +4,9 @@
 	"title": "Ideogram",
 	"version": "1.0.0",
 	"description": "Image generation with accurate text rendering.",
+	"categories": [
+		"IMAGE"
+	],
 	"author": "Kucedr",
 	"icon": "ideogram-light.svg",
 	"iconDark": "ideogram-dark.svg",

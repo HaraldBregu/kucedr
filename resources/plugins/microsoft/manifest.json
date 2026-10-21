@@ -4,6 +4,9 @@
 	"title": "Microsoft",
 	"version": "1.0.0",
 	"description": "Microsoft 365 MCP servers for Outlook, Teams, OneDrive, SharePoint, Word, and Learn.",
+	"categories": [
+		"MCP"
+	],
 	"author": "Kucedr",
 	"icon": "microsoft.svg",
 	"authentication": "oauth2",

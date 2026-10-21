@@ -4,6 +4,9 @@
 	"title": "Ollama",
 	"version": "1.0.0",
 	"description": "Run open models locally on your machine.",
+	"categories": [
+		"LLM"
+	],
 	"author": "Kucedr",
 	"icon": "ollama-light.svg",
 	"iconDark": "ollama-dark.svg",

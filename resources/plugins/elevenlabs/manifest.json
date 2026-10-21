@@ -4,6 +4,11 @@
 	"title": "ElevenLabs",
 	"version": "1.0.0",
 	"description": "Lifelike voices, transcription, and sound effects.",
+	"categories": [
+		"AUDIO",
+		"TTS",
+		"STT"
+	],
 	"author": "Kucedr",
 	"icon": "elevenlabs-light.svg",
 	"iconDark": "elevenlabs-dark.svg",

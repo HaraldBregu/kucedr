@@ -23,6 +23,7 @@ export function listPlugins(): PluginInfo[] {
 				iconDark: pluginIcon(path.join(directory, 'assets', manifest.iconDark)),
 			}),
 		}),
+		categories: manifest?.categories ?? [],
 		builtIn,
 		core: builtIn && id === CORE_PLUGIN_ID,
 		enabled: !disabled.has(id),

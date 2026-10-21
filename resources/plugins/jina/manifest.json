@@ -4,6 +4,9 @@
 	"title": "Jina AI",
 	"version": "1.0.0",
 	"description": "Embedding models for search and retrieval.",
+	"categories": [
+		"EMBEDDING"
+	],
 	"author": "Kucedr",
 	"icon": "jina-light.svg",
 	"iconDark": "jina-dark.svg",

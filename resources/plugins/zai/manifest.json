@@ -4,6 +4,12 @@
 	"title": "Z.ai / Zhipu AI",
 	"version": "1.0.0",
 	"description": "GLM chat models, plus image, video, and speech-to-text.",
+	"categories": [
+		"LLM",
+		"IMAGE",
+		"VIDEO",
+		"STT"
+	],
 	"author": "Kucedr",
 	"icon": "zai-light.svg",
 	"iconDark": "zai-dark.svg",

@@ -4,6 +4,10 @@
 	"title": "Cartesia",
 	"version": "1.0.0",
 	"description": "Low-latency speech-to-text and text-to-speech voices.",
+	"categories": [
+		"TTS",
+		"STT"
+	],
 	"author": "Kucedr",
 	"icon": "cartesia-light.svg",
 	"iconDark": "cartesia-dark.svg",

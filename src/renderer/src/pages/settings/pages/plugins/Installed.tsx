@@ -53,9 +53,12 @@ export default function Installed({
 	};
 
 	const normalizedQuery = query.trim().toLocaleLowerCase();
+	const categories = [...new Set(plugins.flatMap((plugin) => plugin.categories))].sort();
 	const visible = plugins.filter(
 		(plugin) =>
-			(category === 'all' || (plugin.builtIn ? 'builtIn' : 'downloaded') === category) &&
+			(category === 'all' ||
+				(plugin.builtIn ? 'builtIn' : 'downloaded') === category ||
+				plugin.categories.includes(category)) &&
 			[plugin.name, plugin.description ?? '', plugin.id].some((value) =>
 				value.toLocaleLowerCase().includes(normalizedQuery)
 			)
@@ -71,7 +74,7 @@ export default function Installed({
 				<SettingsFilter
 					query={query}
 					onQueryChange={setQuery}
-					categories={['builtIn', 'downloaded']}
+					categories={['builtIn', 'downloaded', ...categories]}
 					category={category}
 					onCategoryChange={setCategory}
 				/>

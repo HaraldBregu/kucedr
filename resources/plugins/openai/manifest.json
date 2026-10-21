@@ -4,6 +4,14 @@
 	"title": "OpenAI",
 	"version": "1.0.0",
 	"description": "GPT models for chat, images, speech, realtime voice, and embeddings.",
+	"categories": [
+		"LLM",
+		"IMAGE",
+		"TTS",
+		"STT",
+		"REALTIME",
+		"EMBEDDING"
+	],
 	"author": "Kucedr",
 	"icon": "openai-light.svg",
 	"iconDark": "openai-dark.svg",

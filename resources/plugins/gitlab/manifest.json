@@ -4,6 +4,9 @@
 	"title": "GitLab",
 	"version": "1.0.0",
 	"description": "GitLab MCP server for projects, issues, and merge requests.",
+	"categories": [
+		"MCP"
+	],
 	"author": "Kucedr",
 	"icon": "gitlab.svg",
 	"authentication": "oauth2",

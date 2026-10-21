@@ -4,6 +4,9 @@
 	"title": "Kucedr",
 	"version": "1.0.0",
 	"description": "Core plugin with the built-in apps, extensions, MCP servers, and skills.",
+	"categories": [
+		"CORE"
+	],
 	"author": "Kucedr",
 	"icon": "icon.svg"
 }

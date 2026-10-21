@@ -4,6 +4,9 @@
 	"title": "Cloudflare",
 	"version": "1.0.0",
 	"description": "Cloudflare R2 object storage for files.",
+	"categories": [
+		"STORAGE"
+	],
 	"author": "Kucedr",
 	"icon": "cloudflare.svg",
 	"authentication": "api-key",

@@ -27,6 +27,7 @@ export const pluginManifestSchema = z
 		title: z.string().trim().min(1),
 		version: pluginVersionSchema,
 		description: z.string().trim().min(1),
+		categories: z.array(z.string().trim().min(1)).optional(),
 		author: z.string().trim().min(1).optional(),
 		minAppVersion: pluginVersionSchema.optional(),
 		icon: iconSchema,

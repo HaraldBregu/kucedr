@@ -4,6 +4,9 @@
 	"title": "Notion",
 	"version": "1.0.0",
 	"description": "Notion MCP server for pages and databases.",
+	"categories": [
+		"MCP"
+	],
 	"author": "Kucedr",
 	"icon": "notion.svg",
 	"authentication": "oauth2",
