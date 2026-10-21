@@ -16,6 +16,16 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && git push || true"
+          }
+        ]
+      }
     ]
   }
 }
