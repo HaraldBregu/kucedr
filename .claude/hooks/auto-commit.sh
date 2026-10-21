@@ -1,23 +1,17 @@
 #!/bin/bash
 cd "$CLAUDE_PROJECT_DIR" || exit 0
 
-# Skip if nothing changed
-if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
-  exit 0
-fi
+FILE=$(jq -r '.tool_input.file_path // empty')
+[ -z "$FILE" ] && exit 0
 
 # Skip secret files
-EXCLUDE_PATTERNS=(.env credentials.json *.pem *.key)
-EXCLUDE_ARGS=""
-for pattern in "${EXCLUDE_PATTERNS[@]}"; do
-  EXCLUDE_ARGS="$EXCLUDE_ARGS -- . ':!$pattern'"
-done
+case "$(basename "$FILE")" in
+  .env|*.env|credentials.json|*.pem|*.key) exit 0 ;;
+esac
 
-# Stage all changes
-git add -A
-
-# Unstage secret files if accidentally added
-git reset HEAD -- '*.env' '*.pem' '*.key' 'credentials.json' 2>/dev/null
+# Stage only the changed file
+git add -- "$FILE" 2>/dev/null || exit 0
+git diff --cached --quiet && exit 0
 
 # Get recent commit style
 RECENT_STYLE=$(git log --oneline -5 2>/dev/null)
@@ -31,6 +25,5 @@ if [ -z "$COMMIT_MSG" ]; then
   COMMIT_MSG="Auto-commit from Claude Code [$(date '+%Y-%m-%d %H:%M:%S')]"
 fi
 
-git commit -m "$COMMIT_MSG" || true
-git push || true
+git commit -m "$COMMIT_MSG" -- "$FILE" || true
 exit 0
