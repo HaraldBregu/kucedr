@@ -326,6 +326,7 @@
 	}
 	body {
 		@apply text-foreground;
+		letter-spacing: var(--tracking-normal);
 		font-synthesis-weight: none;
 		text-rendering: optimizeLegibility;
 	}
