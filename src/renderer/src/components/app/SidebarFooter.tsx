@@ -2,8 +2,10 @@ import {
 	AudioLines,
 	HardDrive,
 	Layers,
+	LayoutPanelLeft,
 	Library,
 	LogOut,
+	Plug,
 	Settings,
 	UserRound,
 } from 'lucide-react';
@@ -48,6 +50,8 @@ export function AppSidebarFooter(): React.JSX.Element {
 		{ path: '/settings/storage', label: t('settings.tabs.storage'), icon: HardDrive },
 		{ path: '/settings/library', label: t('library.title'), icon: Library },
 		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
+		{ path: '/settings/plugins', label: t('settings.tabs.plugins'), icon: Plug },
+		{ path: '/settings/extensions', label: t('settings.tabs.extensions'), icon: LayoutPanelLeft },
 	];
 
 	return (
