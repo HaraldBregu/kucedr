@@ -28,6 +28,12 @@ Debug apps have a badge and their registered paths appear in Settings. Removing 
 
 Sources: [debug registration](../src/main/apps/app_debug_add.ts), [debug removal](../src/main/apps/app_debug_remove.ts), [directory resolution](../src/main/apps/app_directory.ts), [window settings persistence](../src/main/apps/app_write.ts).
 
+## Apps from plugins
+
+A plugin can ship apps in its `apps/<app-id>/` folder. They are listed in Settings → Apps after installed and debug apps, tagged with their plugin, and open the same way. Their files stay inside the plugin folder; their app-scoped data still goes to `~/.kucedr/apps/<id>/data`. An installed or debug app with the same ID wins. A plugin app can't be deleted on its own: disable or remove its plugin in Settings → Plugins. See [Plugins](PLUGINS.md).
+
+Sources: [plugin app lookup](../src/main/apps/app_plugin_directory.ts), [app list](../src/main/apps/app_list.ts), [delete guard](../src/main/apps/app_delete.ts).
+
 ## Workspace
 
 Workspace shows agent workspace files in a tree beside a resizable viewer. Its context menu creates files and folders, renames entries, and confirms deletion. Markdown opens in editable Text and Raw views and saves changes automatically; other text and code open read-only. Images, audio, video, and PDFs open in their respective viewers. The viewer can find text in supported files; unsupported files show a preview-unavailable message. Workspace changes from the host refresh the file list.
