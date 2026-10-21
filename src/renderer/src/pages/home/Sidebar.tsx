@@ -224,6 +224,11 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 													setSessionTitle?.(title, session.id);
 													window.dispatchEvent(new Event('kucedr:focus-chat-input'));
 												}}
+												onKeyDown={(event) => {
+													if (event.key !== 'Delete' && event.key !== 'Backspace') return;
+													event.preventDefault();
+													deleteSession(session.id, title, isActive);
+												}}
 												onContextMenu={(event) => {
 													event.preventDefault();
 													void window.win
