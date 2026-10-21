@@ -95,6 +95,18 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			.finally(() => setCompactingSessionId(undefined));
 	};
 
+	const deleteSession = (id: string, title: string, isActive: boolean): void => {
+		if (!window.confirm(t('settings.chatHistory.confirmDeleteSession', { title }))) return;
+		setActionError('');
+		void window.agent
+			.deleteSession(id)
+			.then(() => {
+				setSessions((current) => current.filter((item) => item.id !== id));
+				if (isActive) setSessionId(crypto.randomUUID());
+			})
+			.catch(() => setActionError(t('settings.chatHistory.errors.delete')));
+	};
+
 	useEffect(() => {
 		const session = sessions.find((item) => item.id === currentSessionId);
 		if (session) {
