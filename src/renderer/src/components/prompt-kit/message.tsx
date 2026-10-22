@@ -14,7 +14,7 @@ export type MessageProps = {
 } & React.HTMLProps<HTMLDivElement>
 
 const Message = ({ children, className, ...props }: MessageProps) => (
-  <div className={cn("flex min-w-0 gap-3", className)} {...props}>
+  <div className={cn("flex min-w-0 gap-3 font-chat", className)} {...props}>
     {children}
   </div>
 )
