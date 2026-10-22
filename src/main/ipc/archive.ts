@@ -1,7 +1,7 @@
 import { createWriteStream } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import unzipper from 'unzipper';
 
 import { resolveWorkspaceFile } from './workspace';
@@ -34,7 +34,7 @@ export async function archiveWorkspaceEntry(
 
 		await new Promise<void>((resolve, reject) => {
 			const output = createWriteStream(destination, { flags: 'wx' });
-			const archive = archiver('zip', { zlib: { level: 9 } });
+			const archive = new ZipArchive({ zlib: { level: 9 } });
 			output.on('close', resolve);
 			output.on('error', reject);
 			archive.on('error', reject);
