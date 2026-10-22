@@ -173,7 +173,7 @@
 		"unzipper": "^0.12.5",
 		"use-stick-to-bottom": "^1.1.6",
 		"vgpu": "^0.5.0",
-		"ws": "^8.20.0",
+		"ws": "^8.22.0",
 		"zod": "^4.6.5"
 	},
 	"devDependencies": {
