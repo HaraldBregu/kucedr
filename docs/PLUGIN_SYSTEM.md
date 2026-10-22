@@ -1,8 +1,9 @@
 # Plugin system strategy
 
 Status: steps 1–5 of section 12 are implemented (the manifest, install from an upload or URL, the
-`vector_databases` rename, plugin entries in the listing APIs, and the Installed list). The rest is
-still a proposal.
+`vector_databases` rename, plugin entries in the listing APIs, and the Installed list), and step 7
+is partly done. The rest is still a proposal. [PLUGINS.md](PLUGINS.md) describes what is built
+today.
 
 This document plans how the Kucedr desktop app installs, loads, and distributes plugins. A plugin is
 one package that can contain five kinds of contributions:
@@ -188,7 +189,8 @@ The desktop schema lives in `src/shared/plugin_manifest.ts`. The CLI keeps its o
 
 Apps are standalone apps opened in their own window. They load through the existing apps pipeline:
 `app_list.ts` and `appDirectory()` also look in `pluginDirs('apps')`. They render with `render()`
-in `app_render.ts`, and `AppRegistry` tracks them under the id `<plugin-id>.<app-id>`. Apps keep
+in `app_render.ts`, and `AppRegistry` tracks them under their folder name, not namespaced; an
+installed or debug app with the same id wins. Apps keep
 the existing app sandbox and per-app storage. JS and CSS are loaded only from the app's own folder
 (see the CSP in section 9).
 
@@ -210,7 +212,7 @@ How an extension renders:
 - Kucedr owns the slot's frame: the nav item, panel header, button, and icon. These use the
   existing shadcn components and take `title` and `icon` from the manifest.
 - The slot body is the extension's `index.html`, loaded in a **sandboxed iframe** from the
-  `kucedr-plugin://<plugin-id>/extensions/<extension-id>/` protocol. The iframe has no preload,
+  `kucedr-plugin://<plugin-id>/<extension-id>/` protocol. The iframe has no preload,
   no Node, and no access to `window.api`. Each plugin gets its own origin, so plugins can't read
   each other's storage.
 - The extension talks to Kucedr only through the `postMessage` bridge in section 9, limited to the
@@ -372,7 +374,7 @@ user, and plugin entries in one list.
 | `SkillsChannels.list` | `skills.list()` (`skills_list.ts`) | `skills/*/SKILL.md` |
 | Apps list (`src/main/ipc/apps.ts`) | `listApps()` | `apps/*` |
 | Provider lookups (`ipc/provider.ts`, `ipc/agent.ts`) | `loadProviders()`, `findModel()`, `modelsFor()`, and the rest | Same catalog, so plugin providers resolve everywhere |
-| `plugins:extensions` (new) | `plugins_extensions.ts` | `extensions/*/manifest.json`, grouped by slot |
+| `plugins:list` | `listPlugins()` (`plugins_list.ts`) | `extensions/*/manifest.json`, in each plugin's `extensions` |
 
 How it works:
 
@@ -577,12 +579,13 @@ Build each of these only when a real plugin needs it.
 6. Add the config form generated from `configSchema` and `uiHints`.
 7. Add the postMessage bridge and the remaining extension slot hosts. Done so far: the
    `kucedr-plugin://<plugin-id>/<extension-id>/` protocol (`plugins_extension_resource.ts`, enabled
-   plugins only, with a CSP that blocks network access), and every extension is listed in the home
-   sidebar under New chat and opens in place of the chat (`ExtensionPage`) in a sandboxed iframe,
-   whatever its `slot`.
+   plugins only, with a CSP that blocks network access); standalone extensions imported from
+   Settings → Extensions into `~/.kucedr/extensions` and served from `kucedr-extension://`; and
+   every extension opens from the command menu in place of the chat (`ExtensionPage`) in a
+   sandboxed iframe, whatever its `slot`.
 8. Add local model downloads (Ollama pull, then URL plus `sha256`).
 9. Add the catalog: `plugins_catalog.ts`, the Browse tab, and updates.
-10. Update [PLUGINS.md](PLUGINS.md) to describe schema v5 and the desktop flow, and
+10. ✅ Update [PLUGINS.md](PLUGINS.md) to describe schema v5 and the desktop flow, and
     [PROVIDERS.md](PROVIDERS.md) to use `vector_databases`.
 
 ## 13. Verification
