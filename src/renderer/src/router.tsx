@@ -171,16 +171,9 @@ function RootRouteComponent(): React.JSX.Element {
 							showWorkspace={hasSidebar}
 						/>
 						<div className="min-h-0 flex-1 overflow-hidden pt-12">
-							<div className={cn('h-full', isWorkspace && 'hidden')}>
-								<PageTransition>
-									<Outlet />
-								</PageTransition>
-							</div>
-							{isWorkspace && (
-								<div className="h-full">
-									<WorkspacePage />
-								</div>
-							)}
+							<PageTransition>
+								<Outlet />
+							</PageTransition>
 						</div>
 						<CommandMenu
 							key={location.pathname}
@@ -237,11 +230,15 @@ const routes: RouteObject[] = [
 			},
 			{
 				path: 'workspace',
-				element: null,
+				element: (
+					<RouteWrapper>
+						<WorkspacePage />
+					</RouteWrapper>
+				),
 			},
 			{
 				path: 'code/*',
-				element: <Navigate to="/settings/workspace" replace />,
+				element: <Navigate to="/workspace" replace />,
 			},
 			{
 				path: 'settings',
@@ -265,15 +262,11 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'code/*',
-						element: <Navigate to="/settings/workspace" replace />,
+						element: <Navigate to="/workspace" replace />,
 					},
 					{
 						path: 'workspace',
-						element: (
-							<SettingsRouteWrapper>
-								<WorkspacePage settings />
-							</SettingsRouteWrapper>
-						),
+						element: <Navigate to="/workspace" replace />,
 					},
 					{
 						path: 'library',

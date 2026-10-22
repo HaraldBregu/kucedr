@@ -1,17 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { ContextMenuDescriptor } from '@shared/window_types';
-import { SPLIT_ITEM_CLASS } from '@/components/app/base/page';
-import { SidebarItems } from '@/components/app/SidebarItems';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { WorkspaceActionDialog, type WorkspaceAction } from './ActionDialog';
 import { WorkspaceTree } from './Tree';
 
 interface WorkspaceSidebarProps {
-	readonly embedded?: boolean;
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 	readonly onFilesLoaded?: (files: WorkspaceTreeEntry[]) => void;
 	readonly onEntryRenamed: (sourcePath: string, nextPath: string) => void;
@@ -19,8 +17,9 @@ interface WorkspaceSidebarProps {
 	readonly selectedPath: string | null;
 }
 
-export function WorkspaceSidebar({ embedded = false, onFileSelect, onFilesLoaded, onEntryRenamed, onEntryDeleted, selectedPath }: WorkspaceSidebarProps): React.JSX.Element {
+export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, onEntryDeleted, selectedPath }: WorkspaceSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [entries, setEntries] = useState<WorkspaceTreeEntry[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
@@ -146,15 +145,16 @@ export function WorkspaceSidebar({ embedded = false, onFileSelect, onFilesLoaded
 
 	return (
 		<div data-slot="workspace-sidebar" className="flex h-full min-h-0 flex-col">
-			{embedded && <header className="flex min-h-9 shrink-0 items-center border-b bg-background/95 px-4 py-1 backdrop-blur">
-				<h2 className="flex min-h-7 items-center text-sm font-semibold">{t('settings.workspace.title', 'Workspace')}</h2>
-			</header>}
-			{!embedded && <header className="shrink-0 border-b border-sidebar-border/50 p-2">
-				<Link to="/home" className={SPLIT_ITEM_CLASS}>
-					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
-					<span>{t('settings.returnToChat', 'Return to Home')}</span>
-				</Link>
-			</header>}
+			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/home')}>
+							<ArrowLeft className="size-4 shrink-0" />
+							<span className="truncate">{t('settings.returnToChat', 'Return to Home')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</header>
 			<nav aria-label={t('workspaceSidebar.files', 'Workspace files')} className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2" onContextMenu={(event) => {
 				event.preventDefault();
 				showEntryMenu();
@@ -171,7 +171,7 @@ export function WorkspaceSidebar({ embedded = false, onFileSelect, onFilesLoaded
 				)}
 			</nav>
 			{pendingAction ? <WorkspaceActionDialog key={`${pendingAction.kind}:${pendingAction.entry?.path ?? pendingAction.parentPath}`} action={pendingAction} busy={busy} error={actionError} onClose={() => { setPendingAction(null); setActionError(''); }} onConfirm={confirmAction} /> : null}
-			{!embedded && <><SidebarItems /><AppSidebarFooter /></>}
+			<AppSidebarFooter />
 		</div>
 	);
 }

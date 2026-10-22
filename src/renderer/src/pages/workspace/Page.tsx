@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Group, Panel, Separator } from 'react-resizable-panels';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
@@ -8,19 +6,16 @@ import { WorkspaceViewer } from './Viewer';
 
 const SELECTED_FILE_KEY = 'workspace-selected-file';
 
-export default function WorkspacePage({ settings = false }: { readonly settings?: boolean }): React.JSX.Element {
-	const { t } = useTranslation();
+export default function WorkspacePage(): React.JSX.Element {
 	const [files, setFiles] = useState<WorkspaceTreeEntry[]>([]);
 	const [selectedFile, setSelectedFile] = useState<WorkspaceTreeEntry | null>(() => {
-		if (settings) return null;
 		const path = localStorage.getItem(SELECTED_FILE_KEY);
 		return path ? { type: 'file', path, name: path.split(/[\\/]/).pop() ?? path } : null;
 	});
 	useEffect(() => {
-		if (settings) return;
 		if (selectedFile) localStorage.setItem(SELECTED_FILE_KEY, selectedFile.path);
 		else localStorage.removeItem(SELECTED_FILE_KEY);
-	}, [selectedFile, settings]);
+	}, [selectedFile]);
 	const handleFilesLoaded = useCallback((files: WorkspaceTreeEntry[]) => {
 		setFiles(files);
 		setSelectedFile((current) => {
@@ -37,7 +32,7 @@ export default function WorkspacePage({ settings = false }: { readonly settings?
 			return null;
 		});
 	}, []);
-	const sidebar = <WorkspaceSidebar embedded={settings} onFileSelect={setSelectedFile} onFilesLoaded={handleFilesLoaded} onEntryRenamed={(sourcePath, nextPath) => {
+	const sidebar = <WorkspaceSidebar onFileSelect={setSelectedFile} onFilesLoaded={handleFilesLoaded} onEntryRenamed={(sourcePath, nextPath) => {
 				setSelectedFile((current) => {
 					if (!current) return null;
 					if (current.path === sourcePath) return { ...current, path: nextPath, name: nextPath.split(/[\\/]/).pop() ?? current.name };
@@ -48,19 +43,6 @@ export default function WorkspacePage({ settings = false }: { readonly settings?
 				setSelectedFile((current) => current && (current.path === path || current.path.startsWith(`${path}/`) || current.path.startsWith(`${path}\\`)) ? null : current);
 			}} selectedPath={selectedFile?.path ?? null} />;
 	const viewer = <WorkspaceViewer key={selectedFile?.path} file={selectedFile} entries={files} onFileSelect={setSelectedFile} />;
-	if (settings) {
-		return (
-			<Group orientation="horizontal" className="h-full min-h-0 bg-background" aria-label={t('settings.workspace.title', 'Workspace')}>
-				<Panel id="workspace-files" defaultSize="20%" minSize="10%" maxSize="60%" className="flex min-w-0 flex-col">
-					<div className="min-h-0 flex-1">{sidebar}</div>
-				</Panel>
-				<Separator aria-label={t('settings.workspace.resize', 'Resize workspace files')} className="relative w-px shrink-0 bg-border outline-none after:absolute after:inset-y-0 after:-left-1 after:w-2 hover:bg-ring focus-visible:bg-ring" />
-				<Panel id="workspace-viewer" minSize="40%" className="flex min-w-0 flex-col">
-					{viewer}
-				</Panel>
-			</Group>
-		);
-	}
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split sidebar={sidebar} sidebarLabel="Workspace files">

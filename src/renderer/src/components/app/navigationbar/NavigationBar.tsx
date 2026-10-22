@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ChevronDown, Menu, MessageCircle, Moon, Plus, Search, Sun } from 'lucide-react';
+import { ChevronDown, Folder, Menu, MessageCircle, Moon, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -78,6 +78,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
 	const homeLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search');
+	const workspaceLabel = t('settings.workspace.title', 'Workspace');
 	const chatHistoryLabel = t('settings.chatHistory.title');
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
 	const chatButtonVariant = isHome || isSettings ? 'secondary' : 'ghost';
@@ -192,6 +193,25 @@ export const NavigationBar = React.memo(function NavigationBar({
 				</DropdownMenu>
 			</ButtonGroup>
 			) : chatButtonTooltip}
+			<Tooltip>
+				<TooltipTrigger render={
+					<Button
+						type="button"
+						variant={isWorkspace ? 'secondary' : 'ghost'}
+						size="icon-sm"
+						className="rounded-md"
+						onClick={() => {
+							playSound('navigate');
+							navigate('/workspace');
+						}}
+						aria-label={workspaceLabel}
+						aria-current={isWorkspace ? 'page' : undefined}
+					>
+						<Folder className="size-3.5" strokeWidth={1.8} />
+					</Button>
+				} />
+				<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
+			</Tooltip>
 			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
 			<Tooltip>
 				<TooltipTrigger render={

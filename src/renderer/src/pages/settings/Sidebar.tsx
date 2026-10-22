@@ -29,7 +29,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'data',
 		titleKey: 'settings.overview.groups.data',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/library', '/settings/workspace'].includes(item.path)
+			['/settings/library', '/workspace'].includes(item.path)
 		),
 	},
 	{

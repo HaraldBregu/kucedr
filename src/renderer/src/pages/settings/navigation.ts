@@ -390,7 +390,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Library,
 	},
 	{
-		path: '/settings/workspace',
+		path: '/workspace',
 		labelKey: 'settings.workspace.title',
 		descriptionKey: 'settings.workspace.description',
 		icon: Folder,
