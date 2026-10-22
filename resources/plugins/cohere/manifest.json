@@ -3,11 +3,10 @@
 	"id": "cohere",
 	"title": "Cohere",
 	"version": "1.0.0",
-	"description": "Command chat models, embeddings, and speech-to-text.",
+	"description": "Command chat models and speech-to-text.",
 	"categories": [
 		"LLM",
-		"STT",
-		"EMBEDDING"
+		"STT"
 	],
 	"author": "Kucedr",
 	"icon": "cohere.svg",
@@ -16,163 +15,6 @@
 	"icon_dark_url": "/assets/cohere.svg",
 	"icon_light_url": "/assets/cohere.svg",
 	"models": [
-		{
-			"id": "embed-v4.0",
-			"name": "Embed v4",
-			"type": "embedding-model",
-			"authentication": "api-key",
-			"url": "https://api.cohere.com/v2",
-			"metadata": {
-				"documentationUrl": "https://docs.cohere.com/v2/reference/embed",
-				"documentationStatus": "verified",
-				"inputs": {
-					"input_type": {
-						"type": "string",
-						"enum": [
-							"search_document",
-							"search_query",
-							"classification",
-							"clustering",
-							"image"
-						],
-						"required": true
-					},
-					"output_dimension": {
-						"type": "integer",
-						"enum": [
-							256,
-							512,
-							1024,
-							1536
-						]
-					},
-					"embedding_types": {
-						"type": "array"
-					},
-					"truncate": {
-						"type": "string",
-						"enum": [
-							"NONE",
-							"START",
-							"END"
-						]
-					},
-					"max_tokens": {
-						"type": "integer"
-					},
-					"priority": {
-						"type": "integer"
-					}
-				}
-			},
-			"location": "remote"
-		},
-		{
-			"id": "embed-v5.0-pro",
-			"name": "Embed v5 Pro",
-			"type": "embedding-model",
-			"authentication": "api-key",
-			"url": "https://api.cohere.com/v2",
-			"metadata": {
-				"documentationUrl": "https://docs.cohere.com/v2/reference/embed",
-				"documentationStatus": "verified",
-				"inputs": {
-					"input_type": {
-						"type": "string",
-						"enum": [
-							"search_document",
-							"search_query",
-							"classification",
-							"clustering",
-							"image"
-						],
-						"required": true
-					},
-					"output_dimension": {
-						"type": "integer",
-						"enum": [
-							256,
-							512,
-							768,
-							1024,
-							1536,
-							2048
-						]
-					},
-					"embedding_types": {
-						"type": "array"
-					},
-					"truncate": {
-						"type": "string",
-						"enum": [
-							"NONE",
-							"START",
-							"END"
-						]
-					},
-					"max_tokens": {
-						"type": "integer"
-					},
-					"priority": {
-						"type": "integer"
-					}
-				}
-			},
-			"location": "remote"
-		},
-		{
-			"id": "embed-v5.0-fast",
-			"name": "Embed v5 Fast",
-			"type": "embedding-model",
-			"authentication": "api-key",
-			"url": "https://api.cohere.com/v2",
-			"metadata": {
-				"documentationUrl": "https://docs.cohere.com/v2/reference/embed",
-				"documentationStatus": "verified",
-				"inputs": {
-					"input_type": {
-						"type": "string",
-						"enum": [
-							"search_document",
-							"search_query",
-							"classification",
-							"clustering",
-							"image"
-						],
-						"required": true
-					},
-					"output_dimension": {
-						"type": "integer",
-						"enum": [
-							256,
-							512,
-							768,
-							1024,
-							1536,
-							2048
-						]
-					},
-					"embedding_types": {
-						"type": "array"
-					},
-					"truncate": {
-						"type": "string",
-						"enum": [
-							"NONE",
-							"START",
-							"END"
-						]
-					},
-					"max_tokens": {
-						"type": "integer"
-					},
-					"priority": {
-						"type": "integer"
-					}
-				}
-			},
-			"location": "remote"
-		},
 		{
 			"id": "cohere-transcribe-03-2026",
 			"name": "Cohere Transcribe",

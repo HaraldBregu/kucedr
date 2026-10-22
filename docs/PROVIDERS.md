@@ -71,7 +71,7 @@ manifest.
 | [Black Forest Labs](https://dashboard.bfl.ai) | `black-forest-labs` | Image, Video | Available |
 | [Brave](https://api-dashboard.search.brave.com/app/keys)                           | `brave`             | Web search                                                       | Available                                                                |
 | [Cartesia](https://play.cartesia.ai/keys) | `cartesia` | Speech to text, Text to speech | Available |
-| [Cohere](https://dashboard.cohere.com/api-keys) | `cohere` | Chat, Speech to text, Embeddings | Available |
+| [Cohere](https://dashboard.cohere.com/api-keys) | `cohere` | Chat, Speech to text | Available |
 | [Deepgram](https://console.deepgram.com) | `deepgram` | Speech to text, Text to speech | Available |
 | [DeepSeek](https://platform.deepseek.com/api_keys) | `deepseek` | Chat | Available |
 | [ElevenLabs](https://elevenlabs.io/app/settings/api-keys) | `elevenlabs` | Speech to text, Text to speech, Audio | Available |
@@ -193,7 +193,6 @@ Names and IDs match the bundled manifests. Model metadata links to the official 
 
 | Provider | Cataloged models |
 | --- | --- |
-| Cohere | Embed v4 (`embed-v4.0`); Embed v5 Pro (`embed-v5.0-pro`); Embed v5 Fast (`embed-v5.0-fast`) |
 | Google DeepMind / Google | Gemini Embedding 2 (`gemini-embedding-2`); Gemini Embedding 001 (`gemini-embedding-001`) |
 | Jina AI | Jina Embeddings v3 (`jina-embeddings-v3`); Jina Embeddings v4 (`jina-embeddings-v4`); Jina Embeddings v5 Text Small (`jina-embeddings-v5-text-small`); Jina Embeddings v5 Text Nano (`jina-embeddings-v5-text-nano`); Jina Embeddings v5 Omni Small (`jina-embeddings-v5-omni-small`); Jina Embeddings v5 Omni Nano (`jina-embeddings-v5-omni-nano`) |
 | Mistral AI | Codestral Embed (`codestral-embed-2505`); Mistral Embed (`mistral-embed-2312`) |
