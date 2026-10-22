@@ -44,6 +44,7 @@ export const pluginManifestSchema = z
 		web_search: z.unknown().optional(),
 		storage: z.unknown().optional(),
 		bots: z.unknown().optional(),
+		settings: z.unknown().optional(),
 	})
 	.strict();
 
