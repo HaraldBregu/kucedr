@@ -373,6 +373,8 @@ export interface PluginsApi {
 	listExtensions: () => Promise<PluginExtension[]>;
 	importExtensions: (paths?: string[]) => Promise<ExtensionImportResult | undefined>;
 	removeExtension: (id: string) => Promise<boolean>;
+	getSettings: (id: string) => Promise<Record<string, string>>;
+	saveSettings: (id: string, values: Record<string, string>) => Promise<void>;
 }
 
 export interface McpApi {

@@ -12,6 +12,20 @@
 	"authentication": "oauth2",
 	"icon_dark_url": "/assets/microsoft.svg",
 	"icon_light_url": "/assets/microsoft.svg",
+	"settings": [
+		{
+			"key": "tenant_id",
+			"label": "Tenant ID",
+			"type": "text",
+			"required": true
+		},
+		{
+			"key": "client_id",
+			"label": "Client ID",
+			"type": "text",
+			"required": true
+		}
+	],
 	"mcp_servers": [
 		{
 			"id": "microsoft-learn",
@@ -31,7 +45,7 @@
 			"icon_dark_url": "/assets/microsoft-outlook.svg",
 			"icon_light_url": "/assets/microsoft-outlook.svg",
 			"oauth": {
-				"client_id_env": "MICROSOFT_CLIENT_ID"
+				"client_id_setting": "client_id"
 			}
 		},
 		{
@@ -44,7 +58,7 @@
 			"icon_dark_url": "/assets/outlook-calendar.svg",
 			"icon_light_url": "/assets/outlook-calendar.svg",
 			"oauth": {
-				"client_id_env": "MICROSOFT_CLIENT_ID"
+				"client_id_setting": "client_id"
 			}
 		},
 		{
@@ -57,7 +71,7 @@
 			"icon_dark_url": "/assets/microsoft-teams.svg",
 			"icon_light_url": "/assets/microsoft-teams.svg",
 			"oauth": {
-				"client_id_env": "MICROSOFT_CLIENT_ID"
+				"client_id_setting": "client_id"
 			}
 		},
 		{
@@ -70,7 +84,7 @@
 			"icon_dark_url": "/assets/microsoft-onedrive.svg",
 			"icon_light_url": "/assets/microsoft-onedrive.svg",
 			"oauth": {
-				"client_id_env": "MICROSOFT_CLIENT_ID"
+				"client_id_setting": "client_id"
 			}
 		},
 		{
@@ -83,7 +97,7 @@
 			"icon_dark_url": "/assets/microsoft-sharepoint.svg",
 			"icon_light_url": "/assets/microsoft-sharepoint.svg",
 			"oauth": {
-				"client_id_env": "MICROSOFT_CLIENT_ID"
+				"client_id_setting": "client_id"
 			}
 		},
 		{
@@ -96,7 +110,7 @@
 			"icon_dark_url": "/assets/microsoft-word.svg",
 			"icon_light_url": "/assets/microsoft-word.svg",
 			"oauth": {
-				"client_id_env": "MICROSOFT_CLIENT_ID"
+				"client_id_setting": "client_id"
 			}
 		},
 		{
@@ -109,7 +123,7 @@
 			"icon_dark_url": "/assets/microsoft-365-copilot.svg",
 			"icon_light_url": "/assets/microsoft-365-copilot.svg",
 			"oauth": {
-				"client_id_env": "MICROSOFT_CLIENT_ID"
+				"client_id_setting": "client_id"
 			}
 		}
 	]

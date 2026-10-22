@@ -85,13 +85,14 @@ Google Workspace uses the same callback and PKCE/state flow. Each MCP server's s
 and OAuth parameters are declared in its provider manifest under `mcp_servers`. An empty
 `scopes` array leaves scope selection to the server's OAuth discovery or tool challenges.
 The seven Google MCP services always
-read their OAuth client from `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; their settings
-pages do not accept or display credentials. For a Google Desktop app OAuth client, variable
+read their OAuth client from the Google plugin settings (**Client ID** and **Client Secret**,
+set on any Google plugin detail page and stored in `~/.kucedr/plugins/settings.json`); their MCP
+settings pages do not accept or display credentials. For a Google Desktop app OAuth client, variable
 loopback ports are supported. A Google Web application OAuth client requires the exact
 registered callback. Never reuse an account sign-in callback for an MCP connection.
 
 For Microsoft 365, follow [Microsoft MCP setup](MICROSOFT.md) to register an Entra desktop
-client, grant server permissions, and configure `MICROSOFT_TENANT_ID` and `MICROSOFT_CLIENT_ID`.
+client, grant server permissions, and set **Tenant ID** and **Client ID** in the Microsoft plugin settings.
 Microsoft Learn requires no credentials.
 
 The generic client supports pre-registered clients and dynamic client registration, with

@@ -233,6 +233,7 @@ function toPublicProvider(
 		...(iconDarkUrl ? { iconDarkUrl } : {}),
 		...(iconLightUrl ? { iconLightUrl } : {}),
 		...(plugin ? { plugin } : {}),
+		...(entry.settings ? { settings: entry.settings } : {}),
 	};
 }
 

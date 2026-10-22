@@ -31,7 +31,7 @@ export function buildTransport(id: string, data: McpData): Transport {
 		);
 	}
 	const headers = data.token ? { Authorization: `Bearer ${data.token}` } : undefined;
-	const managedCredentials = Boolean(service?.oauth?.client_id_env);
+	const managedCredentials = Boolean(service?.oauth?.client_id_setting);
 
 	return new StreamableHTTPClientTransport(url, {
 		fetch: service?.oauth?.google_fetch ? createGoogleMcpFetch() : createMcpFetch(),

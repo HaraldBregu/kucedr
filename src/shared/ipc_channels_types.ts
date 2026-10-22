@@ -531,6 +531,11 @@ export interface PluginsInvokeChannelMap {
 		result: import('./plugin_types').ExtensionImportResult | undefined;
 	};
 	[PluginsChannels.removeExtension]: { args: [id: string]; result: boolean };
+	[PluginsChannels.getSettings]: { args: [id: string]; result: Record<string, string> };
+	[PluginsChannels.saveSettings]: {
+		args: [id: string, values: Record<string, string>];
+		result: void;
+	};
 }
 
 export interface McpInvokeChannelMap {

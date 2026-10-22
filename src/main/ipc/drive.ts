@@ -9,6 +9,7 @@ import { TrustedRenderer } from './core/trusted';
 import { DriveChannels } from '../../shared/ipc_channels_definitions';
 import { getMcpOauth } from '../mcp';
 import { DriveClient } from '../drive/client';
+import { pluginSettings } from '../plugins/plugins_settings';
 
 export class DriveIpc implements IpcModule<{ windows: WindowContextManager; apps: AppRegistry }> {
 	readonly name = 'drive';
@@ -20,7 +21,7 @@ export class DriveIpc implements IpcModule<{ windows: WindowContextManager; apps
 		registerQueryWithEvent(DriveChannels.status, (event) => {
 			trusted.assert(event);
 			const state = getMcpOauth('google-drive');
-			return Boolean(state.tokens?.access_token && state.tokensClientId === process.env.GOOGLE_CLIENT_ID?.trim());
+			return Boolean(state.tokens?.access_token && state.tokensClientId === pluginSettings('google').client_id);
 		});
 		registerQueryWithEvent(DriveChannels.list, (event, query, meetOnly) => {
 			trusted.assert(event);

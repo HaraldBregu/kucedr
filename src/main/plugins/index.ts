@@ -12,3 +12,5 @@ export { watchPlugins } from './plugins_watch';
 export { listExtensions } from './plugins_extensions_list';
 export { importExtensions } from './plugins_extensions_import';
 export { removeExtension } from './plugins_extensions_remove';
+export { pluginSettings } from './plugins_settings';
+export { savePluginSettings } from './plugins_save_settings';

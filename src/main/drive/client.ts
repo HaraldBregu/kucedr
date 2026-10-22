@@ -5,6 +5,7 @@ import { basename, join } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { getMcpOauth, saveMcpOauth } from '../mcp';
+import { pluginSettings } from '../plugins/plugins_settings';
 import type { DriveCreateInput, DriveFile, DriveSyncResult, DriveUpdateInput } from '../../shared/drive_types';
 
 const BASE = 'https://www.googleapis.com';
@@ -15,7 +16,7 @@ export class DriveClient {
 	private async request(path: string, init: RequestInit = {}): Promise<Response> {
 		const state = getMcpOauth('google-drive');
 		if (!state.tokens?.access_token) throw new Error('Connect Google Drive first.');
-		const configuredClientId = process.env.GOOGLE_CLIENT_ID?.trim();
+		const { client_id: configuredClientId, client_secret: clientSecret } = pluginSettings('google');
 		if (!configuredClientId || state.tokensClientId !== configuredClientId)
 			throw new Error('Google Drive credentials changed. Connect again.');
 		const send = (token: string): Promise<Response> => fetch(new URL(path, BASE), {
@@ -25,8 +26,7 @@ export class DriveClient {
 		let response = await send(state.tokens.access_token);
 		if (response.status === 401 && state.tokens.refresh_token) {
 			const clientId = configuredClientId;
-			const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
-			if (!clientId || !clientSecret) throw new Error('Google OAuth client credentials are missing.');
+			if (!clientSecret) throw new Error('Google OAuth client credentials are missing.');
 			const refresh = await fetch('https://oauth2.googleapis.com/token', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

@@ -165,6 +165,8 @@ export const PluginsChannels = {
 	listExtensions: 'plugins:list-extensions',
 	importExtensions: 'plugins:import-extensions',
 	removeExtension: 'plugins:remove-extension',
+	getSettings: 'plugins:get-settings',
+	saveSettings: 'plugins:save-settings',
 } as const;
 
 export const LibraryChannels = {

@@ -1,3 +1,4 @@
+import type { ProviderManifestSetting } from './provider_types';
 export const PLUGIN_KINDS = ['apps', 'extensions', 'mcp', 'providers', 'skills'] as const;
 
 /** The built-in plugin that ships Kucedr's own apps, MCP servers, and skills; it can't be disabled or replaced. */
@@ -44,4 +45,5 @@ export interface PluginInfo {
 	readonly error?: string;
 	readonly contributes: Readonly<Record<PluginKind, readonly string[]>>;
 	readonly extensions: readonly PluginExtension[];
+	readonly settings: readonly ProviderManifestSetting[];
 }

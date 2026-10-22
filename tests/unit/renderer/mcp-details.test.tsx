@@ -8,7 +8,7 @@ jest.mock('../../../src/renderer/src/lib/providers', () => ({
 	mcps: () => [
 		...['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'].map((host) => ({
 			url: `https://${host}/mcp/v1`,
-			oauth: { client_id_env: 'GOOGLE_CLIENT_ID' },
+			oauth: { client_id_setting: 'client_id' },
 		})),
 		{ url: 'https://api.githubcopilot.com/mcp/', oauth: { credentials_required: true } },
 	],

@@ -27,4 +27,10 @@ export const plugins: PluginsApi = {
 	removeExtension: (id: string) => {
 		return typedInvokeUnwrap(PluginsChannels.removeExtension, id);
 	},
+	getSettings: (id: string) => {
+		return typedInvokeUnwrap(PluginsChannels.getSettings, id);
+	},
+	saveSettings: (id: string, values: Record<string, string>) => {
+		return typedInvokeUnwrap(PluginsChannels.saveSettings, id, values);
+	},
 };

@@ -103,6 +103,28 @@ export function validateProviderManifest(value: unknown): string[] {
 			errors.push(`manifest.json: "${field}" must be an /images/ or /assets/ path when present.`);
 		}
 	}
+	if (manifest.settings !== undefined) {
+		if (!Array.isArray(manifest.settings)) {
+			errors.push('manifest.json: "settings" must be an array when present.');
+		} else {
+			manifest.settings.forEach((value, index) => {
+				const settingPath = `manifest.json: settings[${index}]`;
+				if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+					errors.push(`${settingPath} must be an object.`);
+					return;
+				}
+				const setting = value as Record<string, unknown>;
+				if (!isNonEmptyString(setting.key))
+					errors.push(`${settingPath}.key must be a non-empty string.`);
+				if (!isNonEmptyString(setting.label))
+					errors.push(`${settingPath}.label must be a non-empty string.`);
+				if (setting.type !== 'text' && setting.type !== 'password')
+					errors.push(`${settingPath}.type must be text or password.`);
+				if (typeof setting.required !== 'boolean')
+					errors.push(`${settingPath}.required must be a boolean.`);
+			});
+		}
+	}
 	if (manifest.services !== undefined)
 		errors.push('manifest.json: "services" has been replaced by capability fields.');
 	if (manifest.databases !== undefined)
@@ -182,7 +204,7 @@ export function validateProviderManifest(value: unknown): string[] {
 						errors.push(`${itemPath}.oauth must be an object.`);
 					} else {
 						const oauth = entry.oauth as Record<string, unknown>;
-						for (const field of ['client_id_env', 'client_secret_env'] as const) {
+						for (const field of ['client_id_setting', 'client_secret_setting'] as const) {
 							if (oauth[field] !== undefined && !isNonEmptyString(oauth[field]))
 								errors.push(`${itemPath}.oauth.${field} must be a non-empty string.`);
 						}

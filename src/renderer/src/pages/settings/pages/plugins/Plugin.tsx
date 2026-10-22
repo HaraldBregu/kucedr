@@ -10,6 +10,7 @@ import type { McpServerInfo } from '@shared/mcp_types';
 import type { SkillInfo } from '@shared/skills_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -50,10 +51,21 @@ export default function PluginPage(): React.JSX.Element {
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
 	const [confirming, setConfirming] = useState(false);
+	const [settings, setSettings] = useState<Record<string, string>>({});
 
 	const load = useCallback(async (): Promise<void> => {
-		const [plugins, models, mcps, vectorDatabases, webSearches, storages, apps, registry, skills] =
-			await Promise.all([
+		const [
+			plugins,
+			models,
+			mcps,
+			vectorDatabases,
+			webSearches,
+			storages,
+			apps,
+			registry,
+			skills,
+			values,
+		] = await Promise.all([
 				window.plugins.list(),
 				window.app.models(),
 				window.app.mcps(),
@@ -63,11 +75,13 @@ export default function PluginPage(): React.JSX.Element {
 				window.apps.list(),
 				window.mcp.registry(),
 				window.skills.list(),
+				window.plugins.getSettings(pluginId ?? ''),
 			]);
 		const owned = <T extends { readonly provider: { readonly plugin?: { readonly id: string } } }>(
 			entries: readonly T[]
 		): T[] => entries.filter((entry) => entry.provider.plugin?.id === pluginId);
 		setPlugin(plugins.find((item) => item.id === pluginId) ?? null);
+		setSettings(values);
 		setContents({
 			models: owned(models),
 			mcps: owned(mcps),
@@ -316,6 +330,42 @@ export default function PluginPage(): React.JSX.Element {
 						))}
 					</SettingsPanel>
 				</SettingsSection>
+				{plugin.settings.length > 0 && (
+					<SettingsSection title={t('settings.integrations.plugin.settings')}>
+						<form
+							className="flex flex-col gap-3"
+							onSubmit={(event) => {
+								event.preventDefault();
+								void run(() => window.plugins.saveSettings(plugin.id, settings));
+							}}
+						>
+							<SettingsPanel>
+								{plugin.settings.map((setting) => (
+									<SettingsRow key={setting.key} title={setting.label}>
+										<Input
+											aria-label={setting.label}
+											className="w-72"
+											type={setting.type}
+											required={setting.required}
+											autoComplete="off"
+											spellCheck={false}
+											value={settings[setting.key] ?? ''}
+											onChange={(event) =>
+												setSettings((current) => ({
+													...current,
+													[setting.key]: event.target.value,
+												}))
+											}
+										/>
+									</SettingsRow>
+								))}
+							</SettingsPanel>
+							<Button type="submit" size="sm" className="w-fit" disabled={busy}>
+								{t('common.save')}
+							</Button>
+						</form>
+					</SettingsSection>
+				)}
 				{!plugin.enabled && !plugin.error ? (
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
 				) : (

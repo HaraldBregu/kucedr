@@ -118,26 +118,15 @@ service principal provisioning using Microsoft's instructions. An ordinary Micro
 
 ## 4. Configure Kucedr
 
-Fill the existing entries in the repository root `.env`, using the values from the app's
-Overview page:
+Open any Microsoft service in **Settings → Plugins** and fill the **Microsoft settings** section
+with the values from the app's Overview page:
 
-```dotenv
-MICROSOFT_TENANT_ID=your-directory-tenant-id
-MICROSOFT_CLIENT_ID=your-application-client-id
-CLIENT_REDIRECT_URL=http://127.0.0.1:3001/oauth/callback
-```
+- **Tenant ID**: the Directory (tenant) ID.
+- **Client ID**: the Application (client) ID.
 
-Replace the placeholder text with your actual IDs. Keep the variables empty until you have
-an app registration; empty values are not a working connection. Keep the callback aligned
-with step 2, and fully quit and restart Kucedr after editing `.env`.
-
-Development runs load the repository `.env` at startup. Packaged applications do not read this
-file: provide these values in the process environment that launches the installed app.
-Existing nonempty process environment values take precedence over `.env`.
-
-Kucedr uses `MICROSOFT_TENANT_ID` to resolve the bundled `{tenantId}` endpoints and
-`MICROSOFT_CLIENT_ID` for the registered OAuth client. It stores the resulting connection tokens
-through its MCP credential store. No `MICROSOFT_CLIENT_SECRET` variable is needed.
+Kucedr stores them in `~/.kucedr/plugins/settings.json`, uses the tenant ID to resolve the bundled
+`{tenantId}` endpoints and the client ID for the registered OAuth client. Keep
+`CLIENT_REDIRECT_URL` in `.env` aligned with step 2. No client secret is needed.
 
 ## 5. Connect and verify
 
@@ -157,7 +146,7 @@ connection works; successful OAuth, tool discovery, and a live tool call verify 
 
 | Symptom                                                | What to check                                                                                                 |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| Missing `MICROSOFT_TENANT_ID` or `MICROSOFT_CLIENT_ID` | Fill `.env` and restart; packaged apps need process environment values.                                       |
+| Missing Tenant ID or Client ID                         | Fill the Microsoft plugin settings in **Settings → Plugins**.                                                 |
 | Invalid tenant ID                                      | Use the nonzero Directory (tenant) UUID, rather than `common`, a domain name, or the Object ID.               |
 | `AADSTS50011` redirect mismatch                        | Compare the exact callback host, path, and port with the app registration and `CLIENT_REDIRECT_URL`.          |
 | Permission or administrator-consent error              | Check the selected server API's delegated permissions and ask the tenant administrator to grant consent.      |

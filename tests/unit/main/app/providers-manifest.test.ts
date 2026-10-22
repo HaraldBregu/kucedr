@@ -52,8 +52,8 @@ describe('provider manifests', () => {
 		expect(services.find((service) => service.id === 'gmail')).toMatchObject({
 			scopes: ['https://www.googleapis.com/auth/gmail.readonly'],
 			oauth: {
-				client_id_env: 'GOOGLE_CLIENT_ID',
-				client_secret_env: 'GOOGLE_CLIENT_SECRET',
+				client_id_setting: 'client_id',
+				client_secret_setting: 'client_secret',
 				google_fetch: true,
 			},
 		});

@@ -39,7 +39,16 @@ export interface Provider {
 export type PublicProvider = Omit<Provider, 'apiKey'> & {
 	/** Set when an installed plugin contributes this provider. */
 	readonly plugin?: PluginSource;
+	readonly settings?: readonly ProviderManifestSetting[];
 };
+
+/** A plugin-wide value the user sets once, e.g. an OAuth client shared by all its services. */
+export interface ProviderManifestSetting {
+	readonly key: string;
+	readonly label: string;
+	readonly type: 'text' | 'password';
+	readonly required: boolean;
+}
 export type ProviderInput = Provider;
 
 /** A model in resources/plugins/<id>/manifest.json. */
@@ -82,8 +91,8 @@ export interface ProviderManifestMcpServer {
 	readonly authentication: AuthenticationType;
 	readonly scopes: readonly string[];
 	readonly oauth?: {
-		readonly client_id_env?: string;
-		readonly client_secret_env?: string;
+		readonly client_id_setting?: string;
+		readonly client_secret_setting?: string;
 		readonly authorization_params?: Readonly<Record<string, string>>;
 		readonly google_fetch?: boolean;
 		readonly credentials_required?: boolean;
@@ -192,6 +201,7 @@ export interface ProviderManifest {
 	readonly storage?: ProviderManifestStorage;
 	readonly web_search?: readonly ProviderManifestWebSearch[];
 	readonly bots?: readonly ProviderManifestBot[];
+	readonly settings?: readonly ProviderManifestSetting[];
 }
 
 export interface ModelSelection {

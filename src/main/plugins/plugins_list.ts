@@ -8,6 +8,7 @@ import {
 import { pluginIcon } from './plugins_icon';
 import { scanPlugins } from './plugins_scan';
 import { pluginsStore } from './plugins_store';
+import type { ProviderManifestSetting } from '../../shared/provider_types';
 
 export function listPlugins(): PluginInfo[] {
 	const disabled = new Set(pluginsStore.get('disabled'));
@@ -39,5 +40,6 @@ export function listPlugins(): PluginInfo[] {
 				...extension,
 				...(icon && { icon: pluginIcon(path.join(directory, 'extensions', extension.id, icon)) }),
 			})) ?? [],
+		settings: (manifest?.settings as ProviderManifestSetting[] | undefined) ?? [],
 	}));
 }

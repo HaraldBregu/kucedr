@@ -21,6 +21,20 @@
 	"apiKeyUrl": "https://aistudio.google.com/apikey",
 	"icon_dark_url": "/assets/google.svg",
 	"icon_light_url": "/assets/google.svg",
+	"settings": [
+		{
+			"key": "client_id",
+			"label": "Client ID",
+			"type": "text",
+			"required": true
+		},
+		{
+			"key": "client_secret",
+			"label": "Client Secret",
+			"type": "password",
+			"required": true
+		}
+	],
 	"models": [
 		{
 			"id": "gemini-3.8-flash",
@@ -1270,8 +1284,8 @@
 				"https://www.googleapis.com/auth/gmail.modify"
 			],
 			"oauth": {
-				"client_id_env": "GOOGLE_CLIENT_ID",
-				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"client_id_setting": "client_id",
+				"client_secret_setting": "client_secret",
 				"authorization_params": {
 					"access_type": "offline",
 					"prompt": "consent select_account"
@@ -1294,8 +1308,8 @@
 				"https://www.googleapis.com/auth/calendar.events"
 			],
 			"oauth": {
-				"client_id_env": "GOOGLE_CLIENT_ID",
-				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"client_id_setting": "client_id",
+				"client_secret_setting": "client_secret",
 				"authorization_params": {
 					"access_type": "offline",
 					"prompt": "consent select_account"
@@ -1316,8 +1330,8 @@
 				"https://www.googleapis.com/auth/drive.file"
 			],
 			"oauth": {
-				"client_id_env": "GOOGLE_CLIENT_ID",
-				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"client_id_setting": "client_id",
+				"client_secret_setting": "client_secret",
 				"authorization_params": {
 					"access_type": "offline",
 					"prompt": "consent select_account"
@@ -1339,8 +1353,8 @@
 				"https://www.googleapis.com/auth/contacts.readonly"
 			],
 			"oauth": {
-				"client_id_env": "GOOGLE_CLIENT_ID",
-				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"client_id_setting": "client_id",
+				"client_secret_setting": "client_secret",
 				"authorization_params": {
 					"access_type": "offline",
 					"prompt": "consent select_account"

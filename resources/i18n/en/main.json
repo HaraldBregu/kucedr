@@ -408,6 +408,7 @@
 				"notFound": "Plugin not found",
 				"notFoundDescription": "It may have been removed.",
 				"details": "Details",
+				"settings": "Settings",
 				"id": "ID",
 				"version": "Version",
 				"author": "Author",

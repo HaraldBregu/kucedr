@@ -52,6 +52,23 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			plugins.setPluginEnabled(id, enabled);
 			changed();
 		});
+		registerQueryWithEvent(PluginsChannels.getSettings, (event, id: string) => {
+			trusted.assert(event);
+			return plugins.pluginSettings(id);
+		});
+		registerCommandWithEvent(
+			PluginsChannels.saveSettings,
+			(event, id: string, values: Record<string, string>) => {
+				trusted.assert(event);
+				if (
+					typeof values !== 'object' ||
+					values === null ||
+					Object.values(values).some((value) => typeof value !== 'string')
+				)
+					throw new Error('Plugin settings must be a map of strings.');
+				plugins.savePluginSettings(id, values);
+			}
+		);
 		registerQueryWithEvent(PluginsChannels.listExtensions, (event) => {
 			trusted.assert(event);
 			return plugins.listExtensions();

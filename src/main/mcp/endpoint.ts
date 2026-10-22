@@ -1,3 +1,5 @@
+import { pluginSettings } from '../plugins/plugins_settings';
+
 export function resolveMcpEndpoint(value: string, required = false): string {
 	if (!URL.canParse(value)) return value;
 	const url = new URL(value);
@@ -6,11 +8,11 @@ export function resolveMcpEndpoint(value: string, required = false): string {
 		!/^\/agents\/tenants\/(?:%7BtenantId%7D|\{tenantId\})\/servers\/[^/]+\/?$/i.test(url.pathname)
 	)
 		return value;
-	const tenantId = process.env.MICROSOFT_TENANT_ID?.trim();
+	const tenantId = pluginSettings('microsoft').tenant_id;
 	if (!tenantId) {
 		if (required)
 			throw new Error(
-				'Set MICROSOFT_TENANT_ID in .env before connecting Microsoft 365 MCP servers.'
+				'Set Tenant ID in the Microsoft plugin settings before connecting Microsoft 365 MCP servers.'
 			);
 		return value;
 	}
@@ -20,7 +22,7 @@ export function resolveMcpEndpoint(value: string, required = false): string {
 	) {
 		if (required)
 			throw new Error(
-				'MICROSOFT_TENANT_ID must be a nonzero Microsoft Entra Directory (tenant) ID.'
+				'Tenant ID must be a nonzero Microsoft Entra Directory (tenant) ID.'
 			);
 		return value;
 	}

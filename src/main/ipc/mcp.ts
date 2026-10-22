@@ -267,7 +267,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				const state = randomBytes(32).toString('hex');
 				const serverUrl = parseMcpUrl(server.url).href;
 				const options = mcpOAuthOptions(serverUrl);
-				const managedCredentials = Boolean(findMcpService(serverUrl)?.oauth?.client_id_env);
+				const managedCredentials = Boolean(findMcpService(serverUrl)?.oauth?.client_id_setting);
 				this.activeOAuthCallback?.close();
 				const callback = await startOauthCallbackServer(state);
 				this.activeOAuthCallback = callback;

@@ -109,7 +109,7 @@ export function McpServerForm({
 	const serverId = id.trim().toLowerCase();
 	const catalogService = type === 'http' ? findCatalogMcpService(url, mcps()) : undefined;
 	const isGitHubRemote = Boolean(catalogService?.oauth?.credentials_required);
-	const isGoogleRemote = Boolean(catalogService?.oauth?.client_id_env);
+	const isGoogleRemote = Boolean(catalogService?.oauth?.client_id_setting);
 
 	const buildEntry = (): McpData => {
 		const now = new Date().toISOString();

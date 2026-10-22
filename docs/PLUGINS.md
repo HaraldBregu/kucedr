@@ -21,7 +21,7 @@ A plugin is one folder that can contribute five kinds of things:
 | `resources/plugins/<id>/` | Built-in plugins, packaged with the app (`bundledPluginsRoot()`). They can be disabled but not removed. |
 | `resources/plugins/kucedr/` | The core plugin (`CORE_PLUGIN_ID`). It can't be disabled, removed, or replaced, and installed plugins can't use the id `kucedr`. |
 | `~/.kucedr/plugins/<id>/` | Plugins installed from Settings → Plugins (`pluginsRoot()`). An installed plugin overrides a built-in plugin with the same id. |
-| `~/.kucedr/plugins/settings.json` | The ids of disabled plugins (`pluginsStore`). Everything else is enabled. |
+| `~/.kucedr/plugins/settings.json` | The ids of disabled plugins (`pluginsStore`; everything else is enabled) and each plugin's `settings` values, keyed by plugin id. |
 | `~/.kucedr/extensions/<id>/` | Extensions imported on their own, outside any plugin (`extensionsRoot()`). |
 
 Every built-in folder except `kucedr/` is a provider plugin: just `manifest.json` and `assets/`.
@@ -144,10 +144,10 @@ An extension is HTML/JS/CSS UI shown inside the main window. Its folder needs `i
 
 ```json
 {
-	"title": "Tetris",
-	"description": "Stack falling tetrominoes, clear lines and level up to chiptune music.",
+	"title": "Word counter",
+	"description": "Counts the words in pasted text.",
 	"slot": "panel",
-	"category": "games",
+	"category": "writing",
 	"icon": "icon.svg"
 }
 ```
