@@ -11,13 +11,11 @@ export async function importWorkspaceAsset(
 	name: string,
 	data: Uint8Array
 ): Promise<string> {
-	const normalizedName = workspaceEntryName(name);
+	const normalizedName = workspaceEntryName(name).replace(/[\s()<>[\]]+/g, '-');
 	if (!['image', 'audio', 'video', 'pdf'].includes(workspaceFileType(normalizedName).kind)) {
 		throw new Error('Workspace file is not a supported asset.');
 	}
-	const resolvedDocument = await resolveWorkspaceFile(root, documentPath);
-	const directory = path.join(path.dirname(resolvedDocument), 'assets');
-	await fs.mkdir(directory, { recursive: true });
+	const directory = path.dirname(await resolveWorkspaceFile(root, documentPath));
 	const extension = path.extname(normalizedName);
 	const base = path.basename(normalizedName, extension);
 	for (let index = 0; ; index += 1) {
