@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Extension, mergeAttributes, type Editor } from '@tiptap/core';
+import { Extension, mergeAttributes, type JSONContent } from '@tiptap/core';
 import { Image } from '@tiptap/extension-image';
 import { TableKit } from '@tiptap/extension-table';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
 import { Placeholder } from '@tiptap/extensions';
 import { Markdown } from '@tiptap/markdown';
-import { Plugin } from '@tiptap/pm/state';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { workspaceFileType } from '@shared/workspace';
@@ -33,28 +32,9 @@ export function WorkspaceMarkdownEditor({
 	const [linkOpen, setLinkOpen] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const onChangeRef = useRef(onChange);
-	const onSaveRef = useRef(onSave);
-	const onErrorRef = useRef(onError);
 	useEffect(() => {
 		onChangeRef.current = onChange;
-		onSaveRef.current = onSave;
-		onErrorRef.current = onError;
-	}, [onChange, onSave, onError]);
-
-	const insertFiles = (editor: Editor, files: File[], position?: number): boolean => {
-		const assets = files.filter((file) => assetKinds.has(workspaceFileType(file.name).kind));
-		if (assets.length === 0) return false;
-		void Promise.all(assets.map(async (file) => ({
-			file,
-			src: await window.agent.importWorkspaceAsset(path, file.name, new Uint8Array(await file.arrayBuffer())),
-		}))).then((items) => {
-			editor.chain().focus().insertContentAt(position ?? editor.state.selection, items.flatMap(({ file, src }) => workspaceFileType(src).kind === 'image'
-				? [{ type: 'image', attrs: { src, alt: file.name.replace(/\.[^.]+$/, '') } }]
-				: [{ type: 'paragraph', content: [{ type: 'text', text: file.name, marks: [{ type: 'link', attrs: { href: src } }] }] }])).run();
-		}).catch((cause: unknown) => onErrorRef.current(cause instanceof Error ? cause.message : 'Unable to add file.'));
-		return true;
-	};
-
+	}, [onChange]);
 	const editor = useEditor({
 		extensions: [
 			StarterKit.configure({ link: { openOnClick: false } }),
@@ -70,42 +50,9 @@ export function WorkspaceMarkdownEditor({
 			Placeholder.configure({ placeholder: 'Start writing, or paste an image…' }),
 			Markdown.configure({ markedOptions: { gfm: true } }),
 			Extension.create({
-				name: 'workspaceEditing',
+				name: 'clearFormatting',
 				addKeyboardShortcuts() {
-					return {
-						'Mod-s': () => {
-							onSaveRef.current();
-							return true;
-						},
-						'Mod-k': () => {
-							setLinkOpen(true);
-							return true;
-						},
-						'Mod-Shift-i': () => {
-							fileInputRef.current?.click();
-							return true;
-						},
-						'Mod-\\': () => this.editor.chain().focus().unsetAllMarks().clearNodes().run(),
-					};
-				},
-				addProseMirrorPlugins() {
-					const editor = this.editor;
-					return [new Plugin({
-						props: {
-							handlePaste: (_view, event) => {
-								if (!insertFiles(editor, Array.from(event.clipboardData?.files ?? []))) return false;
-								event.preventDefault();
-								return true;
-							},
-							handleDrop: (view, event, _slice, moved) => {
-								if (moved) return false;
-								const position = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos;
-								if (!insertFiles(editor, Array.from(event.dataTransfer?.files ?? []), position)) return false;
-								event.preventDefault();
-								return true;
-							},
-						},
-					})];
+					return { 'Mod-\\': () => this.editor.chain().focus().unsetAllMarks().clearNodes().run() };
 				},
 			}),
 		],
@@ -122,11 +69,46 @@ export function WorkspaceMarkdownEditor({
 		},
 	});
 
+	const insertFiles = (files: File[], position?: number): boolean => {
+		const assets = files.filter((file) => assetKinds.has(workspaceFileType(file.name).kind));
+		if (assets.length === 0) return false;
+		void Promise.all(assets.map(async (file) => ({
+			file,
+			src: await window.agent.importWorkspaceAsset(path, file.name, new Uint8Array(await file.arrayBuffer())),
+		}))).then((items) => {
+			editor.chain().focus().insertContentAt(position ?? editor.state.selection, items.flatMap<JSONContent>(({ file, src }) => workspaceFileType(src).kind === 'image'
+				? [{ type: 'image', attrs: { src, alt: file.name.replace(/\.[^.]+$/, '') } }]
+				: [{ type: 'paragraph', content: [{ type: 'text', text: file.name, marks: [{ type: 'link', attrs: { href: src } }] }] }])).run();
+		}).catch((cause: unknown) => onError(cause instanceof Error ? cause.message : 'Unable to add file.'));
+		return true;
+	};
+
 	return (
-		<>
+		<div
+			className="contents"
+			onKeyDown={(event) => {
+				if (!event.metaKey && !event.ctrlKey) return;
+				const key = event.key.toLowerCase();
+				if (key === 's') onSave();
+				else if (key === 'k' && !event.shiftKey) setLinkOpen(true);
+				else if (key === 'i' && event.shiftKey) fileInputRef.current?.click();
+				else return;
+				event.preventDefault();
+			}}
+			onPasteCapture={(event) => {
+				if (!insertFiles(Array.from(event.clipboardData.files))) return;
+				event.preventDefault();
+				event.stopPropagation();
+			}}
+			onDropCapture={(event) => {
+				if (!insertFiles(Array.from(event.dataTransfer.files), editor.view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos)) return;
+				event.preventDefault();
+				event.stopPropagation();
+			}}
+		>
 			<WorkspaceToolbar editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertAsset={() => fileInputRef.current?.click()} />
 			<input ref={fileInputRef} type="file" multiple hidden accept="image/*,audio/*,video/*,application/pdf" onChange={(event) => {
-				insertFiles(editor, Array.from(event.target.files ?? []));
+				insertFiles(Array.from(event.target.files ?? []));
 				event.target.value = '';
 			}} />
 			<EditorContent
@@ -136,6 +118,6 @@ export function WorkspaceMarkdownEditor({
 					if (event.target === event.currentTarget) editor.commands.focus('end');
 				}}
 			/>
-		</>
+		</div>
 	);
 }
