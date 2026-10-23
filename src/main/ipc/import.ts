@@ -22,7 +22,7 @@ export async function importWorkspaceAsset(
 		const fileName = index ? `${base}-${index}${extension}` : normalizedName;
 		try {
 			await fs.writeFile(path.join(directory, fileName), data, { flag: 'wx' });
-			return `assets/${fileName}`;
+			return fileName;
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
 		}
