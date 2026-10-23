@@ -27,7 +27,7 @@ export function WorkspaceLibraryPicker({ onClose, onPick }: WorkspaceLibraryPick
 			<DialogContent className="sm:max-w-2xl">
 				<DialogHeader>
 					<DialogTitle>Insert from Library</DialogTitle>
-					<DialogDescription>Choose a file. A copy is added to this document's assets folder.</DialogDescription>
+					<DialogDescription>Choose a file. A copy is added next to this document.</DialogDescription>
 				</DialogHeader>
 				<Input autoFocus aria-label="Search library" placeholder="Search" value={query} onChange={(event) => setQuery(event.target.value)} />
 				{error ? (
