@@ -48,6 +48,8 @@ module.exports = {
 				// main-process tests can import source modules that depend on it without
 				// hitting "Cannot use import statement outside a module".
 				'^chokidar$': '<rootDir>/tests/mocks/chokidar.ts',
+				// archiver v8 is pure ESM; substitute a CJS-compatible mock.
+				'^archiver$': '<rootDir>/tests/mocks/archiver.ts',
 				'\\.md\\?raw$': '<rootDir>/tests/mocks/raw-md.ts',
 				// Source files use ESM-style relative `.js` imports (required by Vite at
 				// runtime). ts-jest in CJS mode can't resolve the .js suffix to the .ts

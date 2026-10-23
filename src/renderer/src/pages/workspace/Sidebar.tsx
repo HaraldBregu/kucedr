@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, FilePlus, FolderPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { ContextMenuDescriptor } from '@shared/window_types';
+import { workspaceFileType } from '@shared/workspace';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
+import { Button } from '@/components/ui/button';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { WorkspaceActionDialog, type WorkspaceAction } from './ActionDialog';
 import { WorkspaceTree } from './Tree';
 
@@ -15,9 +18,10 @@ interface WorkspaceSidebarProps {
 	readonly onEntryRenamed: (sourcePath: string, nextPath: string) => void;
 	readonly onEntryDeleted: (path: string) => void;
 	readonly selectedPath: string | null;
+	readonly beforeEntryChange?: () => Promise<void>;
 }
 
-export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, onEntryDeleted, selectedPath }: WorkspaceSidebarProps): React.JSX.Element {
+export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, onEntryDeleted, selectedPath, beforeEntryChange = () => Promise.resolve() }: WorkspaceSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [entries, setEntries] = useState<WorkspaceTreeEntry[]>([]);
@@ -71,6 +75,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			...(entry ? [
 				{ type: 'separator' as const },
 				{ id: 'reveal', label: revealLabel },
+				...(entry.type === 'file' && workspaceFileType(entry.path).kind === 'markdown' ? [{ id: 'clean-assets', label: t('workspaceSidebar.cleanAssets', 'Move unused assets to Trash') }] : []),
 				{ id: 'rename', label: t('workspaceSidebar.rename', 'Rename') },
 				{ id: 'delete', label: t('workspaceSidebar.delete', 'Delete') },
 			] : []),
@@ -78,6 +83,12 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		setActionError('');
 		void window.win.showContextMenu(items).then(async (kind): Promise<void> => {
 			if (kind === 'reveal' && entry) await window.agent.revealWorkspaceEntry(entry.path);
+			else if (kind === 'clean-assets' && entry) {
+				await window.agent.cleanWorkspaceAssets(entry.path);
+				const files = await window.agent.listWorkspaceFiles();
+				setEntries(files);
+				onFilesLoaded?.(files);
+			}
 			else if (kind === 'rename' && entry) setRenamingEntry(entry);
 			else if (kind === 'create-file' || kind === 'create-folder' || (kind === 'delete' && entry)) {
 				setPendingAction({ kind, entry, parentPath });
@@ -101,7 +112,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		renameSubmitting.current = true;
 		setBusy(true);
 		setActionError('');
-		void window.agent.renameWorkspaceEntry(entry.path, name)
+		void beforeEntryChange().then(() => window.agent.renameWorkspaceEntry(entry.path, name))
 			.then(async (nextPath) => {
 				onEntryRenamed(entry.path, nextPath);
 				setRenamingEntry(null);
@@ -116,6 +127,23 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				renameSubmitting.current = false;
 				setBusy(false);
 			});
+	};
+
+	const moveEntry = (sourcePath: string, destinationPath: string): void => {
+		if (busy || sourcePath === destinationPath) return;
+		setBusy(true);
+		setActionError('');
+		void beforeEntryChange().then(() => window.agent.moveWorkspaceEntry(sourcePath, destinationPath))
+			.then(async (nextPath) => {
+				if (nextPath !== sourcePath) onEntryRenamed(sourcePath, nextPath);
+				const files = await window.agent.listWorkspaceFiles();
+				setEntries(files);
+				onFilesLoaded?.(files);
+			})
+			.catch((cause: unknown) => {
+				setActionError(cause instanceof Error ? cause.message : t('workspaceSidebar.actionError', 'Unable to change Workspace files.'));
+			})
+			.finally(() => setBusy(false));
 	};
 
 	const confirmAction = (name: string): void => {
@@ -155,9 +183,35 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</header>
+			<div className="flex shrink-0 items-center gap-1 px-4 pb-1 pt-3">
+				<span className="flex-1 text-xs font-medium text-muted-foreground">{t('workspaceSidebar.files', 'Workspace files')}</span>
+				{([
+					{ kind: 'create-file', label: t('workspaceSidebar.newFile', 'New file'), icon: FilePlus },
+					{ kind: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder'), icon: FolderPlus },
+				] as const).map(({ kind, label, icon: Icon }) => (
+					<Tooltip key={kind}>
+						<TooltipTrigger render={
+							<Button type="button" variant="ghost" size="icon-xs" aria-label={label} className="text-muted-foreground" onClick={() => {
+								setActionError('');
+								setPendingAction({ kind, parentPath: '' });
+							}}>
+								<Icon />
+							</Button>
+						} />
+						<TooltipContent side="bottom">{label}</TooltipContent>
+					</Tooltip>
+				))}
+			</div>
 			<nav aria-label={t('workspaceSidebar.files', 'Workspace files')} className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2" onContextMenu={(event) => {
 				event.preventDefault();
 				showEntryMenu();
+			}} onDragOver={(event) => {
+				if (event.dataTransfer.types.includes('application/x-workspace-path')) event.preventDefault();
+			}} onDrop={(event) => {
+				const source = event.dataTransfer.getData('application/x-workspace-path');
+				if (!source) return;
+				event.preventDefault();
+				moveEntry(source, '');
 			}}>
 				{actionError && !pendingAction ? <p className="px-2 py-1 text-xs text-destructive" role="alert">{actionError}</p> : null}
 				{loading ? (
@@ -167,7 +221,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				) : entries.length === 0 ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.empty', 'Workspace is empty.')}</p>
 				) : (
-					<WorkspaceTree entries={entries} onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} selectedPath={selectedPath} />
+					<WorkspaceTree entries={entries} onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} selectedPath={selectedPath} onMove={moveEntry} />
 				)}
 			</nav>
 			{pendingAction ? <WorkspaceActionDialog key={`${pendingAction.kind}:${pendingAction.entry?.path ?? pendingAction.parentPath}`} action={pendingAction} busy={busy} error={actionError} onClose={() => { setPendingAction(null); setActionError(''); }} onConfirm={confirmAction} /> : null}

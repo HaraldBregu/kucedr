@@ -1,6 +1,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import { workspaceFileType } from '../../shared/workspace';
+import { atomicWrite } from '../shared/atomic_write';
 import { resolveWorkspaceFile } from './workspace';
 
 export async function moveWorkspaceEntry(
@@ -52,5 +54,14 @@ export async function moveWorkspaceEntry(
 	}
 
 	await fs.rename(resolvedSource, targetPath);
+	if (sourceStats.isFile() && workspaceFileType(targetPath).kind === 'markdown') {
+		const content = await fs.readFile(targetPath, 'utf8');
+		const rewritten = content.replace(/(\]\()([^)\s]+)/g, (match, prefix: string, link: string) => {
+			if (/^([a-z][a-z\d+.-]*:|\/|#)/i.test(link)) return match;
+			const absolute = path.resolve(path.dirname(resolvedSource), decodeURI(link));
+			return `${prefix}${encodeURI(path.relative(resolvedDestination, absolute).split(path.sep).join('/'))}`;
+		});
+		if (rewritten !== content) await atomicWrite(targetPath, rewritten);
+	}
 	return path.relative(resolvedRoot, targetPath).split(path.sep).join('/');
 }

@@ -10,7 +10,10 @@ import {
 	Heading1,
 	Heading2,
 	Heading3,
+	HardDrive,
 	ImagePlus,
+	Globe,
+	Library,
 	Italic,
 	Link,
 	List,
@@ -27,6 +30,7 @@ import {
 	Undo2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -83,10 +87,12 @@ interface WorkspaceToolbarProps {
 	readonly editor: Editor;
 	readonly linkOpen: boolean;
 	readonly onLinkOpenChange: (open: boolean) => void;
-	readonly onInsertAsset: () => void;
+	readonly onInsertFromComputer: () => void;
+	readonly onInsertFromLibrary: () => void;
+	readonly onInsertFromUrl: () => void;
 }
 
-export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertAsset }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl }: WorkspaceToolbarProps): React.JSX.Element {
 	const [href, setHref] = useState('');
 	const state = useEditorState({
 		editor,
@@ -98,7 +104,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertA
 			canRedo: current.can().redo(),
 		}),
 	});
-	const button = (action: Action, active: boolean, disabled = false, destructive = false): React.JSX.Element => (
+	const button = (action: Action, active: boolean, disabled = false, destructive = false, onClick = (): void => { action.run(editor.chain().focus()).run(); }): React.JSX.Element => (
 		<Tooltip key={action.label}>
 			<TooltipTrigger render={
 				<Button
@@ -110,7 +116,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertA
 					disabled={disabled}
 					className={`${active ? 'bg-muted text-foreground' : 'text-muted-foreground'} ${destructive ? 'text-destructive' : ''}`}
 					onMouseDown={(event) => event.preventDefault()}
-					onClick={() => action.run(editor.chain().focus()).run()}
+					onClick={onClick}
 				>
 					<action.icon />
 				</Button>
@@ -120,7 +126,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertA
 	);
 	let index = 0;
 	return (
-		<div role="toolbar" aria-label="Formatting" className="sticky top-0 z-10 -mx-2 mb-4 flex flex-wrap items-center gap-0.5 border-b bg-background/95 px-2 py-1 backdrop-blur">
+		<div role="toolbar" aria-label="Formatting" className="flex w-full shrink-0 flex-wrap items-center gap-0.5 border-b bg-background px-2 py-1 sm:px-3">
 			{groups.map((group, groupIndex) => (
 				<div key={groupIndex} className="flex items-center gap-0.5 not-first:border-l not-first:pl-1 not-first:ml-1">
 					{group.map((action) => {
@@ -161,7 +167,25 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertA
 							</PopoverContent>
 						</Popover>
 					) : null}
-					{groupIndex === 3 ? button({ label: 'Image or file', icon: ImagePlus, shortcut: `${mod}⇧I`, run: (chain) => chain }, false) : null}
+					{groupIndex === 3 ? (
+						<DropdownMenu>
+							<Tooltip>
+								<TooltipTrigger render={
+									<DropdownMenuTrigger asChild>
+										<Button type="button" variant="ghost" size="icon-sm" aria-label="Insert image or file" className="text-muted-foreground" onMouseDown={(event) => event.preventDefault()}>
+											<ImagePlus />
+										</Button>
+									</DropdownMenuTrigger>
+								} />
+								<TooltipContent side="bottom">Insert image or file</TooltipContent>
+							</Tooltip>
+							<DropdownMenuContent align="start" onCloseAutoFocus={(event) => event.preventDefault()}>
+								<DropdownMenuItem onSelect={onInsertFromComputer}><HardDrive />From computer…<span className="ml-auto pl-4 text-xs text-muted-foreground">{mod}⇧I</span></DropdownMenuItem>
+								<DropdownMenuItem onSelect={onInsertFromLibrary}><Library />From library…</DropdownMenuItem>
+								<DropdownMenuItem onSelect={onInsertFromUrl}><Globe />From URL…</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					) : null}
 				</div>
 			))}
 			{state.table ? (

@@ -229,6 +229,19 @@ export const agent: AgentApi = {
 		if (typeof content !== 'string') throw new Error('Invalid workspace file content.');
 		return typedInvokeUnwrap(AgentChannels.writeWorkspaceMarkdown, normalizedFilePath, content);
 	},
+	importWorkspaceAsset: (documentPath, name, data) => {
+		const normalizedDocumentPath = optionalTrimmedString(documentPath);
+		if (!normalizedDocumentPath) throw new Error('Invalid workspace file path.');
+		const normalizedName = optionalTrimmedString(name);
+		if (!normalizedName) throw new Error('Invalid workspace file name.');
+		if (!(data instanceof Uint8Array)) throw new Error('Invalid workspace asset data.');
+		return typedInvokeUnwrap(AgentChannels.importWorkspaceAsset, normalizedDocumentPath, normalizedName, data);
+	},
+	cleanWorkspaceAssets: (documentPath) => {
+		const normalizedDocumentPath = optionalTrimmedString(documentPath);
+		if (!normalizedDocumentPath) throw new Error('Invalid workspace file path.');
+		return typedInvokeUnwrap(AgentChannels.cleanWorkspaceAssets, normalizedDocumentPath);
+	},
 	createWorkspaceFile: (parentPath, name) => {
 		if (typeof parentPath !== 'string') throw new Error('Invalid workspace parent path.');
 		const normalizedName = optionalTrimmedString(name);

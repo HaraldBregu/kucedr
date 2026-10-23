@@ -253,6 +253,14 @@ export interface AgentInvokeChannelMap {
 		args: [filePath: string, content: string];
 		result: void;
 	};
+	[AgentChannels.importWorkspaceAsset]: {
+		args: [documentPath: string, name: string, data: Uint8Array];
+		result: string;
+	};
+	[AgentChannels.cleanWorkspaceAssets]: {
+		args: [documentPath: string];
+		result: number;
+	};
 	[AgentChannels.createWorkspaceFile]: {
 		args: [parentPath: string, name: string];
 		result: string;

@@ -6,13 +6,14 @@ import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
 import { Placeholder } from '@tiptap/extensions';
 import { Markdown } from '@tiptap/markdown';
+import { NodeSelection, Selection } from '@tiptap/pm/state';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { workspaceFileType } from '@shared/workspace';
+import { importWorkspaceAssets } from './Assets';
 import { workspaceResourceUrl } from './Resource';
+import { WorkspaceLibraryPicker } from './LibraryPicker';
 import { WorkspaceToolbar } from './Toolbar';
-
-const assetKinds = new Set(['image', 'audio', 'video', 'pdf']);
+import { WorkspaceUrlDialog } from './UrlDialog';
 
 interface WorkspaceMarkdownEditorProps {
 	readonly path: string;
@@ -20,6 +21,7 @@ interface WorkspaceMarkdownEditorProps {
 	readonly onChange: (value: string) => void;
 	readonly onSave: () => void;
 	readonly onError: (message: string) => void;
+	readonly onOpenLink: (href: string) => void;
 }
 
 export function WorkspaceMarkdownEditor({
@@ -28,8 +30,11 @@ export function WorkspaceMarkdownEditor({
 	onChange,
 	onSave,
 	onError,
+	onOpenLink,
 }: WorkspaceMarkdownEditorProps): React.JSX.Element {
 	const [linkOpen, setLinkOpen] = useState(false);
+	const [libraryOpen, setLibraryOpen] = useState(false);
+	const [urlOpen, setUrlOpen] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const onChangeRef = useRef(onChange);
 	useEffect(() => {
@@ -70,22 +75,25 @@ export function WorkspaceMarkdownEditor({
 	});
 
 	const insertFiles = (files: File[], position?: number): boolean => {
-		const assets = files.filter((file) => assetKinds.has(workspaceFileType(file.name).kind));
-		if (assets.length === 0) return false;
-		void Promise.all(assets.map(async (file) => ({
-			file,
-			src: await window.agent.importWorkspaceAsset(path, file.name, new Uint8Array(await file.arrayBuffer())),
-		}))).then((items) => {
-			editor.chain().focus().insertContentAt(position ?? editor.state.selection, items.flatMap<JSONContent>(({ file, src }) => workspaceFileType(src).kind === 'image'
+		const imported = importWorkspaceAssets(path, files);
+		if (!imported) return false;
+		void imported.then((items) => {
+			editor.chain().focus().insertContentAt(position ?? editor.state.selection, items.flatMap<JSONContent>(({ file, src, image }) => image
 				? [{ type: 'image', attrs: { src, alt: file.name.replace(/\.[^.]+$/, '') } }]
-				: [{ type: 'paragraph', content: [{ type: 'text', text: file.name, marks: [{ type: 'link', attrs: { href: src } }] }] }])).run();
+				: [{ type: 'paragraph', content: [{ type: 'text', text: file.name, marks: [{ type: 'link', attrs: { href: src } }] }] }])).command(({ tr }) => {
+				if (!(tr.selection instanceof NodeSelection)) return true;
+				const after = tr.selection.to;
+				if (!tr.doc.resolve(after).nodeAfter) tr.insert(after, tr.doc.type.schema.nodes.paragraph.create());
+				tr.setSelection(Selection.near(tr.doc.resolve(after + 1)));
+				return true;
+			}).run();
 		}).catch((cause: unknown) => onError(cause instanceof Error ? cause.message : 'Unable to add file.'));
 		return true;
 	};
 
 	return (
 		<div
-			className="contents"
+			className="flex min-h-0 flex-1 flex-col"
 			onKeyDown={(event) => {
 				if (!event.metaKey && !event.ctrlKey) return;
 				const key = event.key.toLowerCase();
@@ -106,18 +114,34 @@ export function WorkspaceMarkdownEditor({
 				event.stopPropagation();
 			}}
 		>
-			<WorkspaceToolbar editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertAsset={() => fileInputRef.current?.click()} />
+			<WorkspaceToolbar editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} />
+			{urlOpen ? <WorkspaceUrlDialog onClose={() => setUrlOpen(false)} onInsert={(src, alt) => {
+				setUrlOpen(false);
+				editor.chain().focus().setImage({ src, alt }).run();
+			}} /> : null}
+			{libraryOpen ? <WorkspaceLibraryPicker onClose={() => setLibraryOpen(false)} onPick={(file) => {
+				setLibraryOpen(false);
+				void window.agent.readPromptFile(file.path)
+					.then((data) => insertFiles([new File([new Uint8Array(data)], file.name)]))
+					.catch((cause: unknown) => onError(cause instanceof Error ? cause.message : 'Unable to add file.'));
+			}} /> : null}
 			<input ref={fileInputRef} type="file" multiple hidden accept="image/*,audio/*,video/*,application/pdf" onChange={(event) => {
 				insertFiles(Array.from(event.target.files ?? []));
 				event.target.value = '';
 			}} />
+			<div className="min-h-0 flex-1 overflow-auto">
 			<EditorContent
 				editor={editor}
-				className="min-h-full w-full break-words"
+				className="workspace-markdown-content mx-auto min-h-full w-full max-w-[920px] break-words px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12"
 				onClick={(event) => {
-					if (event.target === event.currentTarget) editor.commands.focus('end');
+					const href = (event.target as HTMLElement).closest('a')?.getAttribute('href');
+					if (href && (event.metaKey || event.ctrlKey)) {
+						event.preventDefault();
+						onOpenLink(href);
+					} else if (event.target === event.currentTarget) editor.commands.focus('end');
 				}}
 			/>
+			</div>
 		</div>
 	);
 }

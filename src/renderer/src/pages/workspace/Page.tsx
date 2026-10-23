@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
@@ -12,6 +12,7 @@ export default function WorkspacePage(): React.JSX.Element {
 		const path = localStorage.getItem(SELECTED_FILE_KEY);
 		return path ? { type: 'file', path, name: path.split(/[\\/]/).pop() ?? path } : null;
 	});
+	const flushRef = useRef<() => Promise<void>>(null);
 	useEffect(() => {
 		if (selectedFile) localStorage.setItem(SELECTED_FILE_KEY, selectedFile.path);
 		else localStorage.removeItem(SELECTED_FILE_KEY);
@@ -41,8 +42,8 @@ export default function WorkspacePage(): React.JSX.Element {
 				});
 			}} onEntryDeleted={(path) => {
 				setSelectedFile((current) => current && (current.path === path || current.path.startsWith(`${path}/`) || current.path.startsWith(`${path}\\`)) ? null : current);
-			}} selectedPath={selectedFile?.path ?? null} />;
-	const viewer = <WorkspaceViewer key={selectedFile?.path} file={selectedFile} entries={files} onFileSelect={setSelectedFile} />;
+			}} selectedPath={selectedFile?.path ?? null} beforeEntryChange={() => flushRef.current?.() ?? Promise.resolve()} />;
+	const viewer = <WorkspaceViewer ref={flushRef} key={selectedFile?.path} file={selectedFile} entries={files} onFileSelect={setSelectedFile} />;
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split sidebar={sidebar} sidebarLabel="Workspace files">

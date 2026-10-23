@@ -83,6 +83,8 @@ import type { RagConfiguration } from '../../shared/rag_types';
 import type { WorkspaceAsset } from '../../shared/workspace';
 import { readWorkspaceAsset } from './asset';
 import { createWorkspaceEntry } from './create';
+import { importWorkspaceAsset } from './import';
+import { cleanWorkspaceAssets } from './clean';
 import { deleteWorkspaceFile } from './delete';
 import { deleteWorkspaceDirectory } from './directory';
 import { writeWorkspaceMarkdown } from './markdown';
@@ -693,6 +695,35 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					await writeWorkspaceMarkdown(workspacePath(agent.config), normalizedFilePath, content);
 				},
 				AgentChannels.writeWorkspaceMarkdown
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.importWorkspaceAsset,
+			wrapAgentHandler(
+				workspaceAccess,
+				async (documentPath: unknown, name: unknown, data: unknown): Promise<string> => {
+					const normalizedDocumentPath = optionalTrimmedString(documentPath);
+					if (!normalizedDocumentPath) throw new Error('Invalid workspace file path.');
+					const normalizedName = optionalTrimmedString(name);
+					if (!normalizedName) throw new Error('Invalid workspace file name.');
+					if (!(data instanceof Uint8Array)) throw new Error('Invalid workspace asset data.');
+					return importWorkspaceAsset(workspacePath(agent.config), normalizedDocumentPath, normalizedName, data);
+				},
+				AgentChannels.importWorkspaceAsset
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.cleanWorkspaceAssets,
+			wrapAgentHandler(
+				workspaceAccess,
+				async (documentPath: unknown): Promise<number> => {
+					const normalizedDocumentPath = optionalTrimmedString(documentPath);
+					if (!normalizedDocumentPath) throw new Error('Invalid workspace file path.');
+					return cleanWorkspaceAssets(workspacePath(agent.config), normalizedDocumentPath, (filePath) => shell.trashItem(filePath));
+				},
+				AgentChannels.cleanWorkspaceAssets
 			)
 		);
 

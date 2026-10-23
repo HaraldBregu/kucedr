@@ -24,6 +24,8 @@ export const AgentChannels = {
 	readWorkspaceAsset: 'agent:workspace:asset:read',
 	writeWorkspaceFile: 'agent:workspace:file:write',
 	writeWorkspaceMarkdown: 'agent:workspace:markdown:write',
+	importWorkspaceAsset: 'agent:workspace:asset:import',
+	cleanWorkspaceAssets: 'agent:workspace:asset:clean',
 	createWorkspaceFile: 'agent:workspace:file:create',
 	duplicateWorkspaceFile: 'agent:workspace:file:duplicate',
 	archiveWorkspaceEntry: 'agent:workspace:archive',

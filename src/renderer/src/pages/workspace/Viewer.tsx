@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, LoaderCircle, Search, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,9 @@ import { useIsDark } from '@/hooks/use-is-dark';
 import { markdownComponents } from '@/pages/home/components/markdown';
 import { formatFileSize } from '@/pages/home/attachments/size';
 import type { CodeMirrorEditorHandle } from './Editor';
+import { importWorkspaceAssets } from './Assets';
 import { WorkspaceBreadcrumb } from './Breadcrumb';
+import { workspaceResourceUrl } from './Resource';
 
 const CodeMirrorEditor = lazy(async () => {
 	const module = await import('./Editor');
@@ -27,19 +29,21 @@ interface WorkspaceViewerProps {
 	readonly file: WorkspaceTreeEntry | null;
 	readonly entries: WorkspaceTreeEntry[];
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
+	readonly ref?: React.Ref<() => Promise<void>>;
 }
 
-export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewerProps): React.JSX.Element {
+export function WorkspaceViewer({ file, entries, onFileSelect, ref }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
 	const [content, setContent] = useState('');
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(() => file !== null && !['image', 'audio', 'video', 'pdf', 'unsupported'].includes(workspaceFileType(file.path).kind));
 	const [error, setError] = useState('');
 	const [saveError, setSaveError] = useState('');
 	const [markdownMode, setMarkdownMode] = useState<'preview' | 'source'>('preview');
 	const [findOpen, setFindOpen] = useState(false);
 	const [findQuery, setFindQuery] = useState('');
+	const [replaceText, setReplaceText] = useState('');
 	const editorRef = useRef<CodeMirrorEditorHandle>(null);
 	const pendingContent = useRef<string | null>(null);
 	const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -52,6 +56,15 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 	const searchable = kind !== null && !media && kind !== 'unsupported';
 	const visibleMarkdownMode = kind === 'markdown' && findOpen ? 'source' : markdownMode;
 	const matchCount = findQuery ? content.toLocaleLowerCase().split(findQuery.toLocaleLowerCase()).length - 1 : 0;
+	const pasteRawAssets = (event: React.ClipboardEvent | React.DragEvent, files: FileList): void => {
+		const imported = file ? importWorkspaceAssets(file.path, Array.from(files)) : null;
+		if (!imported) return;
+		event.preventDefault();
+		event.stopPropagation();
+		void imported.then((items) => {
+			editorRef.current?.wrapSelection(items.map(({ file: asset, src, image }) => `${image ? '!' : ''}[${asset.name.replace(/\.[^.]+$/, '')}](${src})`).join('\n\n'), '');
+		}).catch((cause: unknown) => setSaveError(cause instanceof Error ? cause.message : 'Unable to add file.'));
+	};
 	const closeFind = (): void => {
 		setFindOpen(false);
 		setFindQuery('');
@@ -70,6 +83,10 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 	}, [filePath, t]);
 
 	useEffect(() => () => { save(); }, [save]);
+	useImperativeHandle(ref, () => () => {
+		save();
+		return saveQueue.current;
+	}, [save]);
 
 	const handleMarkdownChange = (value: string): void => {
 		setContent(value);
@@ -121,7 +138,12 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 	) : null;
 
 	return (
-		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
+		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" onKeyDown={(event) => {
+			if (!searchable || !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'f') return;
+			event.preventDefault();
+			event.stopPropagation();
+			setFindOpen(true);
+		}}>
 			{file ? (
 				<header aria-label="File navigation" className="sticky top-0 z-20 flex min-h-9 shrink-0 items-center gap-1.5 border-b bg-background/95 px-2 py-1 backdrop-blur sm:px-3 [&_button:hover]:bg-transparent! [&_button:hover]:text-inherit!">
 					<WorkspaceBreadcrumb entries={entries} path={file.path} onFileSelect={onFileSelect} />
@@ -138,6 +160,16 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 							<span aria-live="polite" className="shrink-0 text-[11px] text-muted-foreground">{findQuery ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'Find'}</span>
 							<Button type="button" variant="ghost" size="icon-sm" aria-label="Previous match" disabled={!matchCount} onClick={() => editorRef.current?.find(findQuery, 'previous')}><ChevronUp /></Button>
 							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => editorRef.current?.find(findQuery, 'next')}><ChevronDown /></Button>
+							{kind === 'markdown' ? (
+								<>
+									<Input aria-label="Replace with" placeholder="Replace" value={replaceText} className="h-7 w-24 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-32" onChange={(event) => setReplaceText(event.target.value)} onKeyDown={(event) => {
+										if (event.key === 'Escape') closeFind();
+										if (event.key === 'Enter') editorRef.current?.replace(findQuery, replaceText, event.metaKey || event.ctrlKey);
+									}} />
+									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => editorRef.current?.replace(findQuery, replaceText, false)}>Replace</Button>
+									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => editorRef.current?.replace(findQuery, replaceText, true)}>All</Button>
+								</>
+							) : null}
 							<Button type="button" variant="ghost" size="icon-sm" aria-label="Close find" onClick={closeFind}><X /></Button>
 						</div>
 					) : <Button type="button" variant="ghost" size="icon-sm" className="ml-auto" aria-label="Find in file" onClick={() => setFindOpen(true)}><Search /></Button> : null}
@@ -165,25 +197,27 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 				<div className="flex min-h-0 flex-1 items-center justify-center p-4"><video controls src={mediaUrl?.toString()} className="max-h-full max-w-full" /></div>
 			) : kind === 'pdf' ? (
 				<iframe title={file.name} src={mediaUrl?.toString()} className="min-h-0 flex-1" />
-			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
+			) : kind === 'markdown' && visibleMarkdownMode === 'preview' && content.includes('<!--') ? (
 				<div className="min-h-0 flex-1 overflow-auto">
 					<article className="workspace-markdown-content mx-auto min-h-full w-full max-w-[920px] px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12">
-					{content.includes('<!--') ? (
-						<>
-							<p className="mb-3 text-xs text-muted-foreground">{t('workspaceSidebar.commentSourceOnly', 'This file contains Markdown comments. Edit it in Source to preserve them.')}</p>
-							<Markdown className="w-full break-words" components={markdownComponents}>{content}</Markdown>
-						</>
-					) : (
-						<Suspense fallback={<div className="text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-							<WorkspaceMarkdownEditor value={content} onChange={handleMarkdownChange} onSave={save} />
-						</Suspense>
-					)}
+						<p className="mb-3 text-xs text-muted-foreground">{t('workspaceSidebar.commentSourceOnly', 'This file contains Markdown comments. Edit it in Source to preserve them.')}</p>
+						<Markdown className="w-full break-words" components={{ ...markdownComponents, img: ({ src, alt }) => <img src={typeof src === 'string' ? workspaceResourceUrl(file.path, src) : undefined} alt={alt ?? ''} /> }}>{content}</Markdown>
 					</article>
 				</div>
+			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
+				<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
+					<WorkspaceMarkdownEditor path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} onOpenLink={(href) => {
+						if (/^[a-z][a-z\d+.-]*:/i.test(href)) void window.app.openExternalUrl(href);
+						else {
+							const path = decodeURIComponent(new URL(workspaceResourceUrl(file.path, href)).pathname.slice(1));
+							onFileSelect({ type: 'file', path, name: path.split('/').pop() ?? path });
+						}
+					}} />
+				</Suspense>
 			) : (
 				<div className="min-h-0 flex-1 overflow-auto">
 					{kind === 'markdown' ? (
-						<article className="relative mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12">{codeEditor}</article>
+						<article className="relative mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12" onPasteCapture={(event) => pasteRawAssets(event, event.clipboardData.files)} onDropCapture={(event) => pasteRawAssets(event, event.dataTransfer.files)}>{codeEditor}</article>
 					) : codeEditor}
 				</div>
 			)}
@@ -192,6 +226,7 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 				<footer aria-label="File information" className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t bg-muted/20 px-2 py-1.5 sm:px-3">
 					<div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
 						{typeof file.size === 'number' ? <span>{formatFileSize(file.size)}</span> : null}
+						{kind === 'markdown' ? <span>{content.split(/\s+/).filter(Boolean).length} words</span> : null}
 						{file.createdAt ? <time dateTime={file.createdAt} title={new Date(file.createdAt).toLocaleString()}>Created {new Date(file.createdAt).toLocaleString()}</time> : null}
 						{file.updatedAt ? <time dateTime={file.updatedAt} title={new Date(file.updatedAt).toLocaleString()}>Updated {new Date(file.updatedAt).toLocaleString()}</time> : null}
 					</div>

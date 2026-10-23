@@ -647,10 +647,42 @@ input[type='range']:hover::-moz-range-thumb {
 	padding-left: 0;
 }
 
-.workspace-markdown-preview li[data-type='taskItem'] {
+.workspace-markdown-preview ul[data-type='taskList'] ul[data-type='taskList'] {
+	margin: 0.25rem 0 0;
+	padding-left: 0.25rem;
+}
+
+.workspace-markdown-preview ul[data-type='taskList'] > li {
 	display: flex;
-	align-items: baseline;
+	align-items: flex-start;
 	gap: 0.5rem;
+}
+
+.workspace-markdown-preview ul[data-type='taskList'] > li > label {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	height: 1.75rem;
+	user-select: none;
+}
+
+.workspace-markdown-preview ul[data-type='taskList'] > li > label > input {
+	cursor: pointer;
+	accent-color: var(--primary);
+}
+
+.workspace-markdown-preview ul[data-type='taskList'] > li > div {
+	flex: 1;
+	min-width: 0;
+}
+
+.workspace-markdown-preview ul[data-type='taskList'] > li > div > p {
+	margin: 0;
+}
+
+.workspace-markdown-preview ul[data-type='taskList'] > li[data-checked='true'] > div > p {
+	color: var(--muted-foreground);
+	text-decoration: line-through;
 }
 
 .workspace-markdown-content h1 { margin: 0.5rem 0 1.25rem; }

@@ -19,6 +19,8 @@ import { Compartment, EditorState, RangeSetBuilder } from '@codemirror/state';
 import {
 	findNext,
 	findPrevious,
+	replaceAll,
+	replaceNext,
 	getSearchQuery,
 	search,
 	SearchQuery,
@@ -45,6 +47,7 @@ export interface CodeMirrorEditorHandle {
 	find: (query: string, direction: 'next' | 'previous') => void;
 	clearSearch: () => void;
 	prefixLines: (prefix: string) => void;
+	replace: (query: string, replacement: string, all: boolean) => void;
 	redo: () => void;
 	undo: () => void;
 	wrapSelection: (prefix: string, suffix?: string) => void;
@@ -196,6 +199,18 @@ const codeEditorTheme = EditorView.theme({
 	},
 });
 
+function wrap(view: EditorView, prefix: string, suffix = prefix): boolean {
+	const { from, to } = view.state.selection.main;
+	const selectedText = view.state.sliceDoc(from, to);
+	view.dispatch({
+		changes: { from, to, insert: `${prefix}${selectedText}${suffix}` },
+		selection: { anchor: from + prefix.length, head: to + prefix.length },
+		annotations: isolateHistory.of('full'),
+		scrollIntoView: true,
+	});
+	return true;
+}
+
 export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEditorProps>(
 	function CodeMirrorEditor(
 		{
@@ -243,6 +258,13 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 						effects: EditorView.scrollIntoView(view.state.selection.main.from, { y: 'center' }),
 					});
 				},
+				replace(query, replacement, all) {
+					const view = viewRef.current;
+					if (!view || !query) return;
+					view.dispatch({ effects: setSearchQuery.of(new SearchQuery({ search: query, replace: replacement })) });
+					if (all) replaceAll(view);
+					else replaceNext(view);
+				},
 				clearSearch() {
 					viewRef.current?.dispatch({
 						effects: setSearchQuery.of(new SearchQuery({ search: '' })),
@@ -251,15 +273,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 				wrapSelection(prefix, suffix = prefix) {
 					const view = viewRef.current;
 					if (!view) return;
-
-					const { from, to } = view.state.selection.main;
-					const selectedText = view.state.sliceDoc(from, to);
-					view.dispatch({
-						changes: { from, to, insert: `${prefix}${selectedText}${suffix}` },
-						selection: { anchor: from + prefix.length, head: to + prefix.length },
-						annotations: isolateHistory.of('full'),
-						scrollIntoView: true,
-					});
+					wrap(view, prefix, suffix);
 					view.focus();
 				},
 				prefixLines(prefix) {
@@ -314,6 +328,15 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 								return true;
 							},
 						},
+						...(code || initialReadOnlyRef.current
+							? []
+							: [
+									{ key: 'Mod-b', run: (view: EditorView) => wrap(view, '**') },
+									{ key: 'Mod-i', run: (view: EditorView) => wrap(view, '*') },
+									{ key: 'Mod-e', run: (view: EditorView) => wrap(view, '`') },
+									{ key: 'Mod-Shift-s', run: (view: EditorView) => wrap(view, '~~') },
+									{ key: 'Mod-k', run: (view: EditorView) => wrap(view, '[', '](https://)') },
+								]),
 						...defaultKeymap,
 						...historyKeymap,
 						...foldKeymap,

@@ -203,6 +203,8 @@ export interface AgentApi {
 	readWorkspaceAsset: (filePath: string) => Promise<WorkspaceAsset>;
 	writeWorkspaceFile: (filePath: string, content: string) => Promise<void>;
 	writeWorkspaceMarkdown: (filePath: string, content: string) => Promise<void>;
+	importWorkspaceAsset: (documentPath: string, name: string, data: Uint8Array) => Promise<string>;
+	cleanWorkspaceAssets: (documentPath: string) => Promise<number>;
 	createWorkspaceFile: (parentPath: string, name: string) => Promise<string>;
 	duplicateWorkspaceFile: (filePath: string) => Promise<string>;
 	archiveWorkspaceEntry: (entryPath: string, action: 'compress' | 'extract') => Promise<string>;
