@@ -1,23 +1,25 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, Blocks, ExternalLink, MoreHorizontal } from 'lucide-react';
+import { AlertTriangle, AppWindow, ArrowLeft, Blocks, Trash2, Unlink } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useOpenApp } from '@/hooks/app';
 import type { App } from '../../../../../../../shared/installed_app_types';
 import WindowSettings from './Window';
+import AppIcon from '../AppIcon';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
 	SettingsNotice,
-	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
+	SettingsRow,
 	SettingsSection,
+	SettingsValue,
 } from '../../../components';
 
-const KNOWN_METADATA_KEYS = ['version', 'category', 'entry'];
+const KNOWN_METADATA_KEYS = ['version', 'category', 'entry', 'image'];
 
 const AppDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
@@ -28,7 +30,6 @@ const AppDetailsPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [opening, setOpening] = useState(false);
 	const [deleting, setDeleting] = useState(false);
-	const [actionsOpen, setActionsOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const loadErrorFallback = t('settings.apps.loadError');
 
@@ -50,18 +51,22 @@ const AppDetailsPage: React.FC = () => {
 		void loadApp();
 	}, [loadApp]);
 
-	const handleOpen = useCallback(async (): Promise<void> => {
-		if (!app) return;
-		setOpening(true);
-		setErrorMessage('');
-		try {
-			await window.apps.open(app.id);
-		} catch {
-			setErrorMessage(t('settings.apps.openError'));
-		} finally {
-			setOpening(false);
-		}
-	}, [app, t]);
+	const openApp = useOpenApp();
+	const handleOpen = useCallback(
+		async (target?: 'window'): Promise<void> => {
+			if (!app) return;
+			setOpening(true);
+			setErrorMessage('');
+			try {
+				await openApp(app, target);
+			} catch {
+				setErrorMessage(t('settings.apps.openError'));
+			} finally {
+				setOpening(false);
+			}
+		},
+		[app, openApp, t]
+	);
 
 	const handleDelete = useCallback(async (): Promise<void> => {
 		if (!app) return;
@@ -78,10 +83,17 @@ const AppDetailsPage: React.FC = () => {
 		}
 	}, [app, navigate, t]);
 
+	const back = (
+		<Button variant="ghost" size="sm" className="w-fit" onClick={() => navigate('/settings/apps')}>
+			<ArrowLeft className="size-4" />
+			{t('settings.tabs.apps')}
+		</Button>
+	);
+
 	if (loading) {
 		return (
 			<SettingsPageShell>
-				<SettingsPageHeader title={t('settings.apps.details')} />
+				{back}
 				<SettingsPanel>
 					<SettingsLoadingRows rows={3} />
 				</SettingsPanel>
@@ -92,135 +104,114 @@ const AppDetailsPage: React.FC = () => {
 	if (!app) {
 		return (
 			<SettingsPageShell>
-				<SettingsPageHeader title={t('settings.apps.details')} />
+				{back}
 				{errorMessage && (
 					<SettingsNotice variant="destructive" icon={AlertTriangle}>
 						{errorMessage}
 					</SettingsNotice>
 				)}
-				<SettingsPanel>
-					<SettingsEmptyState
-						icon={Blocks}
-						title={decodedAppId || t('settings.apps.empty')}
-						description={t('settings.apps.emptyDescription')}
-						className="min-h-28"
-					/>
-				</SettingsPanel>
+				<SettingsEmptyState
+					icon={Blocks}
+					title={decodedAppId || t('settings.apps.empty')}
+					description={t('settings.apps.emptyDescription')}
+				/>
 			</SettingsPageShell>
 		);
 	}
 
-	const extraMetadata = Object.entries(app.metadata).filter(
-		([key]) => !KNOWN_METADATA_KEYS.includes(key)
-	);
+	const details: { key: string; title: string; value: string; mono?: boolean }[] = [
+		{ key: 'id', title: t('settings.apps.detailId'), value: app.id, mono: true },
+		{
+			key: 'mode',
+			title: t('settings.apps.detailMode'),
+			value: t(`settings.apps.modes.${app.mode ?? 'extension'}`),
+		},
+		{ key: 'version', title: t('settings.apps.detailVersion'), value: app.metadata.version },
+		{ key: 'category', title: t('settings.apps.detailCategory'), value: app.metadata.category },
+		{ key: 'entry', title: t('settings.apps.detailEntry'), value: app.metadata.entry, mono: true },
+		...Object.entries(app.metadata)
+			.filter(([key]) => !KNOWN_METADATA_KEYS.includes(key))
+			.map(([key, value]) => ({
+				key,
+				title: key,
+				value: typeof value === 'string' ? value : JSON.stringify(value),
+			})),
+	];
 
 	return (
 		<SettingsPageShell>
-			<SettingsPageHeader
-				 title={app.title}
-				description={app.description}
-				action={
-					<>
-						<Button variant="outline" size="xs" onClick={() => void handleOpen()} disabled={opening || deleting}>
-							<ExternalLink className="size-3" />
-							{t('settings.apps.open')}
-						</Button>
-						<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
-							<PopoverTrigger asChild>
-								<Button
-									variant="outline"
-									size="icon-xs"
-									disabled={opening || deleting}
-									aria-label={t('common.moreOptions')}
-								>
-									<MoreHorizontal className="size-3.5" />
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent align="end" collisionPadding={12} className="w-44 p-1">
-								<div role="menu" aria-label={t('common.moreOptions')}>
-									<button
-										type="button"
-										role="menuitem"
-										disabled={deleting}
-										onClick={() => {
-											setActionsOpen(false);
-											void handleDelete();
-										}}
-										className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive outline-none hover:bg-destructive/10 focus-visible:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
-									>
-										{deleting ? t('settings.apps.deleting') : t('settings.apps.deleteAction', { name: app.title })}
-									</button>
-								</div>
-							</PopoverContent>
-						</Popover>
-					</>
-				}
-			/>
-
+			{back}
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{errorMessage}
 				</SettingsNotice>
 			)}
-
-			<SettingsSection title={t('settings.apps.information')}>
-				<SettingsPanel>
-					<AppDetail label={t('settings.apps.detailId')} value={app.id} mono />
-					<AppDetail
-						label={t('settings.apps.detailVersion')}
-						value={app.metadata.version}
-					/>
-					<AppDetail
-						label={t('settings.apps.detailCategory')}
-						value={app.metadata.category}
-					/>
-					<AppDetail
-						label={t('settings.apps.detailEntry')}
-						value={app.metadata.entry}
-						mono
-					/>
-					{extraMetadata.map(([key, value]) => (
-						<AppDetail
-							key={key}
-							label={key}
-							value={typeof value === 'string' ? value : JSON.stringify(value)}
-						/>
-					))}
-				</SettingsPanel>
-			</SettingsSection>
-
-			<WindowSettings key={app.id} appId={app.id} />
+			<header className="mb-6 flex items-start gap-4 py-2">
+				<AppIcon app={app} className="size-14" />
+				<div className="min-w-0 flex-1">
+					<h1 className="flex flex-wrap items-center gap-2 text-3xl font-normal leading-9 text-foreground">
+						{app.title}
+						{import.meta.env.DEV && app.debugPath && (
+							<Badge variant="outline">{t('settings.apps.debug.badge')}</Badge>
+						)}
+					</h1>
+					<p className="mt-1.5 max-w-2xl text-base leading-5 text-muted-foreground">
+						{app.description}
+					</p>
+				</div>
+				<div className="flex shrink-0 items-center gap-1.5">
+					<Button
+						type="button"
+						size="sm"
+						disabled={opening || deleting}
+						onClick={() => void handleOpen()}
+					>
+						{t('settings.apps.open')}
+					</Button>
+					{app.mode === 'both' && (
+						<Button
+							type="button"
+							size="sm"
+							variant="outline"
+							disabled={opening || deleting}
+							onClick={() => void handleOpen('window')}
+						>
+							<AppWindow />
+							{t('settings.apps.openInWindow')}
+						</Button>
+					)}
+					{!app.plugin && (
+						<Button
+							type="button"
+							size="sm"
+							variant="outline"
+							disabled={opening || deleting}
+							onClick={() => void handleDelete()}
+						>
+							{app.debugPath ? <Unlink /> : <Trash2 />}
+							{deleting
+								? t('settings.apps.deleting')
+								: t(app.debugPath ? 'settings.apps.debug.remove' : 'settings.apps.deleteAction', {
+										name: app.title,
+									})}
+						</Button>
+					)}
+				</div>
+			</header>
+			<div className="flex flex-col gap-8 pb-8">
+				<SettingsSection title={t('settings.apps.information')}>
+					<SettingsPanel>
+						{details.map((row) => (
+							<SettingsRow key={row.key} title={row.title}>
+								<SettingsValue mono={row.mono}>{row.value}</SettingsValue>
+							</SettingsRow>
+						))}
+					</SettingsPanel>
+				</SettingsSection>
+				{app.mode && app.mode !== 'extension' && <WindowSettings key={app.id} appId={app.id} />}
+			</div>
 		</SettingsPageShell>
 	);
 };
-
-function AppDetail({
-	label,
-	value,
-	mono,
-}: {
-	readonly label: string;
-	readonly value: string;
-	readonly mono?: boolean;
-}): React.JSX.Element {
-	return (
-		<Item variant="outline" size="md" className="border-b border-border/60 last:border-b-0 px-5 py-4">
-			<ItemContent className="min-w-0">
-				<ItemTitle>{label}</ItemTitle>
-			</ItemContent>
-			<ItemActions className="ml-auto min-w-0 flex-none justify-end">
-				<span
-					className={
-						mono
-							? 'max-w-md break-all text-right font-mono text-[11px] text-foreground'
-							: 'max-w-md break-words text-right text-xs text-foreground'
-					}
-				>
-					{value}
-				</span>
-			</ItemActions>
-		</Item>
-	);
-}
 
 export default AppDetailsPage;
