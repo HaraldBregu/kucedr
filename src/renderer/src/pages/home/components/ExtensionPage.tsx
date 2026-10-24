@@ -63,6 +63,7 @@ export function ExtensionPage({ extension, onClose }: ExtensionPageProps): React
 				</Button>
 			</header>
 			<iframe
+				ref={frameRef}
 				key={`${extension.pluginId ?? ''}/${extension.id}`}
 				title={extension.title}
 				src={
