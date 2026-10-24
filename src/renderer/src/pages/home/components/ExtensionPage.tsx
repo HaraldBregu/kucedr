@@ -22,7 +22,6 @@ export function ExtensionPage({ extension, onClose }: ExtensionPageProps): React
 	const frameRef = useRef<HTMLIFrameElement>(null);
 	const { pluginId, id } = extension;
 
-	// The sandboxed frame has no preload, so it reaches its store through postMessage.
 	useEffect(() => {
 		const onMessage = (event: MessageEvent): void => {
 			const frame = frameRef.current?.contentWindow;
