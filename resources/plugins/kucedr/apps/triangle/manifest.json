@@ -5,5 +5,13 @@
 		"version": "1.0.0",
 		"category": "games",
 		"entry": "index.html"
+	},
+	"window": {
+		"width": 960,
+		"height": 600,
+		"minWidth": 640,
+		"minHeight": 400,
+		"resizable": true,
+		"maximizable": true
 	}
 }
