@@ -12,6 +12,11 @@
 		"minWidth": 320,
 		"minHeight": 440,
 		"resizable": true,
-		"maximizable": false
+		"maximizable": false,
+		"frame": false,
+		"transparent": false,
+		"alwaysOnTop": false,
+		"type": "normal",
+		"titleBarStyle": "hidden"
 	}
 }

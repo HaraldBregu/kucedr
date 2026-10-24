@@ -1710,6 +1710,21 @@
 				"minHeight": "Minimum height (px)",
 				"resizable": "Allow resizing",
 				"maximizable": "Allow maximizing",
+				"frame": "Show system frame",
+				"transparent": "Transparent background",
+				"alwaysOnTop": "Always on top",
+				"type": "Window type",
+				"titleBarStyle": "Title bar style (macOS)",
+				"typeOptions": {
+					"normal": "Normal",
+					"panel": "Panel (macOS)",
+					"toolbar": "Toolbar (Windows, Linux)"
+				},
+				"titleBarStyleOptions": {
+					"hidden": "Hidden",
+					"hiddenInset": "Hidden inset",
+					"default": "Default"
+				},
 				"save": "Save settings",
 				"saving": "Saving...",
 				"saved": "Window settings saved.",

@@ -1,4 +1,4 @@
-import type { AppWindowSettings } from './app_window_settings';
+import { APP_TITLE_BAR_STYLES, APP_WINDOW_TYPES, type AppWindowSettings } from './app_window_settings';
 
 export function isAppWindowSettings(value: unknown): value is AppWindowSettings {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -8,8 +8,12 @@ export function isAppWindowSettings(value: unknown): value is AppWindowSettings 
 			if (typeof entry !== 'number' || !Number.isInteger(entry) || entry < 1 || entry > 32768) {
 				return false;
 			}
-		} else if (key === 'resizable' || key === 'maximizable') {
+		} else if (['resizable', 'maximizable', 'frame', 'transparent', 'alwaysOnTop'].includes(key)) {
 			if (typeof entry !== 'boolean') return false;
+		} else if (key === 'type') {
+			if (!(APP_WINDOW_TYPES as readonly unknown[]).includes(entry)) return false;
+		} else if (key === 'titleBarStyle') {
+			if (!(APP_TITLE_BAR_STYLES as readonly unknown[]).includes(entry)) return false;
 		} else {
 			return false;
 		}

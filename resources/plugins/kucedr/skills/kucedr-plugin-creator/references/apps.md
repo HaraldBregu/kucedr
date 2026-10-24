@@ -39,7 +39,9 @@ sandboxed renderer with no Node access and talks to Kucedr only through the `@ku
   required.
 - `entry` is a relative path to an `.html` file that exists. It can't start with `/` or contain
   `..`.
-- `window` accepts `width`, `height`, `minWidth`, `minHeight`, `resizable`, and `maximizable`.
+- `window` accepts `width`, `height`, `minWidth`, `minHeight`, `resizable`, `maximizable`,
+  `frame`, `transparent`, `alwaysOnTop`, `type` (`normal`, `panel`, `toolbar`), and
+  `titleBarStyle` (`hidden`, `hiddenInset`, `default`; macOS only).
   Sizes describe the whole window, including Kucedr's navigation bar.
 
 ## Minimal app

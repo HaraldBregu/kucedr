@@ -44,15 +44,19 @@ export function render(
 			minHeight: settings.minHeight,
 			resizable: settings.resizable,
 			maximizable: settings.maximizable,
-			frame: false,
-			transparent: true,
+			frame: settings.frame,
+			transparent: settings.transparent,
+			alwaysOnTop: settings.alwaysOnTop,
+			...(settings.type !== 'normal' && { type: settings.type }),
 			...(isMac && {
-				titleBarStyle: 'hidden',
-				trafficLightPosition: { x: 16, y: 17 },
+				titleBarStyle: settings.titleBarStyle,
+				...(settings.titleBarStyle !== 'default' && { trafficLightPosition: { x: 16, y: 17 } }),
 			}),
-			...getPlatformTranslucencyOptions(),
+			...(settings.transparent && {
+				...getPlatformTranslucencyOptions(),
+				backgroundColor: '#00000000',
+			}),
 			title,
-			backgroundColor: '#00000000',
 		},
 		{ html: 'app.html', hash: `app/${encodeURIComponent(title)}` }
 	);

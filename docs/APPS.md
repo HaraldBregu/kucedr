@@ -52,7 +52,7 @@ Sources: [Workspace page](../src/renderer/src/pages/workspace/Page.tsx), [file a
 
 The data root can be overridden by `KUCEDR_E2E_DATA_ROOT` for tests. App-scoped file and value APIs validate IDs and reject invalid storage paths or symlink storage directories.
 
-**Details → Window** controls width, height, minimum dimensions, resizability, and maximization. Changes apply on the next opening of the app window. Host defaults are 820×640 with a 620×480 minimum, resizable and maximizable. Selecting default values removes the custom window section from the manifest.
+**Details → Window** controls width, height, minimum dimensions, resizability, maximization, system frame, transparency, always-on-top, window type (`normal`, `panel` on macOS, `toolbar` on Windows and Linux), and the macOS title bar style. Changes apply on the next opening of the app window. Host defaults are 820×640 with a 620×480 minimum, resizable and maximizable, frameless, transparent, not always on top, a normal window type, and a hidden title bar. Selecting default values removes the custom window section from the manifest.
 
 Sources: [data root](../src/main/shared/user_data_location.ts), [value storage](../src/main/apps/app_values.ts), [file storage](../src/main/apps/app_files.ts), [debug registry](../src/main/apps/app_debug_store.ts), [window settings UI](../src/renderer/src/pages/settings/pages/apps/details/Window.tsx), [window defaults](../src/shared/app_window_settings.ts).
 

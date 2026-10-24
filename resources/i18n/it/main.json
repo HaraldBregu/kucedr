@@ -1710,6 +1710,21 @@
 				"minHeight": "Altezza minima (px)",
 				"resizable": "Consenti ridimensionamento",
 				"maximizable": "Consenti ingrandimento",
+				"frame": "Mostra cornice di sistema",
+				"transparent": "Sfondo trasparente",
+				"alwaysOnTop": "Sempre in primo piano",
+				"type": "Tipo di finestra",
+				"titleBarStyle": "Stile barra del titolo (macOS)",
+				"typeOptions": {
+					"normal": "Normale",
+					"panel": "Pannello (macOS)",
+					"toolbar": "Barra strumenti (Windows, Linux)"
+				},
+				"titleBarStyleOptions": {
+					"hidden": "Nascosta",
+					"hiddenInset": "Nascosta rientrata",
+					"default": "Predefinita"
+				},
 				"save": "Salva impostazioni",
 				"saving": "Salvataggio...",
 				"saved": "Impostazioni finestra salvate.",

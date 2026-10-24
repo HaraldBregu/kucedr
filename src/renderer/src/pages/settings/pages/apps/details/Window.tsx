@@ -11,7 +11,9 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import {
+	APP_TITLE_BAR_STYLES,
 	APP_WINDOW_DEFAULTS,
+	APP_WINDOW_TYPES,
 	type AppWindowSettings,
 	type ResolvedAppWindowSettings,
 } from '../../../../../../../shared/app_window_settings';
@@ -26,8 +28,10 @@ import {
 } from '../../../components';
 
 const DIMENSIONS = ['width', 'height', 'minWidth', 'minHeight'] as const;
-const TOGGLES = ['resizable', 'maximizable'] as const;
-const WINDOW_KEYS = [...DIMENSIONS, ...TOGGLES] as const;
+const TOGGLES = ['resizable', 'maximizable', 'frame', 'transparent', 'alwaysOnTop'] as const;
+const CHOICES = { type: APP_WINDOW_TYPES, titleBarStyle: APP_TITLE_BAR_STYLES } as const;
+const CHOICE_KEYS = Object.keys(CHOICES) as (keyof typeof CHOICES)[];
+const WINDOW_KEYS = [...DIMENSIONS, ...TOGGLES, ...CHOICE_KEYS] as const;
 type Draft = Omit<ResolvedAppWindowSettings, (typeof DIMENSIONS)[number]> &
 	Record<(typeof DIMENSIONS)[number], number | string>;
 
@@ -220,6 +224,34 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 														setStatus('');
 													}}
 												/>
+											}
+										/>
+									))}
+								{customValues &&
+									CHOICE_KEYS.map((key) => (
+										<SettingsRow
+											key={key}
+											title={t(`settings.apps.window.${key}`)}
+											actions={
+												<Select
+													value={draft[key]}
+													onValueChange={(value) => {
+														setDraft((current) => current && { ...current, [key]: value });
+														setError('');
+														setStatus('');
+													}}
+												>
+													<SelectTrigger size="sm" aria-label={t(`settings.apps.window.${key}`)}>
+														<SelectValue />
+													</SelectTrigger>
+													<SelectContent>
+														{CHOICES[key].map((option) => (
+															<SelectItem key={option} value={option}>
+																{t(`settings.apps.window.${key}Options.${option}`)}
+															</SelectItem>
+														))}
+													</SelectContent>
+												</Select>
 											}
 										/>
 									))}
