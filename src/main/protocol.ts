@@ -19,14 +19,10 @@ import type { LoggerService } from './shared';
 import type { AppRegistry } from './apps/app_registry';
 import { isAppId } from './apps/app_id';
 import { appDirectory } from './apps/app_directory';
-import { handleExtensionResource } from './plugins/plugins_extension_resource';
-import { handleStandaloneExtensionResource } from './plugins/plugins_extensions_resource';
 
 const LOCAL_RESOURCE_SCHEME = 'local-resource';
 export const APP_RESOURCE_SCHEME = 'kucedr-app';
 export const APP_SESSION_PARTITION = 'persist:kucedr-apps';
-const PLUGIN_RESOURCE_SCHEME = 'kucedr-plugin';
-const EXTENSION_RESOURCE_SCHEME = 'kucedr-extension';
 
 export function registerLocalResourceProtocolScheme(): void {
 	protocol.registerSchemesAsPrivileged([
@@ -39,14 +35,6 @@ export function registerLocalResourceProtocolScheme(): void {
 				supportFetchAPI: true,
 				stream: true,
 			},
-		},
-		{
-			scheme: PLUGIN_RESOURCE_SCHEME,
-			privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true },
-		},
-		{
-			scheme: EXTENSION_RESOURCE_SCHEME,
-			privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true },
 		},
 		{
 			scheme: APP_RESOURCE_SCHEME,
@@ -131,10 +119,17 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 			return new Response(null, { status: 404 });
 		}
 	};
-	protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
+	// Apps embedded in the main window (extension mode) get no network, like their own windows' sandbox.
+	protocol.handle(APP_RESOURCE_SCHEME, async (request) => {
+		const response = await handleAppResource(request);
+		const headers = new Headers(response.headers);
+		headers.set(
+			'Content-Security-Policy',
+			"default-src 'none'; script-src kucedr-app:; style-src kucedr-app: 'unsafe-inline'; img-src kucedr-app: data:; font-src kucedr-app: data:; media-src kucedr-app: data:"
+		);
+		return new Response(response.body, { status: response.status, headers });
+	});
 	appSession.protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
-	protocol.handle(PLUGIN_RESOURCE_SCHEME, handleExtensionResource);
-	protocol.handle(EXTENSION_RESOURCE_SCHEME, handleStandaloneExtensionResource);
 }
 
 export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
