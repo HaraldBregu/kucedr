@@ -19,6 +19,32 @@ interface ExtensionPageProps {
 
 export function ExtensionPage({ extension, onClose }: ExtensionPageProps): ReactElement {
 	const { t } = useTranslation();
+	const frameRef = useRef<HTMLIFrameElement>(null);
+	const { pluginId, id } = extension;
+
+	// The sandboxed frame has no preload, so it reaches its store through postMessage.
+	useEffect(() => {
+		const onMessage = (event: MessageEvent): void => {
+			const frame = frameRef.current?.contentWindow;
+			const { kucedrStore, op, key, value } = event.data ?? {};
+			if (!frame || event.source !== frame || typeof kucedrStore !== 'number') return;
+			const result =
+				op === 'get'
+					? window.plugins.getExtensionStoreValue(pluginId, id, key)
+					: op === 'set'
+						? window.plugins.setExtensionStoreValue(pluginId, id, key, value)
+						: op === 'delete'
+							? window.plugins.deleteExtensionStoreValue(pluginId, id, key)
+							: Promise.reject(new Error('Unknown store operation.'));
+			result.then(
+				(value) => frame.postMessage({ kucedrStore, value }, '*'),
+				(error: unknown) => frame.postMessage({ kucedrStore, error: String(error) }, '*')
+			);
+		};
+		window.addEventListener('message', onMessage);
+		return () => window.removeEventListener('message', onMessage);
+	}, [pluginId, id]);
+
 	return (
 		<section
 			aria-label={extension.title}
