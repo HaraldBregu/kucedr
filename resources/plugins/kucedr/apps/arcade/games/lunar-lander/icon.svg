@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 120" width="120" height="96" role="img" aria-label="Lunar Lander">
+  <!-- The large module of the vector ROM, landed upright on a site, drawn as glowing beam lines. -->
+  <defs>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="150" height="120" rx="15" fill="#000"/>
+  <g fill="none" stroke="#f4f7ff" stroke-width="2.5" stroke-linejoin="round" filter="url(#glow)">
+    <path transform="translate(74 54) scale(2.4)" stroke-width="1.04" d="M-2 7L-7 2M-7 2L-7 -3M-7 -3L-2 -8M-2 -8L3 -8M3 -8L8 -3M8 -3L8 2M8 2L3 7M3 7L-2 7M-2 7L-7 7M-7 7L-7 10M-7 10L8 10M8 10L8 7M8 7L3 7M-7 10L-11 18M-13 18L-9 18M10 18L14 18M12 18L8 10M4 10L7 16M7 16L-6 16M-6 16L-3 10"/>
+    <path d="M10 84L22 76L34 90L44 98L106 98L114 86L126 80L140 88"/>
+  </g>
+</svg>

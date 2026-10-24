@@ -1,0 +1,9 @@
+{
+	"title": "Arcade",
+	"description": "Insert coins and pick a classic: Space Invaders, Breakout, Asteroids, Lunar Lander, Galaga, Pac-Man and Snake.",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "games",
+		"entry": "index.html"
+	}
+}

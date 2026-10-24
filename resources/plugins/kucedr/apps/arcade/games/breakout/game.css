@@ -1,0 +1,2 @@
+html,body{background:#000;height:100%;margin:0}body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;place-items:center;display:grid}#screen{aspect-ratio:228/308;height:min(100vh,135.088vw);image-rendering:pixelated;cursor:none}@media (pointer:coarse){body{box-sizing:border-box;padding-top:env(safe-area-inset-top);place-items:start center}}
+/*$vite$:1*/

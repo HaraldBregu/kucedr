@@ -1,0 +1,9 @@
+{
+	"title": "Tetris",
+	"description": "Stack falling tetrominoes, clear lines and level up to chiptune music.",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "games",
+		"entry": "index.html"
+	}
+}
