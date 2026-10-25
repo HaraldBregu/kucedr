@@ -7,7 +7,6 @@ import {
 	deleteApp,
 	addDebugApp,
 	destroyApp,
-	importApps,
 	listApps,
 	loadApp,
 	openRoot,
