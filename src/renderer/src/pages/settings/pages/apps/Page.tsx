@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Blocks, ExternalLink } from 'lucide-react';
+import { AlertTriangle, AppWindow, MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useOpenApp } from '@/hooks/app';
 import type { App } from '../../../../../../shared/installed_app_types';
 import {
 	SettingsLoadingRows,
@@ -15,6 +22,7 @@ import {
 } from '../../components';
 import { SettingsFilter } from '../../components/filter';
 import { SettingsUpload } from '../../components/upload';
+import AppIcon from './AppIcon';
 
 function getErrorMessage(error: unknown, fallback: string): string {
 	if (error instanceof Error && error.message.trim().length > 0) {
@@ -94,19 +102,20 @@ const AppsPage: React.FC = () => {
 		[loadApps, t]
 	);
 
+	const openApp = useOpenApp();
 	const handleOpen = useCallback(
-		async (appId: string): Promise<void> => {
-			setOpeningAppId(appId);
+		async (app: App, target?: 'window'): Promise<void> => {
+			setOpeningAppId(app.id);
 			setErrorMessage('');
 			try {
-				await window.apps.open(appId);
+				await openApp(app, target);
 			} catch (error) {
 				setErrorMessage(getErrorMessage(error, t('settings.apps.openError')));
 			} finally {
 				setOpeningAppId(null);
 			}
 		},
-		[t]
+		[openApp, t]
 	);
 
 	return (
@@ -139,25 +148,23 @@ const AppsPage: React.FC = () => {
 			)}
 
 			{(loading || apps.length > 0) && (
-				<section className="-mx-4 pb-4" aria-labelledby="installed-apps-title">
-					<h2 id="installed-apps-title" className="mb-2 px-3 text-sm font-medium">
+				<section className="pb-4" aria-labelledby="installed-apps-title">
+					<h2 id="installed-apps-title" className="mb-2 text-sm font-medium">
 						{t('settings.apps.title')}
 					</h2>
-					<div className="px-3">
-						<SettingsFilter
-							query={query}
-							onQueryChange={setQuery}
-							categories={categories}
-							category={category}
-							onCategoryChange={setCategory}
-						/>
-					</div>
+					<SettingsFilter
+						query={query}
+						onQueryChange={setQuery}
+						categories={categories}
+						category={category}
+						onCategoryChange={setCategory}
+					/>
 					{loading ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />
 						</SettingsPanel>
 					) : (
-						<div className="grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
+						<div className="grid grid-cols-1 gap-3">
 							<SettingsUpload
 								title={t('settings.apps.addTitle')}
 								description={t('settings.apps.dropTitle')}
@@ -167,13 +174,12 @@ const AppsPage: React.FC = () => {
 								className="h-22 flex-row items-center gap-3 px-4 py-0 text-left"
 							/>
 							{visibleApps.map((app) => (
-								<Item
+								<Card
 									key={app.id}
+									size="sm"
 									role="link"
 									tabIndex={0}
-									variant="ghost"
-									size="md"
-									className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+									className="h-22 cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
 									onClick={() => navigate(`/settings/apps/${encodeURIComponent(app.id)}`)}
 									onKeyDown={(event) => {
 										if (
@@ -185,53 +191,57 @@ const AppsPage: React.FC = () => {
 										}
 									}}
 								>
-									{app.imageUrl ? (
-										<img
-											src={app.imageUrl}
-											alt=""
-											className="size-10 shrink-0 rounded-2xl bg-muted/50 object-contain p-2.5"
-										/>
-									) : (
-										<div
-											aria-hidden="true"
-											className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground"
-										>
-											<Blocks className="size-5" />
+									<CardHeader className="flex items-start gap-3">
+										<AppIcon app={app} className="size-8" />
+										<div className="flex min-w-0 flex-1 flex-col gap-1">
+											<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
+												<span className="truncate">{app.title}</span>
+												<span className="text-xs font-normal text-muted-foreground">
+													{app.metadata.version}
+												</span>
+												{import.meta.env.DEV && app.debugPath && (
+													<Badge variant="outline">{t('settings.apps.debug.badge')}</Badge>
+												)}
+											</CardTitle>
+											<CardDescription className="line-clamp-2">{app.description}</CardDescription>
 										</div>
-									)}
-									<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-										<ItemTitle className="min-w-0 max-w-full gap-1.5 text-sm font-medium leading-tight">
-											<h3 className="truncate">{app.title}</h3>
-											{import.meta.env.DEV && app.debugPath && (
-												<Badge variant="outline" className="shrink-0 text-[10px] leading-none">
-													{t('settings.apps.debug.badge')}
-												</Badge>
-											)}
-										</ItemTitle>
-										<p className="max-w-full truncate text-[11px] leading-tight text-muted-foreground">
-											{app.handle ?? `@${app.id}`}
-										</p>
-										<p className="line-clamp-2 text-xs leading-4 text-muted-foreground">
-											{app.description}
-										</p>
-									</ItemContent>
-									<ItemActions className="ml-auto flex-none justify-end">
-										<Button
-											type="button"
-											variant="outline"
-											size="xs"
-											disabled={importing || openingAppId === app.id}
-											onClick={(event) => {
-												event.stopPropagation();
-												void handleOpen(app.id);
-											}}
+										<div
+											className="flex shrink-0 items-center gap-1"
+											onClick={(event) => event.stopPropagation()}
 											onKeyDown={(event) => event.stopPropagation()}
 										>
-											<ExternalLink className="size-3" />
-											{t('settings.apps.open')}
-										</Button>
-									</ItemActions>
-								</Item>
+											<Button
+												type="button"
+												size="sm"
+												variant="outline"
+												disabled={importing || openingAppId === app.id}
+												onClick={() => void handleOpen(app)}
+											>
+												{t('settings.apps.open')}
+											</Button>
+											{app.mode === 'both' && (
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<Button
+															variant="ghost"
+															size="icon-sm"
+															disabled={openingAppId === app.id}
+															aria-label={t('common.moreOptions')}
+														>
+															<MoreHorizontal className="size-4" />
+														</Button>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent align="end">
+														<DropdownMenuItem onSelect={() => void handleOpen(app, 'window')}>
+															<AppWindow />
+															{t('settings.apps.openInWindow')}
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											)}
+										</div>
+									</CardHeader>
+								</Card>
 							))}
 						</div>
 					)}
