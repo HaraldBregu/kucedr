@@ -17,9 +17,6 @@ export const apps: AppsApi = {
 	delete: (appId) => {
 		return typedInvokeUnwrap(AppsChannels.delete, appId);
 	},
-	import: (paths) => {
-		return typedInvokeUnwrap(AppsChannels.import, paths);
-	},
 	addDebug: (folderPath) => {
 		return typedInvokeUnwrap(AppsChannels.addDebug, folderPath);
 	},
