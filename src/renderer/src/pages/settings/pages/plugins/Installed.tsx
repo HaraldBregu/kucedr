@@ -17,11 +17,7 @@ import { SettingsFilter } from '../../components/filter';
 import Confirm from './Confirm';
 import PluginIcon from './PluginIcon';
 
-export default function Installed({
-	upload,
-}: {
-	readonly upload?: React.ReactNode;
-}): React.JSX.Element {
+export default function Installed(): React.JSX.Element {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [plugins, setPlugins] = useState<PluginInfo[]>([]);
