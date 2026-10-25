@@ -485,7 +485,7 @@ Apps in extension mode share one host, `ExtensionPage`, on the home page.
 
 ## 10. Distribution
 
-All plugins live in one public GitHub repo, `HaraldBregu/kucedr-plugins`. Its source, its
+All plugins live in one public GitHub repo, `Kucedr/kucedr-plugins`. Its source, its
 packages, and the catalog all come from that repo, so there's no npm account or second service.
 
 ```text
@@ -530,7 +530,7 @@ kucedr-plugins/
 			"icon": "https://…/icon.png",
 			"version": "1.0.0",
 			"minAppVersion": "1.3.0",
-			"url": "https://registry.npmjs.org/@acme/kucedr-tools/-/kucedr-tools-1.0.0.tgz",
+			"url": "https://github.com/Kucedr/kucedr-plugins/releases/download/acme-tools-v1.0.0/acme-tools-1.0.0.tgz",
 			"integrity": "sha512-…",
 			"contains": ["apps", "mcp", "providers", "skills"]
 		}

@@ -43,12 +43,12 @@ export default function Available({
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{plugins === null && !error && (
 				<p className="text-sm text-muted-foreground">
-					{t('settings.integrations.available.loading')}
+					{t('settings.integrations.marketplace.loading')}
 				</p>
 			)}
 			{plugins?.length === 0 && (
 				<p className="text-sm text-muted-foreground">
-					{t('settings.integrations.available.empty')}
+					{t('settings.integrations.marketplace.empty')}
 				</p>
 			)}
 			<div className="grid grid-cols-1 gap-3">
@@ -90,7 +90,7 @@ export default function Available({
 										{installing === plugin.id
 											? t('settings.integrations.installed.installing')
 											: plugin.update
-												? t('settings.integrations.available.update')
+												? t('settings.integrations.marketplace.update')
 												: t('settings.integrations.installed.install')}
 									</Button>
 								</div>

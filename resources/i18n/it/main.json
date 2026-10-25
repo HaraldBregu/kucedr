@@ -428,6 +428,10 @@
 				"extensions": "Estensioni",
 				"mcp": "Server MCP",
 				"skills": "Skill",
+				"providers": "Provider",
+				"minAppVersion": "Richiede Kucedr",
+				"categories": "Categorie",
+				"contains": "Contenuti",
 				"capabilities": {
 					"llm": "Chat",
 					"research-chat": "Ricerca",
@@ -457,14 +461,16 @@
 				"empty": "Nessun plugin installato",
 				"unavailable": "Non disponibile",
 				"enableAction": "Attiva",
-				"disable": "Disattiva"
+				"disable": "Disattiva",
+				"disabled": "Disattivato"
 			},
-			"addTitle": "Carica un nuovo plugin",
-			"dropTitle": "Trascina qui una cartella plugin o un archivio .tgz o fai clic per sfogliare",
-			"dropDescription": "Un plugin può includere app, estensioni, server MCP, provider e skill.",
-			"uploading": "Caricamento...",
-			"uploaded": "{{name}} installato.",
-			"uploadError": "Impossibile installare il plugin."
+			"marketplace": {
+				"title": "Marketplace",
+				"loading": "Caricamento dei plugin\u2026",
+				"empty": "Tutti i plugin del catalogo sono installati.",
+				"update": "Aggiorna"
+			},
+			"uploaded": "{{name}} installato."
 		},
 		"breadcrumb": {
 			"label": "Navigazione impostazioni",

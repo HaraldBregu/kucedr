@@ -37,7 +37,7 @@ export interface CatalogPlugin {
 	readonly id: string;
 	readonly title: string;
 	readonly description: string;
-	readonly author?: string;
+	readonly author: string;
 	readonly categories: readonly string[];
 	/** An https URL. */
 	readonly icon?: string;

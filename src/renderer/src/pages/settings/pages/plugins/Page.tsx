@@ -26,7 +26,7 @@ const PluginsPage = (): React.JSX.Element => {
 				<TabsList>
 					<TabsTrigger value="installed">{t('settings.integrations.installed.title')}</TabsTrigger>
 					<TabsTrigger value="marketplace">
-						{t('settings.integrations.available.title')}
+						{t('settings.integrations.marketplace.title')}
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="installed">

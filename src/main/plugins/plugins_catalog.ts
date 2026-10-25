@@ -12,7 +12,7 @@ const catalogSchema = z.object({
 			id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
 			title: z.string().min(1),
 			description: z.string(),
-			author: z.string().optional(),
+			author: z.string().min(1),
 			categories: z.array(z.string()).default([]),
 			icon: httpsUrl.optional(),
 			iconDark: httpsUrl.optional(),

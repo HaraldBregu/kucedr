@@ -428,6 +428,10 @@
 				"extensions": "Extensions",
 				"mcp": "MCP servers",
 				"skills": "Skills",
+				"providers": "Providers",
+				"minAppVersion": "Requires Kucedr",
+				"categories": "Categories",
+				"contains": "Contents",
 				"capabilities": {
 					"llm": "Chat",
 					"research-chat": "Research",
@@ -457,14 +461,16 @@
 				"empty": "No plugins installed",
 				"unavailable": "Unavailable",
 				"enableAction": "Enable",
-				"disable": "Disable"
+				"disable": "Disable",
+				"disabled": "Disabled"
 			},
-			"addTitle": "Upload a new plugin",
-			"dropTitle": "Drop a plugin folder or .tgz archive here or click to browse",
-			"dropDescription": "A plugin can bundle apps, extensions, MCP servers, providers, and skills.",
-			"uploading": "Uploading...",
-			"uploaded": "Installed {{name}}.",
-			"uploadError": "Unable to install the plugin."
+			"marketplace": {
+				"title": "Marketplace",
+				"loading": "Loading plugins\u2026",
+				"empty": "Every plugin in the catalog is installed.",
+				"update": "Update"
+			},
+			"uploaded": "Installed {{name}}."
 		},
 		"breadcrumb": {
 			"label": "Settings navigation",

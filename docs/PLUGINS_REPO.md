@@ -1,6 +1,6 @@
 # Plan: the `kucedr-plugins` repository
 
-This plan is for an AI agent working in a new, empty repository, `HaraldBregu/kucedr-plugins`.
+This plan is for an AI agent working in a new, empty repository, `Kucedr/kucedr-plugins`.
 Everything it needs is in this file. The Kucedr desktop app isn't in that repository, so don't
 import from it.
 
@@ -90,7 +90,7 @@ them all, and exit 1 if there were any.
 | `version` | semver: `^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$` |
 | `minAppVersion` | optional, same semver pattern |
 | `categories` | optional array of non-empty strings |
-| `author` | optional, non-empty |
+| `author` | required, non-empty |
 | `icon`, `iconDark` | optional, `^[\w-]+\.(?:png\|svg\|jpe?g\|webp)$`; the file must exist in `assets/` and be 256 KB or smaller |
 | Provider fields | optional, any value: `authentication`, `apiKeyUrl`, `icon_dark_url`, `icon_light_url`, `instructions`, `models`, `mcp_servers`, `vector_databases`, `web_search`, `storage`, `bots`, `settings`. The app checks these in depth at install, so only check that they're there. |
 
@@ -160,10 +160,10 @@ attached. If the tag already exists, skip that plugin; never overwrite a release
 			"description": "What the plugin adds.",
 			"author": "Acme",
 			"categories": ["LLM"],
-			"icon": "https://haraldbregu.github.io/kucedr-plugins/icons/acme-tools.svg",
+			"icon": "https://kucedr.github.io/kucedr-plugins/icons/acme-tools.svg",
 			"version": "1.0.0",
 			"minAppVersion": "1.2.0",
-			"url": "https://github.com/HaraldBregu/kucedr-plugins/releases/download/acme-tools-v1.0.0/acme-tools-1.0.0.tgz",
+			"url": "https://github.com/Kucedr/kucedr-plugins/releases/download/acme-tools-v1.0.0/acme-tools-1.0.0.tgz",
 			"integrity": "sha512-…",
 			"contains": ["apps", "skills"]
 		}
@@ -199,7 +199,7 @@ attached. If the tag already exists, skip that plugin; never overwrite a release
    `index.json` and `icons/` need to be in the artifact, so leave out the `.tgz` files.
 
 In the repository settings, set Pages → Source to "GitHub Actions". The catalog URL is then
-`https://haraldbregu.github.io/kucedr-plugins/index.json`.
+`https://kucedr.github.io/kucedr-plugins/index.json`.
 
 ## Contribution rules
 
@@ -238,7 +238,7 @@ Add one small example plugin, `plugins/hello-skill/`, with only a skill
    symlink, a skill whose `name` doesn't match its folder, and an app whose entry file doesn't exist.
 2. A pull request that changes `hello-skill` without raising `version` fails the `validate` check.
 3. After merging to `main`, the release `hello-skill-v1.0.0` exists with its `.tgz`, and
-   `https://haraldbregu.github.io/kucedr-plugins/index.json` lists it with a matching `integrity`
+   `https://kucedr.github.io/kucedr-plugins/index.json` lists it with a matching `integrity`
    (check with `shasum -a 512 -b` and base64).
 4. Running the release workflow again creates no new release and leaves `integrity` unchanged.
 5. In Kucedr, Settings → Plugins → Install from URL with the `.tgz` URL installs `hello-skill`.
