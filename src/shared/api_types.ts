@@ -30,7 +30,7 @@ import type {
 	McpTestResult,
 } from './mcp_types';
 import type { DriveCreateInput, DriveFile, DriveSyncResult, DriveUpdateInput } from './drive_types';
-import type { App, AppImportResult } from './installed_app_types';
+import type { App } from './installed_app_types';
 import type { AvailablePlugin, PluginInfo } from './plugin_types';
 import type { TaskRuntime, TaskSchedule, TaskScheduledTask } from '../main/tasks/tasks_types';
 import type { HealthSettings } from '../main/health/types';
