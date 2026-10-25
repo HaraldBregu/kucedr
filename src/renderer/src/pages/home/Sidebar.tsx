@@ -289,7 +289,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 												variant="ghost"
 												size="icon-xs"
 												aria-label={t('common.more', 'More')}
-												className="absolute right-1 opacity-0 group-hover/item:opacity-100 focus-visible:opacity-100"
+												className="absolute right-1 bg-sidebar-accent opacity-0 group-hover/item:opacity-100 focus-visible:opacity-100 before:pointer-events-none before:absolute before:inset-y-0 before:right-full before:w-6 before:bg-linear-to-l before:from-sidebar-accent before:to-transparent"
 												onClick={openMenu}
 											>
 												<MoreVertical />
