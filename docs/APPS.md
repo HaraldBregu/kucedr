@@ -14,7 +14,7 @@ An app's folder name is its ID and must begin with an alphanumeric character, fo
 
 **Open folder** opens the managed apps directory; **Refresh** reloads the inventory. Opening an already open app focuses its existing window.
 
-Sources: [Settings Apps](../src/renderer/src/pages/settings/pages/apps/Page.tsx), [importer](../src/main/apps/app_import.ts), [IPC actions and delete confirmation](../src/main/ipc/apps.ts), [window lifecycle](../src/main/apps/app_render.ts).
+Sources: [Settings Apps](../src/renderer/src/pages/settings/pages/apps/Page.tsx), [IPC actions and delete confirmation](../src/main/ipc/apps.ts), [window lifecycle](../src/main/apps/app_render.ts).
 
 ## Opening modes
 
