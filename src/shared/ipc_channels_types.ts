@@ -532,10 +532,6 @@ export interface PluginsInvokeChannelMap {
 		args: [id: string];
 		result: import('./plugin_types').PluginInfo;
 	};
-	[PluginsChannels.upload]: {
-		args: [path?: string];
-		result: import('./plugin_types').PluginInfo | undefined;
-	};
 	[PluginsChannels.remove]: { args: [id: string]; result: void };
 	[PluginsChannels.setEnabled]: { args: [id: string, enabled: boolean]; result: void };
 	[PluginsChannels.getSettings]: { args: [id: string]; result: Record<string, string> };
