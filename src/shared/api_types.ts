@@ -31,7 +31,7 @@ import type {
 } from './mcp_types';
 import type { DriveCreateInput, DriveFile, DriveSyncResult, DriveUpdateInput } from './drive_types';
 import type { App, AppImportResult } from './installed_app_types';
-import type { PluginInfo } from './plugin_types';
+import type { AvailablePlugin, PluginInfo } from './plugin_types';
 import type { TaskRuntime, TaskSchedule, TaskScheduledTask } from '../main/tasks/tasks_types';
 import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
@@ -371,7 +371,6 @@ export interface PluginsApi {
 	installUrl: (url: string) => Promise<PluginInfo>;
 	available: () => Promise<AvailablePlugin[]>;
 	installCatalog: (id: string) => Promise<PluginInfo>;
-	upload: (path?: string) => Promise<PluginInfo | undefined>;
 	remove: (id: string) => Promise<void>;
 	setEnabled: (id: string, enabled: boolean) => Promise<void>;
 	getSettings: (id: string) => Promise<Record<string, string>>;
