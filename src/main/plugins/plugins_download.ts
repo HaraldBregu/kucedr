@@ -31,6 +31,13 @@ export async function downloadPlugin(url: string, integrity?: string): Promise<P
 		}
 		chunks.push(chunk.value);
 	}
+	const archive = Buffer.concat(chunks);
+	if (
+		integrity &&
+		`sha512-${createHash('sha512').update(archive).digest('base64')}` !== integrity
+	) {
+		throw new Error('The downloaded plugin does not match the catalog checksum.');
+	}
 
 	const temporary = await mkdtemp(path.join(os.tmpdir(), 'kucedr-plugin-download-'));
 	try {
