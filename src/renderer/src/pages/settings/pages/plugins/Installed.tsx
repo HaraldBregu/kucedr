@@ -78,7 +78,7 @@ export default function Installed({
 					category={category}
 					onCategoryChange={setCategory}
 				/>
-				<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+				<div className="grid grid-cols-1 gap-3">
 					{upload}
 					{visible.map((plugin) => (
 						<Card
