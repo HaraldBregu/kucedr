@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 5,
+	"id": "openrouter",
+	"title": "OpenRouter",
+	"version": "1.0.0",
+	"description": "Hundreds of models from every major provider through one API.",
+	"categories": [
+		"LLM"
+	],
+	"author": "Kucedr",
+	"icon": "openrouter-light.svg",
+	"iconDark": "openrouter-dark.svg",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://openrouter.ai/settings/keys",
+	"icon_dark_url": "/assets/openrouter-dark.svg",
+	"icon_light_url": "/assets/openrouter-light.svg",
+	"models": [
+		{
+			"id": "openrouter/auto",
+			"name": "Auto Router",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://openrouter.ai/api/v1",
+			"metadata": {
+				"promptAttachments": [],
+				"documentationUrl": "https://openrouter.ai/docs/guides/routing/auto-model-selection",
+				"documentationStatus": "unverified",
+				"contextWindow": 2000000,
+				"inputs": {}
+			},
+			"location": "remote"
+		}
+	]
+}
