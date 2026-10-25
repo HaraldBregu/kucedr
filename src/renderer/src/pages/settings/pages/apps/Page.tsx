@@ -100,16 +100,8 @@ const AppsPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
-
 			{!loading && apps.length === 0 && (
-				<SettingsUpload
-					title={t('settings.apps.dropTitle')}
-					description={t('settings.apps.emptyDescription')}
-					busy={importing}
-					busyLabel={t('settings.apps.uploading')}
-					onUpload={(paths) => void handleImport(paths)}
-				/>
+				<SettingsEmptyState icon={LayoutGrid} title={t('settings.apps.empty')} />
 			)}
 
 			{(loading || apps.length > 0) && (
