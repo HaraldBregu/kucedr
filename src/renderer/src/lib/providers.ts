@@ -96,8 +96,8 @@ export function providerModels(providerId: string, type: ModelCapability): Provi
 		}));
 }
 
-// ponytail: OpenRouter only; any OpenAI-compatible provider with a /models endpoint can join
-const LIVE_MODEL_PROVIDER_IDS = new Set(['openrouter']);
+// ponytail: any OpenAI-compatible provider with a /models endpoint can join
+const LIVE_MODEL_PROVIDER_IDS = new Set(['openrouter', 'iteracompute']);
 
 /** Models fetched from the provider's live `/models` endpoint, else the manifest models. */
 export async function liveProviderModels(

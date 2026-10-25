@@ -200,9 +200,8 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const id = this.id(providerId);
 		const provider = loadProviders().find((entry) => entry.id === id);
 		if (!provider?.baseUrl) throw new Error('Unknown provider.');
-		const response = await fetch(new URL('models', `${provider.baseUrl}/`).toString(), {
-			signal: AbortSignal.timeout(10_000),
-		});
+		const url = new URL('models', `${provider.baseUrl}/`).toString();
+		const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
 		if (!response.ok) throw new Error('Could not load models from the provider.');
 		const body = (await response.json()) as { data?: unknown };
 		if (!Array.isArray(body.data)) throw new Error('The provider returned an invalid model list.');
@@ -212,21 +211,22 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 					id?: unknown;
 					name?: unknown;
 					context_length?: unknown;
+					context_window?: unknown;
 					architecture?: { output_modalities?: unknown };
+					pricing?: { parameters?: Record<string, unknown> };
 				};
 				const outputs = model.architecture?.output_modalities;
 				if (typeof model.id !== 'string' || !model.id.trim() || model.id.length > 256) return [];
 				if (Array.isArray(outputs) && !outputs.includes('text')) return [];
-				const contextWindow =
-					typeof model.context_length === 'number' && model.context_length > 0
-						? model.context_length
-						: undefined;
+				if (model.pricing?.parameters?.output_cost_per_image_token !== undefined) return [];
+				const context = model.context_length ?? model.context_window;
+				const contextWindow = typeof context === 'number' && context > 0 ? context : undefined;
 				return [
 					{
 						id: model.id,
 						name: typeof model.name === 'string' && model.name.trim() ? model.name : model.id,
 						metadata: {
-							documentationUrl: `https://openrouter.ai/${model.id}`,
+							documentationUrl: url,
 							promptAttachments: [],
 							inputs: {},
 							...(contextWindow ? { contextWindow } : {}),
