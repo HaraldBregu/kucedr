@@ -32,14 +32,3 @@ export type App = AppManifest & {
 	/** Set when an installed plugin contributes this app. */
 	plugin?: PluginSource;
 };
-
-export interface AppImportSkipped {
-	name: string;
-	sourcePath: string;
-	reason: string;
-}
-
-export interface AppImportResult {
-	imported: App[];
-	skipped: AppImportSkipped[];
-}
