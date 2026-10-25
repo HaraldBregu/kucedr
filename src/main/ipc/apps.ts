@@ -13,7 +13,6 @@ import {
 	writeAppWindowSettings,
 } from '../apps/app_index';
 import { AppsChannels } from '../../shared/ipc_channels_definitions';
-import type { AppImportResult } from '../../shared/installed_app_types';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
 import type { WindowContextManager } from '../window_context';
