@@ -7,7 +7,7 @@ export default function PluginIcon({
 	plugin,
 	className,
 }: {
-	readonly plugin: PluginInfo;
+	readonly plugin: Pick<PluginInfo, 'icon' | 'iconDark'>;
 	readonly className: string;
 }): React.JSX.Element {
 	if (!plugin.icon) {
