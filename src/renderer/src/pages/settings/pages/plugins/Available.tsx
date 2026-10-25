@@ -6,6 +6,7 @@ import type { AvailablePlugin } from '@shared/plugin_types';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SettingsNotice } from '../../components';
+import { SettingsFilter } from '../../components/filter';
 import PluginIcon from './PluginIcon';
 
 export default function Available({
@@ -18,6 +19,8 @@ export default function Available({
 	const [plugins, setPlugins] = useState<AvailablePlugin[] | null>(null);
 	const [installing, setInstalling] = useState<string | null>(null);
 	const [error, setError] = useState('');
+	const [query, setQuery] = useState('');
+	const [category, setCategory] = useState('all');
 
 	useEffect(() => {
 		window.plugins
@@ -38,6 +41,16 @@ export default function Available({
 		}
 	};
 
+	const normalizedQuery = query.trim().toLocaleLowerCase();
+	const categories = [...new Set((plugins ?? []).flatMap((plugin) => plugin.categories))].sort();
+	const visible = (plugins ?? []).filter(
+		(plugin) =>
+			(category === 'all' || plugin.categories.includes(category)) &&
+			[plugin.title, plugin.description, plugin.id, plugin.author].some((value) =>
+				value.toLocaleLowerCase().includes(normalizedQuery)
+			)
+	);
+
 	return (
 		<section className="pb-4">
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
@@ -51,8 +64,17 @@ export default function Available({
 					{t('settings.integrations.marketplace.empty')}
 				</p>
 			)}
+			{plugins && plugins.length > 0 && (
+				<SettingsFilter
+					query={query}
+					onQueryChange={setQuery}
+					categories={categories}
+					category={category}
+					onCategoryChange={setCategory}
+				/>
+			)}
 			<div className="grid grid-cols-1 gap-3">
-				{plugins?.map((plugin) => (
+				{visible.map((plugin) => (
 					<Card
 						key={plugin.id}
 						size="sm"
