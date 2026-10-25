@@ -4,6 +4,9 @@
 export const usage = { calls: 0 };
 // Reasoning models spend thousands of tokens thinking before they answer; 4096 (the host default) leaves no room.
 const MAX_TOKENS = 16000;
+// The seats run in parallel, so busy providers answer some of them with 429 or 5xx; back off and retry like the original.
+const RETRY = /\b(429|500|502|503|529)\b|rate.?limit|capacity|overloaded/i;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export async function text({ system, prompt }) {
   if (!window.models?.text) throw new Error("Open Roast Room in its own window: the in-app view has no model access.");
