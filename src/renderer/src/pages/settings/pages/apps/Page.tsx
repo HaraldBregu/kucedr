@@ -67,40 +67,6 @@ const AppsPage: React.FC = () => {
 		void loadApps();
 	}, [loadApps]);
 
-	const handleImport = useCallback(
-		async (paths?: string[]): Promise<void> => {
-			setImporting(true);
-			setErrorMessage('');
-			setSuccessMessage('');
-			try {
-				const result = await window.apps.import(paths);
-				if (result) {
-					if (result.imported.length > 0) {
-						setSuccessMessage(
-							t('settings.apps.uploaded', {
-								count: String(result.imported.length),
-								skipped: String(result.skipped.length),
-							})
-						);
-						await loadApps();
-					}
-					if (result.skipped.length > 0) {
-						setErrorMessage((current) =>
-							[current, ...result.skipped.map(({ name, reason }) => `${name}: ${reason}`)]
-								.filter(Boolean)
-								.join('\n')
-						);
-					}
-				}
-			} catch (error) {
-				setErrorMessage(getErrorMessage(error, t('settings.apps.uploadError')));
-			} finally {
-				setImporting(false);
-			}
-		},
-		[loadApps, t]
-	);
-
 	const openApp = useOpenApp();
 	const handleOpen = useCallback(
 		async (app: App): Promise<void> => {
