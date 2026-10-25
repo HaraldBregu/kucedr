@@ -42,25 +42,27 @@ export default function Available({
 			</h2>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{plugins === null && !error && (
-				<p className="text-sm text-muted-foreground">{t('settings.integrations.available.loading')}</p>
+				<p className="text-sm text-muted-foreground">
+					{t('settings.integrations.available.loading')}
+				</p>
 			)}
 			{plugins?.length === 0 && (
-				<p className="text-sm text-muted-foreground">{t('settings.integrations.available.empty')}</p>
+				<p className="text-sm text-muted-foreground">
+					{t('settings.integrations.available.empty')}
+				</p>
 			)}
 			<div className="grid grid-cols-1 gap-3">
 				{plugins?.map((plugin) => (
 					<Card key={plugin.id} size="sm" className="h-22">
-						<CardHeader className="flex items-start gap-3">
-							<PluginIcon plugin={plugin} className="size-8" />
+						<CardHeader className="flex flex-1 items-center gap-3">
+							<PluginIcon plugin={plugin} className="size-12" />
 							<div className="flex min-w-0 flex-1 flex-col gap-1">
 								<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
 									<span className="truncate">{plugin.title}</span>
-									<span className="text-xs font-normal text-muted-foreground">
-										{plugin.version}
-									</span>
 								</CardTitle>
 								<CardDescription className="line-clamp-2">{plugin.description}</CardDescription>
 							</div>
+							<span className="shrink-0 text-xs text-muted-foreground">{plugin.version}</span>
 							<Button
 								type="button"
 								size="sm"
