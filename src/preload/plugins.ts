@@ -15,9 +15,6 @@ export const plugins: PluginsApi = {
 	installCatalog: (id: string) => {
 		return typedInvokeUnwrap(PluginsChannels.installCatalog, id);
 	},
-	upload: (path) => {
-		return typedInvokeUnwrap(PluginsChannels.upload, path);
-	},
 	remove: (id: string) => {
 		return typedInvokeUnwrap(PluginsChannels.remove, id);
 	},
