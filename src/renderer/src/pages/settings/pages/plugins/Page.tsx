@@ -9,6 +9,7 @@ const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
 	const [successMessage, setSuccessMessage] = useState('');
 	const [version, setVersion] = useState(0);
+	const [searchParams, setSearchParams] = useSearchParams();
 
 	return (
 		<SettingsPageShell>
