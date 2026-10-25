@@ -1,7 +1,8 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { ModelProviderSelect, type ModelProviderGroup } from '@/components/model-provider-select';
-import { providerIdsFor, providerModels, providers } from '@/lib/providers';
+import { ModelProviderSelect } from '@/components/model-provider-select';
+import { liveProviderModels, providerIdsFor, providerModels, providers } from '@/lib/providers';
 import { modelContextWindow } from '@shared/model_context';
+import type { ProviderModel } from '@shared/model_types';
 import { welcomeMessage } from './context';
 import type { HomeChatMessage } from './context/state';
 import { Usage } from './Usage';
@@ -15,7 +16,7 @@ export function Model({
 	draft?: string;
 	hasAttachments?: boolean;
 }): ReactElement {
-	const [groups, setGroups] = useState<ModelProviderGroup[]>([]);
+	const [groups, setGroups] = useState<{ id: string; models: ProviderModel[] }[]>([]);
 	const [providerId, setProviderId] = useState('');
 	const [modelId, setModelId] = useState('');
 	const [localProvider, setLocalProvider] =
@@ -53,10 +54,12 @@ export function Model({
 					window.provider?.list('models').catch(() => []) ?? Promise.resolve([]),
 				]);
 				const custom = configuredProviders.find((provider) => provider.id === 'custom');
-				const catalogGroups = providerIdsFor('llm').map((id) => ({
-					id,
-					models: providerModels(id, 'llm'),
-				}));
+				const catalogGroups = await Promise.all(
+					providerIdsFor('llm').map(async (id) => ({
+						id,
+						models: await liveProviderModels(id, providerModels(id, 'llm')),
+					}))
+				);
 				if (custom) {
 					const models = await window.provider
 						.listCustomModels({ baseUrl: custom.baseUrl, apiKey: custom.apiKey })
@@ -127,7 +130,9 @@ export function Model({
 					contextWindow={
 						localContextWindow ??
 						modelContextWindow(
-							providerModels(providerId, 'llm').find((model) => model.id === modelId)?.metadata
+							groups
+								.find((group) => group.id === providerId)
+								?.models.find((model) => model.id === modelId)?.metadata
 						)
 					}
 					messages={messages}

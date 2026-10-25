@@ -96,6 +96,19 @@ export function providerModels(providerId: string, type: ModelCapability): Provi
 		}));
 }
 
+// ponytail: OpenRouter only; any OpenAI-compatible provider with a /models endpoint can join
+const LIVE_MODEL_PROVIDER_IDS = new Set(['openrouter']);
+
+/** Models fetched from the provider's live `/models` endpoint, else the manifest models. */
+export async function liveProviderModels(
+	providerId: string,
+	fallback: ProviderModel[]
+): Promise<ProviderModel[]> {
+	if (!LIVE_MODEL_PROVIDER_IDS.has(providerId)) return fallback;
+	const models = await window.provider.listModels(providerId).catch(() => []);
+	return models.length > 0 ? models : fallback;
+}
+
 /** Provider marked `default` for a capability, else the first one declaring it. */
 export function defaultProviderId(type: ModelCapability): string | undefined {
 	const typed = modelsFor(type);

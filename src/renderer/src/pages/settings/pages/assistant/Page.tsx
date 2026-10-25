@@ -14,7 +14,7 @@ import {
 	Wrench,
 } from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
-import { providerIdsFor, providerModels } from '@/lib/providers';
+import { liveProviderModels, providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import { updateModelOptions } from '@/lib/options';
@@ -68,11 +68,14 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 		const provider = getCatalogProviderById(providerId);
 		return provider && getProviderLlmModels(providerId).length > 0 ? [provider] : [];
 	});
-	const modelGroups: ProviderModelGroup[] = [...providers, localModelProvider()].map(
-		(provider) => ({
+	const modelGroups: ProviderModelGroup[] = await Promise.all(
+		[...providers, localModelProvider()].map(async (provider) => ({
 			provider,
-			models: provider.id === 'ollama' ? [] : getProviderLlmModels(provider.id),
-		})
+			models:
+				provider.id === 'ollama'
+					? []
+					: await liveProviderModels(provider.id, getProviderLlmModels(provider.id)),
+		}))
 	);
 	const preferredGroup =
 		modelGroups.find((group) => group.provider.id === storedProviderId) ?? modelGroups[0];

@@ -351,6 +351,7 @@ export const ProviderChannels = {
 	remove: 'provider-store:remove',
 	list: 'provider-store:list',
 	listCustomModels: 'provider-store:custom:models:list',
+	listModels: 'provider-store:models:list',
 	getChannel: 'provider-store:channel:get',
 	setChannel: 'provider-store:channel:set',
 	listChannels: 'provider-store:channel:list',

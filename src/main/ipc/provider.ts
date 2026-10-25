@@ -11,6 +11,7 @@ import type {
 	PluginProviderKind,
 	StoredProvider,
 } from '../../shared/provider_types';
+import type { ProviderModel } from '../../shared/model_types';
 import { ProviderStoreChannels } from '../../shared/ipc_channels_definitions';
 import {
 	getChannelProvider,
@@ -84,6 +85,10 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		registerQueryWithEvent(ProviderStoreChannels.listCustomModels, async (event, value) => {
 			trusted.assert(event);
 			return this.listCustomModels(value);
+		});
+		registerQueryWithEvent(ProviderStoreChannels.listModels, async (event, providerId) => {
+			trusted.assert(event);
+			return this.listModels(providerId);
 		});
 		registerQueryWithEvent(ProviderStoreChannels.getChannel, (event, id) => {
 			trusted.assert(event);
@@ -189,6 +194,47 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 					.map((id) => id.trim())
 			),
 		].sort((left, right) => left.localeCompare(right));
+	}
+
+	private async listModels(providerId: unknown): Promise<ProviderModel[]> {
+		const id = this.id(providerId);
+		const provider = loadProviders().find((entry) => entry.id === id);
+		if (!provider?.baseUrl) throw new Error('Unknown provider.');
+		const response = await fetch(new URL('models', `${provider.baseUrl}/`).toString(), {
+			signal: AbortSignal.timeout(10_000),
+		});
+		if (!response.ok) throw new Error('Could not load models from the provider.');
+		const body = (await response.json()) as { data?: unknown };
+		if (!Array.isArray(body.data)) throw new Error('The provider returned an invalid model list.');
+		return body.data
+			.flatMap((entry): ProviderModel[] => {
+				const model = (entry ?? {}) as {
+					id?: unknown;
+					name?: unknown;
+					context_length?: unknown;
+					architecture?: { output_modalities?: unknown };
+				};
+				const outputs = model.architecture?.output_modalities;
+				if (typeof model.id !== 'string' || !model.id.trim() || model.id.length > 256) return [];
+				if (Array.isArray(outputs) && !outputs.includes('text')) return [];
+				const contextWindow =
+					typeof model.context_length === 'number' && model.context_length > 0
+						? model.context_length
+						: undefined;
+				return [
+					{
+						id: model.id,
+						name: typeof model.name === 'string' && model.name.trim() ? model.name : model.id,
+						metadata: {
+							documentationUrl: `https://openrouter.ai/${model.id}`,
+							promptAttachments: [],
+							inputs: {},
+							...(contextWindow ? { contextWindow } : {}),
+						},
+					},
+				];
+			})
+			.sort((left, right) => left.name.localeCompare(right.name));
 	}
 
 	private channelInput(value: unknown): ChannelCredentialSaveInput {
