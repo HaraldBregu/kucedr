@@ -42,7 +42,7 @@ export async function downloadPlugin(url: string, integrity?: string): Promise<P
 	const temporary = await mkdtemp(path.join(os.tmpdir(), 'kucedr-plugin-download-'));
 	try {
 		const file = path.join(temporary, 'plugin.tgz');
-		await writeFile(file, Buffer.concat(chunks));
+		await writeFile(file, archive);
 		return await installPluginArchive(file);
 	} finally {
 		await rm(temporary, { recursive: true, force: true });
