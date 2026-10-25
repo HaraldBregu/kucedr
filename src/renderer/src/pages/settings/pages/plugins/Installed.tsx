@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MoreHorizontal, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Power, PowerOff, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PluginInfo } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
