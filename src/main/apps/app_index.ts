@@ -8,7 +8,6 @@ export { loadApp } from './app_load';
 export { readAppManifest } from './app_read';
 export { readAppManifestFromDirectory } from './app_read';
 export { writeAppWindowSettings } from './app_write';
-export { importApps } from './app_import';
 export { addDebugApp } from './app_debug_add';
 export { openRoot } from './app_open_root';
 export { watchApps } from './app_watch';
