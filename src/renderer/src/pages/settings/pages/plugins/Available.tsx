@@ -14,6 +14,7 @@ export default function Available({
 	readonly onInstalled: (name: string) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [plugins, setPlugins] = useState<AvailablePlugin[] | null>(null);
 	const [installing, setInstalling] = useState<string | null>(null);
 	const [error, setError] = useState('');
