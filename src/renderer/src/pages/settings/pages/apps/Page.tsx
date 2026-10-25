@@ -31,9 +31,7 @@ const AppsPage: React.FC = () => {
 	const [apps, setApps] = useState<App[]>([]);
 	const [pluginAuthors, setPluginAuthors] = useState<Map<string, string>>(new Map());
 	const [loading, setLoading] = useState(true);
-	const [importing, setImporting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
-	const [successMessage, setSuccessMessage] = useState('');
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
 	const [query, setQuery] = useState('');
 	const [category, setCategory] = useState('all');
