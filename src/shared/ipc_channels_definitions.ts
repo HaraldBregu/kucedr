@@ -161,12 +161,11 @@ export const SkillsChannels = {
 export const PluginsChannels = {
 	list: 'plugins:list',
 	installUrl: 'plugins:install-url',
+	available: 'plugins:available',
+	installCatalog: 'plugins:install-catalog',
 	upload: 'plugins:upload',
 	remove: 'plugins:remove',
 	setEnabled: 'plugins:set-enabled',
-	listExtensions: 'plugins:list-extensions',
-	importExtensions: 'plugins:import-extensions',
-	removeExtension: 'plugins:remove-extension',
 	getSettings: 'plugins:get-settings',
 	saveSettings: 'plugins:save-settings',
 } as const;
@@ -467,6 +466,9 @@ export const AppsChannels = {
 	import: 'apps:import',
 	addDebug: 'apps:add-debug',
 	selectDebugPath: 'apps:select-debug-path',
+	getStoreValue: 'apps:store:value:get',
+	setStoreValue: 'apps:store:value:set',
+	deleteStoreValue: 'apps:store:value:delete',
 } as const;
 
 export const WindowChannels = {
