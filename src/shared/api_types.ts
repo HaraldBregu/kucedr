@@ -31,7 +31,7 @@ import type {
 } from './mcp_types';
 import type { DriveCreateInput, DriveFile, DriveSyncResult, DriveUpdateInput } from './drive_types';
 import type { App, AppImportResult } from './installed_app_types';
-import type { ExtensionImportResult, PluginExtension, PluginInfo } from './plugin_types';
+import type { PluginInfo } from './plugin_types';
 import type { TaskRuntime, TaskSchedule, TaskScheduledTask } from '../main/tasks/tasks_types';
 import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
@@ -113,7 +113,7 @@ import type {
 } from './app_types';
 import type { ContextMenuDescriptor, AppNavigationBarOptions } from './window_types';
 import type { WorkspaceAsset } from './workspace';
-import type { AppStorageApi } from './app_store_types';
+import type { AppStorageApi, AppStoreValue } from './app_store_types';
 import type { SandboxStatus } from './sandbox';
 import type { CoderLayout } from './coder_layout';
 import type {
@@ -369,12 +369,11 @@ export interface SkillsApi {
 export interface PluginsApi {
 	list: () => Promise<PluginInfo[]>;
 	installUrl: (url: string) => Promise<PluginInfo>;
+	available: () => Promise<AvailablePlugin[]>;
+	installCatalog: (id: string) => Promise<PluginInfo>;
 	upload: (path?: string) => Promise<PluginInfo | undefined>;
 	remove: (id: string) => Promise<void>;
 	setEnabled: (id: string, enabled: boolean) => Promise<void>;
-	listExtensions: () => Promise<PluginExtension[]>;
-	importExtensions: (paths?: string[]) => Promise<ExtensionImportResult | undefined>;
-	removeExtension: (id: string) => Promise<boolean>;
 	getSettings: (id: string) => Promise<Record<string, string>>;
 	saveSettings: (id: string, values: Record<string, string>) => Promise<void>;
 }
@@ -470,6 +469,9 @@ export interface AppsApi {
 	import: (paths?: string[]) => Promise<AppImportResult | undefined>;
 	addDebug: (folderPath: string) => Promise<App>;
 	selectDebugPath: () => Promise<string | undefined>;
+	getStoreValue: (appId: string, key: string) => Promise<AppStoreValue | undefined>;
+	setStoreValue: (appId: string, key: string, value: AppStoreValue) => Promise<void>;
+	deleteStoreValue: (appId: string, key: string) => Promise<void>;
 }
 
 export interface SearchApi {
