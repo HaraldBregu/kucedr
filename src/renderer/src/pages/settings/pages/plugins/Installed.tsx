@@ -118,22 +118,10 @@ export default function Installed(): React.JSX.Element {
 									onClick={(event) => event.stopPropagation()}
 									onKeyDown={(event) => event.stopPropagation()}
 								>
-									{!plugin.core && (
-										<Button
-											type="button"
-											size="sm"
-											variant={plugin.enabled ? 'outline' : 'default'}
-											disabled={busy || Boolean(plugin.error)}
-											onClick={() =>
-												void run(() => window.plugins.setEnabled(plugin.id, !plugin.enabled))
-											}
-										>
-											{plugin.enabled
-												? t('settings.integrations.installed.disable')
-												: t('settings.integrations.installed.enableAction')}
-										</Button>
+									{plugin.version && (
+										<span className="text-xs text-muted-foreground">{plugin.version}</span>
 									)}
-									{!plugin.builtIn && (
+									{!plugin.core && (
 										<DropdownMenu>
 											<DropdownMenuTrigger asChild>
 												<Button
@@ -146,10 +134,23 @@ export default function Installed(): React.JSX.Element {
 												</Button>
 											</DropdownMenuTrigger>
 											<DropdownMenuContent align="end">
-												<DropdownMenuItem onSelect={() => setPendingRemoval(plugin)}>
-													<Trash2 />
-													{t('settings.integrations.remove', { name: plugin.name })}
+												<DropdownMenuItem
+													disabled={Boolean(plugin.error)}
+													onSelect={() =>
+														void run(() => window.plugins.setEnabled(plugin.id, !plugin.enabled))
+													}
+												>
+													{plugin.enabled ? <PowerOff /> : <Power />}
+													{plugin.enabled
+														? t('settings.integrations.installed.disable')
+														: t('settings.integrations.installed.enableAction')}
 												</DropdownMenuItem>
+												{!plugin.builtIn && (
+													<DropdownMenuItem onSelect={() => setPendingRemoval(plugin)}>
+														<Trash2 />
+														{t('settings.integrations.remove', { name: plugin.name })}
+													</DropdownMenuItem>
+												)}
 											</DropdownMenuContent>
 										</DropdownMenu>
 									)}
