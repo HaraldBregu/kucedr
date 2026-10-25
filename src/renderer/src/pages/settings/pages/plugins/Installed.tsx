@@ -75,7 +75,6 @@ export default function Installed(): React.JSX.Element {
 					onCategoryChange={setCategory}
 				/>
 				<div className="grid grid-cols-1 gap-3">
-					{upload}
 					{visible.map((plugin) => (
 						<Card
 							key={plugin.id}
