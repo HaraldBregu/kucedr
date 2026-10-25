@@ -163,7 +163,6 @@ export const PluginsChannels = {
 	installUrl: 'plugins:install-url',
 	available: 'plugins:available',
 	installCatalog: 'plugins:install-catalog',
-	upload: 'plugins:upload',
 	remove: 'plugins:remove',
 	setEnabled: 'plugins:set-enabled',
 	getSettings: 'plugins:get-settings',
