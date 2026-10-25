@@ -3,6 +3,7 @@ import { AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SettingsNotice, SettingsPageHeader, SettingsPageShell } from '../../components';
 import { SettingsUpload } from '../../components/upload';
+import Available from './Available';
 import Installed from './Installed';
 
 const PluginsPage = (): React.JSX.Element => {
