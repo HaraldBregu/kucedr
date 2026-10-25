@@ -88,20 +88,6 @@ export class AppsIpc implements IpcModule<AppsIpcDeps> {
 			deleteApp(appId);
 			return true;
 		});
-		registerCommandWithEvent(
-			AppsChannels.import,
-			async (event, paths?: string[]): Promise<AppImportResult | undefined> => {
-				const window = trusted.assert(event);
-				if (paths?.length) return importApps(paths);
-				const result = await dialog.showOpenDialog(window, {
-					title: 'Select app folder(s)',
-					properties: ['openDirectory', 'multiSelections'],
-				});
-
-				if (result.canceled || result.filePaths.length === 0) return undefined;
-				return importApps(result.filePaths);
-			}
-		);
 		registerCommandWithEvent(AppsChannels.addDebug, (event, folderPath) => {
 			trusted.assert(event);
 			return addDebugApp(folderPath);
