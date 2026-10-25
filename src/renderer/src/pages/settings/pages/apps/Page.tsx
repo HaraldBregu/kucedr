@@ -122,14 +122,6 @@ const AppsPage: React.FC = () => {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3">
-							<SettingsUpload
-								title={t('settings.apps.addTitle')}
-								description={t('settings.apps.dropTitle')}
-								busy={importing}
-								busyLabel={t('settings.apps.uploading')}
-								onUpload={(paths) => void handleImport(paths)}
-								className="h-22 flex-row items-center gap-3 px-4 py-0 text-left"
-							/>
 							{visibleApps.map((app) => (
 								<Card
 									key={app.id}
