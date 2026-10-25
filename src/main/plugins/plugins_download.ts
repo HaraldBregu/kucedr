@@ -6,7 +6,7 @@ import { installPluginArchive } from './plugins_install_archive';
 
 const MAX_DOWNLOAD_BYTES = 200 * 1024 * 1024;
 
-export async function downloadPlugin(url: string): Promise<PluginInfo> {
+export async function downloadPlugin(url: string, integrity?: string): Promise<PluginInfo> {
 	let target: URL;
 	try {
 		target = new URL(url.trim());
