@@ -61,6 +61,14 @@ const PluginsPage = (): React.JSX.Element => {
 					/>
 				}
 			/>
+			<Available
+				key={`available-${version}`}
+				onInstalled={(name) => {
+					setErrorMessage('');
+					setSuccessMessage(t('settings.integrations.uploaded', { name }));
+					setVersion((current) => current + 1);
+				}}
+			/>
 		</SettingsPageShell>
 	);
 };
