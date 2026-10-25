@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tag, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { AvailablePlugin } from '@shared/plugin_types';
 import { Button } from '@/components/ui/button';
