@@ -93,15 +93,15 @@ export default function Installed(): React.JSX.Element {
 								}
 							}}
 						>
-							<CardHeader className="flex items-start gap-3">
-								<PluginIcon plugin={plugin} className="size-8" />
+							<CardHeader className="flex flex-1 items-center gap-3">
+								<PluginIcon plugin={plugin} className="size-12" />
 								<div className="flex min-w-0 flex-1 flex-col gap-1">
 									<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
 										<span className="truncate">{plugin.name}</span>
-										{plugin.version && (
-											<span className="text-xs font-normal text-muted-foreground">
-												{plugin.version}
-											</span>
+										{!plugin.enabled && (
+											<Badge variant="secondary">
+												{t('settings.integrations.installed.disabled')}
+											</Badge>
 										)}
 										{plugin.error && (
 											<Badge variant="destructive">
