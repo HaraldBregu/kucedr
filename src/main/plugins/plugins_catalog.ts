@@ -15,6 +15,7 @@ const catalogSchema = z.object({
 			author: z.string().optional(),
 			categories: z.array(z.string()).default([]),
 			icon: httpsUrl.optional(),
+			iconDark: httpsUrl.optional(),
 			version: pluginVersionSchema,
 			minAppVersion: pluginVersionSchema.optional(),
 			url: httpsUrl,
