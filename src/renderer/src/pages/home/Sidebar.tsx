@@ -243,26 +243,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 												}}
 												onContextMenu={(event) => {
 													event.preventDefault();
-													void window.win
-												.showContextMenu([
-													{ id: 'rename', label: t('common.rename', 'Rename') },
-													{ id: 'clear', label: t('settings.chatHistory.clear') },
-													{ id: 'compact', label: t('settings.chatHistory.compact') },
-													{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
-													{ id: 'delete', label: t('common.delete', 'Delete') },
-												])
-														.then((action) => {
-															if (action === 'rename') {
-																setEditingTitle(title);
-														setEditingSessionId(session.id);
-													}
-													if (action === 'open-location') {
-														void window.agent.openSessionFolder(session.id);
-													}
-													if (action === 'clear' || action === 'compact')
-														setPendingAction({ action, id: session.id, title });
-													if (action === 'delete') deleteSession(session.id, title, isActive);
-														});
+													openMenu();
 												}}
 											>
 											{session.runStatus || isCompacting ? (
