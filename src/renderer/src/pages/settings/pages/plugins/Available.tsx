@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Tag, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { AvailablePlugin } from '@shared/plugin_types';
 import { Button } from '@/components/ui/button';
@@ -36,10 +37,7 @@ export default function Available({
 	};
 
 	return (
-		<section className="pb-4" aria-labelledby="available-plugins-title">
-			<h2 id="available-plugins-title" className="mb-2 text-sm font-medium">
-				{t('settings.integrations.available.title')}
-			</h2>
+		<section className="pb-4">
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{plugins === null && !error && (
 				<p className="text-sm text-muted-foreground">
@@ -53,28 +51,57 @@ export default function Available({
 			)}
 			<div className="grid grid-cols-1 gap-3">
 				{plugins?.map((plugin) => (
-					<Card key={plugin.id} size="sm" className="h-22">
+					<Card
+						key={plugin.id}
+						size="sm"
+						role="link"
+						tabIndex={0}
+						className="cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
+						onClick={() => navigate(`/settings/plugins/marketplace/${plugin.id}`)}
+						onKeyDown={(event) => {
+							if (
+								event.target === event.currentTarget &&
+								(event.key === 'Enter' || event.key === ' ')
+							) {
+								event.preventDefault();
+								navigate(`/settings/plugins/marketplace/${plugin.id}`);
+							}
+						}}
+					>
 						<CardHeader className="flex flex-1 items-center gap-3">
 							<PluginIcon plugin={plugin} className="size-12" />
 							<div className="flex min-w-0 flex-1 flex-col gap-1">
-								<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
-									<span className="truncate">{plugin.title}</span>
-								</CardTitle>
-								<CardDescription className="line-clamp-2">{plugin.description}</CardDescription>
+								<div className="flex items-center gap-2">
+									<CardTitle className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+										<span className="truncate">{plugin.title}</span>
+									</CardTitle>
+									<Button
+										type="button"
+										size="sm"
+										disabled={installing !== null}
+										onClick={() => void install(plugin)}
+									>
+										{installing === plugin.id
+											? t('settings.integrations.installed.installing')
+											: plugin.update
+												? t('settings.integrations.available.update')
+												: t('settings.integrations.installed.install')}
+									</Button>
+								</div>
+								<CardDescription className="line-clamp-1">{plugin.description}</CardDescription>
+								<div className="flex items-center gap-3 text-xs text-muted-foreground">
+									<span className="flex items-center gap-1">
+										<User className="size-3" aria-hidden="true" />
+										<span className="sr-only">{t('settings.integrations.plugin.author')}</span>
+										{plugin.author}
+									</span>
+									<span className="flex items-center gap-1">
+										<Tag className="size-3" aria-hidden="true" />
+										<span className="sr-only">{t('settings.integrations.plugin.version')}</span>
+										{plugin.version}
+									</span>
+								</div>
 							</div>
-							<span className="shrink-0 text-xs text-muted-foreground">{plugin.version}</span>
-							<Button
-								type="button"
-								size="sm"
-								disabled={installing !== null}
-								onClick={() => void install(plugin)}
-							>
-								{installing === plugin.id
-									? t('settings.integrations.installed.installing')
-									: plugin.update
-										? t('settings.integrations.available.update')
-										: t('settings.integrations.installed.install')}
-							</Button>
 						</CardHeader>
 					</Card>
 				))}
