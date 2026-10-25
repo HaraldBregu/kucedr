@@ -249,7 +249,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 												aria-current={isActive ? 'page' : undefined}
 												className={cn(
 													SPLIT_ITEM_CLASS,
-													'h-7 min-w-0 flex-1 text-muted-foreground',
+													'h-7 min-w-0 flex-1 pr-7 text-muted-foreground',
 													isActive && SPLIT_ITEM_ACTIVE_CLASS
 												)}
 												data-run-status={session.runStatus}
