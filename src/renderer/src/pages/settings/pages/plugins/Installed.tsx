@@ -141,7 +141,7 @@ export default function Installed(): React.JSX.Element {
 														{!plugin.builtIn && (
 															<DropdownMenuItem onSelect={() => setPendingRemoval(plugin)}>
 																<Trash2 />
-																{t('settings.integrations.remove', { name: plugin.name })}
+																{t('settings.integrations.uninstall', { name: plugin.name })}
 															</DropdownMenuItem>
 														)}
 													</DropdownMenuContent>

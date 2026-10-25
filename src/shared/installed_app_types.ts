@@ -18,6 +18,7 @@ export type AppManifest = {
 	title: string;
 	handle?: string;
 	description: string;
+	author?: string;
 	/** Defaults to `extension`. */
 	mode?: AppMode;
 	metadata: AppMetadata;

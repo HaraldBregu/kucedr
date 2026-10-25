@@ -15,6 +15,8 @@ export function isAppManifest(value: unknown): value is AppManifest {
 			(typeof manifest.handle === 'string' && /^@[a-z0-9][a-z0-9._-]*$/i.test(manifest.handle))) &&
 		typeof manifest.description === 'string' &&
 		manifest.description.trim().length > 0 &&
+		(manifest.author === undefined ||
+			(typeof manifest.author === 'string' && manifest.author.trim().length > 0)) &&
 		(manifest.mode === undefined || (APP_MODES as readonly unknown[]).includes(manifest.mode)) &&
 		Boolean(metadata) &&
 		typeof metadata === 'object' &&

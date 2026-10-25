@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Tag, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,6 +29,7 @@ const AppsPage: React.FC = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [apps, setApps] = useState<App[]>([]);
+	const [pluginAuthors, setPluginAuthors] = useState<Map<string, string>>(new Map());
 	const [loading, setLoading] = useState(true);
 	const [importing, setImporting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
@@ -50,7 +51,11 @@ const AppsPage: React.FC = () => {
 		setLoading(true);
 		setErrorMessage('');
 		try {
-			setApps(await window.apps.list());
+			const [list, plugins] = await Promise.all([window.apps.list(), window.plugins.list()]);
+			setApps(list);
+			setPluginAuthors(
+				new Map(plugins.flatMap((plugin) => (plugin.author ? [[plugin.id, plugin.author]] : [])))
+			);
 		} catch {
 			setErrorMessage(t('settings.apps.loadError'));
 		} finally {
@@ -173,7 +178,7 @@ const AppsPage: React.FC = () => {
 									size="sm"
 									role="link"
 									tabIndex={0}
-									className="h-22 cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
+									className="cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
 									onClick={() => navigate(`/settings/apps/${encodeURIComponent(app.id)}`)}
 									onKeyDown={(event) => {
 										if (
@@ -185,34 +190,49 @@ const AppsPage: React.FC = () => {
 										}
 									}}
 								>
-									<CardHeader className="flex items-start gap-3">
-										<AppIcon app={app} className="size-8" />
+									<CardHeader className="flex flex-1 items-center gap-3">
+										<AppIcon app={app} className="size-12" />
 										<div className="flex min-w-0 flex-1 flex-col gap-1">
-											<CardTitle className="flex min-w-0 flex-wrap items-center gap-2">
-												<span className="truncate">{app.title}</span>
-												<span className="text-xs font-normal text-muted-foreground">
+											<div className="flex items-center gap-2">
+												<CardTitle className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+													<span className="truncate">{app.title}</span>
+													{import.meta.env.DEV && app.debugPath && (
+														<Badge variant="outline">{t('settings.apps.debug.badge')}</Badge>
+													)}
+												</CardTitle>
+												<Button
+													type="button"
+													size="sm"
+													variant="outline"
+													disabled={importing || openingAppId === app.id}
+													onClick={(event) => {
+														event.stopPropagation();
+														void handleOpen(app);
+													}}
+													onKeyDown={(event) => event.stopPropagation()}
+												>
+													{t('settings.apps.open')}
+												</Button>
+											</div>
+											<CardDescription className="line-clamp-1">{app.description}</CardDescription>
+											<div className="flex items-center gap-3 text-xs text-muted-foreground">
+												<span className="flex items-center gap-1">
+													<Tag className="size-3" aria-hidden="true" />
+													<span className="sr-only">
+														{t('settings.integrations.plugin.version')}
+													</span>
 													{app.metadata.version}
 												</span>
-												{import.meta.env.DEV && app.debugPath && (
-													<Badge variant="outline">{t('settings.apps.debug.badge')}</Badge>
+												{(app.author ?? pluginAuthors.get(app.plugin?.id ?? '')) && (
+													<span className="flex items-center gap-1">
+														<User className="size-3" aria-hidden="true" />
+														<span className="sr-only">
+															{t('settings.integrations.plugin.author')}
+														</span>
+														{app.author ?? pluginAuthors.get(app.plugin?.id ?? '')}
+													</span>
 												)}
-											</CardTitle>
-											<CardDescription className="line-clamp-2">{app.description}</CardDescription>
-										</div>
-										<div
-											className="flex shrink-0 items-center gap-1"
-											onClick={(event) => event.stopPropagation()}
-											onKeyDown={(event) => event.stopPropagation()}
-										>
-											<Button
-												type="button"
-												size="sm"
-												variant="outline"
-												disabled={importing || openingAppId === app.id}
-												onClick={() => void handleOpen(app)}
-											>
-												{t('settings.apps.open')}
-											</Button>
+											</div>
 										</div>
 									</CardHeader>
 								</Card>
