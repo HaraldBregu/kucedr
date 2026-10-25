@@ -152,7 +152,7 @@ const AppsPage: React.FC = () => {
 													type="button"
 													size="sm"
 													variant="outline"
-													disabled={importing || openingAppId === app.id}
+													disabled={openingAppId === app.id}
 													onClick={(event) => {
 														event.stopPropagation();
 														void handleOpen(app);
