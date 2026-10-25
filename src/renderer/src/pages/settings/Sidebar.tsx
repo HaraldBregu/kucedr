@@ -57,17 +57,15 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		],
 	},
 	{
-		id: 'bot',
-		titleKey: 'settings.overview.groups.bot',
-		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/channels', '/settings/remote-agent'].includes(item.path)
-		),
-	},
-	{
 		id: 'extensions',
 		titleKey: 'settings.overview.groups.extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/plugins', '/settings/apps', '/settings/extensions'].includes(item.path)
+			[
+				'/settings/channels',
+				'/settings/remote-agent',
+				'/settings/plugins',
+				'/settings/apps',
+			].includes(item.path)
 		),
 	},
 ] as const;
