@@ -45,12 +45,6 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			changed();
 			return installed;
 		});
-		registerCommandWithEvent(PluginsChannels.upload, async (event, path?: string) => {
-			trusted.assert(event);
-			const installed = await plugins.uploadPlugin(path);
-			if (installed) changed();
-			return installed;
-		});
 		registerCommandWithEvent(PluginsChannels.remove, async (event, id: string) => {
 			trusted.assert(event);
 			await plugins.removePlugin(id);
