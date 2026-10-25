@@ -41,6 +41,8 @@ export interface CatalogPlugin {
 	readonly categories: readonly string[];
 	/** An https URL. */
 	readonly icon?: string;
+	/** The icon shown in dark mode, as an https URL. */
+	readonly iconDark?: string;
 	readonly version: string;
 	readonly minAppVersion?: string;
 	readonly url: string;
