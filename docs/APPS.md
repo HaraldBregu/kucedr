@@ -1,6 +1,6 @@
 # Apps
 
-Kucedr runs installable local HTML applications inside the main window (extension mode) or in dedicated desktop windows, as each app's manifest allows. Manage them in **Settings → Apps**. This repository does not contain bundled app source folders. Build an app in a separate project, then import its built folder or register it as a debug app.
+Kucedr runs installable local HTML applications inside the main window (extension mode) or in dedicated desktop windows, as each app's manifest allows. Manage them in **Settings → Apps**. This repository does not contain bundled app source folders. Apps are installed by plugins from the marketplace in **Settings → Plugins**; during development, register a built app folder as a debug app.
 
 The Workspace file browser is part of the main Kucedr window. Open it at `/workspace` or from **Settings → Workspace**; it is not installed through Settings → Apps. The Coding entry is marked **Soon**, and its old route redirects to Workspace.
 
