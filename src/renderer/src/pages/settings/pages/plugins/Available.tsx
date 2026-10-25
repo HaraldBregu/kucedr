@@ -79,7 +79,11 @@ export default function Available({
 										type="button"
 										size="sm"
 										disabled={installing !== null}
-										onClick={() => void install(plugin)}
+										onClick={(event) => {
+											event.stopPropagation();
+											void install(plugin);
+										}}
+										onKeyDown={(event) => event.stopPropagation()}
 									>
 										{installing === plugin.id
 											? t('settings.integrations.installed.installing')
