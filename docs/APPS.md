@@ -6,13 +6,11 @@ The Workspace file browser is part of the main Kucedr window. Open it at `/works
 
 ## Install, open, and remove an app
 
-1. Obtain an app folder containing a valid `manifest.json` or supported `package.json`, plus its built entry file.
-2. In **Settings → Apps**, open the page action menu and choose the upload action. The native folder picker accepts multiple folders.
-3. Check the reported import result. Invalid folders are skipped with a reason.
-4. Use **Open** on the app card to open it in its default mode. Click the card for **Details**: app information, mode, and window settings for `window` apps.
-5. Use the card's delete action to remove an installed app. Confirming deletion permanently removes its installed folder and app-scoped stored data.
+1. Install a plugin that contains the app from **Settings → Plugins → Marketplace**. Its apps appear in **Settings → Apps**.
+2. Use **Open** on the app card to open it in its default mode. Click the card for **Details**: app information, mode, and window settings for `window` apps.
+3. Use the card's delete action to remove an installed app. Confirming deletion permanently removes its installed folder and app-scoped stored data.
 
-The importer copies each folder into `~/.kucedr/apps/<id>`, excluding `node_modules`. The folder name becomes the ID and must begin with an alphanumeric character, followed only by alphanumeric characters, underscores, or hyphens. Importing an existing ID replaces its application files while preserving its existing `data` directory. Data shipped in the source folder is not imported. A source folder that is already the installed destination is skipped.
+An app's folder name is its ID and must begin with an alphanumeric character, followed only by alphanumeric characters, underscores, or hyphens. Each card shows the app's version and author; the author comes from the app manifest's optional `author`, or from the plugin that provides the app.
 
 **Open folder** opens the managed apps directory; **Refresh** reloads the inventory. Opening an already open app focuses its existing window.
 
