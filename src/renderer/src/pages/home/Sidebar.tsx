@@ -189,8 +189,30 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 								const title = session.title.trim() || t('settings.chatHistory.untitled');
 								const isActive = session.id === currentSessionId;
 								const isCompacting = compactingSessionId === session.id;
+								const openMenu = (): void => {
+									void window.win
+										.showContextMenu([
+											{ id: 'rename', label: t('common.rename', 'Rename') },
+											{ id: 'clear', label: t('settings.chatHistory.clear') },
+											{ id: 'compact', label: t('settings.chatHistory.compact') },
+											{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
+											{ id: 'delete', label: t('common.delete', 'Delete') },
+										])
+										.then((action) => {
+											if (action === 'rename') {
+												setEditingTitle(title);
+												setEditingSessionId(session.id);
+											}
+											if (action === 'open-location') {
+												void window.agent.openSessionFolder(session.id);
+											}
+											if (action === 'clear' || action === 'compact')
+												setPendingAction({ action, id: session.id, title });
+											if (action === 'delete') deleteSession(session.id, title, isActive);
+										});
+								};
 								return (
-									<li key={session.id} className="flex min-w-0 items-center">
+									<li key={session.id} className="group/item relative flex min-w-0 items-center">
 										{editingSessionId === session.id ? (
 											<Input
 												autoFocus
