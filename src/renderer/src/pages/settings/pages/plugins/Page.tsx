@@ -17,10 +17,15 @@ const PluginsPage = (): React.JSX.Element => {
 				description={t('settings.integrations.description')}
 			/>
 			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
-			<Tabs defaultValue="installed">
+			<Tabs
+				value={searchParams.get('tab') === 'marketplace' ? 'marketplace' : 'installed'}
+				onValueChange={(tab) => setSearchParams({ tab: String(tab) }, { replace: true })}
+			>
 				<TabsList>
 					<TabsTrigger value="installed">{t('settings.integrations.installed.title')}</TabsTrigger>
-					<TabsTrigger value="marketplace">{t('settings.integrations.available.title')}</TabsTrigger>
+					<TabsTrigger value="marketplace">
+						{t('settings.integrations.available.title')}
+					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="installed">
 					<Installed key={version} />
