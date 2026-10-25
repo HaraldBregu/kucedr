@@ -283,6 +283,18 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 												)}
 											</button>
 										)}
+										{editingSessionId !== session.id && (
+											<Button
+												type="button"
+												variant="ghost"
+												size="icon-xs"
+												aria-label={t('common.more', 'More')}
+												className="absolute right-1 opacity-0 group-hover/item:opacity-100 focus-visible:opacity-100"
+												onClick={openMenu}
+											>
+												<MoreVertical />
+											</Button>
+										)}
 									</li>
 								);
 							})}
