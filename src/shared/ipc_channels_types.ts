@@ -1271,10 +1271,6 @@ export interface AppsInvokeChannelMap {
 	[AppsChannels.open]: { args: [appId: string]; result: void };
 	[AppsChannels.openRoot]: { args: []; result: void };
 	[AppsChannels.delete]: { args: [appId: string]; result: boolean };
-	[AppsChannels.import]: {
-		args: [paths?: string[]];
-		result: import('./installed_app_types').AppImportResult | undefined;
-	};
 	[AppsChannels.addDebug]: {
 		args: [folderPath: string];
 		result: import('./installed_app_types').App;
