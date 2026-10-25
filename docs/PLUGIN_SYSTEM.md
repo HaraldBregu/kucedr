@@ -577,7 +577,9 @@ Build each of these only when a real plugin needs it.
    sandboxed iframe with a CSP that blocks network access; and a `postMessage` store bridge that
    shares the app's window store. The separate extensions kind was removed.
 8. Add local model downloads (Ollama pull, then URL plus `sha256`).
-9. Add the catalog: `plugins_catalog.ts`, the Browse tab, and updates.
+9. Create the `kucedr-plugins` repo with `validate.yml`, `release.yml`, `CODEOWNERS`, and
+   `CONTRIBUTING.md` (section 10). Then add the catalog: `plugins_catalog.ts`, the Browse tab,
+   the `integrity` check in `downloadPlugin()`, and updates.
 10. ✅ Update [PLUGINS.md](PLUGINS.md) to describe schema v5 and the desktop flow, and
     [PROVIDERS.md](PROVIDERS.md) to use `vector_databases`.
 
