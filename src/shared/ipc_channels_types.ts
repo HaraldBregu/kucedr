@@ -524,21 +524,20 @@ export interface PluginsInvokeChannelMap {
 		args: [url: string];
 		result: import('./plugin_types').PluginInfo;
 	};
+	[PluginsChannels.available]: {
+		args: [];
+		result: import('./plugin_types').AvailablePlugin[];
+	};
+	[PluginsChannels.installCatalog]: {
+		args: [id: string];
+		result: import('./plugin_types').PluginInfo;
+	};
 	[PluginsChannels.upload]: {
 		args: [path?: string];
 		result: import('./plugin_types').PluginInfo | undefined;
 	};
 	[PluginsChannels.remove]: { args: [id: string]; result: void };
 	[PluginsChannels.setEnabled]: { args: [id: string, enabled: boolean]; result: void };
-	[PluginsChannels.listExtensions]: {
-		args: [];
-		result: import('./plugin_types').PluginExtension[];
-	};
-	[PluginsChannels.importExtensions]: {
-		args: [paths?: string[]];
-		result: import('./plugin_types').ExtensionImportResult | undefined;
-	};
-	[PluginsChannels.removeExtension]: { args: [id: string]; result: boolean };
 	[PluginsChannels.getSettings]: { args: [id: string]; result: Record<string, string> };
 	[PluginsChannels.saveSettings]: {
 		args: [id: string, values: Record<string, string>];
@@ -1285,6 +1284,15 @@ export interface AppsInvokeChannelMap {
 		result: import('./installed_app_types').App;
 	};
 	[AppsChannels.selectDebugPath]: { args: []; result: string | undefined };
+	[AppsChannels.getStoreValue]: {
+		args: [appId: string, key: string];
+		result: import('./app_store_types').AppStoreValue | undefined;
+	};
+	[AppsChannels.setStoreValue]: {
+		args: [appId: string, key: string, value: import('./app_store_types').AppStoreValue];
+		result: void;
+	};
+	[AppsChannels.deleteStoreValue]: { args: [appId: string, key: string]; result: void };
 }
 
 export interface WindowInvokeChannelMap {
