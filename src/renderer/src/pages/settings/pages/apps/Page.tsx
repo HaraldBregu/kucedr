@@ -8,6 +8,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { useOpenApp } from '@/hooks/app';
 import type { App } from '../../../../../../shared/installed_app_types';
 import {
+	SettingsEmptyState,
 	SettingsLoadingRows,
 	SettingsNotice,
 	SettingsPageHeader,
