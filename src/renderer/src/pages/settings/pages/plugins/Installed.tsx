@@ -123,7 +123,7 @@ export default function Installed({
 									onClick={(event) => event.stopPropagation()}
 									onKeyDown={(event) => event.stopPropagation()}
 								>
-									{!plugin.builtIn && (
+									{!plugin.core && (
 										<Button
 											type="button"
 											size="sm"
