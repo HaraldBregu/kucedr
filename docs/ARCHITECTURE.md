@@ -2,7 +2,7 @@
 
 Kucedr is an Electron desktop application with a React interface and a main-process agent.
 This reference describes the current checkout; see [Development](DEVELOPMENT.md) for commands,
-[Providers](PROVIDERS.md) for model integrations, and [Plugins](PLUGINS.md) for extensions.
+[Providers](PROVIDERS.md) for model integrations, and [Plugins](PLUGINS.md) for plugins and their apps.
 
 ## Process and service boundaries
 

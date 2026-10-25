@@ -144,10 +144,15 @@ export const models: ModelsApi = {
 			if (!prompt) throw new Error('Invalid text prompt.');
 			const providerId = optionalTrimmedString(request?.providerId);
 			const modelId = optionalTrimmedString(request?.modelId);
+			const maxTokens = request?.maxTokens;
+			if (maxTokens !== undefined && !(Number.isInteger(maxTokens) && maxTokens > 0)) {
+				throw new Error('Invalid text max tokens.');
+			}
 			return typedInvokeUnwrap(TextChannels.generateText, {
 				prompt,
 				...(providerId ? { providerId } : {}),
 				...(modelId ? { modelId } : {}),
+				...(maxTokens ? { maxTokens } : {}),
 			});
 		},
 		getProviderId: () => {

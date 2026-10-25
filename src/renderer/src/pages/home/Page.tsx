@@ -451,13 +451,19 @@ function PageContent(): ReactElement {
 		const open = (event: Event): void =>
 			setOpenExtension((event as CustomEvent<OpenExtension>).detail);
 		const close = (): void => setOpenExtension(null);
+		const show = (): void => {
+			close();
+			updateMode('chat');
+		};
 		window.addEventListener('kucedr:open-extension', open);
 		window.addEventListener('kucedr:focus-chat-input', close);
+		window.addEventListener('kucedr:show-chat', show);
 		return () => {
 			window.removeEventListener('kucedr:open-extension', open);
 			window.removeEventListener('kucedr:focus-chat-input', close);
+			window.removeEventListener('kucedr:show-chat', show);
 		};
-	}, []);
+	}, [updateMode]);
 	const [attachmentsSessionId, setAttachmentsSessionId] = useState<string | null>(null);
 	useEffect(() => {
 		let active = true;

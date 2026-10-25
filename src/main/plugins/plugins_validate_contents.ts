@@ -19,12 +19,6 @@ export function validatePluginContents(directory: string, manifest: ReadPlugin):
 			throw new Error(`apps/${id}: entry ${app.metadata.entry} does not exist.`);
 		}
 	}
-	for (const id of manifest.contributes.extensions) {
-		const entry = path.join(directory, 'extensions', id, 'index.html');
-		if (!existsSync(entry) || !statSync(entry).isFile()) {
-			throw new Error(`extensions/${id} needs an index.html.`);
-		}
-	}
 	if (manifest.contributes.mcp.length > 0) {
 		const [problem] = listLocalMcpServers(path.join(directory, 'mcp')).diagnostics;
 		if (problem) throw new Error(`mcp/${problem.name}: ${problem.error}`);

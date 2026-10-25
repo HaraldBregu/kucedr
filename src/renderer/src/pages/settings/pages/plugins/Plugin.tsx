@@ -243,16 +243,6 @@ export default function PluginPage(): React.JSX.Element {
 			})),
 		},
 		{
-			key: 'extensions',
-			title: t('settings.integrations.plugin.extensions'),
-			rows: plugin.extensions.map((extension) => ({
-				key: extension.id,
-				title: extension.title,
-				description: extension.description,
-				badge: t(`settings.extensions.slots.${extension.slot}`),
-			})),
-		},
-		{
 			key: 'mcp',
 			title: t('settings.integrations.plugin.mcp'),
 			rows: contents.servers.map((server) => ({

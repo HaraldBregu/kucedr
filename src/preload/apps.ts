@@ -26,4 +26,13 @@ export const apps: AppsApi = {
 	selectDebugPath: () => {
 		return typedInvokeUnwrap(AppsChannels.selectDebugPath);
 	},
+	getStoreValue: (appId, key) => {
+		return typedInvokeUnwrap(AppsChannels.getStoreValue, appId, key);
+	},
+	setStoreValue: (appId, key, value) => {
+		return typedInvokeUnwrap(AppsChannels.setStoreValue, appId, key, value);
+	},
+	deleteStoreValue: (appId, key) => {
+		return typedInvokeUnwrap(AppsChannels.deleteStoreValue, appId, key);
+	},
 };

@@ -1,6 +1,0 @@
-{
-	"title": "Tetris",
-	"description": "Stack falling tetrominoes, clear lines and level up to chiptune music.",
-	"slot": "panel",
-	"icon": "icon.svg"
-}

@@ -24,9 +24,9 @@ export const APP_WINDOW_DEFAULTS: Readonly<ResolvedAppWindowSettings> = {
 	minHeight: 480,
 	resizable: true,
 	maximizable: true,
-	frame: false,
+	frame: true,
 	transparent: true,
 	alwaysOnTop: false,
 	type: 'normal',
-	titleBarStyle: 'hidden',
+	titleBarStyle: 'default',
 };

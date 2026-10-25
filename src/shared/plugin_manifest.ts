@@ -10,16 +10,6 @@ const iconSchema = z
 	.string()
 	.regex(/^[\w-]+\.(?:png|svg|jpe?g|webp)$/, 'icon must be a png, svg, jpg, or webp file name.')
 	.optional();
-export const extensionManifestSchema = z
-	.object({
-		title: z.string().trim().min(1),
-		description: z.string().trim().min(1),
-		slot: z.enum(['sidebar', 'panel', 'toolbar', 'composer', 'settings']),
-		category: z.string().trim().min(1).default('utility'),
-		icon: iconSchema,
-	})
-	.strict();
-
 export const pluginManifestSchema = z
 	.object({
 		schemaVersion: z.literal(5),
@@ -49,4 +39,3 @@ export const pluginManifestSchema = z
 	.strict();
 
 export type PluginManifest = z.infer<typeof pluginManifestSchema>;
-export type ExtensionManifest = z.infer<typeof extensionManifestSchema>;

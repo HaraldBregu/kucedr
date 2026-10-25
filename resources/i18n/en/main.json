@@ -93,7 +93,6 @@
 			"all": "All",
 			"routes": "Routes",
 			"apps": "Apps",
-			"extensions": "Extensions",
 			"plugins": "Plugins",
 			"other": "Other"
 		},
@@ -323,7 +322,6 @@
 				"health": "Periodic health checks",
 				"permissions": "Tool permissions and path rules",
 				"apps": "Installed apps",
-				"extensions": "Plugin UI shown inside Kucedr",
 				"knowledge": "Index your documents for search and grounded answers.",
 				"plugins": "Installable app plugins",
 				"configurationDescription": "Configure models, storage, and integrations"
@@ -360,7 +358,6 @@
 			"developer": "Developer",
 			"skills": "Skills",
 			"apps": "Apps",
-			"extensions": "Extensions",
 			"plugins": "Plugins",
 			"knowledge": "Knowledge"
 		},
@@ -425,7 +422,6 @@
 				"webSearch": "Web search",
 				"storage": "Storage",
 				"apps": "Apps",
-				"extensions": "Extensions",
 				"mcp": "MCP servers",
 				"skills": "Skills",
 				"providers": "Providers",
@@ -449,9 +445,9 @@
 				"builtInDescription": "Plugins that ship with Kucedr.",
 				"builtInEmpty": "No built-in plugins",
 				"downloadedTitle": "Downloaded",
-				"downloadedDescription": "Plugins you installed. They add apps, extensions, MCP servers, providers, and skills.",
+				"downloadedDescription": "Plugins you installed. They add apps, MCP servers, providers, and skills.",
 				"title": "Installed",
-				"description": "Plugins add apps, extensions, MCP servers, providers, and skills to Kucedr.",
+				"description": "Plugins add apps, MCP servers, providers, and skills to Kucedr.",
 				"upload": "Upload",
 				"urlLabel": "Plugin URL",
 				"urlPlaceholder": "https://registry.npmjs.org/…/plugin-1.0.0.tgz",
@@ -466,7 +462,7 @@
 			},
 			"marketplace": {
 				"title": "Marketplace",
-				"loading": "Loading plugins\u2026",
+				"loading": "Loading plugins…",
 				"empty": "Every plugin in the catalog is installed.",
 				"update": "Update"
 			},
@@ -1739,6 +1735,11 @@
 				"loadError": "Unable to load window settings.",
 				"saveError": "Unable to save window settings. Try again.",
 				"invalid": "Enter whole numbers from 1 to 32768. Minimum dimensions cannot exceed default dimensions."
+			},
+			"detailMode": "Mode",
+			"modes": {
+				"extension": "Extension",
+				"window": "Window"
 			}
 		},
 		"filter": {
@@ -1749,27 +1750,6 @@
 				"downloaded": "Downloaded",
 				"game": "Game",
 				"utility": "Utility"
-			}
-		},
-		"extensions": {
-			"title": "Extensions",
-			"description": "UI added to Kucedr screens, imported on its own or provided by plugins.",
-			"empty": "No extensions",
-			"emptyDescription": "Add an extension folder that contains a manifest.json and index.html.",
-			"loadError": "Unable to load extensions.",
-			"installed": "Installed extensions",
-			"addTitle": "Upload a new extension",
-			"dropTitle": "Drop extension folders here or click to browse",
-			"uploading": "Uploading...",
-			"uploaded": "Uploaded {{count}} extension(s).",
-			"uploadError": "Unable to install the extension.",
-			"remove": "Remove {{name}}",
-			"slots": {
-				"sidebar": "Sidebar",
-				"panel": "Panel",
-				"toolbar": "Toolbar",
-				"composer": "Composer",
-				"settings": "Settings"
 			}
 		},
 		"plugins": {

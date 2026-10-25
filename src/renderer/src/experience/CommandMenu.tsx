@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AppWindow, Home, LayoutPanelLeft, Puzzle, Settings, type LucideIcon } from 'lucide-react';
+import { AppWindow, Home, Puzzle, Settings, type LucideIcon } from 'lucide-react';
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -22,11 +22,11 @@ import {
 	SETTINGS_NAVIGATION,
 	type SettingsDetailItem,
 } from '@/pages/settings/navigation';
-import type { OpenExtension } from '@/pages/home/components/ExtensionPage';
+import { useOpenApp } from '@/hooks/app';
 import type { App } from '@shared/installed_app_types';
 import type { PluginInfo } from '@shared/plugin_types';
 
-const CATEGORIES = ['all', 'routes', 'apps', 'extensions', 'plugins', 'other'] as const;
+const CATEGORIES = ['all', 'routes', 'apps', 'plugins', 'other'] as const;
 type Category = (typeof CATEGORIES)[number];
 
 interface AppRouteItem {
@@ -250,9 +250,6 @@ export function CommandMenu({
 	const [internalOpen, setInternalOpen] = useState(false);
 	const [search, setSearch] = useState('');
 	const [category, setCategory] = useState<Category>('all');
-	const [extensions, setExtensions] = useState<
-		(OpenExtension & { readonly description: string; readonly icon?: string })[]
-	>([]);
 	const [plugins, setPlugins] = useState<PluginInfo[]>([]);
 	const [apps, setApps] = useState<App[]>([]);
 	const listRef = useRef<HTMLDivElement>(null);
@@ -309,38 +306,14 @@ export function CommandMenu({
 		[navigate, setOpen]
 	);
 
-	const openExtension = useCallback(
-		(extension: OpenExtension) => {
-			setOpen(false);
-			if (location.pathname === '/home') {
-				window.dispatchEvent(
-					new CustomEvent<OpenExtension>('kucedr:open-extension', { detail: extension })
-				);
-				return;
-			}
-			navigate('/home', { state: { openExtension: extension } });
-		},
-		[location.pathname, navigate, setOpen]
-	);
+	const openApp = useOpenApp();
 
 	useEffect(() => {
 		if (!open) return;
-		void Promise.all([window.plugins.list(), window.plugins.listExtensions()])
-			.then(([nextPlugins, standalone]) => {
-				setPlugins(nextPlugins);
-				setExtensions([
-					...standalone,
-					...nextPlugins
-						.filter((plugin) => plugin.enabled && !plugin.error)
-						.flatMap((plugin) =>
-							plugin.extensions.map((extension) => ({ ...extension, pluginId: plugin.id }))
-						),
-				]);
-			})
-			.catch(() => {
-				setPlugins([]);
-				setExtensions([]);
-			});
+		void window.plugins
+			.list()
+			.then(setPlugins)
+			.catch(() => setPlugins([]));
 		void window.apps
 			.list()
 			.then(setApps)
@@ -365,27 +338,8 @@ export function CommandMenu({
 					fallbackIcon={AppWindow}
 					onSelect={() => {
 						setOpen(false);
-						void window.apps.open(app.id);
+						void openApp(app);
 					}}
-				/>
-			)),
-		},
-		{
-			category: 'extensions',
-			items: extensions.map((extension) => (
-				<ImageMenuItem
-					key={`${extension.pluginId ?? ''}/${extension.id}`}
-					title={extension.title}
-					description={extension.description}
-					icon={extension.icon}
-					fallbackIcon={LayoutPanelLeft}
-					onSelect={() =>
-						openExtension({
-							pluginId: extension.pluginId,
-							id: extension.id,
-							title: extension.title,
-						})
-					}
 				/>
 			)),
 		},

@@ -23,7 +23,7 @@ export async function generateText(request: TextRequest): Promise<string> {
 		provider: { id: providerId, apiKey: provider.apiKey, baseURL: provider.baseUrl },
 		model: modelId,
 		messages: [{ role: 'user', content: prompt }],
-		maxTokens: MAX_TOKENS,
+		maxTokens: request.maxTokens ?? MAX_TOKENS,
 	});
 	return response.content;
 }

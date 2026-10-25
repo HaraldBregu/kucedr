@@ -3,12 +3,11 @@ import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 
+/** An app opened in extension mode, inside the home page. */
 export interface OpenExtension {
-	/** Absent for extensions imported on their own. */
-	readonly pluginId?: string;
 	readonly id: string;
 	readonly title: string;
-	/** The extension's icon as a data URL. */
+	readonly entry: string;
 	readonly icon?: string;
 }
 
@@ -20,7 +19,7 @@ interface ExtensionPageProps {
 export function ExtensionPage({ extension, onClose }: ExtensionPageProps): ReactElement {
 	const { t } = useTranslation();
 	const frameRef = useRef<HTMLIFrameElement>(null);
-	const { pluginId, id } = extension;
+	const { id } = extension;
 
 	useEffect(() => {
 		const onMessage = (event: MessageEvent): void => {
@@ -29,11 +28,11 @@ export function ExtensionPage({ extension, onClose }: ExtensionPageProps): React
 			if (!frame || event.source !== frame || typeof kucedrStore !== 'number') return;
 			const result =
 				op === 'get'
-					? window.plugins.getExtensionStoreValue(pluginId, id, key)
+					? window.apps.getStoreValue(id, key)
 					: op === 'set'
-						? window.plugins.setExtensionStoreValue(pluginId, id, key, value)
+						? window.apps.setStoreValue(id, key, value)
 						: op === 'delete'
-							? window.plugins.deleteExtensionStoreValue(pluginId, id, key)
+							? window.apps.deleteStoreValue(id, key)
 							: Promise.reject(new Error('Unknown store operation.'));
 			result.then(
 				(value) => frame.postMessage({ kucedrStore, value }, '*'),
@@ -42,7 +41,7 @@ export function ExtensionPage({ extension, onClose }: ExtensionPageProps): React
 		};
 		window.addEventListener('message', onMessage);
 		return () => window.removeEventListener('message', onMessage);
-	}, [pluginId, id]);
+	}, [id]);
 
 	return (
 		<section
@@ -63,13 +62,9 @@ export function ExtensionPage({ extension, onClose }: ExtensionPageProps): React
 			</header>
 			<iframe
 				ref={frameRef}
-				key={`${extension.pluginId ?? ''}/${extension.id}`}
+				key={extension.id}
 				title={extension.title}
-				src={
-					extension.pluginId
-						? `kucedr-plugin://${extension.pluginId}/${extension.id}/index.html`
-						: `kucedr-extension://${extension.id}/index.html`
-				}
+				src={`kucedr-app://${extension.id}/${extension.entry}`}
 				sandbox="allow-scripts"
 				className="min-h-0 w-full flex-1 border-0 bg-white"
 			/>

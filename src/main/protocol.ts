@@ -119,7 +119,7 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 			return new Response(null, { status: 404 });
 		}
 	};
-	// Apps embedded in the main window (extension mode) get no network, like their own windows' sandbox.
+	// ponytail: apps embedded in the main window (extension mode) get no network until a permissions bridge exists
 	protocol.handle(APP_RESOURCE_SCHEME, async (request) => {
 		const response = await handleAppResource(request);
 		const headers = new Headers(response.headers);

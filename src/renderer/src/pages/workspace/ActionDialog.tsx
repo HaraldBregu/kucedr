@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 export interface WorkspaceAction {
 	readonly kind: 'create-file' | 'create-folder' | 'delete';
 	readonly entry?: WorkspaceTreeEntry;
+	readonly entries?: WorkspaceTreeEntry[];
 	readonly parentPath: string;
 }
 
@@ -42,6 +43,8 @@ export function WorkspaceActionDialog({
 			? t('workspaceSidebar.newFile', 'New file')
 			: action.kind === 'create-folder'
 				? t('workspaceSidebar.newFolder', 'New folder')
+			: action.entries && action.entries.length > 1
+				? t('workspaceSidebar.deleteEntries', { count: action.entries.length, defaultValue: 'Delete {{count}} items' })
 			: t('workspaceSidebar.deleteEntry', { name: action.entry?.name });
 
 	return (

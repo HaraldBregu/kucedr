@@ -150,31 +150,19 @@ export function ModelProviderSelect({
 			<PopoverContent
 				align="end"
 				collisionPadding={12}
-				className={cn(
-					'flex max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1',
-					compactPopover
-						? 'max-h-60 w-56'
-						: 'max-h-[var(--radix-popover-content-available-height)] w-72'
-				)}
+				className="flex max-h-[var(--radix-popover-content-available-height)] w-72 max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1"
 			>
-				{!compactPopover ? (
-					<Input
-						aria-label={t('settings.modelServices.searchModels')}
-						className="mb-1 h-8 shrink-0 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0"
-						placeholder={t('settings.modelServices.searchModels')}
-						value={modelSearch}
-						onChange={(event) => setModelSearch(event.target.value)}
-					/>
-				) : null}
+				<Input
+					aria-label={t('settings.modelServices.searchModels')}
+					className="mb-1 h-8 shrink-0 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0"
+					placeholder={t('settings.modelServices.searchModels')}
+					value={modelSearch}
+					onChange={(event) => setModelSearch(event.target.value)}
+				/>
 				<div
 					role="menu"
 					aria-label={accessibleLabel}
-					className={cn(
-						'min-h-0 min-w-0 overflow-y-auto',
-						compactPopover
-							? 'max-h-56'
-							: 'max-h-[calc(var(--radix-popover-content-available-height)-2.5rem)]'
-					)}
+					className="max-h-[calc(var(--radix-popover-content-available-height)-2.5rem)] min-h-0 min-w-0 overflow-y-auto"
 				>
 					{matchingModels.map(({ group, model }) => {
 						const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;

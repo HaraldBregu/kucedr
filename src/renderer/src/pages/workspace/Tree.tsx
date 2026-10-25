@@ -13,12 +13,15 @@ interface WorkspaceTreeProps {
 	readonly onRename: (name: string) => void;
 	readonly onRenameCancel: () => void;
 	readonly selectedPath: string | null;
-	readonly onMove: (sourcePath: string, destinationPath: string) => void;
+	readonly selection: ReadonlySet<string>;
+	readonly onSelect: (entry: WorkspaceTreeEntry, event: React.MouseEvent) => boolean;
+	readonly onMove: (sourcePaths: string[], destinationPath: string) => void;
 }
 
 const fileIcons = { image: FileImage, audio: FileMusic, video: FileVideo, markdown: FileText, text: FileText } as Partial<Record<string, typeof File>>;
 
-export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renamingPath, renameBusy, onRename, onRenameCancel, selectedPath, onMove }: WorkspaceTreeProps): React.JSX.Element {
+export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renamingPath, renameBusy, onRename, onRenameCancel, selectedPath, selection, onSelect, onMove }: WorkspaceTreeProps): React.JSX.Element {
+	const dragPaths = (entry: WorkspaceTreeEntry): string => (selection.has(entry.path) ? [...selection] : [entry.path]).join('\n');
 	const [openDirectories, setOpenDirectories] = useState(() => new Set(entries.filter((entry) => selectedPath && (selectedPath.startsWith(`${entry.path}/`) || selectedPath.startsWith(`${entry.path}\\`))).map((entry) => entry.path)));
 	return (
 		<ul className="flex min-w-0 flex-col gap-1">
@@ -41,9 +44,11 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 								return next;
 							});
 						}}>
-						<summary draggable className="flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[drop-target]:bg-sidebar-accent data-[drop-target]:ring-2 data-[drop-target]:ring-sidebar-ring" onDragStart={(event) => {
+						<summary draggable data-path={entry.path} data-selected={selection.has(entry.path) || undefined} className="flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[drop-target]:bg-sidebar-accent data-[drop-target]:ring-2 data-[drop-target]:ring-sidebar-ring data-[selected]:bg-sidebar-accent" onClick={(event) => {
+							if (!onSelect(entry, event)) event.preventDefault();
+						}} onDragStart={(event) => {
 							event.stopPropagation();
-							event.dataTransfer.setData('application/x-workspace-path', entry.path);
+							event.dataTransfer.setData('application/x-workspace-path', dragPaths(entry));
 						}} onDragOver={(event) => {
 							if (!event.dataTransfer.types.includes('application/x-workspace-path')) return;
 							event.preventDefault();
@@ -57,7 +62,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							if (!source) return;
 							event.preventDefault();
 							event.stopPropagation();
-							onMove(source, entry.path);
+							onMove(source.split('\n'), entry.path);
 						}} onContextMenu={(event) => {
 							event.preventDefault();
 							event.stopPropagation();
@@ -69,7 +74,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							</summary>
 							{entry.children?.length ? (
 								<div className="ml-3 border-l border-sidebar-border pl-1">
-									<WorkspaceTree entries={entry.children} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} selectedPath={selectedPath} onMove={onMove} />
+									<WorkspaceTree entries={entry.children} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} selectedPath={selectedPath} selection={selection} onSelect={onSelect} onMove={onMove} />
 								</div>
 							) : null}
 						</details>
@@ -77,11 +82,15 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 						<button
 							type="button"
 							aria-current={selectedPath === entry.path ? 'page' : undefined}
-							className="flex min-h-8 w-full items-center gap-2 rounded-md px-2 text-left text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium"
+							className="flex min-h-8 w-full items-center gap-2 rounded-md px-2 text-left text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium data-[selected]:bg-sidebar-accent"
 							title={entry.path}
+							data-path={entry.path}
+							data-selected={selection.has(entry.path) || undefined}
 							draggable
-							onDragStart={(event) => event.dataTransfer.setData('application/x-workspace-path', entry.path)}
-							onClick={() => onFileSelect(entry)}
+							onDragStart={(event) => event.dataTransfer.setData('application/x-workspace-path', dragPaths(entry))}
+							onClick={(event) => {
+								if (onSelect(entry, event)) onFileSelect(entry);
+							}}
 							onContextMenu={(event) => {
 								event.preventDefault();
 								event.stopPropagation();

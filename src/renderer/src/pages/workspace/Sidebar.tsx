@@ -32,6 +32,80 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 	const [renamingEntry, setRenamingEntry] = useState<WorkspaceTreeEntry | null>(null);
 	const [busy, setBusy] = useState(false);
 	const renameSubmitting = useRef(false);
+	const [selection, setSelection] = useState<ReadonlySet<string>>(new Set());
+	const anchorPath = useRef<string | null>(null);
+	const navRef = useRef<HTMLElement>(null);
+	const flatten = (list: WorkspaceTreeEntry[]): WorkspaceTreeEntry[] => list.flatMap((item) => [item, ...flatten(item.children ?? [])]);
+	const topLevel = (paths: Iterable<string>): string[] => {
+		const list = [...paths];
+		return list.filter((item) => !list.some((other) => item.startsWith(`${other}/`) || item.startsWith(`${other}\\`)));
+	};
+	const visibleItems = (): HTMLElement[] => Array.from(navRef.current?.querySelectorAll<HTMLElement>('[data-path]') ?? [])
+		.filter((item) => !item.closest('li')?.parentElement?.closest('details:not([open])'));
+	const selectRange = (path: string, extend: boolean): void => {
+		const paths = visibleItems().map((item) => item.dataset.path ?? '');
+		const from = paths.indexOf(anchorPath.current ?? path);
+		const to = paths.indexOf(path);
+		const range = paths.slice(Math.min(from, to), Math.max(from, to) + 1);
+		setSelection((current) => new Set(extend ? [...current, ...range] : range));
+	};
+	const selectEntry = (entry: WorkspaceTreeEntry, event: { metaKey: boolean; ctrlKey: boolean; shiftKey: boolean }): boolean => {
+		if (event.shiftKey && anchorPath.current) {
+			selectRange(entry.path, event.metaKey || event.ctrlKey);
+			return false;
+		}
+		anchorPath.current = entry.path;
+		if (event.metaKey || event.ctrlKey) {
+			setSelection((current) => {
+				const next = new Set(current);
+				if (!next.delete(entry.path)) next.add(entry.path);
+				return next;
+			});
+			return false;
+		}
+		setSelection(new Set([entry.path]));
+		return true;
+	};
+	const deleteSelection = (targets: WorkspaceTreeEntry[]): void => {
+		if (targets.length === 0) return;
+		setActionError('');
+		setPendingAction({ kind: 'delete', entry: targets[0], entries: targets, parentPath: '' });
+	};
+	const handleTreeKey = (event: React.KeyboardEvent<HTMLElement>): void => {
+		const target = event.target as HTMLElement;
+		const path = target.dataset.path;
+		if (path === undefined) return;
+		const items = visibleItems();
+		const index = items.indexOf(target);
+		const mod = event.metaKey || event.ctrlKey;
+		const focusItem = (next: HTMLElement | undefined): void => {
+			const nextPath = next?.dataset.path;
+			if (!next || nextPath === undefined) return;
+			next.focus();
+			if (event.shiftKey) selectRange(nextPath, false);
+			else {
+				anchorPath.current = nextPath;
+				setSelection(new Set([nextPath]));
+			}
+		};
+		const details = target.tagName === 'SUMMARY' ? target.parentElement as HTMLDetailsElement : null;
+		if (event.key === 'ArrowDown') focusItem(items[index + 1]);
+		else if (event.key === 'ArrowUp') focusItem(items[index - 1]);
+		else if (event.key === 'Home') focusItem(items[0]);
+		else if (event.key === 'End') focusItem(items[items.length - 1]);
+		else if (event.key === 'ArrowRight' && details) details.open = true;
+		else if (event.key === 'ArrowLeft' && details?.open) details.open = false;
+		else if (event.key === 'ArrowLeft') focusItem(target.closest('li')?.parentElement?.closest('details')?.querySelector<HTMLElement>(':scope > summary') ?? undefined);
+		else if (event.key === 'a' && mod) setSelection(new Set(items.map((item) => item.dataset.path ?? '')));
+		else if (event.key === 'Escape') setSelection(new Set());
+		else if (event.key === 'F2') setRenamingEntry(flatten(entries).find((item) => item.path === path) ?? null);
+		else if (event.key === 'Delete' || (event.key === 'Backspace' && mod)) {
+			const paths = topLevel(selection.has(path) ? selection : [path]);
+			deleteSelection(flatten(entries).filter((item) => paths.includes(item.path)));
+		}
+		else return;
+		event.preventDefault();
+	};
 
 	useEffect(() => {
 		let active = true;
@@ -65,6 +139,11 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 	}, [onFilesLoaded]);
 
 	const showEntryMenu = (entry?: WorkspaceTreeEntry): void => {
+		const multiple = entry && selection.size > 1 && selection.has(entry.path);
+		if (entry && !selection.has(entry.path)) {
+			anchorPath.current = entry.path;
+			setSelection(new Set([entry.path]));
+		}
 		const parentPath = entry?.type === 'directory' ? entry.path : entry?.path.split(/[\\/]/).slice(0, -1).join('/') ?? '';
 		const revealLabel = navigator.platform.startsWith('Mac')
 			? t('workspaceSidebar.revealInFinder', 'Reveal in Finder')
@@ -72,7 +151,10 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		const items: ContextMenuDescriptor[] = [
 			{ id: 'create-file', label: t('workspaceSidebar.newFile', 'New file') },
 			{ id: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder') },
-			...(entry ? [
+			...(multiple ? [
+				{ type: 'separator' as const },
+				{ id: 'delete', label: t('workspaceSidebar.deleteCount', { count: topLevel(selection).length, defaultValue: 'Delete {{count}} items' }) },
+			] : entry ? [
 				{ type: 'separator' as const },
 				{ id: 'reveal', label: revealLabel },
 				...(entry.type === 'file' && workspaceFileType(entry.path).kind === 'markdown' ? [{ id: 'clean-assets', label: t('workspaceSidebar.cleanAssets', 'Move unused assets to Trash') }] : []),
@@ -90,6 +172,10 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				onFilesLoaded?.(files);
 			}
 			else if (kind === 'rename' && entry) setRenamingEntry(entry);
+			else if (kind === 'delete' && multiple) {
+				const paths = topLevel(selection);
+				deleteSelection(flatten(entries).filter((item) => paths.includes(item.path)));
+			}
 			else if (kind === 'create-file' || kind === 'create-folder' || (kind === 'delete' && entry)) {
 				setPendingAction({ kind, entry, parentPath });
 			}
@@ -129,13 +215,22 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			});
 	};
 
-	const moveEntry = (sourcePath: string, destinationPath: string): void => {
-		if (busy || sourcePath === destinationPath) return;
+	const moveEntries = (sourcePaths: string[], destinationPath: string): void => {
+		const sources = topLevel(sourcePaths.filter((sourcePath) => sourcePath !== destinationPath));
+		if (busy || sources.length === 0) return;
 		setBusy(true);
 		setActionError('');
-		void beforeEntryChange().then(() => window.agent.moveWorkspaceEntry(sourcePath, destinationPath))
-			.then(async (nextPath) => {
-				if (nextPath !== sourcePath) onEntryRenamed(sourcePath, nextPath);
+		const moved: string[] = [];
+		void beforeEntryChange()
+			.then(async () => {
+				for (const sourcePath of sources) {
+					const nextPath = await window.agent.moveWorkspaceEntry(sourcePath, destinationPath);
+					if (nextPath !== sourcePath) onEntryRenamed(sourcePath, nextPath);
+					moved.push(nextPath);
+				}
+			})
+			.finally(() => setSelection(new Set(moved)))
+			.then(async () => {
 				const files = await window.agent.listWorkspaceFiles();
 				setEntries(files);
 				onFilesLoaded?.(files);
@@ -158,9 +253,12 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			} else if (kind === 'create-folder') {
 				await window.agent.createWorkspaceDirectory(parentPath, name);
 			} else if (kind === 'delete' && entry) {
-				if (entry.type === 'directory') await window.agent.deleteWorkspaceDirectory(entry.path);
-				else await window.agent.deleteWorkspaceFile(entry.path);
-				onEntryDeleted(entry.path);
+				for (const target of pendingAction.entries ?? [entry]) {
+					if (target.type === 'directory') await window.agent.deleteWorkspaceDirectory(target.path);
+					else await window.agent.deleteWorkspaceFile(target.path);
+					onEntryDeleted(target.path);
+				}
+				setSelection(new Set());
 			}
 			setPendingAction(null);
 			const files = await window.agent.listWorkspaceFiles();
@@ -202,7 +300,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					</Tooltip>
 				))}
 			</div>
-			<nav aria-label={t('workspaceSidebar.files', 'Workspace files')} className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2" onContextMenu={(event) => {
+			<nav ref={navRef} onKeyDown={handleTreeKey} aria-label={t('workspaceSidebar.files', 'Workspace files')} className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2" onContextMenu={(event) => {
 				event.preventDefault();
 				showEntryMenu();
 			}} onDragOver={(event) => {
@@ -211,7 +309,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				const source = event.dataTransfer.getData('application/x-workspace-path');
 				if (!source) return;
 				event.preventDefault();
-				moveEntry(source, '');
+				moveEntries(source.split('\n'), '');
 			}}>
 				{actionError && !pendingAction ? <p className="px-2 py-1 text-xs text-destructive" role="alert">{actionError}</p> : null}
 				{loading ? (
@@ -221,7 +319,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				) : entries.length === 0 ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.empty', 'Workspace is empty.')}</p>
 				) : (
-					<WorkspaceTree entries={entries} onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} selectedPath={selectedPath} onMove={moveEntry} />
+					<WorkspaceTree entries={entries} onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} selectedPath={selectedPath} selection={selection} onSelect={selectEntry} onMove={moveEntries} />
 				)}
 			</nav>
 			{pendingAction ? <WorkspaceActionDialog key={`${pendingAction.kind}:${pendingAction.entry?.path ?? pendingAction.parentPath}`} action={pendingAction} busy={busy} error={actionError} onClose={() => { setPendingAction(null); setActionError(''); }} onConfirm={confirmAction} /> : null}

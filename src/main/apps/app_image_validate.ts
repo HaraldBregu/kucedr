@@ -4,6 +4,6 @@ export function isAppImage(value: unknown): value is string {
 	return (
 		!value.startsWith('/') &&
 		segments.every((segment) => Boolean(segment) && segment !== '.' && segment !== '..') &&
-		/\.(avif|jpe?g|png|webp)$/i.test(value)
+		/\.(avif|jpe?g|png|svg|webp)$/i.test(value)
 	);
 }

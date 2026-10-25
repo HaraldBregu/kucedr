@@ -57,7 +57,7 @@ export function WorkspaceOutline({ editor, container }: WorkspaceOutlineProps): 
 					<span key={index} className={cn('h-0.5 rounded-full transition-colors', bars[level - 1] ?? 'w-2', index === active ? 'bg-foreground' : 'bg-muted-foreground/30')} />
 				))}
 			</div>
-			<ul className="pointer-events-none absolute right-0 top-1/2 flex max-h-[70vh] w-64 -translate-y-1/2 translate-x-2 flex-col gap-0.5 overflow-y-auto rounded-xl border bg-popover p-1.5 text-sm text-popover-foreground opacity-0 shadow-lg transition-all duration-150 group-focus-within:pointer-events-auto group-focus-within:translate-x-0 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100">
+			<ul className="pointer-events-none absolute right-0 top-1/2 flex max-h-[70vh] w-64 -translate-y-1/2 translate-x-2 flex-col gap-0.5 overflow-y-auto rounded-xl bg-popover/80 p-1.5 text-sm text-popover-foreground opacity-0 shadow-lg backdrop-blur-md transition-all duration-150 group-focus-within:pointer-events-auto group-focus-within:translate-x-0 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100">
 				{headings.map(({ pos, level, text }, index) => (
 					<li key={index}>
 						<button

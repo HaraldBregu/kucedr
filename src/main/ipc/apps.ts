@@ -2,6 +2,7 @@ import { dialog } from 'electron';
 import type { EventBus } from '../event_bus';
 import type { WindowFactory } from '../window_factory';
 import type { AppRegistry } from '../apps/app_registry';
+import type { AppStorage } from '../apps/app_store';
 import {
 	deleteApp,
 	addDebugApp,
@@ -24,12 +25,16 @@ export interface AppsIpcDeps {
 	windowFactory: WindowFactory;
 	appRegistry: AppRegistry;
 	windows: WindowContextManager;
+	appStorage: AppStorage;
 }
 
 export class AppsIpc implements IpcModule<AppsIpcDeps> {
 	readonly name = 'apps';
 
-	register({ windowFactory, appRegistry, windows }: AppsIpcDeps, _eventBus: EventBus): void {
+	register(
+		{ windowFactory, appRegistry, windows, appStorage }: AppsIpcDeps,
+		_eventBus: EventBus
+	): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		registerQueryWithEvent(AppsChannels.getSettings, (event, appId) => {
 			trusted.assert(event);
@@ -51,6 +56,9 @@ export class AppsIpc implements IpcModule<AppsIpcDeps> {
 			trusted.assert(event);
 			const app = listApps().find((item) => item.id === appId);
 			if (!app) throw new Error(`App not found: ${appId}`);
+			if ((app.mode ?? 'extension') === 'extension') {
+				throw new Error(`${app.title} only opens inside Kucedr.`);
+			}
 			loadApp(windowFactory, app);
 		});
 		registerCommandWithEvent(AppsChannels.openRoot, (event) => {
@@ -105,6 +113,23 @@ export class AppsIpc implements IpcModule<AppsIpcDeps> {
 				properties: ['openDirectory'],
 			});
 			return result.canceled ? undefined : result.filePaths[0];
+		});
+		const extensionApp = (appId: string): string => {
+			const app = listApps().find((item) => item.id === appId);
+			if (!app || app.mode === 'window') throw new Error(`App not found: ${appId}`);
+			return app.id;
+		};
+		registerQueryWithEvent(AppsChannels.getStoreValue, (event, appId, key) => {
+			trusted.assert(event);
+			return appStorage.get(extensionApp(appId), key);
+		});
+		registerCommandWithEvent(AppsChannels.setStoreValue, (event, appId, key, value) => {
+			trusted.assert(event);
+			appStorage.set(extensionApp(appId), key, value);
+		});
+		registerCommandWithEvent(AppsChannels.deleteStoreValue, (event, appId, key) => {
+			trusted.assert(event);
+			appStorage.delete(extensionApp(appId), key);
 		});
 	}
 }

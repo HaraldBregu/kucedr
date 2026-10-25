@@ -47,7 +47,7 @@ function readPackageManifestFromStandardFields(directory: string): AppManifest |
 			keywords?: Array<string> | null;
 			main?: unknown;
 			exports?: unknown;
-			kucedr?: { window?: unknown };
+			kucedr?: { window?: unknown; mode?: unknown };
 		};
 		if (
 			packageJson.kucedr !== undefined &&
@@ -76,6 +76,9 @@ function readPackageManifestFromStandardFields(directory: string): AppManifest |
 			title,
 			description,
 			...(window !== undefined && { window }),
+			...(packageJson.kucedr?.mode !== undefined && {
+				mode: packageJson.kucedr.mode as AppManifest['mode'],
+			}),
 			metadata: {
 				version,
 				category,

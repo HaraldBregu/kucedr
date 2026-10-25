@@ -163,7 +163,10 @@ export function registerIpcHandlers(
 		new DatabaseIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('apps', () =>
-		new AppsIpc().register({ windowFactory, appRegistry, windows: windowContextManager }, eventBus)
+		new AppsIpc().register(
+			{ windowFactory, appRegistry, windows: windowContextManager, appStorage },
+			eventBus
+		)
 	);
 	safeRegister('data', () =>
 		new DataIpc().register(

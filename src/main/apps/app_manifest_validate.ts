@@ -1,6 +1,7 @@
 import { isAppEntry } from './app_entry_validate';
 import { isAppImage } from './app_image_validate';
 import type { AppManifest } from './app_types';
+import { APP_MODES } from '../../shared/installed_app_types';
 import { isAppWindowSettings } from '../../shared/app_window_validate';
 
 export function isAppManifest(value: unknown): value is AppManifest {
@@ -14,6 +15,7 @@ export function isAppManifest(value: unknown): value is AppManifest {
 			(typeof manifest.handle === 'string' && /^@[a-z0-9][a-z0-9._-]*$/i.test(manifest.handle))) &&
 		typeof manifest.description === 'string' &&
 		manifest.description.trim().length > 0 &&
+		(manifest.mode === undefined || (APP_MODES as readonly unknown[]).includes(manifest.mode)) &&
 		Boolean(metadata) &&
 		typeof metadata === 'object' &&
 		!Array.isArray(metadata) &&

@@ -35,11 +35,6 @@ export function listPlugins(): PluginInfo[] {
 				PluginKind,
 				string[]
 			>),
-		extensions:
-			manifest?.extensions.map(({ icon, ...extension }) => ({
-				...extension,
-				...(icon && { icon: pluginIcon(path.join(directory, 'extensions', extension.id, icon)) }),
-			})) ?? [],
 		settings: (manifest?.settings as ProviderManifestSetting[] | undefined) ?? [],
 	}));
 }

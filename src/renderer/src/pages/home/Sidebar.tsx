@@ -234,7 +234,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 												onClick={() => {
 													setSessionId(session.id);
 													setSessionTitle?.(title, session.id);
-													window.dispatchEvent(new Event('kucedr:focus-chat-input'));
+													window.dispatchEvent(new Event('kucedr:show-chat'));
 												}}
 												onKeyDown={(event) => {
 													if (event.key !== 'Delete' && event.key !== 'Backspace') return;

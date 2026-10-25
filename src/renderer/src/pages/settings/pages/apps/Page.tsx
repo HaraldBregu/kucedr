@@ -1,16 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, AppWindow, MoreHorizontal } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { useOpenApp } from '@/hooks/app';
 import type { App } from '../../../../../../shared/installed_app_types';
 import {
@@ -104,11 +98,11 @@ const AppsPage: React.FC = () => {
 
 	const openApp = useOpenApp();
 	const handleOpen = useCallback(
-		async (app: App, target?: 'window'): Promise<void> => {
+		async (app: App): Promise<void> => {
 			setOpeningAppId(app.id);
 			setErrorMessage('');
 			try {
-				await openApp(app, target);
+				await openApp(app);
 			} catch (error) {
 				setErrorMessage(getErrorMessage(error, t('settings.apps.openError')));
 			} finally {
@@ -219,26 +213,6 @@ const AppsPage: React.FC = () => {
 											>
 												{t('settings.apps.open')}
 											</Button>
-											{app.mode === 'both' && (
-												<DropdownMenu>
-													<DropdownMenuTrigger asChild>
-														<Button
-															variant="ghost"
-															size="icon-sm"
-															disabled={openingAppId === app.id}
-															aria-label={t('common.moreOptions')}
-														>
-															<MoreHorizontal className="size-4" />
-														</Button>
-													</DropdownMenuTrigger>
-													<DropdownMenuContent align="end">
-														<DropdownMenuItem onSelect={() => void handleOpen(app, 'window')}>
-															<AppWindow />
-															{t('settings.apps.openInWindow')}
-														</DropdownMenuItem>
-													</DropdownMenuContent>
-												</DropdownMenu>
-											)}
 										</div>
 									</CardHeader>
 								</Card>

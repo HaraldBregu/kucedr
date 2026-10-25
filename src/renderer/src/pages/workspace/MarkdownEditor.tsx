@@ -12,6 +12,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { importWorkspaceAssets } from './Assets';
 import { workspaceResourceUrl } from './Resource';
 import { WorkspaceLibraryPicker } from './LibraryPicker';
+import { WorkspaceOutline } from './Outline';
 import { WorkspaceToolbar } from './Toolbar';
 import { WorkspaceUrlDialog } from './UrlDialog';
 
@@ -36,6 +37,7 @@ export function WorkspaceMarkdownEditor({
 	const [libraryOpen, setLibraryOpen] = useState(false);
 	const [urlOpen, setUrlOpen] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const scrollRef = useRef<HTMLDivElement>(null);
 	const onChangeRef = useRef(onChange);
 	useEffect(() => {
 		onChangeRef.current = onChange;
@@ -129,7 +131,8 @@ export function WorkspaceMarkdownEditor({
 				insertFiles(Array.from(event.target.files ?? []));
 				event.target.value = '';
 			}} />
-			<div className="min-h-0 flex-1 overflow-auto">
+			<div className="relative flex min-h-0 flex-1 flex-col">
+			<div ref={scrollRef} className="min-h-0 flex-1 overflow-auto">
 			<EditorContent
 				editor={editor}
 				className="workspace-markdown-content mx-auto min-h-full w-full max-w-[920px] break-words px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12"
@@ -141,6 +144,8 @@ export function WorkspaceMarkdownEditor({
 					} else if (event.target === event.currentTarget) editor.commands.focus('end');
 				}}
 			/>
+			</div>
+			<WorkspaceOutline editor={editor} container={scrollRef} />
 			</div>
 		</div>
 	);

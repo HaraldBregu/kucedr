@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, AppWindow, ArrowLeft, Blocks, Trash2, Unlink } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Blocks, Trash2, Unlink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useOpenApp } from '@/hooks/app';
@@ -53,12 +53,12 @@ const AppDetailsPage: React.FC = () => {
 
 	const openApp = useOpenApp();
 	const handleOpen = useCallback(
-		async (target?: 'window'): Promise<void> => {
+		async (): Promise<void> => {
 			if (!app) return;
 			setOpening(true);
 			setErrorMessage('');
 			try {
-				await openApp(app, target);
+				await openApp(app);
 			} catch {
 				setErrorMessage(t('settings.apps.openError'));
 			} finally {
@@ -168,18 +168,6 @@ const AppDetailsPage: React.FC = () => {
 					>
 						{t('settings.apps.open')}
 					</Button>
-					{app.mode === 'both' && (
-						<Button
-							type="button"
-							size="sm"
-							variant="outline"
-							disabled={opening || deleting}
-							onClick={() => void handleOpen('window')}
-						>
-							<AppWindow />
-							{t('settings.apps.openInWindow')}
-						</Button>
-					)}
 					{!app.plugin && (
 						<Button
 							type="button"
@@ -208,7 +196,7 @@ const AppDetailsPage: React.FC = () => {
 						))}
 					</SettingsPanel>
 				</SettingsSection>
-				{app.mode && app.mode !== 'extension' && <WindowSettings key={app.id} appId={app.id} />}
+				{app.mode === 'window' && <WindowSettings key={app.id} appId={app.id} />}
 			</div>
 		</SettingsPageShell>
 	);

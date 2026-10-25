@@ -93,7 +93,6 @@
 			"all": "Tutto",
 			"routes": "Pagine",
 			"apps": "App",
-			"extensions": "Estensioni",
 			"plugins": "Plugin",
 			"other": "Altro"
 		},
@@ -323,7 +322,6 @@
 				"health": "Controlli salute periodici",
 				"permissions": "Permessi strumenti e regole di percorso",
 				"apps": "App installate",
-				"extensions": "Interfacce dei plugin dentro Kucedr",
 				"knowledge": "Indicizza i documenti per cercare risposte basate sui file.",
 				"plugins": "Plugin installabili",
 				"configurationDescription": "Configura modelli, archiviazione e integrazioni"
@@ -360,7 +358,6 @@
 			"developer": "Sviluppatore",
 			"skills": "Abilità",
 			"apps": "App",
-			"extensions": "Estensioni",
 			"plugins": "Plugin",
 			"knowledge": "Knowledge"
 		},
@@ -425,7 +422,6 @@
 				"webSearch": "Ricerca web",
 				"storage": "Archiviazione",
 				"apps": "App",
-				"extensions": "Estensioni",
 				"mcp": "Server MCP",
 				"skills": "Skill",
 				"providers": "Provider",
@@ -449,9 +445,9 @@
 				"builtInDescription": "Plugin inclusi in Kucedr.",
 				"builtInEmpty": "Nessun plugin integrato",
 				"downloadedTitle": "Scaricati",
-				"downloadedDescription": "Plugin che hai installato. Aggiungono app, estensioni, server MCP, provider e skill.",
+				"downloadedDescription": "Plugin che hai installato. Aggiungono app, server MCP, provider e skill.",
 				"title": "Installati",
-				"description": "I plugin aggiungono app, estensioni, server MCP, provider e skill a Kucedr.",
+				"description": "I plugin aggiungono app, server MCP, provider e skill a Kucedr.",
 				"upload": "Carica",
 				"urlLabel": "URL del plugin",
 				"urlPlaceholder": "https://registry.npmjs.org/…/plugin-1.0.0.tgz",
@@ -466,7 +462,7 @@
 			},
 			"marketplace": {
 				"title": "Marketplace",
-				"loading": "Caricamento dei plugin\u2026",
+				"loading": "Caricamento dei plugin…",
 				"empty": "Tutti i plugin del catalogo sono installati.",
 				"update": "Aggiorna"
 			},
@@ -1739,6 +1735,11 @@
 				"loadError": "Impossibile caricare le impostazioni della finestra.",
 				"saveError": "Impossibile salvare le impostazioni della finestra. Riprova.",
 				"invalid": "Inserisci numeri interi da 1 a 32768. Le dimensioni minime non possono superare quelle predefinite."
+			},
+			"detailMode": "Modalità",
+			"modes": {
+				"extension": "Estensione",
+				"window": "Finestra"
 			}
 		},
 		"filter": {
@@ -1749,27 +1750,6 @@
 				"downloaded": "Scaricati",
 				"game": "Gioco",
 				"utility": "Utilità"
-			}
-		},
-		"extensions": {
-			"title": "Estensioni",
-			"description": "Interfacce aggiunte alle schermate di Kucedr, importate da sole o fornite dai plugin.",
-			"empty": "Nessuna estensione",
-			"emptyDescription": "Aggiungi una cartella di estensione che contiene manifest.json e index.html.",
-			"loadError": "Impossibile caricare le estensioni.",
-			"installed": "Estensioni installate",
-			"addTitle": "Carica una nuova estensione",
-			"dropTitle": "Trascina qui le cartelle delle estensioni o fai clic per sfogliare",
-			"uploading": "Caricamento...",
-			"uploaded": "Caricate {{count}} estensioni.",
-			"uploadError": "Impossibile installare l'estensione.",
-			"remove": "Rimuovi {{name}}",
-			"slots": {
-				"sidebar": "Barra laterale",
-				"panel": "Pannello",
-				"toolbar": "Barra strumenti",
-				"composer": "Compositore",
-				"settings": "Impostazioni"
 			}
 		},
 		"plugins": {

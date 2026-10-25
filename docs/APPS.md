@@ -1,6 +1,6 @@
 # Apps
 
-Kucedr opens installable local HTML applications in dedicated desktop windows. Manage them in **Settings → Apps**. This repository does not contain bundled app source folders. Build an app in a separate project, then import its built folder or register it as a debug app.
+Kucedr runs installable local HTML applications inside the main window (extension mode) or in dedicated desktop windows, as each app's manifest allows. Manage them in **Settings → Apps**. This repository does not contain bundled app source folders. Build an app in a separate project, then import its built folder or register it as a debug app.
 
 The Workspace file browser is part of the main Kucedr window. Open it at `/workspace` or from **Settings → Workspace**; it is not installed through Settings → Apps. The Coding entry is marked **Soon**, and its old route redirects to Workspace.
 
@@ -9,7 +9,7 @@ The Workspace file browser is part of the main Kucedr window. Open it at `/works
 1. Obtain an app folder containing a valid `manifest.json` or supported `package.json`, plus its built entry file.
 2. In **Settings → Apps**, open the page action menu and choose the upload action. The native folder picker accepts multiple folders.
 3. Check the reported import result. Invalid folders are skipped with a reason.
-4. Use **Open** on the app card. Use **Details** for app information and window settings; the card itself does not navigate.
+4. Use **Open** on the app card to open it in its default mode. Click the card for **Details**: app information, mode, and window settings for `window` apps.
 5. Use the card's delete action to remove an installed app. Confirming deletion permanently removes its installed folder and app-scoped stored data.
 
 The importer copies each folder into `~/.kucedr/apps/<id>`, excluding `node_modules`. The folder name becomes the ID and must begin with an alphanumeric character, followed only by alphanumeric characters, underscores, or hyphens. Importing an existing ID replaces its application files while preserving its existing `data` directory. Data shipped in the source folder is not imported. A source folder that is already the installed destination is skipped.
@@ -17,6 +17,35 @@ The importer copies each folder into `~/.kucedr/apps/<id>`, excluding `node_modu
 **Open folder** opens the managed apps directory; **Refresh** reloads the inventory. Opening an already open app focuses its existing window.
 
 Sources: [Settings Apps](../src/renderer/src/pages/settings/pages/apps/Page.tsx), [importer](../src/main/apps/app_import.ts), [IPC actions and delete confirmation](../src/main/ipc/apps.ts), [window lifecycle](../src/main/apps/app_render.ts).
+
+## Opening modes
+
+The optional top-level `mode` in an app's `manifest.json` (or `kucedr.mode` in `package.json`) decides where it opens:
+
+| `mode` | Opens | Window settings |
+| --- | --- | --- |
+| `extension` (default) | Inside the main window, in place of the chat on the home page | Not used |
+| `window` | Its own desktop window | `window` section |
+
+```json
+{
+	"title": "Tetris",
+	"description": "Stack falling tetrominoes.",
+	"mode": "extension",
+	"metadata": { "version": "1.0.0", "category": "games", "entry": "index.html", "image": "icon.svg" },
+	"window": { "width": 420, "height": 560 }
+}
+```
+
+`metadata.image` (png, jpg, webp, avif, or svg inside the app folder) is the app's icon in Settings → Apps, the command menu, and the home sidebar.
+
+`apps:open` refuses an `extension`-only app. Apps without `mode` open inside Kucedr.
+
+**Extension mode.** The home page shows the app in an iframe with `sandbox="allow-scripts"`, loaded from `kucedr-app://<id>/<entry>`, with a header holding its title and a close button; the open app is also listed in the home sidebar under New chat. The frame has no preload and no `window.app` SDK. Main-window responses carry the CSP `default-src 'none'; script-src kucedr-app:; style-src kucedr-app: 'unsafe-inline'; img-src kucedr-app: data:; font-src kucedr-app: data:; media-src kucedr-app: data:`, so there is no network access and no inline script. App windows (separate session) are unaffected.
+
+**Shared storage.** Both modes use the same `~/.kucedr/apps/<id>/data/store.json`. In a window, use `window.app.getAppStoreValue` / `setAppStoreValue`. In extension mode, post `{ kucedrStore: <request id>, op: 'get' | 'set' | 'delete', key, value }` to `window.parent`; the host answers with `{ kucedrStore, value }` (or `error`). The bundled Triangle app's `store.js` shows a shim that picks the right path. App files (`readAppStoreFile`, …) are window-only.
+
+Sources: [mode type](../src/shared/installed_app_types.ts), [manifest validation](../src/main/apps/app_manifest_validate.ts), [open hook](../src/renderer/src/hooks/app.ts), [in-app host](../src/renderer/src/pages/home/components/ExtensionPage.tsx), [store IPC](../src/main/ipc/apps.ts), [CSP](../src/main/protocol.ts).
 
 ## Debug an external app folder
 
@@ -30,7 +59,7 @@ Sources: [debug registration](../src/main/apps/app_debug_add.ts), [debug removal
 
 ## Apps from plugins
 
-A plugin can ship apps in its `apps/<app-id>/` folder. They are listed in Settings → Apps after installed and debug apps, tagged with their plugin, and open the same way. Their files stay inside the plugin folder; their app-scoped data still goes to `~/.kucedr/apps/<id>/data`. An installed or debug app with the same ID wins. A plugin app can't be deleted on its own: disable or remove its plugin in Settings → Plugins. See [Plugins](PLUGINS.md).
+A plugin can ship apps in its `apps/<app-id>/` folder. They are listed in Settings → Apps after installed and debug apps, tagged with their plugin, and open by the same `mode` rules. Their files stay inside the plugin folder; their app-scoped data still goes to `~/.kucedr/apps/<id>/data`. An installed or debug app with the same ID wins. A plugin app can't be deleted on its own: disable or remove its plugin in Settings → Plugins. See [Plugins](PLUGINS.md).
 
 Sources: [plugin app lookup](../src/main/apps/app_plugin_directory.ts), [app list](../src/main/apps/app_list.ts), [delete guard](../src/main/apps/app_delete.ts).
 
@@ -52,7 +81,7 @@ Sources: [Workspace page](../src/renderer/src/pages/workspace/Page.tsx), [file a
 
 The data root can be overridden by `KUCEDR_E2E_DATA_ROOT` for tests. App-scoped file and value APIs validate IDs and reject invalid storage paths or symlink storage directories.
 
-**Details → Window** controls width, height, minimum dimensions, resizability, maximization, system frame, transparency, always-on-top, window type (`normal`, `panel` on macOS, `toolbar` on Windows and Linux), and the macOS title bar style. Changes apply on the next opening of the app window. Host defaults are 820×640 with a 620×480 minimum, resizable and maximizable, frameless, transparent, not always on top, a normal window type, and a hidden title bar. Selecting default values removes the custom window section from the manifest.
+**Details → Window** (shown for `window` apps) controls width, height, minimum dimensions, resizability, maximization, system frame, transparency, always-on-top, window type (`normal`, `panel` on macOS, `toolbar` on Windows and Linux), and the macOS title bar style. Changes apply on the next opening of the app window. Host defaults are 820×640 with a 620×480 minimum, resizable and maximizable, frameless, transparent, not always on top, a normal window type, and a hidden title bar. Selecting default values removes the custom window section from the manifest.
 
 Sources: [data root](../src/main/shared/user_data_location.ts), [value storage](../src/main/apps/app_values.ts), [file storage](../src/main/apps/app_files.ts), [debug registry](../src/main/apps/app_debug_store.ts), [window settings UI](../src/renderer/src/pages/settings/pages/apps/details/Window.tsx), [window defaults](../src/shared/app_window_settings.ts).
 
