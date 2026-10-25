@@ -86,8 +86,8 @@ Sources: [data root](../src/main/shared/user_data_location.ts), [value storage](
 ## Troubleshooting
 
 - **App not listed:** ensure its folder name is a valid ID, its manifest validates, and its built entry exists; then refresh Settings Apps.
-- **Missing entry:** build the app before importing or registering it. Import excludes `node_modules`, so runtime dependencies must be included in the generated frontend bundle.
-- **Source edits do not appear:** an installed app runs its copied files. Rebuild and reimport it, or register an external debug folder after resolving any ID collision.
+- **Missing entry:** build the app before packaging or registering it. Kucedr never runs `npm install`, so runtime dependencies must be included in the generated frontend bundle.
+- **Source edits do not appear:** an installed app runs its packaged files. Publish a new plugin version, or register an external debug folder after resolving any ID collision.
 - **Debug ID already in use:** use a distinct valid folder name or remove the conflicting registration/install after preserving any data you need.
 - **Model action fails:** inspect the relevant host provider/model configuration and the reported error. A browser preview has no host SDK runtime.
 - **Window settings seem unchanged:** close the existing window and reopen it; opening an already open app only focuses that window.
