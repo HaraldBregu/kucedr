@@ -6,7 +6,6 @@ export { installPlugin } from './plugins_install';
 export { downloadPlugin } from './plugins_download';
 export { availablePlugins } from './plugins_available';
 export { installCatalogPlugin } from './plugins_install_catalog';
-export { uploadPlugin } from './plugins_upload';
 export { removePlugin } from './plugins_remove';
 export { setPluginEnabled } from './plugins_set_enabled';
 export { refreshPlugins } from './plugins_scan';
