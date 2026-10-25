@@ -462,7 +462,6 @@ export const AppsChannels = {
 	open: 'apps:open',
 	openRoot: 'apps:open-root',
 	delete: 'apps:delete',
-	import: 'apps:import',
 	addDebug: 'apps:add-debug',
 	selectDebugPath: 'apps:select-debug-path',
 	getStoreValue: 'apps:store:value:get',
