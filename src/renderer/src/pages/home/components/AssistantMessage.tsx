@@ -168,7 +168,7 @@ export function AssistantMessage({
 		if (
 			!isCard &&
 			last &&
-			last[0].type !== 'run_plugin_tool' &&
+			last[0].type !== 'run_plugin_script' &&
 			last[0].type !== 'ask' &&
 			last[0].type !== 'select_screen_source' &&
 			last[0].type !== 'request_mcp_authorization'
