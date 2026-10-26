@@ -38,6 +38,12 @@ export function AppSidebarFooter(): React.JSX.Element {
 	const { state: authState } = useAuth();
 	const { sessionId } = useChatSession();
 	const [voiceError, setVoiceError] = useState<string | null>(null);
+	const [updateVersion, setUpdateVersion] = useState<string | null>(null);
+	const [updating, setUpdating] = useState(false);
+	useEffect(() => {
+		void window.app.getAvailableUpdate().then(setUpdateVersion);
+		return window.app.onUpdateAvailable(setUpdateVersion);
+	}, []);
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
 	const accountItem = {
 		title: authenticatedUser ? t('settings.tabs.account') : t('settings.title'),
