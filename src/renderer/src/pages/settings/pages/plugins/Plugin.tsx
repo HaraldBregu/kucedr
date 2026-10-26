@@ -270,6 +270,12 @@ export default function PluginPage(): React.JSX.Element {
 					<p className="mt-1.5 max-w-2xl text-base leading-5 text-muted-foreground">
 						{plugin.error ?? plugin.description}
 					</p>
+					<Meta rows={details} />
+					{plugin.core && (
+						<p className="mt-2 text-sm text-muted-foreground">
+							{t('settings.integrations.plugin.core')}
+						</p>
+					)}
 				</div>
 				<div className="flex shrink-0 items-center gap-1.5">
 					{!plugin.builtIn && (
