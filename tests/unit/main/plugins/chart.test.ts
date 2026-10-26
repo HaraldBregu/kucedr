@@ -62,7 +62,7 @@ function chartDom(html: string): JSDOM {
 }
 
 beforeAll(() => {
-	const absWorkingDir = path.resolve('resources/plugins/bootstrap/tools/chart');
+	const absWorkingDir = path.resolve('resources/plugins/bootstrap/scripts/chart');
 	buildSync({
 		absWorkingDir,
 		entryPoints: ['src/browser.jsx'],
