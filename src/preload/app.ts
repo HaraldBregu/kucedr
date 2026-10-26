@@ -101,6 +101,15 @@ export const app: AppApi = {
 	onTrayEnabledChanged: (callback: (enabled: boolean) => void): (() => void) => {
 		return typedOn(AppChannels.trayEnabledChanged, callback);
 	},
+	getAvailableUpdate: () => {
+		return typedInvokeUnwrap(AppChannels.getAvailableUpdate);
+	},
+	installUpdate: () => {
+		return typedInvokeUnwrap(AppChannels.installUpdate);
+	},
+	onUpdateAvailable: (callback: (version: string) => void): (() => void) => {
+		return typedOn(AppChannels.updateAvailable, callback);
+	},
 	setKeepAwake: (enabled: boolean): Promise<void> => {
 		return typedInvokeUnwrap(AppChannels.setKeepAwake, enabled);
 	},
