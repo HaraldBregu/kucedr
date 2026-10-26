@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { buildSync } from 'esbuild';
 import path from 'node:path';
 import { pluginTools } from '../../../../src/main/plugins/tools/plugin_tool_list';
 import { renderPluginTool } from '../../../../src/main/plugins/tools/plugin_tool_render';
@@ -14,14 +14,11 @@ const input = {
 };
 
 beforeAll(() => {
-	execFileSync(process.execPath, [
-		path.resolve('node_modules/esbuild/bin/esbuild'),
-		'src/browser.js', '--bundle', '--minify', '--format=iife', '--outfile=dist/browser.js',
-	], { cwd: path.resolve('resources/plugins/bootstrap/tools/chart') });
-	execFileSync(process.execPath, [
-		path.resolve('node_modules/esbuild/bin/esbuild'),
-		'src/index.mjs', '--bundle', '--platform=node', '--format=esm', '--outfile=dist/index.mjs',
-	], { cwd: path.resolve('resources/plugins/bootstrap/tools/chart') });
+	const absWorkingDir = path.resolve('resources/plugins/bootstrap/tools/chart');
+	buildSync({ absWorkingDir, entryPoints: ['src/browser.js'], bundle: true, minify: true,
+		format: 'iife', outfile: 'dist/browser.js' });
+	buildSync({ absWorkingDir, entryPoints: ['src/index.mjs'], bundle: true,
+		platform: 'node', format: 'esm', outfile: 'dist/index.mjs' });
 });
 
 it('discovers the bundled chart and tells the agent how to call it', () => {
