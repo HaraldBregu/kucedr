@@ -36,7 +36,7 @@ import { useAuth } from './contexts/AuthContext';
 const MemoryPage = lazy(() => import('./pages/settings/pages/memory/Page'));
 const LibraryPage = lazy(() => import('./pages/settings/pages/library/Page'));
 const AccountPage = lazy(() => import('./pages/settings/pages/account/Page'));
-const StoragePage = lazy(() => import('./pages/settings/pages/storage/Page'));
+const CloudPage = lazy(() => import('./pages/settings/pages/cloud/Page'));
 const TasksPage = lazy(() => import('./pages/settings/pages/tasks/Page'));
 const TaskDetailsPage = lazy(() => import('./pages/settings/pages/tasks/detail/Page'));
 const SettingsPage = lazy(() => import('./pages/settings/pages/settings/Page'));
