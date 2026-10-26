@@ -74,8 +74,8 @@ function renderChart({ type, data, xKey, series }: ChartInput): ReactElement {
 	return (
 		<BarChart data={data}>
 			{axes}
-			{series.map(({ key }) => (
-				<Bar key={key} dataKey={key} fill={`var(--color-${key})`} radius={4} />
+			{series.map(({ key }, index) => (
+				<Bar key={key} dataKey={key} fill={color(index)} radius={4} />
 			))}
 		</BarChart>
 	);
