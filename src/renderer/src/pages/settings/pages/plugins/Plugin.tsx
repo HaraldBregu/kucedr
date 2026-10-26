@@ -277,6 +277,11 @@ export default function PluginPage(): React.JSX.Element {
 						</p>
 					)}
 				</div>
+				{plugin.version && (
+					<Badge variant="outline" className="shrink-0">
+						{t('settings.integrations.plugin.version')} {plugin.version}
+					</Badge>
+				)}
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
 				{plugin.settings.length > 0 && (
