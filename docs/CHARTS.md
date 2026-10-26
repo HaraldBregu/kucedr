@@ -1,5 +1,7 @@
 # Charts in Chat
 
+> Replaced by [PLUGIN_TOOLS.md](PLUGIN_TOOLS.md): charts move out of the app into the external `charts` plugin, run through `run_plugin_tool`.
+
 ## Context
 
 The agent can only answer in text, markdown tables or media. We want it to draw charts inline in the chat when the user asks for one or when the data reads better as a chart.
