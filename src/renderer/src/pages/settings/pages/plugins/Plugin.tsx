@@ -152,38 +152,27 @@ export default function PluginPage(): React.JSX.Element {
 		);
 	}
 
-	const details: Row[] = [
-		{ key: 'id', title: t('settings.integrations.plugin.id'), badge: plugin.id },
-		...(plugin.version
-			? [
-					{
-						key: 'version',
-						title: t('settings.integrations.plugin.version'),
-						badge: plugin.version,
-					},
-				]
-			: []),
-		...(plugin.author
-			? [{ key: 'author', title: t('settings.integrations.plugin.author'), badge: plugin.author }]
-			: []),
+	const details = [
+		{ key: 'id', title: t('settings.integrations.plugin.id'), value: plugin.id },
+		{ key: 'version', title: t('settings.integrations.plugin.version'), value: plugin.version ?? '' },
+		{ key: 'author', title: t('settings.integrations.plugin.author'), value: plugin.author ?? '' },
 		{
 			key: 'source',
 			title: t('settings.integrations.plugin.source'),
-			badge: plugin.builtIn
+			value: plugin.builtIn
 				? t('settings.integrations.installed.builtInTitle')
 				: t('settings.integrations.installed.downloadedTitle'),
 		},
 		{
 			key: 'status',
 			title: t('settings.integrations.plugin.status'),
-			description: plugin.core ? t('settings.integrations.plugin.core') : undefined,
-			badge: plugin.error
+			value: plugin.error
 				? t('settings.integrations.installed.unavailable')
 				: plugin.enabled
 					? t('settings.integrations.plugin.enabled')
 					: t('settings.integrations.plugin.disabled'),
 		},
-	];
+	].filter((row) => row.value);
 
 	const sections: { key: string; title: string; rows: Row[] }[] = [
 		{
