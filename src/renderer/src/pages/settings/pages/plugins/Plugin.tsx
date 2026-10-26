@@ -172,6 +172,7 @@ export default function PluginPage(): React.JSX.Element {
 		{
 			key: 'status',
 			title: t('settings.integrations.plugin.status'),
+			icon: plugin.error ? CircleAlert : plugin.enabled ? CircleCheck : CircleOff,
 			value: plugin.error
 				? t('settings.integrations.installed.unavailable')
 				: plugin.enabled
