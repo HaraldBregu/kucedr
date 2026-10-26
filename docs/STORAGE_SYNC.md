@@ -164,7 +164,8 @@ corresponding metadata; the version-sync database migration does not convert the
 - Catch-up installs only new working files. Existing paths stay in place even when a newer cloud
   version is available; the local cache and conflict list retain the alternative version. The
   merge and historical-restore primitives are present in main-process code but have no conflict
-  resolution controls in Settings yet.
+  resolution controls in Settings yet. The planned fix is described in
+  [Two-way sync across devices](#two-way-sync-across-devices).
 - `maxCacheBytes` is reserved for future cache eviction. No immutable blob is automatically
   deleted, so pending local work is never evicted, but the storage directory can grow.
 - Custom S3-compatible endpoints require backend network egress controls. URL validation rejects
