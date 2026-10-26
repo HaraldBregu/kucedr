@@ -1452,6 +1452,7 @@ export interface SendChannelMap extends WindowSendChannelMap, TerminalSendChanne
 export interface AppEventChannelMap {
 	[AppChannels.modelsChanged]: { data: void };
 	[AppChannels.trayEnabledChanged]: { data: boolean };
+	[AppChannels.updateAvailable]: { data: string };
 	[AppChannels.keepAwakeChanged]: { data: boolean };
 	[AppChannels.soundFeedbackEnabledChanged]: { data: boolean };
 	[AppChannels.themeModeChanged]: { data: import('./app_types').AppThemeData };
