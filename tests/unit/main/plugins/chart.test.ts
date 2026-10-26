@@ -83,13 +83,13 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 				runScripts: 'dangerously',
 				pretendToBeVisual: true,
 				beforeParse(window) {
-					window.HTMLElement.prototype.getBoundingClientRect = () => ({
-						x: 0, y: 0, top: 0, left: 0, right: 800, bottom: 240, width: 800, height: 240,
-						toJSON: () => ({}),
-					});
+					window.HTMLElement.prototype.getBoundingClientRect = function () {
+						const height = this.classList.contains('recharts-legend-wrapper') ? 20 : 240;
+						return { x: 0, y: 0, top: 0, left: 0, right: 800, bottom: height, width: 800, height, toJSON: () => ({}) };
+					};
 					window.ResizeObserver = class {
 						constructor(private readonly callback: (entries: unknown[]) => void) {}
-						observe(target: HTMLElement) { this.callback([{ target, contentRect: { width: 800, height: 240 } }]); }
+						observe(target: HTMLElement) { this.callback([{ target, contentRect: target.getBoundingClientRect() }]); }
 						unobserve() {}
 						disconnect() {}
 					};
