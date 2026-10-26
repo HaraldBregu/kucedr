@@ -20,7 +20,8 @@ beforeAll(() => {
 	const absWorkingDir = path.resolve('resources/plugins/bootstrap/tools/chart');
 	buildSync({
 		absWorkingDir,
-		entryPoints: ['src/browser.js'],
+		entryPoints: ['src/browser.jsx'],
+		jsx: 'automatic',
 		bundle: true,
 		minify: true,
 		format: 'iife',
@@ -70,17 +71,14 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 			const html = await renderPluginTool('chart', { ...input, type }, theme);
 			expect(html).toContain('<!doctype html>');
 			expect(html).toContain('<style>');
-			expect(html).toContain('<canvas>');
-			expect(html).toContain(`background:${theme === 'dark' ? '#0a0a0a' : '#ffffff'}`);
+			expect(html).toContain('<div id="chart">');
+			expect(html).toContain('background:var(--background,Canvas)');
+			expect(html).toContain(`color-scheme:${theme}`);
 			expect(html).not.toMatch(/<script[^>]+src=|<link[^>]+href=/i);
-			const config = JSON.parse(
-				html.match(/new Chart\(document.querySelector\('canvas'\), (.*)\);/)![1]
-			);
-			expect(config.type).toBe(type === 'area' ? 'line' : type);
-			expect(config.data.labels).toEqual(['Jan', 'Feb']);
-			expect(config.data.datasets[0].data).toEqual([10, 20]);
-			expect(config.options.color).toBe(theme === 'dark' ? '#d4d4d4' : '#404040');
-			if (type === 'area') expect(config.data.datasets[0].fill).toBe(true);
+			const data = JSON.parse(html.match(/<script id="chart-input" type="application\/json">(.*?)<\/script>/s)![1]);
+			expect(data).toEqual({ ...input, type });
+			expect(html).toContain('recharts-wrapper');
+			expect(html).toContain('var(--chart-1');
 		}
 	}
 );
@@ -112,10 +110,8 @@ it('escapes markup in text and prevents labels from breaking out of the inline s
 		'light'
 	);
 	expect(html).not.toContain(text);
-	expect(html.match(/<script>/g)).toHaveLength(2);
+	expect(html.match(/<script(?:\s|>)/g)).toHaveLength(2);
 	expect(html).toContain('&#60;/script&#62;');
-	const config = JSON.parse(
-		html.match(/new Chart\(document.querySelector\('canvas'\), (.*)\);/)![1]
-	);
-	expect(config.data.labels).toEqual([text]);
+	const data = JSON.parse(html.match(/<script id="chart-input" type="application\/json">(.*?)<\/script>/s)![1]);
+	expect(data.data[0].month).toEqual(text);
 });
