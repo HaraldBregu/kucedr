@@ -1,10 +1,10 @@
 import { buildSync } from 'esbuild';
 import { JSDOM } from 'jsdom';
 import path from 'node:path';
-import { pluginTools } from '../../../../src/main/plugins/tools/plugin_tool_list';
-import { renderPluginTool } from '../../../../src/main/plugins/tools/plugin_tool_render';
-import { runPluginTool } from '../../../../src/main/agent/tools/plugin/run';
-import { addPluginToolsPrompt } from '../../../../src/main/agent/system/system_add_plugin_tools_prompt';
+import { pluginScripts } from '../../../../src/main/plugins/scripts/plugin_script_list';
+import { renderPluginScript } from '../../../../src/main/plugins/scripts/plugin_script_render';
+import { runPluginScript } from '../../../../src/main/agent/tools/plugin/run';
+import { addPluginScriptsPrompt } from '../../../../src/main/agent/system/system_add_plugin_scripts_prompt';
 
 const chartTypes = [
 	'bar',
