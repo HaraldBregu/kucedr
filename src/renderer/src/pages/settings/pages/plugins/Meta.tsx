@@ -1,0 +1,20 @@
+import React from 'react';
+
+interface Props {
+	readonly rows: readonly { readonly key: string; readonly title: string; readonly value: string }[];
+}
+
+export default function Meta({ rows }: Props): React.JSX.Element {
+	return (
+		<dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+			{rows.map((row) => (
+				<div key={row.key} className="flex gap-1.5">
+					<dt className="text-muted-foreground">{row.title}</dt>
+					<dd className={row.key === 'id' ? 'font-mono text-foreground' : 'text-foreground'}>
+						{row.value}
+					</dd>
+				</div>
+			))}
+		</dl>
+	);
+}
