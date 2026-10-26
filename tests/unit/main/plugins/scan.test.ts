@@ -2,7 +2,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'nod
 import os from 'node:os';
 import path from 'node:path';
 import { scanPlugins, refreshPlugins } from '../../../../src/main/plugins/plugins_scan';
-import { pluginTools } from '../../../../src/main/plugins/tools/plugin_tool_list';
+import { pluginScripts } from '../../../../src/main/plugins/scripts/plugin_script_list';
 
 let mockBundledRoot: string;
 let mockInstalledRoot: string;
