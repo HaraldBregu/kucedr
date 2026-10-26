@@ -26,6 +26,7 @@ const READ = new Set([
 	'camera_recorder_status',
 	'microphone_recorder_status',
 	'screen_recorder_status',
+	'create_chart',
 ]);
 const WRITE = new Set(['write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap']);
 const PERSIST = new Set([
