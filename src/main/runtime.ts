@@ -22,6 +22,7 @@ import {
 import type { AppLanguage } from '../shared/app_types';
 import { Menu } from './menu';
 import { setKeepAwake } from './keep_awake';
+import { startUpdater } from './updater';
 import { userDataLocation } from './shared/user_data_location';
 import { destroyAllApps, ensureApps, watchApps } from './apps/app_index';
 import { ShortcutManager } from './shortcuts';
