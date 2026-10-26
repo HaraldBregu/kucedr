@@ -137,8 +137,13 @@ export default function MarketplacePage(): React.JSX.Element {
 					</p>
 					<Meta rows={details} />
 				</div>
-				<Badge variant="outline" className="shrink-0">
-					{t('settings.integrations.plugin.version')} {plugin.version}
+				<Badge
+					variant="outline"
+					className="shrink-0"
+					title={t('settings.integrations.plugin.version')}
+				>
+					<Tag />
+					{plugin.version}
 				</Badge>
 			</header>
 			<div className="pb-8">
