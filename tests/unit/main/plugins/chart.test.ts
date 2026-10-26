@@ -254,7 +254,7 @@ it('escapes markup in text and prevents labels from breaking out of the inline s
 
 it.each([undefined, '', '   '])('renders an untitled chart when title is %j', async (title) => {
 	const untitled = { ...input, title };
-	await expect(runPluginTool.run({ name: 'chart', input: untitled })).resolves.toMatchObject({
+	await expect(runPluginScript.run({ name: 'chart', input: untitled })).resolves.toMatchObject({
 		ok: true,
 	});
 	const html = await renderPluginTool('chart', untitled, 'light');
