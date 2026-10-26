@@ -145,23 +145,41 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 					const wrapper = document.querySelector('.recharts-wrapper')!;
 					for (const interaction of ['hover', 'keyboard']) {
 						if (interaction === 'hover') {
-							wrapper.dispatchEvent(new dom.window.MouseEvent('mousemove', { bubbles: true, clientX: 250, clientY: 100 }));
+							wrapper.dispatchEvent(
+								new dom.window.MouseEvent('mousemove', {
+									bubbles: true,
+									clientX: 250,
+									clientY: 100,
+								})
+							);
 						} else {
 							surface.dispatchEvent(new dom.window.FocusEvent('focusin', { bubbles: true }));
-							surface.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+							surface.dispatchEvent(
+								new dom.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })
+							);
 						}
-						for (let tries = 0; tries < 30 && !document.querySelector('.recharts-tooltip-cursor'); tries++)
+						for (
+							let tries = 0;
+							tries < 30 && !document.querySelector('.recharts-tooltip-cursor');
+							tries++
+						)
 							await new Promise((resolve) => setTimeout(resolve, 20));
 						const cursor = document.querySelector('.recharts-tooltip-cursor');
 						expect(cursor).not.toBeNull();
-						expect(cursor!.getAttribute(type === 'bar' ? 'fill' : 'stroke'))
-							.toContain(type === 'bar' ? 'var(--muted' : 'var(--border');
+						expect(cursor!.getAttribute(type === 'bar' ? 'fill' : 'stroke')).toContain(
+							type === 'bar' ? 'var(--muted' : 'var(--border'
+						);
 						if (type !== 'bar')
-							expect(document.querySelector('.recharts-active-dot circle')?.getAttribute('stroke'))
-								.toContain('var(--background');
+							expect(
+								document.querySelector('.recharts-active-dot circle')?.getAttribute('stroke')
+							).toContain('var(--background');
 						if (interaction === 'hover') {
 							wrapper.dispatchEvent(new dom.window.MouseEvent('mouseout', { bubbles: true }));
-							for (let tries = 0; tries < 30 && document.querySelector('.recharts-tooltip-cursor'); tries++)
+							for (
+								let tries = 0;
+								tries < 30 && document.querySelector('.recharts-tooltip-cursor');
+								tries++
+							)
 								await new Promise((resolve) => setTimeout(resolve, 20));
 							expect(document.querySelector('.recharts-tooltip-cursor')).toBeNull();
 						}
