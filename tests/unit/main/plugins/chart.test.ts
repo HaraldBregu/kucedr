@@ -93,8 +93,8 @@ it('discovers the bundled chart and tells the agent how to call it', () => {
 			}),
 		])
 	);
-	const prompt = addPluginToolsPrompt('', tools);
-	expect(prompt).toContain('run_plugin_tool');
+	const prompt = addPluginScriptsPrompt('', scripts);
+	expect(prompt).toContain('run_plugin_script');
 	expect(prompt).toContain('### chart (Bootstrap plugin)');
 	expect(prompt).toContain('"required":["type","data","xKey","series"]');
 	const schema = tools.find((tool) => tool.name === 'chart')!.inputSchema as {
