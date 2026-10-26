@@ -26,7 +26,6 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useNow } from '@/components/hooks/use-now';
 import { cn } from '@/lib/utils';
 import { formatDuration } from './duration';
-import { googleService } from './google';
 import { McpIcon } from './mcp';
 import { isTaskToolType } from './task';
 import { estimateTokens } from './tokens';
