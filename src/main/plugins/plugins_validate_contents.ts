@@ -24,7 +24,7 @@ export function validatePluginContents(directory: string, manifest: ReadPlugin):
 		const [problem] = listLocalMcpServers(path.join(directory, 'mcp')).diagnostics;
 		if (problem) throw new Error(`mcp/${problem.name}: ${problem.error}`);
 	}
-	for (const id of manifest.contributes.tools) readPluginTool(path.join(directory, 'tools', id));
+	for (const id of manifest.contributes.scripts) readPluginScript(path.join(directory, 'scripts', id));
 	for (const id of manifest.contributes.skills) {
 		const validation = validateSkill(path.join(directory, 'skills', id));
 		if (!validation.valid) {
