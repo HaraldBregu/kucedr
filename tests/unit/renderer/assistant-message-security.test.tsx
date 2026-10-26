@@ -39,6 +39,17 @@ jest.mock('@/hooks/use-plugin-tools', () => ({
 }));
 
 beforeEach(() => {
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: {
+			...window.app,
+			getThemeData: jest.fn().mockResolvedValue({
+				themeMode: 'light', isDark: false,
+				colors: { background: '#ffffff', foreground: '#111111', 'chart-1': '#19635f' },
+			}),
+			onThemeModeChanged: jest.fn(() => () => undefined),
+		},
+	});
 	Object.defineProperty(window, 'plugins', {
 		configurable: true,
 		value: { renderTool: jest.fn().mockResolvedValue('<html><head></head><body>Chart</body></html>') },
