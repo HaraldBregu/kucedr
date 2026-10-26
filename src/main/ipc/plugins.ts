@@ -59,6 +59,23 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			trusted.assert(event);
 			return plugins.pluginSettings(id);
 		});
+		registerQueryWithEvent(PluginsChannels.tools, (event) => {
+			trusted.assert(event);
+			return plugins.pluginTools().map(({ name, title, fence, height, plugin }) => ({
+				name,
+				title,
+				...(fence && { fence }),
+				height,
+				plugin,
+			}));
+		});
+		registerQueryWithEvent(
+			PluginsChannels.renderTool,
+			(event, name: string, input: unknown, theme: 'light' | 'dark') => {
+				trusted.assert(event);
+				return plugins.renderPluginTool(name, input, theme === 'dark' ? 'dark' : 'light');
+			}
+		);
 		registerCommandWithEvent(
 			PluginsChannels.saveSettings,
 			(event, id: string, values: Record<string, string>) => {
