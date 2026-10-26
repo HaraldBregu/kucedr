@@ -97,7 +97,7 @@ it('discovers the bundled chart and tells the agent how to call it', () => {
 	expect(prompt).toContain('run_plugin_script');
 	expect(prompt).toContain('### chart (Bootstrap plugin)');
 	expect(prompt).toContain('"required":["type","data","xKey","series"]');
-	const schema = tools.find((tool) => tool.name === 'chart')!.inputSchema as {
+	const schema = scripts.find((script) => script.name === 'chart')!.inputSchema as {
 		properties: { type: { enum: string[] } };
 		required: string[];
 	};
