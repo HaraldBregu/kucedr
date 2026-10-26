@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AssistantMessage } from '../../../src/renderer/src/pages/home/components/AssistantMessage';
 import type { AgentMessage } from '../../../src/renderer/src/pages/home/context';
+import { historyToChatMessages } from '../../../src/renderer/src/pages/home/context/reducer';
 
 jest.mock('react-markdown', () => ({ defaultUrlTransform: (url: string) => url }));
 jest.mock('@/components/prompt-kit/markdown', () => ({
@@ -29,6 +30,20 @@ jest.mock('@/pages/home/hooks', () => ({
 		clearError: jest.fn(),
 	}),
 }));
+jest.mock('@/hooks/use-plugin-tools', () => ({
+	usePluginTools: () => ({
+		loaded: true,
+		byName: new Map([['chart', { name: 'chart', title: 'Chart', height: 320 }]]),
+		byFence: new Map(),
+	}),
+}));
+
+beforeEach(() => {
+	Object.defineProperty(window, 'plugins', {
+		configurable: true,
+		value: { renderTool: jest.fn().mockResolvedValue('<html><head></head><body>Chart</body></html>') },
+	});
+});
 
 function message(content: string, tools: AgentMessage['tools'] = []): AgentMessage {
 	return {
@@ -351,4 +366,59 @@ it('uses the displayed plan content when replying to a plan', () => {
 	);
 	fireEvent.click(screen.getByRole('button', { name: 'Reply' }));
 	expect(onReply).toHaveBeenCalledWith({ id: 'assistant-1', content: 'The plan to discuss.' });
+});
+
+it('shows every chart between ordinary tool calls', async () => {
+	const tools: AgentMessage['tools'] = [
+		{ toolCallId: 'search', type: 'search_web', state: 'output-available', output: 'Found data' },
+		{ toolCallId: 'first', type: 'run_plugin_tool', state: 'output-available', input: { name: 'chart', input: { title: 'First' } } },
+		{ toolCallId: 'second', type: 'run_plugin_tool', state: 'output-available', input: { name: 'chart', input: { title: 'Second' } } },
+		{ toolCallId: 'read', type: 'read', state: 'output-available', output: 'Read data' },
+	];
+	render(<AssistantMessage message={message('', tools)} />);
+
+	expect(await screen.findAllByTitle('Chart')).toHaveLength(2);
+	expect(window.plugins.renderTool).toHaveBeenNthCalledWith(1, 'chart', { title: 'First' }, 'light');
+	expect(window.plugins.renderTool).toHaveBeenNthCalledWith(2, 'chart', { title: 'Second' }, 'light');
+});
+
+it('waits for successful plugin execution before rendering its chart', async () => {
+	const call: AgentMessage['tools'][number] = {
+		toolCallId: 'chart', type: 'run_plugin_tool', state: 'input-available',
+		input: { name: 'chart', input: { title: 'Sales' } },
+	};
+	const { rerender } = render(<AssistantMessage message={message('', [call])} />);
+
+	expect(window.plugins.renderTool).not.toHaveBeenCalled();
+	expect(screen.queryByTitle('Chart')).not.toBeInTheDocument();
+	rerender(<AssistantMessage message={message('', [{ ...call, state: 'output-available', output: { ok: true } }])} />);
+	expect(await screen.findByTitle('Chart')).toBeInTheDocument();
+	expect(window.plugins.renderTool).toHaveBeenCalledWith('chart', { title: 'Sales' }, 'light');
+});
+
+it('does not render failed plugin calls', () => {
+	render(<AssistantMessage message={message('', [{
+		toolCallId: 'chart', type: 'run_plugin_tool', state: 'output-error',
+		input: { name: 'chart', input: { title: 'Sales' } },
+		errorText: 'Chart failed',
+	}])} />);
+
+	expect(window.plugins.renderTool).not.toHaveBeenCalled();
+	expect(screen.queryByTitle('Chart')).not.toBeInTheDocument();
+});
+
+it('renders a successful chart restored from persisted tool arguments and results', async () => {
+	const input = { title: 'Restored sales' };
+	const restored = historyToChatMessages([
+		{ role: 'assistant', content: '', contentBlocks: [{
+			type: 'tool_use', toolUseId: 'chart', toolName: 'run_plugin_tool',
+			toolArgs: { name: 'chart', input },
+		}] },
+		{ role: 'tool', toolUseId: 'chart', content: JSON.stringify({ ok: true }), status: 'ok' },
+	])[0];
+	if (!restored || restored.role !== 'agent') throw new Error('Expected restored assistant.');
+	render(<AssistantMessage message={restored} />);
+
+	expect(await screen.findByTitle('Chart')).toBeInTheDocument();
+	expect(window.plugins.renderTool).toHaveBeenCalledWith('chart', input, 'light');
 });
