@@ -5,16 +5,16 @@ import {
 	useEditorState,
 	type NodeViewProps,
 } from '@tiptap/react';
-import { PluginToolFrame } from '@/components/plugin-tool/Frame';
-import { usePluginTools } from '@/hooks/use-plugin-tools';
+import { PluginScriptFrame } from '@/components/plugin-script/Frame';
+import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import { cn } from '@/lib/utils';
 
 export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): React.JSX.Element {
-	const { byFence } = usePluginTools();
-	const pluginTool = node.attrs.language ? byFence.get(node.attrs.language) : undefined;
+	const { byFence } = usePluginScripts();
+	const script = node.attrs.language ? byFence.get(node.attrs.language) : undefined;
 	const text = node.textContent;
 	const input = useMemo(() => {
-		if (!pluginTool) return undefined;
+		if (!script) return undefined;
 		try {
 			return JSON.parse(text) as unknown;
 		} catch {
