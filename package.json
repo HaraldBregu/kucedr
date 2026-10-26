@@ -14,7 +14,7 @@
 		"packages/sdk",
 		"packages/cli",
 		"website",
-		"resources/plugins/bootstrap/tools/chart"
+		"resources/plugins/bootstrap/scripts/chart"
 	],
 	"packageManager": "npm@11.13.0",
 	"engines": {
