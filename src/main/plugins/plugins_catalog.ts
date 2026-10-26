@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { pluginVersionSchema } from '../../shared/plugin_manifest';
-import { PLUGIN_KINDS, type CatalogPlugin } from '../../shared/plugin_types';
+import { PLUGIN_KINDS, type CatalogPlugin, type PluginKind } from '../../shared/plugin_types';
 
 export const PLUGINS_CATALOG_URL = 'https://kucedr.github.io/kucedr-plugins/index.json';
 
