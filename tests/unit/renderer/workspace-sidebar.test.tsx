@@ -163,8 +163,8 @@ it('creates inside and deletes a folder from its right click menu', async () => 
 	await user.type(await screen.findByRole('textbox', { name: 'Name' }), 'New');
 	await user.click(screen.getByRole('button', { name: 'Create' }));
 	await waitFor(() => expect(createWorkspaceDirectory).toHaveBeenCalledWith('Notes', 'New'));
+	jest.spyOn(window, 'confirm').mockReturnValue(true);
 	fireEvent.contextMenu(folder.closest('summary') as HTMLElement);
-	await user.click(await screen.findByRole('button', { name: 'Delete' }));
 	await waitFor(() => expect(deleteWorkspaceDirectory).toHaveBeenCalledWith('Notes'));
 });
 
