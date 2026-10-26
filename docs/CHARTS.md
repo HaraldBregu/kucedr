@@ -1,6 +1,6 @@
 # Charts in Chat
 
-> Replaced by [PLUGIN_TOOLS.md](PLUGIN_TOOLS.md): charts move out of the app into the external `charts` plugin, run through `run_plugin_tool`.
+> Replaced by [PLUGIN_SCRIPTS.md](PLUGIN_SCRIPTS.md): charts move out of the app into the bootstrap plugin's `chart` script, run through `run_plugin_script`.
 
 ## Context
 
