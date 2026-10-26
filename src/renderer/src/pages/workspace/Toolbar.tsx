@@ -38,13 +38,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 const mod = navigator.platform.startsWith('Mac') ? '⌘' : 'Ctrl+';
 const alt = navigator.platform.startsWith('Mac') ? '⌥' : 'Alt+';
-const sampleChart = JSON.stringify({
-	type: 'bar',
-	title: 'Chart title',
-	xKey: 'month',
-	series: [{ key: 'value', label: 'Value' }],
-	data: [{ month: 'Jan', value: 10 }, { month: 'Feb', value: 20 }, { month: 'Mar', value: 15 }],
-}, null, 2);
 
 interface Action {
 	readonly label: string;
