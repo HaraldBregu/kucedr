@@ -68,6 +68,7 @@ export function builtinTools(
 		createImageTool(),
 		createVideoTool(),
 		createSoundTool(),
+		createChartTool,
 		microphoneRecorderTool(),
 		microphoneRecorderStatusTool,
 		microphoneRecorderStopTool,
