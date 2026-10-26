@@ -292,6 +292,7 @@ export function AssistantMessage({
 					return <ScreenSourceCard key={tool.toolCallId} tool={tool} pending={pending} />;
 				if (tool.type === 'request_mcp_authorization')
 					return <McpAuthorizationCard key={tool.toolCallId} tool={tool} pending={pending} />;
+				if (tool.type === 'create_chart') return <ChartCard key={tool.toolCallId} tool={tool} />;
 				return <ToolActivityGroup key={tool.toolCallId} tools={section} />;
 			})}
 			{message.pendingPermission && (
