@@ -4,6 +4,7 @@ import type { ReadPlugin } from './plugins_read';
 import { readAppManifestFromDirectory } from '../apps/app_read';
 import { listLocalMcpServers } from '../mcp/mcp_local_list';
 import { validateSkill } from '../agent/skills/skills_validate';
+import { readPluginTool } from './tools/plugin_tool_read';
 import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
 
 /** Install-time checks that each contribution is readable by the loader that will serve it. */
