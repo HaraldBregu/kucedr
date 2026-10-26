@@ -66,8 +66,8 @@ function renderChart({ type, data, xKey, series }: ChartInput): ReactElement {
 		return (
 			<AreaChart data={data}>
 				{axes}
-				{series.map(({ key }) => (
-					<Area key={key} dataKey={key} type="monotone" stroke={`var(--color-${key})`} fill={`var(--color-${key})`} fillOpacity={0.3} />
+				{series.map(({ key }, index) => (
+					<Area key={key} dataKey={key} type="monotone" stroke={color(index)} fill={color(index)} fillOpacity={0.3} />
 				))}
 			</AreaChart>
 		);
