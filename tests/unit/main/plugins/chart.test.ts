@@ -133,24 +133,34 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 					document.querySelector(shape)!.getAttribute(type === 'line' ? 'stroke' : 'fill')
 				).toContain('var(--chart-1');
 				const styles = Array.from(document.querySelectorAll('style'))
-					.map((style) => style.textContent).join('');
+					.map((style) => style.textContent)
+					.join('');
 				expect(styles).toMatch(/:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--ring/);
 				if (type === 'line')
-					expect(document.querySelector('.recharts-line-dot')?.getAttribute('fill'))
-						.toContain('var(--background');
+					expect(document.querySelector('.recharts-line-dot')?.getAttribute('fill')).toContain(
+						'var(--background'
+					);
 				if (type === 'bar' || type === 'line' || type === 'area') {
 					const surface = document.querySelector('svg[role="application"]')!;
 					surface.dispatchEvent(new dom.window.FocusEvent('focusin', { bubbles: true }));
-					surface.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
-					for (let tries = 0; tries < 30 && !document.querySelector('.recharts-tooltip-cursor'); tries++)
+					surface.dispatchEvent(
+						new dom.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })
+					);
+					for (
+						let tries = 0;
+						tries < 30 && !document.querySelector('.recharts-tooltip-cursor');
+						tries++
+					)
 						await new Promise((resolve) => setTimeout(resolve, 20));
 					const cursor = document.querySelector('.recharts-tooltip-cursor');
 					expect(cursor).not.toBeNull();
-					expect(cursor!.getAttribute(type === 'bar' ? 'fill' : 'stroke'))
-						.toContain(type === 'bar' ? 'var(--muted' : 'var(--border');
+					expect(cursor!.getAttribute(type === 'bar' ? 'fill' : 'stroke')).toContain(
+						type === 'bar' ? 'var(--muted' : 'var(--border'
+					);
 					if (type !== 'bar')
-						expect(document.querySelector('.recharts-active-dot circle')?.getAttribute('stroke'))
-							.toContain('var(--background');
+						expect(
+							document.querySelector('.recharts-active-dot circle')?.getAttribute('stroke')
+						).toContain('var(--background');
 				}
 			} finally {
 				dom.window.close();
