@@ -272,6 +272,8 @@
 			"accountMenu": "Menu account per {{name}}",
 			"manageAccount": "Gestisci account",
 			"signOut": "Esci",
+			"update": "Aggiorna a {{version}}",
+			"updating": "Aggiornamento…",
 			"mcp": "MCP"
 		},
 		"overview": {
