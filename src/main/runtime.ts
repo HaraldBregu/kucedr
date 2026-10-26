@@ -192,6 +192,7 @@ app.whenReady().then(() => {
 			.catch((error) => logger.error('Memory', 'Wake refresh failed', error));
 	});
 	recordAppLaunch();
+	if (app.isPackaged) startUpdater(eventBus, logger);
 	startStorageSync(logger, services.storageOperations);
 	services.cloudService.initialize();
 	const authInitialization = services.authService.initialize();
