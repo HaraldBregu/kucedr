@@ -331,6 +331,31 @@ export default function PluginPage(): React.JSX.Element {
 						</SettingsSection>
 					))
 				)}
+				{!plugin.builtIn && (
+					<div className="flex items-center gap-1.5">
+						<Button
+							type="button"
+							size="sm"
+							variant={plugin.enabled ? 'outline' : 'default'}
+							disabled={busy || Boolean(plugin.error)}
+							onClick={() => void run(() => window.plugins.setEnabled(plugin.id, !plugin.enabled))}
+						>
+							{plugin.enabled
+								? t('settings.integrations.installed.disable')
+								: t('settings.integrations.installed.enableAction')}
+						</Button>
+						<Button
+							type="button"
+							size="sm"
+							variant="outline"
+							disabled={busy}
+							onClick={() => setConfirming(true)}
+						>
+							<Trash2 />
+							{t('settings.integrations.plugin.remove')}
+						</Button>
+					</div>
+				)}
 			</div>
 			<Confirm
 				name={plugin.name}
