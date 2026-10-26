@@ -82,6 +82,58 @@ by default. Enable S3 Versioning for additional object recovery. Recovering the 
 coordinating a Supabase metadata backup with the corresponding S3 objects; restoring either one
 alone can leave published versions without content or content without discoverable metadata.
 
+## Two-way sync across devices
+
+Planned changes so every desktop on an account converges on the same workspace, transferring
+only changed files. The design above already provides content-addressed blobs, parent edges,
+heads, and a per-device change cursor; these items close the gaps in the current code.
+
+### Fast-forward apply in catch-up
+
+Today `cloud/catchup.ts` installs a working file only when its path is absent
+(`cloud/install_working.ts` links and gives up on `EEXIST`), so edits, deletions, and renames
+made on another device never reach existing files. Replace that with a fast-forward rule per
+incoming change:
+
+- **Unchanged locally.** The local file is unchanged since the last sync when
+  `working_files.content_hash` equals the content hash of one of the incoming version's parents
+  (from `remote_parents` joined to `remote_versions`) and that parent is in `local_heads`.
+- **`content` / `restore`.** If unchanged locally, write the content to `staging/`, fsync, and
+  `rename` over the working file. Then update `working_files` (hash, `modified_ns`, `size_bytes`)
+  and replace the file's `local_heads` row with the incoming version.
+- **`tombstone`.** If unchanged locally, remove the working file, delete its `working_files` row,
+  and record the tombstone as the local head.
+- **`rename`.** If unchanged locally and the new path is free, move the file and update
+  `relative_path` in `local_files` and `working_files`. An occupied destination stays a path
+  conflict.
+- **Changed locally.** Leave the working file untouched. The existing multiple-head conflict row
+  from `local/change.ts` keeps both versions for review.
+- **Edit during download.** Re-hash the working file immediately before the `rename` or removal.
+  If it no longer matches the expected parent hash, abort the apply and leave a conflict. This
+  check runs while the main process holds the storage lock, which also serializes it with
+  `scanWorkspace`.
+
+New paths keep the current behavior: they are installed only when the destination is absent.
+
+### Stat-based change detection
+
+`cloud/scan.ts` reads and hashes every file on every scan. Compare `lstat` `mtimeNs` and `size`
+against `working_files.modified_ns` and `size_bytes` first, and read and hash only on a mismatch.
+Write both columns whenever a hash is recorded, including after a fast-forward install, so the
+next scan does not re-upload content the device just received. A scan that finds a changed
+file still uses the existing snapshot and pending-operation path.
+
+### Reuse local blobs
+
+Catch-up downloads content for every change, including versions this device published. Before
+calling `cloud.download`, check `storage/blobs/<scope hash>/<sha256>`. If the blob exists and
+verifies, use it and skip the transfer.
+
+### Not planned yet
+
+- Chunked or delta transfer. Add it when files above the 50 MiB object limit are needed.
+- Conflict-resolution controls in Settings. The merge primitives exist; see the limitations below.
+
 ## Service setup
 
 Apply both migrations under `supabase/migrations/` in filename order to the intended Supabase
