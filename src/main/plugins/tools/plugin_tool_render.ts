@@ -20,7 +20,7 @@ export function renderPluginTool(
 	if (cached) return cached;
 
 	const result = new Promise<string>((resolve, reject) => {
-		const child = spawn(process.execPath, [path.join(tool.directory, ...tool.entry.split('/'))], {
+		const child = spawn(process.execPath, [path.join(tool.directory, ...tool.metadata.entry.split('/'))], {
 			cwd: tool.directory,
 			env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' },
 			timeout: TIMEOUT_MS,
