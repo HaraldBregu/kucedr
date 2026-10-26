@@ -23,7 +23,7 @@ export default defineConfig({
 			{
 				name: 'chart-tool',
 				async buildStart() {
-					const directory = resolve(__dirname, 'resources/plugins/bootstrap/tools/chart');
+					const directory = resolve(__dirname, 'resources/plugins/bootstrap/scripts/chart');
 					await Promise.all([
 						build({
 							absWorkingDir: directory,
