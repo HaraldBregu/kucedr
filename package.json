@@ -124,6 +124,7 @@
 		"@supabase/supabase-js": "^2.117.0",
 		"@thilakbhat/heatmap-ui": "^0.3.0",
 		"@tiptap/core": "^3.32.0",
+		"@tiptap/extension-code-block": "^3.32.0",
 		"@tiptap/extension-image": "^3.32.0",
 		"@tiptap/extension-table": "^3.32.0",
 		"@tiptap/extension-task-item": "^3.32.0",
