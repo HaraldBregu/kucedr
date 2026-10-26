@@ -116,8 +116,9 @@ it('creates, renames, and deletes a file through the right click menu', async ()
 	await waitFor(() => expect(renameWorkspaceEntry).toHaveBeenCalledWith('draft.md', 'final.md'));
 	expect(onEntryRenamed).toHaveBeenCalledWith('draft.md', 'final.md');
 
+	const confirm = jest.spyOn(window, 'confirm').mockReturnValue(true);
 	fireEvent.contextMenu(await screen.findByRole('button', { name: 'final.md' }));
-	await user.click(await screen.findByRole('button', { name: 'Delete' }));
+	await waitFor(() => expect(confirm).toHaveBeenCalled());
 	await waitFor(() => expect(deleteWorkspaceFile).toHaveBeenCalledWith('final.md'));
 	expect(onEntryDeleted).toHaveBeenCalledWith('final.md');
 	await screen.findByText('Workspace is empty.');
