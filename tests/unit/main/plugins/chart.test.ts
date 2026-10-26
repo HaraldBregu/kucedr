@@ -1,4 +1,5 @@
 import { buildSync } from 'esbuild';
+import { JSDOM } from 'jsdom';
 import path from 'node:path';
 import { pluginTools } from '../../../../src/main/plugins/tools/plugin_tool_list';
 import { renderPluginTool } from '../../../../src/main/plugins/tools/plugin_tool_render';
@@ -78,7 +79,37 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 			const data = JSON.parse(html.match(/<script id="chart-input" type="application\/json">(.*?)<\/script>/s)![1]);
 			expect(data).toEqual({ ...input, type });
 			expect(html).toContain('recharts-wrapper');
-			expect(html).toContain('var(--chart-1');
+			const dom = new JSDOM(html, {
+				runScripts: 'dangerously',
+				pretendToBeVisual: true,
+				beforeParse(window) {
+					window.HTMLElement.prototype.getBoundingClientRect = () => ({
+						x: 0, y: 0, top: 0, left: 0, right: 800, bottom: 240, width: 800, height: 240,
+						toJSON: () => ({}),
+					});
+					window.ResizeObserver = class {
+						constructor(private readonly callback: (entries: unknown[]) => void) {}
+						observe(target: HTMLElement) { this.callback([{ target, contentRect: { width: 800, height: 240 } }]); }
+						unobserve() {}
+						disconnect() {}
+					};
+				},
+			});
+			try {
+				for (let tries = 0; tries < 30 && !dom.window.document.querySelector('.recharts-surface'); tries++)
+					await new Promise((resolve) => setTimeout(resolve, 20));
+				const document = dom.window.document;
+				expect(document.querySelector('.recharts-surface')).not.toBeNull();
+				const shape = type === 'bar' ? '.recharts-bar-rectangle path'
+					: type === 'line' ? '.recharts-line-curve'
+					: type === 'area' ? '.recharts-area-area' : '.recharts-pie-sector path';
+				for (let tries = 0; tries < 30 && !document.querySelector(shape); tries++)
+					await new Promise((resolve) => setTimeout(resolve, 20));
+				expect(document.querySelector(shape)).not.toBeNull();
+				expect(document.querySelector(shape)!.getAttribute(type === 'line' ? 'stroke' : 'fill')).toContain('var(--chart-1');
+			} finally {
+				dom.window.close();
+			}
 		}
 	}
 );
@@ -110,7 +141,8 @@ it('escapes markup in text and prevents labels from breaking out of the inline s
 		'light'
 	);
 	expect(html).not.toContain(text);
-	expect(html.match(/<script(?:\s|>)/g)).toHaveLength(2);
+	const document = new JSDOM(html).window.document;
+	expect(document.querySelectorAll('script')).toHaveLength(2);
 	expect(html).toContain('&#60;/script&#62;');
 	const data = JSON.parse(html.match(/<script id="chart-input" type="application\/json">(.*?)<\/script>/s)![1]);
 	expect(data.data[0].month).toEqual(text);
