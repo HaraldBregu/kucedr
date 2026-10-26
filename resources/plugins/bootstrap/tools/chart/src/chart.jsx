@@ -1,7 +1,19 @@
 import {
-	AreaChart, BarChart, CartesianGrid, Legend, LineChart, PieChart,
-	PolarAngleAxis, PolarGrid, PolarRadiusAxis, RadarChart, ResponsiveContainer,
-	ScatterChart, Tooltip, XAxis, YAxis,
+	AreaChart,
+	BarChart,
+	CartesianGrid,
+	Legend,
+	LineChart,
+	PieChart,
+	PolarAngleAxis,
+	PolarGrid,
+	PolarRadiusAxis,
+	RadarChart,
+	ResponsiveContainer,
+	ScatterChart,
+	Tooltip,
+	XAxis,
+	YAxis,
 } from 'recharts';
 import { Series } from './series.jsx';
 
@@ -27,28 +39,62 @@ export function Chart({ input }) {
 	const Container = containers[type];
 	return (
 		<ResponsiveContainer width="100%" height="100%" minWidth={0}>
-			<Container data={scatter ? undefined : data} layout={horizontal ? 'vertical' : undefined} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
-				{!polar && <CartesianGrid vertical={horizontal} horizontal={!horizontal} stroke="var(--border, GrayText)" />}
-				{!polar && <XAxis
-					dataKey={scatter ? 'x' : horizontal ? undefined : xKey}
-					type={scatter || horizontal ? 'number' : 'category'}
-					name={scatter ? xKey : undefined}
-					stroke="var(--muted-foreground, CanvasText)" tickLine={false} axisLine={false}
-				/>}
-				{!polar && <YAxis
-					dataKey={scatter ? 'y' : horizontal ? xKey : undefined}
-					type={horizontal ? 'category' : 'number'}
-					stroke="var(--muted-foreground, CanvasText)" tickLine={false} axisLine={false}
-					width={horizontal ? 100 : 48}
-				/>}
+			<Container
+				data={scatter ? undefined : data}
+				layout={horizontal ? 'vertical' : undefined}
+				margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
+			>
+				{!polar && (
+					<CartesianGrid
+						vertical={horizontal}
+						horizontal={!horizontal}
+						stroke="var(--border, GrayText)"
+					/>
+				)}
+				{!polar && (
+					<XAxis
+						dataKey={scatter ? 'x' : horizontal ? undefined : xKey}
+						type={scatter || horizontal ? 'number' : 'category'}
+						name={scatter ? xKey : undefined}
+						stroke="var(--muted-foreground, CanvasText)"
+						tickLine={false}
+						axisLine={false}
+					/>
+				)}
+				{!polar && (
+					<YAxis
+						dataKey={scatter ? 'y' : horizontal ? xKey : undefined}
+						type={horizontal ? 'category' : 'number'}
+						stroke="var(--muted-foreground, CanvasText)"
+						tickLine={false}
+						axisLine={false}
+						width={horizontal ? 100 : 48}
+					/>
+				)}
 				{type === 'radar' && <PolarGrid stroke="var(--border, GrayText)" />}
-				{type === 'radar' && <PolarAngleAxis dataKey={xKey} tick={{ fill: 'var(--muted-foreground, CanvasText)' }} />}
-				{type === 'radar' && <PolarRadiusAxis tick={{ fill: 'var(--muted-foreground, CanvasText)' }} axisLine={false} />}
+				{type === 'radar' && (
+					<PolarAngleAxis dataKey={xKey} tick={{ fill: 'var(--muted-foreground, CanvasText)' }} />
+				)}
+				{type === 'radar' && (
+					<PolarRadiusAxis
+						tick={{ fill: 'var(--muted-foreground, CanvasText)' }}
+						axisLine={false}
+					/>
+				)}
 				<Tooltip
-					cursor={polar ? false : bar
-						? { fill: 'var(--muted, Canvas)', fillOpacity: 0.5, stroke: 'none' }
-						: { stroke: 'var(--border, GrayText)' }}
-					contentStyle={{ background: 'var(--popover, Canvas)', color: 'var(--popover-foreground, CanvasText)', border: '1px solid var(--border, GrayText)', borderRadius: 'var(--radius)' }}
+					cursor={
+						polar
+							? false
+							: bar
+								? { fill: 'var(--muted, Canvas)', fillOpacity: 0.5, stroke: 'none' }
+								: { stroke: 'var(--border, GrayText)' }
+					}
+					contentStyle={{
+						background: 'var(--popover, Canvas)',
+						color: 'var(--popover-foreground, CanvasText)',
+						border: '1px solid var(--border, GrayText)',
+						borderRadius: 'var(--radius)',
+					}}
 					labelStyle={{ color: 'var(--popover-foreground, CanvasText)' }}
 					itemStyle={{ color: 'var(--popover-foreground, CanvasText)' }}
 				/>
