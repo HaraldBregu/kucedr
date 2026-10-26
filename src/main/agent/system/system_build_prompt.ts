@@ -1,9 +1,9 @@
 import type { LoadedSkill } from '../context';
 import type { Config, Tool } from '../types';
 import { addBasePrompt } from './system_add_base_prompt';
-import { pluginTools } from '../../plugins';
+import { pluginScripts } from '../../plugins';
 import { addFilesystemPrompt } from './system_add_filesystem_prompt';
-import { addPluginToolsPrompt } from './system_add_plugin_tools_prompt';
+import { addPluginScriptsPrompt } from './system_add_plugin_scripts_prompt';
 import { addSkillPrompt } from './system_add_skill_prompt';
 import { addToolsPrompt } from './system_add_tools_prompt';
 import { addWorkspacePrompt } from './system_add_workspace_prompt';
