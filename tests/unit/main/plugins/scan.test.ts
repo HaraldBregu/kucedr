@@ -60,9 +60,9 @@ afterEach(() => {
 	rmSync(root, { recursive: true, force: true });
 });
 
-it('keeps bundled chart tools available when an older Bootstrap is installed', () => {
+it('keeps bundled chart scripts available when an older Bootstrap is installed', () => {
 	expect(scanPlugins()[0]).toMatchObject({ builtIn: true, manifest: { version: '1.1.0' } });
-	expect(pluginTools().map((tool) => tool.name)).toContain('chart');
+	expect(pluginScripts().map((script) => script.name)).toContain('chart');
 });
 
 it.each(['1.1.0', '1.2.0'])('preserves installed overrides at version %s', (version) => {
