@@ -10,10 +10,8 @@ import {
 	SettingsNotice,
 	SettingsPageShell,
 	SettingsPanel,
-	SettingsRow,
-	SettingsSection,
-	SettingsValue,
 } from '../../components';
+import Meta from './Meta';
 import PluginIcon from './PluginIcon';
 
 export default function MarketplacePage(): React.JSX.Element {
