@@ -167,6 +167,8 @@ export const PluginsChannels = {
 	setEnabled: 'plugins:set-enabled',
 	getSettings: 'plugins:get-settings',
 	saveSettings: 'plugins:save-settings',
+	tools: 'plugins:tools',
+	renderTool: 'plugins:render-tool',
 } as const;
 
 export const LibraryChannels = {
