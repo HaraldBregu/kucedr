@@ -75,10 +75,10 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 				}));
 		});
 		registerQueryWithEvent(
-			PluginsChannels.renderTool,
+			PluginsChannels.renderScript,
 			(event, name: string, input: unknown, theme: 'light' | 'dark') => {
 				trusted.assert(event);
-				return plugins.renderPluginTool(name, input, theme === 'dark' ? 'dark' : 'light');
+				return plugins.renderPluginScript(name, input, theme === 'dark' ? 'dark' : 'light');
 			}
 		);
 		registerCommandWithEvent(
