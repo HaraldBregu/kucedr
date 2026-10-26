@@ -1,5 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ArrowLeft, Plug, Trash2 } from 'lucide-react';
+import {
+	ArrowLeft,
+	CircleAlert,
+	CircleCheck,
+	CircleOff,
+	Download,
+	Hash,
+	Package,
+	Plug,
+	Tag,
+	Trash2,
+	User,
+} from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { CatalogModel } from '@shared/model_types';
