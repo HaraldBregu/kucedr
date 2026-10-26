@@ -193,11 +193,7 @@ export function AuthStep(): React.JSX.Element {
 												disabled={disabled}
 												onClick={() => void signInWithGoogle()}
 											>
-												{googleBusy ? (
-													<LoaderCircle className="animate-spin" aria-hidden="true" />
-												) : (
-													<img src={googleIcon} alt="" className="size-4" aria-hidden="true" />
-												)}
+												{googleBusy && <LoaderCircle className="animate-spin" aria-hidden="true" />}
 												{mode === 'signUp' ? 'Sign up with Google' : 'Sign in with Google'}
 											</Button>
 											<div className="relative -my-1 h-5 text-center text-xs">
