@@ -24,25 +24,26 @@ What already exists:
 ## Tool folder contract: `<plugin>/tools/<tool-id>/`
 
 ```text
-tool.json         metadata and how to run it
+manifest.json     title, author, version, entry, input schema (same shape as an app manifest)
 INSTRUCTIONS.md   when and how the agent should use it, with input examples (goes into the system prompt)
-index.js          Node script: stdin { input, theme } JSON → stdout full HTML document
-<assets>          anything the script needs (for charts, the vendored Chart.js UMD)
+package.json      a normal Node.js project: devDependencies and a "build" script (no install scripts)
+src/              sources, built into dist/
+dist/             build output; metadata.entry points here (gitignored, built in CI before release)
 ```
 
-`tool.json`:
+`manifest.json`:
 
 ```json
 {
-	"name": "chart",
 	"title": "Chart",
 	"description": "Render bar, line, area, pie or doughnut charts from data.",
+	"author": "Harald Bregu",
+	"metadata": { "version": "1.0.0", "category": "data", "entry": "dist/index.mjs" },
 	"inputSchema": {
 		"type": "object",
 		"properties": { "...": "..." },
 		"required": ["type", "title", "data", "xKey", "series"]
 	},
-	"entry": "index.js",
 	"fence": "chart",
 	"height": 320
 }
@@ -50,7 +51,9 @@ index.js          Node script: stdin { input, theme } JSON → stdout full HTML 
 
 Rules:
 
-- **`name`:** kebab-case and unique across all enabled plugins. A duplicate is skipped and logged.
+- **Name:** the folder name is the tool name, as with apps. It must be kebab-case and unique across all enabled plugins. A duplicate is skipped and logged.
+- **Fields:** `title`, `description`, `metadata.version`, `metadata.category` and `metadata.entry` are required. `author` is optional, as for apps.
+- **Build:** in the `kucedr-plugins` repo every tool is an npm workspace (`plugins/*/tools/*`), so dependencies install in the root `node_modules`. `npm run build` at the root builds all tools, and CI runs it before validating and releasing. Kucedr never runs `npm install` or a build: it only runs `metadata.entry`.
 - **Running the script:** the host runs `entry` on Electron's Node, using `process.execPath` with `ELECTRON_RUN_AS_NODE=1`, so users don't need Node installed.
   - The working directory is the tool folder, there's a 10 s timeout and stdout is capped at 2 MB.
   - On invalid input the script exits non-zero with a clear message on stderr. That message is what the agent sees, so it can correct the input.
