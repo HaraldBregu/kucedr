@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
-	"description": "Bootstrap plugin tool that renders Recharts charts as self-contained HTML.",
+	"description": "Bootstrap plugin script that renders Recharts charts as self-contained HTML.",
 	"scripts": {
 		"build": "esbuild src/browser.jsx --bundle --minify --jsx=automatic --format=iife --outfile=dist/browser.js && esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs"
 	},

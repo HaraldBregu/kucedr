@@ -6,7 +6,8 @@
 		"version": "1.0.0",
 		"category": "games",
 		"entry": "index.html",
-		"image": "icon.svg"
+		"image": "icon.svg",
+		"author": "Harald Bregu"
 	},
 	"window": {
 		"width": 960,

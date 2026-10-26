@@ -6,7 +6,8 @@
 		"version": "1.0.0",
 		"category": "productivity",
 		"entry": "index.html",
-		"image": "icon.svg"
+		"image": "icon.svg",
+		"author": "Harald Bregu"
 	},
 	"window": {
 		"width": 1280,
