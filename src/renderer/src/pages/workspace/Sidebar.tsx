@@ -264,19 +264,12 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		setBusy(true);
 		setActionError('');
 		void (async () => {
-			const { kind, entry, parentPath } = pendingAction;
+			const { kind, parentPath } = pendingAction;
 			if (kind === 'create-file') {
 				const path = await window.agent.createWorkspaceFile(parentPath, name);
 				onFileSelect({ type: 'file', name, path });
-			} else if (kind === 'create-folder') {
+			} else {
 				await window.agent.createWorkspaceDirectory(parentPath, name);
-			} else if (kind === 'delete' && entry) {
-				for (const target of pendingAction.entries ?? [entry]) {
-					if (target.type === 'directory') await window.agent.deleteWorkspaceDirectory(target.path);
-					else await window.agent.deleteWorkspaceFile(target.path);
-					onEntryDeleted(target.path);
-				}
-				setSelection(new Set());
 			}
 			setPendingAction(null);
 			const files = await window.agent.listWorkspaceFiles();
