@@ -143,7 +143,7 @@ export default function MarketplacePage(): React.JSX.Element {
 							? t('settings.integrations.marketplace.update')
 							: t('settings.integrations.installed.install')}
 				</Button>
-			</header>
+			</div>
 		</SettingsPageShell>
 	);
 }
