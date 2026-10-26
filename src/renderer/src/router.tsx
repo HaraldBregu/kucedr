@@ -277,17 +277,17 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'cloud',
-						element: <Navigate to="/settings/storage" replace />,
+						path: 'storage',
+						element: <Navigate to="/settings/cloud" replace />,
 					},
 					{
-						path: 'storage',
+						path: 'cloud',
 						children: [
 							{
 								index: true,
 								element: (
 									<SettingsRouteWrapper>
-										<StoragePage />
+										<CloudPage />
 									</SettingsRouteWrapper>
 								),
 							},
@@ -295,7 +295,7 @@ const routes: RouteObject[] = [
 								path: 'providers',
 								element: (
 									<SettingsRouteWrapper>
-										<StorageProvidersPage />
+										<CloudProvidersPage />
 									</SettingsRouteWrapper>
 								),
 							},
