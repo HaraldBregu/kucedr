@@ -1,10 +1,11 @@
-const TYPES = ['bar', 'line', 'area', 'pie', 'doughnut'];
+import { TYPES } from './types.mjs';
 
 export function validate(input) {
 	if (!input || typeof input !== 'object' || Array.isArray(input))
 		throw new Error('input must be an object.');
 	if (!TYPES.includes(input.type)) throw new Error(`type must be one of: ${TYPES.join(', ')}.`);
-	if (typeof input.title !== 'string' || !input.title.trim()) throw new Error('title is required.');
+	if (input.title !== undefined && typeof input.title !== 'string')
+		throw new Error('title must be a string when provided.');
 	if (input.description !== undefined && typeof input.description !== 'string')
 		throw new Error('description must be a string.');
 	if (!Array.isArray(input.data) || input.data.length === 0 || input.data.length > 200)
@@ -22,6 +23,8 @@ export function validate(input) {
 		)
 	)
 		throw new Error(`every data row needs the xKey field "${input.xKey}".`);
+	if (input.type === 'scatter' && !input.data.every((row) => Number.isFinite(row[input.xKey])))
+		throw new Error('scatter xKey must be a finite number in every data row.');
 	if (!Array.isArray(input.series) || input.series.length === 0 || input.series.length > 6)
 		throw new Error('series must contain between 1 and 6 { key, label } entries.');
 	if (

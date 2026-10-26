@@ -50,7 +50,7 @@ export function PluginToolFrame({
 			title={tool.title}
 			sandbox="allow-scripts"
 			srcDoc={result.html}
-			className="w-full rounded-xl border border-border"
+			className="w-full border-0"
 			style={{ height: tool.height }}
 		/>
 	);
