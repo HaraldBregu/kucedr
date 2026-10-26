@@ -306,15 +306,6 @@ export default function PluginPage(): React.JSX.Element {
 				</div>
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
-				<SettingsSection title={t('settings.integrations.plugin.details')}>
-					<SettingsPanel>
-						{details.map((row) => (
-							<SettingsRow key={row.key} title={row.title} description={row.description}>
-								{row.badge && <SettingsValue mono={row.key === 'id'}>{row.badge}</SettingsValue>}
-							</SettingsRow>
-						))}
-					</SettingsPanel>
-				</SettingsSection>
 				{plugin.settings.length > 0 && (
 					<SettingsSection title={t('settings.integrations.plugin.settings')}>
 						<form
