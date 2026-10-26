@@ -13,7 +13,8 @@
 	"workspaces": [
 		"packages/sdk",
 		"packages/cli",
-		"website"
+		"website",
+		"resources/plugins/bootstrap/tools/chart"
 	],
 	"packageManager": "npm@11.13.0",
 	"engines": {
@@ -201,6 +202,7 @@
 		"electron": "^44.4.5",
 		"electron-builder": "^26.15.3",
 		"electron-vite": "^5.0.0",
+		"esbuild": "^0.28.2",
 		"eslint": "^9.17.0",
 		"eslint-plugin-react": "^7.37.4",
 		"eslint-plugin-react-hooks": "7.1.1",

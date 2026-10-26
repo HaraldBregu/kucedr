@@ -160,6 +160,7 @@ export function AssistantMessage({
 	const toolSections: AgentToolPart[][] = [];
 	for (const tool of message.tools.filter((part) => !isSkillTool(part))) {
 		const isCard =
+			tool.type === 'run_plugin_tool' ||
 			tool.type === 'ask' ||
 			tool.type === 'select_screen_source' ||
 			tool.type === 'request_mcp_authorization';
@@ -167,6 +168,7 @@ export function AssistantMessage({
 		if (
 			!isCard &&
 			last &&
+			last[0].type !== 'run_plugin_tool' &&
 			last[0].type !== 'ask' &&
 			last[0].type !== 'select_screen_source' &&
 			last[0].type !== 'request_mcp_authorization'

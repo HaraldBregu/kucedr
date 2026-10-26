@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 import typegpuPlugin from 'unplugin-typegpu/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import pkg from './package.json';
+import { build } from 'esbuild';
 
 const cloudEnv = { ...loadEnv('production', __dirname, 'SUPABASE_'), ...process.env };
 
@@ -17,7 +18,33 @@ export default defineConfig({
 				.filter((key) => cloudEnv[key])
 				.map((key) => [`process.env.${key}`, JSON.stringify(cloudEnv[key])])
 		),
-		plugins: [externalizeDepsPlugin()],
+		plugins: [
+			externalizeDepsPlugin(),
+			{
+				name: 'chart-tool',
+				async buildStart() {
+					const directory = resolve(__dirname, 'resources/plugins/bootstrap/tools/chart');
+					await Promise.all([
+						build({
+							absWorkingDir: directory,
+							entryPoints: ['src/browser.js'],
+							bundle: true,
+							minify: true,
+							format: 'iife',
+							outfile: 'dist/browser.js',
+						}),
+						build({
+							absWorkingDir: directory,
+							entryPoints: ['src/index.mjs'],
+							bundle: true,
+							platform: 'node',
+							format: 'esm',
+							outfile: 'dist/index.mjs',
+						}),
+					]);
+				},
+			},
+		],
 		build: {
 			rollupOptions: {
 				input: {

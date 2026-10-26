@@ -9,7 +9,7 @@ export function PluginToolCard({ tool }: { tool: AgentToolPart }): ReactElement 
 	const { loaded, byName } = usePluginTools();
 	if (tool.state === 'output-error') return <ToolActivityGroup tools={[tool]} />;
 	const call = tool.input as { name?: unknown; input?: unknown } | undefined;
-	if (tool.state === 'input-streaming' || !loaded || !call?.input)
+	if (tool.state !== 'output-available' || !loaded || !call?.input)
 		return <Skeleton className="h-64 w-full rounded-xl" />;
 	const pluginTool = typeof call.name === 'string' ? byName.get(call.name) : undefined;
 	if (!pluginTool) return <ToolActivityGroup tools={[tool]} />;

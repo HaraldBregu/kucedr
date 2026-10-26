@@ -13,18 +13,24 @@ function fail(message) {
 }
 
 function validate(input) {
-	if (!input || typeof input !== 'object') fail('input must be an object.');
+	if (!input || typeof input !== 'object' || Array.isArray(input)) fail('input must be an object.');
 	if (!TYPES.includes(input.type)) fail(`type must be one of: ${TYPES.join(', ')}.`);
 	if (typeof input.title !== 'string' || !input.title.trim()) fail('title is required.');
-	if (!Array.isArray(input.data) || input.data.length === 0) fail('data must be a non-empty array of rows.');
+	if (input.description !== undefined && typeof input.description !== 'string') fail('description must be a string.');
+	if (!Array.isArray(input.data) || input.data.length === 0 || input.data.length > 200)
+		fail('data must contain between 1 and 200 rows.');
 	if (typeof input.xKey !== 'string' || !input.xKey) fail('xKey is required: the field that holds each category or label.');
-	if (!input.data.every((row) => row && input.xKey in row))
+	if (!input.data.every((row) => row && typeof row === 'object' && !Array.isArray(row) &&
+		Object.hasOwn(row, input.xKey) && ['string', 'number'].includes(typeof row[input.xKey])))
 		fail(`every data row needs the xKey field "${input.xKey}".`);
-	if (!Array.isArray(input.series) || input.series.length === 0)
-		fail('series must list at least one { key, label }.');
+	if (!Array.isArray(input.series) || input.series.length === 0 || input.series.length > 6)
+		fail('series must contain between 1 and 6 { key, label } entries.');
+	if (!input.series.every((series) => series && typeof series.key === 'string' && series.key.trim() &&
+		typeof series.label === 'string' && series.label.trim()))
+		fail('every series needs a non-empty key and label.');
 	for (const { key } of input.series)
-		if (!input.data.every((row) => typeof row[key] === 'number'))
-			fail(`series "${key}" must be a number in every data row.`);
+		if (!input.data.every((row) => Object.hasOwn(row, key) && Number.isFinite(row[key])))
+			fail(`series "${key}" must be a finite number in every data row.`);
 }
 
 function chartConfig({ type, data, xKey, series }, { text, grid, colors }) {

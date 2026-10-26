@@ -9,6 +9,6 @@
 	},
 	"devDependencies": {
 		"chart.js": "^4.4.9",
-		"esbuild": "^0.25.0"
+		"esbuild": "^0.28.2"
 	}
 }
