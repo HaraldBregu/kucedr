@@ -69,7 +69,7 @@ export function builtinTools(
 		createImageTool(),
 		createVideoTool(),
 		createSoundTool(),
-		createChartTool,
+		...(pluginTools().length > 0 ? [runPluginTool] : []),
 		microphoneRecorderTool(),
 		microphoneRecorderStatusTool,
 		microphoneRecorderStopTool,
