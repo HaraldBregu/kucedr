@@ -1,6 +1,6 @@
 # Plugin Tools
 
-Status: implemented. It replaces the built-in charts described in [CHARTS.md](CHARTS.md). The example chart tool ships in the **bootstrap** plugin of the `kucedr-plugins` repo (`plugins/bootstrap/tools/chart/`, entry `index.mjs`) instead of a built-in `resources/plugins/charts`. Tool names must equal their folder name.
+Status: implemented. It replaces the built-in charts described in [CHARTS.md](CHARTS.md). The example chart tool ships in the **bootstrap** plugin of the `kucedr-plugins` repo (`plugins/bootstrap/tools/chart/`) instead of a built-in `resources/plugins/charts`. It's a Node.js project: `src/browser.js` imports Chart.js from npm and is bundled to `dist/browser.js`, and `src/index.mjs` (built to `dist/index.mjs`) inlines that bundle into each chart page.
 
 ## Context
 
