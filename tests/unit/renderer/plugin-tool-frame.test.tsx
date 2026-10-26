@@ -130,5 +130,5 @@ it('renders charts without a bordered or rounded outer container', async () => {
 	render(<PluginToolFrame tool={tool} input={{}} />);
 	const frame = await screen.findByTitle('Chart');
 	expect(frame).toHaveClass('border-0');
-	expect(frame).not.toHaveClass('border', 'border-border', 'rounded-xl');
+	for (const name of ['border', 'border-border', 'rounded-xl']) expect(frame).not.toHaveClass(name);
 });
