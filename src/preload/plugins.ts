@@ -27,4 +27,10 @@ export const plugins: PluginsApi = {
 	saveSettings: (id: string, values: Record<string, string>) => {
 		return typedInvokeUnwrap(PluginsChannels.saveSettings, id, values);
 	},
+	tools: () => {
+		return typedInvokeUnwrap(PluginsChannels.tools);
+	},
+	renderTool: (name: string, input: unknown, theme: 'light' | 'dark') => {
+		return typedInvokeUnwrap(PluginsChannels.renderTool, name, input, theme);
+	},
 };
