@@ -62,6 +62,25 @@ export function AppSidebarFooter(): React.JSX.Element {
 	return (
 		<SidebarFooter className="shrink-0 px-2 pt-1 pb-3">
 			<SidebarMenu>
+				{updateVersion ? (
+					<SidebarMenuItem>
+						<Button
+							type="button"
+							size="sm"
+							className="w-full"
+							disabled={updating}
+							onClick={() => {
+								setUpdating(true);
+								void window.app.installUpdate().finally(() => setUpdating(false));
+							}}
+						>
+							<Download />
+							{updating
+								? t('settings.sidebar.updating')
+								: t('settings.sidebar.update', { version: updateVersion })}
+						</Button>
+					</SidebarMenuItem>
+				) : null}
 				<SidebarMenuItem>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
