@@ -32,6 +32,15 @@ export interface PluginInfo {
 	readonly settings: readonly ProviderManifestSetting[];
 }
 
+/** A plugin tool the renderer can frame, from `<plugin>/tools/<name>/tool.json`. */
+export interface PluginToolInfo {
+	readonly name: string;
+	readonly title: string;
+	readonly fence?: string;
+	readonly height: number;
+	readonly plugin: PluginSource;
+}
+
 /** A plugin listed in the remote catalog (`index.json` of the kucedr-plugins repo). */
 export interface CatalogPlugin {
 	readonly id: string;
