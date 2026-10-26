@@ -44,7 +44,8 @@ export function WorkspaceMarkdownEditor({
 	}, [onChange]);
 	const editor = useEditor({
 		extensions: [
-			StarterKit.configure({ link: { openOnClick: false } }),
+			StarterKit.configure({ codeBlock: false, link: { openOnClick: false } }),
+			CodeBlock.extend({ addNodeView: () => ReactNodeViewRenderer(WorkspaceCodeBlock) }),
 			TableKit.configure({ table: { resizable: false } }),
 			TaskList,
 			TaskItem.configure({ nested: true }),
