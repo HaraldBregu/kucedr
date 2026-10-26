@@ -1,5 +1,6 @@
 import {
 	AudioLines,
+	Download,
 	HardDrive,
 	Layers,
 	Library,
