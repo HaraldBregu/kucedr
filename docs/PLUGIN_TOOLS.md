@@ -104,8 +104,8 @@ Input schema: ```json {…} ```
   - Use it for trends over time (line or area), comparisons across categories (bar) and shares of a whole (pie or doughnut).
   - Explain `xKey` and `series`.
   - Give three example inputs: a bar chart with one series, a line chart with two series, and a pie chart.
-- `package.json`: devDependencies `chart.js` and `esbuild`. The `build` script bundles both sources into `dist/`.
-- `src/browser.js`: imports Chart.js, registers its components and sets `window.Chart`. It's bundled as a minified IIFE to `dist/browser.js`.
+- `package.json`: devDependencies `recharts`, `react`, `react-dom` and `esbuild`. The `build` script bundles both sources into `dist/`.
+- `src/browser.jsx`: defines `window.renderChart(element, input, palette)`. It renders a Recharts `BarChart`, `LineChart`, `AreaChart` or `PieChart` (doughnut is a pie with an inner radius) inside a `ResponsiveContainer`, with animations off. It's bundled as a minified IIFE to `dist/browser.js`.
 - `src/index.mjs`, built to `dist/index.mjs`:
   - Read stdin and validate the required fields (a non-zero exit with a message on error).
   - Map `type` to a Chart.js config. `area` is a line chart with `fill: true`.
