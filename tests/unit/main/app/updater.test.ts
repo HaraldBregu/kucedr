@@ -20,6 +20,7 @@ const logger = { warn } as unknown as LoggerService;
 
 describe('updater', () => {
 	beforeEach(() => {
+		jest.clearAllMocks();
 		jest.useFakeTimers();
 		mockAutoUpdater.removeAllListeners();
 		mockAutoUpdater.checkForUpdates.mockResolvedValue(null);
