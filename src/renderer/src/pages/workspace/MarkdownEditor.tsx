@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Extension, mergeAttributes, type JSONContent } from '@tiptap/core';
+import { CodeBlock } from '@tiptap/extension-code-block';
 import { Image } from '@tiptap/extension-image';
 import { TableKit } from '@tiptap/extension-table';
 import { TaskItem } from '@tiptap/extension-task-item';
