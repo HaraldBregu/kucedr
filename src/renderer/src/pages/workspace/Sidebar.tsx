@@ -67,9 +67,26 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		return true;
 	};
 	const deleteSelection = (targets: WorkspaceTreeEntry[]): void => {
-		if (targets.length === 0) return;
+		if (targets.length === 0 || busy) return;
+		const message = targets.length > 1
+			? t('workspaceSidebar.deleteEntries', { count: targets.length, defaultValue: 'Delete {{count}} items' })
+			: t('workspaceSidebar.deleteEntry', { name: targets[0].name });
+		if (!window.confirm(`${message}\n\n${t('workspaceSidebar.deleteWarning', 'This permanently deletes the item and its contents.')}`)) return;
+		setBusy(true);
 		setActionError('');
-		setPendingAction({ kind: 'delete', entry: targets[0], entries: targets, parentPath: '' });
+		void (async () => {
+			for (const target of targets) {
+				if (target.type === 'directory') await window.agent.deleteWorkspaceDirectory(target.path);
+				else await window.agent.deleteWorkspaceFile(target.path);
+				onEntryDeleted(target.path);
+			}
+			setSelection(new Set());
+			const files = await window.agent.listWorkspaceFiles();
+			setEntries(files);
+			onFilesLoaded?.(files);
+		})().catch((cause: unknown) => {
+			setActionError(cause instanceof Error ? cause.message : t('workspaceSidebar.actionError', 'Unable to change Workspace files.'));
+		}).finally(() => setBusy(false));
 	};
 	const handleTreeKey = (event: React.KeyboardEvent<HTMLElement>): void => {
 		const target = event.target as HTMLElement;
