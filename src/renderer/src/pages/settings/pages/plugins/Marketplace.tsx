@@ -129,6 +129,7 @@ export default function MarketplacePage(): React.JSX.Element {
 					<p className="mt-1.5 max-w-2xl text-base leading-5 text-muted-foreground">
 						{plugin.description}
 					</p>
+					<Meta rows={details} />
 				</div>
 				<Button
 					type="button"
