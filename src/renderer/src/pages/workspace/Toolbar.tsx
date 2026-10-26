@@ -72,6 +72,7 @@ const groups: Action[][] = [
 		{ label: 'Code block', icon: FileCode, shortcut: `${mod}${alt}C`, active: 'codeBlock', run: (chain) => chain.toggleCodeBlock() },
 		{ label: 'Divider', icon: Minus, run: (chain) => chain.setHorizontalRule() },
 		{ label: 'Table', icon: Table, run: (chain) => chain.insertTable({ rows: 3, cols: 3, withHeaderRow: true }) },
+		{ label: 'Chart', icon: ChartColumn, run: (chain) => chain.insertContent({ type: 'codeBlock', attrs: { language: 'chart' }, content: [{ type: 'text', text: sampleChart }] }) },
 	],
 ];
 
