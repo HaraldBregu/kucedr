@@ -1,5 +1,5 @@
 import type { ProviderManifestSetting } from './provider_types';
-export const PLUGIN_KINDS = ['apps', 'mcp', 'providers', 'skills'] as const;
+export const PLUGIN_KINDS = ['apps', 'mcp', 'providers', 'skills', 'tools'] as const;
 
 /** The built-in plugin that ships Kucedr's own apps, MCP servers, and skills; it can't be disabled or replaced. */
 export const CORE_PLUGIN_ID = 'kucedr';
