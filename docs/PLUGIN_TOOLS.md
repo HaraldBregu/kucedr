@@ -97,22 +97,20 @@ Input schema: ```json {…} ```
 <INSTRUCTIONS.md content>
 ````
 
-## Example plugin: `resources/plugins/charts/`
+## Example: `kucedr-plugins/plugins/bootstrap/tools/chart/`
 
-It's built in and can be disabled.
-
-- `manifest.json`: schemaVersion 5, id `charts`, title "Charts".
-- `tools/chart/tool.json`: as above. The input schema is the current `create_chart` schema, with `type` extended to `bar`, `line`, `area`, `pie` and `doughnut`.
-- `tools/chart/INSTRUCTIONS.md`:
+- `manifest.json`: as above. The input schema has `type` (`bar`, `line`, `area`, `pie` or `doughnut`), `title`, `description?`, `data[]`, `xKey` and `series[{key,label}]`.
+- `INSTRUCTIONS.md`:
   - Use it for trends over time (line or area), comparisons across categories (bar) and shares of a whole (pie or doughnut).
   - Explain `xKey` and `series`.
   - Give three example inputs: a bar chart with one series, a line chart with two series, and a pie chart.
-- `tools/chart/index.js`: about 60 lines.
+- `package.json`: devDependencies `chart.js` and `esbuild`. The `build` script bundles both sources into `dist/`.
+- `src/browser.js`: imports Chart.js, registers its components and sets `window.Chart`. It's bundled as a minified IIFE to `dist/browser.js`.
+- `src/index.mjs`, built to `dist/index.mjs`:
   - Read stdin and validate the required fields (a non-zero exit with a message on error).
   - Map `type` to a Chart.js config. `area` is a line chart with `fill: true`.
   - Choose a palette and text and grid colors per `theme`.
-  - Print `<!doctype html>` with the Chart.js source inlined from `chart.umd.js`, a canvas, and `new Chart(…)`.
-- `tools/chart/chart.umd.js`: copied from `chart.js/dist/chart.umd.js` (MIT), so no build step is needed.
+  - Print `<!doctype html>` with `dist/browser.js` inlined, a canvas, and `new Chart(…)`.
 
 ## Host: main process
 
