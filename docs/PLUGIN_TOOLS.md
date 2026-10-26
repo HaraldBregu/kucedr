@@ -1,6 +1,6 @@
 # Plugin Tools
 
-Status: implemented. It replaces the built-in charts described in [CHARTS.md](CHARTS.md). The example chart tool ships in the **bootstrap** plugin of the `kucedr-plugins` repo (`plugins/bootstrap/tools/chart/`) instead of a built-in `resources/plugins/charts`. It's a Node.js project: `src/browser.js` imports Chart.js from npm and is bundled to `dist/browser.js`, and `src/index.mjs` (built to `dist/index.mjs`) inlines that bundle into each chart page.
+Status: implemented. It replaces the built-in charts described in [CHARTS.md](CHARTS.md). The example chart tool ships in the **bootstrap** plugin of the `kucedr-plugins` repo (`plugins/bootstrap/tools/chart/`) instead of a built-in `resources/plugins/charts`. It's a Node.js project: `src/browser.jsx` renders the chart with Recharts (React 19) and is bundled to `dist/browser.js` (about 650 KB), and `src/index.mjs` (built to `dist/index.mjs`) inlines that bundle into each chart page.
 
 ## Context
 
