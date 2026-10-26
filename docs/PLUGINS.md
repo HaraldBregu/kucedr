@@ -41,6 +41,7 @@ plugin deletes one folder.
   mcp/servers.json            optional: server configs keyed by id (stdio or http)
   mcp/<server-id>/            mcp.json (+ server files, stdio only)
   skills/<skill-id>/          SKILL.md
+  tools/<tool-id>/            tool.json + INSTRUCTIONS.md + Node script that prints HTML
 ```
 
 ## Manifest (schema version 5)
