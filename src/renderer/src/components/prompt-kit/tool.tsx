@@ -75,8 +75,6 @@ export function toolIcon(
 ): ElementType<{ className?: string; toolPart?: ToolPart }> {
 	const type = toolPart.type.toLowerCase();
 	if (isTaskToolType(type)) return CalendarClock;
-	const google = googleService(toolPart);
-	if (google) return google.icon;
 	if (toolPart.serviceKind === 'mcp' || type.startsWith('mcp__')) return McpIcon;
 	if (type === 'subagent' || type === 'subagents') return Bot;
 	if (type.includes('skill')) return Sparkles;
