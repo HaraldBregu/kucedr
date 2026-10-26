@@ -37,6 +37,7 @@ import type {
 import { TRAY_CLICK_ACTIONS } from '../../shared/app_types';
 import { wrapIpcHandler, wrapSimpleHandler } from './core/error_handler';
 import { setKeepAwake as applyKeepAwake } from '../keep_awake';
+import { autoUpdater, availableUpdateVersion } from '../updater';
 import {
 	getTrayEnabled as getStoredTrayEnabled,
 	setTrayEnabled as setStoredTrayEnabled,
