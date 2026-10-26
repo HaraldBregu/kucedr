@@ -648,6 +648,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: boolean;
 	};
+	[AppChannels.getAvailableUpdate]: {
+		args: [];
+		result: string | null;
+	};
+	[AppChannels.installUpdate]: {
+		args: [];
+		result: void;
+	};
 	[AppChannels.setTrayClickAction]: {
 		args: [action: import('./app_types').TrayClickAction];
 		result: void;
