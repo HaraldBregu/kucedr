@@ -21,7 +21,7 @@ export default defineConfig({
 		plugins: [
 			externalizeDepsPlugin(),
 			{
-				name: 'chart-tool',
+				name: 'chart-script',
 				async buildStart() {
 					const directory = resolve(__dirname, 'resources/plugins/bootstrap/scripts/chart');
 					await Promise.all([
