@@ -155,8 +155,8 @@ export default function PluginPage(): React.JSX.Element {
 
 	const details = [
 		{ key: 'id', title: t('settings.integrations.plugin.id'), value: plugin.id },
-		{ key: 'version', title: t('settings.integrations.plugin.version'), value: plugin.version ?? '' },
-		{ key: 'author', title: t('settings.integrations.plugin.author'), value: plugin.author ?? '' },
+		{ key: 'version', title: t('settings.integrations.plugin.version'), value: plugin.version },
+		{ key: 'author', title: t('settings.integrations.plugin.author'), value: plugin.author },
 		{
 			key: 'source',
 			title: t('settings.integrations.plugin.source'),
