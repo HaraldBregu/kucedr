@@ -6,7 +6,7 @@ import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
-import googleIcon from '@resources/plugins/google/assets/google.svg';
+import googleIcon from '@/assets/google.svg';
 
 type Mode = 'signIn' | 'signUp' | 'forgot';
 
