@@ -52,6 +52,11 @@ export function Chart({ input: { type, data, xKey, series } }) {
 					/>
 				)}
 				<Tooltip
+					cursor={
+						type === 'bar'
+							? { fill: 'var(--muted, Canvas)', fillOpacity: 0.5, stroke: 'none' }
+							: { stroke: 'var(--border, GrayText)' }
+					}
 					contentStyle={{
 						background: 'var(--popover, Canvas)',
 						color: 'var(--popover-foreground, CanvasText)',
@@ -100,6 +105,7 @@ export function Chart({ input: { type, data, xKey, series } }) {
 									stroke={color}
 									fill={color}
 									fillOpacity={0.2}
+									activeDot={{ fill: color, stroke: 'var(--background, Canvas)' }}
 									isAnimationActive={false}
 								/>
 							);
@@ -111,6 +117,8 @@ export function Chart({ input: { type, data, xKey, series } }) {
 								type="monotone"
 								stroke={color}
 								strokeWidth={2}
+								dot={{ fill: 'var(--background, Canvas)', stroke: color }}
+								activeDot={{ fill: color, stroke: 'var(--background, Canvas)' }}
 								isAnimationActive={false}
 							/>
 						);

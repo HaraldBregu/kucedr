@@ -20,6 +20,7 @@ html,body{height:100%;margin:0;background:var(--background,Canvas);color:var(--f
 body{display:flex;flex-direction:column;padding:8px 12px;box-sizing:border-box}
 h3{margin:0;font-size:14px;font-weight:600}p{margin:2px 0 0;opacity:.7}
 #chart{position:relative;flex:1;min-height:0;margin-top:8px}
+#chart :focus-visible{outline:2px solid var(--ring,Highlight);outline-offset:2px}
 </style></head><body>
 <h3>${escape(input.title)}</h3>${input.description ? `<p>${escape(input.description)}</p>` : ''}
 <div id="chart"></div>
