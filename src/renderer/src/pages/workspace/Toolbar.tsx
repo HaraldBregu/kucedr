@@ -3,6 +3,7 @@ import type { ChainedCommands, Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import {
 	Bold,
+	ChartColumn,
 	Code,
 	Columns3,
 	Eraser,
