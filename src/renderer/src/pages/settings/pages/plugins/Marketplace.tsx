@@ -129,10 +129,11 @@ export default function MarketplacePage(): React.JSX.Element {
 					</p>
 					<Meta rows={details} />
 				</div>
+			</header>
+			<div className="pb-8">
 				<Button
 					type="button"
 					size="sm"
-					className="shrink-0"
 					disabled={installing}
 					onClick={() => void install(plugin.id)}
 				>
