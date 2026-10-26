@@ -136,6 +136,19 @@ export default function MarketplacePage(): React.JSX.Element {
 						{plugin.description}
 					</p>
 					<Meta rows={details} />
+					<Button
+						type="button"
+						size="sm"
+						className="mt-4"
+						disabled={installing}
+						onClick={() => void install(plugin.id)}
+					>
+						{installing
+							? t('settings.integrations.installed.installing')
+							: plugin.update
+								? t('settings.integrations.marketplace.update')
+								: t('settings.integrations.installed.install')}
+					</Button>
 				</div>
 				<Badge
 					variant="outline"
@@ -146,20 +159,6 @@ export default function MarketplacePage(): React.JSX.Element {
 					{plugin.version}
 				</Badge>
 			</header>
-			<div className="pb-8">
-				<Button
-					type="button"
-					size="sm"
-					disabled={installing}
-					onClick={() => void install(plugin.id)}
-				>
-					{installing
-						? t('settings.integrations.installed.installing')
-						: plugin.update
-							? t('settings.integrations.marketplace.update')
-							: t('settings.integrations.installed.install')}
-				</Button>
-			</div>
 		</SettingsPageShell>
 	);
 }
