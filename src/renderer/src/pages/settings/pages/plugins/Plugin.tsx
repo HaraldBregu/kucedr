@@ -285,8 +285,13 @@ export default function PluginPage(): React.JSX.Element {
 					)}
 				</div>
 				{plugin.version && (
-					<Badge variant="outline" className="shrink-0">
-						{t('settings.integrations.plugin.version')} {plugin.version}
+					<Badge
+						variant="outline"
+						className="shrink-0"
+						title={t('settings.integrations.plugin.version')}
+					>
+						<Tag />
+						{plugin.version}
 					</Badge>
 				)}
 			</header>
