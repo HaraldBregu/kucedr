@@ -76,7 +76,9 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 			expect(html).toContain('background:var(--background,Canvas)');
 			expect(html).toContain(`color-scheme:${theme}`);
 			expect(html).not.toMatch(/<script[^>]+src=|<link[^>]+href=/i);
-			const data = JSON.parse(html.match(/<script id="chart-input" type="application\/json">(.*?)<\/script>/s)![1]);
+			const data = JSON.parse(
+				html.match(/<script id="chart-input" type="application\/json">(.*?)<\/script>/s)![1]
+			);
 			expect(data).toEqual({ ...input, type });
 			expect(html).toContain('recharts-wrapper');
 			const dom = new JSDOM(html, {
@@ -85,28 +87,51 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 				beforeParse(window) {
 					window.HTMLElement.prototype.getBoundingClientRect = function () {
 						const height = this.classList.contains('recharts-legend-wrapper') ? 20 : 240;
-						return { x: 0, y: 0, top: 0, left: 0, right: 800, bottom: height, width: 800, height, toJSON: () => ({}) };
+						return {
+							x: 0,
+							y: 0,
+							top: 0,
+							left: 0,
+							right: 800,
+							bottom: height,
+							width: 800,
+							height,
+							toJSON: () => ({}),
+						};
 					};
 					window.ResizeObserver = class {
 						constructor(private readonly callback: (entries: unknown[]) => void) {}
-						observe(target: HTMLElement) { this.callback([{ target, contentRect: target.getBoundingClientRect() }]); }
+						observe(target: HTMLElement) {
+							this.callback([{ target, contentRect: target.getBoundingClientRect() }]);
+						}
 						unobserve() {}
 						disconnect() {}
 					};
 				},
 			});
 			try {
-				for (let tries = 0; tries < 30 && !dom.window.document.querySelector('.recharts-surface'); tries++)
+				for (
+					let tries = 0;
+					tries < 30 && !dom.window.document.querySelector('.recharts-surface');
+					tries++
+				)
 					await new Promise((resolve) => setTimeout(resolve, 20));
 				const document = dom.window.document;
 				expect(document.querySelector('.recharts-surface')).not.toBeNull();
-				const shape = type === 'bar' ? '.recharts-bar-rectangle path'
-					: type === 'line' ? '.recharts-line-curve'
-					: type === 'area' ? '.recharts-area-area' : '.recharts-pie-sector path';
+				const shape =
+					type === 'bar'
+						? '.recharts-bar-rectangle path'
+						: type === 'line'
+							? '.recharts-line-curve'
+							: type === 'area'
+								? '.recharts-area-area'
+								: '.recharts-pie-sector path';
 				for (let tries = 0; tries < 30 && !document.querySelector(shape); tries++)
 					await new Promise((resolve) => setTimeout(resolve, 20));
 				expect(document.querySelector(shape)).not.toBeNull();
-				expect(document.querySelector(shape)!.getAttribute(type === 'line' ? 'stroke' : 'fill')).toContain('var(--chart-1');
+				expect(
+					document.querySelector(shape)!.getAttribute(type === 'line' ? 'stroke' : 'fill')
+				).toContain('var(--chart-1');
 			} finally {
 				dom.window.close();
 			}
@@ -144,6 +169,8 @@ it('escapes markup in text and prevents labels from breaking out of the inline s
 	const document = new JSDOM(html).window.document;
 	expect(document.querySelectorAll('script')).toHaveLength(2);
 	expect(html).toContain('&#60;/script&#62;');
-	const data = JSON.parse(html.match(/<script id="chart-input" type="application\/json">(.*?)<\/script>/s)![1]);
+	const data = JSON.parse(
+		html.match(/<script id="chart-input" type="application\/json">(.*?)<\/script>/s)![1]
+	);
 	expect(data.data[0].month).toEqual(text);
 });

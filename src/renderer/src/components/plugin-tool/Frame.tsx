@@ -17,12 +17,17 @@ export function PluginToolFrame({
 	const [result, setResult] = useState<{ html?: string; error?: string }>({});
 	useEffect(() => {
 		let active = true;
-		const update = (next: AppThemeData): void => { if (active) setTheme(next); };
+		const update = (next: AppThemeData): void => {
+			if (active) setTheme(next);
+		};
 		void app.getThemeData().then(update, (error: unknown) => {
 			if (active) setResult({ error: error instanceof Error ? error.message : String(error) });
 		});
 		const unsubscribe = app.onThemeModeChanged(update);
-		return () => { active = false; unsubscribe(); };
+		return () => {
+			active = false;
+			unsubscribe();
+		};
 	}, []);
 	useEffect(() => {
 		if (!theme) return;

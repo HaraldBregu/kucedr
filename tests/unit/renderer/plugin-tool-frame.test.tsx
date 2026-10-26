@@ -4,7 +4,11 @@ import type { AppThemeData } from '../../../src/shared/app_types';
 import type { PluginToolInfo } from '../../../src/shared/plugin_types';
 
 const tool: PluginToolInfo = {
-	name: 'chart', title: 'Chart', category: 'data', version: '1.0.0', height: 320,
+	name: 'chart',
+	title: 'Chart',
+	category: 'data',
+	version: '1.0.0',
+	height: 320,
 	plugin: { id: 'bootstrap', name: 'Bootstrap' },
 };
 const input = { title: 'Sales' };
@@ -38,9 +42,11 @@ beforeEach(() => {
 	Object.defineProperty(window, 'plugins', {
 		configurable: true,
 		value: {
-			renderTool: jest.fn().mockResolvedValue(
-				'<!doctype html><html><head></head><body><div id="chart"></div><script>document.querySelector("#chart").textContent="Sales";</script></body></html>'
-			),
+			renderTool: jest
+				.fn()
+				.mockResolvedValue(
+					'<!doctype html><html><head></head><body><div id="chart"></div><script>document.querySelector("#chart").textContent="Sales";</script></body></html>'
+				),
 		},
 	});
 });
@@ -51,7 +57,9 @@ it('passes every SDK theme token into the bundled chart document', async () => {
 	const html = frame.getAttribute('srcdoc') ?? '';
 	const document = new DOMParser().parseFromString(html, 'text/html');
 	const styles = Array.from(document.querySelectorAll('style'))
-		.map((style) => style.textContent).join('').replace(/\s+/g, '');
+		.map((style) => style.textContent)
+		.join('')
+		.replace(/\s+/g, '');
 
 	expect(window.app.getThemeData).toHaveBeenCalledTimes(1);
 	expect(window.plugins.renderTool).toHaveBeenCalledWith('chart', input, 'light');
@@ -65,7 +73,9 @@ it('keeps script execution isolated from host APIs and network access', async ()
 	const frame = await screen.findByTitle('Chart');
 	const html = frame.getAttribute('srcdoc') ?? '';
 	const document = new DOMParser().parseFromString(html, 'text/html');
-	const policy = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.getAttribute('content');
+	const policy = document
+		.querySelector('meta[http-equiv="Content-Security-Policy"]')
+		?.getAttribute('content');
 
 	expect(frame).toHaveAttribute('sandbox', 'allow-scripts');
 	expect(policy).toContain("default-src 'none'");
@@ -80,17 +90,30 @@ it('updates SDK colors when the palette changes without changing mode', async ()
 	await screen.findByTitle('Chart');
 	act(() => themeChanged({ ...theme, colors: { ...theme.colors, 'chart-1': '#ff0088' } }));
 
-	await waitFor(() => expect(screen.getByTitle('Chart').getAttribute('srcdoc')).toContain('#ff0088'));
+	await waitFor(() =>
+		expect(screen.getByTitle('Chart').getAttribute('srcdoc')).toContain('#ff0088')
+	);
 	expect(screen.getByTitle('Chart').getAttribute('srcdoc')).not.toContain('#19635f');
 });
 
 it('uses SDK dark mode and unsubscribes when the chart leaves chat', async () => {
 	const { unmount } = render(<PluginToolFrame tool={tool} input={input} />);
 	await screen.findByTitle('Chart');
-	act(() => themeChanged({ ...theme, themeMode: 'dark', isDark: true, colors: { ...theme.colors, foreground: '#eeeeee' } }));
+	act(() =>
+		themeChanged({
+			...theme,
+			themeMode: 'dark',
+			isDark: true,
+			colors: { ...theme.colors, foreground: '#eeeeee' },
+		})
+	);
 
-	await waitFor(() => expect(window.plugins.renderTool).toHaveBeenLastCalledWith('chart', input, 'dark'));
-	await waitFor(() => expect(screen.getByTitle('Chart').getAttribute('srcdoc')).toContain('#eeeeee'));
+	await waitFor(() =>
+		expect(window.plugins.renderTool).toHaveBeenLastCalledWith('chart', input, 'dark')
+	);
+	await waitFor(() =>
+		expect(screen.getByTitle('Chart').getAttribute('srcdoc')).toContain('#eeeeee')
+	);
 	unmount();
 	expect(unsubscribe).toHaveBeenCalledTimes(1);
 });
