@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface Props {
-	readonly rows: readonly { readonly key: string; readonly title: string; readonly value: string }[];
+	readonly rows: readonly { readonly key: string; readonly title: string; readonly value?: string }[];
 }
 
 export default function Meta({ rows }: Props): React.JSX.Element {
