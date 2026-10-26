@@ -10,22 +10,43 @@ const input = {
 	title: 'Monthly sales',
 	xKey: 'month',
 	series: [{ key: 'sales', label: 'Sales' }],
-	data: [{ month: 'Jan', sales: 10 }, { month: 'Feb', sales: 20 }],
+	data: [
+		{ month: 'Jan', sales: 10 },
+		{ month: 'Feb', sales: 20 },
+	],
 };
 
 beforeAll(() => {
 	const absWorkingDir = path.resolve('resources/plugins/bootstrap/tools/chart');
-	buildSync({ absWorkingDir, entryPoints: ['src/browser.js'], bundle: true, minify: true,
-		format: 'iife', outfile: 'dist/browser.js' });
-	buildSync({ absWorkingDir, entryPoints: ['src/index.mjs'], bundle: true,
-		platform: 'node', format: 'esm', outfile: 'dist/index.mjs' });
+	buildSync({
+		absWorkingDir,
+		entryPoints: ['src/browser.js'],
+		bundle: true,
+		minify: true,
+		format: 'iife',
+		outfile: 'dist/browser.js',
+	});
+	buildSync({
+		absWorkingDir,
+		entryPoints: ['src/index.mjs'],
+		bundle: true,
+		platform: 'node',
+		format: 'esm',
+		outfile: 'dist/index.mjs',
+	});
 });
 
 it('discovers the bundled chart and tells the agent how to call it', () => {
 	const tools = pluginTools();
-	expect(tools).toEqual(expect.arrayContaining([
-		expect.objectContaining({ name: 'chart', fence: 'chart', plugin: { id: 'bootstrap', name: 'Bootstrap' } }),
-	]));
+	expect(tools).toEqual(
+		expect.arrayContaining([
+			expect.objectContaining({
+				name: 'chart',
+				fence: 'chart',
+				plugin: { id: 'bootstrap', name: 'Bootstrap' },
+			}),
+		])
+	);
 	const prompt = addPluginToolsPrompt('', tools);
 	expect(prompt).toContain('run_plugin_tool');
 	expect(prompt).toContain('### chart (Bootstrap plugin)');
@@ -34,21 +55,26 @@ it('discovers the bundled chart and tells the agent how to call it', () => {
 
 it('executes the agent tool and returns success only after generating the HTML', async () => {
 	await expect(runPluginTool.run({ name: 'chart', input })).resolves.toEqual({
-		ok: true, shown: 'Chart displayed to the user.',
+		ok: true,
+		shown: 'Chart displayed to the user.',
 	});
-	await expect(runPluginTool.run({ name: 'chart', input: { ...input, data: [] } }))
-		.rejects.toThrow('data must contain between 1 and 200 rows');
+	await expect(runPluginTool.run({ name: 'chart', input: { ...input, data: [] } })).rejects.toThrow(
+		'data must contain between 1 and 200 rows'
+	);
 });
 
 it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
-	'generates a standalone %s chart for both themes', async (type) => {
+	'generates a standalone %s chart for both themes',
+	async (type) => {
 		for (const theme of ['light', 'dark'] as const) {
 			const html = await renderPluginTool('chart', { ...input, type }, theme);
 			expect(html).toContain('<!doctype html>');
 			expect(html).toContain('<style>');
 			expect(html).toContain('<canvas>');
 			expect(html).not.toMatch(/<script[^>]+src=|<link[^>]+href=/i);
-			const config = JSON.parse(html.match(/new Chart\(document.querySelector\('canvas'\), (.*)\);/)![1]);
+			const config = JSON.parse(
+				html.match(/new Chart\(document.querySelector\('canvas'\), (.*)\);/)![1]
+			);
 			expect(config.type).toBe(type === 'area' ? 'line' : type);
 			expect(config.data.labels).toEqual(['Jan', 'Feb']);
 			expect(config.data.datasets[0].data).toEqual([10, 20]);
@@ -74,12 +100,21 @@ it.each([
 
 it('escapes markup in text and prevents labels from breaking out of the inline script', async () => {
 	const text = '</script><script>alert("injected")</script>';
-	const html = await renderPluginTool('chart', {
-		...input, title: text, description: text, data: [{ month: text, sales: 10 }],
-	}, 'light');
+	const html = await renderPluginTool(
+		'chart',
+		{
+			...input,
+			title: text,
+			description: text,
+			data: [{ month: text, sales: 10 }],
+		},
+		'light'
+	);
 	expect(html).not.toContain(text);
 	expect(html.match(/<script>/g)).toHaveLength(2);
 	expect(html).toContain('&#60;/script&#62;');
-	const config = JSON.parse(html.match(/new Chart\(document.querySelector\('canvas'\), (.*)\);/)![1]);
+	const config = JSON.parse(
+		html.match(/new Chart\(document.querySelector\('canvas'\), (.*)\);/)![1]
+	);
 	expect(config.data.labels).toEqual([text]);
 });

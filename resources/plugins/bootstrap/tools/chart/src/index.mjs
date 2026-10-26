@@ -4,8 +4,16 @@ import { validate } from './validate.mjs';
 import { chartConfig } from './config.mjs';
 
 const THEMES = {
-	light: { text: '#404040', grid: '#e5e5e5', colors: ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#7c3aed', '#0891b2'] },
-	dark: { text: '#d4d4d4', grid: '#404040', colors: ['#60a5fa', '#4ade80', '#fbbf24', '#f87171', '#a78bfa', '#22d3ee'] },
+	light: {
+		text: '#404040',
+		grid: '#e5e5e5',
+		colors: ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#7c3aed', '#0891b2'],
+	},
+	dark: {
+		text: '#d4d4d4',
+		grid: '#404040',
+		colors: ['#60a5fa', '#4ade80', '#fbbf24', '#f87171', '#a78bfa', '#22d3ee'],
+	},
 };
 
 const escape = (value) => String(value).replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);

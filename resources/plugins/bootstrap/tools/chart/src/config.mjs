@@ -2,7 +2,14 @@ export function chartConfig({ type, data, xKey, series }, { text, grid, colors }
 	const labels = data.map((row) => String(row[xKey]));
 	const round = type === 'pie' || type === 'doughnut';
 	const datasets = round
-		? [{ label: series[0].label, data: data.map((row) => row[series[0].key]), backgroundColor: labels.map((_, i) => colors[i % colors.length]), borderWidth: 0 }]
+		? [
+				{
+					label: series[0].label,
+					data: data.map((row) => row[series[0].key]),
+					backgroundColor: labels.map((_, i) => colors[i % colors.length]),
+					borderWidth: 0,
+				},
+			]
 		: series.map(({ key, label }, i) => {
 				const color = colors[i % colors.length];
 				return {
@@ -32,4 +39,3 @@ export function chartConfig({ type, data, xKey, series }, { text, grid, colors }
 		},
 	};
 }
-
