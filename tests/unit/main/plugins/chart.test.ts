@@ -83,8 +83,8 @@ beforeAll(() => {
 });
 
 it('discovers the bundled chart and tells the agent how to call it', () => {
-	const tools = pluginTools();
-	expect(tools).toEqual(
+	const scripts = pluginScripts();
+	expect(scripts).toEqual(
 		expect.arrayContaining([
 			expect.objectContaining({
 				name: 'chart',
