@@ -30,9 +30,11 @@ export function scanPlugins(): readonly ScannedPlugin[] {
 				const manifest = readPlugin(directory);
 				const bundled = found.get(entry.name);
 				if (
-					!builtIn && bundled?.manifest &&
+					!builtIn &&
+					bundled?.manifest &&
 					compareVersions(bundled.manifest.version, manifest.version) > 0
-				) continue;
+				)
+					continue;
 				found.set(entry.name, {
 					id: entry.name,
 					directory,
