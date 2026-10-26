@@ -39,7 +39,7 @@ beforeEach(() => {
 			})
 		);
 	}
-	const chart = path.join(mockBundledRoot, 'bootstrap', 'tools', 'chart');
+	const chart = path.join(mockBundledRoot, 'bootstrap', 'scripts', 'chart');
 	mkdirSync(chart, { recursive: true });
 	writeFileSync(
 		path.join(chart, 'manifest.json'),
