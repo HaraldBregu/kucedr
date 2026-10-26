@@ -120,7 +120,7 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 	'generates a standalone %s chart for both themes',
 	async (type) => {
 		for (const theme of ['light', 'dark'] as const) {
-			const html = await renderPluginTool('chart', { ...input, type }, theme);
+			const html = await renderPluginScript('chart', { ...input, type }, theme);
 			expect(html).toContain('<!doctype html>');
 			expect(html).toContain('<style>');
 			expect(html).toContain('<div id="chart">');
@@ -227,12 +227,12 @@ it.each([
 	[{ data: [{ month: 'Jan', sales: Infinity }] }, 'must be a finite number'],
 	[{ description: {} }, 'description must be a string'],
 ])('rejects malformed chart input %j', async (patch, message) => {
-	await expect(renderPluginTool('chart', { ...input, ...patch }, 'light')).rejects.toThrow(message);
+	await expect(renderPluginScript('chart', { ...input, ...patch }, 'light')).rejects.toThrow(message);
 });
 
 it('escapes markup in text and prevents labels from breaking out of the inline script', async () => {
 	const text = '</script><script>alert("injected")</script>';
-	const html = await renderPluginTool(
+	const html = await renderPluginScript(
 		'chart',
 		{
 			...input,
@@ -257,7 +257,7 @@ it.each([undefined, '', '   '])('renders an untitled chart when title is %j', as
 	await expect(runPluginScript.run({ name: 'chart', input: untitled })).resolves.toMatchObject({
 		ok: true,
 	});
-	const html = await renderPluginTool('chart', untitled, 'light');
+	const html = await renderPluginScript('chart', untitled, 'light');
 	const dom = new JSDOM(html);
 	try {
 		expect(dom.window.document.querySelector('h3')).toBeNull();
@@ -273,7 +273,7 @@ it.each([undefined, '', '   '])('renders an untitled chart when title is %j', as
 });
 
 it('keeps an explicitly supplied description without inventing a title', async () => {
-	const html = await renderPluginTool(
+	const html = await renderPluginScript(
 		'chart',
 		{ ...input, title: undefined, description: 'Demo values only.' },
 		'light'
@@ -288,7 +288,7 @@ it('keeps an explicitly supplied description without inventing a title', async (
 });
 
 it.each([null, 42, {}])('rejects a non-string optional title %j', async (title) => {
-	await expect(renderPluginTool('chart', { ...input, title }, 'light')).rejects.toThrow(
+	await expect(renderPluginScript('chart', { ...input, title }, 'light')).rejects.toThrow(
 		'title must be a string'
 	);
 });
@@ -317,7 +317,7 @@ it.each(['horizontal-bar', 'stacked-bar', 'stacked-area', 'scatter', 'radar'])(
 					? '.recharts-scatter-symbol path'
 					: '.recharts-radar-polygon path';
 		for (const theme of ['light', 'dark'] as const) {
-			const html = await renderPluginTool('chart', expanded, theme);
+			const html = await renderPluginScript('chart', expanded, theme);
 			const dom = chartDom(html);
 			try {
 				const document = dom.window.document;
@@ -381,7 +381,7 @@ it.each(['Jan', null, Infinity])(
 	'rejects scatter x coordinates that are not finite numbers: %j',
 	async (x) => {
 		await expect(
-			renderPluginTool(
+			renderPluginScript(
 				'chart',
 				{ ...input, type: 'scatter', xKey: 'x', data: [{ x, sales: 10 }] },
 				'light'
