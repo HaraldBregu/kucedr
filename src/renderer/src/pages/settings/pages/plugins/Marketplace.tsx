@@ -97,21 +97,29 @@ export default function MarketplacePage(): React.JSX.Element {
 		skills: t('settings.integrations.plugin.skills'),
 	};
 	const details = [
-		{ key: 'id', title: t('settings.integrations.plugin.id'), value: plugin.id },
-		{ key: 'author', title: t('settings.integrations.plugin.author'), value: plugin.author },
+		{ key: 'id', title: t('settings.integrations.plugin.id'), icon: Hash, value: plugin.id },
+		{
+			key: 'author',
+			title: t('settings.integrations.plugin.author'),
+			icon: User,
+			value: plugin.author,
+		},
 		{
 			key: 'minAppVersion',
 			title: t('settings.integrations.plugin.minAppVersion'),
+			icon: AppWindow,
 			value: plugin.minAppVersion,
 		},
 		{
 			key: 'categories',
 			title: t('settings.integrations.plugin.categories'),
+			icon: Folder,
 			value: plugin.categories.join(', '),
 		},
 		{
 			key: 'contains',
 			title: t('settings.integrations.plugin.contains'),
+			icon: Boxes,
 			value: plugin.contains.map((kind) => kinds[kind]).join(', '),
 		},
 	].filter((row) => row.value);
