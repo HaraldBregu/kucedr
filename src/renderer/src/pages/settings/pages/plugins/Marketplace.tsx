@@ -3,6 +3,7 @@ import { ArrowLeft, Plug } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { AvailablePlugin } from '@shared/plugin_types';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
 	SettingsEmptyState,
