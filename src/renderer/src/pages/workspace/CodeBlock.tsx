@@ -20,7 +20,7 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 		} catch {
 			return undefined;
 		}
-	}, [pluginTool, text]);
+	}, [script, text]);
 	const editing = useEditorState({
 		editor,
 		selector: ({ editor: current }) => {
