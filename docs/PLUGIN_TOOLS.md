@@ -54,7 +54,7 @@ Rules:
 - **Name:** the folder name is the tool name, as with apps. It must be kebab-case and unique across all enabled plugins. A duplicate is skipped and logged.
 - **Fields:** `title`, `description`, `metadata.version`, `metadata.category` and `metadata.entry` are required. `author` is optional, as for apps.
 - **Build:** in the `kucedr-plugins` repo every tool is an npm workspace (`plugins/*/tools/*`), so dependencies install in the root `node_modules`. `npm run build` at the root builds all tools, and CI runs it before validating and releasing. Kucedr never runs `npm install` or a build: it only runs `metadata.entry`.
-- **Running the script:** the host runs `entry` on Electron's Node, using `process.execPath` with `ELECTRON_RUN_AS_NODE=1`, so users don't need Node installed.
+- **Running the script:** the host runs `metadata.entry` on Electron's Node, using `process.execPath` with `ELECTRON_RUN_AS_NODE=1`, so users don't need Node installed.
   - The working directory is the tool folder, there's a 10 s timeout and stdout is capped at 2 MB.
   - On invalid input the script exits non-zero with a clear message on stderr. That message is what the agent sees, so it can correct the input.
 - **Self-contained HTML:** the output must inline its own JS and CSS, because the host frames it with no network access.
