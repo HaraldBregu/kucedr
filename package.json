@@ -32,7 +32,8 @@
 	},
 	"main": "./out/main/index.js",
 	"scripts": {
-		"dev": "cross-env NODE_ENV=development electron-vite dev --inspect --sourcemap",
+		"postinstall": "install-electron --no",
+		"dev":"cross-env NODE_ENV=development electron-vite dev --inspect --sourcemap",
 		"dev:website": "npm run dev --workspace website",
 		"dev:staging": "cross-env NODE_ENV=staging electron-vite dev --inspect --sourcemap --mode staging",
 		"dev:prod": "cross-env NODE_ENV=production electron-vite dev --inspect --sourcemap --mode production",
