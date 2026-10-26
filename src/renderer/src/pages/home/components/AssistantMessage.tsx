@@ -18,7 +18,7 @@ import { statusLabel, isRunningState, stateTone } from './status';
 import { UserInputCard } from './UserInputCard';
 import { ScreenSourceCard } from './ScreenSourceCard';
 import { McpAuthorizationCard } from './McpAuthorizationCard';
-import { ChartCard } from './ChartCard';
+import { PluginToolCard } from './PluginToolCard';
 import { parsePlanEnvelope } from './plan';
 import { ImageGallery } from './ImageGallery';
 import { generatedMedia } from './media';
