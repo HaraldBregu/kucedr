@@ -18,6 +18,8 @@ export async function buildSystemPrompt(
 	let prompt = basePrompt ?? addBasePrompt('');
 	if (basePrompt === undefined) {
 		prompt = addToolsPrompt(prompt, tools, eligibleTools);
+		if (eligibleTools.some((tool) => tool.id === 'run_plugin_tool'))
+			prompt = addPluginToolsPrompt(prompt, pluginTools());
 		if (contextMode === 'workspace') prompt = await addWorkspacePrompt(config, prompt);
 	}
 	prompt = await addFilesystemPrompt(config, prompt);
