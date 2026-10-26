@@ -22,6 +22,7 @@ import {
 	SettingsValue,
 } from '../../components';
 import Confirm from './Confirm';
+import Meta from './Meta';
 import PluginIcon from './PluginIcon';
 
 interface Contents {
