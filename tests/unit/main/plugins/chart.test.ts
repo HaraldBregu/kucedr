@@ -107,11 +107,11 @@ it('discovers the bundled chart and tells the agent how to call it', () => {
 });
 
 it('executes the agent tool and returns success only after generating the HTML', async () => {
-	await expect(runPluginTool.run({ name: 'chart', input })).resolves.toEqual({
+	await expect(runPluginScript.run({ name: 'chart', input })).resolves.toEqual({
 		ok: true,
 		shown: 'Chart displayed to the user.',
 	});
-	await expect(runPluginTool.run({ name: 'chart', input: { ...input, data: [] } })).rejects.toThrow(
+	await expect(runPluginScript.run({ name: 'chart', input: { ...input, data: [] } })).rejects.toThrow(
 		'data must contain between 1 and 200 rows'
 	);
 });
