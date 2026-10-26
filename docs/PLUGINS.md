@@ -12,6 +12,7 @@ A plugin is one folder that can contribute four kinds of things:
 | **mcp** | `mcp/<server-id>/mcp.json` or `mcp/servers.json` | The local MCP loader |
 | **providers** | Provider fields in the plugin's own `manifest.json` | The provider catalog (`readCatalog()`) |
 | **skills** | `skills/<skill-id>/SKILL.md` | The skills loader |
+| **tools** | `tools/<tool-id>/tool.json` | `pluginTools()`, run by the agent through `run_plugin_tool` (see [PLUGIN_TOOLS.md](PLUGIN_TOOLS.md)) |
 
 ## Where plugins live
 
