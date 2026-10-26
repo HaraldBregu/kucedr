@@ -116,7 +116,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		else if (event.key === 'a' && mod) setSelection(new Set(items.map((item) => item.dataset.path ?? '')));
 		else if (event.key === 'Escape') setSelection(new Set());
 		else if (event.key === 'F2') setRenamingEntry(flatten(entries).find((item) => item.path === path) ?? null);
-		else if (event.key === 'Delete' || (event.key === 'Backspace' && mod)) {
+		else if (event.key === 'Delete' || event.key === 'Backspace') {
 			const paths = topLevel(selection.has(path) ? selection : [path]);
 			deleteSelection(flatten(entries).filter((item) => paths.includes(item.path)));
 		}
