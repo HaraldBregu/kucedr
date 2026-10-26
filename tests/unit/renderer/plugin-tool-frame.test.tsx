@@ -125,3 +125,10 @@ it('shows a readable render failure instead of an empty chart', async () => {
 	expect(await screen.findByText('Chart input is invalid.')).toBeInTheDocument();
 	expect(screen.queryByTitle('Chart')).not.toBeInTheDocument();
 });
+
+it('renders charts without a bordered or rounded outer container', async () => {
+	render(<PluginToolFrame tool={tool} input={{}} />);
+	const frame = await screen.findByTitle('Chart');
+	expect(frame).toHaveClass('border-0');
+	expect(frame).not.toHaveClass('border', 'border-border', 'rounded-xl');
+});

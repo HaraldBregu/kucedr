@@ -6,6 +6,19 @@ import { renderPluginTool } from '../../../../src/main/plugins/tools/plugin_tool
 import { runPluginTool } from '../../../../src/main/agent/tools/plugin/run';
 import { addPluginToolsPrompt } from '../../../../src/main/agent/system/system_add_plugin_tools_prompt';
 
+const chartTypes = [
+	'bar',
+	'horizontal-bar',
+	'stacked-bar',
+	'line',
+	'area',
+	'stacked-area',
+	'pie',
+	'doughnut',
+	'scatter',
+	'radar',
+];
+
 const input = {
 	type: 'bar',
 	title: 'Monthly sales',
@@ -16,6 +29,37 @@ const input = {
 		{ month: 'Feb', sales: 20 },
 	],
 };
+
+function chartDom(html: string): JSDOM {
+	return new JSDOM(html, {
+		runScripts: 'dangerously',
+		pretendToBeVisual: true,
+		beforeParse(window) {
+			window.HTMLElement.prototype.getBoundingClientRect = function () {
+				const height = this.classList.contains('recharts-legend-wrapper') ? 20 : 240;
+				return {
+					x: 0,
+					y: 0,
+					top: 0,
+					left: 0,
+					right: 800,
+					bottom: height,
+					width: 800,
+					height,
+					toJSON: () => ({}),
+				};
+			};
+			window.ResizeObserver = class {
+				constructor(private readonly callback: (entries: unknown[]) => void) {}
+				observe(target: HTMLElement) {
+					this.callback([{ target, contentRect: target.getBoundingClientRect() }]);
+				}
+				unobserve() {}
+				disconnect() {}
+			};
+		},
+	});
+}
 
 beforeAll(() => {
 	const absWorkingDir = path.resolve('resources/plugins/bootstrap/tools/chart');
@@ -52,7 +96,14 @@ it('discovers the bundled chart and tells the agent how to call it', () => {
 	const prompt = addPluginToolsPrompt('', tools);
 	expect(prompt).toContain('run_plugin_tool');
 	expect(prompt).toContain('### chart (Bootstrap plugin)');
-	expect(prompt).toContain('"required":["type","title","data","xKey","series"]');
+	expect(prompt).toContain('"required":["type","data","xKey","series"]');
+	const schema = tools.find((tool) => tool.name === 'chart')!.inputSchema as {
+		properties: { type: { enum: string[] } };
+		required: string[];
+	};
+	expect(schema.properties.type.enum).toEqual(expect.arrayContaining(chartTypes));
+	expect(schema.properties.type.enum).toHaveLength(chartTypes.length);
+	expect(schema.required).not.toContain('title');
 });
 
 it('executes the agent tool and returns success only after generating the HTML', async () => {
@@ -81,34 +132,7 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 			);
 			expect(data).toEqual({ ...input, type });
 			expect(html).toContain('recharts-wrapper');
-			const dom = new JSDOM(html, {
-				runScripts: 'dangerously',
-				pretendToBeVisual: true,
-				beforeParse(window) {
-					window.HTMLElement.prototype.getBoundingClientRect = function () {
-						const height = this.classList.contains('recharts-legend-wrapper') ? 20 : 240;
-						return {
-							x: 0,
-							y: 0,
-							top: 0,
-							left: 0,
-							right: 800,
-							bottom: height,
-							width: 800,
-							height,
-							toJSON: () => ({}),
-						};
-					};
-					window.ResizeObserver = class {
-						constructor(private readonly callback: (entries: unknown[]) => void) {}
-						observe(target: HTMLElement) {
-							this.callback([{ target, contentRect: target.getBoundingClientRect() }]);
-						}
-						unobserve() {}
-						disconnect() {}
-					};
-				},
-			});
+			const dom = chartDom(html);
 			try {
 				for (
 					let tries = 0;
@@ -227,3 +251,139 @@ it('escapes markup in text and prevents labels from breaking out of the inline s
 	);
 	expect(data.data[0].month).toEqual(text);
 });
+
+it.each([undefined, '', '   '])('renders an untitled chart when title is %j', async (title) => {
+	const untitled = { ...input, title };
+	await expect(runPluginTool.run({ name: 'chart', input: untitled })).resolves.toMatchObject({
+		ok: true,
+	});
+	const html = await renderPluginTool('chart', untitled, 'light');
+	const dom = new JSDOM(html);
+	try {
+		expect(dom.window.document.querySelector('h3')).toBeNull();
+		const visibleText = Array.from(dom.window.document.body.children)
+			.filter((element) => element.tagName !== 'SCRIPT')
+			.map((element) => element.textContent)
+			.join('')
+			.trim();
+		expect(visibleText).toBe('');
+	} finally {
+		dom.window.close();
+	}
+});
+
+it('keeps an explicitly supplied description without inventing a title', async () => {
+	const html = await renderPluginTool(
+		'chart',
+		{ ...input, title: undefined, description: 'Demo values only.' },
+		'light'
+	);
+	const dom = new JSDOM(html);
+	try {
+		expect(dom.window.document.querySelector('h3')).toBeNull();
+		expect(dom.window.document.querySelector('p')?.textContent).toBe('Demo values only.');
+	} finally {
+		dom.window.close();
+	}
+});
+
+it.each([null, 42, {}])('rejects a non-string optional title %j', async (title) => {
+	await expect(renderPluginTool('chart', { ...input, title }, 'light')).rejects.toThrow(
+		'title must be a string'
+	);
+});
+
+it.each(['horizontal-bar', 'stacked-bar', 'stacked-area', 'scatter', 'radar'])(
+	'renders the %s chart geometry with multiple series in both themes',
+	async (type) => {
+		const expanded = {
+			type,
+			xKey: type === 'scatter' ? 'x' : 'month',
+			series: [
+				{ key: 'sales', label: 'Sales' },
+				{ key: 'cost', label: 'Cost' },
+			],
+			data: [
+				{ month: 'Jan', x: 1, sales: 10, cost: 6 },
+				{ month: 'Feb', x: 3, sales: 20, cost: 8 },
+				{ month: 'Mar', x: 5, sales: 15, cost: 9 },
+			],
+		};
+		const selector = type.endsWith('bar')
+			? '.recharts-bar-rectangle path'
+			: type === 'stacked-area'
+				? '.recharts-area-area'
+				: type === 'scatter'
+					? '.recharts-scatter-symbol path'
+					: '.recharts-radar-polygon';
+		for (const theme of ['light', 'dark'] as const) {
+			const html = await renderPluginTool('chart', expanded, theme);
+			const dom = chartDom(html);
+			try {
+				const document = dom.window.document;
+				for (let tries = 0; tries < 40 && document.querySelectorAll(selector).length < 2; tries++)
+					await new Promise((resolve) => setTimeout(resolve, 20));
+				expect(document.querySelector('h3')).toBeNull();
+				const shapes = Array.from(document.querySelectorAll(selector));
+				expect(shapes.length).toBe(type.endsWith('bar') || type === 'scatter' ? 6 : 2);
+				expect(shapes[0].getAttribute('fill') ?? shapes[0].getAttribute('stroke')).toContain(
+					'var(--chart-1'
+				);
+				expect(document.querySelectorAll('.recharts-legend-item')).toHaveLength(2);
+				if (type === 'horizontal-bar') {
+					const bars = shapes
+						.slice(0, 3)
+						.map((shape) => ({
+							x: Number(shape.getAttribute('x')),
+							y: Number(shape.getAttribute('y')),
+							width: Number(shape.getAttribute('width')),
+							height: Number(shape.getAttribute('height')),
+						}));
+					expect(bars[0].width).toBeGreaterThan(bars[0].height);
+					expect(bars[1].width).toBeGreaterThan(bars[0].width);
+					expect(bars[0].x).toBe(bars[1].x);
+					expect(bars[0].y).not.toBe(bars[1].y);
+				}
+				if (type === 'stacked-bar') {
+					const first = shapes[0],
+						second = shapes[3];
+					expect(first.getAttribute('x')).toBe(second.getAttribute('x'));
+					expect(first.getAttribute('width')).toBe(second.getAttribute('width'));
+					expect(
+						Number(second.getAttribute('y')) + Number(second.getAttribute('height'))
+					).toBeCloseTo(Number(first.getAttribute('y')));
+				}
+				if (type === 'stacked-area') {
+					expect(shapes[0].getAttribute('d')).not.toBe(shapes[1].getAttribute('d'));
+					expect(document.querySelectorAll('.recharts-area')).toHaveLength(2);
+				}
+				if (type === 'scatter') {
+					const points = Array.from(document.querySelectorAll('.recharts-scatter-symbol'));
+					expect(Number(points[0].getAttribute('cx'))).toBeLessThan(
+						Number(points[1].getAttribute('cx'))
+					);
+					expect(Number(points[0].getAttribute('cy'))).toBeGreaterThan(
+						Number(points[1].getAttribute('cy'))
+					);
+				}
+				if (type === 'radar')
+					expect(document.querySelectorAll('.recharts-polar-angle-axis-tick')).toHaveLength(3);
+			} finally {
+				dom.window.close();
+			}
+		}
+	}
+);
+
+it.each(['Jan', null, Infinity])(
+	'rejects scatter x coordinates that are not finite numbers: %j',
+	async (x) => {
+		await expect(
+			renderPluginTool(
+				'chart',
+				{ ...input, type: 'scatter', xKey: 'x', data: [{ x, sales: 10 }] },
+				'light'
+			)
+		).rejects.toThrow(/scatter.*finite number|xKey.*finite number/);
+	}
+);
