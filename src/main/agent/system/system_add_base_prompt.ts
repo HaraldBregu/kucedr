@@ -85,7 +85,7 @@ export function addBasePrompt(prompt: string, now = new Date()): string {
 	prompt +=
 		'\n- When the user directly asks to record the full screen, workspace, or application, call screen_recorder with target full_screen, workspace, or application and do not ask them to select a source. Only call screen_recorder without sourceId or target when they have not identified what to capture; when it returns selection_required, immediately call select_screen_source with its sources unchanged, then call screen_recorder with the returned sourceId.';
 	prompt +=
-		'\n- When numeric data is better shown visually (trends, comparisons, shares), call create_chart instead of writing a markdown table, and keep a one-line text summary.';
+		'\n- When numeric data is better shown visually (trends, comparisons, shares), call create_chart instead of writing a markdown table, and keep a one-line text summary. When writing a chart into a markdown file, use a ```chart fenced code block containing the same JSON as the create_chart input.';
 	prompt +=
 		'\n- Respect permission boundaries: do not send messages, modify records, make purchases, delete data, or affect production systems without clear authorization.';
 	prompt +=
