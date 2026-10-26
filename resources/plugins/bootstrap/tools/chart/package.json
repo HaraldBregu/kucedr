@@ -3,12 +3,15 @@
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
-	"description": "Bootstrap plugin tool that renders Chart.js charts as self-contained HTML.",
+	"description": "Bootstrap plugin tool that renders Recharts charts as self-contained HTML.",
 	"scripts": {
-		"build": "esbuild src/browser.js --bundle --minify --format=iife --outfile=dist/browser.js && esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs"
+		"build": "esbuild src/browser.jsx --bundle --minify --jsx=automatic --format=iife --outfile=dist/browser.js && esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs"
 	},
 	"devDependencies": {
-		"chart.js": "^4.4.9",
-		"esbuild": "^0.28.2"
+		"esbuild": "^0.28.2",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
+		"react-is": "^19.3.0",
+		"recharts": "^3.10.1"
 	}
 }

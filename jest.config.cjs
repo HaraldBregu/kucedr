@@ -87,6 +87,7 @@ module.exports = {
 				'^react/(.*)$': '<rootDir>/node_modules/react/$1',
 				'^react-dom$': '<rootDir>/node_modules/react-dom',
 				'^react-dom/(.*)$': '<rootDir>/node_modules/react-dom/$1',
+				'^@kucedr/sdk$': '<rootDir>/packages/sdk/index.ts',
 				// Path aliases (match tsconfig.web.json and electron.vite.config.ts)
 				'^@/(.*)$': '<rootDir>/src/renderer/src/$1',
 				'^@utils/(.*)$': '<rootDir>/src/renderer/src/utils/$1',

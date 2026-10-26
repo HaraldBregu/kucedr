@@ -1,16 +1,8 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useIsDark } from '@/hooks/use-is-dark';
+import { app, type AppThemeData } from '@kucedr/sdk';
 import type { PluginToolInfo } from '../../../../shared/plugin_types';
-
-const CSP =
-	"<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:\">";
-
-function withCsp(html: string): string {
-	return /<head[^>]*>/i.test(html)
-		? html.replace(/<head[^>]*>/i, (head) => head + CSP)
-		: CSP + html;
-}
+import { pluginToolDocument } from './document';
 
 /** Renders a plugin tool's HTML in a sandboxed frame with no network access. */
 export function PluginToolFrame({
@@ -20,20 +12,30 @@ export function PluginToolFrame({
 	tool: PluginToolInfo;
 	input: unknown;
 }): ReactElement {
-	const isDark = useIsDark();
+	const [theme, setTheme] = useState<AppThemeData>();
 	const key = JSON.stringify(input);
 	const [result, setResult] = useState<{ html?: string; error?: string }>({});
 	useEffect(() => {
 		let active = true;
-		window.plugins.renderTool(tool.name, JSON.parse(key), isDark ? 'dark' : 'light').then(
-			(html) => active && setResult({ html: withCsp(html) }),
+		const update = (next: AppThemeData): void => { if (active) setTheme(next); };
+		void app.getThemeData().then(update, (error: unknown) => {
+			if (active) setResult({ error: error instanceof Error ? error.message : String(error) });
+		});
+		const unsubscribe = app.onThemeModeChanged(update);
+		return () => { active = false; unsubscribe(); };
+	}, []);
+	useEffect(() => {
+		if (!theme) return;
+		let active = true;
+		window.plugins.renderTool(tool.name, JSON.parse(key), theme.isDark ? 'dark' : 'light').then(
+			(html) => active && setResult({ html: pluginToolDocument(html, theme) }),
 			(error: unknown) =>
 				active && setResult({ error: error instanceof Error ? error.message : String(error) })
 		);
 		return () => {
 			active = false;
 		};
-	}, [tool.name, key, isDark]);
+	}, [tool.name, key, theme]);
 
 	if (result.error) return <p className="text-xs text-destructive">{result.error}</p>;
 	if (!result.html)

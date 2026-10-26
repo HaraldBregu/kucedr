@@ -17,6 +17,7 @@
 		"moduleResolution": "bundler",
 		"jsx": "react-jsx",
 		"paths": {
+			"@kucedr/sdk": ["./packages/sdk/index.ts"],
 			"@/*": ["./src/renderer/src/*"],
 			"@utils/*": ["./src/renderer/src/utils/*"],
 			"@pages/*": ["./src/renderer/src/pages/*"],

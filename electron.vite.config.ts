@@ -27,7 +27,8 @@ export default defineConfig({
 					await Promise.all([
 						build({
 							absWorkingDir: directory,
-							entryPoints: ['src/browser.js'],
+							entryPoints: ['src/browser.jsx'],
+							jsx: 'automatic',
 							bundle: true,
 							minify: true,
 							format: 'iife',
