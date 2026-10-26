@@ -21,6 +21,7 @@ import { getUserTool } from '../tools/user/get';
 import { updateUserTool } from '../tools/user/update';
 import { updateIdentityTool } from '../tools/identity/update';
 import { getHealthTool } from '../tools/health/get';
+import { createChartTool } from '../tools/chart/create';
 import { updateHealthTool } from '../tools/health/update';
 import { createImageTool } from '../tools/media/create_image';
 import { createSoundTool } from '../tools/media/create_sound';
