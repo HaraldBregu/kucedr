@@ -145,17 +145,6 @@ export default function MarketplacePage(): React.JSX.Element {
 							: t('settings.integrations.installed.install')}
 				</Button>
 			</header>
-			<div className="flex flex-col gap-8 pb-8">
-				<SettingsSection title={t('settings.integrations.plugin.details')}>
-					<SettingsPanel>
-						{details.map((row) => (
-							<SettingsRow key={row.key} title={row.title}>
-								<SettingsValue mono={row.key === 'id'}>{row.value}</SettingsValue>
-							</SettingsRow>
-						))}
-					</SettingsPanel>
-				</SettingsSection>
-			</div>
 		</SettingsPageShell>
 	);
 }
