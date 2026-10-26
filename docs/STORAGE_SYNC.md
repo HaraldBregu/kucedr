@@ -109,9 +109,9 @@ incoming change:
 - **Changed locally.** Leave the working file untouched. The existing multiple-head conflict row
   from `local/change.ts` keeps both versions for review.
 - **Edit during download.** Re-hash the working file immediately before the `rename` or removal.
-  If it no longer matches the expected parent hash, abort the apply and leave a conflict. This
-  check runs while the main process holds the storage lock, which also serializes it with
-  `scanWorkspace`.
+  If it no longer matches the expected parent hash, abort the apply and leave a conflict. The
+  apply must not run concurrently with `scanWorkspace` for the same workspace; serialize both
+  within the sync pass in `cloud/sync.ts`.
 
 New paths keep the current behavior: they are installed only when the destination is absent.
 
