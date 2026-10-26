@@ -539,8 +539,8 @@ export interface PluginsInvokeChannelMap {
 		args: [id: string, values: Record<string, string>];
 		result: void;
 	};
-	[PluginsChannels.tools]: { args: []; result: import('./plugin_types').PluginToolInfo[] };
-	[PluginsChannels.renderTool]: {
+	[PluginsChannels.scripts]: { args: []; result: import('./plugin_types').PluginScriptInfo[] };
+	[PluginsChannels.renderScript]: {
 		args: [name: string, input: unknown, theme: 'light' | 'dark'];
 		result: string;
 	};
