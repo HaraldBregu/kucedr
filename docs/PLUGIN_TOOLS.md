@@ -108,9 +108,8 @@ Input schema: ```json {…} ```
 - `src/browser.jsx`: defines `window.renderChart(element, input, palette)`. It renders a Recharts `BarChart`, `LineChart`, `AreaChart` or `PieChart` (doughnut is a pie with an inner radius) inside a `ResponsiveContainer`, with animations off. It's bundled as a minified IIFE to `dist/browser.js`.
 - `src/index.mjs`, built to `dist/index.mjs`:
   - Read stdin and validate the required fields (a non-zero exit with a message on error).
-  - Map `type` to a Chart.js config. `area` is a line chart with `fill: true`.
-  - Choose a palette and text and grid colors per `theme`.
-  - Print `<!doctype html>` with `dist/browser.js` inlined, a canvas, and `new Chart(…)`.
+  - Choose the series colors, plus text, grid and tooltip colors, per `theme`.
+  - Print `<!doctype html>` with the title, `dist/browser.js` inlined, and `renderChart(…)` called with the input and palette.
 
 ## Host: main process
 
