@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Plug } from 'lucide-react';
+import { AppWindow, ArrowLeft, Boxes, Folder, Hash, Plug, Tag, User } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { AvailablePlugin } from '@shared/plugin_types';
