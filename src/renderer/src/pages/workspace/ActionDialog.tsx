@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { Button } from '@/components/ui/button';
 import {
 	Dialog,
@@ -14,9 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 
 export interface WorkspaceAction {
-	readonly kind: 'create-file' | 'create-folder' | 'delete';
-	readonly entry?: WorkspaceTreeEntry;
-	readonly entries?: WorkspaceTreeEntry[];
+	readonly kind: 'create-file' | 'create-folder';
 	readonly parentPath: string;
 }
 
@@ -37,15 +34,10 @@ export function WorkspaceActionDialog({
 }: WorkspaceActionDialogProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [name, setName] = useState('');
-	const deleting = action.kind === 'delete';
 	const title =
 		action.kind === 'create-file'
 			? t('workspaceSidebar.newFile', 'New file')
-			: action.kind === 'create-folder'
-				? t('workspaceSidebar.newFolder', 'New folder')
-			: action.entries && action.entries.length > 1
-				? t('workspaceSidebar.deleteEntries', { count: action.entries.length, defaultValue: 'Delete {{count}} items' })
-			: t('workspaceSidebar.deleteEntry', { name: action.entry?.name });
+			: t('workspaceSidebar.newFolder', 'New folder');
 
 	return (
 		<Dialog
@@ -65,22 +57,15 @@ export function WorkspaceActionDialog({
 					<DialogHeader>
 						<DialogTitle>{title}</DialogTitle>
 						<DialogDescription>
-							{deleting
-								? t(
-										'workspaceSidebar.deleteWarning',
-										'This permanently deletes the item and its contents.'
-									)
-								: t('workspaceSidebar.namePrompt', 'Enter a name for the item.')}
+							{t('workspaceSidebar.namePrompt', 'Enter a name for the item.')}
 						</DialogDescription>
 					</DialogHeader>
-					{!deleting ? (
-						<Input
-							autoFocus
-							aria-label={t('workspaceSidebar.name', 'Name')}
-							value={name}
-							onChange={(event) => setName(event.target.value)}
-						/>
-					) : null}
+					<Input
+						autoFocus
+						aria-label={t('workspaceSidebar.name', 'Name')}
+						value={name}
+						onChange={(event) => setName(event.target.value)}
+					/>
 					{error ? (
 						<p className="text-sm text-destructive" role="alert">
 							{error}
@@ -94,14 +79,8 @@ export function WorkspaceActionDialog({
 								</Button>
 							}
 						/>
-						<Button
-							type="submit"
-							variant={deleting ? 'destructive' : 'default'}
-							disabled={busy || (!deleting && !name.trim())}
-						>
-							{deleting
-								? t('common.delete', 'Delete')
-								: t('workspaceSidebar.create', 'Create')}
+						<Button type="submit" disabled={busy || !name.trim()}>
+							{t('workspaceSidebar.create', 'Create')}
 						</Button>
 					</DialogFooter>
 				</form>
