@@ -1,77 +1,22 @@
 // Reads { input, theme } JSON on stdin and prints a self-contained HTML chart.
 import fs from 'node:fs';
+import { validate } from './validate.mjs';
+import { chartConfig } from './config.mjs';
 
-const TYPES = ['bar', 'line', 'area', 'pie', 'doughnut'];
 const THEMES = {
 	light: { text: '#404040', grid: '#e5e5e5', colors: ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#7c3aed', '#0891b2'] },
 	dark: { text: '#d4d4d4', grid: '#404040', colors: ['#60a5fa', '#4ade80', '#fbbf24', '#f87171', '#a78bfa', '#22d3ee'] },
 };
 
-function fail(message) {
-	process.stderr.write(message);
-	process.exit(1);
-}
-
-function validate(input) {
-	if (!input || typeof input !== 'object' || Array.isArray(input)) fail('input must be an object.');
-	if (!TYPES.includes(input.type)) fail(`type must be one of: ${TYPES.join(', ')}.`);
-	if (typeof input.title !== 'string' || !input.title.trim()) fail('title is required.');
-	if (input.description !== undefined && typeof input.description !== 'string') fail('description must be a string.');
-	if (!Array.isArray(input.data) || input.data.length === 0 || input.data.length > 200)
-		fail('data must contain between 1 and 200 rows.');
-	if (typeof input.xKey !== 'string' || !input.xKey) fail('xKey is required: the field that holds each category or label.');
-	if (!input.data.every((row) => row && typeof row === 'object' && !Array.isArray(row) &&
-		Object.hasOwn(row, input.xKey) && ['string', 'number'].includes(typeof row[input.xKey])))
-		fail(`every data row needs the xKey field "${input.xKey}".`);
-	if (!Array.isArray(input.series) || input.series.length === 0 || input.series.length > 6)
-		fail('series must contain between 1 and 6 { key, label } entries.');
-	if (!input.series.every((series) => series && typeof series.key === 'string' && series.key.trim() &&
-		typeof series.label === 'string' && series.label.trim()))
-		fail('every series needs a non-empty key and label.');
-	for (const { key } of input.series)
-		if (!input.data.every((row) => Object.hasOwn(row, key) && Number.isFinite(row[key])))
-			fail(`series "${key}" must be a finite number in every data row.`);
-}
-
-function chartConfig({ type, data, xKey, series }, { text, grid, colors }) {
-	const labels = data.map((row) => String(row[xKey]));
-	const round = type === 'pie' || type === 'doughnut';
-	const datasets = round
-		? [{ label: series[0].label, data: data.map((row) => row[series[0].key]), backgroundColor: labels.map((_, i) => colors[i % colors.length]), borderWidth: 0 }]
-		: series.map(({ key, label }, i) => {
-				const color = colors[i % colors.length];
-				return {
-					label,
-					data: data.map((row) => row[key]),
-					borderColor: color,
-					backgroundColor: type === 'area' ? `${color}4d` : color,
-					fill: type === 'area',
-					tension: 0.3,
-					borderRadius: type === 'bar' ? 4 : 0,
-				};
-			});
-	return {
-		type: type === 'area' ? 'line' : type,
-		data: { labels, datasets },
-		options: {
-			animation: false,
-			maintainAspectRatio: false,
-			color: text,
-			plugins: { legend: { labels: { color: text } } },
-			scales: round
-				? {}
-				: {
-						x: { ticks: { color: text }, grid: { display: false } },
-						y: { ticks: { color: text }, grid: { color: grid } },
-					},
-		},
-	};
-}
-
 const escape = (value) => String(value).replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 
 const { input, theme } = JSON.parse(fs.readFileSync(0, 'utf8') || '{}');
-validate(input);
+try {
+	validate(input);
+} catch (error) {
+	process.stderr.write(error.message);
+	process.exit(1);
+}
 const palette = THEMES[theme] ?? THEMES.light;
 const config = JSON.stringify(chartConfig(input, palette)).replace(/</g, '\\u003c');
 const chartJs = fs.readFileSync(new URL('browser.js', import.meta.url), 'utf8');
