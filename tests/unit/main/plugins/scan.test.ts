@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { scanPlugins, refreshPlugins } from '../../../../src/main/plugins/plugins_scan';
@@ -13,6 +13,9 @@ jest.mock('../../../../src/main/plugins/plugins_bundled_root', () => ({
 }));
 jest.mock('../../../../src/main/plugins/plugins_root', () => ({
 	pluginsRoot: () => mockInstalledRoot,
+}));
+jest.mock('../../../../src/main/plugins/plugins_store', () => ({
+	pluginsStore: { get: () => [] },
 }));
 
 beforeEach(() => {
@@ -50,6 +53,6 @@ it('keeps bundled chart tools available when an older Bootstrap is installed', (
 
 it.each(['1.1.0', '1.2.0'])('preserves installed overrides at version %s', (version) => {
 	const manifest = path.join(mockInstalledRoot, 'bootstrap', 'manifest.json');
-	writeFileSync(manifest, JSON.stringify({ ...JSON.parse(require('node:fs').readFileSync(manifest, 'utf8')), version }));
+	writeFileSync(manifest, JSON.stringify({ ...JSON.parse(readFileSync(manifest, 'utf8')), version }));
 	expect(scanPlugins()[0]).toMatchObject({ builtIn: false, manifest: { version } });
 });
