@@ -389,8 +389,8 @@ it('shows every chart between ordinary tool calls', async () => {
 	render(<AssistantMessage message={message('', tools)} />);
 
 	expect(await screen.findAllByTitle('Chart')).toHaveLength(2);
-	expect(window.plugins.renderTool).toHaveBeenNthCalledWith(1, 'chart', { title: 'First' }, 'light');
-	expect(window.plugins.renderTool).toHaveBeenNthCalledWith(2, 'chart', { title: 'Second' }, 'light');
+	expect(window.plugins.renderScript).toHaveBeenNthCalledWith(1, 'chart', { title: 'First' }, 'light');
+	expect(window.plugins.renderScript).toHaveBeenNthCalledWith(2, 'chart', { title: 'Second' }, 'light');
 });
 
 it('waits for successful plugin execution before rendering its chart', async () => {
@@ -400,11 +400,11 @@ it('waits for successful plugin execution before rendering its chart', async () 
 	};
 	const { rerender } = render(<AssistantMessage message={message('', [call])} />);
 
-	expect(window.plugins.renderTool).not.toHaveBeenCalled();
+	expect(window.plugins.renderScript).not.toHaveBeenCalled();
 	expect(screen.queryByTitle('Chart')).not.toBeInTheDocument();
 	rerender(<AssistantMessage message={message('', [{ ...call, state: 'output-available', output: { ok: true } }])} />);
 	expect(await screen.findByTitle('Chart')).toBeInTheDocument();
-	expect(window.plugins.renderTool).toHaveBeenCalledWith('chart', { title: 'Sales' }, 'light');
+	expect(window.plugins.renderScript).toHaveBeenCalledWith('chart', { title: 'Sales' }, 'light');
 });
 
 it('does not render failed plugin calls', () => {
@@ -414,7 +414,7 @@ it('does not render failed plugin calls', () => {
 		errorText: 'Chart failed',
 	}])} />);
 
-	expect(window.plugins.renderTool).not.toHaveBeenCalled();
+	expect(window.plugins.renderScript).not.toHaveBeenCalled();
 	expect(screen.queryByTitle('Chart')).not.toBeInTheDocument();
 });
 
@@ -431,5 +431,5 @@ it('renders a successful chart restored from persisted tool arguments and result
 	render(<AssistantMessage message={restored} />);
 
 	expect(await screen.findByTitle('Chart')).toBeInTheDocument();
-	expect(window.plugins.renderTool).toHaveBeenCalledWith('chart', input, 'light');
+	expect(window.plugins.renderScript).toHaveBeenCalledWith('chart', input, 'light');
 });
