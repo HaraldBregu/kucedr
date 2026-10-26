@@ -1,6 +1,6 @@
 {
 	"title": "Chart",
-	"description": "Render bar, line, area, pie or doughnut charts from data.",
+	"description": "Render bar, horizontal bar, stacked bar, line, area, stacked area, pie, doughnut, scatter or radar charts from data, with an optional title.",
 	"author": "Harald Bregu",
 	"metadata": {
 		"version": "1.0.0",
@@ -10,8 +10,8 @@
 	"inputSchema": {
 		"type": "object",
 		"properties": {
-			"type": { "type": "string", "enum": ["bar", "line", "area", "pie", "doughnut"] },
-			"title": { "type": "string" },
+			"type": { "type": "string", "enum": ["bar", "horizontal-bar", "stacked-bar", "line", "area", "stacked-area", "pie", "doughnut", "scatter", "radar"] },
+			"title": { "type": "string", "description": "Optional heading. Omit when no title is needed or the user asks for a chart without a title." },
 			"description": { "type": "string" },
 			"data": {
 				"type": "array",
@@ -22,7 +22,7 @@
 			},
 			"xKey": {
 				"type": "string",
-				"description": "Field used for the x-axis categories, or the slice names for pie and doughnut."
+				"description": "Field for category labels, slice names or radar axes. Scatter charts require a numeric xKey field."
 			},
 			"series": {
 				"type": "array",
@@ -36,7 +36,7 @@
 				}
 			}
 		},
-		"required": ["type", "title", "data", "xKey", "series"]
+		"required": ["type", "data", "xKey", "series"]
 	},
 	"fence": "chart",
 	"height": 320
