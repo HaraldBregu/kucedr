@@ -24,6 +24,7 @@ let themeChanged: (next: AppThemeData) => void;
 const unsubscribe = jest.fn();
 
 beforeEach(() => {
+	unsubscribe.mockReset();
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: {
