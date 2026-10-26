@@ -382,8 +382,8 @@ it('uses the displayed plan content when replying to a plan', () => {
 it('shows every chart between ordinary tool calls', async () => {
 	const tools: AgentMessage['tools'] = [
 		{ toolCallId: 'search', type: 'search_web', state: 'output-available', output: 'Found data' },
-		{ toolCallId: 'first', type: 'run_plugin_tool', state: 'output-available', input: { name: 'chart', input: { title: 'First' } } },
-		{ toolCallId: 'second', type: 'run_plugin_tool', state: 'output-available', input: { name: 'chart', input: { title: 'Second' } } },
+		{ toolCallId: 'first', type: 'run_plugin_script', state: 'output-available', input: { name: 'chart', input: { title: 'First' } } },
+		{ toolCallId: 'second', type: 'run_plugin_script', state: 'output-available', input: { name: 'chart', input: { title: 'Second' } } },
 		{ toolCallId: 'read', type: 'read', state: 'output-available', output: 'Read data' },
 	];
 	render(<AssistantMessage message={message('', tools)} />);
@@ -395,7 +395,7 @@ it('shows every chart between ordinary tool calls', async () => {
 
 it('waits for successful plugin execution before rendering its chart', async () => {
 	const call: AgentMessage['tools'][number] = {
-		toolCallId: 'chart', type: 'run_plugin_tool', state: 'input-available',
+		toolCallId: 'chart', type: 'run_plugin_script', state: 'input-available',
 		input: { name: 'chart', input: { title: 'Sales' } },
 	};
 	const { rerender } = render(<AssistantMessage message={message('', [call])} />);
@@ -409,7 +409,7 @@ it('waits for successful plugin execution before rendering its chart', async () 
 
 it('does not render failed plugin calls', () => {
 	render(<AssistantMessage message={message('', [{
-		toolCallId: 'chart', type: 'run_plugin_tool', state: 'output-error',
+		toolCallId: 'chart', type: 'run_plugin_script', state: 'output-error',
 		input: { name: 'chart', input: { title: 'Sales' } },
 		errorText: 'Chart failed',
 	}])} />);
@@ -422,7 +422,7 @@ it('renders a successful chart restored from persisted tool arguments and result
 	const input = { title: 'Restored sales' };
 	const restored = historyToChatMessages([
 		{ role: 'assistant', content: '', contentBlocks: [{
-			type: 'tool_use', toolUseId: 'chart', toolName: 'run_plugin_tool',
+			type: 'tool_use', toolUseId: 'chart', toolName: 'run_plugin_script',
 			toolArgs: { name: 'chart', input },
 		}] },
 		{ role: 'tool', toolUseId: 'chart', content: JSON.stringify({ ok: true }), status: 'ok' },
