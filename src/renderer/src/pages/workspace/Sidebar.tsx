@@ -195,7 +195,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			}
 			else if (kind === 'delete' && entry) deleteSelection([entry]);
 			else if (kind === 'create-file' || kind === 'create-folder') {
-				setPendingAction({ kind, entry, parentPath });
+				setPendingAction({ kind, parentPath });
 			}
 		}).catch((cause: unknown) => {
 			setActionError(cause instanceof Error ? cause.message : t('workspaceSidebar.actionError', 'Unable to change Workspace files.'));
