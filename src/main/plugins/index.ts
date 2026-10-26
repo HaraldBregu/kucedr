@@ -12,3 +12,6 @@ export { refreshPlugins } from './plugins_scan';
 export { watchPlugins } from './plugins_watch';
 export { pluginSettings } from './plugins_settings';
 export { savePluginSettings } from './plugins_save_settings';
+export { pluginTools } from './tools/plugin_tool_list';
+export type { PluginTool } from './tools/plugin_tool_list';
+export { renderPluginTool } from './tools/plugin_tool_render';
