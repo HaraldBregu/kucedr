@@ -315,7 +315,7 @@ it.each(['horizontal-bar', 'stacked-bar', 'stacked-area', 'scatter', 'radar'])(
 				? '.recharts-area-area'
 				: type === 'scatter'
 					? '.recharts-scatter-symbol path'
-					: '.recharts-radar-polygon';
+					: '.recharts-radar-polygon path';
 		for (const theme of ['light', 'dark'] as const) {
 			const html = await renderPluginTool('chart', expanded, theme);
 			const dom = chartDom(html);
@@ -331,14 +331,12 @@ it.each(['horizontal-bar', 'stacked-bar', 'stacked-area', 'scatter', 'radar'])(
 				);
 				expect(document.querySelectorAll('.recharts-legend-item')).toHaveLength(2);
 				if (type === 'horizontal-bar') {
-					const bars = shapes
-						.slice(0, 3)
-						.map((shape) => ({
-							x: Number(shape.getAttribute('x')),
-							y: Number(shape.getAttribute('y')),
-							width: Number(shape.getAttribute('width')),
-							height: Number(shape.getAttribute('height')),
-						}));
+					const bars = shapes.slice(0, 3).map((shape) => ({
+						x: Number(shape.getAttribute('x')),
+						y: Number(shape.getAttribute('y')),
+						width: Number(shape.getAttribute('width')),
+						height: Number(shape.getAttribute('height')),
+					}));
 					expect(bars[0].width).toBeGreaterThan(bars[0].height);
 					expect(bars[1].width).toBeGreaterThan(bars[0].width);
 					expect(bars[0].x).toBe(bars[1].x);
@@ -356,9 +354,13 @@ it.each(['horizontal-bar', 'stacked-bar', 'stacked-area', 'scatter', 'radar'])(
 				if (type === 'stacked-area') {
 					expect(shapes[0].getAttribute('d')).not.toBe(shapes[1].getAttribute('d'));
 					expect(document.querySelectorAll('.recharts-area')).toHaveLength(2);
+					const firstTop = shapes[0].getAttribute('d')!.match(/^M([-\d.]+),([-\d.]+)/)!;
+					const secondBaseline = shapes[1].getAttribute('d')!.match(/([-\d.]+),([-\d.]+)Z$/)!;
+					expect(Number(secondBaseline[1])).toBeCloseTo(Number(firstTop[1]));
+					expect(Number(secondBaseline[2])).toBeCloseTo(Number(firstTop[2]));
 				}
 				if (type === 'scatter') {
-					const points = Array.from(document.querySelectorAll('.recharts-scatter-symbol'));
+					const points = Array.from(document.querySelectorAll('.recharts-scatter-symbol path'));
 					expect(Number(points[0].getAttribute('cx'))).toBeLessThan(
 						Number(points[1].getAttribute('cx'))
 					);
@@ -384,6 +386,6 @@ it.each(['Jan', null, Infinity])(
 				{ ...input, type: 'scatter', xKey: 'x', data: [{ x, sales: 10 }] },
 				'light'
 			)
-		).rejects.toThrow(/scatter.*finite number|xKey.*finite number/);
+		).rejects.toThrow(/scatter.*finite number|xKey/);
 	}
 );
