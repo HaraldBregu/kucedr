@@ -30,8 +30,8 @@ jest.mock('@/pages/home/hooks', () => ({
 		clearError: jest.fn(),
 	}),
 }));
-jest.mock('@/hooks/use-plugin-tools', () => ({
-	usePluginTools: () => ({
+jest.mock('@/hooks/use-plugin-scripts', () => ({
+	usePluginScripts: () => ({
 		loaded: true,
 		byName: new Map([['chart', { name: 'chart', title: 'Chart', height: 320 }]]),
 		byFence: new Map(),
