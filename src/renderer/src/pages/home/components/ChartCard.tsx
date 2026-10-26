@@ -57,8 +57,8 @@ function renderChart({ type, data, xKey, series }: ChartInput): ReactElement {
 		return (
 			<LineChart data={data}>
 				{axes}
-				{series.map(({ key }) => (
-					<Line key={key} dataKey={key} type="monotone" stroke={`var(--color-${key})`} strokeWidth={2} dot={false} />
+				{series.map(({ key }, index) => (
+					<Line key={key} dataKey={key} type="monotone" stroke={color(index)} strokeWidth={2} dot={false} />
 				))}
 			</LineChart>
 		);
