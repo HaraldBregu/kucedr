@@ -355,7 +355,7 @@ async function* loop(
 			const taskRequest = taskToolIds.length > 0;
 			const requiredIds = new Set([
 				'read', 'write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap', 'update_identity', 'update_soul', 'update_user',
-				'subagent', 'subagents', 'run_plugin_tool',
+				'subagent', 'subagents', 'run_plugin_script',
 				...(input.interactionMode === 'plan' ? ['ask'] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
