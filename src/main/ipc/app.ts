@@ -461,6 +461,24 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
+			AppChannels.getAvailableUpdate,
+			wrapSimpleHandler(() => availableUpdateVersion, AppChannels.getAvailableUpdate)
+		);
+
+		ipcMain.handle(
+			AppChannels.installUpdate,
+			wrapSimpleHandler(async () => {
+				// ponytail: unsigned mac builds can't self-install; sign + notarize to drop this branch
+				if (process.platform === 'darwin') {
+					await shell.openExternal('https://github.com/HaraldBregu/kucedr/releases/latest');
+					return;
+				}
+				await autoUpdater.downloadUpdate();
+				autoUpdater.quitAndInstall();
+			}, AppChannels.installUpdate)
+		);
+
+		ipcMain.handle(
 			AppChannels.openDataFolder,
 			wrapSimpleHandler(async () => {
 				await mkdir(userDataLocation(), { recursive: true });
