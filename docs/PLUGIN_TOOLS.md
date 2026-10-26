@@ -119,7 +119,7 @@ Input schema: ```json {…} ```
   - `plugin_tool_read.ts`: zod validation of `manifest.json`, plus reading `INSTRUCTIONS.md` and checking its size.
   - `plugin_tool_list.ts`: `pluginTools()` reads every enabled plugin's tools through `pluginDirs('tools')`, skipping duplicate names.
   - `plugin_tool_render.ts`: `renderPluginTool(name, input, theme)` spawns the script as described above and caches results in memory by name, input and theme.
-- **`plugins_validate_contents.ts`**: for each `tools/<id>`, `tool.json` and `INSTRUCTIONS.md` must be valid and `entry` must exist.
+- **`plugins_validate_contents.ts`**: for each `tools/<id>`, `manifest.json` and `INSTRUCTIONS.md` must be valid and `metadata.entry` must exist.
 - **IPC** (channel definitions, preload and `src/main/ipc/plugins.ts`):
   - `plugins:tools` returns `{ name, title, fence?, height, plugin }[]`.
   - `plugins:render-tool(name, input, theme)` returns HTML.
