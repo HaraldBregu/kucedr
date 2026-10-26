@@ -20,7 +20,11 @@ const catalogSchema = z.object({
 			minAppVersion: pluginVersionSchema.optional(),
 			url: httpsUrl,
 			integrity: z.string().startsWith('sha512-'),
-			contains: z.array(z.enum(PLUGIN_KINDS)),
+			contains: z
+				.array(z.string())
+				.transform((kinds) =>
+					kinds.filter((kind): kind is PluginKind => PLUGIN_KINDS.includes(kind as PluginKind))
+				),
 		})
 	),
 });
