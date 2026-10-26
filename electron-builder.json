@@ -25,7 +25,11 @@
 			"schemes": ["kucedr"]
 		}
 	],
-	"publish": null,
+	"publish": {
+		"provider": "github",
+		"owner": "HaraldBregu",
+		"repo": "kucedr"
+	},
 	"asar": true,
 	"asarUnpack": [
 		"node_modules/@openai/codex*/**/*",
