@@ -1,20 +1,26 @@
 import { useMemo } from 'react';
-import { NodeViewContent, NodeViewWrapper, useEditorState, type NodeViewProps } from '@tiptap/react';
-import { Chart } from '@/components/chart/Chart';
-import { parseChart } from '@/components/chart/parse';
+import {
+	NodeViewContent,
+	NodeViewWrapper,
+	useEditorState,
+	type NodeViewProps,
+} from '@tiptap/react';
+import { PluginToolFrame } from '@/components/plugin-tool/Frame';
+import { usePluginTools } from '@/hooks/use-plugin-tools';
 import { cn } from '@/lib/utils';
 
 export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): React.JSX.Element {
-	const isChart = node.attrs.language === 'chart';
+	const { byFence } = usePluginTools();
+	const pluginTool = node.attrs.language ? byFence.get(node.attrs.language) : undefined;
 	const text = node.textContent;
-	const chart = useMemo(() => {
-		if (!isChart) return undefined;
+	const input = useMemo(() => {
+		if (!pluginTool) return undefined;
 		try {
-			return parseChart(JSON.parse(text));
+			return JSON.parse(text) as unknown;
 		} catch {
 			return undefined;
 		}
-	}, [isChart, text]);
+	}, [pluginTool, text]);
 	const editing = useEditorState({
 		editor,
 		selector: ({ editor: current }) => {
@@ -25,15 +31,22 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 	});
 
 	const code = (
-		<pre className={cn(chart && !editing && 'hidden')}>
-			<NodeViewContent<'code'> as="code" className={node.attrs.language ? `language-${node.attrs.language}` : undefined} />
+		<pre className={cn(input !== undefined && !editing && 'hidden')}>
+			<NodeViewContent<'code'>
+				as="code"
+				className={node.attrs.language ? `language-${node.attrs.language}` : undefined}
+			/>
 		</pre>
 	);
-	if (!isChart) return <NodeViewWrapper>{code}</NodeViewWrapper>;
+	if (!pluginTool) return <NodeViewWrapper>{code}</NodeViewWrapper>;
 	return (
 		<NodeViewWrapper className="my-5">
 			<div contentEditable={false}>
-				{chart ? <Chart chart={chart} /> : <p className="mb-1 text-xs text-destructive">Invalid chart data</p>}
+				{input !== undefined ? (
+					<PluginToolFrame tool={pluginTool} input={input} />
+				) : (
+					<p className="mb-1 text-xs text-destructive">Invalid {pluginTool.title} JSON</p>
+				)}
 			</div>
 			{code}
 		</NodeViewWrapper>
