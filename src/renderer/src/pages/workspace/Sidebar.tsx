@@ -193,7 +193,8 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				const paths = topLevel(selection);
 				deleteSelection(flatten(entries).filter((item) => paths.includes(item.path)));
 			}
-			else if (kind === 'create-file' || kind === 'create-folder' || (kind === 'delete' && entry)) {
+			else if (kind === 'delete' && entry) deleteSelection([entry]);
+			else if (kind === 'create-file' || kind === 'create-folder') {
 				setPendingAction({ kind, entry, parentPath });
 			}
 		}).catch((cause: unknown) => {
