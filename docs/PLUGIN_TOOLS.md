@@ -1,6 +1,6 @@
 # Plugin Tools
 
-Status: plan, not implemented. It replaces the built-in charts described in [CHARTS.md](CHARTS.md).
+Status: implemented. It replaces the built-in charts described in [CHARTS.md](CHARTS.md). The example chart tool ships in the **bootstrap** plugin of the `kucedr-plugins` repo (`plugins/bootstrap/tools/chart/`, entry `index.mjs`) instead of a built-in `resources/plugins/charts`. Tool names must equal their folder name.
 
 ## Context
 
