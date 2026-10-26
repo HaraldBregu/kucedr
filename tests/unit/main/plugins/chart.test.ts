@@ -71,6 +71,7 @@ it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
 			expect(html).toContain('<!doctype html>');
 			expect(html).toContain('<style>');
 			expect(html).toContain('<canvas>');
+			expect(html).toContain(`background:${theme === 'dark' ? '#0a0a0a' : '#ffffff'}`);
 			expect(html).not.toMatch(/<script[^>]+src=|<link[^>]+href=/i);
 			const config = JSON.parse(
 				html.match(/new Chart\(document.querySelector\('canvas'\), (.*)\);/)![1]
