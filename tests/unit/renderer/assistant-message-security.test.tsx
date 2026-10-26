@@ -52,7 +52,7 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'plugins', {
 		configurable: true,
-		value: { renderTool: jest.fn().mockResolvedValue('<html><head></head><body>Chart</body></html>') },
+		value: { renderScript: jest.fn().mockResolvedValue('<html><head></head><body>Chart</body></html>') },
 	});
 });
 
