@@ -32,8 +32,8 @@ export interface PluginInfo {
 	readonly settings: readonly ProviderManifestSetting[];
 }
 
-/** A plugin tool the renderer can frame, from `<plugin>/tools/<name>/manifest.json`. */
-export interface PluginToolInfo {
+/** A plugin script the renderer can frame, from `<plugin>/scripts/<name>/manifest.json`. */
+export interface PluginScriptInfo {
 	readonly name: string;
 	readonly title: string;
 	readonly author?: string;
