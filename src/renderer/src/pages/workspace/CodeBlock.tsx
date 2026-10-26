@@ -38,14 +38,14 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 			/>
 		</pre>
 	);
-	if (!pluginTool) return <NodeViewWrapper>{code}</NodeViewWrapper>;
+	if (!script) return <NodeViewWrapper>{code}</NodeViewWrapper>;
 	return (
 		<NodeViewWrapper className="my-5">
 			<div contentEditable={false}>
 				{input !== undefined ? (
-					<PluginToolFrame tool={pluginTool} input={input} />
+					<PluginScriptFrame script={script} input={input} />
 				) : (
-					<p className="mb-1 text-xs text-destructive">Invalid {pluginTool.title} JSON</p>
+					<p className="mb-1 text-xs text-destructive">Invalid {script.title} JSON</p>
 				)}
 			</div>
 			{code}
