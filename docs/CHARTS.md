@@ -89,7 +89,95 @@ if (tool.type === 'create_chart') return <ChartCard key={tool.toolCallId} tool={
 - **Chart export or download.** Add it if users ask for it.
 - **A markdown `chart` code-fence alternative.** It would stream with the text and skip the tool round trip, but it gives up schema validation. Switch to it only if the tool feels slow.
 
-## Verification
+## Workspace editor (plan)
+
+### Context
+
+Workspace files are markdown. The preview editor (`src/renderer/src/pages/workspace/MarkdownEditor.tsx`) is tiptap with `@tiptap/markdown`, and Source mode is CodeMirror over the raw text. A chart must therefore live in the `.md` file as plain text, load back the same way, and stay readable in other markdown tools.
+
+### Format: a `chart` fenced code block
+
+````md
+```chart
+{
+  "type": "bar",
+  "title": "Monthly sales",
+  "xKey": "month",
+  "series": [{ "key": "sales", "label": "Sales" }],
+  "data": [{ "month": "Jan", "sales": 10 }, { "month": "Feb", "sales": 20 }]
+}
+```
+````
+
+- The JSON uses the same schema as the `create_chart` tool input, so the chat and the editor share one format and one renderer.
+- It's a normal code block to tiptap: it parses into `codeBlock` with `language: 'chart'` and saves back unchanged. No new markdown syntax or serializer is needed.
+- In GitHub or any other markdown viewer it shows as readable JSON. In Source mode you edit the JSON directly.
+
+### 1. Share the renderer
+
+Move the pure drawing code out of `pages/home/components/ChartCard.tsx` into shared files:
+
+- `src/renderer/src/components/chart/Chart.tsx`: `<Chart chart={...} />`, which renders Card, ChartContainer and the bar, line, area or pie chart. This is the current `renderChart` code plus the config building.
+- `src/renderer/src/components/chart/parse.ts`: `parseChart(value: unknown): ChartInput | undefined`, which is the current `chartInput` check.
+
+`ChartCard.tsx` keeps only the tool-state handling (skeleton and error fallback) and renders `<Chart>`.
+
+### 2. Chart node view in the editor
+
+New file `src/renderer/src/pages/workspace/CodeBlock.tsx`, a React node view for code blocks:
+
+- If `language !== 'chart'`, render the normal `<pre><code>` through `NodeViewContent`, so other code blocks look exactly as they do now.
+- If `language === 'chart'`:
+  - Run `parseChart(JSON.parse(node.textContent))` inside a try/catch.
+  - If the JSON is valid, show `<Chart>`. Show the JSON (`NodeViewContent`) below it only while the block is selected, so clicking the chart lets you edit its data in place.
+  - If the JSON is invalid, show a short "Invalid chart data" message with the code visible.
+  - `NodeViewContent` stays mounted and is just hidden. That way tiptap keeps editing and saving the text normally.
+
+In `MarkdownEditor.tsx`, turn off StarterKit's code block and add the extended one:
+
+```ts
+StarterKit.configure({ codeBlock: false, link: { openOnClick: false } }),
+CodeBlock.extend({ addNodeView: () => ReactNodeViewRenderer(WorkspaceCodeBlock) }),
+```
+
+This adds `@tiptap/extension-code-block@^3.32.0` to `package.json`. It's already installed, because StarterKit depends on it.
+
+### 3. Toolbar insert
+
+In `pages/workspace/Toolbar.tsx`, add a **Chart** action to the block group next to Code block and Table. It inserts a `codeBlock` with `language: 'chart'` and a small sample JSON, so users can see the format and edit it.
+
+### 4. Agent writes charts into files
+
+In `system_add_base_prompt.ts`, extend the chart instruction: "When writing a chart into a markdown file, use a ```chart fenced block with the same JSON as create_chart." The agent can then add charts to workspace documents with its normal write and edit tools. No new tool is needed.
+
+### Files touched
+
+- `src/renderer/src/components/chart/Chart.tsx` (new, moved from ChartCard)
+- `src/renderer/src/components/chart/parse.ts` (new, moved from ChartCard)
+- `src/renderer/src/pages/home/components/ChartCard.tsx` (slimmed)
+- `src/renderer/src/pages/workspace/CodeBlock.tsx` (new)
+- `src/renderer/src/pages/workspace/MarkdownEditor.tsx`
+- `src/renderer/src/pages/workspace/Toolbar.tsx`
+- `src/main/agent/system/system_add_base_prompt.ts`
+- `package.json` (adds `@tiptap/extension-code-block`)
+
+### Skipped
+
+- **A visual chart editor (a form for type, series and rows).** Editing the JSON is enough for now. Add the form if users find the JSON awkward.
+- **The read-only preview** that `Viewer.tsx` shows for files containing `<!-- -->` comments. Those `chart` blocks still show as code. Add a `code` override to its `markdownComponents` if needed.
+- **`chart` blocks inside chat replies.** Chat uses the tool. Add the same `code` override there if we want both.
+
+### Verification
+
+1. Open a `.md` file that contains the sample block. The chart should render in Preview, and Source should show the JSON.
+2. Click the chart, change a value in the JSON, and click away. The chart should update. Save, reopen, and diff the file: only the edited value should change.
+3. Break the JSON. You should see the "Invalid chart data" message and the code. Fix the JSON and the chart should come back.
+4. Ordinary code blocks, such as `ts`, should look and behave as before.
+5. Use the toolbar's **Chart** action. It should insert a working sample.
+6. Ask the agent to "add a chart of X to notes.md". The file should get a `chart` block that renders.
+7. Run `npm run typecheck:app` and lint.
+
+## Verification (chat)
 
 1. Run `npm run dev` and ask "show monthly sales Jan–Jun as a bar chart: 10,20,15,30,25,40". A bar chart should render inline.
 2. Ask for a line, an area and a pie chart. Each should render, and the colors should be correct in both light and dark themes.
