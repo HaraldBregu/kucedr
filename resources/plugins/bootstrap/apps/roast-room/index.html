@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roast Room</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-logo" src="brand/ais-horizontal.svg" alt="AI Automation Society">
+      <span class="brand-rule" aria-hidden="true"></span>
+      <span class="brand-name">Roast Room</span>
+    </div>
+    <ol class="stepper" id="stepper" aria-label="Council progress">
+      <li data-step="setup">Brief</li>
+      <li data-step="round1">Openings</li>
+      <li data-step="cruxes">Fault lines</li>
+      <li data-step="round2">Debate</li>
+      <li data-step="round3">Vote</li>
+      <li data-step="verdict">Verdict</li>
+    </ol>
+    <div class="top-actions">
+      <span class="usage" id="usage" title="Tokens used by this app since it started"></span>
+      <button class="ghost" id="guideBtn" type="button">How it works</button>
+      <button class="ghost" id="historyBtn" type="button">Past sessions</button>
+      <button class="ghost" id="newBtn" type="button" hidden>New question</button>
+    </div>
+  </header>
+
+  <div class="topic" id="topic" hidden>
+    <div class="topic-main">
+      <div class="label">On the table</div>
+      <h1 id="topicTitle"></h1>
+    </div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <main class="layout">
+    <section class="stage-wrap" aria-label="The council table">
+      <div class="stage" id="stage">
+        <div class="wall" aria-hidden="true"></div>
+        <div class="spot" id="spot" aria-hidden="true"></div>
+        <div id="seats"></div>
+        <div class="table" id="table" aria-hidden="true"><img class="etch" src="brand/ais-symbol.png" alt=""></div>
+        <div id="plates"></div>
+        <svg class="links" id="links" aria-hidden="true"></svg>
+
+        <div class="center" id="center">
+          <div class="waiting" id="waiting" hidden>
+            <span class="pulse"><i></i>The room is open</span>
+            <h2 data-type>Bring a decision to the Roast Room</h2>
+            <p>In Claude Code, type the line below with your decision. The council shows up here and argues it out live.</p>
+            <code>/roast-room should I ...</code>
+            <div class="row"><button class="ghost" type="button" id="waitGuide">What to put in your question</button><button class="ghost" type="button" id="waitHistory">Watch a past council</button></div>
+          </div>
+
+          <form class="composer" id="composer" hidden>
+            <h2 data-type>What decision do you need help with?</h2>
+            <textarea id="prompt" rows="3" placeholder="Give them the decision, your options, a few numbers (revenue, cash, team), and which way you're leaning." required minlength="10"></textarea>
+            <div class="samples" id="samples"></div>
+            <div class="composer-row">
+              <div class="mode" role="radiogroup" aria-label="Council size">
+                <label><input type="radio" name="mode" value="full" checked><span>Full council <small>7 seats, 3 rounds</small></span></label>
+                <label><input type="radio" name="mode" value="quick"><span>Quick <small>4 seats, 2 rounds</small></span></label>
+              </div>
+              <button class="convene" type="submit" id="convene">Convene the council</button>
+            </div>
+          </form>
+
+          <div class="caption" id="caption" hidden>
+            <div class="cap-head">
+              <span class="cap-av" id="capAv"></span>
+              <span class="cap-who" id="capWho"></span>
+              <span class="cap-tag" id="capTag"></span>
+            </div>
+            <p class="cap-text" id="capText"></p>
+            <div class="cap-sub" id="capSub"></div>
+          </div>
+
+          <div class="waitcard" id="waitcard" hidden aria-live="polite">
+            <div class="wc-top"><span class="wc-step" id="wcStep"></span><span class="wc-time" id="wcTime"></span></div>
+            <p class="wc-head" id="wcHead"></p>
+            <p class="wc-sub" id="wcSub"></p>
+            <p class="wc-muse" id="wcMuse"></p>
+            <div class="wc-bar"><i id="wcBar"></i></div>
+            <p class="wc-nudge" id="wcNudge" hidden>Nothing new for a while? Long answers from your text model can take a few minutes.</p>
+          </div>
+
+          <div class="cruxes" id="cruxes" hidden></div>
+          <div class="plate" id="plate" hidden></div>
+        </div>
+
+        <div class="playbar" id="playbar" hidden>
+          <span class="queue" id="queueInfo"></span>
+          <div class="speed" role="radiogroup" aria-label="Playback speed">
+            <button type="button" data-speed="1" aria-pressed="true">1x</button>
+            <button type="button" data-speed="1.6" aria-pressed="false">1.6x</button>
+            <button type="button" data-speed="2.5" aria-pressed="false">2.5x</button>
+          </div>
+          <button type="button" class="skip" id="skipBtn">Skip ahead</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel" aria-label="Key points">
+      <div class="panel-head" id="panelHead">Key points</div>
+      <div class="tabpanel" id="feed">
+        <div class="empty">One line per seat as the council talks. Click a seat to read its full card.</div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="sheet" id="verdictSheet" hidden>
+    <div class="sheet-inner" id="verdictBody"></div>
+  </div>
+
+  <dialog id="cardDialog" class="card-dialog">
+    <div id="cardBody"></div>
+    <form method="dialog"><button class="ghost">Close</button></form>
+  </dialog>
+
+  <dialog id="guideDialog" class="card-dialog">
+    <div id="guideBody"></div>
+    <form method="dialog"><button class="ghost">Close</button></form>
+  </dialog>
+
+  <dialog id="historyDialog" class="card-dialog">
+    <h3>Past sessions</h3>
+    <p class="muted">Replay a council exactly as it happened.</p>
+    <ul class="history" id="historyList"></ul>
+    <form method="dialog"><button class="ghost">Close</button></form>
+  </dialog>
+
+  <div class="toast" id="toast" hidden></div>
+  <p class="disclaimer">Simulated advisors built from each person's public work and drawn as caricatures. They are not the people and do not speak for them.</p>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

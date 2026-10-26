@@ -263,7 +263,7 @@
 		"searchLabel": "Search settings",
 		"sidebar": {
 			"account": "Settings",
-			"summary": "Account, Storage, Providers etc",
+			"summary": "Account, Cloud, Providers etc",
 			"assistant": "Assistant",
 			"chatSettings": "Chat settings",
 			"getHelp": "Get help",
@@ -345,7 +345,7 @@
 			"providers": "Providers",
 			"searchEngine": "Search engine",
 			"databases": "Database",
-			"storage": "Storage",
+			"storage": "Cloud",
 			"searchEngines": "Web Search",
 			"media": "Media",
 			"devices": "Devices",
@@ -1344,7 +1344,7 @@
 			}
 		},
 		"storage": {
-			"configurationTitle": "Storage setup",
+			"configurationTitle": "Cloud setup",
 			"description": "Upload and download folders with Amazon S3 or any S3-compatible storage provider.",
 			"sync": {
 				"title": "Folders",

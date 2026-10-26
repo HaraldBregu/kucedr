@@ -74,7 +74,7 @@ export interface SettingsProviderConfigItem {
 
 export const SETTINGS_PROVIDER_CONFIG_ITEMS: readonly SettingsProviderConfigItem[] = [
 	{
-		path: '/settings/storage',
+		path: '/settings/cloud',
 		labelKey: 'settings.storage.configurationTitle',
 		descriptionKey: 'settings.storage.description',
 		icon: Folder,
@@ -153,13 +153,13 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Search engines
 	{
-		path: '/settings/storage',
+		path: '/settings/cloud',
 		labelKey: 'settings.searchEngine.braveName',
 		descriptionKey: 'settings.searchEngine.braveDescription',
 		keywords: 'brave web search api key',
 	},
 	{
-		path: '/settings/storage',
+		path: '/settings/cloud',
 		labelKey: 'settings.searchEngine.tavilyName',
 		descriptionKey: 'settings.searchEngine.tavilyDescription',
 		keywords: 'tavily web search api key',
@@ -290,14 +290,14 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'database vector provider api key',
 	},
 	{
-		path: '/settings/storage/providers',
+		path: '/settings/cloud/providers',
 		labelKey: 'settings.tabs.providers',
 		descriptionKey: 'settings.storageProviders.description',
 		keywords: 'storage s3 bucket provider',
 	},
 	// Tasks
 	{
-		path: '/settings/storage',
+		path: '/settings/cloud',
 		labelKey: 'settings.cron.runtime.title',
 		descriptionKey: 'settings.cron.runtime.description',
 		keywords: 'scheduled agent provider model runtime',
@@ -309,7 +309,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'scheduled task history runs sessions',
 	},
 	{
-		path: '/settings/storage',
+		path: '/settings/cloud',
 		labelKey: 'settings.cron.schedulesTitle',
 		descriptionKey: 'settings.cron.schedulesDescription',
 		keywords: 'cron schedule recurring task',
@@ -365,7 +365,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Settings,
 	},
 	{
-		path: '/settings/storage',
+		path: '/settings/cloud',
 		labelKey: 'settings.tabs.storage',
 		descriptionKey: 'settings.overview.descriptions.storage',
 		icon: HardDrive,

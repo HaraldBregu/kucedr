@@ -61,16 +61,18 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 		});
 		registerQueryWithEvent(PluginsChannels.tools, (event) => {
 			trusted.assert(event);
-			return plugins.pluginTools().map(({ name, title, author, metadata, fence, height, plugin }) => ({
-				name,
-				title,
-				...(author && { author }),
-				version: metadata.version,
-				category: metadata.category,
-				...(fence && { fence }),
-				height,
-				plugin,
-			}));
+			return plugins
+				.pluginTools()
+				.map(({ name, title, author, metadata, fence, height, plugin }) => ({
+					name,
+					title,
+					...(author && { author }),
+					version: metadata.version,
+					category: metadata.category,
+					...(fence && { fence }),
+					height,
+					plugin,
+				}));
 		});
 		registerQueryWithEvent(
 			PluginsChannels.renderTool,

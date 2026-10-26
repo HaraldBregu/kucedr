@@ -1,0 +1,43 @@
+{
+	"title": "Chart",
+	"description": "Render bar, line, area, pie or doughnut charts from data.",
+	"author": "Harald Bregu",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "data",
+		"entry": "dist/index.mjs"
+	},
+	"inputSchema": {
+		"type": "object",
+		"properties": {
+			"type": { "type": "string", "enum": ["bar", "line", "area", "pie", "doughnut"] },
+			"title": { "type": "string" },
+			"description": { "type": "string" },
+			"data": {
+				"type": "array",
+				"minItems": 1,
+				"maxItems": 200,
+				"description": "Rows of data. Each row has the xKey field and one number per series key.",
+				"items": { "type": "object", "additionalProperties": { "type": ["string", "number"] } }
+			},
+			"xKey": {
+				"type": "string",
+				"description": "Field used for the x-axis categories, or the slice names for pie and doughnut."
+			},
+			"series": {
+				"type": "array",
+				"minItems": 1,
+				"maxItems": 6,
+				"description": "Numeric fields to plot. Pie and doughnut use only the first series.",
+				"items": {
+					"type": "object",
+					"properties": { "key": { "type": "string" }, "label": { "type": "string" } },
+					"required": ["key", "label"]
+				}
+			}
+		},
+		"required": ["type", "title", "data", "xKey", "series"]
+	},
+	"fence": "chart",
+	"height": 320
+}

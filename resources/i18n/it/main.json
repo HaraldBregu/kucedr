@@ -263,7 +263,7 @@
 		"searchLabel": "Cerca nelle impostazioni",
 		"sidebar": {
 			"account": "Impostazioni",
-			"summary": "Account, Storage, Provider ecc.",
+			"summary": "Account, Cloud, Provider ecc.",
 			"assistant": "Assistente",
 			"chatSettings": "Impostazioni chat",
 			"getHelp": "Ottieni aiuto",
@@ -345,7 +345,7 @@
 			"providers": "Provider",
 			"searchEngine": "Motore di ricerca",
 			"databases": "Database",
-			"storage": "Storage",
+			"storage": "Cloud",
 			"searchEngines": "Ricerca web",
 			"media": "Media",
 			"devices": "Dispositivi",
@@ -1344,7 +1344,7 @@
 			}
 		},
 		"storage": {
-			"configurationTitle": "Configurazione storage",
+			"configurationTitle": "Configurazione cloud",
 			"description": "Carica e scarica cartelle con Amazon S3 o qualsiasi provider compatibile con S3.",
 			"sync": {
 				"title": "Cartelle",

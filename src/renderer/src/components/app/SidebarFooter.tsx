@@ -53,7 +53,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 	};
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
-		{ path: '/settings/storage', label: t('settings.tabs.storage'), icon: HardDrive },
+		{ path: '/settings/cloud', label: t('settings.tabs.storage'), icon: HardDrive },
 		{ path: '/settings/library', label: t('library.title'), icon: Library },
 		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
 		{ path: '/settings/plugins', label: t('settings.tabs.plugins'), icon: Plug },

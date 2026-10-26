@@ -1,0 +1,14 @@
+{
+	"name": "@kucedr-plugins/bootstrap-chart",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Bootstrap plugin tool that renders Chart.js charts as self-contained HTML.",
+	"scripts": {
+		"build": "esbuild src/browser.js --bundle --minify --format=iife --outfile=dist/browser.js && esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs"
+	},
+	"devDependencies": {
+		"chart.js": "^4.4.9",
+		"esbuild": "^0.25.0"
+	}
+}

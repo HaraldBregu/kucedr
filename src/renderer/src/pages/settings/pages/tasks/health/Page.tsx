@@ -33,7 +33,7 @@ import {
 	SettingsRow,
 	SettingsSection,
 } from '../../../components';
-import { SYNC_INTERVALS } from '../../storage/constants';
+import { SYNC_INTERVALS } from '../../cloud/constants';
 import { ModelProviderConfiguration } from '../../../components/model-configuration';
 
 function llmModelGroups(): ProviderModelGroup[] {

@@ -1,0 +1,24 @@
+{
+	"title": "Roast Room",
+	"description": "Bring a hard business decision and a council of AI advisors argues it out, then hands you a scored verdict and a PDF.",
+	"mode": "window",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "productivity",
+		"entry": "index.html",
+		"image": "icon.svg"
+	},
+	"window": {
+		"width": 1280,
+		"height": 820,
+		"minWidth": 960,
+		"minHeight": 640,
+		"resizable": true,
+		"maximizable": true,
+		"frame": true,
+		"transparent": false,
+		"alwaysOnTop": false,
+		"type": "normal",
+		"titleBarStyle": "default"
+	}
+}

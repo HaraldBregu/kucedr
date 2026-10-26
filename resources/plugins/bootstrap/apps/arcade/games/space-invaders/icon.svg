@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 12" width="120" height="96" shape-rendering="crispEdges" role="img" aria-label="Space Invaders">
+  <!-- The crab invader, drawn from the same ASCII sprite used by the game (games/space-invaders/src/sprites.ts). -->
+  <rect width="15" height="12" rx="1.5" fill="#000"/>
+  <path fill="#30ff30" d="M4 2h1v1h-1zM10 2h1v1h-1zM5 3h1v1h-1zM9 3h1v1h-1zM4 4h7v1h-7zM3 5h2v1h-2zM6 5h3v1h-3zM10 5h2v1h-2zM2 6h11v1h-11zM2 7h1v1h-1zM4 7h7v1h-7zM12 7h1v1h-1zM2 8h1v1h-1zM4 8h1v1h-1zM10 8h1v1h-1zM12 8h1v1h-1zM5 9h2v1h-2zM8 9h2v1h-2z"/>
+</svg>
