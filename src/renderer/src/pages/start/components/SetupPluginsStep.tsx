@@ -78,7 +78,7 @@ export function SetupPluginsStep(): React.JSX.Element {
 				</TabsList>
 				<div className="relative mt-2">
 					<Search
-						className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+						className="pointer-events-none absolute top-1/2 z-10 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
 						aria-hidden="true"
 					/>
 					<Input
