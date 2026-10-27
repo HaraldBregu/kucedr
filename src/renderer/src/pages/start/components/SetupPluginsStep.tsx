@@ -15,6 +15,15 @@ export function SetupPluginsStep(): React.JSX.Element {
 	const [available, setAvailable] = useState<AvailablePlugin[] | null>(null);
 	const [installing, setInstalling] = useState<string | null>(null);
 	const [error, setError] = useState('');
+	const [query, setQuery] = useState('');
+	const matches = (text: string): boolean =>
+		text.toLowerCase().includes(query.trim().toLowerCase());
+	const filteredInstalled = installed?.filter((plugin) =>
+		matches(`${plugin.name} ${plugin.description ?? ''}`)
+	);
+	const filteredAvailable = available?.filter((plugin) =>
+		matches(`${plugin.title} ${plugin.description}`)
+	);
 
 	useEffect(() => {
 		void Promise.all([window.plugins.list(), window.plugins.available()])
