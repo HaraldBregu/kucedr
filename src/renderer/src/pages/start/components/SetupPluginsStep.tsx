@@ -53,11 +53,11 @@ export function SetupPluginsStep(): React.JSX.Element {
 	};
 
 	return (
-		<div className="mx-auto flex min-h-full w-full max-w-3xl flex-col py-8">
+		<div className="mx-auto flex h-full min-h-0 w-full max-w-3xl flex-col pt-8">
 			<SetupStepHeader title={STEP_COPY.plugins.title} description={STEP_COPY.plugins.description} />
 			{error && (
 				<p
-					className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
+					className="mt-4 shrink-0 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
 					role="alert"
 				>
 					{error}
