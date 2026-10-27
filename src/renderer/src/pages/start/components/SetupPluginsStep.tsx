@@ -133,14 +133,16 @@ export function SetupPluginsStep(): React.JSX.Element {
 						</div>
 					)}
 				</TabsContent>
-				<TabsContent value="download" className="mt-4">
-					{available === null ? (
+				<TabsContent value="download" className="mt-2 min-h-0 overflow-y-auto pb-8">
+					{filteredAvailable === undefined ? (
 						<p className="text-sm text-muted-foreground">Loading plugins…</p>
-					) : available.length === 0 ? (
-						<p className="text-sm text-muted-foreground">Every plugin in the catalog is installed.</p>
+					) : filteredAvailable.length === 0 ? (
+						<p className="text-sm text-muted-foreground">
+							{query ? 'No matching plugins.' : 'Every plugin in the catalog is installed.'}
+						</p>
 					) : (
 						<div className="grid gap-3">
-							{available.map((plugin) => (
+							{filteredAvailable.map((plugin) => (
 								<Card key={plugin.id} size="sm">
 									<CardHeader className="flex items-center gap-3">
 										<PluginIcon plugin={plugin} className="size-10" />
