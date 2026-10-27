@@ -17,7 +17,7 @@ export function LandingStep({ loading, onStart }: LandingStepProps): React.JSX.E
 					role="img"
 					aria-label="Kucedr logo"
 				/>
-				<p className="mt-6 font-heading text-5xl font-black leading-none tracking-[-0.055em] text-primary">
+				<p className="mt-6 font-heading text-5xl font-black leading-none tracking-[-0.055em] text-foreground">
 					Kucedr
 				</p>
 			</div>
