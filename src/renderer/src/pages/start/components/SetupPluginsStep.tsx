@@ -163,6 +163,14 @@ export function SetupPluginsStep(): React.JSX.Element {
 												</span>
 											</div>
 										</div>
+										<Button
+											type="button"
+											size="sm"
+											disabled={installing !== null}
+											onClick={() => void install(plugin)}
+										>
+											{installing === plugin.id ? 'Installing…' : plugin.update ? 'Update' : 'Install'}
+										</Button>
 									</CardHeader>
 								</Card>
 							))}
