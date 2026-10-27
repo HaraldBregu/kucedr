@@ -13,7 +13,7 @@ export function LandingStep({ loading, onStart }: LandingStepProps): React.JSX.E
 		<div className="landing mx-auto flex min-h-full w-full max-w-xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6">
 			<div className="landing-brand flex shrink-0 flex-col items-center">
 				<span
-					className="landing-logo size-20 shrink-0 bg-foreground"
+					className="landing-logo size-28 shrink-0 bg-foreground"
 					role="img"
 					aria-label="Kucedr logo"
 				/>
