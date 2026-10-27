@@ -84,7 +84,7 @@ const StartPage: React.FC = () => {
 			return;
 		}
 
-		if (step !== 'plugins') {
+		if (step !== 'voice') {
 			const nextStep = SETUP_STEPS[stepIndex + 1];
 			if (nextStep) dispatch({ type: 'GO_TO_STEP', step: nextStep });
 			return;
@@ -175,7 +175,10 @@ const StartPage: React.FC = () => {
 						<Button
 							type="button"
 							size="sm"
-							disabled={step === 'modelProvider' ? isBusy : !canContinueModels}
+							disabled={
+								isBusy ||
+								(step !== 'plugins' && step !== 'modelProvider' && !canContinueModels)
+							}
 							onClick={handlePrimaryAction}
 						>
 							{isBusy ? 'Saving...' : stepIndex === SETUP_STEPS.length - 1 ? 'Finish' : 'Continue'}

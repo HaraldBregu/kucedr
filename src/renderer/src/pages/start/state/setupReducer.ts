@@ -4,7 +4,7 @@ import type { SetupState } from './setupState';
 
 export function createInitialSetupState(): SetupState {
 	return {
-		step: 'modelProvider',
+		step: 'plugins',
 		serviceStates: createInitialModelServiceState(),
 		loadingModels: false,
 		savingConfig: false,

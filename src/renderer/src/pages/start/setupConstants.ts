@@ -178,7 +178,7 @@ export const MODEL_SERVICE_DEFINITIONS: readonly ModelServiceDefinition[] = [
 	},
 ];
 
-export const SETUP_STEPS: readonly SetupStep[] = ['modelProvider', 'chat', 'voice', 'plugins'];
+export const SETUP_STEPS: readonly SetupStep[] = ['plugins', 'modelProvider', 'chat', 'voice'];
 
 export const ONBOARDING_STEPS: readonly OnboardingStep[] = SETUP_STEPS;
 
