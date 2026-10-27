@@ -148,17 +148,7 @@ export function SetupPluginsStep(): React.JSX.Element {
 									<CardHeader className="flex items-center gap-3">
 										<PluginIcon plugin={plugin} className="size-10" />
 										<div className="min-w-0 flex-1">
-											<div className="flex items-center gap-2">
-												<CardTitle className="min-w-0 flex-1 truncate">{plugin.title}</CardTitle>
-												<Button
-													type="button"
-													size="sm"
-													disabled={installing !== null}
-													onClick={() => void install(plugin)}
-												>
-													{installing === plugin.id ? 'Installing…' : plugin.update ? 'Update' : 'Install'}
-												</Button>
-											</div>
+											<CardTitle className="truncate">{plugin.title}</CardTitle>
 											<CardDescription className="mt-1 line-clamp-1">
 												{plugin.description}
 											</CardDescription>
