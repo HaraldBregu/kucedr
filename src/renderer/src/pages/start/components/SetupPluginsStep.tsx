@@ -148,7 +148,7 @@ export function SetupPluginsStep(): React.JSX.Element {
 									<CardHeader className="flex items-center gap-3">
 										<PluginIcon plugin={plugin} className="size-10" />
 										<div className="min-w-0 flex-1">
-											<CardTitle className="truncate">{plugin.title}</CardTitle>
+											<CardTitle className="truncate leading-5">{plugin.title}</CardTitle>
 											<CardDescription className="mt-1 line-clamp-1">
 												{plugin.description}
 											</CardDescription>
