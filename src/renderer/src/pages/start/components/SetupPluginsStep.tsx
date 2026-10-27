@@ -4,6 +4,7 @@ import type { AvailablePlugin, PluginInfo } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PluginIcon from '../../settings/pages/plugins/PluginIcon';
 import { STEP_COPY } from '../setupConstants';
