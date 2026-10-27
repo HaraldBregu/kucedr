@@ -8,6 +8,7 @@ import { SetupChatStep } from './components/SetupChatStep';
 import { SetupVoiceStep } from './components/SetupVoiceStep';
 import { SetupProviderStep } from './components/SetupProviderStep';
 import { SetupStepProgress } from './components/SetupStepProgress';
+import { SetupPluginsStep } from './components/SetupPluginsStep';
 import {
 	actionableProviderCatalog,
 	getErrorMessage,
@@ -83,7 +84,7 @@ const StartPage: React.FC = () => {
 			return;
 		}
 
-		if (step !== 'voice') {
+		if (step !== 'plugins') {
 			const nextStep = SETUP_STEPS[stepIndex + 1];
 			if (nextStep) dispatch({ type: 'GO_TO_STEP', step: nextStep });
 			return;
@@ -112,6 +113,8 @@ const StartPage: React.FC = () => {
 				/>
 			);
 		}
+
+		if (step === 'plugins') return <SetupPluginsStep />;
 
 		const AssistantStep = step === 'chat' ? SetupChatStep : SetupVoiceStep;
 		return (

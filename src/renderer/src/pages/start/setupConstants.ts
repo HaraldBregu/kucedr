@@ -178,7 +178,7 @@ export const MODEL_SERVICE_DEFINITIONS: readonly ModelServiceDefinition[] = [
 	},
 ];
 
-export const SETUP_STEPS: readonly SetupStep[] = ['modelProvider', 'chat', 'voice'];
+export const SETUP_STEPS: readonly SetupStep[] = ['modelProvider', 'chat', 'voice', 'plugins'];
 
 export const ONBOARDING_STEPS: readonly OnboardingStep[] = SETUP_STEPS;
 
@@ -188,6 +188,7 @@ export const ONBOARDING_STEP_TITLES: Record<OnboardingStep, string> = {
 	modelProvider: 'Model',
 	chat: 'Chat assistant',
 	voice: 'Voice assistant',
+	plugins: 'Plugins',
 };
 
 export const MASKED_API_KEY_LABEL = 'sk-************' as const;
@@ -207,6 +208,10 @@ export const STEP_COPY: Record<SetupStep, { title: string; description: string }
 		title: 'Voice assistant',
 		description:
 			'Choose how your assistant speaks, listens, and handles live conversations. You can update these choices anytime in Settings.',
+	},
+	plugins: {
+		title: 'Plugins',
+		description: 'Learn how plugins extend Kucedr with new capabilities.',
 	},
 };
 

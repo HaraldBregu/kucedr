@@ -65,6 +65,6 @@ export type ModelServiceState = {
 
 export type ModelServiceStateMap = Record<ModelServiceId, ModelServiceState>;
 
-export type SetupStep = 'modelProvider' | 'chat' | 'voice';
+export type SetupStep = 'modelProvider' | 'chat' | 'voice' | 'plugins';
 
 export type OnboardingStep = 'landing' | 'auth' | SetupStep;
