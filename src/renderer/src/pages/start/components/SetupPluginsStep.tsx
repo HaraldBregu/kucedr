@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Download, Tag, User } from 'lucide-react';
+import { Download, Search, Tag, User } from 'lucide-react';
 import type { AvailablePlugin, PluginInfo } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
