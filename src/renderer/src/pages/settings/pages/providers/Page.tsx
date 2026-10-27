@@ -691,18 +691,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					{error}
 				</SettingsNotice>
 			)}
-			{(section === undefined || section === 'models') &&
-				(!embedded || modelCatalog.length > 0) && (
-					<SettingsSection title={t('settings.overview.groups.mlModels')}>
-						<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
-							{orderedModelProviders.map((provider) => renderProviderCard(provider, 'models'))}
-							{section === undefined && renderCustomProviderCard()}
-						</div>
-					</SettingsSection>
-				)}
-			{section === 'models' && (
-				<SettingsSection title={t('settings.modelServices.localModels')}>
-					<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">{renderCustomProviderCard()}</div>
+			{(section === 'models' ||
+				(section === undefined && (!embedded || modelCatalog.length > 0))) && (
+				<SettingsSection title={t('settings.overview.groups.mlModels')}>
+					<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
+						{orderedModelProviders.map((provider) => renderProviderCard(provider, 'models'))}
+						{renderCustomProviderCard()}
+					</div>
 				</SettingsSection>
 			)}
 
