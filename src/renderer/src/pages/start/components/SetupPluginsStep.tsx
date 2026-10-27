@@ -64,7 +64,7 @@ export function SetupPluginsStep(): React.JSX.Element {
 				</p>
 			)}
 			<Tabs
-				className="mt-6"
+				className="mt-6 min-h-0 flex-1"
 				value={tab}
 				onValueChange={(value) => setTab(value as 'installed' | 'download')}
 			>
@@ -75,14 +75,30 @@ export function SetupPluginsStep(): React.JSX.Element {
 						Download plugins
 					</TabsTrigger>
 				</TabsList>
-				<TabsContent value="installed" className="mt-4">
-					{installed === null ? (
+				<div className="relative mt-2">
+					<Search
+						className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+						aria-hidden="true"
+					/>
+					<Input
+						type="search"
+						className="pl-8"
+						placeholder="Search plugins"
+						aria-label="Search plugins"
+						value={query}
+						onChange={(event) => setQuery(event.target.value)}
+					/>
+				</div>
+				<TabsContent value="installed" className="mt-2 min-h-0 overflow-y-auto pb-8">
+					{filteredInstalled === undefined ? (
 						<p className="text-sm text-muted-foreground">Loading plugins…</p>
-					) : installed.length === 0 ? (
-						<p className="text-sm text-muted-foreground">No plugins installed.</p>
+					) : filteredInstalled.length === 0 ? (
+						<p className="text-sm text-muted-foreground">
+							{query ? 'No matching plugins.' : 'No plugins installed.'}
+						</p>
 					) : (
 						<div className="grid gap-3">
-							{installed.map((plugin) => (
+							{filteredInstalled.map((plugin) => (
 								<Card key={plugin.id} size="sm">
 									<CardHeader className="flex items-center gap-3">
 										<PluginIcon plugin={plugin} className="size-10" />
