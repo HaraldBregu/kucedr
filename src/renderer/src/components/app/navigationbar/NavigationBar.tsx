@@ -303,15 +303,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 
 				<div className="flex-1" />
 
-				{rightContent && (
-					<div
-						className="z-10 mr-3 flex h-full items-center"
-						style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-					>
-						{rightContent}
-					</div>
-				)}
-
 				{/* ── Right actions ── */}
 				<div
 					className={`z-10 mr-3 ${actionGroupClassName}`}
@@ -332,6 +323,11 @@ export const NavigationBar = React.memo(function NavigationBar({
 						} />
 						<TooltipContent side="bottom">{themeLabel}</TooltipContent>
 					</Tooltip>
+					{rightContent && (
+						<div className="flex h-full items-center" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+							{rightContent}
+						</div>
+					)}
 				</div>
 
 				{!isMac && <WindowControls isMaximized={isMaximized} />}
