@@ -13,17 +13,17 @@ Scripts render a visual result straight into the user's view. Run them with the 
 
 `name` is the script's folder name from the table below. Never call a script name as a tool of its own.
 
-| Script | Use for | Fence | Reference |
-| --- | --- | --- | --- |
-| `chart` | bar, line, area, pie, doughnut, scatter and radar charts from data | `chart` | [references/chart.md](references/chart.md) |
-| `draw` | static Excalidraw drawings, diagrams, flowcharts, sketches and wireframes | `draw` | [references/draw.md](references/draw.md) |
-| `organui` | clinical components: body map (where pain, symptoms or injuries are), dermatome map, patient banner, allergies, problems, vital signs, NEWS2, lab results, medication schedule, ECG, growth chart, anatomy, image viewer, DNA helix, AI note and review elements | `organui` | [references/organui.md](references/organui.md) |
-| `dither` | any dithercn component: dithered backgrounds, charts, gauges, cards, buttons, text, images, or a custom GLSL field | `dither` | [references/dither.md](references/dither.md) |
+| Script | Use for | Fence |
+| --- | --- | --- |
+| `chart` | bar, line, area, pie, doughnut, scatter and radar charts from data | `chart` |
+| `draw` | static Excalidraw drawings, diagrams, flowcharts, sketches and wireframes | `draw` |
+| `organui` | clinical components: body map (where pain, symptoms or injuries are), dermatome map, patient banner, allergies, problems, vital signs, NEWS2, lab results, medication schedule, ECG, growth chart, anatomy, image viewer, DNA helix, AI note and review elements | `organui` |
+| `dither` | any dithercn component: dithered backgrounds, charts, gauges, cards, buttons, text, images, or a custom GLSL field | `dither` |
 
 ## Steps
 
 1. Pick the script whose "Use for" matches the request. If none matches, answer normally without a script. For a data chart prefer `chart`; use `draw` for diagrams and drawings, and `dither` for a dithered look.
-2. Read that script's reference before building the input. It lists every field, the allowed values and examples.
+2. Read that script's instructions with `read_plugin_script` (`{"name": "<script>"}`) before building the input. They list every field, the allowed values and examples.
 3. Build `input` from real data in the conversation or tool results. Never invent numbers, dates or labels; ask if data is missing.
 4. Call `run_plugin_script`. The result appears in the user's view on its own: don't repeat it as text or a table, add at most a one-line summary.
 5. If the tool returns an error, fix the input using the error message and retry once. If it fails again, tell the user what went wrong.
