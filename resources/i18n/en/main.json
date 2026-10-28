@@ -1677,6 +1677,18 @@
 			"loadError": "Unable to load model service settings.",
 			"saveError": "Unable to save model service settings."
 		},
+		"scripts": {
+			"title": "Installed scripts",
+			"information": "Script information",
+			"description": "Browse the scripts provided by your plugins.",
+			"empty": "No scripts installed",
+			"emptyDescription": "Install a plugin that provides scripts.",
+			"loadError": "Unable to load scripts.",
+			"name": "Name",
+			"category": "Category",
+			"fence": "Code fence",
+			"plugin": "Plugin"
+		},
 		"apps": {
 			"title": "Installed apps",
 			"information": "App information",
