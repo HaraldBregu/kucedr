@@ -68,7 +68,7 @@ export function ChatOutline({ messages }: { readonly messages: readonly HomeChat
 							<span aria-hidden className={cn('h-0.5 shrink-0 rounded-full transition-[width,background-color] duration-150 motion-reduce:transition-none group-hover:bg-foreground group-focus-visible:bg-foreground', active === turn.id ? 'bg-foreground' : 'bg-muted-foreground/30', hovered === index ? 'w-7' : hovered !== null && Math.abs(hovered - index) === 1 ? 'w-5' : 'w-3')} />
 						</button>
 					} />
-					<TooltipContent side="right" sideOffset={8} className="block w-80 max-w-[calc(100vw-4rem)] rounded-xl border bg-popover p-3 text-sm text-popover-foreground shadow-lg [&>svg]:hidden">
+					<TooltipContent side="right" sideOffset={8} showArrow={false} className="block w-80 max-w-[calc(100vw-4rem)] rounded-xl border bg-popover p-3 text-sm text-popover-foreground shadow-lg">
 						<p className="line-clamp-2 font-medium">{turn.title}</p>
 						{turn.response && <p className="mt-1 line-clamp-3 text-muted-foreground">{turn.response}</p>}
 					</TooltipContent>
