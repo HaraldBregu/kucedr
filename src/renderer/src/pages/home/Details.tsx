@@ -1,11 +1,12 @@
-import { Activity, ArrowUpRight, ChevronDown, File, Files, MessageSquare, Wrench } from 'lucide-react';
+import { Activity, ArrowUpRight, ChevronDown, File, Files, MessageSquare } from 'lucide-react';
+import { Tool } from '@/components/prompt-kit/tool';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import type { HomeChatMessage } from './context/state';
 import { chatAssets } from './components/assets';
 import { statusLabel } from './components/status';
-import { ToolActivityGroup } from './components/ToolActivityGroup';
+import { toolPartLabel } from './components/tool-label';
 
 export function ChatDetails({ messages, onJump }: {
 	readonly messages: readonly HomeChatMessage[];
@@ -33,17 +34,11 @@ export function ChatDetails({ messages, onJump }: {
 					</div>}
 					{latest?.outputTokens !== undefined && <div className="flex justify-between gap-2 text-muted-foreground"><span>Output tokens</span><span className="tabular-nums text-foreground">{latest.outputTokens.toLocaleString()}</span></div>}
 				</CardContent>
-				<Collapsible className="border-t border-border">
-					<CollapsibleTrigger render={<Button variant="ghost" className="group h-11 w-full justify-start rounded-none px-3 font-normal" />}>
-						<Wrench className="size-4 text-muted-foreground" aria-hidden />
-						<span className="flex-1 text-left">Tool calls</span>
-						<span className="text-xs tabular-nums text-muted-foreground">{tools.length}</span>
-						<ChevronDown className="size-4 text-muted-foreground transition-transform group-data-open:rotate-180" aria-hidden />
-					</CollapsibleTrigger>
-					<CollapsibleContent>
-						<div className="px-3 pb-3">{tools.length ? <ToolActivityGroup tools={tools} /> : <p className="text-xs text-muted-foreground">No tool calls yet.</p>}</div>
-					</CollapsibleContent>
-				</Collapsible>
+				{tools.length > 0 && <ul className="space-y-1 border-t border-border px-3 py-3">
+					{tools.map((tool) => <li key={tool.toolCallId}>
+						<Tool toolPart={tool} label={toolPartLabel(tool)} className="mt-0" />
+					</li>)}
+				</ul>}
 				<Collapsible defaultOpen className="border-t border-border">
 					<CollapsibleTrigger render={<Button variant="ghost" className="group h-11 w-full justify-start rounded-none px-3 font-normal" />}>
 						<Files className="size-4 text-muted-foreground" aria-hidden />
