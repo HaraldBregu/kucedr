@@ -6,7 +6,6 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import type { PluginScriptInfo } from '../../../../../../shared/plugin_types';
 import {
 	SettingsEmptyState,
-	SettingsItemMedia,
 	SettingsLoadingRows,
 	SettingsNotice,
 	SettingsPageHeader,
@@ -14,6 +13,7 @@ import {
 	SettingsPanel,
 } from '../../components';
 import { SettingsFilter } from '../../components/filter';
+import { SettingsItemMedia } from '../../components/item-media';
 
 const ScriptsPage: React.FC = () => {
 	const { t } = useTranslation();
