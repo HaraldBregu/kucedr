@@ -206,13 +206,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 							</Tooltip>
 							<DropdownMenuContent align="start" onCloseAutoFocus={(event) => event.preventDefault()}>
 								{[...byFence].map(([fence, script]) => (
-									<DropdownMenuItem key={fence} onSelect={() => {
-										editor.chain().focus().insertContent({
-											type: 'codeBlock',
-											attrs: { language: fence },
-											content: [{ type: 'text', text: JSON.stringify(script.inputSchema?.examples?.[0] ?? {}, null, 2) }],
-										}).run();
-									}}>
+									<DropdownMenuItem key={fence} onSelect={() => onInsertScript(script)}>
 										{script.title}
 									</DropdownMenuItem>
 								))}
