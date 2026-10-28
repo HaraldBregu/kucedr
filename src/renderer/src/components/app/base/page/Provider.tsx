@@ -19,8 +19,7 @@ import {
 	type PageState,
 } from './context/state';
 
-const SIDEBAR_COOKIE_NAME = 'page_sidebar_layout_state';
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+const SIDEBAR_STATE_STORAGE_KEY = 'page_sidebar_layout_state';
 const SIDEBAR_KEYBOARD_SHORTCUT = '';
 const SIDEBAR_WIDTH_STORAGE_KEY = 'kucedr_sidebar_width';
 
@@ -35,7 +34,7 @@ export const Provider = memo(function Provider({
 }: ProviderProps): React.ReactElement {
 	const [state, dispatch] = useReducer(pageReducer, {
 		...INITIAL_PAGE_STATE,
-		sidebarOpen: document.cookie.split('; ').find((entry) => entry.startsWith(`${SIDEBAR_COOKIE_NAME}=`))?.split('=')[1] !== 'false',
+		sidebarOpen: window.localStorage.getItem(SIDEBAR_STATE_STORAGE_KEY) !== 'false',
 		...initialState,
 	});
 	const [sidebarWidth, setSidebarWidthState] = useState(() => {
@@ -65,7 +64,7 @@ export const Provider = memo(function Provider({
 	}, [isMobile]);
 
 	useEffect(() => {
-		document.cookie = `${SIDEBAR_COOKIE_NAME}=${state.sidebarOpen}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+		window.localStorage.setItem(SIDEBAR_STATE_STORAGE_KEY, String(state.sidebarOpen));
 	}, [state.sidebarOpen]);
 
 	useEffect(() => {
