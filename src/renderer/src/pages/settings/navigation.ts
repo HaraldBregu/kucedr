@@ -7,6 +7,7 @@ import {
 	HardDrive,
 	Code2,
 	Cpu,
+	FileCode,
 	Folder,
 	Globe,
 	HeartPulse,
