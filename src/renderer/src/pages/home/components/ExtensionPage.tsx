@@ -65,7 +65,7 @@ export function ExtensionPage({ extension, onClose }: ExtensionPageProps): React
 				key={extension.id}
 				title={extension.title}
 				src={`kucedr-app://${extension.id}/${extension.entry}`}
-				sandbox="allow-scripts"
+				sandbox="allow-scripts allow-downloads"
 				className="min-h-0 w-full flex-1 border-0 bg-white"
 			/>
 		</section>
