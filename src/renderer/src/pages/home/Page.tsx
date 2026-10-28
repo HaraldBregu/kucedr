@@ -722,7 +722,7 @@ function PageContent(): ReactElement {
 			data-slot="home-composer-shell"
 			className={cn(
 				'z-20 flex justify-center px-4',
-				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3 @[1120px]/chat:w-[calc(100%-20rem)]'
+				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
 			)}
 		>
 			{showEmptyConversation ? null : (
@@ -852,7 +852,7 @@ function PageContent(): ReactElement {
 					) : (
 						<>
 							<ChatContainerRoot
-								className="min-h-0 p-0 [scrollbar-gutter:auto] @[1120px]/chat:mr-80"
+								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
 								<ChatContainerContent className="mx-auto min-h-full w-full max-w-3xl gap-5 pl-10 pr-4 pt-6">
@@ -875,8 +875,6 @@ function PageContent(): ReactElement {
 										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
 									/>
 								</div>
-							</ChatContainerRoot>
-							{composer}
 							<ChatDetails messages={visibleMessages} onJump={(messageId) => {
 								const scroll = chatScrollRef.current;
 								const viewport = scroll?.scrollRef.current;
@@ -885,6 +883,8 @@ function PageContent(): ReactElement {
 								scroll.stopScroll();
 								viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
 							}} />
+							</ChatContainerRoot>
+							{composer}
 						</>
 					)}
 				</div>

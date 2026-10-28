@@ -17,7 +17,7 @@ export function ChatDetails({ messages, onJump }: {
 	const tools = responses.flatMap((message) => message.tools);
 	const assets = chatAssets(responses);
 	return (
-		<aside aria-label="Chat information" className="absolute bottom-6 right-4 top-6 hidden w-72 overflow-y-auto @[1120px]/chat:block">
+		<aside aria-label="Chat information" className="absolute right-6 top-6 hidden max-h-[calc(100%-3rem)] w-72 overflow-y-auto @[1408px]/chat:block">
 			<Card size="sm" className="gap-0 rounded-2xl border border-border bg-card ring-0">
 				<CardHeader className="pb-3">
 					<CardTitle>Chat information</CardTitle>
