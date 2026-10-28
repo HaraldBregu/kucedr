@@ -160,13 +160,27 @@ export function SettingsRow({
 	className,
 	contentClassName,
 	actionClassName,
+	onClick,
 }: SettingsRowProps): React.JSX.Element {
 	const rowActions = actions ?? children;
 
 	return (
 		<div
+			role={onClick ? 'link' : undefined}
+			tabIndex={onClick ? 0 : undefined}
+			onClick={onClick}
+			onKeyDown={
+				onClick &&
+				((event) => {
+					if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+						event.preventDefault();
+						onClick();
+					}
+				})
+			}
 			className={cn(
 				'grid min-h-11 items-center gap-2 border-b border-border/60 px-4 py-3 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-4',
+				onClick && 'cursor-pointer transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-none',
 				className
 			)}
 		>
