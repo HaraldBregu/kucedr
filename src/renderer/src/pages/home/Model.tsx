@@ -140,14 +140,7 @@ export function Model({
 				<Usage
 					providerId={providerId}
 					modelId={modelId}
-					contextWindow={
-						localContextWindow ??
-						modelContextWindow(
-							groups
-								.find((group) => group.id === providerId)
-								?.models.find((model) => model.id === modelId)?.metadata
-						)
-					}
+					contextWindow={contextWindow}
 					messages={messages}
 					draft={draft}
 					hasAttachments={hasAttachments}
