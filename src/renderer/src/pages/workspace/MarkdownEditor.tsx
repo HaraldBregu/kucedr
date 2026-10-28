@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Extension, mergeAttributes, type JSONContent } from '@tiptap/core';
 import { CodeBlock } from '@tiptap/extension-code-block';
 import { Image } from '@tiptap/extension-image';
