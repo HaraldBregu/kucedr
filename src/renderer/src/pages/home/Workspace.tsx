@@ -63,7 +63,7 @@ export function ChatWorkspace({ onAttach }: {
 				<ChevronDown className="size-4 text-muted-foreground transition-transform group-data-open:rotate-180" aria-hidden />
 			</CollapsibleTrigger>
 			<CollapsibleContent>
-				<div className="px-3 pb-2"><Input aria-label="Search workspace files" placeholder="Search files…" value={query} className="h-8 text-xs" onChange={(event) => { setQuery(event.target.value); setVisibleCount(BATCH_SIZE); }} /></div>
+				<div className="px-3 pb-2 pt-2"><Input aria-label="Search workspace files" placeholder="Search files…" value={query} className="h-8 text-xs" onChange={(event) => { setQuery(event.target.value); setVisibleCount(BATCH_SIZE); }} /></div>
 				{attachError && <p role="alert" className="px-3 pb-2 text-xs text-destructive">File could not be attached. Please try again.</p>}
 				{loading ? <p className="px-3 pb-3 text-xs text-muted-foreground">Loading Workspace…</p> : error ? <div className="px-3 pb-3"><p role="alert" className="text-xs text-destructive">Workspace could not be loaded.</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}>Retry</Button></div> : filtered.length ? <ul aria-label="Workspace files" className="max-h-64 space-y-0.5 overflow-y-auto px-1 pb-2" onScroll={(event) => {
 					const viewport = event.currentTarget;
