@@ -1,4 +1,5 @@
 import { resolveContextWindow } from '../../../../src/main/models/context';
+import * as catalog from '../../../../src/main/models';
 import { loadModels } from '../../../../src/main/models';
 import { modelContextWindow } from '../../../../src/shared/model_context';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -23,66 +24,34 @@ it('covers every bundled chat model with a documented positive context limit', (
 	}
 });
 
-it('uses explicit Ollama num_ctx without contacting the server', async () => {
-	const fetcher = jest.spyOn(globalThis, 'fetch');
-	await expect(
-		resolveContextWindow({ id: 'ollama', apiKey: '', baseURL: 'http://localhost:11434' }, 'llama', {
-			num_ctx: 8192,
-		})
-	).resolves.toBe(8192);
-	expect(fetcher).not.toHaveBeenCalled();
-});
-
-it.each(['http://localhost:11434', 'http://localhost:11434/api'])(
-	'reads the effective loaded limit from %s',
-	async (baseURL) => {
-		const fetcher = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
-			ok: true,
-			json: async () => ({ models: [{ name: 'llama:latest', context_length: 4096 }] }),
-		} as Response);
+describe('catalog context resolution', () => {
+	it('uses the configured catalog context limit without contacting the provider', async () => {
+		const find = jest.spyOn(catalog, 'findModel').mockReturnValue({
+			metadata: { contextWindow: 8192 },
+		} as never);
+		const fetcher = jest.spyOn(globalThis, 'fetch');
 		await expect(
-			resolveContextWindow({ id: 'ollama', apiKey: '', baseURL }, 'llama')
-		).resolves.toBe(4096);
-		expect(String(fetcher.mock.calls[0][0])).toBe('http://localhost:11434/api/ps');
-	}
-);
+			resolveContextWindow({ id: 'openai', apiKey: 'key' }, 'catalog-model')
+		).resolves.toBe(8192);
+		expect(find).toHaveBeenCalledWith('openai', 'llm', 'catalog-model');
+		expect(fetcher).not.toHaveBeenCalled();
+	});
 
-it('uses persisted num_ctx while an Ollama model is unloaded', async () => {
-	const fetcher = jest
-		.spyOn(globalThis, 'fetch')
-		.mockResolvedValueOnce({ ok: true, json: async () => ({ models: [] }) } as Response)
-		.mockResolvedValueOnce({
-			ok: true,
-			json: async () => ({
-				parameters: 'num_ctx 16384\nstop test',
-				model_info: { 'llama.context_length': 131072 },
-			}),
-		} as Response);
-	await expect(
-		resolveContextWindow(
-			{ id: 'custom', apiKey: '', baseURL: 'http://localhost:11434/api' },
-			'llama'
-		)
-	).resolves.toBe(16384);
-	expect(String(fetcher.mock.calls[1][0])).toBe('http://localhost:11434/api/show');
-});
+	it('keeps an unknown custom context limit unavailable without contacting the provider', async () => {
+		jest.spyOn(catalog, 'findModel').mockReturnValue(undefined);
+		const fetcher = jest.spyOn(globalThis, 'fetch');
+		await expect(
+			resolveContextWindow(
+				{ id: 'custom', apiKey: 'key', baseURL: 'https://models.example/v1' },
+				'custom-model'
+			)
+		).resolves.toBeUndefined();
+		expect(fetcher).not.toHaveBeenCalled();
+	});
 
-it('does not confuse advertised capacity with an unknown effective Ollama limit', async () => {
-	jest
-		.spyOn(globalThis, 'fetch')
-		.mockResolvedValueOnce({ ok: true, json: async () => ({ models: [] }) } as Response)
-		.mockResolvedValueOnce({
-			ok: true,
-			json: async () => ({ model_info: { 'llama.context_length': 131072 } }),
-		} as Response);
-	await expect(
-		resolveContextWindow({ id: 'ollama', apiKey: '', baseURL: 'http://localhost:11434' }, 'llama')
-	).resolves.toBeUndefined();
-});
-
-it('keeps offline local limits unknown', async () => {
-	jest.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('offline'));
-	await expect(
-		resolveContextWindow({ id: 'ollama', apiKey: '', baseURL: 'http://localhost:11434' }, 'llama')
-	).resolves.toBeUndefined();
+	it('leaves the context limit unavailable when no provider is selected', async () => {
+		const find = jest.spyOn(catalog, 'findModel');
+		await expect(resolveContextWindow(undefined, 'model')).resolves.toBeUndefined();
+		expect(find).not.toHaveBeenCalled();
+	});
 });

@@ -133,16 +133,16 @@ it('shows live conversation and media tools on Voice assistant', () => {
 	}
 });
 
-it('uses the Assistant local-model controls for Ollama', async () => {
+it('uses the Assistant controls for a custom model provider', async () => {
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
 		value: {
 			list: jest.fn().mockResolvedValue([
 				{
 					id: 'custom',
-					name: 'Ollama',
-					apiKey: 'ollama',
-					baseUrl: 'http://localhost:11434/api',
+					name: 'Custom model provider',
+					apiKey: 'custom-key',
+					baseUrl: 'https://models.example/v1',
 				},
 			]),
 			listCustomModels: jest.fn().mockResolvedValue(['llama3.2:3b', 'qwen3:8b']),
@@ -151,11 +151,11 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 	const serviceStates = {
 		...SERVICE_STATES,
 		assistant: {
-			providerId: 'ollama',
+			providerId: 'custom',
 			modelId: 'local',
 			modelGroups: [
 				{
-					provider: { id: 'ollama', name: 'Ollama', baseUrl: '' },
+					provider: { id: 'custom', name: 'Custom model provider', baseUrl: '' },
 					models: [{ id: 'local', name: 'Local model' }],
 				},
 			],
@@ -173,8 +173,8 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 
 	await screen.findByTestId('setup-assistant-select');
 	expect(window.provider.listCustomModels).toHaveBeenCalledWith({
-		baseUrl: 'http://localhost:11434/api',
-		apiKey: 'ollama',
+		baseUrl: 'https://models.example/v1',
+		apiKey: 'custom-key',
 	});
 });
 

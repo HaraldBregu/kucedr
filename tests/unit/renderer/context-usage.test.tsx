@@ -47,9 +47,9 @@ it('resets the context baseline for the latest request after history is fitted',
 	expect(contextTokens([message], 'openai', 'other', '').measured).toBe(false);
 });
 
-it('matches the custom local provider to its Ollama selection', () => {
+it('matches usage to the selected custom provider', () => {
 	const local = { ...message, contextUsage: { ...message.contextUsage!, providerId: 'custom' } };
-	expect(contextTokens([local], 'ollama', 'small', '').tokens).toBe(500);
+	expect(contextTokens([local], 'custom', 'small', '').tokens).toBe(500);
 });
 
 it('restores the latest per-request snapshot when assistant tool turns merge', () => {

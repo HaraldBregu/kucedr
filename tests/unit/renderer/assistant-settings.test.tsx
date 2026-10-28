@@ -258,7 +258,7 @@ beforeEach(() => {
 		value: {
 			list: jest
 				.fn()
-				.mockResolvedValue([{ id: 'custom', name: 'Ollama', baseUrl: 'http://localhost:11434' }]),
+				.mockResolvedValue([{ id: 'custom', name: 'Custom model provider', baseUrl: 'https://models.example/v1' }]),
 			listCustomModels: jest.fn().mockResolvedValue(['gemma3:4b', 'llama3.2:1b']),
 		},
 	});

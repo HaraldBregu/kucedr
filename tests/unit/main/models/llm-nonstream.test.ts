@@ -241,40 +241,34 @@ describe('LlmModel non-streaming transport', () => {
 		);
 	});
 
-	it('uses the local provider native chat endpoint for a configured API URL', async () => {
-		const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
-			new Response(
-				JSON.stringify({
-					message: { content: 'local reply' },
-					done: true,
-					prompt_eval_count: 4,
-					eval_count: 2,
-				}),
-				{ status: 200, headers: { 'content-type': 'application/json' } }
-			)
-		);
+	it('uses custom OpenAI chat completions with the configured base URL', async () => {
+		const create = jest.fn().mockResolvedValue({
+			choices: [{ message: { content: 'custom reply' }, finish_reason: 'stop' }],
+			usage: { prompt_tokens: 4, completion_tokens: 2 },
+		});
+		const factory = jest.fn(() => ({ chat: { completions: { create } } }) as never);
+		const model = new LlmModel({ openAIClientFactory: factory });
 		const events: LlmEvent[] = [];
-		for await (const event of new LlmModel().stream({
-			...request('ollama'),
-			provider: { id: 'ollama', apiKey: 'key', baseURL: 'http://localhost:11434/api' },
-		})) {
-			events.push(event);
-		}
+		for await (const event of model.stream({
+			...request('custom'),
+			provider: { id: 'custom', apiKey: 'custom-key', baseURL: 'https://models.example/custom/v1' },
+		})) events.push(event);
 
-		expect(fetchMock).toHaveBeenCalledWith(
-			'http://localhost:11434/api/chat',
-			expect.objectContaining({ method: 'POST' })
+		expect(factory).toHaveBeenCalledWith({
+			apiKey: 'custom-key',
+			baseURL: 'https://models.example/custom/v1',
+		});
+		expect(create).toHaveBeenCalledWith(
+			expect.objectContaining({ model: 'model', stream: false }),
+			expect.objectContaining({ signal: undefined })
 		);
-		expect(events).toEqual(
-			expect.arrayContaining([
-				{ type: 'model_call_delta', delta: 'local reply' },
-				expect.objectContaining({
-					type: 'model_call_end',
-					usage: { inputTokens: 4, outputTokens: 2 },
-				}),
-			])
-		);
-		fetchMock.mockRestore();
+		expect(events).toEqual(expect.arrayContaining([
+			{ type: 'model_call_delta', delta: 'custom reply' },
+			expect.objectContaining({
+				type: 'model_call_end',
+				usage: { inputTokens: 4, outputTokens: 2 },
+			}),
+		]));
 	});
 
 	it('uses the targeted Reka PDF payload for batch requests', async () => {

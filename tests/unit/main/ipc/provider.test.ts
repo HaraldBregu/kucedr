@@ -142,9 +142,9 @@ describe('provider credential IPC boundary', () => {
 		register();
 		const provider = {
 			id: 'custom',
-			name: 'Local model provider',
-			apiKey: 'ollama',
-			baseUrl: 'http://localhost:11434/api',
+			name: 'Custom model provider',
+			apiKey: 'custom-key',
+			baseUrl: 'https://models.example/v1',
 		};
 		setProvider.mockReturnValue(provider);
 
@@ -153,8 +153,8 @@ describe('provider credential IPC boundary', () => {
 			{
 				kind: 'models',
 				id: 'custom',
-				apiKey: 'ollama',
-				baseUrl: 'http://localhost:11434/api/',
+				apiKey: 'custom-key',
+				baseUrl: 'https://models.example/v1/',
 			}
 		);
 
@@ -171,7 +171,7 @@ describe('provider credential IPC boundary', () => {
 				{
 					kind: 'models',
 					id: 'custom',
-					apiKey: 'ollama',
+					apiKey: 'custom-key',
 					baseUrl: 'file:///tmp/model',
 				}
 			)
@@ -183,38 +183,40 @@ describe('provider credential IPC boundary', () => {
 		const fetchMock = jest.fn().mockResolvedValue({
 			ok: true,
 			json: async () => ({
-				models: [{ name: 'llama3.2:3b' }, { name: 'qwen3:8b' }, { name: 'llama3.2:3b' }, {}],
+				data: [{ id: 'model-a' }, { id: 'model-b' }, { id: 'model-a' }, {}, { id: ' ' }],
 			}),
 		});
 		global.fetch = fetchMock;
 
 		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
 			{},
-			{ baseUrl: 'http://localhost:11434/api', apiKey: 'ollama' }
+			{ baseUrl: 'https://models.example/v1', apiKey: 'custom-key' }
 		);
 
-		expect(result).toEqual(['llama3.2:3b', 'qwen3:8b']);
-		expect(fetchMock).toHaveBeenCalledWith('http://localhost:11434/api/tags', {
+		expect(result).toEqual(['model-a', 'model-b']);
+		expect(fetchMock).toHaveBeenCalledWith('https://models.example/v1/models', {
 			signal: expect.any(AbortSignal),
+			headers: { Authorization: 'Bearer custom-key' },
 		});
 	});
 
-	it('lists Ollama models without a token', async () => {
+	it('lists custom models without a token', async () => {
 		register();
 		const fetchMock = jest.fn().mockResolvedValue({
 			ok: true,
-			json: async () => ({ models: [{ name: 'llama3.2:3b' }] }),
+			json: async () => ({ data: [{ id: 'model-a' }] }),
 		});
 		global.fetch = fetchMock;
 
 		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
 			{},
-			{ baseUrl: 'http://localhost:11434/api', apiKey: '' }
+			{ baseUrl: 'https://models.example/v1', apiKey: '' }
 		);
 
-		expect(result).toEqual(['llama3.2:3b']);
-		expect(fetchMock).toHaveBeenCalledWith('http://localhost:11434/api/tags', {
+		expect(result).toEqual(['model-a']);
+		expect(fetchMock).toHaveBeenCalledWith('https://models.example/v1/models', {
 			signal: expect.any(AbortSignal),
+			headers: {},
 		});
 	});
 
@@ -224,7 +226,7 @@ describe('provider credential IPC boundary', () => {
 
 		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
 			{},
-			{ baseUrl: 'http://localhost:11434/api', apiKey: 'ollama' }
+			{ baseUrl: 'https://models.example/v1', apiKey: 'custom-key' }
 		);
 
 		expect(result).toEqual([]);

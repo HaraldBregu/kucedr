@@ -1,3 +1,4 @@
+import * as catalog from '../../../../../src/main/models';
 import { LlmContextOverflowError } from '../../../../../src/main/models/adapters/llm';
 import { runModelTurn } from '../../../../../src/main/agent/runner/run_model_turn';
 import type { ModelTurnStream } from '../../../../../src/main/agent/runner/run_model_turn';
@@ -269,10 +270,17 @@ it.each([undefined, { inputTokens: 0, outputTokens: 0 }])('retains estimates whe
 	expect(emitted.at(-1)).toMatchObject({ type: 'model_call_end', usage: { context: { estimated: true, inputTokens: expect.any(Number), outputTokens: 2 } } });
 });
 
-it('keeps input and output within a configured local context window', async () => {
+it('keeps input and output within a catalog context window', async () => {
+	const find = jest.spyOn(catalog, 'findModel').mockReturnValue({
+		metadata: { contextWindow: 4096 },
+	} as never);
 	const stream = jest.fn(async function* () {
-		yield { type: 'model_call_end' as const, model: 'local', usage: { inputTokens: 20, outputTokens: 1 } };
+		yield { type: 'model_call_end' as const, model: 'catalog-model', usage: { inputTokens: 20, outputTokens: 1 } };
 	});
-	for await (const _event of runModelTurn({ task: 'chat', message: 'hello' }, { id: 'ollama', apiKey: '' } as ResolvedProvider, 'local', 'system', [{ role: 'user', content: 'hello' }], [], new AbortController().signal, { num_ctx: 4096 }, { stream })) void _event;
-	expect(stream).toHaveBeenCalledWith(expect.objectContaining({ maxTokens: 1024 }));
+	try {
+		for await (const _event of runModelTurn({ task: 'chat', message: 'hello' }, { id: 'test', apiKey: '' } as ResolvedProvider, 'catalog-model', 'system', [{ role: 'user', content: 'hello' }], [], new AbortController().signal, {}, { stream })) void _event;
+		expect(stream).toHaveBeenCalledWith(expect.objectContaining({ maxTokens: 1024 }));
+	} finally {
+		find.mockRestore();
+	}
 });

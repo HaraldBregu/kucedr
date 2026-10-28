@@ -14,12 +14,12 @@ jest.mock('react-i18next', () => {
 		'settings.providers.description': 'Connect providers and configure models.',
 		'settings.overview.groups.mlModels': 'Models',
 		'settings.providers.localModels.title': 'Local models',
-		'settings.providers.localModels.model': 'Ollama',
+		'settings.providers.localModels.model': 'Custom provider',
 		'settings.providers.localModels.compatibility': 'OpenAI-compatible API',
 		'settings.providers.localModels.url': 'URL',
 		'settings.providers.localModels.token': 'API key',
 		'settings.providers.localModels.connect': 'Connect',
-		'settings.providers.localModels.edit': 'Edit Ollama',
+		'settings.providers.localModels.edit': 'Edit Custom provider',
 		'settings.modelServices.localModels': 'Local models',
 		'settings.providers.configured': 'Configured',
 		'settings.providers.notConfigured': 'Not configured',
@@ -213,9 +213,9 @@ describe('Providers settings', () => {
 			within(modelsSection!)
 				.getAllByRole('heading')
 				.map((heading) => heading.textContent)
-		).toEqual(['Models', 'OpenAI', 'Ollama']);
+		).toEqual(['Models', 'OpenAI', 'Custom provider']);
 		expect(screen.queryByRole('heading', { name: 'Local models' })).not.toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Ollama' })).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Custom provider' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Databases' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Search' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Channels' })).not.toBeInTheDocument();
@@ -313,7 +313,7 @@ it('resets a saved local model connection', async () => {
 	jest
 		.mocked(window.provider.list)
 		.mockResolvedValue([
-			{ id: 'custom', name: 'Ollama', apiKey: 'saved-key', baseUrl: 'http://localhost:11434/api' },
+			{ id: 'custom', name: 'Custom provider', apiKey: 'saved-key', baseUrl: 'https://models.example/v1' },
 		]);
 	const user = userEvent.setup();
 	render(
@@ -322,11 +322,11 @@ it('resets a saved local model connection', async () => {
 		</MemoryRouter>
 	);
 	await screen.findByText('Configured');
-	await user.click(screen.getByRole('button', { name: 'Options for Ollama' }));
+	await user.click(screen.getByRole('button', { name: 'Options for Custom provider' }));
 	await user.click(screen.getByRole('menuitem', { name: 'Reset' }));
 	await waitFor(() => expect(window.provider.remove).toHaveBeenCalledWith('custom', 'models'));
 	expect(
-		screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="item"]')
+		screen.getByRole('heading', { name: 'Custom provider' }).closest('[data-slot="item"]')
 	).toHaveTextContent('Not configured');
 });
 
@@ -383,22 +383,22 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 		</MemoryRouter>
 	);
 
-	const ollamaItem = screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="item"]');
-	expect(ollamaItem).not.toBeNull();
-	await user.click(within(ollamaItem!).getByRole('button', { name: 'Connect' }));
+	const customProviderItem = screen.getByRole('heading', { name: 'Custom provider' }).closest('[data-slot="item"]');
+	expect(customProviderItem).not.toBeNull();
+	await user.click(within(customProviderItem!).getByRole('button', { name: 'Connect' }));
 	const baseUrlInput = screen.getByLabelText('URL');
 	const customItem = baseUrlInput.closest('[data-slot="item"]');
 	expect(customItem).not.toBeNull();
-	await user.type(baseUrlInput, 'http://localhost:11434/api');
-	await user.type(screen.getByLabelText('API key'), 'ollama');
+	await user.type(baseUrlInput, 'https://models.example/v1');
+	await user.type(screen.getByLabelText('API key'), 'custom-key');
 	await user.click(within(customItem!).getByRole('button', { name: 'Save', exact: true }));
 
 	await waitFor(() =>
 		expect(window.provider.set).toHaveBeenCalledWith({
 			id: 'custom',
 			kind: 'models',
-			apiKey: 'ollama',
-			baseUrl: 'http://localhost:11434/api',
+			apiKey: 'custom-key',
+			baseUrl: 'https://models.example/v1',
 		})
 	);
 	expect(screen.queryByLabelText('Model')).not.toBeInTheDocument();
@@ -514,9 +514,9 @@ it.each([false, true])(
 		jest.mocked(window.provider.list).mockResolvedValue([
 			{
 				id: 'custom',
-				name: 'Ollama',
+				name: 'Custom provider',
 				apiKey: 'saved-key',
-				baseUrl: 'http://localhost:11434/api',
+				baseUrl: 'https://models.example/v1',
 			},
 		]);
 		render(
