@@ -17,10 +17,7 @@ it('discovers draw and runs every documented example through the agent tool', as
 	expect(pluginScripts()).toEqual(
 		expect.arrayContaining([expect.objectContaining({ name: 'draw', fence: 'draw', height: 420 })])
 	);
-	const reference = readFileSync(
-		'resources/plugins/bootstrap/skills/run-scripts/references/draw.md',
-		'utf8'
-	);
+	const reference = readFileSync(path.join(directory, 'instructions.md'), 'utf8');
 	const examples = [...reference.matchAll(/```json\n([\s\S]*?)\n```/g)];
 	expect(examples).toHaveLength(3);
 	for (const example of examples)
