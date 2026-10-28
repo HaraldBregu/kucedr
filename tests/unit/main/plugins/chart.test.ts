@@ -1,6 +1,5 @@
 import { buildSync } from 'esbuild';
 import { JSDOM } from 'jsdom';
-import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { pluginScripts } from '../../../../src/main/plugins/scripts/plugin_script_list';
 import { renderPluginScript } from '../../../../src/main/plugins/scripts/plugin_script_render';
