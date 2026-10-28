@@ -326,6 +326,7 @@
 				"health": "Periodic health checks",
 				"permissions": "Tool permissions and path rules",
 				"apps": "Installed apps",
+				"scripts": "Scripts provided by plugins",
 				"knowledge": "Index your documents for search and grounded answers.",
 				"plugins": "Installable app plugins",
 				"configurationDescription": "Configure models, storage, and integrations"
