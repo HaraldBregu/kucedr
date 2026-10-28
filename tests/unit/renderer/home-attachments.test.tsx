@@ -186,6 +186,7 @@ function renderPage(): void {
 
 describe('Home prompt attachments', () => {
 	it('toggles chat information from the navbar while preserving its contents', async () => {
+		messages = [{ id: 'user-one', role: 'user' }];
 		renderPage();
 		const toggle = await screen.findByRole('button', { name: 'Hide chat information' });
 		expect(toggle).toHaveAttribute('aria-expanded', 'true');
