@@ -119,7 +119,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
-			<header className="shrink-0 p-3">
+			<header className="shrink-0 px-3">
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton
