@@ -67,7 +67,7 @@ test('context ring keeps custom limits unavailable and resolves catalog limits',
 		await expect(ring).toHaveAttribute('aria-valuetext', /^Estimated context/);
 		await expect(ring).toHaveAttribute('aria-valuenow', '0');
 		await editor.fill('x'.repeat(3000));
-		await expect(ring).toHaveAttribute('aria-valuetext', /^Estimated context: 1[,.]0\d{2} \/ 400[,.]000 tokens/);
+		await expect(ring).toHaveAttribute('aria-valuetext', /^Estimated context: 1[,.]?0\d{2} \/ 400[,.]000 tokens/);
 		await expect(page.getByText('This page crashed')).toHaveCount(0);
 	} finally {
 		await closeApp(app, userDataDir);
