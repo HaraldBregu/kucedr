@@ -184,6 +184,11 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		items.push({ label: skillId });
 	}
 
+	if (location.pathname.startsWith('/settings/scripts/')) {
+		items[0] = { ...items[0], path: current.path };
+		items.push({ label: decodeURIComponent(location.pathname.split('/').at(-1) ?? '') });
+	}
+
 	if (location.pathname.startsWith('/settings/settings/media/')) {
 		const media = getSystemMedia(decodeURIComponent(location.pathname.split('/').at(-1) ?? ''));
 		items[0] = { ...items[0], path: current.path };
