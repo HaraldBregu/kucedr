@@ -18,7 +18,8 @@ export type ReadPlugin = PluginManifest & {
 
 export function readPlugin(
 	directory: string,
-	expectedId: string | null = path.basename(directory)
+	expectedId: string | null = path.basename(directory),
+	builtIn = false
 ): ReadPlugin {
 	let value: unknown;
 	try {
