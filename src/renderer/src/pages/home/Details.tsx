@@ -10,10 +10,11 @@ import { ChatLibrary } from './Library';
 import { ChatWorkspace } from './Workspace';
 import type { LibraryFile } from '@shared/library_types';
 
-export function ChatDetails({ messages, onJump, onAttach }: {
+export function ChatDetails({ messages, onJump, onAttach, onWorkspaceAttach }: {
 	readonly messages: readonly HomeChatMessage[];
 	readonly onJump: (messageId: string, toolCallId?: string) => void;
-	readonly onAttach: (files: Pick<LibraryFile, 'name' | 'path'>[]) => void;
+	readonly onAttach: (files: LibraryFile[]) => void;
+	readonly onWorkspaceAttach: (files: File[]) => void;
 }): React.JSX.Element {
 	const responses = messages.filter((message) => message.role === 'agent');
 	const latest = responses.at(-1);
@@ -37,7 +38,7 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 					</div>
 				</CardContent>
 				<Collapsible>
-					<CollapsibleTrigger render={<Button variant="ghost" className="group h-10 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
+					<CollapsibleTrigger render={<Button variant="ghost" className="group h-8 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
 						<Files className="size-4 text-muted-foreground" aria-hidden />
 						<span className="flex-1 text-left">Generated assets</span>
 						<span className="text-xs tabular-nums text-muted-foreground">{assets.length}</span>
@@ -54,7 +55,7 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 					</CollapsibleContent>
 				</Collapsible>
 				<Collapsible>
-					<CollapsibleTrigger render={<Button variant="ghost" className="group h-10 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
+					<CollapsibleTrigger render={<Button variant="ghost" className="group h-8 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
 						<FileCode className="size-4 text-muted-foreground" aria-hidden />
 						<span className="flex-1 text-left">Created scripts</span>
 						<span className="text-xs tabular-nums text-muted-foreground">{scripts.length}</span>
@@ -71,7 +72,7 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 					</CollapsibleContent>
 				</Collapsible>
 				<ChatLibrary refreshKey={`${latest?.id}:${latest?.completedAtMs}:${assets.map((asset) => asset.path).join('\n')}`} onAttach={onAttach} />
-				<ChatWorkspace onAttach={onAttach} />
+				<ChatWorkspace onAttach={onWorkspaceAttach} />
 			</Card>
 		</aside>
 	);

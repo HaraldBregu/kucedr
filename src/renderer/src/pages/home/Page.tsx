@@ -602,7 +602,7 @@ function PageContent(): ReactElement {
 		});
 	}, []);
 
-	const addLibraryFiles = useCallback((files: Pick<LibraryFile, 'name' | 'path'>[]): void => {
+	const addLibraryFiles = useCallback((files: LibraryFile[]): void => {
 		setAttachments((current) => [
 			...current,
 			...files.map((entry) => {
@@ -893,7 +893,7 @@ function PageContent(): ReactElement {
 										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
 									/>
 								</div>
-								<ChatDetails messages={visibleMessages} onAttach={addLibraryFiles} onJump={(messageId, toolCallId) => {
+								<ChatDetails messages={visibleMessages} onAttach={addLibraryFiles} onWorkspaceAttach={(files) => setAttachments((current) => [...current, ...filesToAttachments(files)])} onJump={(messageId, toolCallId) => {
 									const scroll = chatScrollRef.current;
 									const viewport = scroll?.scrollRef.current;
 									const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
