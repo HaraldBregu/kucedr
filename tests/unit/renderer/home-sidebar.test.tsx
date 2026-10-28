@@ -85,6 +85,8 @@ beforeEach(() => {
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: {
+			getAvailableUpdate: jest.fn().mockResolvedValue(null),
+			onUpdateAvailable: jest.fn(() => jest.fn()),
 			openExternalUrl,
 			getMicrophonePermission,
 		},

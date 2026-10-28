@@ -1,3 +1,4 @@
+import { Provider as PageProvider } from '../../../src/renderer/src/components/app/base/page/Provider';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { NavigationBar } from '../../../src/renderer/src/components/app/navigationbar/NavigationBar';
@@ -49,13 +50,13 @@ it.each([
 ])('opens a native context menu and navigates from %s to %s', async (_label, path) => {
 	showContextMenu.mockResolvedValue(path);
 	const { container } = render(
-		<MemoryRouter initialEntries={['/project']}>
+		<PageProvider><MemoryRouter initialEntries={['/project']}>
 			<NavigationBar />
 			<Routes>
 				<Route path="/project" element={null} />
 				<Route path={path} element={<p>{path}</p>} />
 			</Routes>
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
 
@@ -73,9 +74,9 @@ it.each([
 
 it('does not open the navigationbar menu from a button', () => {
 	render(
-		<MemoryRouter initialEntries={['/home']}>
+		<PageProvider><MemoryRouter initialEntries={['/home']}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	fireEvent.contextMenu(screen.getByRole('button', { name: 'settings.theme.title: settings.theme.dark' }));
@@ -85,9 +86,9 @@ it('does not open the navigationbar menu from a button', () => {
 
 it.each(['/settings', '/start'])('opens the navigationbar menu while viewing %s', (path) => {
 	const { container } = render(
-		<MemoryRouter initialEntries={[path]}>
+		<PageProvider><MemoryRouter initialEntries={[path]}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	fireEvent.contextMenu(container.querySelector('[data-slot="navigationbar"]') as Element);
@@ -97,9 +98,9 @@ it.each(['/settings', '/start'])('opens the navigationbar menu while viewing %s'
 
 it('hides application navigation during onboarding', () => {
 	const { container } = render(
-		<MemoryRouter initialEntries={['/start']}>
+		<PageProvider><MemoryRouter initialEntries={['/start']}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
@@ -111,9 +112,9 @@ it('hides application navigation during onboarding', () => {
 
 it('omits the Account icon but keeps Search on Home', () => {
 	render(
-		<MemoryRouter initialEntries={['/home']}>
+		<PageProvider><MemoryRouter initialEntries={['/home']}>
 			<NavigationBar showWorkspace />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
@@ -124,9 +125,9 @@ it.each(['/home', '/settings/settings'])(
 	'does not render the Voice button in the navbar on %s',
 	(path) => {
 		render(
-			<MemoryRouter initialEntries={[path]}>
+			<PageProvider><MemoryRouter initialEntries={[path]}>
 				<NavigationBar />
-			</MemoryRouter>
+			</MemoryRouter></PageProvider>
 		);
 
 		expect(
@@ -137,9 +138,9 @@ it.each(['/home', '/settings/settings'])(
 
 it('does not render a chat title in the navigationbar', () => {
 	const { container } = render(
-		<MemoryRouter initialEntries={['/home']}>
+		<PageProvider><MemoryRouter initialEntries={['/home']}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	expect(container.querySelector('[data-slot="navigationbar-chat-title"]')).not.toBeInTheDocument();
@@ -148,9 +149,9 @@ it('does not render a chat title in the navigationbar', () => {
 
 it('omits Space and Code while keeping Chat navigation on the right', () => {
 	render(
-		<MemoryRouter initialEntries={['/home']}>
+		<PageProvider><MemoryRouter initialEntries={['/home']}>
 			<NavigationBar showWorkspace />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	expect(screen.queryByRole('button', { name: 'navigationBar.space' })).not.toBeInTheDocument();
@@ -160,9 +161,9 @@ it('omits Space and Code while keeping Chat navigation on the right', () => {
 
 it('renders one solid navigationbar color without visible title text', () => {
 	const { container } = render(
-		<MemoryRouter initialEntries={['/home']}>
+		<PageProvider><MemoryRouter initialEntries={['/home']}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
 
@@ -175,9 +176,9 @@ it('renders one solid navigationbar color without visible title text', () => {
 
 it('omits the Account icon while viewing Settings', () => {
 	render(
-		<MemoryRouter initialEntries={['/settings/settings']}>
+		<PageProvider><MemoryRouter initialEntries={['/settings/settings']}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
@@ -186,9 +187,9 @@ it('omits the Account icon while viewing Settings', () => {
 
 it('does not render the sidebar toggle in the navigationbar', () => {
 	render(
-		<MemoryRouter initialEntries={['/home']}>
+		<PageProvider><MemoryRouter initialEntries={['/home']}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	expect(screen.queryByRole('button', { name: 'navigationBar.toggleSidebar' })).not.toBeInTheDocument();
@@ -196,9 +197,9 @@ it('does not render the sidebar toggle in the navigationbar', () => {
 
 it.each(['/home', '/settings/settings'])('omits the Coder and standalone Workspace launch buttons on %s', (path) => {
 	render(
-		<MemoryRouter initialEntries={[path]}>
+		<PageProvider><MemoryRouter initialEntries={[path]}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	expect(screen.queryByRole('button', { name: 'Open Coder' })).not.toBeInTheDocument();
@@ -207,9 +208,9 @@ it.each(['/home', '/settings/settings'])('omits the Coder and standalone Workspa
 
 it('does not render route titles inside the navigationbar', () => {
 	const { container } = render(
-		<MemoryRouter initialEntries={['/settings/settings/persona']}>
+		<PageProvider><MemoryRouter initialEntries={['/settings/settings/persona']}>
 			<NavigationBar />
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 
 	expect(container.querySelector('[data-slot="navigationbar-content"]')).not.toBeInTheDocument();
@@ -227,11 +228,11 @@ it('reveals the active chat session after loading and when history reopens', asy
 	const listSessions = jest.fn().mockResolvedValue(sessions).mockImplementationOnce(() => new Promise<AgentSessionSummary[]>((resolve) => { finishLoading = resolve; }));
 	Object.defineProperty(window, 'agent', { configurable: true, value: { listSessions } });
 	render(
-		<MemoryRouter initialEntries={['/home']}>
+		<PageProvider><MemoryRouter initialEntries={['/home']}>
 			<ChatSessionContext.Provider value={{ sessionId: 'older', setSessionId: jest.fn() }}>
 				<NavigationBar showWorkspace />
 			</ChatSessionContext.Provider>
-		</MemoryRouter>
+		</MemoryRouter></PageProvider>
 	);
 	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
 	expect(screen.getByText('settings.chatHistory.loading')).toBeInTheDocument();
@@ -246,4 +247,17 @@ it('reveals the active chat session after loading and when history reopens', asy
 	await waitFor(() => expect(selected).toHaveFocus());
 	expect(scrollIntoView.mock.contexts).toContain(selected);
 	expect(listSessions).toHaveBeenCalledTimes(2);
+});
+
+
+it('shows the active chat in the sidebar-aligned header', () => {
+	const { container } = render(
+		<PageProvider><MemoryRouter initialEntries={['/home']}>
+			<ChatSessionContext.Provider value={{ sessionId: 'session-1', sessionTitle: 'Navigation refresh', setSessionId: jest.fn() }}>
+				<NavigationBar showWorkspace />
+			</ChatSessionContext.Provider>
+		</MemoryRouter></PageProvider>
+	);
+	expect(container.querySelector('[data-slot="navigationbar-context"]')).toHaveTextContent('Navigation refresh');
+	expect(screen.getByText('Kucedr')).toBeInTheDocument();
 });
