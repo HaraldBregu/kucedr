@@ -8,13 +8,13 @@ import {
 import { Settings2 } from 'lucide-react';
 import { PluginScriptFrame } from '@/components/plugin-script/Frame';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import { cn } from '@/lib/utils';
-import { ScriptProperties } from './Properties';
+import { WorkspaceScriptForm } from './ScriptForm';
 
 export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): React.JSX.Element {
 	const { byFence } = usePluginScripts();
+	const [formOpen, setFormOpen] = useState(false);
 	const script = node.attrs.language ? byFence.get(node.attrs.language) : undefined;
 	const text = node.textContent;
 	const input = useMemo(() => {
