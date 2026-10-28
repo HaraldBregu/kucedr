@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
 	NodeViewContent,
 	NodeViewWrapper,
