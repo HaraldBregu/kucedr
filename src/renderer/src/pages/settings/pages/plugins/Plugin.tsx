@@ -253,6 +253,7 @@ export default function PluginPage(): React.JSX.Element {
 				title: app.title,
 				description: app.description,
 				badge: app.metadata.version,
+				path: `/settings/apps/${encodeURIComponent(app.id)}`,
 			})),
 		},
 		{
