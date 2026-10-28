@@ -10,9 +10,12 @@ import { ChatLibrary } from './Library';
 import { ChatWorkspace } from './Workspace';
 import type { LibraryFile } from '@shared/library_types';
 
-export function ChatDetails({ open, messages, onJump, onAttach, onWorkspaceAttach }: {
+export function ChatDetails({ open, messages, model, draft, hasAttachments, onJump, onAttach, onWorkspaceAttach }: {
 	readonly open: boolean;
 	readonly messages: readonly HomeChatMessage[];
+	readonly model?: { providerId: string; modelId: string; contextWindow?: number };
+	readonly draft: string;
+	readonly hasAttachments: boolean;
 	readonly onJump: (messageId: string, toolCallId?: string) => void;
 	readonly onAttach: (files: LibraryFile[]) => void;
 	readonly onWorkspaceAttach: (files: File[]) => void;
