@@ -68,6 +68,7 @@ import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { ReplyPreview } from './components/Reply';
 import { LibraryPicker } from './components/LibraryPicker';
 import { Messages } from './Messages';
+import { ChatOutline } from './Outline';
 import { Provider, welcomeMessage } from './context';
 import {
 	useAudioRecorder,
@@ -853,7 +854,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className="mx-auto min-h-full w-full max-w-3xl gap-5 px-4 pt-6">
+								<ChatContainerContent className="mx-auto min-h-full w-full max-w-3xl gap-5 pl-10 pr-4 pt-6">
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
@@ -865,6 +866,7 @@ function PageContent(): ReactElement {
 									/>
 									<ChatContainerScrollAnchor className="h-[calc(var(--composer-height,7rem)+3rem)]" />
 								</ChatContainerContent>
+								<ChatOutline key={chatSessionId} messages={visibleMessages} />
 								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+0.75rem)] z-30 flex justify-center">
 									<ScrollButton
 										type="button"

@@ -40,13 +40,14 @@ export const Messages = memo(function Messages({
 						.slice(index + 1)
 						.filter((nextMessage) => nextMessage.role === 'user').length;
 					return (
+						<div key={message.id} data-chat-turn={message.id}>
 						<UserMessage
-							key={message.id}
 							content={message.content}
 							attachments={message.attachments}
 							canEdit={!isLoading && !voiceMode}
 							onEdit={(content) => onEdit(message.id, userOffsetFromEnd, content)}
 						/>
+						</div>
 					);
 				}
 
