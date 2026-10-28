@@ -1,6 +1,6 @@
 {
 	"title": "Sketch",
-	"description": "Draw, write and sketch freehand with pens, shapes, text and an infinite canvas. Your drawing is saved automatically.",
+	"description": "Draw, write and sketch on an infinite canvas with pens, highlighter, shapes, text, images, selection and an eraser, then export to PNG or SVG. Your drawing is saved automatically.",
 	"mode": "extension",
 	"metadata": {
 		"version": "1.1.0",
