@@ -393,7 +393,12 @@ export default function PluginPage(): React.JSX.Element {
 						<SettingsSection key={section.key} title={`${section.title} · ${section.rows.length}`}>
 							<SettingsPanel>
 								{section.rows.map((row) => (
-									<SettingsRow key={row.key} title={row.title} description={row.description}>
+									<SettingsRow
+										key={row.key}
+										title={row.title}
+										description={row.description}
+										onClick={row.path ? () => navigate(row.path!) : undefined}
+									>
 										{row.badge && <SettingsValue>{row.badge}</SettingsValue>}
 									</SettingsRow>
 								))}
