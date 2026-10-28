@@ -4,6 +4,16 @@ import { z } from 'zod';
 
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const text = z.string().trim().min(1);
+const relativePath = (field: string) =>
+	z
+		.string()
+		.refine(
+			(file) =>
+				!file.startsWith('/') &&
+				!file.includes('\\') &&
+				file.split('/').every((part) => part !== '' && part !== '.' && part !== '..'),
+			`metadata.${field} must be a relative path`
+		);
 
 const manifestSchema = z
 	.object({
@@ -14,15 +24,11 @@ const manifestSchema = z
 			.object({
 				version: text,
 				category: text,
-				entry: z
-					.string()
-					.refine(
-						(entry) =>
-							!entry.startsWith('/') &&
-							!entry.includes('\\') &&
-							entry.split('/').every((part) => part !== '' && part !== '.' && part !== '..'),
-						'metadata.entry must be a relative path'
-					),
+				entry: relativePath('entry'),
+				instructions: relativePath('instructions').refine(
+					(file) => file.endsWith('.md'),
+					'metadata.instructions must be a markdown file'
+				),
 			})
 			.strict(),
 		inputSchema: z.looseObject({ type: z.literal('object') }).optional(),
