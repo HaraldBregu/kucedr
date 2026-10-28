@@ -71,6 +71,7 @@ export class Memory implements MemoryService {
 		];
 	}
 	async context(query: string): Promise<string> {
+		if (!this.state.config.includeInPrompt) return '';
 		return recall(await this.read(), query);
 	}
 	async capture(sessionId: string, messages: readonly MemoryMessage[]): Promise<void> {
