@@ -16,6 +16,7 @@
 		"website",
 		"resources/plugins/bootstrap/scripts/chart",
 		"resources/plugins/bootstrap/scripts/dither",
+		"resources/plugins/bootstrap/scripts/draw",
 		"resources/plugins/bootstrap/scripts/organui"
 	],
 	"packageManager": "npm@11.13.0",

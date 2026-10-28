@@ -1,0 +1,16 @@
+{
+	"name": "@kucedr-plugins/bootstrap-draw",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Bootstrap plugin script that renders static Excalidraw drawings as self-contained HTML.",
+	"scripts": {
+		"build": "node build.mjs"
+	},
+	"devDependencies": {
+		"@excalidraw/excalidraw": "0.18.1",
+		"esbuild": "^0.28.2",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0"
+	}
+}

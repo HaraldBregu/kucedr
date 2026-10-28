@@ -98,7 +98,7 @@ it('loads script guidance on demand and runs the chart reference examples', asyn
 	await expect(loader!.run({ name: 'run-scripts' })).resolves.toMatchObject({
 		activated: true,
 		name: 'run-scripts',
-		resources: ['references/chart.md', 'references/dither.md', 'references/organui.md'],
+		resources: ['references/chart.md', 'references/dither.md', 'references/draw.md', 'references/organui.md'],
 	});
 	expect(buildLoadedSkillPrompt(loaded)).toContain('run_plugin_script');
 	const reference = readFileSync(

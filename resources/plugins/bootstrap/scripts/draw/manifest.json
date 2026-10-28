@@ -1,0 +1,12 @@
+{
+	"title": "Draw",
+	"description": "Render static Excalidraw drawings, flowcharts, diagrams and wireframes from shapes, labels, lines and arrows.",
+	"author": "Harald Bregu",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "design",
+		"entry": "dist/index.mjs"
+	},
+	"fence": "draw",
+	"height": 420
+}
