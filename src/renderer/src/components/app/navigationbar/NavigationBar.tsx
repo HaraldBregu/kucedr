@@ -38,6 +38,7 @@ export interface NavigationBarProps {
 	/** Optional class applied to the navigation bar container */
 	className?: string;
 	startContent?: ReactNode;
+	contextContent?: ReactNode;
 	/** Custom content rendered on the right before window controls */
 	rightContent?: ReactNode;
 	/** Shows the Workspace entry on app routes with a sidebar */
@@ -47,6 +48,7 @@ export interface NavigationBarProps {
 export const NavigationBar = React.memo(function NavigationBar({
 	className,
 	startContent,
+	contextContent,
 	rightContent,
 	showWorkspace,
 }: NavigationBarProps) {
@@ -291,8 +293,9 @@ export const NavigationBar = React.memo(function NavigationBar({
 					)}
 
 					{showWorkspace && (
-						<div data-slot="navigationbar-context" className="flex min-w-0 items-center gap-3 px-3 text-sm">
+						<div data-slot="navigationbar-context" className="flex min-w-0 items-center gap-3 px-3 text-sm" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
 							<span className="shrink-0 font-medium text-muted-foreground">{isHome ? homeLabel : isWorkspace ? workspaceLabel : t('settings.title')}</span>
+							{contextContent}
 							{isHome && <><span aria-hidden="true" className="text-muted-foreground/50">/</span><span className="truncate font-medium">{sessionTitle || newChatLabel}</span></>}
 						</div>
 					)}

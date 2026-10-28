@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ChevronDown, ChevronUp, LoaderCircle, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, LoaderCircle, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -13,7 +13,7 @@ import { markdownComponents } from '@/pages/home/components/markdown';
 import { formatFileSize } from '@/pages/home/attachments/size';
 import type { CodeMirrorEditorHandle } from './Editor';
 import { importWorkspaceAssets } from './Assets';
-import { WorkspaceBreadcrumb } from './Breadcrumb';
+import { WorkspaceViewActions } from './Actions';
 import { workspaceResourceUrl } from './Resource';
 
 const CodeMirrorEditor = lazy(async () => {
@@ -27,14 +27,13 @@ const WorkspaceMarkdownEditor = lazy(async () => {
 
 interface WorkspaceViewerProps {
 	readonly file: WorkspaceTreeEntry | null;
-	readonly entries: WorkspaceTreeEntry[];
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 	readonly ref?: React.Ref<() => Promise<void>>;
 	readonly wide: boolean;
 	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceViewer({ file, entries, onFileSelect, ref, wide, onWideChange }: WorkspaceViewerProps): React.JSX.Element {
+export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
@@ -146,11 +145,14 @@ export function WorkspaceViewer({ file, entries, onFileSelect, ref, wide, onWide
 			event.stopPropagation();
 			setFindOpen(true);
 		}}>
-			{file ? (
-				<header aria-label="File navigation" className="sticky top-0 z-20 flex min-h-9 shrink-0 items-center gap-1.5 border-b bg-background/95 px-2 py-1 backdrop-blur sm:px-3 [&_button:hover]:bg-transparent! [&_button:hover]:text-inherit!">
-					<WorkspaceBreadcrumb entries={entries} path={file.path} onFileSelect={onFileSelect} />
-					{searchable ? findOpen ? (
-						<div role="search" className="ml-auto flex min-w-0 items-center gap-1">
+			{searchable && (kind !== 'markdown' || visibleMarkdownMode === 'source' || content.includes('<!--')) ? (
+				<div role="toolbar" aria-label="File tools" className="flex shrink-0 items-center border-b px-2 py-1 sm:px-3">
+					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={() => setFindOpen(true)} />
+				</div>
+			) : null}
+			{searchable && findOpen ? (
+				<div className="flex shrink-0 flex-wrap items-center gap-1 border-b px-2 py-1 sm:px-3">
+						<div role="search" className="ml-auto flex min-w-0 flex-wrap items-center gap-1">
 							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-40" onChange={(event) => {
 								setFindQuery(event.target.value);
 								if (event.target.value) editorRef.current?.find(event.target.value, 'next');
@@ -174,8 +176,7 @@ export function WorkspaceViewer({ file, entries, onFileSelect, ref, wide, onWide
 							) : null}
 							<Button type="button" variant="ghost" size="icon-sm" aria-label="Close find" onClick={closeFind}><X /></Button>
 						</div>
-					) : <Button type="button" variant="ghost" size="icon-sm" className="ml-auto" aria-label="Find in file" onClick={() => setFindOpen(true)}><Search /></Button> : null}
-				</header>
+				</div>
 			) : null}
 			{!file ? (
 				<div className="flex flex-1 items-center justify-center px-6 text-center text-sm text-muted-foreground">
@@ -208,7 +209,7 @@ export function WorkspaceViewer({ file, entries, onFileSelect, ref, wide, onWide
 				</div>
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
 				<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-					<WorkspaceMarkdownEditor path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} onOpenLink={(href) => {
+					<WorkspaceMarkdownEditor path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} onFind={() => setFindOpen(true)} onOpenLink={(href) => {
 						if (/^[a-z][a-z\d+.-]*:/i.test(href)) void window.app.openExternalUrl(href);
 						else {
 							const path = decodeURIComponent(new URL(workspaceResourceUrl(file.path, href)).pathname.slice(1));

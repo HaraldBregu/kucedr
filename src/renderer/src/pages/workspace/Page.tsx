@@ -3,6 +3,7 @@ import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
 import { WorkspaceViewer } from './Viewer';
+import { WorkspaceBreadcrumb } from './Breadcrumb';
 
 const SELECTED_FILE_KEY = 'workspace-selected-file';
 
@@ -51,10 +52,10 @@ export default function WorkspacePage(): React.JSX.Element {
 			}} onEntryDeleted={(path) => {
 				setSelectedFile((current) => current && (current.path === path || current.path.startsWith(`${path}/`) || current.path.startsWith(`${path}\\`)) ? null : current);
 			}} selectedPath={selectedFile?.path ?? null} beforeEntryChange={() => flushRef.current?.() ?? Promise.resolve()} />;
-	const viewer = <WorkspaceViewer ref={flushRef} key={selectedFile?.path} file={selectedFile} entries={files} onFileSelect={setSelectedFile} wide={wide} onWideChange={handleWideChange} />;
+	const viewer = <WorkspaceViewer ref={flushRef} key={selectedFile?.path} file={selectedFile} onFileSelect={setSelectedFile} wide={wide} onWideChange={handleWideChange} />;
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
-			<Split sidebar={sidebar} sidebarLabel="Workspace files">
+			<Split sidebar={sidebar} sidebarLabel="Workspace files" navigationContent={selectedFile ? <WorkspaceBreadcrumb entries={files} path={selectedFile.path} onFileSelect={setSelectedFile} /> : undefined}>
 				{viewer}
 			</Split>
 		</PageContainer>

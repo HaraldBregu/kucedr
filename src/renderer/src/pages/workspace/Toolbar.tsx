@@ -21,7 +21,6 @@ import {
 	ListChecks,
 	ListOrdered,
 	Minus,
-	MoveHorizontal,
 	Quote,
 	Redo2,
 	Rows3,
@@ -36,6 +35,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { WorkspaceViewActions } from './Actions';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import type { PluginScriptInfo } from '../../../../shared/plugin_types';
 
@@ -94,11 +94,12 @@ interface WorkspaceToolbarProps {
 	readonly onInsertFromLibrary: () => void;
 	readonly onInsertFromUrl: () => void;
 	readonly onInsertScript: (script: PluginScriptInfo) => void;
+	readonly onFind: () => void;
 	readonly wide: boolean;
 	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [href, setHref] = useState('');
 	const { byFence } = usePluginScripts();
 	const state = useEditorState({
@@ -221,16 +222,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 					{tableActions.map((action) => button(action, false, false, action.label.startsWith('Delete')))}
 				</div>
 			) : null}
-			<div className="ml-auto flex items-center">
-				<Tooltip>
-					<TooltipTrigger render={
-						<Button type="button" variant="ghost" size="icon-sm" aria-label="Full width" aria-pressed={wide} className={wide ? 'bg-muted text-foreground' : 'text-muted-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={() => onWideChange(!wide)}>
-							<MoveHorizontal />
-						</Button>
-					} />
-					<TooltipContent side="bottom">Full width</TooltipContent>
-				</Tooltip>
-			</div>
+			<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={onFind} />
 		</div>
 	);
 }

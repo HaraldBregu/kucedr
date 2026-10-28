@@ -23,7 +23,7 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 		siblings = current?.children ?? [];
 	}
 	return (
-		<nav aria-label="File path" className="flex min-w-0 flex-1 items-center text-xs" title={path}>
+		<nav aria-label="File path" className="flex min-w-0 flex-1 items-center text-xs [&_button:hover]:bg-transparent! [&_button:hover]:text-inherit!" title={path}>
 			<DropdownMenu open={openPath === ''} onOpenChange={(open) => setOpenPath(open ? '' : null)}>
 				<DropdownMenuTrigger asChild>
 					<Button type="button" variant="ghost" size="icon-sm" className="size-7 shrink-0 aria-expanded:bg-transparent!" aria-label="Browse workspace root">
@@ -39,8 +39,8 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 					<ChevronRight aria-hidden="true" className="mx-0.5 size-3 shrink-0 text-muted-foreground" />
 					<DropdownMenu open={openPath === crumb.key} onOpenChange={(open) => setOpenPath(open ? crumb.key : null)}>
 						<DropdownMenuTrigger asChild>
-							<Button type="button" variant="ghost" size="sm" className={crumb.file ? 'h-auto min-h-6 min-w-0 flex-1 justify-start whitespace-normal break-all px-1.5 py-1 text-left text-xs font-medium aria-expanded:bg-transparent!' : 'h-6 max-w-32 min-w-0 shrink truncate px-1.5 text-xs font-medium aria-expanded:bg-transparent!'} aria-label={`Browse ${crumb.label}`}>
-								<span className={crumb.file ? 'whitespace-normal break-all text-left' : 'truncate'}>{crumb.label}</span>
+							<Button type="button" variant="ghost" size="sm" className={crumb.file ? 'h-6 min-w-0 flex-1 justify-start px-1.5 text-left text-xs font-medium aria-expanded:bg-transparent!' : 'h-6 max-w-32 min-w-0 shrink truncate px-1.5 text-xs font-medium aria-expanded:bg-transparent!'} aria-label={`Browse ${crumb.label}`}>
+								<span className="truncate">{crumb.label}</span>
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="start" className="max-h-80 min-w-56 overflow-y-auto p-0">

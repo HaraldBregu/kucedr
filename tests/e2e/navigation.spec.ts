@@ -366,6 +366,12 @@ test('Workspace breadcrumbs browse folders and sibling files', async ({ browserN
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
 	await workspace.getByText('CrumbPicker').click();
 	await workspace.getByRole('button', { name: 'one.md' }).click();
+	const navbar = page.locator('[data-slot="navigationbar"]');
+	await expect(navbar.getByRole('navigation', { name: 'File path' })).toBeVisible();
+	await expect(page.getByRole('banner', { name: 'File navigation' })).toHaveCount(0);
+	const toolbar = page.getByRole('toolbar', { name: 'Formatting' });
+	await expect(toolbar.getByRole('button', { name: 'Find in file', exact: true })).toBeVisible();
+	await expect(toolbar.getByRole('button', { name: 'Full width', exact: true })).toBeVisible();
 	await page.getByRole('button', { name: 'Find in file', exact: true }).click();
 	const findInput = page.getByRole('textbox', { name: 'Find in file', exact: true });
 	await findInput.fill('one');
@@ -405,7 +411,7 @@ test('Workspace breadcrumbs browse folders and sibling files', async ({ browserN
 		.getByRole('treeitem', { name: longName })
 		.click();
 	const filenameButton = page.getByRole('button', { name: `Browse ${longName}` });
-	await expect(filenameButton).toHaveCSS('white-space', 'normal');
+	await expect(filenameButton.locator('span')).toHaveCSS('text-overflow', 'ellipsis');
 	await expect
 		.poll(() => filenameButton.evaluate((button) => button.scrollWidth <= button.clientWidth))
 		.toBe(true);
