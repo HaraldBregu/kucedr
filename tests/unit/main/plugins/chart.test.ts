@@ -6,7 +6,7 @@ import { pluginScripts } from '../../../../src/main/plugins/scripts/plugin_scrip
 import { renderPluginScript } from '../../../../src/main/plugins/scripts/plugin_script_render';
 import { runPluginScript } from '../../../../src/main/agent/tools/plugin/run';
 import { createSkillRegistrySnapshot } from '../../../../src/main/agent/skills/skills_registry';
-import { resolveSkillResource } from '../../../../src/main/agent/skills/skills_resolve_resource';
+import { readPluginScript } from '../../../../src/main/agent/tools/plugin/read';
 import { loadSkillTool } from '../../../../src/main/agent/tools/skills/load_skill';
 import { buildLoadedSkillPrompt } from '../../../../src/main/agent/system/system_build_loaded_skill_prompt';
 import type { SkillLoadResult } from '../../../../src/shared/skills_types';
