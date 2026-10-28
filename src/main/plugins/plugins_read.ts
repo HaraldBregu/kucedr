@@ -45,7 +45,8 @@ export function readPlugin(
 	if (manifest.minAppVersion && compareVersions(app.getVersion(), manifest.minAppVersion) < 0) {
 		throw new Error(`Requires Kucedr ${manifest.minAppVersion} or newer.`);
 	}
-	assertNoLinks(directory);
+	// ponytail: built-in plugins ship with the app; their script workspaces may hold npm .bin links
+	if (!builtIn) assertNoLinks(directory);
 	if (manifest.icon) assertIcon(path.join(directory, 'assets'), manifest.icon);
 	if (manifest.iconDark) assertIcon(path.join(directory, 'assets'), manifest.iconDark);
 	const models = readPluginModels(directory);
