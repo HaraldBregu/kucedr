@@ -55,6 +55,7 @@ Rules:
 - **Self-contained HTML:** the output must inline its own JS and CSS, because the host frames it with no network access.
 - **Determinism:** the same input and theme must give the same HTML. Chat and the editor re-render from the stored input, so HTML is never saved in history or sent to the model.
 - **`fence`:** optional. It names the code-block language this script renders inside markdown files.
+- **`height`:** the frame's initial height. A script sizes the frame to its content by posting `parent.postMessage({ type: 'kucedr:script-height', height }, '*')`. The frame accepts it only from its own iframe and clamps it to 80–2000 px. `organui` posts its document height from a `ResizeObserver`, except for full-bleed components (the image viewer), which keep the manifest height.
 - **Usage:** document input fields, limits, and examples in the script's `metadata.instructions` markdown file; the manifest `description` is what the agent sees in the prompt catalog to choose between scripts. Script manifests do not need an `inputSchema`; existing schemas remain accepted for installed plugins but are never added to the prompt.
 
 ## The agent: a prompt catalog plus two tools
