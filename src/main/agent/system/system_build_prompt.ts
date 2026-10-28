@@ -22,5 +22,8 @@ export async function buildSystemPrompt(
 	}
 	prompt = await addFilesystemPrompt(config, prompt);
 	prompt = addSkillPrompt(prompt, [], hasAvailableSkills);
+	if (eligibleTools.some((tool) => tool.id === 'run_script')) {
+		prompt = addScriptsPrompt(prompt, pluginScripts());
+	}
 	return prompt;
 }
