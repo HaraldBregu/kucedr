@@ -30,8 +30,10 @@ interface WorkspaceMarkdownEditorProps {
 	readonly onError: (message: string) => void;
 	readonly onOpenLink: (href: string) => void;
 	readonly onFind: () => void;
+	readonly onMatchCount: (count: number) => void;
 	readonly wide: boolean;
 	readonly onWideChange: (wide: boolean) => void;
+	readonly ref?: React.Ref<Pick<CodeMirrorEditorHandle, 'find' | 'replace' | 'clearSearch'>>;
 }
 
 export function WorkspaceMarkdownEditor({
