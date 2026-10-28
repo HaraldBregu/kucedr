@@ -21,28 +21,14 @@ export default defineConfig({
 		plugins: [
 			externalizeDepsPlugin(),
 			{
-				name: 'chart-script',
-				async buildStart() {
-					const directory = resolve(__dirname, 'resources/plugins/bootstrap/scripts/chart');
-					await Promise.all([
-						build({
-							absWorkingDir: directory,
-							entryPoints: ['src/browser.jsx'],
-							jsx: 'automatic',
-							bundle: true,
-							minify: true,
-							format: 'iife',
-							outfile: 'dist/browser.js',
-						}),
-						build({
-							absWorkingDir: directory,
-							entryPoints: ['src/index.mjs'],
-							bundle: true,
-							platform: 'node',
-							format: 'esm',
-							outfile: 'dist/index.mjs',
-						}),
-					]);
+				name: 'bootstrap-scripts',
+				buildStart() {
+					for (const script of ['chart', 'dither', 'organui']) {
+						execFileSync('npm', ['run', 'build'], {
+							cwd: resolve(__dirname, 'resources/plugins/bootstrap/scripts', script),
+							stdio: 'inherit',
+						});
+					}
 				},
 			},
 		],
