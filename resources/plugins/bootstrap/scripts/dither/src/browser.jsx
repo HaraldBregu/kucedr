@@ -5,8 +5,8 @@ import { REGISTRY } from './registry.jsx';
 
 const PLACES = {
 	fill: 'relative min-h-0 flex-1 overflow-hidden rounded-lg',
-	stretch: 'flex min-h-0 flex-1 flex-col justify-center-safe overflow-auto [scrollbar-width:thin]',
-	center: 'flex min-h-0 flex-1 items-center-safe justify-center-safe overflow-auto [scrollbar-width:thin]',
+	stretch: 'flex min-h-0 flex-1 flex-col justify-center-safe',
+	center: 'flex min-h-0 flex-1 items-center-safe justify-center-safe',
 };
 
 class Boundary extends Component {
