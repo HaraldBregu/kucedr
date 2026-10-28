@@ -279,7 +279,7 @@ export default function PluginPage(): React.JSX.Element {
 			rows: contents.scripts.map((script) => ({
 				key: script.name,
 				title: script.title,
-				description: script.fence ? `${script.name} · \`\`\`${script.fence}` : script.name,
+				description: script.name,
 				badge: script.version,
 			})),
 		},
