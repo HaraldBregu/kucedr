@@ -107,6 +107,7 @@ export default function PluginPage(): React.JSX.Element {
 			apps: apps.filter((app) => app.plugin?.id === pluginId),
 			servers: registry.servers.filter((server) => server.plugin?.id === pluginId),
 			skills: skills.filter((skill) => skill.plugin?.id === pluginId),
+			scripts: scripts.filter((script) => script.plugin.id === pluginId),
 		});
 	}, [pluginId]);
 
