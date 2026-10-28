@@ -1,12 +1,11 @@
 import { Activity, ArrowUpRight, ChevronDown, File, Files, MessageSquare } from 'lucide-react';
-import { Tool } from '@/components/prompt-kit/tool';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import type { HomeChatMessage } from './context/state';
 import { chatAssets } from './components/assets';
 import { statusLabel } from './components/status';
-import { toolPartLabel } from './components/tool-label';
+import { Usage } from './Usage';
 
 export function ChatDetails({ messages, onJump }: {
 	readonly messages: readonly HomeChatMessage[];
@@ -14,7 +13,7 @@ export function ChatDetails({ messages, onJump }: {
 }): React.JSX.Element {
 	const responses = messages.filter((message) => message.role === 'agent');
 	const latest = responses.at(-1);
-	const tools = responses.flatMap((message) => message.tools);
+	const context = responses.findLast((message) => message.contextUsage)?.contextUsage;
 	const assets = chatAssets(responses);
 	return (
 		<aside aria-label="Chat information" className="absolute right-6 top-6 hidden max-h-[calc(100%-3rem)] w-72 overflow-y-auto @[1408px]/chat:block">
@@ -30,12 +29,11 @@ export function ChatDetails({ messages, onJump }: {
 						<div className="min-w-0"><p className="text-xs">Latest response</p><p className="mt-0.5 text-foreground" role="status">{statusLabel(latest)}</p></div>
 					</div>}
 					{latest?.outputTokens !== undefined && <div className="flex justify-between gap-2 text-muted-foreground"><span>Output tokens</span><span className="tabular-nums text-foreground">{latest.outputTokens.toLocaleString()}</span></div>}
+					<div className="flex items-center justify-between gap-2 text-muted-foreground">
+						<span>Context</span>
+						<Usage providerId={context?.providerId ?? ''} modelId={context?.modelId ?? ''} contextWindow={context?.contextWindow} messages={messages} draft="" hasAttachments={false} />
+					</div>
 				</CardContent>
-				{tools.length > 0 && <ul className="space-y-1 border-t border-border px-3 py-3">
-					{tools.map((tool) => <li key={tool.toolCallId}>
-						<Tool toolPart={tool} label={toolPartLabel(tool)} className="mt-0" />
-					</li>)}
-				</ul>}
 				<Collapsible defaultOpen className="border-t border-border">
 					<CollapsibleTrigger render={<Button variant="ghost" className="group h-11 w-full justify-start rounded-none px-3 font-normal" />}>
 						<Files className="size-4 text-muted-foreground" aria-hidden />
