@@ -120,18 +120,19 @@ describe('addToolsPrompt', () => {
 });
 
 describe('buildSystemPrompt', () => {
-	it('keeps plugin script instructions and schemas out of the default prompt', async () => {
+	it('lists scripts with their instructions path but keeps instructions and schemas out', async () => {
 		const prompt = await buildSystemPrompt(
 			{ location: '/workspace' },
-			[tool('run_plugin_script', 'Run a plugin script')],
+			[tool('load_script', 'Load script'), tool('run_script', 'Run script')],
 			[],
 			undefined,
 			'minimal'
 		);
 
-		expect(prompt).toContain('`run_plugin_script`');
-		expect(prompt).not.toContain('## Plugin scripts');
-		expect(prompt).not.toContain('(Bootstrap plugin)');
+		expect(prompt).toContain('# Scripts');
+		expect(prompt).toContain('- `chart` (Chart)');
+		expect(prompt).toContain(path.join('scripts', 'chart', 'instructions.md'));
+		expect(prompt).not.toContain('Input fields:');
 		expect(prompt).not.toContain('Input schema:');
 		expect(prompt).not.toContain('"required":["type","data","xKey","series"]');
 	});
