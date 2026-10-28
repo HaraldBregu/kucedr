@@ -1,11 +1,10 @@
-import { Activity, ArrowUpRight, ChevronDown, File, FileCode, Files, Gauge, Hash, MessageSquare } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, File, FileCode, Files, Gauge, Hash, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import type { HomeChatMessage } from './context/state';
 import { chatAssets } from './components/assets';
 import { chatScripts } from './components/scripts';
-import { statusLabel } from './components/status';
 import { Usage } from './Usage';
 import { ChatLibrary } from './Library';
 import type { LibraryFile } from '@shared/library_types';
@@ -29,10 +28,6 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 						<span className="flex-1">Responses</span>
 						<span className="tabular-nums text-foreground">{responses.length}</span>
 					</div>
-					{latest && <div className="flex min-h-7 items-start gap-2 text-muted-foreground">
-						<Activity className="mt-0.5 size-4 shrink-0" aria-hidden />
-						<div className="min-w-0"><p className="text-xs">Latest response</p><p className="mt-0.5 text-foreground" role="status">{statusLabel(latest)}</p></div>
-					</div>}
 					{latest?.outputTokens !== undefined && <div className="flex min-h-7 items-center gap-2 text-muted-foreground"><Hash className="size-4 shrink-0" aria-hidden /><span className="flex-1">Output tokens</span><span className="tabular-nums text-foreground">{latest.outputTokens.toLocaleString()}</span></div>}
 					<div className="flex min-h-7 items-center gap-2 text-muted-foreground">
 						<Gauge className="size-4 shrink-0" aria-hidden />
