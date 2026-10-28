@@ -60,11 +60,12 @@ export function PluginScriptFrame({
 		return <Skeleton className="w-full rounded-xl" style={{ height: script.height }} />;
 	return (
 		<iframe
+			ref={frame}
 			title={script.title}
 			sandbox="allow-scripts"
 			srcDoc={result.html}
 			className="w-full border-0"
-			style={{ height: script.height }}
+			style={{ height }}
 		/>
 	);
 }
