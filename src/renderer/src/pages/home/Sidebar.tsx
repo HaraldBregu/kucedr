@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { LayoutPanelLeft, MoreVertical, Plus } from 'lucide-react';
+import { LayoutPanelLeft, MoreVertical, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
@@ -25,6 +25,10 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [search, setSearch] = useState('');
+	const filteredSessions = sessions.filter((session) =>
+		(session.title.trim() || t('settings.chatHistory.untitled')).toLocaleLowerCase().includes(search.trim().toLocaleLowerCase())
+	);
 	const [error, setError] = useState(false);
 	const [actionError, setActionError] = useState('');
 	const [editingSessionId, setEditingSessionId] = useState<string>();
@@ -119,7 +123,11 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
-			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
+			<header className="shrink-0 space-y-2 p-3">
+				<div className="relative">
+					<Search aria-hidden="true" className="pointer-events-none absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+					<Input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t('navigationBar.search')} aria-label={t('navigationBar.search')} className="h-9 border-transparent bg-transparent pl-9 shadow-none hover:bg-sidebar-accent focus-visible:bg-sidebar-accent" />
+				</div>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton
@@ -184,8 +192,9 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					</p>
 				) : (
 					<nav aria-label={t('settings.chatHistory.title')}>
+						{filteredSessions.length === 0 && <p role="status" className="px-2 py-1 text-xs text-muted-foreground">{t('common.noResults', 'No results found')}</p>}
 						<ul className="flex min-w-0 flex-col gap-1">
-							{sessions.map((session) => {
+							{filteredSessions.map((session) => {
 								const title = session.title.trim() || t('settings.chatHistory.untitled');
 								const isActive = session.id === currentSessionId;
 								const isCompacting = compactingSessionId === session.id;

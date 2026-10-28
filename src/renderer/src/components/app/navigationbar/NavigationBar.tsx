@@ -8,6 +8,7 @@ import { NavigationBarLeftContainer } from './NavigationBarLeftContainer';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { useApp } from '@/contexts';
+import { usePageContext } from '@/components/app/base/page/hooks/use-page-context';
 import { NavigationBarProvider } from './context/NavigationBarContext';
 import { useCommandMenu } from '@/contexts/command-menu';
 import {
@@ -64,7 +65,9 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
 	const { open: openCommandMenu } = useCommandMenu();
-	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
+	const { sessionId, sessionTitle, setSessionId, setSessionTitle } = useChatSession();
+	const { state, isMobile, sidebarWidth } = usePageContext();
+	const sidebarExpanded = showWorkspace && !isMobile && state.sidebarOpen;
 	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
 	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
 	const [chatSessionsLoadError, setChatSessionsLoadError] = useState(false);
@@ -242,11 +245,12 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<NavigationBarLeftContainer
 					isMac={isMac}
 					isFullScreen={isFullScreen}
-					className={isMac ? 'ml-[84px]' : undefined}
+					className="min-w-0 shrink transition-[width] duration-200 motion-reduce:transition-none"
 				>
 					<div
 						data-slot="navigationbar-sidebar-actions"
-						className={actionGroupClassName}
+						className={`${actionGroupClassName} shrink-0 overflow-hidden`}
+						style={sidebarExpanded ? { width: sidebarWidth - (isMac ? (isFullScreen ? 8 : 80) : 0) - 1 } : undefined}
 					>
 						{!isMac && (
 							<Tooltip>
@@ -266,6 +270,8 @@ export const NavigationBar = React.memo(function NavigationBar({
 							</Tooltip>
 						)}
 						<span data-slot="split-pane-toggle-target" className="contents" />
+						{sidebarExpanded && <span className="ml-2 truncate text-sm font-semibold">Kucedr</span>}
+
 					</div>
 					{!isHome && !isWorkspace && !isOnboarding && !isSettings && !isCode && (
 						<Tooltip>
@@ -284,7 +290,12 @@ export const NavigationBar = React.memo(function NavigationBar({
 						</Tooltip>
 					)}
 
-					{/* {isSettings && <NavigationButtons />} */}
+					{showWorkspace && (
+						<div data-slot="navigationbar-context" className="flex min-w-0 items-center gap-3 px-3 text-sm">
+							<span className="shrink-0 font-medium text-muted-foreground">{isHome ? homeLabel : isWorkspace ? workspaceLabel : t('settings.title')}</span>
+							{isHome && <><span aria-hidden="true" className="text-muted-foreground/50">/</span><span className="truncate font-medium">{sessionTitle || newChatLabel}</span></>}
+						</div>
+					)}
 				</NavigationBarLeftContainer>
 
 				<div className="flex-1" />

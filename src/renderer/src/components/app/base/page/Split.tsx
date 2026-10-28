@@ -63,7 +63,7 @@ export function Split({
 					title="Toggle Sidebar"
 					onClick={toggleSidebar}
 					className={cn(
-						'size-8 rounded-full aria-expanded:bg-transparent',
+						'size-8 rounded-md text-muted-foreground hover:text-foreground aria-expanded:bg-transparent',
 						toggleTarget === document.body && 'fixed left-[84px] top-2 z-50'
 					)}
 					style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
@@ -111,8 +111,9 @@ export function Split({
 						data-slot="split-pane-sidebar"
 						data-state={state.sidebarOpen ? 'expanded' : 'collapsed'}
 						aria-label={sidebarLabel}
+						inert={!state.sidebarOpen}
 						className={cn(
-							'fixed bottom-0 left-0 top-12 z-30 flex flex-col border-r border-sidebar-border bg-background text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
+							'fixed bottom-0 left-0 top-12 z-30 flex flex-col border-r border-sidebar-border/60 bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
 							state.sidebarOpen ? 'translate-x-0' : '-translate-x-full'
 						)}
 						style={{ width: 'var(--split-pane-sidebar-width)' }}
