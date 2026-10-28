@@ -87,20 +87,8 @@ it('discovers the bundled chart without an input schema', () => {
 	expect(scripts.find((script) => script.name === 'chart')).not.toHaveProperty('inputSchema');
 });
 
-it('loads script guidance on demand and runs the chart reference examples', async () => {
-	const snapshot = createSkillRegistrySnapshot({
-		userRoot: path.resolve('resources/plugins/bootstrap/skills/run-scripts/missing-user-skills'),
-	});
-	const loaded: SkillLoadResult[] = [];
-	const loader = loadSkillTool(snapshot, (skill) => loaded.push(skill));
-	expect(buildLoadedSkillPrompt(loaded)).toBe('');
-	await expect(loader!.run({ name: 'run-scripts' })).resolves.toMatchObject({
-		activated: true,
-		name: 'run-scripts',
-		resources: [],
-	});
-	expect(buildLoadedSkillPrompt(loaded)).toContain('read_plugin_script');
-	const reference = await readPluginScript.run({ name: 'chart' });
+it('loads script instructions on demand and runs the chart examples', async () => {
+	const reference = await loadScript.run({ name: 'chart' });
 	const examples = [...reference.matchAll(/```json\n([\s\S]*?)\n```/g)];
 	expect(examples.length).toBeGreaterThan(0);
 	for (const example of examples) {
