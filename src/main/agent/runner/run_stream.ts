@@ -482,8 +482,8 @@ async function* loop(
 					? goalContext(sessionDir(session))
 					: '';
 			const memoryContext =
-				session.category === 'main'
-					? ((await options.memory?.read().catch(() => '')) ?? '')
+				session.category === 'main' && options.memory?.getConfig().includeInPrompt
+					? await options.memory.read().catch(() => '')
 					: '';
 			const workspaceContext = await buildWorkspaceContext(
 				config,
