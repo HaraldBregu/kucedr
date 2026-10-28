@@ -10,7 +10,7 @@ export function Toggle(): ReactElement {
 			aria-label="Toggle Sidebar" aria-controls="split-pane-sidebar"
 			aria-expanded={isMobile ? state.sidebarOpenMobile : state.sidebarOpen}
 			title="Toggle Sidebar" onClick={toggleSidebar}
-			className="size-8 shrink-0 rounded-md text-muted-foreground hover:text-foreground"
+			className="size-8 shrink-0 rounded-md text-muted-foreground hover:text-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground"
 			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
 			<PanelLeft className="size-4" strokeWidth={1.8} />
 		</Button>
