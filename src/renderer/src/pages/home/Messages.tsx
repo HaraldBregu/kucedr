@@ -41,12 +41,12 @@ export const Messages = memo(function Messages({
 						.filter((nextMessage) => nextMessage.role === 'user').length;
 					return (
 						<div key={message.id} data-chat-turn={message.id}>
-						<UserMessage
-							content={message.content}
-							attachments={message.attachments}
-							canEdit={!isLoading && !voiceMode}
-							onEdit={(content) => onEdit(message.id, userOffsetFromEnd, content)}
-						/>
+							<UserMessage
+								content={message.content}
+								attachments={message.attachments}
+								canEdit={!isLoading && !voiceMode}
+								onEdit={(content) => onEdit(message.id, userOffsetFromEnd, content)}
+							/>
 						</div>
 					);
 				}
