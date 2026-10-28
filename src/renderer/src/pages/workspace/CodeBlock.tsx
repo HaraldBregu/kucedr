@@ -39,9 +39,32 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 		</pre>
 	);
 	if (!script) return <NodeViewWrapper>{code}</NodeViewWrapper>;
+	const update = (next: Record<string, unknown>): void => {
+		const pos = getPos();
+		if (pos === undefined) return;
+		editor
+			.chain()
+			.command(({ tr }) => {
+				tr.replaceWith(pos + 1, pos + node.nodeSize - 1, editor.schema.text(JSON.stringify(next, null, 2)));
+				return true;
+			})
+			.run();
+	};
 	return (
 		<NodeViewWrapper className="my-5">
-			<div contentEditable={false}>
+			<div contentEditable={false} className="relative">
+				{script.inputSchema && input !== null && typeof input === 'object' && !Array.isArray(input) ? (
+					<Popover>
+						<PopoverTrigger asChild>
+							<Button type="button" variant="outline" size="icon-sm" aria-label={`${script.title} properties`} className="absolute right-2 top-2 z-10">
+								<Settings2 />
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent align="end" className="max-h-[60vh] w-96 overflow-y-auto p-3">
+							<ScriptProperties schema={script.inputSchema} value={input as Record<string, unknown>} onChange={update} />
+						</PopoverContent>
+					</Popover>
+				) : null}
 				{input !== undefined ? (
 					<PluginScriptFrame script={script} input={input} />
 				) : (
