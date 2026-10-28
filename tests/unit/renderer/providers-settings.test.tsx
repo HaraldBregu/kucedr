@@ -197,7 +197,7 @@ describe('Providers settings', () => {
 		);
 
 		expect(container.firstElementChild).toHaveClass('p-0', 'sm:p-0');
-		expect(screen.getByRole('heading', { name: 'Local models' })).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Custom provider' })).toBeInTheDocument();
 	});
 
 	it('shows provider connections without object storage', async () => {
@@ -309,7 +309,7 @@ it.each([
 	expect(within(item!).getByRole('button', { name: 'Connect' })).toBeInTheDocument();
 });
 
-it('resets a saved local model connection', async () => {
+it('resets a saved custom provider connection', async () => {
 	jest
 		.mocked(window.provider.list)
 		.mockResolvedValue([
@@ -322,7 +322,7 @@ it('resets a saved local model connection', async () => {
 		</MemoryRouter>
 	);
 	await screen.findByText('Configured');
-	await user.click(screen.getByRole('button', { name: 'Options for Custom provider' }));
+	await user.click(screen.getByRole('button', { name: 'Options for custom provider' }));
 	await user.click(screen.getByRole('menuitem', { name: 'Reset' }));
 	await waitFor(() => expect(window.provider.remove).toHaveBeenCalledWith('custom', 'models'));
 	expect(
@@ -509,7 +509,7 @@ it('places connected model providers before unconnected ones', async () => {
 });
 
 it.each([false, true])(
-	'keeps connected local models below hosted models when embedded is %s',
+	'keeps the connected custom provider below hosted models when embedded is %s',
 	async (embedded) => {
 		jest.mocked(window.provider.list).mockResolvedValue([
 			{
@@ -526,8 +526,8 @@ it.each([false, true])(
 		);
 		await screen.findByText('Configured');
 		expect(
-			screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)
-		).toEqual(['Models', 'OpenAI', 'Local models']);
+			screen.getAllByRole('heading').map((heading) => heading.textContent)
+		).toEqual([...(embedded ? [] : ['Models']), 'Models', 'OpenAI', 'Custom provider']);
 	}
 );
 
