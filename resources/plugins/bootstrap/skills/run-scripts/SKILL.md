@@ -31,7 +31,7 @@ Scripts render a visual result straight into the user's view. Run them with the 
 ## Rules
 
 - Leave out optional fields the user didn't ask for. The defaults already look good.
-- For `dither`, use palette colour names (`ink`, `blue`, `purple`, `green`, `pink`, `orange`, `red`, `grey`) so the result follows light and dark mode. For `draw`, use Excalidraw colours as described in its reference; dark mode is applied automatically.
+- For `dither`, use palette colour names (`ink`, `blue`, `purple`, `green`, `pink`, `orange`, `red`, `grey`) so the result follows light and dark mode. For `draw`, use Excalidraw colours as described in its instructions; dark mode is applied automatically.
 - Omit `title` unless the user wants a heading, and never invent one when they ask for no title.
 - To put a script's result into a markdown file, write a fenced code block whose language is the script's fence and whose body is the same input JSON:
 
