@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { addBasePrompt } from '../../../../../src/main/agent/system/system_add_base_prompt';
 import { addSkillPrompt } from '../../../../../src/main/agent/system/system_add_skill_prompt';
 import { addToolsPrompt } from '../../../../../src/main/agent/system/system_add_tools_prompt';
