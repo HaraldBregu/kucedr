@@ -26,6 +26,7 @@ const READ = new Set([
 	'camera_recorder_status',
 	'microphone_recorder_status',
 	'screen_recorder_status',
+	'read_plugin_script',
 	'run_plugin_script',
 ]);
 const WRITE = new Set(['write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap']);
