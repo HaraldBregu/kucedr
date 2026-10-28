@@ -6,6 +6,7 @@ import {
 	Code,
 	Columns3,
 	Eraser,
+	FileBox,
 	FileCode,
 	Heading1,
 	Heading2,
@@ -35,6 +36,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 
 const mod = navigator.platform.startsWith('Mac') ? '⌘' : 'Ctrl+';
 const alt = navigator.platform.startsWith('Mac') ? '⌥' : 'Alt+';
@@ -90,12 +92,14 @@ interface WorkspaceToolbarProps {
 	readonly onInsertFromComputer: () => void;
 	readonly onInsertFromLibrary: () => void;
 	readonly onInsertFromUrl: () => void;
+	readonly onInsertScript: (script: PluginScriptInfo) => void;
 	readonly wide: boolean;
 	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, wide, onWideChange }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange }: WorkspaceToolbarProps): React.JSX.Element {
 	const [href, setHref] = useState('');
+	const { byFence } = usePluginScripts();
 	const state = useEditorState({
 		editor,
 		selector: ({ editor: current }) => ({
@@ -185,6 +189,33 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 								<DropdownMenuItem onSelect={onInsertFromComputer}><HardDrive />From computer…<span className="ml-auto pl-4 text-xs text-muted-foreground">{mod}⇧I</span></DropdownMenuItem>
 								<DropdownMenuItem onSelect={onInsertFromLibrary}><Library />From library…</DropdownMenuItem>
 								<DropdownMenuItem onSelect={onInsertFromUrl}><Globe />From URL…</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					) : null}
+					{groupIndex === 3 && byFence.size > 0 ? (
+						<DropdownMenu>
+							<Tooltip>
+								<TooltipTrigger render={
+									<DropdownMenuTrigger asChild>
+										<Button type="button" variant="ghost" size="icon-sm" aria-label="Insert script" className="text-muted-foreground" onMouseDown={(event) => event.preventDefault()}>
+											<FileBox />
+										</Button>
+									</DropdownMenuTrigger>
+								} />
+								<TooltipContent side="bottom">Insert script</TooltipContent>
+							</Tooltip>
+							<DropdownMenuContent align="start" onCloseAutoFocus={(event) => event.preventDefault()}>
+								{[...byFence].map(([fence, script]) => (
+									<DropdownMenuItem key={fence} onSelect={() => {
+										editor.chain().focus().insertContent({
+											type: 'codeBlock',
+											attrs: { language: fence },
+											content: [{ type: 'text', text: JSON.stringify(script.inputSchema?.examples?.[0] ?? {}, null, 2) }],
+										}).run();
+									}}>
+										{script.title}
+									</DropdownMenuItem>
+								))}
 							</DropdownMenuContent>
 						</DropdownMenu>
 					) : null}
