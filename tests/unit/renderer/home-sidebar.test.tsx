@@ -8,6 +8,10 @@ import type { AuthState } from '../../../src/shared/auth_types';
 
 const mockUseAuth = jest.fn();
 
+jest.mock('@/contexts', () => ({
+	useApp: () => ({ theme: 'dark', setTheme: jest.fn() }),
+}));
+
 jest.mock('../../../src/renderer/src/contexts/AuthContext', () => ({
 	useAuth: () => mockUseAuth(),
 }));
