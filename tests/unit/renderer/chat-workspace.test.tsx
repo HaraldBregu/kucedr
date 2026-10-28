@@ -9,6 +9,7 @@ const onAttach = jest.fn();
 
 beforeEach(() => {
 	localStorage.clear();
+	onAttach.mockReset();
 	Object.defineProperty(window, 'agent', { configurable: true, value: {
 		getWorkspaceLocation: jest.fn().mockResolvedValue('/workspace/'),
 		readPromptFile: jest.fn().mockResolvedValue(new Uint8Array([104, 101, 108, 108, 111])),
