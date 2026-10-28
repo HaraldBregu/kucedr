@@ -23,8 +23,8 @@ export function ChatDetails({ messages, onJump, onAttach, onWorkspaceAttach }: {
 	const scripts = chatScripts(responses);
 	return (
 		<aside aria-label="Chat information" className="absolute right-6 top-6 hidden max-h-[calc(100%-3rem)] w-72 overflow-y-auto @[1408px]/chat:block">
-			<Card size="sm" className="gap-0 rounded-2xl border border-border bg-card ring-0 data-[size=sm]:py-0">
-				<CardContent className="space-y-2 py-3 text-sm">
+			<Card size="sm" className="rounded-2xl border border-border bg-card ring-0 data-[size=sm]:gap-0">
+				<CardContent className="space-y-2 pb-3 pt-0 text-sm">
 					<div className="flex min-h-7 items-center gap-2 text-muted-foreground">
 						<MessageSquare className="size-4 shrink-0" aria-hidden />
 						<span className="flex-1">Responses</span>
