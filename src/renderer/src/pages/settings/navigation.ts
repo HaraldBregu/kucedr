@@ -457,6 +457,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Layers,
 	},
 	{
+		path: '/settings/scripts',
+		labelKey: 'settings.tabs.scripts',
+		descriptionKey: 'settings.overview.descriptions.scripts',
+		icon: FileCode,
+	},
+	{
 		path: '/settings/channels',
 		labelKey: 'settings.tabs.channels',
 		descriptionKey: 'settings.overview.descriptions.channels',
