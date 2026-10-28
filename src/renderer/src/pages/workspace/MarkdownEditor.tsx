@@ -46,6 +46,8 @@ export function WorkspaceMarkdownEditor({
 	wide,
 	onWideChange,
 	onFind,
+	onMatchCount,
+	ref,
 }: WorkspaceMarkdownEditorProps): React.JSX.Element {
 	const [linkOpen, setLinkOpen] = useState(false);
 	const [libraryOpen, setLibraryOpen] = useState(false);
