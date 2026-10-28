@@ -111,7 +111,7 @@ Rules:
 ## Host: renderer
 
 - **`components/plugin-script/Frame.tsx`**: `<PluginScriptFrame script input />`.
-  - It calls `plugins:render-script` with the current theme and renders `<iframe sandbox="allow-scripts" srcdoc={html}>` at the script's `height`.
+  - It calls `plugins:render-script` with the current theme and renders `<iframe sandbox="allow-scripts" srcdoc={html}>` at the script's `height`, then at the height the script posts, if it posts one.
   - It prepends a CSP meta tag (`components/plugin-script/document.ts`): `default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:`.
   - It shows a `Skeleton` while loading and the error text on failure.
 - **`hooks/use-plugin-scripts.ts`**: `usePluginScripts()` with lookups `byName` and `byFence`.
