@@ -7,6 +7,9 @@ const setInput = jest.fn();
 const useSuggestion = jest.fn();
 const clearReply = jest.fn();
 const triggerFileUpload = jest.fn();
+
+jest.mock('../../../src/renderer/src/pages/home/Outline', () => ({ ChatOutline: () => null }));
+jest.mock('../../../src/renderer/src/pages/home/Details', () => ({ ChatDetails: () => null }));
 let replyTo: { id: string; content: string } | null = null;
 let messages: { id: string; role: string }[] = [{ id: 'agent-welcome', role: 'agent' }];
 
