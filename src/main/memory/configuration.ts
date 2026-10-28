@@ -6,6 +6,7 @@ import { validateOption } from './options';
 const schema = z
 	.object({
 		enabled: z.boolean(),
+		includeInPrompt: z.boolean(),
 		providerId: z.string().max(200),
 		modelId: z.string().max(300),
 		modelOptions: z.record(z.string(), z.unknown()),
