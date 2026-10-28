@@ -285,7 +285,7 @@ export function AssistantMessage({
 		speakErrorMessage ?? (isSpeaking ? 'Reading message aloud' : 'Read message aloud');
 
 	return (
-		<Message className={cn('flex w-full flex-col', className)}>
+		<Message data-chat-response={message.id} className={cn('flex w-full flex-col', className)}>
 			{skillTools.length > 0 && <ToolActivityGroup tools={skillTools} />}
 			{toolSections.map((section) => {
 				const tool = section[0];

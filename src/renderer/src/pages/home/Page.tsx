@@ -69,6 +69,7 @@ import { ReplyPreview } from './components/Reply';
 import { LibraryPicker } from './components/LibraryPicker';
 import { Messages } from './Messages';
 import { ChatOutline } from './Outline';
+import { ChatDetails } from './Details';
 import { Provider, welcomeMessage } from './context';
 import {
 	useAudioRecorder,
@@ -721,7 +722,7 @@ function PageContent(): ReactElement {
 			data-slot="home-composer-shell"
 			className={cn(
 				'z-20 flex justify-center px-4',
-				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
+				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3 @[1120px]/chat:w-[calc(100%-20rem)]'
 			)}
 		>
 			{showEmptyConversation ? null : (
@@ -833,7 +834,7 @@ function PageContent(): ReactElement {
 					ref={workspaceRef}
 					data-slot="home-workspace"
 					className={cn(
-						'relative flex min-h-0 flex-1 flex-col bg-background text-foreground',
+						'@container/chat relative flex min-h-0 min-w-0 flex-1 flex-col bg-background text-foreground',
 						openExtension && 'hidden',
 						showEmptyConversation && 'overflow-y-auto'
 					)}
@@ -851,7 +852,7 @@ function PageContent(): ReactElement {
 					) : (
 						<>
 							<ChatContainerRoot
-								className="min-h-0 p-0 [scrollbar-gutter:auto]"
+								className="min-h-0 p-0 [scrollbar-gutter:auto] @[1120px]/chat:mr-80"
 								contextRef={chatScrollRef}
 							>
 								<ChatContainerContent className="mx-auto min-h-full w-full max-w-3xl gap-5 pl-10 pr-4 pt-6">
@@ -876,6 +877,14 @@ function PageContent(): ReactElement {
 								</div>
 							</ChatContainerRoot>
 							{composer}
+							<ChatDetails messages={visibleMessages} onJump={(messageId) => {
+								const scroll = chatScrollRef.current;
+								const viewport = scroll?.scrollRef.current;
+								const anchor = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
+								if (!scroll || !viewport || !anchor) return;
+								scroll.stopScroll();
+								viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+							}} />
 						</>
 					)}
 				</div>
