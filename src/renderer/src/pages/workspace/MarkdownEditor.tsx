@@ -16,7 +16,9 @@ import { workspaceResourceUrl } from './Resource';
 import { WorkspaceLibraryPicker } from './LibraryPicker';
 import { WorkspaceOutline } from './Outline';
 import { WorkspaceToolbar } from './Toolbar';
+import { WorkspaceScriptForm } from './ScriptForm';
 import { WorkspaceUrlDialog } from './UrlDialog';
+import type { PluginScriptInfo } from '../../../../shared/plugin_types';
 
 interface WorkspaceMarkdownEditorProps {
 	readonly path: string;
