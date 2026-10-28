@@ -12,6 +12,8 @@ import { EditorContent, ReactNodeViewRenderer, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { importWorkspaceAssets } from './Assets';
 import { WorkspaceCodeBlock } from './CodeBlock';
+import type { CodeMirrorEditorHandle } from './Editor';
+import { searchKey, WorkspaceSearch } from './Search';
 import { workspaceResourceUrl } from './Resource';
 import { WorkspaceLibraryPicker } from './LibraryPicker';
 import { WorkspaceOutline } from './Outline';
