@@ -15,7 +15,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { CatalogModel } from '@shared/model_types';
-import type { PluginInfo } from '@shared/plugin_types';
+import type { PluginInfo, PluginScriptInfo } from '@shared/plugin_types';
 import type { CatalogService, CatalogStorage, CatalogWebSearch } from '@shared/provider_types';
 import type { App } from '@shared/installed_app_types';
 import type { McpServerInfo } from '@shared/mcp_types';
