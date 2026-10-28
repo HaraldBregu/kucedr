@@ -1,9 +1,7 @@
 import type { LoadedSkill } from '../context';
 import type { Config, Tool } from '../types';
 import { addBasePrompt } from './system_add_base_prompt';
-import { pluginScripts } from '../../plugins';
 import { addFilesystemPrompt } from './system_add_filesystem_prompt';
-import { addPluginScriptsPrompt } from './system_add_plugin_scripts_prompt';
 import { addSkillPrompt } from './system_add_skill_prompt';
 import { addToolsPrompt } from './system_add_tools_prompt';
 import { addWorkspacePrompt } from './system_add_workspace_prompt';
@@ -20,8 +18,6 @@ export async function buildSystemPrompt(
 	let prompt = basePrompt ?? addBasePrompt('');
 	if (basePrompt === undefined) {
 		prompt = addToolsPrompt(prompt, tools, eligibleTools);
-		if (eligibleTools.some((tool) => tool.id === 'run_plugin_script'))
-			prompt = addPluginScriptsPrompt(prompt, pluginScripts());
 		if (contextMode === 'workspace') prompt = await addWorkspacePrompt(config, prompt);
 	}
 	prompt = await addFilesystemPrompt(config, prompt);

@@ -7,13 +7,13 @@ export const runPluginScript = tool({
 	category: 'integration',
 	name: 'Run plugin script',
 	description:
-		'Run a plugin script by name. Its visual result is shown to the user automatically. Only use names listed under Plugin scripts.',
+		'Run a plugin script by name using the input documented by a loaded skill. Its visual result is shown to the user automatically.',
 	planSafe: true,
 	inputSchema: z.object({
-		name: z.string().describe('One of the scripts listed under Plugin scripts.'),
+		name: z.string().describe('The script name documented by the loaded skill.'),
 		input: z
 			.record(z.string(), z.unknown())
-			.describe("Input object matching that script's input schema."),
+			.describe('Input object documented in the skill reference for this script.'),
 	}),
 	execute: async ({ name, input }) => {
 		const scripts = pluginScripts();

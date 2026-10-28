@@ -47,11 +47,9 @@ beforeEach(() => {
 			title: 'Chart',
 			description: 'Render a chart',
 			metadata: { version: '1.0.0', category: 'data', entry: 'index.mjs' },
-			inputSchema: { type: 'object' },
 		})
 	);
 	writeFileSync(path.join(chart, 'index.mjs'), '');
-	writeFileSync(path.join(chart, 'INSTRUCTIONS.md'), 'Render a chart.');
 	refreshPlugins();
 });
 
@@ -62,6 +60,18 @@ afterEach(() => {
 
 it('keeps bundled chart scripts available when an older Bootstrap is installed', () => {
 	expect(scanPlugins()[0]).toMatchObject({ builtIn: true, manifest: { version: '1.1.0' } });
+	expect(pluginScripts().map((script) => script.name)).toContain('chart');
+});
+
+it('keeps scripts with an existing input schema discoverable', () => {
+	const manifest = path.join(mockBundledRoot, 'bootstrap', 'scripts', 'chart', 'manifest.json');
+	writeFileSync(
+		manifest,
+		JSON.stringify({
+			...JSON.parse(readFileSync(manifest, 'utf8')),
+			inputSchema: { type: 'object' },
+		})
+	);
 	expect(pluginScripts().map((script) => script.name)).toContain('chart');
 });
 

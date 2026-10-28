@@ -120,6 +120,22 @@ describe('addToolsPrompt', () => {
 });
 
 describe('buildSystemPrompt', () => {
+	it('keeps plugin script instructions and schemas out of the default prompt', async () => {
+		const prompt = await buildSystemPrompt(
+			{ location: '/workspace' },
+			[tool('run_plugin_script', 'Run a plugin script')],
+			[],
+			undefined,
+			'minimal'
+		);
+
+		expect(prompt).toContain('`run_plugin_script`');
+		expect(prompt).not.toContain('## Plugin scripts');
+		expect(prompt).not.toContain('(Bootstrap plugin)');
+		expect(prompt).not.toContain('Input schema:');
+		expect(prompt).not.toContain('"required":["type","data","xKey","series"]');
+	});
+
 	it('keeps the native tool catalog visible in minimal context', async () => {
 		const prompt = await buildSystemPrompt(
 			{ location: '/workspace' },

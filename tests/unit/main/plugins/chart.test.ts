@@ -1,23 +1,15 @@
 import { buildSync } from 'esbuild';
 import { JSDOM } from 'jsdom';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { pluginScripts } from '../../../../src/main/plugins/scripts/plugin_script_list';
 import { renderPluginScript } from '../../../../src/main/plugins/scripts/plugin_script_render';
 import { runPluginScript } from '../../../../src/main/agent/tools/plugin/run';
-import { addPluginScriptsPrompt } from '../../../../src/main/agent/system/system_add_plugin_scripts_prompt';
-
-const chartTypes = [
-	'bar',
-	'horizontal-bar',
-	'stacked-bar',
-	'line',
-	'area',
-	'stacked-area',
-	'pie',
-	'doughnut',
-	'scatter',
-	'radar',
-];
+import { createSkillRegistrySnapshot } from '../../../../src/main/agent/skills/skills_registry';
+import { resolveSkillResource } from '../../../../src/main/agent/skills/skills_resolve_resource';
+import { loadSkillTool } from '../../../../src/main/agent/tools/skills/load_skill';
+import { buildLoadedSkillPrompt } from '../../../../src/main/agent/system/system_build_loaded_skill_prompt';
+import type { SkillLoadResult } from '../../../../src/shared/skills_types';
 
 const input = {
 	type: 'bar',
@@ -82,7 +74,7 @@ beforeAll(() => {
 	});
 });
 
-it('discovers the bundled chart and tells the agent how to call it', () => {
+it('discovers the bundled chart without an input schema', () => {
 	const scripts = pluginScripts();
 	expect(scripts).toEqual(
 		expect.arrayContaining([
@@ -93,17 +85,33 @@ it('discovers the bundled chart and tells the agent how to call it', () => {
 			}),
 		])
 	);
-	const prompt = addPluginScriptsPrompt('', scripts);
-	expect(prompt).toContain('run_plugin_script');
-	expect(prompt).toContain('### chart (Bootstrap plugin)');
-	expect(prompt).toContain('"required":["type","data","xKey","series"]');
-	const schema = scripts.find((script) => script.name === 'chart')!.inputSchema as {
-		properties: { type: { enum: string[] } };
-		required: string[];
-	};
-	expect(schema.properties.type.enum).toEqual(expect.arrayContaining(chartTypes));
-	expect(schema.properties.type.enum).toHaveLength(chartTypes.length);
-	expect(schema.required).not.toContain('title');
+	expect(scripts.find((script) => script.name === 'chart')).not.toHaveProperty('inputSchema');
+});
+
+it('loads script guidance on demand and runs the chart reference examples', async () => {
+	const snapshot = createSkillRegistrySnapshot({
+		userRoot: path.resolve('resources/plugins/bootstrap/skills/run-scripts/missing-user-skills'),
+	});
+	const loaded: SkillLoadResult[] = [];
+	const loader = loadSkillTool(snapshot, (skill) => loaded.push(skill));
+	expect(buildLoadedSkillPrompt(loaded)).toBe('');
+	await expect(loader!.run({ name: 'run-scripts' })).resolves.toMatchObject({
+		activated: true,
+		name: 'run-scripts',
+		resources: ['references/chart.md', 'references/dither.md', 'references/organui.md'],
+	});
+	expect(buildLoadedSkillPrompt(loaded)).toContain('run_plugin_script');
+	const reference = readFileSync(
+		resolveSkillResource(loaded[0].canonicalRoot, 'references/chart.md'),
+		'utf8'
+	);
+	const examples = [...reference.matchAll(/```json\n([\s\S]*?)\n```/g)];
+	expect(examples.length).toBeGreaterThan(0);
+	for (const example of examples) {
+		await expect(
+			runPluginScript.run({ name: 'chart', input: JSON.parse(example[1]) })
+		).resolves.toMatchObject({ ok: true });
+	}
 });
 
 it('executes the agent tool and returns success only after generating the HTML', async () => {

@@ -13,10 +13,12 @@ Do not use it for a single number or for data that is mostly text.
 
 Input fields:
 
+- `type`: required. One of `bar`, `horizontal-bar`, `stacked-bar`, `line`, `area`, `stacked-area`, `pie`, `doughnut`, `scatter`, or `radar`.
 - `title`: optional. Omit it for an untitled chart. Never invent a heading when the user requests no title. Empty titles also produce no heading.
-- `data`: one object per x-axis point, or per slice for pie and doughnut.
-- `xKey`: the field in each row that holds the category or label, for example `"month"`. For scatter, every value in this field must be a number.
-- `series`: the numeric fields to plot, each with a human-readable `label`. Every row needs a number for every series key.
+- `description`: optional text below the heading.
+- `data`: required, 1–200 objects, one per x-axis point or per slice for pie and doughnut.
+- `xKey`: required. The field in each row that holds the category or label, for example `"month"`. For scatter, every value in this field must be a finite number.
+- `series`: required, 1–6 objects with a non-empty `key` naming a numeric field and a non-empty human-readable `label`. Every row needs a finite number for every series key. Pie and doughnut use only the first series.
 
 Examples:
 
