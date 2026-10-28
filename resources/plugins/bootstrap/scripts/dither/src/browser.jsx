@@ -29,7 +29,7 @@ if (place === 'fill') {
 } else {
 	new ResizeObserver(() =>
 		parent.postMessage(
-			{ type: 'kucedr:script-height', height: Math.ceil(document.documentElement.getBoundingClientRect().height) },
+			{ type: 'kucedr:script-height', height: Math.ceil(Math.max(document.body.getBoundingClientRect().height, document.body.scrollHeight)) },
 			'*'
 		)
 	).observe(document.documentElement);
