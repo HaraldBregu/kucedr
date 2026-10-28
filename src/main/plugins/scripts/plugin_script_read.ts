@@ -3,7 +3,6 @@ import path from 'node:path';
 import { z } from 'zod';
 
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const MAX_INSTRUCTIONS = 4 * 1024;
 const text = z.string().trim().min(1);
 
 const manifestSchema = z
