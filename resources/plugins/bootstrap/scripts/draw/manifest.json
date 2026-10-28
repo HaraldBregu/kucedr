@@ -5,7 +5,8 @@
 	"metadata": {
 		"version": "1.0.0",
 		"category": "design",
-		"entry": "dist/index.mjs"
+		"entry": "dist/index.mjs",
+		"instructions": "instructions.md"
 	},
 	"fence": "draw",
 	"height": 420
