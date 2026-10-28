@@ -53,15 +53,5 @@ export function readPluginScript(directory: string): PluginScriptManifest {
 	if (!existsSync(entry) || !statSync(entry).isFile()) {
 		throw new Error(`scripts/${name}: entry ${parsed.data.metadata.entry} does not exist.`);
 	}
-	const instructionsFile = path.join(directory, 'INSTRUCTIONS.md');
-	if (!existsSync(instructionsFile)) throw new Error(`scripts/${name}: INSTRUCTIONS.md is missing.`);
-	if (statSync(instructionsFile).size > MAX_INSTRUCTIONS) {
-		throw new Error(`scripts/${name}: INSTRUCTIONS.md is larger than 4 KB.`);
-	}
-	return {
-		...parsed.data,
-		name,
-		directory,
-		instructions: readFileSync(instructionsFile, 'utf8').trim(),
-	};
+	return { ...parsed.data, name, directory };
 }
