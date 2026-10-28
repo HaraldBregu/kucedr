@@ -31,6 +31,7 @@ export class Memory implements MemoryService {
 			...state,
 			config: {
 				enabled: state.config.enabled,
+				includeInPrompt: state.config.includeInPrompt ?? true,
 				providerId: state.config.providerId,
 				modelId: state.config.modelId,
 				modelOptions: state.config.modelOptions,
