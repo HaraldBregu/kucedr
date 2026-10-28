@@ -95,6 +95,47 @@ export function WorkspaceMarkdownEditor({
 		},
 	});
 
+	useImperativeHandle(ref, () => {
+		const select = (query: string, direction: 'next' | 'previous'): { from: number; to: number } | undefined => {
+			const { view } = editor;
+			view.dispatch(view.state.tr.setMeta(searchKey, query));
+			const matches = searchKey.getState(view.state)?.matches ?? [];
+			const { from, to } = view.state.selection;
+			const match = direction === 'next'
+				? matches.find((item) => item.from > from || (item.from === from && item.to !== to)) ?? matches[0]
+				: matches.findLast((item) => item.from < from) ?? matches.at(-1);
+			if (!match) return undefined;
+			view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, match.from, match.to)));
+			const { node } = view.domAtPos(match.from);
+			(node instanceof Element ? node : node.parentElement)?.scrollIntoView({ block: 'center' });
+			return match;
+		};
+		return {
+			find(query, direction) {
+				if (query) select(query, direction);
+			},
+			replace(query, replacement, all) {
+				if (!query) return;
+				const { view } = editor;
+				view.dispatch(view.state.tr.setMeta(searchKey, query));
+				const matches = searchKey.getState(view.state)?.matches ?? [];
+				const { from, to } = view.state.selection;
+				const targets = all ? matches : matches.filter((item) => item.from === from && item.to === to);
+				if (!all && !targets.length) {
+					select(query, 'next');
+					return;
+				}
+				const tr = view.state.tr;
+				for (const target of [...targets].reverse()) tr.insertText(replacement, target.from, target.to);
+				view.dispatch(tr);
+				if (!all) select(query, 'next');
+			},
+			clearSearch() {
+				editor.view.dispatch(editor.state.tr.setMeta(searchKey, ''));
+			},
+		};
+	}, [editor]);
+
 	const insertFiles = (files: File[], position?: number): boolean => {
 		const imported = importWorkspaceAssets(path, files);
 		if (!imported) return false;
