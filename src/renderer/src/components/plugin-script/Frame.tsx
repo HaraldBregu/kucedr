@@ -15,6 +15,19 @@ export function PluginScriptFrame({
 	const [theme, setTheme] = useState<AppThemeData>();
 	const key = JSON.stringify(input);
 	const [result, setResult] = useState<{ html?: string; error?: string }>({});
+	const frame = useRef<HTMLIFrameElement>(null);
+	const [height, setHeight] = useState(script.height);
+	useEffect(() => {
+		const onMessage = (event: MessageEvent): void => {
+			if (event.source !== frame.current?.contentWindow) return;
+			const { type, height: next } = (event.data ?? {}) as { type?: unknown; height?: unknown };
+			if (type === 'kucedr:script-height' && typeof next === 'number' && Number.isFinite(next)) {
+				setHeight(Math.min(Math.max(Math.ceil(next), 80), 2000));
+			}
+		};
+		window.addEventListener('message', onMessage);
+		return () => window.removeEventListener('message', onMessage);
+	}, []);
 	useEffect(() => {
 		let active = true;
 		const update = (next: AppThemeData): void => {
