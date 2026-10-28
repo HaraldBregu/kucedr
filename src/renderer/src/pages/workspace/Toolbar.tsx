@@ -37,6 +37,7 @@ import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
+import type { PluginScriptInfo } from '../../../../shared/plugin_types';
 
 const mod = navigator.platform.startsWith('Mac') ? '⌘' : 'Ctrl+';
 const alt = navigator.platform.startsWith('Mac') ? '⌥' : 'Alt+';
