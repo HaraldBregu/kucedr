@@ -326,6 +326,7 @@
 				"health": "Controlli salute periodici",
 				"permissions": "Permessi strumenti e regole di percorso",
 				"apps": "App installate",
+				"scripts": "Script forniti dai plugin",
 				"knowledge": "Indicizza i documenti per cercare risposte basate sui file.",
 				"plugins": "Plugin installabili",
 				"configurationDescription": "Configura modelli, archiviazione e integrazioni"
