@@ -27,7 +27,7 @@ export function scanPlugins(): readonly ScannedPlugin[] {
 			if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
 			const directory = path.join(root, entry.name);
 			try {
-				const manifest = readPlugin(directory);
+				const manifest = readPlugin(directory, entry.name, builtIn);
 				const bundled = found.get(entry.name);
 				if (
 					!builtIn &&
