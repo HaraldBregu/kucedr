@@ -8,6 +8,32 @@
 		"entry": "dist/index.mjs",
 		"instructions": "instructions.md"
 	},
+	"inputSchema": {
+		"type": "object",
+		"required": ["component"],
+		"properties": {
+			"component": {
+				"type": "string",
+				"title": "Component",
+				"enum": [
+					"dither-gradient", "dither-glow", "mesh-gradient", "aurora", "noise-field", "waves", "plasma", "beams", "silk", "smoke", "contours", "ripples", "ridgelines", "metaballs", "tunnel", "retro-grid", "eclipse", "horizon", "starfield", "halftone", "dither-globe", "dot-map", "dither-orb", "dither-fade",
+					"area-chart", "bar-chart", "line-chart", "sparkline", "heatmap", "donut-chart", "radar-chart", "gauge", "progress-bar", "uptime-bar", "stat-card",
+					"dither-button", "avatar", "dither-card", "divider", "skeleton", "loader", "empty-state", "not-found",
+					"dither-text", "dissolve-text", "scramble-text", "dither-number",
+					"dither-image", "image-compare", "scroll-reveal-image", "dithered-logo", "logo-marquee",
+					"shader"
+				]
+			},
+			"title": { "type": "string", "title": "Title" },
+			"description": { "type": "string", "title": "Description" },
+			"props": {
+				"type": "object",
+				"title": "Props",
+				"description": "The component's props. Only required props are needed; everything else has a default."
+			}
+		},
+		"examples": [{ "component": "aurora", "props": { "color": "green" } }]
+	},
 	"fence": "dither",
 	"height": 400
 }
