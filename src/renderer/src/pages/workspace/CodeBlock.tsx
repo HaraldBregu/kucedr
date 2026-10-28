@@ -5,9 +5,13 @@ import {
 	useEditorState,
 	type NodeViewProps,
 } from '@tiptap/react';
+import { Settings2 } from 'lucide-react';
 import { PluginScriptFrame } from '@/components/plugin-script/Frame';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import { cn } from '@/lib/utils';
+import { ScriptProperties } from './Properties';
 
 export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): React.JSX.Element {
 	const { byFence } = usePluginScripts();
