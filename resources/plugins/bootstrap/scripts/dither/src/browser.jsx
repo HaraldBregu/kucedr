@@ -24,6 +24,17 @@ const { component, props = {} } = JSON.parse(document.getElementById('dither-inp
 const Dither = REGISTRY[component];
 const { place } = CATALOG[component];
 
+if (place === 'fill') {
+	document.documentElement.classList.add('fill');
+} else {
+	new ResizeObserver(() =>
+		parent.postMessage(
+			{ type: 'kucedr:script-height', height: Math.ceil(document.documentElement.getBoundingClientRect().height) },
+			'*'
+		)
+	).observe(document.documentElement);
+}
+
 createRoot(document.getElementById('dither')).render(
 	<Boundary>
 		<div className={PLACES[place]}>

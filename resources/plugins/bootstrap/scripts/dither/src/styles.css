@@ -115,7 +115,11 @@
 	}
 	html,
 	body {
-		@apply h-full bg-background text-foreground;
+		@apply bg-background text-foreground;
+	}
+	html.fill,
+	html.fill body {
+		@apply h-full;
 	}
 	body {
 		@apply flex flex-col gap-2 px-3 py-2 font-sans text-[13px];

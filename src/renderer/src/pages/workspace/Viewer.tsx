@@ -46,6 +46,8 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange }:
 	const [findQuery, setFindQuery] = useState('');
 	const [replaceText, setReplaceText] = useState('');
 	const editorRef = useRef<CodeMirrorEditorHandle>(null);
+	const textRef = useRef<Pick<CodeMirrorEditorHandle, 'find' | 'replace' | 'clearSearch'>>(null);
+	const [textMatchCount, setTextMatchCount] = useState(0);
 	const pendingContent = useRef<string | null>(null);
 	const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const saveQueue = useRef(Promise.resolve());
@@ -55,8 +57,10 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange }:
 	const mediaUrl = file && media ? new URL('local-resource://agent/') : null;
 	if (mediaUrl && file) mediaUrl.pathname = `/${file.path.replaceAll('\\', '/')}`;
 	const searchable = kind !== null && !media && kind !== 'unsupported';
-	const visibleMarkdownMode = kind === 'markdown' && findOpen ? 'source' : markdownMode;
-	const matchCount = findQuery ? content.toLocaleLowerCase().split(findQuery.toLocaleLowerCase()).length - 1 : 0;
+	const visibleMarkdownMode = kind === 'markdown' && findOpen && content.includes('<!--') ? 'source' : markdownMode;
+	const textSearch = kind === 'markdown' && visibleMarkdownMode === 'preview';
+	const finder = textSearch ? textRef : editorRef;
+	const matchCount = textSearch ? textMatchCount : findQuery ? content.toLocaleLowerCase().split(findQuery.toLocaleLowerCase()).length - 1 : 0;
 	const pasteRawAssets = (event: React.ClipboardEvent | React.DragEvent, files: FileList): void => {
 		const imported = file ? importWorkspaceAssets(file.path, Array.from(files)) : null;
 		if (!imported) return;
@@ -69,7 +73,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange }:
 	const closeFind = (): void => {
 		setFindOpen(false);
 		setFindQuery('');
-		editorRef.current?.clearSearch();
+		finder.current?.clearSearch();
 	};
 
 	const save = useCallback(() => {
@@ -155,23 +159,23 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange }:
 						<div role="search" className="ml-auto flex min-w-0 flex-wrap items-center gap-1">
 							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-40" onChange={(event) => {
 								setFindQuery(event.target.value);
-								if (event.target.value) editorRef.current?.find(event.target.value, 'next');
-								else editorRef.current?.clearSearch();
+								if (event.target.value) finder.current?.find(event.target.value, 'next');
+								else finder.current?.clearSearch();
 							}} onKeyDown={(event) => {
 								if (event.key === 'Escape') closeFind();
-								if (event.key === 'Enter') editorRef.current?.find(findQuery, event.shiftKey ? 'previous' : 'next');
+								if (event.key === 'Enter') finder.current?.find(findQuery, event.shiftKey ? 'previous' : 'next');
 							}} />
 							<span aria-live="polite" className="shrink-0 text-[11px] text-muted-foreground">{findQuery ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'Find'}</span>
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Previous match" disabled={!matchCount} onClick={() => editorRef.current?.find(findQuery, 'previous')}><ChevronUp /></Button>
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => editorRef.current?.find(findQuery, 'next')}><ChevronDown /></Button>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Previous match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'previous')}><ChevronUp /></Button>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'next')}><ChevronDown /></Button>
 							{kind === 'markdown' ? (
 								<>
 									<Input aria-label="Replace with" placeholder="Replace" value={replaceText} className="h-7 w-24 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-32" onChange={(event) => setReplaceText(event.target.value)} onKeyDown={(event) => {
 										if (event.key === 'Escape') closeFind();
-										if (event.key === 'Enter') editorRef.current?.replace(findQuery, replaceText, event.metaKey || event.ctrlKey);
+										if (event.key === 'Enter') finder.current?.replace(findQuery, replaceText, event.metaKey || event.ctrlKey);
 									}} />
-									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => editorRef.current?.replace(findQuery, replaceText, false)}>Replace</Button>
-									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => editorRef.current?.replace(findQuery, replaceText, true)}>All</Button>
+									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, false)}>Replace</Button>
+									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, true)}>All</Button>
 								</>
 							) : null}
 							<Button type="button" variant="ghost" size="icon-sm" aria-label="Close find" onClick={closeFind}><X /></Button>
@@ -209,7 +213,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange }:
 				</div>
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
 				<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-					<WorkspaceMarkdownEditor path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} onFind={() => setFindOpen(true)} onOpenLink={(href) => {
+					<WorkspaceMarkdownEditor ref={textRef} onMatchCount={setTextMatchCount} path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} onFind={() => setFindOpen(true)} onOpenLink={(href) => {
 						if (/^[a-z][a-z\d+.-]*:/i.test(href)) void window.app.openExternalUrl(href);
 						else {
 							const path = decodeURIComponent(new URL(workspaceResourceUrl(file.path, href)).pathname.slice(1));
