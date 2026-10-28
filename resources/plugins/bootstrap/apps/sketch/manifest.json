@@ -3,7 +3,7 @@
 	"description": "Draw, write and sketch freehand with pens, shapes, text and an infinite canvas. Your drawing is saved automatically.",
 	"mode": "extension",
 	"metadata": {
-		"version": "1.0.0",
+		"version": "1.1.0",
 		"category": "productivity",
 		"entry": "index.html",
 		"image": "icon.svg",
