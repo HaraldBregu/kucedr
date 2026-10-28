@@ -113,7 +113,7 @@ export function Split({
 						aria-label={sidebarLabel}
 						inert={!state.sidebarOpen}
 						className={cn(
-							'fixed bottom-0 left-0 top-12 z-30 flex flex-col border-r border-sidebar-border/60 bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
+							'fixed inset-y-0 left-0 z-30 flex flex-col pt-12 border-r border-sidebar-border/60 bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
 							state.sidebarOpen ? 'translate-x-0' : '-translate-x-full'
 						)}
 						style={{ width: 'var(--split-pane-sidebar-width)' }}

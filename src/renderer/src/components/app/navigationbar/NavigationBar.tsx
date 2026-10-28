@@ -23,6 +23,7 @@ import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session
 import type { AgentSessionSummary } from '@/lib/compat';
 import { revealSelection } from '@/lib/selection';
 import { playSound } from '@/lib/sounds/play';
+import { cn } from '@/lib/utils';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
@@ -239,7 +240,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	return (
 		<NavigationBarProvider value={{ isMac, isFullScreen }}>
 			<NavigationBarContainer
-				className={className}
+				className={cn(sidebarExpanded && 'border-b-0 bg-transparent', className)}
 			>
 				{/* ── Left: platform menu + nav buttons ── */}
 				<NavigationBarLeftContainer
