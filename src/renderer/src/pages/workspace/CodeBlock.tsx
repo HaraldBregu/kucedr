@@ -58,16 +58,17 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 		<NodeViewWrapper className="my-5">
 			<div contentEditable={false} className="relative">
 				{script.inputSchema && input !== null && typeof input === 'object' && !Array.isArray(input) ? (
-					<Popover>
-						<PopoverTrigger asChild>
-							<Button type="button" variant="outline" size="icon-sm" aria-label={`${script.title} properties`} className="absolute right-2 top-2 z-10">
-								<Settings2 />
-							</Button>
-						</PopoverTrigger>
-						<PopoverContent align="end" className="max-h-[60vh] w-96 overflow-y-auto p-3">
-							<ScriptProperties schema={script.inputSchema} value={input as Record<string, unknown>} onChange={update} />
-						</PopoverContent>
-					</Popover>
+					<>
+						<Button type="button" variant="outline" size="icon-sm" aria-label={`${script.title} properties`} className="absolute right-2 top-2 z-10" onClick={() => setFormOpen(true)}>
+							<Settings2 />
+						</Button>
+						{formOpen ? (
+							<WorkspaceScriptForm script={script} value={input as Record<string, unknown>} submitLabel="Save" onClose={() => setFormOpen(false)} onSubmit={(next) => {
+								setFormOpen(false);
+								update(next);
+							}} />
+						) : null}
+					</>
 				) : null}
 				{input !== undefined ? (
 					<PluginScriptFrame script={script} input={input} />
