@@ -41,7 +41,7 @@ export function ChatWorkspace(): React.JSX.Element {
 		return () => { active = false; window.clearTimeout(refreshTimer); unsubscribe(); };
 	}, [revision]);
 	return (
-		<Collapsible className="border-t border-border">
+		<Collapsible>
 			<CollapsibleTrigger render={<Button variant="ghost" className="group h-10 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
 				<FolderOpen className="size-4 text-muted-foreground" aria-hidden />
 				<span className="flex-1 text-left">Workspace</span>
