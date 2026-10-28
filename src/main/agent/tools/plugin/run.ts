@@ -2,18 +2,18 @@ import { z } from 'zod';
 import { pluginScripts, renderPluginScript } from '../../../plugins';
 import { tool } from '../tool';
 
-export const runPluginScript = tool({
-	id: 'run_plugin_script',
+export const runScript = tool({
+	id: 'run_script',
 	category: 'integration',
-	name: 'Run plugin script',
+	name: 'Run script',
 	description:
-		'Run a plugin script by name using the input documented by a loaded skill. Its visual result is shown to the user automatically.',
+		'Run a script from the Scripts section by name, with the input documented in its instructions. Its visual result is shown to the user automatically.',
 	planSafe: true,
 	inputSchema: z.object({
-		name: z.string().describe('The script name documented by the loaded skill.'),
+		name: z.string().describe('The script name from the Scripts section.'),
 		input: z
 			.record(z.string(), z.unknown())
-			.describe('Input object documented in the instructions returned by read_plugin_script.'),
+			.describe('Input object documented in the instructions returned by load_script.'),
 	}),
 	execute: async ({ name, input }) => {
 		const scripts = pluginScripts();
