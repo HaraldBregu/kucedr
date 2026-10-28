@@ -9,7 +9,7 @@ const clearReply = jest.fn();
 const triggerFileUpload = jest.fn();
 
 jest.mock('../../../src/renderer/src/pages/home/Outline', () => ({ ChatOutline: () => null }));
-jest.mock('../../../src/renderer/src/pages/home/Details', () => ({ ChatDetails: () => null }));
+jest.mock('../../../src/renderer/src/pages/home/Details', () => ({ ChatDetails: ({ open }: { open: boolean }) => <aside id="chat-information" aria-label="Chat information" hidden={!open}><input aria-label="Details search" /></aside> }));
 let replyTo: { id: string; content: string } | null = null;
 let messages: { id: string; role: string }[] = [{ id: 'agent-welcome', role: 'agent' }];
 
@@ -84,8 +84,8 @@ jest.mock('@/components/prompt-kit/markdown', () => ({
 
 jest.mock('@/components/app/base/page', () => ({
 	PageContainer: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-	Split: ({ children }: { sidebar?: React.ReactNode; children?: React.ReactNode }) => (
-		<div>{children}</div>
+	Split: ({ children, navigationActions }: { sidebar?: React.ReactNode; children?: React.ReactNode; navigationActions?: React.ReactNode }) => (
+		<div>{navigationActions}{children}</div>
 	),
 }));
 
@@ -185,6 +185,22 @@ function renderPage(): void {
 }
 
 describe('Home prompt attachments', () => {
+	it('toggles chat information from the navbar while preserving its contents', async () => {
+		renderPage();
+		const toggle = await screen.findByRole('button', { name: 'Hide chat information' });
+		expect(toggle).toHaveAttribute('aria-expanded', 'true');
+		expect(toggle).toHaveAttribute('aria-controls', 'chat-information');
+		const card = screen.getByRole('complementary', { name: 'Chat information' });
+		const search = screen.getByRole('textbox', { name: 'Details search' });
+		fireEvent.change(search, { target: { value: 'notes' } });
+		fireEvent.click(toggle);
+		expect(card).not.toBeVisible();
+		expect(screen.getByRole('button', { name: 'Show chat information' })).toHaveAttribute('aria-expanded', 'false');
+		fireEvent.click(screen.getByRole('button', { name: 'Show chat information' }));
+		expect(card).toBeVisible();
+		expect(screen.getByRole('textbox', { name: 'Details search' })).toBe(search);
+		expect(search).toHaveValue('notes');
+	});
 	beforeEach(() => {
 		localStorage.clear();
 		Object.defineProperty(URL, 'createObjectURL', {

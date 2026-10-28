@@ -150,7 +150,7 @@ export function Split({
 			)}
 			<main
 				data-slot="split-pane-content"
-				className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background"
+				className="@container/pane relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background"
 			>
 				<NavigationBar showWorkspace contextContent={navigationContent} rightContent={navigationActions} startContent={isMobile || !state.sidebarOpen ? <Toggle /> : undefined} />
 				<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>

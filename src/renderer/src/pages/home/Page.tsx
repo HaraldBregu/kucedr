@@ -842,7 +842,7 @@ function PageContent(): ReactElement {
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
 				navigationActions={!showEmptyConversation && !openExtension ? <Tooltip>
-					<TooltipTrigger render={<Button type="button" variant={detailsOpen ? 'secondary' : 'ghost'} size="icon-sm" className="rounded-md" aria-label={detailsOpen ? 'Hide chat information' : 'Show chat information'} aria-pressed={detailsOpen} aria-controls="chat-information" onClick={() => setDetailsOpen((open) => !open)}><PanelRight className="size-3.5" strokeWidth={1.8} /></Button>} />
+					<TooltipTrigger render={<Button type="button" variant={detailsOpen ? 'secondary' : 'ghost'} size="icon-sm" className="hidden rounded-md @[1408px]/pane:inline-flex" aria-label={detailsOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={detailsOpen} aria-controls="chat-information" onClick={() => setDetailsOpen((open) => !open)}><PanelRight className="size-3.5" strokeWidth={1.8} /></Button>} />
 					<TooltipContent side="bottom">{detailsOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
 				</Tooltip> : undefined}
 				sidebar={

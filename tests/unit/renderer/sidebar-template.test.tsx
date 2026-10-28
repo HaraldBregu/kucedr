@@ -32,7 +32,7 @@ it('renders the page header inside the content pane beside a full-height sidebar
 	const { container } = render(
 		<MemoryRouter initialEntries={['/home']}>
 			<PageContainer>
-				<Split sidebar={<button>Stored chat</button>}><div>Conversation</div></Split>
+				<Split sidebar={<button>Stored chat</button>} navigationActions={<button>Chat information</button>}><div>Conversation</div></Split>
 			</PageContainer>
 		</MemoryRouter>
 	);
@@ -43,6 +43,7 @@ it('renders the page header inside the content pane beside a full-height sidebar
 
 	expect(container.querySelectorAll('[data-slot="navigationbar"]')).toHaveLength(1);
 	expect(content).toContainElement(header as HTMLElement);
+	expect(header).toContainElement(within(content).getByRole('button', { name: 'Chat information' }));
 	expect(header).not.toHaveClass('fixed');
 	expect(sidebar).not.toHaveClass('fixed', 'top-12', 'pt-12');
 	expect(within(sidebar).queryByText('Kucedr')).not.toBeInTheDocument();
