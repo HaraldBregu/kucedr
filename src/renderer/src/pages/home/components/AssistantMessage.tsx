@@ -84,6 +84,10 @@ function isSkillTool(tool: AgentToolPart): boolean {
 	return tool.type.toLowerCase().includes('skill');
 }
 
+function isScriptTool(type: string): boolean {
+	return type === 'run_script' || type === 'run_plugin_script';
+}
+
 function fileName(path: string): string {
 	return path.slice(Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\')) + 1);
 }
