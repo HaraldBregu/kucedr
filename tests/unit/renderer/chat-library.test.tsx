@@ -12,6 +12,8 @@ beforeEach(() => {
 it('lists files with click-to-attach and copy drag payloads, excluding folders', async () => {
 	const onAttach = jest.fn();
 	render(<ChatLibrary refreshKey="chat" onAttach={onAttach} />);
+	expect(screen.getByRole('button', { name: /^Library/ })).toHaveAttribute('aria-expanded', 'false');
+	fireEvent.click(screen.getByRole('button', { name: /^Library/ }));
 	const button = await screen.findByRole('button', { name: 'Attach notes.md' });
 	expect(screen.queryByRole('button', { name: 'Attach folder' })).not.toBeInTheDocument();
 	fireEvent.click(button);

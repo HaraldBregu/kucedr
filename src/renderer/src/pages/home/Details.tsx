@@ -35,7 +35,7 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 						<Usage className="h-7 rounded-md px-0 text-xs tabular-nums text-foreground" providerId={context?.providerId ?? ''} modelId={context?.modelId ?? ''} contextWindow={context?.contextWindow} messages={messages} draft="" hasAttachments={false} />
 					</div>
 				</CardContent>
-				<Collapsible defaultOpen className="border-t border-border">
+				<Collapsible className="border-t border-border">
 					<CollapsibleTrigger render={<Button variant="ghost" className="group h-10 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
 						<Files className="size-4 text-muted-foreground" aria-hidden />
 						<span className="flex-1 text-left">Generated assets</span>
@@ -52,7 +52,7 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 						</div>
 					</CollapsibleContent>
 				</Collapsible>
-				<Collapsible defaultOpen className="border-t border-border">
+				<Collapsible className="border-t border-border">
 					<CollapsibleTrigger render={<Button variant="ghost" className="group h-10 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
 						<FileCode className="size-4 text-muted-foreground" aria-hidden />
 						<span className="flex-1 text-left">Created scripts</span>

@@ -32,7 +32,7 @@ export function ChatLibrary({ refreshKey, onAttach }: {
 		return () => { active = false; window.removeEventListener('focus', load); };
 	}, [refreshKey, revision]);
 	return (
-		<Collapsible defaultOpen className="border-t border-border">
+		<Collapsible className="border-t border-border">
 			<CollapsibleTrigger render={<Button variant="ghost" className="group h-10 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
 				<LibraryIcon className="size-4 text-muted-foreground" aria-hidden />
 				<span className="flex-1 text-left">Library</span>
