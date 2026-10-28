@@ -8,6 +8,53 @@
 		"entry": "dist/index.mjs",
 		"instructions": "instructions.md"
 	},
+	"inputSchema": {
+		"type": "object",
+		"required": ["type", "xKey", "series", "data"],
+		"properties": {
+			"type": {
+				"type": "string",
+				"title": "Type",
+				"enum": ["bar", "horizontal-bar", "stacked-bar", "line", "area", "stacked-area", "pie", "doughnut", "scatter", "radar"]
+			},
+			"title": { "type": "string", "title": "Title" },
+			"description": { "type": "string", "title": "Description" },
+			"xKey": { "type": "string", "title": "X key", "description": "The field in each row that holds the category or label." },
+			"series": {
+				"type": "array",
+				"title": "Series",
+				"description": "1–6 numeric fields to plot, each with a key and a label.",
+				"minItems": 1,
+				"maxItems": 6,
+				"items": {
+					"type": "object",
+					"required": ["key", "label"],
+					"properties": { "key": { "type": "string" }, "label": { "type": "string" } }
+				}
+			},
+			"data": {
+				"type": "array",
+				"title": "Data",
+				"description": "1–200 rows, one per x-axis point or slice.",
+				"minItems": 1,
+				"maxItems": 200,
+				"items": { "type": "object" }
+			}
+		},
+		"examples": [
+			{
+				"type": "bar",
+				"title": "Monthly sales",
+				"xKey": "month",
+				"series": [{ "key": "sales", "label": "Sales" }],
+				"data": [
+					{ "month": "Jan", "sales": 10 },
+					{ "month": "Feb", "sales": 20 },
+					{ "month": "Mar", "sales": 15 }
+				]
+			}
+		]
+	},
 	"fence": "chart",
 	"height": 320
 }
