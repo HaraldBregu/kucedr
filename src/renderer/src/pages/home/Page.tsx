@@ -814,6 +814,7 @@ function PageContent(): ReactElement {
 									messages={agent.chatState.messages}
 									draft={agent.input}
 									hasAttachments={attachments.length > 0}
+									onContext={setModelContext}
 								/>
 							</div>
 						}
