@@ -98,18 +98,10 @@ it('loads script guidance on demand and runs the chart reference examples', asyn
 	await expect(loader!.run({ name: 'run-scripts' })).resolves.toMatchObject({
 		activated: true,
 		name: 'run-scripts',
-		resources: [
-			'references/chart.md',
-			'references/dither.md',
-			'references/draw.md',
-			'references/organui.md',
-		],
+		resources: [],
 	});
-	expect(buildLoadedSkillPrompt(loaded)).toContain('run_plugin_script');
-	const reference = readFileSync(
-		resolveSkillResource(loaded[0].canonicalRoot, 'references/chart.md'),
-		'utf8'
-	);
+	expect(buildLoadedSkillPrompt(loaded)).toContain('read_plugin_script');
+	const reference = await readPluginScript.run({ name: 'chart' });
 	const examples = [...reference.matchAll(/```json\n([\s\S]*?)\n```/g)];
 	expect(examples.length).toBeGreaterThan(0);
 	for (const example of examples) {
