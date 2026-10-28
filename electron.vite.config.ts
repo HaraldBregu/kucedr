@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 import typegpuPlugin from 'unplugin-typegpu/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import pkg from './package.json';
-import { build } from 'esbuild';
+import { execFileSync } from 'child_process';
 
 const cloudEnv = { ...loadEnv('production', __dirname, 'SUPABASE_'), ...process.env };
 
