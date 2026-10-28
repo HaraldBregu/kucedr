@@ -46,6 +46,7 @@ interface Contents {
 	readonly apps: readonly App[];
 	readonly servers: readonly McpServerInfo[];
 	readonly skills: readonly SkillInfo[];
+	readonly scripts: readonly PluginScriptInfo[];
 }
 
 interface Row {
