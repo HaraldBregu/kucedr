@@ -7,12 +7,12 @@ Status: implemented. It replaces the built-in charts described in [CHARTS.md](CH
 Kucedr should not build charts or any other renderer itself. Plugins provide scripts instead:
 
 - Each plugin can have a `scripts/` folder with one folder per script.
-- Script usage instructions live in a separate skill and its references, loaded on demand.
-- The agent has **one common tool, `run_plugin_script`**, that runs any plugin script by name.
-- The default system prompt contains no script catalog, instructions, or input schemas. Bootstrap provides the `run-scripts` skill to choose and call its scripts.
+- Each script ships an `instructions.md`, linked from its manifest as `metadata.instructions`, describing how to use it.
+- The system prompt lists every enabled script (name, title, description, fence, instructions path) in a `# Scripts` section, but never its instructions or input schema.
+- The agent loads a script's instructions with **`load_script`** and runs it by name with **`run_script`**.
 - A script's Node entry returns HTML+JS, which Kucedr frames in the chat reply and in the workspace editor.
 
-The built-in charts (the `create_chart` tool, Recharts, the Chart toolbar action) are removed. The bootstrap plugin ships `chart`, `dither`, and `organui`, documented by its `run-scripts` skill.
+The built-in charts (the `create_chart` tool, Recharts, the Chart toolbar action) are removed. The bootstrap plugin ships `chart`, `dither`, and `organui`, each documented by its own `instructions.md`.
 
 What already exists:
 
@@ -25,6 +25,7 @@ What already exists:
 
 ```text
 manifest.json     title, description, author, metadata, fence, height
+instructions.md   how to use the script: input fields, limits, examples; metadata.instructions points here
 package.json      a normal Node.js project: devDependencies and a "build" script (no install scripts)
 src/              sources, built into dist/
 dist/             build output; metadata.entry points here (gitignored, built in CI before release)
@@ -37,7 +38,7 @@ dist/             build output; metadata.entry points here (gitignored, built in
 	"title": "Chart",
 	"description": "Render bar, line, area, pie or doughnut charts from data.",
 	"author": "Harald Bregu",
-	"metadata": { "version": "1.0.0", "category": "data", "entry": "dist/index.mjs" },
+	"metadata": { "version": "1.0.0", "category": "data", "entry": "dist/index.mjs", "instructions": "instructions.md" },
 	"fence": "chart",
 	"height": 320
 }
@@ -46,7 +47,7 @@ dist/             build output; metadata.entry points here (gitignored, built in
 Rules:
 
 - **Name:** the folder name is the script name, as with apps. It must be kebab-case and unique across all enabled plugins. A duplicate is skipped and logged.
-- **Fields:** `title`, `description`, `metadata.version`, `metadata.category` and `metadata.entry` are required. `author` is optional, as for apps.
+- **Fields:** `title`, `description`, `metadata.version`, `metadata.category`, `metadata.entry` and `metadata.instructions` are required. `author` is optional, as for apps.
 - **Build:** every script is an npm workspace (here `resources/plugins/bootstrap/scripts/chart`; in the `kucedr-plugins` repo `plugins/*/scripts/*`), so dependencies install in the root `node_modules`. Kucedr never runs `npm install` or a build at runtime: it only runs `metadata.entry`.
 - **Running the script:** the host runs `metadata.entry` on Electron's Node, using `process.execPath` with `ELECTRON_RUN_AS_NODE=1`, so users don't need Node installed.
   - The working directory is the script folder, there's a 10 s timeout and stdout is capped at 2 MB.
@@ -54,15 +55,23 @@ Rules:
 - **Self-contained HTML:** the output must inline its own JS and CSS, because the host frames it with no network access.
 - **Determinism:** the same input and theme must give the same HTML. Chat and the editor re-render from the stored input, so HTML is never saved in history or sent to the model.
 - **`fence`:** optional. It names the code-block language this script renders inside markdown files.
-- **Usage:** document script selection, input fields, limits, and examples in a plugin skill and its references. Script manifests do not need an `inputSchema`; existing schemas remain accepted for installed plugins but are never added to the prompt.
+- **Usage:** document input fields, limits, and examples in the script's `metadata.instructions` markdown file; the manifest `description` is what the agent sees in the prompt catalog to choose between scripts. Script manifests do not need an `inputSchema`; existing schemas remain accepted for installed plugins but are never added to the prompt.
 
-## The agent: one common tool plus an on-demand skill
+## The agent: a prompt catalog plus two tools
 
-### `run_plugin_script`
+### `# Scripts` prompt section
+
+`src/main/agent/system/system_add_scripts_prompt.ts`. `buildSystemPrompt()` appends it when `run_script` is among the eligible tools, with `pluginScripts()` as the catalog. It holds the load → build → run → retry steps, the general rules (no invented data, omit optional fields and `title`, fence blocks in markdown), and one line per script with its instructions path. There is no list tool: the catalog is in the prompt.
+
+### `load_script`
+
+`src/main/agent/tools/plugin/load.ts`. Input: `{ name: string }`. Returns the script's `metadata.instructions` markdown. An unknown name is an error that lists the valid names. Registered, classified and required alongside `run_script`.
+
+### `run_script`
 
 `src/main/agent/tools/plugin/run.ts`, built with the `tool()` factory.
 
-- Input: `{ name: string, input: object }`. The loaded skill documents the script names and their inputs.
+- Input: `{ name: string, input: object }`. The prompt catalog names the scripts; `load_script` documents their inputs.
 - `run`:
   1. Look up `name`. An unknown name is an error that lists the valid names.
   2. Call `renderPluginScript(name, input, 'light')` to make sure the input renders.
@@ -70,18 +79,11 @@ Rules:
 - `category: 'integration'`, `planSafe: true`. It's in the `READ` set in `execution/capability.ts`.
 - Registered in `builtinTools()` only when at least one plugin script is enabled, and listed in `requiredIds` in `run_stream.ts` so it's always loaded and never needs `tool_search`.
 
-### Skill loading
-
-`resources/plugins/bootstrap/skills/run-scripts/SKILL.md` routes requests to `chart`, `dither`, or `organui`. Each script has a separate reference documenting its input and examples. Read only the reference for the chosen script.
-
-Select the skill or explicitly ask to use it, for example "Use the run-scripts skill to chart these values." The existing `list_skills` / `load_skill` flow discovers and activates it. Its instructions enter the protected loaded-skill context for the run, and references are read only when needed. Ordinary chart requests do not automatically activate skills under the current explicit-invocation policy.
-
-`buildSystemPrompt()` does not read plugin scripts or append a `Plugin scripts` section. The shared `run_plugin_script` tool remains available when scripts are enabled.
 
 ## Example: `resources/plugins/bootstrap/scripts/chart/`
 
 - `manifest.json`: runtime and display metadata, as above.
-- `skills/run-scripts/references/chart.md`:
+- `instructions.md`:
   - Use it for trends over time (line or area), comparisons across categories (bar) and shares of a whole (pie or doughnut).
   - Explain `xKey` and `series`.
   - Give example inputs.
@@ -96,10 +98,10 @@ Select the skill or explicitly ask to use it, for example "Use the run-scripts s
 
 - **`plugin_types.ts`**: `'scripts'` is in `PLUGIN_KINDS`.
 - **`src/main/plugins/scripts/`** (one function per file):
-  - `plugin_script_read.ts`: zod validation of `manifest.json` and checking that its entry exists.
+  - `plugin_script_read.ts`: zod validation of `manifest.json` and checking that its entry and instructions exist.
   - `plugin_script_list.ts`: `pluginScripts()` reads every enabled plugin's scripts through `pluginDirs('scripts')`, skipping duplicate names.
   - `plugin_script_render.ts`: `renderPluginScript(name, input, theme)` spawns the script as described above and caches results in memory by name, input and theme.
-- **`plugins_validate_contents.ts`**: for each `scripts/<id>`, `manifest.json` must be valid and `metadata.entry` must exist.
+- **`plugins_validate_contents.ts`**: for each `scripts/<id>`, `manifest.json` must be valid and `metadata.entry` and `metadata.instructions` must exist.
 - **IPC** (channel definitions, preload and `src/main/ipc/plugins.ts`):
   - `plugins:scripts` returns `{ name, title, author?, version, category, fence?, height, plugin }[]`.
   - `plugins:render-script(name, input, theme)` returns HTML.
@@ -112,12 +114,11 @@ Select the skill or explicitly ask to use it, for example "Use the run-scripts s
   - It prepends a CSP meta tag (`components/plugin-script/document.ts`): `default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:`.
   - It shows a `Skeleton` while loading and the error text on failure.
 - **`hooks/use-plugin-scripts.ts`**: `usePluginScripts()` with lookups `byName` and `byFence`.
-- **Chat**: `PluginScriptCard.tsx`. In `AssistantMessage.tsx`, the branch is `tool.type === 'run_plugin_script'`, and the card renders `<PluginScriptFrame script={…} input={input.input} />`. The skeleton-while-streaming and error-fallback behaviour stays.
+- **Chat**: `PluginScriptCard.tsx`. In `AssistantMessage.tsx`, the branch is `isScriptTool(tool.type)`, which matches `run_script` and the legacy `run_plugin_script` of saved chats, and the card renders `<PluginScriptFrame script={…} input={input.input} />`. The skeleton-while-streaming and error-fallback behaviour stays.
 - **Editor**: `CodeBlock.tsx` looks up `byFence.get(language)` and renders `<PluginScriptFrame>` with the parsed JSON. Click-to-edit and the invalid-JSON message stay.
 
 ## Skipped
 
-- **Auto-height frames.** Fixed `height` for now.
 - **Interactive scripts that call back into the app.**
 - **Per-script permissions in Settings.** Disabling the plugin turns its scripts off.
 - **Sandboxing the Node script.** It has the same trust as a plugin's stdio MCP servers.
@@ -125,12 +126,12 @@ Select the skill or explicitly ask to use it, for example "Use the run-scripts s
 
 ## Verification
 
-1. Settings → Plugins should show **Bootstrap** (built-in, enabled). The default system prompt (debug log) should contain no `## Plugin scripts` section or per-script input schemas.
-2. **Chat:** select `run-scripts` or explicitly ask to use that skill, then try:
-   - "bar chart of 10,20,15,30 for Jan–Apr", "line chart of revenue and cost by quarter: …", "pie chart of market share: …". Each should produce `run_plugin_script` with `name: "chart"` and render in a frame.
+1. Settings → Plugins should show **Bootstrap** (built-in, enabled). The system prompt (debug log) should contain a `# Scripts` section listing each script and its instructions path, with no input schemas.
+2. **Chat:** try:
+   - "bar chart of 10,20,15,30 for Jan–Apr", "line chart of revenue and cost by quarter: …", "pie chart of market share: …". Each should produce `load_script` then `run_script` with `name: "chart"` and render in a frame.
    - Switch themes: the charts should re-render. Reload: they should still render.
 3. **Bad input:** a call with a missing `xKey` should return the script's error, and the agent should retry once with fixed input.
 4. **Editor:** a ```` ```chart ```` block should render through the same script. Edit the JSON and it re-renders; the saved file changes only where you edited.
-5. **Disable the plugin:** `run_plugin_script` and the Bootstrap skills should disappear from discovery, and ```` ```chart ```` blocks should show as code. Enable it again and they come back with no restart.
+5. **Disable the plugin:** `load_script`, `run_script` and the `# Scripts` section should disappear, and ```` ```chart ```` blocks should show as code. Enable it again and they come back with no restart.
 6. **Sandbox:** a `fetch` from inside the frame should be blocked by the CSP.
 7. Run `npm run typecheck:app` and lint.
