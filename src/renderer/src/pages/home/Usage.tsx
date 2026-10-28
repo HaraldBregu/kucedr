@@ -11,6 +11,7 @@ export function Usage({
 	messages,
 	draft,
 	hasAttachments,
+	className,
 }: {
 	providerId: string;
 	modelId: string;
@@ -18,6 +19,7 @@ export function Usage({
 	messages: readonly HomeChatMessage[];
 	draft: string;
 	hasAttachments: boolean;
+	className?: string;
 }): ReactElement {
 	const usage = contextTokens(messages, providerId, modelId, draft);
 	const limit = contextWindow ?? usage.contextWindow;
@@ -30,7 +32,7 @@ export function Usage({
 		<Tooltip>
 			<TooltipTrigger
 				render={<button type="button" aria-label={label} />}
-				className="flex h-9 shrink-0 items-center gap-1.5 rounded-full px-2 text-[11px] text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+				className={cn('flex h-9 shrink-0 items-center gap-1.5 rounded-full px-2 text-[11px] text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring', className)}
 			>
 				<svg
 					viewBox="0 0 24 24"
