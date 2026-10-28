@@ -63,12 +63,13 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			trusted.assert(event);
 			return plugins
 				.pluginScripts()
-				.map(({ name, title, author, metadata, fence, height, plugin }) => ({
+				.map(({ name, title, author, metadata, inputSchema, fence, height, plugin }) => ({
 					name,
 					title,
 					...(author && { author }),
 					version: metadata.version,
 					category: metadata.category,
+					...(inputSchema && { inputSchema }),
 					...(fence && { fence }),
 					height,
 					plugin,
