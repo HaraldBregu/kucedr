@@ -249,6 +249,8 @@
 			"loading": "Loading memory…",
 			"enabled": "Automatic Memory",
 			"enabledDescription": "Capture important facts and concise summaries from new conversations.",
+			"includeInPrompt": "Use Memory in Prompts",
+			"includeInPromptDescription": "Add saved memory to the assistant's context in chats and voice.",
 			"model": "Memory Model",
 			"modelDescription": "Choose a model independently from your chat model.",
 			"type": "Memory Type",
