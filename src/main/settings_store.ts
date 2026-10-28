@@ -36,6 +36,7 @@ export type AppSettingsState = {
 	trayClickAction: TrayClickAction;
 	keepAwake: boolean;
 	soundFeedbackEnabled: boolean;
+	workspaceWideContent: boolean;
 	language: AppLanguage;
 	theme: AppTheme;
 	windowSize: WindowSize;
@@ -51,6 +52,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	trayClickAction: 'toggle-chat',
 	keepAwake: false,
 	soundFeedbackEnabled: false,
+	workspaceWideContent: false,
 	language: 'en',
 	theme: 'dark',
 	windowSize: '1200x800',
@@ -163,6 +165,15 @@ export function getSoundFeedbackEnabled(): boolean {
 export function setSoundFeedbackEnabled(enabled: boolean): void {
 	if (typeof enabled !== 'boolean') throw new Error('Invalid sound feedback setting.');
 	store.set('soundFeedbackEnabled', enabled);
+}
+
+export function getWorkspaceWideContent(): boolean {
+	return store.get('workspaceWideContent');
+}
+
+export function setWorkspaceWideContent(enabled: boolean): void {
+	if (typeof enabled !== 'boolean') throw new Error('Invalid workspace width setting.');
+	store.set('workspaceWideContent', enabled);
 }
 
 export function getLanguage(): AppLanguage {

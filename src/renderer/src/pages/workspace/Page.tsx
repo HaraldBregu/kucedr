@@ -12,7 +12,15 @@ export default function WorkspacePage(): React.JSX.Element {
 		const path = localStorage.getItem(SELECTED_FILE_KEY);
 		return path ? { type: 'file', path, name: path.split(/[\\/]/).pop() ?? path } : null;
 	});
+	const [wide, setWide] = useState(false);
 	const flushRef = useRef<() => Promise<void>>(null);
+	useEffect(() => {
+		void window.app.getWorkspaceWideContent().then(setWide);
+	}, []);
+	const handleWideChange = useCallback((next: boolean) => {
+		setWide(next);
+		void window.app.setWorkspaceWideContent(next);
+	}, []);
 	useEffect(() => {
 		if (selectedFile) localStorage.setItem(SELECTED_FILE_KEY, selectedFile.path);
 		else localStorage.removeItem(SELECTED_FILE_KEY);
@@ -43,7 +51,7 @@ export default function WorkspacePage(): React.JSX.Element {
 			}} onEntryDeleted={(path) => {
 				setSelectedFile((current) => current && (current.path === path || current.path.startsWith(`${path}/`) || current.path.startsWith(`${path}\\`)) ? null : current);
 			}} selectedPath={selectedFile?.path ?? null} beforeEntryChange={() => flushRef.current?.() ?? Promise.resolve()} />;
-	const viewer = <WorkspaceViewer ref={flushRef} key={selectedFile?.path} file={selectedFile} entries={files} onFileSelect={setSelectedFile} />;
+	const viewer = <WorkspaceViewer ref={flushRef} key={selectedFile?.path} file={selectedFile} entries={files} onFileSelect={setSelectedFile} wide={wide} onWideChange={handleWideChange} />;
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split sidebar={sidebar} sidebarLabel="Workspace files">

@@ -685,6 +685,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: boolean;
 	};
+	[AppChannels.setWorkspaceWideContent]: {
+		args: [enabled: boolean];
+		result: void;
+	};
+	[AppChannels.getWorkspaceWideContent]: {
+		args: [];
+		result: boolean;
+	};
 	[AppChannels.getLanguage]: {
 		args: [];
 		result: import('./app_types').AppLanguage;

@@ -1,0 +1,90 @@
+{
+	"title": "Dither",
+	"description": "Render any dithercn component as a dithered visual: backgrounds (aurora, plasma, globe, starfield and more), charts, interface pieces, display text, dithered images, or a custom GLSL field, in theme colours, with an optional title.",
+	"author": "Harald Bregu",
+	"metadata": {
+		"version": "2.0.0",
+		"category": "design",
+		"entry": "dist/index.mjs"
+	},
+	"inputSchema": {
+		"type": "object",
+		"properties": {
+			"component": {
+				"type": "string",
+				"enum": [
+					"dither-gradient",
+					"dither-glow",
+					"mesh-gradient",
+					"aurora",
+					"noise-field",
+					"waves",
+					"plasma",
+					"beams",
+					"silk",
+					"smoke",
+					"contours",
+					"ripples",
+					"ridgelines",
+					"metaballs",
+					"tunnel",
+					"retro-grid",
+					"eclipse",
+					"horizon",
+					"starfield",
+					"halftone",
+					"dither-globe",
+					"dot-map",
+					"dither-orb",
+					"dither-fade",
+					"shader",
+					"area-chart",
+					"bar-chart",
+					"line-chart",
+					"sparkline",
+					"heatmap",
+					"donut-chart",
+					"radar-chart",
+					"gauge",
+					"progress-bar",
+					"uptime-bar",
+					"stat-card",
+					"dither-button",
+					"avatar",
+					"dither-card",
+					"divider",
+					"skeleton",
+					"loader",
+					"empty-state",
+					"not-found",
+					"dither-text",
+					"dissolve-text",
+					"scramble-text",
+					"dither-number",
+					"dither-image",
+					"image-compare",
+					"scroll-reveal-image",
+					"dithered-logo",
+					"logo-marquee"
+				],
+				"description": "Which dithercn component to render. Use shader for a custom GLSL field."
+			},
+			"props": {
+				"type": "object",
+				"description": "Props for the component, as JSON. Every prop is optional unless listed here; defaults already look good. Colours: palette names ink, blue, purple, green, pink, orange, red, grey (follow light and dark), or CSS colours. Common optional props: color, accent, background, speed, animate, matrix (bayer2, bayer4, bayer8, blue-noise), cell (dot size in px), fill (gradient, dotted, hatched, solid), bloom (off, low, high). className takes common Tailwind utilities: spacing, sizes, max-w, text size and weight, rounded. Backgrounds need no props. shader: field (GLSL defining float field(vec2 uv, vec2 res, float t) returning a tone 0 to 1), palette (paper then ink colours). Charts: area-chart, bar-chart, line-chart: data (rows), x (category key), series ([{label, value: row key, color}]). sparkline: data (numbers), label. heatmap: data ([{date: \"YYYY-MM-DD\", value}]). donut-chart: data ([{label, value, color}]), label. radar-chart: axes (names), series ([{label, values: one per axis}]). gauge: value, label, min, max, unit. progress-bar: label, value, max. uptime-bar: label, days ([{date, uptime: 0 to 1, status: up|degraded|down|none, note}]). stat-card: label, value, delta, trend (numbers). Interface: dither-button: children (text), variant, size. avatar: name, size, status. dither-card: children (text), glow. divider: label. skeleton: shape (block, text, circle), lines. loader: variant, size. empty-state: title, description. not-found: code, title, description. Text: dither-text: children (text), fill (gradient, noise, dotted, hatched, solid). dissolve-text, scramble-text: children (text). dither-number: value, prefix, suffix, size. Images (src must be a URL the page can load, ideally a data: URL): dither-image, image-compare, scroll-reveal-image, dithered-logo: src, alt. logo-marquee: logos ([{src, alt}])."
+			},
+			"title": {
+				"type": "string",
+				"description": "Optional heading. Omit when no title is needed."
+			},
+			"description": {
+				"type": "string"
+			}
+		},
+		"required": [
+			"component"
+		]
+	},
+	"fence": "dither",
+	"height": 400
+}

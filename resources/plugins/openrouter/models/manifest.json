@@ -1,0 +1,17 @@
+[
+	{
+		"id": "openrouter/auto",
+		"name": "Auto Router",
+		"type": "large-language-model",
+		"authentication": "api-key",
+		"url": "https://openrouter.ai/api/v1",
+		"metadata": {
+			"promptAttachments": [],
+			"documentationUrl": "https://openrouter.ai/docs/guides/routing/auto-model-selection",
+			"documentationStatus": "unverified",
+			"contextWindow": 2000000,
+			"inputs": {}
+		},
+		"location": "remote"
+	}
+]

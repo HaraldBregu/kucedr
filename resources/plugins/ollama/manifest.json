@@ -2,12 +2,12 @@
 	"schemaVersion": 5,
 	"id": "ollama",
 	"title": "Ollama",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Run open models locally on your machine.",
 	"categories": [
 		"LLM"
 	],
-	"author": "Kucedr",
+	"author": "Harald Bregu",
 	"icon": "ollama-light.svg",
 	"iconDark": "ollama-dark.svg",
 	"authentication": "none",

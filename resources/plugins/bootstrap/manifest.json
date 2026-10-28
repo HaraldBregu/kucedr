@@ -2,7 +2,7 @@
 	"schemaVersion": 5,
 	"id": "bootstrap",
 	"title": "Bootstrap",
-	"version": "1.1.0",
+	"version": "1.4.0",
 	"description": "Core plugin with the built-in apps, MCP servers, skills, and scripts.",
 	"categories": [
 		"CORE"

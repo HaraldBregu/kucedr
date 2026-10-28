@@ -1,0 +1,123 @@
+@import 'tailwindcss' source(none);
+@source './components';
+@source './lib';
+@source './browser.jsx';
+/* Utilities a caller may pass in props.className; Tailwind can't see them in the source. */
+@source inline('{p,px,py,pt,pb,pl,pr,m,mx,my,mt,mb,gap}-{0,1,2,3,4,5,6,8,10,12,16}');
+@source inline('{w,h,size,min-h,max-h}-{8,10,12,16,20,24,32,40,48,56,64,80,96,full,fit,auto}');
+@source inline('max-w-{xs,sm,md,lg,xl,2xl,3xl,full} mx-auto');
+@source inline('text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl,8xl,9xl,left,center,right,foreground,muted-foreground}');
+@source inline('font-{normal,medium,semibold,bold,black,mono,sans,serif} tracking-{tighter,tight,normal,wide} leading-{none,tight,snug,normal}');
+@source inline('rounded-{none,md,lg,xl,2xl,full} border');
+
+@custom-variant dark (&:is(.dark *));
+
+/* shadcn's neutral theme and dithercn's dither-tokens. :where() keeps them at zero
+   specificity, so a host that injects its own theme variables wins. */
+:where(html) {
+	--radius: 0.625rem;
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.145 0 0);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.145 0 0);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.145 0 0);
+	--primary: oklch(0.205 0 0);
+	--primary-foreground: oklch(0.985 0 0);
+	--secondary: oklch(0.97 0 0);
+	--secondary-foreground: oklch(0.205 0 0);
+	--muted: oklch(0.97 0 0);
+	--muted-foreground: oklch(0.556 0 0);
+	--accent: oklch(0.97 0 0);
+	--accent-foreground: oklch(0.205 0 0);
+	--destructive: oklch(0.577 0.245 27.325);
+	--border: oklch(0.922 0 0);
+	--input: oklch(0.922 0 0);
+	--ring: oklch(0.708 0 0);
+	--dither-ink: var(--primary);
+	--dither-paper: var(--background);
+	--dither-cell: 3px;
+	--dither-color-blue: oklch(0.56 0.18 248);
+	--dither-color-purple: oklch(0.53 0.22 302);
+	--dither-color-green: oklch(0.58 0.15 152);
+	--dither-color-pink: oklch(0.58 0.21 355);
+	--dither-color-orange: oklch(0.64 0.17 52);
+	--dither-color-red: oklch(0.55 0.21 27);
+	--dither-color-grey: oklch(0.55 0 0);
+	--dither-bloom: 0.6;
+}
+:where(html.dark) {
+	--background: oklch(0.145 0 0);
+	--foreground: oklch(0.985 0 0);
+	--card: oklch(0.205 0 0);
+	--card-foreground: oklch(0.985 0 0);
+	--popover: oklch(0.205 0 0);
+	--popover-foreground: oklch(0.985 0 0);
+	--primary: oklch(0.922 0 0);
+	--primary-foreground: oklch(0.205 0 0);
+	--secondary: oklch(0.269 0 0);
+	--secondary-foreground: oklch(0.985 0 0);
+	--muted: oklch(0.269 0 0);
+	--muted-foreground: oklch(0.708 0 0);
+	--accent: oklch(0.269 0 0);
+	--accent-foreground: oklch(0.985 0 0);
+	--destructive: oklch(0.704 0.191 22.216);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.556 0 0);
+	--dither-color-blue: oklch(0.72 0.14 240);
+	--dither-color-purple: oklch(0.7 0.18 304);
+	--dither-color-green: oklch(0.78 0.17 152);
+	--dither-color-pink: oklch(0.74 0.17 354);
+	--dither-color-orange: oklch(0.79 0.15 62);
+	--dither-color-red: oklch(0.68 0.2 25);
+	--dither-color-grey: oklch(0.66 0 0);
+	--dither-bloom: 1;
+}
+
+@theme inline {
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-dither-ink: var(--dither-ink);
+	--color-dither-paper: var(--dither-paper);
+	--color-dither-blue: var(--dither-color-blue);
+	--color-dither-purple: var(--dither-color-purple);
+	--color-dither-green: var(--dither-color-green);
+	--color-dither-pink: var(--dither-color-pink);
+	--color-dither-orange: var(--dither-color-orange);
+	--color-dither-red: var(--dither-color-red);
+	--color-dither-grey: var(--dither-color-grey);
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	html,
+	body {
+		@apply h-full bg-background text-foreground;
+	}
+	body {
+		@apply flex flex-col gap-2 px-3 py-2 font-sans text-[13px];
+	}
+}

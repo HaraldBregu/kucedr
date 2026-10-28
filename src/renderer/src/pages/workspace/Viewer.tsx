@@ -30,9 +30,11 @@ interface WorkspaceViewerProps {
 	readonly entries: WorkspaceTreeEntry[];
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 	readonly ref?: React.Ref<() => Promise<void>>;
+	readonly wide: boolean;
+	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceViewer({ file, entries, onFileSelect, ref }: WorkspaceViewerProps): React.JSX.Element {
+export function WorkspaceViewer({ file, entries, onFileSelect, ref, wide, onWideChange }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
@@ -199,14 +201,14 @@ export function WorkspaceViewer({ file, entries, onFileSelect, ref }: WorkspaceV
 				<iframe title={file.name} src={mediaUrl?.toString()} className="min-h-0 flex-1" />
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' && content.includes('<!--') ? (
 				<div className="min-h-0 flex-1 overflow-auto">
-					<article className="workspace-markdown-content mx-auto min-h-full w-full max-w-[920px] px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12">
+					<article className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12`}>
 						<p className="mb-3 text-xs text-muted-foreground">{t('workspaceSidebar.commentSourceOnly', 'This file contains Markdown comments. Edit it in Source to preserve them.')}</p>
 						<Markdown className="w-full break-words" components={{ ...markdownComponents, img: ({ src, alt }) => <img src={typeof src === 'string' ? workspaceResourceUrl(file.path, src) : undefined} alt={alt ?? ''} /> }}>{content}</Markdown>
 					</article>
 				</div>
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
 				<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-					<WorkspaceMarkdownEditor path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} onOpenLink={(href) => {
+					<WorkspaceMarkdownEditor path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} onOpenLink={(href) => {
 						if (/^[a-z][a-z\d+.-]*:/i.test(href)) void window.app.openExternalUrl(href);
 						else {
 							const path = decodeURIComponent(new URL(workspaceResourceUrl(file.path, href)).pathname.slice(1));
@@ -217,7 +219,7 @@ export function WorkspaceViewer({ file, entries, onFileSelect, ref }: WorkspaceV
 			) : (
 				<div className="min-h-0 flex-1 overflow-auto">
 					{kind === 'markdown' ? (
-						<article className="relative mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12" onPasteCapture={(event) => pasteRawAssets(event, event.clipboardData.files)} onDropCapture={(event) => pasteRawAssets(event, event.dataTransfer.files)}>{codeEditor}</article>
+						<article className={`relative mx-auto flex min-h-full w-full ${wide ? '' : 'max-w-[920px]'} flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12`} onPasteCapture={(event) => pasteRawAssets(event, event.clipboardData.files)} onDropCapture={(event) => pasteRawAssets(event, event.dataTransfer.files)}>{codeEditor}</article>
 					) : codeEditor}
 				</div>
 			)}

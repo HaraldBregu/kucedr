@@ -1,0 +1,50 @@
+{
+	"title": "OrganUI",
+	"description": "Render OrganUI clinical components: body map, dermatome map, patient banner, allergy and problem lists, vital signs, NEWS2 chart, lab results, medication schedule, ECG trace, growth chart, anatomy tree and medical image viewer, with an optional title. Not a medical device.",
+	"author": "Harald Bregu",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "data",
+		"entry": "dist/index.mjs"
+	},
+	"inputSchema": {
+		"type": "object",
+		"properties": {
+			"component": {
+				"type": "string",
+				"enum": [
+					"body-map",
+					"dermatome-map",
+					"patient-banner",
+					"allergy-list",
+					"problem-list",
+					"vital-signs",
+					"news2-chart",
+					"lab-results",
+					"medication-schedule",
+					"ecg-trace",
+					"growth-chart",
+					"anatomy-tree",
+					"image-viewer"
+				],
+				"description": "Which OrganUI component to render."
+			},
+			"props": {
+				"type": "object",
+				"description": "Props for the component, as JSON. Props are optional unless marked (required). Use only real data from the conversation. Dates are ISO 8601. ids are any unique strings. body-map: value (selected region ids; front: head, neck, groin, and right-/left- + shoulder, chest, upper-abdomen, lower-abdomen, upper-arm, forearm, palm, thigh, knee, shin, foot; back: back-of-head, back-of-neck, and right-/left- + shoulder-back, upper-back, lower-back, buttock, upper-arm-back, forearm-back, hand-back, thigh-back, knee-back, calf, heel; right/left are the person's own), views ([front, back]), label. dermatome-map: selectedId (C2-C8, T1-T12, L1-L5, S1-S4-5), colors ({level: CSS colour}), views, showLabels. patient-banner: patient (required: {name: {family, given: [], prefix}, birthDate, sex, identifiers: [{label, value}], deceasedDate}), allergies (substances, or \"none-known\"), alerts (strings such as DNACPR). allergy-list: allergies ([{id, substance, type: allergy|intolerance, reactions: [], severity: mild|moderate|severe, verification: confirmed|unconfirmed, status: active|inactive|resolved, recordedDate}], or \"none-known\"), caption. problem-list: problems (required: [{id, name, code: {system, value}, status: active|inactive|resolved, significance: major|minor, onset, resolved}]), caption, showCodes. vital-signs: readings (required: {heartRate, systolic, diastolic, spo2, temperature, respiratoryRate}, null when not measured), ranges ({vital: {low, high}} over adult defaults), vitals (heartRate, bloodPressure, spo2, temperature, respiratoryRate), temperatureUnit (celsius|fahrenheit), title, description. news2-chart: observations (required: [{time, respirationRate, spo2, onOxygen, systolic, pulse, consciousness: alert|confusion|voice|pain|unresponsive, temperature (°C)}]), spo2Scale (1|2), caption. lab-results: results (required: [{id, name, value (number or text), unit, date, referenceRange: {low, high, criticalLow, criticalHigh, text}, flag: critical-low|low|normal|high|critical-high|abnormal, history: [{value, date}], decimals}]), caption, showTrend. medication-schedule: medications (required: [{id, name, dose, instructions, times: [\"HH:MM\"], days: [0 Sunday to 6], start, end, color}]), date (required: \"YYYY-MM-DD\"), interactions ([{id, medicationIds, severity: minor|moderate|major, summary, separationHours}]), doseStatus ({\"<medId>@<date>T<time>\": taken|skipped}), now (\"HH:MM\"). ecg-trace: samples (millivolts) or synthetic (a heart rate; draws a demo sinus rhythm, only when the user wants an example), sampleRate (default 250), duration (s), lead (default II), range ([min, max] mV), calibration, label. growth-chart: standards (required: LMS tables the user supplies, {weight|length|height|head: {female|male: {start: month, lms: [[L, M, S] per month]}}}), measure (required: weight|length|head), sex (required: female|male), measurements ([{ageMonths, value}]), percentiles, ageRange ([from, to] months). anatomy-tree: data (required: [{id, label, color, selectable, children: [...]}]), selectedId, visibility ({id: false} hides), defaultExpandedIds, label. image-viewer: slices ([{src: data: URL, label}] or [{data: numbers, width, height, label}]); without slices it shows a synthetic head phantom, never a patient; presets ([{name, center, width}]), pixelSpacing, unit, controls, label."
+			},
+			"title": {
+				"type": "string",
+				"description": "Optional heading. Omit when no title is needed."
+			},
+			"description": {
+				"type": "string"
+			}
+		},
+		"required": [
+			"component"
+		]
+	},
+	"fence": "organui",
+	"height": 480
+}

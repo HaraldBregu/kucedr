@@ -1,0 +1,1781 @@
+[
+	{
+		"name": "dither-gradient",
+		"theme": "light",
+		"input": {
+			"component": "dither-gradient",
+			"props": {
+				"color": "blue"
+			}
+		}
+	},
+	{
+		"name": "dither-glow",
+		"theme": "dark",
+		"input": {
+			"component": "dither-glow",
+			"props": {
+				"color": "purple"
+			}
+		}
+	},
+	{
+		"name": "mesh-gradient",
+		"theme": "dark",
+		"input": {
+			"component": "mesh-gradient",
+			"props": {}
+		}
+	},
+	{
+		"name": "aurora",
+		"theme": "dark",
+		"input": {
+			"component": "aurora",
+			"props": {
+				"color": "green"
+			}
+		}
+	},
+	{
+		"name": "noise-field",
+		"theme": "dark",
+		"input": {
+			"component": "noise-field",
+			"props": {}
+		}
+	},
+	{
+		"name": "waves",
+		"theme": "dark",
+		"input": {
+			"component": "waves",
+			"props": {
+				"color": "blue"
+			}
+		}
+	},
+	{
+		"name": "plasma",
+		"theme": "dark",
+		"input": {
+			"component": "plasma",
+			"props": {
+				"color": "pink"
+			}
+		}
+	},
+	{
+		"name": "beams",
+		"theme": "dark",
+		"input": {
+			"component": "beams",
+			"props": {}
+		}
+	},
+	{
+		"name": "silk",
+		"theme": "light",
+		"input": {
+			"component": "silk",
+			"props": {}
+		}
+	},
+	{
+		"name": "smoke",
+		"theme": "dark",
+		"input": {
+			"component": "smoke",
+			"props": {}
+		}
+	},
+	{
+		"name": "contours",
+		"theme": "light",
+		"input": {
+			"component": "contours",
+			"props": {}
+		}
+	},
+	{
+		"name": "ripples",
+		"theme": "dark",
+		"input": {
+			"component": "ripples",
+			"props": {
+				"color": "blue"
+			}
+		}
+	},
+	{
+		"name": "ridgelines",
+		"theme": "dark",
+		"input": {
+			"component": "ridgelines",
+			"props": {}
+		}
+	},
+	{
+		"name": "metaballs",
+		"theme": "dark",
+		"input": {
+			"component": "metaballs",
+			"props": {
+				"color": "orange"
+			}
+		}
+	},
+	{
+		"name": "tunnel",
+		"theme": "dark",
+		"input": {
+			"component": "tunnel",
+			"props": {}
+		}
+	},
+	{
+		"name": "retro-grid",
+		"theme": "dark",
+		"input": {
+			"component": "retro-grid",
+			"props": {
+				"color": "pink"
+			}
+		}
+	},
+	{
+		"name": "eclipse",
+		"theme": "dark",
+		"input": {
+			"component": "eclipse",
+			"props": {}
+		}
+	},
+	{
+		"name": "horizon",
+		"theme": "dark",
+		"input": {
+			"component": "horizon",
+			"props": {}
+		}
+	},
+	{
+		"name": "starfield",
+		"theme": "dark",
+		"input": {
+			"component": "starfield",
+			"props": {}
+		}
+	},
+	{
+		"name": "halftone",
+		"theme": "light",
+		"input": {
+			"component": "halftone",
+			"props": {}
+		}
+	},
+	{
+		"name": "dither-globe",
+		"theme": "dark",
+		"input": {
+			"component": "dither-globe",
+			"props": {
+				"markers": [
+					{
+						"at": [
+							40.7,
+							-74
+						]
+					},
+					{
+						"at": [
+							51.5,
+							-0.1
+						]
+					},
+					{
+						"at": [
+							35.7,
+							139.7
+						]
+					}
+				],
+				"arcs": [
+					{
+						"from": [
+							40.7,
+							-74
+						],
+						"to": [
+							51.5,
+							-0.1
+						]
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "dot-map",
+		"theme": "dark",
+		"input": {
+			"component": "dot-map",
+			"props": {
+				"markers": [
+					{
+						"at": [
+							40.7,
+							-74
+						],
+						"label": "New York"
+					},
+					{
+						"at": [
+							41.3,
+							19.8
+						],
+						"label": "Tirana"
+					},
+					{
+						"at": [
+							-33.9,
+							151.2
+						],
+						"label": "Sydney"
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "dither-orb",
+		"theme": "dark",
+		"input": {
+			"component": "dither-orb",
+			"props": {
+				"color": "purple"
+			}
+		}
+	},
+	{
+		"name": "dither-fade",
+		"theme": "dark",
+		"input": {
+			"component": "dither-fade",
+			"props": {
+				"side": "bottom",
+				"color": "blue",
+				"size": "70%"
+			}
+		}
+	},
+	{
+		"name": "shader",
+		"theme": "dark",
+		"input": {
+			"component": "shader",
+			"title": "Custom shader",
+			"props": {
+				"field": "float field(vec2 uv, vec2 res, float t) { vec2 p = vec2(uv.x * res.x / res.y, uv.y); float d = length(p - vec2(0.5 * res.x / res.y, 0.5)); return smoothstep(0.45, 0.1, d) * (0.85 + 0.15 * sin(t * 2.0)); }",
+				"palette": [
+					"--dither-paper",
+					"orange"
+				]
+			}
+		}
+	},
+	{
+		"name": "area-chart",
+		"theme": "light",
+		"input": {
+			"component": "area-chart",
+			"title": "Revenue",
+			"props": {
+				"data": [
+					{
+						"month": "Jan",
+						"revenue": 40,
+						"cost": 38
+					},
+					{
+						"month": "Feb",
+						"revenue": 59,
+						"cost": 39
+					},
+					{
+						"month": "Mar",
+						"revenue": 69,
+						"cost": 37
+					},
+					{
+						"month": "Apr",
+						"revenue": 69,
+						"cost": 37
+					},
+					{
+						"month": "May",
+						"revenue": 67,
+						"cost": 45
+					},
+					{
+						"month": "Jun",
+						"revenue": 73,
+						"cost": 57
+					},
+					{
+						"month": "Jul",
+						"revenue": 91,
+						"cost": 68
+					},
+					{
+						"month": "Aug",
+						"revenue": 111,
+						"cost": 71
+					}
+				],
+				"x": "month",
+				"series": [
+					{
+						"label": "Revenue",
+						"value": "revenue",
+						"color": "blue"
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "bar-chart",
+		"theme": "dark",
+		"input": {
+			"component": "bar-chart",
+			"title": "Revenue vs cost",
+			"props": {
+				"data": [
+					{
+						"month": "Jan",
+						"revenue": 40,
+						"cost": 38
+					},
+					{
+						"month": "Feb",
+						"revenue": 59,
+						"cost": 39
+					},
+					{
+						"month": "Mar",
+						"revenue": 69,
+						"cost": 37
+					},
+					{
+						"month": "Apr",
+						"revenue": 69,
+						"cost": 37
+					},
+					{
+						"month": "May",
+						"revenue": 67,
+						"cost": 45
+					},
+					{
+						"month": "Jun",
+						"revenue": 73,
+						"cost": 57
+					},
+					{
+						"month": "Jul",
+						"revenue": 91,
+						"cost": 68
+					},
+					{
+						"month": "Aug",
+						"revenue": 111,
+						"cost": 71
+					}
+				],
+				"x": "month",
+				"series": [
+					{
+						"label": "Revenue",
+						"value": "revenue",
+						"color": "blue"
+					},
+					{
+						"label": "Cost",
+						"value": "cost",
+						"color": "orange"
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "line-chart",
+		"theme": "light",
+		"input": {
+			"component": "line-chart",
+			"props": {
+				"data": [
+					{
+						"month": "Jan",
+						"revenue": 40,
+						"cost": 38
+					},
+					{
+						"month": "Feb",
+						"revenue": 59,
+						"cost": 39
+					},
+					{
+						"month": "Mar",
+						"revenue": 69,
+						"cost": 37
+					},
+					{
+						"month": "Apr",
+						"revenue": 69,
+						"cost": 37
+					},
+					{
+						"month": "May",
+						"revenue": 67,
+						"cost": 45
+					},
+					{
+						"month": "Jun",
+						"revenue": 73,
+						"cost": 57
+					},
+					{
+						"month": "Jul",
+						"revenue": 91,
+						"cost": 68
+					},
+					{
+						"month": "Aug",
+						"revenue": 111,
+						"cost": 71
+					}
+				],
+				"x": "month",
+				"series": [
+					{
+						"label": "Revenue",
+						"value": "revenue"
+					},
+					{
+						"label": "Cost",
+						"value": "cost",
+						"color": "pink",
+						"dashed": true
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "sparkline",
+		"theme": "dark",
+		"input": {
+			"component": "sparkline",
+			"props": {
+				"data": [
+					4,
+					6,
+					5,
+					9,
+					7,
+					11,
+					10,
+					14
+				],
+				"label": "Signups",
+				"color": "green"
+			}
+		}
+	},
+	{
+		"name": "heatmap",
+		"theme": "light",
+		"input": {
+			"component": "heatmap",
+			"props": {
+				"data": [
+					{
+						"date": "2026-01-01",
+						"value": 4
+					},
+					{
+						"date": "2026-01-02",
+						"value": 7
+					},
+					{
+						"date": "2026-01-03",
+						"value": 8
+					},
+					{
+						"date": "2026-01-04",
+						"value": 8
+					},
+					{
+						"date": "2026-01-05",
+						"value": 9
+					},
+					{
+						"date": "2026-01-06",
+						"value": 9
+					},
+					{
+						"date": "2026-01-07",
+						"value": 10
+					},
+					{
+						"date": "2026-01-08",
+						"value": 8
+					},
+					{
+						"date": "2026-01-09",
+						"value": 10
+					},
+					{
+						"date": "2026-01-10",
+						"value": 10
+					},
+					{
+						"date": "2026-01-11",
+						"value": 10
+					},
+					{
+						"date": "2026-01-12",
+						"value": 9
+					},
+					{
+						"date": "2026-01-13",
+						"value": 9
+					},
+					{
+						"date": "2026-01-14",
+						"value": 8
+					},
+					{
+						"date": "2026-01-15",
+						"value": 5
+					},
+					{
+						"date": "2026-01-16",
+						"value": 7
+					},
+					{
+						"date": "2026-01-17",
+						"value": 6
+					},
+					{
+						"date": "2026-01-18",
+						"value": 5
+					},
+					{
+						"date": "2026-01-19",
+						"value": 4
+					},
+					{
+						"date": "2026-01-20",
+						"value": 4
+					},
+					{
+						"date": "2026-01-21",
+						"value": 3
+					},
+					{
+						"date": "2026-01-22",
+						"value": 1
+					},
+					{
+						"date": "2026-01-23",
+						"value": 2
+					},
+					{
+						"date": "2026-01-24",
+						"value": 2
+					},
+					{
+						"date": "2026-01-25",
+						"value": 2
+					},
+					{
+						"date": "2026-01-26",
+						"value": 2
+					},
+					{
+						"date": "2026-01-27",
+						"value": 2
+					},
+					{
+						"date": "2026-01-28",
+						"value": 3
+					},
+					{
+						"date": "2026-01-29",
+						"value": 1
+					},
+					{
+						"date": "2026-01-30",
+						"value": 4
+					},
+					{
+						"date": "2026-01-31",
+						"value": 5
+					},
+					{
+						"date": "2026-02-01",
+						"value": 6
+					},
+					{
+						"date": "2026-02-02",
+						"value": 6
+					},
+					{
+						"date": "2026-02-03",
+						"value": 7
+					},
+					{
+						"date": "2026-02-04",
+						"value": 8
+					},
+					{
+						"date": "2026-02-05",
+						"value": 7
+					},
+					{
+						"date": "2026-02-06",
+						"value": 9
+					},
+					{
+						"date": "2026-02-07",
+						"value": 10
+					},
+					{
+						"date": "2026-02-08",
+						"value": 10
+					},
+					{
+						"date": "2026-02-09",
+						"value": 10
+					},
+					{
+						"date": "2026-02-10",
+						"value": 10
+					},
+					{
+						"date": "2026-02-11",
+						"value": 10
+					},
+					{
+						"date": "2026-02-12",
+						"value": 7
+					},
+					{
+						"date": "2026-02-13",
+						"value": 9
+					},
+					{
+						"date": "2026-02-14",
+						"value": 8
+					},
+					{
+						"date": "2026-02-15",
+						"value": 8
+					},
+					{
+						"date": "2026-02-16",
+						"value": 7
+					},
+					{
+						"date": "2026-02-17",
+						"value": 6
+					},
+					{
+						"date": "2026-02-18",
+						"value": 5
+					},
+					{
+						"date": "2026-02-19",
+						"value": 3
+					},
+					{
+						"date": "2026-02-20",
+						"value": 4
+					},
+					{
+						"date": "2026-02-21",
+						"value": 3
+					},
+					{
+						"date": "2026-02-22",
+						"value": 3
+					},
+					{
+						"date": "2026-02-23",
+						"value": 2
+					},
+					{
+						"date": "2026-02-24",
+						"value": 2
+					},
+					{
+						"date": "2026-02-25",
+						"value": 2
+					},
+					{
+						"date": "2026-02-26",
+						"value": 0
+					},
+					{
+						"date": "2026-02-27",
+						"value": 2
+					},
+					{
+						"date": "2026-02-28",
+						"value": 3
+					},
+					{
+						"date": "2026-03-01",
+						"value": 3
+					},
+					{
+						"date": "2026-03-02",
+						"value": 4
+					},
+					{
+						"date": "2026-03-03",
+						"value": 5
+					},
+					{
+						"date": "2026-03-04",
+						"value": 5
+					},
+					{
+						"date": "2026-03-05",
+						"value": 4
+					},
+					{
+						"date": "2026-03-06",
+						"value": 7
+					},
+					{
+						"date": "2026-03-07",
+						"value": 8
+					},
+					{
+						"date": "2026-03-08",
+						"value": 8
+					},
+					{
+						"date": "2026-03-09",
+						"value": 9
+					},
+					{
+						"date": "2026-03-10",
+						"value": 9
+					},
+					{
+						"date": "2026-03-11",
+						"value": 10
+					},
+					{
+						"date": "2026-03-12",
+						"value": 8
+					},
+					{
+						"date": "2026-03-13",
+						"value": 10
+					},
+					{
+						"date": "2026-03-14",
+						"value": 10
+					},
+					{
+						"date": "2026-03-15",
+						"value": 10
+					},
+					{
+						"date": "2026-03-16",
+						"value": 9
+					},
+					{
+						"date": "2026-03-17",
+						"value": 9
+					},
+					{
+						"date": "2026-03-18",
+						"value": 8
+					},
+					{
+						"date": "2026-03-19",
+						"value": 5
+					},
+					{
+						"date": "2026-03-20",
+						"value": 6
+					},
+					{
+						"date": "2026-03-21",
+						"value": 6
+					},
+					{
+						"date": "2026-03-22",
+						"value": 5
+					},
+					{
+						"date": "2026-03-23",
+						"value": 4
+					},
+					{
+						"date": "2026-03-24",
+						"value": 3
+					},
+					{
+						"date": "2026-03-25",
+						"value": 3
+					},
+					{
+						"date": "2026-03-26",
+						"value": 0
+					},
+					{
+						"date": "2026-03-27",
+						"value": 2
+					},
+					{
+						"date": "2026-03-28",
+						"value": 2
+					},
+					{
+						"date": "2026-03-29",
+						"value": 2
+					},
+					{
+						"date": "2026-03-30",
+						"value": 2
+					},
+					{
+						"date": "2026-03-31",
+						"value": 3
+					},
+					{
+						"date": "2026-04-01",
+						"value": 3
+					},
+					{
+						"date": "2026-04-02",
+						"value": 2
+					},
+					{
+						"date": "2026-04-03",
+						"value": 4
+					},
+					{
+						"date": "2026-04-04",
+						"value": 5
+					},
+					{
+						"date": "2026-04-05",
+						"value": 6
+					},
+					{
+						"date": "2026-04-06",
+						"value": 7
+					},
+					{
+						"date": "2026-04-07",
+						"value": 7
+					},
+					{
+						"date": "2026-04-08",
+						"value": 8
+					},
+					{
+						"date": "2026-04-09",
+						"value": 7
+					},
+					{
+						"date": "2026-04-10",
+						"value": 9
+					},
+					{
+						"date": "2026-04-11",
+						"value": 10
+					},
+					{
+						"date": "2026-04-12",
+						"value": 10
+					},
+					{
+						"date": "2026-04-13",
+						"value": 10
+					},
+					{
+						"date": "2026-04-14",
+						"value": 10
+					},
+					{
+						"date": "2026-04-15",
+						"value": 10
+					},
+					{
+						"date": "2026-04-16",
+						"value": 7
+					},
+					{
+						"date": "2026-04-17",
+						"value": 9
+					},
+					{
+						"date": "2026-04-18",
+						"value": 8
+					},
+					{
+						"date": "2026-04-19",
+						"value": 8
+					},
+					{
+						"date": "2026-04-20",
+						"value": 7
+					},
+					{
+						"date": "2026-04-21",
+						"value": 6
+					},
+					{
+						"date": "2026-04-22",
+						"value": 5
+					},
+					{
+						"date": "2026-04-23",
+						"value": 2
+					},
+					{
+						"date": "2026-04-24",
+						"value": 4
+					},
+					{
+						"date": "2026-04-25",
+						"value": 3
+					},
+					{
+						"date": "2026-04-26",
+						"value": 3
+					},
+					{
+						"date": "2026-04-27",
+						"value": 2
+					},
+					{
+						"date": "2026-04-28",
+						"value": 2
+					},
+					{
+						"date": "2026-04-29",
+						"value": 2
+					},
+					{
+						"date": "2026-04-30",
+						"value": 0
+					},
+					{
+						"date": "2026-05-01",
+						"value": 2
+					},
+					{
+						"date": "2026-05-02",
+						"value": 3
+					},
+					{
+						"date": "2026-05-03",
+						"value": 3
+					},
+					{
+						"date": "2026-05-04",
+						"value": 4
+					},
+					{
+						"date": "2026-05-05",
+						"value": 5
+					},
+					{
+						"date": "2026-05-06",
+						"value": 5
+					},
+					{
+						"date": "2026-05-07",
+						"value": 4
+					},
+					{
+						"date": "2026-05-08",
+						"value": 7
+					},
+					{
+						"date": "2026-05-09",
+						"value": 8
+					},
+					{
+						"date": "2026-05-10",
+						"value": 8
+					},
+					{
+						"date": "2026-05-11",
+						"value": 9
+					},
+					{
+						"date": "2026-05-12",
+						"value": 10
+					},
+					{
+						"date": "2026-05-13",
+						"value": 10
+					},
+					{
+						"date": "2026-05-14",
+						"value": 8
+					},
+					{
+						"date": "2026-05-15",
+						"value": 10
+					},
+					{
+						"date": "2026-05-16",
+						"value": 10
+					},
+					{
+						"date": "2026-05-17",
+						"value": 10
+					},
+					{
+						"date": "2026-05-18",
+						"value": 9
+					},
+					{
+						"date": "2026-05-19",
+						"value": 8
+					},
+					{
+						"date": "2026-05-20",
+						"value": 8
+					},
+					{
+						"date": "2026-05-21",
+						"value": 5
+					},
+					{
+						"date": "2026-05-22",
+						"value": 6
+					},
+					{
+						"date": "2026-05-23",
+						"value": 5
+					},
+					{
+						"date": "2026-05-24",
+						"value": 5
+					},
+					{
+						"date": "2026-05-25",
+						"value": 4
+					},
+					{
+						"date": "2026-05-26",
+						"value": 3
+					},
+					{
+						"date": "2026-05-27",
+						"value": 3
+					},
+					{
+						"date": "2026-05-28",
+						"value": 0
+					},
+					{
+						"date": "2026-05-29",
+						"value": 2
+					},
+					{
+						"date": "2026-05-30",
+						"value": 2
+					},
+					{
+						"date": "2026-05-31",
+						"value": 2
+					},
+					{
+						"date": "2026-06-01",
+						"value": 2
+					},
+					{
+						"date": "2026-06-02",
+						"value": 3
+					},
+					{
+						"date": "2026-06-03",
+						"value": 3
+					},
+					{
+						"date": "2026-06-04",
+						"value": 2
+					},
+					{
+						"date": "2026-06-05",
+						"value": 4
+					},
+					{
+						"date": "2026-06-06",
+						"value": 5
+					},
+					{
+						"date": "2026-06-07",
+						"value": 6
+					},
+					{
+						"date": "2026-06-08",
+						"value": 7
+					},
+					{
+						"date": "2026-06-09",
+						"value": 7
+					},
+					{
+						"date": "2026-06-10",
+						"value": 8
+					},
+					{
+						"date": "2026-06-11",
+						"value": 7
+					},
+					{
+						"date": "2026-06-12",
+						"value": 9
+					},
+					{
+						"date": "2026-06-13",
+						"value": 10
+					},
+					{
+						"date": "2026-06-14",
+						"value": 10
+					},
+					{
+						"date": "2026-06-15",
+						"value": 10
+					},
+					{
+						"date": "2026-06-16",
+						"value": 10
+					},
+					{
+						"date": "2026-06-17",
+						"value": 10
+					},
+					{
+						"date": "2026-06-18",
+						"value": 7
+					},
+					{
+						"date": "2026-06-19",
+						"value": 9
+					},
+					{
+						"date": "2026-06-20",
+						"value": 8
+					},
+					{
+						"date": "2026-06-21",
+						"value": 7
+					},
+					{
+						"date": "2026-06-22",
+						"value": 7
+					},
+					{
+						"date": "2026-06-23",
+						"value": 6
+					},
+					{
+						"date": "2026-06-24",
+						"value": 5
+					},
+					{
+						"date": "2026-06-25",
+						"value": 2
+					},
+					{
+						"date": "2026-06-26",
+						"value": 4
+					},
+					{
+						"date": "2026-06-27",
+						"value": 3
+					},
+					{
+						"date": "2026-06-28",
+						"value": 3
+					},
+					{
+						"date": "2026-06-29",
+						"value": 2
+					}
+				],
+				"color": "green"
+			}
+		}
+	},
+	{
+		"name": "donut-chart",
+		"theme": "dark",
+		"input": {
+			"component": "donut-chart",
+			"props": {
+				"label": "Traffic",
+				"data": [
+					{
+						"label": "Search",
+						"value": 52
+					},
+					{
+						"label": "Direct",
+						"value": 28
+					},
+					{
+						"label": "Social",
+						"value": 20
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "radar-chart",
+		"theme": "light",
+		"input": {
+			"component": "radar-chart",
+			"props": {
+				"axes": [
+					"Speed",
+					"Quality",
+					"Cost",
+					"Support",
+					"Docs"
+				],
+				"series": [
+					{
+						"label": "Us",
+						"values": [
+							80,
+							90,
+							60,
+							75,
+							85
+						]
+					},
+					{
+						"label": "Them",
+						"values": [
+							70,
+							60,
+							85,
+							50,
+							55
+						]
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "gauge",
+		"theme": "dark",
+		"input": {
+			"component": "gauge",
+			"props": {
+				"value": 72,
+				"label": "CPU",
+				"unit": "%"
+			}
+		}
+	},
+	{
+		"name": "progress-bar",
+		"theme": "light",
+		"input": {
+			"component": "progress-bar",
+			"props": {
+				"label": "Upload",
+				"value": 64
+			}
+		}
+	},
+	{
+		"name": "uptime-bar",
+		"theme": "dark",
+		"input": {
+			"component": "uptime-bar",
+			"props": {
+				"label": "API",
+				"days": [
+					{
+						"date": "2026-01-01",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-02",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-03",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-04",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-05",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-06",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-07",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-08",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-09",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-10",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-11",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-12",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-13",
+						"uptime": 0.993,
+						"status": "degraded"
+					},
+					{
+						"date": "2026-01-14",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-15",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-16",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-17",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-18",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-19",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-20",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-21",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-22",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-23",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-24",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-25",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-26",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-27",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-28",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-29",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-30",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-01-31",
+						"uptime": 0.87,
+						"status": "down",
+						"note": "Database outage"
+					},
+					{
+						"date": "2026-02-01",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-02",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-03",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-04",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-05",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-06",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-07",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-08",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-09",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-10",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-11",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-12",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-13",
+						"uptime": 1,
+						"status": "up"
+					},
+					{
+						"date": "2026-02-14",
+						"uptime": 1,
+						"status": "up"
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "stat-card",
+		"theme": "light",
+		"input": {
+			"component": "stat-card",
+			"props": {
+				"label": "Revenue",
+				"value": "$48.2k",
+				"delta": 12.4,
+				"trend": [
+					3,
+					4,
+					4,
+					6,
+					5,
+					7,
+					8,
+					9
+				]
+			}
+		}
+	},
+	{
+		"name": "dither-button",
+		"theme": "dark",
+		"input": {
+			"component": "dither-button",
+			"props": {
+				"children": "Get started",
+				"color": "blue"
+			}
+		}
+	},
+	{
+		"name": "avatar",
+		"theme": "light",
+		"input": {
+			"component": "avatar",
+			"props": {
+				"name": "Harald Bregu",
+				"size": 96,
+				"status": "online"
+			}
+		}
+	},
+	{
+		"name": "dither-card",
+		"theme": "dark",
+		"input": {
+			"component": "dither-card",
+			"props": {
+				"children": "A card with a dithered glow in its corner.",
+				"glow": "bottom-right",
+				"className": "p-8 text-base max-w-md mx-auto"
+			}
+		}
+	},
+	{
+		"name": "divider",
+		"theme": "light",
+		"input": {
+			"component": "divider",
+			"props": {
+				"label": "or"
+			}
+		}
+	},
+	{
+		"name": "skeleton",
+		"theme": "dark",
+		"input": {
+			"component": "skeleton",
+			"props": {
+				"shape": "text",
+				"lines": 4
+			}
+		}
+	},
+	{
+		"name": "loader",
+		"theme": "light",
+		"input": {
+			"component": "loader",
+			"props": {
+				"variant": "ring",
+				"size": "lg"
+			}
+		}
+	},
+	{
+		"name": "empty-state",
+		"theme": "dark",
+		"input": {
+			"component": "empty-state",
+			"props": {
+				"title": "No projects yet",
+				"description": "Create a project to see it here.",
+				"illustration": "planet"
+			}
+		}
+	},
+	{
+		"name": "not-found",
+		"theme": "light",
+		"input": {
+			"component": "not-found",
+			"props": {
+				"title": "Page not found",
+				"description": "The page you are looking for does not exist."
+			}
+		}
+	},
+	{
+		"name": "dither-text",
+		"theme": "dark",
+		"input": {
+			"component": "dither-text",
+			"props": {
+				"children": "Dithered",
+				"fill": "gradient",
+				"color": "purple",
+				"className": "text-6xl font-bold"
+			}
+		}
+	},
+	{
+		"name": "dissolve-text",
+		"theme": "light",
+		"input": {
+			"component": "dissolve-text",
+			"props": {
+				"children": "Text that dissolves in",
+				"className": "text-3xl font-semibold"
+			}
+		}
+	},
+	{
+		"name": "scramble-text",
+		"theme": "dark",
+		"input": {
+			"component": "scramble-text",
+			"props": {
+				"children": "Scrambled into place",
+				"className": "text-3xl font-semibold"
+			}
+		}
+	},
+	{
+		"name": "dither-number",
+		"theme": "light",
+		"input": {
+			"component": "dither-number",
+			"props": {
+				"value": 12840,
+				"prefix": "$",
+				"size": "display"
+			}
+		}
+	},
+	{
+		"name": "dither-image",
+		"theme": "dark",
+		"input": {
+			"component": "dither-image",
+			"props": {
+				"src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iNDAwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InMiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxZTNhOGEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmNTllMGIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNjQwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNzKSIvPjxjaXJjbGUgY3g9IjQ2MCIgY3k9IjI1MCIgcj0iNzAiIGZpbGw9IiNmZGU2OGEiLz48cGF0aCBkPSJNMCAzMDAgTDE0MCAxODAgTDI2MCAyOTAgTDM4MCAxNTAgTDUyMCAyODAgTDY0MCAyMDAgTDY0MCA0MDAgTDAgNDAwWiIgZmlsbD0iIzExMTgyNyIvPjxwYXRoIGQ9Ik0wIDM1MCBMMjAwIDI2MCBMMzYwIDM0MCBMNTIwIDI3MCBMNjQwIDMzMCBMNjQwIDQwMCBMMCA0MDBaIiBmaWxsPSIjMzc0MTUxIi8+PC9zdmc+",
+				"alt": "Mountains at sunset"
+			}
+		}
+	},
+	{
+		"name": "image-compare",
+		"theme": "light",
+		"input": {
+			"component": "image-compare",
+			"props": {
+				"src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iNDAwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InMiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxZTNhOGEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmNTllMGIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNjQwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNzKSIvPjxjaXJjbGUgY3g9IjQ2MCIgY3k9IjI1MCIgcj0iNzAiIGZpbGw9IiNmZGU2OGEiLz48cGF0aCBkPSJNMCAzMDAgTDE0MCAxODAgTDI2MCAyOTAgTDM4MCAxNTAgTDUyMCAyODAgTDY0MCAyMDAgTDY0MCA0MDAgTDAgNDAwWiIgZmlsbD0iIzExMTgyNyIvPjxwYXRoIGQ9Ik0wIDM1MCBMMjAwIDI2MCBMMzYwIDM0MCBMNTIwIDI3MCBMNjQwIDMzMCBMNjQwIDQwMCBMMCA0MDBaIiBmaWxsPSIjMzc0MTUxIi8+PC9zdmc+",
+				"alt": "Mountains at sunset"
+			}
+		}
+	},
+	{
+		"name": "scroll-reveal-image",
+		"theme": "dark",
+		"input": {
+			"component": "scroll-reveal-image",
+			"props": {
+				"src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iNDAwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InMiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxZTNhOGEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmNTllMGIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNjQwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNzKSIvPjxjaXJjbGUgY3g9IjQ2MCIgY3k9IjI1MCIgcj0iNzAiIGZpbGw9IiNmZGU2OGEiLz48cGF0aCBkPSJNMCAzMDAgTDE0MCAxODAgTDI2MCAyOTAgTDM4MCAxNTAgTDUyMCAyODAgTDY0MCAyMDAgTDY0MCA0MDAgTDAgNDAwWiIgZmlsbD0iIzExMTgyNyIvPjxwYXRoIGQ9Ik0wIDM1MCBMMjAwIDI2MCBMMzYwIDM0MCBMNTIwIDI3MCBMNjQwIDMzMCBMNjQwIDQwMCBMMCA0MDBaIiBmaWxsPSIjMzc0MTUxIi8+PC9zdmc+",
+				"alt": "Mountains at sunset"
+			}
+		}
+	},
+	{
+		"name": "dithered-logo",
+		"theme": "light",
+		"input": {
+			"component": "dithered-logo",
+			"props": {
+				"src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCAyMDAgODAiPjxwYXRoIGQ9Ik0xMCAxMGg2MHY2MEgxMHogTTkwIDQwYTMwIDMwIDAgMSAwIDYwIDBhMzAgMzAgMCAxIDAgLTYwIDB6IiBmaWxsPSIjMDAwIi8+PC9zdmc+",
+				"alt": "Logo",
+				"effect": "shimmer",
+				"className": "h-24"
+			}
+		}
+	},
+	{
+		"name": "logo-marquee",
+		"theme": "dark",
+		"input": {
+			"component": "logo-marquee",
+			"props": {
+				"logos": [
+					{
+						"src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCAyMDAgODAiPjxwYXRoIGQ9Ik0xMCAxMGg2MHY2MEgxMHogTTkwIDQwYTMwIDMwIDAgMSAwIDYwIDBhMzAgMzAgMCAxIDAgLTYwIDB6IiBmaWxsPSIjMDAwIi8+PC9zdmc+",
+						"alt": "Logo 1"
+					},
+					{
+						"src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCAyMDAgODAiPjxwYXRoIGQ9Ik0xMCA3MEw1MCAxMEw5MCA3MHogTTExMCAxMGg4MHYyMGgtODB6IE0xMTAgNTBoODB2MjBoLTgweiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==",
+						"alt": "Logo 2"
+					},
+					{
+						"src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCAyMDAgODAiPjxwYXRoIGQ9Ik0xMDAgNWEzNSAzNSAwIDEgMSAwIDcwYTM1IDM1IDAgMSAxIDAtNzB6IE02MCA0MGg4MHY4SDYweiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==",
+						"alt": "Logo 3"
+					}
+				]
+			}
+		}
+	}
+]

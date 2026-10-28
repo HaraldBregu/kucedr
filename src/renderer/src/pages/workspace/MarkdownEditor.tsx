@@ -25,6 +25,8 @@ interface WorkspaceMarkdownEditorProps {
 	readonly onSave: () => void;
 	readonly onError: (message: string) => void;
 	readonly onOpenLink: (href: string) => void;
+	readonly wide: boolean;
+	readonly onWideChange: (wide: boolean) => void;
 }
 
 export function WorkspaceMarkdownEditor({
@@ -34,6 +36,8 @@ export function WorkspaceMarkdownEditor({
 	onSave,
 	onError,
 	onOpenLink,
+	wide,
+	onWideChange,
 }: WorkspaceMarkdownEditorProps): React.JSX.Element {
 	const [linkOpen, setLinkOpen] = useState(false);
 	const [libraryOpen, setLibraryOpen] = useState(false);
@@ -119,7 +123,7 @@ export function WorkspaceMarkdownEditor({
 				event.stopPropagation();
 			}}
 		>
-			<WorkspaceToolbar editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} />
+			<WorkspaceToolbar editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} wide={wide} onWideChange={onWideChange} />
 			{urlOpen ? <WorkspaceUrlDialog onClose={() => setUrlOpen(false)} onInsert={(src, alt) => {
 				setUrlOpen(false);
 				editor.chain().focus().setImage({ src, alt }).run();
@@ -138,7 +142,7 @@ export function WorkspaceMarkdownEditor({
 			<div ref={scrollRef} className="min-h-0 flex-1 overflow-auto">
 			<EditorContent
 				editor={editor}
-				className="workspace-markdown-content mx-auto min-h-full w-full max-w-[920px] break-words px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12"
+				className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} break-words px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12`}
 				onClick={(event) => {
 					const href = (event.target as HTMLElement).closest('a')?.getAttribute('href');
 					if (href && (event.metaKey || event.ctrlKey)) {

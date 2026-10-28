@@ -47,6 +47,8 @@ import {
 	setKeepAwake as setStoredKeepAwake,
 	getSoundFeedbackEnabled as getStoredSoundFeedbackEnabled,
 	setSoundFeedbackEnabled as setStoredSoundFeedbackEnabled,
+	getWorkspaceWideContent as getStoredWorkspaceWideContent,
+	setWorkspaceWideContent as setStoredWorkspaceWideContent,
 	getLanguage as getStoredLanguage,
 	setLanguage as setStoredLanguage,
 	getTheme as getStoredTheme,
@@ -656,6 +658,20 @@ export class AppIpc implements IpcModule {
 			wrapSimpleHandler(() => {
 				return getStoredSoundFeedbackEnabled();
 			}, AppChannels.getSoundFeedbackEnabled)
+		);
+
+		ipcMain.handle(
+			AppChannels.setWorkspaceWideContent,
+			wrapSimpleHandler((enabled: boolean) => {
+				setStoredWorkspaceWideContent(enabled);
+			}, AppChannels.setWorkspaceWideContent)
+		);
+
+		ipcMain.handle(
+			AppChannels.getWorkspaceWideContent,
+			wrapSimpleHandler(() => {
+				return getStoredWorkspaceWideContent();
+			}, AppChannels.getWorkspaceWideContent)
 		);
 
 		ipcMain.handle(

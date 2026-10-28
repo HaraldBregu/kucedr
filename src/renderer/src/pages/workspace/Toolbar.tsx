@@ -20,6 +20,7 @@ import {
 	ListChecks,
 	ListOrdered,
 	Minus,
+	MoveHorizontal,
 	Quote,
 	Redo2,
 	Rows3,
@@ -89,9 +90,11 @@ interface WorkspaceToolbarProps {
 	readonly onInsertFromComputer: () => void;
 	readonly onInsertFromLibrary: () => void;
 	readonly onInsertFromUrl: () => void;
+	readonly wide: boolean;
+	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, wide, onWideChange }: WorkspaceToolbarProps): React.JSX.Element {
 	const [href, setHref] = useState('');
 	const state = useEditorState({
 		editor,
@@ -192,6 +195,16 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 					{tableActions.map((action) => button(action, false, false, action.label.startsWith('Delete')))}
 				</div>
 			) : null}
+			<div className="ml-auto flex items-center">
+				<Tooltip>
+					<TooltipTrigger render={
+						<Button type="button" variant="ghost" size="icon-sm" aria-label="Full width" aria-pressed={wide} className={wide ? 'bg-muted text-foreground' : 'text-muted-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={() => onWideChange(!wide)}>
+							<MoveHorizontal />
+						</Button>
+					} />
+					<TooltipContent side="bottom">Full width</TooltipContent>
+				</Tooltip>
+			</div>
 		</div>
 	);
 }

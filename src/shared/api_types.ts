@@ -629,6 +629,8 @@ export interface AppApi extends AppStorageApi {
 	setSoundFeedbackEnabled: (enabled: boolean) => Promise<void>;
 	getSoundFeedbackEnabled: () => Promise<boolean>;
 	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void) => () => void;
+	setWorkspaceWideContent: (enabled: boolean) => Promise<void>;
+	getWorkspaceWideContent: () => Promise<boolean>;
 	setLanguage: (language: AppLanguage) => Promise<void>;
 	getLanguage: () => Promise<AppLanguage>;
 	setTheme: (theme: AppTheme) => Promise<void>;

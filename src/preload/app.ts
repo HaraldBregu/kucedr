@@ -128,6 +128,12 @@ export const app: AppApi = {
 	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void): (() => void) => {
 		return typedOn(AppChannels.soundFeedbackEnabledChanged, callback);
 	},
+	setWorkspaceWideContent: (enabled: boolean): Promise<void> => {
+		return typedInvokeUnwrap(AppChannels.setWorkspaceWideContent, enabled);
+	},
+	getWorkspaceWideContent: (): Promise<boolean> => {
+		return typedInvokeUnwrap(AppChannels.getWorkspaceWideContent);
+	},
 	setLanguage: (language) => {
 		return typedInvokeUnwrap(AppChannels.setLanguage, language);
 	},

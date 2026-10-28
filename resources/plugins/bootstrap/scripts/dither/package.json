@@ -1,0 +1,23 @@
+{
+	"name": "@kucedr-plugins/bootstrap-dither",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Bootstrap plugin script that renders any dithercn component as self-contained HTML.",
+	"scripts": {
+		"build": "tailwindcss -i src/styles.css -o dist/styles.css --minify && esbuild src/browser.jsx --bundle --minify --jsx=automatic --format=iife --outfile=dist/browser.js && esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs",
+		"dev": "npm run build && vite --config example/vite.config.mjs"
+	},
+	"devDependencies": {
+		"@tailwindcss/cli": "^4.3.3",
+		"@vitejs/plugin-react": "^6.1.2",
+		"clsx": "^2.1.1",
+		"esbuild": "^0.28.2",
+		"radix-ui": "^1.8.1",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
+		"tailwind-merge": "^3.7.0",
+		"tailwindcss": "^4.3.3",
+		"vite": "^8.3.5"
+	}
+}

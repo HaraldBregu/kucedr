@@ -1,0 +1,185 @@
+[
+	{
+		"id": "deepseek-v4-pro",
+		"name": "DeepSeek V4 Pro",
+		"type": "large-language-model",
+		"authentication": "api-key",
+		"url": "https://api.deepseek.com",
+		"metadata": {
+			"promptAttachments": [],
+			"documentationUrl": "https://api-docs.deepseek.com/guides/thinking_mode",
+			"documentationStatus": "verified",
+			"contextWindow": 1048576,
+			"defaultOutputTokens": 32768,
+			"inputs": {
+				"thinking": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"enabled",
+								"disabled"
+							]
+						}
+					}
+				},
+				"reasoning_effort": {
+					"type": "string",
+					"enum": [
+						"high",
+						"max"
+					]
+				},
+				"max_tokens": {
+					"type": "integer",
+					"maximum": 384000
+				},
+				"temperature": {
+					"type": "number"
+				},
+				"top_p": {
+					"type": "number"
+				},
+				"top_k": {
+					"type": "integer"
+				},
+				"frequency_penalty": {
+					"type": "number"
+				},
+				"presence_penalty": {
+					"type": "number"
+				},
+				"stop": {
+					"type": "array"
+				},
+				"response_format": {
+					"type": "object"
+				},
+				"tools": {
+					"type": "array"
+				},
+				"tool_choice": {
+					"type": "object"
+				},
+				"stream": {
+					"type": "boolean"
+				},
+				"stream_options": {
+					"type": "object"
+				},
+				"logprobs": {
+					"type": "boolean"
+				},
+				"top_logprobs": {
+					"type": "integer"
+				},
+				"user_id": {
+					"type": "string"
+				}
+			},
+			"contextWindowDocumentationUrl": "https://api-docs.deepseek.com/quick_start/pricing/"
+		},
+		"location": "remote"
+	},
+	{
+		"id": "deepseek-flash",
+		"name": "DeepSeek V4.1 Flash",
+		"type": "large-language-model",
+		"authentication": "api-key",
+		"url": "https://api.deepseek.com",
+		"metadata": {
+			"promptAttachments": [
+				{
+					"kind": "image",
+					"mimeTypes": [
+						"image/jpeg",
+						"image/png",
+						"image/gif",
+						"image/webp"
+					],
+					"extensions": [
+						".jpg",
+						".jpeg",
+						".png",
+						".gif",
+						".webp"
+					]
+				}
+			],
+			"documentationUrl": "https://api-docs.deepseek.com/news/news260910/",
+			"documentationStatus": "verified",
+			"contextWindow": 1048576,
+			"defaultOutputTokens": 32768,
+			"inputs": {
+				"thinking": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"enabled",
+								"disabled"
+							]
+						}
+					}
+				},
+				"reasoning_effort": {
+					"type": "string",
+					"enum": [
+						"high",
+						"max"
+					]
+				},
+				"max_tokens": {
+					"type": "integer",
+					"maximum": 384000
+				},
+				"temperature": {
+					"type": "number"
+				},
+				"top_p": {
+					"type": "number"
+				},
+				"top_k": {
+					"type": "integer"
+				},
+				"frequency_penalty": {
+					"type": "number"
+				},
+				"presence_penalty": {
+					"type": "number"
+				},
+				"stop": {
+					"type": "array"
+				},
+				"response_format": {
+					"type": "object"
+				},
+				"tools": {
+					"type": "array"
+				},
+				"tool_choice": {
+					"type": "object"
+				},
+				"stream": {
+					"type": "boolean"
+				},
+				"stream_options": {
+					"type": "object"
+				},
+				"logprobs": {
+					"type": "boolean"
+				},
+				"top_logprobs": {
+					"type": "integer"
+				},
+				"user_id": {
+					"type": "string"
+				}
+			},
+			"contextWindowDocumentationUrl": "https://api-docs.deepseek.com/quick_start/pricing/"
+		},
+		"location": "remote"
+	}
+]
