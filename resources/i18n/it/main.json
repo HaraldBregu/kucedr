@@ -1676,6 +1676,18 @@
 			"loadError": "Impossibile caricare le impostazioni dei servizi modello.",
 			"saveError": "Impossibile salvare le impostazioni dei servizi modello."
 		},
+		"scripts": {
+			"title": "Script installati",
+			"information": "Informazioni sullo script",
+			"description": "Sfoglia gli script forniti dai tuoi plugin.",
+			"empty": "Nessuno script installato",
+			"emptyDescription": "Installa un plugin che fornisce script.",
+			"loadError": "Impossibile caricare gli script.",
+			"name": "Nome",
+			"category": "Categoria",
+			"fence": "Blocco di codice",
+			"plugin": "Plugin"
+		},
 		"apps": {
 			"title": "App installate",
 			"information": "Informazioni sull'app",
