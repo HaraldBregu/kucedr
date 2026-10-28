@@ -63,10 +63,14 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			[
 				'/settings/channels',
 				'/settings/remote-agent',
-				'/settings/plugins',
 				'/settings/apps',
+				'/settings/scripts',
 			].includes(item.path)
 		),
+	},
+	{
+		id: 'plugins',
+		items: SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/plugins'),
 	},
 ] as const;
 
