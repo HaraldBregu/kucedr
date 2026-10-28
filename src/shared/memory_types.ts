@@ -1,5 +1,6 @@
 export interface MemoryConfig {
 	enabled: boolean;
+	includeInPrompt: boolean;
 	providerId: string;
 	modelId: string;
 	modelOptions: Record<string, unknown>;
