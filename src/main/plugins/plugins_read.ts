@@ -46,7 +46,8 @@ export function readPlugin(
 	assertNoLinks(directory);
 	if (manifest.icon) assertIcon(path.join(directory, 'assets'), manifest.icon);
 	if (manifest.iconDark) assertIcon(path.join(directory, 'assets'), manifest.iconDark);
-	const provider = pluginProvider(manifest);
+	const models = readPluginModels(directory);
+	const provider = pluginProvider(models ? { ...manifest, models } : manifest);
 	const contributes = { ...pluginContents(directory), providers: provider ? [manifest.id] : [] };
 	if (Object.values(contributes).every((ids) => ids.length === 0)) {
 		throw new Error('A plugin must contain at least one app, MCP server, provider, or skill.');
