@@ -48,7 +48,7 @@ export function ChatOutline({ messages }: { readonly messages: readonly HomeChat
 		<nav aria-label="Conversation outline" onMouseLeave={() => setHovered(null)} className="absolute left-1 top-1/2 z-10 max-h-[50%] -translate-y-1/2 overflow-y-auto py-2">
 			{turns.map((turn, index) => (
 				<Tooltip key={turn.id}>
-					<TooltipTrigger render={
+					<TooltipTrigger delay={0} render={
 						<button
 							type="button"
 							aria-label={turn.title}
@@ -65,7 +65,7 @@ export function ChatOutline({ messages }: { readonly messages: readonly HomeChat
 								viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
 							}}
 						>
-							<span aria-hidden className={cn('h-0.5 shrink-0 rounded-full transition-[width,background-color] duration-150 motion-reduce:transition-none group-hover:bg-foreground group-focus-visible:bg-foreground', active === turn.id ? 'bg-foreground' : 'bg-muted-foreground/30', hovered === index ? 'w-7' : (hovered !== null && Math.abs(hovered - index) === 1) || active === turn.id ? 'w-5' : 'w-3')} />
+							<span aria-hidden className={cn('h-0.5 shrink-0 rounded-full transition-[width,background-color] duration-150 motion-reduce:transition-none group-hover:bg-foreground group-focus-visible:bg-foreground', active === turn.id ? 'bg-foreground' : 'bg-muted-foreground/30', hovered === index ? 'w-7' : hovered !== null && Math.abs(hovered - index) === 1 ? 'w-5' : 'w-3')} />
 						</button>
 					} />
 					<TooltipContent side="right" sideOffset={8} className="block w-80 max-w-[calc(100vw-4rem)] rounded-xl border bg-popover p-3 text-sm text-popover-foreground shadow-lg [&>svg]:hidden">
