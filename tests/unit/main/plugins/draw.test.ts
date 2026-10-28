@@ -29,9 +29,9 @@ it.each(['light', 'dark'] as const)('generates self-contained HTML within the ho
 	expect(Buffer.byteLength(html)).toBeLessThan(2 * 1024 * 1024);
 	expect(html).toContain(`color-scheme:${theme}`);
 	expect(html).toContain('data:font/woff2;base64,');
-	expect(html).not.toMatch(/<script[^>]+src=|<link[^>]+href=/i);
 	const dom = new JSDOM(html);
 	try {
+		expect(dom.window.document.querySelectorAll('script[src],link[href]')).toHaveLength(0);
 		expect(dom.window.document.querySelector('h3')).toBeNull();
 		expect(JSON.parse(dom.window.document.getElementById('draw-input')!.textContent!)).toEqual(input);
 	} finally {
