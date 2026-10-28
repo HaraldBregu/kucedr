@@ -22,7 +22,6 @@ export function ChatDetails({ open, messages, model, draft, hasAttachments, onJu
 }): React.JSX.Element {
 	const responses = messages.filter((message) => message.role === 'agent');
 	const latest = responses.at(-1);
-	const context = responses.findLast((message) => message.contextUsage)?.contextUsage;
 	const assets = chatAssets(responses);
 	const scripts = chatScripts(responses);
 	return (
