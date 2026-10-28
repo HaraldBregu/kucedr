@@ -124,9 +124,9 @@ it('executes the agent tool and returns success only after generating the HTML',
 		ok: true,
 		shown: 'Chart displayed to the user.',
 	});
-	await expect(
-		runPluginScript.run({ name: 'chart', input: { ...input, data: [] } })
-	).rejects.toThrow('data must contain between 1 and 200 rows');
+	await expect(runPluginScript.run({ name: 'chart', input: { ...input, data: [] } })).rejects.toThrow(
+		'data must contain between 1 and 200 rows'
+	);
 });
 
 it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
@@ -240,9 +240,7 @@ it.each([
 	[{ data: [{ month: 'Jan', sales: Infinity }] }, 'must be a finite number'],
 	[{ description: {} }, 'description must be a string'],
 ])('rejects malformed chart input %j', async (patch, message) => {
-	await expect(renderPluginScript('chart', { ...input, ...patch }, 'light')).rejects.toThrow(
-		message
-	);
+	await expect(renderPluginScript('chart', { ...input, ...patch }, 'light')).rejects.toThrow(message);
 });
 
 it('escapes markup in text and prevents labels from breaking out of the inline script', async () => {
