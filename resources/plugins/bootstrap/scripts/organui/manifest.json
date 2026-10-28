@@ -8,6 +8,28 @@
 		"entry": "dist/index.mjs",
 		"instructions": "instructions.md"
 	},
+	"inputSchema": {
+		"type": "object",
+		"required": ["component"],
+		"properties": {
+			"component": {
+				"type": "string",
+				"title": "Component",
+				"enum": [
+					"body-map", "dermatome-map", "patient-banner", "allergy-list", "problem-list", "vital-signs", "news2-chart", "lab-results", "medication-schedule", "ecg-trace", "growth-chart", "anatomy-tree", "image-viewer", "dna-helix",
+					"ai-note", "clinical-sources", "clinical-citation", "differential-list", "clinician-review", "ai-disclaimer"
+				]
+			},
+			"title": { "type": "string", "title": "Title" },
+			"description": { "type": "string", "title": "Description" },
+			"props": {
+				"type": "object",
+				"title": "Props",
+				"description": "The component's props. Use only real clinical data."
+			}
+		},
+		"examples": [{ "component": "body-map", "title": "Where does it hurt?", "props": { "value": ["right-knee"] } }]
+	},
 	"fence": "organui",
 	"height": 480
 }
