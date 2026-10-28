@@ -449,6 +449,7 @@ function PageContent(): ReactElement {
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
 	const [detailsOpen, setDetailsOpen] = useState(true);
+	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
 	const location = useLocation();
 	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(
 		(location.state as { openExtension?: OpenExtension } | null)?.openExtension ?? null
