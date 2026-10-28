@@ -107,6 +107,17 @@ export default function MemoryPage(): React.JSX.Element {
 								/>
 							}
 						/>
+						<SettingsRow
+							title={t('settings.memory.includeInPrompt')}
+							description={t('settings.memory.includeInPromptDescription')}
+							actions={
+								<Switch
+									aria-label={t('settings.memory.includeInPrompt')}
+									checked={config.includeInPrompt}
+									onCheckedChange={(includeInPrompt) => setConfig({ ...config, includeInPrompt })}
+								/>
+							}
+						/>
 						<ModelProviderConfiguration
 							idPrefix="memory"
 							triggerTitle={t('settings.memory.model')}
