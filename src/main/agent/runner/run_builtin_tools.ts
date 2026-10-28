@@ -22,6 +22,7 @@ import { updateUserTool } from '../tools/user/update';
 import { updateIdentityTool } from '../tools/identity/update';
 import { getHealthTool } from '../tools/health/get';
 import { runPluginScript } from '../tools/plugin/run';
+import { readPluginScript } from '../tools/plugin/read';
 import { pluginScripts } from '../../plugins';
 import { updateHealthTool } from '../tools/health/update';
 import { createImageTool } from '../tools/media/create_image';
