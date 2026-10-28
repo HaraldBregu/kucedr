@@ -70,6 +70,8 @@ import { LibraryPicker } from './components/LibraryPicker';
 import { Messages } from './Messages';
 import { ChatOutline } from './Outline';
 import { ChatDetails } from './Details';
+import { LIBRARY_DRAG_TYPE } from '../settings/pages/library/drag';
+import { droppedLibraryFiles } from './attachments/library';
 import { Provider, welcomeMessage } from './context';
 import {
 	useAudioRecorder,
@@ -500,6 +502,7 @@ function PageContent(): ReactElement {
 	const [planCommandActive, setPlanCommandActive] = useState(false);
 	const [goalCommandActive, setGoalCommandActive] = useState(false);
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
+	const [libraryDropError, setLibraryDropError] = useState(false);
 	const [transcribingRecording, setTranscribingRecording] = useState(false);
 	const transcriptionRunRef = useRef(0);
 	const visibleMessages = useMemo(
@@ -720,6 +723,20 @@ function PageContent(): ReactElement {
 		<div
 			ref={composerRef}
 			data-slot="home-composer-shell"
+			onDragOverCapture={(event) => {
+				if (attachmentDisabled || !event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
+				event.preventDefault();
+				event.stopPropagation();
+				event.dataTransfer.dropEffect = 'copy';
+			}}
+			onDropCapture={(event) => {
+				if (!event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
+				event.preventDefault();
+				event.stopPropagation();
+				if (attachmentDisabled) return;
+				setLibraryDropError(false);
+				void droppedLibraryFiles(event.dataTransfer.getData(LIBRARY_DRAG_TYPE)).then(addLibraryFiles).catch(() => setLibraryDropError(true));
+			}}
 			className={cn(
 				'z-20 flex justify-center px-4',
 				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
@@ -729,6 +746,7 @@ function PageContent(): ReactElement {
 				<div className="pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background" />
 			)}
 			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl')}>
+				{libraryDropError && <p role="alert" className="mb-2 text-xs text-destructive">Could not attach Library files. Please try again.</p>}
 				<RecorderErrorMessage
 					message={voiceErrorMessage}
 					actionLabel={voiceErrorAction?.label}
@@ -875,7 +893,7 @@ function PageContent(): ReactElement {
 										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
 									/>
 								</div>
-								<ChatDetails messages={visibleMessages} onJump={(messageId) => {
+									<ChatDetails messages={visibleMessages} onAttach={addLibraryFiles} onJump={(messageId) => {
 									const scroll = chatScrollRef.current;
 									const viewport = scroll?.scrollRef.current;
 									const anchor = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);

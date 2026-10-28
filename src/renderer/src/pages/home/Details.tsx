@@ -6,10 +6,13 @@ import type { HomeChatMessage } from './context/state';
 import { chatAssets } from './components/assets';
 import { statusLabel } from './components/status';
 import { Usage } from './Usage';
+import { ChatLibrary } from './Library';
+import type { LibraryFile } from '@shared/library_types';
 
-export function ChatDetails({ messages, onJump }: {
+export function ChatDetails({ messages, onJump, onAttach }: {
 	readonly messages: readonly HomeChatMessage[];
 	readonly onJump: (messageId: string) => void;
+	readonly onAttach: (files: LibraryFile[]) => void;
 }): React.JSX.Element {
 	const responses = messages.filter((message) => message.role === 'agent');
 	const latest = responses.at(-1);
@@ -51,6 +54,7 @@ export function ChatDetails({ messages, onJump }: {
 						</div>
 					</CollapsibleContent>
 				</Collapsible>
+				<ChatLibrary refreshKey={assets.map((asset) => asset.path).join('\n')} onAttach={onAttach} />
 			</Card>
 		</aside>
 	);
