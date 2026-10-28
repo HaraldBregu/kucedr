@@ -13,7 +13,7 @@ export const runPluginScript = tool({
 		name: z.string().describe('The script name documented by the loaded skill.'),
 		input: z
 			.record(z.string(), z.unknown())
-			.describe('Input object documented in the skill reference for this script.'),
+			.describe('Input object documented in the instructions returned by read_plugin_script.'),
 	}),
 	execute: async ({ name, input }) => {
 		const scripts = pluginScripts();
