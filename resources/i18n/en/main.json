@@ -429,6 +429,7 @@
 				"apps": "Apps",
 				"mcp": "MCP servers",
 				"skills": "Skills",
+				"scripts": "Scripts",
 				"providers": "Providers",
 				"minAppVersion": "Requires Kucedr",
 				"categories": "Categories",
