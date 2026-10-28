@@ -74,6 +74,7 @@ export function WorkspaceMarkdownEditor({
 			}),
 			Placeholder.configure({ placeholder: 'Start writing, or paste an image…' }),
 			Markdown.configure({ markedOptions: { gfm: true } }),
+			WorkspaceSearch.configure({ onMatchCount }),
 			Extension.create({
 				name: 'clearFormatting',
 				addKeyboardShortcuts() {
