@@ -515,5 +515,3 @@ it('resizes the sidebar with keyboard and pointer input and persists the width',
 	expect(toggle).toHaveAttribute('aria-expanded', 'false');
 	expect(sidebar).toHaveAttribute('data-state', 'collapsed');
 });
-
-
