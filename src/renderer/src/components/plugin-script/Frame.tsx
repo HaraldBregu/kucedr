@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactElement } from 'react';
+import { useEffect, useRef, useState, type ReactElement } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { app, type AppThemeData } from '@kucedr/sdk';
 import type { PluginScriptInfo } from '../../../../shared/plugin_types';
