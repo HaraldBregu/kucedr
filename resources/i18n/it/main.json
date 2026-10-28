@@ -249,6 +249,8 @@
 			"loading": "Caricamento della memoria…",
 			"enabled": "Memoria automatica",
 			"enabledDescription": "Salva fatti importanti e riepiloghi concisi dalle nuove conversazioni.",
+			"includeInPrompt": "Usa la memoria nei prompt",
+			"includeInPromptDescription": "Aggiungi la memoria salvata al contesto dell'assistente in chat e voce.",
 			"model": "Modello della memoria",
 			"modelDescription": "Scegli un modello indipendente dal modello della chat.",
 			"type": "Tipo di memoria",
