@@ -39,6 +39,7 @@ export interface PluginScriptInfo {
 	readonly author?: string;
 	readonly version: string;
 	readonly category: string;
+	readonly inputSchema?: PluginScriptSchema;
 	readonly fence?: string;
 	readonly height: number;
 	readonly plugin: PluginSource;
