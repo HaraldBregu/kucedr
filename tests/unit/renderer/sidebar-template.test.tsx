@@ -85,3 +85,21 @@ it('renders an initially collapsed sidebar without an expanded header phase', ()
 	expect(within(content).getByRole('button', { name: 'Toggle Sidebar' })).toHaveAttribute('aria-expanded', 'false');
 	expect(content.querySelector('[data-slot="navigationbar"]')).toBeInTheDocument();
 });
+
+it('restores a saved collapsed sidebar on the first render', () => {
+	window.localStorage.setItem('page_sidebar_layout_state', 'false');
+	const { container } = render(
+		<MemoryRouter initialEntries={['/home']}>
+			<PageContainer>
+				<Split sidebar={<button>Stored chat</button>}><div>Conversation</div></Split>
+			</PageContainer>
+		</MemoryRouter>
+	);
+	const sidebar = container.querySelector('[data-slot="split-pane-sidebar"]');
+	const content = container.querySelector('[data-slot="split-pane-content"]') as HTMLElement;
+
+	expect(sidebar).toHaveAttribute('data-state', 'collapsed');
+	expect(sidebar).toHaveAttribute('inert');
+	expect(within(content).getByRole('button', { name: 'Toggle Sidebar' })).toHaveAttribute('aria-expanded', 'false');
+	expect(content.querySelector('[data-slot="navigationbar"]')).toBeInTheDocument();
+});
