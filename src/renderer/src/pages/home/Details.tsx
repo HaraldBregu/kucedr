@@ -7,6 +7,7 @@ import { chatAssets } from './components/assets';
 import { chatScripts } from './components/scripts';
 import { Usage } from './Usage';
 import { ChatLibrary } from './Library';
+import { ChatWorkspace } from './Workspace';
 import type { LibraryFile } from '@shared/library_types';
 
 export function ChatDetails({ messages, onJump, onAttach }: {
@@ -70,6 +71,7 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 					</CollapsibleContent>
 				</Collapsible>
 				<ChatLibrary refreshKey={`${latest?.id}:${latest?.completedAtMs}:${assets.map((asset) => asset.path).join('\n')}`} onAttach={onAttach} />
+				<ChatWorkspace />
 			</Card>
 		</aside>
 	);
