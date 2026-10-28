@@ -31,6 +31,7 @@ it('refreshes after workspace changes and cleans up its subscription', async () 
 	jest.mocked(window.agent.listWorkspaceFiles).mockResolvedValue([]);
 	act(() => onChanged({ type: 'unlink' }));
 	expect(await screen.findByText('Workspace is empty.')).toBeInTheDocument();
+	unsubscribe.mockClear();
 	unmount();
 	expect(unsubscribe).toHaveBeenCalledTimes(1);
 });
