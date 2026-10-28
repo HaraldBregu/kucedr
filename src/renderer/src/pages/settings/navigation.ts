@@ -172,6 +172,13 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.apps.description',
 		keywords: 'external apps window manifest api install folder entry',
 	},
+	// Scripts
+	{
+		path: '/settings/scripts',
+		labelKey: 'settings.scripts.title',
+		descriptionKey: 'settings.scripts.description',
+		keywords: 'plugin scripts render code fence',
+	},
 	// Channels
 	{
 		path: '/settings/channels',
