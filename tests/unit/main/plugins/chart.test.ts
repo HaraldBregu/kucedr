@@ -98,7 +98,12 @@ it('loads script guidance on demand and runs the chart reference examples', asyn
 	await expect(loader!.run({ name: 'run-scripts' })).resolves.toMatchObject({
 		activated: true,
 		name: 'run-scripts',
-		resources: ['references/chart.md', 'references/dither.md', 'references/draw.md', 'references/organui.md'],
+		resources: [
+			'references/chart.md',
+			'references/dither.md',
+			'references/draw.md',
+			'references/organui.md',
+		],
 	});
 	expect(buildLoadedSkillPrompt(loaded)).toContain('run_plugin_script');
 	const reference = readFileSync(
@@ -119,9 +124,9 @@ it('executes the agent tool and returns success only after generating the HTML',
 		ok: true,
 		shown: 'Chart displayed to the user.',
 	});
-	await expect(runPluginScript.run({ name: 'chart', input: { ...input, data: [] } })).rejects.toThrow(
-		'data must contain between 1 and 200 rows'
-	);
+	await expect(
+		runPluginScript.run({ name: 'chart', input: { ...input, data: [] } })
+	).rejects.toThrow('data must contain between 1 and 200 rows');
 });
 
 it.each(['bar', 'line', 'area', 'pie', 'doughnut'])(
@@ -235,7 +240,9 @@ it.each([
 	[{ data: [{ month: 'Jan', sales: Infinity }] }, 'must be a finite number'],
 	[{ description: {} }, 'description must be a string'],
 ])('rejects malformed chart input %j', async (patch, message) => {
-	await expect(renderPluginScript('chart', { ...input, ...patch }, 'light')).rejects.toThrow(message);
+	await expect(renderPluginScript('chart', { ...input, ...patch }, 'light')).rejects.toThrow(
+		message
+	);
 });
 
 it('escapes markup in text and prevents labels from breaking out of the inline script', async () => {
