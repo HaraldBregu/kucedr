@@ -19,6 +19,7 @@ import {
 	Library,
 	Mic,
 	MonitorUp,
+	PanelRight,
 	Plus,
 	Square,
 	TableIcon,
@@ -30,6 +31,7 @@ import { workspaceFileType } from '../../../../shared/workspace';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -446,6 +448,7 @@ function PageContent(): ReactElement {
 	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
+	const [detailsOpen, setDetailsOpen] = useState(true);
 	const location = useLocation();
 	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(
 		(location.state as { openExtension?: OpenExtension } | null)?.openExtension ?? null
@@ -838,6 +841,10 @@ function PageContent(): ReactElement {
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
+				navigationActions={!showEmptyConversation && !openExtension ? <Tooltip>
+					<TooltipTrigger render={<Button type="button" variant={detailsOpen ? 'secondary' : 'ghost'} size="icon-sm" className="rounded-md" aria-label={detailsOpen ? 'Hide chat information' : 'Show chat information'} aria-pressed={detailsOpen} aria-controls="chat-information" onClick={() => setDetailsOpen((open) => !open)}><PanelRight className="size-3.5" strokeWidth={1.8} /></Button>} />
+					<TooltipContent side="bottom">{detailsOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
+				</Tooltip> : undefined}
 				sidebar={
 					<StableHomeSidebar
 						refreshKey={`${chatSessionId}:${visibleMessages.length}:${agent.isLoading}`}
@@ -893,7 +900,7 @@ function PageContent(): ReactElement {
 										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
 									/>
 								</div>
-								<ChatDetails messages={visibleMessages} onAttach={addLibraryFiles} onWorkspaceAttach={(files) => setAttachments((current) => [...current, ...filesToAttachments(files)])} onJump={(messageId, toolCallId) => {
+								<ChatDetails open={detailsOpen} messages={visibleMessages} onAttach={addLibraryFiles} onWorkspaceAttach={(files) => setAttachments((current) => [...current, ...filesToAttachments(files)])} onJump={(messageId, toolCallId) => {
 									const scroll = chatScrollRef.current;
 									const viewport = scroll?.scrollRef.current;
 									const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
