@@ -11,10 +11,12 @@ export function Model({
 	messages = [],
 	draft = '',
 	hasAttachments = false,
+	onContext,
 }: {
 	messages?: readonly HomeChatMessage[];
 	draft?: string;
 	hasAttachments?: boolean;
+	onContext?: (context: { providerId: string; modelId: string; contextWindow?: number }) => void;
 }): ReactElement {
 	const [groups, setGroups] = useState<{ id: string; models: ProviderModel[] }[]>([]);
 	const [providerId, setProviderId] = useState('');
@@ -106,6 +108,17 @@ export function Model({
 			setSaving(false);
 		}
 	};
+
+	const contextWindow =
+		localContextWindow ??
+		modelContextWindow(
+			groups
+				.find((group) => group.id === providerId)
+				?.models.find((model) => model.id === modelId)?.metadata
+		);
+	useEffect(() => {
+		onContext?.({ providerId, modelId, contextWindow });
+	}, [onContext, providerId, modelId, contextWindow]);
 
 	return (
 		<div className="flex min-w-0 items-center gap-1" onClick={(event) => event.stopPropagation()}>
