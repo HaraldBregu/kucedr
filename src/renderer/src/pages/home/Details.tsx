@@ -1,7 +1,7 @@
 import { Activity, ArrowUpRight, ChevronDown, File, Files, MessageSquare } from 'lucide-react';
 import { Tool } from '@/components/prompt-kit/tool';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import type { HomeChatMessage } from './context/state';
 import { chatAssets } from './components/assets';
@@ -19,9 +19,6 @@ export function ChatDetails({ messages, onJump }: {
 	return (
 		<aside aria-label="Chat information" className="absolute right-6 top-6 hidden max-h-[calc(100%-3rem)] w-72 overflow-y-auto @[1408px]/chat:block">
 			<Card size="sm" className="gap-0 rounded-2xl border border-border bg-card ring-0">
-				<CardHeader className="pb-3">
-					<CardTitle>Chat information</CardTitle>
-				</CardHeader>
 				<CardContent className="space-y-3 pb-3 text-sm">
 					<div className="flex items-center gap-2 text-muted-foreground">
 						<MessageSquare className="size-4 shrink-0" aria-hidden />
