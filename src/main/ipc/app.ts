@@ -153,7 +153,7 @@ const lightThemeColors: AppThemeColors = {
 	'chart-5': 'oklch(0.5600 0 0)',
 	'primary-foreground': 'oklch(1 0 0)',
 	secondary: 'oklch(0.9400 0 0)',
-	'secondary-foreground': 'oklch(0.6660 0.1790 58.3180)',
+	'secondary-foreground': 'oklch(0 0 0)',
 	muted: 'oklch(0.9220 0 0)',
 	'muted-foreground': 'oklch(0.4400 0 0)',
 	accent: 'oklch(0.9220 0 0)',
