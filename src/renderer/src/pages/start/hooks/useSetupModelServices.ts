@@ -17,14 +17,14 @@ export async function loadModelServiceState(
 		service.getSelection().catch(() => undefined),
 		service.loadModelGroups().catch(() => []),
 	]);
-	const selectedProviderId = selection?.providerId === 'custom' ? 'ollama' : selection?.providerId;
+	const selectedProviderId = selection?.providerId;
 	const selectedGroup = selection
 		? modelGroups.find((group) => group.provider.id === selectedProviderId)
 		: undefined;
 	const selectedModel = selectedGroup?.models.find((model) => model.id === selection?.modelId);
-	if ((selection?.providerId === 'ollama' || selection?.providerId === 'custom') && selectedGroup) {
+	if (selection?.providerId === 'custom' && selectedGroup) {
 		return {
-			providerId: 'ollama',
+			providerId: 'custom',
 			modelId: 'local',
 			localModelId: selection.modelId,
 			modelGroups,
@@ -93,7 +93,7 @@ export function useSetupModelServices(state: SetupState, dispatch: Dispatch<Setu
 		modelId: string
 	): Promise<void> {
 		dispatch({ type: 'CLEAR_ERROR' });
-		const isAssistantLocalModel = serviceId === 'assistant' && providerId === 'ollama';
+		const isAssistantLocalModel = serviceId === 'assistant' && providerId === 'custom';
 		dispatch({
 			type: 'CHANGE_SERVICE_SELECTION',
 			serviceId,

@@ -39,7 +39,7 @@ export async function* runModelTurn(
 	requiredContextMessages: Message[] = []
 ): AsyncGenerator<RuntimeEvent, ModelTurn> {
 	const maxRetries = 2;
-	const contextWindow = await resolveContextWindow(provider, modelId, modelOptions);
+	const contextWindow = await resolveContextWindow(provider, modelId);
 	const outputLimit = modelOutputLimit(provider.id, modelId, modelOptions);
 	const maxTokens = contextWindow
 		? Math.min(outputLimit, Math.max(1, contextWindow - MODEL_CONTEXT_SAFETY_TOKENS - 2_048))
@@ -133,7 +133,7 @@ export async function* runModelTurn(
 						context: {
 							...contextUsage,
 							contextWindow:
-								contextWindow ?? (await resolveContextWindow(provider, modelId, modelOptions)),
+								contextWindow ?? (await resolveContextWindow(provider, modelId)),
 							inputTokens:
 								event.usage?.inputTokens && event.usage.inputTokens > 0
 									? event.usage.inputTokens

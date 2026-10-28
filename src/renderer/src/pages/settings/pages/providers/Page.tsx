@@ -9,8 +9,6 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
-import ollamaDarkLogo from '@resources/plugins/ollama/assets/ollama-dark.svg';
-import ollamaLightLogo from '@resources/plugins/ollama/assets/ollama-light.svg';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -519,15 +517,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				<div className="w-full">
 					<div className={cn('flex min-h-10 items-center gap-3', customProvider.editing && 'pb-3')}>
 						<ProviderAvatar
-							providerId="ollama"
-							name="Ollama"
-							iconDarkUrl={ollamaDarkLogo}
-							iconLightUrl={ollamaLightLogo}
+							providerId="custom"
+							name="Custom provider"
 							className="size-10 rounded-2xl border-0 bg-muted/50 p-1.5"
 						/>
 						<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
 							<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
-								<h3>{t('settings.providers.localModels.model')}</h3>
+								<h3>Custom provider</h3>
 							</ItemTitle>
 							<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 								{t(
@@ -552,7 +548,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											variant="ghost"
 											size="icon-sm"
 											disabled={saving}
-											aria-label="Options for Ollama"
+											aria-label="Options for custom provider"
 										>
 											<MoreHorizontal className="size-4" />
 										</Button>
@@ -584,7 +580,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									autoComplete="off"
 									className="h-8"
 									disabled={saving}
-									placeholder="http://localhost:11434/api"
+									placeholder="http://localhost:8080/v1"
 									spellCheck={false}
 									value={customProvider.baseUrl}
 									onChange={(event) =>
@@ -604,7 +600,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									autoComplete="off"
 									className="h-8"
 									disabled={saving}
-									placeholder={customProvider.savedApiKey ? '************' : 'ollama'}
+									placeholder={customProvider.savedApiKey ? '************' : 'API key'}
 									spellCheck={false}
 									type="password"
 									value={customProvider.apiKey}

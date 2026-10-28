@@ -47,7 +47,7 @@ export function SetupService({
 	const Icon = ICONS[service.id];
 	const title = service.id === 'assistant' ? 'LLM Model' : service.title;
 	const modelId =
-		service.id === 'assistant' && state.providerId === 'ollama'
+		service.id === 'assistant' && state.providerId === 'custom'
 			? (state.localModelId ?? state.modelId)
 			: state.modelId;
 	return (

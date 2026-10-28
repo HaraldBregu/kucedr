@@ -129,8 +129,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	): StoredProvider {
 		if (id === 'custom') {
 			if (!baseUrl) throw new Error('Custom provider configuration is invalid.');
-			const provider = loadProviders().find((entry) => entry.id === 'ollama');
-			return { id, name: provider?.name ?? 'Local model provider', apiKey, baseUrl };
+			return { id, name: 'Custom model provider', apiKey, baseUrl };
 		}
 		if (kind === 'models') {
 			const provider = loadProviders().find((entry) => entry.id === id);
@@ -170,23 +169,27 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	private async listCustomModels(value: unknown): Promise<string[]> {
 		const record = this.record(value);
 		const baseUrl = this.baseUrl(record.baseUrl);
-		const url = new URL('tags', `${baseUrl}/`);
+		const url = new URL('models', `${baseUrl}/`);
+		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
 		const signal = AbortSignal.timeout(10_000);
 		let response: Response;
 		try {
-			response = await fetch(url.toString(), { signal });
+			response = await fetch(url.toString(), {
+				signal,
+				headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
+			});
 		} catch {
 			return [];
 		}
 		if (!response.ok) throw new Error('Could not load models from the custom provider.');
-		const body = (await response.json()) as { models?: unknown };
-		if (!Array.isArray(body.models))
-			throw new Error('The local provider returned an invalid model list.');
+		const body = (await response.json()) as { data?: unknown };
+		if (!Array.isArray(body.data))
+			throw new Error('The custom provider returned an invalid model list.');
 		return [
 			...new Set(
-				body.models
+				body.data
 					.map((entry) =>
-						entry && typeof entry === 'object' ? (entry as { name?: unknown }).name : ''
+						entry && typeof entry === 'object' ? (entry as { id?: unknown }).id : ''
 					)
 					.filter(
 						(id): id is string => typeof id === 'string' && id.trim().length > 0 && id.length <= 256

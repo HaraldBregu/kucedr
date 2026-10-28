@@ -283,14 +283,14 @@ function isModelReasoningEffort(value: unknown): value is ModelReasoningEffort {
 }
 
 function toPublicProvider(providerId: string): PublicProvider | undefined {
-	if (providerId === 'ollama') {
+	if (providerId === 'custom') {
 		const provider = getProvider('custom', 'models');
 		return provider
 			? {
-					id: 'ollama',
+					id: 'custom',
 					name: provider.name,
 					baseUrl: provider.baseUrl,
-					capabilities: 'Local models',
+					capabilities: 'Custom models',
 				}
 			: undefined;
 	}
@@ -442,8 +442,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					const modelId = getModelId() ?? '';
 					const contextWindow = await resolveContextWindow(
 						getResolvedProvider(providerId),
-						modelId,
-						getModelOptions()
+						modelId
 					);
 					return { providerId, modelId, contextWindow };
 				},
@@ -890,7 +889,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				(provider: PublicProvider): boolean => {
 					if (!provider.id) return false;
-					setProviderId(provider.id === 'custom' ? 'ollama' : provider.id);
+					setProviderId(provider.id);
 					return true;
 				},
 				AgentChannels.setProvider

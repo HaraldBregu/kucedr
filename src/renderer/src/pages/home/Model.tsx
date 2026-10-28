@@ -26,14 +26,14 @@ export function Model({
 	useEffect(() => {
 		let active = true;
 		setLocalContextWindow(undefined);
-		if (providerId === 'ollama')
+		if (providerId === 'custom')
 			void window.agent
 				.getContextWindow()
 				.then((value) => {
 					if (
 						active &&
 						value.modelId === modelId &&
-						['ollama', 'custom'].includes(value.providerId)
+						value.providerId === 'custom'
 					)
 						setLocalContextWindow(value.contextWindow);
 				})
@@ -65,14 +65,14 @@ export function Model({
 						.listCustomModels({ baseUrl: custom.baseUrl, apiKey: custom.apiKey })
 						.catch(() => []);
 					catalogGroups.push({
-						id: 'ollama',
+						id: 'custom',
 						models: models.map((id) => ({ id, name: id })),
 					});
 				}
 				if (!active) return;
 				setGroups(catalogGroups);
 				setLocalProvider(custom);
-				setProviderId(storedProvider?.id === 'custom' ? 'ollama' : (storedProvider?.id ?? ''));
+				setProviderId(storedProvider?.id ?? '');
 				setModelId(storedModelId ?? '');
 			} catch {
 				if (active) setError(true);
@@ -88,8 +88,8 @@ export function Model({
 
 	const changeModel = async (nextProviderId: string, nextModelId: string): Promise<void> => {
 		const provider =
-			nextProviderId === 'ollama' && localProvider
-				? { id: 'ollama', name: localProvider.name, baseUrl: localProvider.baseUrl }
+			nextProviderId === 'custom' && localProvider
+				? { id: 'custom', name: localProvider.name, baseUrl: localProvider.baseUrl }
 				: providers().find((item) => item.id === nextProviderId);
 		if (!provider) return;
 		setSaving(true);
@@ -97,7 +97,7 @@ export function Model({
 		try {
 			if (!(await window.agent.setProvider(provider))) throw new Error('Provider was not saved');
 			if (!(await window.agent.setModelId(nextModelId))) throw new Error('Model was not saved');
-			if (nextProviderId !== 'ollama') await window.agent.setModelOptions({});
+			if (nextProviderId !== 'custom') await window.agent.setModelOptions({});
 			setProviderId(nextProviderId);
 			setModelId(nextModelId);
 		} catch {

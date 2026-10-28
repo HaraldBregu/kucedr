@@ -215,10 +215,6 @@ export class LlmModel implements LlmAdapter {
 			yield* this.streamOpenAIResponses(provider, req);
 			return;
 		}
-		if (id === 'ollama') {
-			yield* this.streamOllama(provider, req);
-			return;
-		}
 		yield* this.streamOpenAIChat(provider, req);
 	}
 
@@ -734,114 +730,6 @@ export class LlmModel implements LlmAdapter {
 		yield { type: 'message_end', stopReason, usage };
 	}
 
-	private async *streamOllama(
-		provider: LlmProviderSpec,
-		req: LlmStreamRequest
-	): AsyncIterable<LlmProviderEvent> {
-		const response = await fetch(new URL('/api/chat', provider.baseURL).toString(), {
-			method: 'POST',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({
-				model: req.model,
-				messages: llmBuildChatMessages(req.system, req.messages).map((message) => ({
-					role: message.role,
-					content: typeof message.content === 'string' ? message.content : '',
-				})),
-				tools:
-					req.tools.length > 0
-						? req.tools.map((tool) => ({
-								type: 'function',
-								function: {
-									name: tool.name,
-									description: tool.description,
-									parameters: tool.schema,
-								},
-							}))
-						: undefined,
-				options: { ...req.options, num_predict: req.maxTokens },
-				stream: req.streaming !== false,
-			}),
-			signal: req.signal,
-		});
-		if (!response.ok) {
-			const error = Object.assign(new Error(await response.text()), { status: response.status });
-			this.throwProviderError(error);
-		}
-
-		yield { type: 'message_start' };
-		const usage: LlmUsage = { inputTokens: 0, outputTokens: 0 };
-		let stopReason = 'end_turn';
-		let toolIndex = 0;
-		const emit = function* (chunk: {
-			message?: {
-				content?: string;
-				tool_calls?: Array<{ function?: { name?: string; arguments?: unknown } }>;
-			};
-			done?: boolean;
-			done_reason?: string;
-			prompt_eval_count?: number;
-			eval_count?: number;
-		}): Iterable<LlmProviderEvent> {
-			if (typeof chunk.message?.content === 'string' && chunk.message.content) {
-				yield { type: 'text_delta', text: chunk.message.content };
-			}
-			for (const toolCall of chunk.message?.tool_calls ?? []) {
-				stopReason = 'tool_calls';
-				const id = `ollama-tool-${toolIndex++}`;
-				const name = toolCall.function?.name ?? '';
-				if (!name) continue;
-				yield { type: 'tool_call_start', id, name };
-				yield {
-					type: 'tool_call_args_delta',
-					id,
-					jsonDelta: JSON.stringify(toolCall.function?.arguments ?? {}),
-				};
-				yield { type: 'tool_call_end', id };
-			}
-		};
-		const consume = (chunk: {
-			prompt_eval_count?: number;
-			eval_count?: number;
-			done?: boolean;
-			done_reason?: string;
-		}): void => {
-			usage.inputTokens = chunk.prompt_eval_count ?? usage.inputTokens;
-			usage.outputTokens = chunk.eval_count ?? usage.outputTokens;
-			if (chunk.done) stopReason = chunk.done_reason === 'length' ? 'max_tokens' : 'end_turn';
-		};
-
-		if (req.streaming === false) {
-			const chunk = (await response.json()) as Parameters<typeof emit>[0];
-			consume(chunk);
-			yield* emit(chunk);
-		} else {
-			if (!response.body) throw new Error('Ollama returned an empty response body.');
-			const reader = response.body.getReader();
-			const decoder = new TextDecoder();
-			let buffer = '';
-			for (;;) {
-				const { done, value } = await reader.read();
-				buffer += decoder.decode(value, { stream: !done });
-				const lines = buffer.split('\n');
-				buffer = lines.pop() ?? '';
-				for (const line of lines) {
-					if (!line.trim()) continue;
-					const chunk = JSON.parse(line) as Parameters<typeof emit>[0];
-					consume(chunk);
-					yield* emit(chunk);
-				}
-				if (done) break;
-			}
-			if (buffer.trim()) {
-				const chunk = JSON.parse(buffer) as Parameters<typeof emit>[0];
-				consume(chunk);
-				yield* emit(chunk);
-			}
-		}
-
-		yield { type: 'message_end', stopReason, usage };
-	}
-
 	private createOpenAIClient(provider: LlmProviderSpec, missingKeyMessage: string): OpenAI {
 		if (!provider.apiKey) throw new LlmProviderAuthError(missingKeyMessage);
 		const factory =
@@ -878,7 +766,5 @@ function llmBaseUrl(provider: LlmProviderSpec): string | undefined {
 		(!provider.baseURL || /^https:\/\/api\.cohere\.(?:com|ai)\/v[12]\/?$/.test(provider.baseURL))
 	)
 		return 'https://api.cohere.ai/compatibility/v1';
-	if (!['custom', 'ollama'].includes(provider.id.toLowerCase()) || !provider.baseURL)
-		return provider.baseURL;
-	return new URL('/v1', provider.baseURL).toString();
+	return provider.baseURL;
 }

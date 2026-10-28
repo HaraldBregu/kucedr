@@ -17,7 +17,7 @@ export function SetupChatStep({
 	const assistantModelGroups = useMemo(
 		() =>
 			serviceStates.assistant.modelGroups.map((group) =>
-				group.provider.id === 'ollama' && availableLocalModels.length > 0
+				group.provider.id === 'custom' && availableLocalModels.length > 0
 					? {
 							...group,
 							provider: { ...group.provider, name: localProviderName ?? group.provider.name },

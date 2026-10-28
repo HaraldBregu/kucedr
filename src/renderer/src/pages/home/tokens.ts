@@ -15,8 +15,7 @@ export function contextTokens(
 		const context = message.role === 'agent' ? message.contextUsage : undefined;
 		if (
 			context &&
-			(context.providerId === 'custom' ? 'ollama' : context.providerId) ===
-				(providerId === 'custom' ? 'ollama' : providerId) &&
+			context.providerId === providerId &&
 			context.modelId === modelId
 		) {
 			tokens = context.inputTokens + context.outputTokens;
