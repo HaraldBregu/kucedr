@@ -300,7 +300,7 @@ export function AssistantMessage({
 				if (tool.type === 'request_mcp_authorization')
 					return <McpAuthorizationCard key={tool.toolCallId} tool={tool} pending={pending} />;
 				if (isScriptTool(tool.type))
-					return <PluginScriptCard key={tool.toolCallId} tool={tool} />;
+					return <div key={tool.toolCallId} data-chat-script={tool.toolCallId}><PluginScriptCard tool={tool} /></div>;
 				return <ToolActivityGroup key={tool.toolCallId} tools={section} />;
 			})}
 			{message.pendingPermission && (

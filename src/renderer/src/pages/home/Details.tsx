@@ -1,9 +1,10 @@
-import { Activity, ArrowUpRight, ChevronDown, File, Files, Gauge, Hash, MessageSquare } from 'lucide-react';
+import { Activity, ArrowUpRight, ChevronDown, File, FileCode, Files, Gauge, Hash, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import type { HomeChatMessage } from './context/state';
 import { chatAssets } from './components/assets';
+import { chatScripts } from './components/scripts';
 import { statusLabel } from './components/status';
 import { Usage } from './Usage';
 import { ChatLibrary } from './Library';
@@ -11,13 +12,14 @@ import type { LibraryFile } from '@shared/library_types';
 
 export function ChatDetails({ messages, onJump, onAttach }: {
 	readonly messages: readonly HomeChatMessage[];
-	readonly onJump: (messageId: string) => void;
+	readonly onJump: (messageId: string, toolCallId?: string) => void;
 	readonly onAttach: (files: LibraryFile[]) => void;
 }): React.JSX.Element {
 	const responses = messages.filter((message) => message.role === 'agent');
 	const latest = responses.at(-1);
 	const context = responses.findLast((message) => message.contextUsage)?.contextUsage;
 	const assets = chatAssets(responses);
+	const scripts = chatScripts(responses);
 	return (
 		<aside aria-label="Chat information" className="absolute right-6 top-6 hidden max-h-[calc(100%-3rem)] w-72 overflow-y-auto @[1408px]/chat:block">
 			<Card size="sm" className="gap-0 rounded-2xl border border-border bg-card ring-0 data-[size=sm]:py-0">
@@ -52,6 +54,23 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 								<span className="min-w-0 flex-1 truncate text-left text-xs">{path.replace(/\\/g, '/').split('/').at(-1)}</span>
 								<ArrowUpRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
 							</Button>) : <p className="px-2 pb-1 text-xs text-muted-foreground">No generated assets yet.</p>}
+						</div>
+					</CollapsibleContent>
+				</Collapsible>
+				<Collapsible defaultOpen className="border-t border-border">
+					<CollapsibleTrigger render={<Button variant="ghost" className="group h-10 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
+						<FileCode className="size-4 text-muted-foreground" aria-hidden />
+						<span className="flex-1 text-left">Created scripts</span>
+						<span className="text-xs tabular-nums text-muted-foreground">{scripts.length}</span>
+						<ChevronDown className="size-4 text-muted-foreground transition-transform group-data-open:rotate-180" aria-hidden />
+					</CollapsibleTrigger>
+					<CollapsibleContent>
+						<div className="space-y-0.5 px-1 pb-2">
+							{scripts.length ? scripts.map((script) => <Button key={`${script.messageId}:${script.id}`} variant="ghost" className="h-9 w-full justify-start gap-2 px-2 font-normal" title={`Show in conversation: ${script.label}`} onClick={() => onJump(script.messageId, script.id)}>
+								<span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted/40"><FileCode className="size-3.5 text-muted-foreground" aria-hidden /></span>
+								<span className="min-w-0 flex-1 truncate text-left text-xs">{script.label}</span>
+								<ArrowUpRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
+							</Button>) : <p className="px-2 pb-1 text-xs text-muted-foreground">No created scripts yet.</p>}
 						</div>
 					</CollapsibleContent>
 				</Collapsible>

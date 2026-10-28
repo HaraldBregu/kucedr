@@ -893,10 +893,11 @@ function PageContent(): ReactElement {
 										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
 									/>
 								</div>
-									<ChatDetails messages={visibleMessages} onAttach={addLibraryFiles} onJump={(messageId) => {
+								<ChatDetails messages={visibleMessages} onAttach={addLibraryFiles} onJump={(messageId, toolCallId) => {
 									const scroll = chatScrollRef.current;
 									const viewport = scroll?.scrollRef.current;
-									const anchor = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
+									const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
+									const anchor = toolCallId ? Array.from(response?.querySelectorAll<HTMLElement>('[data-chat-script]') ?? []).find((element) => element.dataset.chatScript === toolCallId) : response;
 									if (!scroll || !viewport || !anchor) return;
 									scroll.stopScroll();
 									viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
