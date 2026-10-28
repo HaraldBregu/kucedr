@@ -875,14 +875,14 @@ function PageContent(): ReactElement {
 										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
 									/>
 								</div>
-							<ChatDetails messages={visibleMessages} onJump={(messageId) => {
-								const scroll = chatScrollRef.current;
-								const viewport = scroll?.scrollRef.current;
-								const anchor = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
-								if (!scroll || !viewport || !anchor) return;
-								scroll.stopScroll();
-								viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-							}} />
+								<ChatDetails messages={visibleMessages} onJump={(messageId) => {
+									const scroll = chatScrollRef.current;
+									const viewport = scroll?.scrollRef.current;
+									const anchor = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
+									if (!scroll || !viewport || !anchor) return;
+									scroll.stopScroll();
+									viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+								}} />
 							</ChatContainerRoot>
 							{composer}
 						</>
