@@ -110,6 +110,9 @@
 }
 
 @layer base {
+	.sr-only {
+		@apply top-0;
+	}
 	* {
 		@apply border-border outline-ring/50;
 	}
