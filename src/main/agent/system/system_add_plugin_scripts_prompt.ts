@@ -23,8 +23,6 @@ export function addPluginScriptsPrompt(prompt: string, scripts: PluginScript[]):
 		prompt += `\n\n### ${script.name} (${script.plugin.name} plugin)`;
 		prompt += `\n${script.description}`;
 		if (script.fence) prompt += `\nFence: ${script.fence}`;
-		prompt += `\nInput schema:\n\`\`\`json\n${JSON.stringify(script.inputSchema)}\n\`\`\``;
-		prompt += `\n${script.instructions}`;
-	}
+		prompt += `\nInput schema:\n\`\`\`json\n${JSON.stringify(script.inputSchema)}\n\`\`\``;	}
 	return prompt;
 }
