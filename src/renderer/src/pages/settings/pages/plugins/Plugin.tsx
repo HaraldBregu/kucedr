@@ -273,6 +273,16 @@ export default function PluginPage(): React.JSX.Element {
 				description: skill.description,
 			})),
 		},
+		{
+			key: 'scripts',
+			title: t('settings.integrations.plugin.scripts'),
+			rows: contents.scripts.map((script) => ({
+				key: script.name,
+				title: script.title,
+				description: script.fence ? `${script.name} · \`\`\`${script.fence}` : script.name,
+				badge: script.version,
+			})),
+		},
 	].filter((section) => section.rows.length > 0);
 
 	return (
