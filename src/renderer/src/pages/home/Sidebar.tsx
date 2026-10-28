@@ -125,7 +125,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="shrink-0 space-y-2 p-3">
 				<div className="relative">
-					<Search aria-hidden="true" className="pointer-events-none absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+					<Search aria-hidden="true" className="pointer-events-none absolute z-10 left-2.5 top-2.5 size-4 text-muted-foreground" />
 					<Input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t('navigationBar.search')} aria-label={t('navigationBar.search')} className="h-9 border-transparent bg-transparent pl-9 shadow-none hover:bg-sidebar-accent focus-visible:bg-sidebar-accent" />
 				</div>
 				<SidebarMenu>

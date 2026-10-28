@@ -261,3 +261,14 @@ it('shows the active chat in the sidebar-aligned header', () => {
 	expect(container.querySelector('[data-slot="navigationbar-context"]')).toHaveTextContent('Navigation refresh');
 	expect(screen.getByText('Kucedr')).toBeInTheDocument();
 });
+
+
+it('keeps the current chat context beside the toggle when the sidebar is closed', () => {
+	const { container } = render(
+		<PageProvider initialState={{ sidebarOpen: false }}><MemoryRouter initialEntries={['/home']}>
+			<NavigationBar showWorkspace />
+		</MemoryRouter></PageProvider>
+	);
+	expect(container.querySelector('[data-slot="navigationbar-context"]')).toHaveTextContent('navigationBar.newChat');
+	expect(screen.queryByText('Kucedr')).not.toBeInTheDocument();
+});

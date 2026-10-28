@@ -515,3 +515,20 @@ it('resizes the sidebar with keyboard and pointer input and persists the width',
 	expect(toggle).toHaveAttribute('aria-expanded', 'false');
 	expect(sidebar).toHaveAttribute('data-state', 'collapsed');
 });
+
+
+it('filters chat history by title and restores results when search is cleared', async () => {
+	const user = userEvent.setup();
+	listSessions.mockResolvedValue([
+		{ id: 'latest', title: 'Navigation refresh', createdAtMs: 2 },
+		{ id: 'older', title: 'Project notes', createdAtMs: 1 },
+	]);
+	render(<MemoryRouter><HomeSidebar refreshKey="search" openExtension={null} /></MemoryRouter>);
+	await screen.findByRole('button', { name: 'Project notes' });
+	const search = screen.getByRole('searchbox');
+	await user.type(search, 'NAVIGATION');
+	expect(screen.getByRole('button', { name: 'Navigation refresh' })).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Project notes' })).not.toBeInTheDocument();
+	await user.clear(search);
+	expect(screen.getByRole('button', { name: 'Project notes' })).toBeInTheDocument();
+});
