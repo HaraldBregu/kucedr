@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import type { PluginScriptInfo } from '../../../../../../../shared/plugin_types';
 import {
 	SettingsEmptyState,
-	SettingsItemMedia,
 	SettingsLoadingRows,
 	SettingsNotice,
 	SettingsPageShell,
