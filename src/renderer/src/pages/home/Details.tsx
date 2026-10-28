@@ -37,7 +37,7 @@ export function ChatDetails({ open, messages, model, draft, hasAttachments, onJu
 					<div className="flex min-h-7 items-center gap-2 text-muted-foreground">
 						<Gauge className="size-4 shrink-0" aria-hidden />
 						<span className="flex-1">Context</span>
-						<Usage className="h-7 rounded-md px-0 text-xs tabular-nums text-foreground" providerId={context?.providerId ?? ''} modelId={context?.modelId ?? ''} contextWindow={context?.contextWindow} messages={messages} draft="" hasAttachments={false} />
+						<Usage className="h-7 rounded-md px-0 text-xs tabular-nums text-foreground" providerId={model?.providerId ?? ''} modelId={model?.modelId ?? ''} contextWindow={model?.contextWindow} messages={messages} draft={draft} hasAttachments={hasAttachments} />
 					</div>
 				</CardContent>
 				<Collapsible>
