@@ -54,6 +54,7 @@ interface Row {
 	readonly title: string;
 	readonly description?: string;
 	readonly badge?: string;
+	readonly path?: string;
 }
 
 export default function PluginPage(): React.JSX.Element {
