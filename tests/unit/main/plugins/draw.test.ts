@@ -4,7 +4,7 @@ import path from 'node:path';
 import { JSDOM } from 'jsdom';
 import { pluginScripts } from '../../../../src/main/plugins/scripts/plugin_script_list';
 import { renderPluginScript } from '../../../../src/main/plugins/scripts/plugin_script_render';
-import { runPluginScript } from '../../../../src/main/agent/tools/plugin/run';
+import { runScript } from '../../../../src/main/agent/tools/plugin/run';
 
 const directory = path.resolve('resources/plugins/bootstrap/scripts/draw');
 const input = { elements: [{ type: 'rectangle', x: 0, y: 0, label: { text: 'Start' } }] };
@@ -22,7 +22,7 @@ it('discovers draw and runs every documented example through the agent tool', as
 	expect(examples).toHaveLength(3);
 	for (const example of examples)
 		await expect(
-			runPluginScript.run({ name: 'draw', input: JSON.parse(example[1]) })
+			runScript.run({ name: 'draw', input: JSON.parse(example[1]) })
 		).resolves.toMatchObject({ ok: true });
 });
 

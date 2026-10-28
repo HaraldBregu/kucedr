@@ -89,17 +89,17 @@ it('loads script instructions on demand and runs the chart examples', async () =
 	expect(examples.length).toBeGreaterThan(0);
 	for (const example of examples) {
 		await expect(
-			runPluginScript.run({ name: 'chart', input: JSON.parse(example[1]) })
+			runScript.run({ name: 'chart', input: JSON.parse(example[1]) })
 		).resolves.toMatchObject({ ok: true });
 	}
 });
 
 it('executes the agent tool and returns success only after generating the HTML', async () => {
-	await expect(runPluginScript.run({ name: 'chart', input })).resolves.toEqual({
+	await expect(runScript.run({ name: 'chart', input })).resolves.toEqual({
 		ok: true,
 		shown: 'Chart displayed to the user.',
 	});
-	await expect(runPluginScript.run({ name: 'chart', input: { ...input, data: [] } })).rejects.toThrow(
+	await expect(runScript.run({ name: 'chart', input: { ...input, data: [] } })).rejects.toThrow(
 		'data must contain between 1 and 200 rows'
 	);
 });
@@ -242,7 +242,7 @@ it('escapes markup in text and prevents labels from breaking out of the inline s
 
 it.each([undefined, '', '   '])('renders an untitled chart when title is %j', async (title) => {
 	const untitled = { ...input, title };
-	await expect(runPluginScript.run({ name: 'chart', input: untitled })).resolves.toMatchObject({
+	await expect(runScript.run({ name: 'chart', input: untitled })).resolves.toMatchObject({
 		ok: true,
 	});
 	const html = await renderPluginScript('chart', untitled, 'light');
