@@ -693,6 +693,27 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
+						path: 'scripts',
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<ScriptsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: ':scriptName',
+								element: (
+									<SettingsRouteWrapper>
+										<ScriptDetailsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
+					},
+					{
 						path: 'model-services/:serviceId/details/*',
 						element: <ModelServiceLegacyRedirect />,
 					},
