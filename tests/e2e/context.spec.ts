@@ -3,26 +3,19 @@ import { createServer } from 'node:http';
 import { launchApp } from './helpers';
 import { closeApp } from './close';
 
-test('context ring follows real local usage, draft changes, model selection and restored history', async () => {
+test('context ring keeps custom limits unavailable and resolves catalog limits', async () => {
 	const server = createServer((request, response) => {
-		response.setHeader('content-type', 'application/json');
-		if (request.url === '/api/tags')
-			response.end(JSON.stringify({ models: [{ name: 'context-test' }] }));
-		else if (request.url === '/api/ps')
-			response.end(JSON.stringify({ models: [{ name: 'context-test', context_length: 32768 }] }));
-		else if (request.url === '/api/show')
-			response.end(JSON.stringify({ parameters: 'num_ctx 32768' }));
-		else if (request.url === '/api/chat')
-			response.end(
-				JSON.stringify({
-					message: { role: 'assistant', content: 'Context tracking verified.' },
-					done: true,
-					done_reason: 'stop',
-					prompt_eval_count: 16000,
-					eval_count: 384,
-				}) + '\n'
-			);
-		else {
+		if (request.url === '/v1/models') {
+			response.setHeader('content-type', 'application/json');
+			response.end(JSON.stringify({ data: [{ id: 'context-test' }] }));
+		} else if (request.url === '/v1/chat/completions') {
+			response.setHeader('content-type', 'text/event-stream');
+			for (const chunk of [
+				{ choices: [{ index: 0, delta: { role: 'assistant', content: 'Context tracking verified.' }, finish_reason: null }] },
+				{ choices: [{ index: 0, delta: {}, finish_reason: 'stop' }], usage: { prompt_tokens: 16000, completion_tokens: 384 } },
+			]) response.write(`data: ${JSON.stringify(chunk)}\n\n`);
+			response.end('data: [DONE]\n\n');
+		} else {
 			response.statusCode = 404;
 			response.end('{}');
 		}
@@ -35,24 +28,22 @@ test('context ring follows real local usage, draft changes, model selection and 
 		await expect(page).toHaveURL(/#\/?start$/);
 		await page.evaluate(async (baseUrl) => {
 			await window.provider.set({ kind: 'models', id: 'custom', apiKey: 'local-test', baseUrl });
-			await window.agent.setProvider({ id: 'ollama', name: 'Ollama', baseUrl });
+			await window.agent.setProvider({ id: 'custom', name: 'Custom model provider', baseUrl });
 			await window.agent.setModelId('context-test');
 			window.sessionStorage.setItem('kucedr-auth-local-only', 'true');
 			window.sessionStorage.setItem('kucedr-onboarding-started', 'true');
-		}, `http://127.0.0.1:${address.port}/api`);
+		}, `http://127.0.0.1:${address.port}/v1`);
 		await page.reload();
 		await expect(page).toHaveURL(/#\/home$/);
 		const ring = page.getByRole('progressbar', { name: 'Context window used' });
-		await expect(ring).toHaveAttribute('aria-valuenow', '0');
+		await expect(ring).not.toHaveAttribute('aria-valuenow');
+		await expect(ring).toHaveAttribute('aria-valuetext', 'Context window unavailable');
 		const editor = page.locator('[data-slot="home-composer-shell"] [role="textbox"]');
 		await editor.fill('Please say hello.');
 		await editor.press('Enter');
 		await expect(page.getByText('Context tracking verified.', { exact: true })).toBeVisible();
-		await expect(ring).toHaveAttribute('aria-valuenow', '50');
-		await expect(ring).toHaveAttribute(
-			'aria-valuetext',
-			/^Context: 16[,.]384 \/ 32[,.]768 tokens \(50% used\)$/
-		);
+		await expect(ring).not.toHaveAttribute('aria-valuenow');
+		await expect(ring).toHaveAttribute('aria-valuetext', 'Context window unavailable');
 		await expect(page.getByRole('button', { name: 'Send message' })).toBeVisible();
 		await editor.focus();
 		for (
@@ -64,17 +55,21 @@ test('context ring follows real local usage, draft changes, model selection and 
 			await page.keyboard.press('Tab');
 		await expect(ring.locator('..')).toBeFocused();
 		await expect(
-			page.locator('[data-slot="tooltip-content"]').filter({ hasText: /16[,.]384/ })
+			page.locator('[data-slot="tooltip-content"]').filter({ hasText: 'The provider has not reported a context limit for this model.' })
 		).toBeVisible();
 		await editor.fill('x'.repeat(3000));
-		await expect(ring).toHaveAttribute('aria-valuenow', '53');
+		await expect(ring).toHaveAttribute('aria-valuetext', 'Context window unavailable');
 		await editor.fill('');
 		await page.reload();
-		await expect(ring).toHaveAttribute('aria-valuenow', '50');
+		await expect(ring).not.toHaveAttribute('aria-valuenow');
+		await expect(ring).toHaveAttribute('aria-valuetext', 'Context window unavailable');
 		await page.getByRole('button', { name: 'Change model' }).click();
 		await page.getByRole('menuitemradio', { name: /GPT-5.4 Mini/ }).click();
 		await expect(ring).toHaveAttribute('aria-valuetext', /400[,.]000 tokens/);
 		await expect(ring).toHaveAttribute('aria-valuetext', /^Estimated context/);
+		await expect(ring).toHaveAttribute('aria-valuenow', '0');
+		await editor.fill('x'.repeat(3000));
+		await expect(ring).toHaveAttribute('aria-valuetext', /^Estimated context: 1[,.]0\d{2} \/ 400[,.]000 tokens/);
 		await expect(page.getByText('This page crashed')).toHaveCount(0);
 	} finally {
 		await closeApp(app, userDataDir);
