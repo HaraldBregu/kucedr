@@ -273,6 +273,7 @@ export default function PluginPage(): React.JSX.Element {
 				key: skill.id,
 				title: skill.name,
 				description: skill.description,
+				path: `/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`,
 			})),
 		},
 		{
