@@ -23,7 +23,6 @@ import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session
 import type { AgentSessionSummary } from '@/lib/compat';
 import { revealSelection } from '@/lib/selection';
 import { playSound } from '@/lib/sounds/play';
-import { cn } from '@/lib/utils';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
@@ -38,6 +37,7 @@ const actionGroupClassName = 'flex h-full items-center gap-1';
 export interface NavigationBarProps {
 	/** Optional class applied to the navigation bar container */
 	className?: string;
+	startContent?: ReactNode;
 	/** Custom content rendered on the right before window controls */
 	rightContent?: ReactNode;
 	/** Shows the Workspace entry on app routes with a sidebar */
@@ -46,6 +46,7 @@ export interface NavigationBarProps {
 
 export const NavigationBar = React.memo(function NavigationBar({
 	className,
+	startContent,
 	rightContent,
 	showWorkspace,
 }: NavigationBarProps) {
@@ -67,7 +68,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const { isFullScreen, isMaximized } = useWindowState();
 	const { open: openCommandMenu } = useCommandMenu();
 	const { sessionId, sessionTitle, setSessionId, setSessionTitle } = useChatSession();
-	const { state, isMobile, sidebarWidth } = usePageContext();
+	const { state, isMobile } = usePageContext();
 	const sidebarExpanded = showWorkspace && !isMobile && state.sidebarOpen;
 	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
 	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
@@ -240,18 +241,17 @@ export const NavigationBar = React.memo(function NavigationBar({
 	return (
 		<NavigationBarProvider value={{ isMac, isFullScreen }}>
 			<NavigationBarContainer
-				className={cn(sidebarExpanded && 'border-b-0 bg-transparent', className)}
+				className={className}
 			>
 				{/* ── Left: platform menu + nav buttons ── */}
 				<NavigationBarLeftContainer
-					isMac={isMac}
+					isMac={isMac && !sidebarExpanded}
 					isFullScreen={isFullScreen}
 					className="min-w-0 shrink transition-[width] duration-200 motion-reduce:transition-none"
 				>
 					<div
 						data-slot="navigationbar-sidebar-actions"
 						className={`${actionGroupClassName} shrink-0 overflow-hidden`}
-						style={sidebarExpanded ? { width: sidebarWidth - (isMac ? (isFullScreen ? 8 : 80) : 0) - 1 } : undefined}
 					>
 						{!isMac && (
 							<Tooltip>
@@ -270,8 +270,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 								<TooltipContent side="bottom">{t('navigationBar.applicationMenu')}</TooltipContent>
 							</Tooltip>
 						)}
-						<span data-slot="split-pane-toggle-target" className="contents" />
-						{sidebarExpanded && <span className="ml-2 truncate text-sm font-semibold">Kucedr</span>}
+						{startContent}
 
 					</div>
 					{!isHome && !isWorkspace && !isOnboarding && !isSettings && !isCode && (

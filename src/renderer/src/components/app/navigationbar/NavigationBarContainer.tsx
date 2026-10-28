@@ -16,7 +16,7 @@ export const NavigationBarContainer = memo(function AppNavigationBarContainer({
 		<div
 			data-slot="navigationbar"
 			className={cn(
-				'fixed inset-x-0 top-0 z-50 flex h-12 shrink-0 items-center border-b border-border bg-background select-none',
+				'relative z-40 flex h-12 shrink-0 items-center border-b border-border bg-background select-none',
 				className
 			)}
 			style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}

@@ -1,6 +1,6 @@
-import React, { type ReactNode, useLayoutEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { PanelLeft } from 'lucide-react';
+import React, { type ReactNode } from 'react';
+import { NavigationBar } from '@/components/app/navigationbar/NavigationBar';
+import { Toggle } from './Toggle';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,15 +29,6 @@ export function Split({
 }: SplitProps): React.JSX.Element {
 	const { state, dispatch, isMobile, sidebarWidth, setSidebarWidth, toggleSidebar } =
 		usePageContext();
-	const sidebarOpen = isMobile ? state.sidebarOpenMobile : state.sidebarOpen;
-	const [toggleTarget, setToggleTarget] = useState<HTMLElement>(() => document.body);
-
-	useLayoutEffect(() => {
-		const titlebarTarget = document.querySelector<HTMLElement>(
-			'[data-slot="split-pane-toggle-target"]'
-		);
-		if (titlebarTarget) setToggleTarget(titlebarTarget);
-	}, []);
 
 	return (
 		<div
@@ -51,27 +42,6 @@ export function Split({
 			}
 			{...props}
 		>
-			{createPortal(
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon"
-					data-slot="split-pane-toggle"
-					aria-label="Toggle Sidebar"
-					aria-controls="split-pane-sidebar"
-					aria-expanded={sidebarOpen}
-					title="Toggle Sidebar"
-					onClick={toggleSidebar}
-					className={cn(
-						'size-8 rounded-md text-muted-foreground hover:text-foreground aria-expanded:bg-transparent',
-						toggleTarget === document.body && 'fixed left-[84px] top-2 z-50'
-					)}
-					style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-				>
-					<PanelLeft className="size-4" strokeWidth={1.8} />
-				</Button>,
-				toggleTarget
-			)}
 			{isMobile ? (
 				<Sheet
 					open={state.sidebarOpenMobile}
@@ -98,14 +68,6 @@ export function Split({
 				</Sheet>
 			) : (
 				<>
-					<div
-						data-slot="split-pane-gap"
-						aria-hidden="true"
-						className={cn(
-							'shrink-0 transition-[width] duration-200 ease-linear motion-reduce:transition-none',
-							state.sidebarOpen ? 'w-[var(--split-pane-sidebar-width)]' : 'w-0'
-						)}
-					/>
 					<aside
 						id="split-pane-sidebar"
 						data-slot="split-pane-sidebar"
@@ -113,12 +75,18 @@ export function Split({
 						aria-label={sidebarLabel}
 						inert={!state.sidebarOpen}
 						className={cn(
-							'fixed inset-y-0 left-0 z-30 flex flex-col pt-12 border-r border-sidebar-border/60 bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
-							state.sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+							'relative z-30 flex shrink-0 flex-col overflow-hidden bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-linear motion-reduce:transition-none',
+							state.sidebarOpen && 'border-r border-sidebar-border/60'
 						)}
-						style={{ width: 'var(--split-pane-sidebar-width)' }}
+						style={{ width: state.sidebarOpen ? 'var(--split-pane-sidebar-width)' : 0 }}
 					>
-						{sidebar}
+						<div className="flex h-full min-h-0 flex-col" style={{ width: 'var(--split-pane-sidebar-width)' }}>
+							<header data-slot="sidebar-header" className="flex h-12 shrink-0 items-center gap-2 pl-20 pr-3" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}>
+								<Toggle />
+								<span className="truncate text-sm font-semibold">Kucedr</span>
+							</header>
+							<div className="min-h-0 flex-1">{sidebar}</div>
+						</div>
 						<button
 							type="button"
 							data-slot="split-pane-resizer"
@@ -180,9 +148,10 @@ export function Split({
 			)}
 			<main
 				data-slot="split-pane-content"
-				className="relative flex min-h-0 min-w-0 flex-1 flex-col bg-transparent"
+				className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background"
 			>
-				{children}
+				<NavigationBar showWorkspace startContent={isMobile || !state.sidebarOpen ? <Toggle /> : undefined} />
+				<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
 			</main>
 		</div>
 	);

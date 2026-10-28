@@ -35,6 +35,7 @@ export const Provider = memo(function Provider({
 }: ProviderProps): React.ReactElement {
 	const [state, dispatch] = useReducer(pageReducer, {
 		...INITIAL_PAGE_STATE,
+		sidebarOpen: document.cookie.split('; ').find((entry) => entry.startsWith(`${SIDEBAR_COOKIE_NAME}=`))?.split('=')[1] !== 'false',
 		...initialState,
 	});
 	const [sidebarWidth, setSidebarWidthState] = useState(() => {

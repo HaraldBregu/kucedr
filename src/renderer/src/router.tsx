@@ -135,7 +135,7 @@ function RootRouteComponent(): React.JSX.Element {
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
 	const isSettings = location.pathname.startsWith('/settings');
-	const hasSidebar = isHome || isWorkspace || isSettings;
+	const hasSidebar = isHome || isWorkspace || isSettings || location.pathname === '/code' || location.pathname.startsWith('/code/');
 
 	return (
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
@@ -162,7 +162,7 @@ function RootRouteComponent(): React.JSX.Element {
 							'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground'
 						)}
 					>
-						<NavigationBar
+						{!hasSidebar && <NavigationBar
 							rightContent={
 								phase === 'auth' && authState.status !== 'recovery' ? (
 									<Button type="button" variant="ghost" size="sm" onClick={skipSignIn}>
@@ -170,12 +170,10 @@ function RootRouteComponent(): React.JSX.Element {
 									</Button>
 								) : undefined
 							}
-							showWorkspace={hasSidebar}
-						/>
-						<div className="min-h-0 flex-1 overflow-hidden pt-12">
-							<PageTransition>
-								<Outlet />
-							</PageTransition>
+							showWorkspace={false}
+						/>}
+						<div className="min-h-0 flex-1 overflow-hidden">
+							{hasSidebar ? <Outlet /> : <PageTransition><Outlet /></PageTransition>}
 						</div>
 						<CommandMenu
 							key={location.pathname}
