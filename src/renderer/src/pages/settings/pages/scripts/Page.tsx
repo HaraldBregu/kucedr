@@ -40,8 +40,9 @@ const ScriptsPage: React.FC = () => {
 			.finally(() => setLoading(false));
 	}, [t]);
 
-	const open = (script: PluginScriptInfo): void =>
-		navigate(`/settings/scripts/${encodeURIComponent(script.name)}`);
+	const open = (script: PluginScriptInfo): void => {
+		void navigate(`/settings/scripts/${encodeURIComponent(script.name)}`);
+	};
 
 	return (
 		<SettingsPageShell>
