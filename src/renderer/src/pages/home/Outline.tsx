@@ -52,7 +52,7 @@ export function ChatOutline({ messages }: { readonly messages: readonly HomeChat
 							type="button"
 							aria-label={turn.title}
 							aria-current={active === turn.id ? 'location' : undefined}
-							className="group flex h-4 w-8 items-center rounded-sm px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							className="group flex h-2 w-8 items-center rounded-sm px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 							onClick={() => {
 								const viewport = scrollRef.current;
 								const anchor = Array.from(contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-turn]') ?? []).find((element) => element.dataset.chatTurn === turn.id);
