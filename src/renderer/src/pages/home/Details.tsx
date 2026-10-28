@@ -54,7 +54,7 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 						</div>
 					</CollapsibleContent>
 				</Collapsible>
-				<ChatLibrary refreshKey={assets.map((asset) => asset.path).join('\n')} onAttach={onAttach} />
+				<ChatLibrary refreshKey={`${latest?.id}:${latest?.completedAtMs}:${assets.map((asset) => asset.path).join('\n')}`} onAttach={onAttach} />
 			</Card>
 		</aside>
 	);

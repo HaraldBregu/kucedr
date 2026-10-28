@@ -424,6 +424,17 @@ describe('Home prompt attachments', () => {
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 	});
 
+	it('attaches dropped library files without inserting their paths into the editor', async () => {
+		renderPage();
+		const editor = screen.getByRole('textbox');
+		const getData = jest.fn(() => '["notes/library-notes.md"]');
+		fireEvent.drop(editor, { dataTransfer: { types: ['application/x-kucedr-library-items'], getData } });
+		expect(await screen.findByText('library-notes.md')).toBeInTheDocument();
+		expect(editor).toHaveValue('');
+		expect(setInput).not.toHaveBeenCalled();
+		await waitFor(() => expect(localStorage.getItem('kucedr-prompt-attachments')).toContain('/tmp/library/library-notes.md'));
+	});
+
 	it('clears submitted files immediately while the captured request continues', async () => {
 		let resolveSubmit = (_accepted: boolean): void => {};
 		handleSubmit.mockReturnValueOnce(
