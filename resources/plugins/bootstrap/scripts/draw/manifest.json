@@ -8,6 +8,39 @@
 		"entry": "dist/index.mjs",
 		"instructions": "instructions.md"
 	},
+	"inputSchema": {
+		"type": "object",
+		"required": ["elements"],
+		"properties": {
+			"title": { "type": "string", "title": "Title" },
+			"description": { "type": "string", "title": "Description" },
+			"elements": {
+				"type": "array",
+				"title": "Elements",
+				"description": "1–200 Excalidraw element skeletons: rectangle, ellipse, diamond, text, line or arrow, each with type, x and y.",
+				"minItems": 1,
+				"maxItems": 200,
+				"items": {
+					"type": "object",
+					"required": ["type", "x", "y"],
+					"properties": {
+						"type": { "type": "string", "enum": ["rectangle", "ellipse", "diamond", "text", "line", "arrow"] },
+						"x": { "type": "number" },
+						"y": { "type": "number" }
+					}
+				}
+			}
+		},
+		"examples": [
+			{
+				"elements": [
+					{ "id": "request", "type": "rectangle", "x": 0, "y": 20, "width": 160, "height": 80, "label": { "text": "Request" } },
+					{ "id": "result", "type": "rectangle", "x": 300, "y": 20, "width": 160, "height": 80, "label": { "text": "Result" } },
+					{ "type": "arrow", "x": 170, "y": 60, "width": 120, "height": 0, "start": { "id": "request" }, "end": { "id": "result" } }
+				]
+			}
+		]
+	},
 	"fence": "draw",
 	"height": 420
 }
