@@ -13,7 +13,7 @@ import type { LibraryFile } from '@shared/library_types';
 export function ChatDetails({ messages, onJump, onAttach }: {
 	readonly messages: readonly HomeChatMessage[];
 	readonly onJump: (messageId: string, toolCallId?: string) => void;
-	readonly onAttach: (files: LibraryFile[]) => void;
+	readonly onAttach: (files: Pick<LibraryFile, 'name' | 'path'>[]) => void;
 }): React.JSX.Element {
 	const responses = messages.filter((message) => message.role === 'agent');
 	const latest = responses.at(-1);
@@ -71,7 +71,7 @@ export function ChatDetails({ messages, onJump, onAttach }: {
 					</CollapsibleContent>
 				</Collapsible>
 				<ChatLibrary refreshKey={`${latest?.id}:${latest?.completedAtMs}:${assets.map((asset) => asset.path).join('\n')}`} onAttach={onAttach} />
-				<ChatWorkspace />
+				<ChatWorkspace onAttach={onAttach} />
 			</Card>
 		</aside>
 	);

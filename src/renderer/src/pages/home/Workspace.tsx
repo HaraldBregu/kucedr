@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowUpRight, ChevronDown, File, FolderOpen } from 'lucide-react';
+import { ChevronDown, File, FolderOpen, Plus } from 'lucide-react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const BATCH_SIZE = 50;
 
-export function ChatWorkspace(): React.JSX.Element {
-	const navigate = useNavigate();
+export function ChatWorkspace({ onAttach }: {
+	readonly onAttach: (files: { name: string; path: string }[]) => void;
+}): React.JSX.Element {
 	const [files, setFiles] = useState<WorkspaceTreeEntry[]>([]);
+	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [revision, setRevision] = useState(0);
@@ -18,8 +19,9 @@ export function ChatWorkspace(): React.JSX.Element {
 		let active = true;
 		let refreshTimer: number | undefined;
 		const load = (): void => {
-			void window.agent.listWorkspaceFiles().then((entries) => {
+			void Promise.all([window.agent.listWorkspaceFiles(), window.agent.getWorkspaceLocation()]).then(([entries, location]) => {
 				if (!active) return;
+				setRoot(location.replace(/[\\/]+$/, ''));
 				const pending = [...entries].reverse();
 				const items: WorkspaceTreeEntry[] = [];
 				while (pending.length) {
@@ -57,13 +59,10 @@ export function ChatWorkspace(): React.JSX.Element {
 					if (viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < 76) setVisibleCount((count) => Math.min(count + BATCH_SIZE, files.length));
 				}}>
 					{files.slice(0, visibleCount).map((file) => <li key={file.path}>
-						<Button variant="ghost" className="h-9 w-full justify-start gap-2 px-2 font-normal" title={file.path} aria-label={`Open ${file.path} in Workspace`} onClick={() => {
-							localStorage.setItem('workspace-selected-file', file.path);
-							navigate('/workspace');
-						}}>
+						<Button variant="ghost" className="h-9 w-full justify-start gap-2 px-2 font-normal" title={file.path} aria-label={`Attach ${file.path}`} onClick={() => onAttach([{ name: file.name, path: `${root}/${file.path}` }])}>
 							<span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted/40"><File className="size-3.5 text-muted-foreground" aria-hidden /></span>
 							<span className="min-w-0 flex-1 truncate text-left text-xs">{file.name}</span>
-							<ArrowUpRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
+							<Plus className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
 						</Button>
 					</li>)}
 					{visibleCount < files.length && <li><Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => setVisibleCount((count) => Math.min(count + BATCH_SIZE, files.length))}>Show more</Button></li>}

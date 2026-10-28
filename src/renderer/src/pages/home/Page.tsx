@@ -602,7 +602,7 @@ function PageContent(): ReactElement {
 		});
 	}, []);
 
-	const addLibraryFiles = useCallback((files: LibraryFile[]): void => {
+	const addLibraryFiles = useCallback((files: Pick<LibraryFile, 'name' | 'path'>[]): void => {
 		setAttachments((current) => [
 			...current,
 			...files.map((entry) => {
