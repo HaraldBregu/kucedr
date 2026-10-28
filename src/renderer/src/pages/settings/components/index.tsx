@@ -147,6 +147,7 @@ interface SettingsRowProps {
 	readonly className?: string;
 	readonly contentClassName?: string;
 	readonly actionClassName?: string;
+	readonly onClick?: () => void;
 }
 
 export function SettingsRow({
