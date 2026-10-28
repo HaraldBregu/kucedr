@@ -4,6 +4,7 @@ export function defaultState(): MemoryState {
 	return {
 		config: {
 			enabled: true,
+			includeInPrompt: true,
 			providerId: '',
 			modelId: '',
 			modelOptions: {},
