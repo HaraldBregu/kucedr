@@ -14,6 +14,7 @@ import {
 	SettingsSection,
 	SettingsValue,
 } from '../../../components';
+import { SettingsItemMedia } from '../../../components/item-media';
 
 const ScriptDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
