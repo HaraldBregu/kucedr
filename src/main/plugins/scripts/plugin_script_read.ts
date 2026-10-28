@@ -36,10 +36,9 @@ export type PluginScriptManifest = z.infer<typeof manifestSchema> & {
 	/** The folder name. */
 	readonly name: string;
 	readonly directory: string;
-	readonly instructions: string;
 };
 
-/** Reads and validates `scripts/<id>/manifest.json` and its `INSTRUCTIONS.md`. */
+/** Reads and validates `scripts/<id>/manifest.json`. */
 export function readPluginScript(directory: string): PluginScriptManifest {
 	const name = path.basename(directory);
 	if (!ID.test(name)) throw new Error(`scripts/${name} must be a kebab-case folder name.`);
