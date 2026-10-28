@@ -33,6 +33,17 @@ export interface PluginInfo {
 }
 
 /** A plugin script the renderer can frame, from `<plugin>/scripts/<name>/manifest.json`. */
+/** The subset of JSON Schema a script's `inputSchema` uses to describe its properties. */
+export interface PluginScriptSchema {
+	readonly type?: string;
+	readonly title?: string;
+	readonly description?: string;
+	readonly enum?: readonly string[];
+	readonly required?: readonly string[];
+	readonly properties?: Readonly<Record<string, PluginScriptSchema>>;
+	readonly examples?: readonly unknown[];
+}
+
 export interface PluginScriptInfo {
 	readonly name: string;
 	readonly title: string;
