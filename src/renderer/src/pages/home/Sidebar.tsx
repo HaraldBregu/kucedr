@@ -157,9 +157,12 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				</SidebarMenu>
 			</header>
 			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>
-				<div className="px-2 pb-2 text-xs font-medium text-sidebar-foreground/70">
+				<Collapsible defaultOpen className="group/collapsible">
+				<CollapsibleTrigger className="flex w-full items-center gap-1 px-2 pb-2 text-xs font-medium text-sidebar-foreground/70 hover:text-sidebar-foreground">
 					{t('settings.chatHistory.title')}
-				</div>
+					<ChevronRight className="size-3 transition-transform group-data-open/collapsible:rotate-90" />
+				</CollapsibleTrigger>
+				<CollapsibleContent>
 				{actionError ? (
 					<p className="px-2 pb-2 text-xs text-destructive" role="alert">
 						{actionError}
