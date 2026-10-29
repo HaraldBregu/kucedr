@@ -118,6 +118,9 @@ export function AppSidebarFooter(): React.JSX.Element {
 						>
 							<AudioLines className="size-4" strokeWidth={1.8} />
 						</Button>
+						} />
+						<TooltipContent>{voiceError ?? t('settings.tabs.voice')}</TooltipContent>
+						</Tooltip>
 						<DropdownMenuContent
 							className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
 							side="top"
