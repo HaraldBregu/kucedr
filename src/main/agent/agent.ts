@@ -480,6 +480,14 @@ export class Agent {
 		);
 	}
 
+	pinSession(sessionId: string, pinned: boolean): Promise<void> {
+		return this.scheduler.run(
+			sessionId,
+			async () => pinStoredSession(sessionId, this.config.location, pinned),
+			{ priority: 'high' }
+		);
+	}
+
 	getLastMessages(sessionId: string): AgentHistoryMessage[] {
 		return loadMessages(this.config, sessionId).flatMap(toHistoryMessages);
 	}
