@@ -14,11 +14,11 @@
     </section>
     <div id="warning" class="warning" role="status" hidden></div>
     <section class="inputs" aria-label="Dati per il calcolo">
-      <label><span>Compensi incassati <small>annui</small></span><span class="field"><input id="revenue" type="number" min="0" step="0.01" value="0" inputmode="decimal"> €</span></label>
-      <label><span>Redditività <small>in base al codice ATECO</small></span><span class="field"><input id="coefficient" type="number" min="0" max="100" step="0.01" value="78" inputmode="decimal"> %</span></label>
+      <label><span>Compensi incassati <small>annui</small></span><span class="field"><input id="revenue" type="text" value="0" inputmode="decimal"> €</span></label>
+      <label><span>Redditività <small>in base al codice ATECO</small></span><span class="field"><input id="coefficient" type="text" value="78" inputmode="decimal"> %</span></label>
       <label><span>Imposta sostitutiva</span><select id="tax"><option value="15">15% ordinaria</option><option value="5">5% agevolata</option></select></label>
-      <label><span>Contributi versati <small>deducibili nell'anno</small></span><span class="field"><input id="paid" type="number" min="0" step="0.01" value="0" inputmode="decimal"> €</span></label>
-      <label><span>Contributi stimati <small>relativi ai compensi</small></span><span class="field"><input id="contributions" type="number" min="0" step="0.01" value="0" inputmode="decimal"> €</span></label>
+      <label><span>Contributi versati <small>deducibili nell'anno</small></span><span class="field"><input id="paid" type="text" value="0" inputmode="decimal"> €</span></label>
+      <label><span>Contributi stimati <small>relativi ai compensi</small></span><span class="field"><input id="contributions" type="text" value="0" inputmode="decimal"> €</span></label>
     </section>
     <section class="breakdown" aria-label="Dettaglio della stima">
       <div><span>Reddito forfetario</span><output id="income">€ 0,00</output></div>

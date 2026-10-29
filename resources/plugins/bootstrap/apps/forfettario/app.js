@@ -7,8 +7,9 @@ const money = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR
 let active = fields[0];
 
 function calculate() {
-  const [revenue, coefficient, paid, contributions] = fields.map(field => Number(field.value));
-  const valid = fields.every(field => field.value !== '' && field.checkValidity() && Number.isFinite(Number(field.value)));
+  const values = fields.map(field => field.value.trim().replace(',', '.'));
+  const [revenue, coefficient, paid, contributions] = values.map(Number);
+  const valid = values.every(value => /^\d+(?:\.\d*)?$/.test(value) && Number.isFinite(Number(value))) && coefficient <= 100;
   const outputs = ['net', 'income', 'base', 'amount', 'total'];
   if (!valid || revenue > 100000) {
     outputs.forEach(id => document.getElementById(id).textContent = '—');
@@ -42,7 +43,7 @@ document.querySelector('.keypad').addEventListener('click', event => {
   if (key === 'clear') active.value = '0';
   else if (key === 'back') active.value = active.value.slice(0, -1) || '0';
   else if (key === '.') {
-    if (!active.value.includes('.')) active.value += '.';
+    if (!/[.,]/.test(active.value)) active.value += ',';
   } else active.value = active.value === '0' ? key : active.value + key;
   calculate();
 });
