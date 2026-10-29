@@ -1,3 +1,5 @@
+import { providerModels } from '../../../models';
+import { modelEfforts, resolveModelEffort } from '../../../../shared/effort';
 import Anthropic from '@anthropic-ai/sdk';
 import { content } from './content';
 import { options as requestOptions } from './options';
@@ -207,6 +209,10 @@ export class LlmModel implements LlmAdapter {
 		if (!provider) throw new Error('LlmModel requires a provider for LLM streaming.');
 
 		const id = provider.id.toLowerCase();
+		if (id === 'openai' || id === 'anthropic') {
+			const model = providerModels(id, 'llm').find((item) => item.id === req.model);
+			req = { ...req, effort: resolveModelEffort(req.effort, modelEfforts(model?.metadata)) };
+		}
 		if (id === 'anthropic') {
 			yield* this.streamAnthropic(provider, req);
 			return;

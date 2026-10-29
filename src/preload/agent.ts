@@ -29,6 +29,7 @@ const MODEL_REASONING_EFFORTS: readonly ModelReasoningEffort[] = [
 	'medium',
 	'high',
 	'xhigh',
+	'max',
 ];
 
 function isModelReasoningEffort(value: unknown): value is ModelReasoningEffort {

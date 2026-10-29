@@ -10,8 +10,7 @@ export function options(provider: string, request: LlmStreamRequest): Record<str
 		configured.reasoning_effort = request.effort === 'none' ? 'none' : 'high';
 	if (!request.effort) return configured;
 	if (
-		provider === 'anthropic' &&
-		/^claude-(?:fable-5-1|opus-5-5|sonnet-5-5|haiku-5-5|opus-4-8)$/.test(request.model)
+		provider === 'anthropic'
 	) {
 		const output = configured.output_config as Record<string, unknown> | undefined;
 		configured.output_config = {
