@@ -187,6 +187,7 @@ export interface AgentSessionSummary {
 	createdAtMs: number;
 	updatedAtMs?: number;
 	title: string;
+	pinned?: boolean;
 	category: AgentSessionCategory;
 	runStatus?: 'queued' | 'running' | 'cancelling';
 }
