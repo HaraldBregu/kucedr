@@ -1703,6 +1703,7 @@
 			"emptyDescription": "Add an app folder that contains a manifest.json and entry file.",
 			"loadError": "Unable to load apps.",
 			"open": "Open",
+			"openWindow": "Open in window",
 			"openError": "Unable to open the app.",
 			"details": "Details",
 			"detailId": "ID",
@@ -1754,7 +1755,8 @@
 			"detailMode": "Mode",
 			"modes": {
 				"extension": "Extension",
-				"window": "Window"
+				"window": "Window",
+				"both": "Extension and window"
 			}
 		},
 		"filter": {

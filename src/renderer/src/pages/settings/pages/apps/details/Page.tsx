@@ -53,12 +53,13 @@ const AppDetailsPage: React.FC = () => {
 
 	const openApp = useOpenApp();
 	const handleOpen = useCallback(
-		async (): Promise<void> => {
+		async (separateWindow = false): Promise<void> => {
 			if (!app) return;
 			setOpening(true);
 			setErrorMessage('');
 			try {
-				await openApp(app);
+				if (separateWindow) await window.apps.open(app.id);
+				else await openApp(app);
 			} catch {
 				setErrorMessage(t('settings.apps.openError'));
 			} finally {
@@ -168,6 +169,11 @@ const AppDetailsPage: React.FC = () => {
 					>
 						{t('settings.apps.open')}
 					</Button>
+					{app.mode === 'both' && (
+						<Button type="button" size="sm" variant="outline" disabled={opening || deleting} onClick={() => void handleOpen(true)}>
+							{t('settings.apps.openWindow')}
+						</Button>
+					)}
 					{!app.plugin && (
 						<Button
 							type="button"
@@ -196,7 +202,7 @@ const AppDetailsPage: React.FC = () => {
 						))}
 					</SettingsPanel>
 				</SettingsSection>
-				{app.mode === 'window' && <WindowSettings key={app.id} appId={app.id} />}
+				{(app.mode === 'window' || app.mode === 'both') && <WindowSettings key={app.id} appId={app.id} />}
 			</div>
 		</SettingsPageShell>
 	);

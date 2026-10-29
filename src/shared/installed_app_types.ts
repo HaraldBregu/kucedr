@@ -9,9 +9,9 @@ export type AppMetadata = {
 	[key: string]: unknown;
 };
 
-export const APP_MODES = ['extension', 'window'] as const;
+export const APP_MODES = ['extension', 'window', 'both'] as const;
 
-/** Where an app opens: inside Kucedr or in its own window (extension by default). */
+/** Where an app opens: inside Kucedr, in its own window, or both (extension by default). */
 export type AppMode = (typeof APP_MODES)[number];
 
 export type AppManifest = {

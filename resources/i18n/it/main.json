@@ -1703,6 +1703,7 @@
 			"emptyDescription": "Aggiungi una cartella app che contiene manifest.json e il file di ingresso.",
 			"loadError": "Impossibile caricare le app.",
 			"open": "Apri",
+			"openWindow": "Apri in una finestra",
 			"openError": "Impossibile aprire l'app.",
 			"details": "Dettagli",
 			"detailId": "ID",
@@ -1754,7 +1755,8 @@
 			"detailMode": "Modalità",
 			"modes": {
 				"extension": "Estensione",
-				"window": "Finestra"
+				"window": "Finestra",
+				"both": "Estensione e finestra"
 			}
 		},
 		"filter": {
