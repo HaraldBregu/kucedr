@@ -127,7 +127,8 @@
 								"high",
 								"xhigh",
 								"max"
-							]
+							],
+							"default": "medium"
 						},
 						"mode": {
 							"type": "string",
@@ -787,7 +788,8 @@
 								"medium",
 								"high",
 								"xhigh"
-							]
+							],
+							"default": "medium"
 						}
 					}
 				},
@@ -854,7 +856,8 @@
 								"medium",
 								"high",
 								"xhigh"
-							]
+							],
+							"default": "high"
 						}
 					}
 				},
