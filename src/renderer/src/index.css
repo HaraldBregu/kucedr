@@ -152,7 +152,7 @@
 	--sidebar-primary-foreground: oklch(1 0 0);
 	--sidebar-accent: oklch(0.9400 0 0);
 	--sidebar-accent-foreground: oklch(0 0 0);
-	--sidebar-border: oklch(0.9400 0 0);
+	--sidebar-border: oklch(0.8700 0 0);
 	--sidebar-ring: oklch(0 0 0);
 	--surface: var(--app-surface-background);
 	--surface-foreground: var(--foreground);
