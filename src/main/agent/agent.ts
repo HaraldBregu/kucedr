@@ -9,6 +9,7 @@ import {
 	listSessions,
 	loadMessages,
 	renameSession as renameStoredSession,
+	pinSession as pinStoredSession,
 	resolveSessionId,
 	resolveStoredSessionId,
 	tryAppendRun,
