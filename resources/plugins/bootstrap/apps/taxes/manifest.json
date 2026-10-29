@@ -11,9 +11,9 @@
   },
   "window": {
     "width": 700,
-    "height": 610,
+    "height": 720,
     "minWidth": 580,
-    "minHeight": 500,
+    "minHeight": 700,
     "resizable": true,
     "maximizable": false,
     "frame": true,
