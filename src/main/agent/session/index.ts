@@ -13,6 +13,7 @@ export { init } from './session_init';
 export { isExhausted } from './session_is_exhausted';
 export { listSessions } from './session_list_sessions';
 export { renameSession } from './session_rename_session';
+export { pinSession } from './session_pin_session';
 export { loadMessages } from './session_load_messages';
 export { createSessionState } from './session_module_state';
 export { persistSystemPrompt } from './session_persist_system';
