@@ -200,25 +200,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 				</DropdownMenu>
 			</ButtonGroup>
 			) : chatButtonTooltip}
-			<Tooltip>
-				<TooltipTrigger render={
-					<Button
-						type="button"
-						variant={isWorkspace ? 'secondary' : 'ghost'}
-						size="icon-sm"
-						className="rounded-md"
-						onClick={() => {
-							playSound('navigate');
-							navigate('/workspace');
-						}}
-						aria-label={workspaceLabel}
-						aria-current={isWorkspace ? 'page' : undefined}
-					>
-						<Folder className="size-3.5" strokeWidth={1.8} />
-					</Button>
-				} />
-				<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
-			</Tooltip>
 			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
 			<Tooltip>
 				<TooltipTrigger render={
