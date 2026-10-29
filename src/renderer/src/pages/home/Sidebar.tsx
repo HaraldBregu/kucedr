@@ -301,7 +301,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			</header>
 			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>
 				{pinnedSessions.length > 0 && (
-					<Collapsible defaultOpen className="group/collapsible mb-4">
+					<Collapsible defaultOpen className="group/collapsible mb-2">
 						<SidebarGroup>
 							<CollapsibleTrigger
 								nativeButton={false}
