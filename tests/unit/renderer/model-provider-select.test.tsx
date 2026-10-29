@@ -96,4 +96,3 @@ it('shows the compact model name without a High suffix and keeps the dropdown ch
 	await user.click(trigger);
 	expect(screen.getByRole('menuitemradio', { name: /Opus 5 High/ })).toBeInTheDocument();
 });
-
