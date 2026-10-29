@@ -304,6 +304,8 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						</ul>
 					</nav>
 				)}
+				</CollapsibleContent>
+				</Collapsible>
 			</section>
 			<Dialog open={!!pendingAction} onOpenChange={(open) => { if (!open) setPendingAction(undefined); }}>
 				<DialogContent showCloseButton={false}>
