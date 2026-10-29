@@ -158,7 +158,7 @@ export function ModelProviderSelect({
 			<PopoverContent
 				align="end"
 				collisionPadding={12}
-				className="flex max-h-[var(--radix-popover-content-available-height)] w-72 max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1"
+				className="flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-72 max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1"
 			>
 				<Input
 					aria-label={t('settings.modelServices.searchModels')}
@@ -170,7 +170,7 @@ export function ModelProviderSelect({
 				<div
 					role="menu"
 					aria-label={accessibleLabel}
-					className="max-h-[calc(var(--radix-popover-content-available-height)-2.5rem)] min-h-0 min-w-0 overflow-y-auto"
+					className="min-h-0 min-w-0 flex-1 overflow-y-auto"
 				>
 					{matchingModels.map(({ group, model }) => {
 						const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
@@ -210,7 +210,7 @@ export function ModelProviderSelect({
 					)}
 				</div>
 				{onEffortChange && effort && (
-					<div className="mx-1.5 border-t border-border px-0.5 pb-2 pt-3">
+					<div className="mx-1.5 shrink-0 border-t border-border px-0.5 pb-2 pt-3">
 						<div className="mb-2 flex justify-between text-xs"><span className="font-medium">Effort</span><span className="text-muted-foreground">← → to adjust</span></div>
 						<div role="radiogroup" aria-label="Effort" className="flex rounded-lg bg-muted p-0.5">
 							{EFFORTS.map((level, index) => (
