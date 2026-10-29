@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forfettario</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="calculator">
+    <header><span class="eyebrow">PARTITA IVA</span><h1>Forfettario</h1><span class="year">Stima annuale</span></header>
+    <section class="display" aria-live="polite">
+      <span>Netto stimato</span><output id="net">€ 0,00</output><small>prima delle spese effettive</small>
+    </section>
+    <div id="warning" class="warning" role="status" hidden></div>
+    <section class="inputs" aria-label="Dati per il calcolo">
+      <label><span>Compensi incassati <small>annui</small></span><span class="field"><input id="revenue" type="number" min="0" step="0.01" value="0" inputmode="decimal"> €</span></label>
+      <label><span>Redditività <small>in base al codice ATECO</small></span><span class="field"><input id="coefficient" type="number" min="0" max="100" step="0.01" value="78" inputmode="decimal"> %</span></label>
+      <label><span>Imposta sostitutiva</span><select id="tax"><option value="15">15% ordinaria</option><option value="5">5% agevolata</option></select></label>
+      <label><span>Contributi versati <small>deducibili nell'anno</small></span><span class="field"><input id="paid" type="number" min="0" step="0.01" value="0" inputmode="decimal"> €</span></label>
+      <label><span>Contributi stimati <small>relativi ai compensi</small></span><span class="field"><input id="contributions" type="number" min="0" step="0.01" value="0" inputmode="decimal"> €</span></label>
+    </section>
+    <section class="breakdown" aria-label="Dettaglio della stima">
+      <div><span>Reddito forfetario</span><output id="income">€ 0,00</output></div>
+      <div><span>Base imponibile</span><output id="base">€ 0,00</output></div>
+      <div><span>Imposta sostitutiva</span><output id="amount">€ 0,00</output></div>
+      <div class="total"><span>Imposta + contributi stimati</span><output id="total">€ 0,00</output></div>
+    </section>
+    <div class="keypad" aria-label="Tastierino numerico">
+      <button data-key="clear" class="utility">AC</button><button data-key="back" class="utility" aria-label="Cancella ultima cifra">⌫</button><button data-key="." class="utility" aria-label="Virgola">,</button><button data-key="next" class="accent" aria-label="Campo successivo">↓</button>
+      <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button><button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button><button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button><button data-key="0" class="zero">0</button><button data-key="00">00</button>
+    </div>
+    <p class="note">Stima indicativa: non include spese, acconti, crediti o altre situazioni personali. Il 5% richiede specifici requisiti. Verifica i dati con il commercialista.</p>
+    <p class="sources"><a href="https://infoprecompilata.agenziaentrate.gov.it/portale/web/guest/quadro-lm" target="_blank" rel="noopener noreferrer">Agenzia delle Entrate · Quadro LM ↗</a> <a href="https://www.inps.it/it/it/inps-comunica/notizie/dettaglio-news-page.news.2026.02.gestione-separata-le-aliquote-contributive-per-il-2026.html" target="_blank" rel="noopener noreferrer">INPS · Contributi ↗</a></p>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

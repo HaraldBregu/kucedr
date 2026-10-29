@@ -1,0 +1,23 @@
+{
+  "title": "Forfettario",
+  "description": "Calcola una stima di imposta e contributi per la partita IVA in regime forfetario.",
+  "mode": "extension",
+  "metadata": {
+    "version": "1.0.0",
+    "category": "productivity",
+    "entry": "index.html",
+    "image": "icon.svg",
+    "author": "Harald Bregu"
+  },
+  "window": {
+    "width": 390,
+    "height": 790,
+    "minWidth": 340,
+    "minHeight": 580,
+    "resizable": true,
+    "maximizable": false,
+    "frame": true,
+    "transparent": false,
+    "titleBarStyle": "default"
+  }
+}
