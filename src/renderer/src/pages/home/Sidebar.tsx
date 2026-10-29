@@ -31,6 +31,7 @@ interface HomeSidebarProps {
 
 export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
