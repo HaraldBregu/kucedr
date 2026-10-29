@@ -34,6 +34,17 @@ function sessionTitle(sessionId: string, location: string): string {
 	return text.trim().replace(/\s+/g, ' ').slice(0, 60);
 }
 
+function sessionPinned(sessionId: string, location: string): boolean {
+	try {
+		const info = JSON.parse(
+			readFileSync(infoFile(sessionsRoot(location), sessionId), 'utf8')
+		) as { pinned?: unknown };
+		return info.pinned === true;
+	} catch {
+		return false;
+	}
+}
+
 export function listSessions(
 	location: string,
 	category: SessionCategory = DEFAULT_CATEGORY
