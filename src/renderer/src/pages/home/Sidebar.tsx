@@ -307,6 +307,19 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							<span className="truncate">{t('navigationBar.newChat', 'New Chat')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							type="button"
+							className="px-2.5 text-sm"
+							onClick={() => {
+								playSound('navigate');
+								navigate('/workspace');
+							}}
+						>
+							<Folder className="size-4 shrink-0" />
+							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
 					{openExtension && (
 						<SidebarMenuItem>
 							<SidebarMenuButton
