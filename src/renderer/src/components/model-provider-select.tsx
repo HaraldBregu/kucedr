@@ -1,4 +1,5 @@
 import React, { type ReactNode, useState } from 'react';
+import type { ModelReasoningEffort } from '@/lib/compat';
 import { useTranslation } from 'react-i18next';
 import { Check, ChevronDown } from 'lucide-react';
 import { providerIdsFor, providerModels } from '@/lib/providers';
@@ -72,7 +73,11 @@ interface ModelProviderSelectLabels {
 	readonly description?: ReactNode;
 }
 
+const EFFORTS = ['auto', 'none', 'low', 'medium', 'high'] as const;
+
 interface ModelProviderSelectProps {
+	readonly effort?: ModelReasoningEffort | 'auto';
+	readonly onEffortChange?: (effort: ModelReasoningEffort | 'auto') => void;
 	readonly idPrefix: string;
 	readonly providerGroups: readonly ModelProviderGroup[];
 	readonly providerId: string;
@@ -89,6 +94,8 @@ interface ModelProviderSelectProps {
 
 export function ModelProviderSelect({
 	idPrefix,
+	effort,
+	onEffortChange,
 	providerGroups,
 	providerId,
 	modelId,
@@ -144,6 +151,7 @@ export function ModelProviderSelect({
 					className={cn('min-w-40 max-w-full justify-between text-xs', buttonClassName)}
 				>
 					<span className="min-w-0 truncate capitalize">{buttonLabel}</span>
+					{effort && <span className="text-xs capitalize text-muted-foreground">{effort}</span>}
 					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
 				</Button>
 			</PopoverTrigger>
@@ -175,7 +183,7 @@ export function ModelProviderSelect({
 								aria-checked={isSelected}
 								onClick={() => {
 									onChange(group.id, model.id);
-									setButtonOpen(false);
+									if (!onEffortChange) setButtonOpen(false);
 									setModelSearch('');
 								}}
 								className="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent aria-checked:bg-accent aria-checked:text-accent-foreground"
@@ -201,6 +209,23 @@ export function ModelProviderSelect({
 						</p>
 					)}
 				</div>
+				{onEffortChange && effort && (
+					<div className="mx-1.5 border-t border-border px-0.5 pb-2 pt-3">
+						<div className="mb-2 flex justify-between text-xs"><span className="font-medium">Effort</span><span className="text-muted-foreground">← → to adjust</span></div>
+						<div role="radiogroup" aria-label="Effort" className="flex rounded-lg bg-muted p-0.5">
+							{EFFORTS.map((level, index) => (
+								<button key={level} type="button" role="radio" aria-checked={effort === level} tabIndex={effort === level ? 0 : -1} onClick={() => onEffortChange(level)} onKeyDown={(event) => {
+									if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+									event.preventDefault();
+									const next = (index + (event.key === 'ArrowRight' ? 1 : -1) + EFFORTS.length) % EFFORTS.length;
+									onEffortChange(EFFORTS[next]);
+									(event.currentTarget.parentElement?.children[next] as HTMLElement | undefined)?.focus();
+								}} className={cn('flex-1 rounded-md py-1.5 text-xs capitalize outline-none focus-visible:ring-2 focus-visible:ring-ring', effort === level ? 'bg-background font-medium shadow-sm' : 'text-muted-foreground hover:text-foreground')}>{level}</button>
+							))}
+						</div>
+						<p className="mt-2 text-xs text-muted-foreground">{effort === 'auto' ? 'Adjusts reasoning to the prompt.' : effort === 'none' ? 'Fast answers with minimal reasoning.' : effort === 'low' ? 'A little reasoning for quick tasks.' : effort === 'medium' ? 'More reasoning for everyday work.' : 'More time for complex work.'}</p>
+					</div>
+				)}
 			</PopoverContent>
 		</Popover>
 	);
