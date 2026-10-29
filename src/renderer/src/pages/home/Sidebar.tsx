@@ -326,7 +326,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					nativeButton={false}
 					render={<SidebarGroupLabel className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />}
 				>
-					{t('settings.chatHistory.title')}
+					{t('settings.chatHistory.history', 'History')}
 					<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
 				</CollapsibleTrigger>
 				<CollapsibleContent>
