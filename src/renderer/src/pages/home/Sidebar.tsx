@@ -124,6 +124,18 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		}
 	}, [currentSessionId, sessions, setSessionTitle, t]);
 
+	const togglePin = (session: AgentSessionSummary): void => {
+		const pinned = !session.pinned;
+		void window.agent.pinSession(session.id, pinned).then(() =>
+			setSessions((current) =>
+				current.map((item) => (item.id === session.id ? { ...item, pinned } : item))
+			)
+		);
+	};
+
+	const pinnedSessions = sessions.filter((session) => session.pinned);
+	const recentSessions = sessions.filter((session) => !session.pinned);
+
 	const renderSession = (session: AgentSessionSummary): ReactElement => {
 		const title = session.title.trim() || t('settings.chatHistory.untitled');
 		const isActive = session.id === currentSessionId;
