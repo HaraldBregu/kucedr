@@ -448,7 +448,13 @@ function PageContent(): ReactElement {
 	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
-	const [detailsOpen, setDetailsOpen] = useState(true);
+	const [detailsOpen, setDetailsOpen] = useState(() => window.matchMedia('(min-width: 1280px)').matches);
+	useEffect(() => {
+		const query = window.matchMedia('(min-width: 1280px)');
+		const onChange = (): void => setDetailsOpen(query.matches);
+		query.addEventListener('change', onChange);
+		return () => query.removeEventListener('change', onChange);
+	}, []);
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
 	const location = useLocation();
 	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(
