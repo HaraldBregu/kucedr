@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { ChevronRight, LayoutPanelLeft, MoreVertical, Plus } from 'lucide-react';
+import { ChevronRight, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
