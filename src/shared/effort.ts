@@ -8,4 +8,3 @@ export function modelEfforts(metadata?: ModelMetadata): ModelReasoningEffort[] {
 	const schema = inputs?.reasoning?.properties?.effort ?? inputs?.output_config?.properties?.effort;
 	return ORDER.filter((effort) => schema?.enum?.includes(effort));
 }
-

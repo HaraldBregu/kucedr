@@ -10,4 +10,3 @@ export function resolveModelEffort(effort: ModelReasoningEffort | undefined, lev
 		Math.abs(ORDER.indexOf(level) - index) < Math.abs(ORDER.indexOf(closest) - index) ? level : closest
 	);
 }
-
