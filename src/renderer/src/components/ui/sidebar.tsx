@@ -49,4 +49,41 @@ const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonP
 );
 SidebarMenuButton.displayName = 'SidebarMenuButton';
 
-export { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem };
+const SidebarGroup = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<'div'>>(
+	({ className, ...props }, ref) => (
+		<div ref={ref} data-sidebar="group" className={cn('relative flex w-full min-w-0 flex-col', className)} {...props} />
+	)
+);
+SidebarGroup.displayName = 'SidebarGroup';
+
+const SidebarGroupLabel = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<'div'>>(
+	({ className, ...props }, ref) => (
+		<div
+			ref={ref}
+			data-sidebar="group-label"
+			className={cn(
+				'flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sidebar-ring [&>svg]:size-4 [&>svg]:shrink-0',
+				className
+			)}
+			{...props}
+		/>
+	)
+);
+SidebarGroupLabel.displayName = 'SidebarGroupLabel';
+
+const SidebarGroupContent = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<'div'>>(
+	({ className, ...props }, ref) => (
+		<div ref={ref} data-sidebar="group-content" className={cn('w-full text-sm', className)} {...props} />
+	)
+);
+SidebarGroupContent.displayName = 'SidebarGroupContent';
+
+export {
+	SidebarFooter,
+	SidebarGroup,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+};
