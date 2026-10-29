@@ -460,6 +460,11 @@ function PageContent(): ReactElement {
 	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(
 		(location.state as { openExtension?: OpenExtension } | null)?.openExtension ?? null
 	);
+	useEffect(() => {
+		if ((location.state as { openExtension?: OpenExtension } | null)?.openExtension) {
+			navigate(location, { replace: true, state: null });
+		}
+	}, [location, navigate]);
 
 	useEffect(() => {
 		const open = (event: Event): void =>
