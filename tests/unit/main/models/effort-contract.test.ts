@@ -20,3 +20,10 @@ it.each([true, false])('sends supported effort to Anthropic with streaming=%s', 
 	for await (const _ of model.stream({ provider: { id: 'anthropic', apiKey: 'key' }, model: 'supported', messages: [{ role: 'user', content: 'hi' }], maxTokens: 100, effort: 'max', streaming })) {}
 	expect((streaming ? stream : create).mock.calls[0][0].output_config.effort).toBe('max');
 });
+
+it('omits automatic effort for a model without documented support', async () => {
+	const create = jest.fn().mockResolvedValue({ content: [], stop_reason: 'end_turn', usage: { input_tokens: 0, output_tokens: 0 } });
+	const model = new LlmModel({ anthropicClientFactory: () => ({ messages: { create } }) as never });
+	for await (const _ of model.stream({ provider: { id: 'anthropic', apiKey: 'key' }, model: 'unknown', messages: [{ role: 'user', content: 'hi' }], maxTokens: 100, effort: 'high', streaming: false })) {}
+	expect(create.mock.calls[0][0].output_config).toBeUndefined();
+});
