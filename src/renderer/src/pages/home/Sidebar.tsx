@@ -136,6 +136,32 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const pinnedSessions = sessions.filter((session) => session.pinned);
 	const recentSessions = sessions.filter((session) => !session.pinned);
 
+	const renderGroup = (label: string, count: number, content: ReactNode, className?: string): ReactElement => {
+		if (count < 10)
+			return (
+				<SidebarGroup className={className}>
+					<SidebarGroupLabel>{label}</SidebarGroupLabel>
+					<SidebarGroupContent>{content}</SidebarGroupContent>
+				</SidebarGroup>
+			);
+		return (
+			<Collapsible defaultOpen className={cn('group/collapsible', className)}>
+				<SidebarGroup>
+					<CollapsibleTrigger
+						nativeButton={false}
+						render={<SidebarGroupLabel className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />}
+					>
+						{label}
+						<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
+					</CollapsibleTrigger>
+					<CollapsibleContent>
+						<SidebarGroupContent>{content}</SidebarGroupContent>
+					</CollapsibleContent>
+				</SidebarGroup>
+			</Collapsible>
+		);
+	};
+
 	const renderSession = (session: AgentSessionSummary): ReactElement => {
 		const title = session.title.trim() || t('settings.chatHistory.untitled');
 		const isActive = session.id === currentSessionId;
@@ -300,41 +326,19 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				</SidebarMenu>
 			</header>
 			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>
-				{pinnedSessions.length > 0 && (
-					<Collapsible defaultOpen disabled={pinnedSessions.length < 10} className="group/collapsible mb-2">
-						<SidebarGroup>
-							<CollapsibleTrigger
-								nativeButton={false}
-								render={<SidebarGroupLabel className={cn(pinnedSessions.length >= 10 && 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground')} />}
-							>
-								{t('settings.chatHistory.pinned', 'Pinned')}
-								{pinnedSessions.length >= 10 && (
-									<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
-								)}
-							</CollapsibleTrigger>
-							<CollapsibleContent>
-								<SidebarGroupContent>
-									<nav aria-label={t('settings.chatHistory.pinned', 'Pinned')}>
-										<ul className="flex min-w-0 flex-col gap-1">{pinnedSessions.map(renderSession)}</ul>
-									</nav>
-								</SidebarGroupContent>
-							</CollapsibleContent>
-						</SidebarGroup>
-					</Collapsible>
-				)}
-				<Collapsible defaultOpen disabled={recentSessions.length < 10} className="group/collapsible">
-				<SidebarGroup>
-				<CollapsibleTrigger
-					nativeButton={false}
-					render={<SidebarGroupLabel className={cn(recentSessions.length >= 10 && 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground')} />}
-				>
-					{t('settings.chatHistory.history', 'History')}
-					{recentSessions.length >= 10 && (
-						<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
+				{pinnedSessions.length > 0 &&
+					renderGroup(
+						t('settings.chatHistory.pinned', 'Pinned'),
+						pinnedSessions.length,
+						<nav aria-label={t('settings.chatHistory.pinned', 'Pinned')}>
+							<ul className="flex min-w-0 flex-col gap-1">{pinnedSessions.map(renderSession)}</ul>
+						</nav>,
+						'mb-2'
 					)}
-				</CollapsibleTrigger>
-				<CollapsibleContent>
-				<SidebarGroupContent>
+				{renderGroup(
+					t('settings.chatHistory.history', 'History'),
+					recentSessions.length,
+					<>
 				{actionError ? (
 					<p className="px-2 pb-2 text-xs text-destructive" role="alert">
 						{actionError}
@@ -364,10 +368,8 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						</ul>
 					</nav>
 				)}
-				</SidebarGroupContent>
-				</CollapsibleContent>
-				</SidebarGroup>
-				</Collapsible>
+					</>
+				)}
 			</section>
 			<Dialog open={!!pendingAction} onOpenChange={(open) => { if (!open) setPendingAction(undefined); }}>
 				<DialogContent showCloseButton={false}>
