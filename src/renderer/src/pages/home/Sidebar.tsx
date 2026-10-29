@@ -124,6 +124,129 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		}
 	}, [currentSessionId, sessions, setSessionTitle, t]);
 
+	const renderSession = (session: AgentSessionSummary): ReactElement => {
+		const title = session.title.trim() || t('settings.chatHistory.untitled');
+		const isActive = session.id === currentSessionId;
+		const isCompacting = compactingSessionId === session.id;
+		const openMenu = (): void => {
+			void window.win
+				.showContextMenu([
+					{ id: 'rename', label: t('common.rename', 'Rename') },
+					{ id: 'clear', label: t('settings.chatHistory.clear') },
+					{ id: 'compact', label: t('settings.chatHistory.compact') },
+					{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
+					{ id: 'delete', label: t('common.delete', 'Delete') },
+				])
+				.then((action) => {
+					if (action === 'rename') {
+						setEditingTitle(title);
+						setEditingSessionId(session.id);
+					}
+					if (action === 'open-location') {
+						void window.agent.openSessionFolder(session.id);
+					}
+					if (action === 'clear' || action === 'compact')
+						setPendingAction({ action, id: session.id, title });
+					if (action === 'delete') deleteSession(session.id, title, isActive);
+				});
+		};
+		return (
+			<li key={session.id} className="group/item relative flex min-w-0 items-center">
+				{editingSessionId === session.id ? (
+					<Input
+						autoFocus
+						maxLength={120}
+						value={editingTitle}
+						onChange={(event) => setEditingTitle(event.target.value)}
+						onKeyDown={(event) => {
+							if (event.key === 'Enter') event.currentTarget.blur();
+							if (event.key === 'Escape') {
+								event.currentTarget.value = title;
+								event.currentTarget.blur();
+							}
+						}}
+						onBlur={(event) => {
+							const nextTitle = event.currentTarget.value.trim();
+							setEditingSessionId(undefined);
+							if (!nextTitle || nextTitle === title) return;
+									void window.agent.renameSession(session.id, nextTitle).then(() => {
+										setSessions((current) =>
+											current.map((item) =>
+												item.id === session.id ? { ...item, title: nextTitle } : item
+											)
+										);
+										if (isActive) setSessionTitle?.(nextTitle, session.id);
+									});
+						}}
+						aria-label={`Rename ${title}`}
+						className="h-8 min-w-0 flex-1"
+					/>
+				) : (
+					<button
+						type="button"
+						data-active={isActive ? '' : undefined}
+						aria-current={isActive ? 'page' : undefined}
+						className={cn(
+							SPLIT_ITEM_CLASS,
+							'h-7 min-w-0 flex-1 text-muted-foreground group-hover/item:bg-sidebar-accent',
+							isActive && SPLIT_ITEM_ACTIVE_CLASS
+						)}
+						data-run-status={session.runStatus}
+						onClick={() => {
+							setSessionId(session.id);
+							setSessionTitle?.(title, session.id);
+							window.dispatchEvent(new Event('kucedr:show-chat'));
+						}}
+						onKeyDown={(event) => {
+							if (event.key !== 'Delete' && event.key !== 'Backspace') return;
+							event.preventDefault();
+							deleteSession(session.id, title, isActive);
+						}}
+						onContextMenu={(event) => {
+							event.preventDefault();
+							openMenu();
+						}}
+					>
+					{session.runStatus || isCompacting ? (
+							<TextShimmer
+								duration={2}
+								className="truncate"
+								style={
+									{ '--foreground': 'var(--sidebar-foreground)' } as React.CSSProperties
+								}
+							>
+						{isCompacting ? t('settings.chatHistory.compacting') : title}
+							</TextShimmer>
+						) : (
+							<span className="truncate">{title}</span>
+						)}
+					</button>
+				)}
+				{editingSessionId !== session.id && (
+					<div className="absolute right-1 flex bg-sidebar-accent opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 before:pointer-events-none before:absolute before:inset-y-0 before:right-full before:w-6 before:bg-linear-to-l before:from-sidebar-accent before:to-transparent">
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-xs"
+							aria-label={session.pinned ? t('common.unpin', 'Unpin') : t('common.pin', 'Pin')}
+							onClick={() => togglePin(session)}
+						>
+							{session.pinned ? <PinOff /> : <Pin />}
+						</Button>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-xs"
+							aria-label={t('common.more', 'More')}
+							onClick={openMenu}
+						>
+							<MoreVertical />
+						</Button>
+					</div>
+				)}
+			</li>
+		);
+	};
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
@@ -201,119 +324,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				) : (
 					<nav aria-label={t('settings.chatHistory.title')}>
 						<ul className="flex min-w-0 flex-col gap-1">
-							{sessions.map((session) => {
-								const title = session.title.trim() || t('settings.chatHistory.untitled');
-								const isActive = session.id === currentSessionId;
-								const isCompacting = compactingSessionId === session.id;
-								const openMenu = (): void => {
-									void window.win
-										.showContextMenu([
-											{ id: 'rename', label: t('common.rename', 'Rename') },
-											{ id: 'clear', label: t('settings.chatHistory.clear') },
-											{ id: 'compact', label: t('settings.chatHistory.compact') },
-											{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
-											{ id: 'delete', label: t('common.delete', 'Delete') },
-										])
-										.then((action) => {
-											if (action === 'rename') {
-												setEditingTitle(title);
-												setEditingSessionId(session.id);
-											}
-											if (action === 'open-location') {
-												void window.agent.openSessionFolder(session.id);
-											}
-											if (action === 'clear' || action === 'compact')
-												setPendingAction({ action, id: session.id, title });
-											if (action === 'delete') deleteSession(session.id, title, isActive);
-										});
-								};
-								return (
-									<li key={session.id} className="group/item relative flex min-w-0 items-center">
-										{editingSessionId === session.id ? (
-											<Input
-												autoFocus
-												maxLength={120}
-												value={editingTitle}
-												onChange={(event) => setEditingTitle(event.target.value)}
-												onKeyDown={(event) => {
-													if (event.key === 'Enter') event.currentTarget.blur();
-													if (event.key === 'Escape') {
-														event.currentTarget.value = title;
-														event.currentTarget.blur();
-													}
-												}}
-												onBlur={(event) => {
-													const nextTitle = event.currentTarget.value.trim();
-													setEditingSessionId(undefined);
-													if (!nextTitle || nextTitle === title) return;
-															void window.agent.renameSession(session.id, nextTitle).then(() => {
-																setSessions((current) =>
-																	current.map((item) =>
-																		item.id === session.id ? { ...item, title: nextTitle } : item
-																	)
-																);
-																if (isActive) setSessionTitle?.(nextTitle, session.id);
-															});
-												}}
-												aria-label={`Rename ${title}`}
-												className="h-8 min-w-0 flex-1"
-											/>
-										) : (
-											<button
-												type="button"
-												data-active={isActive ? '' : undefined}
-												aria-current={isActive ? 'page' : undefined}
-												className={cn(
-													SPLIT_ITEM_CLASS,
-													'h-7 min-w-0 flex-1 text-muted-foreground group-hover/item:bg-sidebar-accent',
-													isActive && SPLIT_ITEM_ACTIVE_CLASS
-												)}
-												data-run-status={session.runStatus}
-												onClick={() => {
-													setSessionId(session.id);
-													setSessionTitle?.(title, session.id);
-													window.dispatchEvent(new Event('kucedr:show-chat'));
-												}}
-												onKeyDown={(event) => {
-													if (event.key !== 'Delete' && event.key !== 'Backspace') return;
-													event.preventDefault();
-													deleteSession(session.id, title, isActive);
-												}}
-												onContextMenu={(event) => {
-													event.preventDefault();
-													openMenu();
-												}}
-											>
-											{session.runStatus || isCompacting ? (
-													<TextShimmer
-														duration={2}
-														className="truncate"
-														style={
-															{ '--foreground': 'var(--sidebar-foreground)' } as React.CSSProperties
-														}
-													>
-												{isCompacting ? t('settings.chatHistory.compacting') : title}
-													</TextShimmer>
-												) : (
-													<span className="truncate">{title}</span>
-												)}
-											</button>
-										)}
-										{editingSessionId !== session.id && (
-											<Button
-												type="button"
-												variant="ghost"
-												size="icon-xs"
-												aria-label={t('common.more', 'More')}
-												className="absolute right-1 bg-sidebar-accent opacity-0 group-hover/item:opacity-100 focus-visible:opacity-100 before:pointer-events-none before:absolute before:inset-y-0 before:right-full before:w-6 before:bg-linear-to-l before:from-sidebar-accent before:to-transparent"
-												onClick={openMenu}
-											>
-												<MoreVertical />
-											</Button>
-										)}
-									</li>
-								);
-							})}
+							{recentSessions.map(renderSession)}
 						</ul>
 					</nav>
 				)}
