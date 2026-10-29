@@ -64,7 +64,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		finishInteractionModeMigration,
 	} = useInteractionMode(sessionId);
 	const [input, setInput] = useState('');
-	const [effort, setEffort] = useState<ModelReasoningEffort | 'auto'>('auto');
 	const [replyTo, setReplyTo] = useState<Pick<AgentMessage, 'id' | 'content'> | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [historyLoading, setHistoryLoading] = useState(false);
@@ -197,7 +196,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				if (requestIdRef.current !== requestId) return false;
 				const runtimeOptions = {
 					...runtimeOptionsForPrompt(trimmed),
-					...(effort !== 'auto' ? { effort, lightContext: effort === 'none' } : {}),
 					runId,
 					sessionId,
 					interactionMode: sendOptions.interactionMode ?? interactionMode,
@@ -274,7 +272,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		},
 		[
 			dispatchChat,
-			effort,
 			finishInteractionModeMigration,
 			interactionMode,
 			migrateInteractionMode,
@@ -448,7 +445,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		chatState,
 		clearReply,
 		editUserMessage,
-		effort,
 		handleSubmit,
 		historyLoading,
 		input,
@@ -460,7 +456,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		replyToMessage,
 		resetChat,
 		setInput,
-		setEffort,
 		setInteractionMode,
 		switchToTyping,
 	};

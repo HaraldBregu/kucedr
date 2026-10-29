@@ -6,18 +6,13 @@ import type { ProviderModel } from '@shared/model_types';
 import { welcomeMessage } from './context';
 import type { HomeChatMessage } from './context/state';
 import { Usage } from './Usage';
-import type { ModelReasoningEffort } from '@/lib/compat';
 
 export function Model({
 	messages = [],
 	draft = '',
 	hasAttachments = false,
 	onContext,
-	effort,
-	onEffortChange,
 }: {
-	effort: ModelReasoningEffort | 'auto';
-	onEffortChange: (effort: ModelReasoningEffort | 'auto') => void;
 	messages?: readonly HomeChatMessage[];
 	draft?: string;
 	hasAttachments?: boolean;
@@ -128,8 +123,6 @@ export function Model({
 	return (
 		<div className="flex min-w-0 items-center gap-1" onClick={(event) => event.stopPropagation()}>
 			<ModelProviderSelect
-				effort={effort}
-				onEffortChange={onEffortChange}
 				idPrefix="home"
 				providerGroups={groups}
 				providerId={providerId}

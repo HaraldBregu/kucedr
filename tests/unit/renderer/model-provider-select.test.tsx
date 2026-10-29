@@ -97,10 +97,3 @@ it('shows the compact model name without a High suffix and keeps the dropdown ch
 	expect(screen.getByRole('menuitemradio', { name: /Opus 5 High/ })).toBeInTheDocument();
 });
 
-it('offers only the selected model’s supported effort levels', async () => {
-	const user = userEvent.setup();
-	render(<ModelProviderSelect idPrefix="home" providerGroups={[{ id: 'openai', models: [{ id: 'astra', name: 'Astra', metadata: { documentationUrl: '', inputs: { reasoning: { properties: { effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'] } } } } } }] }]} providerId="openai" modelId="astra" onChange={jest.fn()} buttonDropdown compactPopover effort="auto" onEffortChange={jest.fn()} />);
-	await user.click(screen.getByRole('button'));
-	expect(screen.getByRole('radio', { name: 'max' })).toBeInTheDocument();
-	expect(screen.queryByRole('radio', { name: 'none' })).not.toBeInTheDocument();
-});

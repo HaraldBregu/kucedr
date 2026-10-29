@@ -1,7 +1,4 @@
 import React, { type ReactNode, useState } from 'react';
-import type { ModelReasoningEffort } from '@/lib/compat';
-import { modelEfforts } from '@shared/effort';
-import type { ModelMetadata } from '@shared/model_types';
 import { useTranslation } from 'react-i18next';
 import { Check, ChevronDown } from 'lucide-react';
 import { providerIdsFor, providerModels } from '@/lib/providers';
@@ -22,7 +19,7 @@ import { cn } from '@/lib/utils';
 export interface ModelProviderGroup {
 	readonly id: string;
 	readonly name?: string;
-	readonly models: readonly { readonly id: string; readonly name: string; readonly metadata?: ModelMetadata }[];
+	readonly models: readonly { readonly id: string; readonly name: string }[];
 }
 
 export function llmProviderGroups(): readonly ModelProviderGroup[] {
@@ -75,11 +72,7 @@ interface ModelProviderSelectLabels {
 	readonly description?: ReactNode;
 }
 
-const FALLBACK_EFFORTS: readonly ModelReasoningEffort[] = ['none', 'low', 'medium', 'high'];
-
 interface ModelProviderSelectProps {
-	readonly effort?: ModelReasoningEffort | 'auto';
-	readonly onEffortChange?: (effort: ModelReasoningEffort | 'auto') => void;
 	readonly idPrefix: string;
 	readonly providerGroups: readonly ModelProviderGroup[];
 	readonly providerId: string;
@@ -96,8 +89,6 @@ interface ModelProviderSelectProps {
 
 export function ModelProviderSelect({
 	idPrefix,
-	effort,
-	onEffortChange,
 	providerGroups,
 	providerId,
 	modelId,
@@ -115,10 +106,6 @@ export function ModelProviderSelect({
 	const [modelSearch, setModelSearch] = useState('');
 	const selectedGroup = providerGroups.find((group) => group.id === providerId);
 	const selectedModel = selectedGroup?.models.find((model) => model.id === modelId);
-	const supportedEfforts = selectedGroup?.id === 'openai' || selectedGroup?.id === 'anthropic'
-		? modelEfforts(selectedModel?.metadata) : FALLBACK_EFFORTS;
-	const efforts: readonly (ModelReasoningEffort | 'auto')[] = ['auto', ...supportedEfforts];
-	const displayedEffort = effort && efforts.includes(effort) ? effort : 'auto';
 	const selectedLabel =
 		selectedModel && selectedGroup ? modelLabel(selectedGroup, selectedModel) : undefined;
 	const accessibleLabel = labels?.label ?? t('settings.modelServices.model');
@@ -157,7 +144,6 @@ export function ModelProviderSelect({
 					className={cn('min-w-40 max-w-full justify-between text-xs', buttonClassName)}
 				>
 					<span className="min-w-0 truncate capitalize">{buttonLabel}</span>
-					{effort && <span className="text-xs capitalize text-muted-foreground">{displayedEffort}</span>}
 					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
 				</Button>
 			</PopoverTrigger>
@@ -189,8 +175,7 @@ export function ModelProviderSelect({
 								aria-checked={isSelected}
 								onClick={() => {
 									onChange(group.id, model.id);
-									onEffortChange?.('auto');
-									if (!onEffortChange) setButtonOpen(false);
+									setButtonOpen(false);
 									setModelSearch('');
 								}}
 								className="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent aria-checked:bg-accent aria-checked:text-accent-foreground"
@@ -216,23 +201,6 @@ export function ModelProviderSelect({
 						</p>
 					)}
 				</div>
-				{onEffortChange && effort && supportedEfforts.length > 0 && (
-					<div className="mx-1.5 shrink-0 border-t border-border px-0.5 pb-2 pt-3">
-						<div className="mb-2 flex justify-between text-xs"><span className="font-medium">Effort</span><span className="text-muted-foreground">← → to adjust</span></div>
-						<div role="radiogroup" aria-label="Effort" className="flex rounded-lg bg-muted p-0.5">
-							{efforts.map((level, index) => (
-								<button key={level} type="button" role="radio" aria-checked={displayedEffort === level} tabIndex={displayedEffort === level ? 0 : -1} onClick={() => onEffortChange(level)} onKeyDown={(event) => {
-									if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-									event.preventDefault();
-									const next = (index + (event.key === 'ArrowRight' ? 1 : -1) + efforts.length) % efforts.length;
-									onEffortChange(efforts[next]);
-									(event.currentTarget.parentElement?.children[next] as HTMLElement | undefined)?.focus();
-								}} className={cn('flex-1 rounded-md py-1.5 text-xs capitalize outline-none focus-visible:ring-2 focus-visible:ring-ring', displayedEffort === level ? 'bg-background font-medium shadow-sm' : 'text-muted-foreground hover:text-foreground')}>{level}</button>
-							))}
-						</div>
-						<p className="mt-2 text-xs text-muted-foreground">{displayedEffort === 'auto' ? 'Adjusts reasoning to the prompt.' : displayedEffort === 'none' ? 'Fast answers with minimal reasoning.' : displayedEffort === 'low' ? 'A little reasoning for quick tasks.' : displayedEffort === 'medium' ? 'More reasoning for everyday work.' : 'More time for complex work.'}</p>
-					</div>
-				)}
 			</PopoverContent>
 		</Popover>
 	);
