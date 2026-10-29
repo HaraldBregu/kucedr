@@ -70,6 +70,7 @@ export function listSessions(
 						existsSync(runPath) ? statSync(runPath).mtimeMs : 0
 					),
 					title: sessionTitle(entry.name, location),
+					pinned: sessionPinned(entry.name, location),
 					category,
 				};
 			})
