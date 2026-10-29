@@ -1,5 +1,6 @@
 import { providerModels } from '../../../models';
-import { modelEfforts, resolveModelEffort } from '../../../../shared/effort';
+import { modelEfforts } from '../../../../shared/effort';
+import { resolveModelEffort } from '../../../../shared/resolve_effort';
 import Anthropic from '@anthropic-ai/sdk';
 import { content } from './content';
 import { options as requestOptions } from './options';
