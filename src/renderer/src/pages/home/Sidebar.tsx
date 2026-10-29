@@ -322,14 +322,16 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						</SidebarGroup>
 					</Collapsible>
 				)}
-				<Collapsible defaultOpen className="group/collapsible">
+				<Collapsible defaultOpen disabled={recentSessions.length < 10} className="group/collapsible">
 				<SidebarGroup>
 				<CollapsibleTrigger
 					nativeButton={false}
-					render={<SidebarGroupLabel className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />}
+					render={<SidebarGroupLabel className={cn(recentSessions.length >= 10 && 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground')} />}
 				>
 					{t('settings.chatHistory.history', 'History')}
-					<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
+					{recentSessions.length >= 10 && (
+						<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
+					)}
 				</CollapsibleTrigger>
 				<CollapsibleContent>
 				<SidebarGroupContent>
