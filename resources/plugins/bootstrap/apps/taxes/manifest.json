@@ -10,10 +10,10 @@
     "author": "Harald Bregu"
   },
   "window": {
-    "width": 390,
-    "height": 790,
-    "minWidth": 340,
-    "minHeight": 580,
+    "width": 700,
+    "height": 610,
+    "minWidth": 580,
+    "minHeight": 500,
     "resizable": true,
     "maximizable": false,
     "frame": true,
