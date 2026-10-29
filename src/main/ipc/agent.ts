@@ -531,6 +531,16 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.pinSession,
+			wrapAgentHandler(
+				mainAccess,
+				(sessionId: unknown, pinned: unknown): Promise<void> =>
+					agent.pinSession(requireUuidSessionId(sessionId), pinned === true),
+				AgentChannels.pinSession
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.lastMessages,
 			wrapAgentHandler(
 				mainAccess,
