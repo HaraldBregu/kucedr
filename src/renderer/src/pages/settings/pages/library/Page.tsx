@@ -36,6 +36,7 @@ const LibraryPage: React.FC = () => {
 	const [files, setFiles] = useState<LibraryFile[]>([]);
 	const [currentFolder, setCurrentFolder] = useState('');
 	const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
+	const [editing, setEditing] = useState(false);
 	const [visibleCount, setVisibleCount] = useState(FILE_BATCH_SIZE);
 	const loadMoreRef = useRef<HTMLDivElement>(null);
 	const [view, setView] = useState<'collections' | 'list'>('list');
@@ -50,8 +51,16 @@ const LibraryPage: React.FC = () => {
 	const [deletingPath, setDeletingPath] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
 	const currentFiles = useMemo(
-		() => files.filter((file) => libraryParent(file.relativePath) === currentFolder),
-		[files, currentFolder]
+		() => {
+			const search = query.trim().toLowerCase();
+			const icons = LIBRARY_FILTERS.find((entry) => entry.value === filter)?.icons ?? [];
+			return files.filter((file) =>
+				libraryParent(file.relativePath) === currentFolder &&
+				(!search || file.name.toLowerCase().includes(search)) &&
+				(filter === 'all' || (file.kind !== 'folder' && (icons as readonly unknown[]).includes(libraryFileIcon(file.name))))
+			);
+		},
+		[files, currentFolder, query, filter]
 	);
 	const orderedFiles = useMemo(() => sortLibraryFiles(currentFiles, sort), [currentFiles, sort]);
 	const navigateFolder = useCallback((folder: string): void => {
@@ -347,11 +356,17 @@ const LibraryPage: React.FC = () => {
 						view={view}
 						onViewChange={(next) => {
 							setView(next);
+							setEditing(false);
 							setSelectedPaths(new Set());
 						}}
 						onCreateFolder={() => setFolderDialogOpen(true)}
 						onOpenFolder={() => void handleOpenFolder()}
 						onUpload={() => void handleUpload()}
+						editing={editing}
+						onEditingChange={(next) => {
+							setEditing(next);
+							if (!next) setSelectedPaths(new Set());
+						}}
 						disabled={loading || uploading}
 					/>
 				}
@@ -437,6 +452,7 @@ const LibraryPage: React.FC = () => {
 							sort={sort}
 							onSort={handleSort}
 							selectedPaths={selectedPaths}
+							editing={editing}
 							onSelect={handleSelect}
 							onSelectAll={handleSelectAll}
 							onOpenFolder={(entry) => navigateFolder(entry.relativePath)}
