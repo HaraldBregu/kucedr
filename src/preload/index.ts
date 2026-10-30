@@ -124,4 +124,6 @@ if (process.contextIsolated) {
 	globalThis.auth = auth;
 	// @ts-ignore (define in dts)
 	globalThis.cloud = cloud;
+	// @ts-ignore (define in dts)
+	globalThis.credentials = credentials;
 }
