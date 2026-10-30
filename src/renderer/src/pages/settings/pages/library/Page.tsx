@@ -23,6 +23,8 @@ import { LibraryHeaderActions } from './Header';
 import { LibraryFolderDialog } from './FolderDialog';
 import { LibrarySelection } from './Selection';
 import { LibraryPath } from './Path';
+import { LIBRARY_FILTERS, LibraryFilter, type LibraryFilterValue } from './Filter';
+import { libraryFileIcon } from './icon';
 import { libraryParent } from './parent';
 import { LIBRARY_DRAG_TYPE } from './drag';
 import { sortLibraryFiles, type LibrarySort, type LibrarySortKey } from './sort';
