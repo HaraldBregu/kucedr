@@ -55,7 +55,7 @@ export function LibraryRow({
 					/>
 				)}
 			</TableCell>}
-			<TableCell className={selected ? 'rounded-l-xl bg-muted/70 py-2' : 'py-2'}>
+			<TableCell className="py-2">
 				{file.kind === 'folder' ? (
 					<button
 						type="button"
