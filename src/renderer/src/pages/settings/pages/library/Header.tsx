@@ -1,8 +1,8 @@
 import React from 'react';
-import { FolderOpen, FolderPlus, LayoutGrid, List, Upload } from 'lucide-react';
+import { Check, FolderOpen, FolderPlus, LayoutGrid, List, SquarePen, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { ButtonGroup } from '@/components/ui/button-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function LibraryHeaderActions({
@@ -11,6 +11,8 @@ export function LibraryHeaderActions({
 	onCreateFolder,
 	onOpenFolder,
 	onUpload,
+	editing,
+	onEditingChange,
 	disabled,
 }: {
 	readonly view: 'collections' | 'list';
@@ -18,23 +20,34 @@ export function LibraryHeaderActions({
 	readonly onCreateFolder: () => void;
 	readonly onOpenFolder: () => void;
 	readonly onUpload: () => void;
+	readonly editing: boolean;
+	readonly onEditingChange: (editing: boolean) => void;
 	readonly disabled: boolean;
 }): React.JSX.Element {
 	const { t } = useTranslation();
 	return (
 		<TooltipProvider delay={400}>
 			<div className="flex items-center gap-2">
-				<ToggleGroup
-					type="single"
-					className="gap-2"
-					value={view}
-					onValueChange={(value) => {
-						if (value === 'collections' || value === 'list') onViewChange(value);
-					}}
-					variant="default"
-					size="sm"
-					aria-label={t('settings.library.view')}
-				>
+				{view === 'list' && (
+					<Tooltip>
+						<TooltipTrigger
+							render={
+								<Button
+									type="button"
+									variant={editing ? 'default' : 'secondary'}
+									size="icon-sm"
+									aria-label={editing ? t('settings.library.done', 'Done') : t('settings.library.edit', 'Edit')}
+									aria-pressed={editing}
+									onClick={() => onEditingChange(!editing)}
+								>
+									{editing ? <Check className="size-4" /> : <SquarePen className="size-4" />}
+								</Button>
+							}
+						/>
+						<TooltipContent side="bottom">{editing ? t('settings.library.done', 'Done') : t('settings.library.edit', 'Edit')}</TooltipContent>
+					</Tooltip>
+				)}
+				<ButtonGroup aria-label={t('settings.library.view')}>
 					{[
 						{ value: 'collections' as const, icon: LayoutGrid },
 						{ value: 'list' as const, icon: List },
@@ -42,19 +55,23 @@ export function LibraryHeaderActions({
 						<Tooltip key={value}>
 							<TooltipTrigger
 								render={
-									<ToggleGroupItem
-										value={value}
-										className="size-7 min-w-0 bg-secondary p-0 text-secondary-foreground hover:bg-secondary/80 hover:text-secondary-foreground data-[pressed]:bg-accent data-[pressed]:text-accent-foreground"
+									<Button
+										type="button"
+										variant="outline"
+										className={view === value ? 'bg-accent text-accent-foreground' : undefined}
+										size="icon-sm"
 										aria-label={t(`settings.library.${value}`)}
+										aria-pressed={view === value}
+										onClick={() => onViewChange(value)}
 									>
 										<Icon className="size-4" />
-									</ToggleGroupItem>
+									</Button>
 								}
 							/>
 							<TooltipContent side="bottom">{t(`settings.library.${value}`)}</TooltipContent>
 						</Tooltip>
 					))}
-				</ToggleGroup>
+				</ButtonGroup>
 				{(
 					[
 						{ key: 'createFolder', icon: FolderPlus, action: onCreateFolder, disabled },

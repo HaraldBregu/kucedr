@@ -355,7 +355,14 @@ const LibraryPage: React.FC = () => {
 			<SettingsPageHeader
 				title={t('library.title')}
 				description={t('settings.library.description')}
-				action={
+			/>
+
+			<LibraryFilter
+				filter={filter}
+				onFilterChange={setFilter}
+				query={query}
+				onQueryChange={setQuery}
+				actions={
 					<LibraryHeaderActions
 						view={view}
 						onViewChange={(next) => {
@@ -375,8 +382,6 @@ const LibraryPage: React.FC = () => {
 					/>
 				}
 			/>
-
-			<LibraryFilter filter={filter} onFilterChange={setFilter} query={query} onQueryChange={setQuery} />
 
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
@@ -464,6 +469,7 @@ const LibraryPage: React.FC = () => {
 							onOpenFolder={(entry) => navigateFolder(entry.relativePath)}
 							onMove={(paths, folder) => void handleMove(paths, folder)}
 							onContextMenu={handleContextMenu}
+							onDelete={(file) => void handleDelete(file)}
 						/>
 					)}
 					{visibleCount < currentFiles.length && (

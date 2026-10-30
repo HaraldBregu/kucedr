@@ -13,21 +13,25 @@ export function LibraryTable({
 	sort,
 	onSort,
 	selectedPaths,
+	editing,
 	onSelect,
 	onSelectAll,
 	onOpenFolder,
 	onMove,
 	onContextMenu,
+	onDelete,
 }: {
 	readonly files: LibraryFile[];
 	readonly sort: LibrarySort;
 	readonly onSort: (key: LibrarySortKey) => void;
 	readonly selectedPaths: ReadonlySet<string>;
+	readonly editing: boolean;
 	readonly onSelect: (path: string, selected: boolean) => void;
 	readonly onSelectAll: (files: LibraryFile[], selected: boolean) => void;
 	readonly onOpenFolder: (file: LibraryFile) => void;
 	readonly onMove: (paths: string[], folder: string) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
+	readonly onDelete: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
 	const selectableFiles = files.filter((file) => file.kind !== 'folder');
@@ -44,7 +48,7 @@ export function LibraryTable({
 		<Table className="min-w-[520px] table-fixed">
 			<TableHeader>
 				<TableRow>
-					<TableHead className="w-12 px-3">
+					{editing && <TableHead className="w-12 px-3">
 						<Checkbox
 							checked={
 								selectableFiles.length > 0 && selectedCount === selectableFiles.length
@@ -57,7 +61,7 @@ export function LibraryTable({
 							aria-label={t('settings.library.select')}
 							className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=indeterminate]:border-muted-foreground/60 data-[state=indeterminate]:bg-muted"
 						/>
-					</TableHead>
+					</TableHead>}
 					{columns.map(({ key, label, className }) => {
 						const active = sort.key === key;
 						const SortIcon = active
@@ -80,6 +84,7 @@ export function LibraryTable({
 							</TableHead>
 						);
 					})}
+					<TableHead className="w-12" />
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -88,11 +93,13 @@ export function LibraryTable({
 						key={file.relativePath}
 						file={file}
 						selected={selectedPaths.has(file.relativePath)}
+						editing={editing}
 						selectedPaths={selectedPaths}
 						onSelect={(selected) => onSelect(file.relativePath, selected)}
 						onOpenFolder={onOpenFolder}
 						onMove={onMove}
 						onContextMenu={onContextMenu}
+						onDelete={onDelete}
 					/>
 				))}
 			</TableBody>

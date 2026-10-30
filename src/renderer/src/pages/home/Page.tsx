@@ -760,9 +760,9 @@ function PageContent(): ReactElement {
 			)}
 		>
 			{showEmptyConversation ? null : (
-				<div className="pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background" />
+				<div className={cn('pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background', detailsOpen && 'max-w-[60.5rem] pr-[12.5rem] bg-clip-content')} />
 			)}
-			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl')}>
+			<div className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl', !showEmptyConversation && detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}>
 				{libraryDropError && <p role="alert" className="mb-2 text-xs text-destructive">Could not attach Library files. Please try again.</p>}
 				<RecorderErrorMessage
 					message={voiceErrorMessage}

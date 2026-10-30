@@ -1,7 +1,16 @@
 import React from 'react';
+import { MoreHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { LibraryPreview } from './Preview';
@@ -17,6 +26,7 @@ export function LibraryRow({
 	onOpenFolder,
 	onMove,
 	onContextMenu,
+	onDelete,
 }: {
 	readonly file: LibraryFile;
 	readonly selected: boolean;
@@ -26,6 +36,7 @@ export function LibraryRow({
 	readonly onOpenFolder: (file: LibraryFile) => void;
 	readonly onMove: (paths: string[], folder: string) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
+	readonly onDelete: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
 	const { isDropTarget, ...dragProps } = useLibraryDrag(file, selectedPaths, onMove);
@@ -63,25 +74,47 @@ export function LibraryRow({
 						onClick={() => onOpenFolder(file)}
 						aria-label={t('settings.library.openFolderNamed', { name: file.name })}
 					>
-						<LibraryPreview file={file} compact />
-						<span className="min-w-0 truncate font-medium" title={file.name}>
-							{file.name}
-						</span>
+						<span className="size-9 shrink-0 [&>*]:size-9 [&>*]:rounded-sm [&>*]:bg-muted"><LibraryPreview file={file} compact /></span>
+						<div className="flex min-w-0 flex-col">
+							<span className="truncate text-sm font-medium" title={file.name}>
+								{file.name}
+							</span>
+						</div>
 					</button>
 				) : (
 					<div className="flex w-full min-w-0 items-center gap-3 text-left">
-						<LibraryPreview file={file} compact />
-						<span className="min-w-0 truncate font-medium" title={file.name}>
-							{file.name}
-						</span>
+						<span className="size-9 shrink-0 [&>*]:size-9 [&>*]:rounded-sm [&>*]:bg-muted"><LibraryPreview file={file} compact /></span>
+						<div className="flex min-w-0 flex-col">
+							<span className="truncate text-sm font-medium" title={file.name}>
+								{file.name}
+							</span>
+						</div>
 					</div>
 				)}
 			</TableCell>
-			<TableCell className="whitespace-nowrap py-2 text-muted-foreground">
+			<TableCell className="whitespace-nowrap py-2 text-sm text-muted-foreground">
 				{file.kind === 'folder' ? '—' : formatLibraryFileSize(file.size)}
 			</TableCell>
-			<TableCell className="whitespace-nowrap py-2 text-muted-foreground">
+			<TableCell className="whitespace-nowrap py-2 text-sm text-muted-foreground">
 				<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
+			</TableCell>
+			<TableCell className="py-2">
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button type="button" variant="ghost" size="icon" className="size-8" aria-label={t('settings.library.actions', 'Actions')}>
+							<MoreHorizontal />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						<DropdownMenuItem onSelect={() => void navigator.clipboard.writeText(file.path)}>
+							{t('settings.library.copyPath', 'Copy path')}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={() => onDelete(file)}>
+							{t('settings.library.deleteAction', 'Delete')}
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</TableCell>
 		</TableRow>
 	);
