@@ -748,8 +748,8 @@ export class LlmModel implements LlmAdapter {
 		if (!provider.apiKey) throw new LlmProviderAuthError('Anthropic api key not configured');
 		const factory =
 			this.anthropicClientFactory ??
-			((c) => new Anthropic({ apiKey: c.apiKey, baseURL: c.baseURL, fetch: c.fetch }));
-		return factory({ apiKey: provider.apiKey, baseURL: provider.baseURL, fetch: provider.fetch });
+			((c) => new Anthropic({ apiKey: c.apiKey, baseURL: c.baseURL }));
+		return factory({ apiKey: provider.apiKey, baseURL: provider.baseURL });
 	}
 
 	private throwProviderError(err: unknown): never {
