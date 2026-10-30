@@ -1446,6 +1446,11 @@ export interface CredentialInvokeChannelMap {
 	};
 	[CredentialChannels.test]: { args: [id: string]; result: boolean };
 	[CredentialChannels.remove]: { args: [id: string]; result: void };
+	[CredentialChannels.active]: { args: []; result: Record<string, string> };
+	[CredentialChannels.activate]: {
+		args: Parameters<Credentials['activate']>;
+		result: void;
+	};
 	[CredentialChannels.listLocal]: {
 		args: [];
 		result: Awaited<ReturnType<Credentials['listLocal']>>;
