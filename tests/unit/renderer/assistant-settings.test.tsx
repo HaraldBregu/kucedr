@@ -217,6 +217,8 @@ beforeEach(() => {
 			setProvider: jest.fn().mockResolvedValue(true),
 			getModelId: jest.fn().mockResolvedValue('gpt'),
 			setModelId: jest.fn().mockResolvedValue(true),
+			getCredentialId: jest.fn().mockResolvedValue(undefined),
+			setCredentialId: jest.fn().mockResolvedValue(undefined),
 			getModelOptions: jest.fn().mockResolvedValue({}),
 			setModelOptions: jest.fn().mockResolvedValue({}),
 			getCompactModel: jest.fn().mockResolvedValue({ providerId: '', modelId: '', options: {} }),
