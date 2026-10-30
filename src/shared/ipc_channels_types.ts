@@ -1429,7 +1429,6 @@ export interface CloudInvokeChannelMap {
 	[CloudChannels.unwatchSession]: { args: [sessionId: string]; result: void };
 }
 
-type CredentialTypes = typeof import('./credential_types');
 type Credentials = import('./credential_types').CredentialsApi;
 
 export interface CredentialInvokeChannelMap {
