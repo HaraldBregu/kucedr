@@ -19,7 +19,6 @@ export class CredentialService {
 	private controller = new AbortController();
 	private userId: string | undefined;
 	private unsubscribe?: () => void;
-	private readonly removedListeners = new Set<(id: string) => void>();
 
 	constructor(
 		private readonly auth: CredentialAuthPort,
