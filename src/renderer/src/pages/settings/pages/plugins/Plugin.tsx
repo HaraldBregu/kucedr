@@ -413,7 +413,8 @@ export default function PluginPage(): React.JSX.Element {
 								))}
 							</SettingsPanel>
 						</SettingsSection>
-					))
+						))}
+					</>
 				)}
 			</div>
 			<Confirm
