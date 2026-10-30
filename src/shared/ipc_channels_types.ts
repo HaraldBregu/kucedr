@@ -62,6 +62,7 @@ import {
 	TerminalChannels,
 	AuthChannels,
 	CloudChannels,
+	CredentialChannels,
 } from './ipc_channels_definitions';
 
 export interface CodingInvokeChannelMap {
