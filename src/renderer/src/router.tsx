@@ -28,6 +28,7 @@ import {
 import { cn } from './lib/utils';
 import HomePage from './pages/home/Page';
 import WorkspacePage from './pages/workspace/Page';
+import LibraryRoutePage from './pages/library/Page';
 import StartPage from './pages/start/StartPage';
 import { StartupGate } from './auth/Gate';
 import { useOnboarding } from './contexts/useOnboarding';
@@ -233,6 +234,14 @@ const routes: RouteObject[] = [
 				element: (
 					<RouteWrapper>
 						<WorkspacePage />
+					</RouteWrapper>
+				),
+			},
+			{
+				path: 'library',
+				element: (
+					<RouteWrapper>
+						<LibraryRoutePage />
 					</RouteWrapper>
 				),
 			},
