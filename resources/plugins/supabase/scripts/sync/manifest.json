@@ -1,0 +1,11 @@
+{
+	"title": "Sync",
+	"description": "Back up selected folders to the Supabase Storage bucket and restore them, through its S3 endpoint.",
+	"author": "Harald Bregu",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "storage",
+		"entry": "dist/index.mjs",
+		"instructions": "instructions.md"
+	}
+}
