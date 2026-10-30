@@ -103,6 +103,13 @@ export function bootstrapServices(): BootstrapResult {
 		authService,
 		cloudClient ? new SupabaseCloudRepository(cloudClient) : undefined
 	);
+	const credentialService = new CredentialService(authService, cloudConfig);
+	credentialRegistry.service = credentialService;
+	const credentialMigration = new CredentialMigration(
+		credentialService,
+		() => authService.getSignedInUserId(),
+		{ list: getModelProvidersState, remove: (id) => deleteProvider(id, 'models') }
+	);
 	eventBus.on('window:closed', (event) => {
 		agentService.cancelWindow((event.payload as { windowId: number }).windowId);
 		codingService.cancelWindow((event.payload as { windowId: number }).windowId);
