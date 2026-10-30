@@ -157,7 +157,7 @@ function EmptyConversation(): ReactElement {
 	return (
 		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
 			<EmptyHeader className="max-w-lg flex-row gap-2">
-				<LogoView className="size-20" />
+				<LogoView className="size-12" />
 				<EmptyTitle className="text-3xl font-bold leading-tight text-foreground">
 					{greeting}, how are you?
 				</EmptyTitle>
@@ -833,6 +833,7 @@ function PageContent(): ReactElement {
 						}
 						className="w-full"
 						inputClassName={cn(
+							showEmptyConversation && 'min-h-[130px]',
 							planCommandActive && 'plan-prompt-frame',
 							goalCommandActive && 'goal-prompt-frame'
 						)}
