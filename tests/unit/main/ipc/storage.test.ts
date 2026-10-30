@@ -28,8 +28,6 @@ jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 jest.mock('../../../../src/main/storage', () => ({
 	getStorageSettings,
 	pickFolders: jest.fn(),
-	pullFiles: jest.fn(),
-	pushFiles: jest.fn(),
 	rescheduleStorageSync,
 	saveStorageSettings,
 	syncFolders: jest.fn(),
