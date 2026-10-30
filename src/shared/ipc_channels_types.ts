@@ -1429,6 +1429,36 @@ export interface CloudInvokeChannelMap {
 	[CloudChannels.unwatchSession]: { args: [sessionId: string]; result: void };
 }
 
+type CredentialTypes = typeof import('./credential_types');
+type Credentials = import('./credential_types').CredentialsApi;
+
+export interface CredentialInvokeChannelMap {
+	[CredentialChannels.list]: { args: []; result: Awaited<ReturnType<Credentials['list']>> };
+	[CredentialChannels.create]: {
+		args: Parameters<Credentials['create']>;
+		result: Awaited<ReturnType<Credentials['create']>>;
+	};
+	[CredentialChannels.replace]: {
+		args: Parameters<Credentials['replace']>;
+		result: Awaited<ReturnType<Credentials['replace']>>;
+	};
+	[CredentialChannels.rename]: {
+		args: Parameters<Credentials['rename']>;
+		result: Awaited<ReturnType<Credentials['rename']>>;
+	};
+	[CredentialChannels.test]: { args: [id: string]; result: boolean };
+	[CredentialChannels.remove]: { args: [id: string]; result: void };
+	[CredentialChannels.listLocal]: {
+		args: [];
+		result: Awaited<ReturnType<Credentials['listLocal']>>;
+	};
+	[CredentialChannels.migrate]: {
+		args: [localIds: string[]];
+		result: Awaited<ReturnType<Credentials['migrate']>>;
+	};
+	[CredentialChannels.removeLocal]: { args: [localId: string]; result: void };
+}
+
 export interface InvokeChannelMap
 	extends
 		MemoryInvokeChannelMap,
