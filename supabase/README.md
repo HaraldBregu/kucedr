@@ -70,6 +70,43 @@ For coordinated disaster recovery, restore S3 content and Supabase metadata to m
 
 Run tenant-isolation, duplicate-operation, conflict, and object-integrity integration tests against the target project before release.
 
+## Cloud API Keys
+
+`migrations/20261030120000_credentials.sql` stores per-user model API keys. Metadata lives in
+`credentials.credentials` (a private schema outside the Data API); each key lives only in Supabase
+Vault and is referenced by `vault_secret_id`. Access is through `public.credential_*` functions that
+are `SECURITY DEFINER`, use `search_path = ''`, and are executable only by `service_role`. An
+`after delete` trigger removes the Vault secret for every deletion path, including the
+`auth.users` cascade when an account is deleted.
+
+Deploy two functions with JWT verification enabled:
+
+- `credentials`: `list`, `create`, `replace`, `rename`, `test`, and `delete`. It never returns a key.
+  `test` calls the provider's free model-listing endpoint.
+- `model-gateway`: `/model-gateway/<credentialId>/<operation>` streams one approved provider
+  operation using the saved key. Destinations and operations are fixed in
+  `functions/_shared/services.ts` (OpenAI, Anthropic, DeepSeek, Mistral, xAI chat). Client auth
+  headers are dropped, redirects are refused, and provider errors are redacted.
+
+Both functions derive the owner from the verified user JWT and look up credentials by
+`(id, user_id)`; inaccessible credentials return a generic 404. Limits: 60 credential operations
+and 120 gateway requests per user per minute, 8 concurrent gateway streams per user (leases expire
+after 10 minutes), 200 credentials per user, 32 MiB gateway request bodies.
+
+Edge Function wall-clock limits apply to each model call (not to a whole agent run, which stays on
+the desktop). A single generation longer than the plan's limit is cut off and surfaces as a provider
+error.
+
+```sh
+supabase db push
+supabase functions deploy credentials
+supabase functions deploy model-gateway
+supabase test db   # runs supabase/tests/database/credentials.test.sql
+```
+
+The functions use `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`, which the
+hosted runtime provides. No other secret is required.
+
 ## Enable Desktop Sync
 
 In Settings → Storage, select an existing saved S3 provider and folders, sign in, then enable
