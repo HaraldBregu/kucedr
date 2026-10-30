@@ -932,6 +932,25 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.getCredentialId,
+			wrapAgentHandler(mainAccess, () => getCredentialId(), AgentChannels.getCredentialId)
+		);
+
+		ipcMain.handle(
+			AgentChannels.setCredentialId,
+			wrapAgentHandler(
+				mainAccess,
+				(credentialId: unknown): void => {
+					if (credentialId === null) return setCredentialId(undefined);
+					if (typeof credentialId !== 'string' || !UUID_PATTERN.test(credentialId))
+						throw new Error('Invalid credential identifier.');
+					setCredentialId(credentialId.toLowerCase());
+				},
+				AgentChannels.setCredentialId
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.getModelOptions,
 			wrapAgentHandler(mainAccess, () => getModelOptions(), AgentChannels.getModelOptions)
 		);
