@@ -25,6 +25,7 @@ import type {
 	AuthApi,
 	CloudApi,
 } from '../shared/api_types';
+import type { CredentialsApi } from '../shared/credential_types';
 
 declare global {
 	interface Window {
