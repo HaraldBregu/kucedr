@@ -172,6 +172,7 @@ export async function cleanup(services: MainServices): Promise<void> {
 	await storageOperations.settle();
 	await recorderCleanup;
 	await cloudService.destroy();
+	credentialService.destroy();
 	authService.destroy();
 	await channelRegistry.destroy();
 	logger.info('Bootstrap', 'Cleanup complete');
