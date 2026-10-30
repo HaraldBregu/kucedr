@@ -27,6 +27,7 @@ export default function Provider({
 }: ProviderProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const selectedProvider = providers.find((provider) => provider.id === providerId);
+	const storagePlugin = storages()[0]?.provider.plugin?.id;
 
 	return (
 		<SettingsPanel>
