@@ -39,7 +39,10 @@ function json(body: unknown, status = 200): Response {
 
 it('rejects every operation without a signed-in session and never calls the backend', async () => {
 	const request = jest.fn();
-	const service = new CredentialService(auth(undefined, null).port, CONFIG, request);
+	const signedOut = auth();
+	signedOut.state.userId = undefined;
+	signedOut.state.token = null;
+	const service = new CredentialService(signedOut.port, CONFIG, request);
 	await expect(service.list()).rejects.toThrow('Sign in');
 	await expect(service.test(CREDENTIAL_ID)).rejects.toThrow('Sign in');
 	expect(() => service.provider('openai', CREDENTIAL_ID)).toThrow('Sign in');
