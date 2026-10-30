@@ -15,6 +15,7 @@ import { TrustedRenderer } from './core/trusted';
 export interface CredentialIpcDeps {
 	credentials: CredentialService;
 	migration: CredentialMigration;
+	selection: CredentialSelection;
 	windows: WindowContextManager;
 	apps: AppRegistry;
 }
