@@ -313,6 +313,8 @@ export interface AgentInvokeChannelMap {
 		args: [modelId: string];
 		result: boolean;
 	};
+	[AgentChannels.getCredentialId]: { args: []; result: string | undefined };
+	[AgentChannels.setCredentialId]: { args: [credentialId: string | null]; result: void };
 	[AgentChannels.getModelOptions]: { args: []; result: Record<string, unknown> };
 	[AgentChannels.setModelOptions]: {
 		args: [options: Record<string, unknown>];
