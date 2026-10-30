@@ -74,6 +74,7 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('terminalAPI', terminalAPI);
 		contextBridge.exposeInMainWorld('auth', auth);
 		contextBridge.exposeInMainWorld('cloud', cloud);
+		contextBridge.exposeInMainWorld('credentials', credentials);
 	} catch (error) {
 		console.error('[preload] Failed to expose IPC APIs:', error);
 	}
