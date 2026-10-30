@@ -222,7 +222,7 @@ const routes: RouteObject[] = [
 				element: <Navigate to="/start" replace />,
 			},
 			{
-				path: 'home',
+				path: 'home/*',
 				element: (
 					<RouteWrapper fallback={<HomePageLoadingSkeleton />}>
 						<HomePage />
