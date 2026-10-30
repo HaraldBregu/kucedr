@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	AlertTriangle,
-	ChevronRight,
 	Download,
 	FolderSync,
 	Plus,
-	Server,
 	Trash2,
 	Upload,
 } from 'lucide-react';
