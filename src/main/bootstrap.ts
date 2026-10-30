@@ -55,6 +55,7 @@ export interface MainServices {
 	cloudService: CloudService;
 	credentialService: CredentialService;
 	credentialMigration: CredentialMigration;
+	credentialSelection: CredentialSelection;
 }
 
 export interface BootstrapResult extends MainServices {}
