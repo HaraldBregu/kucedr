@@ -233,6 +233,8 @@ export interface ResolvedProvider {
 	id: string;
 	apiKey: string;
 	baseURL: string;
+	/** Set for cloud credentials: authenticates each request against the backend gateway. */
+	fetch?: typeof fetch;
 }
 
 export function normalizeProviderId(providerId: string): string {
