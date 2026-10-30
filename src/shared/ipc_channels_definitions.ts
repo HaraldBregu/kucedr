@@ -40,6 +40,8 @@ export const AgentChannels = {
 	setProvider: 'agent:set-provider',
 	getModelId: 'agent:get-model-id',
 	setModelId: 'agent:set-model-id',
+	getCredentialId: 'agent:get-credential-id',
+	setCredentialId: 'agent:set-credential-id',
 	getModelOptions: 'agent:get-model-options',
 	setModelOptions: 'agent:set-model-options',
 	getCompactModel: 'agent:compact-model:get',
