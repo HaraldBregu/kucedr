@@ -149,6 +149,7 @@ export function bootstrapServices(): BootstrapResult {
 		cloudService,
 		credentialService,
 		credentialMigration,
+		credentialSelection,
 	};
 }
 
