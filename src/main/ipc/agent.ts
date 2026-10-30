@@ -65,7 +65,6 @@ import {
 	setModelId,
 	setModelOptions,
 	setCompactModel,
-	setCredentialId,
 	setProviderId,
 	setToolProfileTool,
 	setToolModel,
