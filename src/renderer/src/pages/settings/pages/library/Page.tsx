@@ -37,6 +37,8 @@ const LibraryPage: React.FC = () => {
 	const [currentFolder, setCurrentFolder] = useState('');
 	const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
 	const [editing, setEditing] = useState(false);
+	const [filter, setFilter] = useState<LibraryFilterValue>('all');
+	const [query, setQuery] = useState('');
 	const [visibleCount, setVisibleCount] = useState(FILE_BATCH_SIZE);
 	const loadMoreRef = useRef<HTMLDivElement>(null);
 	const [view, setView] = useState<'collections' | 'list'>('list');
