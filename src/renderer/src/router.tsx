@@ -262,6 +262,14 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'credentials',
+						element: (
+							<SettingsRouteWrapper>
+								<CredentialsPage />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
 						path: 'code/*',
 						element: <Navigate to="/workspace" replace />,
 					},
