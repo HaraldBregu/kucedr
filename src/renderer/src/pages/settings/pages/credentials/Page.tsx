@@ -86,7 +86,19 @@ const CredentialsPage: React.FC = () => {
 			<SettingsPageHeader
 				icon={KeyRound}
 				title="Cloud API keys"
-				description="Keys are stored encrypted in your account and used only by the Kucedr backend. Each plugin uses the key marked “In use”, or its local key when none is."
+				description="Keys are encrypted on this device with your passphrase and synced to your account as ciphertext. Each plugin uses the key marked “In use”, or its local key when none is."
+				action={
+					current?.status === 'unlocked' ? (
+						<Button
+							type="button"
+							size="xs"
+							variant="ghost"
+							onClick={() => void window.credentials.lock().then(() => setReload((n) => n + 1))}
+						>
+							Lock
+						</Button>
+					) : undefined
+				}
 			/>
 			{!userId ? (
 				<SettingsEmptyState
