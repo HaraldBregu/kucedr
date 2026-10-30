@@ -39,6 +39,9 @@ export interface CredentialsApi {
 	rename(id: string, label: string): Promise<CloudCredential>;
 	test(id: string): Promise<boolean>;
 	remove(id: string): Promise<void>;
+	/** Active cloud key per plugin id for the signed-in account. */
+	active(): Promise<Record<string, string>>;
+	activate(service: CloudCredentialService, id: string | null): Promise<void>;
 	listLocal(): Promise<LocalCredential[]>;
 	migrate(localIds: string[]): Promise<CredentialMigrationResult[]>;
 	removeLocal(localId: string): Promise<void>;
