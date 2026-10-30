@@ -154,6 +154,7 @@ export async function cleanup(services: MainServices): Promise<void> {
 		conversationService,
 		terminalManager,
 		cloudService,
+		credentialService,
 		authService,
 		agentService,
 		memoryService,
