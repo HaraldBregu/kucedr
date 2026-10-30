@@ -6,8 +6,8 @@ import { readPluginScript, type PluginScriptManifest } from './plugin_script_rea
 
 export type PluginScript = PluginScriptManifest & { readonly plugin: PluginSource };
 
-/** Every enabled plugin's scripts; the first plugin to claim a name wins. */
-export function pluginScripts(): PluginScript[] {
+/** Every enabled plugin's scripts of one kind; the first plugin to claim a name wins. */
+export function pluginScripts(kind: 'render' | 'storage' = 'render'): PluginScript[] {
 	const scripts = new Map<string, PluginScript>();
 	for (const { directory, plugin } of pluginDirs('scripts')) {
 		for (const entry of readdirSync(directory, { withFileTypes: true })) {
