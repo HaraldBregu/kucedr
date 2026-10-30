@@ -3,9 +3,9 @@ import {
 	type CloudCredentialInput,
 } from '../../shared/credential_types';
 import { CredentialChannels } from '../../shared/ipc_channels_definitions';
-import { getCredentialId, getProviderId, setCredentialId } from '../agent/agent_store';
 import type { AppRegistry } from '../apps/app_registry';
 import type { CredentialMigration } from '../credentials/migration';
+import type { CredentialSelection } from '../credentials/selection';
 import type { CredentialService } from '../credentials/service';
 import type { EventBus } from '../event_bus';
 import type { WindowContextManager } from '../window_context';
