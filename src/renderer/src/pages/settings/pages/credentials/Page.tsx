@@ -21,6 +21,7 @@ import { CredentialForm } from './Form';
 import { CredentialMigrate } from './Migrate';
 import { SERVICE_NAMES } from './names';
 import { CredentialRow } from './Row';
+import { CredentialUnlock } from './Unlock';
 
 interface Loaded {
 	userId: string;
