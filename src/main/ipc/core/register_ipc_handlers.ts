@@ -44,6 +44,8 @@ export function registerIpcHandlers(
 		windowContextManager,
 		authService,
 		cloudService,
+		credentialService,
+		credentialMigration,
 	} = services;
 
 	const safeRegister = (name: string, register: () => void): void => {
