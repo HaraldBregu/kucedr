@@ -11,6 +11,7 @@ import {
 	Folder,
 	Globe,
 	HeartPulse,
+	KeyRound,
 	Settings,
 	Library,
 	ListChecks,
