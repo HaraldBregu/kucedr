@@ -11,6 +11,7 @@ import { formatLibraryFileSize } from './size';
 export function LibraryRow({
 	file,
 	selected,
+	editing,
 	selectedPaths,
 	onSelect,
 	onOpenFolder,
@@ -19,6 +20,7 @@ export function LibraryRow({
 }: {
 	readonly file: LibraryFile;
 	readonly selected: boolean;
+	readonly editing: boolean;
 	readonly selectedPaths: ReadonlySet<string>;
 	readonly onSelect: (selected: boolean) => void;
 	readonly onOpenFolder: (file: LibraryFile) => void;
@@ -43,7 +45,7 @@ export function LibraryRow({
 				onContextMenu(file);
 			}}
 		>
-			<TableCell className="px-3 py-2">
+			{editing && <TableCell className="px-3 py-2">
 				{file.kind !== 'folder' && (
 					<Checkbox
 						checked={selected}
@@ -52,7 +54,7 @@ export function LibraryRow({
 						className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white"
 					/>
 				)}
-			</TableCell>
+			</TableCell>}
 			<TableCell className={selected ? 'rounded-l-xl bg-muted/70 py-2' : 'py-2'}>
 				{file.kind === 'folder' ? (
 					<button
@@ -84,13 +86,7 @@ export function LibraryRow({
 			>
 				{file.kind === 'folder' ? '—' : formatLibraryFileSize(file.size)}
 			</TableCell>
-			<TableCell
-				className={
-					selected
-						? 'rounded-r-xl whitespace-nowrap bg-muted/70 py-2 text-muted-foreground'
-						: 'whitespace-nowrap py-2 text-muted-foreground'
-				}
-			>
+			<TableCell className="whitespace-nowrap py-2 text-muted-foreground">
 				<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
 			</TableCell>
 		</TableRow>
