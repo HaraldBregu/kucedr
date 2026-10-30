@@ -30,6 +30,13 @@ export class CredentialIpc implements IpcModule<CredentialIpcDeps> {
 		_eventBus: EventBus
 	): void {
 		const trusted = new TrustedRenderer(windows, apps);
+		trusted.query(CredentialChannels.status, () => credentials.status());
+		trusted.command(CredentialChannels.unlock, (passphrase) => {
+			if (typeof passphrase !== 'string' || passphrase.length < 10 || passphrase.length > 1024)
+				throw new Error('Use a passphrase of at least 10 characters.');
+			return credentials.unlock(passphrase);
+		});
+		trusted.command(CredentialChannels.lock, () => credentials.lock());
 		trusted.query(CredentialChannels.list, () => credentials.list());
 		trusted.command(CredentialChannels.create, (input) => credentials.create(this.input(input)));
 		trusted.command(CredentialChannels.replace, (id, secret) =>
