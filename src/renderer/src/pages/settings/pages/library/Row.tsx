@@ -77,13 +77,7 @@ export function LibraryRow({
 					</div>
 				)}
 			</TableCell>
-			<TableCell
-				className={
-					selected
-						? 'whitespace-nowrap bg-muted/70 py-2 text-muted-foreground'
-						: 'whitespace-nowrap py-2 text-muted-foreground'
-				}
-			>
+			<TableCell className="whitespace-nowrap py-2 text-muted-foreground">
 				{file.kind === 'folder' ? '—' : formatLibraryFileSize(file.size)}
 			</TableCell>
 			<TableCell className="whitespace-nowrap py-2 text-muted-foreground">
