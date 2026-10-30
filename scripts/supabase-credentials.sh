@@ -22,7 +22,11 @@ if [[ ! "$REF" =~ ^[a-z]{20}$ ]]; then
 fi
 
 echo "→ Checking whether the credentials schema is installed"
-installed="$(query "select to_regnamespace('credentials') is not null as installed")"
+installed="$(query "select to_regnamespace('credentials') is not null as installed")" || {
+	echo "$installed" >&2
+	echo "Could not reach the project. Run 'npx supabase login' and check the project ref." >&2
+	exit 1
+}
 if grep -q true <<<"$installed"; then
 	echo "  already installed, skipping migration"
 else
