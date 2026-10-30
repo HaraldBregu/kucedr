@@ -25,7 +25,10 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export class CredentialIpc implements IpcModule<CredentialIpcDeps> {
 	readonly name = 'credentials';
 
-	register({ credentials, migration, windows, apps }: CredentialIpcDeps, _eventBus: EventBus): void {
+	register(
+		{ credentials, migration, selection, windows, apps }: CredentialIpcDeps,
+		_eventBus: EventBus
+	): void {
 		const trusted = new TrustedRenderer(windows, apps);
 		trusted.query(CredentialChannels.list, () => credentials.list());
 		trusted.command(CredentialChannels.create, (input) => credentials.create(this.input(input)));
