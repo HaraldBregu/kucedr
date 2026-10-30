@@ -35,7 +35,7 @@ export function LibrarySelection({
 		<div
 			role="toolbar"
 			aria-label={t('settings.library.selectionActions')}
-			className="fixed bottom-6 left-1/2 z-40 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-2 overflow-x-auto rounded-full bg-neutral-900 px-4 py-3 text-white shadow-xl sm:gap-3 sm:px-6"
+			className="sticky bottom-6 z-40 mx-auto flex w-fit max-w-full items-center gap-2 overflow-x-auto rounded-full bg-neutral-900 px-4 py-3 text-white shadow-xl sm:gap-3 sm:px-6"
 		>
 			<span className="mr-2 shrink-0 whitespace-nowrap text-sm sm:text-base">
 				{t('settings.library.selectedCount', { count })}
