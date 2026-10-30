@@ -323,6 +323,9 @@ export const CloudChannels = {
 } as const;
 
 export const CredentialChannels = {
+	status: 'credentials:status',
+	unlock: 'credentials:unlock',
+	lock: 'credentials:lock',
 	list: 'credentials:list',
 	create: 'credentials:create',
 	replace: 'credentials:replace',
