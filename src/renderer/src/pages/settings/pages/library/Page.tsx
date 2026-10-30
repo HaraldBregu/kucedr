@@ -376,6 +376,8 @@ const LibraryPage: React.FC = () => {
 				}
 			/>
 
+			<LibraryFilter filter={filter} onFilterChange={setFilter} query={query} onQueryChange={setQuery} />
+
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{errorMessage}
