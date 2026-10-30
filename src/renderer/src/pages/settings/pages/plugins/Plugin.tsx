@@ -94,6 +94,7 @@ export default function PluginPage(): React.JSX.Element {
 				window.mcp.registry(),
 				window.skills.list(),
 				window.plugins.scripts(),
+				window.plugins.scripts('storage'),
 				window.plugins.getSettings(pluginId ?? ''),
 			]);
 		const owned = <T extends { readonly provider: { readonly plugin?: { readonly id: string } } }>(
