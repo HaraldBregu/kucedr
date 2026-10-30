@@ -44,11 +44,6 @@ export class CredentialService {
 		this.controller.abort();
 	}
 
-	onRemoved(listener: (id: string) => void): () => void {
-		this.removedListeners.add(listener);
-		return () => this.removedListeners.delete(listener);
-	}
-
 	async list(): Promise<CloudCredential[]> {
 		const { credentials } = await this.call<{ credentials: CloudCredential[] }>({ action: 'list' });
 		return credentials.filter((credential) =>
