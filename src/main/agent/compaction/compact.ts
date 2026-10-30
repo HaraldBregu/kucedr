@@ -61,7 +61,7 @@ async function summarize(
 	let summary = '';
 	let inputTokens = 0;
 	const profile = getCompactModel() ?? getAgentProfileModel('chat', 'textToText');
-	const provider = getResolvedProvider(profile.providerId, profile.credentialId);
+	const provider = getResolvedProvider(profile.providerId);
 	if (!provider || !profile.modelId) throw new Error('Chat compaction requires a configured text model.');
 	const deadline = AbortSignal.timeout(5 * 60_000);
 
