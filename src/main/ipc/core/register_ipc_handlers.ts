@@ -22,6 +22,7 @@ import { CoderIpc } from '../coder';
 import { TerminalIpc } from '../terminal';
 import { AuthIpc } from '../auth';
 import { CloudIpc } from '../cloud';
+import { CredentialIpc } from '../credentials';
 import type { EventBus } from '../../event_bus';
 import type { MainServices } from '../../bootstrap';
 
