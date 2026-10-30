@@ -17,7 +17,8 @@
 		"resources/plugins/bootstrap/scripts/chart",
 		"resources/plugins/bootstrap/scripts/dither",
 		"resources/plugins/bootstrap/scripts/draw",
-		"resources/plugins/bootstrap/scripts/organui"
+		"resources/plugins/bootstrap/scripts/organui",
+		"resources/plugins/supabase/scripts/sync"
 	],
 	"packageManager": "npm@11.13.0",
 	"engines": {
