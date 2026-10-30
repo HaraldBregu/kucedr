@@ -301,6 +301,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							onClick={() => {
 								playSound('navigate');
 								setSessionId(crypto.randomUUID());
+								navigate('/home');
 								if (sessions.length === 0)
 									setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
 								window.dispatchEvent(new Event('kucedr:focus-chat-input'));
