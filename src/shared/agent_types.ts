@@ -85,6 +85,8 @@ export interface AgentMediaModelSettings {
 	providerId: string;
 	modelId: string;
 	options: Record<string, unknown>;
+	/** Cloud credential used through the backend gateway; absent means the local provider key. */
+	credentialId?: string;
 }
 
 export interface AgentInputFile {
