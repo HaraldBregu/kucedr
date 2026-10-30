@@ -111,15 +111,18 @@ export function bootstrapServices(): BootstrapResult {
 		authService,
 		cloudClient ? new SupabaseCloudRepository(cloudClient) : undefined
 	);
-	const credentialService = new CredentialService(authService, cloudConfig);
+	const credentialService = new CredentialService(
+		authService,
+		cloudClient ? new CredentialBucket(cloudClient) : null,
+		new CredentialKeychain()
+	);
 	const credentialSelection = new CredentialSelection(() => authService.getSignedInUserId());
 	credentialRegistry.service = credentialService;
 	credentialRegistry.selection = credentialSelection;
-	const credentialMigration = new CredentialMigration(
-		credentialService,
-		() => authService.getSignedInUserId(),
-		{ list: getModelProvidersState, remove: (id) => deleteProvider(id, 'models') }
-	);
+	const credentialMigration = new CredentialMigration(credentialService, {
+		list: getModelProvidersState,
+		remove: (id) => deleteProvider(id, 'models'),
+	});
 	eventBus.on('window:closed', (event) => {
 		agentService.cancelWindow((event.payload as { windowId: number }).windowId);
 		codingService.cancelWindow((event.payload as { windowId: number }).windowId);
