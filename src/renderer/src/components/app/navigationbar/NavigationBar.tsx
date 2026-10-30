@@ -79,6 +79,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const chatSessionsRef = useRef<HTMLDivElement>(null);
 
 	const isHome = location.pathname === '/home';
+	const isHomeRoute = isHome || isLibrary;
 	const isWorkspace = location.pathname === '/workspace';
 	const isCode = location.pathname === '/code' || location.pathname.startsWith('/code/');
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
@@ -89,7 +90,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const workspaceLabel = t('settings.workspace.title', 'Workspace');
 	const chatHistoryLabel = t('settings.chatHistory.title');
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
-	const chatButtonVariant = isHome || isSettings ? 'secondary' : 'ghost';
+	const chatButtonVariant = isHomeRoute || isSettings ? 'secondary' : 'ghost';
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
 	useEffect(() => {
 		if (!chatSessionsLoading && chatSessionsRef.current) revealSelection(chatSessionsRef.current);
@@ -99,7 +100,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			type="button"
 			variant={chatButtonVariant}
 			size="sm"
-			className={isHome ? '!rounded-r-none text-xs' : 'rounded-md text-xs'}
+			className={isHomeRoute ? '!rounded-r-none text-xs' : 'rounded-md text-xs'}
 			onClick={() => navigate('/home')}
 			aria-label={homeLabel}
 			aria-current={isHome ? 'page' : undefined}
@@ -116,7 +117,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	);
 	const navigationButtons = showWorkspace ? (
 		<>
-			{isHome ? (
+			{isHomeRoute ? (
 			<ButtonGroup role="group" aria-label={homeLabel}>
 				{chatButtonTooltip}
 				<DropdownMenu
@@ -257,7 +258,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						{startContent}
 
 					</div>
-					{!isHome && !isWorkspace && !isOnboarding && !isSettings && !isCode && (
+					{!isHomeRoute && !isWorkspace && !isOnboarding && !isSettings && !isCode && (
 						<Tooltip>
 							<TooltipTrigger render={
 								<Button
