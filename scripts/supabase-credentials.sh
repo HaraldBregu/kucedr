@@ -22,7 +22,8 @@ if [[ ! "$REF" =~ ^[a-z]{20}$ ]]; then
 fi
 
 echo "→ Checking whether the credentials schema is installed"
-if supabase db query --project-ref "$REF" "select to_regnamespace('credentials') is not null as installed" | grep -q true; then
+installed="$(query "select to_regnamespace('credentials') is not null as installed")"
+if grep -q true <<<"$installed"; then
 	echo "  already installed, skipping migration"
 else
 	echo "→ Applying $MIGRATION in one transaction"
