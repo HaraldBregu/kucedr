@@ -3,6 +3,9 @@ import { CredentialChannels } from '../shared/ipc_channels_definitions';
 import { typedInvokeUnwrap } from '../shared/ipc_types';
 
 export const credentials: CredentialsApi = {
+	status: () => typedInvokeUnwrap(CredentialChannels.status),
+	unlock: (passphrase) => typedInvokeUnwrap(CredentialChannels.unlock, passphrase),
+	lock: () => typedInvokeUnwrap(CredentialChannels.lock),
 	list: () => typedInvokeUnwrap(CredentialChannels.list),
 	create: (input) => typedInvokeUnwrap(CredentialChannels.create, input),
 	replace: (id, secret) => typedInvokeUnwrap(CredentialChannels.replace, id, secret),
