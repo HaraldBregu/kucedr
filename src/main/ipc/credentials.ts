@@ -35,7 +35,22 @@ export class CredentialIpc implements IpcModule<CredentialIpcDeps> {
 			credentials.rename(this.id(id), this.label(label))
 		);
 		trusted.command(CredentialChannels.test, (id) => credentials.test(this.id(id)));
-		trusted.command(CredentialChannels.remove, (id) => credentials.remove(this.id(id)));
+		trusted.command(CredentialChannels.remove, async (id) => {
+			const credentialId = this.id(id);
+			await credentials.remove(credentialId);
+			selection.clear(credentialId);
+		});
+		trusted.query(CredentialChannels.active, () => selection.all());
+		trusted.command(CredentialChannels.activate, async (service, id) => {
+			if (!(CLOUD_CREDENTIAL_SERVICES as readonly unknown[]).includes(service))
+				throw new Error('This plugin does not support cloud API keys.');
+			if (id === null) return selection.set(service, undefined);
+			const credentialId = this.id(id);
+			const owned = await credentials.list();
+			if (!owned.some((entry) => entry.id === credentialId && entry.service === service))
+				throw new Error('This API key no longer exists.');
+			selection.set(service, credentialId);
+		});
 		trusted.query(CredentialChannels.listLocal, () => migration.listLocal());
 		trusted.command(CredentialChannels.migrate, (localIds) => {
 			if (!Array.isArray(localIds) || localIds.length === 0 || localIds.length > 50)
