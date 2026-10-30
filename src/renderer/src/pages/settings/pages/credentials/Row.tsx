@@ -53,9 +53,7 @@ export function CredentialRow({
 		<SettingsRow
 			icon={KeyRound}
 			title={credential.label}
-			description={`${SERVICE_NAMES[credential.service]} · ${
-				credential.lastFour ? `••••${credential.lastFour}` : 'Key saved'
-			}`}
+			description={credential.lastFour ? `••••${credential.lastFour}` : 'Key saved'}
 			actions={
 				editing ? (
 					<form
