@@ -833,7 +833,7 @@ function PageContent(): ReactElement {
 						}
 						className="w-full"
 						inputClassName={cn(
-							showEmptyConversation && 'min-h-[130px]',
+							showEmptyConversation && 'min-h-[114px]',
 							planCommandActive && 'plan-prompt-frame',
 							goalCommandActive && 'goal-prompt-frame'
 						)}
