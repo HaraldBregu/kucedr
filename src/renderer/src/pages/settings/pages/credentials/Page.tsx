@@ -59,9 +59,11 @@ const CredentialsPage: React.FC = () => {
 	}, [userId, reload]);
 
 	const update = useCallback(
-		(change: (value: Loaded) => Omit<Loaded, 'userId'>) => {
+		(change: (value: Loaded) => Omit<Loaded, 'userId' | 'status'>) => {
 			setLoaded((value) =>
-				value && value.userId === userId ? { userId: value.userId, ...change(value) } : value
+				value && value.userId === userId
+					? { userId: value.userId, status: value.status, ...change(value) }
+					: value
 			);
 		},
 		[userId]
