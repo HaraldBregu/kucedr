@@ -132,8 +132,8 @@ function RootRouteComponent(): React.JSX.Element {
 
 	const { phase } = useOnboarding();
 	const { state: authState, skipSignIn } = useAuth();
-	const isHome = location.pathname === '/home';
-	const isWorkspace = location.pathname === '/workspace' || location.pathname === '/library';
+	const isHome = location.pathname === '/home' || location.pathname === '/home/library';
+	const isWorkspace = location.pathname === '/workspace';
 	const isSettings = location.pathname.startsWith('/settings');
 	const hasSidebar = isHome || isWorkspace || isSettings || location.pathname === '/code' || location.pathname.startsWith('/code/');
 
