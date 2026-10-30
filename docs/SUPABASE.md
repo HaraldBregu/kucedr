@@ -106,9 +106,10 @@ local provider settings. Vector databases serve RAG and are separate from file b
 
 Chat model keys can also be stored in the signed-in account under **Settings → Cloud API keys**
 (see [Cloud API keys](../supabase/README.md#cloud-api-keys)). The desktop sees only credential IDs,
-labels, and the last four characters; chat requests for a selected cloud key go through the
-`model-gateway` Edge Function with the user's session token. Local keys keep working when signed
-out. Uploading local keys is an explicit choice on that page, and local copies are removed only
+labels, and the last four characters. Each plugin has at most one active cloud key per account
+(stored locally as `pluginId → credentialId`); chat requests for a plugin with an active cloud key
+go through the `model-gateway` Edge Function with the user's session token. Plugins without one,
+and every plugin while signed out, use their local key. Uploading local keys is an explicit choice on that page, and local copies are removed only
 after the upload is verified and the user removes them. Speech, media, embedding, search, and
 vector-database providers still use local keys.
 
