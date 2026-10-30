@@ -40,7 +40,9 @@ verified="$(query "select
   and not has_function_privilege('anon', 'public.credential_secret(uuid, uuid)', 'execute')
   and not has_function_privilege('authenticated', 'public.credential_secret(uuid, uuid)', 'execute')
   and has_function_privilege('service_role', 'public.credential_secret(uuid, uuid)', 'execute')
-  as verified" | tee /dev/stderr | grep -q true || { echo "Verification failed." >&2; exit 1; }
+  as verified")"
+echo "$verified"
+grep -q true <<<"$verified" || { echo "Verification failed." >&2; exit 1; }
 
 echo "→ Deploying Edge Functions (JWT verification on)"
 supabase functions deploy credentials --project-ref "$REF" --use-api
