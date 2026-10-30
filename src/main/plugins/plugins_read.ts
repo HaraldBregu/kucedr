@@ -9,6 +9,7 @@ import { assertNoLinks } from './plugins_assert_no_links';
 import { pluginContents } from './plugins_contents';
 import { readPluginModels } from './plugins_models_read';
 import { pluginProvider } from './plugins_provider';
+import { readPluginStorage } from './plugins_storage_read';
 import { compareVersions } from './plugins_version_compare';
 
 export type ReadPlugin = PluginManifest & {
