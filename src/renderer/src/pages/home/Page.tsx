@@ -156,8 +156,8 @@ function EmptyConversation(): ReactElement {
 	const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 	return (
 		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
-			<EmptyHeader className="max-w-lg gap-2">
-				<LogoView className="mx-auto size-20" />
+			<EmptyHeader className="max-w-lg flex-row gap-2">
+				<LogoView className="size-20" />
 				<EmptyTitle className="text-3xl font-bold leading-tight text-foreground">
 					{greeting}, how are you?
 				</EmptyTitle>
