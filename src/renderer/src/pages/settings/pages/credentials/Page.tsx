@@ -195,25 +195,29 @@ const CredentialsPage: React.FC = () => {
 							</SettingsSection>
 						))
 					)}
-					<SettingsSection title="Add a key">
-						<SettingsPanel>
-							<CredentialForm
+					{current?.status === 'unlocked' ? (
+						<>
+							<SettingsSection title="Add a key">
+								<SettingsPanel>
+									<CredentialForm
+										onError={setError}
+										onCreated={(credential) => {
+											setError('');
+											update((value) => ({
+												active: value.active,
+												credentials: [...value.credentials, credential],
+											}));
+										}}
+									/>
+								</SettingsPanel>
+							</SettingsSection>
+							<CredentialMigrate
+								userId={userId}
 								onError={setError}
-								onCreated={(credential) => {
-									setError('');
-									update((value) => ({
-										active: value.active,
-										credentials: [...value.credentials, credential],
-									}));
-								}}
+								onUploaded={() => setReload((n) => n + 1)}
 							/>
-						</SettingsPanel>
-					</SettingsSection>
-					<CredentialMigrate
-						userId={userId}
-						onError={setError}
-						onUploaded={() => setReload((n) => n + 1)}
-					/>
+						</>
+					) : null}
 				</>
 			)}
 		</SettingsPageShell>
