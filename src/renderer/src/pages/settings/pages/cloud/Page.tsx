@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-	AlertTriangle,
-	Download,
-	FolderSync,
-	Plus,
-	Trash2,
-	Upload,
-} from 'lucide-react';
+import { AlertTriangle, Download, FolderSync, Plus, Trash2, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
