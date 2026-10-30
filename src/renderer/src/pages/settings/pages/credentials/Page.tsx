@@ -23,6 +23,7 @@ import { CredentialRow } from './Row';
 
 interface Loaded {
 	userId: string;
+	status: CredentialVaultStatus;
 	credentials: CloudCredential[];
 	active: Record<string, string>;
 }
