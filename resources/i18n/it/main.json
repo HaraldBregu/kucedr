@@ -310,6 +310,7 @@
 				"storage": "Carica e scarica file con il tuo provider di archiviazione",
 				"settings": "Info e aspetto dell'app",
 				"account": "Identità cloud e sessione",
+				"credentials": "Chiavi API salvate nel tuo account",
 				"modelServices": "Setup servizi modello",
 				"channels": "Integrazioni messaggi",
 				"integrations": "Servizi collegati e app di lavoro",
