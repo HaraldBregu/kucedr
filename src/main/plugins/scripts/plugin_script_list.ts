@@ -24,5 +24,7 @@ export function pluginScripts(kind: 'render' | 'storage' = 'render'): PluginScri
 			}
 		}
 	}
-	return [...scripts.values()];
+	return [...scripts.values()].filter(
+		(script) => (script.metadata.category === 'storage') === (kind === 'storage')
+	);
 }
