@@ -21,6 +21,8 @@ import { Coding, CodingProjectStore, CodingStore } from './coding';
 import { deleteProvider, getStorageSettings } from './settings_store';
 import { getModelProvidersState } from './providers/providers_store';
 import { CredentialService } from './credentials/service';
+import { CredentialBucket } from './credentials/bucket';
+import { CredentialKeychain } from './credentials/keychain';
 import { CredentialMigration } from './credentials/migration';
 import { CredentialSelection } from './credentials/selection';
 import { credentialRegistry } from './credentials/registry';
