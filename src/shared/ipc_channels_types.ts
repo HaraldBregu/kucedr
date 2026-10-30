@@ -1431,6 +1431,9 @@ export interface CloudInvokeChannelMap {
 type Credentials = import('./credential_types').CredentialsApi;
 
 export interface CredentialInvokeChannelMap {
+	[CredentialChannels.status]: { args: []; result: Awaited<ReturnType<Credentials['status']>> };
+	[CredentialChannels.unlock]: { args: [passphrase: string]; result: void };
+	[CredentialChannels.lock]: { args: []; result: void };
 	[CredentialChannels.list]: { args: []; result: Awaited<ReturnType<Credentials['list']>> };
 	[CredentialChannels.create]: {
 		args: Parameters<Credentials['create']>;
