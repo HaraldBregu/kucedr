@@ -879,7 +879,7 @@ function PageContent(): ReactElement {
 					data-slot="home-workspace"
 					className={cn(
 						'@container/chat relative flex min-h-0 min-w-0 flex-1 flex-col bg-background text-foreground',
-						openExtension && 'hidden',
+						(openExtension || showLibrary) && 'hidden',
 						showEmptyConversation && 'overflow-y-auto'
 					)}
 				>
