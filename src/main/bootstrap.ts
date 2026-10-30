@@ -22,6 +22,7 @@ import { deleteProvider, getStorageSettings } from './settings_store';
 import { getModelProvidersState } from './providers/providers_store';
 import { CredentialService } from './credentials/service';
 import { CredentialMigration } from './credentials/migration';
+import { CredentialSelection } from './credentials/selection';
 import { credentialRegistry } from './credentials/registry';
 import { EnvironmentManager } from './terminal/environment';
 import { PtyManager } from './terminal/manager';
