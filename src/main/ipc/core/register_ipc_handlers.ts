@@ -81,6 +81,17 @@ export function registerIpcHandlers(
 			eventBus
 		)
 	);
+	safeRegister('credentials', () =>
+		new CredentialIpc().register(
+			{
+				credentials: credentialService,
+				migration: credentialMigration,
+				windows: windowContextManager,
+				apps: appRegistry,
+			},
+			eventBus
+		)
+	);
 	safeRegister('agent', () =>
 		new AgentIpc().register(
 			{
