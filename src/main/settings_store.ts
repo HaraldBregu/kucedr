@@ -299,15 +299,11 @@ export function clearProviders(): void {
 }
 
 /** The selected provider resolved to the shape model adapters consume. */
-export function getResolvedProvider(
-	providerId: string | undefined,
-	credentialId?: string
-): ResolvedProvider | undefined {
+export function getResolvedProvider(providerId: string | undefined): ResolvedProvider | undefined {
 	if (!providerId) return undefined;
-	if (credentialId) {
-		const credentials = credentialRegistry.service;
-		if (!credentials) throw new Error('Cloud API keys are unavailable in this build.');
-		return credentials.provider(providerId, credentialId);
+	const credentialId = credentialRegistry.selection?.get(providerId);
+	if (credentialId && credentialRegistry.service) {
+		return credentialRegistry.service.provider(providerId, credentialId);
 	}
 	const provider = getProvider(providerId, 'models');
 	if (!provider) return undefined;
