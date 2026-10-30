@@ -53,5 +53,6 @@ declare global {
 		terminalAPI: TerminalApi;
 		auth: AuthApi;
 		cloud: CloudApi;
+		credentials: CredentialsApi;
 	}
 }
