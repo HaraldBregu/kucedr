@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactElement, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Folder, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus } from 'lucide-react';
+import { ChevronRight, Folder, LayoutPanelLeft, Library, MoreVertical, Pin, PinOff, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
@@ -320,6 +320,19 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						>
 							<Folder className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							type="button"
+							className="px-2.5 text-sm"
+							onClick={() => {
+								playSound('navigate');
+								navigate('/home/library');
+							}}
+						>
+							<Library className="size-4 shrink-0" />
+							<span className="truncate">{t('settings.library.title', 'Library')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					{openExtension && (
