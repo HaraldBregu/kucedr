@@ -741,16 +741,21 @@ export class LlmModel implements LlmAdapter {
 	private createOpenAIClient(provider: LlmProviderSpec, missingKeyMessage: string): OpenAI {
 		if (!provider.apiKey) throw new LlmProviderAuthError(missingKeyMessage);
 		const factory =
-			this.openAIClientFactory ?? ((c) => new OpenAI({ apiKey: c.apiKey, baseURL: c.baseURL }));
-		return factory({ apiKey: provider.apiKey, baseURL: llmBaseUrl(provider) });
+			this.openAIClientFactory ??
+			((c) => new OpenAI({ apiKey: c.apiKey, baseURL: c.baseURL, fetch: c.fetch }));
+		return factory({
+			apiKey: provider.apiKey,
+			baseURL: provider.fetch ? provider.baseURL : llmBaseUrl(provider),
+			fetch: provider.fetch,
+		});
 	}
 
 	private createAnthropicClient(provider: LlmProviderSpec): Anthropic {
 		if (!provider.apiKey) throw new LlmProviderAuthError('Anthropic api key not configured');
 		const factory =
 			this.anthropicClientFactory ??
-			((c) => new Anthropic({ apiKey: c.apiKey, baseURL: c.baseURL }));
-		return factory({ apiKey: provider.apiKey, baseURL: provider.baseURL });
+			((c) => new Anthropic({ apiKey: c.apiKey, baseURL: c.baseURL, fetch: c.fetch }));
+		return factory({ apiKey: provider.apiKey, baseURL: provider.baseURL, fetch: provider.fetch });
 	}
 
 	private throwProviderError(err: unknown): never {
