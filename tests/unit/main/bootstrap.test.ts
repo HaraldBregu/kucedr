@@ -26,6 +26,7 @@ it('settles storage operations before cloud and auth teardown', async () => {
 		windowContextManager: { destroyAll: jest.fn(async () => undefined) },
 		storageOperations,
 		cloudService,
+		credentialService: { destroy: jest.fn() },
 		authService,
 		channelRegistry: { destroy: jest.fn(async () => undefined) },
 	} as unknown as MainServices;
