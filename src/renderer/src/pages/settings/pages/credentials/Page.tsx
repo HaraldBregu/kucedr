@@ -6,6 +6,7 @@ import {
 	CLOUD_CREDENTIAL_SERVICES,
 	type CloudCredential,
 	type CloudCredentialService,
+	type CredentialVaultStatus,
 } from '@shared/credential_types';
 import {
 	SettingsEmptyState,
