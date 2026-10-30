@@ -244,7 +244,6 @@ export function setCompactChatModel(settings: AgentMediaModelSettings): AgentMed
 		providerId: settings.providerId.trim(),
 		modelId: settings.modelId.trim(),
 		options: { ...settings.options },
-		...credentialReference(settings.credentialId),
 	};
 	profileStore('chat').set('compact_llm', next);
 	return structuredClone(next);
