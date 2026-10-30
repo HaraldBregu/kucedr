@@ -1,15 +1,22 @@
 import React from 'react';
-import { FileAudio, FileCode2, FileImage, FileSpreadsheet, FileText, FileVideo, Search } from 'lucide-react';
+import { Check, FileAudio, FileCode2, FileImage, FileSpreadsheet, FileText, FileVideo, ListFilter, Search, Shapes, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 
 export const LIBRARY_FILTERS = [
-	{ value: 'all', label: 'All', icons: [] },
-	{ value: 'images', label: 'Images', icons: [FileImage] },
-	{ value: 'documents', label: 'Documents', icons: [FileText, FileSpreadsheet, FileCode2] },
-	{ value: 'media', label: 'Media', icons: [FileAudio, FileVideo] },
+	{ value: 'all', label: 'All', icon: Shapes, icons: [] },
+	{ value: 'images', label: 'Images', icon: FileImage, icons: [FileImage] },
+	{ value: 'documents', label: 'Documents', icon: FileText, icons: [FileText, FileSpreadsheet, FileCode2] },
+	{ value: 'media', label: 'Media', icon: FileVideo, icons: [FileAudio, FileVideo] },
 ] as const;
 
 export type LibraryFilterValue = (typeof LIBRARY_FILTERS)[number]['value'];
@@ -26,23 +33,23 @@ export function LibraryFilter({
 	readonly onQueryChange: (query: string) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
+	const active = LIBRARY_FILTERS.find((entry) => entry.value === filter);
+	const typeLabel = t('settings.library.type', 'Type');
+	const options = (
+		<DropdownMenuContent align="start" className="w-48">
+			<DropdownMenuLabel className="text-xs text-muted-foreground">{typeLabel}</DropdownMenuLabel>
+			{LIBRARY_FILTERS.filter((entry) => entry.value !== 'all').map(({ value, label, icon: Icon }) => (
+				<DropdownMenuItem key={value} onSelect={() => onFilterChange(value)}>
+					<Icon className="text-muted-foreground" />
+					<span className="flex-1">{t(`settings.library.filters.${value}`, label)}</span>
+					{filter === value && <Check />}
+				</DropdownMenuItem>
+			))}
+		</DropdownMenuContent>
+	);
 	return (
 		<div className="flex flex-wrap items-center gap-2">
-			<ButtonGroup aria-label={t('settings.library.filter', 'Filter')}>
-				{LIBRARY_FILTERS.map(({ value, label }) => (
-					<Button
-						key={value}
-						type="button"
-						variant={filter === value ? 'secondary' : 'outline'}
-						size="sm"
-						aria-pressed={filter === value}
-						onClick={() => onFilterChange(value)}
-					>
-						{t(`settings.library.filters.${value}`, label)}
-					</Button>
-				))}
-			</ButtonGroup>
-			<div className="relative ml-auto w-full max-w-64">
+			<div className="relative w-full max-w-64">
 				<Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 				<Input
 					type="search"
@@ -53,6 +60,39 @@ export function LibraryFilter({
 					className="h-8 pl-8"
 				/>
 			</div>
+			{active && active.value !== 'all' ? (
+				<ButtonGroup aria-label={typeLabel}>
+					<Button type="button" variant="outline" size="sm" className="pointer-events-none gap-1.5 text-muted-foreground">
+						<Shapes className="size-3.5" />
+						{typeLabel}
+					</Button>
+					<Button type="button" variant="outline" size="sm" className="pointer-events-none text-muted-foreground">
+						{t('settings.library.is', 'is')}
+					</Button>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button type="button" variant="outline" size="sm" className="gap-1.5">
+								<active.icon className="size-3.5" />
+								{t(`settings.library.filters.${active.value}`, active.label)}
+							</Button>
+						</DropdownMenuTrigger>
+						{options}
+					</DropdownMenu>
+					<Button type="button" variant="outline" size="icon-sm" aria-label={t('settings.library.clearFilter', 'Remove filter')} onClick={() => onFilterChange('all')}>
+						<X className="size-3.5" />
+					</Button>
+				</ButtonGroup>
+			) : (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button type="button" variant="outline" size="sm" className="gap-1.5">
+							<ListFilter className="size-3.5" />
+							{t('settings.library.addFilter', 'Filter')}
+						</Button>
+					</DropdownMenuTrigger>
+					{options}
+				</DropdownMenu>
+			)}
 		</div>
 	);
 }
