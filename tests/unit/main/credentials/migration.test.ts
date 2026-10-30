@@ -43,7 +43,8 @@ it('lists only supported local keys and never exposes the full key', () => {
 });
 
 it('requires a signed-in account to upload or remove', async () => {
-	const { migration, credentials } = setup(undefined);
+	const { migration, credentials, state } = setup();
+	state.userId = undefined;
 	await expect(migration.migrate(['openai'])).rejects.toThrow('Sign in');
 	await expect(migration.removeLocal('openai')).rejects.toThrow('Sign in');
 	expect(credentials.create).not.toHaveBeenCalled();
