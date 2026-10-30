@@ -866,7 +866,12 @@ function PageContent(): ReactElement {
 					/>
 				}
 			>
-				{openExtension && (
+				{showLibrary && (
+					<div className="min-h-0 flex-1 overflow-y-auto">
+						<LibraryContent />
+					</div>
+				)}
+				{openExtension && !showLibrary && (
 					<ExtensionPage extension={openExtension} onClose={() => setOpenExtension(null)} />
 				)}
 				<div
