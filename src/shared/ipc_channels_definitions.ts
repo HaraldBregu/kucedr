@@ -329,6 +329,8 @@ export const CredentialChannels = {
 	rename: 'credentials:rename',
 	test: 'credentials:test',
 	remove: 'credentials:remove',
+	active: 'credentials:active',
+	activate: 'credentials:activate',
 	listLocal: 'credentials:local:list',
 	migrate: 'credentials:local:migrate',
 	removeLocal: 'credentials:local:remove',
