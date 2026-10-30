@@ -139,6 +139,8 @@ export function bootstrapServices(): BootstrapResult {
 		terminalManager,
 		authService,
 		cloudService,
+		credentialService,
+		credentialMigration,
 	};
 }
 
