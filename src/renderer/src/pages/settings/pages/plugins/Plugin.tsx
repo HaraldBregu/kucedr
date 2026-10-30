@@ -81,6 +81,7 @@ export default function PluginPage(): React.JSX.Element {
 			registry,
 			skills,
 			scripts,
+			storageScripts,
 			values,
 		] = await Promise.all([
 				window.plugins.list(),
