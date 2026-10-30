@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, FilePlus, FolderPlus } from 'lucide-react';
+import { ArrowLeft, FilePlus, Folder, FolderPlus, Library } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { ContextMenuDescriptor } from '@shared/window_types';
 import { workspaceFileType } from '@shared/workspace';
+import { SPLIT_ITEM_ACTIVE_CLASS } from '@/components/app/base/page';
+import { cn } from '@/lib/utils';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { Button } from '@/components/ui/button';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
@@ -282,12 +284,24 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 
 	return (
 		<div data-slot="workspace-sidebar" className="flex h-full min-h-0 flex-col">
-			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
+			<header className="shrink-0 border-b border-sidebar-border/50 px-2 pb-2">
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/home')}>
 							<ArrowLeft className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.returnToChat', 'Return to Home')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton type="button" className={cn('px-2.5 text-sm', SPLIT_ITEM_ACTIVE_CLASS)} aria-current="page">
+							<Folder className="size-4 shrink-0" />
+							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/home/library')}>
+							<Library className="size-4 shrink-0" />
+							<span className="truncate">{t('settings.library.title', 'Library')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
