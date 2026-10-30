@@ -432,6 +432,8 @@
 				"mcp": "MCP servers",
 				"skills": "Skills",
 				"scripts": "Scripts",
+				"configuration": "{{name}} configuration",
+				"required": "Required",
 				"providers": "Providers",
 				"minAppVersion": "Requires Kucedr",
 				"categories": "Categories",
