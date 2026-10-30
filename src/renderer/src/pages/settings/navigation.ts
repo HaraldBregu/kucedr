@@ -367,6 +367,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: UserRound,
 	},
 	{
+		path: '/settings/credentials',
+		labelKey: 'settings.tabs.credentials',
+		descriptionKey: 'settings.overview.descriptions.credentials',
+		icon: KeyRound,
+	},
+	{
 		path: '/settings/settings',
 		labelKey: 'settings.tabs.settings',
 		descriptionKey: 'settings.overview.descriptions.settings',
