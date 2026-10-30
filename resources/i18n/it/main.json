@@ -432,6 +432,8 @@
 				"mcp": "Server MCP",
 				"skills": "Skill",
 				"scripts": "Script",
+				"configuration": "Configurazione {{name}}",
+				"required": "Obbligatorio",
 				"providers": "Provider",
 				"minAppVersion": "Richiede Kucedr",
 				"categories": "Categorie",
