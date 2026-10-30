@@ -60,6 +60,7 @@ export function LibraryFilter({
 					className="h-8 pl-8"
 				/>
 			</div>
+			<div className="flex-1" />
 			{active && active.value !== 'all' ? (
 				<ButtonGroup aria-label={typeLabel}>
 					<Button type="button" variant="outline" size="sm" className="pointer-events-none gap-1.5 text-muted-foreground">
