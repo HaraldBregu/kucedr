@@ -1,0 +1,15 @@
+{
+	"schemaVersion": 5,
+	"id": "supabase",
+	"title": "Supabase",
+	"version": "1.0.1",
+	"description": "Supabase Storage for files.",
+	"categories": [
+		"STORAGE"
+	],
+	"author": "Harald Bregu",
+	"icon": "supabase.svg",
+	"authentication": "api-key",
+	"icon_dark_url": "/assets/supabase.svg",
+	"icon_light_url": "/assets/supabase.svg"
+}
