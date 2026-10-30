@@ -195,6 +195,7 @@ app.whenReady().then(() => {
 	if (app.isPackaged) startUpdater(eventBus, logger);
 	startStorageSync(logger, services.storageOperations);
 	services.cloudService.initialize();
+	services.credentialService.initialize();
 	const authInitialization = services.authService.initialize();
 	const unsubscribeAuthLinks = authLinks.subscribe(async (url) => {
 		try {
