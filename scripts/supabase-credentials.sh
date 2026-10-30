@@ -8,7 +8,13 @@ cd "$(dirname "$0")/.."
 REF="${SUPABASE_PROJECT_REF:-}"
 MIGRATION="supabase/migrations/20261030120000_credentials.sql"
 TEST="supabase/tests/database/credentials.test.sql"
-supabase() { npx --no-install supabase "$@" 2>&1 | grep -v -e 'new version of Supabase CLI' -e 'recommend updating'; }
+supabase() {
+	local out status=0
+	out="$(npx --no-install supabase "$@" 2>&1)" || status=$?
+	grep -v -e 'new version of Supabase CLI' -e 'recommend updating' <<<"$out" || true
+	return "$status"
+}
+query() { supabase db query --linked --project-ref "$REF" "$@"; }
 
 if [[ ! "$REF" =~ ^[a-z]{20}$ ]]; then
 	echo "Set SUPABASE_PROJECT_REF to your 20-letter project ref (Dashboard → Project Settings → General)." >&2
