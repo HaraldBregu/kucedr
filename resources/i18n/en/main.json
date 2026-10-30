@@ -310,6 +310,7 @@
 				"storage": "Upload and download files with your storage provider",
 				"settings": "App info and appearance",
 				"account": "Cloud identity and session",
+				"credentials": "API keys stored in your account",
 				"modelServices": "Model service setup",
 				"channels": "Messaging integrations",
 				"integrations": "Connected services and work apps",
