@@ -238,14 +238,6 @@ const routes: RouteObject[] = [
 				),
 			},
 			{
-				path: 'library',
-				element: (
-					<RouteWrapper>
-						<LibraryRoutePage />
-					</RouteWrapper>
-				),
-			},
-			{
 				path: 'code/*',
 				element: <Navigate to="/workspace" replace />,
 			},
