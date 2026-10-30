@@ -46,6 +46,7 @@ export { data } from './data';
 export { terminalAPI } from './terminal';
 export { auth } from './auth';
 export { cloud } from './cloud';
+export { credentials } from './credentials';
 
 if (process.contextIsolated) {
 	try {
