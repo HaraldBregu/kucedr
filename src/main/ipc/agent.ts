@@ -56,7 +56,6 @@ import type { HealthSettings } from '../health/types';
 import { resolveContextWindow } from '../models/context';
 import { getResolvedProvider } from '../settings_store';
 import {
-	getCredentialId,
 	getModelId,
 	getModelOptions,
 	getCompactModel,
