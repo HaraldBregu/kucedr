@@ -219,6 +219,8 @@ export interface AgentApi {
 	setProvider: (provider: PublicProvider) => Promise<boolean>;
 	getModelId: () => Promise<string | undefined>;
 	setModelId: (modelId: string) => Promise<boolean>;
+	getCredentialId: () => Promise<string | undefined>;
+	setCredentialId: (credentialId: string | null) => Promise<void>;
 	getModelOptions: () => Promise<Record<string, unknown>>;
 	setModelOptions: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
 	getCompactModel: () => Promise<import('./agent_types').AgentMediaModelSettings>;
