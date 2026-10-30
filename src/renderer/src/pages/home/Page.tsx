@@ -457,6 +457,7 @@ function PageContent(): ReactElement {
 	}, []);
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
 	const location = useLocation();
+	const showLibrary = location.pathname === '/home/library';
 	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(
 		(location.state as { openExtension?: OpenExtension } | null)?.openExtension ?? null
 	);
