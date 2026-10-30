@@ -285,8 +285,6 @@ const AssistantPage: React.FC = () => {
 					/>
 				</ModelProviderConfiguration>
 
-				<ChatCredentialSelect providerId={state.providerId} />
-
 				<SettingsRow
 					title={t('settings.modelServices.compactModel')}
 					icon={Layers}
