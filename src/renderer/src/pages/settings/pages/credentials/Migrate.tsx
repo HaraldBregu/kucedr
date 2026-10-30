@@ -55,6 +55,7 @@ export function CredentialMigrate({
 	const removeLocal = async (localId: string): Promise<void> => {
 		try {
 			await window.credentials.removeLocal(localId);
+			onUploaded();
 			await load();
 		} catch (error) {
 			onError(error instanceof Error ? error.message : 'The local copy was kept.');
