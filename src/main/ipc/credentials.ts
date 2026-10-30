@@ -60,7 +60,7 @@ export class CredentialIpc implements IpcModule<CredentialIpcDeps> {
 		trusted.command(CredentialChannels.removeLocal, async (localId) => {
 			const id = this.localId(localId);
 			const credentialId = await migration.removeLocal(id);
-			if (getProviderId() === id && !getCredentialId()) setCredentialId(credentialId);
+			if (!selection.get(id)) selection.set(id, credentialId);
 		});
 	}
 
