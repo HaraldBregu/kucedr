@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileAudio, FileImage, FileText, FileVideo, Search } from 'lucide-react';
+import { FileAudio, FileCode2, FileImage, FileSpreadsheet, FileText, FileVideo, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
