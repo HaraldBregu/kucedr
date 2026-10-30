@@ -1,7 +1,10 @@
-/** Services whose saved keys the backend gateway can use. Mirrors supabase/functions/_shared/services.ts. */
+/** Services whose keys can be saved in the account. Mirrors src/main/credentials/services.ts. */
 export const CLOUD_CREDENTIAL_SERVICES = ['openai', 'anthropic', 'deepseek', 'mistral', 'xai'] as const;
 
 export type CloudCredentialService = (typeof CLOUD_CREDENTIAL_SERVICES)[number];
+
+/** signed-out: no account. empty: no keys file yet. locked: passphrase needed on this device. */
+export type CredentialVaultStatus = 'signed-out' | 'empty' | 'locked' | 'unlocked';
 
 export interface CloudCredential {
 	id: string;
@@ -33,6 +36,10 @@ export interface CredentialMigrationResult {
 }
 
 export interface CredentialsApi {
+	status(): Promise<CredentialVaultStatus>;
+	/** Creates the keys file on first use, otherwise decrypts it. */
+	unlock(passphrase: string): Promise<void>;
+	lock(): Promise<void>;
 	list(): Promise<CloudCredential[]>;
 	create(input: CloudCredentialInput): Promise<CloudCredential>;
 	replace(id: string, secret: string): Promise<CloudCredential>;
