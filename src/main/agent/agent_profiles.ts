@@ -34,7 +34,8 @@ type AgentProfileStore = {
 };
 type StoredModelKey = Exclude<keyof AgentProfileStore, 'permissions' | 'tools' | 'mcpTools'>;
 
-const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };const DEFAULT_TOOL: AgentToolConfiguration = { permission: 'allow' };
+const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
+const DEFAULT_TOOL: AgentToolConfiguration = { permission: 'allow' };
 const DEFAULT_TOOL_SETTINGS: Record<string, AgentToolConfiguration> = {
 	camera_recorder: { permission: 'ask' },
 	update_health: { permission: 'ask' },
