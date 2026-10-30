@@ -235,6 +235,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						onClick={() => {
 							setSessionId(session.id);
 							setSessionTitle?.(title, session.id);
+							navigate('/home');
 							window.dispatchEvent(new Event('kucedr:show-chat'));
 						}}
 						onKeyDown={(event) => {
