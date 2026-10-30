@@ -41,9 +41,14 @@ const CredentialsPage: React.FC = () => {
 		setError('');
 		if (!userId) return;
 		let active = true;
-		void Promise.all([window.credentials.list(), window.credentials.active()])
-			.then(([credentials, selection]) => {
-				if (active) setLoaded({ userId, credentials, active: selection });
+		void window.credentials
+			.status()
+			.then(async (status) => {
+				const [credentials, selection] =
+					status === 'unlocked'
+						? await Promise.all([window.credentials.list(), window.credentials.active()])
+						: [[], {}];
+				if (active) setLoaded({ userId, status, credentials, active: selection });
 			})
 			.catch((cause: unknown) => {
 				if (active) setError(cause instanceof Error ? cause.message : 'Could not load API keys.');
