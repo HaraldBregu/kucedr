@@ -152,11 +152,7 @@ async function* loop(
 	backgroundBrowser?: Tool
 ): AsyncGenerator<RuntimeEvent> {
 	const selectedModel = getAgentProfileModel(input.toolProfile ?? 'chat', 'textToText');
-	const providerId = input.providerId ?? selectedModel.providerId;
-	const provider = getResolvedProvider(
-		providerId,
-		providerId === selectedModel.providerId ? selectedModel.credentialId : undefined
-	);
+	const provider = getResolvedProvider(input.providerId ?? selectedModel.providerId);
 	const modelId = input.model ?? selectedModel.modelId;
 	const modelOptions = options.modelOptions ?? structuredClone(selectedModel.options);
 	const runId = input.runId ?? session.id;
