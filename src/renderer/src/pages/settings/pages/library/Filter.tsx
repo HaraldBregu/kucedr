@@ -26,11 +26,13 @@ export function LibraryFilter({
 	onFilterChange,
 	query,
 	onQueryChange,
+	actions,
 }: {
 	readonly filter: LibraryFilterValue;
 	readonly onFilterChange: (filter: LibraryFilterValue) => void;
 	readonly query: string;
 	readonly onQueryChange: (query: string) => void;
+	readonly actions: React.ReactNode;
 }): React.JSX.Element {
 	const { t } = useTranslation();
 	const active = LIBRARY_FILTERS.find((entry) => entry.value === filter);
@@ -50,7 +52,7 @@ export function LibraryFilter({
 	return (
 		<div className="flex flex-wrap items-center gap-2">
 			<div className="relative w-full max-w-64">
-				<Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+				<Search className="pointer-events-none absolute z-10 left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 				<Input
 					type="search"
 					value={query}
@@ -94,6 +96,7 @@ export function LibraryFilter({
 					{options}
 				</DropdownMenu>
 			)}
+			{actions}
 		</div>
 	);
 }
