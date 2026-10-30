@@ -33,17 +33,17 @@ it('keeps one active key per plugin, scoped to the signed-in account', () => {
 	expect(active.all()).toEqual({ anthropic: '22222222-2222-4333-8444-555555555555' });
 });
 
-it('resolves a plugin through the gateway when it has an active cloud key', () => {
+it('resolves a plugin with its active cloud key', () => {
 	const state: { userId?: string } = { userId: 'user-a' };
 	const active = selection(state);
-	const gateway = { id: 'openai', apiKey: 'kucedr-gateway', baseURL: 'https://gateway' };
-	const provider = jest.fn(() => gateway);
+	const cloud = { id: 'openai', apiKey: 'sk-cloud', baseURL: 'https://api.openai.com/v1' };
+	const provider = jest.fn(() => cloud);
 	credentialRegistry.selection = active;
 	credentialRegistry.service = { provider } as unknown as CredentialService;
 
 	active.set('openai', KEY);
-	expect(getResolvedProvider('openai')).toBe(gateway);
-	expect(provider).toHaveBeenCalledWith('openai', KEY);
+	expect(getResolvedProvider('openai')).toBe(cloud);
+	expect(provider).toHaveBeenCalledWith('openai', KEY, undefined);
 
 	state.userId = undefined;
 	provider.mockClear();
