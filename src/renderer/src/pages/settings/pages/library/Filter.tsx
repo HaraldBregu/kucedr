@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 export const LIBRARY_FILTERS = [
 	{ value: 'all', label: 'All', icons: [] },
 	{ value: 'images', label: 'Images', icons: [FileImage] },
-	{ value: 'documents', label: 'Documents', icons: [FileText] },
+	{ value: 'documents', label: 'Documents', icons: [FileText, FileSpreadsheet, FileCode2] },
 	{ value: 'media', label: 'Media', icons: [FileAudio, FileVideo] },
 ] as const;
 
