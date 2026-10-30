@@ -30,11 +30,11 @@ else
 	sql="$(mktemp)"
 	trap 'rm -f "$sql"' EXIT
 	{ echo 'begin;'; cat "$MIGRATION"; echo 'commit;'; } > "$sql"
-	supabase db query --project-ref "$REF" -f "$sql"
+	query -f "$sql"
 fi
 
 echo "→ Verifying table and privileges"
-supabase db query --project-ref "$REF" "select
+verified="$(query "select
   to_regclass('credentials.credentials') is not null
   and not has_schema_privilege('authenticated', 'credentials', 'usage')
   and not has_function_privilege('anon', 'public.credential_secret(uuid, uuid)', 'execute')
