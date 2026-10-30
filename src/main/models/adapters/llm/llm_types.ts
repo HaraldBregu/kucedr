@@ -48,6 +48,7 @@ export interface LlmProviderSpec {
 	id: string;
 	apiKey: string;
 	baseURL?: string;
+	fetch?: typeof fetch;
 }
 
 export interface LlmUsage {
