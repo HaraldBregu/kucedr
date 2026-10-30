@@ -88,6 +88,7 @@ export function registerIpcHandlers(
 			{
 				credentials: credentialService,
 				migration: credentialMigration,
+				selection: credentialSelection,
 				windows: windowContextManager,
 				apps: appRegistry,
 			},
