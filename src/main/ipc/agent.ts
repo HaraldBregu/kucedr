@@ -448,9 +448,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					const providerId = getProviderId() ?? '';
 					const modelId = getModelId() ?? '';
 					const contextWindow = await resolveContextWindow(
-						getCredentialId()
-							? { id: providerId, apiKey: '', baseURL: '' }
-							: getResolvedProvider(providerId),
+						getResolvedProvider(providerId),
 						modelId
 					);
 					return { providerId, modelId, contextWindow };
