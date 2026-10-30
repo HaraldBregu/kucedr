@@ -262,9 +262,14 @@ export function setAgentProfileModel(
 		providerId: settings.providerId.trim(),
 		modelId: settings.modelId.trim(),
 		options: { ...settings.options },
+		...(modelKey === 'textToText' ? credentialReference(settings.credentialId) : {}),
 	};
 	write(profileId, { ...current, [modelKey]: next });
 	return structuredClone(next);
+}
+
+function credentialReference(value: unknown): { credentialId?: string } {
+	return typeof value === 'string' && UUID.test(value) ? { credentialId: value.toLowerCase() } : {};
 }
 
 export function getAgentProfileTools(profileId: AgentToolProfileId): AgentToolProfile {
