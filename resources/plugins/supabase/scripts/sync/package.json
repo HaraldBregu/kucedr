@@ -5,7 +5,7 @@
 	"type": "module",
 	"description": "Supabase plugin script that backs up and restores folders through the Storage S3 endpoint.",
 	"scripts": {
-		"build": "esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs"
+		"build": "esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\""
 	},
 	"devDependencies": {
 		"@aws-sdk/client-s3": "^3.1127.0",
