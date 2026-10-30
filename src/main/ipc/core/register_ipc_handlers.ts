@@ -47,6 +47,7 @@ export function registerIpcHandlers(
 		cloudService,
 		credentialService,
 		credentialMigration,
+		credentialSelection,
 	} = services;
 
 	const safeRegister = (name: string, register: () => void): void => {
