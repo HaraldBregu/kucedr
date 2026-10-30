@@ -50,7 +50,6 @@ const PluginMarketplacePage = lazy(() => import('./pages/settings/pages/plugins/
 const SkillsPage = lazy(() => import('./pages/settings/pages/skills/Page'));
 const SkillDetailsPage = lazy(() => import('./pages/settings/pages/skills/details/Page'));
 const ProvidersPage = lazy(() => import('./pages/settings/pages/providers/Page'));
-const CloudProvidersPage = lazy(() => import('./pages/settings/pages/cloud/providers/Page'));
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
 const RemoteAgentPage = lazy(() => import('./pages/settings/pages/remote-agent/Page'));
 const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Page'));
