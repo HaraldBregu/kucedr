@@ -110,7 +110,9 @@ export function bootstrapServices(): BootstrapResult {
 		cloudClient ? new SupabaseCloudRepository(cloudClient) : undefined
 	);
 	const credentialService = new CredentialService(authService, cloudConfig);
+	const credentialSelection = new CredentialSelection(() => authService.getSignedInUserId());
 	credentialRegistry.service = credentialService;
+	credentialRegistry.selection = credentialSelection;
 	const credentialMigration = new CredentialMigration(
 		credentialService,
 		() => authService.getSignedInUserId(),
