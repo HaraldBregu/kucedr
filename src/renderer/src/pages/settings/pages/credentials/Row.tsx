@@ -11,11 +11,15 @@ type Mode = 'idle' | 'rename' | 'replace' | 'delete';
 
 export function CredentialRow({
 	credential,
+	active,
+	onActivate,
 	onChanged,
 	onRemoved,
 	onError,
 }: {
 	readonly credential: CloudCredential;
+	readonly active: boolean;
+	readonly onActivate: () => Promise<void>;
 	readonly onChanged: (credential: CloudCredential) => void;
 	readonly onRemoved: (id: string) => void;
 	readonly onError: (message: string) => void;
