@@ -72,40 +72,26 @@ Run tenant-isolation, duplicate-operation, conflict, and object-integrity integr
 
 ## Cloud API Keys
 
-`migrations/20261030120000_credentials.sql` stores per-user model API keys. Metadata lives in
-`credentials.credentials` (a private schema outside the Data API); each key lives only in Supabase
-Vault and is referenced by `vault_secret_id`. Access is through `public.credential_*` functions that
-are `SECURITY DEFINER`, use `search_path = ''`, and are executable only by `service_role`. An
-`after delete` trigger removes the Vault secret for every deletion path, including the
-`auth.users` cascade when an account is deleted.
+Each account's model API keys live in one end-to-end encrypted file,
+`credentials/<user id>/keys.json`, in a private Storage bucket created by
+`migrations/20261030140000_credentials_bucket.sql`. Four `storage.objects` policies let only the
+signed-in owner read, create, update, or delete exactly that path. There are no Edge Functions and no
+server secrets.
 
-Deploy two functions with JWT verification enabled:
+The desktop main process derives a 256-bit key from the user's passphrase with scrypt (N=2^17, r=8,
+p=1, random 16-byte salt kept in the file) and encrypts the key list with AES-256-GCM, authenticating
+the user id so a file cannot be opened under another account. The passphrase never leaves the device
+and cannot be recovered. The derived key is remembered per account with Electron `safeStorage` until
+the user locks; without secure storage the user unlocks after each restart. Model requests go
+directly from the desktop to the provider.
 
-- `credentials`: `list`, `create`, `replace`, `rename`, `test`, and `delete`. It never returns a key.
-  `test` calls the provider's free model-listing endpoint.
-- `model-gateway`: `/model-gateway/<credentialId>/<operation>` streams one approved provider
-  operation using the saved key. Destinations and operations are fixed in
-  `functions/_shared/services.ts` (OpenAI, Anthropic, DeepSeek, Mistral, xAI chat). Client auth
-  headers are dropped, redirects are refused, and provider errors are redacted.
-
-Both functions derive the owner from the verified user JWT and look up credentials by
-`(id, user_id)`; inaccessible credentials return a generic 404. Limits: 60 credential operations
-and 120 gateway requests per user per minute, 8 concurrent gateway streams per user (leases expire
-after 10 minutes), 200 credentials per user, 32 MiB gateway request bodies.
-
-Edge Function wall-clock limits apply to each model call (not to a whole agent run, which stays on
-the desktop). A single generation longer than the plan's limit is cut off and surfaces as a provider
-error.
+Every change downloads the latest file, applies the change, and uploads it, so edits from other
+devices are kept; two devices saving at the same instant resolve as last write wins. Deleting an
+account does not remove its file, which stays unreadable without the passphrase.
 
 ```sh
-supabase db push
-supabase functions deploy credentials
-supabase functions deploy model-gateway
-supabase test db   # runs supabase/tests/database/credentials.test.sql
+SUPABASE_PROJECT_REF=<ref> npm run supabase:credentials
 ```
-
-The functions use `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`, which the
-hosted runtime provides. No other secret is required.
 
 ## Enable Desktop Sync
 
