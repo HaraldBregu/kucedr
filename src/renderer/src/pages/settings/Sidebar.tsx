@@ -18,7 +18,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: SETTINGS_NAVIGATION.filter((item) =>
 			[
 				'/settings/account',
-				'/settings/credentials',
 				'/settings/settings',
 				'/settings/cloud',
 				'/settings/models',

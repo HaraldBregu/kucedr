@@ -11,7 +11,6 @@ import {
 	Folder,
 	Globe,
 	HeartPulse,
-	KeyRound,
 	Settings,
 	Library,
 	ListChecks,
@@ -366,12 +365,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.account',
 		descriptionKey: 'settings.overview.descriptions.account',
 		icon: UserRound,
-	},
-	{
-		path: '/settings/credentials',
-		labelKey: 'settings.tabs.credentials',
-		descriptionKey: 'settings.overview.descriptions.credentials',
-		icon: KeyRound,
 	},
 	{
 		path: '/settings/settings',

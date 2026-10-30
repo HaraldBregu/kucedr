@@ -62,7 +62,6 @@ import {
 	TerminalChannels,
 	AuthChannels,
 	CloudChannels,
-	CredentialChannels,
 } from './ipc_channels_definitions';
 
 export interface CodingInvokeChannelMap {
@@ -1428,43 +1427,6 @@ export interface CloudInvokeChannelMap {
 	[CloudChannels.unwatchSession]: { args: [sessionId: string]; result: void };
 }
 
-type Credentials = import('./credential_types').CredentialsApi;
-
-export interface CredentialInvokeChannelMap {
-	[CredentialChannels.status]: { args: []; result: Awaited<ReturnType<Credentials['status']>> };
-	[CredentialChannels.unlock]: { args: [passphrase: string]; result: void };
-	[CredentialChannels.lock]: { args: []; result: void };
-	[CredentialChannels.list]: { args: []; result: Awaited<ReturnType<Credentials['list']>> };
-	[CredentialChannels.create]: {
-		args: Parameters<Credentials['create']>;
-		result: Awaited<ReturnType<Credentials['create']>>;
-	};
-	[CredentialChannels.replace]: {
-		args: Parameters<Credentials['replace']>;
-		result: Awaited<ReturnType<Credentials['replace']>>;
-	};
-	[CredentialChannels.rename]: {
-		args: Parameters<Credentials['rename']>;
-		result: Awaited<ReturnType<Credentials['rename']>>;
-	};
-	[CredentialChannels.test]: { args: [id: string]; result: boolean };
-	[CredentialChannels.remove]: { args: [id: string]; result: void };
-	[CredentialChannels.active]: { args: []; result: Record<string, string> };
-	[CredentialChannels.activate]: {
-		args: Parameters<Credentials['activate']>;
-		result: void;
-	};
-	[CredentialChannels.listLocal]: {
-		args: [];
-		result: Awaited<ReturnType<Credentials['listLocal']>>;
-	};
-	[CredentialChannels.migrate]: {
-		args: [localIds: string[]];
-		result: Awaited<ReturnType<Credentials['migrate']>>;
-	};
-	[CredentialChannels.removeLocal]: { args: [localId: string]; result: void };
-}
-
 export interface InvokeChannelMap
 	extends
 		MemoryInvokeChannelMap,
@@ -1496,8 +1458,7 @@ export interface InvokeChannelMap
 		AppsInvokeChannelMap,
 		TerminalInvokeChannelMap,
 		AuthInvokeChannelMap,
-		CloudInvokeChannelMap,
-		CredentialInvokeChannelMap {}
+		CloudInvokeChannelMap {}
 
 export interface SendChannelMap extends WindowSendChannelMap, TerminalSendChannelMap {}
 

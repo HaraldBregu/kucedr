@@ -49,7 +49,6 @@
 		"supabase:status": "supabase status",
 		"supabase:reset": "supabase db reset",
 		"supabase:test": "supabase test db",
-		"supabase:credentials": "bash scripts/supabase-credentials.sh",
 		"typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
 		"typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
 		"typecheck:app": "npm run typecheck:node && npm run typecheck:web",

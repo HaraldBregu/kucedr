@@ -6,7 +6,6 @@ import type {
 	StoredProviderKind,
 } from '../shared/provider_types';
 import { userDataLocation } from './shared/user_data_location';
-import { credentialRegistry } from './credentials/registry';
 import { migrateStorageSettings } from './storage/storage_store';
 import { migrateMcpStoreFromProviders } from './mcp/mcp_store_state';
 import { getTaskState, setTaskState, taskStorePath } from './tasks/tasks_store';
@@ -302,10 +301,6 @@ export function clearProviders(): void {
 export function getResolvedProvider(providerId: string | undefined): ResolvedProvider | undefined {
 	if (!providerId) return undefined;
 	const provider = getProvider(providerId, 'models');
-	const credentialId = credentialRegistry.selection?.get(providerId);
-	if (credentialId && credentialRegistry.service) {
-		return credentialRegistry.service.provider(providerId, credentialId, provider?.baseUrl);
-	}
 	if (!provider) return undefined;
 	return {
 		id: providerId,

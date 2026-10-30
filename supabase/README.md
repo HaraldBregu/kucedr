@@ -70,29 +70,6 @@ For coordinated disaster recovery, restore S3 content and Supabase metadata to m
 
 Run tenant-isolation, duplicate-operation, conflict, and object-integrity integration tests against the target project before release.
 
-## Cloud API Keys
-
-Each account's model API keys live in one end-to-end encrypted file,
-`credentials/<user id>/keys.json`, in a private Storage bucket created by
-`migrations/20261030140000_credentials_bucket.sql`. Four `storage.objects` policies let only the
-signed-in owner read, create, update, or delete exactly that path. There are no Edge Functions and no
-server secrets.
-
-The desktop main process derives a 256-bit key from the user's passphrase with scrypt (N=2^17, r=8,
-p=1, random 16-byte salt kept in the file) and encrypts the key list with AES-256-GCM, authenticating
-the user id so a file cannot be opened under another account. The passphrase never leaves the device
-and cannot be recovered. The derived key is remembered per account with Electron `safeStorage` until
-the user locks; without secure storage the user unlocks after each restart. Model requests go
-directly from the desktop to the provider.
-
-Every change downloads the latest file, applies the change, and uploads it, so edits from other
-devices are kept; two devices saving at the same instant resolve as last write wins. Deleting an
-account does not remove its file, which stays unreadable without the passphrase.
-
-```sh
-SUPABASE_PROJECT_REF=<ref> npm run supabase:credentials
-```
-
 ## Enable Desktop Sync
 
 In Settings → Storage, select an existing saved S3 provider and folders, sign in, then enable

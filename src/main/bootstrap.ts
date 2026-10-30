@@ -18,14 +18,7 @@ import { storageProviders } from './storage/providers';
 import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
 import { Coding, CodingProjectStore, CodingStore } from './coding';
-import { deleteProvider, getStorageSettings } from './settings_store';
-import { getModelProvidersState } from './providers/providers_store';
-import { CredentialService } from './credentials/service';
-import { CredentialBucket } from './credentials/bucket';
-import { CredentialKeychain } from './credentials/keychain';
-import { CredentialMigration } from './credentials/migration';
-import { CredentialSelection } from './credentials/selection';
-import { credentialRegistry } from './credentials/registry';
+import { getStorageSettings } from './settings_store';
 import { EnvironmentManager } from './terminal/environment';
 import { PtyManager } from './terminal/manager';
 import { ShellDetector } from './terminal/shell';
@@ -56,9 +49,6 @@ export interface MainServices {
 	terminalManager: PtyManager;
 	authService: AuthService;
 	cloudService: CloudService;
-	credentialService: CredentialService;
-	credentialMigration: CredentialMigration;
-	credentialSelection: CredentialSelection;
 }
 
 export interface BootstrapResult extends MainServices {}
@@ -113,18 +103,6 @@ export function bootstrapServices(): BootstrapResult {
 		authService,
 		cloudClient ? new SupabaseCloudRepository(cloudClient) : undefined
 	);
-	const credentialService = new CredentialService(
-		authService,
-		cloudClient ? new CredentialBucket(cloudClient) : null,
-		new CredentialKeychain()
-	);
-	const credentialSelection = new CredentialSelection(() => authService.getSignedInUserId());
-	credentialRegistry.service = credentialService;
-	credentialRegistry.selection = credentialSelection;
-	const credentialMigration = new CredentialMigration(credentialService, {
-		list: getModelProvidersState,
-		remove: (id) => deleteProvider(id, 'models'),
-	});
 	eventBus.on('window:closed', (event) => {
 		agentService.cancelWindow((event.payload as { windowId: number }).windowId);
 		codingService.cancelWindow((event.payload as { windowId: number }).windowId);
@@ -154,9 +132,6 @@ export function bootstrapServices(): BootstrapResult {
 		terminalManager,
 		authService,
 		cloudService,
-		credentialService,
-		credentialMigration,
-		credentialSelection,
 	};
 }
 
@@ -168,7 +143,6 @@ export async function cleanup(services: MainServices): Promise<void> {
 		conversationService,
 		terminalManager,
 		cloudService,
-		credentialService,
 		authService,
 		agentService,
 		memoryService,
@@ -186,7 +160,6 @@ export async function cleanup(services: MainServices): Promise<void> {
 	await storageOperations.settle();
 	await recorderCleanup;
 	await cloudService.destroy();
-	credentialService.destroy();
 	authService.destroy();
 	await channelRegistry.destroy();
 	logger.info('Bootstrap', 'Cleanup complete');

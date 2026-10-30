@@ -322,23 +322,6 @@ export const CloudChannels = {
 	sessionChanged: 'cloud:session:changed',
 } as const;
 
-export const CredentialChannels = {
-	status: 'credentials:status',
-	unlock: 'credentials:unlock',
-	lock: 'credentials:lock',
-	list: 'credentials:list',
-	create: 'credentials:create',
-	replace: 'credentials:replace',
-	rename: 'credentials:rename',
-	test: 'credentials:test',
-	remove: 'credentials:remove',
-	active: 'credentials:active',
-	activate: 'credentials:activate',
-	listLocal: 'credentials:local:list',
-	migrate: 'credentials:local:migrate',
-	removeLocal: 'credentials:local:remove',
-} as const;
-
 export const EmbeddingChannels = {
 	createEmbedding: 'embedding:create-embedding',
 	getModelId: 'embedding:get-model-id',

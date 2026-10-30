@@ -22,7 +22,6 @@ import { CoderIpc } from '../coder';
 import { TerminalIpc } from '../terminal';
 import { AuthIpc } from '../auth';
 import { CloudIpc } from '../cloud';
-import { CredentialIpc } from '../credentials';
 import type { EventBus } from '../../event_bus';
 import type { MainServices } from '../../bootstrap';
 
@@ -45,9 +44,6 @@ export function registerIpcHandlers(
 		windowContextManager,
 		authService,
 		cloudService,
-		credentialService,
-		credentialMigration,
-		credentialSelection,
 	} = services;
 
 	const safeRegister = (name: string, register: () => void): void => {
@@ -80,18 +76,6 @@ export function registerIpcHandlers(
 	safeRegister('cloud', () =>
 		new CloudIpc().register(
 			{ cloud: cloudService, windows: windowContextManager, apps: appRegistry },
-			eventBus
-		)
-	);
-	safeRegister('credentials', () =>
-		new CredentialIpc().register(
-			{
-				credentials: credentialService,
-				migration: credentialMigration,
-				selection: credentialSelection,
-				windows: windowContextManager,
-				apps: appRegistry,
-			},
 			eventBus
 		)
 	);

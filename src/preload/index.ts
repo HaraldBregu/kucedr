@@ -23,7 +23,6 @@ import { data } from './data';
 import { terminalAPI } from './terminal';
 import { auth } from './auth';
 import { cloud } from './cloud';
-import { credentials } from './credentials';
 
 export { agent } from './agent';
 export { coding, coder } from './coding';
@@ -46,7 +45,6 @@ export { data } from './data';
 export { terminalAPI } from './terminal';
 export { auth } from './auth';
 export { cloud } from './cloud';
-export { credentials } from './credentials';
 
 if (process.contextIsolated) {
 	try {
@@ -74,7 +72,6 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('terminalAPI', terminalAPI);
 		contextBridge.exposeInMainWorld('auth', auth);
 		contextBridge.exposeInMainWorld('cloud', cloud);
-		contextBridge.exposeInMainWorld('credentials', credentials);
 	} catch (error) {
 		console.error('[preload] Failed to expose IPC APIs:', error);
 	}
@@ -124,6 +121,4 @@ if (process.contextIsolated) {
 	globalThis.auth = auth;
 	// @ts-ignore (define in dts)
 	globalThis.cloud = cloud;
-	// @ts-ignore (define in dts)
-	globalThis.credentials = credentials;
 }
