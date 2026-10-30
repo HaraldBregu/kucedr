@@ -119,21 +119,9 @@ export function getProviderId(): string | undefined {
 	return getAgentProfileModel('chat', 'textToText').providerId || undefined;
 }
 export function setProviderId(providerId: string): void {
-	const { credentialId, ...current } = getAgentProfileModel('chat', 'textToText');
 	setAgentProfileModel('chat', 'textToText', {
-		...current,
-		...(current.providerId === providerId && credentialId ? { credentialId } : {}),
+		...getAgentProfileModel('chat', 'textToText'),
 		providerId,
-	});
-}
-export function getCredentialId(): string | undefined {
-	return getAgentProfileModel('chat', 'textToText').credentialId;
-}
-export function setCredentialId(credentialId: string | undefined): void {
-	const { credentialId: _previous, ...current } = getAgentProfileModel('chat', 'textToText');
-	setAgentProfileModel('chat', 'textToText', {
-		...current,
-		...(credentialId ? { credentialId } : {}),
 	});
 }
 export function getModelId(): string | undefined {
