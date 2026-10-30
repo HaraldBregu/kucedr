@@ -71,8 +71,8 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const { open: openCommandMenu } = useCommandMenu();
 	const { sessionId, sessionTitle, setSessionId, setSessionTitle } = useChatSession();
 	const { state, isMobile } = usePageContext();
-	const isLibrary = location.pathname === '/library';
-	const sidebarExpanded = showWorkspace && !isLibrary && !isMobile && state.sidebarOpen;
+	const isLibrary = location.pathname === '/home/library';
+	const sidebarExpanded = showWorkspace && !isMobile && state.sidebarOpen;
 	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
 	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
 	const [chatSessionsLoadError, setChatSessionsLoadError] = useState(false);
