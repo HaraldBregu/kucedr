@@ -1,4 +1,5 @@
 import { authenticate } from '../_shared/auth.ts';
+import { failure } from '../_shared/failure.ts';
 import { forward } from '../_shared/forward.ts';
 import { rpc } from '../_shared/rpc.ts';
 import { services } from '../_shared/services.ts';
