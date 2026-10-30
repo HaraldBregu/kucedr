@@ -109,6 +109,19 @@ export function CredentialRow({
 					</div>
 				) : (
 					<div className="flex items-center gap-1">
+						{active ? (
+							<Badge variant="secondary">In use</Badge>
+						) : (
+							<Button
+								type="button"
+								size="xs"
+								variant="ghost"
+								disabled={busy}
+								onClick={() => void run(onActivate)}
+							>
+								Use
+							</Button>
+						)}
 						{valid !== undefined && (
 							<Badge variant={valid ? 'secondary' : 'destructive'}>{valid ? 'Valid' : 'Rejected'}</Badge>
 						)}
