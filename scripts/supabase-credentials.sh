@@ -44,7 +44,7 @@ verified="$(query "select
   and not has_function_privilege('anon', 'public.credential_secret(uuid, uuid)', 'execute')
   and not has_function_privilege('authenticated', 'public.credential_secret(uuid, uuid)', 'execute')
   and has_function_privilege('service_role', 'public.credential_secret(uuid, uuid)', 'execute')
-  as verified")"
+  as verified")" || { echo "$verified" >&2; exit 1; }
 echo "$verified"
 grep -q true <<<"$verified" || { echo "Verification failed." >&2; exit 1; }
 
