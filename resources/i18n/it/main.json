@@ -338,6 +338,7 @@
 			"video": "Video",
 			"image": "Immagine",
 			"account": "Account",
+			"credentials": "Chiavi API cloud",
 			"settings": "Impostazioni",
 			"settingsDescription": "Configura informazioni, aspetto, lingua e dati dell'applicazione.",
 			"modelServices": "Servizi modello",
