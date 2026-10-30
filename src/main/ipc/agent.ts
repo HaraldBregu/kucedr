@@ -194,12 +194,16 @@ function toToolModelKind(value: unknown): AgentToolModelKind {
 	throw new Error('Invalid tool model kind.');
 }
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 function toAgentMediaModelSettings(value: unknown): AgentMediaModelSettings {
 	if (!isRecord(value)) throw new Error('Invalid tool model settings.');
 	if (
 		typeof value.providerId !== 'string' ||
 		typeof value.modelId !== 'string' ||
-		!isRecord(value.options)
+		!isRecord(value.options) ||
+		(value.credentialId !== undefined &&
+			(typeof value.credentialId !== 'string' || !UUID_PATTERN.test(value.credentialId)))
 	) {
 		throw new Error('Invalid tool model settings.');
 	}
@@ -207,6 +211,7 @@ function toAgentMediaModelSettings(value: unknown): AgentMediaModelSettings {
 		providerId: value.providerId.trim(),
 		modelId: value.modelId.trim(),
 		options: { ...value.options },
+		...(typeof value.credentialId === 'string' ? { credentialId: value.credentialId } : {}),
 	};
 }
 
