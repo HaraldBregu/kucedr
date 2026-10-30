@@ -297,12 +297,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.overview.descriptions.databases',
 		keywords: 'database vector provider api key',
 	},
-	{
-		path: '/settings/cloud/providers',
-		labelKey: 'settings.tabs.providers',
-		descriptionKey: 'settings.storageProviders.description',
-		keywords: 'storage s3 bucket provider',
-	},
 	// Tasks
 	{
 		path: '/settings/cloud',
