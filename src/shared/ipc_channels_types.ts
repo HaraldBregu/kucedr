@@ -1489,7 +1489,8 @@ export interface InvokeChannelMap
 		AppsInvokeChannelMap,
 		TerminalInvokeChannelMap,
 		AuthInvokeChannelMap,
-		CloudInvokeChannelMap {}
+		CloudInvokeChannelMap,
+		CredentialInvokeChannelMap {}
 
 export interface SendChannelMap extends WindowSendChannelMap, TerminalSendChannelMap {}
 
