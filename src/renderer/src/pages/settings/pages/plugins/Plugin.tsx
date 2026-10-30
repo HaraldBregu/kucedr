@@ -396,7 +396,9 @@ export default function PluginPage(): React.JSX.Element {
 				{!plugin.enabled && !plugin.error ? (
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
 				) : (
-					sections.map((section) => (
+					<>
+						{contents.storages.length > 0 && <Storage storages={contents.storages} />}
+						{sections.map((section) => (
 						<SettingsSection key={section.key} title={`${section.title} · ${section.rows.length}`}>
 							<SettingsPanel>
 								{section.rows.map((row) => (
