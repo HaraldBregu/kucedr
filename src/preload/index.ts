@@ -23,6 +23,7 @@ import { data } from './data';
 import { terminalAPI } from './terminal';
 import { auth } from './auth';
 import { cloud } from './cloud';
+import { credentials } from './credentials';
 
 export { agent } from './agent';
 export { coding, coder } from './coding';
