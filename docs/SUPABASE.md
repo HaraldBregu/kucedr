@@ -101,8 +101,16 @@ hosted-project settings before releasing a build:
 Existing local chats and provider configuration stay on the device. The first signed-in account
 becomes the owner of that local Kucedr profile; signing into another account
 is rejected to prevent accidental cross-account data exposure. Folder backups use the separately configured S3-compatible storage provider in Settings → Storage;
-they do not use this account adapter or require sign-in. Model, database, and search credentials
-remain in local provider settings. Vector databases serve RAG and are separate from file backup.
+they do not use this account adapter or require sign-in. Database and search credentials remain in
+local provider settings. Vector databases serve RAG and are separate from file backup.
+
+Chat model keys can also be stored in the signed-in account under **Settings → Cloud API keys**
+(see [Cloud API keys](../supabase/README.md#cloud-api-keys)). The desktop sees only credential IDs,
+labels, and the last four characters; chat requests for a selected cloud key go through the
+`model-gateway` Edge Function with the user's session token. Local keys keep working when signed
+out. Uploading local keys is an explicit choice on that page, and local copies are removed only
+after the upload is verified and the user removes them. Speech, media, embedding, search, and
+vector-database providers still use local keys.
 
 Opt-in version history sync does require account sign-in. It uses the Supabase SDK client from
 the Electron main process and the storage Edge Functions. When version sync is enabled for a
