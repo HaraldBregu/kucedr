@@ -39,6 +39,7 @@ type LlmModelFactory = (provider: LlmProviderSpec) => LlmAdapter;
 interface LlmClientFactoryInput {
 	apiKey: string;
 	baseURL?: string;
+	fetch?: typeof fetch;
 }
 
 export interface LlmModelOptions {
