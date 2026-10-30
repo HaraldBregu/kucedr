@@ -49,6 +49,8 @@ export interface MainServices {
 	terminalManager: PtyManager;
 	authService: AuthService;
 	cloudService: CloudService;
+	credentialService: CredentialService;
+	credentialMigration: CredentialMigration;
 }
 
 export interface BootstrapResult extends MainServices {}
