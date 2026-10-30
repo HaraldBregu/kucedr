@@ -128,6 +128,15 @@ const CredentialsPage: React.FC = () => {
 								<SettingsLoadingRows rows={2} />
 							</SettingsPanel>
 						)
+					) : current.status !== 'unlocked' ? (
+						<CredentialUnlock
+							create={current.status === 'empty'}
+							onError={setError}
+							onUnlocked={() => {
+								setError('');
+								setReload((n) => n + 1);
+							}}
+						/>
 					) : services.length === 0 ? (
 						<SettingsPanel>
 							<SettingsEmptyState title="No cloud API keys yet" description="Add one below." />
