@@ -166,6 +166,9 @@ jest.mock('react-i18next', () => {
 	};
 	return { useTranslation: () => ({ t }) };
 });
+jest.mock('@/contexts/AuthContext', () => ({
+	useAuth: () => ({ state: { status: 'signedOut' }, localOnly: true }),
+}));
 jest.mock('@/lib/providers', () => ({
 	modelsFor: (capability: string) => mockCatalog.filter((model) => model.type === capability),
 	providerIdsFor: (capability: string) => [
