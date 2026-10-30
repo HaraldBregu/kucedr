@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { CloudCredential } from '@shared/credential_types';
 import { SettingsRow } from '../../components';
-import { SERVICE_NAMES } from './names';
 
 type Mode = 'idle' | 'rename' | 'replace' | 'delete';
 
