@@ -85,7 +85,6 @@ export class CredentialService {
 
 	async remove(id: string): Promise<void> {
 		await this.call({ action: 'delete', id });
-		this.removedListeners.forEach((listener) => listener(id));
 	}
 
 	/** Chat provider that reaches the model through the backend gateway; never holds the saved key. */
