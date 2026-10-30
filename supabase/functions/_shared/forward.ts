@@ -1,3 +1,4 @@
+import { failure } from './failure.ts';
 import type { Service } from './services.ts';
 
 const REQUEST_HEADERS = ['content-type', 'accept', 'anthropic-version', 'anthropic-beta', 'idempotency-key'];
