@@ -50,7 +50,7 @@ supabase functions deploy model-gateway --project-ref "$REF" --use-api
 
 if [[ "${1:-}" == "--test" ]]; then
 	echo "→ Running $TEST (wrapped in a transaction that rolls back)"
-	supabase db query --project-ref "$REF" -f "$TEST"
+	query -f "$TEST"
 fi
 
 echo "Done. If you later use 'supabase db push', first run:"
