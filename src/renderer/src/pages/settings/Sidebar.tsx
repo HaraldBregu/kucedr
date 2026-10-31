@@ -43,8 +43,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 					'/settings/health',
 				].includes(item.path)
 			),
-			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
-			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
 		],
 	},
 	{
