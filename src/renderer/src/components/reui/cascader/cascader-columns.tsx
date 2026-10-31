@@ -23,7 +23,7 @@ import { Combobox as ComboboxPrimitive } from "@base-ui/react"
 
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/reui/cascader/scroll"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { LoaderCircleIcon } from "lucide-react"
 
 export interface CascaderColumnsProps extends Omit<
   React.ComponentProps<"div">,
@@ -166,12 +166,7 @@ function CascaderColumnPanel({
   } else if (loadState?.loading) {
     emptyBody = (
       <span className="flex items-center gap-1.5">
-        <IconPlaceholder
-          lucide="LoaderCircleIcon"
-          tabler="IconLoader2"
-          hugeicons="Loading02Icon"
-          phosphor="CircleNotchIcon"
-          remixicon="RiLoader4Line"
+        <LoaderCircleIcon
           className="size-3.5 animate-spin"
           aria-hidden
         />

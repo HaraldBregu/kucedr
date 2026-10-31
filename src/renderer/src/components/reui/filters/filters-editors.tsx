@@ -55,7 +55,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { Input } from "@/components/ui/input"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { CheckIcon, XIcon } from "lucide-react"
 
 /* -------------------------------------------------------------------------- */
 /*                              The options service                           */
@@ -390,13 +390,8 @@ function EditorCommitButtons({
         aria-label={labels.apply}
         onClick={onCommit}
       >
-        <IconPlaceholder
+        <CheckIcon
           aria-hidden="true"
-          lucide="CheckIcon"
-          tabler="IconCheck"
-          hugeicons="Tick02Icon"
-          phosphor="CheckIcon"
-          remixicon="RiCheckLine"
         />
       </Button>
       <Button
@@ -406,13 +401,8 @@ function EditorCommitButtons({
         aria-label={labels.discard}
         onClick={onCancel}
       >
-        <IconPlaceholder
+        <XIcon
           aria-hidden="true"
-          lucide="XIcon"
-          tabler="IconX"
-          hugeicons="Cancel01Icon"
-          phosphor="XIcon"
-          remixicon="RiCloseLine"
         />
       </Button>
     </>
@@ -988,12 +978,7 @@ export function FilterMenu({
                logical inset. `end-*` rather than `right-2`, so RTL mirrors. */
             className="size-4 pointer-events-none absolute end-[var(--cascader-row-inset,8px)]! flex items-center justify-center rtl:right-auto!"
           >
-            <IconPlaceholder
-              lucide="CheckIcon"
-              tabler="IconCheck"
-              hugeicons="Tick02Icon"
-              phosphor="CheckIcon"
-              remixicon="RiCheckLine"
+            <CheckIcon
               /* Pinned on the svg AND its descendants: every style repaints
                  icons in a highlighted row with `**:text-accent-foreground`. */
               className="text-foreground! **:text-foreground!"

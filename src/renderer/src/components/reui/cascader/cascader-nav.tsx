@@ -22,7 +22,7 @@ import { useDirection } from "@base-ui/react/direction-provider"
 import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 /* -------------------------------------------------------------------------- */
 /*                                  Separator                                 */
@@ -30,12 +30,7 @@ import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
 
 function PathChevron() {
   return (
-    <IconPlaceholder
-      lucide="ChevronRightIcon"
-      tabler="IconChevronRight"
-      hugeicons="ArrowRight01Icon"
-      phosphor="CaretRightIcon"
-      remixicon="RiArrowRightSLine"
+    <ChevronRightIcon
       className="size-3 shrink-0 opacity-50 rtl:-scale-x-100"
     />
   )
@@ -153,12 +148,7 @@ function CascaderBack({
       {...props}
     >
       {children ?? (
-        <IconPlaceholder
-          lucide="ChevronLeftIcon"
-          tabler="IconChevronLeft"
-          hugeicons="ArrowLeft01Icon"
-          phosphor="CaretLeftIcon"
-          remixicon="RiArrowLeftSLine"
+        <ChevronLeftIcon
           className="size-4 rtl:-scale-x-100"
         />
       )}

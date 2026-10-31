@@ -44,7 +44,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { ListFilterPlusIcon } from "lucide-react"
 
 /**
  * Projects ONLY the field tree: operators or values as nodes would force the
@@ -288,12 +288,7 @@ export function FiltersBuilder<V, O>({
             className="transition-[color,background-color,border-color,box-shadow]"
           >
             {/* No filter-plus glyph in phosphor or remixicon. */}
-            <IconPlaceholder
-              lucide="ListFilterPlusIcon"
-              tabler="IconFilterPlus"
-              hugeicons="FilterAddIcon"
-              phosphor="FunnelSimpleIcon"
-              remixicon="RiFilter3Line"
+            <ListFilterPlusIcon
             />
             {compact ? null : actions.labels.addFilter}
           </Button>

@@ -17,7 +17,7 @@ import { Popover as PopoverPrimitive } from "@base-ui/react"
 import { useDirection } from "@base-ui/react/direction-provider"
 
 import { cn } from "@/lib/utils"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { ChevronRightIcon } from "lucide-react"
 
 /**
  * The pinned footer, and the side-anchored flyout a footer row can open. These
@@ -542,12 +542,7 @@ function CascaderSubmenuTrigger({
       <span className="min-w-0 flex-1 truncate text-start">{children}</span>
       {/* Nothing else says the row opens a MENU, not another tree level. */}
       <span className="sr-only">, {labels.submenuAffordance}</span>
-      <IconPlaceholder
-        lucide="ChevronRightIcon"
-        tabler="IconChevronRight"
-        hugeicons="ArrowRight01Icon"
-        phosphor="CaretRightIcon"
-        remixicon="RiArrowRightSLine"
+      <ChevronRightIcon
         aria-hidden="true"
         /* Static: a rotating chevron is the DISCLOSURE convention, and this
            one opens to the SIDE and keeps pointing there the whole time. */

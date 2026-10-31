@@ -49,7 +49,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   ButtonGroup,
-  ButtonGroupText,
 } from "@/components/ui/button-group"
 import {
   DropdownMenu,
@@ -68,7 +67,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { ArrowLeftRightIcon, ChevronRightIcon, CopyIcon, CornerDownRightIcon, EllipsisVerticalIcon, LayersIcon, SlidersHorizontalIcon, Trash2Icon, XIcon } from "lucide-react"
 
 /** Which part of the chip a pointer or key is aimed at. No `field`: the chip's
  *  attribute segment is display only, and only the builder re-picks one. */
@@ -139,13 +138,17 @@ function valueWithIcon<V>(
   )
 }
 
+function ButtonGroupText({ className, ...props }: React.ComponentProps<"div">) {
+  return <div className={cn("flex items-center border px-3 text-sm", className)} {...props} />
+}
+
 /** The glyph between two ancestors in a nested attribute path, a chevron
  *  because the `pathSeparator` string read as loud as the names it parts.
  *  DECORATIVE: `aria-hidden`, and the plain string is still what
  *  `formatFilterPath` joins for the chip's accessible name and `title`. */
 function FilterPathSeparator() {
   return (
-    <IconPlaceholder
+    <ChevronRightIcon
       aria-hidden="true"
       data-slot="filter-path-separator"
       /* The full muted token, not the `/60` the string carried: a size-3
@@ -157,11 +160,6 @@ function FilterPathSeparator() {
          `size-3`. `inline-block` because the reset makes every `svg` a block,
          which broke the builder's inline `Repository > Stars` into three. */
       className="text-muted-foreground mx-[3px] inline-block size-3 shrink-0 self-center align-[calc(0.3635em_-_0.375rem)]"
-      lucide="ChevronRightIcon"
-      tabler="IconChevronRight"
-      hugeicons="ArrowRight01Icon"
-      phosphor="CaretRightIcon"
-      remixicon="RiArrowRightSLine"
     />
   )
 }
@@ -174,7 +172,7 @@ function FilterPathEllipsis({ full }: { full: string }) {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger render={<span />}>
           <span
             aria-hidden="true"
             data-slot="filter-path-ellipsis"
@@ -566,6 +564,7 @@ export function FilterOperatorPopover<V, O>({
   const handoff = React.useRef(false)
   const operators = actions.resolveOperators(field)
   const operator = getFilterOperator(operators, rule.operator)
+  void operator
 
   // Memoized because the array IS the menu's identity: the cascader rebuilds
   // its index per `items` identity, so a fresh array rebuilds it per keystroke.
@@ -778,12 +777,7 @@ export function FilterMoveToMenuItems({ nodeId }: { nodeId: string }) {
           }
         >
           {/* A bend into the destination: movement, not duplication or nesting. */}
-          <IconPlaceholder
-            lucide="CornerDownRightIcon"
-            tabler="IconCornerDownRight"
-            hugeicons="CornerDownRightIcon"
-            phosphor="ArrowBendDownRightIcon"
-            remixicon="RiCornerDownRightLine"
+          <CornerDownRightIcon
             aria-hidden="true"
           />
           <span className={FILTER_MENU_LABEL_CLASS}>{destination.label}</span>
@@ -818,12 +812,7 @@ export function FilterRuleMenuItems({
         disabled={locked}
         onClick={() => actions.duplicateNode(ruleId)}
       >
-        <IconPlaceholder
-          lucide="CopyIcon"
-          tabler="IconCopy"
-          hugeicons="Copy01Icon"
-          phosphor="CopyIcon"
-          remixicon="RiFileCopyLine"
+        <CopyIcon
           aria-hidden="true"
         />
         <span className={FILTER_MENU_LABEL_CLASS}>
@@ -835,12 +824,7 @@ export function FilterRuleMenuItems({
         onClick={() => actions.negateRule(ruleId)}
       >
         {/* Two arrows swapping: negation flips to the declared inverse. */}
-        <IconPlaceholder
-          lucide="ArrowLeftRightIcon"
-          tabler="IconArrowsExchange"
-          hugeicons="ArrowDataTransferHorizontalIcon"
-          phosphor="ArrowsLeftRightIcon"
-          remixicon="RiArrowLeftRightLine"
+        <ArrowLeftRightIcon
           aria-hidden="true"
         />
         <span className={FILTER_MENU_LABEL_CLASS}>{actions.labels.negate}</span>
@@ -851,12 +835,7 @@ export function FilterRuleMenuItems({
           onClick={() => actions.wrapNodeInGroup(ruleId)}
         >
           {/* Layers: braces read as grouping in only three of the five sets. */}
-          <IconPlaceholder
-            lucide="LayersIcon"
-            tabler="IconStack2"
-            hugeicons="Layers01Icon"
-            phosphor="StackIcon"
-            remixicon="RiStackLine"
+          <LayersIcon
             aria-hidden="true"
           />
           <span className={FILTER_MENU_LABEL_CLASS}>
@@ -872,12 +851,7 @@ export function FilterRuleMenuItems({
       {actions.convertToAdvanced && actions.variant !== "advanced" ? (
         <DropdownMenuItem onClick={() => actions.convertToAdvanced?.()}>
           {/* Sliders: the one "advanced settings" glyph in all five sets. */}
-          <IconPlaceholder
-            lucide="SlidersHorizontalIcon"
-            tabler="IconAdjustmentsHorizontal"
-            hugeicons="SlidersHorizontalIcon"
-            phosphor="SlidersHorizontalIcon"
-            remixicon="RiEqualizer2Line"
+          <SlidersHorizontalIcon
             aria-hidden="true"
           />
           <span className={FILTER_MENU_LABEL_CLASS}>
@@ -886,17 +860,12 @@ export function FilterRuleMenuItems({
         </DropdownMenuItem>
       ) : null}
       <DropdownMenuItem
-        variant="destructive"
+        className="text-destructive"
         disabled={locked}
         onClick={() => actions.removeNode(ruleId)}
       >
         {/* No colour: the destructive variant already paints the row's svgs. */}
-        <IconPlaceholder
-          lucide="Trash2Icon"
-          tabler="IconTrash"
-          hugeicons="Delete02Icon"
-          phosphor="TrashIcon"
-          remixicon="RiDeleteBinLine"
+        <Trash2Icon
           aria-hidden="true"
         />
         <span className={FILTER_MENU_LABEL_CLASS}>{actions.labels.remove}</span>
@@ -984,12 +953,7 @@ function FilterChipImpl<V, O>({ rule, index }: FilterChipProps<V>) {
           {...filterReadOnlyProps(actions)}
           onClick={() => actions.removeNode(rule.id)}
         >
-          <IconPlaceholder
-            lucide="XIcon"
-            tabler="IconX"
-            hugeicons="Cancel01Icon"
-            phosphor="XIcon"
-            remixicon="RiCloseLine"
+          <XIcon
           />
         </Button>
       </ButtonGroup>
@@ -1127,12 +1091,7 @@ function FilterChipImpl<V, O>({ rule, index }: FilterChipProps<V>) {
             aria-label={actions.labels.chipMenu(field.label)}
             onPointerDown={() => focusSegment("menu")}
           >
-            <IconPlaceholder
-              lucide="EllipsisVerticalIcon"
-              tabler="IconDotsVertical"
-              hugeicons="MoreVerticalIcon"
-              phosphor="DotsThreeVerticalIcon"
-              remixicon="RiMoreLine"
+            <EllipsisVerticalIcon
             />
           </Button>
         </DropdownMenuTrigger>

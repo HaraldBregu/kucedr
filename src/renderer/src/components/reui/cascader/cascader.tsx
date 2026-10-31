@@ -84,7 +84,7 @@ import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/reui/cascader/scroll"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { ChevronDownIcon, XIcon } from "lucide-react"
 
 /** Stable `filteredItems` for a level swap; a fixed identity cannot loop. */
 const EMPTY: CascaderNode<never>[] = []
@@ -2375,12 +2375,7 @@ function CascaderTrigger({
     >
       {children}
       {showIcon ? (
-        <IconPlaceholder
-          lucide="ChevronDownIcon"
-          tabler="IconChevronDown"
-          hugeicons="ArrowDown01Icon"
-          phosphor="CaretDownIcon"
-          remixicon="RiArrowDownSLine"
+        <ChevronDownIcon
           className={`${TRIGGER_ICON_CLASS} pointer-events-none shrink-0`}
         />
       ) : null}
@@ -2654,12 +2649,7 @@ function CascaderChip({
             : null)}
           className={CHIP_REMOVE_CLASS}
         >
-          <IconPlaceholder
-            lucide="XIcon"
-            tabler="IconX"
-            hugeicons="Cancel01Icon"
-            phosphor="XIcon"
-            remixicon="RiCloseLine"
+          <XIcon
             className="pointer-events-none"
           />
         </ComboboxPrimitive.ChipRemove>

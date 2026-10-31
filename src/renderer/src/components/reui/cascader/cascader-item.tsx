@@ -22,7 +22,7 @@ import { useRender } from "@base-ui/react/use-render"
 
 import { cn } from "@/lib/utils"
 import { Spinner } from "@/components/reui/cascader/spinner"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { CheckIcon, ChevronRightIcon, LoaderCircleIcon, MinusIcon, RotateCwIcon } from "lucide-react"
 
 // Base UI extends its synthetic events with a handler-veto escape hatch.
 type VetoableEvent = { preventBaseUIHandler?: () => void }
@@ -437,12 +437,7 @@ const CascaderItem = React.memo(function CascaderItem({
     const moreBody = children ?? (
       <>
         {loading ? (
-          <IconPlaceholder
-            lucide="LoaderCircleIcon"
-            tabler="IconLoader2"
-            hugeicons="Loading02Icon"
-            phosphor="CircleNotchIcon"
-            remixicon="RiLoader4Line"
+          <LoaderCircleIcon
             className="size-3.5 animate-spin"
             aria-hidden
           />
@@ -528,22 +523,12 @@ const CascaderItem = React.memo(function CascaderItem({
     >
       {/* Colour declared ON THE ICON with `!`; see `CHECKBOX_MARK_CLASS`. */}
       {indeterminate ? (
-        <IconPlaceholder
-          lucide="MinusIcon"
-          tabler="IconMinus"
-          hugeicons="MinusSignIcon"
-          phosphor="MinusIcon"
-          remixicon="RiSubtractLine"
+        <MinusIcon
           data-slot="cascader-item-dash"
           className={cn(CHECKBOX_MARK_CLASS, "size-3")}
         />
       ) : (
-        <IconPlaceholder
-          lucide="CheckIcon"
-          tabler="IconCheck"
-          hugeicons="Tick02Icon"
-          phosphor="CheckIcon"
-          remixicon="RiCheckLine"
+        <CheckIcon
           data-slot="cascader-item-tick"
           className={cn(
             CHECKBOX_MARK_CLASS,
@@ -559,12 +544,7 @@ const CascaderItem = React.memo(function CascaderItem({
       {multiple ? (
         checkbox
       ) : (
-        <IconPlaceholder
-          lucide="CheckIcon"
-          tabler="IconCheck"
-          hugeicons="Tick02Icon"
-          phosphor="CheckIcon"
-          remixicon="RiCheckLine"
+        <CheckIcon
           data-slot="cascader-item-check"
           className={cn("pointer-events-none", INDICATOR_MARK_CLASS)}
         />
@@ -599,21 +579,11 @@ const CascaderItem = React.memo(function CascaderItem({
           {childrenLoading ? (
             <Spinner aria-hidden="true" className="size-4" />
           ) : childrenError ? (
-            <IconPlaceholder
-              lucide="RotateCwIcon"
-              tabler="IconRefresh"
-              hugeicons="RefreshIcon"
-              phosphor="ArrowClockwiseIcon"
-              remixicon="RiRefreshLine"
+            <RotateCwIcon
               className="size-4"
             />
           ) : (
-            <IconPlaceholder
-              lucide="ChevronRightIcon"
-              tabler="IconChevronRight"
-              hugeicons="ArrowRight01Icon"
-              phosphor="CaretRightIcon"
-              remixicon="RiArrowRightSLine"
+            <ChevronRightIcon
               className={cn(
                 "size-4 transition-transform",
                 /* Collapsed it points INTO the level, so it mirrors; expanded
@@ -725,21 +695,11 @@ const CascaderItem = React.memo(function CascaderItem({
             {childrenLoading ? (
               <Spinner aria-hidden="true" className="size-4" />
             ) : childrenError ? (
-              <IconPlaceholder
-                lucide="RotateCwIcon"
-                tabler="IconRefresh"
-                hugeicons="RefreshIcon"
-                phosphor="ArrowClockwiseIcon"
-                remixicon="RiRefreshLine"
+              <RotateCwIcon
                 className="size-4"
               />
             ) : (
-              <IconPlaceholder
-                lucide="ChevronRightIcon"
-                tabler="IconChevronRight"
-                hugeicons="ArrowRight01Icon"
-                phosphor="CaretRightIcon"
-                remixicon="RiArrowRightSLine"
+              <ChevronRightIcon
                 className="size-4 rtl:-scale-x-100"
               />
             )}

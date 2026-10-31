@@ -84,7 +84,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
+import { ChevronDownIcon, CircleAlertIcon, CopyIcon, EllipsisVerticalIcon, FolderPlusIcon, GripVerticalIcon, ListFilterIcon, PlusIcon, RefreshCwIcon, Trash2Icon, UngroupIcon, XIcon } from "lucide-react"
 
 /* -------------------------------------------------------------------------- */
 /*                                  Columns                                   */
@@ -422,12 +422,7 @@ function CombinatorCell({
           "[&_svg]:size-3"
         )}
       >
-        <IconPlaceholder
-          lucide="RefreshCwIcon"
-          tabler="IconRefresh"
-          hugeicons="RefreshIcon"
-          phosphor="ArrowsClockwiseIcon"
-          remixicon="RiRefreshLine"
+        <RefreshCwIcon
         />
       </span>
     </Button>
@@ -460,9 +455,9 @@ function RowIssueHint({
 }) {
   if (!message) return null
   return (
-    <TooltipProvider delayDuration={200}>
+    <TooltipProvider delay={200}>
       <Tooltip>
-        <TooltipTrigger asChild>
+        <TooltipTrigger render={<span />}>
           <span
             data-slot="filter-row-issue"
             /* Focusable so a keyboard user can summon it, but OUT of the
@@ -474,12 +469,7 @@ function RowIssueHint({
               className
             )}
           >
-            <IconPlaceholder
-              lucide="CircleAlertIcon"
-              tabler="IconAlertCircle"
-              hugeicons="Alert02Icon"
-              phosphor="WarningCircleIcon"
-              remixicon="RiErrorWarningLine"
+            <CircleAlertIcon
             />
           </span>
         </TooltipTrigger>
@@ -529,12 +519,7 @@ function RowHandle({
       /* Not armed at all while locked; the engine refuses it again. */
       {...(locked ? null : dragProps?.(nodeId))}
     >
-      <IconPlaceholder
-        lucide="GripVerticalIcon"
-        tabler="IconGripVertical"
-        hugeicons="DragDropVerticalIcon"
-        phosphor="DotsSixVerticalIcon"
-        remixicon="RiDraggable"
+      <GripVerticalIcon
       />
     </Button>
   )
@@ -904,12 +889,7 @@ function FilterAdvancedRowImpl<V, O>({
                   {field.icon}
                   <span className="truncate">{pathLabel}</span>
                 </span>
-                <IconPlaceholder
-                  lucide="ChevronDownIcon"
-                  tabler="IconChevronDown"
-                  hugeicons="ArrowDown01Icon"
-                  phosphor="CaretDownIcon"
-                  remixicon="RiArrowDownSLine"
+                <ChevronDownIcon
                 />
               </Button>
             </PopoverTrigger>
@@ -974,12 +954,7 @@ function FilterAdvancedRowImpl<V, O>({
                   onFocus={onCellFocus("operator")}
                 >
                   <span className="truncate">{operatorLabel}</span>
-                  <IconPlaceholder
-                    lucide="ChevronDownIcon"
-                    tabler="IconChevronDown"
-                    hugeicons="ArrowDown01Icon"
-                    phosphor="CaretDownIcon"
-                    remixicon="RiArrowDownSLine"
+                  <ChevronDownIcon
                   />
                 </Button>
               }
@@ -1077,12 +1052,7 @@ function FilterAdvancedRowImpl<V, O>({
               {...cellProps("menu", active)}
               onFocus={onCellFocus("menu")}
             >
-              <IconPlaceholder
-                lucide="EllipsisVerticalIcon"
-                tabler="IconDotsVertical"
-                hugeicons="MoreVerticalIcon"
-                phosphor="DotsThreeVerticalIcon"
-                remixicon="RiMoreLine"
+              <EllipsisVerticalIcon
               />
             </Button>
           </DropdownMenuTrigger>
@@ -1152,12 +1122,7 @@ function FilterUnknownRow<V>({
           {...filterReadOnlyProps(actions)}
           onClick={() => actions.removeNode(rule.id)}
         >
-          <IconPlaceholder
-            lucide="XIcon"
-            tabler="IconX"
-            hugeicons="Cancel01Icon"
-            phosphor="XIcon"
-            remixicon="RiCloseLine"
+          <XIcon
           />
         </Button>
       </div>
@@ -1342,12 +1307,7 @@ function FilterAdvancedGroup<V, O>({
             onFocus={onCellFocus("add")}
             onClick={addInto}
           >
-            <IconPlaceholder
-              lucide="PlusIcon"
-              tabler="IconPlus"
-              hugeicons="PlusSignIcon"
-              phosphor="PlusIcon"
-              remixicon="RiAddLine"
+            <PlusIcon
             />
             {actions.labels.addCondition}
           </Button>
@@ -1408,12 +1368,7 @@ function FilterGroupMenu<V>({
           {...cellProps("menu", active)}
           onFocus={onFocus("menu")}
         >
-          <IconPlaceholder
-            lucide="EllipsisVerticalIcon"
-            tabler="IconDotsVertical"
-            hugeicons="MoreVerticalIcon"
-            phosphor="DotsThreeVerticalIcon"
-            remixicon="RiMoreLine"
+          <EllipsisVerticalIcon
           />
         </Button>
       </DropdownMenuTrigger>
@@ -1425,12 +1380,7 @@ function FilterGroupMenu<V>({
           disabled={locked}
           onClick={() => actions.duplicateNode(group.id)}
         >
-          <IconPlaceholder
-            lucide="CopyIcon"
-            tabler="IconCopy"
-            hugeicons="Copy01Icon"
-            phosphor="CopyIcon"
-            remixicon="RiFileCopyLine"
+          <CopyIcon
             aria-hidden="true"
           />
           <span className={FILTER_MENU_LABEL_CLASS}>
@@ -1442,12 +1392,7 @@ function FilterGroupMenu<V>({
           onClick={() => actions.unwrapGroup(group.id)}
         >
           {/* The inverse of the row menu's layers glyph. */}
-          <IconPlaceholder
-            lucide="UngroupIcon"
-            tabler="IconStackPop"
-            hugeicons="UngroupItemsIcon"
-            phosphor="StackMinusIcon"
-            remixicon="RiSplitCellsHorizontal"
+          <UngroupIcon
             aria-hidden="true"
           />
           <span className={FILTER_MENU_LABEL_CLASS}>
@@ -1457,17 +1402,12 @@ function FilterGroupMenu<V>({
         <FilterMoveToMenuItems nodeId={group.id} />
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          variant="destructive"
+          className="text-destructive"
           disabled={locked}
           onClick={() => actions.removeNode(group.id)}
         >
           {/* No colour: the destructive variant paints the row's svgs. */}
-          <IconPlaceholder
-            lucide="Trash2Icon"
-            tabler="IconTrash"
-            hugeicons="Delete02Icon"
-            phosphor="TrashIcon"
-            remixicon="RiDeleteBinLine"
+          <Trash2Icon
             aria-hidden="true"
           />
           <span className={FILTER_MENU_LABEL_CLASS}>
@@ -1624,6 +1564,8 @@ export function FiltersAdvancedPanel<V, O>({
     [issues]
   )
 
+  void issueMap
+
   /** The issues a row may DRAW: the ones on a value committed once. */
   const visibleIssueMap = React.useMemo(() => {
     const visible = new Map<string, FilterIssue>()
@@ -1671,6 +1613,8 @@ export function FiltersAdvancedPanel<V, O>({
     )
     target?.focus()
   }, [issues])
+
+  void focusFirstIssue
 
   /* ---------------------------- focus recovery ---------------------------- */
 
@@ -1979,12 +1923,7 @@ export function FiltersAdvancedPanel<V, O>({
                style, square or round. */
             className="bg-muted text-muted-foreground mb-1 flex size-9 items-center justify-center rounded-full [&_svg]:size-4"
           >
-            <IconPlaceholder
-              lucide="ListFilterIcon"
-              tabler="IconFilter2"
-              hugeicons="FilterMailIcon"
-              phosphor="FunnelSimpleIcon"
-              remixicon="RiFilter3Line"
+            <ListFilterIcon
             />
           </span>
           <p className="text-sm font-medium">{actions.labels.builderEmpty}</p>
@@ -2032,12 +1971,7 @@ export function FiltersAdvancedPanel<V, O>({
           {...filterReadOnlyProps(actions)}
           onClick={addRow}
         >
-          <IconPlaceholder
-            lucide="PlusIcon"
-            tabler="IconPlus"
-            hugeicons="PlusSignIcon"
-            phosphor="PlusIcon"
-            remixicon="RiAddLine"
+          <PlusIcon
           />
           {actions.labels.addCondition}
         </Button>
@@ -2050,12 +1984,7 @@ export function FiltersAdvancedPanel<V, O>({
           {...filterReadOnlyProps(actions)}
           onClick={addGroup}
         >
-          <IconPlaceholder
-            lucide="FolderPlusIcon"
-            tabler="IconFolderPlus"
-            hugeicons="FolderAddIcon"
-            phosphor="FolderPlusIcon"
-            remixicon="RiFolderAddLine"
+          <FolderPlusIcon
           />
           {actions.labels.addConditionGroup}
         </Button>
@@ -2165,12 +2094,7 @@ export function FiltersAdvanced<V, O>({
                 : undefined
             }
           >
-            <IconPlaceholder
-              lucide="ListFilterIcon"
-              tabler="IconFilter2"
-              hugeicons="FilterMailIcon"
-              phosphor="FunnelSimpleIcon"
-              remixicon="RiFilter3Line"
+            <ListFilterIcon
             />
             {actions.labels.advancedFilter}
             {ruleCount > 0 ? (
