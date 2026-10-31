@@ -72,11 +72,7 @@ export default function Provider({
 							nativeButton={false}
 							render={
 								<Link
-									to={
-										storage
-											? `/settings/plugins/storage/${encodeURIComponent(storage.provider.id)}/${encodeURIComponent(storage.id)}`
-											: '/settings/plugins'
-									}
+									to={script ? `/settings/scripts/${encodeURIComponent(script)}` : '/settings/scripts'}
 								/>
 							}
 						>
