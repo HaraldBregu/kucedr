@@ -275,7 +275,10 @@ export default function PluginPage(): React.JSX.Element {
 				title: script.title,
 				description: script.name,
 				badge: script.version,
-				path: `/settings/scripts/${encodeURIComponent(script.name)}`,
+				path:
+					script.type === 'STORAGE'
+						? `/settings/scripts/${encodeURIComponent(script.name)}`
+						: undefined,
 			})),
 		},
 	].filter((section) => section.rows.length > 0);
