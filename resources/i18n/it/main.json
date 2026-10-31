@@ -1419,8 +1419,8 @@
 			"cancel": "Annulla",
 			"provider": {
 				"title": "Archiviazione",
-				"description": "Scegli un provider Amazon S3 o compatibile con S3 salvato.",
-				"placeholder": "Seleziona provider di archiviazione"
+				"description": "Il bucket Amazon S3 o compatibile con S3 usato da Cloud Sync S3.",
+				"placeholder": "Non configurato"
 			}
 		},
 		"embedding": {
