@@ -60,42 +60,6 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			trusted.assert(event);
 			return plugins.pluginSettings(id);
 		});
-		registerQueryWithEvent(PluginsChannels.scripts, (event) => {
-			trusted.assert(event);
-			return PLUGIN_SCRIPT_TYPES.flatMap((type) => plugins.pluginScripts(type)).map(
-				({
-					name,
-					title,
-					description,
-					type,
-					author,
-					metadata,
-					inputSchema,
-					fence,
-					height,
-					plugin,
-				}) => ({
-					name,
-					title,
-					description,
-					type,
-					...(author && { author }),
-					version: metadata.version,
-					category: metadata.category,
-					...(inputSchema && { inputSchema }),
-					...(fence && { fence }),
-					height,
-					plugin,
-				})
-			);
-		});
-		registerQueryWithEvent(
-			PluginsChannels.renderScript,
-			(event, name: string, input: unknown, theme: 'light' | 'dark') => {
-				trusted.assert(event);
-				return plugins.renderPluginScript(name, input, theme === 'dark' ? 'dark' : 'light');
-			}
-		);
 		registerCommandWithEvent(
 			PluginsChannels.saveSettings,
 			(event, id: string, values: Record<string, string>) => {
