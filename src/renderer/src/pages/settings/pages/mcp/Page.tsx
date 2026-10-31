@@ -19,7 +19,9 @@ import {
 import { catalogServer } from './catalog_server';
 import { MicrosoftConnect } from './components/McpConnect';
 import { McpServerForm } from './components/McpServerForm';
-import { SettingsFilter } from '../../components/filter';
+import { createFilterQuery } from '@/components/reui/filters/filters-query';
+import { RuleFilter } from '../../components/rulefilter';
+import { matches } from '../../components/matches';
 
 const McpPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
@@ -31,8 +33,7 @@ const McpPage = (): React.JSX.Element => {
 	const [error, setError] = useState('');
 	const [catalog, setCatalog] = useState<readonly CatalogService[]>([]);
 	const [connecting, setConnecting] = useState<CatalogService | null>(null);
-	const [query, setQuery] = useState('');
-	const [category, setCategory] = useState('all');
+	const [query, setQuery] = useState(createFilterQuery);
 
 	const load = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -80,9 +81,7 @@ const McpPage = (): React.JSX.Element => {
 		server.data.type === 'http' ? 'remote' : 'local';
 	const categories = [...new Set(servers.map(categoryOf))].sort();
 	const visibleServers = servers.filter(
-		(server) =>
-			(category === 'all' || categoryOf(server) === category) &&
-			`${server.data.name ?? ''} ${server.id}`.toLowerCase().includes(query.trim().toLowerCase())
+		(server) => matches(query, `${server.data.name ?? ''} ${server.id}`, categoryOf(server))
 	);
 
 	const addService = async (
@@ -177,12 +176,10 @@ const McpPage = (): React.JSX.Element => {
 					<h2 id="installed-mcp-title" className="mb-2 text-sm font-medium">
 						Installed servers
 					</h2>
-					<SettingsFilter
+					<RuleFilter
 						query={query}
 						onQueryChange={setQuery}
 						categories={categories}
-						category={category}
-						onCategoryChange={setCategory}
 					/>
 					{loading ? (
 						<SettingsPanel>
