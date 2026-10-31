@@ -2,7 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { PLUGIN_SERVICE_TYPES } from '../../shared/plugin_types';
 
-/** Reads `services/<name>/manifest.json`: the services a provider plugin offers, keyed by their `type`. */
+/** Reads `services/<id>/manifest.json`: the services a provider plugin offers, keyed by their `type`. */
 export function readPluginServices(directory: string): { web_search?: unknown[] } {
 	const servicesDirectory = path.join(directory, 'services');
 	if (!existsSync(servicesDirectory)) return {};
