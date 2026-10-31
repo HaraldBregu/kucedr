@@ -15,7 +15,6 @@ import Confirm from './Confirm';
 
 export default function PluginDetailPage(): React.JSX.Element {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { kind, providerId, entryId } = useParams<{
 		kind: string;
 		providerId: string;
