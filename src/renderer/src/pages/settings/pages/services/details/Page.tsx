@@ -42,7 +42,7 @@ const ServiceDetailsPage: React.FC = () => {
 				setService(null);
 			}
 		);
-	}, [id, t]);
+	}, [id, provider, t]);
 
 	if (service === undefined) {
 		return (
