@@ -1690,6 +1690,19 @@
 			"fence": "Blocco di codice",
 			"plugin": "Plugin"
 		},
+		"services": {
+			"title": "Servizi installati",
+			"information": "Informazioni sul servizio",
+			"description": "Sfoglia e configura i servizi forniti dai tuoi plugin.",
+			"empty": "Nessun servizio installato",
+			"emptyDescription": "Installa un plugin che fornisce servizi.",
+			"loadError": "Impossibile caricare i servizi.",
+			"saveError": "Impossibile salvare la chiave API.",
+			"type": "Tipo",
+			"endpoint": "Endpoint",
+			"apiKey": "Chiave API",
+			"plugin": "Plugin"
+		},
 		"apps": {
 			"title": "App installate",
 			"information": "Informazioni sull'app",
