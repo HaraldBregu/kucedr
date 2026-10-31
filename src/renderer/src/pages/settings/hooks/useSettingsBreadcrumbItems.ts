@@ -184,7 +184,9 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	) {
 		items[0] = { ...items[0], path: current.path };
 		items.push({
-			label: formatAppLabel(decodeURIComponent(location.pathname.split('/').at(-1) ?? '')),
+			label: formatAppLabel(
+				location.pathname.split('/').slice(3).map(decodeURIComponent).join(' ')
+			),
 		});
 	}
 
