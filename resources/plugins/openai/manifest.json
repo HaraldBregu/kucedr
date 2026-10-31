@@ -15,8 +15,5 @@
 	"author": "Harald Bregu",
 	"icon": "openai-light.svg",
 	"iconDark": "openai-dark.svg",
-	"authentication": "api-key",
-	"apiKeyUrl": "https://platform.openai.com/api-keys",
-	"icon_dark_url": "/assets/openai-dark.svg",
-	"icon_light_url": "/assets/openai-light.svg"
+	"apiKeyUrl": "https://platform.openai.com/api-keys"
 }
