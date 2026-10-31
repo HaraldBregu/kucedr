@@ -20,7 +20,8 @@ import Meta from '../../plugins/Meta';
 
 const ServiceDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
-	const { serviceId } = useParams<{ serviceId: string }>();
+	const { providerId, serviceId } = useParams<{ providerId: string; serviceId: string }>();
+	const provider = decodeURIComponent(providerId ?? '');
 	const id = decodeURIComponent(serviceId ?? '');
 	const [service, setService] = useState<CatalogWebSearch | null | undefined>(undefined);
 	const [settings, setSettings] = useState<SearchSettings | null>(null);
