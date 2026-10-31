@@ -43,6 +43,8 @@ import {
 	DriveChannels,
 	SkillsChannels,
 	PluginsChannels,
+	ScriptsChannels,
+	ServicesChannels,
 	LibraryChannels,
 	StorageChannels,
 	DatabaseChannels,
