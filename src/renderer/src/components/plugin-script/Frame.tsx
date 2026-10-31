@@ -45,7 +45,7 @@ export function PluginScriptFrame({
 	useEffect(() => {
 		if (!theme) return;
 		let active = true;
-		window.plugins.renderScript(script.name, JSON.parse(key), theme.isDark ? 'dark' : 'light').then(
+		window.scripts.render(script.name, JSON.parse(key), theme.isDark ? 'dark' : 'light').then(
 			(html) => active && setResult({ html: pluginScriptDocument(html, theme) }),
 			(error: unknown) =>
 				active && setResult({ error: error instanceof Error ? error.message : String(error) })
