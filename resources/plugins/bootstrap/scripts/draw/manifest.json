@@ -2,6 +2,7 @@
 	"title": "Draw",
 	"description": "Render static Excalidraw drawings, flowcharts, diagrams and wireframes from shapes, labels, lines and arrows.",
 	"author": "Harald Bregu",
+	"type": "UI",
 	"metadata": {
 		"version": "1.0.0",
 		"category": "design",
