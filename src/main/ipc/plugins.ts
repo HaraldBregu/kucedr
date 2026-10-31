@@ -59,10 +59,10 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			trusted.assert(event);
 			return plugins.pluginSettings(id);
 		});
-		registerQueryWithEvent(PluginsChannels.scripts, (event) => {
+		registerQueryWithEvent(PluginsChannels.scripts, (event, kind) => {
 			trusted.assert(event);
 			return plugins
-				.pluginScripts()
+				.pluginScripts(kind === 'storage' ? 'storage' : 'render')
 				.map(({ name, title, author, metadata, inputSchema, fence, height, plugin }) => ({
 					name,
 					title,
