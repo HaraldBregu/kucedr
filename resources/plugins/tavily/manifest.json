@@ -9,8 +9,5 @@
 	],
 	"author": "Harald Bregu",
 	"icon": "tavily.svg",
-	"authentication": "api-key",
-	"apiKeyUrl": "https://app.tavily.com/home",
-	"icon_dark_url": "/assets/tavily.svg",
-	"icon_light_url": "/assets/tavily.svg"
+	"apiKeyUrl": "https://app.tavily.com/home"
 }
