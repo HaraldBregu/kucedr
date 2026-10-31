@@ -239,16 +239,6 @@ export default function PluginPage(): React.JSX.Element {
 			})),
 		},
 		{
-			key: 'storage',
-			title: t('settings.integrations.plugin.storage'),
-			rows: contents.storages.map((service) => ({
-				key: service.id,
-				title: service.name,
-				description: service.description,
-				path: `/settings/plugins/storage/${encodeURIComponent(service.provider.id)}/${encodeURIComponent(service.id)}`,
-			})),
-		},
-		{
 			key: 'apps',
 			title: t('settings.integrations.plugin.apps'),
 			rows: contents.apps.map((app) => ({
