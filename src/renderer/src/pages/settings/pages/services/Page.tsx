@@ -52,7 +52,9 @@ const ServicesPage: React.FC = () => {
 	}, [t]);
 
 	const open = (service: CatalogWebSearch): void => {
-		void navigate(`/settings/services/${encodeURIComponent(service.id)}`);
+		void navigate(
+			`/settings/services/${encodeURIComponent(service.provider.id)}/${encodeURIComponent(service.id)}`
+		);
 	};
 
 	return (
