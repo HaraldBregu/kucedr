@@ -142,7 +142,7 @@ const ServiceDetailsPage: React.FC = () => {
 									disabled={saving}
 									onClick={() => run(() => window.search.removeEngine(engineId))}
 								>
-									{t('settings.integrations.remove')}
+									{t('settings.integrations.remove', { name: t('settings.services.apiKey') })}
 								</Button>
 							)}
 							<Button type="submit" disabled={saving || !apiKey.trim()}>
