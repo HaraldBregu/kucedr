@@ -4,7 +4,5 @@
 	"description": "Search, extract, crawl, and map the web with Tavily.",
 	"authentication": "oauth2",
 	"url": "https://mcp.tavily.com/mcp/",
-	"scopes": [],
-	"icon_dark_url": "/assets/tavily.svg",
-	"icon_light_url": "/assets/tavily.svg"
+	"scopes": []
 }
