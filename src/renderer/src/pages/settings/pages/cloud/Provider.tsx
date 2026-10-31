@@ -14,8 +14,8 @@ export default function Provider({ provider }: ProviderProps): React.JSX.Element
 	const [script, setScript] = useState<string>();
 
 	useEffect(() => {
-		void window.plugins
-			.scripts()
+		void window.scripts
+			.list()
 			.then((scripts) => setScript(scripts.find((entry) => entry.type === 'STORAGE')?.name))
 			.catch(() => undefined);
 	}, []);
