@@ -7,6 +7,7 @@ export function mcpToolDetails(id: string, tools: Tool[]): McpToolDetail[] {
 		.map((tool) => ({
 			name: tool.name,
 			description: tool.description,
+			inputSchema: tool.inputSchema,
 			permission: getMcpToolPermission(id, tool.name),
 		}))
 		.sort((a, b) => a.name.localeCompare(b.name));

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, FlaskConical, Plug, RefreshCw } from 'lucide-react';
+import { AlertTriangle, FlaskConical, Globe, HardDrive, Hash, Plug, RefreshCw } from 'lucide-react';
 import type { McpData, McpServerInfo, McpTestResult, McpToolDetail } from '@shared/mcp_types';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +26,7 @@ import type { AgentToolPermission } from '@shared/agent_tools';
 import { catalogServer } from '../catalog_server';
 import { McpServerForm } from '../components/McpServerForm';
 import { ToolPermissionControl } from '../../assistant/tools/Permission';
+import Meta from '../../plugins/Meta';
 
 const McpDetailsPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -189,26 +190,26 @@ const McpDetailsPage: React.FC = () => {
 
 	return (
 		<SettingsPageShell>
-			<SettingsPageHeader
-				title={title}
-				description={description}
-				action={
-					<div className="flex items-center">
-						<Switch
-							checked={server.data.enabled !== false}
-							disabled={
-								saving ||
-								testing ||
-								(server.data.type === 'http' && server.data.url.includes('{tenantId}'))
-							}
-							onCheckedChange={(enabled) =>
-								void save(server.id, { ...server.data, enabled }).catch(() => undefined)
-							}
-							aria-label={`${server.data.enabled === false ? 'Enable' : 'Disable'} ${title}`}
-						/>
+			<header className="mb-6 flex items-start gap-4 py-2">
+				<div className="min-w-0 flex-1">
+					<div className="mb-4 flex size-16 items-center justify-center rounded-2xl border border-border bg-muted/50 p-2 text-muted-foreground">
+						<Plug className="size-6" aria-hidden="true" />
 					</div>
-				}
-			/>
+					<h1 className="text-3xl font-normal leading-9 text-foreground">{title}</h1>
+					<p className="mt-1.5 max-w-2xl break-all text-base leading-5 text-muted-foreground">{description}</p>
+					<Meta rows={[
+						{ key: 'id', title: 'ID', icon: Hash, value: server.id },
+						{ key: 'type', title: 'Type', icon: server.data.type === 'http' ? Globe : HardDrive, value: server.data.type === 'http' ? 'Remote' : 'Local' },
+						{ key: 'plugin', title: 'Plugin', icon: Plug, value: server.plugin?.name },
+					].filter((row) => row.value)} />
+				</div>
+				<Switch
+					checked={server.data.enabled !== false}
+					disabled={saving || testing || (server.data.type === 'http' && server.data.url.includes('{tenantId}'))}
+					onCheckedChange={(enabled) => void save(server.id, { ...server.data, enabled }).catch(() => undefined)}
+					aria-label={`${server.data.enabled === false ? 'Enable' : 'Disable'} ${title}`}
+				/>
+			</header>
 
 			{!saved && (
 				<SettingsNotice>
@@ -320,19 +321,27 @@ const McpDetailsPage: React.FC = () => {
 				{tools.length > 0 && (
 					<SettingsPanel>
 						{tools.map((tool) => (
-							<SettingsRow
-								key={tool.name}
-								title={tool.name}
-								description={tool.description}
-								actions={
-									<ToolPermissionControl
-										name={tool.name}
-										value={tool.permission ?? 'ask'}
-										disabled={saving}
-										onChange={(permission) => void setPermission(tool.name, permission)}
-									/>
-								}
-							/>
+							<div key={tool.name} className="border-b border-border/60 last:border-b-0">
+								<SettingsRow
+									className="border-b-0"
+									title={tool.name}
+									description={tool.description}
+									actions={
+										<ToolPermissionControl
+											name={tool.name}
+											value={tool.permission ?? 'ask'}
+											disabled={saving}
+											onChange={(permission) => void setPermission(tool.name, permission)}
+										/>
+									}
+								/>
+								{tool.inputSchema && (
+									<details className="px-4 pb-3 text-xs">
+										<summary className="cursor-pointer text-muted-foreground">Input schema</summary>
+										<pre className="mt-2 max-h-64 overflow-auto rounded-md bg-muted p-3 text-xs">{JSON.stringify(tool.inputSchema, null, 2)}</pre>
+									</details>
+								)}
+							</div>
 						))}
 					</SettingsPanel>
 				)}

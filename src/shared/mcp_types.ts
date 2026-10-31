@@ -75,6 +75,7 @@ export type McpLocalImportResult = {
 export type McpToolDetail = {
 	readonly name: string;
 	readonly description?: string;
+	readonly inputSchema?: Readonly<Record<string, unknown>>;
 	readonly permission?: import('./agent_tools').AgentToolPermission;
 };
 
