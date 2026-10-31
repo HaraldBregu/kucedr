@@ -4,7 +4,7 @@ import {
 	Brain,
 	Bot,
 	Layers,
-	HardDrive,
+	Cloud,
 	Code2,
 	Cpu,
 	FileCode,
@@ -370,7 +370,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/settings/cloud',
 		labelKey: 'settings.tabs.storage',
 		descriptionKey: 'settings.overview.descriptions.storage',
-		icon: HardDrive,
+		icon: Cloud,
 	},
 	{
 		path: '/settings/models',

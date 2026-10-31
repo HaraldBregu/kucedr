@@ -272,12 +272,18 @@ export default function PluginPage(): React.JSX.Element {
 		{
 			key: 'scripts',
 			title: t('settings.integrations.plugin.scripts'),
-			rows: contents.scripts.map((script) => ({
-				key: script.name,
-				title: script.title,
-				description: script.name,
-				badge: script.version,
-			})),
+			rows: contents.scripts.map((script) => {
+				const storage = script.category === 'storage' ? contents.storages[0] : undefined;
+				return {
+					key: script.name,
+					title: script.title,
+					description: script.name,
+					badge: script.version,
+					path:
+						storage &&
+						`/settings/plugins/storage/${encodeURIComponent(storage.provider.id)}/${encodeURIComponent(storage.id)}`,
+				};
+			}),
 		},
 	].filter((section) => section.rows.length > 0);
 
