@@ -21,7 +21,10 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 	const provider = {
 		providerId: id,
 		providerName: title,
-		...(icon && { icon_light_url: `/assets/${icon}`, icon_dark_url: `/assets/${iconDark ?? icon}` }),
+		...(icon && {
+			icon_light_url: `/assets/${icon}`,
+			icon_dark_url: `/assets/${iconDark ?? icon}`,
+		}),
 		...fields,
 	};
 	const errors = validateProviderManifest(provider);
