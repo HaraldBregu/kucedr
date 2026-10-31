@@ -556,13 +556,6 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
-			AppChannels.webSearches,
-			wrapSimpleHandler(() => {
-				return [...loadWebSearches()];
-			}, AppChannels.webSearches)
-		);
-
-		ipcMain.handle(
 			AppChannels.mcps,
 			wrapSimpleHandler(() => {
 				return [...loadMcps()];
