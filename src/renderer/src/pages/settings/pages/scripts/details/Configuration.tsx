@@ -54,7 +54,7 @@ export default function Configuration({ name }: ConfigurationProps): React.JSX.E
 
 	return (
 		<SettingsSection
-			title={t('settings.integrations.plugin.configuration', { name: storage.name })}
+			title={t('settings.integrations.plugin.configuration', { name })}
 			description={t('settings.storageProviders.description')}
 			action={
 				<Button
