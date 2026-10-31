@@ -242,12 +242,7 @@ const CloudPage: React.FC = () => {
 				</div>
 			) : storage ? (
 				<>
-					<Provider
-						providers={providers}
-						providerId={storage.providerId}
-						disabled={busy}
-						onChange={selectProvider}
-					/>
+					<Provider provider={selectedProvider} />
 					<SettingsSection
 						title={t('settings.storage.sync.title')}
 						description={t('settings.storage.sync.description')}
