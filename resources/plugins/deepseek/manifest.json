@@ -9,8 +9,5 @@
 	],
 	"author": "Harald Bregu",
 	"icon": "deepseek.svg",
-	"authentication": "api-key",
-	"apiKeyUrl": "https://platform.deepseek.com/api_keys",
-	"icon_dark_url": "/assets/deepseek.svg",
-	"icon_light_url": "/assets/deepseek.svg"
+	"apiKeyUrl": "https://platform.deepseek.com/api_keys"
 }
