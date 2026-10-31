@@ -12,11 +12,14 @@ export function readPluginServices(directory: string): { web_search?: unknown[] 
 		if (!entry.isDirectory()) throw new Error(`services/${entry.name} must be a folder.`);
 		const file = path.join(servicesDirectory, entry.name, 'manifest.json');
 		if (!existsSync(file)) throw new Error(`services/${entry.name}/manifest.json is missing.`);
-		let value: { type?: unknown };
+		let value: { id?: unknown; type?: unknown };
 		try {
 			value = JSON.parse(readFileSync(file, 'utf8'));
 		} catch (error) {
 			throw new Error(`services/${entry.name}/manifest.json is not valid JSON.`, { cause: error });
+		}
+		if (value?.id !== entry.name) {
+			throw new Error(`services/${entry.name}/manifest.json must have id "${entry.name}".`);
 		}
 		if (!PLUGIN_SERVICE_TYPES.includes(value?.type as (typeof PLUGIN_SERVICE_TYPES)[number])) {
 			throw new Error(
