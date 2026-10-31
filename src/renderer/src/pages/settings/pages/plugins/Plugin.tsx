@@ -131,18 +131,6 @@ export default function PluginPage(): React.JSX.Element {
 		}
 	};
 
-	const back = (
-		<Button
-			variant="ghost"
-			size="sm"
-			className="w-fit"
-			onClick={() => navigate('/settings/plugins')}
-		>
-			<ArrowLeft className="size-4" />
-			{t('settings.integrations.title')}
-		</Button>
-	);
-
 	if (plugin === undefined || !contents) {
 		return (
 			<SettingsPageShell>
