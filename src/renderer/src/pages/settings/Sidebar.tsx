@@ -58,16 +58,13 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		titleKey: 'settings.overview.groups.extensions',
 		items: [
 			...SETTINGS_NAVIGATION.filter((item) =>
-				[
-					'/settings/channels',
-					'/settings/remote-agent',
-					'/settings/apps',
-					'/settings/services',
-					'/settings/scripts',
-				].includes(item.path)
+				['/settings/apps', '/settings/services', '/settings/scripts'].includes(item.path)
 			),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
+			...SETTINGS_NAVIGATION.filter((item) =>
+				['/settings/channels', '/settings/remote-agent'].includes(item.path)
+			),
 		],
 	},
 ] as const;
