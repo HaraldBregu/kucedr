@@ -24,7 +24,5 @@ export function pluginScripts(type: PluginScriptType = 'UI'): PluginScript[] {
 			}
 		}
 	}
-	return [...scripts.values()].filter(
-		(script) => (script.metadata.category === 'storage') === (kind === 'storage')
-	);
+	return [...scripts.values()].filter((script) => script.type === type);
 }
