@@ -83,15 +83,6 @@ export default function PluginDetailPage(): React.JSX.Element {
 
 	return (
 		<SettingsPageShell>
-			<Button
-				variant="ghost"
-				size="sm"
-				className="w-fit"
-				onClick={() => navigate('/settings/plugins')}
-			>
-				<ArrowLeft className="size-4" />
-				{t('settings.integrations.title')}
-			</Button>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{entry ? (
 				<>
