@@ -32,9 +32,7 @@ const ServiceDetailsPage: React.FC = () => {
 	useEffect(() => {
 		Promise.all([window.services.list(), window.search.getSettings()]).then(
 			([list, searchSettings]) => {
-				setService(
-					list.find((item) => item.provider.id === provider && item.id === id) ?? null
-				);
+				setService(list.find((item) => item.provider.id === provider && item.id === id) ?? null);
 				setSettings(searchSettings);
 			},
 			() => {
