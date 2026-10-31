@@ -66,8 +66,8 @@ export default function Provider({
 							render={
 								<Link
 									to={
-										storagePlugin
-											? `/settings/plugins/${encodeURIComponent(storagePlugin)}`
+										storage
+											? `/settings/plugins/storage/${encodeURIComponent(storage.provider.id)}/${encodeURIComponent(storage.id)}`
 											: '/settings/plugins'
 									}
 								/>
