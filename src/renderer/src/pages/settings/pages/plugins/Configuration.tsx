@@ -150,7 +150,9 @@ export default function Configuration({ storage }: ConfigurationProps): React.JS
 														);
 													})
 													.catch((err: unknown) => {
-														setError(getErrorMessage(err, t('settings.storageProviders.removeError')));
+														setError(
+															getErrorMessage(err, t('settings.storageProviders.removeError'))
+														);
 													})
 													.finally(() => setRemoving(null));
 											}}
