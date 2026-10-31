@@ -15,7 +15,6 @@ import Configuration from './Configuration';
 
 const ScriptDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { scriptName } = useParams<{ scriptName: string }>();
 	const name = decodeURIComponent(scriptName ?? '');
 	const [script, setScript] = useState<PluginScriptInfo | null | undefined>(undefined);
