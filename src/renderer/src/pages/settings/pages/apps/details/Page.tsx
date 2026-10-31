@@ -134,7 +134,9 @@ const AppDetailsPage: React.FC = () => {
 			)}
 			<header className="mb-6 flex items-start gap-4 py-2">
 				<div className="min-w-0 flex-1">
-					<AppIcon app={app} className="mb-4 size-14" />
+					<div className="mb-4 flex size-16 items-center justify-center rounded-2xl border border-border bg-muted/50 p-2">
+						<AppIcon app={app} className="size-full" />
+					</div>
 					<h1 className="flex flex-wrap items-center gap-2 text-3xl font-normal leading-9 text-foreground">
 						{app.title}
 						{import.meta.env.DEV && app.debugPath && (
