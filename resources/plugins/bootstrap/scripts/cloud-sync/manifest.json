@@ -2,9 +2,10 @@
 	"title": "Cloud Sync S3",
 	"description": "Back up selected folders to an Amazon S3 or S3-compatible bucket and restore them.",
 	"author": "Harald Bregu",
+	"type": "STORAGE",
 	"metadata": {
 		"version": "1.0.0",
-		"category": "storage",
+		"category": "sync",
 		"entry": "dist/index.mjs",
 		"instructions": "instructions.md"
 	},
