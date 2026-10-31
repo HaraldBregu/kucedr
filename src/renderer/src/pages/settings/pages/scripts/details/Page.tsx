@@ -58,9 +58,24 @@ const ScriptDetailsPage: React.FC = () => {
 	}
 
 	const details = [
-		{ key: 'version', title: t('settings.integrations.plugin.version'), icon: Tag, value: script.version },
-		{ key: 'category', title: t('settings.scripts.category'), icon: Folder, value: script.category },
-		{ key: 'author', title: t('settings.integrations.plugin.author'), icon: User, value: script.author },
+		{
+			key: 'version',
+			title: t('settings.integrations.plugin.version'),
+			icon: Tag,
+			value: script.version,
+		},
+		{
+			key: 'category',
+			title: t('settings.scripts.category'),
+			icon: Folder,
+			value: script.category,
+		},
+		{
+			key: 'author',
+			title: t('settings.integrations.plugin.author'),
+			icon: User,
+			value: script.author,
+		},
 		{ key: 'fence', title: t('settings.scripts.fence'), icon: Code, value: script.fence },
 		{ key: 'plugin', title: t('settings.scripts.plugin'), icon: Plug, value: script.plugin.name },
 	].filter((row) => row.value);
@@ -68,9 +83,6 @@ const ScriptDetailsPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<header className="mb-6 flex items-start gap-4 py-2">
-				<div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground">
-					<FileCode className="size-1/2" aria-hidden="true" />
-				</div>
 				<div className="min-w-0 flex-1">
 					<h1 className="text-3xl font-normal leading-9 text-foreground">{script.title}</h1>
 					<p className="mt-1.5 max-w-2xl text-base leading-5 text-muted-foreground">
