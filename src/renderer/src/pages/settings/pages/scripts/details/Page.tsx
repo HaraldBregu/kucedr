@@ -21,7 +21,7 @@ const ScriptDetailsPage: React.FC = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 
 	useEffect(() => {
-		window.plugins.scripts().then(
+		window.scripts.list().then(
 			(list) => setScript(list.find((item) => item.name === name) ?? null),
 			() => {
 				setErrorMessage(t('settings.scripts.loadError'));
