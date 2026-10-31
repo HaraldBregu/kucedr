@@ -10,8 +10,5 @@
 	"author": "Harald Bregu",
 	"icon": "anthropic-light.svg",
 	"iconDark": "anthropic-dark.svg",
-	"authentication": "api-key",
-	"apiKeyUrl": "https://console.anthropic.com/settings/keys",
-	"icon_dark_url": "/assets/anthropic-dark.svg",
-	"icon_light_url": "/assets/anthropic-light.svg"
+	"apiKeyUrl": "https://console.anthropic.com/settings/keys"
 }
