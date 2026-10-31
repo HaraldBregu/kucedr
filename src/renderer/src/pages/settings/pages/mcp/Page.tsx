@@ -1,13 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-	AlertTriangle,
-	ChevronRight,
-	Globe,
-	HardDrive,
-	Plug,
-	Plus,
-	PlugZap,
-} from 'lucide-react';
+import { AlertTriangle, ChevronRight, Globe, HardDrive, Plug, Plus, PlugZap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { McpData, McpRegistry, McpServerInfo } from '@shared/mcp_types';
