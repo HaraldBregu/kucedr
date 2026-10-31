@@ -39,6 +39,8 @@ export { provider } from './provider';
 export { search } from './search';
 export { skills } from './skills';
 export { plugins } from './plugins';
+export { scripts } from './scripts';
+export { services } from './services';
 export { library } from './library';
 export { storage } from './storage';
 export { database } from './database';
