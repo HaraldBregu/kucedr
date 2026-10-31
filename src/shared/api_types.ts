@@ -597,7 +597,6 @@ export interface AppApi extends AppStorageApi {
 	models: () => Promise<CatalogModel[]>;
 	vectorDatabases: () => Promise<CatalogService[]>;
 	storages: () => Promise<CatalogStorage[]>;
-	webSearches: () => Promise<CatalogWebSearch[]>;
 	mcps: () => Promise<CatalogService[]>;
 	channels: () => Promise<CatalogService[]>;
 	getChannelsModelSelection: (kind: ChannelModelKind) => Promise<ChannelModelSelection>;
