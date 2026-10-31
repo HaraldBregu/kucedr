@@ -453,6 +453,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Layers,
 	},
 	{
+		path: '/settings/services',
+		labelKey: 'settings.tabs.services',
+		descriptionKey: 'settings.overview.descriptions.services',
+		icon: ServerCog,
+	},
+	{
 		path: '/settings/scripts',
 		labelKey: 'settings.tabs.scripts',
 		descriptionKey: 'settings.overview.descriptions.scripts',
