@@ -2,6 +2,7 @@
 	"title": "OrganUI",
 	"description": "Render OrganUI clinical components: body map, dermatome map, patient banner, allergy and problem lists, vital signs, NEWS2 chart, lab results, medication schedule, ECG trace, growth chart, anatomy tree and medical image viewer, with an optional title. Not a medical device.",
 	"author": "Harald Bregu",
+	"type": "UI",
 	"metadata": {
 		"version": "1.0.0",
 		"category": "data",
