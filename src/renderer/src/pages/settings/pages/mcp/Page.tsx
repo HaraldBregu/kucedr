@@ -129,6 +129,14 @@ const McpPage = (): React.JSX.Element => {
 				description="Manage remote services and local MCP server packages."
 			/>
 
+			<SettingsFilter
+				query={query}
+				onQueryChange={setQuery}
+				categories={categories}
+				category={category}
+				onCategoryChange={setCategory}
+			/>
+
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{error}
@@ -144,19 +152,12 @@ const McpPage = (): React.JSX.Element => {
 				<SettingsEmptyState
 					icon={PlugZap}
 					title="No MCP servers"
-					description="Add a server or upload a local package to make its tools available to Kucedr."
+					description="No MCP servers are available."
 				/>
 			)}
 
 			{(loading || servers.length > 0) && (
 				<section className="pb-4">
-					<SettingsFilter
-						query={query}
-						onQueryChange={setQuery}
-						categories={categories}
-						category={category}
-						onCategoryChange={setCategory}
-					/>
 					{loading ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />

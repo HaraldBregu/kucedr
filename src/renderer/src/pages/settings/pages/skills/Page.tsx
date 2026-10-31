@@ -64,7 +64,6 @@ const SkillsPage: React.FC = () => {
 		void loadSkills();
 	}, [loadSkills]);
 
-
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -72,12 +71,19 @@ const SkillsPage: React.FC = () => {
 				description={t('settings.skills.description')}
 			/>
 
+			<SettingsFilter
+				query={query}
+				onQueryChange={setQuery}
+				categories={categories}
+				category={category}
+				onCategoryChange={setCategory}
+			/>
+
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{errorMessage}
 				</SettingsNotice>
 			)}
-
 
 			{!loading && skills.length === 0 && (
 				<SettingsEmptyState
@@ -89,13 +95,6 @@ const SkillsPage: React.FC = () => {
 
 			{(loading || skills.length > 0) && (
 				<section className="pb-4">
-						<SettingsFilter
-							query={query}
-							onQueryChange={setQuery}
-							categories={categories}
-							category={category}
-							onCategoryChange={setCategory}
-						/>
 					{loading ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />

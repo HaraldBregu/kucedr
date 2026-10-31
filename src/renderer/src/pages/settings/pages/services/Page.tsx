@@ -64,6 +64,14 @@ const ServicesPage: React.FC = () => {
 				description={t('settings.services.description')}
 			/>
 
+			<SettingsFilter
+				query={query}
+				onQueryChange={setQuery}
+				categories={types}
+				category={type}
+				onCategoryChange={setType}
+			/>
+
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{errorMessage}
@@ -80,13 +88,6 @@ const ServicesPage: React.FC = () => {
 
 			{(loading || services.length > 0) && (
 				<section className="pb-4">
-					<SettingsFilter
-						query={query}
-						onQueryChange={setQuery}
-						categories={types}
-						category={type}
-						onCategoryChange={setType}
-					/>
 					{loading ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />

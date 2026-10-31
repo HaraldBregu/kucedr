@@ -88,6 +88,14 @@ const AppsPage: React.FC = () => {
 				description={t('settings.apps.description')}
 			/>
 
+			<SettingsFilter
+				query={query}
+				onQueryChange={setQuery}
+				categories={categories}
+				category={category}
+				onCategoryChange={setCategory}
+			/>
+
 			{errorMessage && (
 				<SettingsNotice
 					variant="destructive"
@@ -104,13 +112,6 @@ const AppsPage: React.FC = () => {
 
 			{(loading || apps.length > 0) && (
 				<section className="pb-4">
-					<SettingsFilter
-						query={query}
-						onQueryChange={setQuery}
-						categories={categories}
-						category={category}
-						onCategoryChange={setCategory}
-					/>
 					{loading ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />

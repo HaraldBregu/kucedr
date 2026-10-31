@@ -59,6 +59,14 @@ const ScriptsPage: React.FC = () => {
 				description={t('settings.scripts.description')}
 			/>
 
+			<SettingsFilter
+				query={query}
+				onQueryChange={setQuery}
+				categories={categories}
+				category={category}
+				onCategoryChange={setCategory}
+			/>
+
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{errorMessage}
@@ -75,13 +83,6 @@ const ScriptsPage: React.FC = () => {
 
 			{(loading || scripts.length > 0) && (
 				<section className="pb-4">
-					<SettingsFilter
-						query={query}
-						onQueryChange={setQuery}
-						categories={categories}
-						category={category}
-						onCategoryChange={setCategory}
-					/>
 					{loading ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />
