@@ -73,7 +73,8 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 					...(fence && { fence }),
 					height,
 					plugin,
-				}));
+				})
+			);
 		});
 		registerQueryWithEvent(
 			PluginsChannels.renderScript,
