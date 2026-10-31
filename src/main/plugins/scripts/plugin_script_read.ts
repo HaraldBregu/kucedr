@@ -20,6 +20,7 @@ const manifestSchema = z
 		title: text,
 		description: text.max(1024),
 		author: text.optional(),
+		type: z.enum(PLUGIN_SCRIPT_TYPES).default('UI'),
 		metadata: z
 			.object({
 				version: text,
