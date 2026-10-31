@@ -22,7 +22,15 @@ export function listLocalMcpServers(
 		const rootSourceIds = new Set<string>();
 		const entries: McpServerEntry[] = [
 			...readdirSync(normalizedRoot, { withFileTypes: true })
-				.filter((entry) => entry.isDirectory())
+				.filter(
+					(entry) =>
+						entry.isDirectory() &&
+						// remote servers (`manifest.json`) are read into the provider catalog
+						!(
+							existsSync(path.join(normalizedRoot, entry.name, 'manifest.json')) &&
+							!existsSync(path.join(normalizedRoot, entry.name, 'mcp.json'))
+						)
+				)
 				.sort((a, b) => a.name.localeCompare(b.name))
 				.map((entry) => {
 					const directory = path.join(normalizedRoot, entry.name);
