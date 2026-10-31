@@ -1,6 +1,6 @@
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
-import type { PluginSource } from '../../../shared/plugin_types';
+import type { PluginScriptType, PluginSource } from '../../../shared/plugin_types';
 import { pluginDirs } from '../plugins_dirs';
 import { readPluginScript, type PluginScriptManifest } from './plugin_script_read';
 
