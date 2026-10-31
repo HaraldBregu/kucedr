@@ -14,7 +14,6 @@ import {
 	SettingsSection,
 	SettingsValue,
 } from '../../../components';
-import { SettingsItemMedia } from '../../../components/item-media';
 import Configuration from './Configuration';
 
 const ScriptDetailsPage: React.FC = () => {
@@ -83,9 +82,6 @@ const ScriptDetailsPage: React.FC = () => {
 		<SettingsPageShell>
 			{back}
 			<header className="mb-6 flex items-start gap-4 py-2">
-				<SettingsItemMedia>
-					<FileCode className="size-5" aria-hidden="true" />
-				</SettingsItemMedia>
 				<div className="min-w-0 flex-1">
 					<h1 className="text-3xl font-normal leading-9 text-foreground">{script.title}</h1>
 				</div>

@@ -13,7 +13,6 @@ import {
 	SettingsPanel,
 } from '../../components';
 import { SettingsFilter } from '../../components/filter';
-import { SettingsItemMedia } from '../../components/item-media';
 
 const ScriptsPage: React.FC = () => {
 	const { t } = useTranslation();
@@ -102,9 +101,6 @@ const ScriptsPage: React.FC = () => {
 									}}
 								>
 									<CardHeader className="flex flex-1 items-center gap-3">
-										<SettingsItemMedia>
-											<FileCode className="size-5" aria-hidden="true" />
-										</SettingsItemMedia>
 										<div className="flex min-w-0 flex-1 flex-col gap-1">
 											<CardTitle className="truncate">{script.title}</CardTitle>
 											<CardDescription className="line-clamp-1">{script.name}</CardDescription>
