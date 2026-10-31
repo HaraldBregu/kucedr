@@ -9,6 +9,8 @@ import { DriveIpc } from '../drive';
 import { ModelsIpc } from '../models';
 import { SkillsIpc } from '../skills';
 import { PluginsIpc } from '../plugins';
+import { ScriptsIpc } from '../scripts';
+import { ServicesIpc } from '../services';
 import { LibraryIpc } from '../library';
 import { ProviderStoreIpc } from '../provider';
 import { SearchIpc } from '../search';
