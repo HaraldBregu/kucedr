@@ -1,6 +1,7 @@
 {
 	"id": "tavily-web-search",
 	"name": "Tavily Web Search",
+	"type": "SEARCH_ENGINE",
 	"url": "https://api.tavily.com/search",
 	"authentication": "api-key",
 	"settings": [
