@@ -101,6 +101,25 @@ const McpPage = (): React.JSX.Element => {
 		}
 	};
 
+	const setEnabled = async (server: McpServerInfo, enabled: boolean): Promise<void> => {
+		const service = available.find((item) => item.id === server.id);
+		if (service) {
+			if (service.url?.includes('{tenantId}')) {
+				setError('');
+				setConnecting(service);
+			} else await addService(service);
+			return;
+		}
+		setSavingId(server.id);
+		try {
+			await save(server.id, { ...server.data, enabled });
+		} catch {
+			// The card keeps its previous state when saving fails.
+		} finally {
+			setSavingId(null);
+		}
+	};
+
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
