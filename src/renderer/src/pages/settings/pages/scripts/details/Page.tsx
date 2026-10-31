@@ -92,7 +92,7 @@ const ScriptDetailsPage: React.FC = () => {
 				</div>
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
-				{script.type === 'STORAGE' && <Configuration name={script.title} />}
+				{script.type === 'STORAGE' && <Configuration />}
 			</div>
 		</SettingsPageShell>
 	);
