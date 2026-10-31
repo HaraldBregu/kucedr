@@ -175,7 +175,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	if (location.pathname.startsWith('/settings/skills/skilldetails/')) {
 		const skillId = decodeURIComponent(location.pathname.split('/').at(-1) ?? '');
 		items[0] = { ...items[0], path: current.path };
-		items.push({ label: skillId });
+		items.push({ label: formatAppLabel(skillId) });
 	}
 
 	if (location.pathname.startsWith('/settings/scripts/')) {
