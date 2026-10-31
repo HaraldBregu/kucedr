@@ -23,15 +23,9 @@ export default defineConfig({
 			{
 				name: 'bootstrap-scripts',
 				buildStart() {
-					for (const script of [
-						'bootstrap/scripts/chart',
-						'bootstrap/scripts/dither',
-						'bootstrap/scripts/draw',
-						'bootstrap/scripts/organui',
-						'supabase/scripts/sync',
-					]) {
+					for (const script of ['chart', 'cloud-sync', 'dither', 'draw', 'organui']) {
 						execFileSync('npm', ['run', 'build'], {
-							cwd: resolve(__dirname, 'resources/plugins', script),
+							cwd: resolve(__dirname, 'resources/plugins/bootstrap/scripts', script),
 							stdio: 'inherit',
 						});
 					}
