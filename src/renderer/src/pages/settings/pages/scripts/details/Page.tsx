@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AlertTriangle, Code, FileCode, Folder, Plug, Tag, User } from 'lucide-react';
 import type { PluginScriptInfo } from '../../../../../../../shared/plugin_types';
 import {
