@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { z } from 'zod';
+import { PLUGIN_SCRIPT_TYPES } from '../../../shared/plugin_types';
 
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const text = z.string().trim().min(1);
