@@ -131,43 +131,91 @@ const McpPage = (): React.JSX.Element => {
 				</SettingsSection>
 			)}
 
-			{loading ? (
-				<SettingsLoadingRows rows={2} />
-			) : servers.length === 0 ? (
+			{!loading && servers.length === 0 && (
 				<SettingsEmptyState
 					icon={PlugZap}
 					title="No MCP servers"
 					description="Add a server or upload a local package to make its tools available to Kucedr."
 				/>
-			) : (
-				<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
-					{servers.map((server) => (
-						<McpServerRow
-							key={server.id}
-							server={server}
-							onOpen={() => navigate(`/settings/mcp/${encodeURIComponent(server.id)}`)}
-							onEnabledChange={async (enabled) => {
-								const service = available.find((item) => item.id === server.id);
-								if (service) {
-									if (service.url?.includes('{tenantId}')) {
-										setError('');
-										setConnecting(service);
-									} else await addService(service);
-									return;
-								}
-								setSavingId(server.id);
-								try {
-									await save(server.id, { ...server.data, enabled });
-								} catch {
-									// The row keeps its previous state when saving fails.
-								} finally {
-									setSavingId(null);
-								}
-							}}
-							saving={savingId === server.id}
-						/>
-					))}
-				</div>
+			)}
+
+			{(loading || servers.length > 0) && (
+				<section className="pb-4" aria-labelledby="installed-mcp-title">
+					<h2 id="installed-mcp-title" className="mb-2 text-sm font-medium">
+						Installed servers
+					</h2>
+					<SettingsFilter
+						query={query}
+						onQueryChange={setQuery}
+						categories={categories}
+						category={category}
+						onCategoryChange={setCategory}
+					/>
+					{loading ? (
+						<SettingsPanel>
+							<SettingsLoadingRows rows={2} />
+						</SettingsPanel>
+					) : (
+						<div className="grid grid-cols-1 gap-3">
+							{visibleServers.map((server) => {
+								const title = server.data.name ?? server.id;
+								const enabled = server.data.enabled !== false;
+								const open = (): void =>
+									void navigate(`/settings/mcp/${encodeURIComponent(server.id)}`);
+								return (
+									<Card
+										key={server.id}
+										size="sm"
+										role="link"
+										tabIndex={0}
+										className="cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
+										onClick={open}
+										onKeyDown={(event) => {
+											if (
+												event.target === event.currentTarget &&
+												(event.key === 'Enter' || event.key === ' ')
+											) {
+												event.preventDefault();
+												open();
+											}
+										}}
+									>
+										<CardHeader className="flex flex-1 items-center gap-3">
+											<div className="flex min-w-0 flex-1 flex-col gap-1">
+												<CardTitle className="truncate">{title}</CardTitle>
+												<div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+													<span className="flex items-center gap-1">
+														{server.data.type === 'http' ? (
+															<Globe className="size-3" aria-hidden="true" />
+														) : (
+															<HardDrive className="size-3" aria-hidden="true" />
+														)}
+														{t(`settings.filter.categories.${categoryOf(server)}`)}
+													</span>
+													{server.plugin && (
+														<span className="flex items-center gap-1">
+															<Plug className="size-3" aria-hidden="true" />
+															{server.plugin.name}
+														</span>
+													)}
+												</div>
+											</div>
+											<Switch
+												checked={enabled}
+												disabled={savingId === server.id}
+												onClick={(event) => event.stopPropagation()}
+												onKeyDown={(event) => event.stopPropagation()}
+												onCheckedChange={(checked) => void setEnabled(server, checked)}
+												aria-label={`${enabled ? 'Disable' : 'Enable'} ${title}`}
+											/>
+											<ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+										</CardHeader>
+									</Card>
+								);
+							})}
+						</div>
+					)}
+				</section>
 			)}
 
 			<MicrosoftConnect
