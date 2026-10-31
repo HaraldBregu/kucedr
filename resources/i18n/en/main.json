@@ -1690,6 +1690,19 @@
 			"fence": "Code fence",
 			"plugin": "Plugin"
 		},
+		"services": {
+			"title": "Installed services",
+			"information": "Service information",
+			"description": "Browse and configure the services provided by your plugins.",
+			"empty": "No services installed",
+			"emptyDescription": "Install a plugin that provides services.",
+			"loadError": "Unable to load services.",
+			"saveError": "Unable to save the API key.",
+			"type": "Type",
+			"endpoint": "Endpoint",
+			"apiKey": "API key",
+			"plugin": "Plugin"
+		},
 		"apps": {
 			"title": "Installed apps",
 			"information": "App information",
