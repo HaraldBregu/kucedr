@@ -65,7 +65,6 @@ import {
 	loadModels,
 	loadStorages,
 	loadVectorDatabases,
-	loadWebSearches,
 	providersDir,
 	refreshProviderCatalog,
 	watchModels,
