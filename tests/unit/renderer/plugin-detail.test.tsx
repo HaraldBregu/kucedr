@@ -68,8 +68,6 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'mcp', { configurable: true, value: mcpApi });
 	Object.defineProperty(window, 'provider', { configurable: true, value: providerApi });
-	Object.defineProperty(window, 'storage', { configurable: true, value: storageApi });
-	storageApi.listProviders.mockResolvedValue([]);
 	mcpApi.list.mockResolvedValue({
 		gmail: { type: 'http', name: 'Gmail', url: 'https://gmail.example/mcp', enabled: true },
 	});
