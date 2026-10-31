@@ -22,7 +22,7 @@ export async function loadModels(): Promise<void> {
 	[catalog, databaseCatalog, webSearchCatalog, mcpCatalog, storageCatalog] = await Promise.all([
 		window.app.models(),
 		window.app.vectorDatabases(),
-		window.app.webSearches(),
+		window.services.list(),
 		window.app.mcps(),
 		window.app.storages(),
 	]);
