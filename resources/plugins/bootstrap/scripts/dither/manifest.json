@@ -2,6 +2,7 @@
 	"title": "Dither",
 	"description": "Render any dithercn component as a dithered visual: backgrounds (aurora, plasma, globe, starfield and more), charts, interface pieces, display text, dithered images, or a custom GLSL field, in theme colours, with an optional title.",
 	"author": "Harald Bregu",
+	"type": "UI",
 	"metadata": {
 		"version": "2.0.0",
 		"category": "design",
