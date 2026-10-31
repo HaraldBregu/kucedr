@@ -1,10 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, ChevronRight, FolderOpen, RefreshCw, Sparkles, Upload } from 'lucide-react';
+import {
+	AlertTriangle,
+	ChevronRight,
+	FolderOpen,
+	Plug,
+	RefreshCw,
+	Sparkles,
+	Upload,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import type { SkillInfo } from '../../../../../../shared/skills_types';
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -12,8 +20,8 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
-	SettingsSection,
 } from '../../components';
+import { SettingsFilter } from '../../components/filter';
 
 function getErrorMessage(error: unknown, fallback: string): string {
 	if (error instanceof Error && error.message.trim().length > 0) {
