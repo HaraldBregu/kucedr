@@ -1440,6 +1440,8 @@ export interface InvokeChannelMap
 		TaskInvokeChannelMap,
 		SkillsInvokeChannelMap,
 		PluginsInvokeChannelMap,
+		ScriptsInvokeChannelMap,
+		ServicesInvokeChannelMap,
 		LibraryInvokeChannelMap,
 		A2aInvokeChannelMap,
 		McpInvokeChannelMap,
