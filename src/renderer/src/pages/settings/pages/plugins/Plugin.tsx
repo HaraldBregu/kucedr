@@ -394,7 +394,10 @@ export default function PluginPage(): React.JSX.Element {
 										description={row.description}
 										onClick={row.path ? () => navigate(row.path!) : undefined}
 									>
-										{row.badge && <SettingsValue>{row.badge}</SettingsValue>}
+										<div className="flex items-center gap-2">
+											{row.badge && <SettingsValue>{row.badge}</SettingsValue>}
+											{row.path && <ChevronRight className="size-4 text-muted-foreground" />}
+										</div>
 									</SettingsRow>
 								))}
 							</SettingsPanel>
