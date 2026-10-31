@@ -36,8 +36,6 @@ import {
 import Confirm from './Confirm';
 import Meta from './Meta';
 import PluginIcon from './PluginIcon';
-import { properties } from './properties';
-import Storage from './Storage';
 
 interface Contents {
 	readonly models: readonly CatalogModel[];
