@@ -132,7 +132,6 @@ const AppDetailsPage: React.FC = () => {
 
 	return (
 		<SettingsPageShell>
-			{back}
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{errorMessage}
