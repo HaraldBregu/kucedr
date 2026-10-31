@@ -138,6 +138,10 @@ export function registerIpcHandlers(
 	safeRegister('plugins', () =>
 		new PluginsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
+	safeRegister('scripts', () =>
+		new ScriptsIpc().register({ windows: windowContextManager, apps: appRegistry })
+	);
+	safeRegister('services', () => new ServicesIpc().register());
 	safeRegister('library', () =>
 		new LibraryIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
