@@ -41,6 +41,8 @@ declare global {
 		tasks: TaskApi;
 		skills: SkillsApi;
 		plugins: PluginsApi;
+		scripts: ScriptsApi;
+		services: ServicesApi;
 		library: LibraryApi;
 		mcp: McpApi;
 		drive: DriveApi;
