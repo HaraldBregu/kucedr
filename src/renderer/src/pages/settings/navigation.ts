@@ -9,7 +9,6 @@ import {
 	Cpu,
 	FileCode,
 	Folder,
-	Globe,
 	HeartPulse,
 	Settings,
 	Library,
@@ -152,7 +151,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords:
 			'windows files network webcam microphone audio bluetooth usb printer scanner clipboard notifications gps location system information drivers daemons hardware',
 	},
-	// Search engines
+	// Services
 	{
 		path: '/settings/cloud',
 		labelKey: 'settings.searchEngine.braveName',
@@ -283,12 +282,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.overview.descriptions.providers',
 		keywords: 'models llm provider api keys',
 	},
-	// Search engines
+	// Services
 	{
-		path: '/settings/websearch',
-		labelKey: 'settings.tabs.searchEngines',
-		descriptionKey: 'settings.overview.descriptions.searchEngine',
-		keywords: 'web search provider api key',
+		path: '/settings/services',
+		labelKey: 'settings.tabs.services',
+		descriptionKey: 'settings.overview.descriptions.services',
+		keywords: 'services web search provider api key',
 	},
 	// Provider pages
 	{
@@ -379,9 +378,9 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Cpu,
 	},
 	{
-		path: '/settings/websearch',
-		labelKey: 'settings.tabs.searchEngines',
-		descriptionKey: 'settings.overview.descriptions.searchEngine',
+		path: '/settings/services',
+		labelKey: 'settings.tabs.services',
+		descriptionKey: 'settings.overview.descriptions.services',
 		icon: Globe,
 	},
 	{
