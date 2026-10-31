@@ -9,8 +9,5 @@
 	],
 	"author": "Harald Bregu",
 	"icon": "brave.svg",
-	"authentication": "api-key",
-	"apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys",
-	"icon_dark_url": "/assets/brave.svg",
-	"icon_light_url": "/assets/brave.svg"
+	"apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys"
 }
