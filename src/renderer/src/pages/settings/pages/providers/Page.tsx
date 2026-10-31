@@ -55,8 +55,8 @@ const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descript
 			descriptionKey: 'settings.overview.descriptions.providers',
 		},
 		search: {
-			titleKey: 'settings.tabs.searchEngines',
-			descriptionKey: 'settings.overview.descriptions.searchEngine',
+			titleKey: 'settings.tabs.services',
+			descriptionKey: 'settings.overview.descriptions.services',
 		},
 		databases: {
 			titleKey: 'settings.tabs.databases',

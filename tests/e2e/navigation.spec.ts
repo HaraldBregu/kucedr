@@ -50,7 +50,7 @@ const routes = [
 	'/settings/plugins',
 	'/settings/skills',
 	'/settings/models',
-	'/settings/websearch',
+	'/settings/services',
 	'/settings/knowledge/providers',
 	'/settings/mcp',
 	'/settings/mcp/missing',

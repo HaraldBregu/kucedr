@@ -137,7 +137,7 @@ it.each([
 	['/settings/skills', 'settings.tabs.skills'],
 	['/settings/mcp', 'settings.tabs.mcp'],
 	['/settings/models', 'settings.overview.groups.mlModels'],
-	['/settings/websearch', 'settings.tabs.searchEngines'],
+	['/settings/services', 'settings.tabs.services'],
 	['/settings/knowledge/providers', 'settings.tabs.providers'],
 	['/settings/storage/providers', 'settings.tabs.providers'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
@@ -249,9 +249,9 @@ it('renders settings navigation beside the workspace and marks the current secti
 		name: 'settings.tabs.storage',
 	});
 	const webSearchLink = within(generalGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.searchEngines',
+		name: 'settings.tabs.services',
 	});
-	expect(webSearchLink).toHaveAttribute('href', '/settings/websearch');
+	expect(webSearchLink).toHaveAttribute('href', '/settings/services');
 	expect(generalLinks.indexOf(modelsLink)).toBe(generalLinks.indexOf(storage) + 1);
 	expect(generalLinks.indexOf(webSearchLink)).toBe(generalLinks.indexOf(modelsLink) + 1);
 	for (const path of [
@@ -442,7 +442,7 @@ it('places Models and Web Search after Storage without a Providers entry in the 
 	).not.toBeInTheDocument();
 	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(storage) + 3).map((link) => link.getAttribute('href'))).toEqual([
 		'/settings/models',
-		'/settings/websearch',
+		'/settings/services',
 	]);
 	for (const path of [
 		'/settings/providers/models',

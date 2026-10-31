@@ -391,7 +391,7 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'websearch',
+						path: 'services',
 						element: (
 							<SettingsRouteWrapper>
 								<ProvidersPage section="search" />
