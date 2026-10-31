@@ -27,10 +27,4 @@ export const plugins: PluginsApi = {
 	saveSettings: (id: string, values: Record<string, string>) => {
 		return typedInvokeUnwrap(PluginsChannels.saveSettings, id, values);
 	},
-	scripts: () => {
-		return typedInvokeUnwrap(PluginsChannels.scripts);
-	},
-	renderScript: (name: string, input: unknown, theme: 'light' | 'dark') => {
-		return typedInvokeUnwrap(PluginsChannels.renderScript, name, input, theme);
-	},
 };
