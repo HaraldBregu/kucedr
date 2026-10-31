@@ -1,0 +1,44 @@
+{
+	"id": "gpt-live-1",
+	"name": "GPT Live 1",
+	"type": "realtime-voice-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"sampleRate": 24000,
+	"metadata": {
+		"documentationUrl": "https://developers.openai.com/api/reference/resources/live/primary-websocket",
+		"documentationStatus": "verified",
+		"inputs": {
+			"voice": {
+				"type": "string",
+				"title": "Voice",
+				"default": "marin",
+				"enum": [
+					"alloy",
+					"ash",
+					"ballad",
+					"beacon",
+					"bossa",
+					"cedar",
+					"cinder",
+					"coral",
+					"delta",
+					"echo",
+					"gleam",
+					"marin",
+					"meridian",
+					"quartz",
+					"ripple",
+					"sage",
+					"shimmer",
+					"stone",
+					"tempo",
+					"verse",
+					"vesper",
+					"willow"
+				]
+			}
+		}
+	},
+	"location": "remote"
+}

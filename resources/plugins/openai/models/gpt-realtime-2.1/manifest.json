@@ -1,0 +1,35 @@
+{
+	"id": "gpt-realtime-2.1",
+	"name": "GPT Realtime 2.1",
+	"type": "realtime-voice-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"default": true,
+	"sampleRate": 24000,
+	"metadata": {
+		"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-realtime-2.1",
+		"documentationStatus": "verified",
+		"contextWindow": 128000,
+		"defaultOutputTokens": 32000,
+		"inputs": {
+			"voice": {
+				"type": "string",
+				"title": "Voice",
+				"default": "marin",
+				"enum": [
+					"alloy",
+					"ash",
+					"ballad",
+					"coral",
+					"echo",
+					"sage",
+					"shimmer",
+					"verse",
+					"marin",
+					"cedar"
+				]
+			}
+		}
+	},
+	"location": "remote"
+}

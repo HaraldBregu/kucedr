@@ -1,0 +1,59 @@
+{
+	"id": "gpt-4o-mini-tts",
+	"name": "GPT-4o Mini TTS",
+	"type": "text-to-speech-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"metadata": {
+		"documentationUrl": "https://platform.openai.com/docs/api-reference",
+		"documentationStatus": "verified",
+		"inputs": {
+			"voice": {
+				"type": "string",
+				"title": "Voice",
+				"default": "alloy",
+				"enum": [
+					"alloy",
+					"ash",
+					"ballad",
+					"coral",
+					"echo",
+					"fable",
+					"onyx",
+					"nova",
+					"sage",
+					"shimmer",
+					"verse",
+					"marin",
+					"cedar"
+				]
+			},
+			"custom_voice_id": {
+				"type": "string",
+				"title": "Custom voice ID"
+			},
+			"instructions": {
+				"type": "string"
+			},
+			"response_format": {
+				"type": "string",
+				"default": "mp3",
+				"enum": [
+					"mp3",
+					"opus",
+					"aac",
+					"flac",
+					"wav",
+					"pcm"
+				]
+			},
+			"speed": {
+				"type": "number",
+				"minimum": 0.25,
+				"maximum": 4,
+				"default": 1
+			}
+		}
+	},
+	"location": "remote"
+}

@@ -1,0 +1,83 @@
+{
+	"id": "gpt-6-sol",
+	"name": "GPT-6 Sol",
+	"type": "large-language-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"metadata": {
+		"promptAttachments": [
+			{
+				"kind": "image",
+				"mimeTypes": [
+					"image/jpeg",
+					"image/png",
+					"image/webp"
+				],
+				"extensions": [
+					".jpg",
+					".jpeg",
+					".png",
+					".webp"
+				]
+			},
+			{
+				"kind": "document",
+				"mimeTypes": [
+					"application/pdf"
+				],
+				"extensions": [
+					".pdf"
+				]
+			}
+		],
+		"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-6-sol",
+		"documentationStatus": "verified",
+		"inputs": {
+			"reasoning": {
+				"type": "object",
+				"properties": {
+					"effort": {
+						"type": "string",
+						"enum": [
+							"none",
+							"low",
+							"medium",
+							"high",
+							"xhigh",
+							"max"
+						]
+					},
+					"mode": {
+						"type": "string",
+						"enum": [
+							"standard",
+							"pro"
+						]
+					}
+				}
+			},
+			"text": {
+				"type": "object",
+				"properties": {
+					"verbosity": {
+						"type": "string",
+						"enum": [
+							"low",
+							"medium",
+							"high"
+						]
+					}
+				}
+			},
+			"max_output_tokens": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 128000
+			}
+		},
+		"contextWindow": 1050000,
+		"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-6-sol",
+		"maxInputTokens": 922000
+	},
+	"location": "remote"
+}

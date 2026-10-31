@@ -1,0 +1,28 @@
+{
+	"id": "gpt-live-transcribe",
+	"name": "GPT Live Transcribe",
+	"type": "speech-to-text-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"apiTypes": [
+		"stream"
+	],
+	"realtime": true,
+	"sampleRate": 24000,
+	"location": "remote",
+	"metadata": {
+		"documentationUrl": "https://developers.openai.com/api/docs/guides/realtime-transcription",
+		"documentationStatus": "verified",
+		"inputs": {
+			"prompt": {
+				"type": "string"
+			},
+			"languages": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"id": "gpt-transcribe",
+	"name": "GPT Transcribe",
+	"type": "speech-to-text-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"apiTypes": [
+		"batch",
+		"stream"
+	],
+	"realtime": true,
+	"sampleRate": 24000,
+	"location": "remote",
+	"metadata": {
+		"documentationUrl": "https://developers.openai.com/api/docs/guides/speech-to-text",
+		"documentationStatus": "verified",
+		"inputs": {
+			"prompt": {
+				"type": "string"
+			},
+			"languages": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

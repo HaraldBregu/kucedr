@@ -1,0 +1,99 @@
+{
+	"id": "claude-opus-4-7",
+	"name": "Claude Opus 4.7",
+	"type": "large-language-model",
+	"authentication": "api-key",
+	"url": "https://api.anthropic.com",
+	"metadata": {
+		"promptAttachments": [
+			{
+				"kind": "image",
+				"mimeTypes": [
+					"image/jpeg",
+					"image/png",
+					"image/webp"
+				],
+				"extensions": [
+					".jpg",
+					".jpeg",
+					".png",
+					".webp"
+				]
+			},
+			{
+				"kind": "document",
+				"mimeTypes": [
+					"application/pdf"
+				],
+				"extensions": [
+					".pdf"
+				]
+			}
+		],
+		"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
+		"documentationStatus": "verified",
+		"inputs": {
+			"max_tokens": {
+				"type": "integer",
+				"minimum": 1,
+				"required": true
+			},
+			"temperature": {
+				"type": "number",
+				"minimum": 0,
+				"maximum": 1
+			},
+			"top_p": {
+				"type": "number",
+				"minimum": 0,
+				"maximum": 1
+			},
+			"top_k": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"stop_sequences": {
+				"type": "array"
+			},
+			"thinking": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"adaptive",
+							"disabled"
+						]
+					}
+				}
+			},
+			"output_config": {
+				"type": "object",
+				"properties": {
+					"effort": {
+						"type": "string",
+						"enum": [
+							"low",
+							"medium",
+							"high",
+							"xhigh",
+							"max"
+						]
+					}
+				}
+			},
+			"tools": {
+				"type": "array"
+			},
+			"tool_choice": {
+				"type": "object"
+			},
+			"metadata": {
+				"type": "object"
+			}
+		},
+		"contextWindow": 1000000,
+		"contextWindowDocumentationUrl": "https://platform.claude.com/docs/en/models/opus-4-7/overview"
+	},
+	"location": "remote"
+}

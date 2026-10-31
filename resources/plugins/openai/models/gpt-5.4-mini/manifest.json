@@ -1,0 +1,69 @@
+{
+	"id": "gpt-5.4-mini",
+	"name": "GPT-5.4 Mini",
+	"type": "large-language-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"metadata": {
+		"promptAttachments": [
+			{
+				"kind": "image",
+				"mimeTypes": [
+					"image/jpeg",
+					"image/png",
+					"image/webp"
+				],
+				"extensions": [
+					".jpg",
+					".jpeg",
+					".png",
+					".webp"
+				]
+			},
+			{
+				"kind": "document",
+				"mimeTypes": [
+					"application/pdf"
+				],
+				"extensions": [
+					".pdf"
+				]
+			}
+		],
+		"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+		"documentationStatus": "verified",
+		"inputs": {
+			"reasoning": {
+				"type": "object",
+				"properties": {
+					"effort": {
+						"type": "string",
+						"enum": [
+							"none",
+							"low",
+							"medium",
+							"high",
+							"xhigh"
+						]
+					}
+				}
+			},
+			"text": {
+				"type": "object",
+				"properties": {
+					"verbosity": {
+						"type": "string",
+						"enum": [
+							"low",
+							"medium",
+							"high"
+						]
+					}
+				}
+			}
+		},
+		"contextWindow": 400000,
+		"contextWindowDocumentationUrl": "https://developers.openai.com/api/docs/models/gpt-5.4-mini"
+	},
+	"location": "remote"
+}

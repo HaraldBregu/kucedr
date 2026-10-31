@@ -1,0 +1,32 @@
+{
+	"id": "gpt-realtime-whisper",
+	"name": "GPT Realtime Whisper",
+	"apiTypes": [
+		"stream"
+	],
+	"realtime": true,
+	"type": "speech-to-text-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"default": true,
+	"sampleRate": 24000,
+	"metadata": {
+		"documentationUrl": "https://platform.openai.com/docs/api-reference",
+		"documentationStatus": "verified",
+		"inputs": {
+			"audio": {
+				"type": "object"
+			},
+			"noise_reduction": {
+				"type": "object"
+			},
+			"transcription": {
+				"type": "object"
+			},
+			"turn_detection": {
+				"type": "object"
+			}
+		}
+	},
+	"location": "remote"
+}

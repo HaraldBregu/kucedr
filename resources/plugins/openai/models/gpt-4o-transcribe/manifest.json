@@ -1,0 +1,40 @@
+{
+	"id": "gpt-4o-transcribe",
+	"name": "GPT-4o Transcribe",
+	"apiTypes": [
+		"batch"
+	],
+	"type": "speech-to-text-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"default": true,
+	"sampleRate": 24000,
+	"metadata": {
+		"documentationUrl": "https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create",
+		"documentationStatus": "verified",
+		"inputs": {
+			"language": {
+				"type": "string"
+			},
+			"prompt": {
+				"type": "string"
+			},
+			"response_format": {
+				"type": "string",
+				"enum": [
+					"json"
+				]
+			},
+			"include": {
+				"type": "array"
+			},
+			"chunking_strategy": {
+				"type": "object"
+			},
+			"stream": {
+				"type": "boolean"
+			}
+		}
+	},
+	"location": "remote"
+}

@@ -1,0 +1,62 @@
+{
+	"id": "gpt-image-2.5-sunburst",
+	"name": "GPT Image 2.5 Sunburst",
+	"type": "text-to-image-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"location": "remote",
+	"metadata": {
+		"documentationUrl": "https://developers.openai.com/api/docs/guides/image-generation",
+		"documentationStatus": "verified",
+		"inputs": {
+			"size": {
+				"type": "string",
+				"default": "auto",
+				"description": "WIDTHxHEIGHT or auto; multiples of 16, aspect ratio 1:3 to 3:1, edges at most 3840, 655360 to 8294400 pixels."
+			},
+			"quality": {
+				"type": "string",
+				"enum": [
+					"low",
+					"medium",
+					"high",
+					"xhigh",
+					"max",
+					"auto"
+				],
+				"default": "auto"
+			},
+			"background": {
+				"type": "string",
+				"enum": [
+					"auto",
+					"opaque",
+					"transparent"
+				],
+				"default": "auto"
+			},
+			"output_format": {
+				"type": "string",
+				"enum": [
+					"png",
+					"jpeg",
+					"webp"
+				],
+				"default": "png"
+			},
+			"output_compression": {
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 100
+			},
+			"moderation": {
+				"type": "string",
+				"enum": [
+					"auto",
+					"low"
+				],
+				"default": "auto"
+			}
+		}
+	}
+}
