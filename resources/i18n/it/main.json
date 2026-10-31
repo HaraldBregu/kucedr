@@ -1704,6 +1704,7 @@
 			"plugin": "Plugin"
 		},
 		"apps": {
+			"noConfiguration": "Nessuna configurazione disponibile.",
 			"title": "App installate",
 			"information": "Informazioni sull'app",
 			"description": "Gestisci e apri le app installate.",

@@ -183,7 +183,11 @@ const AppDetailsPage: React.FC = () => {
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
 				<SettingsSection title={t('settings.modelServices.configuration')}>
-					<SettingsPanel className="min-h-20">{null}</SettingsPanel>
+					<SettingsPanel>
+						<p className="px-4 py-3 text-sm text-muted-foreground">
+							{t('settings.apps.noConfiguration')}
+						</p>
+					</SettingsPanel>
 				</SettingsSection>
 				{(app.mode === 'window' || app.mode === 'both') && <WindowSettings key={app.id} appId={app.id} />}
 			</div>

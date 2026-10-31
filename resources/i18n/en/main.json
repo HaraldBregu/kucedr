@@ -1704,6 +1704,7 @@
 			"plugin": "Plugin"
 		},
 		"apps": {
+			"noConfiguration": "No configuration available.",
 			"title": "Installed apps",
 			"information": "App information",
 			"description": "Manage and open your installed apps.",
