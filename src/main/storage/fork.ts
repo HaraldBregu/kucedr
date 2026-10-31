@@ -10,7 +10,7 @@ import { getStorageSettings } from './storage_store';
 
 /** Runs the storage plugin's sync script in a utility process and returns its result. */
 export async function forkSync<T>(operation: StorageOperation): Promise<T> {
-	const [script] = pluginScripts('storage');
+	const [script] = pluginScripts('STORAGE');
 	if (!script) throw new Error('No storage sync script available.');
 	const settings = getStorageSettings();
 	const provider = storageProviders.resolve(settings.providerId);
