@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
 	ArrowLeft,
+	ChevronRight,
 	CircleAlert,
 	CircleCheck,
 	CircleOff,
