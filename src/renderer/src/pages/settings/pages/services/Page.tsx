@@ -10,7 +10,6 @@ import {
 	Plug,
 	ServerCog,
 } from 'lucide-react';
-import { ProviderAvatar } from '@/components/provider-avatar';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import type { CatalogWebSearch } from '@shared/provider_types';
 import type { SearchEngineId, SearchSettings } from '@shared/search_types';
