@@ -119,13 +119,6 @@ const ServicesPage: React.FC = () => {
 										}}
 									>
 										<CardHeader className="flex flex-1 items-center gap-3">
-											<ProviderAvatar
-												providerId={service.provider.id}
-												name={service.provider.name}
-												iconDarkUrl={service.provider.iconDarkUrl}
-												iconLightUrl={service.provider.iconLightUrl}
-												className="size-6 shrink-0 rounded-md"
-											/>
 											<div className="flex min-w-0 flex-1 flex-col gap-1">
 												<CardTitle className="truncate">{service.name}</CardTitle>
 												<div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
