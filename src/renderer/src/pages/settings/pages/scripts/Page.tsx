@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, FileCode, Layers, Plug, Tag, User } from 'lucide-react';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertTriangle, FileCode, Folder, Layers, Plug, Tag, User } from 'lucide-react';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import type { PluginScriptInfo } from '../../../../../../shared/plugin_types';
 import {
 	SettingsEmptyState,
@@ -103,11 +103,14 @@ const ScriptsPage: React.FC = () => {
 									<CardHeader className="flex flex-1 items-center gap-3">
 										<div className="flex min-w-0 flex-1 flex-col gap-1">
 											<CardTitle className="truncate">{script.title}</CardTitle>
-											<CardDescription className="line-clamp-1">{script.name}</CardDescription>
 											<div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
 												<span className="flex items-center gap-1">
 													<Layers className="size-3" aria-hidden="true" />
 													{script.type}
+												</span>
+												<span className="flex items-center gap-1">
+													<Folder className="size-3" aria-hidden="true" />
+													{script.category}
 												</span>
 												<span className="flex items-center gap-1">
 													<Tag className="size-3" aria-hidden="true" />
