@@ -32,8 +32,6 @@ const manifestSchema = z
 			})
 			.strict(),
 		inputSchema: z.looseObject({ type: z.literal('object') }).optional(),
-		// ponytail: checked by validateProviderManifest() once merged into the plugin's provider
-		storage: z.unknown().optional(),
 		fence: z.string().regex(ID, 'fence must be kebab-case').optional(),
 		height: z.number().int().min(80).max(2000).default(320),
 	})
