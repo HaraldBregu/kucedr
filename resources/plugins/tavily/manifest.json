@@ -1,0 +1,16 @@
+{
+	"schemaVersion": 5,
+	"id": "tavily",
+	"title": "Tavily",
+	"version": "1.0.1",
+	"description": "Tavily web search built for AI agents.",
+	"categories": [
+		"SEARCH"
+	],
+	"author": "Harald Bregu",
+	"icon": "tavily.svg",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://app.tavily.com/home",
+	"icon_dark_url": "/assets/tavily.svg",
+	"icon_light_url": "/assets/tavily.svg"
+}
