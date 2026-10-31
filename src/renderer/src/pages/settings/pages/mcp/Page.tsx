@@ -30,6 +30,7 @@ import { McpServerForm } from './components/McpServerForm';
 import { SettingsFilter } from '../../components/filter';
 
 const McpPage = (): React.JSX.Element => {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [registry, setRegistry] = useState<McpRegistry>({ servers: [], diagnostics: [] });
 	const [loading, setLoading] = useState(true);
