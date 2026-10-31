@@ -2,6 +2,7 @@
 	"title": "Chart",
 	"description": "Render bar, horizontal bar, stacked bar, line, area, stacked area, pie, doughnut, scatter or radar charts from data, with an optional title.",
 	"author": "Harald Bregu",
+	"type": "UI",
 	"metadata": {
 		"version": "1.0.0",
 		"category": "data",
