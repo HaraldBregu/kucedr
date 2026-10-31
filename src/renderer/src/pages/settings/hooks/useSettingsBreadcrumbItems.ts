@@ -180,7 +180,9 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	if (location.pathname.startsWith('/settings/scripts/')) {
 		items[0] = { ...items[0], path: current.path };
-		items.push({ label: decodeURIComponent(location.pathname.split('/').at(-1) ?? '') });
+		items.push({
+			label: formatAppLabel(decodeURIComponent(location.pathname.split('/').at(-1) ?? '')),
+		});
 	}
 
 	if (location.pathname.startsWith('/settings/settings/media/')) {
