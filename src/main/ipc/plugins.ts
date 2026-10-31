@@ -2,6 +2,7 @@ import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { AppChannels, PluginsChannels } from '../../shared/ipc_channels_definitions';
+import { PLUGIN_SCRIPT_TYPES } from '../../shared/plugin_types';
 import * as plugins from '../plugins';
 import { refreshProviderCatalog } from '../models';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
