@@ -42,8 +42,8 @@ const ScriptsPage: React.FC = () => {
 	);
 
 	useEffect(() => {
-		window.plugins
-			.scripts()
+		window.scripts
+			.list()
 			.then(setScripts, () => setErrorMessage(t('settings.scripts.loadError')))
 			.finally(() => setLoading(false));
 	}, [t]);
