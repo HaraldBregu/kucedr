@@ -329,7 +329,7 @@ function readCatalog(): Catalog {
 			...(entry.web_search ?? []).map(
 				(search): CatalogEntryWebSearch & { provider: PublicProvider } => ({
 					...search,
-					type: 'web-search',
+					type: 'SEARCH_ENGINE',
 					provider,
 				})
 			)
