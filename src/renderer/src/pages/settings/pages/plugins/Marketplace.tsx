@@ -50,18 +50,6 @@ export default function MarketplacePage(): React.JSX.Element {
 		}
 	};
 
-	const back = (
-		<Button
-			variant="ghost"
-			size="sm"
-			className="w-fit"
-			onClick={() => navigate('/settings/plugins?tab=marketplace')}
-		>
-			<ArrowLeft className="size-4" />
-			{t('settings.integrations.title')}
-		</Button>
-	);
-
 	if (plugin === undefined) {
 		return (
 			<SettingsPageShell>
