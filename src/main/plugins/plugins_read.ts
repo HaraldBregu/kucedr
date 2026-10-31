@@ -55,6 +55,7 @@ export function readPlugin(
 		...manifest,
 		...(models && { models }),
 		...readPluginServices(directory),
+		...readPluginMcpServers(directory),
 	});
 	const contributes = { ...pluginContents(directory), providers: provider ? [manifest.id] : [] };
 	if (Object.values(contributes).every((ids) => ids.length === 0)) {
