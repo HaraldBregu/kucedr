@@ -143,11 +143,6 @@ const CloudPage: React.FC = () => {
 		void persistSettings(next);
 	};
 
-	const selectProvider = (providerId: string): void => {
-		if (!storage) return;
-		updateDraft({ ...storage, providerId });
-	};
-
 	const pickFolders = async (): Promise<void> => {
 		if (!storage) return;
 		setError(null);
