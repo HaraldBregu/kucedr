@@ -195,9 +195,11 @@ export default function StorageForm({
 						</SettingsField>
 					</fieldset>
 					<div className="flex justify-end gap-2">
-						<Button type="button" variant="outline" disabled={saving} onClick={onCancel}>
-							{t('common.cancel')}
-						</Button>
+						{onCancel && (
+							<Button type="button" variant="outline" disabled={saving} onClick={onCancel}>
+								{t('common.cancel')}
+							</Button>
+						)}
 						<Button type="submit" disabled={saving || !canSave}>
 							{saving && <LoaderCircle className="size-3.5 animate-spin" />}
 							{t('common.save')}
