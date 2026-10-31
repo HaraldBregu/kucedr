@@ -394,11 +394,24 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'services',
-						element: (
-							<SettingsRouteWrapper>
-								<ProvidersPage section="search" />
-							</SettingsRouteWrapper>
-						),
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<ServicesPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: ':serviceId',
+								element: (
+									<SettingsRouteWrapper>
+										<ServiceDetailsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
 					},
 					{
 						path: 'knowledge',
