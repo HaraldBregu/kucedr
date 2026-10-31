@@ -87,7 +87,6 @@ const AppDetailsPage: React.FC = () => {
 	if (loading) {
 		return (
 			<SettingsPageShell>
-				{back}
 				<SettingsPanel>
 					<SettingsLoadingRows rows={3} />
 				</SettingsPanel>
@@ -98,7 +97,6 @@ const AppDetailsPage: React.FC = () => {
 	if (!app) {
 		return (
 			<SettingsPageShell>
-				{back}
 				{errorMessage && (
 					<SettingsNotice variant="destructive" icon={AlertTriangle}>
 						{errorMessage}
