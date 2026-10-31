@@ -236,18 +236,16 @@ export default function PluginPage(): React.JSX.Element {
 				description: service.description,
 			})),
 		},
-		...contents.storageScripts.map((script) => ({
-			key: `configuration/${script.name}`,
-			title: t('settings.integrations.plugin.configuration', { name: script.title }),
-			rows: properties(script.inputSchema).map((property) => ({
-				key: property.key,
-				title: property.title,
-				description: property.description
-					? `${property.key} · ${property.description}`
-					: property.key,
-				badge: property.required ? t('settings.integrations.plugin.required') : property.type,
+		{
+			key: 'storage',
+			title: t('settings.integrations.plugin.storage'),
+			rows: contents.storages.map((service) => ({
+				key: service.id,
+				title: service.name,
+				description: service.description,
+				path: `/settings/plugins/storage/${encodeURIComponent(service.provider.id)}/${encodeURIComponent(service.id)}`,
 			})),
-		})),
+		},
 		{
 			key: 'apps',
 			title: t('settings.integrations.plugin.apps'),
