@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, Blocks, FileCode, Folder, Hash, Layers, Tag, Trash2, Unlink, User, Plug } from 'lucide-react';
+import { AlertTriangle, Blocks, Folder, Hash, Tag, Trash2, Unlink, User, Plug } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useOpenApp } from '@/hooks/app';
@@ -111,15 +111,8 @@ const AppDetailsPage: React.FC = () => {
 
 	const details = [
 		{ key: 'id', title: t('settings.apps.detailId'), icon: Hash, value: app.id },
-		{
-			key: 'mode',
-			title: t('settings.apps.detailMode'),
-			icon: Layers,
-			value: t(`settings.apps.modes.${app.mode ?? 'extension'}`),
-		},
 		{ key: 'version', title: t('settings.apps.detailVersion'), icon: Tag, value: app.metadata.version },
 		{ key: 'category', title: t('settings.apps.detailCategory'), icon: Folder, value: app.metadata.category },
-		{ key: 'entry', title: t('settings.apps.detailEntry'), icon: FileCode, value: app.metadata.entry },
 		{ key: 'author', title: t('settings.integrations.plugin.author'), icon: User, value: app.author },
 		{ key: 'plugin', title: t('settings.scripts.plugin'), icon: Plug, value: app.plugin?.name },
 		...Object.entries(app.metadata)
