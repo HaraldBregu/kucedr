@@ -1,3 +1,4 @@
+import { Slot } from "@radix-ui/react-slot"
 "use client"
 
 import * as React from "react"
@@ -138,8 +139,9 @@ function valueWithIcon<V>(
   )
 }
 
-function ButtonGroupText({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("flex items-center border px-3 text-sm", className)} {...props} />
+function ButtonGroupText({ className, asChild, ...props }: React.ComponentProps<"div"> & { asChild?: boolean }) {
+  const Component = asChild ? Slot : "div"
+  return <Component className={cn("flex items-center border px-3 text-sm", className)} {...props} />
 }
 
 /** The glyph between two ancestors in a nested attribute path, a chevron
