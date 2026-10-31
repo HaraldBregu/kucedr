@@ -11,7 +11,7 @@ export function pluginContents(directory: string): Record<PluginKind, string[]> 
 			if (kind === 'providers' || !existsSync(kindDirectory)) return [kind, []];
 			const ids: string[] = [];
 			for (const entry of readdirSync(kindDirectory, { withFileTypes: true })) {
-				if (entry.name.startsWith('.')) continue;
+				if (entry.name.startsWith('.') || (entry.name === 'README.md' && entry.isFile())) continue;
 				if (kind === 'mcp' && entry.name === 'servers.json' && entry.isFile()) continue;
 				if (!entry.isDirectory()) throw new Error(`${kind}/${entry.name} must be a folder.`);
 				ids.push(entry.name);
