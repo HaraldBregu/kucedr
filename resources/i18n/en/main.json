@@ -1780,7 +1780,9 @@
 				"builtIn": "Built-in",
 				"downloaded": "Downloaded",
 				"game": "Game",
-				"utility": "Utility"
+				"utility": "Utility",
+				"local": "Local",
+				"remote": "Remote"
 			}
 		},
 		"plugins": {
