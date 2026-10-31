@@ -86,19 +86,22 @@ const ScriptsPage: React.FC = () => {
 								<Card
 									key={script.name}
 									size="sm"
-									role="link"
-									tabIndex={0}
-									className="cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
-									onClick={() => open(script)}
-									onKeyDown={(event) => {
-										if (
-											event.target === event.currentTarget &&
-											(event.key === 'Enter' || event.key === ' ')
-										) {
-											event.preventDefault();
-											open(script);
-										}
-									}}
+									{...(script.type === 'STORAGE' && {
+										role: 'link',
+										tabIndex: 0,
+										className:
+											'cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20',
+										onClick: () => open(script),
+										onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {
+											if (
+												event.target === event.currentTarget &&
+												(event.key === 'Enter' || event.key === ' ')
+											) {
+												event.preventDefault();
+												open(script);
+											}
+										},
+									})}
 								>
 									<CardHeader className="flex flex-1 items-center gap-3">
 										<div className="flex min-w-0 flex-1 flex-col gap-1">
