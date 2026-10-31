@@ -1,0 +1,15 @@
+{
+	"name": "@kucedr-plugins/bootstrap-cloud-sync",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Bootstrap plugin script that backs up and restores folders to an S3-compatible bucket.",
+	"scripts": {
+		"build": "esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\""
+	},
+	"devDependencies": {
+		"@aws-sdk/client-s3": "^3.1127.0",
+		"@aws-sdk/lib-storage": "^3.1152.0",
+		"esbuild": "^0.28.2"
+	}
+}
