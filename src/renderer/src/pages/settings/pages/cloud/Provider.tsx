@@ -27,7 +27,7 @@ export default function Provider({
 }: ProviderProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const selectedProvider = providers.find((provider) => provider.id === providerId);
-	const storagePlugin = storages()[0]?.provider.plugin?.id;
+	const [storage] = storages();
 
 	return (
 		<SettingsPanel>
@@ -63,7 +63,15 @@ export default function Provider({
 							variant="outline"
 							size="sm"
 							nativeButton={false}
-							render={<Link to="/settings/cloud/providers" />}
+							render={
+								<Link
+									to={
+										storagePlugin
+											? `/settings/plugins/${encodeURIComponent(storagePlugin)}`
+											: '/settings/plugins'
+									}
+								/>
+							}
 						>
 							{t('settings.storageProviders.add')}
 						</Button>
