@@ -1419,8 +1419,8 @@
 			"cancel": "Cancel",
 			"provider": {
 				"title": "Storage",
-				"description": "Choose a saved Amazon S3 or S3-compatible provider.",
-				"placeholder": "Select storage provider"
+				"description": "The Amazon S3 or S3-compatible bucket that Cloud Sync S3 uses.",
+				"placeholder": "Not configured"
 			}
 		},
 		"embedding": {
