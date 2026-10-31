@@ -404,7 +404,7 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
-								path: ':serviceId',
+								path: ':providerId/:serviceId',
 								element: (
 									<SettingsRouteWrapper>
 										<ServiceDetailsPage />
