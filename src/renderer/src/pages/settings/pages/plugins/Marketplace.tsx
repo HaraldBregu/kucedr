@@ -112,7 +112,6 @@ export default function MarketplacePage(): React.JSX.Element {
 
 	return (
 		<SettingsPageShell>
-			{back}
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			<header className="mb-6 flex items-start gap-4 py-2">
 				<PluginIcon plugin={plugin} className="size-14" />
