@@ -25,7 +25,7 @@ Example:
 ```json
 {
 	"id": "web-search",
-	"name": "Brave Web Search",
+	"name": "Web Search",
 	"type": "SEARCH_ENGINE",
 	"url": "https://api.search.brave.com/res/v1/web/search",
 	"authentication": "api-key",
