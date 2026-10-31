@@ -45,8 +45,8 @@ export default function Provider({ provider }: ProviderProps): React.JSX.Element
 							}
 						>
 							{t(
-							provider ? 'settings.storageProviders.editTitle' : 'settings.storageProviders.add'
-						)}
+								provider ? 'settings.storageProviders.editTitle' : 'settings.storageProviders.add'
+							)}
 						</Button>
 					</div>
 				}

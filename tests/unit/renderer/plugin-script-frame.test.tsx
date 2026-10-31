@@ -39,10 +39,10 @@ beforeEach(() => {
 			}),
 		},
 	});
-	Object.defineProperty(window, 'plugins', {
+	Object.defineProperty(window, 'scripts', {
 		configurable: true,
 		value: {
-			renderScript: jest
+			render: jest
 				.fn()
 				.mockResolvedValue(
 					'<!doctype html><html><head></head><body><div id="chart"></div><script>document.querySelector("#chart").textContent="Sales";</script></body></html>'
@@ -62,7 +62,7 @@ it('passes every SDK theme token into the bundled chart document', async () => {
 		.replace(/\s+/g, '');
 
 	expect(window.app.getThemeData).toHaveBeenCalledTimes(1);
-	expect(window.plugins.renderScript).toHaveBeenCalledWith('chart', input, 'light');
+	expect(window.scripts.render).toHaveBeenCalledWith('chart', input, 'light');
 	for (const [key, value] of Object.entries(theme.colors))
 		expect(styles).toContain(`--${key}:${value.replace(/\s+/g, '')}`);
 	expect(document.querySelector('#chart')).not.toBeNull();
@@ -109,7 +109,7 @@ it('uses SDK dark mode and unsubscribes when the chart leaves chat', async () =>
 	);
 
 	await waitFor(() =>
-		expect(window.plugins.renderScript).toHaveBeenLastCalledWith('chart', input, 'dark')
+		expect(window.scripts.render).toHaveBeenLastCalledWith('chart', input, 'dark')
 	);
 	await waitFor(() =>
 		expect(screen.getByTitle('Chart').getAttribute('srcdoc')).toContain('#eeeeee')
@@ -119,7 +119,7 @@ it('uses SDK dark mode and unsubscribes when the chart leaves chat', async () =>
 });
 
 it('shows a readable render failure instead of an empty chart', async () => {
-	(window.plugins.renderScript as jest.Mock).mockRejectedValue(new Error('Chart input is invalid.'));
+	(window.scripts.render as jest.Mock).mockRejectedValue(new Error('Chart input is invalid.'));
 	render(<PluginScriptFrame script={script} input={input} />);
 
 	expect(await screen.findByText('Chart input is invalid.')).toBeInTheDocument();
