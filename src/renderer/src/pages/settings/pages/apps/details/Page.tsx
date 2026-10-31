@@ -1,22 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, Blocks, Trash2, Unlink } from 'lucide-react';
+import { AlertTriangle, Blocks, FileCode, Folder, Hash, Layers, Tag, Trash2, Unlink, User, Plug } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useOpenApp } from '@/hooks/app';
 import type { App } from '../../../../../../../shared/installed_app_types';
 import WindowSettings from './Window';
 import AppIcon from '../AppIcon';
+import Meta from '../../plugins/Meta';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
 	SettingsNotice,
 	SettingsPageShell,
 	SettingsPanel,
-	SettingsRow,
-	SettingsSection,
-	SettingsValue,
 } from '../../../components';
 
 const KNOWN_METADATA_KEYS = ['version', 'category', 'entry', 'image'];
@@ -111,24 +109,28 @@ const AppDetailsPage: React.FC = () => {
 		);
 	}
 
-	const details: { key: string; title: string; value: string; mono?: boolean }[] = [
-		{ key: 'id', title: t('settings.apps.detailId'), value: app.id, mono: true },
+	const details = [
+		{ key: 'id', title: t('settings.apps.detailId'), icon: Hash, value: app.id },
 		{
 			key: 'mode',
 			title: t('settings.apps.detailMode'),
+			icon: Layers,
 			value: t(`settings.apps.modes.${app.mode ?? 'extension'}`),
 		},
-		{ key: 'version', title: t('settings.apps.detailVersion'), value: app.metadata.version },
-		{ key: 'category', title: t('settings.apps.detailCategory'), value: app.metadata.category },
-		{ key: 'entry', title: t('settings.apps.detailEntry'), value: app.metadata.entry, mono: true },
+		{ key: 'version', title: t('settings.apps.detailVersion'), icon: Tag, value: app.metadata.version },
+		{ key: 'category', title: t('settings.apps.detailCategory'), icon: Folder, value: app.metadata.category },
+		{ key: 'entry', title: t('settings.apps.detailEntry'), icon: FileCode, value: app.metadata.entry },
+		{ key: 'author', title: t('settings.integrations.plugin.author'), icon: User, value: app.author },
+		{ key: 'plugin', title: t('settings.scripts.plugin'), icon: Plug, value: app.plugin?.name },
 		...Object.entries(app.metadata)
 			.filter(([key]) => !KNOWN_METADATA_KEYS.includes(key))
 			.map(([key, value]) => ({
 				key,
 				title: key,
+				icon: Tag,
 				value: typeof value === 'string' ? value : JSON.stringify(value),
 			})),
-	];
+	].filter((row) => row.value);
 
 	return (
 		<SettingsPageShell>
@@ -149,6 +151,7 @@ const AppDetailsPage: React.FC = () => {
 					<p className="mt-1.5 max-w-2xl text-base leading-5 text-muted-foreground">
 						{app.description}
 					</p>
+					<Meta rows={details} />
 				</div>
 				<div className="flex shrink-0 items-center gap-1.5">
 					<Button
@@ -183,15 +186,6 @@ const AppDetailsPage: React.FC = () => {
 				</div>
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
-				<SettingsSection title={t('settings.apps.information')}>
-					<SettingsPanel>
-						{details.map((row) => (
-							<SettingsRow key={row.key} title={row.title}>
-								<SettingsValue mono={row.mono}>{row.value}</SettingsValue>
-							</SettingsRow>
-						))}
-					</SettingsPanel>
-				</SettingsSection>
 				{(app.mode === 'window' || app.mode === 'both') && <WindowSettings key={app.id} appId={app.id} />}
 			</div>
 		</SettingsPageShell>
