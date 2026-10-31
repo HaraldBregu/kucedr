@@ -13,7 +13,9 @@ export function usePluginScripts(): {
 	useEffect(() => {
 		let active = true;
 		const load = (): void => {
-			request ??= window.plugins.scripts();
+			request ??= window.plugins
+				.scripts()
+				.then((scripts) => scripts.filter((script) => script.type === 'UI'));
 			request.then(
 				(next) => active && setScripts(next),
 				() => active && setScripts([])
