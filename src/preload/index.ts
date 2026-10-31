@@ -63,6 +63,8 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('tasks', tasks);
 		contextBridge.exposeInMainWorld('skills', skills);
 		contextBridge.exposeInMainWorld('plugins', plugins);
+		contextBridge.exposeInMainWorld('scripts', scripts);
+		contextBridge.exposeInMainWorld('services', services);
 		contextBridge.exposeInMainWorld('library', library);
 		contextBridge.exposeInMainWorld('mcp', mcp);
 		contextBridge.exposeInMainWorld('drive', drive);
