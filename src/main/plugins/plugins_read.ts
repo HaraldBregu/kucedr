@@ -51,12 +51,7 @@ export function readPlugin(
 	if (manifest.icon) assertIcon(path.join(directory, 'assets'), manifest.icon);
 	if (manifest.iconDark) assertIcon(path.join(directory, 'assets'), manifest.iconDark);
 	const models = readPluginModels(directory);
-	const storage = readPluginStorage(directory);
-	const provider = pluginProvider({
-		...manifest,
-		...(models && { models }),
-		...(storage !== undefined && { storage }),
-	});
+	const provider = pluginProvider(models ? { ...manifest, models } : manifest);
 	const contributes = { ...pluginContents(directory), providers: provider ? [manifest.id] : [] };
 	if (Object.values(contributes).every((ids) => ids.length === 0)) {
 		throw new Error('A plugin must contain at least one app, MCP server, provider, or skill.');
