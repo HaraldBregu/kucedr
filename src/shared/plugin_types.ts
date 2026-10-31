@@ -44,9 +44,15 @@ export interface PluginScriptSchema {
 	readonly examples?: readonly unknown[];
 }
 
+/** Where a script runs: `UI` renders inside chats and documents, `STORAGE` syncs files with cloud storage. */
+export const PLUGIN_SCRIPT_TYPES = ['UI', 'STORAGE'] as const;
+
+export type PluginScriptType = (typeof PLUGIN_SCRIPT_TYPES)[number];
+
 export interface PluginScriptInfo {
 	readonly name: string;
 	readonly title: string;
+	readonly type: PluginScriptType;
 	readonly author?: string;
 	readonly version: string;
 	readonly category: string;
