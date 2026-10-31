@@ -124,52 +124,76 @@ const SkillsPage: React.FC = () => {
 
 			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 
-			<SettingsSection title={t('settings.skills.title')} description={skillsRoot || undefined}>
-				<SettingsPanel>
-					{loading ? (
-						<SettingsLoadingRows rows={2} />
-					) : skills.length === 0 ? (
-						<SettingsEmptyState
-							icon={Sparkles}
-							title={t('settings.skills.empty')}
-							description={t('settings.skills.emptyDescription')}
-						/>
-					) : (
-						skills.map((skill) => (
-							<Item
-								key={skill.id}
-								role="button"
-								tabIndex={0}
-								variant="outline"
-								size="md"
-								className="cursor-pointer border-b border-border/60 hover:bg-muted/40 last:border-b-0 px-5 py-4"
-								onClick={() =>
-								navigate(`/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`)
-								}
-								onKeyDown={(event) => {
-									if (event.key === 'Enter' || event.key === ' ') {
-										event.preventDefault();
-									navigate(`/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`);
-									}
-								}}
-							>
-								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-									<ItemTitle className="max-w-full truncate">{skill.manifest.name}</ItemTitle>
-									<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
-										{skill.manifest.description || t('settings.skills.noDescription')}
-									</p>
-								</ItemContent>
-								<ItemActions className="ml-auto flex-none justify-end">
-									<ChevronRight
-										className="size-3.5 text-muted-foreground transition-transform group-hover/item:translate-x-0.5"
-										strokeWidth={1.8}
-									/>
-								</ItemActions>
-							</Item>
-						))
+			{!loading && skills.length === 0 && (
+				<SettingsEmptyState
+					icon={Sparkles}
+					title={t('settings.skills.empty')}
+					description={t('settings.skills.emptyDescription')}
+				/>
+			)}
+
+			{(loading || skills.length > 0) && (
+				<section className="pb-4" aria-labelledby="installed-skills-title">
+					<h2 id="installed-skills-title" className="text-sm font-medium">
+						{t('settings.skills.title')}
+					</h2>
+					{skillsRoot && (
+						<p className="mt-0.5 truncate text-xs text-muted-foreground">{skillsRoot}</p>
 					)}
-				</SettingsPanel>
-			</SettingsSection>
+					<div className="mt-2">
+						<SettingsFilter
+							query={query}
+							onQueryChange={setQuery}
+							categories={categories}
+							category={category}
+							onCategoryChange={setCategory}
+						/>
+					</div>
+					{loading ? (
+						<SettingsPanel>
+							<SettingsLoadingRows rows={2} />
+						</SettingsPanel>
+					) : (
+						<div className="grid grid-cols-1 gap-3">
+							{visibleSkills.map((skill) => (
+								<Card
+									key={skill.id}
+									size="sm"
+									role="link"
+									tabIndex={0}
+									className="cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
+									onClick={() => open(skill)}
+									onKeyDown={(event) => {
+										if (
+											event.target === event.currentTarget &&
+											(event.key === 'Enter' || event.key === ' ')
+										) {
+											event.preventDefault();
+											open(skill);
+										}
+									}}
+								>
+									<CardHeader className="flex flex-1 items-center gap-3">
+										<div className="flex min-w-0 flex-1 flex-col gap-1">
+											<CardTitle className="truncate">{skill.manifest.name}</CardTitle>
+											<p className="line-clamp-2 text-xs text-muted-foreground">
+												{skill.manifest.description || t('settings.skills.noDescription')}
+											</p>
+											<div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+												<span className="flex items-center gap-1">
+													<Plug className="size-3" aria-hidden="true" />
+													{skill.plugin?.name ?? t('settings.filter.categories.local')}
+												</span>
+											</div>
+										</div>
+										<ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+									</CardHeader>
+								</Card>
+							))}
+						</div>
+					)}
+				</section>
+			)}
 		</SettingsPageShell>
 	);
 };
