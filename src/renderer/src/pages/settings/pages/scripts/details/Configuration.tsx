@@ -6,11 +6,7 @@ import { getErrorMessage } from '../../../../start/setupConstants';
 import { SettingsLoadingRows, SettingsNotice, SettingsSection } from '../../../components';
 import StorageForm from './StorageForm';
 
-interface ConfigurationProps {
-	readonly name: string;
-}
-
-export default function Configuration({ name }: ConfigurationProps): React.JSX.Element {
+export default function Configuration(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [provider, setProvider] = useState<StorageProvider | null>();
 	const [error, setError] = useState('');
