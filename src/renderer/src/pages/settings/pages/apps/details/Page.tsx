@@ -84,13 +84,6 @@ const AppDetailsPage: React.FC = () => {
 		}
 	}, [app, navigate, t]);
 
-	const back = (
-		<Button variant="ghost" size="sm" className="w-fit" onClick={() => navigate('/settings/apps')}>
-			<ArrowLeft className="size-4" />
-			{t('settings.tabs.apps')}
-		</Button>
-	);
-
 	if (loading) {
 		return (
 			<SettingsPageShell>
