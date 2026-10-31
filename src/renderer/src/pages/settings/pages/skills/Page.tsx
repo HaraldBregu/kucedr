@@ -4,13 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	ChevronRight,
-	FolderOpen,
 	Plug,
-	RefreshCw,
 	Sparkles,
-	Upload,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import type { SkillInfo } from '../../../../../../shared/skills_types';
 import {
@@ -34,11 +30,8 @@ const SkillsPage: React.FC = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [skills, setSkills] = useState<SkillInfo[]>([]);
-	const [skillsRoot, setSkillsRoot] = useState('');
 	const [loading, setLoading] = useState(true);
-	const [importing, setImporting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
-	const [successMessage, setSuccessMessage] = useState('');
 	const [query, setQuery] = useState('');
 	const [category, setCategory] = useState('all');
 	const categoryOf = (skill: SkillInfo): string => skill.plugin?.name ?? 'local';
@@ -58,9 +51,8 @@ const SkillsPage: React.FC = () => {
 		setLoading(true);
 		setErrorMessage('');
 		try {
-			const [list, root] = await Promise.all([window.skills.list(), window.skills.getRoot()]);
+			const list = await window.skills.list();
 			setSkills(list);
-			setSkillsRoot(root);
 		} catch (error) {
 			setErrorMessage(getErrorMessage(error, t('settings.skills.loadError')));
 		} finally {
@@ -72,70 +64,12 @@ const SkillsPage: React.FC = () => {
 		void loadSkills();
 	}, [loadSkills]);
 
-	const handleOpenFolder = useCallback(async (): Promise<void> => {
-		setErrorMessage('');
-		try {
-			await window.skills.openRoot();
-		} catch (error) {
-			setErrorMessage(getErrorMessage(error, t('settings.skills.openFolderError')));
-		}
-	}, [t]);
-
-	const handleImport = useCallback(async (): Promise<void> => {
-		setImporting(true);
-		setErrorMessage('');
-		setSuccessMessage('');
-		try {
-			const result = await window.skills.import();
-			if (result) {
-				const importedCount = result.imported.length;
-				const skippedCount = result.skipped.length;
-				setSuccessMessage(
-					t('settings.skills.uploaded', {
-						count: String(importedCount),
-						skipped: String(skippedCount),
-					})
-				);
-				await loadSkills();
-			}
-		} catch (error) {
-			setErrorMessage(getErrorMessage(error, t('settings.skills.uploadError')));
-		} finally {
-			setImporting(false);
-		}
-	}, [loadSkills, t]);
 
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.skills')}
 				description={t('settings.skills.description')}
-				action={
-					<div className="flex flex-wrap items-center gap-2">
-						<Button
-							variant="outline"
-							size="xs"
-							onClick={() => void handleOpenFolder()}
-							disabled={loading || importing}
-						>
-							<FolderOpen className="size-3" />
-							{t('settings.skills.openFolder')}
-						</Button>
-						<Button
-							variant="outline"
-							size="xs"
-							onClick={loadSkills}
-							disabled={loading || importing}
-						>
-							<RefreshCw className="size-3" />
-							{t('settings.skills.refresh')}
-						</Button>
-						<Button size="xs" onClick={() => void handleImport()} disabled={loading || importing}>
-							<Upload className="size-3" />
-							{importing ? t('settings.skills.uploading') : t('settings.skills.upload')}
-						</Button>
-					</div>
-				}
 			/>
 
 			{errorMessage && (
@@ -144,7 +78,6 @@ const SkillsPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 
 			{!loading && skills.length === 0 && (
 				<SettingsEmptyState
@@ -155,14 +88,7 @@ const SkillsPage: React.FC = () => {
 			)}
 
 			{(loading || skills.length > 0) && (
-				<section className="pb-4" aria-labelledby="installed-skills-title">
-					<h2 id="installed-skills-title" className="text-sm font-medium">
-						{t('settings.skills.title')}
-					</h2>
-					{skillsRoot && (
-						<p className="mt-0.5 truncate text-xs text-muted-foreground">{skillsRoot}</p>
-					)}
-					<div className="mt-2">
+				<section className="pb-4">
 						<SettingsFilter
 							query={query}
 							onQueryChange={setQuery}
@@ -170,7 +96,6 @@ const SkillsPage: React.FC = () => {
 							category={category}
 							onCategoryChange={setCategory}
 						/>
-					</div>
 					{loading ? (
 						<SettingsPanel>
 							<SettingsLoadingRows rows={2} />

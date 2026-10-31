@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertTriangle, ChevronRight, Globe, HardDrive, Plug, Plus, PlugZap } from 'lucide-react';
+import { AlertTriangle, ChevronRight, Globe, HardDrive, Plug, PlugZap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { McpData, McpRegistry, McpServerInfo } from '@shared/mcp_types';
 import type { CatalogService } from '@shared/provider_types';
-import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -14,11 +13,9 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
-	SettingsSection,
 } from '../../components';
 import { catalogServer } from './catalog_server';
 import { MicrosoftConnect } from './components/McpConnect';
-import { McpServerForm } from './components/McpServerForm';
 import { SettingsFilter } from '../../components/filter';
 
 const McpPage = (): React.JSX.Element => {
@@ -26,7 +23,6 @@ const McpPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
 	const [registry, setRegistry] = useState<McpRegistry>({ servers: [], diagnostics: [] });
 	const [loading, setLoading] = useState(true);
-	const [addingServer, setAddingServer] = useState(false);
 	const [savingId, setSavingId] = useState<string | null>(null);
 	const [error, setError] = useState('');
 	const [catalog, setCatalog] = useState<readonly CatalogService[]>([]);
@@ -131,12 +127,6 @@ const McpPage = (): React.JSX.Element => {
 			<SettingsPageHeader
 				title="MCP servers"
 				description="Manage remote services and local MCP server packages."
-				action={
-					<Button size="xs" disabled={addingServer} onClick={() => setAddingServer(true)}>
-						<Plus className="size-3" />
-						Add server
-					</Button>
-				}
 			/>
 
 			{error && (
@@ -150,20 +140,6 @@ const McpPage = (): React.JSX.Element => {
 				</SettingsNotice>
 			))}
 
-			{addingServer && (
-				<SettingsSection title="Add MCP server">
-					<SettingsPanel>
-						<McpServerForm
-							onSubmit={async (id, entry) => {
-								await save(id, entry);
-								setAddingServer(false);
-							}}
-							onCancel={() => setAddingServer(false)}
-						/>
-					</SettingsPanel>
-				</SettingsSection>
-			)}
-
 			{!loading && servers.length === 0 && (
 				<SettingsEmptyState
 					icon={PlugZap}
@@ -173,10 +149,7 @@ const McpPage = (): React.JSX.Element => {
 			)}
 
 			{(loading || servers.length > 0) && (
-				<section className="pb-4" aria-labelledby="installed-mcp-title">
-					<h2 id="installed-mcp-title" className="mb-2 text-sm font-medium">
-						Installed servers
-					</h2>
+				<section className="pb-4">
 					<SettingsFilter
 						query={query}
 						onQueryChange={setQuery}

@@ -79,10 +79,7 @@ const ServicesPage: React.FC = () => {
 			)}
 
 			{(loading || services.length > 0) && (
-				<section className="pb-4" aria-labelledby="installed-services-title">
-					<h2 id="installed-services-title" className="mb-2 text-sm font-medium">
-						{t('settings.services.title')}
-					</h2>
+				<section className="pb-4">
 					<SettingsFilter
 						query={query}
 						onQueryChange={setQuery}

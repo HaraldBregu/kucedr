@@ -74,10 +74,7 @@ const ScriptsPage: React.FC = () => {
 			)}
 
 			{(loading || scripts.length > 0) && (
-				<section className="pb-4" aria-labelledby="installed-scripts-title">
-					<h2 id="installed-scripts-title" className="mb-2 text-sm font-medium">
-						{t('settings.scripts.title')}
-					</h2>
+				<section className="pb-4">
 					<SettingsFilter
 						query={query}
 						onQueryChange={setQuery}
