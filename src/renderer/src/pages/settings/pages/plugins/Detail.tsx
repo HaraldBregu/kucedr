@@ -11,7 +11,6 @@ import {
 	SettingsPageShell,
 	SettingsSection,
 } from '../../components';
-import Configuration from './Configuration';
 import Confirm from './Confirm';
 
 export default function PluginDetailPage(): React.JSX.Element {
