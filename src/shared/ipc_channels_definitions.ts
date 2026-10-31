@@ -281,7 +281,6 @@ export const AppChannels = {
 	models: 'app:models',
 	vectorDatabases: 'app:vector-databases',
 	storages: 'app:storages',
-	webSearches: 'app:web-searches',
 	mcps: 'app:mcps',
 	channels: 'app:channels:list',
 	getChannelModelSelection: 'app:channels:model-selection:get',
