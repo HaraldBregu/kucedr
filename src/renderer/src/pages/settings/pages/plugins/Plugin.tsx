@@ -370,7 +370,11 @@ export default function PluginPage(): React.JSX.Element {
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
 				) : (
 					sections.map((section) => (
-						<SettingsSection key={section.key} title={`${section.title} · ${section.rows.length}`}>
+						<SettingsSection key={section.key} title={
+								section.rows.length < 5
+									? section.title
+									: `${section.title} · ${section.rows.length}`
+							}>
 							<SettingsPanel>
 								{section.rows.map((row) => (
 									<SettingsRow
