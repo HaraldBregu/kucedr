@@ -27,7 +27,7 @@ import {
 import { catalogServer } from './catalog_server';
 import { MicrosoftConnect } from './components/McpConnect';
 import { McpServerForm } from './components/McpServerForm';
-import { McpServerRow } from './components/McpServerRow';
+import { SettingsFilter } from '../../components/filter';
 
 const McpPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
