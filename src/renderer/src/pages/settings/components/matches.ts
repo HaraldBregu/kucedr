@@ -8,6 +8,7 @@ export function matches(query: FilterQuery, search: string, category: string): b
 			.filter((value): value is string => typeof value === 'string')
 			.map((value) => value.toLowerCase());
 		const value = values[0] ?? '';
+		if (rule.operator !== 'empty' && rule.operator !== 'not_empty' && values.length === 0) return true;
 		let result: boolean;
 		switch (rule.operator) {
 			case 'contains': result = actual.includes(value); break;
