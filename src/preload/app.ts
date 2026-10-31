@@ -37,9 +37,6 @@ export const app: AppApi = {
 	storages: () => {
 		return typedInvokeUnwrap(AppChannels.storages);
 	},
-	webSearches: () => {
-		return typedInvokeUnwrap(AppChannels.webSearches);
-	},
 	mcps: () => {
 		return typedInvokeUnwrap(AppChannels.mcps);
 	},
