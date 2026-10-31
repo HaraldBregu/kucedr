@@ -13,12 +13,17 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 		categories: _categories,
 		author: _author,
 		minAppVersion: _minAppVersion,
-		icon: _icon,
-		iconDark: _iconDark,
+		icon,
+		iconDark,
 		...fields
 	} = manifest;
 	if (Object.keys(fields).length === 0) return undefined;
-	const provider = { providerId: id, providerName: title, ...fields };
+	const provider = {
+		providerId: id,
+		providerName: title,
+		...(icon && { icon_light_url: `/assets/${icon}`, icon_dark_url: `/assets/${iconDark ?? icon}` }),
+		...fields,
+	};
 	const errors = validateProviderManifest(provider);
 	if (errors.length > 0) throw new Error(errors.join(' '));
 	return provider as ProviderManifest;
