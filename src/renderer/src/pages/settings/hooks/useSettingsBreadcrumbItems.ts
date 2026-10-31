@@ -178,7 +178,10 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		items.push({ label: formatAppLabel(skillId) });
 	}
 
-	if (location.pathname.startsWith('/settings/scripts/')) {
+	if (
+		location.pathname.startsWith('/settings/scripts/') ||
+		location.pathname.startsWith('/settings/services/')
+	) {
 		items[0] = { ...items[0], path: current.path };
 		items.push({
 			label: formatAppLabel(decodeURIComponent(location.pathname.split('/').at(-1) ?? '')),
