@@ -15,6 +15,8 @@ import type {
 	SearchApi,
 	SkillsApi,
 	PluginsApi,
+	ScriptsApi,
+	ServicesApi,
 	LibraryApi,
 	StorageApi,
 	DatabaseApi,
