@@ -7,7 +7,7 @@ Kucedr posts one message on `process.parentPort`:
 ```json
 {
 	"operation": "backup",
-	"provider": { "region": "...", "endpoint": "...", "forcePathStyle": true, "bucket": "...", "accessKeyId": "...", "secretAccessKey": "..." },
+	"provider": { "region": "...", "endpoint": "...", "forcePathStyle": false, "bucket": "...", "accessKeyId": "...", "secretAccessKey": "..." },
 	"roots": [{ "path": "/Users/me/Documents/notes", "prefix": "notes/" }],
 	"protectedRoot": "/Users/me/.kucedr"
 }
