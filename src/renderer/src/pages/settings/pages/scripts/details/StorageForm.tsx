@@ -29,7 +29,7 @@ const FIELDS = [
 interface StorageFormProps {
 	readonly provider?: StorageProvider;
 	readonly onSaved: (provider: StorageProvider) => void;
-	readonly onCancel: () => void;
+	readonly onCancel?: () => void;
 	readonly enabledPresetIds: readonly string[];
 	readonly initialPresetId?: string;
 }
