@@ -25,7 +25,7 @@ Example:
 ```json
 {
 	"id": "web-search",
-	"name": "Tavily Web Search",
+	"name": "Web Search",
 	"type": "SEARCH_ENGINE",
 	"url": "https://api.tavily.com/search",
 	"authentication": "api-key",
