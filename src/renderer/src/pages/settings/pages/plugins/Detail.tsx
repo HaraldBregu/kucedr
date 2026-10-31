@@ -181,7 +181,6 @@ export default function PluginDetailPage(): React.JSX.Element {
 							)}
 						</dl>
 					</SettingsSection>
-					{storage && <Configuration storage={storage} />}
 				</>
 			) : (
 				<SettingsEmptyState title={t('settings.integrations.notFound')} />
