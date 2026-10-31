@@ -86,7 +86,7 @@ export default function PluginPage(): React.JSX.Element {
 				window.app.models(),
 				window.app.mcps(),
 				window.app.vectorDatabases(),
-				window.app.webSearches(),
+				window.services.list(),
 				window.app.storages(),
 				window.apps.list(),
 				window.mcp.registry(),
