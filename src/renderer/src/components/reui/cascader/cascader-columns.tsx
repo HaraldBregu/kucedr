@@ -22,7 +22,7 @@ import {
 import { Combobox as ComboboxPrimitive } from "@base-ui/react"
 
 import { cn } from "@/lib/utils"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea } from "@/components/reui/cascader/scroll"
 import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
 
 export interface CascaderColumnsProps extends Omit<

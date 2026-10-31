@@ -21,7 +21,7 @@ import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 
 import { cn } from "@/lib/utils"
-import { Spinner } from "@/components/ui/spinner"
+import { Spinner } from "@/components/reui/cascader/spinner"
 import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
 
 // Base UI extends its synthetic events with a handler-veto escape hatch.

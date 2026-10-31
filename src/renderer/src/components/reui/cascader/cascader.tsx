@@ -83,7 +83,7 @@ import { Combobox as ComboboxPrimitive } from "@base-ui/react"
 import { Slot } from "radix-ui"
 
 import { cn } from "@/lib/utils"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea } from "@/components/reui/cascader/scroll"
 import { IconPlaceholder } from "@/app/(create)/components/icon-placeholder"
 
 /** Stable `filteredItems` for a level swap; a fixed identity cannot loop. */
