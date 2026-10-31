@@ -109,6 +109,7 @@ const ScriptDetailsPage: React.FC = () => {
 						</SettingsRow>
 					</SettingsPanel>
 				</SettingsSection>
+				{script.type === 'STORAGE' && <Configuration name={script.title} />}
 			</div>
 		</SettingsPageShell>
 	);
