@@ -52,6 +52,7 @@ export type PluginScriptType = (typeof PLUGIN_SCRIPT_TYPES)[number];
 export interface PluginScriptInfo {
 	readonly name: string;
 	readonly title: string;
+	readonly description: string;
 	readonly type: PluginScriptType;
 	readonly author?: string;
 	readonly version: string;
