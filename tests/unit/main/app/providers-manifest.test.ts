@@ -327,7 +327,7 @@ describe('provider manifests', () => {
 		expect(loadWebSearches()).toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({
-					id: 'brave-web-search',
+					id: 'web-search',
 					provider: expect.objectContaining({ id: 'brave' }),
 				}),
 			])
