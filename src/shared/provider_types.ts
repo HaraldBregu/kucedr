@@ -174,7 +174,7 @@ export interface CatalogStorage extends ProviderManifestStorage {
 
 /** One web search service in resources/plugins/<id>/manifest.json. */
 export interface CatalogEntryWebSearch extends CatalogEntryService {
-	readonly type: 'web-search';
+	readonly type: 'SEARCH_ENGINE';
 	readonly url: string;
 }
 
