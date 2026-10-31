@@ -38,6 +38,7 @@ export default function Configuration({ name }: ConfigurationProps): React.JSX.E
 				if (!cancelled) {
 					setProviders(saved);
 					setLoading(false);
+					if (saved.length === 0) setEditing('new');
 				}
 			},
 			(err: unknown) => {
