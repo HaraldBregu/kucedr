@@ -8,7 +8,7 @@ export function readPluginServices(directory: string): { web_search?: unknown[] 
 	if (!existsSync(servicesDirectory)) return {};
 	const web_search: unknown[] = [];
 	for (const entry of readdirSync(servicesDirectory, { withFileTypes: true })) {
-		if (entry.name.startsWith('.')) continue;
+		if (entry.name.startsWith('.') || entry.name === 'README.md') continue;
 		if (!entry.isDirectory()) throw new Error(`services/${entry.name} must be a folder.`);
 		const file = path.join(servicesDirectory, entry.name, 'manifest.json');
 		if (!existsSync(file)) throw new Error(`services/${entry.name}/manifest.json is missing.`);
