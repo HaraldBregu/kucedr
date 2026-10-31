@@ -21,9 +21,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 } from '../../components';
-import { createFilterQuery } from '@/components/reui/filters/filters-query';
-import { RuleFilter } from '../../components/rulefilter';
-import { matches } from '../../components/matches';
+import { SettingsFilter } from '../../components/filter';
 
 function getErrorMessage(error: unknown, fallback: string): string {
 	if (error instanceof Error && error.message.trim().length > 0) {
@@ -41,11 +39,16 @@ const SkillsPage: React.FC = () => {
 	const [importing, setImporting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
-	const [query, setQuery] = useState(createFilterQuery);
+	const [query, setQuery] = useState('');
+	const [category, setCategory] = useState('all');
 	const categoryOf = (skill: SkillInfo): string => skill.plugin?.name ?? 'local';
 	const categories = [...new Set(skills.map(categoryOf))].sort();
 	const visibleSkills = skills.filter(
-		(skill) => matches(query, `${skill.manifest.name} ${skill.manifest.description}`, categoryOf(skill))
+		(skill) =>
+			(category === 'all' || categoryOf(skill) === category) &&
+			`${skill.manifest.name} ${skill.manifest.description}`
+				.toLowerCase()
+				.includes(query.trim().toLowerCase())
 	);
 	const open = (skill: SkillInfo): void => {
 		void navigate(`/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`);
@@ -160,10 +163,12 @@ const SkillsPage: React.FC = () => {
 						<p className="mt-0.5 truncate text-xs text-muted-foreground">{skillsRoot}</p>
 					)}
 					<div className="mt-2">
-						<RuleFilter
+						<SettingsFilter
 							query={query}
 							onQueryChange={setQuery}
 							categories={categories}
+							category={category}
+							onCategoryChange={setCategory}
 						/>
 					</div>
 					{loading ? (
