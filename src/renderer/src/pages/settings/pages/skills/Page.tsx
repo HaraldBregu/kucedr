@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	ChevronRight,
+	Folder,
 	Plug,
 	Sparkles,
+	Tag,
+	User,
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import type { SkillInfo } from '../../../../../../shared/skills_types';
@@ -126,6 +129,26 @@ const SkillsPage: React.FC = () => {
 												{skill.manifest.description || t('settings.skills.noDescription')}
 											</p>
 											<div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+												{skill.manifest.metadata?.category && (
+													<span className="flex items-center gap-1">
+														<Folder className="size-3" aria-hidden="true" />
+														{skill.manifest.metadata.category}
+													</span>
+												)}
+												{skill.manifest.metadata?.version && (
+													<span className="flex items-center gap-1">
+														<Tag className="size-3" aria-hidden="true" />
+														<span className="sr-only">{t('settings.skills.detailVersion')}</span>
+														{skill.manifest.metadata.version}
+													</span>
+												)}
+												{skill.manifest.metadata?.author && (
+													<span className="flex items-center gap-1">
+														<User className="size-3" aria-hidden="true" />
+														<span className="sr-only">{t('settings.skills.detailAuthor')}</span>
+														{skill.manifest.metadata.author}
+													</span>
+												)}
 												<span className="flex items-center gap-1">
 													<Plug className="size-3" aria-hidden="true" />
 													{skill.plugin?.name ?? t('settings.filter.categories.local')}
