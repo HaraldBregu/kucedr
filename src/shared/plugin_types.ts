@@ -49,6 +49,8 @@ export const PLUGIN_SCRIPT_TYPES = ['UI', 'STORAGE'] as const;
 
 export type PluginScriptType = (typeof PLUGIN_SCRIPT_TYPES)[number];
 
+export const PLUGIN_SERVICE_TYPES = ['SEARCH_ENGINE'] as const;
+
 export interface PluginScriptInfo {
 	readonly name: string;
 	readonly title: string;
