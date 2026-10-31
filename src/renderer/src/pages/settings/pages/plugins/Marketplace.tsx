@@ -53,7 +53,6 @@ export default function MarketplacePage(): React.JSX.Element {
 	if (plugin === undefined) {
 		return (
 			<SettingsPageShell>
-				{back}
 				<SettingsPanel>
 					<SettingsLoadingRows rows={3} />
 				</SettingsPanel>
@@ -64,7 +63,6 @@ export default function MarketplacePage(): React.JSX.Element {
 	if (plugin === null) {
 		return (
 			<SettingsPageShell>
-				{back}
 				{error ? (
 					<SettingsNotice variant="destructive">{error}</SettingsNotice>
 				) : (
