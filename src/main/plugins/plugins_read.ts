@@ -9,6 +9,7 @@ import { assertNoLinks } from './plugins_assert_no_links';
 import { pluginContents } from './plugins_contents';
 import { readPluginModels } from './plugins_models_read';
 import { readPluginServices } from './plugins_services_read';
+import { readPluginMcpServers } from './plugins_mcp_read';
 import { pluginProvider } from './plugins_provider';
 import { compareVersions } from './plugins_version_compare';
 
