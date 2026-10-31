@@ -63,6 +63,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				'/settings/channels',
 				'/settings/remote-agent',
 				'/settings/apps',
+				'/settings/services',
 				'/settings/scripts',
 			].includes(item.path)
 		),
