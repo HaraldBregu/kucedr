@@ -382,7 +382,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/settings/services',
 		labelKey: 'settings.tabs.services',
 		descriptionKey: 'settings.overview.descriptions.services',
-		icon: Globe,
+		icon: ServerCog,
 	},
 	{
 		path: '/settings/library',
