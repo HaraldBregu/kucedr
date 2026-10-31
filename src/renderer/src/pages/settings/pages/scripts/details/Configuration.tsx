@@ -74,8 +74,7 @@ export default function Configuration({ name }: ConfigurationProps): React.JSX.E
 			)}
 			{editing !== null && (
 				<StorageForm
-					enabledPresetIds={[`${storage.provider.id}/${storage.id}`]}
-					initialPresetId={storage.id}
+					enabledPresetIds={[]}
 					provider={editing === 'new' ? undefined : editing}
 					onCancel={() => setEditing(null)}
 					onSaved={(saved) => {
