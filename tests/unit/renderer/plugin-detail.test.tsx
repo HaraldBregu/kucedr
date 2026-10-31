@@ -63,6 +63,9 @@ const providerApi = {
 	listEnabledPlugins: jest.fn(),
 	setPluginEnabled: jest.fn(),
 };
+const storageApi = {
+	listProviders: jest.fn(),
+};
 
 beforeEach(() => {
 	jest.clearAllMocks();
