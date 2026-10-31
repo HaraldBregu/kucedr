@@ -101,7 +101,7 @@ const ServicesPage: React.FC = () => {
 									settings?.configured[service.provider.id as SearchEngineId] ?? false;
 								return (
 									<Card
-										key={service.id}
+										key={`${service.provider.id}/${service.id}`}
 										size="sm"
 										role="link"
 										tabIndex={0}
