@@ -379,12 +379,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Cpu,
 	},
 	{
-		path: '/settings/services',
-		labelKey: 'settings.tabs.services',
-		descriptionKey: 'settings.overview.descriptions.services',
-		icon: ServerCog,
-	},
-	{
 		path: '/settings/library',
 		labelKey: 'library.title',
 		descriptionKey: 'settings.overview.descriptions.library',
