@@ -214,8 +214,8 @@ export default function PluginPage(): React.JSX.Element {
 			})),
 		},
 		{
-			key: 'webSearch',
-			title: t('settings.integrations.plugin.webSearch'),
+			key: 'services',
+			title: t('settings.integrations.plugin.services'),
 			rows: contents.webSearches.map((service) => ({
 				key: service.id,
 				title: service.name,
