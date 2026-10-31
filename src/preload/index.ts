@@ -102,6 +102,7 @@ if (process.contextIsolated) {
 	globalThis.skills = skills;
 	// @ts-ignore (define in dts)
 	globalThis.plugins = plugins;
+	Object.assign(globalThis, { scripts, services });
 	// @ts-ignore (define in dts)
 	globalThis.library = library;
 	// @ts-ignore (define in dts)
