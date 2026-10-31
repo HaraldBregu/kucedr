@@ -68,15 +68,15 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			].includes(item.path)
 		),
 	},
-	{
-		id: 'plugins',
-		items: SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/plugins'),
-	},
 ] as const;
+
+const SETTINGS_SIDEBAR_FOOTER_ITEMS = SETTINGS_NAVIGATION.filter(
+	(item) => item.path === '/settings/plugins'
+);
 
 const SETTINGS_SIDEBAR_ITEMS = SETTINGS_SIDEBAR_GROUPS.flatMap<SettingsNavigationItem>(
 	(group) => group.items
-);
+).concat(SETTINGS_SIDEBAR_FOOTER_ITEMS);
 
 export function SettingsSidebar(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -118,6 +118,11 @@ export function SettingsSidebar(): React.JSX.Element {
 						/>
 					))}
 				</div>
+				<Group
+					items={SETTINGS_SIDEBAR_FOOTER_ITEMS}
+					activePath={activePath}
+					className="shrink-0 border-t border-sidebar-border/50 py-2"
+				/>
 			</nav>
 		</div>
 	);
