@@ -539,11 +539,18 @@ export interface PluginsInvokeChannelMap {
 		args: [id: string, values: Record<string, string>];
 		result: void;
 	};
-	[PluginsChannels.scripts]: { args: []; result: import('./plugin_types').PluginScriptInfo[] };
-	[PluginsChannels.renderScript]: {
+}
+
+export interface ScriptsInvokeChannelMap {
+	[ScriptsChannels.list]: { args: []; result: import('./plugin_types').PluginScriptInfo[] };
+	[ScriptsChannels.render]: {
 		args: [name: string, input: unknown, theme: 'light' | 'dark'];
 		result: string;
 	};
+}
+
+export interface ServicesInvokeChannelMap {
+	[ServicesChannels.list]: { args: []; result: import('./provider_types').CatalogWebSearch[] };
 }
 
 export interface McpInvokeChannelMap {
