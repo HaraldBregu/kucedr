@@ -21,6 +21,8 @@ const mcpApi = {
 	upsert: jest.fn(),
 	delete: jest.fn(),
 	registry: jest.fn(),
+	catalog: jest.fn(),
+	setToolPermission: jest.fn(),
 	importLocal: jest.fn(),
 	configureLocal: jest.fn(),
 	getRoot: jest.fn(),
@@ -47,6 +49,8 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'mcp', { configurable: true, value: mcpApi });
+	Object.defineProperty(window, 'app', { configurable: true, value: { mcps: jest.fn().mockResolvedValue([]) } });
+	mcpApi.catalog.mockResolvedValue(null);
 	mcpApi.registry.mockImplementation(async () => ({ servers: [server], diagnostics: [] }));
 	mcpApi.configureLocal.mockImplementation(async (_id: string, data: McpData) => {
 		server = { ...server, data };
@@ -60,7 +64,7 @@ beforeEach(() => {
 		ok: true,
 		tools: ['search', 'read'],
 		toolDetails: [
-			{ name: 'search', description: 'Search indexed documents.' },
+			{ name: 'search', description: 'Search indexed documents.', inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] } },
 			{ name: 'read', description: 'Read a document.' },
 		],
 		toolCount: 2,
@@ -142,6 +146,8 @@ describe('MCP details', () => {
 		expect(await screen.findByText('2 tools · 25 ms')).toBeInTheDocument();
 		expect(screen.getByText('search')).toBeInTheDocument();
 		expect(screen.getByText(/Search indexed documents/)).toBeInTheDocument();
+		await user.click(screen.getByText('Input schema'));
+		expect(screen.getByText(/"query":/)).toBeVisible();
 
 		const url = screen.getByLabelText('Server URL');
 		await user.clear(url);
