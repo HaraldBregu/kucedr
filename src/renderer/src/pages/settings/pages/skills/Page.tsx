@@ -31,6 +31,20 @@ const SkillsPage: React.FC = () => {
 	const [importing, setImporting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
+	const [query, setQuery] = useState('');
+	const [category, setCategory] = useState('all');
+	const categoryOf = (skill: SkillInfo): string => skill.plugin?.name ?? 'local';
+	const categories = [...new Set(skills.map(categoryOf))].sort();
+	const visibleSkills = skills.filter(
+		(skill) =>
+			(category === 'all' || categoryOf(skill) === category) &&
+			`${skill.manifest.name} ${skill.manifest.description}`
+				.toLowerCase()
+				.includes(query.trim().toLowerCase())
+	);
+	const open = (skill: SkillInfo): void => {
+		void navigate(`/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`);
+	};
 
 	const loadSkills = useCallback(async (): Promise<void> => {
 		setLoading(true);
