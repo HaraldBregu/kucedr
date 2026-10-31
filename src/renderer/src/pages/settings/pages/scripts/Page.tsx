@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, FileCode, Folder, Layers, Plug, Tag, User } from 'lucide-react';
+import { AlertTriangle, ChevronRight, FileCode, Folder, Layers, Plug, Tag, User } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import type { PluginScriptInfo } from '../../../../../../shared/plugin_types';
 import {
