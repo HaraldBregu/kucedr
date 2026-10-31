@@ -31,7 +31,7 @@ export default function Configuration(): React.JSX.Element {
 
 	return (
 		<SettingsSection
-			title={t('settings.integrations.plugin.configuration', { name })}
+			title={t('settings.integrations.plugin.configuration')}
 			description={t('settings.storageProviders.description')}
 		>
 			{error && (
