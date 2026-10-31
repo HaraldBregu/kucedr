@@ -51,11 +51,10 @@ export function readPlugin(
 	if (manifest.icon) assertIcon(path.join(directory, 'assets'), manifest.icon);
 	if (manifest.iconDark) assertIcon(path.join(directory, 'assets'), manifest.iconDark);
 	const models = readPluginModels(directory);
-	const search = readPluginSearch(directory);
 	const provider = pluginProvider({
 		...manifest,
 		...(models && { models }),
-		...(search !== undefined && { web_search: [search] }),
+		...readPluginServices(directory),
 	});
 	const contributes = { ...pluginContents(directory), providers: provider ? [manifest.id] : [] };
 	if (Object.values(contributes).every((ids) => ids.length === 0)) {
