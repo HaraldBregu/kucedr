@@ -390,28 +390,22 @@ export default function PluginPage(): React.JSX.Element {
 				{!plugin.enabled && !plugin.error ? (
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
 				) : (
-					<>
-						{contents.storages.length > 0 && <Storage storages={contents.storages} />}
-						{sections.map((section) => (
-							<SettingsSection
-								key={section.key}
-								title={`${section.title} · ${section.rows.length}`}
-							>
-								<SettingsPanel>
-									{section.rows.map((row) => (
-										<SettingsRow
-											key={row.key}
-											title={row.title}
-											description={row.description}
-											onClick={row.path ? () => navigate(row.path!) : undefined}
-										>
-											{row.badge && <SettingsValue>{row.badge}</SettingsValue>}
-										</SettingsRow>
-									))}
-								</SettingsPanel>
-							</SettingsSection>
-						))}
-					</>
+					sections.map((section) => (
+						<SettingsSection key={section.key} title={`${section.title} · ${section.rows.length}`}>
+							<SettingsPanel>
+								{section.rows.map((row) => (
+									<SettingsRow
+										key={row.key}
+										title={row.title}
+										description={row.description}
+										onClick={row.path ? () => navigate(row.path!) : undefined}
+									>
+										{row.badge && <SettingsValue>{row.badge}</SettingsValue>}
+									</SettingsRow>
+								))}
+							</SettingsPanel>
+						</SettingsSection>
+					))
 				)}
 			</div>
 			<Confirm
