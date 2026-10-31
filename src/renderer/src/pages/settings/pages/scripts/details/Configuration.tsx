@@ -30,10 +30,7 @@ export default function Configuration(): React.JSX.Element {
 	}, [t]);
 
 	return (
-		<SettingsSection
-			title={t('settings.integrations.plugin.configuration')}
-			description={t('settings.storageProviders.description')}
-		>
+		<SettingsSection title={t('settings.integrations.plugin.configuration')}>
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{error}
