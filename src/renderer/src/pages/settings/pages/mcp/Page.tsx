@@ -1,9 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertTriangle, Plus, PlugZap } from 'lucide-react';
+import {
+	AlertTriangle,
+	ChevronRight,
+	Globe,
+	HardDrive,
+	Plug,
+	Plus,
+	PlugZap,
+} from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import type { McpData, McpRegistry } from '@shared/mcp_types';
+import type { McpData, McpRegistry, McpServerInfo } from '@shared/mcp_types';
 import type { CatalogService } from '@shared/provider_types';
 import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
