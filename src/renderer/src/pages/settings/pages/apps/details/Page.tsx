@@ -15,6 +15,7 @@ import {
 	SettingsNotice,
 	SettingsPageShell,
 	SettingsPanel,
+	SettingsSection,
 } from '../../../components';
 
 const KNOWN_METADATA_KEYS = ['version', 'category', 'entry', 'image'];
@@ -181,6 +182,9 @@ const AppDetailsPage: React.FC = () => {
 				</div>
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
+				<SettingsSection title={t('settings.modelServices.configuration')}>
+					<SettingsPanel className="min-h-20">{null}</SettingsPanel>
+				</SettingsSection>
 				{(app.mode === 'window' || app.mode === 'both') && <WindowSettings key={app.id} appId={app.id} />}
 			</div>
 		</SettingsPageShell>
