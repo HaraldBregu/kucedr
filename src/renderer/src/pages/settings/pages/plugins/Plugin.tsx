@@ -273,8 +273,10 @@ export default function PluginPage(): React.JSX.Element {
 		<SettingsPageShell>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			<header className="mb-6 flex items-start gap-4 py-2">
-				<PluginIcon plugin={plugin} className="size-14" />
 				<div className="min-w-0 flex-1">
+					<div className="mb-4 flex size-16 items-center justify-center rounded-2xl border border-border bg-muted/50 p-2">
+						<PluginIcon plugin={plugin} className="size-full" />
+					</div>
 					<h1 className="flex flex-wrap items-center gap-2 text-3xl font-normal leading-9 text-foreground">
 						{plugin.name}
 						{plugin.error && (
@@ -330,8 +332,8 @@ export default function PluginPage(): React.JSX.Element {
 				)}
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
-				{plugin.settings.length > 0 && (
-					<SettingsSection title={t('settings.integrations.plugin.settings')}>
+				<SettingsSection title={t('settings.modelServices.configuration')}>
+					{plugin.settings.length > 0 ? (
 						<form
 							className="flex flex-col gap-3"
 							onSubmit={(event) => {
@@ -364,8 +366,14 @@ export default function PluginPage(): React.JSX.Element {
 								{t('common.save')}
 							</Button>
 						</form>
-					</SettingsSection>
-				)}
+					) : (
+						<SettingsPanel>
+							<p className="px-4 py-3 text-sm text-muted-foreground">
+								{t('settings.apps.noConfiguration')}
+							</p>
+						</SettingsPanel>
+					)}
+				</SettingsSection>
 				{!plugin.enabled && !plugin.error ? (
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
 				) : (
