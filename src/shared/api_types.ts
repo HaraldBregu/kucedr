@@ -376,8 +376,15 @@ export interface PluginsApi {
 	setEnabled: (id: string, enabled: boolean) => Promise<void>;
 	getSettings: (id: string) => Promise<Record<string, string>>;
 	saveSettings: (id: string, values: Record<string, string>) => Promise<void>;
-	scripts: () => Promise<PluginScriptInfo[]>;
-	renderScript: (name: string, input: unknown, theme: 'light' | 'dark') => Promise<string>;
+}
+
+export interface ScriptsApi {
+	list: () => Promise<PluginScriptInfo[]>;
+	render: (name: string, input: unknown, theme: 'light' | 'dark') => Promise<string>;
+}
+
+export interface ServicesApi {
+	list: () => Promise<CatalogWebSearch[]>;
 }
 
 export interface McpApi {
