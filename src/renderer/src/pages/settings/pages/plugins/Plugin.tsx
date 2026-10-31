@@ -134,7 +134,6 @@ export default function PluginPage(): React.JSX.Element {
 	if (plugin === undefined || !contents) {
 		return (
 			<SettingsPageShell>
-				{back}
 				{error ? (
 					<SettingsNotice variant="destructive">{error}</SettingsNotice>
 				) : (
@@ -149,7 +148,6 @@ export default function PluginPage(): React.JSX.Element {
 	if (plugin === null) {
 		return (
 			<SettingsPageShell>
-				{back}
 				<SettingsEmptyState
 					icon={Plug}
 					title={t('settings.integrations.plugin.notFound')}
