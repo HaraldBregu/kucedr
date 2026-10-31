@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, ChevronRight, CircleCheck, CircleOff, Layers, Plug, ServerCog } from 'lucide-react';
+import {
+	AlertTriangle,
+	ChevronRight,
+	CircleCheck,
+	CircleOff,
+	Layers,
+	Plug,
+	ServerCog,
+} from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import type { CatalogWebSearch } from '@shared/provider_types';
 import type { SearchEngineId, SearchSettings } from '@shared/search_types';
