@@ -14,6 +14,8 @@ import { provider } from './provider';
 import { search } from './search';
 import { skills } from './skills';
 import { plugins } from './plugins';
+import { scripts } from './scripts';
+import { services } from './services';
 import { library } from './library';
 import { storage } from './storage';
 import { database } from './database';
