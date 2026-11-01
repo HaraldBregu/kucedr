@@ -25,7 +25,12 @@ import type { SkillInfo } from '@shared/skills_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { SettingsItemMedia } from '../../components/item-media';
 import {
@@ -161,7 +166,10 @@ export default function PluginPage(): React.JSX.Element {
 
 	const saveSetting = async (key: string): Promise<void> => {
 		if (!plugin) return;
-		const next = { ...savedSettings.current, [key]: settings[key]?.trim() || savedSettings.current[key] };
+		const next = {
+			...savedSettings.current,
+			[key]: settings[key]?.trim() || savedSettings.current[key],
+		};
 		setBusy(true);
 		setError('');
 		try {
@@ -426,23 +434,100 @@ export default function PluginPage(): React.JSX.Element {
 											</ItemContent>
 											<ItemActions className="ml-auto flex-none justify-end gap-2">
 												{editingSetting === key ? (
-															<>
-																<Input autoFocus aria-label={setting.title ?? key} className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none" type={setting.format === 'password' ? 'password' : 'text'} autoComplete="off" spellCheck={false} placeholder={savedSettings.current[key] ? '************' : t('settings.providers.apiKeyPlaceholder')} value={settings[key] ?? ''} onChange={(event) => setSettings((current) => ({ ...current, [key]: event.target.value }))} onKeyDown={(event) => { if (event.key === 'Enter' && (settings[key]?.trim() || savedSettings.current[key]?.trim())) { event.preventDefault(); void saveSetting(key); } }} />
-																<Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => { setSettings(savedSettings.current); setEditingSetting(null); }}>{t('common.cancel')}</Button>
-																<Button type="button" size="sm" disabled={busy || !(settings[key]?.trim() || savedSettings.current[key]?.trim())} onClick={() => void saveSetting(key)}>{t('common.save')}</Button>
-															</>
-														) : !savedSettings.current[key] ? (
-															<Button type="button" variant="ghost" size="sm" onClick={() => { setSettings((current) => ({ ...current, [key]: '' })); setEditingSetting(key); }}>Connect</Button>
-														) : (
-															<DropdownMenu>
-																<DropdownMenuTrigger asChild><Button variant="ghost" size="icon-sm" disabled={busy} aria-label={`Options for ${setting.title ?? key}`}><MoreHorizontal className="size-4" /></Button></DropdownMenuTrigger>
-																<DropdownMenuContent align="end">
-																	<DropdownMenuItem onSelect={() => { setSettings((current) => ({ ...current, [key]: '' })); setEditingSetting(key); }}>Edit API key</DropdownMenuItem>
-																	<DropdownMenuItem onSelect={() => void resetSetting(key)}>Reset</DropdownMenuItem>
-																</DropdownMenuContent>
-															</DropdownMenu>
-														)}
-													</ItemActions>
+													<>
+														<Input
+															autoFocus
+															aria-label={setting.title ?? key}
+															className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
+															type={setting.format === 'password' ? 'password' : 'text'}
+															autoComplete="off"
+															spellCheck={false}
+															placeholder={
+																savedSettings.current[key]
+																	? '************'
+																	: t('settings.providers.apiKeyPlaceholder')
+															}
+															value={settings[key] ?? ''}
+															onChange={(event) =>
+																setSettings((current) => ({
+																	...current,
+																	[key]: event.target.value,
+																}))
+															}
+															onKeyDown={(event) => {
+																if (
+																	event.key === 'Enter' &&
+																	(settings[key]?.trim() || savedSettings.current[key]?.trim())
+																) {
+																	event.preventDefault();
+																	void saveSetting(key);
+																}
+															}}
+														/>
+														<Button
+															type="button"
+															variant="outline"
+															size="sm"
+															disabled={busy}
+															onClick={() => {
+																setSettings(savedSettings.current);
+																setEditingSetting(null);
+															}}
+														>
+															{t('common.cancel')}
+														</Button>
+														<Button
+															type="button"
+															size="sm"
+															disabled={
+																busy ||
+																!(settings[key]?.trim() || savedSettings.current[key]?.trim())
+															}
+															onClick={() => void saveSetting(key)}
+														>
+															{t('common.save')}
+														</Button>
+													</>
+												) : !savedSettings.current[key] ? (
+													<Button
+														type="button"
+														variant="ghost"
+														size="sm"
+														onClick={() => {
+															setSettings((current) => ({ ...current, [key]: '' }));
+															setEditingSetting(key);
+														}}
+													>
+														Connect
+													</Button>
+												) : (
+													<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<Button
+																variant="ghost"
+																size="icon-sm"
+																disabled={busy}
+																aria-label={`Options for ${setting.title ?? key}`}
+															>
+																<MoreHorizontal className="size-4" />
+															</Button>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent align="end">
+															<DropdownMenuItem
+																onSelect={() => {
+																	setSettings((current) => ({ ...current, [key]: '' }));
+																	setEditingSetting(key);
+																}}
+															>
+																Edit API key
+															</DropdownMenuItem>
+															<DropdownMenuItem onSelect={() => void resetSetting(key)}>
+																Reset
+															</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												)}
+											</ItemActions>
 										</Item>
 									)
 								)}

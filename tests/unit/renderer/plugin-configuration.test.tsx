@@ -8,7 +8,7 @@ jest.mock('react-router-dom', () => ({
 }));
 jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 
-it('saves a valid API key when editing ends without a save button', async () => {
+it('saves, edits, cancels and resets the API key using model controls', async () => {
 	const saveSettings = jest.fn().mockResolvedValue(undefined);
 	Object.defineProperty(window, 'plugins', {
 		configurable: true,
@@ -62,14 +62,22 @@ it('saves a valid API key when editing ends without a save button', async () => 
 	await user.click(await screen.findByRole('button', { name: 'Connect' }));
 	const input = screen.getByLabelText('API key');
 	expect(input).toHaveAttribute('type', 'password');
-	expect(screen.queryByRole('button', { name: 'common.save' })).not.toBeInTheDocument();
 	await user.type(input, 'example-key');
+	await user.click(screen.getByRole('button', { name: 'common.cancel' }));
 	expect(saveSettings).not.toHaveBeenCalled();
-	await user.tab();
+	await user.click(screen.getByRole('button', { name: 'Connect' }));
+	await user.type(screen.getByLabelText('API key'), 'example-key');
+	await user.click(screen.getByRole('button', { name: 'common.save' }));
 	await waitFor(() =>
 		expect(saveSettings).toHaveBeenCalledWith('openai', { apiKey: 'example-key' })
 	);
-	await user.click(await screen.findByRole('button', { name: 'Reset' }));
+	await user.click(await screen.findByRole('button', { name: 'Options for API key' }));
+	await user.click(await screen.findByRole('menuitem', { name: 'Edit API key' }));
+	await user.type(screen.getByLabelText('API key'), 'replacement');
+	await user.click(screen.getByRole('button', { name: 'common.cancel' }));
+	expect(saveSettings).toHaveBeenCalledTimes(1);
+	await user.click(screen.getByRole('button', { name: 'Options for API key' }));
+	await user.click(await screen.findByRole('menuitem', { name: 'Reset' }));
 	await waitFor(() => expect(saveSettings).toHaveBeenLastCalledWith('openai', {}));
 	expect(screen.queryByLabelText('API key')).not.toBeInTheDocument();
 });
