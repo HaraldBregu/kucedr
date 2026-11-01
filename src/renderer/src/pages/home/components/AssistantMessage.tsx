@@ -423,11 +423,6 @@ export function AssistantMessage({
 						>
 							<Reply className="size-3.5" />
 						</Button>
-						{!isStreaming && message.completedAtMs != null && Number.isFinite(message.completedAtMs) && (
-							<time dateTime={new Date(message.completedAtMs).toISOString()} className="ml-2 text-xs text-muted-foreground">
-								{new Date(message.completedAtMs).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
-							</time>
-						)}
 					</MessageActions>
 				</>
 			)}
