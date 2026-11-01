@@ -103,6 +103,7 @@ export interface Message {
 	content: MessageContent;
 	toolCalls?: ToolCall[];
 	usage?: SessionUsage;
+	createdAtMs?: number;
 }
 
 import type {

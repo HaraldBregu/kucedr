@@ -384,6 +384,11 @@ export function AssistantMessage({
 							</Markdown>
 						) : null}
 					</div>
+					{!isStreaming && message.completedAtMs != null && Number.isFinite(message.completedAtMs) && (
+						<time dateTime={new Date(message.completedAtMs).toISOString()} className="mt-1 text-xs text-muted-foreground">
+							{new Date(message.completedAtMs).toLocaleString()}
+						</time>
+					)}
 					<MessageActions className="mt-1 gap-1">
 						<Button
 							type="button"

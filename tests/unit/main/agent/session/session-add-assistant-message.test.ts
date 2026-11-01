@@ -14,3 +14,12 @@ it('does not persist an empty assistant turn produced by interruption', () => {
 
 	expect(state.messages).toEqual([{ role: 'user', content: 'request' }]);
 });
+
+
+it('records when an assistant response is saved', () => {
+	const state = createSessionState();
+	const before = Date.now();
+	addAssistantMessage(state, 'Response', []);
+	expect(state.messages[0].createdAtMs).toBeGreaterThanOrEqual(before);
+	expect(state.messages[0].createdAtMs).toBeLessThanOrEqual(Date.now());
+});

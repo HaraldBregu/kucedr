@@ -433,3 +433,14 @@ it('renders a successful chart restored from persisted tool arguments and result
 	expect(await screen.findByTitle('Chart')).toBeInTheDocument();
 	expect(window.scripts.render).toHaveBeenCalledWith('chart', input, 'light');
 });
+
+
+it('shows the saved response date beneath assistant content', () => {
+	const timestamp = new Date(2026, 10, 1, 12, 30).getTime();
+	const restored = historyToChatMessages([{ role: 'assistant', content: 'Hello', createdAtMs: timestamp }])[0];
+	if (!restored || restored.role !== 'agent') throw new Error('Expected assistant message');
+	const { container } = render(<AssistantMessage message={restored} />);
+	const time = container.querySelector('time');
+	expect(time).toHaveAttribute('datetime', new Date(timestamp).toISOString());
+	expect(time).toHaveTextContent(new Date(timestamp).toLocaleString());
+});

@@ -19,6 +19,7 @@ export function addAssistantMessage(
 	state.messages.push({
 		role: 'assistant',
 		content: contentBlocks,
+		createdAtMs: Date.now(),
 		...(toolCalls.length > 0 ? { toolCalls } : {}),
 		...(usage ? { usage } : {}),
 	});

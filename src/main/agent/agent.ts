@@ -633,6 +633,7 @@ function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 			{
 				role: 'assistant',
 				content,
+				...(message.createdAtMs !== undefined ? { createdAtMs: message.createdAtMs } : {}),
 				contentBlocks: toHistoryContentBlocks(message),
 				...(message.usage ? { usage: message.usage } : {}),
 			},

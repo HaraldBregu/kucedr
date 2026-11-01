@@ -419,6 +419,7 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 						? `${last.content}\n\n${content}`
 						: last.content + content,
 				tools: [...last.tools, ...tools],
+				completedAtMs: message.createdAtMs ?? last.completedAtMs,
 				contextUsage: message.usage?.context,
 				inputTokens: (last.inputTokens ?? 0) + (message.usage?.inputTokens ?? 0),
 				outputTokens: (last.outputTokens ?? 0) + (message.usage?.outputTokens ?? 0),
@@ -433,6 +434,7 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 			content,
 			state: 'completed',
 			tools,
+			completedAtMs: message.createdAtMs,
 			contextUsage: message.usage?.context,
 			inputTokens: message.usage?.inputTokens,
 			outputTokens: message.usage?.outputTokens,
