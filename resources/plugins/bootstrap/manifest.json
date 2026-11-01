@@ -9,8 +9,10 @@
 	],
 	"author": "Harald Bregu",
 	"icon": "icon.svg",
-	"inputSchema": {
-		"type": "object",
-		"properties": {}
+	"settings": {
+		"inputSchema": {
+			"type": "object",
+			"properties": {}
+		}
 	}
 }
