@@ -8,7 +8,7 @@ export function Toggle(): ReactElement {
 	const { state, isMobile, toggleSidebar } = usePageContext();
 	const navigate = useNavigate();
 	return (
-		<>
+		<div className="flex items-center">
 		<Button type="button" variant="ghost" size="icon" data-slot="split-pane-toggle"
 			aria-label="Toggle Sidebar" aria-controls="split-pane-sidebar"
 			aria-expanded={isMobile ? state.sidebarOpenMobile : state.sidebarOpen}
@@ -29,6 +29,6 @@ export function Toggle(): ReactElement {
 			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
 			<ChevronRight className="size-4" strokeWidth={1.8} />
 		</Button>
-		</>
+		</div>
 	);
 }
