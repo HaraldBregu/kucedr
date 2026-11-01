@@ -1,0 +1,3 @@
+.dark .chat-map .leaflet-tile-pane {
+	filter: brightness(0.6) invert(1) contrast(1.1) hue-rotate(180deg) saturate(0.5);
+}
