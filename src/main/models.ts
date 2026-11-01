@@ -232,6 +232,8 @@ function toPublicProvider(
 		baseUrl,
 		...(entry.authentication ? { authentication: entry.authentication } : {}),
 		...(entry.apiKeyUrl ? { apiKeyUrl: entry.apiKeyUrl } : {}),
+		...(entry.modelsUrl ? { modelsUrl: entry.modelsUrl } : {}),
+		...(entry.modelUrl ? { modelUrl: entry.modelUrl } : {}),
 		...(iconDarkUrl ? { iconDarkUrl } : {}),
 		...(iconLightUrl ? { iconLightUrl } : {}),
 		...(plugin ? { plugin } : {}),
