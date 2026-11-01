@@ -5,6 +5,7 @@ import {
 	type PluginInfo,
 	type PluginKind,
 } from '../../shared/plugin_types';
+import { pluginWebsites } from '../../shared/plugin_websites';
 import { pluginIcon } from './plugins_icon';
 import { scanPlugins } from './plugins_scan';
 import { pluginsStore } from './plugins_store';
@@ -14,6 +15,7 @@ export function listPlugins(): PluginInfo[] {
 	return scanPlugins().map(({ id, directory, builtIn, manifest, error }) => ({
 		id,
 		name: manifest?.title ?? id,
+		website: manifest?.website ?? pluginWebsites[id],
 		...(manifest && {
 			version: manifest.version,
 			description: manifest.description,

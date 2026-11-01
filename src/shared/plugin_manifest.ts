@@ -19,6 +19,7 @@ export const pluginManifestSchema = z
 		description: z.string().trim().min(1),
 		categories: z.array(z.string().trim().min(1)).optional(),
 		author: z.string().trim().min(1),
+		website: z.url().refine((value) => value.startsWith('https://')).optional(),
 		minAppVersion: pluginVersionSchema.optional(),
 		icon: iconSchema,
 		iconDark: iconSchema,

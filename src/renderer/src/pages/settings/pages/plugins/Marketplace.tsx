@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { AvailablePlugin } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { handleExternalLinkClick } from '@/lib/external-links';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -121,6 +122,15 @@ export default function MarketplacePage(): React.JSX.Element {
 						{plugin.description}
 					</p>
 					<Meta rows={details} />
+					{plugin.website && (
+						<a
+							href={plugin.website}
+							onClick={handleExternalLinkClick}
+							className="mt-2 inline-block text-sm text-primary underline-offset-4 hover:underline"
+						>
+							{t('settings.integrations.plugin.website')}
+						</a>
+					)}
 					<Button
 						type="button"
 						size="sm"

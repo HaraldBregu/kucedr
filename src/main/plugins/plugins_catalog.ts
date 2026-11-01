@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { pluginWebsites } from '../../shared/plugin_websites';
 import { pluginVersionSchema } from '../../shared/plugin_manifest';
 import { PLUGIN_KINDS, type CatalogPlugin, type PluginKind } from '../../shared/plugin_types';
 
@@ -13,6 +14,7 @@ const catalogSchema = z.object({
 			title: z.string().min(1),
 			description: z.string(),
 			author: z.string().min(1),
+			website: z.url().refine((value) => value.startsWith('https://')).optional(),
 			categories: z.array(z.string()).default([]),
 			icon: httpsUrl.optional(),
 			iconDark: httpsUrl.optional(),
@@ -34,5 +36,8 @@ export async function listCatalog(): Promise<CatalogPlugin[]> {
 	if (!response.ok) throw new Error(`Unable to load the plugin catalog (HTTP ${response.status}).`);
 	const parsed = catalogSchema.safeParse(await response.json());
 	if (!parsed.success) throw new Error('The plugin catalog is not valid.');
-	return parsed.data.plugins;
+	return parsed.data.plugins.map((plugin) => ({
+		...plugin,
+		website: plugin.website ?? pluginWebsites[plugin.id],
+	}));
 }

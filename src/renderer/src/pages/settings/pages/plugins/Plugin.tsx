@@ -24,6 +24,7 @@ import type { McpServerInfo } from '@shared/mcp_types';
 import type { SkillInfo } from '@shared/skills_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { handleExternalLinkClick } from '@/lib/external-links';
 import { Input } from '@/components/ui/input';
 import {
 	DropdownMenu,
@@ -360,6 +361,15 @@ export default function PluginPage(): React.JSX.Element {
 						{plugin.error ?? plugin.description}
 					</p>
 					<Meta rows={details} />
+					{plugin.website && (
+						<a
+							href={plugin.website}
+							onClick={handleExternalLinkClick}
+							className="mt-2 inline-block text-sm text-primary underline-offset-4 hover:underline"
+						>
+							{t('settings.integrations.plugin.website')}
+						</a>
+					)}
 					{plugin.core && (
 						<p className="mt-2 text-sm text-muted-foreground">
 							{t('settings.integrations.plugin.core')}

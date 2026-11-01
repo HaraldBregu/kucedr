@@ -19,6 +19,7 @@ export interface PluginInfo {
 	readonly description?: string;
 	readonly categories: readonly string[];
 	readonly author?: string;
+	readonly website?: string;
 	/** The plugin's icon as a data URL. */
 	readonly icon?: string;
 	/** The icon shown in dark mode, as a data URL. */
@@ -71,6 +72,7 @@ export interface CatalogPlugin {
 	readonly title: string;
 	readonly description: string;
 	readonly author: string;
+	readonly website?: string;
 	readonly categories: readonly string[];
 	/** An https URL. */
 	readonly icon?: string;

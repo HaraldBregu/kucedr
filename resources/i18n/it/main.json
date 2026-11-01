@@ -416,6 +416,7 @@
 				"id": "ID",
 				"version": "Versione",
 				"author": "Autore",
+				"website": "Sito web",
 				"source": "Origine",
 				"status": "Stato",
 				"enabled": "Attivo",
