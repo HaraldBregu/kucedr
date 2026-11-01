@@ -70,6 +70,7 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 				)
 					throw new Error('Plugin settings must be a map of strings.');
 				plugins.savePluginSettings(id, values);
+				changed();
 			}
 		);
 	}
