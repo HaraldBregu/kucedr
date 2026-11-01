@@ -9,5 +9,5 @@ it('uses an SDK placeholder for a no-auth local provider without storing a key',
 		model: 'llama3.2:latest', messages: [{ role: 'user', content: 'hello' }], maxTokens: 100, streaming: false,
 	})) { void _event; }
 	expect(factory).toHaveBeenCalledWith({ apiKey: 'unused', baseURL: 'http://localhost:11434/v1' });
-	expect(create).toHaveBeenCalledWith(expect.objectContaining({ model: 'llama3.2:latest' }));
+	expect(create).toHaveBeenCalledWith(expect.objectContaining({ model: 'llama3.2:latest' }), expect.anything());
 });
