@@ -202,9 +202,9 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	private async listModels(providerId: unknown): Promise<ProviderModel[]> {
 		const id = this.id(providerId);
 		const provider = loadProviders().find((entry) => entry.id === id);
-		if (!provider?.baseUrl) throw new Error('Unknown provider.');
-		const url = new URL('models', `${provider.baseUrl}/`).toString();
-		const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+		if (!provider?.modelsUrl) throw new Error('This provider has no live model list.');
+		const { modelsUrl, modelUrl } = provider;
+		const response = await fetch(modelsUrl, { signal: AbortSignal.timeout(10_000) });
 		if (!response.ok) throw new Error('Could not load models from the provider.');
 		const body = (await response.json()) as { data?: unknown };
 		if (!Array.isArray(body.data)) throw new Error('The provider returned an invalid model list.');
