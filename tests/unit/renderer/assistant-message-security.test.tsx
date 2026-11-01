@@ -443,4 +443,5 @@ it('shows the saved response date beneath assistant content', () => {
 	const time = container.querySelector('time');
 	expect(time).toHaveAttribute('datetime', new Date(timestamp).toISOString());
 	expect(time).toHaveTextContent(new Date(timestamp).toLocaleString());
+	expect(time?.previousElementSibling).toHaveAttribute('aria-label', 'Reply');
 });
