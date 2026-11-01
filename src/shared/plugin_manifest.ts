@@ -25,6 +25,9 @@ export const pluginManifestSchema = z
 		// ponytail: provider services are checked by validateProviderManifest()
 		authentication: z.unknown().optional(),
 		apiKeyUrl: z.unknown().optional(),
+		baseUrl: z.unknown().optional(),
+		modelsUrl: z.unknown().optional(),
+		modelUrl: z.unknown().optional(),
 		icon_dark_url: z.unknown().optional(),
 		icon_light_url: z.unknown().optional(),
 		instructions: z.unknown().optional(),
