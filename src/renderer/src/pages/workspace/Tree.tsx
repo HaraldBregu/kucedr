@@ -21,7 +21,7 @@ interface WorkspaceTreeProps {
 
 const fileIcons = { image: FileImage, audio: FileMusic, video: FileVideo, markdown: FileText, text: FileText } as Partial<Record<string, typeof File>>;
 
-export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renamingPath, renameBusy, onRename, onRenameCancel, selectedPath, selection, onSelect, onMove }: WorkspaceTreeProps): React.JSX.Element {
+export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renamingPath, renameBusy, onRename, onRenameCancel, selectedPath, selection, onSelect, onMove, expanded = false }: WorkspaceTreeProps): React.JSX.Element {
 	const dragPaths = (entry: WorkspaceTreeEntry): string => (selection.has(entry.path) ? [...selection] : [entry.path]).join('\n');
 	const [openDirectories, setOpenDirectories] = useState(() => new Set(entries.filter((entry) => selectedPath && (selectedPath.startsWith(`${entry.path}/`) || selectedPath.startsWith(`${entry.path}\\`))).map((entry) => entry.path)));
 	return (
