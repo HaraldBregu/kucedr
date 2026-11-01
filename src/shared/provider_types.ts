@@ -30,6 +30,10 @@ export interface Provider {
 	readonly capabilities?: string;
 	/** Provider dashboard page where API keys are created. */
 	readonly apiKeyUrl?: string;
+	/** Endpoint listing the provider's models live, OpenAI `/models` shape. */
+	readonly modelsUrl?: string;
+	/** Model page template; `{id}` is replaced with the model id. */
+	readonly modelUrl?: string;
 	readonly authentication?: AuthenticationType;
 	readonly iconDarkUrl?: string;
 	readonly iconLightUrl?: string;
