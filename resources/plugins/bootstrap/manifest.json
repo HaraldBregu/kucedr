@@ -8,5 +8,9 @@
 		"CORE"
 	],
 	"author": "Harald Bregu",
-	"icon": "icon.svg"
+	"icon": "icon.svg",
+	"inputSchema": {
+		"type": "object",
+		"properties": {}
+	}
 }

@@ -9,5 +9,12 @@
 	],
 	"author": "Harald Bregu",
 	"icon": "brave.svg",
-	"apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys"
+	"apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys",
+	"inputSchema": {
+		"type": "object",
+		"properties": {
+			"apiKey": { "type": "string", "title": "API key", "format": "password" }
+		},
+		"required": ["apiKey"]
+	}
 }

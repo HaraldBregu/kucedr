@@ -10,5 +10,12 @@
 	"author": "Harald Bregu",
 	"icon": "openrouter-light.svg",
 	"iconDark": "openrouter-dark.svg",
-	"authentication": "api-key"
+	"authentication": "api-key",
+	"inputSchema": {
+		"type": "object",
+		"properties": {
+			"apiKey": { "type": "string", "title": "API key", "format": "password" }
+		},
+		"required": ["apiKey"]
+	}
 }

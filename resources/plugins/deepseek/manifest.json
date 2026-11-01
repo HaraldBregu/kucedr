@@ -9,5 +9,12 @@
 	],
 	"author": "Harald Bregu",
 	"icon": "deepseek.svg",
-	"apiKeyUrl": "https://platform.deepseek.com/api_keys"
+	"apiKeyUrl": "https://platform.deepseek.com/api_keys",
+	"inputSchema": {
+		"type": "object",
+		"properties": {
+			"apiKey": { "type": "string", "title": "API key", "format": "password" }
+		},
+		"required": ["apiKey"]
+	}
 }
