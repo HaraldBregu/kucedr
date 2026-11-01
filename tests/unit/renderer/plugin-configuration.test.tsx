@@ -10,6 +10,7 @@ jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) =>
 
 it('saves, edits, cancels and resets the API key using model controls', async () => {
 	const saveSettings = jest.fn().mockResolvedValue(undefined);
+	const openExternalUrl = jest.fn().mockResolvedValue(undefined);
 	Object.defineProperty(window, 'plugins', {
 		configurable: true,
 		value: {
@@ -17,6 +18,7 @@ it('saves, edits, cancels and resets the API key using model controls', async ()
 				{
 					id: 'openai',
 					name: 'OpenAI',
+					website: 'https://openai.com',
 					enabled: true,
 					builtIn: true,
 					categories: [],
@@ -36,6 +38,7 @@ it('saves, edits, cancels and resets the API key using model controls', async ()
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: {
+			openExternalUrl,
 			models: async () => [],
 			mcps: async () => [],
 			vectorDatabases: async () => [],
@@ -59,6 +62,8 @@ it('saves, edits, cancels and resets the API key using model controls', async ()
 	Object.defineProperty(window, 'scripts', { configurable: true, value: { list: async () => [] } });
 	const user = userEvent.setup();
 	render(<PluginPage />);
+	await user.click(await screen.findByRole('link', { name: 'settings.integrations.plugin.website' }));
+	expect(openExternalUrl).toHaveBeenCalledWith('https://openai.com');
 	await user.click(await screen.findByRole('button', { name: 'Connect' }));
 	const input = screen.getByLabelText('API key');
 	expect(input).toHaveAttribute('type', 'password');
