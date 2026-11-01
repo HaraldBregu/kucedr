@@ -43,4 +43,20 @@ describe('trackpad navigation', () => {
 		expect(navigate).not.toHaveBeenCalled();
 		scroller.remove();
 	});
+
+	it('allows navigation from a scrollable panel at its horizontal boundary', () => {
+		renderHook(() => useMouseNavigation());
+		const scroller = document.createElement('div');
+		scroller.style.overflowY = 'auto';
+		scroller.style.overflowX = 'auto';
+		Object.defineProperty(scroller, 'scrollWidth', { value: 101 });
+		Object.defineProperty(scroller, 'clientWidth', { value: 100 });
+		document.body.appendChild(scroller);
+		act(() => {
+			scroller.dispatchEvent(new WheelEvent('wheel', { deltaX: -35, deltaY: 25, bubbles: true }));
+			scroller.dispatchEvent(new WheelEvent('wheel', { deltaX: -35, deltaY: 25, bubbles: true }));
+		});
+		expect(navigate).toHaveBeenCalledWith(-1);
+		scroller.remove();
+	});
 });
