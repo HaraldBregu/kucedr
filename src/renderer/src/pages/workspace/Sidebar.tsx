@@ -37,6 +37,14 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 	const [selection, setSelection] = useState<ReadonlySet<string>>(new Set());
 	const anchorPath = useRef<string | null>(null);
 	const navRef = useRef<HTMLElement>(null);
+	const [query, setQuery] = useState('');
+	const filter = (list: WorkspaceTreeEntry[], text: string): WorkspaceTreeEntry[] => list.flatMap((item) => {
+		if (item.name.toLowerCase().includes(text)) return [item];
+		const children = filter(item.children ?? [], text);
+		return children.length > 0 ? [{ ...item, children }] : [];
+	});
+	const search = query.trim().toLowerCase();
+	const shownEntries = search ? filter(entries, search) : entries;
 	const flatten = (list: WorkspaceTreeEntry[]): WorkspaceTreeEntry[] => list.flatMap((item) => [item, ...flatten(item.children ?? [])]);
 	const topLevel = (paths: Iterable<string>): string[] => {
 		const list = [...paths];
