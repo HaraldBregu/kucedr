@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { router } from '../router';
+import { useNavigate } from 'react-router-dom';
 
 export function useMouseNavigation(): void {
+	const navigate = useNavigate();
 	useEffect(() => {
 		if (!navigator.platform.startsWith('Mac')) return;
 		let distance = 0;
@@ -9,8 +10,8 @@ export function useMouseNavigation(): void {
 		let timer: ReturnType<typeof setTimeout> | undefined;
 
 		const handleMouseUp = (event: MouseEvent): void => {
-			if (event.button === 3) void router.navigate(-1);
-			if (event.button === 4) void router.navigate(1);
+			if (event.button === 3) void navigate(-1);
+			if (event.button === 4) void navigate(1);
 		};
 
 		const handleWheel = (event: WheelEvent): void => {
@@ -42,7 +43,7 @@ export function useMouseNavigation(): void {
 			if (Math.abs(distance) >= 60) {
 				lastDirection = Math.sign(distance);
 				distance = 0;
-				void router.navigate(lastDirection < 0 ? -1 : 1);
+				void navigate(lastDirection < 0 ? -1 : 1);
 			}
 		};
 
@@ -53,5 +54,5 @@ export function useMouseNavigation(): void {
 			window.removeEventListener('wheel', handleWheel, true);
 			if (timer) clearTimeout(timer);
 		};
-	}, []);
+	}, [navigate]);
 }

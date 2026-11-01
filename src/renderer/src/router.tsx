@@ -32,6 +32,7 @@ import StartPage from './pages/start/StartPage';
 import { StartupGate } from './auth/Gate';
 import { useOnboarding } from './contexts/useOnboarding';
 import { useAuth } from './contexts/AuthContext';
+import { useMouseNavigation } from './hooks/mouse';
 
 const MemoryPage = lazy(() => import('./pages/settings/pages/memory/Page'));
 const LibraryPage = lazy(() => import('./pages/settings/pages/library/Page'));
@@ -124,6 +125,7 @@ function SettingsRouteWrapper({ children }: { readonly children: ReactNode }): R
 }
 
 function RootRouteComponent(): React.JSX.Element {
+	useMouseNavigation();
 	const location = useLocation();
 	const [chatMode, setChatMode] = useState<ChatMode>('chat');
 	const [chatSessionId, setChatSessionId] = useState<string>(readPersistedChatSessionId);

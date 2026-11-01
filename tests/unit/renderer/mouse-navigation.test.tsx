@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { useMouseNavigation } from '../../../src/renderer/src/hooks/mouse';
 
 const navigate = jest.fn();
-jest.mock('../../../src/renderer/src/router', () => ({ router: { navigate: (...args: unknown[]) => navigate(...args) } }));
+jest.mock('react-router-dom', () => ({ useNavigate: () => navigate }));
 
 describe('trackpad navigation', () => {
 	beforeEach(() => {
