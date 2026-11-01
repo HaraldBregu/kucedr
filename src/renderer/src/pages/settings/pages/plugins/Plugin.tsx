@@ -7,6 +7,7 @@ import {
 	Download,
 	Hash,
 	KeyRound,
+	MoreHorizontal,
 	Package,
 	Plug,
 	Tag,
@@ -24,6 +25,7 @@ import type { SkillInfo } from '@shared/skills_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { SettingsItemMedia } from '../../components/item-media';
 import {
