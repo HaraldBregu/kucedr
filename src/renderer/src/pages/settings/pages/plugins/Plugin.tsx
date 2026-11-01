@@ -6,6 +6,7 @@ import {
 	CircleOff,
 	Download,
 	Hash,
+	KeyRound,
 	Package,
 	Plug,
 	Tag,
@@ -23,6 +24,8 @@ import type { SkillInfo } from '@shared/skills_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { SettingsItemMedia } from '../../components/item-media';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -363,10 +366,16 @@ export default function PluginPage(): React.JSX.Element {
 							<SettingsPanel>
 								{Object.entries(plugin.settings?.inputSchema?.properties ?? {}).map(
 									([key, setting]) => (
-										<SettingsRow key={key} title={setting.title ?? key}>
+										<Item key={key} variant="ghost" size="md" className="min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50">
+											<SettingsItemMedia><KeyRound className="size-5" aria-hidden="true" /></SettingsItemMedia>
+											<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+												<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">{setting.title ?? key}</ItemTitle>
+												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">{t(settings[key]?.trim() ? 'settings.providers.configured' : 'settings.providers.notConfigured')}</p>
+											</ItemContent>
+											<ItemActions className="ml-auto flex-none justify-end gap-2">
 											<Input
 												aria-label={setting.title ?? key}
-												className="w-72"
+												className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
 												type={setting.format === 'password' ? 'password' : 'text'}
 												required={plugin.settings?.inputSchema?.required?.includes(key)}
 												autoComplete="off"
@@ -401,7 +410,8 @@ export default function PluginPage(): React.JSX.Element {
 													if (event.key === 'Enter') event.currentTarget.blur();
 												}}
 											/>
-										</SettingsRow>
+											</ItemActions>
+										</Item>
 									)
 								)}
 							</SettingsPanel>
