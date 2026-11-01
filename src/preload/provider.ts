@@ -55,7 +55,8 @@ export const provider: ProviderApi = {
 	setPluginEnabled: (kind: PluginProviderKind, id: string, enabled: boolean) =>
 		typedInvokeUnwrap(ProviderStoreChannels.setPluginEnabled, kind, id, enabled),
 	getModelProviders: async (): Promise<PublicProvider[]> => {
-		return uniqueProvidersWithStored(await window.app.models(), 'models');
+		const providers = await typedInvokeUnwrap(ProviderStoreChannels.listModelProviders);
+		return uniqueProvidersWithStored(providers.map((provider) => ({ provider })), 'models');
 	},
 	getDatabaseProviders: async (): Promise<PublicProvider[]> => {
 		return uniqueProvidersWithStored(await window.app.vectorDatabases(), 'databases');
