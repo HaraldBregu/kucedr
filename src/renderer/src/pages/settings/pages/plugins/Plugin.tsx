@@ -110,6 +110,21 @@ export default function PluginPage(): React.JSX.Element {
 			skills: skills.filter((skill) => skill.plugin?.id === pluginId),
 			scripts: scripts.filter((script) => script.plugin.id === pluginId),
 		});
+		const ownedModels = owned(models);
+		const ownedProviders = new Map(ownedModels.map((model) => [model.provider.id, model.provider]));
+		const liveModels = (
+			await Promise.all(
+				[...ownedProviders.values()].map(async (provider) =>
+					(await liveProviderModels(provider.id, [])).map(
+						(model): CatalogModel => ({ ...model, type: 'llm', location: 'remote', provider })
+					)
+				)
+			)
+		)
+			.flat()
+			.filter((model) => !ownedModels.some((entry) => entry.id === model.id));
+		if (liveModels.length > 0)
+			setContents((current) => current && { ...current, models: [...ownedModels, ...liveModels] });
 	}, [pluginId]);
 
 	useEffect(() => {
