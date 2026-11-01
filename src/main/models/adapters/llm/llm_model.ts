@@ -741,7 +741,7 @@ export class LlmModel implements LlmAdapter {
 		if (!provider.apiKey && provider.authentication !== 'none') throw new LlmProviderAuthError(missingKeyMessage);
 		const factory =
 			this.openAIClientFactory ?? ((c) => new OpenAI({ apiKey: c.apiKey, baseURL: c.baseURL }));
-		return factory({ apiKey: provider.apiKey, baseURL: llmBaseUrl(provider) });
+		return factory({ apiKey: provider.apiKey || 'unused', baseURL: llmBaseUrl(provider) });
 	}
 
 	private createAnthropicClient(provider: LlmProviderSpec): Anthropic {
