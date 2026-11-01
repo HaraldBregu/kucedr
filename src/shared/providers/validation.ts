@@ -92,6 +92,14 @@ export function validateProviderManifest(value: unknown): string[] {
 	if (manifest.apiKeyUrl !== undefined && !isNonEmptyString(manifest.apiKeyUrl)) {
 		errors.push('manifest.json: "apiKeyUrl" must be a non-empty string when present.');
 	}
+	for (const field of ['baseUrl', 'modelsUrl', 'modelUrl'] as const) {
+		if (
+			manifest[field] !== undefined &&
+			(!isNonEmptyString(manifest[field]) || !/^https?:\/\//.test(manifest[field]))
+		) {
+			errors.push(`manifest.json: "${field}" must be an http(s) URL when present.`);
+		}
+	}
 	if (manifest.images_url !== undefined && manifest.images_url !== '/images') {
 		errors.push('manifest.json: "images_url" must be "/images" when present.');
 	}
