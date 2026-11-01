@@ -433,5 +433,3 @@ it('renders a successful chart restored from persisted tool arguments and result
 	expect(await screen.findByTitle('Chart')).toBeInTheDocument();
 	expect(window.scripts.render).toHaveBeenCalledWith('chart', input, 'light');
 });
-
-
