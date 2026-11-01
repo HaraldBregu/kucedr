@@ -1,35 +1,46 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useMouseNavigation } from '../../../src/renderer/src/hooks/mouse';
-import { router } from '../../../src/renderer/src/router';
 
-jest.mock('../../../src/renderer/src/router', () => ({
-	router: { navigate: jest.fn() },
-}));
+const navigate = jest.fn();
+jest.mock('../../../src/renderer/src/router', () => ({ router: { navigate: (...args: unknown[]) => navigate(...args) } }));
 
-const navigate = router.navigate as jest.Mock;
+describe('trackpad navigation', () => {
+	beforeEach(() => {
+		jest.useFakeTimers();
+		Object.defineProperty(navigator, 'platform', { configurable: true, value: 'MacIntel' });
+		navigate.mockClear();
+	});
 
-beforeEach(() => navigate.mockClear());
+	afterEach(() => jest.useRealTimers());
 
-it('navigates route history with mouse back and forward buttons on macOS', () => {
-	Object.defineProperty(navigator, 'platform', { configurable: true, value: 'MacIntel' });
-	const { unmount } = renderHook(() => useMouseNavigation());
+	it('navigates once per horizontal gesture in either direction', () => {
+		renderHook(() => useMouseNavigation());
+		act(() => {
+			window.dispatchEvent(new WheelEvent('wheel', { deltaX: -60 }));
+			window.dispatchEvent(new WheelEvent('wheel', { deltaX: -60 }));
+			window.dispatchEvent(new WheelEvent('wheel', { deltaX: -120 }));
+		});
+		expect(navigate).toHaveBeenCalledTimes(1);
+		expect(navigate).toHaveBeenLastCalledWith(-1);
+		act(() => {
+			jest.advanceTimersByTime(250);
+			window.dispatchEvent(new WheelEvent('wheel', { deltaX: 120 }));
+		});
+		expect(navigate).toHaveBeenLastCalledWith(1);
+	});
 
-	window.dispatchEvent(new MouseEvent('mouseup', { button: 3 }));
-	window.dispatchEvent(new MouseEvent('mouseup', { button: 4 }));
-
-	expect(navigate).toHaveBeenNthCalledWith(1, -1);
-	expect(navigate).toHaveBeenNthCalledWith(2, 1);
-	unmount();
-	window.dispatchEvent(new MouseEvent('mouseup', { button: 3 }));
-	expect(navigate).toHaveBeenCalledTimes(2);
-});
-
-it('leaves Windows and Linux mouse commands to Electron', () => {
-	Object.defineProperty(navigator, 'platform', { configurable: true, value: 'Win32' });
-	renderHook(() => useMouseNavigation());
-
-	window.dispatchEvent(new MouseEvent('mouseup', { button: 3 }));
-	window.dispatchEvent(new MouseEvent('mouseup', { button: 4 }));
-
-	expect(navigate).not.toHaveBeenCalled();
+	it('does not navigate for vertical scrolling or horizontal scrollable content', () => {
+		renderHook(() => useMouseNavigation());
+		const scroller = document.createElement('div');
+		scroller.style.overflowX = 'auto';
+		Object.defineProperty(scroller, 'scrollWidth', { value: 200 });
+		Object.defineProperty(scroller, 'clientWidth', { value: 100 });
+		document.body.appendChild(scroller);
+		act(() => {
+			window.dispatchEvent(new WheelEvent('wheel', { deltaX: 10, deltaY: 120 }));
+			scroller.dispatchEvent(new WheelEvent('wheel', { deltaX: 120, bubbles: true }));
+		});
+		expect(navigate).not.toHaveBeenCalled();
+		scroller.remove();
+	});
 });
