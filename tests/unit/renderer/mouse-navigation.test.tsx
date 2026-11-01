@@ -59,4 +59,19 @@ describe('trackpad navigation', () => {
 		expect(navigate).toHaveBeenCalledWith(-1);
 		scroller.remove();
 	});
+
+	it('allows forward navigation over a vertical panel with incidental horizontal overflow', () => {
+		renderHook(() => useMouseNavigation());
+		const scroller = document.createElement('div');
+		scroller.className = 'overflow-y-auto';
+		scroller.style.overflowX = 'auto';
+		Object.defineProperty(scroller, 'scrollWidth', { value: 200 });
+		Object.defineProperty(scroller, 'clientWidth', { value: 100 });
+		document.body.appendChild(scroller);
+		act(() => {
+			scroller.dispatchEvent(new WheelEvent('wheel', { deltaX: 70, bubbles: true }));
+		});
+		expect(navigate).toHaveBeenCalledWith(1);
+		scroller.remove();
+	});
 });
