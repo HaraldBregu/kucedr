@@ -31,6 +31,7 @@ import {
 } from './agent/knowledge/rag/rag_store';
 import { WINDOW_SIZES, type WindowSize } from '../shared/window_size';
 import { loadProviders } from './models';
+import { pluginSettings } from './plugins/plugins_settings';
 
 export type AppSettingsState = {
 	trayEnabled: boolean;
@@ -303,10 +304,11 @@ export function getResolvedProvider(providerId: string | undefined): ResolvedPro
 	if (!providerId) return undefined;
 	const provider = getProvider(providerId, 'models');
 	const catalogProvider = loadProviders().find((entry) => entry.id === providerId);
-	if (!provider && catalogProvider?.authentication !== 'none') return undefined;
+	const masterKey = catalogProvider?.plugin ? pluginSettings(catalogProvider.plugin.id).apiKey : undefined;
+	if (!provider && !masterKey && catalogProvider?.authentication !== 'none') return undefined;
 	return {
 		id: providerId,
-		apiKey: provider?.apiKey ?? '',
+		apiKey: masterKey || provider?.apiKey || '',
 		baseURL: provider?.baseUrl ?? catalogProvider?.baseUrl,
 		...(catalogProvider?.authentication ? { authentication: catalogProvider.authentication } : {}),
 	};
