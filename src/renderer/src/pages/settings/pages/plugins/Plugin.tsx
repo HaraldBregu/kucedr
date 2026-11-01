@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	ChevronRight,
 	CircleAlert,
@@ -67,6 +67,7 @@ export default function PluginPage(): React.JSX.Element {
 	const [error, setError] = useState('');
 	const [confirming, setConfirming] = useState(false);
 	const [settings, setSettings] = useState<Record<string, string>>({});
+	const savedSettings = useRef<Record<string, string>>({});
 
 	const load = useCallback(async (): Promise<void> => {
 		const [
@@ -101,6 +102,7 @@ export default function PluginPage(): React.JSX.Element {
 		): T[] => entries.filter((entry) => entry.provider.plugin?.id === pluginId);
 		setPlugin(plugins.find((item) => item.id === pluginId) ?? null);
 		setSettings(values);
+		savedSettings.current = values;
 		setContents({
 			models: owned(models),
 			mcps: owned(mcps),
@@ -357,13 +359,7 @@ export default function PluginPage(): React.JSX.Element {
 			<div className="flex flex-col gap-8 pb-8">
 				<SettingsSection title={t('settings.modelServices.configuration')}>
 					{Object.keys(plugin.settings?.inputSchema?.properties ?? {}).length > 0 ? (
-						<form
-							className="flex flex-col gap-3"
-							onSubmit={(event) => {
-								event.preventDefault();
-								void run(() => window.plugins.saveSettings(plugin.id, settings));
-							}}
-						>
+						<>
 							<SettingsPanel>
 								{Object.entries(plugin.settings?.inputSchema?.properties ?? {}).map(
 									([key, setting]) => (
@@ -372,7 +368,7 @@ export default function PluginPage(): React.JSX.Element {
 												aria-label={setting.title ?? key}
 												className="w-72"
 												type={setting.format === 'password' ? 'password' : 'text'}
-											required={plugin.settings?.inputSchema?.required?.includes(key)}
+													required={plugin.settings?.inputSchema?.required?.includes(key)}
 												autoComplete="off"
 												spellCheck={false}
 												value={settings[key] ?? ''}
@@ -382,15 +378,23 @@ export default function PluginPage(): React.JSX.Element {
 														[key]: event.target.value,
 													}))
 												}
+													onBlur={() => {
+														if (JSON.stringify(settings) === JSON.stringify(savedSettings.current)) return;
+														if (plugin.settings?.inputSchema?.required?.some((name) => !settings[name]?.trim())) return;
+														setError('');
+														void window.plugins.saveSettings(plugin.id, settings).then(() => {
+															savedSettings.current = settings;
+														}).catch((caught) => setError(caught instanceof Error ? caught.message : String(caught)));
+													}}
+													onKeyDown={(event) => {
+														if (event.key === 'Enter') event.currentTarget.blur();
+													}}
 											/>
 										</SettingsRow>
 									)
 								)}
 							</SettingsPanel>
-							<Button type="submit" size="sm" className="w-fit" disabled={busy}>
-								{t('common.save')}
-							</Button>
-						</form>
+						</>
 					) : (
 						<SettingsPanel>
 							<p className="px-4 py-3 text-sm text-muted-foreground">
