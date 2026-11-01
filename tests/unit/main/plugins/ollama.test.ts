@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { readPlugin } from '../../../../src/main/plugins/plugins_read';
 import { loadModels, loadProviders } from '../../../../src/main/models';
+import { getResolvedProvider } from '../../../../src/main/settings_store';
 
 jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
 	pluginProviders: () => {
@@ -17,4 +18,7 @@ it('exposes Ollama discovery URLs without exposing the discovery entry as a mode
 		modelsUrl: 'http://localhost:11434/v1/models',
 	}));
 	expect(loadModels().filter((model) => model.provider.id === 'ollama')).toEqual([]);
+	expect(getResolvedProvider('ollama')).toMatchObject({
+		id: 'ollama', apiKey: '', baseURL: 'http://localhost:11434/v1', authentication: 'none',
+	});
 });
