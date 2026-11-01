@@ -9,6 +9,7 @@ import { SPLIT_ITEM_ACTIVE_CLASS } from '@/components/app/base/page';
 import { cn } from '@/lib/utils';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { WorkspaceActionDialog, type WorkspaceAction } from './ActionDialog';
