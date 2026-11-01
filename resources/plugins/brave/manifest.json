@@ -8,6 +8,7 @@
 		"SEARCH"
 	],
 	"author": "Harald Bregu",
+	"website": "https://brave.com/search/",
 	"icon": "brave.svg",
 	"apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys",
 	"settings": {

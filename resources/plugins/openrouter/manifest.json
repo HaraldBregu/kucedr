@@ -8,6 +8,7 @@
 		"LLM"
 	],
 	"author": "Harald Bregu",
+	"website": "https://openrouter.ai",
 	"icon": "openrouter-light.svg",
 	"iconDark": "openrouter-dark.svg",
 	"authentication": "api-key",

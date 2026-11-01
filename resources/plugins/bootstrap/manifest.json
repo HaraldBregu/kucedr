@@ -8,6 +8,7 @@
 		"CORE"
 	],
 	"author": "Harald Bregu",
+	"website": "https://github.com/Kucedr/kucedr-plugins/tree/main/plugins/bootstrap",
 	"icon": "icon.svg",
 	"settings": {
 		"inputSchema": {

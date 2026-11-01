@@ -8,6 +8,7 @@
 		"LLM"
 	],
 	"author": "Harald Bregu",
+	"website": "https://www.deepseek.com",
 	"icon": "deepseek.svg",
 	"apiKeyUrl": "https://platform.deepseek.com/api_keys",
 	"settings": {

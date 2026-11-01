@@ -8,6 +8,7 @@
 		"LLM"
 	],
 	"author": "Harald Bregu",
+	"website": "https://www.anthropic.com",
 	"icon": "anthropic-light.svg",
 	"iconDark": "anthropic-dark.svg",
 	"apiKeyUrl": "https://console.anthropic.com/settings/keys",

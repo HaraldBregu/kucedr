@@ -8,6 +8,7 @@
 		"SEARCH"
 	],
 	"author": "Harald Bregu",
+	"website": "https://tavily.com",
 	"icon": "tavily.svg",
 	"apiKeyUrl": "https://app.tavily.com/home",
 	"settings": {

@@ -13,6 +13,7 @@
 		"EMBEDDING"
 	],
 	"author": "Harald Bregu",
+	"website": "https://openai.com",
 	"icon": "openai-light.svg",
 	"iconDark": "openai-dark.svg",
 	"apiKeyUrl": "https://platform.openai.com/api-keys",

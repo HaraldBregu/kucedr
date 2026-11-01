@@ -12,6 +12,7 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 		description: _description,
 		categories: _categories,
 		author: _author,
+		website: _website,
 		minAppVersion: _minAppVersion,
 		icon,
 		iconDark,
