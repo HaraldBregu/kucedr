@@ -366,50 +366,65 @@ export default function PluginPage(): React.JSX.Element {
 							<SettingsPanel>
 								{Object.entries(plugin.settings?.inputSchema?.properties ?? {}).map(
 									([key, setting]) => (
-										<Item key={key} variant="ghost" size="md" className="min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50">
-											<SettingsItemMedia><KeyRound className="size-5" aria-hidden="true" /></SettingsItemMedia>
+										<Item
+											key={key}
+											variant="ghost"
+											size="md"
+											className="min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+										>
+											<SettingsItemMedia>
+												<KeyRound className="size-5" aria-hidden="true" />
+											</SettingsItemMedia>
 											<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-												<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">{setting.title ?? key}</ItemTitle>
-												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">{t(settings[key]?.trim() ? 'settings.providers.configured' : 'settings.providers.notConfigured')}</p>
+												<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+													{setting.title ?? key}
+												</ItemTitle>
+												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+													{t(
+														settings[key]?.trim()
+															? 'settings.providers.configured'
+															: 'settings.providers.notConfigured'
+													)}
+												</p>
 											</ItemContent>
 											<ItemActions className="ml-auto flex-none justify-end gap-2">
-											<Input
-												aria-label={setting.title ?? key}
-												className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
-												type={setting.format === 'password' ? 'password' : 'text'}
-												required={plugin.settings?.inputSchema?.required?.includes(key)}
-												autoComplete="off"
-												spellCheck={false}
-												value={settings[key] ?? ''}
-												onChange={(event) =>
-													setSettings((current) => ({
-														...current,
-														[key]: event.target.value,
-													}))
-												}
-												onBlur={() => {
-													if (JSON.stringify(settings) === JSON.stringify(savedSettings.current))
-														return;
-													if (
-														plugin.settings?.inputSchema?.required?.some(
-															(name) => !settings[name]?.trim()
+												<Input
+													aria-label={setting.title ?? key}
+													className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
+													type={setting.format === 'password' ? 'password' : 'text'}
+													required={plugin.settings?.inputSchema?.required?.includes(key)}
+													autoComplete="off"
+													spellCheck={false}
+													value={settings[key] ?? ''}
+													onChange={(event) =>
+														setSettings((current) => ({
+															...current,
+															[key]: event.target.value,
+														}))
+													}
+													onBlur={() => {
+														if (JSON.stringify(settings) === JSON.stringify(savedSettings.current))
+															return;
+														if (
+															plugin.settings?.inputSchema?.required?.some(
+																(name) => !settings[name]?.trim()
+															)
 														)
-													)
-														return;
-													setError('');
-													void window.plugins
-														.saveSettings(plugin.id, settings)
-														.then(() => {
-															savedSettings.current = settings;
-														})
-														.catch((caught) =>
-															setError(caught instanceof Error ? caught.message : String(caught))
-														);
-												}}
-												onKeyDown={(event) => {
-													if (event.key === 'Enter') event.currentTarget.blur();
-												}}
-											/>
+															return;
+														setError('');
+														void window.plugins
+															.saveSettings(plugin.id, settings)
+															.then(() => {
+																savedSettings.current = settings;
+															})
+															.catch((caught) =>
+																setError(caught instanceof Error ? caught.message : String(caught))
+															);
+													}}
+													onKeyDown={(event) => {
+														if (event.key === 'Enter') event.currentTarget.blur();
+													}}
+												/>
 											</ItemActions>
 										</Item>
 									)
