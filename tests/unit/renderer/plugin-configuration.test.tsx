@@ -13,24 +13,22 @@ it('saves a valid API key when editing ends without a save button', async () => 
 	Object.defineProperty(window, 'plugins', {
 		configurable: true,
 		value: {
-			list: jest
-				.fn()
-				.mockResolvedValue([
-					{
-						id: 'openai',
-						name: 'OpenAI',
-						enabled: true,
-						builtIn: true,
-						categories: [],
-						settings: {
-							inputSchema: {
-								type: 'object',
-								properties: { apiKey: { type: 'string', title: 'API key', format: 'password' } },
-								required: ['apiKey'],
-							},
+			list: jest.fn().mockResolvedValue([
+				{
+					id: 'openai',
+					name: 'OpenAI',
+					enabled: true,
+					builtIn: true,
+					categories: [],
+					settings: {
+						inputSchema: {
+							type: 'object',
+							properties: { apiKey: { type: 'string', title: 'API key', format: 'password' } },
+							required: ['apiKey'],
 						},
 					},
-				]),
+				},
+			]),
 			getSettings: jest.fn().mockResolvedValue({}),
 			saveSettings,
 		},
