@@ -73,6 +73,7 @@ export default function PluginPage(): React.JSX.Element {
 		const [
 			plugins,
 			models,
+			modelProviders,
 			mcps,
 			vectorDatabases,
 			webSearches,
@@ -85,6 +86,7 @@ export default function PluginPage(): React.JSX.Element {
 		] = await Promise.all([
 				window.plugins.list(),
 				window.app.models(),
+				window.provider.getModelProviders(),
 				window.app.mcps(),
 				window.app.vectorDatabases(),
 				window.services.list(),
@@ -112,11 +114,11 @@ export default function PluginPage(): React.JSX.Element {
 			scripts: scripts.filter((script) => script.plugin.id === pluginId),
 		});
 		const ownedModels = owned(models);
-		const ownedProviders = new Map(ownedModels.map((model) => [model.provider.id, model.provider]));
+		const ownedProviders = new Map(modelProviders.filter((provider) => provider.plugin?.id === pluginId).map((provider) => [provider.id, provider]));
 		const liveModels = (
 			await Promise.all(
 				[...ownedProviders.values()].map(async (provider) =>
-					(await liveProviderModels(provider.id, [])).map(
+					(await window.provider.listModels(provider.id).catch(() => [])).map(
 						(model): CatalogModel => ({ ...model, type: 'llm', location: 'remote', provider })
 					)
 				)

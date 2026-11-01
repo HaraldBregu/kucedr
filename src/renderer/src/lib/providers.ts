@@ -13,19 +13,28 @@ import type {
 } from '@shared/model_types';
 
 let catalog: readonly CatalogModel[] = [];
+let modelProviders: readonly PublicProvider[] = [];
 let databaseCatalog: readonly CatalogService[] = [];
 let webSearchCatalog: readonly CatalogWebSearch[] = [];
 let mcpCatalog: readonly CatalogService[] = [];
 let storageCatalog: readonly CatalogStorage[] = [];
 
 export async function loadModels(): Promise<void> {
-	[catalog, databaseCatalog, webSearchCatalog, mcpCatalog, storageCatalog] = await Promise.all([
+	[catalog, modelProviders, databaseCatalog, webSearchCatalog, mcpCatalog, storageCatalog] = await Promise.all([
 		window.app.models(),
+		window.provider.getModelProviders(),
 		window.app.vectorDatabases(),
 		window.services.list(),
 		window.app.mcps(),
 		window.app.storages(),
 	]);
+	const liveModels = await Promise.all(modelProviders.filter((provider) => provider.modelsUrl).map(async (provider) =>
+		(await window.provider.listModels(provider.id).catch(() => [])).map(
+			(model): CatalogModel => ({ ...model, type: 'llm', location: 'remote', provider })
+		)
+	));
+	const ids = new Set(catalog.map((model) => `${model.provider.id}/${model.id}`));
+	catalog = [...catalog, ...liveModels.flat().filter((model) => !ids.has(`${model.provider.id}/${model.id}`))];
 }
 
 export function models(): readonly CatalogModel[] {
@@ -46,7 +55,7 @@ function uniqueProviders(entries: readonly { provider: PublicProvider }[]): Publ
 
 /** One record per provider, derived from the models they serve. */
 export function providers(): readonly PublicProvider[] {
-	return uniqueProviders(catalog);
+	return modelProviders;
 }
 
 export function vectorDatabases(): readonly CatalogService[] {
