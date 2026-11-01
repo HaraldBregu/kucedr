@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react';
 import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import './map.css';
 import { mapSchema } from '../../../../../shared/map';
 import type { AgentToolPart } from '../context';
 import { ToolActivityGroup } from './ToolActivityGroup';
@@ -26,7 +25,7 @@ export function MapCard({ tool }: { tool: AgentToolPart }): ReactElement {
 				center={[map.latitude, map.longitude]}
 				zoom={map.zoom ?? 13}
 				scrollWheelZoom={false}
-				className="chat-map h-80 w-full"
+				className="h-80 w-full"
 				aria-label={map.title ?? 'Map'}
 			>
 				<TileLayer
