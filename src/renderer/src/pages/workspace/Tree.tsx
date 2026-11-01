@@ -16,6 +16,7 @@ interface WorkspaceTreeProps {
 	readonly selection: ReadonlySet<string>;
 	readonly onSelect: (entry: WorkspaceTreeEntry, event: React.MouseEvent) => boolean;
 	readonly onMove: (sourcePaths: string[], destinationPath: string) => void;
+	readonly expanded?: boolean;
 }
 
 const fileIcons = { image: FileImage, audio: FileMusic, video: FileVideo, markdown: FileText, text: FileText } as Partial<Record<string, typeof File>>;
