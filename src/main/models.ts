@@ -317,6 +317,7 @@ function readCatalog(): Catalog {
 		const provider = toPublicProvider(entry, providerDir, plugin);
 		if (entry.models?.length || entry.modelsUrl) providers.push(provider);
 		const modelEntries = (entry.models ?? []).flatMap((model): CatalogEntryModel[] => {
+			if (model.discoveryOnly) return [];
 			const type = toModelCapability(model.type);
 			return type ? [{ ...model, type }] : [];
 		});

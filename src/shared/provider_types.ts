@@ -83,6 +83,7 @@ export type ProviderModelType =
 
 export interface ProviderManifestModel extends Omit<CatalogEntryModel, 'type'> {
 	readonly type: ProviderModelType;
+	readonly discoveryOnly?: boolean;
 	readonly icon_dark_url?: string;
 	readonly icon_light_url?: string;
 }

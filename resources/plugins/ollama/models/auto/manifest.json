@@ -1,0 +1,12 @@
+{
+	"id": "auto",
+	"name": "Ollama model discovery",
+	"type": "large-language-model",
+	"authentication": "none",
+	"discoveryOnly": true,
+	"url": "http://localhost:11434/v1",
+	"baseUrl": "http://localhost:11434/v1",
+	"modelsUrl": "http://localhost:11434/v1/models",
+	"modelUrl": "http://localhost:11434/v1/models/{id}",
+	"location": "local"
+}
