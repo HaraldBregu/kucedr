@@ -70,6 +70,7 @@ export default function PluginPage(): React.JSX.Element {
 	const [error, setError] = useState('');
 	const [confirming, setConfirming] = useState(false);
 	const [settings, setSettings] = useState<Record<string, string>>({});
+	const [editingSetting, setEditingSetting] = useState<string | null>(null);
 	const savedSettings = useRef<Record<string, string>>({});
 
 	const load = useCallback(async (): Promise<void> => {
@@ -381,14 +382,16 @@ export default function PluginPage(): React.JSX.Element {
 												</ItemTitle>
 												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 													{t(
-														settings[key]?.trim()
+													savedSettings.current[key]?.trim()
 															? 'settings.providers.configured'
 															: 'settings.providers.notConfigured'
 													)}
 												</p>
 											</ItemContent>
 											<ItemActions className="ml-auto flex-none justify-end gap-2">
+													{editingSetting === key ? (
 												<Input
+														autoFocus
 													aria-label={setting.title ?? key}
 													className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
 													type={setting.format === 'password' ? 'password' : 'text'}
@@ -403,19 +406,25 @@ export default function PluginPage(): React.JSX.Element {
 														}))
 													}
 													onBlur={() => {
-														if (JSON.stringify(settings) === JSON.stringify(savedSettings.current))
-															return;
+															if (JSON.stringify(settings) === JSON.stringify(savedSettings.current)) {
+																setEditingSetting(null);
+																return;
+															}
 														if (
 															plugin.settings?.inputSchema?.required?.some(
 																(name) => !settings[name]?.trim()
 															)
-														)
-															return;
+															) {
+																setSettings(savedSettings.current);
+																setEditingSetting(null);
+																return;
+															}
 														setError('');
 														void window.plugins
 															.saveSettings(plugin.id, settings)
 															.then(() => {
 																savedSettings.current = settings;
+																		setEditingSetting(null);
 															})
 															.catch((caught) =>
 																setError(caught instanceof Error ? caught.message : String(caught))
@@ -425,6 +434,24 @@ export default function PluginPage(): React.JSX.Element {
 														if (event.key === 'Enter') event.currentTarget.blur();
 													}}
 												/>
+													) : (
+														<>
+															<Button type="button" variant="ghost" size="sm" onClick={() => setEditingSetting(key)}>
+																{savedSettings.current[key] ? 'Change' : 'Connect'}
+															</Button>
+															{savedSettings.current[key] && (
+																<Button type="button" variant="ghost" size="sm" onClick={() => {
+																	const next = { ...savedSettings.current };
+																	delete next[key];
+																	setError('');
+																	void window.plugins.saveSettings(plugin.id, next).then(() => {
+																		savedSettings.current = next;
+																		setSettings(next);
+																	}).catch((caught) => setError(caught instanceof Error ? caught.message : String(caught)));
+																}}>Reset</Button>
+															)}
+														</>
+													)}
 											</ItemActions>
 										</Item>
 									)
