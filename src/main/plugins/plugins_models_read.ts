@@ -17,13 +17,14 @@ export function readPluginModels(directory: string): unknown[] | undefined {
 		} catch (error) {
 			throw new Error(`models/${entry.name}/manifest.json is not valid JSON.`, { cause: error });
 		}
+		const id = (value as { id?: unknown } | null)?.id;
 		if (
 			typeof value !== 'object' ||
-			value === null ||
-			(value as { id?: unknown }).id !== entry.name
+			typeof id !== 'string' ||
+			(id !== entry.name && !id.endsWith(`/${entry.name}`))
 		) {
 			throw new Error(
-				`models/${entry.name}/manifest.json must be a model with id "${entry.name}".`
+				`models/${entry.name}/manifest.json must be a model with id "${entry.name}" or "<vendor>/${entry.name}".`
 			);
 		}
 		models.push(value);
