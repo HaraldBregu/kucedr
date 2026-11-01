@@ -96,14 +96,15 @@ export function providerModels(providerId: string, type: ModelCapability): Provi
 		}));
 }
 
-/** Models fetched from the provider manifest's `modelsUrl`, else the manifest models. */
+/** Manifest models first (the defaults), then those fetched from the manifest's `modelsUrl`. */
 export async function liveProviderModels(
 	providerId: string,
 	fallback: ProviderModel[]
 ): Promise<ProviderModel[]> {
 	if (!providers().find((provider) => provider.id === providerId)?.modelsUrl) return fallback;
 	const models = await window.provider.listModels(providerId).catch(() => []);
-	return models.length > 0 ? models : fallback;
+	const ids = new Set(fallback.map((model) => model.id));
+	return [...fallback, ...models.filter((model) => !ids.has(model.id))];
 }
 
 /** Provider marked `default` for a capability, else the first one declaring it. */
