@@ -48,6 +48,7 @@ export interface LlmProviderSpec {
 	id: string;
 	apiKey: string;
 	baseURL?: string;
+	authentication?: import('../../../../shared/provider_types').AuthenticationType;
 }
 
 export interface LlmUsage {

@@ -30,6 +30,7 @@ import {
 	saveRagConfiguration,
 } from './agent/knowledge/rag/rag_store';
 import { WINDOW_SIZES, type WindowSize } from '../shared/window_size';
+import { loadProviders } from './models';
 
 export type AppSettingsState = {
 	trayEnabled: boolean;
@@ -301,11 +302,13 @@ export function clearProviders(): void {
 export function getResolvedProvider(providerId: string | undefined): ResolvedProvider | undefined {
 	if (!providerId) return undefined;
 	const provider = getProvider(providerId, 'models');
-	if (!provider) return undefined;
+	const catalogProvider = loadProviders().find((entry) => entry.id === providerId);
+	if (!provider && catalogProvider?.authentication !== 'none') return undefined;
 	return {
 		id: providerId,
-		apiKey: provider.apiKey,
-		baseURL: provider.baseUrl,
+		apiKey: provider?.apiKey ?? '',
+		baseURL: provider?.baseUrl ?? catalogProvider!.baseUrl,
+		...(catalogProvider?.authentication ? { authentication: catalogProvider.authentication } : {}),
 	};
 }
 

@@ -1,6 +1,6 @@
 import { LlmModel } from '../adapters/llm';
 import type { TextRequest } from '../../../shared/text_types';
-import { getProvider } from '../../settings_store';
+import { getResolvedProvider } from '../../settings_store';
 import { getModelId, getProviderId } from '../selection';
 
 const llmModel = new LlmModel();
@@ -16,11 +16,11 @@ export async function generateText(request: TextRequest): Promise<string> {
 	const modelId = request.modelId?.trim() || getModelId('text');
 	if (!modelId) throw new Error('Text model not configured.');
 
-	const provider = getProvider(providerId);
+	const provider = getResolvedProvider(providerId);
 	if (!provider) throw new Error(`Provider not configured: ${providerId}`);
 
 	const response = await llmModel.generate({
-		provider: { id: providerId, apiKey: provider.apiKey, baseURL: provider.baseUrl },
+		provider,
 		model: modelId,
 		messages: [{ role: 'user', content: prompt }],
 		maxTokens: request.maxTokens ?? MAX_TOKENS,

@@ -244,6 +244,7 @@ export interface ResolvedProvider {
 	id: string;
 	apiKey: string;
 	baseURL: string;
+	authentication?: AuthenticationType;
 }
 
 export function normalizeProviderId(providerId: string): string {
