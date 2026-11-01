@@ -18,6 +18,7 @@ import { statusLabel, isRunningState, stateTone } from './status';
 import { UserInputCard } from './UserInputCard';
 import { ScreenSourceCard } from './ScreenSourceCard';
 import { McpAuthorizationCard } from './McpAuthorizationCard';
+import { MapCard } from './MapCard';
 import { PluginScriptCard } from './PluginScriptCard';
 import { parsePlanEnvelope } from './plan';
 import { ImageGallery } from './ImageGallery';
@@ -165,6 +166,7 @@ export function AssistantMessage({
 	for (const tool of message.tools.filter((part) => !isSkillTool(part))) {
 		const isCard =
 			isScriptTool(tool.type) ||
+			tool.type === 'show_map' ||
 			tool.type === 'ask' ||
 			tool.type === 'select_screen_source' ||
 			tool.type === 'request_mcp_authorization';
@@ -173,6 +175,7 @@ export function AssistantMessage({
 			!isCard &&
 			last &&
 			!isScriptTool(last[0].type) &&
+			last[0].type !== 'show_map' &&
 			last[0].type !== 'ask' &&
 			last[0].type !== 'select_screen_source' &&
 			last[0].type !== 'request_mcp_authorization'
@@ -299,6 +302,7 @@ export function AssistantMessage({
 					return <ScreenSourceCard key={tool.toolCallId} tool={tool} pending={pending} />;
 				if (tool.type === 'request_mcp_authorization')
 					return <McpAuthorizationCard key={tool.toolCallId} tool={tool} pending={pending} />;
+				if (tool.type === 'show_map') return <MapCard key={tool.toolCallId} tool={tool} />;
 				if (isScriptTool(tool.type))
 					return <div key={tool.toolCallId} data-chat-script={tool.toolCallId}><PluginScriptCard tool={tool} /></div>;
 				return <ToolActivityGroup key={tool.toolCallId} tools={section} />;

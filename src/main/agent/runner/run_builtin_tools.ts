@@ -43,6 +43,7 @@ import { deleteTaskTool } from '../tools/tasks/delete_task';
 import { listTasksTool } from '../tools/tasks/list_tasks';
 import { runTaskNowTool } from '../tools/tasks/run_task_now';
 import { updateTaskTool } from '../tools/tasks/update_task';
+import { mapTool } from '../tools/web/map';
 import { fetchWebPageTool } from '../tools/web/fetch_web_page';
 import { getSearchWebTools } from '../tools/web/search_web';
 import { useWebBrowserTool } from '../tools/web/use_web_browser';
@@ -66,6 +67,7 @@ export function builtinTools(
 		processTool,
 		...getSearchWebTools(),
 		fetchWebPageTool,
+		mapTool,
 		useWebBrowserTool,
 		createImageTool(),
 		createVideoTool(),

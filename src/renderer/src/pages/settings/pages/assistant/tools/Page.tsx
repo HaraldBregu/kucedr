@@ -91,6 +91,7 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		titleKey: 'web',
 		icon: Globe,
 		tools: [
+			['Show map', 'show_map', 'Displays an interactive map in chat.'],
 			['Fetch web page', 'fetch_web_page', 'Retrieves and reads a web page by URL.'],
 			[
 				'Use web browser',
