@@ -4,7 +4,8 @@ import { getResolvedProvider } from '../../../../src/main/settings_store';
 import { getSearchKey } from '../../../../src/main/search/search_get_key';
 
 jest.mock('../../../../src/main/plugins/plugins_settings', () => ({
-	pluginSettings: (id: string) => id === 'openai' || id === 'tavily' ? { apiKey: `${id}-master` } : {},
+	pluginSettings: (id: string) =>
+		id === 'openai' || id === 'tavily' ? { apiKey: `${id}-master` } : {},
 }));
 jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
 	pluginProviders: () => {
