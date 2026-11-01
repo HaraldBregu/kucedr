@@ -21,6 +21,11 @@ export function useMouseNavigation(): void {
 				if (!(node instanceof HTMLElement)) continue;
 				const overflow = getComputedStyle(node).overflowX;
 				if (overflow !== 'auto' && overflow !== 'scroll') continue;
+				if (
+					(node.classList.contains('overflow-y-auto') || node.classList.contains('overflow-y-scroll')) &&
+					!node.classList.contains('overflow-x-auto') &&
+					!node.classList.contains('overflow-x-scroll')
+				) continue;
 				const maxScroll = node.scrollWidth - node.clientWidth;
 				if ((event.deltaX < 0 && node.scrollLeft > 0) || (event.deltaX > 0 && node.scrollLeft < maxScroll - 1)) {
 					return;
