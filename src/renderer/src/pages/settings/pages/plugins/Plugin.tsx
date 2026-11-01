@@ -368,7 +368,7 @@ export default function PluginPage(): React.JSX.Element {
 												aria-label={setting.title ?? key}
 												className="w-72"
 												type={setting.format === 'password' ? 'password' : 'text'}
-													required={plugin.settings?.inputSchema?.required?.includes(key)}
+												required={plugin.settings?.inputSchema?.required?.includes(key)}
 												autoComplete="off"
 												spellCheck={false}
 												value={settings[key] ?? ''}
@@ -378,17 +378,28 @@ export default function PluginPage(): React.JSX.Element {
 														[key]: event.target.value,
 													}))
 												}
-													onBlur={() => {
-														if (JSON.stringify(settings) === JSON.stringify(savedSettings.current)) return;
-														if (plugin.settings?.inputSchema?.required?.some((name) => !settings[name]?.trim())) return;
-														setError('');
-														void window.plugins.saveSettings(plugin.id, settings).then(() => {
+												onBlur={() => {
+													if (JSON.stringify(settings) === JSON.stringify(savedSettings.current))
+														return;
+													if (
+														plugin.settings?.inputSchema?.required?.some(
+															(name) => !settings[name]?.trim()
+														)
+													)
+														return;
+													setError('');
+													void window.plugins
+														.saveSettings(plugin.id, settings)
+														.then(() => {
 															savedSettings.current = settings;
-														}).catch((caught) => setError(caught instanceof Error ? caught.message : String(caught)));
-													}}
-													onKeyDown={(event) => {
-														if (event.key === 'Enter') event.currentTarget.blur();
-													}}
+														})
+														.catch((caught) =>
+															setError(caught instanceof Error ? caught.message : String(caught))
+														);
+												}}
+												onKeyDown={(event) => {
+													if (event.key === 'Enter') event.currentTarget.blur();
+												}}
 											/>
 										</SettingsRow>
 									)
