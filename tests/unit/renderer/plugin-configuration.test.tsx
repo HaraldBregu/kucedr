@@ -61,7 +61,8 @@ it('saves a valid API key when editing ends without a save button', async () => 
 	Object.defineProperty(window, 'scripts', { configurable: true, value: { list: async () => [] } });
 	const user = userEvent.setup();
 	render(<PluginPage />);
-	const input = await screen.findByLabelText('API key');
+	await user.click(await screen.findByRole('button', { name: 'Connect' }));
+	const input = screen.getByLabelText('API key');
 	expect(input).toHaveAttribute('type', 'password');
 	expect(screen.queryByRole('button', { name: 'common.save' })).not.toBeInTheDocument();
 	await user.type(input, 'example-key');
@@ -70,4 +71,7 @@ it('saves a valid API key when editing ends without a save button', async () => 
 	await waitFor(() =>
 		expect(saveSettings).toHaveBeenCalledWith('openai', { apiKey: 'example-key' })
 	);
+	await user.click(await screen.findByRole('button', { name: 'Reset' }));
+	await waitFor(() => expect(saveSettings).toHaveBeenLastCalledWith('openai', {}));
+	expect(screen.queryByLabelText('API key')).not.toBeInTheDocument();
 });
