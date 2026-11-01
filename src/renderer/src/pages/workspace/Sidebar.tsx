@@ -358,7 +358,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				) : shownEntries.length === 0 ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.noResults', 'No matching files.')}</p>
 				) : (
-					<WorkspaceTree key={search ? 'search' : 'tree'} expanded={!!search} entries={shownEntries} onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} selectedPath={selectedPath} selection={selection} onSelect={selectEntry} onMove={moveEntries} />
+					<WorkspaceTree expanded={!!search} entries={shownEntries} onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} selectedPath={selectedPath} selection={selection} onSelect={selectEntry} onMove={moveEntries} />
 				)}
 			</nav>
 			{pendingAction ? <WorkspaceActionDialog key={`${pendingAction.kind}:${pendingAction.parentPath}`} action={pendingAction} busy={busy} error={actionError} onClose={() => { setPendingAction(null); setActionError(''); }} onConfirm={confirmAction} /> : null}
