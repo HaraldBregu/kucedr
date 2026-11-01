@@ -11,6 +11,7 @@ export function savePluginSettings(id: string, values: Record<string, string>): 
 	const plain: Record<string, string> = {};
 	const secrets: Record<string, string> = {};
 	for (const [key, input] of Object.entries(values)) {
+		if (!(key in properties)) throw new Error('Unknown plugin setting.');
 		const value = input.trim();
 		if (!value) continue;
 		if (properties[key]?.format === 'password') {
