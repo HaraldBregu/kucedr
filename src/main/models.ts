@@ -219,9 +219,11 @@ function toPublicProvider(
 	plugin: PluginSource | undefined
 ): PublicProvider {
 	const baseUrl =
+		entry.baseUrl ??
 		[...(entry.models ?? []), ...(entry.mcp_servers ?? []), ...(entry.vector_databases ?? [])].find(
 			(service) => service.url?.startsWith('http')
-		)?.url ?? '';
+		)?.url ??
+		'';
 	const iconDarkUrl = iconUrl(providerDir, entry.icon_dark_url);
 	const iconLightUrl = iconUrl(providerDir, entry.icon_light_url);
 	return {
