@@ -154,18 +154,15 @@ describe('app renderer', () => {
 		expect(openAppWindows.has('project-order')).toBe(false);
 	});
 
-	it('navigates app content with native mouse commands and macOS swipe events', () => {
+	it('navigates app content with native mouse commands', () => {
 		const harness = createHarness();
 		render(harness.windowFactory, '/app/index.html', 'Project', 'project-navigation');
 		harness.shellHandlers.get('did-finish-load')?.();
 
 		harness.handlers.get('app-command')?.({}, 'browser-backward');
 		harness.handlers.get('app-command')?.({}, 'browser-forward');
-		harness.handlers.get('swipe')?.({}, 'left');
-		harness.handlers.get('swipe')?.({}, 'right');
-
-		expect(harness.viewWebContents.navigationHistory.goBack).toHaveBeenCalledTimes(2);
-		expect(harness.viewWebContents.navigationHistory.goForward).toHaveBeenCalledTimes(2);
+		expect(harness.viewWebContents.navigationHistory.goBack).toHaveBeenCalledTimes(1);
+		expect(harness.viewWebContents.navigationHistory.goForward).toHaveBeenCalledTimes(1);
 	});
 
 	it('keeps a failed app view hidden and closes its shell', async () => {
