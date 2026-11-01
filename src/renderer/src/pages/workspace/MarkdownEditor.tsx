@@ -206,7 +206,7 @@ export function WorkspaceMarkdownEditor({
 				className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} break-words px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12`}
 				onClick={(event) => {
 					const href = (event.target as HTMLElement).closest('a')?.getAttribute('href');
-					if (href && (event.metaKey || event.ctrlKey)) {
+					if (href) {
 						event.preventDefault();
 						onOpenLink(href);
 					} else if (event.target === event.currentTarget) editor.commands.focus('end');
