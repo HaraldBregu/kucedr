@@ -90,6 +90,10 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			trusted.assert(event);
 			return this.listModels(providerId);
 		});
+		registerQueryWithEvent(ProviderStoreChannels.listModelProviders, (event) => {
+			trusted.assert(event);
+			return [...loadProviders()];
+		});
 		registerQueryWithEvent(ProviderStoreChannels.getChannel, (event, id) => {
 			trusted.assert(event);
 			const normalizedId = this.id(id);

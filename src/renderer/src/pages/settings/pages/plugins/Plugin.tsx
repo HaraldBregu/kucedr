@@ -23,7 +23,6 @@ import type { SkillInfo } from '@shared/skills_types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { liveProviderModels } from '@/lib/providers';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -73,6 +72,7 @@ export default function PluginPage(): React.JSX.Element {
 		const [
 			plugins,
 			models,
+			modelProviders,
 			mcps,
 			vectorDatabases,
 			webSearches,
@@ -83,18 +83,19 @@ export default function PluginPage(): React.JSX.Element {
 			scripts,
 			values,
 		] = await Promise.all([
-				window.plugins.list(),
-				window.app.models(),
-				window.app.mcps(),
-				window.app.vectorDatabases(),
-				window.services.list(),
-				window.app.storages(),
-				window.apps.list(),
-				window.mcp.registry(),
-				window.skills.list(),
-				window.scripts.list(),
-				window.plugins.getSettings(pluginId ?? ''),
-			]);
+			window.plugins.list(),
+			window.app.models(),
+			window.provider.getModelProviders(),
+			window.app.mcps(),
+			window.app.vectorDatabases(),
+			window.services.list(),
+			window.app.storages(),
+			window.apps.list(),
+			window.mcp.registry(),
+			window.skills.list(),
+			window.scripts.list(),
+			window.plugins.getSettings(pluginId ?? ''),
+		]);
 		const owned = <T extends { readonly provider: { readonly plugin?: { readonly id: string } } }>(
 			entries: readonly T[]
 		): T[] => entries.filter((entry) => entry.provider.plugin?.id === pluginId);
@@ -112,11 +113,15 @@ export default function PluginPage(): React.JSX.Element {
 			scripts: scripts.filter((script) => script.plugin.id === pluginId),
 		});
 		const ownedModels = owned(models);
-		const ownedProviders = new Map(ownedModels.map((model) => [model.provider.id, model.provider]));
+		const ownedProviders = new Map(
+			modelProviders
+				.filter((provider) => provider.plugin?.id === pluginId)
+				.map((provider) => [provider.id, provider])
+		);
 		const liveModels = (
 			await Promise.all(
 				[...ownedProviders.values()].map(async (provider) =>
-					(await liveProviderModels(provider.id, [])).map(
+					(await window.provider.listModels(provider.id).catch(() => [])).map(
 						(model): CatalogModel => ({ ...model, type: 'llm', location: 'remote', provider })
 					)
 				)
@@ -317,7 +322,9 @@ export default function PluginPage(): React.JSX.Element {
 								size="sm"
 								variant={plugin.enabled ? 'outline' : 'default'}
 								disabled={busy || Boolean(plugin.error)}
-								onClick={() => void run(() => window.plugins.setEnabled(plugin.id, !plugin.enabled))}
+								onClick={() =>
+									void run(() => window.plugins.setEnabled(plugin.id, !plugin.enabled))
+								}
 							>
 								{plugin.enabled
 									? t('settings.integrations.installed.disable')
@@ -394,11 +401,14 @@ export default function PluginPage(): React.JSX.Element {
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
 				) : (
 					sections.map((section) => (
-						<SettingsSection key={section.key} title={
+						<SettingsSection
+							key={section.key}
+							title={
 								section.rows.length < 5
 									? section.title
 									: `${section.title} · ${section.rows.length}`
-							}>
+							}
+						>
 							<SettingsPanel>
 								{section.rows.map((row) => (
 									<SettingsRow

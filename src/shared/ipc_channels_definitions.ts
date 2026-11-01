@@ -364,6 +364,7 @@ export const ProviderChannels = {
 	list: 'provider-store:list',
 	listCustomModels: 'provider-store:custom:models:list',
 	listModels: 'provider-store:models:list',
+	listModelProviders: 'provider-store:model-providers:list',
 	getChannel: 'provider-store:channel:get',
 	setChannel: 'provider-store:channel:set',
 	listChannels: 'provider-store:channel:list',

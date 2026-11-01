@@ -25,6 +25,7 @@ import { pluginProviders } from './plugins/plugins_providers';
 import type { PluginSource } from '../shared/plugin_types';
 
 interface Catalog {
+	readonly providers: readonly PublicProvider[];
 	readonly models: readonly CatalogModel[];
 	readonly vectorDatabases: readonly CatalogService[];
 	readonly webSearches: readonly CatalogWebSearch[];
@@ -107,11 +108,7 @@ export function findModel(
 
 /** One record per provider, derived from the models they serve. */
 export function loadProviders(): readonly PublicProvider[] {
-	const unique = new Map<string, PublicProvider>();
-	for (const model of loadModels()) {
-		if (!unique.has(model.provider.id)) unique.set(model.provider.id, model.provider);
-	}
-	return [...unique.values()].sort(compareByName);
+	return loadCatalog().providers;
 }
 
 export function providerModels(providerId: string, type: ModelCapability): ProviderModel[] {
@@ -246,6 +243,7 @@ export function providersDir(): string {
 }
 
 function readCatalog(): Catalog {
+	const providers: PublicProvider[] = [];
 	const models: CatalogModel[] = [];
 	const vectorDatabases: CatalogService[] = [];
 	const webSearches: CatalogWebSearch[] = [];
@@ -317,6 +315,7 @@ function readCatalog(): Catalog {
 
 	for (const { entry, providerDir, plugin } of manifests.values()) {
 		const provider = toPublicProvider(entry, providerDir, plugin);
+		if (entry.models?.length || entry.modelsUrl) providers.push(provider);
 		const modelEntries = (entry.models ?? []).flatMap((model): CatalogEntryModel[] => {
 			const type = toModelCapability(model.type);
 			return type ? [{ ...model, type }] : [];
@@ -351,6 +350,7 @@ function readCatalog(): Catalog {
 	}
 
 	return {
+		providers: providers.sort(compareByName),
 		models: models.sort(compareByName),
 		vectorDatabases: vectorDatabases.sort(compareByName),
 		webSearches: webSearches.sort(compareByName),
