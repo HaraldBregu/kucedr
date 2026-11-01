@@ -186,6 +186,7 @@ export interface AgentSessionSummary {
 	id: string;
 	createdAtMs: number;
 	updatedAtMs?: number;
+	lastMessageAtMs?: number;
 	title: string;
 	pinned?: boolean;
 	category: AgentSessionCategory;

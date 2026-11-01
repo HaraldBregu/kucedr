@@ -23,6 +23,7 @@ import type { AgentSessionSummary } from '@/lib/compat';
 import { cn } from '@/lib/utils';
 import { playSound } from '@/lib/sounds/play';
 import type { OpenExtension } from './components/ExtensionPage';
+import { formatChatAge } from './formatChatAge';
 
 interface HomeSidebarProps {
 	readonly refreshKey: string;
@@ -169,6 +170,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		const title = session.title.trim() || t('settings.chatHistory.untitled');
 		const isActive = !libraryOpen && session.id === currentSessionId;
 		const isCompacting = compactingSessionId === session.id;
+		const age = session.lastMessageAtMs == null ? undefined : formatChatAge(session.lastMessageAtMs);
 		const openMenu = (): void => {
 			void window.win
 				.showContextMenu([
@@ -262,6 +264,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						) : (
 							<span className="truncate">{title}</span>
 						)}
+						{age && <time dateTime={new Date(session.lastMessageAtMs!).toISOString()} title={new Date(session.lastMessageAtMs!).toLocaleString()} aria-hidden="true" className="ml-auto shrink-0 text-xs font-normal text-muted-foreground group-hover/item:opacity-0 group-focus-within/item:opacity-0">{age}</time>}
 					</button>
 				)}
 				{editingSessionId !== session.id && (

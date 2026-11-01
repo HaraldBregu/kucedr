@@ -69,6 +69,7 @@ export function listSessions(
 						existsSync(messagesPath) ? statSync(messagesPath).mtimeMs : 0,
 						existsSync(runPath) ? statSync(runPath).mtimeMs : 0
 					),
+					lastMessageAtMs: existsSync(messagesPath) ? statSync(messagesPath).mtimeMs : undefined,
 					title: sessionTitle(entry.name, location),
 					pinned: sessionPinned(entry.name, location),
 					category,
