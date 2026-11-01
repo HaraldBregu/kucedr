@@ -8,7 +8,7 @@ export function Toggle(): ReactElement {
 	const { state, isMobile, toggleSidebar } = usePageContext();
 	const navigate = useNavigate();
 	return (
-		<div className="flex items-center">
+		<div className="flex items-center -space-x-2">
 		<Button type="button" variant="ghost" size="icon" data-slot="split-pane-toggle"
 			aria-label="Toggle Sidebar" aria-controls="split-pane-sidebar"
 			aria-expanded={isMobile ? state.sidebarOpenMobile : state.sidebarOpen}
