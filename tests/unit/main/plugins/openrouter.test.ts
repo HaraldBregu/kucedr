@@ -8,6 +8,6 @@ it('loads the bundled OpenRouter provider and its icon', () => {
 		title: 'OpenRouter',
 		icon: 'openrouter-light.svg',
 		iconDark: 'openrouter-dark.svg',
-		provider: { models: [expect.objectContaining({ id: 'openai/gpt-5.4' })] },
+		provider: { modelsUrl: 'https://openrouter.ai/api/v1/models' },
 	});
 });
