@@ -34,7 +34,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							<WorkspaceRenameInput name={entry.name} busy={renameBusy} onCancel={onRenameCancel} onConfirm={onRename} />
 						</div>
 					) : entry.type === 'directory' ? (
-						<details className="group" open={openDirectories.has(entry.path)} onToggle={(event) => {
+						<details className="group" open={expanded || openDirectories.has(entry.path)} onToggle={(event) => {
 							if (event.target !== event.currentTarget) return;
 							const open = event.currentTarget.open;
 							setOpenDirectories((current) => {
