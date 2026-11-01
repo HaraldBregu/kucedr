@@ -63,7 +63,7 @@ it('saves, edits, cancels and resets the API key using model controls', async ()
 	const user = userEvent.setup();
 	render(<PluginPage />);
 	await user.click(await screen.findByRole('link', { name: 'settings.integrations.plugin.website' }));
-	expect(openExternalUrl).toHaveBeenCalledWith('https://openai.com');
+	expect(openExternalUrl).toHaveBeenCalledWith('https://openai.com/');
 	await user.click(await screen.findByRole('button', { name: 'Connect' }));
 	const input = screen.getByLabelText('API key');
 	expect(input).toHaveAttribute('type', 'password');
