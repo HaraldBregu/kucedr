@@ -159,6 +159,40 @@ export default function PluginPage(): React.JSX.Element {
 		}
 	};
 
+	const saveSetting = async (key: string): Promise<void> => {
+		if (!plugin) return;
+		const next = { ...savedSettings.current, [key]: settings[key]?.trim() || savedSettings.current[key] };
+		setBusy(true);
+		setError('');
+		try {
+			await window.plugins.saveSettings(plugin.id, next);
+			savedSettings.current = next;
+			setSettings(next);
+			setEditingSetting(null);
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setBusy(false);
+		}
+	};
+
+	const resetSetting = async (key: string): Promise<void> => {
+		if (!plugin) return;
+		const next = { ...savedSettings.current };
+		delete next[key];
+		setBusy(true);
+		setError('');
+		try {
+			await window.plugins.saveSettings(plugin.id, next);
+			savedSettings.current = next;
+			setSettings(next);
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setBusy(false);
+		}
+	};
+
 	if (plugin === undefined || !contents) {
 		return (
 			<SettingsPageShell>
@@ -392,92 +426,23 @@ export default function PluginPage(): React.JSX.Element {
 											</ItemContent>
 											<ItemActions className="ml-auto flex-none justify-end gap-2">
 												{editingSetting === key ? (
-													<Input
-														autoFocus
-														aria-label={setting.title ?? key}
-														className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
-														type={setting.format === 'password' ? 'password' : 'text'}
-														required={plugin.settings?.inputSchema?.required?.includes(key)}
-														autoComplete="off"
-														spellCheck={false}
-														value={settings[key] ?? ''}
-														onChange={(event) =>
-															setSettings((current) => ({
-																...current,
-																[key]: event.target.value,
-															}))
-														}
-														onBlur={() => {
-															if (
-																JSON.stringify(settings) === JSON.stringify(savedSettings.current)
-															) {
-																setEditingSetting(null);
-																return;
-															}
-															if (
-																plugin.settings?.inputSchema?.required?.some(
-																	(name) => !settings[name]?.trim()
-																)
-															) {
-																setSettings(savedSettings.current);
-																setEditingSetting(null);
-																return;
-															}
-															setError('');
-															void window.plugins
-																.saveSettings(plugin.id, settings)
-																.then(() => {
-																	savedSettings.current = settings;
-																	setEditingSetting(null);
-																})
-																.catch((caught) =>
-																	setError(
-																		caught instanceof Error ? caught.message : String(caught)
-																	)
-																);
-														}}
-														onKeyDown={(event) => {
-															if (event.key === 'Enter') event.currentTarget.blur();
-														}}
-													/>
-												) : (
-													<>
-														<Button
-															type="button"
-															variant="ghost"
-															size="sm"
-															onClick={() => setEditingSetting(key)}
-														>
-															{savedSettings.current[key] ? 'Change' : 'Connect'}
-														</Button>
-														{savedSettings.current[key] && (
-															<Button
-																type="button"
-																variant="ghost"
-																size="sm"
-																onClick={() => {
-																	const next = { ...savedSettings.current };
-																	delete next[key];
-																	setError('');
-																	void window.plugins
-																		.saveSettings(plugin.id, next)
-																		.then(() => {
-																			savedSettings.current = next;
-																			setSettings(next);
-																		})
-																		.catch((caught) =>
-																			setError(
-																				caught instanceof Error ? caught.message : String(caught)
-																			)
-																		);
-																}}
-															>
-																Reset
-															</Button>
+															<>
+																<Input autoFocus aria-label={setting.title ?? key} className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none" type={setting.format === 'password' ? 'password' : 'text'} autoComplete="off" spellCheck={false} placeholder={savedSettings.current[key] ? '************' : t('settings.providers.apiKeyPlaceholder')} value={settings[key] ?? ''} onChange={(event) => setSettings((current) => ({ ...current, [key]: event.target.value }))} onKeyDown={(event) => { if (event.key === 'Enter' && (settings[key]?.trim() || savedSettings.current[key]?.trim())) { event.preventDefault(); void saveSetting(key); } }} />
+																<Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => { setSettings(savedSettings.current); setEditingSetting(null); }}>{t('common.cancel')}</Button>
+																<Button type="button" size="sm" disabled={busy || !(settings[key]?.trim() || savedSettings.current[key]?.trim())} onClick={() => void saveSetting(key)}>{t('common.save')}</Button>
+															</>
+														) : !savedSettings.current[key] ? (
+															<Button type="button" variant="ghost" size="sm" onClick={() => { setSettings((current) => ({ ...current, [key]: '' })); setEditingSetting(key); }}>Connect</Button>
+														) : (
+															<DropdownMenu>
+																<DropdownMenuTrigger asChild><Button variant="ghost" size="icon-sm" disabled={busy} aria-label={`Options for ${setting.title ?? key}`}><MoreHorizontal className="size-4" /></Button></DropdownMenuTrigger>
+																<DropdownMenuContent align="end">
+																	<DropdownMenuItem onSelect={() => { setSettings((current) => ({ ...current, [key]: '' })); setEditingSetting(key); }}>Edit API key</DropdownMenuItem>
+																	<DropdownMenuItem onSelect={() => void resetSetting(key)}>Reset</DropdownMenuItem>
+																</DropdownMenuContent>
+															</DropdownMenu>
 														)}
-													</>
-												)}
-											</ItemActions>
+													</ItemActions>
 										</Item>
 									)
 								)}
