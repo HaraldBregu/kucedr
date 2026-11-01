@@ -314,6 +314,9 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</header>
+			<div className="shrink-0 px-2 pt-2">
+				<Input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('workspaceSidebar.search', 'Search files')} aria-label={t('workspaceSidebar.search', 'Search files')} className="h-8" />
+			</div>
 			<div className="flex shrink-0 items-center gap-1 px-4 pb-1 pt-3">
 				<span className="flex-1 text-xs font-medium text-muted-foreground">{t('workspaceSidebar.files', 'Workspace files')}</span>
 				{([
