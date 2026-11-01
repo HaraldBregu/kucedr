@@ -15,6 +15,7 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 		minAppVersion: _minAppVersion,
 		icon,
 		iconDark,
+		settings: _settings,
 		...fields
 	} = manifest;
 	if (Object.keys(fields).length === 0) return undefined;

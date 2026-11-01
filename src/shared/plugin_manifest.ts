@@ -37,7 +37,18 @@ export const pluginManifestSchema = z
 		web_search: z.unknown().optional(),
 		storage: z.unknown().optional(),
 		bots: z.unknown().optional(),
-		settings: z.unknown().optional(),
+		settings: z.object({
+			inputSchema: z.object({
+				type: z.literal('object'),
+				properties: z.record(z.string(), z.object({
+					type: z.literal('string'),
+					title: z.string().optional(),
+					description: z.string().optional(),
+					format: z.string().optional(),
+				})),
+				required: z.array(z.string()).optional(),
+			}),
+		}).optional(),
 	})
 	.strict();
 

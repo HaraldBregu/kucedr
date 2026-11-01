@@ -1,4 +1,4 @@
-import type { ProviderManifestSetting } from './provider_types';
+import type { PluginManifest } from './plugin_manifest';
 export const PLUGIN_KINDS = ['apps', 'mcp', 'providers', 'skills', 'scripts'] as const;
 
 /** The built-in plugin that ships Kucedr's own apps, MCP servers, and skills; it can't be disabled or replaced. */
@@ -29,7 +29,7 @@ export interface PluginInfo {
 	/** Why the plugin could not be loaded; its contributions are hidden while set. */
 	readonly error?: string;
 	readonly contributes: Readonly<Record<PluginKind, readonly string[]>>;
-	readonly settings: readonly ProviderManifestSetting[];
+	readonly settings?: PluginManifest['settings'];
 }
 
 /** A plugin script the renderer can frame, from `<plugin>/scripts/<name>/manifest.json`. */
