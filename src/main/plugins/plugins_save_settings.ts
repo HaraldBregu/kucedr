@@ -6,7 +6,9 @@ import { isSafeStorageAvailable } from '../shared/safe_storage';
 export function savePluginSettings(id: string, values: Record<string, string>): void {
 	const plugin = scanPlugins().find((entry) => entry.id === id)?.manifest;
 	if (!plugin) throw new Error('Unknown plugin.');
-	const schema = plugin.settings as { inputSchema?: { properties?: Record<string, { format?: string }> } } | undefined;
+	const schema = plugin.settings as
+		| { inputSchema?: { properties?: Record<string, { format?: string }> } }
+		| undefined;
 	const properties = schema?.inputSchema?.properties ?? {};
 	const plain: Record<string, string> = {};
 	const secrets: Record<string, string> = {};

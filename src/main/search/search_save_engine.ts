@@ -18,9 +18,7 @@ export function saveSearchEngine(
 
 	const catalogProvider = SEARCH_PROVIDERS.find((provider) => provider.id === engineId);
 	if (!catalogProvider) throw new Error('Unknown search engine.');
-	const providersById = new Map(
-		getSearchProviders().map((provider) => [provider.id, provider])
-	);
+	const providersById = new Map(getSearchProviders().map((provider) => [provider.id, provider]));
 	providersById.set(engineId, { ...catalogProvider, apiKey });
 	const providers = SEARCH_PROVIDERS.flatMap((provider) => {
 		const stored = providersById.get(provider.id);

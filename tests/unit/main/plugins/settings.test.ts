@@ -12,10 +12,22 @@ jest.mock('electron', () => ({
 }));
 jest.mock('../../../../src/main/plugins/plugins_store', () => {
 	const state: Record<string, unknown> = { settings: {}, secrets: {} };
-	return { pluginsStore: { get: (key: string) => state[key], set: (key: string, value: unknown) => { state[key] = value; } } };
+	return {
+		pluginsStore: {
+			get: (key: string) => state[key],
+			set: (key: string, value: unknown) => {
+				state[key] = value;
+			},
+		},
+	};
 });
 jest.mock('../../../../src/main/plugins/plugins_scan', () => ({
-	scanPlugins: () => [{ id: 'openai', manifest: { settings: { inputSchema: { properties: { apiKey: { format: 'password' } } } } } }],
+	scanPlugins: () => [
+		{
+			id: 'openai',
+			manifest: { settings: { inputSchema: { properties: { apiKey: { format: 'password' } } } } },
+		},
+	],
 }));
 
 it('encrypts plugin API keys and restores them for provider use', () => {

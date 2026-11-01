@@ -249,14 +249,21 @@ function readProviders(kind: StoredProviderKind): StoredProvider[] {
 }
 
 export function listProviders(kind?: StoredProviderKind): StoredProvider[] {
-	const providers = kind ? readProviders(kind) : [...readProviders('models'), ...readProviders('databases')];
+	const providers = kind
+		? readProviders(kind)
+		: [...readProviders('models'), ...readProviders('databases')];
 	if (kind && kind !== 'models') return providers;
 	for (const catalog of loadProviders()) {
 		if (!catalog.plugin) continue;
 		const apiKey = pluginSettings(catalog.plugin.id).apiKey;
 		if (!apiKey) continue;
 		const index = providers.findIndex((provider) => provider.id === catalog.id);
-		const provider = { ...(index < 0 ? { id: catalog.id, name: catalog.name, baseUrl: catalog.baseUrl } : providers[index]), apiKey };
+		const provider = {
+			...(index < 0
+				? { id: catalog.id, name: catalog.name, baseUrl: catalog.baseUrl }
+				: providers[index]),
+			apiKey,
+		};
 		if (index < 0) providers.push(provider);
 		else providers[index] = provider;
 	}

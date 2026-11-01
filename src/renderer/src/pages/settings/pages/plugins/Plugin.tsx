@@ -365,25 +365,27 @@ export default function PluginPage(): React.JSX.Element {
 							}}
 						>
 							<SettingsPanel>
-								{Object.entries(plugin.settings?.inputSchema.properties ?? {}).map(([key, setting]) => (
-									<SettingsRow key={key} title={setting.title ?? key}>
-										<Input
-											aria-label={setting.title ?? key}
-											className="w-72"
-											type={setting.format === 'password' ? 'password' : 'text'}
-											required={plugin.settings?.inputSchema.required?.includes(key)}
-											autoComplete="off"
-											spellCheck={false}
-											value={settings[key] ?? ''}
-											onChange={(event) =>
-												setSettings((current) => ({
-													...current,
+								{Object.entries(plugin.settings?.inputSchema.properties ?? {}).map(
+									([key, setting]) => (
+										<SettingsRow key={key} title={setting.title ?? key}>
+											<Input
+												aria-label={setting.title ?? key}
+												className="w-72"
+												type={setting.format === 'password' ? 'password' : 'text'}
+												required={plugin.settings?.inputSchema.required?.includes(key)}
+												autoComplete="off"
+												spellCheck={false}
+												value={settings[key] ?? ''}
+												onChange={(event) =>
+													setSettings((current) => ({
+														...current,
 														[key]: event.target.value,
-												}))
-											}
-										/>
-									</SettingsRow>
-								))}
+													}))
+												}
+											/>
+										</SettingsRow>
+									)
+								)}
 							</SettingsPanel>
 							<Button type="submit" size="sm" className="w-fit" disabled={busy}>
 								{t('common.save')}
