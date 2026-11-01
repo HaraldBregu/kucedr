@@ -4,6 +4,10 @@
 	"type": "large-language-model",
 	"authentication": "api-key",
 	"url": "https://openrouter.ai/api/v1",
+	"apiKeyUrl": "https://openrouter.ai/settings/keys",
+	"baseUrl": "https://openrouter.ai/api/v1",
+	"modelsUrl": "https://openrouter.ai/api/v1/models",
+	"modelUrl": "https://openrouter.ai/{id}",
 	"metadata": {
 		"promptAttachments": [],
 		"documentationUrl": "https://openrouter.ai/openrouter/auto",

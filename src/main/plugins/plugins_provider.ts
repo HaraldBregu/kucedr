@@ -18,6 +18,11 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 		...fields
 	} = manifest;
 	if (Object.keys(fields).length === 0) return undefined;
+	const model = Array.isArray(fields.models) ? fields.models[0] : undefined;
+	const modelUrls =
+		model && typeof model === 'object' && !Array.isArray(model)
+			? (model as Record<string, unknown>)
+			: {};
 	const provider = {
 		providerId: id,
 		providerName: title,
@@ -25,6 +30,11 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 			icon_light_url: `/assets/${icon}`,
 			icon_dark_url: `/assets/${iconDark ?? icon}`,
 		}),
+		...Object.fromEntries(
+			(['apiKeyUrl', 'baseUrl', 'modelsUrl', 'modelUrl'] as const)
+				.filter((key) => modelUrls[key] !== undefined)
+				.map((key) => [key, modelUrls[key]])
+		),
 		...fields,
 	};
 	const errors = validateProviderManifest(provider);

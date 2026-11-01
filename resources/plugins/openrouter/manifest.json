@@ -10,11 +10,5 @@
 	"author": "Harald Bregu",
 	"icon": "openrouter-light.svg",
 	"iconDark": "openrouter-dark.svg",
-	"authentication": "api-key",
-	"apiKeyUrl": "https://openrouter.ai/settings/keys",
-	"baseUrl": "https://openrouter.ai/api/v1",
-	"modelsUrl": "https://openrouter.ai/api/v1/models",
-	"modelUrl": "https://openrouter.ai/{id}",
-	"icon_dark_url": "/assets/openrouter-dark.svg",
-	"icon_light_url": "/assets/openrouter-light.svg"
+	"authentication": "api-key"
 }
