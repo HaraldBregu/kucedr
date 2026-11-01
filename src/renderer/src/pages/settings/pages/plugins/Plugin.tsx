@@ -356,7 +356,7 @@ export default function PluginPage(): React.JSX.Element {
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
 				<SettingsSection title={t('settings.modelServices.configuration')}>
-					{Object.keys(plugin.settings?.inputSchema.properties ?? {}).length > 0 ? (
+					{Object.keys(plugin.settings?.inputSchema?.properties ?? {}).length > 0 ? (
 						<form
 							className="flex flex-col gap-3"
 							onSubmit={(event) => {
@@ -365,14 +365,14 @@ export default function PluginPage(): React.JSX.Element {
 							}}
 						>
 							<SettingsPanel>
-								{Object.entries(plugin.settings?.inputSchema.properties ?? {}).map(
+								{Object.entries(plugin.settings?.inputSchema?.properties ?? {}).map(
 									([key, setting]) => (
 										<SettingsRow key={key} title={setting.title ?? key}>
 											<Input
 												aria-label={setting.title ?? key}
 												className="w-72"
 												type={setting.format === 'password' ? 'password' : 'text'}
-												required={plugin.settings?.inputSchema.required?.includes(key)}
+											required={plugin.settings?.inputSchema?.required?.includes(key)}
 												autoComplete="off"
 												spellCheck={false}
 												value={settings[key] ?? ''}
