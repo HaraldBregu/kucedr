@@ -249,14 +249,25 @@ function readProviders(kind: StoredProviderKind): StoredProvider[] {
 }
 
 export function listProviders(kind?: StoredProviderKind): StoredProvider[] {
-	return kind ? readProviders(kind) : [...readProviders('models'), ...readProviders('databases')];
+	const providers = kind ? readProviders(kind) : [...readProviders('models'), ...readProviders('databases')];
+	if (kind && kind !== 'models') return providers;
+	for (const catalog of loadProviders()) {
+		if (!catalog.plugin) continue;
+		const apiKey = pluginSettings(catalog.plugin.id).apiKey;
+		if (!apiKey) continue;
+		const index = providers.findIndex((provider) => provider.id === catalog.id);
+		const provider = { ...(index < 0 ? { id: catalog.id, name: catalog.name, baseUrl: catalog.baseUrl } : providers[index]), apiKey };
+		if (index < 0) providers.push(provider);
+		else providers[index] = provider;
+	}
+	return providers;
 }
 
 export function getProvider(
 	id: string,
 	kind: Exclude<StoredProviderKind, 'channels'> = 'models'
 ): StoredProvider | undefined {
-	return readProviders(kind).find((provider) => provider.id === id);
+	return listProviders(kind).find((provider) => provider.id === id);
 }
 
 export function hasProvider(
@@ -304,11 +315,10 @@ export function getResolvedProvider(providerId: string | undefined): ResolvedPro
 	if (!providerId) return undefined;
 	const provider = getProvider(providerId, 'models');
 	const catalogProvider = loadProviders().find((entry) => entry.id === providerId);
-	const masterKey = catalogProvider?.plugin ? pluginSettings(catalogProvider.plugin.id).apiKey : undefined;
-	if (!provider && !masterKey && catalogProvider?.authentication !== 'none') return undefined;
+	if (!provider && catalogProvider?.authentication !== 'none') return undefined;
 	return {
 		id: providerId,
-		apiKey: masterKey || provider?.apiKey || '',
+		apiKey: provider?.apiKey ?? '',
 		baseURL: provider?.baseUrl ?? catalogProvider?.baseUrl,
 		...(catalogProvider?.authentication ? { authentication: catalogProvider.authentication } : {}),
 	};
