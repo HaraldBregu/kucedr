@@ -40,8 +40,8 @@ export const pluginManifestSchema = z
 		settings: z.object({
 			inputSchema: z.object({
 				type: z.literal('object'),
-				properties: z.record(z.string(), z.object({
-					type: z.literal('string'),
+				properties: z.record(z.string(), z.looseObject({
+					type: z.string(),
 					title: z.string().optional(),
 					description: z.string().optional(),
 					format: z.string().optional(),
