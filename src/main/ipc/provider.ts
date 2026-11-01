@@ -229,7 +229,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 						id: model.id,
 						name: typeof model.name === 'string' && model.name.trim() ? model.name : model.id,
 						metadata: {
-							documentationUrl: url,
+							documentationUrl: modelUrl?.replace('{id}', model.id) ?? modelsUrl,
 							promptAttachments: [],
 							inputs: {},
 							...(contextWindow ? { contextWindow } : {}),
