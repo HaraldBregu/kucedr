@@ -5,7 +5,7 @@ export function useMouseNavigation(): void {
 	useEffect(() => {
 		if (!navigator.platform.startsWith('Mac')) return;
 		let distance = 0;
-		let navigated = false;
+		let lastDirection = 0;
 		let timer: ReturnType<typeof setTimeout> | undefined;
 
 		const handleMouseUp = (event: MouseEvent): void => {
@@ -35,13 +35,14 @@ export function useMouseNavigation(): void {
 			if (timer) clearTimeout(timer);
 			timer = setTimeout(() => {
 				distance = 0;
-				navigated = false;
+				lastDirection = 0;
 			}, 250);
-			if (navigated) return;
+			if (Math.sign(event.deltaX) === lastDirection) return;
 			distance += event.deltaX;
 			if (Math.abs(distance) >= 60) {
-				navigated = true;
-				void router.navigate(distance < 0 ? -1 : 1);
+				lastDirection = Math.sign(distance);
+				distance = 0;
+				void router.navigate(lastDirection < 0 ? -1 : 1);
 			}
 		};
 
