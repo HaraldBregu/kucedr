@@ -190,6 +190,12 @@ export interface ProviderManifest {
 	readonly authentication?: AuthenticationType;
 	/** Provider dashboard page where API keys are created. */
 	readonly apiKeyUrl?: string;
+	/** Base URL of the provider API; defaults to the first service url. */
+	readonly baseUrl?: string;
+	/** Endpoint listing the provider's models live, OpenAI `/models` shape. */
+	readonly modelsUrl?: string;
+	/** Model page template; `{id}` is replaced with the model id. */
+	readonly modelUrl?: string;
 	/** Human-readable steps for obtaining credentials. */
 	readonly instructions?: string;
 	readonly images_url?: string;
