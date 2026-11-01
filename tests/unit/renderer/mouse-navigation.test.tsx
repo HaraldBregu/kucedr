@@ -74,4 +74,13 @@ describe('trackpad navigation', () => {
 		expect(navigate).toHaveBeenCalledWith(1);
 		scroller.remove();
 	});
+
+	it('accepts a reverse gesture without waiting for the previous gesture timeout', () => {
+		renderHook(() => useMouseNavigation());
+		act(() => {
+			window.dispatchEvent(new WheelEvent('wheel', { deltaX: -70 }));
+			window.dispatchEvent(new WheelEvent('wheel', { deltaX: 70 }));
+		});
+		expect(navigate.mock.calls).toEqual([[-1], [1]]);
+	});
 });
