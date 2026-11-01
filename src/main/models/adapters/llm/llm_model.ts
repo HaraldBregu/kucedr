@@ -738,7 +738,8 @@ export class LlmModel implements LlmAdapter {
 	}
 
 	private createOpenAIClient(provider: LlmProviderSpec, missingKeyMessage: string): OpenAI {
-		if (!provider.apiKey && provider.authentication !== 'none') throw new LlmProviderAuthError(missingKeyMessage);
+		if (!provider.apiKey && provider.authentication !== 'none')
+			throw new LlmProviderAuthError(missingKeyMessage);
 		const factory =
 			this.openAIClientFactory ?? ((c) => new OpenAI({ apiKey: c.apiKey, baseURL: c.baseURL }));
 		return factory({ apiKey: provider.apiKey || 'unused', baseURL: llmBaseUrl(provider) });

@@ -12,13 +12,18 @@ jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
 }));
 
 it('exposes Ollama discovery URLs without exposing the discovery entry as a model', () => {
-	expect(loadProviders()).toContainEqual(expect.objectContaining({
-		id: 'ollama',
-		baseUrl: 'http://localhost:11434/v1',
-		modelsUrl: 'http://localhost:11434/v1/models',
-	}));
+	expect(loadProviders()).toContainEqual(
+		expect.objectContaining({
+			id: 'ollama',
+			baseUrl: 'http://localhost:11434/v1',
+			modelsUrl: 'http://localhost:11434/v1/models',
+		})
+	);
 	expect(loadModels().filter((model) => model.provider.id === 'ollama')).toEqual([]);
 	expect(getResolvedProvider('ollama')).toMatchObject({
-		id: 'ollama', apiKey: '', baseURL: 'http://localhost:11434/v1', authentication: 'none',
+		id: 'ollama',
+		apiKey: '',
+		baseURL: 'http://localhost:11434/v1',
+		authentication: 'none',
 	});
 });
