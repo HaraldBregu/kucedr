@@ -307,7 +307,7 @@ export function getResolvedProvider(providerId: string | undefined): ResolvedPro
 	return {
 		id: providerId,
 		apiKey: provider?.apiKey ?? '',
-		baseURL: provider?.baseUrl ?? catalogProvider!.baseUrl,
+		baseURL: provider?.baseUrl ?? catalogProvider?.baseUrl,
 		...(catalogProvider?.authentication ? { authentication: catalogProvider.authentication } : {}),
 	};
 }
