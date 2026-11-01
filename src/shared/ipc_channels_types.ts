@@ -899,10 +899,6 @@ export interface ProviderInvokeChannelMap {
 		args: [providerId: string];
 		result: ProviderModel[];
 	};
-	[ProviderChannels.listModelProviders]: {
-		args: [];
-		result: import('./provider_types').PublicProvider[];
-	};
 	[ProviderChannels.getChannel]: {
 		args: [id: string];
 		result: import('./channels_types').ChannelCredentialSummary | undefined;
