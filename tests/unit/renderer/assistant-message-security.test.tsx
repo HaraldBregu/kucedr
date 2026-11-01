@@ -442,6 +442,6 @@ it('shows the saved response date beneath assistant content', () => {
 	const { container } = render(<AssistantMessage message={restored} />);
 	const time = container.querySelector('time');
 	expect(time).toHaveAttribute('datetime', new Date(timestamp).toISOString());
-	expect(time).toHaveTextContent(new Date(timestamp).toLocaleString());
+	expect(time).toHaveTextContent(new Date(timestamp).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }));
 	expect(time?.previousElementSibling).toHaveAttribute('aria-label', 'Reply');
 });
