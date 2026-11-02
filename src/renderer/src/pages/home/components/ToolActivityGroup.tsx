@@ -45,7 +45,7 @@ export function ToolActivityGroup({
 						variant="ghost"
 						className="p-0! h-auto w-full justify-start rounded-md bg-transparent! py-1 font-normal text-muted-foreground transition-colors hover:bg-transparent hover:text-foreground"
 					>
-						<span className="truncate text-sm font-medium">
+						<span className="truncate text-base font-medium">
 							{isBusy ? <TextShimmer>{label}</TextShimmer> : label}
 						</span>
 						<ChevronDown
