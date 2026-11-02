@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import type { AgentToolPart } from '../context';
 import { isToolRunning, toolActivityLabel, toolPartLabel } from './tool-label';
 
-function reflectedLabel(ms: number): string {
+function thoughtLabel(ms: number): string {
 	if (ms >= 60_000) return `Thought for ${Math.round(ms / 60_000)} min`;
 	return `Thought for ${Math.max(1, Math.round(ms / 1000))} sec`;
 }
@@ -30,7 +30,7 @@ export function ToolActivityGroup({
 			? toolActivityLabel(running[running.length - 1])
 			: isActive
 				? 'Thinking…'
-				: reflectedLabel(tools.reduce((total, tool) => total + (tool.durationMs ?? 0), 0));
+				: thoughtLabel(tools.reduce((total, tool) => total + (tool.durationMs ?? 0), 0));
 
 	return (
 		<Collapsible
