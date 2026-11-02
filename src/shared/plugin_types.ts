@@ -10,6 +10,7 @@ export type PluginKind = (typeof PLUGIN_KINDS)[number];
 export interface PluginSource {
 	readonly id: string;
 	readonly name: string;
+	readonly version?: string;
 }
 
 export interface PluginInfo {
