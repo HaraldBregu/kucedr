@@ -914,12 +914,14 @@ function PageContent(): ReactElement {
 									<ChatContainerScrollAnchor className="h-[calc(var(--composer-height,7rem)+3rem)]" />
 								</ChatContainerContent>
 								<ChatOutline key={chatSessionId} messages={visibleMessages} />
-								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+0.75rem)] z-30 flex justify-center">
-									<ScrollButton
-										type="button"
-										aria-label="Scroll to latest"
-										className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
-									/>
+								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+0.75rem)] z-30 px-4">
+									<div className={cn('mx-auto flex w-full max-w-3xl justify-center transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}>
+										<ScrollButton
+											type="button"
+											aria-label="Scroll to latest"
+											className="pointer-events-auto dark:bg-muted dark:hover:bg-accent"
+										/>
+									</div>
 								</div>
 								<ChatDetails open={detailsOpen} messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0}onAttach={addLibraryFiles} onWorkspaceAttach={(files) => setAttachments((current) => [...current, ...filesToAttachments(files)])} onJump={(messageId, toolCallId) => {
 									const scroll = chatScrollRef.current;
