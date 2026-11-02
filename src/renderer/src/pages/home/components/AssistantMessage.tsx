@@ -81,12 +81,18 @@ function resolveLocalImagePath(
 	return undefined;
 }
 
-function isSkillTool(tool: AgentToolPart): boolean {
-	return tool.type.toLowerCase().includes('skill');
-}
-
 function isScriptTool(type: string): boolean {
 	return type === 'run_script' || type === 'run_plugin_script';
+}
+
+function isCardTool(tool: AgentToolPart): boolean {
+	return (
+		isScriptTool(tool.type) ||
+		tool.type === 'show_map' ||
+		tool.type === 'ask' ||
+		tool.type === 'select_screen_source' ||
+		tool.type === 'request_mcp_authorization'
+	);
 }
 
 function fileName(path: string): string {
