@@ -38,6 +38,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
 	const { sessionId } = useChatSession();
+	const navigate = useNavigate();
 	const [voiceError, setVoiceError] = useState<string | null>(null);
 	const [updateVersion, setUpdateVersion] = useState<string | null>(null);
 	const [updating, setUpdating] = useState(false);
