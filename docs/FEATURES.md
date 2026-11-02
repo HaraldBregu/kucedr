@@ -117,7 +117,7 @@ picker.
 - GitHub-flavored Markdown, headings, lists, tables, blockquotes, line breaks, inline code, and syntax-highlighted code blocks are rendered.
 - External links open outside the application.
 - Copy, read-aloud, and reply/focus actions are available on assistant messages.
-- Tool calls are grouped into collapsible activity summaries and show running, completed, or error states, input, output, duration, and tool-call identifiers.
+- Tool calls collapse into a single activity section per response, closed by default, whose header shows the live status (Thinking…, Reading file…, Searching on web…); expanding it shows each call's state, input, output, duration, and tool-call identifier.
 - Generated images, video, and audio appear inline. Local media can be played without leaving the conversation.
 - Image context menus can open, reveal, copy the image, copy its path, or save a copy. Video and audio menus can open, reveal, copy the path, or save a copy.
 - User messages include their submitted attachments, including after transcript restoration.
