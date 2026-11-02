@@ -24,6 +24,10 @@ export const runScript = tool({
 			);
 		}
 		await renderPluginScript(name, input, 'light');
-		return { ok: true, shown: `${found.title} displayed to the user.` };
+		return {
+			ok: true,
+			shown: `${found.title} displayed to the user.`,
+			script: pluginScriptRef(found.name, found.metadata.version, found.plugin),
+		};
 	},
 });
