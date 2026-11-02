@@ -1,7 +1,7 @@
 import type { AppThemeData } from '@kucedr/sdk';
 
 const CSP =
-	"<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:\">";
+	"<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: https://tile.openstreetmap.org; font-src data:\">";
 
 export function pluginScriptDocument(html: string, theme: AppThemeData): string {
 	const colors = Object.entries(theme.colors)
