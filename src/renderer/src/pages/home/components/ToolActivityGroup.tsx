@@ -1,58 +1,38 @@
 import { useState, type ReactElement } from 'react';
-import { useNow } from '@/components/hooks/use-now';
-import { formatDuration } from '@/components/prompt-kit/duration';
+import { ChevronDown } from 'lucide-react';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
-import { isTaskToolType } from '@/components/prompt-kit/task';
 import { Tool } from '@/components/prompt-kit/tool';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import type { AgentToolPart } from '../context';
-import { isToolRunning, toolGroupLabel, toolPartLabel } from './tool-label';
+import { isToolRunning, toolActivityLabel, toolPartLabel } from './tool-label';
 
-type ToolTypeGroup = {
-	readonly type: string;
-	readonly tools: AgentToolPart[];
-};
-
-function groupToolsByType(tools: readonly AgentToolPart[]): ToolTypeGroup[] {
-	const groups: ToolTypeGroup[] = [];
-	for (const tool of tools) {
-		const type = isTaskToolType(tool.type) ? 'task' : tool.type;
-		const last = groups[groups.length - 1];
-		if (last && last.type === type) {
-			last.tools.push(tool);
-		} else {
-			groups.push({ type, tools: [tool] });
-		}
-	}
-	return groups;
-}
-
-function staggerStyle(index: number): { animationDelay: string } {
-	return { animationDelay: `${Math.min(index * 40, 240)}ms` };
-}
-
-function isLiveTool(tool: AgentToolPart): boolean {
-	return tool.durationMs === undefined && tool.startedAtMs !== undefined && isToolRunning(tool);
-}
-
-function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactElement {
+export function ToolActivityGroup({
+	tools,
+	isActive = false,
+	className,
+}: {
+	readonly tools: readonly AgentToolPart[];
+	readonly isActive?: boolean;
+	readonly className?: string;
+}): ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
-	const isRunning = group.tools.some(isToolRunning);
-	const label = toolGroupLabel(group.type, group.tools);
-	const hasLiveTool = group.tools.some(isLiveTool);
-	const now = useNow(hasLiveTool);
-	const hasDuration = hasLiveTool || group.tools.some((tool) => tool.durationMs !== undefined);
-	const durationMs = group.tools.reduce((total, tool) => {
-		if (tool.durationMs !== undefined) return total + tool.durationMs;
-		if (isLiveTool(tool) && tool.startedAtMs !== undefined)
-			return total + Math.max(0, now - tool.startedAtMs);
-		return total;
-	}, 0);
+	const running = tools.filter(isToolRunning);
+	const isBusy = isActive || running.length > 0;
+	const label =
+		running.length > 0
+			? toolActivityLabel(running[running.length - 1])
+			: isActive
+				? 'Thinking…'
+				: `Used ${tools.length} tool${tools.length === 1 ? '' : 's'}`;
 
 	return (
-		<Collapsible open={isOpen} onOpenChange={setIsOpen}>
+		<Collapsible
+			open={isOpen}
+			onOpenChange={setIsOpen}
+			className={cn('flex w-full max-w-2xl flex-col gap-1', className)}
+		>
 			<CollapsibleTrigger
 				render={
 					<Button
@@ -60,61 +40,22 @@ function ToolTypeSection({ group }: { readonly group: ToolTypeGroup }): ReactEle
 						variant="ghost"
 						className="p-0! h-auto w-full justify-start rounded-md bg-transparent! py-1 font-normal text-muted-foreground transition-colors hover:bg-transparent hover:text-foreground"
 					>
-						<div className="flex w-full min-w-0 items-center gap-1.5">
-							<span className="flex min-w-0 items-baseline gap-1 truncate text-sm font-medium">
-								{isRunning ? <TextShimmer>{label}</TextShimmer> : <span>{label}</span>}
-							</span>
-							{hasDuration && (
-								<span className="ml-auto shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
-									{formatDuration(durationMs)}
-								</span>
-							)}
-						</div>
+						<span className="truncate text-sm font-medium">
+							{isBusy ? <TextShimmer>{label}</TextShimmer> : label}
+						</span>
+						<ChevronDown
+							className={cn('size-3.5 shrink-0 transition-transform', isOpen && 'rotate-180')}
+						/>
 					</Button>
 				}
 			/>
 			<CollapsibleContent>
 				<div className="flex flex-col gap-1">
-					{group.tools.map((tool, index) => (
-						<Tool
-							key={tool.toolCallId}
-							toolPart={tool}
-							label={toolPartLabel(tool)}
-							hideIcon
-							className="mt-0"
-							style={staggerStyle(index)}
-						/>
+					{tools.map((tool) => (
+						<Tool key={tool.toolCallId} toolPart={tool} label={toolPartLabel(tool)} className="mt-0" />
 					))}
 				</div>
 			</CollapsibleContent>
 		</Collapsible>
-	);
-}
-
-export function ToolActivityGroup({
-	tools,
-	className,
-}: {
-	readonly tools: readonly AgentToolPart[];
-	readonly className?: string;
-}): ReactElement {
-	const groups = groupToolsByType(tools);
-
-	return (
-		<div className={cn('flex w-full max-w-2xl flex-col gap-1', className)}>
-			{groups.map((group, index) =>
-				group.tools.length > 1 ? (
-					<ToolTypeSection key={group.tools[0].toolCallId} group={group} />
-				) : (
-					<Tool
-						key={group.tools[0].toolCallId}
-						toolPart={group.tools[0]}
-						label={toolPartLabel(group.tools[0])}
-						className="mt-0"
-						style={staggerStyle(index)}
-					/>
-				)
-			)}
-		</div>
 	);
 }
