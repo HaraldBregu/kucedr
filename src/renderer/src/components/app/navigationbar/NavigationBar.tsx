@@ -100,7 +100,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			type="button"
 			variant={chatButtonVariant}
 			size="sm"
-			className={isHomeRoute ? '!rounded-l-full !rounded-r-none text-xs' : 'rounded-full text-xs'}
+			className={isHomeRoute ? '!rounded-l-full !rounded-r-none text-xs' : 'rounded-full text-xs dark:hover:bg-accent'}
 			onClick={() => navigate('/home')}
 			aria-label={homeLabel}
 			aria-current={isHome ? 'page' : undefined}
