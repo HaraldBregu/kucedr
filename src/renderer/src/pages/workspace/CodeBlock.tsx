@@ -52,7 +52,7 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 		editor
 			.chain()
 			.command(({ tr }) => {
-				tr.replaceWith(pos + 1, pos + node.nodeSize - 1, editor.schema.text(JSON.stringify(next, null, 2)));
+				tr.replaceWith(pos + 1, pos + node.nodeSize - 1, editor.schema.text(JSON.stringify({ script: pluginScriptRef(script.name, script.version, script.plugin, ref?.createdAt), input: next }, null, 2)));
 				return true;
 			})
 			.run();
