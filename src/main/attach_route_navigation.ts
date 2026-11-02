@@ -14,4 +14,9 @@ export function attachRouteNavigation(
 		if (command === 'browser-backward') navigate(-1);
 		if (command === 'browser-forward') navigate(1);
 	});
+
+	win.on('swipe', (_event, direction) => {
+		if (direction === 'left') navigate(-1);
+		if (direction === 'right') navigate(1);
+	});
 }
