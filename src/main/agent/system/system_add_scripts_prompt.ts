@@ -10,10 +10,11 @@ export function addScriptsPrompt(prompt: string, scripts: readonly PluginScriptM
 		'2. Build `input` from real data in the conversation or tool results. Never invent numbers, dates or labels; ask if data is missing.\n' +
 		"3. Call `run_script` with `{\"name\": \"<script>\", \"input\": {...}}`. The result appears in the user's view on its own: don't repeat it as text or a table, add at most a one-line summary.\n" +
 		'4. If it returns an error, fix the input using the error message and retry once. If it fails again, tell the user what went wrong.\n' +
-		"\nLeave out optional fields the user didn't ask for, and omit `title` unless the user wants a heading. Never call a script name as a tool of its own. To put a script's result into a markdown file, write a fenced code block whose language is the script's fence and whose body is the same input JSON.";
+		"\nLeave out optional fields the user didn't ask for, and omit `title` unless the user wants a heading. Never call a script name as a tool of its own. To put a script's result into a markdown file, write a fenced code block whose language is the script's fence and whose body is `{\"script\": <the script's Ref JSON below>, \"input\": <the same input JSON>}`.";
 	for (const script of scripts) {
 		const instructions = path.join(script.directory, ...script.metadata.instructions.split('/'));
-		prompt += `\n- \`${script.name}\` (${script.title}) — ${script.description.replace(/\n/g, ' ')}${script.fence ? ` Fence: \`${script.fence}\`.` : ''} Instructions: \`${instructions}\``;
+		const ref = JSON.stringify(pluginScriptRef(script.name, script.metadata.version, script.plugin));
+		prompt += `\n- \`${script.name}\` (${script.title}) — ${script.description.replace(/\n/g, ' ')}${script.fence ? ` Fence: \`${script.fence}\`. Ref: \`${ref}\`.` : ''} Instructions: \`${instructions}\``;
 	}
 	return prompt;
 }
