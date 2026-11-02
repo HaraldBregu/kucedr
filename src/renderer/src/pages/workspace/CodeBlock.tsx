@@ -17,12 +17,15 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 	const [formOpen, setFormOpen] = useState(false);
 	const script = node.attrs.language ? byFence.get(node.attrs.language) : undefined;
 	const text = node.textContent;
-	const input = useMemo(() => {
-		if (!script) return undefined;
+	const { input, ref } = useMemo((): { input?: unknown; ref?: PluginScriptRef } => {
+		if (!script) return {};
 		try {
-			return JSON.parse(text) as unknown;
+			const body = JSON.parse(text) as unknown;
+			if (body && typeof body === 'object' && 'script' in body && 'input' in body)
+				return { input: body.input, ref: body.script as PluginScriptRef };
+			return { input: body };
 		} catch {
-			return undefined;
+			return {};
 		}
 	}, [script, text]);
 	const editing = useEditorState({
