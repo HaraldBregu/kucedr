@@ -291,7 +291,6 @@ export function AssistantMessage({
 				if (tool.type === 'request_mcp_authorization')
 					return <McpAuthorizationCard key={tool.toolCallId} tool={tool} pending={pending} />;
 				if (tool.type === 'show_map') return <MapCard key={tool.toolCallId} tool={tool} />;
-				if (isScriptTool(tool.type))
 				return <div key={tool.toolCallId} data-chat-script={tool.toolCallId}><PluginScriptCard tool={tool} /></div>;
 			})}
 			{message.pendingPermission && (
