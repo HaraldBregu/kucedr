@@ -1,0 +1,46 @@
+{
+	"title": "Maps",
+	"description": "Render an interactive OpenStreetMap map centered on known coordinates, with optional labeled markers and title.",
+	"author": "Harald Bregu",
+	"type": "UI",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "web",
+		"entry": "dist/index.mjs",
+		"instructions": "instructions.md"
+	},
+	"inputSchema": {
+		"type": "object",
+		"required": ["latitude", "longitude"],
+		"properties": {
+			"latitude": { "type": "number", "title": "Latitude", "minimum": -90, "maximum": 90 },
+			"longitude": { "type": "number", "title": "Longitude", "minimum": -180, "maximum": 180 },
+			"zoom": { "type": "integer", "title": "Zoom", "minimum": 0, "maximum": 19 },
+			"title": { "type": "string", "title": "Title" },
+			"markers": {
+				"type": "array",
+				"title": "Markers",
+				"maxItems": 100,
+				"items": {
+					"type": "object",
+					"required": ["latitude", "longitude"],
+					"properties": {
+						"latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+						"longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+						"label": { "type": "string" }
+					}
+				}
+			}
+		},
+		"examples": [
+			{
+				"latitude": 48.8584,
+				"longitude": 2.2945,
+				"zoom": 14,
+				"markers": [{ "latitude": 48.8584, "longitude": 2.2945, "label": "Eiffel Tower" }]
+			}
+		]
+	},
+	"fence": "maps",
+	"height": 320
+}
