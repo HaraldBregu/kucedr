@@ -81,6 +81,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isHome = location.pathname === '/home';
 	const isHomeRoute = isHome || isLibrary;
 	const isWorkspace = location.pathname === '/workspace';
+	const showChatGroup = isHomeRoute || isWorkspace;
 	const isCode = location.pathname === '/code' || location.pathname.startsWith('/code/');
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
@@ -90,7 +91,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const workspaceLabel = t('settings.workspace.title', 'Workspace');
 	const chatHistoryLabel = t('settings.chatHistory.title');
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
-	const chatButtonVariant = isHomeRoute || isSettings ? 'secondary' : 'ghost';
+	const chatButtonVariant = showChatGroup || isSettings ? 'secondary' : 'ghost';
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
 	useEffect(() => {
 		if (!chatSessionsLoading && chatSessionsRef.current) revealSelection(chatSessionsRef.current);
@@ -100,7 +101,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			type="button"
 			variant={chatButtonVariant}
 			size="sm"
-			className={isHomeRoute ? '!rounded-l-full !rounded-r-none text-xs' : 'rounded-full text-xs dark:hover:bg-accent'}
+			className={showChatGroup ? '!rounded-l-full !rounded-r-none text-xs' : 'rounded-full text-xs dark:hover:bg-accent'}
 			onClick={() => navigate('/home')}
 			aria-label={homeLabel}
 			aria-current={isHome ? 'page' : undefined}
@@ -117,7 +118,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	);
 	const navigationButtons = showWorkspace ? (
 		<>
-			{isHomeRoute ? (
+			{showChatGroup ? (
 			<ButtonGroup role="group" aria-label={homeLabel}>
 				{chatButtonTooltip}
 				<DropdownMenu
