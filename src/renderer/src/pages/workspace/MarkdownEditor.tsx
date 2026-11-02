@@ -182,7 +182,7 @@ export function WorkspaceMarkdownEditor({
 				editor.chain().focus().insertContent({
 					type: 'codeBlock',
 					attrs: { language: script.fence },
-					content: [{ type: 'text', text: JSON.stringify(input, null, 2) }],
+					content: [{ type: 'text', text: JSON.stringify({ script: pluginScriptRef(script.name, script.version, script.plugin), input }, null, 2) }],
 				}).run();
 			}} /> : null}
 			{urlOpen ? <WorkspaceUrlDialog onClose={() => setUrlOpen(false)} onInsert={(src, alt) => {
