@@ -25,7 +25,11 @@ export function ToolActivityGroup({
 			? toolActivityLabel(running[running.length - 1])
 			: isActive
 				? 'Thinking…'
-				: `Used ${tools.length} tool${tools.length === 1 ? '' : 's'}`;
+				: elapsedMs === undefined
+					? 'Reflected'
+					: elapsedMs < 60_000
+						? `Reflected for ${Math.max(1, Math.round(elapsedMs / 1000))} sec`
+						: `Reflected for ${Math.round(elapsedMs / 60_000)} min`;
 
 	return (
 		<Collapsible
