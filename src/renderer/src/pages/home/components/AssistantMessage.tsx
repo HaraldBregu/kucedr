@@ -277,11 +277,6 @@ export function AssistantMessage({
 				<ToolActivityGroup
 					tools={activityTools}
 					isActive={isStreaming && isRunningState(message.state)}
-					elapsedMs={
-						message.startedAtMs !== undefined && message.completedAtMs !== undefined
-							? message.completedAtMs - message.startedAtMs
-							: undefined
-					}
 				/>
 			)}
 			{cardTools.map((tool) => {
