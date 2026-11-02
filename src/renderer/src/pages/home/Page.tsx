@@ -857,7 +857,7 @@ function PageContent(): ReactElement {
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
-				navigationActions={!showEmptyConversation && !openExtension ? <Tooltip>
+				navigationActions={!showEmptyConversation && !openExtension && !showLibrary ? <Tooltip>
 					<TooltipTrigger render={<Button type="button" variant={detailsOpen ? 'secondary' : 'ghost'} size="icon" className="rounded-full" aria-label={detailsOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={detailsOpen} aria-controls="chat-information" onClick={() => setDetailsOpen((open) => !open)}><PanelRight className="size-4" strokeWidth={1.8} /></Button>} />
 					<TooltipContent side="bottom">{detailsOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
 				</Tooltip> : undefined}
