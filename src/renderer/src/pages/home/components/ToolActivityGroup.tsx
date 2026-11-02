@@ -8,6 +8,15 @@ import { cn } from '@/lib/utils';
 import type { AgentToolPart } from '../context';
 import { isToolRunning, toolActivityLabel, toolPartLabel } from './tool-label';
 
+function reflectedLabel(ms: number): string {
+	if (ms >= 60_000) {
+		const minutes = Math.round(ms / 60_000);
+		return `Reflected for ${minutes} minute${minutes === 1 ? '' : 's'}`;
+	}
+	const seconds = Math.max(1, Math.round(ms / 1000));
+	return `Reflected for ${seconds} second${seconds === 1 ? '' : 's'}`;
+}
+
 export function ToolActivityGroup({
 	tools,
 	isActive = false,
