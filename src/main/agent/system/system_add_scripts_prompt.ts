@@ -1,7 +1,7 @@
 import path from 'node:path';
-import type { PluginScriptManifest } from '../../plugins/scripts/plugin_script_read';
+import type { PluginScript } from '../../plugins';
 
-export function addScriptsPrompt(prompt: string, scripts: readonly PluginScriptManifest[]): string {
+export function addScriptsPrompt(prompt: string, scripts: readonly PluginScript[]): string {
 	if (scripts.length === 0) return prompt;
 	prompt += '\n\n# Scripts';
 	prompt +=
