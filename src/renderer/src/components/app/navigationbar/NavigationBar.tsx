@@ -298,7 +298,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 								type="button"
 								variant="ghost"
 								size="icon"
-								className="size-8 rounded-full"
+								className="size-8 rounded-full dark:hover:bg-accent"
 								onClick={() => setTheme(nextTheme)}
 								aria-label={themeLabel}
 							>
