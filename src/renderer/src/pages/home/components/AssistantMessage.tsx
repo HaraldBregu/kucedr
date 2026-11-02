@@ -161,30 +161,8 @@ export function AssistantMessage({
 	const displayContent = parsedPlan.kind === 'markdown' ? message.content : parsedPlan.content;
 	const messageText = displayContent.trim();
 	const hasTools = message.tools.length > 0;
-	const skillTools = message.tools.filter(isSkillTool);
-	const toolSections: AgentToolPart[][] = [];
-	for (const tool of message.tools.filter((part) => !isSkillTool(part))) {
-		const isCard =
-			isScriptTool(tool.type) ||
-			tool.type === 'show_map' ||
-			tool.type === 'ask' ||
-			tool.type === 'select_screen_source' ||
-			tool.type === 'request_mcp_authorization';
-		const last = toolSections[toolSections.length - 1];
-		if (
-			!isCard &&
-			last &&
-			!isScriptTool(last[0].type) &&
-			last[0].type !== 'show_map' &&
-			last[0].type !== 'ask' &&
-			last[0].type !== 'select_screen_source' &&
-			last[0].type !== 'request_mcp_authorization'
-		) {
-			last.push(tool);
-		} else {
-			toolSections.push([tool]);
-		}
-	}
+	const cardTools = message.tools.filter(isCardTool);
+	const activityTools = message.tools.filter((tool) => !isCardTool(tool));
 	const generated = generatedMedia(message.tools);
 	const mediaPaths = generated.flatMap(({ paths }) => paths);
 	const generatedImagePaths = generated
