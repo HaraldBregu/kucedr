@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { pluginScripts, renderPluginScript } from '../../../plugins';
+import { pluginScriptRef } from '../../../../shared/plugin_script_ref';
 import { tool } from '../tool';
 
 export const runScript = tool({
