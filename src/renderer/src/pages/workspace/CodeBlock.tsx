@@ -29,6 +29,16 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 			return {};
 		}
 	}, [script, text]);
+	useEffect(() => {
+		const pos = getPos();
+		if (!script || input === undefined || ref?.createdAt || !editor.isEditable || pos === undefined) return;
+		const stamped = ref ? { ...ref, createdAt: new Date().toISOString() } : pluginScriptRef(script.name, script.version, script.plugin);
+		editor.view.dispatch(
+			editor.state.tr
+				.replaceWith(pos + 1, pos + node.nodeSize - 1, editor.schema.text(JSON.stringify({ script: stamped, input }, null, 2)))
+				.setMeta('addToHistory', false)
+		);
+	}, [script, input, ref, editor, getPos, node.nodeSize]);
 	const editing = useEditorState({
 		editor,
 		selector: ({ editor: current }) => {
