@@ -8,7 +8,7 @@ export function createSessionState(): SessionState {
 		messages: [],
 		toolCalls: [],
 		usage: { inputTokens: 0, outputTokens: 0 },
-		maxTurns: 20,
+		maxTurns: 32,
 		model: 'default',
 		numTurns: 0,
 		finalText: '',
