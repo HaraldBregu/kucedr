@@ -11,12 +11,10 @@ import { isToolRunning, toolActivityLabel, toolPartLabel } from './tool-label';
 export function ToolActivityGroup({
 	tools,
 	isActive = false,
-	elapsedMs,
 	className,
 }: {
 	readonly tools: readonly AgentToolPart[];
 	readonly isActive?: boolean;
-	readonly elapsedMs?: number;
 	readonly className?: string;
 }): ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
