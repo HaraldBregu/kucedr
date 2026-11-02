@@ -6,7 +6,7 @@ export interface PluginScriptRef {
 	readonly version: string;
 	readonly plugin: string;
 	readonly pluginVersion?: string;
-	readonly createdAt: string;
+	readonly createdAt?: string;
 }
 
 export function pluginScriptRef(name: string, version: string, plugin: PluginSource, createdAt = new Date().toISOString()): PluginScriptRef {
