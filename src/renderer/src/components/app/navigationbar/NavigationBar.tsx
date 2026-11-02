@@ -247,7 +247,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 										size="icon"
 										aria-label={t('navigationBar.applicationMenu')}
 										onClick={() => window.win?.popupMenu()}
-										className="ml-2 rounded-full"
+										className="ml-2 rounded-full dark:hover:bg-accent"
 									>
 										<Menu className="size-4" strokeWidth={1.5} />
 									</Button>
