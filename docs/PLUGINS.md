@@ -24,7 +24,7 @@ A plugin is one folder that can contribute four kinds of things:
 | `~/.kucedr/plugins/settings.json` | The ids of disabled plugins (`pluginsStore`; everything else is enabled) and each plugin's `settings` values, keyed by plugin id. |
 
 Every built-in folder except `kucedr/` is a provider plugin: just `manifest.json` and `assets/`.
-The core plugin ships the built-in apps (Arcade, Tetris, Triangle, Roast Room), skills, and an empty
+The core plugin ships the built-in apps (Arcade, Tetris, Triangle), skills, and an empty
 `mcp/servers.json`.
 
 Plugin files are never copied into `~/.kucedr/apps`, `providers`, `mcp`, or `skills`. Each loader
