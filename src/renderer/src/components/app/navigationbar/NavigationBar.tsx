@@ -100,7 +100,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			type="button"
 			variant={chatButtonVariant}
 			size="sm"
-			className={isHomeRoute ? '!rounded-r-none text-xs' : 'rounded-md text-xs'}
+			className={isHomeRoute ? '!rounded-l-full !rounded-r-none text-xs' : 'rounded-full text-xs'}
 			onClick={() => navigate('/home')}
 			aria-label={homeLabel}
 			aria-current={isHome ? 'page' : undefined}
@@ -136,7 +136,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 							type="button"
 							variant={chatButtonVariant}
 							size="icon-sm"
-							className="!rounded-l-none border-l-0"
+							className="!rounded-l-none !rounded-r-full border-l-0"
 							aria-label={chatHistoryLabel}
 						>
 							<ChevronDown className="size-4" strokeWidth={1.8} />
@@ -266,6 +266,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 									aria-label={chatButtonLabel}
 									variant="default"
 									size="xs"
+									className="rounded-full"
 									onClick={() => navigate('/home')}
 								>
 									{chatButtonLabel}
