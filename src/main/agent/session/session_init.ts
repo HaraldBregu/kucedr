@@ -49,7 +49,7 @@ export function init(
 		state.messages.push(...additions);
 	}
 	state.model = input.model ?? 'default';
-	state.maxTurns = input.maxTurns ?? input.maxIterations ?? 20;
+	state.maxTurns = input.maxTurns ?? input.maxIterations ?? 32;
 	state.toolCalls = [];
 	state.usage = { inputTokens: 0, outputTokens: 0 };
 	state.numTurns = 0;
