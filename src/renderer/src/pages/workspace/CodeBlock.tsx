@@ -10,6 +10,7 @@ import { PluginScriptFrame } from '@/components/plugin-script/Frame';
 import { Button } from '@/components/ui/button';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import { cn } from '@/lib/utils';
+import { pluginScriptRef, type PluginScriptRef } from '../../../../shared/plugin_script_ref';
 import { WorkspaceScriptForm } from './ScriptForm';
 
 export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): React.JSX.Element {
