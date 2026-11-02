@@ -273,9 +273,13 @@ export function AssistantMessage({
 
 	return (
 		<Message data-chat-response={message.id} className={cn('flex w-full flex-col', className)}>
-			{skillTools.length > 0 && <ToolActivityGroup tools={skillTools} />}
-			{toolSections.map((section) => {
-				const tool = section[0];
+			{activityTools.length > 0 && (
+				<ToolActivityGroup
+					tools={activityTools}
+					isActive={isStreaming && isRunningState(message.state)}
+				/>
+			)}
+			{cardTools.map((tool) => {
 				const pending =
 					message.pendingUserInput?.toolCallId === tool.toolCallId
 						? message.pendingUserInput
