@@ -5,10 +5,12 @@ import { ErrorBoundary } from './components/app/base/ErrorBoundary';
 import { initRecorderCapture } from './lib/recorder';
 import { router } from './router';
 import { Provider as PageProvider } from './components/app/base/page';
+import { useMouseNavigation } from './hooks/mouse';
 import './index.css';
 
 const App: React.FC = () => {
 	useEffect(() => initRecorderCapture(), []);
+	useMouseNavigation();
 
 	return (
 		<ErrorBoundary level="root">
