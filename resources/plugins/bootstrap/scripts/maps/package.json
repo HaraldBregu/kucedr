@@ -1,0 +1,14 @@
+{
+	"name": "@kucedr-plugins/bootstrap-maps",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Bootstrap plugin script that renders Leaflet maps as self-contained HTML.",
+	"scripts": {
+		"build": "esbuild src/browser.mjs --bundle --minify --format=iife --outfile=dist/browser.js && esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs"
+	},
+	"devDependencies": {
+		"esbuild": "^0.28.2",
+		"leaflet": "^1.9.4"
+	}
+}
