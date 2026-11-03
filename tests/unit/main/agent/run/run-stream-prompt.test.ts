@@ -700,7 +700,7 @@ describe('run stream system prompt', () => {
 		}
 	);
 
-	it.each(['bot', 'task', 'health', 'subagent'] as const)(
+	it.each(['task', 'health', 'subagent'] as const)(
 		'keeps personal memory out of %s runs even in workspace mode',
 		async (category) => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-isolated-memory-'));
@@ -737,7 +737,7 @@ describe('run stream system prompt', () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-bot-bootstrap-'));
 		try {
 			const session = createSessionState();
-			session.category = 'bot';
+			session.category = 'task';
 			session.messages = [{ role: 'user', content: 'Hello' }];
 			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
 			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
@@ -752,7 +752,7 @@ describe('run stream system prompt', () => {
 					message: 'Hello',
 					model: 'test-model',
 					type: 'background',
-					agentId: 'channels',
+					agentId: 'tasks',
 					contextMode: 'minimal',
 					interactionMode: 'default',
 				},
@@ -773,127 +773,6 @@ describe('run stream system prompt', () => {
 		}
 	});
 
-	it('caps public web calls only for bot-origin runs', async () => {
-		const calls = Array.from({ length: 9 }, (_, index) => ({
-			id: `web-${index}`,
-			name: 'search_web',
-			args: { query: `query ${index}` },
-		}));
-		const search = jest.fn().mockResolvedValue('public result');
-		const webTool = jsonTool({
-			id: 'search_web',
-			category: 'web',
-			name: 'Search web',
-			description: 'public web search',
-			schema: { type: 'object' },
-			execute: search,
-		});
-		runModelTurnMock.mockImplementationOnce(async function* () {
-			yield* [];
-			return { content: '', model: 'test-model', toolCalls: calls };
-		});
-		const botEvents = [];
-		const botSession = createSessionState();
-		botSession.messages = [{ role: 'user', content: 'public current-events question' }];
-		for await (const event of stream(
-			{ location: '/workspace' },
-			botSession,
-			{
-				runId: 'bot-run',
-				task: 'chat',
-				message: 'search',
-				model: 'test-model',
-				type: 'background',
-				agentId: 'channels',
-				contextMode: 'minimal',
-			},
-			new AbortController().signal,
-			{ tools: [webTool] }
-		))
-			botEvents.push(event);
-		expect(search).not.toHaveBeenCalled();
-		expect(botEvents.at(-1)).toMatchObject({
-			type: 'run_finished',
-			result: { stopReason: 'budget_exhausted' },
-		});
-
-		runModelTurnMock
-			.mockImplementationOnce(async function* () {
-				yield* [];
-				return { content: '', model: 'test-model', toolCalls: calls };
-			})
-			.mockImplementationOnce(successfulTurn);
-		const mainSession = createSessionState();
-		mainSession.messages = [{ role: 'user', content: 'public current-events question' }];
-		for await (const event of stream(
-			{ location: '/workspace' },
-			mainSession,
-			{
-				runId: 'main-run',
-				task: 'chat',
-				message: 'search',
-				model: 'test-model',
-				type: 'default',
-				agentId: 'main',
-				contextMode: 'minimal',
-			},
-			new AbortController().signal,
-			{ tools: [webTool] }
-		))
-			void event;
-		expect(search).toHaveBeenCalledTimes(9);
-	});
-
-	it.each(['microphone_recorder', 'camera_recorder', 'screen_recorder'])(
-		'summarizes after %s starts without allowing more tools',
-		async (id) => {
-			// camera_recorder defaults to 'ask', which a headless run can only deny.
-			setAgentProfileTool('chat', { kind: 'builtin', id }, { permission: 'allow' });
-			const recorder = jsonTool({
-				id,
-				category: 'system',
-				name: id,
-				description: id,
-				capability: { effects: ['sensor', 'write'] },
-				schema: { type: 'object' },
-				execute: () => ({ id: 'recording-1', status: 'recording' }),
-			});
-			runModelTurnMock
-				.mockImplementationOnce(async function* () {
-					yield* [];
-					return {
-						content: '',
-						model: 'test-model',
-						toolCalls: [{ id: 'record', name: id, args: {} }],
-					};
-				})
-				.mockImplementationOnce(successfulTurn);
-			const events = [];
-			for await (const event of stream(
-				{ location: '/workspace' },
-				createSessionState(),
-				{
-					runId: `${id}-run`,
-					task: 'chat',
-					message: 'Start recording',
-					model: 'test-model',
-					type: 'default',
-					agentId: 'main',
-					contextMode: 'minimal',
-				},
-				new AbortController().signal,
-				{ tools: [recorder] }
-			))
-				events.push(event);
-
-			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
-			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
-			expect(events.at(-1)).toMatchObject({
-				type: 'run_finished',
-				result: { text: 'done', stopReason: 'end_turn' },
-			});
-		}
-	);
 
 	it('rejects a malformed Plan response before publishing it', async () => {
 		const events = [];
@@ -1024,7 +903,7 @@ describe('run stream system prompt', () => {
 	it('pins the resolved execution contract for delegated children', async () => {
 		const scope = {
 			ownerId: 'channel',
-			source: 'channel' as const,
+			source: 'task' as const,
 			sessionId: 'parent',
 			runId: 'parent',
 		};

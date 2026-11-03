@@ -69,7 +69,6 @@ describe('agent tool profiles', () => {
 		['voice', false, true],
 		['tasks', false, false],
 		['health', false, false],
-		['channels', false, false],
 	] as const)(
 		'applies required system tool eligibility to %s',
 		(profileId, allowsAsk, allowsBootstrap) => {

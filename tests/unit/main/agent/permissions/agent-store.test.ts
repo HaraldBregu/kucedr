@@ -60,7 +60,7 @@ describe('agent store permissions', () => {
 		});
 	});
 
-	it.each(['chat', 'voice', 'tasks', 'channels'] as const)(
+	it.each(['chat', 'voice', 'tasks'] as const)(
 		'stores media models independently in the %s profile',
 		(profileId) => {
 			setToolModel(

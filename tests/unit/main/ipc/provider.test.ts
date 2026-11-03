@@ -4,9 +4,6 @@ const getProvider = jest.fn();
 const listProviders = jest.fn();
 const setProvider = jest.fn();
 const deleteProvider = jest.fn();
-const getChannelProvider = jest.fn();
-const listChannelProviders = jest.fn();
-const setChannelProvider = jest.fn();
 const getEnabledPluginProviders = jest.fn();
 const setPluginProviderEnabled = jest.fn();
 
@@ -31,19 +28,6 @@ jest.mock('../../../../src/main/settings_store', () => ({
 jest.mock('../../../../src/main/providers/providers_store', () => ({
 	getEnabledPluginProviders,
 	setPluginProviderEnabled,
-}));
-
-jest.mock('../../../../src/main/channels', () => ({
-	getChannelProvider,
-	listChannelProviders,
-	setChannelProvider,
-	loadChannels: () => [
-		{
-			id: 'telegram-bot',
-			provider: { id: 'telegram', name: 'Telegram', baseUrl: 'https://api.telegram.org' },
-			url: 'https://api.telegram.org',
-		},
-	],
 }));
 
 jest.mock('../../../../src/main/models', () => ({
@@ -296,59 +280,4 @@ describe('provider credential IPC boundary', () => {
 		);
 	});
 
-	it('rejects saving a channel that is absent from the supported catalog', () => {
-		register();
-
-		expect(() =>
-			handler(registerCommandWithEvent, ProviderChannels.setChannel)(
-				{},
-				{
-					id: 'unsupported',
-					apiKey: 'bot-secret',
-				}
-			)
-		).toThrow('Unknown channel provider.');
-		expect(setChannelProvider).not.toHaveBeenCalled();
-	});
-
-	it('omits unsupported saved channels from queries without changing stored credentials', () => {
-		register();
-		listChannelProviders.mockReturnValue([
-			{ id: 'unsupported', name: 'Unsupported', baseUrl: '', apiKey: 'old-secret' },
-			{ id: 'telegram', name: 'Telegram', baseUrl: '', apiKey: 'bot-secret' },
-		]);
-
-		expect(handler(registerQueryWithEvent, ProviderChannels.listChannels)({})).toEqual([
-			{ id: 'telegram', name: 'Telegram', baseUrl: '', configured: true },
-		]);
-		expect(
-			handler(registerQueryWithEvent, ProviderChannels.getChannel)({}, 'unsupported')
-		).toBeUndefined();
-		expect(setChannelProvider).not.toHaveBeenCalled();
-	});
-
-	it('does not expose bot tokens through the split bot query', async () => {
-		register();
-		getChannelProvider.mockReturnValue({
-			id: 'telegram',
-			name: 'Telegram',
-			apiKey: 'bot-secret',
-			baseUrl: 'https://api.telegram.org',
-			dmPolicy: 'allowlist',
-		});
-
-		const result = await handler(registerQueryWithEvent, ProviderChannels.getChannel)(
-			{},
-			'telegram'
-		);
-
-		expect(result).toEqual({
-			id: 'telegram',
-			name: 'Telegram',
-			baseUrl: 'https://api.telegram.org',
-			dmPolicy: 'allowlist',
-			configured: true,
-		});
-		expect(JSON.stringify(result)).not.toContain('bot-secret');
-	});
 });

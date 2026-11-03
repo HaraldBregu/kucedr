@@ -170,7 +170,6 @@ it('gives a background child its own browser when it inherits the parent tools',
 
 it.each([
 	{ agentId: 'tasks', toolsAllow: [], source: 'task' },
-	{ agentId: 'channels', toolsAllow: undefined, source: 'channel' },
 ] as const)(
 	'preserves browser restrictions for $agentId',
 	async ({ agentId, toolsAllow, source }) => {
@@ -197,73 +196,3 @@ it.each([
 	}
 );
 
-it('does not let channel agents delegate browser access to a background child', async () => {
-	const requested = new Set<string>();
-	const phases = new Map<string, number>();
-	model.mockReset().mockImplementation(async function* (
-		input: { agentId: string },
-		_provider: unknown,
-		_model: unknown,
-		_prompt: unknown,
-		_messages: unknown,
-		tools: Tool[]
-	) {
-		yield* [];
-		if (input.agentId === 'subagent')
-			expect(tools.map((tool) => tool.id)).not.toContain('use_web_browser');
-		const phase = phases.get(input.agentId) ?? 0;
-		phases.set(input.agentId, phase + 1);
-		if (phase >= 2) return { content: 'done', model: 'test-model', toolCalls: [] };
-		if (phase === 0) {
-			return {
-				content: '',
-				model: 'test-model',
-				toolCalls: [
-					{
-						id: input.agentId === 'channels' ? 'search' : 'child-start',
-						name: input.agentId === 'channels' ? 'tool_search' : 'use_web_browser',
-						args: input.agentId === 'channels' ? { query: 'subagent' } : { action: 'start' },
-					},
-				],
-			};
-		}
-		requested.add(input.agentId);
-		return {
-			content: '',
-			model: 'test-model',
-			toolCalls: [
-				input.agentId === 'channels'
-					? { id: 'delegate', name: 'subagent', args: { task: 'Open a browser' } }
-					: { id: 'child-start', name: 'use_web_browser', args: { action: 'start' } },
-			],
-		};
-	});
-	for await (const event of stream(
-		{ location: userDataLocation() },
-		createSessionState(),
-		{
-			runId: 'channel-parent',
-			task: 'chat',
-			message: 'Open browser',
-			model: 'test-model',
-			type: 'background',
-			agentId: 'channels',
-			contextMode: 'minimal',
-			scope: {
-				ownerId: 'channel',
-				source: 'channel',
-				sessionId: 'channel',
-				runId: 'channel-parent',
-			},
-		},
-		new AbortController().signal,
-		{ sandbox: {} as ExecSandbox }
-	)) {
-		if (event.type === 'tool_call_end') {
-			if (event.toolName === 'subagent') expect(event.permissionOutcome).toBe('allow');
-			if (event.toolName === 'use_web_browser') expect(event.isError).toBe(true);
-		}
-	}
-	expect(requested).toEqual(new Set(['channels', 'subagent']));
-	expect(launchPersistentContext).not.toHaveBeenCalled();
-});

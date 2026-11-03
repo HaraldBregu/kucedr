@@ -146,7 +146,7 @@ it('captures completed main chat runs', async () => {
 	expect(capture).toHaveBeenCalledWith(SESSION_ID, expect.any(Array));
 });
 
-it.each(['channels', 'tasks', 'health'])('does not expose %s runs to personal memory', async (agentId) => {
+it.each(['tasks', 'health'])('does not expose %s runs to personal memory', async (agentId) => {
 	const capture = jest.fn(async () => undefined);
 	const memory = { capture } as unknown as MemoryService;
 	const agent = new Agent(

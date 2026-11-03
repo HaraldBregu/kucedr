@@ -1,5 +1,4 @@
 jest.mock('../../../src/main/memory', () => ({ createMemory: jest.fn() }));
-jest.mock('../../../src/main/channels', () => ({ createChannelRegistry: jest.fn() }));
 jest.mock('../../../src/main/agent/sandbox', () => ({ ExecSandbox: jest.fn() }));
 
 import { cleanup, type MainServices } from '../../../src/main/bootstrap';
@@ -27,7 +26,6 @@ it('settles storage operations before cloud and auth teardown', async () => {
 		storageOperations,
 		cloudService,
 		authService,
-		channelRegistry: { destroy: jest.fn(async () => undefined) },
 	} as unknown as MainServices;
 
 	const cleaning = cleanup(services);

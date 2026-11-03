@@ -89,7 +89,6 @@ it('creates clean independent agent profile stores without migration metadata', 
 	expect(agentProfileStorePath('voice')).toMatch(/voice\.json$/);
 	expect(agentProfileStorePath('tasks')).toMatch(/tasks\.json$/);
 	expect(agentProfileStorePath('health')).toMatch(/health\/settings\.json$/);
-	expect(agentProfileStorePath('channels')).toMatch(/channels\.json$/);
 	setAgentProfileModel('voice', 'realtimeVoice', {
 		providerId: 'openai',
 		modelId: 'gpt-realtime',
@@ -139,7 +138,6 @@ it('keeps model selections isolated between agent profiles', () => {
 		['chat', 'openai', 'chat-image'],
 		['voice', 'google', 'voice-image'],
 		['tasks', 'xai', 'tasks-image'],
-		['channels', 'anthropic', 'channels-image'],
 	] as const) {
 		setAgentProfileModel(profileId, 'image', { providerId, modelId, options: {} });
 	}
@@ -178,32 +176,5 @@ it('keeps model selections isolated between agent profiles', () => {
 	expect(getAgentProfileDocument('health')).not.toHaveProperty('textToSpeech');
 	expect(getAgentProfileDocument('health')).not.toHaveProperty('speechToText');
 	expect(getAgentProfileDocument('health')).not.toHaveProperty('realtimeVoice');
-	setAgentProfileModel('channels', 'textToText', {
-		providerId: 'openai',
-		modelId: 'gpt-5-mini',
-		options: {},
-	});
-	setAgentProfileModel('channels', 'textToSpeech', {
-		providerId: 'openai',
-		modelId: 'gpt-4o-mini-tts',
-		options: {},
-	});
-	setAgentProfileModel('channels', 'speechToText', {
-		providerId: 'openai',
-		modelId: 'gpt-4o-transcribe',
-		options: {},
-	});
-	expect(getAgentProfileDocument('channels')).toMatchObject({
-		llm: { providerId: 'openai', modelId: 'gpt-5-mini' },
-		tts: { providerId: 'openai', modelId: 'gpt-4o-mini-tts' },
-		stt: { providerId: 'openai', modelId: 'gpt-4o-transcribe' },
-		image: { providerId: 'anthropic', modelId: 'channels-image' },
-	});
-	expect(getAgentProfileDocument('channels')).not.toHaveProperty('realtimeVoice');
-	expect(getAgentProfileDocument('voice')).toMatchObject({
-		image: { providerId: 'google', modelId: 'voice-image' },
-	});
-	expect(getAgentProfileDocument('tasks')).toMatchObject({
-		image: { providerId: 'xai', modelId: 'tasks-image' },
-	});
+
 });

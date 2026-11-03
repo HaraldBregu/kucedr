@@ -111,7 +111,7 @@ describe('Agent scoped cancellation', () => {
 					yield {
 						type: 'run_finished',
 						result: {
-							text: `${input.agentId === 'channels' ? 'bot' : input.runId} reply`,
+							text: `${input.agentId === 'tasks' ? 'bot' : input.runId} reply`,
 							model: 'model',
 							toolCalls: [],
 							numTurns: 1,
@@ -134,14 +134,14 @@ describe('Agent scoped cancellation', () => {
 			sessionId: 'ui-session',
 			windowId: 11,
 		});
-		const botResponse = agent.send('bot', 'channels', {
+		const botResponse = agent.send('bot', 'tasks', {
 			type: 'background',
 			runId: 'bot-run',
 			sessionId: 'bot-session',
 		});
 		await Promise.all([ui.started, bot.started]);
 		const botCall = mockStream.mock.calls.find((call) => call[2].runId === 'bot-run');
-		expect(botCall?.[2]).toMatchObject({ agentId: 'channels', contextMode: 'minimal' });
+		expect(botCall?.[2]).toMatchObject({ agentId: 'tasks', contextMode: 'minimal' });
 
 		expect(agent.cancel('ui-run', 12)).toBe(false);
 		expect(ui.signal?.aborted).toBe(false);
@@ -228,7 +228,7 @@ describe('Agent scoped cancellation', () => {
 				runId: 'first',
 				sessionId: 'shared',
 			}),
-			agent.send('concurrent', 'channels', {
+			agent.send('concurrent', 'tasks', {
 				type: 'background',
 				runId: 'concurrent',
 				sessionId: 'other',
@@ -277,7 +277,7 @@ describe('Agent scoped cancellation', () => {
 				runId: 'ui-run',
 				sessionId: 'ui',
 			}),
-			agent.send('bot', 'channels', {
+			agent.send('bot', 'tasks', {
 				type: 'background',
 				runId: 'bot-run',
 				sessionId: 'bot',
