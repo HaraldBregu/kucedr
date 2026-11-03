@@ -410,6 +410,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: ListChecks,
 	},
 	{
+		path: '/settings/bots',
+		labelKey: 'settings.tabs.bots',
+		descriptionKey: 'settings.overview.descriptions.bots',
+		icon: Bot,
+	},
+	{
 		path: '/settings/mcp',
 		labelKey: 'settings.tabs.mcp',
 		sidebarLabelKey: 'settings.sidebar.mcp',
