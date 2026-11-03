@@ -14,7 +14,6 @@ const READ = new Set([
 	'get_identity',
 	'get_soul',
 	'get_user',
-	'list_a2a_agents',
 	'list_tasks',
 	'list_skills',
 	'load_skill',
