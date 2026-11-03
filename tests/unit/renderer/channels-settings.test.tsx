@@ -1,11 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import type {
 	ChannelCredentialSummary,
 	ChannelModelKind,
 } from '../../../src/shared/channels_types';
 import ChannelsPage from '../../../src/renderer/src/pages/settings/pages/channels/Page';
+import ChannelDetailsPage from '../../../src/renderer/src/pages/settings/pages/channels/details/Page';
+import ChannelsConfigurationPage from '../../../src/renderer/src/pages/settings/pages/channels/Configuration';
 import {
 	modelsFor,
 	providerIdsFor,
@@ -123,14 +125,14 @@ beforeEach(() => {
 	setToolModel.mockImplementation(async (_kind, value) => value);
 	channels.mockResolvedValue([
 		{
-			id: 'telegram-bot',
+			id: 'telegram/default',
 			name: 'Telegram Bot API',
 			type: 'bot',
 			url: 'https://api.telegram.org',
 			instructions: 'Message @BotFather, then paste the bot token here.',
 			credentials: [{ key: 'apiKey', label: 'Bot token', type: 'password', required: true }],
 			provider: {
-				id: 'telegram',
+				id: 'telegram/default',
 				name: 'Telegram',
 				baseUrl: 'https://api.telegram.org',
 				apiKeyUrl: 'https://t.me/BotFather',
@@ -148,38 +150,23 @@ beforeEach(() => {
 	});
 });
 
-it('shows channel credentials, models and media configuration directly on Channels', async () => {
+it('lists channels with links to their detail pages', async () => {
 	render(
 		<MemoryRouter>
 			<ChannelsPage />
 		</MemoryRouter>
 	);
-	expect(
-		await screen.findByRole('heading', { name: 'Telegram Not configured' })
-	).toBeInTheDocument();
-	expect(
-		screen.getByText('Message @BotFather, then paste the bot token here.')
-	).toBeInTheDocument();
-	expect(screen.getByLabelText('Bot token')).toBeInTheDocument();
-	expect(screen.getByRole('heading', { name: 'Configuration' })).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Model' })).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Transcribe model' })).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Voice model' })).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Music' })).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Image' })).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Video' })).toBeInTheDocument();
-	expect(screen.queryByRole('link', { name: /Configuration/ })).not.toBeInTheDocument();
-	expect(screen.getByRole('link', { name: /Tools/ })).toHaveAttribute(
-		'href',
-		'/settings/channels/tools'
-	);
+	const link = await screen.findByRole('link', { name: /Telegram Bot API/ });
+	expect(link).toHaveAttribute('href', '/settings/channels/telegram/default');
+	expect(screen.queryByLabelText('Bot token')).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Model' })).not.toBeInTheDocument();
 });
 
 it('keeps the existing collapsible model controls', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<ChannelsPage />
+			<ChannelsConfigurationPage />
 		</MemoryRouter>
 	);
 	const modelButton = await screen.findByRole('button', { name: 'Model' });
@@ -196,8 +183,10 @@ it('keeps the existing collapsible model controls', async () => {
 it('saves a trimmed token on Channels and clears the secret after persistence', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter>
-			<ChannelsPage />
+		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
+			<Routes>
+				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
+			</Routes>
 		</MemoryRouter>
 	);
 	const token = await screen.findByLabelText('Bot token');
@@ -206,7 +195,7 @@ it('saves a trimmed token on Channels and clears the secret after persistence', 
 	await user.click(screen.getByRole('button', { name: 'Save' }));
 	await waitFor(() =>
 		expect(setChannel).toHaveBeenCalledWith(
-			expect.objectContaining({ id: 'telegram', apiKey: 'test-token' })
+			expect.objectContaining({ id: 'telegram/default', apiKey: 'test-token' })
 		)
 	);
 	expect(token).toHaveValue('');
@@ -216,8 +205,10 @@ it('keeps the token editable when saving fails', async () => {
 	setChannel.mockRejectedValue(new Error('Token could not be saved'));
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter>
-			<ChannelsPage />
+		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
+			<Routes>
+				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
+			</Routes>
 		</MemoryRouter>
 	);
 	const token = await screen.findByLabelText('Bot token');
@@ -231,7 +222,7 @@ it('keeps the token editable when saving fails', async () => {
 it('loads stored access rules and persists DM policy and user/group changes without re-entering a token', async () => {
 	stored = [
 		{
-			id: 'telegram',
+			id: 'telegram/default',
 			name: 'Telegram',
 			configured: true,
 			allowFrom: ['123'],
@@ -241,8 +232,10 @@ it('loads stored access rules and persists DM policy and user/group changes with
 	];
 	const user = userEvent.setup();
 	const view = render(
-		<MemoryRouter>
-			<ChannelsPage />
+		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
+			<Routes>
+				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
+			</Routes>
 		</MemoryRouter>
 	);
 	expect(await screen.findByText('123')).toBeInTheDocument();
@@ -251,7 +244,7 @@ it('loads stored access rules and persists DM policy and user/group changes with
 	await user.click(await screen.findByRole('option', { name: 'Open' }));
 	await waitFor(() =>
 		expect(setChannel).toHaveBeenLastCalledWith(
-			expect.objectContaining({ id: 'telegram', apiKey: '', dmPolicy: 'open' })
+			expect.objectContaining({ id: 'telegram/default', apiKey: '', dmPolicy: 'open' })
 		)
 	);
 	await user.type(screen.getByLabelText('User ID'), ' 456 ');
@@ -276,8 +269,10 @@ it('loads stored access rules and persists DM policy and user/group changes with
 	);
 	view.unmount();
 	render(
-		<MemoryRouter>
-			<ChannelsPage />
+		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
+			<Routes>
+				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
+			</Routes>
 		</MemoryRouter>
 	);
 	expect(await screen.findByText('456')).toBeInTheDocument();
@@ -294,8 +289,10 @@ it.each([
 ] as const)('saves and reloads the %s model from the Channels page', async (kind, label) => {
 	const user = userEvent.setup();
 	const view = render(
-		<MemoryRouter>
-			<ChannelsPage />
+		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
+			<Routes>
+				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
+			</Routes>
 		</MemoryRouter>
 	);
 	const button = await screen.findByRole('button', { name: label });
@@ -307,8 +304,10 @@ it.each([
 	);
 	view.unmount();
 	render(
-		<MemoryRouter>
-			<ChannelsPage />
+		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
+			<Routes>
+				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
+			</Routes>
 		</MemoryRouter>
 	);
 	await waitFor(() =>
@@ -319,8 +318,10 @@ it.each([
 it('keeps media-model changes scoped to the channels profile', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter>
-			<ChannelsPage />
+		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
+			<Routes>
+				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
+			</Routes>
 		</MemoryRouter>
 	);
 	const button = await screen.findByRole('button', { name: 'Image' });
