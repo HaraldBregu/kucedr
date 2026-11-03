@@ -48,6 +48,24 @@ describe('Telegram voice messages', () => {
 		}));
 	});
 
+	it('handles Telegram commands as automatic replies', () => {
+		const adapter = createChannelAdapter({ credentials: { apiKey: 'token' }, channel: 'telegram/default' });
+		const receive = jest.fn();
+		adapter.onMessage(receive);
+		const textHandler = mockOn.mock.calls.find(([event]) => event === 'message:text')?.[1];
+		const context = (text: string) => ({
+			message: { text, message_id: 1 },
+			chat: { id: 2, type: 'private' },
+			from: { id: 3 },
+		});
+		textHandler(context('/start@mybot'));
+		expect(receive).toHaveBeenCalledWith(expect.objectContaining({
+			automaticReply: "Hi! I'm connected. Send me a message and I'll reply.",
+		}));
+		textHandler(context('/unknown'));
+		expect(receive).toHaveBeenCalledTimes(1);
+	});
+
 	it('sends a native voice message', async () => {
 		mockSendVoice.mockResolvedValueOnce({ message_id: 42 });
 		const adapter = createChannelAdapter({ credentials: { apiKey: 'token' }, channel: 'telegram/default' });

@@ -9,25 +9,5 @@
 	],
 	"author": "Harald Bregu",
 	"website": "https://telegram.org",
-	"icon": "telegram.svg",
-	"authentication": "api-key",
-	"apiKeyUrl": "https://core.telegram.org/bots#botfather",
-	"icon_dark_url": "/assets/telegram.svg",
-	"icon_light_url": "/assets/telegram.svg",
-	"bots": [
-		{
-			"id": "telegram-bot",
-			"name": "Telegram Bot API",
-			"instructions": "Open Telegram, message @BotFather, send /newbot and follow the prompts, then paste the bot token here.",
-			"credentials": [
-				{
-					"key": "apiKey",
-					"label": "Bot token",
-					"type": "password",
-					"required": true
-				}
-			],
-			"url": "https://api.telegram.org"
-		}
-	]
+	"icon": "telegram.svg"
 }

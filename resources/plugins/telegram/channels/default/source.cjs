@@ -142,6 +142,8 @@ function registerMessageHandlers(bot, token, channel, accountId, emit) {
   bot.on("message:text", (ctx) => {
     const text = ctx.message.text;
     if (!text) return;
+    const command = text.startsWith("/") ? text.split(/\s+/)[0].slice(1).split("@")[0].toLowerCase() : undefined;
+    if (command !== undefined && command !== "start") return;
     const chatId = String(ctx.chat.id);
     const threadId = ctx.message.message_thread_id ? String(ctx.message.message_thread_id) : void 0;
     const messageId = String(ctx.message.message_id);
@@ -155,6 +157,7 @@ function registerMessageHandlers(bot, token, channel, accountId, emit) {
       messageId,
       threadId,
       content: { type: "text", text },
+      ...(command === "start" && { automaticReply: "Hi! I'm connected. Send me a message and I'll reply." }),
       idempotencyKey: [channel, accountId, chatId, threadId, messageId].filter(Boolean).join(":"),
       receivedAt: Date.now()
     };
