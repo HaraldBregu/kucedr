@@ -331,7 +331,18 @@
 		},
 		"models": {
 			"empty": "Nessun modello disponibile dai plugin",
-			"loadError": "Impossibile caricare i modelli"
+			"loadError": "Impossibile caricare i modelli",
+			"types": {
+				"llm": "Modello linguistico di grandi dimensioni",
+				"research-chat": "Modello di ricerca",
+				"text-to-image": "Da testo a immagine",
+				"text-to-video": "Da testo a video",
+				"text-to-audio": "Da testo ad audio",
+				"text-to-speech": "Da testo a voce",
+				"speech-to-text": "Da voce a testo",
+				"realtime-voice": "Voce in tempo reale",
+				"embedding": "Embedding"
+			}
 		},
 		"tabs": {
 			"music": "Musica",

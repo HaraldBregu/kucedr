@@ -96,9 +96,9 @@ export default function ModelsPage(): React.JSX.Element {
 					const group = models?.filter((model) => model.type === type) ?? [];
 					if (group.length === 0) return null;
 					return (
-						<section key={type}>
-							<h2 className="mb-3 text-sm font-medium">
-								{t(`settings.integrations.plugin.capabilities.${type}`)}
+						<section key={type} aria-labelledby={`models-${type}`}>
+							<h2 id={`models-${type}`} className="mb-3 text-base font-semibold">
+								{t(`settings.models.types.${type}`)}
 							</h2>
 							<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 								{group.map((model) => (

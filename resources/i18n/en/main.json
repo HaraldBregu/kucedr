@@ -331,7 +331,18 @@
 		},
 		"models": {
 			"empty": "No models available from plugins",
-			"loadError": "Could not load models"
+			"loadError": "Could not load models",
+			"types": {
+				"llm": "Large language model",
+				"research-chat": "Research model",
+				"text-to-image": "Text to image",
+				"text-to-video": "Text to video",
+				"text-to-audio": "Text to audio",
+				"text-to-speech": "Text to speech",
+				"speech-to-text": "Speech to text",
+				"realtime-voice": "Realtime voice",
+				"embedding": "Embedding"
+			}
 		},
 		"tabs": {
 			"music": "Music",

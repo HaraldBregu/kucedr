@@ -30,10 +30,10 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 		screen.getByText('Chat model').closest('[data-slot="card"]')
 	);
 	expect(
-		screen.getByText('settings.integrations.plugin.capabilities.text-to-image')
+		screen.getByRole('heading', { name: 'settings.models.types.text-to-image' })
 	).toBeInTheDocument();
 	expect(
-		screen.queryByText('settings.integrations.plugin.capabilities.text-to-speech')
+		screen.queryByRole('heading', { name: 'settings.models.types.text-to-speech' })
 	).not.toBeInTheDocument();
 	expect(screen.queryByText('Other model')).not.toBeInTheDocument();
 	models.mockResolvedValue([]);
