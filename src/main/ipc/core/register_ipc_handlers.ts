@@ -36,7 +36,6 @@ export function registerIpcHandlers(
 		agentService,
 		codingService,
 		conversationService,
-		channelRegistry,
 		windowFactory,
 		appRegistry,
 		appStorage,
@@ -59,8 +58,7 @@ export function registerIpcHandlers(
 		new AppIpc().register(
 			{
 				logger,
-				channelRegistry,
-				appRegistry,
+						appRegistry,
 				appStorage,
 				sandbox: agentService.sandbox,
 			},
@@ -136,7 +134,7 @@ export function registerIpcHandlers(
 		new SkillsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('plugins', () =>
-		new PluginsIpc().register({ windows: windowContextManager, apps: appRegistry, channels: channelRegistry, logger }, eventBus)
+		new PluginsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('scripts', () =>
 		new ScriptsIpc().register({ windows: windowContextManager, apps: appRegistry })

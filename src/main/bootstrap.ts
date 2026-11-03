@@ -5,7 +5,6 @@ import { EventBus } from './event_bus';
 import { WindowContextManager } from './window_context';
 import { WindowFactory } from './window_factory';
 import { LoggerService } from './shared';
-import { createChannelRegistry, type ChannelRegistry } from './channels';
 import { AppRegistry, AppStorage } from './apps/app_index';
 
 import { Agent } from './agent/agent';
@@ -39,7 +38,6 @@ export interface MainServices {
 	memoryService: MemoryService;
 	codingService: Coding;
 	conversationService: Conversation;
-	channelRegistry: ChannelRegistry;
 	windowFactory: WindowFactory;
 	windowContextManager: WindowContextManager;
 	appRegistry: AppRegistry;
@@ -67,7 +65,6 @@ export function bootstrapServices(): BootstrapResult {
 		store: codingStore,
 		projects: new CodingProjectStore(),
 	});
-	const channelRegistry = createChannelRegistry({ logger, eventBus, agentService });
 	const windowContextManager = new WindowContextManager(logger, eventBus);
 	const realtimeVoiceManager = createRealtimeVoiceManager(agentService, eventBus);
 	const conversationService = new Conversation(agentService, realtimeVoiceManager);
@@ -120,7 +117,6 @@ export function bootstrapServices(): BootstrapResult {
 		memoryService,
 		codingService,
 		conversationService,
-		channelRegistry,
 		windowFactory,
 		windowContextManager,
 		appRegistry,
@@ -136,7 +132,6 @@ export async function cleanup(services: MainServices): Promise<void> {
 	const {
 		logger,
 		windowContextManager,
-		channelRegistry,
 		conversationService,
 		terminalManager,
 		cloudService,
@@ -158,7 +153,6 @@ export async function cleanup(services: MainServices): Promise<void> {
 	await recorderCleanup;
 	await cloudService.destroy();
 	authService.destroy();
-	await channelRegistry.destroy();
 	logger.info('Bootstrap', 'Cleanup complete');
 	logger.destroy();
 }

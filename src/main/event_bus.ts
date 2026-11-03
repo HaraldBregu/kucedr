@@ -14,16 +14,7 @@ export interface AppEvents {
 	'window:closed': { windowId: number };
 	'tray:set-enabled': { enabled: boolean };
 	'language:changed': { language: import('../shared/app_types').AppLanguage };
-	'channel:status': import('../shared').ChannelStatusEvent;
-	'channel:route': {
-		channel: import('../shared').ChannelType;
-		accountId?: string;
-		to: string;
-		threadId?: string;
-		replyToMessageId?: string;
-		chatType?: import('./channels/channels_types').ChannelChatType;
-		sessionKey?: string;
-	};
+
 }
 
 /**

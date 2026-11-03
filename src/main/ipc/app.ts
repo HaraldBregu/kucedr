@@ -71,13 +71,6 @@ import {
 } from '../models';
 import type { LoggerService } from '../shared';
 import { validateProviderManifest } from '../../shared/providers/validation';
-import type { ChannelStatusEvent, ChannelType } from '../../shared';
-import {
-	getChannelModelSelection,
-	loadChannels,
-	setChannelModelSelection,
-	type ChannelRegistry,
-} from '../channels';
 import type { AppRegistry } from '../apps/app_registry';
 import type { AppStorage } from '../apps/app_store';
 import { registerAppStoreIpc } from './app_store';
@@ -87,7 +80,6 @@ import type { ExecSandbox } from '../agent/sandbox';
 
 export interface AppIpcDeps {
 	logger: LoggerService;
-	channelRegistry: ChannelRegistry;
 	appRegistry: AppRegistry;
 	appStorage: AppStorage;
 	sandbox: ExecSandbox;
@@ -469,7 +461,7 @@ export class AppIpc implements IpcModule {
 	readonly name = 'app';
 
 	register(
-		{ logger, channelRegistry, appRegistry, appStorage, sandbox }: AppIpcDeps,
+		{ logger, appRegistry, appStorage, sandbox }: AppIpcDeps,
 		eventBus: EventBus
 	): void {
 		registerAppStoreIpc({ appRegistry, appStorage });
@@ -561,31 +553,6 @@ export class AppIpc implements IpcModule {
 			}, AppChannels.mcps)
 		);
 
-		ipcMain.handle(
-			AppChannels.channels,
-			wrapSimpleHandler(() => {
-				return [...loadChannels()];
-			}, AppChannels.channels)
-		);
-
-		ipcMain.handle(
-			AppChannels.getChannelModelSelection,
-			wrapSimpleHandler((kind: 'llm' | 'stt' | 'tts') => {
-				return getChannelModelSelection(kind);
-			}, AppChannels.getChannelModelSelection)
-		);
-
-		ipcMain.handle(
-			AppChannels.setChannelModelSelection,
-			wrapSimpleHandler((kind: 'llm' | 'stt' | 'tts', providerId: string, modelId: string) => {
-				setChannelModelSelection(kind, {
-					providerId: providerId?.trim(),
-					modelId: modelId?.trim(),
-				});
-			}, AppChannels.setChannelModelSelection)
-		);
-
-		// Re-read the catalog and tell renderers when ~/.kucedr/providers changes on disk
 		watchModels(() => eventBus.broadcast(AppChannels.modelsChanged));
 
 		ipcMain.handle(
@@ -850,36 +817,6 @@ export class AppIpc implements IpcModule {
 					eventBus.broadcast(AppChannels.modelsChanged);
 				});
 			}, AppChannels.uploadProvider)
-		);
-
-		ipcMain.handle(
-			AppChannels.getChannelsStatus,
-			wrapSimpleHandler((type: ChannelType): ChannelStatusEvent | undefined => {
-				return channelRegistry.getStatus(type);
-			}, AppChannels.getChannelsStatus)
-		);
-
-		ipcMain.handle(
-			AppChannels.startChannel,
-			wrapSimpleHandler(async (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
-				await channelRegistry.start(type);
-				return channelRegistry.getStatus(type);
-			}, AppChannels.startChannel)
-		);
-
-		ipcMain.handle(
-			AppChannels.stopChannel,
-			wrapSimpleHandler(async (type: ChannelType): Promise<void> => {
-				await channelRegistry.stop(type);
-			}, AppChannels.stopChannel)
-		);
-
-		ipcMain.handle(
-			AppChannels.restartChannel,
-			wrapSimpleHandler(async (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
-				await channelRegistry.restart(type);
-				return channelRegistry.getStatus(type);
-			}, AppChannels.restartChannel)
 		);
 
 		ipcMain.handle(
