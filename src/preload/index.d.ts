@@ -4,7 +4,6 @@ import type {
 	MemoryApi,
 	AgentApi,
 	CodingApi,
-	A2aApi,
 	AppApi,
 	RecorderApi,
 	TaskApi,
