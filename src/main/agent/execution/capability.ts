@@ -21,7 +21,6 @@ const READ = new Set([
 	'ask',
 	'subagent',
 	'subagents',
-	'get_a2a_task',
 	'camera_recorder_status',
 	'microphone_recorder_status',
 	'screen_recorder_status',
