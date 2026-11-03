@@ -35,7 +35,6 @@ import {
 	MemoryChannels,
 	AgentChannels,
 	CodingChannels,
-	A2aChannels,
 	AppChannels,
 	RecorderChannels,
 	TaskChannels,
