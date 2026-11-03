@@ -33,13 +33,17 @@ export default function ModelsPage(): React.JSX.Element {
 	const [query, setQuery] = useState('');
 	const [category, setCategory] = useState('all');
 	const search = query.trim().toLocaleLowerCase();
-	const visibleModels = models?.filter((model) =>
-		(category === 'all' || model.type === category) && `${model.name} ${model.id} ${model.provider.name} ${model.provider.plugin?.name ?? ''}`
-			.toLocaleLowerCase()
-			.includes(search)
+	const visibleModels = models?.filter(
+		(model) =>
+			(category === 'all' || model.type === category) &&
+			`${model.name} ${model.id} ${model.provider.name} ${model.provider.plugin?.name ?? ''}`
+				.toLocaleLowerCase()
+				.includes(search)
 	);
 	const categories = TYPES.filter((type) => models?.some((model) => model.type === type));
-	const categoryLabels = Object.fromEntries(categories.map((type) => [type, t(`settings.models.types.${type}`)]));
+	const categoryLabels = Object.fromEntries(
+		categories.map((type) => [type, t(`settings.models.types.${type}`)])
+	);
 
 	useEffect(() => {
 		let active = true;
@@ -92,9 +96,18 @@ export default function ModelsPage(): React.JSX.Element {
 				title={t('settings.tabs.models')}
 				description={t('settings.overview.descriptions.models')}
 			/>
-			<SettingsFilter query={query} onQueryChange={setQuery} categories={categories} category={category} onCategoryChange={setCategory} categoryLabels={categoryLabels} />
+			<SettingsFilter
+				query={query}
+				onQueryChange={setQuery}
+				categories={categories}
+				category={category}
+				onCategoryChange={setCategory}
+				categoryLabels={categoryLabels}
+			/>
 			{error && (
-				<SettingsNotice variant="destructive" icon={AlertTriangle}>{t('settings.models.loadError')}</SettingsNotice>
+				<SettingsNotice variant="destructive" icon={AlertTriangle}>
+					{t('settings.models.loadError')}
+				</SettingsNotice>
 			)}
 			{models === null && !error && (
 				<SettingsPanel>
@@ -120,14 +133,20 @@ export default function ModelsPage(): React.JSX.Element {
 								{group.map((model) => (
 									<Card key={`${model.provider.id}/${model.id}`} size="sm">
 										<CardHeader className="flex flex-1 items-center gap-3">
-											<ProviderAvatar providerId={model.provider.id} name={model.provider.name} iconDarkUrl={model.provider.iconDarkUrl} iconLightUrl={model.provider.iconLightUrl} className="size-12 rounded-xl" />
+											<ProviderAvatar
+												providerId={model.provider.id}
+												name={model.provider.name}
+												iconDarkUrl={model.provider.iconDarkUrl}
+												iconLightUrl={model.provider.iconLightUrl}
+												className="size-12 rounded-xl"
+											/>
 											<div className="flex min-w-0 flex-1 flex-col gap-1">
-											<CardTitle className="break-words">{model.name}</CardTitle>
-											<CardDescription className="break-words text-xs">
-												{model.provider.name}
-												{model.provider.plugin?.name !== model.provider.name &&
-													` · ${model.provider.plugin?.name}`}
-											</CardDescription>
+												<CardTitle className="break-words">{model.name}</CardTitle>
+												<CardDescription className="break-words text-xs">
+													{model.provider.name}
+													{model.provider.plugin?.name !== model.provider.name &&
+														` · ${model.provider.plugin?.name}`}
+												</CardDescription>
 											</div>
 										</CardHeader>
 									</Card>
