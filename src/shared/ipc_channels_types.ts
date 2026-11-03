@@ -1435,7 +1435,6 @@ export interface InvokeChannelMap
 		ScriptsInvokeChannelMap,
 		ServicesInvokeChannelMap,
 		LibraryInvokeChannelMap,
-		A2aInvokeChannelMap,
 		McpInvokeChannelMap,
 		DriveInvokeChannelMap,
 		ProviderStoreInvokeChannelMap,
