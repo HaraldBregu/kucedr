@@ -317,7 +317,7 @@
 				"databases": "Database providers and API keys",
 				"providers": "API keys and providers",
 				"services": "Web search and other plugin services",
-				"models": "Configure image, video, audio and speech models",
+				"models": "Models available from your plugins",
 				"cron": "Schedule, review, and manage recurring tasks for Kucedr.",
 				"heartbeat": "Periodic agent checks",
 				"health": "Periodic health checks",
@@ -328,6 +328,10 @@
 				"plugins": "Installable app plugins",
 				"configurationDescription": "Configure models, storage, and integrations"
 			}
+		},
+		"models": {
+			"empty": "No models available from plugins",
+			"loadError": "Could not load models"
 		},
 		"tabs": {
 			"music": "Music",

@@ -317,7 +317,7 @@
 				"databases": "Provider di database e chiavi API",
 				"providers": "Provider, chiavi e servizi",
 				"services": "Ricerca web e altri servizi dei plugin",
-				"models": "Configura i modelli per immagini, video, audio e voce",
+				"models": "Modelli disponibili dai tuoi plugin",
 				"cron": "Programma, controlla e gestisci le attività ricorrenti.",
 				"heartbeat": "Controlli periodici agente",
 				"health": "Controlli salute periodici",
@@ -328,6 +328,10 @@
 				"plugins": "Plugin installabili",
 				"configurationDescription": "Configura modelli, archiviazione e integrazioni"
 			}
+		},
+		"models": {
+			"empty": "Nessun modello disponibile dai plugin",
+			"loadError": "Impossibile caricare i modelli"
 		},
 		"tabs": {
 			"music": "Musica",
