@@ -35,6 +35,7 @@ export interface ChannelInboundMessage {
 	messageId: string;
 	threadId?: string;
 	content: ChannelInboundContent;
+	automaticReply?: string;
 	idempotencyKey: string;
 	receivedAt: number;
 }

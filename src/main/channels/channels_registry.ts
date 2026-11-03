@@ -22,8 +22,6 @@ import type {
 import { toText } from '../models/transcribe';
 import { synthesize } from '../models/voice';
 
-const CHANNEL_START_REPLY = "Hi! I'm connected. Send me a message and I'll reply.";
-
 export interface ChannelRegistryDependencies {
 	logger: LoggerService;
 	eventBus: EventBus;
@@ -120,9 +118,8 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 					: await transcribeVoice(await loadChannelVoice(message.content.voice), {
 							...channelModelSelection('stt'),
 						});
-			if (text.startsWith('/')) {
-				const command = text.split(/\s+/)[0].slice(1).split('@')[0].toLowerCase();
-				if (command === 'start') await reply({ type: 'text', text: CHANNEL_START_REPLY });
+			if (message.automaticReply) {
+				await reply({ type: 'text', text: message.automaticReply });
 				return;
 			}
 			if (!agentService) return;
