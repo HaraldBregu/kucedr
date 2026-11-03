@@ -72,10 +72,16 @@ export default function ModelsPage(): React.JSX.Element {
 				const pluginModels = catalog.filter((model) => model.provider.plugin);
 				const ids = new Set(pluginModels.map((model) => `${model.provider.id}/${model.id}`));
 				if (active && current === revision) {
-					setModels([
+					const nextModels = [
 						...pluginModels,
 						...live.flat().filter((model) => !ids.has(`${model.provider.id}/${model.id}`)),
-					]);
+					];
+					setModels(nextModels);
+					setCategory((selected) =>
+						selected === 'all' || nextModels.some((model) => model.type === selected)
+							? selected
+							: 'all'
+					);
 					setError(false);
 				}
 			} catch {
