@@ -157,7 +157,7 @@ function EmptyConversation(): ReactElement {
 	return (
 		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
 			<EmptyHeader className="max-w-lg flex-row gap-2">
-				<LogoView className="size-12 !bg-current dark:!bg-current" />
+				<LogoView className="size-10 !bg-current dark:!bg-current" />
 				<EmptyTitle className="text-3xl font-bold leading-tight text-foreground">
 					{greeting}, how are you?
 				</EmptyTitle>
