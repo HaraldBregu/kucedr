@@ -36,7 +36,7 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 		screen.queryByRole('heading', { name: 'settings.models.types.text-to-speech' })
 	).not.toBeInTheDocument();
 	expect(screen.queryByText('Other model')).not.toBeInTheDocument();
-	fireEvent.change(screen.getByRole('searchbox', { name: 'settings.modelServices.searchModels' }), {
+	fireEvent.change(screen.getByRole('searchbox', { name: 'settings.filter.search' }), {
 		target: { value: 'image' },
 	});
 	expect(screen.getByText('Image model')).toBeInTheDocument();
@@ -44,7 +44,7 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 	expect(
 		screen.queryByRole('heading', { name: 'settings.models.types.llm' })
 	).not.toBeInTheDocument();
-	fireEvent.change(screen.getByRole('searchbox', { name: 'settings.modelServices.searchModels' }), {
+	fireEvent.change(screen.getByRole('searchbox', { name: 'settings.filter.search' }), {
 		target: { value: 'missing' },
 	});
 	expect(screen.getByText('settings.modelServices.noMatchingModels')).toBeInTheDocument();
