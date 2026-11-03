@@ -40,7 +40,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				[
 					'/settings/voice',
 					'/settings/tasks',
-					'/settings/bots',
 					'/settings/health',
 				].includes(item.path)
 			),
@@ -63,9 +62,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
-			...SETTINGS_NAVIGATION.filter((item) =>
-				item.path === '/settings/channels'
-			),
 		],
 	},
 ] as const;

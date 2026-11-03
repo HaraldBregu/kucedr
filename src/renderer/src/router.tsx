@@ -42,11 +42,6 @@ const TaskDetailsPage = lazy(() => import('./pages/settings/pages/tasks/detail/P
 const SettingsPage = lazy(() => import('./pages/settings/pages/settings/Page'));
 const PersonaPage = lazy(() => import('./pages/settings/pages/settings/persona/Page'));
 const SettingsMediaDetailPage = lazy(() => import('./pages/settings/pages/settings/media/Page'));
-const ChannelsPage = lazy(() => import('./pages/settings/pages/channels/Page'));
-const ChannelDetailsPage = lazy(() => import('./pages/settings/pages/channels/details/Page'));
-const ChannelsConfigurationPage = lazy(
-	() => import('./pages/settings/pages/channels/Configuration')
-);
 const PluginsPage = lazy(() => import('./pages/settings/pages/plugins/Page'));
 const PluginDetailPage = lazy(() => import('./pages/settings/pages/plugins/Detail'));
 const PluginPage = lazy(() => import('./pages/settings/pages/plugins/Plugin'));
@@ -59,7 +54,6 @@ const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Pag
 const KnowledgePage = lazy(() => import('./pages/settings/pages/knowledge/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
-const BotsPage = lazy(() => import('./pages/settings/pages/bots/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
@@ -341,43 +335,6 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
-						path: 'channels',
-						children: [
-							{
-								index: true,
-								element: (
-									<SettingsRouteWrapper>
-										<ChannelsPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'configuration',
-								element: (
-									<SettingsRouteWrapper>
-										<ChannelsConfigurationPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: ':pluginId/:channelId',
-								element: (
-									<SettingsRouteWrapper>
-										<ChannelDetailsPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'tools',
-								element: (
-									<SettingsRouteWrapper>
-										<ToolsPage profile="channels" />
-									</SettingsRouteWrapper>
-								),
-							},
-						],
-					},
-					{
 						path: 'plugins',
 						element: (
 							<SettingsRouteWrapper>
@@ -544,27 +501,6 @@ const routes: RouteObject[] = [
 								<PermissionsPage profile="voice" />
 							</SettingsRouteWrapper>
 						),
-					},
-					{
-						path: 'bots',
-						children: [
-							{
-								index: true,
-								element: (
-									<SettingsRouteWrapper>
-										<BotsPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'tools',
-								element: (
-									<SettingsRouteWrapper>
-										<ToolsPage profile="bots" />
-									</SettingsRouteWrapper>
-								),
-							},
-						],
 					},
 					{
 						path: 'health',

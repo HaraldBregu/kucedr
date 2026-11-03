@@ -16,7 +16,6 @@ import {
 	MessageCircle,
 	Plug,
 	PlugZap,
-	RadioTower,
 	ServerCog,
 	ShieldCheck,
 	Sparkles,
@@ -78,12 +77,6 @@ export const SETTINGS_PROVIDER_CONFIG_ITEMS: readonly SettingsProviderConfigItem
 		labelKey: 'settings.storage.configurationTitle',
 		descriptionKey: 'settings.storage.description',
 		icon: Folder,
-	},
-	{
-		path: '/settings/channels',
-		labelKey: 'settings.tabs.channels',
-		descriptionKey: 'settings.overview.descriptions.channels',
-		icon: RadioTower,
 	},
 ] as const;
 
@@ -178,42 +171,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.scripts.description',
 		keywords: 'plugin scripts render code fence',
 	},
-	// Channels
-	{
-		path: '/settings/channels',
-		labelKey: 'settings.channels.configuration',
-		descriptionKey: 'settings.channels.configurationDescription',
-		keywords: 'channel models voice transcription tools configuration',
-	},
-	{
-		path: '/settings/channels',
-		labelKey: 'settings.channels.enabled',
-		descriptionKey: 'settings.channels.enabledDescription',
-		keywords: 'toggle on off activate',
-	},
-	{
-		path: '/settings/channels',
-		labelKey: 'settings.channels.token',
-		descriptionKey: 'settings.channels.tokenDescription',
-		keywords: 'bot secret key telegram',
-	},
-	{
-		path: '/settings/channels',
-		labelKey: 'settings.channels.dmPolicy',
-		descriptionKey: 'settings.channels.dmPolicyDescription',
-		keywords: 'allowlist open pairing deny direct message',
-	},
-	{
-		path: '/settings/channels',
-		labelKey: 'settings.channels.allowFrom',
-		descriptionKey: 'settings.channels.allowFromDescription',
-		keywords: 'whitelist users allowed senders',
-	},
-	{
-		path: '/settings/channels',
-		labelKey: 'settings.channels.status',
-		keywords: 'connected disconnected runtime start stop',
-	},
 	// Skills
 	{
 		path: '/settings/skills',
@@ -262,18 +219,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		labelKey: 'settings.modelServices.tools',
 		descriptionKey: 'settings.modelServices.toolsDescription',
 		keywords: 'health tools permissions allow deny ask',
-	},
-	{
-		path: '/settings/bots/tools',
-		labelKey: 'settings.modelServices.tools',
-		descriptionKey: 'settings.modelServices.toolsDescription',
-		keywords: 'bots telegram discord slack tools permissions allow deny ask',
-	},
-	{
-		path: '/settings/channels/tools',
-		labelKey: 'settings.modelServices.tools',
-		descriptionKey: 'settings.modelServices.toolsDescription',
-		keywords: 'channel tools permissions allow deny ask',
 	},
 	// Models
 	{
@@ -415,12 +360,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: ListChecks,
 	},
 	{
-		path: '/settings/bots',
-		labelKey: 'settings.tabs.bots',
-		descriptionKey: 'settings.overview.descriptions.bots',
-		icon: Bot,
-	},
-	{
 		path: '/settings/mcp',
 		labelKey: 'settings.tabs.mcp',
 		sidebarLabelKey: 'settings.sidebar.mcp',
@@ -468,11 +407,5 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.scripts',
 		descriptionKey: 'settings.overview.descriptions.scripts',
 		icon: FileCode,
-	},
-	{
-		path: '/settings/channels',
-		labelKey: 'settings.tabs.channels',
-		descriptionKey: 'settings.overview.descriptions.channels',
-		icon: RadioTower,
 	},
 ] satisfies readonly SettingsNavigationItem[];

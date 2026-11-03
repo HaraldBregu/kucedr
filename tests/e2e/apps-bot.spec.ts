@@ -4,7 +4,7 @@ import path from 'node:path';
 import { closeApp } from './close';
 import { launchApp } from './helpers';
 
-test('production Apps search and Bot navigation work in Electron', async ({
+test('production Apps search works in Electron', async ({
 	browserName: _browserName,
 }, testInfo) => {
 	test.setTimeout(90_000);
@@ -77,21 +77,12 @@ test('production Apps search and Bot navigation work in Electron', async ({
 		);
 
 		const sidebar = page.locator('[data-slot="settings-sidebar"]');
-		const bot = sidebar.locator('[data-slot="split-pane-group"]').filter({
-			has: page.getByRole('heading', { name: 'Bot', exact: true }),
-		});
 		const extensions = sidebar.locator('[data-slot="split-pane-group"]').filter({
 			has: page.getByRole('heading', { name: 'Extensions', exact: true }),
 		});
-		await expect(bot.getByRole('link', { name: 'Channels', exact: true })).toBeVisible();
-		await expect(bot.getByRole('link')).toHaveCount(2);
 		await expect(extensions.getByRole('link', { name: 'Apps', exact: true })).toBeVisible();
 		await expect(extensions.getByRole('link', { name: 'Plugins', exact: true })).toBeVisible();
 		await expect(extensions.getByRole('link')).toHaveCount(2);
-		const headings = (
-			await sidebar.locator('[data-slot="split-pane-group"] h2').allTextContents()
-		).map((value) => value.trim());
-		expect(headings.indexOf('Bot')).toBeLessThan(headings.indexOf('Extensions'));
 		await extensions.getByRole('link', { name: 'Apps', exact: true }).scrollIntoViewIfNeeded();
 		await page.screenshot({ path: testInfo.outputPath('apps-desktop.png'), fullPage: true });
 

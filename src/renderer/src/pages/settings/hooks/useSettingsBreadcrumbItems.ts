@@ -31,7 +31,6 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	const mcpDetailMatch = useMatch('/settings/mcp/:mcpServerId');
 	const pluginDetailMatch = useMatch('/settings/plugins/:kind/:providerId/:entryId');
 	const appDetailMatch = useMatch('/settings/apps/:appId');
-	const channelDetailMatch = useMatch('/settings/channels/:pluginId/:channelId');
 	const appId = decodeURIComponent(appDetailMatch?.params.appId ?? '');
 	const [appLabel, setAppLabel] = useState<{ id: string; label: string } | null>(null);
 
@@ -104,30 +103,6 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	if (location.pathname === '/settings/health/tools') {
 		return [
 			{ label: t('settings.tabs.health'), path: '/settings/health' },
-			{ label: t('settings.modelServices.tools') },
-		];
-	}
-	if (location.pathname === '/settings/bots/tools') {
-		return [
-			{ label: t('settings.tabs.bots'), path: '/settings/bots' },
-			{ label: t('settings.modelServices.tools') },
-		];
-	}
-	if (location.pathname === '/settings/channels/configuration') {
-		return [
-			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
-			{ label: t('settings.channels.configuration') },
-		];
-	}
-	if (channelDetailMatch) {
-		return [
-			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
-			{ label: `${channelDetailMatch.params.pluginId}/${channelDetailMatch.params.channelId}` },
-		];
-	}
-	if (location.pathname === '/settings/channels/tools') {
-		return [
-			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
 			{ label: t('settings.modelServices.tools') },
 		];
 	}

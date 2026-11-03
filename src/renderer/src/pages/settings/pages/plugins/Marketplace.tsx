@@ -79,7 +79,6 @@ export default function MarketplacePage(): React.JSX.Element {
 
 	const kinds: Record<string, string> = {
 		apps: t('settings.integrations.plugin.apps'),
-		channels: t('settings.tabs.channels'),
 		mcp: t('settings.integrations.plugin.mcp'),
 		providers: t('settings.integrations.plugin.providers'),
 		skills: t('settings.integrations.plugin.skills'),
