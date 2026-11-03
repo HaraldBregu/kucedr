@@ -90,7 +90,6 @@ export interface StreamOptions {
 const MAX_TOOL_CALLS = 100;
 const MAX_TOOL_OUTPUT_BYTES = 2_000_000;
 const MAX_PAID_TOOL_CALLS = 3;
-const MAX_BOT_WEB_TOOL_CALLS = 8;
 export async function* stream(
 	config: Config,
 	session: SessionState,
@@ -100,7 +99,7 @@ export async function* stream(
 ): AsyncGenerator<RuntimeEvent> {
 	let terminal = false;
 	const browser =
-		input.type === 'background' && input.agentId !== 'channels' && input.scope?.source !== 'channel'
+		input.type === 'background'
 			? createBackgroundBrowser()
 			: undefined;
 	try {
@@ -162,7 +161,6 @@ async function* loop(
 			calls: MAX_TOOL_CALLS,
 			paid: MAX_PAID_TOOL_CALLS,
 			output: MAX_TOOL_OUTPUT_BYTES,
-			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
 	let mcpServerHint: string | undefined;
@@ -178,7 +176,6 @@ async function* loop(
 		'update_user',
 		'complete_bootstrap',
 	]);
-	const channelAllowedTools = new Set(['search_web', 'fetch_web_page', 'subagent', 'subagents', 'tool_search']);
 	const filterRuntimeTools = (candidates: Tool[]): Tool[] =>
 		filterProfileTools(candidates, toolProfile).filter(
 			(tool) =>
@@ -186,8 +183,7 @@ async function* loop(
 					toolProfile,
 					tool.policy ?? { kind: 'builtin', id: tool.id }
 				) &&
-				(!bootstrap || bootstrapTools.has(tool.id)) &&
-				(input.agentId !== 'channels' || channelAllowedTools.has(tool.id))
+				(!bootstrap || bootstrapTools.has(tool.id))
 		);
 	const profileToolEnabled = (toolId: string): boolean => {
 		const settings = getToolConfiguration(toolProfile, { kind: 'builtin', id: toolId });

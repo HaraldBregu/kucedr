@@ -53,8 +53,6 @@ const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
 	'voice',
 	'tasks',
 	'health',
-	'channels',
-	'bots',
 ]);
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
@@ -63,8 +61,6 @@ const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelK
 	voice: ['realtimeVoice', 'image', 'audio', 'video'],
 	tasks: ['textToText', 'image', 'audio', 'video'],
 	health: ['textToText'],
-	channels: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
-	bots: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
 };
 const storedModelKey = (
 	profileId: AgentToolProfileId,
@@ -72,11 +68,11 @@ const storedModelKey = (
 ): StoredModelKey =>
 	(profileId === 'tasks' || profileId === 'health') && modelKey === 'textToText'
 		? 'llm'
-		: (profileId === 'chat' || profileId === 'channels') && modelKey === 'textToText'
+		: profileId === 'chat' && modelKey === 'textToText'
 			? 'llm'
-			: (profileId === 'chat' || profileId === 'channels') && modelKey === 'textToSpeech'
+			: profileId === 'chat' && modelKey === 'textToSpeech'
 				? 'tts'
-				: (profileId === 'chat' || profileId === 'channels') && modelKey === 'speechToText'
+				: profileId === 'chat' && modelKey === 'speechToText'
 					? 'stt'
 					: profileId === 'voice' && modelKey === 'realtimeVoice'
 						? 'rtv'
@@ -169,17 +165,7 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 		mcpTools: structuredClone(next.mcpTools),
 	} as AgentProfileStore;
 	const existing = profileStore(profileId).store;
-	const legacyKeys =
-		profileId === 'channels'
-			? [
-					'llmProviderId',
-					'llmModelId',
-					'sttProviderId',
-					'sttModelId',
-					'ttsProviderId',
-					'ttsModelId',
-				]
-			: ['providerId', 'modelId', 'modelOptions'];
+	const legacyKeys = ['providerId', 'modelId', 'modelOptions'];
 	const profileKeys = [
 		'llm',
 		'tts',

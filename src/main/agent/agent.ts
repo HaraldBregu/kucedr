@@ -76,7 +76,6 @@ import type { AgentToolProfileId } from '../../shared/agent_tools';
 
 const RUN_PRIORITIES: Record<SessionCategory, AgentRunPriority> = {
 	main: 'high',
-	bot: 'normal',
 	health: 'low',
 	task: 'low',
 	subagent: 'low',
@@ -85,14 +84,12 @@ const RUN_PRIORITIES: Record<SessionCategory, AgentRunPriority> = {
 
 const AGENT_CATEGORIES: Record<string, SessionCategory> = {
 	main: 'main',
-	channels: 'bot',
 	tasks: 'task',
 	health: 'health',
 };
 
 const AGENT_TOOL_PROFILES: Record<string, AgentToolProfileId> = {
 	main: 'chat',
-	channels: 'channels',
 	tasks: 'tasks',
 	health: 'health',
 };
@@ -261,9 +258,7 @@ export class Agent {
 					source:
 						request.category === 'main'
 							? 'interactive'
-							: request.category === 'bot'
-								? 'channel'
-								: request.category === 'task'
+							: : request.category === 'task'
 									? 'task'
 									: request.category === 'health'
 										? 'health'
@@ -451,7 +446,7 @@ export class Agent {
 
 	listSessions(category: SessionCategory | 'all' = 'main'): AgentSessionSummary[] {
 		if (category === 'all') {
-			return (['main', 'bot', 'health', 'task', 'subagent', 'voice'] as const)
+			return (['main', 'health', 'task', 'subagent', 'voice'] as const)
 				.flatMap((sessionCategory) => this.listSessions(sessionCategory))
 				.sort((left, right) => right.createdAtMs - left.createdAtMs);
 		}

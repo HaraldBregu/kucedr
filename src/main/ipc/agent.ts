@@ -248,8 +248,7 @@ function toToolProfileId(value: unknown): AgentToolProfileId {
 		value === 'chat' ||
 		value === 'voice' ||
 		value === 'tasks' ||
-		value === 'health' ||
-		value === 'channels'
+		value === 'health'
 	)
 		return value;
 	throw new Error('Invalid tool profile.');
