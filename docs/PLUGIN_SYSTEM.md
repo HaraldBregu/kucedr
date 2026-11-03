@@ -27,7 +27,7 @@ name, relative executable entry, and credential fields. Fields have a `key`, `la
 `resources/plugins/telegram/channels/default/manifest.json` for an example. Settings stores the
 credential values securely and passes them to the adapter; the channel ID is `<plugin-id>/<id>`.
 
-The entry exports `createChannelAdapter({ channel, credentials })`. It returns an adapter with
+The CommonJS entry exports `createChannelAdapter({ channel, credentials })`. It returns an adapter with
 `start()`, `stop()`, `send(message)`, `onMessage(handler)`, and `onStatus(handler)` methods. The
 message, receipt, and status shapes are defined in `src/main/channels/channels_types.ts`. Inbound
 messages and receipts must use the supplied channel ID. Bundle runtime dependencies with the entry
