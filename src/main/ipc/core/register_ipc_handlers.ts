@@ -1,6 +1,5 @@
 import { MemoryIpc } from '../memory';
 import { AgentIpc } from '../agent';
-import { A2aIpc } from '../a2a';
 import { AppIpc } from '../app';
 import { RecorderIpc } from '../recorder';
 import { TaskIpc } from '../tasks';
