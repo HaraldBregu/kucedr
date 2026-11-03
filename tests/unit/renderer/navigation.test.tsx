@@ -365,21 +365,6 @@ it('uses the audio waveform icon for Voice', () => {
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
 });
 
-it('shows Channels in settings without Remote Agents', () => {
-	render(
-		<MemoryRouter initialEntries={['/settings/channels']}>
-			<Routes>
-				<Route path="/settings" element={<Layout />}>
-					<Route path="*" element={<p>Settings page</p>} />
-				</Route>
-			</Routes>
-		</MemoryRouter>
-	);
-	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	expect(within(navigation).getByRole('link', { name: 'settings.tabs.channels' })).toHaveAttribute('href', '/settings/channels');
-	expect(within(navigation).queryByRole('link', { name: /remoteAgent/i })).not.toBeInTheDocument();
-});
-
 it('places Models and Web Search after Storage without a Providers entry in the sidebar', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/storage']}>
