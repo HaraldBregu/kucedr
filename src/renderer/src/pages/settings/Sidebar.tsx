@@ -64,7 +64,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
 			...SETTINGS_NAVIGATION.filter((item) =>
-				['/settings/channels', '/settings/remote-agent'].includes(item.path)
+				item.path === '/settings/channels'
 			),
 		],
 	},

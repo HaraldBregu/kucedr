@@ -14,7 +14,6 @@ import {
 	Library,
 	ListChecks,
 	MessageCircle,
-	Network,
 	Plug,
 	PlugZap,
 	RadioTower,
@@ -475,12 +474,5 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.channels',
 		descriptionKey: 'settings.overview.descriptions.channels',
 		icon: RadioTower,
-	},
-	{
-		path: '/settings/remote-agent',
-		labelKey: 'settings.tabs.remoteAgent',
-		descriptionKey: 'settings.overview.descriptions.remoteAgent',
-		icon: Network,
-		badge: 'new',
 	},
 ] satisfies readonly SettingsNavigationItem[];

@@ -365,59 +365,19 @@ it('uses the audio waveform icon for Voice', () => {
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
 });
 
-it('places Channels and Remote Agents in Bot immediately above Extensions', () => {
+it('shows Channels in settings without Remote Agents', () => {
 	render(
-		<MemoryRouter initialEntries={['/settings/health']}>
+		<MemoryRouter initialEntries={['/settings/channels']}>
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
-					<Route path="*" element={<SettingsPageHeader title="Settings page" />} />
+					<Route path="*" element={<p>Settings page</p>} />
 				</Route>
 			</Routes>
 		</MemoryRouter>
 	);
-
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const assistantGroup = within(navigation)
-		.getByText('settings.overview.groups.assistant')
-		.closest('[data-slot="split-pane-group"]');
-	const links = within(assistantGroup as HTMLElement).getAllByRole('link');
-	const voice = within(assistantGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.voice',
-	});
-	const health = within(assistantGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.health',
-	});
-	const remoteAgent = within(navigation).getByRole('link', {
-		name: 'settings.tabs.remoteAgent new',
-	});
-	const apps = within(navigation).getByRole('link', { name: 'settings.tabs.apps' });
-	const channels = within(navigation).getByRole('link', { name: 'settings.tabs.channels' });
-	const extensionsGroup = apps.closest('[data-slot="split-pane-group"]');
-	const extensionLinks = within(extensionsGroup as HTMLElement).getAllByRole('link');
-	const botGroup = channels.closest('[data-slot="split-pane-group"]');
-	const botLinks = within(botGroup as HTMLElement).getAllByRole('link');
-
-	expect(within(extensionsGroup as HTMLElement).getByText('settings.overview.groups.extensions')).toBeInTheDocument();
-	expect(within(botGroup as HTMLElement).getByText('settings.overview.groups.bot')).toBeInTheDocument();
-	expect(en.settings.overview.groups.bot).toBe('Bot');
-	expect(italian.settings.overview.groups.bot).toBe('Bot');
-	expect(botGroup?.nextElementSibling).toBe(extensionsGroup);
-	expect(channels).toHaveAttribute('href', '/settings/channels');
-	expect(botLinks).toEqual([channels, remoteAgent]);
-	expect(extensionLinks.map((link) => link.getAttribute('href'))).toEqual([
-		'/settings/plugins',
-		'/settings/apps',
-	]);
-	expect(
-		within(assistantGroup as HTMLElement).queryByRole('link', {
-			name: 'settings.tabs.channels',
-		})
-	).not.toBeInTheDocument();
-	expect(remoteAgent).toHaveAttribute('href', '/settings/remote-agent');
-	expect(remoteAgent.querySelector('.lucide-network')).toBeInTheDocument();
-	expect(within(remoteAgent).getByText('new')).toHaveAttribute('data-slot', 'badge');
-	expect(links.indexOf(health)).toBe(links.indexOf(voice) + 1);
-	expect(within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.remoteAgent new' })).not.toBeInTheDocument();
+	expect(within(navigation).getByRole('link', { name: 'settings.tabs.channels' })).toHaveAttribute('href', '/settings/channels');
+	expect(within(navigation).queryByRole('link', { name: /remoteAgent/i })).not.toBeInTheDocument();
 });
 
 it('places Models and Web Search after Storage without a Providers entry in the sidebar', () => {

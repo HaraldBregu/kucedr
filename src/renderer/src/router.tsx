@@ -55,7 +55,6 @@ const SkillsPage = lazy(() => import('./pages/settings/pages/skills/Page'));
 const SkillDetailsPage = lazy(() => import('./pages/settings/pages/skills/details/Page'));
 const ProvidersPage = lazy(() => import('./pages/settings/pages/providers/Page'));
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
-const RemoteAgentPage = lazy(() => import('./pages/settings/pages/remote-agent/Page'));
 const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Page'));
 const KnowledgePage = lazy(() => import('./pages/settings/pages/knowledge/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
@@ -407,14 +406,6 @@ const routes: RouteObject[] = [
 						element: (
 							<SettingsRouteWrapper>
 								<PluginDetailPage />
-							</SettingsRouteWrapper>
-						),
-					},
-					{
-						path: 'remote-agent',
-						element: (
-							<SettingsRouteWrapper>
-								<RemoteAgentPage />
 							</SettingsRouteWrapper>
 						),
 					},

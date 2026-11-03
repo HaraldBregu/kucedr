@@ -61,14 +61,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		titleKey: 'coordination',
 		icon: Network,
 		tools: [
-			[
-				'List remote agents',
-				'list_a2a_agents',
-				'Lists connected remote agents that can accept delegated work.',
-			],
-			['Delegate to remote agent', 'delegate_a2a', 'Sends a task to a connected remote agent.'],
-			['Get remote task', 'get_a2a_task', 'Checks the status and result of a delegated task.'],
-			['Cancel remote task', 'cancel_a2a_task', 'Cancels a delegated task that is still running.'],
 			['Subagent', 'subagent', 'Starts one subagent for a focused task.'],
 			['Subagents', 'subagents', 'Starts multiple subagents for independent tasks.'],
 		],

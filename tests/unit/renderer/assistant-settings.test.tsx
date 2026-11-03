@@ -438,7 +438,6 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	);
 
 	for (const tool of [
-		'List remote agents',
 		'Read file',
 		'Screen recorder',
 		'Query knowledge',
@@ -480,7 +479,7 @@ it('lists every built-in agent tool on the Tools page', async () => {
 		Node.DOCUMENT_POSITION_FOLLOWING
 	);
 	expect(
-		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
+		screen.getByText('Read file').compareDocumentPosition(screen.getByText('Subagent'))
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 });
 
