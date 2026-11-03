@@ -37,10 +37,10 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'extensions',
 		titleKey: 'settings.overview.groups.extensions',
 		items: [
-			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/models'),
 			...SETTINGS_NAVIGATION.filter((item) =>
 				['/settings/apps', '/settings/services', '/settings/scripts'].includes(item.path)
 			),
+			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/models'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
 		],
