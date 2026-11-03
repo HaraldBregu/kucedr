@@ -109,7 +109,9 @@ export default function ModelsPage(): React.JSX.Element {
 										>
 											<div className="break-words font-medium">{model.name}</div>
 											<div className="break-words text-xs text-muted-foreground">
-												{model.provider.name} · {model.provider.plugin?.name}
+												{model.provider.name}
+												{model.provider.plugin?.name !== model.provider.name &&
+											` · ${model.provider.plugin?.name}`}
 											</div>
 										</li>
 									))}
