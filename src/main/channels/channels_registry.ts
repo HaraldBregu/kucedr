@@ -213,7 +213,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 		const loadAdapter =
 			dependencies.loadAdapter ??
 			(async (entry, options) => {
-				const require = createRequire(import.meta.url);
+				const require = createRequire(entry);
 				delete require.cache[require.resolve(entry)];
 				const module = require(entry);
 				return module.createChannelAdapter(options) as ChannelAdapter;
