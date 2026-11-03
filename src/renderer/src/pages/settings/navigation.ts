@@ -215,12 +215,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		labelKey: 'settings.channels.status',
 		keywords: 'connected disconnected runtime start stop',
 	},
-	{
-		path: '/settings/channels',
-		labelKey: 'channels.telegram',
-		descriptionKey: 'channels.telegramDescription',
-		keywords: 'telegram bot channel configuration token',
-	},
 	// Skills
 	{
 		path: '/settings/skills',

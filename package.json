@@ -29,13 +29,6 @@
 	"copyright": "© 2026 Kucedr Project. All rights reserved.",
 	"type": "module",
 	"license": "MIT",
-	"kucedr.channel": {
-		"catalogPath": "src/main/channels/catalog.ts",
-		"ids": [
-			"telegram"
-		],
-		"aliases": {}
-	},
 	"main": "./out/main/index.js",
 	"scripts": {
 		"postinstall": "install-electron --no",
