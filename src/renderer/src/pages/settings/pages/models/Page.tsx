@@ -97,7 +97,9 @@ export default function ModelsPage(): React.JSX.Element {
 					if (group.length === 0) return null;
 					return (
 						<section key={type}>
-							<h2 className="mb-3 text-sm font-medium">{t(`settings.integrations.plugin.capabilities.${type}`)}</h2>
+							<h2 className="mb-3 text-sm font-medium">
+								{t(`settings.integrations.plugin.capabilities.${type}`)}
+							</h2>
 							<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 								{group.map((model) => (
 									<Card key={`${model.provider.id}/${model.id}`} size="sm">
@@ -105,7 +107,8 @@ export default function ModelsPage(): React.JSX.Element {
 											<CardTitle className="break-words">{model.name}</CardTitle>
 											<CardDescription className="break-words text-xs">
 												{model.provider.name}
-												{model.provider.plugin?.name !== model.provider.name && ` · ${model.provider.plugin?.name}`}
+												{model.provider.plugin?.name !== model.provider.name &&
+													` · ${model.provider.plugin?.name}`}
 											</CardDescription>
 										</CardHeader>
 									</Card>
