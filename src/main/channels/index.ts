@@ -30,4 +30,3 @@ export type {
 	ChannelStatusHandler,
 	ChannelStatusUpdate,
 } from './channels_types';
-export type { TelegramAdapterOptions } from './adapters/telegram';

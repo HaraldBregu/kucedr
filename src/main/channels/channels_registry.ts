@@ -1,5 +1,6 @@
 import type { ChannelStatusEvent, ChannelType, StoredChannelProvider } from '../../shared';
-import { isChannelId } from '../../shared/channels_definitions';
+import { pathToFileURL } from 'node:url';
+import { resolveChannel } from './catalog';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
 import type { EventBus } from '../event_bus';
 import type { LoggerService } from '../shared';
@@ -21,12 +22,11 @@ import type {
 import { toText } from '../models/transcribe';
 import { synthesize } from '../models/voice';
 
-const CHANNEL_START_REPLY = "Hi! I'm connected. Send me a message and I'll reply.";
-
 export interface ChannelRegistryDependencies {
 	logger: LoggerService;
 	eventBus: EventBus;
 	agentService?: Agent;
+	loadAdapter?: (entry: string, options: { channel: string; apiKey: string }) => Promise<ChannelAdapter>;
 	transcribeVoice?: (
 		audio: SttAudioInput,
 		options?: { providerId?: string; modelId?: string }
@@ -42,7 +42,7 @@ export interface ChannelRegistry {
 	stop(channel: ChannelType): Promise<void>;
 	restart(channel: ChannelType): Promise<void>;
 	send(message: ChannelOutboundMessage): Promise<ChannelMessageReceipt>;
-	getStatus(channel?: ChannelType): ChannelStatusEvent | undefined;
+	getStatus(channel: ChannelType): ChannelStatusEvent | undefined;
 	destroy(): Promise<void>;
 }
 
@@ -115,13 +115,6 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 					: await transcribeVoice(await loadChannelVoice(message.content.voice), {
 							...channelModelSelection('stt'),
 						});
-			if (text.startsWith('/')) {
-				const command = text.split(/\s+/)[0].slice(1).split('@')[0].toLowerCase();
-				if (command === 'start') {
-					await reply({ type: 'text', text: CHANNEL_START_REPLY });
-				}
-				return;
-			}
 			if (!agentService) return;
 
 			eventBus.emit('channel:route', {
@@ -173,17 +166,21 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 	}
 
 	async function start(channel: ChannelType): Promise<void> {
-		if (!isChannelId(channel)) throw new Error('Unknown channel provider.');
+		const contribution = resolveChannel(channel);
+		if (!contribution) throw new Error('Unknown channel.');
 		if (adapters.has(channel)) return;
 
 		const credential = channelCredential(channel);
-		if (!credential?.apiKey.trim()) {
+		if (contribution.credentials.some((item) => item.key === 'apiKey' && item.required) && !credential?.apiKey.trim()) {
 			logger.warn('ChannelRegistry', `${channel} channel is not configured`);
 			return;
 		}
 
-		const { createTelegramAdapter } = await import('./adapters/telegram');
-		const adapter = createTelegramAdapter({ token: credential.apiKey });
+		const loadAdapter = dependencies.loadAdapter ?? (async (entry, options) => {
+			const module = await import(/* @vite-ignore */ pathToFileURL(entry).href);
+			return module.createChannelAdapter(options) as ChannelAdapter;
+		});
+		const adapter = await loadAdapter(contribution.entry, { channel, apiKey: credential?.apiKey ?? '' });
 		adapter.onStatus((update) => handleStatus(channel, update));
 		adapter.onMessage((message) => {
 			void handleMessage(message);
@@ -220,7 +217,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 			await start(channel);
 		},
 		send,
-		getStatus(channel = 'telegram') {
+		getStatus(channel) {
 			return statusCache.get(channel);
 		},
 		async destroy() {
