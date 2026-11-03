@@ -21,7 +21,7 @@ jest.mock('../../../../src/main/channels/catalog', () => ({
 	resolveChannel: (id: string) =>
 		id === 'unsupported'
 			? undefined
-			: { id, entry: '/channel.cjs', credentials: [{ key: 'apiKey', required: true }] },
+			: mockDiscoverChannels().find((channel: { id: string }) => channel.id === id) ?? { id, entry: '/channel.cjs', credentials: [{ key: 'apiKey', required: true }] },
 }));
 
 import { createChannelRegistry } from '../../../../src/main/channels/channels_registry';
