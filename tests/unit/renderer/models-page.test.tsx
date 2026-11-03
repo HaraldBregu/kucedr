@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ModelsPage from '../../../src/renderer/src/pages/settings/pages/models/Page';
 
 jest.mock('react-i18next', () => ({
@@ -36,6 +36,12 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 		screen.queryByRole('heading', { name: 'settings.models.types.text-to-speech' })
 	).not.toBeInTheDocument();
 	expect(screen.queryByText('Other model')).not.toBeInTheDocument();
+	fireEvent.change(screen.getByRole('searchbox', { name: 'settings.modelServices.searchModels' }), { target: { value: 'image' } });
+	expect(screen.getByText('Image model')).toBeInTheDocument();
+	expect(screen.queryByText('Chat model')).not.toBeInTheDocument();
+	expect(screen.queryByRole('heading', { name: 'settings.models.types.llm' })).not.toBeInTheDocument();
+	fireEvent.change(screen.getByRole('searchbox', { name: 'settings.modelServices.searchModels' }), { target: { value: 'missing' } });
+	expect(screen.getByText('settings.modelServices.noMatchingModels')).toBeInTheDocument();
 	models.mockResolvedValue([]);
 	act(() => changed());
 	await waitFor(() => expect(screen.getByText('settings.models.empty')).toBeInTheDocument());

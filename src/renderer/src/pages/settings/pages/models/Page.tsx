@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Boxes } from 'lucide-react';
+import { Boxes, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import type { CatalogModel, ModelCapability } from '@shared/model_types';
 import {
 	SettingsEmptyState,
@@ -28,6 +29,13 @@ export default function ModelsPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [models, setModels] = useState<readonly CatalogModel[] | null>(null);
 	const [error, setError] = useState(false);
+	const [query, setQuery] = useState('');
+	const search = query.trim().toLocaleLowerCase();
+	const visibleModels = models?.filter((model) =>
+		`${model.name} ${model.id} ${model.provider.name} ${model.provider.plugin?.name ?? ''}`
+			.toLocaleLowerCase()
+			.includes(search)
+	);
 
 	useEffect(() => {
 		let active = true;
@@ -80,6 +88,10 @@ export default function ModelsPage(): React.JSX.Element {
 				title={t('settings.tabs.models')}
 				description={t('settings.overview.descriptions.models')}
 			/>
+			<div className="relative mb-3">
+				<Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+				<Input type="search" className="h-8 pl-8" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('settings.modelServices.searchModels')} aria-label={t('settings.modelServices.searchModels')} />
+			</div>
 			{error && (
 				<SettingsNotice variant="destructive">{t('settings.models.loadError')}</SettingsNotice>
 			)}
@@ -91,9 +103,12 @@ export default function ModelsPage(): React.JSX.Element {
 			{models?.length === 0 && !error && (
 				<SettingsEmptyState icon={Boxes} title={t('settings.models.empty')} />
 			)}
+			{models && models.length > 0 && visibleModels?.length === 0 && !error && (
+				<SettingsEmptyState title={t('settings.modelServices.noMatchingModels')} />
+			)}
 			<div className="space-y-6 pb-4">
 				{TYPES.map((type) => {
-					const group = models?.filter((model) => model.type === type) ?? [];
+					const group = visibleModels?.filter((model) => model.type === type) ?? [];
 					if (group.length === 0) return null;
 					return (
 						<section key={type} aria-labelledby={`models-${type}`}>
