@@ -172,7 +172,7 @@ export function AgentMediaModelConfiguration({
 		}));
 		try {
 			if (capability === 'speech-to-text' && api.saveSelection) {
-				await api.saveSelection(providerId, modelId);
+				if (!(await api.saveSelection(providerId, modelId))) throw new Error('Unable to save model');
 			} else {
 				await api.setProviderId(providerId);
 				await api.setModelId(modelId);
