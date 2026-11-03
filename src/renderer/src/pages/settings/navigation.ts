@@ -13,6 +13,7 @@ import {
 	Library,
 	ListChecks,
 	MessageCircle,
+	Boxes,
 	Plug,
 	PlugZap,
 	ServerCog,
@@ -284,6 +285,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 ] as const;
 
 export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
+	{
+		path: '/settings/models',
+		labelKey: 'settings.tabs.models',
+		descriptionKey: 'settings.overview.descriptions.models',
+		icon: Boxes,
+	},
 	{
 		path: '/settings/memory',
 		labelKey: 'settings.memory.title',

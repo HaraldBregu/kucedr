@@ -43,6 +43,7 @@ const SettingsPage = lazy(() => import('./pages/settings/pages/settings/Page'));
 const PersonaPage = lazy(() => import('./pages/settings/pages/settings/persona/Page'));
 const SettingsMediaDetailPage = lazy(() => import('./pages/settings/pages/settings/media/Page'));
 const PluginsPage = lazy(() => import('./pages/settings/pages/plugins/Page'));
+const ModelsPage = lazy(() => import('./pages/settings/pages/models/Page'));
 const PluginDetailPage = lazy(() => import('./pages/settings/pages/plugins/Detail'));
 const PluginPage = lazy(() => import('./pages/settings/pages/plugins/Plugin'));
 const PluginMarketplacePage = lazy(() => import('./pages/settings/pages/plugins/Marketplace'));
@@ -333,6 +334,14 @@ const routes: RouteObject[] = [
 								),
 							},
 						],
+					},
+					{
+						path: 'models',
+						element: (
+							<SettingsRouteWrapper>
+								<ModelsPage />
+							</SettingsRouteWrapper>
+						),
 					},
 					{
 						path: 'plugins',
