@@ -506,19 +506,6 @@ export interface LibraryInvokeChannelMap {
 	[LibraryChannels.getRoot]: { args: []; result: string };
 }
 
-export interface A2aInvokeChannelMap {
-	[A2aChannels.list]: { args: []; result: import('./a2a_types').A2aAgentSummary[] };
-	[A2aChannels.save]: {
-		args: [input: import('./a2a_types').A2aAgentInput];
-		result: import('./a2a_types').A2aAgentSummary;
-	};
-	[A2aChannels.delete]: { args: [id: string]; result: void };
-	[A2aChannels.test]: {
-		args: [input: import('./a2a_types').A2aAgentInput];
-		result: import('./a2a_types').A2aTestResult;
-	};
-}
-
 export interface PluginsInvokeChannelMap {
 	[PluginsChannels.list]: { args: []; result: import('./plugin_types').PluginInfo[] };
 	[PluginsChannels.installUrl]: {
