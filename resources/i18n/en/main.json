@@ -324,6 +324,7 @@
 				"cron": "Schedule, review, and manage recurring tasks for Kucedr.",
 				"heartbeat": "Periodic agent checks",
 				"health": "Periodic health checks",
+				"bots": "Manage your bots",
 				"permissions": "Tool permissions and path rules",
 				"apps": "Installed apps",
 				"scripts": "Scripts provided by plugins",
