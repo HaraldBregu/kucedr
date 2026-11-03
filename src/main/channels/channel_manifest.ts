@@ -18,7 +18,7 @@ const schema = z
 		credentials: z.array(
 			z
 				.object({
-					key: text,
+					key: z.string().regex(/^[a-zA-Z0-9._-]{1,128}$/),
 					label: text,
 					type: z.enum(['password', 'text']),
 					required: z.boolean(),
