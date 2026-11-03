@@ -1,0 +1,23 @@
+{
+	"schemaVersion": 5,
+	"id": "xai",
+	"title": "xAI",
+	"version": "1.1.0",
+	"description": "Grok models for chat, images, video, and voice.",
+	"categories": [
+		"LLM",
+		"IMAGE",
+		"VIDEO",
+		"TTS",
+		"STT",
+		"REALTIME"
+	],
+	"author": "Harald Bregu",
+	"website": "https://x.ai",
+	"icon": "xai-light.svg",
+	"iconDark": "xai-dark.svg",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://console.x.ai",
+	"icon_dark_url": "/assets/xai-dark.svg",
+	"icon_light_url": "/assets/xai-light.svg"
+}
