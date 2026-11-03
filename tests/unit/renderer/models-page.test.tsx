@@ -14,14 +14,24 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 		{ id: 'other', name: 'Other model', type: 'text-to-speech', provider: { id: 'other' } },
 	]);
 	Object.assign(window, {
-		app: { models, onModelsChanged: (callback: () => void) => { changed = callback; return jest.fn(); } },
+		app: {
+			models,
+			onModelsChanged: (callback: () => void) => {
+				changed = callback;
+				return jest.fn();
+			},
+		},
 		provider: { getModelProviders: jest.fn().mockResolvedValue([]) },
 	});
 	render(<ModelsPage />);
 	expect(await screen.findByText('Image model')).toBeInTheDocument();
 	expect(screen.getByText('Chat model')).toBeInTheDocument();
-	expect(screen.getByText('settings.integrations.plugin.capabilities.text-to-image')).toBeInTheDocument();
-	expect(screen.queryByText('settings.integrations.plugin.capabilities.text-to-speech')).not.toBeInTheDocument();
+	expect(
+		screen.getByText('settings.integrations.plugin.capabilities.text-to-image')
+	).toBeInTheDocument();
+	expect(
+		screen.queryByText('settings.integrations.plugin.capabilities.text-to-speech')
+	).not.toBeInTheDocument();
 	expect(screen.queryByText('Other model')).not.toBeInTheDocument();
 	models.mockResolvedValue([]);
 	act(() => changed());
