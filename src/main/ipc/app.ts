@@ -460,10 +460,7 @@ function showVideoContextMenu(event: IpcMainInvokeEvent, requestedPath: string):
 export class AppIpc implements IpcModule {
 	readonly name = 'app';
 
-	register(
-		{ logger, appRegistry, appStorage, sandbox }: AppIpcDeps,
-		eventBus: EventBus
-	): void {
+	register({ logger, appRegistry, appStorage, sandbox }: AppIpcDeps, eventBus: EventBus): void {
 		registerAppStoreIpc({ appRegistry, appStorage });
 		let currentThemeData: AppThemeData = getThemeData();
 		const emitThemeChangeEvent = (): void => {
@@ -718,10 +715,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.getVoiceAgentAppearance,
-			wrapSimpleHandler(
-				() => getStoredVoiceAgentAppearance(),
-				AppChannels.getVoiceAgentAppearance
-			)
+			wrapSimpleHandler(() => getStoredVoiceAgentAppearance(), AppChannels.getVoiceAgentAppearance)
 		);
 
 		ipcMain.handle(

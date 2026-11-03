@@ -181,7 +181,7 @@ export interface AgentHistoryMessage {
 	usage?: AgentTokenUsage;
 }
 
-export type AgentSessionCategory = 'main' | 'bot' | 'health' | 'task' | 'subagent' | 'voice';
+export type AgentSessionCategory = 'main' | 'health' | 'task' | 'subagent' | 'voice';
 
 export interface AgentSessionSummary {
 	id: string;

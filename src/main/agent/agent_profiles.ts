@@ -48,12 +48,7 @@ if (!existsSync(healthSettingsPath) && existsSync(legacyHealthSettingsPath)) {
 	mkdirSync(healthDirectory, { recursive: true });
 	renameSync(legacyHealthSettingsPath, healthSettingsPath);
 }
-const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
-	'chat',
-	'voice',
-	'tasks',
-	'health',
-]);
+const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['chat', 'voice', 'tasks', 'health']);
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelKey[]> = {

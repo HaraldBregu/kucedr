@@ -208,15 +208,17 @@ export async function* runToolCall(
 					const requestId = crypto.randomUUID();
 					const fingerprint = inputFingerprint(canonicalInput);
 					const expiresAtMs = Date.now() + 7 * 24 * 60 * 60_000;
-					const questions: AgentUserInputQuestion[] = [{
-						id: 'mcp-authorization',
-						header: 'MCP',
-						question: `Authorize ${checked.serverName ?? checked.serverId}?`,
-						options: [
-							{ label: 'Authorize', description: 'Continue the run after OAuth succeeds.' },
-							{ label: 'Cancel', description: 'End the run without authorization.' },
-						],
-					}];
+					const questions: AgentUserInputQuestion[] = [
+						{
+							id: 'mcp-authorization',
+							header: 'MCP',
+							question: `Authorize ${checked.serverName ?? checked.serverId}?`,
+							options: [
+								{ label: 'Authorize', description: 'Continue the run after OAuth succeeds.' },
+								{ label: 'Cancel', description: 'End the run without authorization.' },
+							],
+						},
+					];
 					yield {
 						type: 'user_input_request',
 						requestId,
@@ -225,15 +227,18 @@ export async function* runToolCall(
 						expiresAt: new Date(expiresAtMs).toISOString(),
 						inputFingerprint: fingerprint,
 					};
-					const answers = await waitForUserInput({
-						requestId,
-						runId: security.runId,
-						toolCallId: toolCall.id,
-						inputFingerprint: fingerprint,
-						questionIds: ['mcp-authorization'],
-						expiresAtMs,
-						windowId: security.windowId,
-					}, signal);
+					const answers = await waitForUserInput(
+						{
+							requestId,
+							runId: security.runId,
+							toolCallId: toolCall.id,
+							inputFingerprint: fingerprint,
+							questionIds: ['mcp-authorization'],
+							expiresAtMs,
+							windowId: security.windowId,
+						},
+						signal
+					);
 					yield {
 						type: 'user_input_result',
 						requestId,
@@ -242,7 +247,8 @@ export async function* runToolCall(
 						answers: answers ?? [],
 					};
 					const accepted = answers?.[0]?.answer === 'authorized';
-					const authorized = accepted && Boolean(getMcpOauth(checked.serverId).tokens?.access_token);
+					const authorized =
+						accepted && Boolean(getMcpOauth(checked.serverId).tokens?.access_token);
 					output = {
 						status: authorized ? 'authorized' : accepted ? 'authorization_failed' : 'cancelled',
 						serverId: checked.serverId,
@@ -328,8 +334,7 @@ export async function* runToolCall(
 				signal
 			);
 			const effectiveDecision =
-				(decision === 'approve' && !allowOnce) ||
-				(decision === 'approve_always' && !persistable)
+				(decision === 'approve' && !allowOnce) || (decision === 'approve_always' && !persistable)
 					? 'reject'
 					: decision;
 			permissionOutcome = effectiveDecision;

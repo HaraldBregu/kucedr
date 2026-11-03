@@ -81,7 +81,6 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			trusted.assert(event);
 			return [...loadProviders()];
 		});
-
 	}
 
 	private credential(value: unknown): ProviderCredentialSaveInput {
@@ -234,7 +233,6 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		}
 		return value as Record<string, unknown>;
 	}
-
 
 	private optionalIdentifiers(
 		record: Record<string, unknown>

@@ -1,4 +1,4 @@
-export const AGENT_TOOL_PROFILE_IDS = ['chat', 'voice', 'tasks', 'health', 'channels', 'bots'] as const;
+export const AGENT_TOOL_PROFILE_IDS = ['chat', 'voice', 'tasks', 'health'] as const;
 
 export type AgentToolProfileId = (typeof AGENT_TOOL_PROFILE_IDS)[number];
 

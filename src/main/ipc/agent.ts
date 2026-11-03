@@ -244,12 +244,7 @@ function toPermissions(value: unknown): PermissionsSchema {
 }
 
 function toToolProfileId(value: unknown): AgentToolProfileId {
-	if (
-		value === 'chat' ||
-		value === 'voice' ||
-		value === 'tasks' ||
-		value === 'health'
-	)
+	if (value === 'chat' || value === 'voice' || value === 'tasks' || value === 'health')
 		return value;
 	throw new Error('Invalid tool profile.');
 }
@@ -396,32 +391,36 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 
 		ipcMain.handle(
 			AgentChannels.send,
-			wrapIpcHandler(async (event, message: string, options?: unknown): Promise<AgentSendResult> => {
-				const window = renderer.assert(event);
-				const runtimeOptions = normalizeAgentSendRuntimeOptions(options);
-				const runId = runtimeOptions.runId ?? randomUUID();
-				let finished: AgentSendResult['finished'];
-				const text = await conversation.execute({
-					type: 'text',
-					message,
-					agentId: 'main',
-					options: {
-						...runtimeOptions,
-						runId,
-						type: 'default',
-						windowId: window.id,
-						streamEvent: (responseEvent) => {
-							if (
-								responseEvent.type === 'run_finished' &&
-								responseEvent.agentId === 'main' &&
-								responseEvent.runId === runId
-							) finished = responseEvent;
-							eventBus.sendTo(window.id, AgentChannels.response, responseEvent);
+			wrapIpcHandler(
+				async (event, message: string, options?: unknown): Promise<AgentSendResult> => {
+					const window = renderer.assert(event);
+					const runtimeOptions = normalizeAgentSendRuntimeOptions(options);
+					const runId = runtimeOptions.runId ?? randomUUID();
+					let finished: AgentSendResult['finished'];
+					const text = await conversation.execute({
+						type: 'text',
+						message,
+						agentId: 'main',
+						options: {
+							...runtimeOptions,
+							runId,
+							type: 'default',
+							windowId: window.id,
+							streamEvent: (responseEvent) => {
+								if (
+									responseEvent.type === 'run_finished' &&
+									responseEvent.agentId === 'main' &&
+									responseEvent.runId === runId
+								)
+									finished = responseEvent;
+								eventBus.sendTo(window.id, AgentChannels.response, responseEvent);
+							},
 						},
-					},
-				});
-				return { text, ...(finished ? { finished } : {}) };
-			}, AgentChannels.send)
+					});
+					return { text, ...(finished ? { finished } : {}) };
+				},
+				AgentChannels.send
+			)
 		);
 
 		ipcMain.handle(
@@ -716,7 +715,12 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					const normalizedName = optionalTrimmedString(name);
 					if (!normalizedName) throw new Error('Invalid workspace file name.');
 					if (!(data instanceof Uint8Array)) throw new Error('Invalid workspace asset data.');
-					return importWorkspaceAsset(workspacePath(agent.config), normalizedDocumentPath, normalizedName, data);
+					return importWorkspaceAsset(
+						workspacePath(agent.config),
+						normalizedDocumentPath,
+						normalizedName,
+						data
+					);
 				},
 				AgentChannels.importWorkspaceAsset
 			)
@@ -729,7 +733,11 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				async (documentPath: unknown): Promise<number> => {
 					const normalizedDocumentPath = optionalTrimmedString(documentPath);
 					if (!normalizedDocumentPath) throw new Error('Invalid workspace file path.');
-					return cleanWorkspaceAssets(workspacePath(agent.config), normalizedDocumentPath, (filePath) => shell.trashItem(filePath));
+					return cleanWorkspaceAssets(
+						workspacePath(agent.config),
+						normalizedDocumentPath,
+						(filePath) => shell.trashItem(filePath)
+					);
 				},
 				AgentChannels.cleanWorkspaceAssets
 			)

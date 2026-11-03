@@ -58,7 +58,7 @@ export function registerIpcHandlers(
 		new AppIpc().register(
 			{
 				logger,
-						appRegistry,
+				appRegistry,
 				appStorage,
 				sandbox: agentService.sandbox,
 			},

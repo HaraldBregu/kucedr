@@ -98,10 +98,7 @@ export async function* stream(
 	options: StreamOptions = {}
 ): AsyncGenerator<RuntimeEvent> {
 	let terminal = false;
-	const browser =
-		input.type === 'background'
-			? createBackgroundBrowser()
-			: undefined;
+	const browser = input.type === 'background' ? createBackgroundBrowser() : undefined;
 	try {
 		for await (const event of loop(config, session, input, signal, options, browser?.tool)) {
 			tryAppendRun(session, event);
@@ -305,7 +302,10 @@ async function* loop(
 				mcpDiscovery = mcp.diagnostics;
 				unsubscribeMcp = mcp.onChanged((entries) => {
 					mcpEntries = entries;
-					tools = [...tools.filter((tool) => tool.policy?.kind !== 'mcp'), ...entries.map((entry) => entry.tool)];
+					tools = [
+						...tools.filter((tool) => tool.policy?.kind !== 'mcp'),
+						...entries.map((entry) => entry.tool),
+					];
 					search?.replaceMcpEntries(entries);
 					search?.replaceEligible(filterEligibleTools(tools));
 				});
@@ -350,8 +350,20 @@ async function* loop(
 		if (!bootstrap && (!options.tools || options.progressiveDiscovery === true)) {
 			const taskRequest = taskToolIds.length > 0;
 			const requiredIds = new Set([
-				'read', 'write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap', 'update_identity', 'update_soul', 'update_user',
-				'subagent', 'subagents', 'load_script', 'run_script',
+				'read',
+				'write',
+				'edit',
+				'patch',
+				'undo',
+				'redo',
+				'complete_bootstrap',
+				'update_identity',
+				'update_soul',
+				'update_user',
+				'subagent',
+				'subagents',
+				'load_script',
+				'run_script',
 				...(input.interactionMode === 'plan' ? ['ask'] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
@@ -402,7 +414,11 @@ async function* loop(
 				server.serverId.toLocaleLowerCase() === mcpServerHint ||
 				server.serverName.toLocaleLowerCase() === mcpServerHint
 		);
-		if (requestedUncatalogedMcp && input.approvalWindowId !== undefined && input.interactionMode === 'default') {
+		if (
+			requestedUncatalogedMcp &&
+			input.approvalWindowId !== undefined &&
+			input.interactionMode === 'default'
+		) {
 			const authorizationCall: ToolCall = {
 				id: crypto.randomUUID(),
 				name: 'request_mcp_authorization',
@@ -413,14 +429,24 @@ async function* loop(
 				[authorizationCall],
 				signal,
 				session.runContext.fileAccess,
-				{ runId, budget, interactionMode: input.interactionMode, toolProfile, windowId: input.approvalWindowId },
+				{
+					runId,
+					budget,
+					interactionMode: input.interactionMode,
+					toolProfile,
+					windowId: input.approvalWindowId,
+				},
 				options.resources,
 				session.runContext.fileHistory
-			)) yield event;
+			))
+				yield event;
 			const result = authorizationCall.result?.content;
 			let authorizationStatus: string | undefined;
 			try {
-				authorizationStatus = typeof result === 'string' ? (JSON.parse(result) as { status?: string }).status : undefined;
+				authorizationStatus =
+					typeof result === 'string'
+						? (JSON.parse(result) as { status?: string }).status
+						: undefined;
 			} catch {
 				authorizationStatus = undefined;
 			}
@@ -443,7 +469,9 @@ async function* loop(
 				search?.replaceMcpEntries(mcpEntries);
 				search?.replaceEligible(filterEligibleTools(tools));
 				if (!mcpEntries.some((entry) => entry.serverId === requestedUncatalogedMcp.serverId))
-					throw new Error(`${requestedUncatalogedMcp.serverName} did not provide any MCP tools after authorization.`);
+					throw new Error(
+						`${requestedUncatalogedMcp.serverName} did not provide any MCP tools after authorization.`
+					);
 			}
 		}
 
@@ -662,8 +690,7 @@ async function* loop(
 				let discoveryLatencyMs: number | undefined;
 				const selectedIds = new Set(
 					pendingToolCalls.flatMap((call) => {
-						if (call.name !== 'tool_search' || typeof call.result?.content !== 'string')
-							return [];
+						if (call.name !== 'tool_search' || typeof call.result?.content !== 'string') return [];
 						try {
 							const parsed = JSON.parse(call.result.content) as {
 								selectedToolIds?: unknown;

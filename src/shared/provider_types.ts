@@ -134,28 +134,12 @@ export interface ProviderManifestWebSearch {
 	readonly authentication: AuthenticationType;
 }
 
-export interface ProviderManifestBot {
-	readonly id: string;
-	readonly name: string;
-	readonly instructions?: string;
-	readonly credentials?: readonly ProviderManifestBotCredential[];
-	readonly url: string;
-}
-
-export interface ProviderManifestBotCredential {
-	readonly key: string;
-	readonly label: string;
-	readonly type: 'text' | 'password';
-	readonly required: boolean;
-}
-
 /** A non-model service in resources/plugins/<id>/manifest.json. */
 export interface CatalogEntryService {
 	readonly id: string;
 	readonly name: string;
 	readonly description?: string;
 	readonly instructions?: string;
-	readonly credentials?: readonly ProviderManifestBotCredential[];
 	readonly type: string;
 	readonly authentication?: AuthenticationType;
 	readonly scopes?: readonly string[];
@@ -211,7 +195,6 @@ export interface ProviderManifest {
 	readonly vector_databases?: readonly ProviderManifestVectorDatabase[];
 	readonly storage?: ProviderManifestStorage;
 	readonly web_search?: readonly ProviderManifestWebSearch[];
-	readonly bots?: readonly ProviderManifestBot[];
 	readonly settings?: readonly ProviderManifestSetting[];
 }
 
@@ -221,9 +204,9 @@ export interface ModelSelection {
 }
 
 /** Which settings-store collection a provider credential belongs to. */
-export type StoredProviderKind = 'models' | 'databases' | 'channels';
+export type StoredProviderKind = 'models' | 'databases';
 
-export type ProviderCredentialKind = Exclude<StoredProviderKind, 'channels'> | 'search_engines';
+export type ProviderCredentialKind = StoredProviderKind | 'search_engines';
 
 export interface ProviderCredentialSaveInput {
 	kind: Exclude<ProviderCredentialKind, 'search_engines'>;

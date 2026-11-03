@@ -37,7 +37,6 @@ export const pluginManifestSchema = z
 		vector_databases: z.unknown().optional(),
 		web_search: z.unknown().optional(),
 		storage: z.unknown().optional(),
-		bots: z.unknown().optional(),
 		settings: z.object({
 			inputSchema: z.object({
 				type: z.literal('object'),
