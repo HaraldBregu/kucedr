@@ -3,7 +3,6 @@ export { memory } from './memory';
 import { contextBridge } from 'electron';
 import { agent } from './agent';
 import { coding } from './coding';
-import { a2a } from './a2a';
 import { app } from './app';
 import { recorder } from './recorder';
 import { tasks } from './tasks';
