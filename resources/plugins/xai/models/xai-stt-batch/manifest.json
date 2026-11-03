@@ -1,0 +1,17 @@
+{
+	"id": "xai-stt-batch",
+	"name": "xAI STT Batch",
+	"apiTypes": [
+		"batch"
+	],
+	"authentication": "api-key",
+	"type": "speech-to-text-model",
+	"url": "https://api.x.ai/v1",
+	"sampleRate": 24000,
+	"metadata": {
+		"documentationUrl": "https://docs.x.ai/developers/models",
+		"documentationStatus": "unverified",
+		"inputs": {}
+	},
+	"location": "remote"
+}

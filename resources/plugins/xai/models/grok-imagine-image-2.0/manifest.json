@@ -1,0 +1,35 @@
+{
+	"id": "grok-imagine-image-2.0",
+	"name": "Grok Imagine Image 2.0",
+	"authentication": "api-key",
+	"type": "text-to-image-model",
+	"url": "https://api.x.ai/v1",
+	"metadata": {
+		"documentationUrl": "https://docs.x.ai/developers/models/grok-imagine-image-2.0",
+		"documentationStatus": "verified",
+		"inputs": {
+			"n": {
+				"type": "integer",
+				"maximum": 10
+			},
+			"aspect_ratio": {
+				"type": "string"
+			},
+			"resolution": {
+				"type": "string"
+			},
+			"response_format": {
+				"type": "string",
+				"default": "url",
+				"enum": [
+					"url",
+					"b64_json"
+				]
+			},
+			"storage_options": {
+				"type": "object"
+			}
+		}
+	},
+	"location": "remote"
+}

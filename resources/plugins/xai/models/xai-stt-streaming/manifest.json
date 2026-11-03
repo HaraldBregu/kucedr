@@ -1,0 +1,18 @@
+{
+	"id": "xai-stt-streaming",
+	"name": "xAI STT Streaming",
+	"apiTypes": [
+		"stream"
+	],
+	"realtime": true,
+	"authentication": "api-key",
+	"type": "speech-to-text-model",
+	"url": "https://api.x.ai/v1",
+	"sampleRate": 24000,
+	"metadata": {
+		"documentationUrl": "https://docs.x.ai/developers/models",
+		"documentationStatus": "unverified",
+		"inputs": {}
+	},
+	"location": "remote"
+}

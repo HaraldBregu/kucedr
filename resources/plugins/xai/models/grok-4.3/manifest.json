@@ -1,0 +1,62 @@
+{
+	"id": "grok-4.3",
+	"name": "Grok 4.3",
+	"authentication": "api-key",
+	"type": "large-language-model",
+	"url": "https://api.x.ai/v1",
+	"metadata": {
+		"promptAttachments": [
+			{
+				"kind": "image",
+				"mimeTypes": [
+					"image/jpeg",
+					"image/png",
+					"image/webp"
+				],
+				"extensions": [
+					".jpg",
+					".jpeg",
+					".png",
+					".webp"
+				]
+			}
+		],
+		"documentationUrl": "https://docs.x.ai/developers/models",
+		"documentationStatus": "verified",
+		"inputs": {
+			"reasoning_effort": {
+				"type": "string",
+				"enum": [
+					"none",
+					"low",
+					"medium",
+					"high"
+				]
+			},
+			"temperature": {
+				"type": "number"
+			},
+			"top_p": {
+				"type": "number"
+			},
+			"max_tokens": {
+				"type": "integer"
+			},
+			"stop": {
+				"type": "array"
+			},
+			"response_format": {
+				"type": "object"
+			},
+			"tools": {
+				"type": "array"
+			},
+			"tool_choice": {
+				"type": "object"
+			}
+		},
+		"contextWindow": 1000000,
+		"contextWindowDocumentationUrl": "https://docs.x.ai/developers/models/grok-4.3"
+	},
+	"location": "remote"
+}
