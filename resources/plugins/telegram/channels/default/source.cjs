@@ -1,25 +1,3 @@
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var stdin_exports = {};
-__export(stdin_exports, {
-  createChannelAdapter: () => createChannelAdapter
-});
-module.exports = __toCommonJS(stdin_exports);
 var import_web = require("grammy/web");
 const TELEGRAM_MAX_MESSAGE_LENGTH = 4096;
 const TELEGRAM_HEALTH_CHECK_INTERVAL_MS = 6e4;
@@ -30,9 +8,9 @@ function createChannelAdapter(options) {
   const token = options.apiKey.trim();
   if (!token) throw new Error("Telegram bot token is required");
   const accountId = options.accountId?.trim() || "default";
-  const seenMessages = /* @__PURE__ */ new Set();
-  const messageHandlers = /* @__PURE__ */ new Set();
-  const statusHandlers = /* @__PURE__ */ new Set();
+  const seenMessages = new Set();
+  const messageHandlers = new Set();
+  const statusHandlers = new Set();
   let healthTimer = null;
   let reconnectTimer = null;
   let reconnectDelayMs = TELEGRAM_RECONNECT_INITIAL_DELAY_MS;
@@ -304,3 +282,5 @@ function splitText(text, maxLength) {
   }
   return chunks;
 }
+
+module.exports = { createChannelAdapter };

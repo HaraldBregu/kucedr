@@ -19,7 +19,7 @@ jest.mock('grammy/web', () => ({
 	InputFile: MockInputFile,
 }));
 
-import { createTelegramAdapter } from '../../../../src/main/channels/adapters/telegram';
+const { createChannelAdapter } = require('../../../../resources/plugins/telegram/channels/default/source.cjs');
 
 describe('Telegram voice messages', () => {
 	beforeEach(() => {
@@ -27,14 +27,14 @@ describe('Telegram voice messages', () => {
 	});
 
 	it('registers received voice messages', () => {
-		createTelegramAdapter({ token: 'token' });
+		createChannelAdapter({ apiKey: 'token', channel: 'telegram/default' });
 
 		expect(mockOn).toHaveBeenCalledWith('message:voice', expect.any(Function));
 	});
 
 	it('sends a native voice message', async () => {
 		mockSendVoice.mockResolvedValueOnce({ message_id: 42 });
-		const adapter = createTelegramAdapter({ token: 'token' });
+		const adapter = createChannelAdapter({ apiKey: 'token', channel: 'telegram/default' });
 		const receipt = await adapter.send({
 			channel: 'telegram',
 			to: 'chat-1',
@@ -54,7 +54,7 @@ describe('Telegram voice messages', () => {
 	});
 
 	it('bounds the inbound message deduplication cache', () => {
-		const adapter = createTelegramAdapter({ token: 'token' });
+		const adapter = createChannelAdapter({ apiKey: 'token', channel: 'telegram/default' });
 		const receive = jest.fn();
 		adapter.onMessage(receive);
 		const textHandler = mockOn.mock.calls.find(([event]) => event === 'message:text')?.[1];

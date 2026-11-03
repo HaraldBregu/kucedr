@@ -6268,28 +6268,6 @@ var init_web = __esm({
 });
 
 // resources/plugins/telegram/channels/default/source.cjs
-var __defProp2 = Object.defineProperty;
-var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames2 = Object.getOwnPropertyNames;
-var __hasOwnProp2 = Object.prototype.hasOwnProperty;
-var __export2 = (target, all) => {
-  for (var name in all)
-    __defProp2(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps2 = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames2(from))
-      if (!__hasOwnProp2.call(to, key) && key !== except)
-        __defProp2(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toCommonJS2 = (mod) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod);
-var stdin_exports = {};
-__export2(stdin_exports, {
-  createChannelAdapter: () => createChannelAdapter
-});
-module.exports = __toCommonJS2(stdin_exports);
 var import_web = (init_web(), __toCommonJS(web_exports));
 var TELEGRAM_MAX_MESSAGE_LENGTH = 4096;
 var TELEGRAM_HEALTH_CHECK_INTERVAL_MS = 6e4;
@@ -6574,3 +6552,4 @@ function splitText(text, maxLength) {
   }
   return chunks;
 }
+module.exports = { createChannelAdapter };
