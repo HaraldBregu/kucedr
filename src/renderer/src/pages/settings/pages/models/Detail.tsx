@@ -34,6 +34,7 @@ export default function ModelDetail(): React.JSX.Element {
 		[t('settings.models.details.location'), model.location],
 		[t('settings.models.details.authentication'), model.authentication],
 		[t('settings.models.details.endpoint'), model.url],
+		[t('settings.models.details.providerEndpoint'), model.provider.baseUrl],
 		[t('settings.models.details.apiTypes'), model.apiTypes?.join(', ')],
 		[t('settings.models.details.realtime'), model.realtime],
 		[t('settings.models.details.sampleRate'), model.sampleRate],

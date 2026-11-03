@@ -334,7 +334,7 @@
 			"loadError": "Impossibile caricare i modelli",
 			"notFound": "Modello non trovato",
 			"details": {
-				"title": "Dettagli", "id": "ID modello", "type": "Tipo", "provider": "Provider", "plugin": "Plugin", "location": "Posizione", "authentication": "Autenticazione", "endpoint": "Endpoint", "apiTypes": "Tipi di API", "realtime": "Trascrizione in tempo reale", "sampleRate": "Frequenza di campionamento (Hz)", "default": "Provider predefinito", "contextWindow": "Finestra di contesto", "maxInputTokens": "Token di input massimi", "defaultOutputTokens": "Token di output predefiniti", "documentationStatus": "Stato della documentazione", "documentation": "Documentazione", "contextDocumentation": "Documentazione della finestra di contesto", "attachments": "Allegati", "inputs": "Input supportati"
+				"title": "Dettagli", "id": "ID modello", "type": "Tipo", "provider": "Provider", "plugin": "Plugin", "location": "Posizione", "authentication": "Autenticazione", "endpoint": "Endpoint", "providerEndpoint": "Endpoint del provider", "apiTypes": "Tipi di API", "realtime": "Trascrizione in tempo reale", "sampleRate": "Frequenza di campionamento (Hz)", "default": "Provider predefinito", "contextWindow": "Finestra di contesto", "maxInputTokens": "Token di input massimi", "defaultOutputTokens": "Token di output predefiniti", "documentationStatus": "Stato della documentazione", "documentation": "Documentazione", "contextDocumentation": "Documentazione della finestra di contesto", "attachments": "Allegati", "inputs": "Input supportati"
 			},
 			"types": {
 				"llm": "Modello linguistico di grandi dimensioni",
