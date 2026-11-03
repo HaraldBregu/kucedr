@@ -111,7 +111,7 @@ describe('Agent scoped cancellation', () => {
 					yield {
 						type: 'run_finished',
 						result: {
-							text: `${input.agentId === 'tasks' ? 'bot' : input.runId} reply`,
+							text: `${input.agentId === 'tasks' ? 'task' : input.runId} reply`,
 							model: 'model',
 							toolCalls: [],
 							numTurns: 1,
@@ -127,33 +127,33 @@ describe('Agent scoped cancellation', () => {
 	it('cancels only the owned UI run and returns its accumulated text', async () => {
 		const agent = new Agent(sandbox());
 		const ui = controlRun(controls, 'ui-run');
-		const bot = controlRun(controls, 'bot-run');
+		const task = controlRun(controls, 'task-run');
 		const uiResponse = agent.send('ui', 'main', {
 			type: 'default',
 			runId: 'ui-run',
 			sessionId: 'ui-session',
 			windowId: 11,
 		});
-		const botResponse = agent.send('bot', 'tasks', {
+		const taskResponse = agent.send('task', 'tasks', {
 			type: 'background',
-			runId: 'bot-run',
-			sessionId: 'bot-session',
+			runId: 'task-run',
+			sessionId: 'task-session',
 		});
-		await Promise.all([ui.started, bot.started]);
-		const botCall = mockStream.mock.calls.find((call) => call[2].runId === 'bot-run');
-		expect(botCall?.[2]).toMatchObject({ agentId: 'tasks', contextMode: 'minimal' });
+		await Promise.all([ui.started, task.started]);
+		const taskCall = mockStream.mock.calls.find((call) => call[2].runId === 'task-run');
+		expect(taskCall?.[2]).toMatchObject({ agentId: 'tasks', contextMode: 'minimal' });
 
 		expect(agent.cancel('ui-run', 12)).toBe(false);
 		expect(ui.signal?.aborted).toBe(false);
 		expect(agent.cancel('ui-run', 11)).toBe(true);
 		expect(agent.cancel('ui-run', 11)).toBe(false);
 		await expect(uiResponse).resolves.toBe('ui-run:partial');
-		expect(bot.signal?.aborted).toBe(false);
+		expect(task.signal?.aborted).toBe(false);
 		expect(mockRejectPendingToolPermissions).toHaveBeenCalledWith('ui-run');
-		expect(mockRejectPendingToolPermissions).not.toHaveBeenCalledWith('bot-run');
+		expect(mockRejectPendingToolPermissions).not.toHaveBeenCalledWith('task-run');
 
-		bot.release();
-		await expect(botResponse).resolves.toBe('bot reply');
+		task.release();
+		await expect(taskResponse).resolves.toBe('task reply');
 	});
 
 	it('resolves a queued cancellation with empty text and admits a replacement', async () => {
@@ -270,25 +270,25 @@ describe('Agent scoped cancellation', () => {
 	it('retains global cancellation only for shutdown', async () => {
 		const agent = new Agent(sandbox());
 		const ui = controlRun(controls, 'ui-run');
-		const bot = controlRun(controls, 'bot-run');
+		const task = controlRun(controls, 'task-run');
 		const runs = [
 			agent.send('ui', 'main', {
 				type: 'default',
 				runId: 'ui-run',
 				sessionId: 'ui',
 			}),
-			agent.send('bot', 'tasks', {
+			agent.send('task', 'tasks', {
 				type: 'background',
-				runId: 'bot-run',
-				sessionId: 'bot',
+				runId: 'task-run',
+				sessionId: 'task',
 			}),
 		];
-		await Promise.all([ui.started, bot.started]);
+		await Promise.all([ui.started, task.started]);
 
 		agent.cancelAll();
 		await Promise.all(runs);
 		expect(ui.signal?.aborted).toBe(true);
-		expect(bot.signal?.aborted).toBe(true);
+		expect(task.signal?.aborted).toBe(true);
 		expect(mockRejectPendingToolPermissions).toHaveBeenCalledWith();
 	});
 });

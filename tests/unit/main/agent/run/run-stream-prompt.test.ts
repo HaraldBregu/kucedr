@@ -734,7 +734,7 @@ describe('run stream system prompt', () => {
 	);
 
 	it('keeps pending bootstrap context out of non-main minimal turns', async () => {
-		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-bot-bootstrap-'));
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-task-bootstrap-'));
 		try {
 			const session = createSessionState();
 			session.category = 'task';
@@ -747,7 +747,7 @@ describe('run stream system prompt', () => {
 				{ location: root },
 				session,
 				{
-					runId: 'bot-bootstrap',
+					runId: 'task-bootstrap',
 					task: 'chat',
 					message: 'Hello',
 					model: 'test-model',
@@ -902,7 +902,7 @@ describe('run stream system prompt', () => {
 
 	it('pins the resolved execution contract for delegated children', async () => {
 		const scope = {
-			ownerId: 'channel',
+			ownerId: 'task',
 			source: 'task' as const,
 			sessionId: 'parent',
 			runId: 'parent',
