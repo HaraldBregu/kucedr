@@ -145,7 +145,7 @@ export interface ProviderManifestBot {
 export interface ProviderManifestBotCredential {
 	readonly key: string;
 	readonly label: string;
-	readonly type: 'password';
+	readonly type: 'text' | 'password';
 	readonly required: boolean;
 }
 

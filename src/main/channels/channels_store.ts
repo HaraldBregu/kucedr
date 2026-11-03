@@ -10,7 +10,7 @@ import {
 	setAgentProfileModel,
 } from '../agent/agent_profiles';
 
-type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey'> & {
+type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey' | 'credentials'> & {
 	readonly apiKey?: string;
 };
 
@@ -36,7 +36,7 @@ const CHANNEL_PROFILE_MODELS: Record<
 
 export const channelsStorePath = agentProfileStorePath('channels');
 restrictSettingsFile(channelsStorePath);
-const volatileApiKeys = new Map<string, string>();
+const volatileApiKeys = new Map<string, { apiKey: string; credentials?: Record<string, string> }>();
 
 function readChannelsState(): ChannelsStoreState {
 	const stored = getAgentProfileDocument('channels') as Partial<ChannelsStoreState>;
@@ -63,7 +63,7 @@ export function listChannelProviders(): StoredChannelProvider[] {
 	let migrated = false;
 	const providers = state.providers.map((provider) => {
 		const { apiKey: plaintextApiKey, ...metadata } = provider;
-		let apiKey = volatileApiKeys.get(provider.id) ?? '';
+		let { apiKey, credentials } = volatileApiKeys.get(provider.id) ?? { apiKey: '', credentials: undefined };
 		if (plaintextApiKey) {
 			apiKey = plaintextApiKey;
 			migrated = true;
@@ -72,19 +72,22 @@ export function listChannelProviders(): StoredChannelProvider[] {
 					.encryptString(JSON.stringify({ id: provider.id, apiKey }))
 					.toString('base64');
 			} else {
-				volatileApiKeys.set(provider.id, apiKey);
+				volatileApiKeys.set(provider.id, { apiKey });
 			}
 		} else if (encryptedApiKeys[provider.id] && isSafeStorageAvailable()) {
 			try {
 				const opened = JSON.parse(
 					safeStorage.decryptString(Buffer.from(encryptedApiKeys[provider.id], 'base64'))
-				) as { id?: unknown; apiKey?: unknown };
-				if (opened.id === provider.id && typeof opened.apiKey === 'string') apiKey = opened.apiKey;
+				) as { id?: unknown; apiKey?: unknown; credentials?: Record<string, string> };
+				if (opened.id === provider.id && typeof opened.apiKey === 'string') {
+					apiKey = opened.apiKey;
+					credentials = opened.credentials;
+				}
 			} catch {
 				apiKey = '';
 			}
 		}
-		return { ...metadata, apiKey };
+		return { ...metadata, apiKey, ...(credentials ? { credentials } : {}) };
 	});
 	if (migrated) {
 		writeChannelsState({
@@ -108,15 +111,15 @@ export function setChannelProvider(provider: StoredChannelProvider): StoredChann
 	if (index === -1) providers.push(provider);
 	else providers[index] = provider;
 	const encryptedApiKeys = { ...state.encryptedApiKeys };
-	if (provider.apiKey) {
+	if (provider.apiKey || Object.keys(provider.credentials ?? {}).length) {
 		if (isSafeStorageAvailable()) {
 			encryptedApiKeys[provider.id] = safeStorage
-				.encryptString(JSON.stringify({ id: provider.id, apiKey: provider.apiKey }))
+				.encryptString(JSON.stringify({ id: provider.id, apiKey: provider.apiKey, ...(provider.credentials ? { credentials: provider.credentials } : {}) }))
 				.toString('base64');
 			volatileApiKeys.delete(provider.id);
 		} else {
 			delete encryptedApiKeys[provider.id];
-			volatileApiKeys.set(provider.id, provider.apiKey);
+			volatileApiKeys.set(provider.id, { apiKey: provider.apiKey, credentials: provider.credentials });
 		}
 	} else {
 		delete encryptedApiKeys[provider.id];
@@ -124,7 +127,7 @@ export function setChannelProvider(provider: StoredChannelProvider): StoredChann
 	}
 	writeChannelsState({
 		...state,
-		providers: providers.map(({ apiKey: _apiKey, ...entry }) => entry),
+		providers: providers.map(({ apiKey: _apiKey, credentials: _credentials, ...entry }) => entry),
 		encryptedApiKeys,
 	});
 	restrictSettingsFile(channelsStorePath);

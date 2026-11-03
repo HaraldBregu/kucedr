@@ -254,6 +254,9 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 				typeof record.apiKey === 'string' && record.apiKey.length <= 16_384
 					? record.apiKey.trim()
 					: '',
+			...(record.credentials && typeof record.credentials === 'object' && !Array.isArray(record.credentials)
+				? { credentials: Object.fromEntries(Object.entries(record.credentials).filter(([key, value]) => /^[a-zA-Z0-9._-]{1,128}$/.test(key) && typeof value === 'string' && value.length <= 16_384).map(([key, value]) => [key, (value as string).trim()])) }
+				: {}),
 			...(this.list(record.allowFrom) ? { allowFrom: this.list(record.allowFrom) } : {}),
 			...(this.list(record.groupAllowFrom)
 				? { groupAllowFrom: this.list(record.groupAllowFrom) }
@@ -267,8 +270,12 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const service = loadChannels().find((entry) => entry.provider.id === input.id);
 		if (!service) throw new Error('Unknown channel provider.');
 		const existing = getChannelProvider(input.id);
-		const apiKey = input.apiKey || existing?.apiKey || '';
-		if (!apiKey) throw new Error('The bot token is required.');
+		const credentials = { ...existing?.credentials, ...Object.fromEntries(Object.entries(input.credentials ?? {}).filter(([, value]) => value)) };
+		const apiKey = input.apiKey || credentials.apiKey || existing?.apiKey || '';
+		if (apiKey) credentials.apiKey = apiKey;
+		for (const field of service.credentials ?? []) {
+			if (field.required && !credentials[field.key]) throw new Error(`${field.label} is required.`);
+		}
 		const saved = setChannelProvider({
 			...existing,
 			...input,
@@ -276,13 +283,16 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			name: service.provider.name,
 			baseUrl: service.url ?? service.provider.baseUrl,
 			apiKey,
+			credentials,
 		});
 		return this.channelSummary(saved);
 	}
 
 	private channelSummary(provider: StoredChannelProvider): ChannelCredentialSummary {
-		const { apiKey, ...summary } = provider;
-		return { ...summary, configured: Boolean(apiKey.trim()) };
+		const { apiKey, credentials, ...summary } = provider;
+		const service = loadChannels().find((entry) => entry.provider.id === provider.id);
+		const values = { ...credentials, ...(apiKey ? { apiKey } : {}) };
+		return { ...summary, configured: Boolean(service) && (service?.credentials ?? []).every((field) => !field.required || Boolean(values[field.key]?.trim())) }; 
 	}
 
 	private kind(value: unknown): SavedCredentialKind {
