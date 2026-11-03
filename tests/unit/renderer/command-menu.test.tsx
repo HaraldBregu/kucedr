@@ -37,7 +37,7 @@ Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
 	value: jest.fn(),
 });
 
-it.each(['/home', '/home/session/1', '/workspace', '/settings', '/settings/models'])(
+it.each(['/home', '/home/session/1', '/workspace', '/settings'])(
 	'opens command search on %s',
 	(path) => {
 		render(
@@ -112,7 +112,6 @@ it('includes every canonical static settings subpage', () => {
 
 	for (const path of [
 		'/settings/settings/persona',
-		'/settings/models',
 		'/settings/services',
 		'/settings/knowledge/providers',
 		'/settings/storage/providers',

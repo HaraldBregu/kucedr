@@ -6,7 +6,6 @@ import {
 	Layers,
 	Cloud,
 	Code2,
-	Cpu,
 	FileCode,
 	Folder,
 	HeartPulse,
@@ -220,13 +219,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.modelServices.toolsDescription',
 		keywords: 'health tools permissions allow deny ask',
 	},
-	// Models
-	{
-		path: '/settings/models',
-		labelKey: 'settings.overview.groups.mlModels',
-		descriptionKey: 'settings.overview.descriptions.providers',
-		keywords: 'models llm provider api keys',
-	},
 	// Services
 	{
 		path: '/settings/services',
@@ -315,12 +307,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.storage',
 		descriptionKey: 'settings.overview.descriptions.storage',
 		icon: Cloud,
-	},
-	{
-		path: '/settings/models',
-		labelKey: 'settings.overview.groups.mlModels',
-		descriptionKey: 'settings.overview.descriptions.providers',
-		icon: Cpu,
 	},
 	{
 		path: '/settings/library',

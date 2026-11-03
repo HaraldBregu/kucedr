@@ -720,17 +720,13 @@ it('does not fall back to local SQLite when the saved remote database is unavail
 	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
 });
 
-it('links directly to embedding and database provider configuration', async () => {
+it('links directly to database provider configuration', async () => {
 	render(
 		<MemoryRouter>
 			<KnowledgePage />
 		</MemoryRouter>
 	);
-	expect(await screen.findByRole('button', { name: 'Configure models' })).toHaveAttribute(
-		'href',
-		'/settings/models'
-	);
-	expect(screen.getByRole('button', { name: 'Configure databases' })).toHaveAttribute(
+	expect(await screen.findByRole('button', { name: 'Configure databases' })).toHaveAttribute(
 		'href',
 		'/settings/knowledge/providers'
 	);

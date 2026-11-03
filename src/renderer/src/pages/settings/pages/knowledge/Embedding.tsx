@@ -1,8 +1,6 @@
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { BrainCircuit } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import {
 	Select,
@@ -25,20 +23,7 @@ export default function Embedding({ knowledge }: { knowledge: KnowledgeState }):
 		save,
 	} = knowledge;
 	return (
-		<SettingsSection
-			title={t('settings.knowledge.embeddingTitle')}
-			action={
-				<Button
-					variant="outline"
-					size="sm"
-					disabled={disabled}
-					nativeButton={false}
-					render={<Link to="/settings/models" />}
-				>
-					{t('settings.knowledge.configureModels')}
-				</Button>
-			}
-		>
+		<SettingsSection title={t('settings.knowledge.embeddingTitle')}>
 			<SettingsPanel>
 				<SettingsRow
 					title={t('settings.knowledge.embeddingModelTitle')}

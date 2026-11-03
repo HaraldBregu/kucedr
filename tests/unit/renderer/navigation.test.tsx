@@ -136,7 +136,6 @@ it.each([
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
 	['/settings/mcp', 'settings.tabs.mcp'],
-	['/settings/models', 'settings.overview.groups.mlModels'],
 	['/settings/services', 'settings.tabs.services'],
 	['/settings/knowledge/providers', 'settings.tabs.providers'],
 	['/settings/storage/providers', 'settings.tabs.providers'],
@@ -231,10 +230,11 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(SETTINGS_NAVIGATION).not.toContainEqual(
 		expect.objectContaining({ path: '/settings/agent/models' })
 	);
-	const modelsLink = within(generalGroup as HTMLElement).getByRole('link', {
-		name: 'settings.overview.groups.mlModels',
-	});
-	expect(modelsLink).toHaveAttribute('href', '/settings/models');
+	expect(
+		within(generalGroup as HTMLElement).queryByRole('link', {
+			name: 'settings.overview.groups.mlModels',
+		})
+	).not.toBeInTheDocument();
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.skills' })
 	).toHaveAttribute('href', '/settings/skills');
@@ -386,7 +386,6 @@ it('places Models and Web Search after Storage without a Providers entry in the 
 		within(group as HTMLElement).queryByRole('link', { name: 'settings.tabs.providers' })
 	).not.toBeInTheDocument();
 	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(storage) + 3).map((link) => link.getAttribute('href'))).toEqual([
-		'/settings/models',
 		'/settings/services',
 	]);
 	for (const path of [

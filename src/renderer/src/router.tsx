@@ -367,14 +367,6 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'models',
-						element: (
-							<SettingsRouteWrapper>
-								<ProvidersPage section="models" />
-							</SettingsRouteWrapper>
-						),
-					},
-					{
 						path: 'services',
 						children: [
 							{
