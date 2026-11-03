@@ -40,6 +40,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				[
 					'/settings/voice',
 					'/settings/tasks',
+					'/settings/bots',
 					'/settings/health',
 				].includes(item.path)
 			),
