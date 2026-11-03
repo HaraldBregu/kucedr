@@ -15,14 +15,8 @@ jest.mock('../../../../src/main/channels/channels_store', () => ({
 jest.mock('../../../../src/main/models/transcribe', () => ({ toText: jest.fn() }));
 jest.mock('../../../../src/main/models/voice', () => ({ synthesize: jest.fn() }));
 
-jest.mock('../../../../src/main/channels/adapters/telegram', () => ({
-	createTelegramAdapter: jest.fn(() => ({
-		start: mockAdapterStart,
-		stop: mockAdapterStop,
-		send: mockAdapterSend,
-		onMessage: mockAdapterOnMessage,
-		onStatus: mockAdapterOnStatus,
-	})),
+jest.mock('../../../../src/main/channels/catalog', () => ({
+	resolveChannel: (id: string) => id === 'unsupported' ? undefined : ({ id, entry: '/channel.cjs', credentials: [{ key: 'apiKey', required: true }] }),
 }));
 
 import { createChannelRegistry } from '../../../../src/main/channels/channels_registry';
@@ -36,6 +30,7 @@ function deps(agentService?: Agent) {
 		logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as LoggerService,
 		eventBus: { emit: jest.fn(), broadcast: jest.fn() } as unknown as EventBus,
 		agentService,
+		loadAdapter: async () => ({ start: mockAdapterStart, stop: mockAdapterStop, send: mockAdapterSend, onMessage: mockAdapterOnMessage, onStatus: mockAdapterOnStatus }),
 	};
 }
 
@@ -83,14 +78,13 @@ describe('createChannelRegistry', () => {
 
 	it('returns undefined status before any channel starts', () => {
 		const registry = createChannelRegistry(deps());
-		expect(registry.getStatus()).toBeUndefined();
 		expect(registry.getStatus('telegram')).toBeUndefined();
 	});
 
 	it('rejects unsupported channel identifiers before loading credentials or starting an adapter', async () => {
 		const registry = createChannelRegistry(deps());
 
-		await expect(registry.start('unsupported' as never)).rejects.toThrow('Unknown channel provider.');
+		await expect(registry.start('unsupported' as never)).rejects.toThrow('Unknown channel.');
 		expect(mockGetChannelProvider).not.toHaveBeenCalled();
 		expect(mockAdapterStart).not.toHaveBeenCalled();
 	});
