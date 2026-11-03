@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ModelsPage from '../../../src/renderer/src/pages/settings/pages/models/Page';
+import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string) => key }),
@@ -23,7 +24,7 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 		},
 		provider: { getModelProviders: jest.fn().mockResolvedValue([]) },
 	});
-	render(<ModelsPage />);
+	render(<MemoryRouter><ModelsPage /></MemoryRouter>);
 	expect(await screen.findByText('Image model')).toBeInTheDocument();
 	expect(screen.getByText('Chat model')).toBeInTheDocument();
 	expect(screen.getByText('Image model').closest('[data-slot="card"]')).not.toBe(

@@ -332,6 +332,10 @@
 		"models": {
 			"empty": "No models available from plugins",
 			"loadError": "Could not load models",
+			"notFound": "Model not found",
+			"details": {
+				"title": "Details", "id": "Model ID", "type": "Type", "provider": "Provider", "plugin": "Plugin", "location": "Location", "authentication": "Authentication", "endpoint": "Endpoint", "apiTypes": "API types", "realtime": "Realtime transcription", "sampleRate": "Sample rate (Hz)", "default": "Provider default", "contextWindow": "Context window", "maxInputTokens": "Maximum input tokens", "defaultOutputTokens": "Default output tokens", "documentationStatus": "Documentation status", "documentation": "Documentation", "contextDocumentation": "Context window documentation", "attachments": "Attachments", "inputs": "Supported inputs"
+			},
 			"types": {
 				"llm": "Large language model",
 				"research-chat": "Research model",
