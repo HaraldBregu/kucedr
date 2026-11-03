@@ -16,17 +16,17 @@ import type {
 import { CODER_HARNESSES, isCodingSettings } from '../../shared/coding_types';
 import type { CoderLayout } from '../../shared/coder_layout';
 import { userDataLocation } from '../shared/user_data_location';
-import { Pi } from './pi';
 import { CodingStore } from './store';
 import { CodingProjectStore } from './projects';
 import { CoderSessions, type CoderSession } from './sessions';
 import { CoderCredentials } from './credentials';
 import { CodexHarness } from './harness/codex';
-import { ClineHarness } from './harness/cline';
 import type { CodingHarness, HarnessContext, HarnessEvent } from './harness/types';
 import { executeCommand } from './shell';
 import { CodingInstructions } from './instructions';
 import { listMarkdownFiles } from './markdown';
+import { createProjectFile, listProjectFiles } from './files';
+import { readProjectFile } from './read';
 import { saveMarkdownFile } from './save';
 import { readMarkdownFile } from './load';
 import { createMarkdownFile } from './create';
@@ -52,7 +52,6 @@ interface PendingInteraction {
 }
 
 export class Coder {
-	private readonly pi: Pi;
 	private readonly sessions: CoderSessions;
 	private readonly credentials: Pick<CoderCredentials, 'get' | 'set'>;
 	private readonly harnesses: Record<CoderHarness, CodingHarness>;
@@ -63,63 +62,9 @@ export class Coder {
 	constructor(private readonly dependencies: CodingDependencies) {
 		this.sessions = dependencies.sessions ?? new CoderSessions();
 		this.credentials = dependencies.credentials ?? new CoderCredentials();
-		this.pi = new Pi({
-			...dependencies,
-			getProvider: (id) => {
-				if (id !== 'openai' && id !== 'anthropic') return undefined;
-				const key = this.credentials.get(id, 'pi');
-				return key
-					? {
-							id,
-							name: id,
-							apiKey: key,
-							baseUrl: id === 'openai' ? 'https://api.openai.com/v1' : 'https://api.anthropic.com',
-						}
-					: undefined;
-			},
-		});
 		this.harnesses = {
-			pi: {
-				run: async (input, context) => {
-					const project = this.requireProject(context.projectId);
-					const runId = randomUUID();
-					const abort = (): void => {
-						this.pi.cancel(runId, 0);
-					};
-					context.signal.addEventListener('abort', abort, { once: true });
-					try {
-						context.signal.throwIfAborted();
-						const result = await this.pi.send(
-							0,
-							runId,
-							{
-								projectId: project.id,
-								workingDirectory: context.cwd,
-								sessionId: context.nativeSessionId,
-								mode: 'agent',
-								input,
-								settings: context.settings,
-							},
-							(event) => {
-								if (event.type !== 'status' && event.type !== 'error') context.emit(event);
-							},
-							context.saveSession,
-							context.signal
-						);
-						return result.output;
-					} finally {
-						context.signal.removeEventListener('abort', abort);
-					}
-				},
-				listModels: () => this.pi.listModels(),
-			},
 			codex: new CodexHarness(path.join(userDataLocation(), 'coder', 'codex'), () =>
 				this.credentials.get('openai', 'codex')
-			),
-			cline: new ClineHarness(
-				path.join(userDataLocation(), 'coder', 'cline'),
-				() => this.credentials.get('cline', 'cline'),
-				async (value) => this.credentials.set('cline', value ?? '', 'cline')
 			),
 			...dependencies.harnesses,
 		};
@@ -138,17 +83,9 @@ export class Coder {
 	saveLayout(layout: CoderLayout): CoderLayout {
 		return this.dependencies.store.setLayout(layout);
 	}
-	setApiKey(provider: 'openai' | 'anthropic' | 'cline', key: string, runtime?: CoderHarness): void {
-		if (!['openai', 'anthropic', 'cline'].includes(provider) || typeof key !== 'string')
-			throw new Error('Invalid Coder API key.');
-		const selected = this.getSettings(runtime).runtime;
-		if (
-			(selected === 'codex' && provider !== 'openai') ||
-			(selected === 'cline' && provider !== 'cline') ||
-			(selected === 'pi' && provider === 'cline')
-		)
-			throw new Error('API key provider does not match the harness.');
-		this.credentials.set(provider, key, selected);
+	setApiKey(provider: 'openai', key: string, runtime?: CoderHarness): void {
+		if (provider !== 'openai' || typeof key !== 'string') throw new Error('Invalid Coder API key.');
+		this.credentials.set(provider, key, this.getSettings(runtime).runtime);
 	}
 	listModels(runtime?: CoderHarness) {
 		const selected = this.getSettings(runtime).runtime;
@@ -168,11 +105,11 @@ export class Coder {
 			throw new Error('Stop the project run first.');
 		return this.dependencies.projects.remove(id);
 	}
-	readProjectFile(id: string, file: string) {
-		return this.pi.readProjectFile(id, file);
+	async readProjectFile(id: string, file: string) {
+		return readProjectFile(this.requireProject(id), file);
 	}
-	listProjectFiles(id: string) {
-		return this.pi.listProjectFiles(id);
+	async listProjectFiles(id: string) {
+		return listProjectFiles(this.requireProject(id));
 	}
 	listMarkdownFiles(id: string) {
 		return listMarkdownFiles(this.requireProject(id));
@@ -189,8 +126,8 @@ export class Coder {
 	saveMarkdownFile(id: string, file: string, content: string, expectedContent: string) {
 		return saveMarkdownFile(this.requireProject(id), file, content, expectedContent);
 	}
-	createProjectFile(id: string, file: string) {
-		return this.pi.createProjectFile(id, file);
+	async createProjectFile(id: string, file: string) {
+		return createProjectFile(this.requireProject(id), file);
 	}
 	getProjectInstructions(id: string, runtime?: CoderHarness) {
 		this.validateHarness(runtime);
@@ -210,45 +147,18 @@ export class Coder {
 	}
 	async listSessions(projectId: string) {
 		this.requireProject(projectId);
-		const managed = this.sessions.list(projectId);
-		const nativeIds = new Set(
-			managed.filter((s) => s.runtime === 'pi').map((s) => s.nativeSessionId)
-		);
-		const legacy = await this.pi.listSessions(projectId);
-		return [
-			...managed,
-			...legacy
-				.filter((s) => !nativeIds.has(s.id) && !managed.some((m) => m.id === s.id))
-				.map((s) => ({
-					...s,
-					runtime: 'pi' as const,
-					workingDirectory: this.requireProject(projectId).directory,
-				})),
-		].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+		return this.sessions.list(projectId);
 	}
 	async getSession(projectId: string, id: string) {
-		const managed = this.sessions.read(id);
-		if (managed) {
-			this.assertProject(managed, projectId);
-			return this.sessions.snapshot(managed);
-		}
-		const snapshot = await this.pi.getSession(projectId, id);
-		return {
-			...snapshot,
-			session: {
-				...snapshot.session,
-				runtime: 'pi' as const,
-				workingDirectory: this.requireProject(projectId).directory,
-				settings: this.getSettings('pi'),
-			},
-		};
+		const session = this.requireSession(id);
+		this.assertProject(session, projectId);
+		return this.sessions.snapshot(session);
 	}
 	async renameSession(projectId: string, id: string, title: string) {
 		this.assertIdle(id);
 		if (typeof title !== 'string' || !title.trim() || title.trim().length > 120)
 			throw new Error('Invalid Coder session title.');
-		const session = this.sessions.read(id);
-		if (!session) return this.pi.renameSession(projectId, id, title);
+		const session = this.requireSession(id);
 		this.assertProject(session, projectId);
 		const next = { ...session, title: title.trim(), updatedAt: new Date().toISOString() };
 		this.sessions.save(next);
@@ -256,34 +166,16 @@ export class Coder {
 	}
 	async deleteSession(projectId: string, id: string) {
 		this.assertIdle(id);
-		const session = this.sessions.read(id);
-		if (!session) return this.pi.deleteSession(projectId, id);
+		const session = this.requireSession(id);
 		this.assertProject(session, projectId);
-		if (session.nativeSessionId) {
-			if (session.runtime === 'pi') {
-				if (
-					(await this.pi.listSessions(projectId)).some(
-						(item) => item.id === session.nativeSessionId
-					)
-				)
-					await this.pi.deleteSession(projectId, session.nativeSessionId);
-			} else await this.harnesses[session.runtime].deleteSession?.(session.nativeSessionId);
-		}
+		if (session.nativeSessionId)
+			await this.harnesses[session.runtime].deleteSession?.(session.nativeSessionId);
 		return this.sessions.delete(id);
 	}
 	async saveSessionSettings(projectId: string, id: string, settings: CodingSettings) {
 		this.assertIdle(id);
 		this.validateSettings(settings);
-		let session = this.sessions.read(id);
-		if (!session) {
-			const snapshot = await this.pi.getSession(projectId, id);
-			if (settings.runtime !== 'pi') throw new Error('Create a new session to change harness.');
-			const cwd = this.requireProject(projectId).directory;
-			if (settings.workingDirectory && path.resolve(settings.workingDirectory) !== cwd)
-				throw new Error('Create a new session to change directory.');
-			session = this.sessions.create(projectId, cwd, settings, snapshot.session.title, id, id);
-			this.sessions.append(id, { type: 'seed', blocks: snapshot.blocks });
-		}
+		const session = this.requireSession(id);
 		this.assertProject(session, projectId);
 		if (
 			session.runtime !== settings.runtime ||
@@ -350,16 +242,7 @@ export class Coder {
 				)
 					throw new Error('Save session settings before starting a run.');
 			} else if (request.sessionId) {
-				const legacy = await this.pi.getSession(request.projectId, id);
-				session = this.sessions.create(
-					request.projectId,
-					this.requireProject(request.projectId).directory,
-					this.getSettings('pi'),
-					legacy.session.title,
-					id,
-					id
-				);
-				this.sessions.append(id, { type: 'seed', blocks: legacy.blocks });
+				throw new Error('Coder session was not found for this project.');
 			} else {
 				const selected = request.projectId ? this.requireProject(request.projectId) : undefined;
 				const settings = request.settings ?? selected?.settings ?? this.getSettings();
@@ -491,7 +374,6 @@ export class Coder {
 		this.auth.set(ownerId, controller);
 		const timer = setTimeout(() => controller.abort(), 10 * 60 * 1000);
 		try {
-			if (selected === 'pi') return await this.pi.connectCodex(ownerId, emit);
 			const harness = this.harnesses[selected];
 			if (!harness.connect) throw new Error('Save an API key to connect this harness.');
 			const status = await harness.connect(controller.signal, emit);
@@ -504,7 +386,6 @@ export class Coder {
 		}
 	}
 	cancelCodexLogin(ownerId: number): boolean {
-		this.pi.cancelCodexLogin(ownerId);
 		const controller = this.auth.get(ownerId);
 		if (!controller) return false;
 		controller.abort();
@@ -512,17 +393,13 @@ export class Coder {
 	}
 	async disconnectCodex(runtime?: CoderHarness): Promise<void> {
 		const selected = this.getSettings(runtime).runtime;
-		if (selected === 'pi') await this.pi.disconnectCodex();
-		else {
-			await this.harnesses[selected].disconnect?.();
-			if (selected === 'codex' && this.credentials.get('openai', 'codex'))
-				this.credentials.set('openai', '', 'codex');
-		}
+		await this.harnesses[selected].disconnect?.();
+		if (selected === 'codex' && this.credentials.get('openai', 'codex'))
+			this.credentials.set('openai', '', 'codex');
 	}
 	destroy(): void {
 		for (const run of this.runs.values()) run.controller.abort();
 		for (const controller of this.auth.values()) controller.abort();
-		this.pi.destroy();
 		for (const harness of Object.values(this.harnesses)) harness.destroy?.();
 		this.runs.clear();
 		this.auth.clear();
@@ -534,6 +411,11 @@ export class Coder {
 	private assertProject(session: CoderSession, projectId: string): void {
 		if (session.projectId !== projectId)
 			throw new Error('Coder session was not found for this project.');
+	}
+	private requireSession(id: string): CoderSession {
+		const session = this.sessions.read(id);
+		if (!session) throw new Error('Coder session was not found for this project.');
+		return session;
 	}
 	private requireProject(id: string) {
 		const project = this.dependencies.projects.get(id);
@@ -548,8 +430,6 @@ export class Coder {
 		if (!isCodingSettings(settings)) throw new Error('Invalid Coder settings.');
 		if (settings.runtime === 'codex' && settings.providerId !== 'openai-codex')
 			throw new Error('Codex requires the Codex provider.');
-		if (settings.runtime === 'cline' && settings.providerId !== 'cline')
-			throw new Error('Cline requires the Cline provider.');
 	}
 }
 

@@ -8,14 +8,14 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SettingsPageHeader, SettingsPageShell, SettingsPanel, SettingsRow, SettingsSection } from '../settings/components';
 
-const harnessLabels = { pi: 'Pi', codex: 'Codex', cline: 'Cline' };
-const providerLabels = { 'openai-codex': 'OpenAI Codex', openai: 'OpenAI', anthropic: 'Anthropic', cline: 'Cline' };
+const harnessLabels = { codex: 'Codex' };
+const providerLabels = { 'openai-codex': 'OpenAI Codex' };
 
 export function NewWorkspace({ onCreated, onCancel }: { readonly onCreated: (project: CodingProject) => void; readonly onCancel: () => void }): React.JSX.Element {
 	const { t } = useTranslation();
 	const [name, setName] = useState('');
 	const [shared, setShared] = useState(true);
-	const [runtime, setRuntime] = useState<CoderHarness>('pi');
+	const [runtime, setRuntime] = useState<CoderHarness>('codex');
 	const [profiles, setProfiles] = useState<Partial<Record<CoderHarness, CodingSettings>>>({});
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
@@ -42,7 +42,7 @@ export function NewWorkspace({ onCreated, onCancel }: { readonly onCreated: (pro
 	}, [attempt, t]);
 
 	const settings = profiles[runtime];
-	const providers = runtime === 'pi' ? ['openai-codex', 'openai', 'anthropic'] : runtime === 'codex' ? ['openai-codex'] : ['cline'];
+	const providers = ['openai-codex'];
 	const fields = settings ? [
 		{ key: 'runtime', label: t('codeWorkspace.harness', 'Harness'), value: runtime, options: CODER_HARNESSES.map((value) => ({ value, label: harnessLabels[value] })) },
 		{ key: 'providerId', label: t('codeSettings.provider', 'Provider'), value: settings.providerId, options: providers.map((value) => ({ value, label: providerLabels[value as keyof typeof providerLabels] })) },

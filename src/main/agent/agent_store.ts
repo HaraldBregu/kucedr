@@ -66,7 +66,6 @@ const RUNTIME_TOOL_KEYS = {
 	process: 'manage_process',
 	search_web: 'search_web',
 	fetch_web_page: 'fetch_web_page',
-	show_map: 'show_map',
 	use_web_browser: 'use_web_browser',
 	create_image: 'create_image',
 	create_video: 'create_video',

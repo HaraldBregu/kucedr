@@ -9,25 +9,19 @@ import type {
 	CodingProjectInstructionsUpdate,
 } from '../../shared/coding_types';
 import { atomicWrite } from '../shared/atomic_write';
-import { codingLocation } from './location';
 import { userDataLocation } from '../shared/user_data_location';
 
 const DEFAULT_FILE_NAME = 'AGENTS.md';
 const MAX_FILE_SIZE = 256 * 1024;
 
 export class CodingInstructions {
-	constructor(private readonly agentDirectory = codingLocation()) {}
-
 	async get(
 		project: CodingProject,
-		runtime: CoderHarness = 'pi'
+		runtime: CoderHarness = 'codex'
 	): Promise<CodingProjectInstructions> {
 		const workspaceDirectory = path.resolve(project.directory);
-		const agentDirectory =
-			runtime === 'pi'
-				? path.resolve(this.agentDirectory)
-				: path.join(userDataLocation(), 'coder', runtime);
-		const contextFiles = loadInstructionSources(workspaceDirectory, runtime, agentDirectory);
+		const agentDirectory = path.join(userDataLocation(), 'coder', runtime);
+		const contextFiles = loadInstructionSources(workspaceDirectory, agentDirectory);
 		const workspaceSource = contextFiles.find(
 			(source) => path.dirname(path.resolve(source.path)) === workspaceDirectory
 		);
@@ -93,7 +87,7 @@ export class CodingInstructions {
 	async save(
 		project: CodingProject,
 		update: CodingProjectInstructionsUpdate,
-		runtime: CoderHarness = 'pi'
+		runtime: CoderHarness = 'codex'
 	): Promise<CodingProjectInstructions> {
 		if (Buffer.byteLength(update.content, 'utf8') > MAX_FILE_SIZE) {
 			throw new Error('Coding project instructions exceed the 256 KiB limit.');

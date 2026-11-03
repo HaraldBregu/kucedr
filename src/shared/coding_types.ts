@@ -1,7 +1,7 @@
-export const CODER_HARNESSES = ['pi', 'codex', 'cline'] as const;
+export const CODER_HARNESSES = ['codex'] as const;
 export type CoderHarness = (typeof CODER_HARNESSES)[number];
 
-export const CODING_PROVIDER_IDS = ['openai-codex', 'openai', 'anthropic', 'cline'] as const;
+export const CODING_PROVIDER_IDS = ['openai-codex'] as const;
 export const CODING_THINKING_LEVELS = [
 	'off',
 	'minimal',
@@ -264,13 +264,7 @@ export function isCodingProjectCreate(value: unknown): value is CodingProjectCre
 	if (typeof input.name !== 'string' || !input.name.trim() || input.name.trim().length > 120)
 		return false;
 	if (input.settings === undefined) return true;
-	if (!isCodingSettings(input.settings)) return false;
-	const { runtime, providerId } = input.settings;
-	return runtime === 'codex'
-		? providerId === 'openai-codex'
-		: runtime === 'cline'
-			? providerId === 'cline'
-			: providerId !== 'cline';
+	return isCodingSettings(input.settings);
 }
 
 export function isCodingRunRequest(value: unknown): value is CodingRunRequest {

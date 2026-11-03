@@ -162,7 +162,7 @@ is opened; close and reopen an existing app window to use the updated settings.
 
 - `app`: app data + settings APIs exposed by preload (`setTheme`, `getThemeData`, `getLanguage`, etc.)
 - `agent`: workspace APIs exposed by preload, including text reads, typed asset reads, and Markdown writes.
-- `coder` / `coding`: embedded Coder APIs for Pi, Codex, and Cline runtimes, projects, persistent
+- `coder` / `coding`: embedded Coder APIs for the Codex runtime, projects, persistent
   sessions, Agent/Shell runs, settings, authentication, streaming, and cancellation.
 - `models`: embedded model APIs for LLM text, embeddings, STT, TTS, realtime voice, image, audio, and video without exposing provider credentials.
 - `terminal`: trusted-host-only, owner-scoped PTY lifecycle, input, resize, output, and exit events.

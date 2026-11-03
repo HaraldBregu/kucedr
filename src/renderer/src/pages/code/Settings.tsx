@@ -29,20 +29,15 @@ import {
 	SettingsSection,
 } from '../settings/components';
 
-const harnessLabels = { pi: 'Pi', codex: 'Codex', cline: 'Cline' };
-const providerLabels = {
-	'openai-codex': 'OpenAI Codex',
-	openai: 'OpenAI',
-	anthropic: 'Anthropic',
-	cline: 'Cline',
-};
+const harnessLabels = { codex: 'Codex' };
+const providerLabels = { 'openai-codex': 'OpenAI Codex' };
 
 export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: () => void; readonly project?: CodingProject; readonly onSaved?: () => void }): React.JSX.Element {
 	const { t } = useTranslation();
 	const [name, setName] = useState(project?.name ?? '');
 	const [directory, setDirectory] = useState(project?.settings?.workingDirectory ?? project?.directory ?? '');
 	const [picking, setPicking] = useState(false);
-	const [runtime, setRuntime] = useState<CoderHarness>('pi');
+	const [runtime, setRuntime] = useState<CoderHarness>('codex');
 	const [profiles, setProfiles] = useState<Partial<Record<CoderHarness, CodingSettings>>>({});
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
@@ -79,12 +74,7 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 	}, [project, t]);
 
 	const settings = profiles[runtime];
-	const providers =
-		runtime === 'pi'
-			? ['openai-codex', 'openai', 'anthropic']
-			: runtime === 'codex'
-				? ['openai-codex']
-				: ['cline'];
+	const providers = ['openai-codex'];
 	const fields = settings
 		? [
 				{

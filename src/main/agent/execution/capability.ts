@@ -9,7 +9,6 @@ const READ = new Set([
 	'read',
 	'search_web',
 	'fetch_web_page',
-	'show_map',
 	'query_knowledge',
 	'get_health',
 	'get_identity',

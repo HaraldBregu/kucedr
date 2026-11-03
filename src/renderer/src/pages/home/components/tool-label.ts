@@ -116,52 +116,16 @@ export function isToolRunning(tool: AgentToolPart): boolean {
 	return tool.state === 'input-streaming' || tool.state === 'input-available';
 }
 
-type GroupVerbs = { readonly running: string; readonly done: string; readonly noun: string };
-
-function groupVerbs(type: string): GroupVerbs {
-	const t = type.toLowerCase();
-	if (t === 'read') return { running: 'Reading', done: 'Read', noun: 'file' };
-	if (t === 'edit' || t === 'patch') return { running: 'Editing', done: 'Edited', noun: 'file' };
-	if (t === 'write') return { running: 'Writing', done: 'Wrote', noun: 'file' };
-	if (t === 'bash' || t === 'process') return { running: 'Running', done: 'Ran', noun: 'command' };
-	if (t === 'grep' || t === 'search')
-		return { running: 'Searching', done: 'Searched', noun: 'pattern' };
-	if (t === 'list_dir') return { running: 'Listing', done: 'Listed', noun: 'folder' };
-	if (t === 'load_skill') return { running: 'Loading', done: 'Loaded', noun: 'skill' };
-	if (t === 'subagent' || t === 'subagents')
-		return { running: 'Delegating', done: 'Delegated', noun: 'task' };
-	if (t === 'use_web_browser' || t === 'fetch_web_page' || t === 'search_web') {
-		return { running: 'Browsing', done: 'Browsed', noun: 'page' };
-	}
-	if (t.startsWith('mcp__')) return { running: 'Using', done: 'Used', noun: 'tool' };
-	return { running: 'Running', done: 'Ran', noun: 'tool' };
-}
-
-function toolRunningDetail(tool: AgentToolPart): string | undefined {
-	const input = isRecord(tool.input) ? tool.input : {};
+export function toolActivityLabel(tool: AgentToolPart): string {
 	const t = tool.type.toLowerCase();
-	if (t === 'read' || t === 'edit' || t === 'write' || t === 'patch' || t === 'list_dir') {
-		const path = stringArg(input, 'path', 'file_path', 'filepath');
-		return path ? basename(path) : undefined;
-	}
-	if (t === 'bash' || t === 'process') return stringArg(input, 'command', 'name');
-	if (t === 'grep' || t === 'search') return stringArg(input, 'pattern', 'query');
-	if (t === 'load_skill') return stringArg(input, 'name');
-	if (t === 'use_web_browser' || t === 'fetch_web_page' || t === 'search_web') {
-		return stringArg(input, 'url', 'query');
-	}
-	return undefined;
-}
-
-export function toolGroupLabel(type: string, tools: readonly AgentToolPart[]): string {
-	const running = tools.filter(isToolRunning);
-	if (type.toLowerCase() === 'task') return 'Tasks';
-	if (type.toLowerCase() === 'app') return 'Apps';
-
-	const verbs = groupVerbs(type);
-	if (running.length > 0) {
-		const detail = toolRunningDetail(running[running.length - 1]);
-		return detail ? `${verbs.running} ${detail}` : `${verbs.running}…`;
-	}
-	return `${verbs.done} ${tools.length} ${verbs.noun}${tools.length === 1 ? '' : 's'}`;
+	if (t === 'read') return 'Reading file…';
+	if (t === 'edit' || t === 'patch' || t === 'write') return 'Writing file…';
+	if (t === 'bash' || t === 'process') return 'Running command…';
+	if (t === 'grep' || t === 'search') return 'Searching files…';
+	if (t === 'list_dir') return 'Browsing folder…';
+	if (t === 'load_skill' || t.includes('skill')) return 'Loading skill…';
+	if (t === 'subagent' || t === 'subagents') return 'Delegating task…';
+	if (t === 'search_web') return 'Searching on web…';
+	if (t === 'use_web_browser' || t === 'fetch_web_page') return 'Browsing web…';
+	return 'Working…';
 }

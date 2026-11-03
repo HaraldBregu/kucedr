@@ -91,7 +91,7 @@ globalThis.agent = {
 	deleteWorkspaceDirectory: async () => undefined,
 };
 const codingSettings = {
-	runtime: 'pi',
+	runtime: 'codex',
 	providerId: 'openai-codex',
 	modelId: 'gpt-5.4',
 	thinkingLevel: 'high',

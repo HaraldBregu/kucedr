@@ -9,7 +9,7 @@ import { isCoderLayout, type CoderLayout } from '../../shared/coder_layout';
 import { userDataLocation } from '../shared/user_data_location';
 
 export const DEFAULT_CODING_SETTINGS: CodingSettings = {
-	runtime: 'pi',
+	runtime: 'codex',
 	providerId: 'openai-codex',
 	modelId: '',
 	thinkingLevel: 'medium',
@@ -33,7 +33,7 @@ export class CodingStore {
 	}
 	get(runtime?: CoderHarness): CodingSettings {
 		const stored = this.store.store;
-		const selected = runtime ?? (isCodingSettings(stored) ? stored.runtime : 'pi');
+		const selected = runtime ?? (isCodingSettings(stored) ? stored.runtime : 'codex');
 		const candidate =
 			stored.profiles?.[selected] ?? (stored.runtime === selected ? stored : undefined);
 		return isCodingSettings(candidate)
@@ -45,11 +45,7 @@ export class CodingStore {
 					toolMode: candidate.toolMode,
 					...(candidate.workingDirectory ? { workingDirectory: candidate.workingDirectory } : {}),
 				}
-			: {
-					...DEFAULT_CODING_SETTINGS,
-					runtime: selected,
-					providerId: selected === 'cline' ? 'cline' : 'openai-codex',
-				};
+			: { ...DEFAULT_CODING_SETTINGS, runtime: selected };
 	}
 	set(settings: CodingSettings): CodingSettings {
 		if (!isCodingSettings(settings)) throw new Error('Invalid Coder settings.');
