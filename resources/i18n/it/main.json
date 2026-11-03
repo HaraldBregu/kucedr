@@ -889,6 +889,16 @@
 			"tools": "{{count}} strumenti",
 			"tool": "1 strumento"
 		},
+		"bots": {
+			"fields": {
+				"enabled": "Attivo",
+				"name": "Nome",
+				"namePlaceholder": "Il mio bot",
+				"provider": "Provider",
+				"providerDescription": "Piattaforma usata dal bot per scrivere a Kucedr.",
+				"token": "Token del bot"
+			}
+		},
 		"health": {
 			"settingsTitle": "Impostazioni",
 			"settingsDescription": "Configura il controllo di salute periodico.",
