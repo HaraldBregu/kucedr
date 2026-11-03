@@ -5,12 +5,14 @@ import { readAppManifestFromDirectory } from '../apps/app_read';
 import { listLocalMcpServers } from '../mcp/mcp_local_list';
 import { validateSkill } from '../agent/skills/skills_validate';
 import { readPluginScript } from './scripts/plugin_script_read';
+import { readPluginChannel } from '../channels/channel_manifest';
 import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
 
 /** Install-time checks that each contribution is readable by the loader that will serve it. */
 export function validatePluginContents(directory: string, manifest: ReadPlugin): void {
 	if (manifest.id === CORE_PLUGIN_ID)
 		throw new Error(`"${CORE_PLUGIN_ID}" is reserved for Kucedr.`);
+	for (const id of manifest.contributes.channels) readPluginChannel(path.join(directory, 'channels', id), { id: manifest.id, name: manifest.title });
 	for (const id of manifest.contributes.apps) {
 		const folder = path.join(directory, 'apps', id);
 		const app = readAppManifestFromDirectory(folder);

@@ -60,7 +60,7 @@ export function readPlugin(
 	});
 	const contributes = { ...pluginContents(directory), providers: provider ? [manifest.id] : [] };
 	if (Object.values(contributes).every((ids) => ids.length === 0)) {
-		throw new Error('A plugin must contain at least one app, MCP server, provider, or skill.');
+		throw new Error('A plugin must contain at least one contribution.');
 	}
 	return { ...manifest, contributes, ...(provider && { provider }) };
 }
