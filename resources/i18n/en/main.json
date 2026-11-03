@@ -889,6 +889,16 @@
 			"tools": "{{count}} tools",
 			"tool": "1 tool"
 		},
+		"bots": {
+			"fields": {
+				"enabled": "Enabled",
+				"name": "Name",
+				"namePlaceholder": "My bot",
+				"provider": "Provider",
+				"providerDescription": "Platform the bot uses to message Kucedr.",
+				"token": "Bot token"
+			}
+		},
 		"health": {
 			"settingsTitle": "Settings",
 			"settingsDescription": "Configure the periodic health check.",
