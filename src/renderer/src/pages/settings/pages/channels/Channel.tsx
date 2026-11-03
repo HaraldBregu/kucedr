@@ -43,6 +43,7 @@ export function ChannelConfiguration({
 		dmPolicy: 'allowlist',
 		...stored,
 		apiKey: '',
+		credentials: {},
 	}));
 	const [listDrafts, setListDrafts] = useState<Record<ListField, string>>({
 		allowFrom: '',
@@ -51,7 +52,6 @@ export function ChannelConfiguration({
 	const [saving, setSaving] = useState(false);
 	const [configured, setConfigured] = useState(stored?.configured ?? false);
 	const [error, setError] = useState<string | null>(null);
-	const apiKeyCredential = service.credentials?.find(({ key }) => key === 'apiKey');
 
 	const save = async (next: StoredChannelProvider): Promise<boolean> => {
 		setCredential(next);
@@ -59,7 +59,7 @@ export function ChannelConfiguration({
 		setError(null);
 		try {
 			const saved = await window.provider.setChannel(next);
-			setCredential({ ...saved, apiKey: '' });
+			setCredential({ ...saved, apiKey: '', credentials: {} });
 			setConfigured(saved.configured);
 			return true;
 		} catch (cause) {
@@ -103,35 +103,35 @@ export function ChannelConfiguration({
 		>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			<SettingsPanel>
-				<SettingsRow
-					title={apiKeyCredential?.label ?? t('settings.channels.token')}
-					description={t('settings.channels.tokenDescription')}
-					icon={KeyRound}
-					actions={
-						<>
-							<Input
-								id={`${providerId}-${apiKeyCredential?.key ?? 'apiKey'}`}
-								type={apiKeyCredential?.type ?? 'password'}
-								autoComplete="off"
-								value={credential.apiKey}
-								disabled={saving}
-								onChange={(event) => setCredential({ ...credential, apiKey: event.target.value })}
-								placeholder={t('settings.channels.tokenPlaceholder')}
-								className="h-8 min-w-0 flex-1 text-xs sm:w-64"
-								aria-label={apiKeyCredential?.label ?? t('settings.channels.token')}
-								required={apiKeyCredential?.required}
-							/>
-							<Button
-								type="button"
-								size="sm"
-								disabled={saving || !credential.apiKey.trim()}
-								onClick={() => void save({ ...credential, apiKey: credential.apiKey.trim() })}
-							>
-								{t('common.save')}
-							</Button>
-						</>
-					}
-				/>
+				{(service.credentials ?? []).map((field) => (
+					<SettingsRow
+						key={field.key}
+						title={field.label}
+						icon={KeyRound}
+						actions={
+							<>
+								<Input
+									id={`${providerId}-${field.key}`}
+									type={field.type}
+									autoComplete="off"
+									value={credential.credentials?.[field.key] ?? ''}
+									disabled={saving}
+									onChange={(event) => setCredential({ ...credential, credentials: { ...credential.credentials, [field.key]: event.target.value } })}
+									className="h-8 min-w-0 flex-1 text-xs sm:w-64"
+									aria-label={field.label}
+									required={field.required}
+								/>
+							</>
+						}
+					/>
+				))}
+				{(service.credentials ?? []).length > 0 && (
+					<SettingsRow title={t('common.save')} actions={
+						<Button type="button" size="sm" disabled={saving || !Object.values(credential.credentials ?? {}).some((value) => value.trim())} onClick={() => void save(credential)}>
+							{t('common.save')}
+						</Button>
+					} />
+				)}
 				<SettingsRow
 					title={t('settings.channels.dmPolicy')}
 					description={t('settings.channels.dmPolicyDescription')}
