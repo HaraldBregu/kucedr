@@ -47,7 +47,7 @@ export const toolCategoryRegistry = {
 	delegation: {
 		label: 'Delegation',
 		description:
-			'Delegate independent work to subagents or connected remote agents and follow their progress.',
+			'Delegate independent work to subagents and follow their progress.',
 	},
 	goal: {
 		label: 'Goals',
