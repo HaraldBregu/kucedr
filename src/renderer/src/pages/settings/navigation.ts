@@ -265,6 +265,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'health tools permissions allow deny ask',
 	},
 	{
+		path: '/settings/bots/tools',
+		labelKey: 'settings.modelServices.tools',
+		descriptionKey: 'settings.modelServices.toolsDescription',
+		keywords: 'bots telegram discord slack tools permissions allow deny ask',
+	},
+	{
 		path: '/settings/channels/tools',
 		labelKey: 'settings.modelServices.tools',
 		descriptionKey: 'settings.modelServices.toolsDescription',
