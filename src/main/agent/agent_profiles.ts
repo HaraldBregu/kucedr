@@ -54,6 +54,7 @@ const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
 	'tasks',
 	'health',
 	'channels',
+	'bots',
 ]);
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
