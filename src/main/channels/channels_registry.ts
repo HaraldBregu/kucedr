@@ -28,7 +28,7 @@ export interface ChannelRegistryDependencies {
 	logger: LoggerService;
 	eventBus: EventBus;
 	agentService?: Agent;
-	loadAdapter?: (entry: string, options: { channel: string; apiKey: string }) => Promise<ChannelAdapter>;
+	loadAdapter?: (entry: string, options: { channel: string; credentials: Record<string, string> }) => Promise<ChannelAdapter>;
 	transcribeVoice?: (
 		audio: SttAudioInput,
 		options?: { providerId?: string; modelId?: string }
@@ -178,7 +178,8 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 		if (adapters.has(channel)) return;
 
 		const credential = channelCredential(channel);
-		if (contribution.credentials.some((item) => item.key === 'apiKey' && item.required) && !credential?.apiKey.trim()) {
+		const credentials = { ...credential?.credentials, ...(credential?.apiKey ? { apiKey: credential.apiKey } : {}) };
+		if (contribution.credentials.some((item) => item.required && !credentials[item.key]?.trim())) {
 			logger.warn('ChannelRegistry', `${channel} channel is not configured`);
 			return;
 		}
@@ -187,7 +188,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 			const module = await import(/* @vite-ignore */ pathToFileURL(entry).href);
 			return module.createChannelAdapter(options) as ChannelAdapter;
 		});
-		const adapter = await loadAdapter(contribution.entry, { channel, apiKey: credential?.apiKey ?? '' });
+		const adapter = await loadAdapter(contribution.entry, { channel, credentials });
 		adapter.onStatus((update) => handleStatus(channel, update));
 		adapter.onMessage((message) => {
 			void handleMessage(message);
