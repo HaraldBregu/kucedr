@@ -27,7 +27,6 @@ import { cloud } from './cloud';
 
 export { agent } from './agent';
 export { coding, coder } from './coding';
-export { a2a } from './a2a';
 export { app } from './app';
 export { recorder } from './recorder';
 export { tasks } from './tasks';
