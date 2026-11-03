@@ -66,7 +66,6 @@ export function builtinCapability(
 	if (RECORD.has(id)) return { effects: ['sensor', 'write'], approval: id === 'camera_recorder' };
 	if (CONTROL.has(id)) return { effects: ['sensor'] };
 	if (PAID.has(id)) return { effects: ['paid', 'write'] };
-	if (EXTERNAL.has(id)) return { effects: ['external'], approval: true };
 	if (id === 'bash') return { effects: ['execute'] };
 	if (id === 'process')
 		return {
