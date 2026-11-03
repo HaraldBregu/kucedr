@@ -860,26 +860,26 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
-			AppChannels.startTelegram,
-			wrapSimpleHandler(async (): Promise<ChannelStatusEvent | undefined> => {
-				await channelRegistry.start('telegram');
-				return channelRegistry.getStatus('telegram');
-			}, AppChannels.startTelegram)
+			AppChannels.startChannel,
+			wrapSimpleHandler(async (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
+				await channelRegistry.start(type);
+				return channelRegistry.getStatus(type);
+			}, AppChannels.startChannel)
 		);
 
 		ipcMain.handle(
-			AppChannels.stopTelegram,
-			wrapSimpleHandler(async (): Promise<void> => {
-				await channelRegistry.stop('telegram');
-			}, AppChannels.stopTelegram)
+			AppChannels.stopChannel,
+			wrapSimpleHandler(async (type: ChannelType): Promise<void> => {
+				await channelRegistry.stop(type);
+			}, AppChannels.stopChannel)
 		);
 
 		ipcMain.handle(
-			AppChannels.restartTelegram,
-			wrapSimpleHandler(async (): Promise<ChannelStatusEvent | undefined> => {
-				await channelRegistry.restart('telegram');
-				return channelRegistry.getStatus('telegram');
-			}, AppChannels.restartTelegram)
+			AppChannels.restartChannel,
+			wrapSimpleHandler(async (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
+				await channelRegistry.restart(type);
+				return channelRegistry.getStatus(type);
+			}, AppChannels.restartChannel)
 		);
 
 		ipcMain.handle(

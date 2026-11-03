@@ -675,9 +675,9 @@ export interface AppApi extends AppStorageApi {
 	/** Pick a provider folder and copy it into the providers catalog; null when canceled. */
 	uploadProvider: () => Promise<string | null>;
 	getChannelsStatus: (type?: ChannelType) => Promise<ChannelStatusEvent | undefined>;
-	startTelegram: () => Promise<ChannelStatusEvent | undefined>;
-	stopTelegram: () => Promise<void>;
-	restartTelegram: () => Promise<ChannelStatusEvent | undefined>;
+	startChannel: (type: ChannelType) => Promise<ChannelStatusEvent | undefined>;
+	stopChannel: (type: ChannelType) => Promise<void>;
+	restartChannel: (type: ChannelType) => Promise<ChannelStatusEvent | undefined>;
 	onChannelsStatusChanged: (callback: (event: ChannelStatusEvent) => void) => () => void;
 }
 

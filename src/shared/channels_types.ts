@@ -1,8 +1,6 @@
 import type { StoredProvider } from './provider_types';
 
-export const CHANNEL_PROVIDER_IDS = ['telegram'] as const;
-
-export type ChannelType = (typeof CHANNEL_PROVIDER_IDS)[number];
+export type ChannelType = string;
 
 export const CHANNEL_DM_POLICIES = ['allowlist', 'pairing', 'open', 'deny'] as const;
 

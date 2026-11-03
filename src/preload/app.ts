@@ -223,14 +223,14 @@ export const app: AppApi = {
 	getChannelsStatus: (type?: ChannelType): Promise<ChannelStatusEvent | undefined> => {
 		return typedInvokeUnwrap(AppChannels.getChannelsStatus, type);
 	},
-	startTelegram: (): Promise<ChannelStatusEvent | undefined> => {
-		return typedInvokeUnwrap(AppChannels.startTelegram);
+	startChannel: (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
+		return typedInvokeUnwrap(AppChannels.startChannel, type);
 	},
-	stopTelegram: (): Promise<void> => {
-		return typedInvokeUnwrap(AppChannels.stopTelegram);
+	stopChannel: (type: ChannelType): Promise<void> => {
+		return typedInvokeUnwrap(AppChannels.stopChannel, type);
 	},
-	restartTelegram: (): Promise<ChannelStatusEvent | undefined> => {
-		return typedInvokeUnwrap(AppChannels.restartTelegram);
+	restartChannel: (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
+		return typedInvokeUnwrap(AppChannels.restartChannel, type);
 	},
 	onChannelsStatusChanged: (callback: (event: ChannelStatusEvent) => void): (() => void) => {
 		return typedOn(AppChannels.channelsStatusChanged, callback);

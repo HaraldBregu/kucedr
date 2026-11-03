@@ -830,16 +830,16 @@ export interface AppInvokeChannelMap {
 		args: [type?: import('./channels_types').ChannelType];
 		result: import('./channels_types').ChannelStatusEvent | undefined;
 	};
-	[AppChannels.startTelegram]: {
-		args: [];
+	[AppChannels.startChannel]: {
+		args: [type: import('./channels_types').ChannelType];
 		result: import('./channels_types').ChannelStatusEvent | undefined;
 	};
-	[AppChannels.stopTelegram]: {
-		args: [];
+	[AppChannels.stopChannel]: {
+		args: [type: import('./channels_types').ChannelType];
 		result: void;
 	};
-	[AppChannels.restartTelegram]: {
-		args: [];
+	[AppChannels.restartChannel]: {
+		args: [type: import('./channels_types').ChannelType];
 		result: import('./channels_types').ChannelStatusEvent | undefined;
 	};
 	[AppChannels.getAppStoreValue]: {

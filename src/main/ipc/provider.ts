@@ -3,7 +3,6 @@ import type {
 	ChannelCredentialSummary,
 	StoredChannelProvider,
 } from '../../shared/channels_types';
-import { isChannelId } from '../../shared/channels_definitions';
 import { CHANNEL_DM_POLICIES } from '../../shared/channels_types';
 import type {
 	ProviderCredentialKind,
@@ -96,15 +95,15 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		});
 		registerQueryWithEvent(ProviderStoreChannels.getChannel, (event, id) => {
 			trusted.assert(event);
-			const normalizedId = this.id(id);
-			if (!isChannelId(normalizedId)) return undefined;
+			const normalizedId = this.channelId(id);
+			if (!loadChannels().some((entry) => entry.provider.id === normalizedId)) return undefined;
 			const provider = getChannelProvider(normalizedId);
 			return provider ? this.channelSummary(provider) : undefined;
 		});
 		registerQueryWithEvent(ProviderStoreChannels.listChannels, (event) => {
 			trusted.assert(event);
 			return listChannelProviders()
-				.filter((provider) => isChannelId(provider.id))
+				.filter((provider) => loadChannels().some((entry) => entry.provider.id === provider.id))
 				.map((provider) => this.channelSummary(provider));
 		});
 		registerCommandWithEvent(ProviderStoreChannels.setChannel, (event, value) => {
@@ -250,7 +249,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			? (record.dmPolicy as ChannelCredentialSaveInput['dmPolicy'])
 			: undefined;
 		return {
-			id: this.id(record.id),
+			id: this.channelId(record.id),
 			apiKey:
 				typeof record.apiKey === 'string' && record.apiKey.length <= 16_384
 					? record.apiKey.trim()
@@ -295,6 +294,14 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const id = typeof value === 'string' ? value.trim().toLowerCase() : '';
 		if (!/^[a-z0-9][a-z0-9._-]{0,127}$/.test(id)) {
 			throw new Error('The provider identifier is invalid.');
+		}
+		return id;
+	}
+
+	private channelId(value: unknown): string {
+		const id = typeof value === 'string' ? value.trim().toLowerCase() : '';
+		if (!/^[a-z0-9][a-z0-9._-]{0,127}\/[a-z0-9][a-z0-9._-]{0,127}$/.test(id)) {
+			throw new Error('The channel identifier is invalid.');
 		}
 		return id;
 	}

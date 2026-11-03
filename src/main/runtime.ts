@@ -38,7 +38,7 @@ import { setupMemoryMonitor } from './shared/metrics';
 import { bootstrapServices, cleanup } from './bootstrap';
 import { startStorageSync, stopStorageSync } from './storage';
 import { startRagSchedule, stopRagSchedule } from './agent/knowledge/rag';
-import { CHANNEL_PROVIDER_IDS } from '../shared';
+import { loadChannels } from './channels';
 import { AppChannels } from '../shared/ipc_channels_definitions';
 import { authLinks } from './cloud/links';
 import { loadLocalEnvironment } from './cloud/environment';
@@ -244,7 +244,7 @@ app.whenReady().then(() => {
 	if (!mainWindow.getWindow()) mainWindow.create();
 
 	// Start enabled messaging channels (registry skips disabled/unconfigured ones)
-	for (const channel of CHANNEL_PROVIDER_IDS) {
+	for (const channel of loadChannels().map((entry) => entry.provider.id)) {
 		services.channelRegistry.start(channel).catch((error) => {
 			logger.error('Main', `Failed to start ${channel} channel`, error);
 		});
