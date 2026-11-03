@@ -94,7 +94,7 @@ it('uses distinct icons for Library and Knowledge', () => {
 	);
 });
 
-it('places Library and Workspace in the Data sidebar section below the general group without Code', () => {
+it('places Library below Cloud and omits Workspace from the sidebar', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/settings']}>
 			<Routes>
@@ -106,20 +106,13 @@ it('places Library and Workspace in the Data sidebar section below the general g
 	);
 
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const general = within(navigation)
-		.getByRole('link', { name: 'settings.tabs.account' })
-		.closest('[data-slot="split-pane-group"]');
-	const data = within(navigation)
-		.getByText('settings.overview.groups.data')
-		.closest('[data-slot="split-pane-group"]');
-	const links = within(data as HTMLElement).getAllByRole('link');
+	const links = within(navigation).getAllByRole('link');
+	const paths = links.map((link) => link.getAttribute('href'));
 
-	expect(data?.previousElementSibling).toBe(general);
-	expect(links.map((link) => link.getAttribute('href'))).toEqual([
-		'/settings/library',
-		'/settings/workspace',
-	]);
-	expect(within(navigation).queryByRole('button', { name: /navigationBar.code/ })).not.toBeInTheDocument();
+	expect(paths.indexOf('/settings/library')).toBe(paths.indexOf('/settings/cloud') + 1);
+	expect(paths).not.toContain('/workspace');
+	expect(within(navigation).queryByText('settings.overview.groups.data')).not.toBeInTheDocument();
+
 });
 
 it.each([
@@ -240,15 +233,6 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(generalGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.providers' })
 	).not.toBeInTheDocument();
 	const generalLinks = within(generalGroup as HTMLElement).getAllByRole('link');
-	const storage = within(generalGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.storage',
-	});
-	const webSearchLink = within(generalGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.services',
-	});
-	expect(webSearchLink).toHaveAttribute('href', '/settings/services');
-	expect(generalLinks.indexOf(modelsLink)).toBe(generalLinks.indexOf(storage) + 1);
-	expect(generalLinks.indexOf(webSearchLink)).toBe(generalLinks.indexOf(modelsLink) + 1);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',

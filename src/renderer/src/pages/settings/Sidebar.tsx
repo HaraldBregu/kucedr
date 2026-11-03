@@ -16,16 +16,9 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'general',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/account', '/settings/settings', '/settings/cloud'].includes(
+			['/settings/account', '/settings/settings', '/settings/cloud', '/settings/library'].includes(
 				item.path
 			)
-		),
-	},
-	{
-		id: 'data',
-		titleKey: 'settings.overview.groups.data',
-		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/library', '/workspace'].includes(item.path)
 		),
 	},
 	{
