@@ -30,6 +30,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	const location = useLocation();
 	const mcpDetailMatch = useMatch('/settings/mcp/:mcpServerId');
 	const pluginDetailMatch = useMatch('/settings/plugins/:kind/:providerId/:entryId');
+	const modelDetailMatch = useMatch('/settings/models/:type/:providerId/:modelId');
 	const appDetailMatch = useMatch('/settings/apps/:appId');
 	const appId = decodeURIComponent(appDetailMatch?.params.appId ?? '');
 	const [appLabel, setAppLabel] = useState<{ id: string; label: string } | null>(null);
@@ -120,6 +121,10 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	const serviceItem = SETTINGS_MODEL_SERVICE_ITEMS.find((item) => item.path === location.pathname);
 	if (serviceItem) return [{ label: t(serviceItem.labelKey) }];
+	if (modelDetailMatch) return [
+		{ label: t('settings.tabs.models'), path: '/settings/models' },
+		{ label: modelDetailMatch.params.modelId ?? '' },
+	];
 
 	if (mcpDetailMatch) {
 		return [
