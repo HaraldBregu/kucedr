@@ -35,7 +35,6 @@ declare global {
 		agent: AgentApi;
 		coding: CodingApi;
 		coder: CodingApi;
-		a2a: A2aApi;
 		recorder: RecorderApi;
 		tasks: TaskApi;
 		skills: SkillsApi;
