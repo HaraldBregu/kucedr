@@ -36,12 +36,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_NAVIGATION.filter((item) =>
 				['/settings/voice', '/settings/tasks', '/settings/health'].includes(item.path)
 			),
-		],
-	},
-	{
-		id: 'brain',
-		titleKey: 'settings.overview.groups.brain',
-		items: [
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/knowledge'),
 		],

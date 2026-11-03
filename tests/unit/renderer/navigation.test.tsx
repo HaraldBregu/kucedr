@@ -57,7 +57,7 @@ it('provides English and Italian translations for every settings navigation item
 	}
 });
 
-it('places Memory and Knowledge in the Brain sidebar section below Agents', () => {
+it('places Memory and Knowledge in the Agents sidebar section', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/memory']}>
 			<Routes>
@@ -72,18 +72,13 @@ it('places Memory and Knowledge in the Brain sidebar section below Agents', () =
 	const agents = within(navigation)
 		.getByText('settings.overview.groups.assistant')
 		.closest('[data-slot="split-pane-group"]');
-	const brain = within(navigation)
-		.getByText('settings.overview.groups.brain')
-		.closest('[data-slot="split-pane-group"]');
-	const links = within(brain as HTMLElement).getAllByRole('link');
+	const links = within(agents as HTMLElement).getAllByRole('link');
 
-	expect(brain?.previousElementSibling).toBe(agents);
-	expect(links.map((link) => link.getAttribute('href'))).toEqual([
+	expect(within(navigation).queryByText('settings.overview.groups.brain')).not.toBeInTheDocument();
+	expect(links.slice(-2).map((link) => link.getAttribute('href'))).toEqual([
 		'/settings/memory',
 		'/settings/knowledge',
 	]);
-	expect(within(agents as HTMLElement).queryByRole('link', { name: 'settings.memory.title' })).not.toBeInTheDocument();
-	expect(within(agents as HTMLElement).queryByRole('link', { name: 'settings.knowledge.title' })).not.toBeInTheDocument();
 });
 
 it('does not expose Coding in settings navigation', () => {
