@@ -6275,7 +6275,7 @@ var TELEGRAM_RECONNECT_INITIAL_DELAY_MS = 2e3;
 var TELEGRAM_RECONNECT_MAX_DELAY_MS = 6e4;
 var TELEGRAM_SEEN_MESSAGE_LIMIT = 1e4;
 function createChannelAdapter(options) {
-  const token = options.apiKey.trim();
+  const token = (options.credentials.apiKey ?? "").trim();
   if (!token) throw new Error("Telegram bot token is required");
   const accountId = options.accountId?.trim() || "default";
   const seenMessages = /* @__PURE__ */ new Set();

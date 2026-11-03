@@ -27,14 +27,14 @@ describe('Telegram voice messages', () => {
 	});
 
 	it('registers received voice messages', () => {
-		createChannelAdapter({ apiKey: 'token', channel: 'telegram/default' });
+		createChannelAdapter({ credentials: { apiKey: 'token' }, channel: 'telegram/default' });
 
 		expect(mockOn).toHaveBeenCalledWith('message:voice', expect.any(Function));
 	});
 
 	it('sends a native voice message', async () => {
 		mockSendVoice.mockResolvedValueOnce({ message_id: 42 });
-		const adapter = createChannelAdapter({ apiKey: 'token', channel: 'telegram/default' });
+		const adapter = createChannelAdapter({ credentials: { apiKey: 'token' }, channel: 'telegram/default' });
 		const receipt = await adapter.send({
 			channel: 'telegram',
 			to: 'chat-1',
@@ -54,7 +54,7 @@ describe('Telegram voice messages', () => {
 	});
 
 	it('bounds the inbound message deduplication cache', () => {
-		const adapter = createChannelAdapter({ apiKey: 'token', channel: 'telegram/default' });
+		const adapter = createChannelAdapter({ credentials: { apiKey: 'token' }, channel: 'telegram/default' });
 		const receive = jest.fn();
 		adapter.onMessage(receive);
 		const textHandler = mockOn.mock.calls.find(([event]) => event === 'message:text')?.[1];
