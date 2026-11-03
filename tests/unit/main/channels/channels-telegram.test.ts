@@ -32,6 +32,22 @@ describe('Telegram voice messages', () => {
 		expect(mockOn).toHaveBeenCalledWith('message:voice', expect.any(Function));
 	});
 
+	it('uses the configured channel ID for inbound messages', () => {
+		const adapter = createChannelAdapter({ credentials: { apiKey: 'token' }, channel: 'telegram/default' });
+		const receive = jest.fn();
+		adapter.onMessage(receive);
+		const textHandler = mockOn.mock.calls.find(([event]) => event === 'message:text')?.[1];
+		textHandler({
+			message: { text: 'hello', message_id: 1 },
+			chat: { id: 2, type: 'private' },
+			from: { id: 3 },
+		});
+		expect(receive).toHaveBeenCalledWith(expect.objectContaining({
+			channel: 'telegram/default',
+			idempotencyKey: 'telegram/default:default:2:1',
+		}));
+	});
+
 	it('sends a native voice message', async () => {
 		mockSendVoice.mockResolvedValueOnce({ message_id: 42 });
 		const adapter = createChannelAdapter({ credentials: { apiKey: 'token' }, channel: 'telegram/default' });
