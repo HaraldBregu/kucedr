@@ -51,7 +51,6 @@ const CONTROL = new Set([
 	'screen_recorder_stop',
 ]);
 const PAID = new Set(['create_image', 'create_sound', 'create_video']);
-const EXTERNAL = new Set(['delegate_a2a', 'cancel_a2a_task']);
 
 export function builtinCapability(
 	id: string,
