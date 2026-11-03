@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ModelsPage from '../../../src/renderer/src/pages/settings/pages/models/Page';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import ModelDetail from '../../../src/renderer/src/pages/settings/pages/models/Detail';
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string) => key }),
@@ -53,4 +54,18 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 	act(() => changed());
 	await waitFor(() => expect(screen.getByText('settings.models.empty')).toBeInTheDocument());
 	expect(screen.queryByText('Image model')).not.toBeInTheDocument();
+});
+
+it('opens a model with a slash in its ID and displays its catalog details', async () => {
+	const provider = { id: 'router', name: 'Router', plugin: { id: 'router', name: 'Router' } };
+	Object.assign(window, {
+		app: { models: jest.fn().mockResolvedValue([{ id: 'vendor/model', name: 'Model', type: 'llm', location: 'remote', provider, metadata: { documentationUrl: 'https://example.com', contextWindow: 1000, inputs: { temperature: { type: 'number' } } } }]), onModelsChanged: () => jest.fn() },
+		provider: { getModelProviders: jest.fn().mockResolvedValue([]) },
+	});
+	render(<MemoryRouter initialEntries={['/settings/models']}><Routes><Route path="/settings/models" element={<ModelsPage />} /><Route path="/settings/models/:type/:providerId/:modelId" element={<ModelDetail />} /></Routes></MemoryRouter>);
+	fireEvent.click(await screen.findByRole('link', { name: /Model/ }));
+	expect(await screen.findByRole('heading', { name: 'Model' })).toBeInTheDocument();
+	expect(screen.getByText('vendor/model')).toBeInTheDocument();
+	expect(screen.getByText('1000')).toBeInTheDocument();
+	expect(screen.getByText(/temperature/)).toBeInTheDocument();
 });
