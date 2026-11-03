@@ -556,11 +556,24 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'bots',
-						element: (
-							<SettingsRouteWrapper>
-								<BotsPage />
-							</SettingsRouteWrapper>
-						),
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<BotsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'tools',
+								element: (
+									<SettingsRouteWrapper>
+										<ToolsPage profile="bots" />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
 					},
 					{
 						path: 'health',
