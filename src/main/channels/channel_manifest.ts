@@ -17,7 +17,12 @@ const schema = z
 		),
 		credentials: z.array(
 			z
-				.object({ key: text, label: text, type: z.literal('password'), required: z.boolean() })
+				.object({
+					key: text,
+					label: text,
+					type: z.enum(['password', 'text']),
+					required: z.boolean(),
+				})
 				.strict()
 		),
 		instructions: text.optional(),
