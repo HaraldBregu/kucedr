@@ -179,7 +179,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 
 		const credential = channelCredential(channel);
 		const credentials = { ...credential?.credentials, ...(credential?.apiKey ? { apiKey: credential.apiKey } : {}) };
-		if (contribution.credentials.some((item) => item.required && !credentials[item.key]?.trim())) {
+		if (!credential || contribution.credentials.some((item) => item.required && !credentials[item.key]?.trim())) {
 			logger.warn('ChannelRegistry', `${channel} channel is not configured`);
 			return;
 		}
