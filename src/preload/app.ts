@@ -3,7 +3,6 @@ import { typedInvokeUnwrap, typedOn } from '../shared/ipc_types';
 import { AppChannels } from '../shared/ipc_channels_definitions';
 import type { AppApi } from './index.d';
 import type { AppThemeData } from '../shared/app_types';
-import type { ChannelModelKind, ChannelStatusEvent, ChannelType } from '../shared';
 import { optionalTrimmedString } from './normalize';
 import type { AppStoreValue } from '../shared/app_store_types';
 
@@ -39,22 +38,6 @@ export const app: AppApi = {
 	},
 	mcps: () => {
 		return typedInvokeUnwrap(AppChannels.mcps);
-	},
-	channels: () => {
-		return typedInvokeUnwrap(AppChannels.channels);
-	},
-	getChannelsModelSelection: (kind: ChannelModelKind) => {
-		return typedInvokeUnwrap(AppChannels.getChannelModelSelection, kind);
-	},
-	setChannelsModelSelection: (kind: ChannelModelKind, providerId: string, modelId: string) => {
-		const normalizedProviderId = optionalTrimmedString(providerId);
-		const normalizedModelId = optionalTrimmedString(modelId);
-		return typedInvokeUnwrap(
-			AppChannels.setChannelModelSelection,
-			kind,
-			normalizedProviderId ?? '',
-			normalizedModelId ?? ''
-		);
 	},
 	onModelsChanged: (callback: () => void): (() => void) => {
 		return typedOn(AppChannels.modelsChanged, callback);
@@ -219,20 +202,5 @@ export const app: AppApi = {
 	},
 	uploadProvider: (): Promise<string | null> => {
 		return typedInvokeUnwrap(AppChannels.uploadProvider);
-	},
-	getChannelsStatus: (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
-		return typedInvokeUnwrap(AppChannels.getChannelsStatus, type);
-	},
-	startChannel: (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
-		return typedInvokeUnwrap(AppChannels.startChannel, type);
-	},
-	stopChannel: (type: ChannelType): Promise<void> => {
-		return typedInvokeUnwrap(AppChannels.stopChannel, type);
-	},
-	restartChannel: (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
-		return typedInvokeUnwrap(AppChannels.restartChannel, type);
-	},
-	onChannelsStatusChanged: (callback: (event: ChannelStatusEvent) => void): (() => void) => {
-		return typedOn(AppChannels.channelsStatusChanged, callback);
 	},
 };

@@ -30,7 +30,6 @@ import type {
 	RecorderCaptureChunk,
 	RecorderCommand,
 } from './recorder_types';
-import type { ChannelModelKind, ChannelModelSelection } from './channels_types';
 import {
 	MemoryChannels,
 	AgentChannels,
@@ -780,18 +779,6 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: import('./provider_types').CatalogService[];
 	};
-	[AppChannels.channels]: {
-		args: [];
-		result: import('./provider_types').CatalogService[];
-	};
-	[AppChannels.getChannelModelSelection]: {
-		args: [kind: ChannelModelKind];
-		result: ChannelModelSelection;
-	};
-	[AppChannels.setChannelModelSelection]: {
-		args: [kind: ChannelModelKind, providerId: string, modelId: string];
-		result: void;
-	};
 	[AppChannels.openVideo]: {
 		args: [path: string];
 		result: void;
@@ -811,22 +798,6 @@ export interface AppInvokeChannelMap {
 	[AppChannels.uploadProvider]: {
 		args: [];
 		result: string | null;
-	};
-	[AppChannels.getChannelsStatus]: {
-		args: [type: import('./channels_types').ChannelType];
-		result: import('./channels_types').ChannelStatusEvent | undefined;
-	};
-	[AppChannels.startChannel]: {
-		args: [type: import('./channels_types').ChannelType];
-		result: import('./channels_types').ChannelStatusEvent | undefined;
-	};
-	[AppChannels.stopChannel]: {
-		args: [type: import('./channels_types').ChannelType];
-		result: void;
-	};
-	[AppChannels.restartChannel]: {
-		args: [type: import('./channels_types').ChannelType];
-		result: import('./channels_types').ChannelStatusEvent | undefined;
 	};
 	[AppChannels.getAppStoreValue]: {
 		args: [key: string];
@@ -888,18 +859,6 @@ export interface ProviderInvokeChannelMap {
 	[ProviderChannels.listModelProviders]: {
 		args: [];
 		result: import('./provider_types').PublicProvider[];
-	};
-	[ProviderChannels.getChannel]: {
-		args: [id: string];
-		result: import('./channels_types').ChannelCredentialSummary | undefined;
-	};
-	[ProviderChannels.setChannel]: {
-		args: [input: import('./channels_types').ChannelCredentialSaveInput];
-		result: import('./channels_types').ChannelCredentialSummary;
-	};
-	[ProviderChannels.listChannels]: {
-		args: [];
-		result: import('./channels_types').ChannelCredentialSummary[];
 	};
 	[ProviderChannels.listEnabledPlugins]: {
 		args: [];
@@ -1468,7 +1427,6 @@ export interface AppEventChannelMap {
 	[AppChannels.voiceAgentAppearanceChanged]: {
 		data: import('./app_types').VoiceAgentAppearance;
 	};
-	[AppChannels.channelsStatusChanged]: { data: import('./channels_types').ChannelStatusEvent };
 }
 
 export interface StorageEventChannelMap {

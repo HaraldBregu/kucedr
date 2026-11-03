@@ -7,7 +7,6 @@ import type {
 	PluginProviderKind,
 	PublicProvider,
 } from '../shared/provider_types';
-import type { ChannelCredentialSaveInput } from '../shared/channels_types';
 
 type SavedCredentialKind = Exclude<ProviderCredentialKind, 'search_engines'>;
 
@@ -48,10 +47,6 @@ export const provider: ProviderApi = {
 		typedInvokeUnwrap(ProviderStoreChannels.listCustomModels, input),
 	listModels: (providerId: string) =>
 		typedInvokeUnwrap(ProviderStoreChannels.listModels, providerId),
-	getChannel: (id: string) => typedInvokeUnwrap(ProviderStoreChannels.getChannel, id),
-	setChannel: (input: ChannelCredentialSaveInput) =>
-		typedInvokeUnwrap(ProviderStoreChannels.setChannel, input),
-	listChannels: () => typedInvokeUnwrap(ProviderStoreChannels.listChannels),
 	listEnabledPlugins: () => typedInvokeUnwrap(ProviderStoreChannels.listEnabledPlugins),
 	setPluginEnabled: (kind: PluginProviderKind, id: string, enabled: boolean) =>
 		typedInvokeUnwrap(ProviderStoreChannels.setPluginEnabled, kind, id, enabled),

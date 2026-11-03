@@ -9,7 +9,6 @@ import type {
 	PublicProvider,
 	StoredProvider,
 } from './provider_types';
-import type { ChannelCredentialSaveInput, ChannelCredentialSummary } from './channels_types';
 import type { SearchEngineId, SearchEngineInput, SearchSettings } from './search_types';
 import type {
 	StorageOperationStatus,
@@ -60,12 +59,6 @@ import type {
 	AgentToolReference,
 } from './agent_tools';
 import type { CatalogModel, ProviderModel } from './model_types';
-import type {
-	ChannelModelKind,
-	ChannelModelSelection,
-	ChannelStatusEvent,
-	ChannelType,
-} from './channels_types';
 import type { EmbeddingRequest, EmbeddingResult } from './embedding_types';
 import type { ImageRequest, ImageResult } from './image_types';
 import type { SoundFile, SoundRequest, SoundResult } from './sound_types';
@@ -431,9 +424,6 @@ export interface ProviderApi {
 	list: (kind?: Exclude<ProviderCredentialKind, 'search_engines'>) => Promise<StoredProvider[]>;
 	listCustomModels: (input: { baseUrl: string; apiKey: string }) => Promise<string[]>;
 	listModels: (providerId: string) => Promise<ProviderModel[]>;
-	getChannel: (id: string) => Promise<ChannelCredentialSummary | undefined>;
-	setChannel: (input: ChannelCredentialSaveInput) => Promise<ChannelCredentialSummary>;
-	listChannels: () => Promise<ChannelCredentialSummary[]>;
 	listEnabledPlugins: () => Promise<EnabledPluginProviders>;
 	setPluginEnabled: (
 		kind: PluginProviderKind,
@@ -604,13 +594,6 @@ export interface AppApi extends AppStorageApi {
 	vectorDatabases: () => Promise<CatalogService[]>;
 	storages: () => Promise<CatalogStorage[]>;
 	mcps: () => Promise<CatalogService[]>;
-	channels: () => Promise<CatalogService[]>;
-	getChannelsModelSelection: (kind: ChannelModelKind) => Promise<ChannelModelSelection>;
-	setChannelsModelSelection: (
-		kind: ChannelModelKind,
-		providerId: string,
-		modelId: string
-	) => Promise<void>;
 	/** Fires when ~/.kucedr/providers changes on disk; returns an unsubscribe function. */
 	onModelsChanged: (callback: () => void) => () => void;
 	getPathForFile: (file: File) => string;
@@ -673,11 +656,6 @@ export interface AppApi extends AppStorageApi {
 	showAudioContextMenu: (path: string) => Promise<void>;
 	/** Pick a provider folder and copy it into the providers catalog; null when canceled. */
 	uploadProvider: () => Promise<string | null>;
-	getChannelsStatus: (type: ChannelType) => Promise<ChannelStatusEvent | undefined>;
-	startChannel: (type: ChannelType) => Promise<ChannelStatusEvent | undefined>;
-	stopChannel: (type: ChannelType) => Promise<void>;
-	restartChannel: (type: ChannelType) => Promise<ChannelStatusEvent | undefined>;
-	onChannelsStatusChanged: (callback: (event: ChannelStatusEvent) => void) => () => void;
 }
 
 export interface LibraryApi {
