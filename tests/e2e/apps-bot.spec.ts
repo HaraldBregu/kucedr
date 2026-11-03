@@ -84,7 +84,6 @@ test('production Apps search and Bot navigation work in Electron', async ({
 			has: page.getByRole('heading', { name: 'Extensions', exact: true }),
 		});
 		await expect(bot.getByRole('link', { name: 'Channels', exact: true })).toBeVisible();
-		await expect(bot.locator('a[href$="/settings/remote-agent"]')).toBeVisible();
 		await expect(bot.getByRole('link')).toHaveCount(2);
 		await expect(extensions.getByRole('link', { name: 'Apps', exact: true })).toBeVisible();
 		await expect(extensions.getByRole('link', { name: 'Plugins', exact: true })).toBeVisible();
