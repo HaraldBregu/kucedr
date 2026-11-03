@@ -19,6 +19,7 @@ interface MediaModelApi {
 	readonly setProviderId: (providerId: string) => Promise<void>;
 	readonly getModelId: () => Promise<string | undefined>;
 	readonly setModelId: (modelId: string) => Promise<void>;
+	readonly saveSelection?: (providerId: string, modelId: string) => Promise<boolean>;
 	readonly getOptions?: () => Promise<Record<string, unknown>>;
 	readonly setOptions?: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
 }
@@ -116,21 +117,20 @@ export function AgentMediaModelConfiguration({
 				if (!mounted) return;
 				const availableProviders = providerIdsFor(capability).flatMap((providerId) => {
 					const provider = providers().find((entry) => entry.id === providerId);
-					return provider && providerModels(providerId, capability).length > 0 ? [provider] : [];
+					return provider ? [provider] : [];
 				});
 				const modelGroups: ProviderModelGroup[] = availableProviders.map((provider) => ({
 					provider: provider as PublicProvider,
-					models: providerModels(provider.id, capability),
-				}));
-				const preferredGroup =
-					modelGroups.find((group) => group.provider.id === storedProviderId) ?? modelGroups[0];
-				const preferredModel =
-					preferredGroup?.models.find((model) => model.id === storedModelId) ??
-					preferredGroup?.models[0];
+					models: providerModels(provider.id, capability).filter(
+						(model) => capability !== 'speech-to-text' || model.apiTypes?.includes('batch')
+					),
+				})).filter((group) => group.models.length > 0);
+				const preferredGroup = modelGroups.find((group) => group.provider.id === storedProviderId);
+				const preferredModel = preferredGroup?.models.find((model) => model.id === storedModelId);
 				setState({
 					providers: availableProviders,
 					modelGroups,
-					providerId: preferredGroup?.provider.id ?? '',
+					providerId: preferredModel ? preferredGroup?.provider.id ?? '' : '',
 					modelId: preferredModel?.id ?? '',
 					loading: false,
 					loadingModels: false,
@@ -171,8 +171,12 @@ export function AgentMediaModelConfiguration({
 			error: null,
 		}));
 		try {
-			await api.setProviderId(providerId);
-			await api.setModelId(modelId);
+			if (capability === 'speech-to-text' && api.saveSelection) {
+				await api.saveSelection(providerId, modelId);
+			} else {
+				await api.setProviderId(providerId);
+				await api.setModelId(modelId);
+			}
 			if (api.setOptions) await api.setOptions({});
 			setState((current) => ({ ...current, saving: false, saved: true }));
 		} catch (error) {
