@@ -43,6 +43,10 @@ const SettingsPage = lazy(() => import('./pages/settings/pages/settings/Page'));
 const PersonaPage = lazy(() => import('./pages/settings/pages/settings/persona/Page'));
 const SettingsMediaDetailPage = lazy(() => import('./pages/settings/pages/settings/media/Page'));
 const ChannelsPage = lazy(() => import('./pages/settings/pages/channels/Page'));
+const ChannelDetailsPage = lazy(() => import('./pages/settings/pages/channels/details/Page'));
+const ChannelsConfigurationPage = lazy(
+	() => import('./pages/settings/pages/channels/Configuration')
+);
 const PluginsPage = lazy(() => import('./pages/settings/pages/plugins/Page'));
 const PluginDetailPage = lazy(() => import('./pages/settings/pages/plugins/Detail'));
 const PluginPage = lazy(() => import('./pages/settings/pages/plugins/Plugin'));
@@ -136,7 +140,12 @@ function RootRouteComponent(): React.JSX.Element {
 	const isHome = location.pathname === '/home' || location.pathname === '/home/library';
 	const isWorkspace = location.pathname === '/workspace';
 	const isSettings = location.pathname.startsWith('/settings');
-	const hasSidebar = isHome || isWorkspace || isSettings || location.pathname === '/code' || location.pathname.startsWith('/code/');
+	const hasSidebar =
+		isHome ||
+		isWorkspace ||
+		isSettings ||
+		location.pathname === '/code' ||
+		location.pathname.startsWith('/code/');
 
 	return (
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
@@ -163,18 +172,26 @@ function RootRouteComponent(): React.JSX.Element {
 							'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground'
 						)}
 					>
-						{!hasSidebar && <NavigationBar
-							rightContent={
-								phase === 'auth' && authState.status !== 'recovery' ? (
-									<Button type="button" variant="ghost" size="sm" onClick={skipSignIn}>
-										Skip
-									</Button>
-								) : undefined
-							}
-							showWorkspace={false}
-						/>}
+						{!hasSidebar && (
+							<NavigationBar
+								rightContent={
+									phase === 'auth' && authState.status !== 'recovery' ? (
+										<Button type="button" variant="ghost" size="sm" onClick={skipSignIn}>
+											Skip
+										</Button>
+									) : undefined
+								}
+								showWorkspace={false}
+							/>
+						)}
 						<div className="min-h-0 flex-1 overflow-hidden">
-							{hasSidebar ? <Outlet /> : <PageTransition><Outlet /></PageTransition>}
+							{hasSidebar ? (
+								<Outlet />
+							) : (
+								<PageTransition>
+									<Outlet />
+								</PageTransition>
+							)}
 						</div>
 						<CommandMenu
 							key={location.pathname}
@@ -331,6 +348,22 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<ChannelsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'configuration',
+								element: (
+									<SettingsRouteWrapper>
+										<ChannelsConfigurationPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: ':pluginId/:channelId',
+								element: (
+									<SettingsRouteWrapper>
+										<ChannelDetailsPage />
 									</SettingsRouteWrapper>
 								),
 							},
