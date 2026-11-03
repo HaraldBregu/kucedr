@@ -64,6 +64,7 @@ const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelK
 	tasks: ['textToText', 'image', 'audio', 'video'],
 	health: ['textToText'],
 	channels: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
+	bots: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
 };
 const storedModelKey = (
 	profileId: AgentToolProfileId,
