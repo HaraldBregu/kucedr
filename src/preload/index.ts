@@ -90,8 +90,6 @@ if (process.contextIsolated) {
 	globalThis.coding = coding;
 	globalThis.coder = coding;
 	// @ts-ignore (define in dts)
-	globalThis.a2a = a2a;
-	// @ts-ignore (define in dts)
 	globalThis.recorder = recorder;
 	// @ts-ignore (define in dts)
 	globalThis.tasks = tasks;
