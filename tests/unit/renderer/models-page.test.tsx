@@ -26,6 +26,9 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 	render(<ModelsPage />);
 	expect(await screen.findByText('Image model')).toBeInTheDocument();
 	expect(screen.getByText('Chat model')).toBeInTheDocument();
+	expect(screen.getByText('Image model').closest('[data-slot="card"]')).not.toBe(
+		screen.getByText('Chat model').closest('[data-slot="card"]')
+	);
 	expect(
 		screen.getByText('settings.integrations.plugin.capabilities.text-to-image')
 	).toBeInTheDocument();
