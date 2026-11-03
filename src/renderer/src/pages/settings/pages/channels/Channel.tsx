@@ -147,7 +147,7 @@ export function ChannelConfiguration({
 								size="sm"
 								disabled={
 									saving ||
-									(configured &&
+									((service.credentials ?? []).length > 0 &&
 										!Object.values(credential.credentials ?? {}).some((value) => value.trim()))
 								}
 								onClick={() => void save(credential)}
