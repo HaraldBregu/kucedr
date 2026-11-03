@@ -146,7 +146,7 @@ export default function ModelsPage(): React.JSX.Element {
 												name={model.provider.name}
 												iconDarkUrl={model.provider.iconDarkUrl}
 												iconLightUrl={model.provider.iconLightUrl}
-												className="size-12 rounded-xl"
+													className="size-12 rounded-xl border-0"
 											/>
 											<div className="flex min-w-0 flex-1 flex-col gap-1">
 												<CardTitle className="break-words">{model.name}</CardTitle>
