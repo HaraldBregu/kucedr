@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Boxes } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { CatalogModel, ModelCapability } from '@shared/model_types';
 import {
 	SettingsEmptyState,
@@ -13,8 +13,6 @@ import {
 } from '../../components';
 
 const TYPES: readonly ModelCapability[] = [
-	'llm',
-	'research-chat',
 	'text-to-image',
 	'text-to-video',
 	'text-to-audio',
@@ -22,6 +20,8 @@ const TYPES: readonly ModelCapability[] = [
 	'speech-to-text',
 	'realtime-voice',
 	'embedding',
+	'llm',
+	'research-chat',
 ];
 
 export default function ModelsPage(): React.JSX.Element {
@@ -91,33 +91,27 @@ export default function ModelsPage(): React.JSX.Element {
 			{models?.length === 0 && !error && (
 				<SettingsEmptyState icon={Boxes} title={t('settings.models.empty')} />
 			)}
-			<div className="grid grid-cols-1 items-start gap-3 pb-4 md:grid-cols-2">
+			<div className="space-y-6 pb-4">
 				{TYPES.map((type) => {
 					const group = models?.filter((model) => model.type === type) ?? [];
 					if (group.length === 0) return null;
 					return (
-						<Card key={type} size="sm">
-							<CardHeader>
-								<CardTitle>{t(`settings.integrations.plugin.capabilities.${type}`)}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<ul className="max-h-64 divide-y divide-border overflow-y-auto" tabIndex={0}>
-									{group.map((model) => (
-										<li
-											key={`${model.provider.id}/${model.id}`}
-											className="py-2 first:pt-0 last:pb-0"
-										>
-											<div className="break-words font-medium">{model.name}</div>
-											<div className="break-words text-xs text-muted-foreground">
+						<section key={type}>
+							<h2 className="mb-3 text-sm font-medium">{t(`settings.integrations.plugin.capabilities.${type}`)}</h2>
+							<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+								{group.map((model) => (
+									<Card key={`${model.provider.id}/${model.id}`} size="sm">
+										<CardHeader>
+											<CardTitle className="break-words">{model.name}</CardTitle>
+											<CardDescription className="break-words text-xs">
 												{model.provider.name}
-												{model.provider.plugin?.name !== model.provider.name &&
-											` · ${model.provider.plugin?.name}`}
-											</div>
-										</li>
-									))}
-								</ul>
-							</CardContent>
-						</Card>
+												{model.provider.plugin?.name !== model.provider.name && ` · ${model.provider.plugin?.name}`}
+											</CardDescription>
+										</CardHeader>
+									</Card>
+								))}
+							</div>
+						</section>
 					);
 				})}
 			</div>
