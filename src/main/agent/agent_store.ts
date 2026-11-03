@@ -50,10 +50,6 @@ const DEFAULT_AGENT_PERMISSIONS: PermissionsSchema = {
 	exec: { allow: [workspacePattern], deny: [] },
 };
 const RUNTIME_TOOL_KEYS = {
-	list_a2a_agents: 'list_remote_agents',
-	delegate_a2a: 'delegate_to_remote_agent',
-	get_a2a_task: 'get_remote_task',
-	cancel_a2a_task: 'cancel_remote_task',
 	subagent: 'subagent',
 	subagents: 'subagents',
 	read: 'read_file',
