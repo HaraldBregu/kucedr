@@ -98,6 +98,32 @@ describe('createChannelRegistry', () => {
 		expect(mockAdapterStart).not.toHaveBeenCalled();
 	});
 
+	it('starts a different channel with its declared credentials', async () => {
+		mockGetChannelProvider.mockReturnValue({
+			id: 'example/default',
+			name: 'Example',
+			baseUrl: '',
+			apiKey: 'secret',
+			credentials: { workspace: 'team' },
+			dmPolicy: 'open',
+		});
+		const dependencies = deps();
+		const loadAdapter = jest.fn(dependencies.loadAdapter);
+		const registry = createChannelRegistry({ ...dependencies, loadAdapter });
+		await registry.start('example/default');
+		expect(loadAdapter).toHaveBeenCalledWith('/channel.cjs', {
+			channel: 'example/default',
+			credentials: { apiKey: 'secret', workspace: 'team' },
+		});
+		await registry.send({
+			channel: 'example/default',
+			to: 'chat',
+			content: { type: 'text', text: 'hello' },
+		});
+		expect(mockAdapterSend).toHaveBeenCalled();
+		await registry.destroy();
+	});
+
 	it('throws when sending on a channel that is not running', async () => {
 		const registry = createChannelRegistry(deps());
 		await expect(
