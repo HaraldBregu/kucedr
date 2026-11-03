@@ -56,7 +56,6 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('agent', agent);
 		contextBridge.exposeInMainWorld('coding', coding);
 		contextBridge.exposeInMainWorld('coder', coding);
-		contextBridge.exposeInMainWorld('a2a', a2a);
 		contextBridge.exposeInMainWorld('recorder', recorder);
 		contextBridge.exposeInMainWorld('tasks', tasks);
 		contextBridge.exposeInMainWorld('skills', skills);
