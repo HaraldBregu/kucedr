@@ -191,13 +191,6 @@ export const LibraryChannels = {
 	getRoot: 'library:get-root',
 } as const;
 
-export const A2aChannels = {
-	list: 'a2a:list',
-	save: 'a2a:save',
-	delete: 'a2a:delete',
-	test: 'a2a:test',
-} as const;
-
 export const McpChannels = {
 	list: 'mcp:list',
 	get: 'mcp:get',
