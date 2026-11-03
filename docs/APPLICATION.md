@@ -29,7 +29,6 @@ Home contains the conversation, composer, session sidebar, and tool activity. Se
 | Library              | Collections or list view, upload, preview, move, download, and delete local files                    |
 | Workspace            | Browse agent files; create, rename, and delete entries; edit Markdown                                |
 | Memory               | Enable memory, select its model and type                                                             |
-| Channels             | Telegram bot credentials, sender policies, and channel model choices                                 |
 | Integrations and MCP | External service connections and tool servers                                                        |
 | Apps                 | Import, inspect, open, remove, or register external apps                                             |
 
@@ -101,17 +100,13 @@ Skills provide instructions and resources the agent can load. Import them from t
 
 Model Context Protocol (MCP) servers expose tools through remote HTTP or local commands. Add a remote or command server in Settings, or place a local package under `~/.kucedr/mcp/servers`; then configure its credentials, test the connection, and inspect its tools before relying on it. Authentication depends on the server. The Integrations page offers shortcuts for catalog services; enabling a shortcut is not proof that authentication or tool execution succeeded. Turning an integration off removes its configured MCP entry.
 
-### Telegram
-
-Open Channels, configure the reply and optional speech models, then open Telegram and save the bot token and sender policies. Restrict direct senders and groups as needed. Test with an allowed sender and inspect the resulting reply. The current detail screen does not expose a runtime enable/disable switch or live connection-status controls.
-
 ## Data, backup, and privacy
 
 Kucedr stores its profile under `~/.kucedr` (the user's home directory on each platform). Settings can open application data. See [Architecture](ARCHITECTURE.md) for the storage map.
 
 Configure a storage provider in **Providers → Storage**, select it in **Storage**, choose folders and a schedule, and run a backup. Review operation status for transferred files or errors. Restore requires confirmation and can overwrite matching local files; preserve any local versions you need before restoring. Storage-provider backup is separate from account authentication; see [Cloud architecture](CLOUD.md).
 
-Prompts, selected files, tool inputs, and generated data can leave the device through configured model providers, search engines, MCP servers, channels, and storage. Local-only account mode does not make these services offline. Secrets are handled by their respective main-process stores; do not treat the entire profile directory as encrypted.
+Prompts, selected files, tool inputs, and generated data can leave the device through configured model providers, search engines, MCP servers and storage. Local-only account mode does not make these services offline. Secrets are handled by their respective main-process stores; do not treat the entire profile directory as encrypted.
 
 ## Troubleshooting
 

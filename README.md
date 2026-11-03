@@ -54,7 +54,6 @@ Start with the [application guide](docs/APPLICATION.md), or explore the full
 - **Remember useful context** — maintain durable memory, personalization files, conversation history, and a local working directory.
 - **Search personal knowledge** — index selected folders with explicit embedding and remote-storage consent, then retrieve source excerpts from the local RAG index.
 - **Manage local work** — browse and edit Markdown in the Workspace, and organize imported files in Library.
-- **Chat from other apps** — connect Telegram to reach Kucedr away from the desktop app.
 
 Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces and light, dark, and system themes.
 
@@ -63,7 +62,7 @@ Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces an
 - Model, database, and search API keys are stored in plaintext in local provider settings.
 - Storage secret keys require secure device storage. MCP secrets, channel tokens, and account
   sessions use encrypted device storage when available, with memory-only fallback for those secrets.
-- Prompts, attachments, and tool data may be sent to the providers, MCP servers, websites, or messaging channels you configure. Backup and version sync upload selected folder data to configured storage.
+- Prompts, attachments, and tool data may be sent to the providers, MCP servers, websites you configure. Backup and version sync upload selected folder data to configured storage.
 - File writes, edits, patches, and command execution follow configured permissions and trusted
   locations. MCP approval is configured per server; permitted actions may run without a new prompt.
 - Tool activity is streamed into the conversation so you can follow what the agent is doing.
@@ -191,7 +190,7 @@ chat and other supported features from running.
 
 ## Project Structure
 
-- `src/main` contains the Electron main process, agent runtime, channels, model integrations, media services, transcription, IPC, and application services.
+- `src/main` contains the Electron main process, agent runtime, model integrations, media services, transcription, IPC, and application services.
 - `src/renderer/src` contains the React user interface.
 - `src/preload` exposes the narrow bridge between the renderer and main process.
 - `src/shared` contains cross-process types and API contracts.

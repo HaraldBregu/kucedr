@@ -23,10 +23,3 @@ Use services or test accounts that you control. Settings configuration alone is 
 2. Use **Open**, then **Details** to inspect its window settings.
 
 **Pass:** The app opens in a separate window; opening it again focuses the same window. Remove the disposable app when finished. This test needs an actual built app; the repository does not currently bundle app source folders.
-
-## Receive a Telegram reply
-
-1. Configure reply models and a test bot token under **Settings → Channels → Telegram**. Allow only your test sender ID.
-2. From that account, send the bot `Kucedr Telegram test <RUN>: reply with this marker.`
-
-**Pass:** The allowed sender receives a reply containing the marker, and Kucedr records the bot conversation. Remove the test token or sender rule afterward. The channel detail page does not show live connection status.

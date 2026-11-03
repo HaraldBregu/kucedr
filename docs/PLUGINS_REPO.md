@@ -92,7 +92,7 @@ them all, and exit 1 if there were any.
 | `categories` | optional array of non-empty strings |
 | `author` | required, non-empty |
 | `icon`, `iconDark` | optional, `^[\w-]+\.(?:png\|svg\|jpe?g\|webp)$`; the file must exist in `assets/` and be 256 KB or smaller |
-| Provider fields | optional, any value: `authentication`, `apiKeyUrl`, `icon_dark_url`, `icon_light_url`, `instructions`, `models`, `mcp_servers`, `vector_databases`, `web_search`, `storage`, `bots`, `settings`. The app checks these in depth at install, so only check that they're there. |
+| Provider fields | optional, any value: `authentication`, `apiKeyUrl`, `icon_dark_url`, `icon_light_url`, `instructions`, `models`, `mcp_servers`, `vector_databases`, `web_search`, `storage`, `settings`. The app checks these in depth at install, so only check that they're there. |
 
 **Files:**
 

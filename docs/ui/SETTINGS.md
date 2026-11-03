@@ -1,7 +1,7 @@
 # Settings UI
 
 Settings is Kucedr's configuration workspace after setup. It combines application preferences,
-assistant and provider selection, background work, knowledge, permissions, messaging channels,
+assistant and provider selection, background work, knowledge, permissions,
 and integrations under `/settings`.
 
 See [Home UI](HOME.md) for the conversation workspace and [Provider Reference](../PROVIDERS.md)
@@ -41,7 +41,7 @@ The visible sidebar is grouped as follows:
 | General    | Account, Settings, Storage, Providers, Library, Workspace |
 | Assistant  | Agent, Voice, Tasks, Health, Skills, MCP                  |
 | Brain      | Memory, Knowledge                                         |
-| Extensions | Plugins, Apps, Channels                    |
+| Extensions | Plugins, Apps                    |
 
 The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open Settings directly.
@@ -159,7 +159,7 @@ See [Provider Reference](../PROVIDERS.md) for exact runtime coverage and model I
 
 ### Provider connections
 
-- **Models**, **Search engines**, and **Channels** should list their catalog providers as
+- **Models** and **Search engines** should list their catalog providers as
   connection cards with external setup links, API-key inputs, and connected state.
 - Unsupported catalog entries should be disabled as **Soon**.
 - The searchable **API Keys** deep page should provide the model-provider credential list. The
@@ -238,18 +238,6 @@ has no editable control. Local package changes
 should be written to that package's `mcp.json`; configured server changes should be written to
 Kucedr settings. Registry and connection diagnostics should remain visible.
 
-## Channels
-
-Channels should configure shared reply, batch speech-to-text, and text-to-speech provider/model
-selections, then list the channel services returned by the runtime catalog.
-
-Each channel detail page should save its bot token, direct-message policy, direct-sender allowlist,
-and group or channel allowlist. Tokens save on blur; allowlist values can be added with Enter or the
-add action and removed individually.
-
-The current channel UI does not expose enable/disable or live runtime-status controls, even though
-those terms remain searchable.
-
 ## Permissions and sandbox
 
 Permissions should show sandbox readiness, allow a status recheck, and offer Windows setup when
@@ -301,7 +289,6 @@ required. Filesystem policy should:
 - [System media settings](../../src/renderer/src/pages/settings/pages/settings/media/)
 - [Knowledge settings](../../src/renderer/src/pages/settings/pages/knowledge/Page.tsx)
 - [Permissions settings](../../src/renderer/src/pages/settings/pages/permissions/Page.tsx)
-- [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
 - [Settings tests](../../tests/unit/renderer/settings-page.test.tsx)
 - [Assistant settings tests](../../tests/unit/renderer/assistant-settings.test.tsx)

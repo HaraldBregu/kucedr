@@ -10,7 +10,6 @@ one package that can contain several kinds of contributions:
 
 | Kind          | What it adds                                                                                                                         | Where it runs                                            |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
-| **channels**  | Messaging channel adapters                                                                                                           | Main process                                             |
 | **apps**      | HTML/JS/CSS apps shown inside Kucedr (extension mode), or in their own window, as the app manifest's `mode` says                     | Sandboxed iframe in the host UI, or sandboxed app window |
 | **mcp**       | Agent tools served over MCP: local stdio servers or remote http servers                                                              | Separate process, or remote                              |
 | **providers** | Provider manifests: models (remote API models and local model files), vector databases, web search, storage, and remote MCP services | Remote API, or local through Ollama                      |
@@ -18,21 +17,6 @@ one package that can contain several kinds of contributions:
 
 Users install plugins from the in-app catalog, from an https URL, or by uploading a folder or `.tgz`
 archive. The CLI is not part of this plan.
-
-## Channel adapter contract
-
-A channel contribution lives in `channels/<id>/`. Its manifest declares the folder-matching ID,
-name, relative executable entry, and credential fields. Fields have a `key`, `label`, `type`
-(`text` or `password`), and `required` flag. `instructions` is optional. See
-`resources/plugins/telegram/channels/default/manifest.json` for an example. Settings stores the
-credential values securely and passes them to the adapter; the channel ID is `<plugin-id>/<id>`.
-
-The CommonJS entry exports `createChannelAdapter({ channel, credentials })`. It returns an adapter with
-`start()`, `stop()`, `send(message)`, `onMessage(handler)`, and `onStatus(handler)` methods. The
-message, receipt, and status shapes are defined in `src/main/channels/channels_types.ts`. Inbound
-messages and receipts must use the supplied channel ID. Bundle runtime dependencies with the entry
-so the contribution works after installation. Channel entries run in the main process and must be
-trusted code.
 
 ## 1. Goals and non-goals
 
@@ -87,11 +71,8 @@ contribution kind in its own folder:
 ```text
 ~/.kucedr/plugins/<plugin-id>/
   manifest.json              plugin info, plus provider services (models, mcp_servers,
-                             vector_databases, web_search, storage, bots) when it is a provider
+                             vector_databases, web_search, storage) when it is a provider
   assets/                    images and other data, including the plugin and provider icons
-  channels/<channel-id>/
-    manifest.json            channel configuration and executable entry
-    index.cjs                adapter implementation
   apps/<app-id>/
     manifest.json            title, description, mode, metadata, window
     index.html
@@ -184,7 +165,6 @@ Field rules:
 - `permissions` lists what the plugin's apps may do through the bridge in
   section 9. They are shown to the user before install, and anything not listed is denied.
 - On install, each contribution must also be readable by its loader (`validatePluginContents()`):
-  - a channel needs a valid channel `manifest.json` and entry file;
   - an app needs a valid app `manifest.json` and entry file;
   - every `mcp` id needs either a folder `mcp/<id>/` with a valid `mcp.json` or an entry in
     `mcp/servers.json`, but not both;
@@ -260,7 +240,7 @@ A plugin's `mcp/` folder holds its servers in two forms. A server's id is its fo
 
 A plugin is a provider when its own `manifest.json` has provider fields: `authentication`,
 `apiKeyUrl`, `icon_dark_url`, `icon_light_url`, `instructions`, and any of `models`,
-`vector_databases`, `web_search`, `storage`, `mcp_servers`, and `bots`. The provider id is the
+`vector_databases`, `web_search`, `storage`, and `mcp_servers`. The provider id is the
 plugin `id` and its name is the plugin `title`. Icon paths point into `assets/`
 (`"/assets/acme-light.svg"`). `pluginProvider()` checks the fields with
 `validateProviderManifest()`, and `readCatalog()` reads `pluginProviders()`, so every catalog API

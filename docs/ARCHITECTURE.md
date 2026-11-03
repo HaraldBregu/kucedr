@@ -30,8 +30,7 @@ subagents, and voice sessions have explicit session categories and scheduling pr
 Tools live under `src/main/agent/tools`; provider-specific text, speech, image, audio, video,
 embedding, and realtime adapters live under `src/main/models`. MCP servers provide additional
 tools and skills contribute reusable instructions.
-Coding has a separate service under `src/main/coding`. Telegram is the registered messaging
-channel in `src/main/channels/catalog.ts`.
+Coding has a separate service under `src/main/coding`.
 
 Permissions and command sandboxing are enforced by `src/main/agent/permissions` and
 `src/main/agent/sandbox.ts`. A tool being installed does not imply unrestricted filesystem or
