@@ -244,7 +244,6 @@ export function setTaskConfiguration(configuration: PersistedTaskState): void {
 function readProviders(kind: StoredProviderKind): StoredProvider[] {
 	if (kind === 'models') return getModelProvidersState();
 	if (kind === 'databases') return getDatabaseProvidersState();
-	if (kind === 'channels') return [];
 	return [];
 }
 
@@ -272,14 +271,14 @@ export function listProviders(kind?: StoredProviderKind): StoredProvider[] {
 
 export function getProvider(
 	id: string,
-	kind: Exclude<StoredProviderKind, 'channels'> = 'models'
+	kind: StoredProviderKind = 'models'
 ): StoredProvider | undefined {
 	return listProviders(kind).find((provider) => provider.id === id);
 }
 
 export function hasProvider(
 	id: string,
-	kind: Exclude<StoredProviderKind, 'channels'> = 'models'
+	kind: StoredProviderKind = 'models'
 ): boolean {
 	return getProvider(id, kind) !== undefined;
 }
@@ -288,9 +287,6 @@ export function setProvider(
 	provider: StoredProvider,
 	kind: StoredProviderKind = 'models'
 ): StoredProvider {
-	if (kind === 'channels') {
-		throw new Error('Channel providers are stored in channels settings.');
-	}
 	const providers = readProviders(kind);
 	const index = providers.findIndex((entry) => entry.id === provider.id);
 	if (index === -1) providers.push(provider);
@@ -305,7 +301,7 @@ export function setProvider(
 
 export function deleteProvider(
 	id: string,
-	kind: Exclude<StoredProviderKind, 'channels'> = 'models'
+	kind: StoredProviderKind = 'models'
 ): void {
 	const remaining = readProviders(kind).filter((provider) => provider.id !== id);
 	if (kind === 'databases') setDatabaseProvidersState(remaining);

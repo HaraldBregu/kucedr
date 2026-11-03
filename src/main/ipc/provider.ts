@@ -234,21 +234,4 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		return value as Record<string, unknown>;
 	}
 
-	private optionalIdentifiers(
-		record: Record<string, unknown>
-	): Pick<
-		ChannelCredentialSaveInput,
-		'sttProviderId' | 'sttModelId' | 'ttsProviderId' | 'ttsModelId'
-	> {
-		const result: Record<string, string> = {};
-		for (const key of ['sttProviderId', 'sttModelId', 'ttsProviderId', 'ttsModelId']) {
-			const value = record[key];
-			if (value === undefined) continue;
-			if (typeof value !== 'string' || value.trim().length > 200) {
-				throw new Error('The channel model identifier is invalid.');
-			}
-			result[key] = value.trim();
-		}
-		return result;
-	}
 }
