@@ -9,7 +9,10 @@ export default function ModelsPage(): React.JSX.Element {
 
 	return (
 		<SettingsPageShell>
-			<SettingsPageHeader title="Models" description="Configure models for media and speech." />
+			<SettingsPageHeader
+				title={t('settings.tabs.models')}
+				description={t('settings.overview.descriptions.models')}
+			/>
 			<SettingsPanel>
 				<AgentMediaModelConfiguration
 					api={window.models.image}
