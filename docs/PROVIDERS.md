@@ -4,12 +4,7 @@ Kucedr ships 31 provider manifests as built-in plugins under `resources/plugins/
 model, search, and database providers, their cataloged services, and whether the current runtime
 can execute each service.
 
-The inventory covers model, search, and database providers. Telegram is a
-messaging channel and is documented in [Kucedr Feature Reference](FEATURES.md#5-messaging-channels).
-The other manifests describe MCP, storage, messaging, and local-model integrations: Cloudflare,
-GitHub, GitLab, Microsoft, Notion, Ollama, Supabase, and Telegram. See
-[Kucedr Feature Reference](FEATURES.md) and [Account and Cloud Architecture](CLOUD.md) for their
-respective runtime paths.
+The inventory covers model, search, and database providers. See [Kucedr Feature Reference](FEATURES.md) and [Account and Cloud Architecture](CLOUD.md) for runtime paths.
 
 For Microsoft MCP app registration, permissions, and environment configuration, see
 [Microsoft MCP setup](MICROSOFT.md).
@@ -255,7 +250,6 @@ All 31 manifests were checked against official documentation. This update adds 1
 | Reka AI | [Documentation](https://docs.reka.ai/chat/models) | 6 additions; documented request contracts implemented. |
 | Supabase | [Documentation](https://supabase.com/docs/guides/storage/s3/compatibility) | Existing S3 storage integration; no model catalog. |
 | Tavily | [Documentation](https://docs.tavily.com/documentation/api-reference/endpoint/search) | Existing search API; no model IDs. |
-| Telegram | [Documentation](https://core.telegram.org/bots/api) | Existing messaging channel; no model catalog. |
 | xAI | [Documentation](https://docs.x.ai/developers/models/grok-4.7) | 2 additions; documented request contracts implemented. |
 | Z.ai / Zhipu AI | [Documentation](https://docs.z.ai/release-notes/new-released) | 8 additions; documented request contracts implemented. |
 
@@ -274,7 +268,7 @@ Provider plugins use the same folder shape. See [Kucedr plugins](PLUGINS.md) for
 layout.
 
 A provider manifest requires `providerId` and `providerName`. It declares capabilities in
-`models`, `mcp_servers`, `vector_databases`, `web_search`, `bots`, or `storage`; the former
+`models`, `mcp_servers`, `vector_databases`, `web_search`, or `storage`; the former
 `services` and `databases` fields are rejected. Entries in the array capabilities require `id`, `name`, and `url`, with additional
 fields depending on the capability. Optional provider fields include `apiKeyUrl`, authentication,
 and icon paths. Model entries declare their type, authentication, location, and prompt attachment

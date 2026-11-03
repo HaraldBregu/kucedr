@@ -78,13 +78,13 @@ Acceptance: an unknown tool is denied; a trusted output directory alone cannot a
 
 ### F3 — High: background callers share desktop resource authority
 
-Allowed channel messages receive no tool allowlist. The process registry has no owner/run/session identity: another run can enumerate processes and retrieve host-process output, or write to a sandboxed process's stdin. The browser likewise uses one global persistent context and global tab map. A channel participant admitted by configuration can therefore reach resources created by an unrelated interactive run if the model invokes those tools. This is an authorization boundary missing after channel admission, not a bypass of the admission check itself. Process `kill`/`clear`/`remove` do have a separate hard approval.
+The process registry has no owner/run/session identity: another run can enumerate processes and retrieve host-process output, or write to a sandboxed process's stdin. The browser likewise uses one global persistent context and global tab map. Process `kill`/`clear`/`remove` have a separate hard approval.
 
 Evidence: [process registry](../src/main/agent/tools/core/process.ts#L9), [process resolution](../src/main/agent/permissions/resolve_tool_permission.ts#L29), [browser globals](../src/main/agent/tools/web/use_web_browser.ts#L42). A temporary test confirmed an unrelated run could read a registered host process's fixture output.
 
-Refactor: carry an immutable caller scope from the adapter into execution. Scope process/browser/recording handles to their owner and grant explicit sharing when needed. Channel and scheduled runs need bounded capabilities appropriate to the originating request. Preserve documented schedule defaults until deliberately changing that contract; do not silently reinterpret stored empty lists during refactoring.
+Refactor: carry an immutable caller scope from the adapter into execution. Scope process/browser/recording handles to their owner and grant explicit sharing when needed. Scheduled runs need bounded capabilities appropriate to the originating request. Preserve documented schedule defaults until deliberately changing that contract; do not silently reinterpret stored empty lists during refactoring.
 
-Acceptance: run B cannot enumerate/read/control run A's resources without a sharing grant; allowed group membership does not grant desktop-browser access; same-owner continuation works; child scope can only narrow its parent's grant.
+Acceptance: run B cannot enumerate/read/control run A's resources without a sharing grant; same-owner continuation works; child scope can only narrow its parent's grant.
 
 ### F4 — High: filesystem authorization is not bound to the accessed object
 

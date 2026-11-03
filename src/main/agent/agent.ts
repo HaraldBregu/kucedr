@@ -259,10 +259,10 @@ export class Agent {
 						request.category === 'main'
 							? 'interactive'
 							: request.category === 'task'
-									? 'task'
-									: request.category === 'health'
-										? 'health'
-										: 'child',
+								? 'task'
+								: request.category === 'health'
+									? 'health'
+									: 'child',
 					sessionId: request.sessionId,
 					runId: request.id,
 				},
@@ -359,7 +359,10 @@ export class Agent {
 
 			const streamingToolArgs = new Map<string, { name: string; argsText: string }>();
 			for await (const event of events) {
-				if (event.type === 'user_input_request' && event.questions.some((question) => question.id === 'mcp-authorization')) {
+				if (
+					event.type === 'user_input_request' &&
+					event.questions.some((question) => question.id === 'mcp-authorization')
+				) {
 					clearTimeout(timeoutTimer);
 				} else if (event.type === 'user_input_result') {
 					startTimeout();

@@ -74,7 +74,7 @@ plugin deletes one folder.
 
 A plugin is a **provider** when its manifest also has provider fields: `authentication`,
 `apiKeyUrl`, `icon_dark_url`, `icon_light_url`, `instructions`, `models`, `mcp_servers`,
-`vector_databases`, `web_search`, `storage`, or `bots`. The provider id is the plugin `id` and its
+`vector_databases`, `web_search`, or `storage`. The provider id is the plugin `id` and its
 name is the plugin `title`. `pluginProvider()` checks those fields with
 `validateProviderManifest()`. See [PROVIDERS.md](PROVIDERS.md) for the provider format.
 

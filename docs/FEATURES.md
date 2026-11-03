@@ -20,7 +20,6 @@ This document describes the feature set present in the current source tree, grou
 - [2. Agent runtime and automation](#2-agent-runtime-and-automation)
 - [3. Providers and model catalogs](#3-providers-and-model-catalogs)
 - [4. Media generation](#4-media-generation)
-- [5. Messaging channels](#5-messaging-channels)
 - [6. Desktop, settings, and extensibility surfaces](#6-desktop-settings-and-extensibility-surfaces)
 - [7. Privacy, storage, and security](#7-privacy-storage-and-security)
 - [8. Platform and packaging](#8-platform-and-packaging)
@@ -37,7 +36,6 @@ Kucedr provides:
 - Local skills, remote HTTP MCP servers, local stdio MCP servers, and standalone app windows.
 - Persistent schedules, periodic `HEALTH.md` checks, and provider-backed cloud backup for local folders.
 - A built-in Workspace for browsing agent files and editing Markdown, plus a Library for imported local files.
-- Telegram bot connections with sender policies.
 - Local configuration, conversation history, memory, generated-media storage, and operational logs.
 - Windows, macOS, and Linux packaging; partial English and Italian localization; light, dark, and system themes.
 
@@ -129,7 +127,7 @@ picker.
 - Switching sessions restores its stored transcript; the Home view loads at most the last 50 stored messages before expanding tool results.
 - Stored transcripts remain complete. Model calls always retain the current run and add older complete turns within a 50-message, 120,000-serialized-character history budget.
 - Settings includes a Chat History screen with session title, creation date, and confirmation-backed deletion.
-- Session storage is separated into `main`, `task`, `health`, and `bot` categories.
+- Session storage is separated into `main`, `task`, and `health` categories.
 - Each stored session can contain `messages.json`, append-only `run.jsonl`, and the latest system prompt in `SYSTEM.md`.
 
 There is a clear-messages API in the runtime, but the current Chat History screen exposes per-session deletion rather than a separate clear button.
@@ -435,40 +433,6 @@ The audio catalog presents four providers, but only ElevenLabs currently has an 
 
 **Settings → Library** provides Collections and List views, upload, folders, sorting, selection, preview, move, download, and deletion for local files. The current router has no dedicated Image, Video, or Audio studio routes; media model selection is part of Agent settings.
 
-## 5. Messaging channels
-
-Kucedr includes a Telegram bot adapter. Telegram starts when the app becomes ready if enabled with a token.
-
-### Shared behavior
-
-- Incoming direct, group/channel, and thread messages are normalized and routed to the agent.
-- Replies target the originating chat, message, and thread when the platform supports it.
-- Channel replies use their own configured chat provider and model.
-- Long replies are split into platform-sized parts, and delivery receipts distinguish sent, partial, and failed delivery.
-- `/start` returns a fixed connected greeting. Other slash-prefixed channel messages are ignored.
-- All accepted Telegram messages currently share one fixed bot-session UUID.
-- Channel agent runs use the background type with the full tool catalog, plus an eight-call public-web budget per run.
-
-### Access policies
-
-- Disabled or tokenless channels reject input.
-- Empty messages are ignored.
-- Direct-message policy can be **Allowlist** (default), **Open**, **Pairing**, or **Deny**.
-- Allowlist mode accepts only configured sender IDs.
-- An optional group/channel list restricts accepted route IDs.
-- **Pairing is partial:** the current policy always rejects with `pairing_required`; there is no code-generation or approval flow.
-
-### Telegram
-
-- Long polling with pending updates dropped at start.
-- Connection, error, and disconnected status events.
-- A 60-second health check and exponential reconnect delay from 2 to 60 seconds.
-- In-memory duplicate-message protection.
-- Reply splitting at 4,096 characters.
-- Renderer IPC supports start, stop, and restart.
-
-The Channels screen configures Telegram with enable state, token, DM policy, direct-sender allowlist, group/channel allowlist, and the reply provider/model. It also displays live runtime status.
-
 ## 6. Desktop, settings, and extensibility surfaces
 
 ### Settings navigation
@@ -547,7 +511,6 @@ Kucedr stores configuration and working data below Electron's application-data d
 | App         | Tray, keep-awake, language, and theme settings.                                                                                             |
 | Providers   | Provider name, API key, and base URL.                                                                                                       |
 | Agent       | Active model, policy, MCP definitions and OAuth state, skills, schedules, health settings, workspace Markdown, sessions, and media library. |
-| Channels    | Bot tokens, sender policies, and channel reply model.                                                                                       |
 | Services    | Independent text, transcription, voice, image, video, and audio selections.                                                                 |
 | Media       | Generated images, video, audio, recordings, browser screenshots, and browser PDFs in `~/.kucedr/library` by default.                         |
 | Browser     | Persistent agent-browser profile.                                                                                                           |
@@ -555,11 +518,11 @@ Kucedr stores configuration and working data below Electron's application-data d
 | Diagnostics | Local rotating logs and crash dumps. Crash dumps are not uploaded by the current configuration.                                             |
 
 Model, database, and search provider keys are stored as entered in the local provider settings
-file and are visible in Provider settings. Bot tokens and MCP secrets use their respective local
+file and are visible in Provider settings. MCP secrets use their local
 stores and should still be protected as sensitive app data.
 
 Prompts, attachments, tool inputs, and generated content may be sent to configured model providers,
-MCP servers, websites, browser targets, messaging channels, or Kucedr account cloud services as
+MCP servers, websites, browser targets, or Kucedr account cloud services as
 required by the requested operation. Only folders selected in Storage are included in folder
 backups.
 
@@ -604,7 +567,6 @@ The main implementation areas behind this reference are:
 - [Image adapters](../src/main/models/adapters/tti/)
 - [Video adapters](../src/main/models/adapters/ttv/)
 - [Audio adapters](../src/main/models/adapters/tta/)
-- [Messaging channels](../src/main/channels/)
 - [Desktop application services](../src/main/)
 - [Security policy](../SECURITY.md)
 
