@@ -49,10 +49,6 @@ export function builtinTools(
 	interactionMode: AgentInteractionMode = 'default'
 ): Tool[] {
 	return [
-		listA2aAgentsTool,
-		delegateA2aTool,
-		getA2aTaskTool,
-		cancelA2aTaskTool,
 		readTool,
 		...(interactionMode === 'plan' ? [requestUserInputTool] : []),
 		writeTool,
