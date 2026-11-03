@@ -12,7 +12,11 @@ import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
 export function validatePluginContents(directory: string, manifest: ReadPlugin): void {
 	if (manifest.id === CORE_PLUGIN_ID)
 		throw new Error(`"${CORE_PLUGIN_ID}" is reserved for Kucedr.`);
-	for (const id of manifest.contributes.channels) readPluginChannel(path.join(directory, 'channels', id), { id: manifest.id, name: manifest.title });
+	for (const id of manifest.contributes.channels)
+		readPluginChannel(path.join(directory, 'channels', id), {
+			id: manifest.id,
+			name: manifest.title,
+		});
 	for (const id of manifest.contributes.apps) {
 		const folder = path.join(directory, 'apps', id);
 		const app = readAppManifestFromDirectory(folder);
@@ -26,7 +30,8 @@ export function validatePluginContents(directory: string, manifest: ReadPlugin):
 		const [problem] = listLocalMcpServers(path.join(directory, 'mcp')).diagnostics;
 		if (problem) throw new Error(`mcp/${problem.name}: ${problem.error}`);
 	}
-	for (const id of manifest.contributes.scripts) readPluginScript(path.join(directory, 'scripts', id));
+	for (const id of manifest.contributes.scripts)
+		readPluginScript(path.join(directory, 'scripts', id));
 	for (const id of manifest.contributes.skills) {
 		const validation = validateSkill(path.join(directory, 'skills', id));
 		if (!validation.valid) {
