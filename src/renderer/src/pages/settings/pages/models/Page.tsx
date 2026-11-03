@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AlertTriangle, Boxes } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import type { CatalogModel, ModelCapability } from '@shared/model_types';
@@ -13,6 +14,7 @@ import {
 	SettingsPanel,
 } from '../../components';
 import { SettingsFilter } from '../../components/filter';
+import { loadModelCatalog } from './catalog';
 
 const TYPES: readonly ModelCapability[] = [
 	'text-to-image',
@@ -28,6 +30,7 @@ const TYPES: readonly ModelCapability[] = [
 
 export default function ModelsPage(): React.JSX.Element {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [models, setModels] = useState<readonly CatalogModel[] | null>(null);
 	const [error, setError] = useState(false);
 	const [query, setQuery] = useState('');
@@ -51,31 +54,8 @@ export default function ModelsPage(): React.JSX.Element {
 		const load = async (): Promise<void> => {
 			const current = ++revision;
 			try {
-				const [catalog, providers] = await Promise.all([
-					window.app.models(),
-					window.provider.getModelProviders(),
-				]);
-				const live = await Promise.all(
-					providers
-						.filter((provider) => provider.plugin && provider.modelsUrl)
-						.map(async (provider) =>
-							(await window.provider.listModels(provider.id).catch(() => [])).map(
-								(model): CatalogModel => ({
-									...model,
-									type: 'llm',
-									location: 'remote',
-									provider,
-								})
-							)
-						)
-				);
-				const pluginModels = catalog.filter((model) => model.provider.plugin);
-				const ids = new Set(pluginModels.map((model) => `${model.provider.id}/${model.id}`));
+				const nextModels = await loadModelCatalog();
 				if (active && current === revision) {
-					const nextModels = [
-						...pluginModels,
-						...live.flat().filter((model) => !ids.has(`${model.provider.id}/${model.id}`)),
-					];
 					setModels(nextModels);
 					setCategory((selected) =>
 						selected === 'all' || nextModels.some((model) => model.type === selected)
@@ -137,7 +117,15 @@ export default function ModelsPage(): React.JSX.Element {
 							</h2>
 							<div className="grid grid-cols-1 gap-3">
 								{group.map((model) => (
-									<Card key={`${model.provider.id}/${model.id}`} size="sm">
+									<Card key={`${model.provider.id}/${model.id}`} size="sm" role="link" tabIndex={0}
+										className="cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
+										onClick={() => navigate(`/settings/models/${encodeURIComponent(model.type)}/${encodeURIComponent(model.provider.id)}/${encodeURIComponent(model.id)}`)}
+										onKeyDown={(event) => {
+											if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+												event.preventDefault();
+												navigate(`/settings/models/${encodeURIComponent(model.type)}/${encodeURIComponent(model.provider.id)}/${encodeURIComponent(model.id)}`);
+											}
+										}}>
 										<CardHeader className="flex flex-1 items-center gap-3">
 											<ProviderAvatar
 												providerId={model.provider.id}
