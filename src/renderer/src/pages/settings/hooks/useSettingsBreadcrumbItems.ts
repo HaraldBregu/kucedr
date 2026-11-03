@@ -121,10 +121,11 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	const serviceItem = SETTINGS_MODEL_SERVICE_ITEMS.find((item) => item.path === location.pathname);
 	if (serviceItem) return [{ label: t(serviceItem.labelKey) }];
-	if (modelDetailMatch) return [
-		{ label: t('settings.tabs.models'), path: '/settings/models' },
-		{ label: modelDetailMatch.params.modelId ?? '' },
-	];
+	if (modelDetailMatch)
+		return [
+			{ label: t('settings.tabs.models'), path: '/settings/models' },
+			{ label: modelDetailMatch.params.modelId ?? '' },
+		];
 
 	if (mcpDetailMatch) {
 		return [

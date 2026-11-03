@@ -4,7 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Boxes } from 'lucide-react';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import type { CatalogModel } from '@shared/model_types';
-import { SettingsEmptyState, SettingsLoadingRows, SettingsNotice, SettingsPageShell, SettingsPanel, SettingsSection } from '../../components';
+import {
+	SettingsEmptyState,
+	SettingsLoadingRows,
+	SettingsNotice,
+	SettingsPageShell,
+	SettingsPanel,
+	SettingsSection,
+} from '../../components';
 import { loadModelCatalog } from './catalog';
 
 export default function ModelDetail(): React.JSX.Element {
@@ -16,14 +23,46 @@ export default function ModelDetail(): React.JSX.Element {
 		let active = true;
 		setModel(undefined);
 		setError(false);
-		void loadModelCatalog().then((models) => {
-			if (active) setModel(models.find((item) => item.type === type && item.provider.id === providerId && item.id === modelId) ?? null);
-		}, () => { if (active) { setError(true); setModel(null); } });
-		return () => { active = false; };
+		void loadModelCatalog().then(
+			(models) => {
+				if (active)
+					setModel(
+						models.find(
+							(item) => item.type === type && item.provider.id === providerId && item.id === modelId
+						) ?? null
+					);
+			},
+			() => {
+				if (active) {
+					setError(true);
+					setModel(null);
+				}
+			}
+		);
+		return () => {
+			active = false;
+		};
 	}, [type, providerId, modelId]);
 
-	if (model === undefined) return <SettingsPageShell><SettingsPanel><SettingsLoadingRows rows={3} /></SettingsPanel></SettingsPageShell>;
-	if (!model) return <SettingsPageShell>{error && <SettingsNotice variant="destructive" icon={AlertTriangle}>{t('settings.models.loadError')}</SettingsNotice>}<SettingsEmptyState icon={Boxes} title={t('settings.models.notFound')} /></SettingsPageShell>;
+	if (model === undefined)
+		return (
+			<SettingsPageShell>
+				<SettingsPanel>
+					<SettingsLoadingRows rows={3} />
+				</SettingsPanel>
+			</SettingsPageShell>
+		);
+	if (!model)
+		return (
+			<SettingsPageShell>
+				{error && (
+					<SettingsNotice variant="destructive" icon={AlertTriangle}>
+						{t('settings.models.loadError')}
+					</SettingsNotice>
+				)}
+				<SettingsEmptyState icon={Boxes} title={t('settings.models.notFound')} />
+			</SettingsPageShell>
+		);
 
 	const metadata = model.metadata;
 	const rows: [string, string | number | boolean | undefined][] = [
@@ -49,20 +88,79 @@ export default function ModelDetail(): React.JSX.Element {
 		[t('settings.models.details.contextDocumentation'), metadata?.contextWindowDocumentationUrl],
 	] as const;
 
-	return <SettingsPageShell>
-		<header className="mb-6 flex items-start gap-4 py-2">
-			<ProviderAvatar providerId={model.provider.id} name={model.provider.name} iconDarkUrl={model.provider.iconDarkUrl} iconLightUrl={model.provider.iconLightUrl} className="size-16 rounded-2xl" />
-			<div className="min-w-0"><h1 className="break-words text-3xl font-normal leading-9">{model.name}</h1><p className="mt-1.5 text-base text-muted-foreground">{model.provider.name}</p></div>
-		</header>
-		<div className="flex flex-col gap-8 pb-8">
-			<SettingsSection title={t('settings.models.details.title')}>
-				<SettingsPanel><dl className="divide-y divide-border">
-					{rows.filter(([, value]) => value !== undefined && value !== '').map(([label, value]) => <div key={label} className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[12rem_minmax(0,1fr)]"><dt className="text-muted-foreground">{label}</dt><dd className="break-all">{typeof value === 'boolean' ? t(value ? 'common.yes' : 'common.no') : value}</dd></div>)}
-					{links.filter(([, url]) => url).map(([label, url]) => <div key={label} className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[12rem_minmax(0,1fr)]"><dt className="text-muted-foreground">{label}</dt><dd><button type="button" className="break-all text-left underline" onClick={() => void window.app.openExternalUrl(url!)}>{url}</button></dd></div>)}
-				</dl></SettingsPanel>
-			</SettingsSection>
-			{metadata?.promptAttachments && metadata.promptAttachments.length > 0 && <SettingsSection title={t('settings.models.details.attachments')}><SettingsPanel><pre className="overflow-x-auto whitespace-pre-wrap break-words p-4 text-xs">{JSON.stringify(metadata.promptAttachments, null, 2)}</pre></SettingsPanel></SettingsSection>}
-			{metadata && Object.keys(metadata.inputs).length > 0 && <SettingsSection title={t('settings.models.details.inputs')}><SettingsPanel><pre className="overflow-x-auto whitespace-pre-wrap break-words p-4 text-xs">{JSON.stringify(metadata.inputs, null, 2)}</pre></SettingsPanel></SettingsSection>}
-		</div>
-	</SettingsPageShell>;
+	return (
+		<SettingsPageShell>
+			<header className="mb-6 flex items-start gap-4 py-2">
+				<ProviderAvatar
+					providerId={model.provider.id}
+					name={model.provider.name}
+					iconDarkUrl={model.provider.iconDarkUrl}
+					iconLightUrl={model.provider.iconLightUrl}
+					className="size-16 rounded-2xl"
+				/>
+				<div className="min-w-0">
+					<h1 className="break-words text-3xl font-normal leading-9">{model.name}</h1>
+					<p className="mt-1.5 text-base text-muted-foreground">{model.provider.name}</p>
+				</div>
+			</header>
+			<div className="flex flex-col gap-8 pb-8">
+				<SettingsSection title={t('settings.models.details.title')}>
+					<SettingsPanel>
+						<dl className="divide-y divide-border">
+							{rows
+								.filter(([, value]) => value !== undefined && value !== '')
+								.map(([label, value]) => (
+									<div
+										key={label}
+										className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[12rem_minmax(0,1fr)]"
+									>
+										<dt className="text-muted-foreground">{label}</dt>
+										<dd className="break-all">
+											{typeof value === 'boolean' ? t(value ? 'common.yes' : 'common.no') : value}
+										</dd>
+									</div>
+								))}
+							{links
+								.filter(([, url]) => url)
+								.map(([label, url]) => (
+									<div
+										key={label}
+										className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[12rem_minmax(0,1fr)]"
+									>
+										<dt className="text-muted-foreground">{label}</dt>
+										<dd>
+											<button
+												type="button"
+												className="break-all text-left underline"
+												onClick={() => void window.app.openExternalUrl(url!)}
+											>
+												{url}
+											</button>
+										</dd>
+									</div>
+								))}
+						</dl>
+					</SettingsPanel>
+				</SettingsSection>
+				{metadata?.promptAttachments && metadata.promptAttachments.length > 0 && (
+					<SettingsSection title={t('settings.models.details.attachments')}>
+						<SettingsPanel>
+							<pre className="overflow-x-auto whitespace-pre-wrap break-words p-4 text-xs">
+								{JSON.stringify(metadata.promptAttachments, null, 2)}
+							</pre>
+						</SettingsPanel>
+					</SettingsSection>
+				)}
+				{metadata && Object.keys(metadata.inputs).length > 0 && (
+					<SettingsSection title={t('settings.models.details.inputs')}>
+						<SettingsPanel>
+							<pre className="overflow-x-auto whitespace-pre-wrap break-words p-4 text-xs">
+								{JSON.stringify(metadata.inputs, null, 2)}
+							</pre>
+						</SettingsPanel>
+					</SettingsSection>
+				)}
+			</div>
+		</SettingsPageShell>
+	);
 }

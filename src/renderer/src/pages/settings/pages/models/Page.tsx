@@ -117,15 +117,29 @@ export default function ModelsPage(): React.JSX.Element {
 							</h2>
 							<div className="grid grid-cols-1 gap-3">
 								{group.map((model) => (
-									<Card key={`${model.provider.id}/${model.id}`} size="sm" role="link" tabIndex={0}
+									<Card
+										key={`${model.provider.id}/${model.id}`}
+										size="sm"
+										role="link"
+										tabIndex={0}
 										className="cursor-pointer transition-colors hover:bg-muted hover:ring-foreground/20 focus-visible:bg-muted focus-visible:ring-foreground/20"
-										onClick={() => navigate(`/settings/models/${encodeURIComponent(model.type)}/${encodeURIComponent(model.provider.id)}/${encodeURIComponent(model.id)}`)}
+										onClick={() =>
+											navigate(
+												`/settings/models/${encodeURIComponent(model.type)}/${encodeURIComponent(model.provider.id)}/${encodeURIComponent(model.id)}`
+											)
+										}
 										onKeyDown={(event) => {
-											if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+											if (
+												event.target === event.currentTarget &&
+												(event.key === 'Enter' || event.key === ' ')
+											) {
 												event.preventDefault();
-												navigate(`/settings/models/${encodeURIComponent(model.type)}/${encodeURIComponent(model.provider.id)}/${encodeURIComponent(model.id)}`);
+												navigate(
+													`/settings/models/${encodeURIComponent(model.type)}/${encodeURIComponent(model.provider.id)}/${encodeURIComponent(model.id)}`
+												);
 											}
-										}}>
+										}}
+									>
 										<CardHeader className="flex flex-1 items-center gap-3">
 											<ProviderAvatar
 												providerId={model.provider.id}

@@ -6,13 +6,18 @@ export async function loadModelCatalog(): Promise<CatalogModel[]> {
 		window.provider.getModelProviders(),
 	]);
 	const live = await Promise.all(
-		providers.filter((provider) => provider.plugin && provider.modelsUrl).map(async (provider) =>
-			(await window.provider.listModels(provider.id).catch(() => [])).map(
-				(model): CatalogModel => ({ ...model, type: 'llm', location: 'remote', provider })
+		providers
+			.filter((provider) => provider.plugin && provider.modelsUrl)
+			.map(async (provider) =>
+				(await window.provider.listModels(provider.id).catch(() => [])).map(
+					(model): CatalogModel => ({ ...model, type: 'llm', location: 'remote', provider })
+				)
 			)
-		)
 	);
 	const pluginModels = catalog.filter((model) => model.provider.plugin);
 	const ids = new Set(pluginModels.map((model) => `${model.provider.id}/${model.id}`));
-	return [...pluginModels, ...live.flat().filter((model) => !ids.has(`${model.provider.id}/${model.id}`))];
+	return [
+		...pluginModels,
+		...live.flat().filter((model) => !ids.has(`${model.provider.id}/${model.id}`)),
+	];
 }

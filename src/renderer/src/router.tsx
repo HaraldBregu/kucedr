@@ -346,7 +346,11 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'models/:type/:providerId/:modelId',
-						element: <SettingsRouteWrapper><ModelDetail /></SettingsRouteWrapper>,
+						element: (
+							<SettingsRouteWrapper>
+								<ModelDetail />
+							</SettingsRouteWrapper>
+						),
 					},
 					{
 						path: 'plugins',
