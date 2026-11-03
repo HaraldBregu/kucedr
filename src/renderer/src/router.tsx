@@ -555,6 +555,14 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'bots',
+						element: (
+							<SettingsRouteWrapper>
+								<BotsPage />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
 						path: 'health',
 						children: [
 							{
