@@ -60,6 +60,7 @@ function inboundMessage(): ChannelInboundMessage {
 
 describe('createChannelRegistry', () => {
 	beforeEach(() => {
+		jest.clearAllMocks();
 		mockGetChannelProvider.mockReturnValue({
 			id: 'telegram',
 			name: 'Telegram',
