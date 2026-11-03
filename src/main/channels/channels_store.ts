@@ -95,7 +95,7 @@ export function listChannelProviders(): StoredChannelProvider[] {
 	if (migrated) {
 		writeChannelsState({
 			...state,
-			providers: providers.map(({ apiKey: _apiKey, ...provider }) => provider),
+			providers: providers.map(({ apiKey: _apiKey, credentials: _credentials, ...provider }) => provider),
 			encryptedApiKeys,
 		});
 		restrictSettingsFile(channelsStorePath);
