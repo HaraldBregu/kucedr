@@ -1,7 +1,6 @@
 import { decode, encode } from '../../src/shared/api_codec';
 import { AgentChannels, AppChannels } from '../../src/shared/ipc_channels_definitions';
 import type { AgentApi, AppApi } from '../../src/shared/api_types';
-import type { ChannelStatusEvent } from '../../src/shared/channels_types';
 import type { AppThemeData } from '../../src/shared/app_types';
 import type { AppStorageApi } from '../../src/shared/app_store_types';
 import type { WorkspaceChangeEvent } from '../../src/shared/agent_types';
@@ -136,14 +135,6 @@ export function connect(options: ConnectOptions): KucedrClient {
 			onModelsChanged: (callback: () => void) => {
 				const pending = listen((channel) => {
 					if (channel === AppChannels.modelsChanged) callback();
-				});
-				return (): void => {
-					void pending.then((off) => off());
-				};
-			},
-			onChannelsStatusChanged: (callback: (event: ChannelStatusEvent) => void) => {
-				const pending = listen((channel, data) => {
-					if (channel === AppChannels.channelsStatusChanged) callback(data as ChannelStatusEvent);
 				});
 				return (): void => {
 					void pending.then((off) => off());
