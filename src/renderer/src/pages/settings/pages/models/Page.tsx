@@ -91,7 +91,7 @@ export default function ModelsPage(): React.JSX.Element {
 			{models?.length === 0 && !error && (
 				<SettingsEmptyState icon={Boxes} title={t('settings.models.empty')} />
 			)}
-			<div className="grid grid-cols-1 gap-3 pb-4 md:grid-cols-2">
+			<div className="grid grid-cols-1 items-start gap-3 pb-4 md:grid-cols-2">
 				{TYPES.map((type) => {
 					const group = models?.filter((model) => model.type === type) ?? [];
 					if (group.length === 0) return null;
@@ -101,7 +101,7 @@ export default function ModelsPage(): React.JSX.Element {
 								<CardTitle>{t(`settings.integrations.plugin.capabilities.${type}`)}</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<ul className="divide-y divide-border">
+								<ul className="max-h-64 divide-y divide-border overflow-y-auto" tabIndex={0}>
 									{group.map((model) => (
 										<li
 											key={`${model.provider.id}/${model.id}`}
