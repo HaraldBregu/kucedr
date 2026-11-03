@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, Boxes } from 'lucide-react';
+import { AlertTriangle, Boxes, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -156,6 +156,7 @@ export default function ModelsPage(): React.JSX.Element {
 														` · ${model.provider.plugin?.name}`}
 												</CardDescription>
 											</div>
+												<ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
 										</CardHeader>
 									</Card>
 								))}
