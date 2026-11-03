@@ -67,7 +67,6 @@ export function registerIpcHandlers(
 			eventBus
 		)
 	);
-	safeRegister('a2a', () => new A2aIpc().register({ appRegistry }, eventBus));
 	safeRegister('auth', () =>
 		new AuthIpc().register(
 			{ auth: authService, windows: windowContextManager, apps: appRegistry },
