@@ -107,6 +107,12 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.modelServices.tools') },
 		];
 	}
+	if (location.pathname === '/settings/bots/tools') {
+		return [
+			{ label: t('settings.tabs.bots'), path: '/settings/bots' },
+			{ label: t('settings.modelServices.tools') },
+		];
+	}
 	if (location.pathname === '/settings/channels/configuration') {
 		return [
 			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
