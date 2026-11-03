@@ -59,6 +59,7 @@ jest.mock('react-i18next', () => {
 });
 
 const channels = jest.fn();
+const restartChannel = jest.fn().mockResolvedValue(undefined);
 const listChannels = jest.fn();
 const setChannel = jest.fn();
 const getChannelsModelSelection = jest.fn();
@@ -82,7 +83,7 @@ beforeEach(() => {
 	selections = {};
 	Object.defineProperty(window, 'app', {
 		configurable: true,
-		value: { channels, getChannelsModelSelection, setChannelsModelSelection },
+		value: { channels, restartChannel, getChannelsModelSelection, setChannelsModelSelection },
 	});
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
@@ -140,7 +141,8 @@ beforeEach(() => {
 	]);
 	listChannels.mockImplementation(async () => stored);
 	setChannel.mockImplementation(async ({ apiKey: _apiKey, ...value }) => {
-		const summary = { ...value, configured: true };
+		const { credentials: _credentials, ...metadata } = value;
+		const summary = { ...metadata, configured: true };
 		stored = [summary];
 		return summary;
 	});

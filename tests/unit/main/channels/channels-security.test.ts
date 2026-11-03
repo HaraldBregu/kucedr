@@ -36,8 +36,10 @@ describe('canReceive', () => {
 			reason: 'channel_not_configured',
 		});
 	});
-	it('rejects unconfigured channels (blank token)', () => {
-		expect(canReceive(message(), config({ apiKey: '  ' })).reason).toBe('channel_not_configured');
+	it('applies access policy to credentialless channels', () => {
+		expect(canReceive(message(), config({ apiKey: '', groupAllowFrom: ['c1'] }))).toEqual({
+			allowed: true,
+		});
 	});
 	it('rejects empty text', () => {
 		expect(canReceive(message({ content: { type: 'text', text: '   ' } }), config()).reason).toBe(

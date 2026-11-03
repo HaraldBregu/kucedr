@@ -43,4 +43,22 @@ describe('channels store', () => {
 
 		expect(getChannelProvider('telegram')).toEqual(provider);
 	});
+	it('encrypts and restores arbitrary channel credentials', () => {
+		const provider: StoredChannelProvider = {
+			id: 'example/default',
+			name: 'Example',
+			apiKey: '',
+			baseUrl: '',
+			credentials: { username: 'user', secret: 'secret' },
+		};
+		setChannelProvider(provider);
+		expect(getChannelProvider(provider.id)).toEqual(provider);
+		expect(safeStorage.encryptString).toHaveBeenCalledWith(
+			JSON.stringify({
+				id: provider.id,
+				apiKey: '',
+				credentials: provider.credentials,
+			})
+		);
+	});
 });
