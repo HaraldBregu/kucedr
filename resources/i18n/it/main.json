@@ -324,6 +324,7 @@
 				"cron": "Programma, controlla e gestisci le attività ricorrenti.",
 				"heartbeat": "Controlli periodici agente",
 				"health": "Controlli salute periodici",
+				"bots": "Gestisci i tuoi bot",
 				"permissions": "Permessi strumenti e regole di percorso",
 				"apps": "App installate",
 				"scripts": "Script forniti dai plugin",
