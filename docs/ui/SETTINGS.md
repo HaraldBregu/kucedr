@@ -41,7 +41,7 @@ The visible sidebar is grouped as follows:
 | General    | Account, Settings, Storage, Providers, Library, Workspace |
 | Assistant  | Agent, Voice, Tasks, Health, Skills, MCP                  |
 | Brain      | Memory, Knowledge                                         |
-| Extensions | Plugins, Apps, Channels, Remote Agents                    |
+| Extensions | Plugins, Apps, Channels                    |
 
 The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open Settings directly.
@@ -65,7 +65,7 @@ Settings uses both immediate and explicit persistence:
 
 - Provider/model selectors, simple application preferences, channel policy changes, and many
   service choices save when changed.
-- Permissions, Health, Storage sync, MCP, A2A, and task capability forms provide explicit
+- Permissions, Health, Storage sync, MCP and task capability forms provide explicit
   save or submit actions where multiple values belong together.
 - Provider secrets should use password inputs and display a masked connected state after saving.
 - Pages should disable conflicting controls while loading, saving, testing, importing, running, or
@@ -223,7 +223,7 @@ registration, removal, and data behavior.
 
 Apps do not currently expose enable/disable controls in Settings.
 
-## MCP servers and remote agents
+## MCP servers
 
 ### MCP servers
 
@@ -237,15 +237,6 @@ and confirmed removal of configured servers. The stored deferred-loading value i
 has no editable control. Local package changes
 should be written to that package's `mcp.json`; configured server changes should be written to
 Kucedr settings. Registry and connection diagnostics should remain visible.
-
-### Remote agents
-
-Remote agent settings should add and edit Agent2Agent-compatible agents. It should validate the base
-URL while saving and support no authentication, bearer token, API-key header, or OAuth
-`private_key_jwt`, plus enabled state. Stored secrets should never be loaded back into the edit
-form; a blank secret retains the existing credential.
-
-Saved entries should show their URL, advertised skills, enabled state, and credential status.
 
 ## Channels
 
@@ -282,7 +273,6 @@ required. Filesystem policy should:
 - Data-control **Purge** does not show a renderer confirmation dialog; it immediately performs the
   backend preview-token and purge sequence.
 - Permissions **Reset** is immediate. Managed app deletion requests native confirmation.
-- A2A deletion has no confirmation or inline failure handling.
 - Ordinary Settings links do not close the mobile sidebar sheet after navigation; **Return to
   Home** does.
 - Some setting-specific search entries still route search-engine and scheduled-task queries to
@@ -293,7 +283,7 @@ required. Filesystem policy should:
 - Some optimistic application, assistant-option, channel, and folder actions do not surface a
   failure or restore the prior value.
 - Local-command MCP arguments are split on whitespace, so quoted arguments are not preserved.
-- Some Account, MCP, A2A, and provider copy remains hardcoded in English while most Settings copy
+- Some Account, MCP and provider copy remains hardcoded in English while most Settings copy
   uses the translation catalogs.
 
 ## Implementation reference
@@ -313,7 +303,6 @@ required. Filesystem policy should:
 - [Permissions settings](../../src/renderer/src/pages/settings/pages/permissions/Page.tsx)
 - [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
-- [Remote agent settings](../../src/renderer/src/pages/settings/pages/remote-agent/Page.tsx)
 - [Settings tests](../../tests/unit/renderer/settings-page.test.tsx)
 - [Assistant settings tests](../../tests/unit/renderer/assistant-settings.test.tsx)
 - [Provider settings tests](../../tests/unit/renderer/providers-settings.test.tsx)

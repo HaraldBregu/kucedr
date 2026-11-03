@@ -29,7 +29,7 @@ subagents, and voice sessions have explicit session categories and scheduling pr
 
 Tools live under `src/main/agent/tools`; provider-specific text, speech, image, audio, video,
 embedding, and realtime adapters live under `src/main/models`. MCP servers provide additional
-tools, skills contribute reusable instructions, and A2A integrations connect external agents.
+tools and skills contribute reusable instructions.
 Coding has a separate service under `src/main/coding`. Telegram is the registered messaging
 channel in `src/main/channels/catalog.ts`.
 

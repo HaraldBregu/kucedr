@@ -24,13 +24,6 @@ Use services or test accounts that you control. Settings configuration alone is 
 
 **Pass:** The app opens in a separate window; opening it again focuses the same window. Remove the disposable app when finished. This test needs an actual built app; the repository does not currently bundle app source folders.
 
-## Delegate to a remote agent
-
-1. Add a test Agent2Agent endpoint in **Settings → Remote Agents** and use **Validate and save**.
-2. In chat ask for a harmless task that matches one of the remote agent's advertised skills.
-
-**Pass:** Validation lists the remote agent and skills, and chat activity shows delegation with a returned result. An unreachable endpoint is a setup block.
-
 ## Receive a Telegram reply
 
 1. Configure reply models and a test bot token under **Settings → Channels → Telegram**. Allow only your test sender ID.

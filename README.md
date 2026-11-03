@@ -32,7 +32,7 @@ works through the task.
 Choose providers and models separately for chat, voice, and media. Shape the assistant with
 instructions, memory, and a searchable knowledge base; connect services through MCP; and schedule
 recurring tasks and health checks while Kucedr is running. Extend your workspace with focused apps,
-reusable skills, and compatible remote agents.
+and reusable skills.
 
 Conversations, settings, memory, and workspace files live in your local Kucedr profile. A Kucedr
 account is optional for local use. Tasks that use external models or connected services send the

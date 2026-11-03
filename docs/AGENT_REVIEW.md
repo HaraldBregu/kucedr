@@ -49,11 +49,11 @@ Sources: [IPC trust](../src/main/ipc/core/trusted.ts#L13), [approval caller](../
 - Main-frame/registered-renderer checks, window-bound approval responses, expiry, fingerprints, and denial when approval is unavailable.
 - Schema parsing before execution, Plan filtering at both discovery and execution, explicit hard approvals for selected destructive operations, and no automatic fallback from failed sandbox initialization to host execution.
 - Per-session text scheduling, provider/subagent concurrency limits, ordered resource locks, bounded model retries, tool counts and output limits.
-- A2A hard approvals, endpoint/origin validation, bounded responses, redirect rejection and credential sealing; MCP schema and transport checks.
+- MCP schema and transport checks.
 - Skill package/resource containment, activation hashes and actual tool narrowing; workspace routing metadata is identified as user-controlled.
 - Session UUID/containment checks, atomic snapshots and backups, attachment checksums, and semantic traces excluding raw model/tool content.
 
-Examples: [approval registry](../src/main/agent/permissions/permissions_pending.ts), [A2A fetch](../src/main/agent/a2a/fetch.ts), [skill tool intersection](../src/main/agent/runner/run_skill_tools.ts), [session containment](../src/main/agent/session/session_contained_path.ts), [trace projection](../src/main/agent/session/session_trace_entry.ts).
+Examples: [approval registry](../src/main/agent/permissions/permissions_pending.ts), [skill tool intersection](../src/main/agent/runner/run_skill_tools.ts), [session containment](../src/main/agent/session/session_contained_path.ts), [trace projection](../src/main/agent/session/session_trace_entry.ts).
 
 ## Findings
 
@@ -229,6 +229,6 @@ The runtime after refactoring should follow: admit caller and immutable scope â†
 - Additional isolated probes used fake data to demonstrate wiki symlink reads and missed JSON/bare-token screening. No real provider calls, recordings, messages or sensitive-file reads were needed.
 - The existing tests mock Electron and several integrations; sandbox permission tests mock the runtime. No full packaged-app, real connector, cross-platform sandbox, dependency-vulnerability, performance/load or live model adversarial assessment was completed.
 - Arbitrary command environment reaches the Plan helper bootstrap in source, but a direct local Electron-binary marker probe did **not** execute the injected bootstrap marker. A Node launcher probe is not evidence of an Electron sandbox escape. Packaged/platform helper behavior remains an explicit verification item; no confirmed OS sandbox escape is claimed here.
-- Session files contain private conversation content by design; this review does not establish encryption/access guarantees for every storage backend or OS backup. A2A/MCP safeguards were inspected and covered by the existing suite, not tested against hostile live servers.
+- Session files contain private conversation content by design; this review does not establish encryption/access guarantees for every storage backend or OS backup. MCP safeguards were inspected and covered by the existing suite, not tested against hostile live servers.
 
 The recommendations align with deterministic tool authorization and scoped agent authority in [OWASP's AI Agent Security guidance](https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html), and sender validation/context isolation in [Electron's security guidance](https://www.electronjs.org/docs/latest/tutorial/security). These are reference criteria; each finding above is grounded in repository evidence.

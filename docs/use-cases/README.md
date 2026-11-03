@@ -17,7 +17,7 @@ Replace values in angle brackets with your own disposable test data. Record the 
 | Devices         | [Microphone, camera, and screen capture](devices.md)                              |
 | Agent work      | [Files, commands, schedules, and health checks](agent.md)                         |
 | Personal data   | [Knowledge, memory, Workspace, Library, and backup](data.md)                      |
-| Extensions      | [Skills, generic MCP, apps, remote agents, and Telegram](integrations.md)         |
+| Extensions      | [Skills, generic MCP, apps, and Telegram](integrations.md)         |
 | Google services | [Gmail, Calendar, Drive, Docs, Sheets, Maps, Contacts, and Gmail SMTP](google.md) |
 | Google scopes   | [Gmail, Calendar, and Drive OAuth scope use cases](google-scopes.md)              |
 
