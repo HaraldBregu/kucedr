@@ -100,7 +100,7 @@ export default function ModelsPage(): React.JSX.Element {
 							<h2 id={`models-${type}`} className="mb-3 text-base font-semibold">
 								{t(`settings.models.types.${type}`)}
 							</h2>
-							<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+							<div className="grid grid-cols-1 gap-3">
 								{group.map((model) => (
 									<Card key={`${model.provider.id}/${model.id}`} size="sm">
 										<CardHeader>
