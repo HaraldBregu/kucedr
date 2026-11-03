@@ -28,6 +28,14 @@ const mockCatalog = [
 			inputs: { resolution: { type: 'string', enum: ['1k', '2k'] } },
 		},
 	},
+	{
+		id: 'batch', name: 'Batch', type: 'speech-to-text', apiTypes: ['batch'],
+		provider: { id: 'google', name: 'Google' },
+	},
+	{
+		id: 'stream', name: 'Stream', type: 'speech-to-text', apiTypes: ['stream'],
+		provider: { id: 'google', name: 'Google' },
+	},
 ];
 
 jest.mock('react-i18next', () => {
@@ -35,10 +43,10 @@ jest.mock('react-i18next', () => {
 	return { useTranslation: () => ({ t }) };
 });
 jest.mock('@/lib/providers', () => ({
-	modelsFor: () => mockCatalog,
+	modelsFor: (type: string) => mockCatalog.filter((model) => model.type === type),
 	providerIdsFor: () => ['google', 'xai'],
-	providerModels: (providerId: string) =>
-		mockCatalog.filter((model) => model.provider.id === providerId),
+	providerModels: (providerId: string, type: string) =>
+		mockCatalog.filter((model) => model.provider.id === providerId && model.type === type),
 	providers: () => [
 		{ id: 'google', name: 'Google', baseUrl: 'https://google.example' },
 		{ id: 'xai', name: 'xAI', baseUrl: 'https://xai.example' },
@@ -62,6 +70,36 @@ beforeEach(() => {
 	api.setProviderId.mockResolvedValue(undefined);
 	api.setModelId.mockResolvedValue(undefined);
 	api.setOptions.mockImplementation(async (options) => options);
+});
+
+it('does not present an unstored model as selected', async () => {
+	api.getProviderId.mockResolvedValue(undefined);
+	api.getModelId.mockResolvedValue(undefined);
+	render(
+		<AgentMediaModelConfiguration api={api} capability="text-to-image" idPrefix="image"
+			title="Image" description="Image defaults" showSelectedModel buttonDropdown />
+	);
+	expect(await screen.findByRole('button', { name: 'Image' })).toHaveTextContent(
+		'settings.modelServices.modelPlaceholder'
+	);
+});
+
+it('offers only batch transcription models and saves through validated selection', async () => {
+	const user = userEvent.setup();
+	const saveSelection = jest.fn().mockResolvedValue(true);
+	api.getProviderId.mockResolvedValue(undefined);
+	api.getModelId.mockResolvedValue(undefined);
+	render(
+		<AgentMediaModelConfiguration api={{ ...api, saveSelection }} capability="speech-to-text"
+			idPrefix="transcription" title="Transcription" description="Transcription"
+			showSelectedModel buttonDropdown />
+	);
+	await user.click(await screen.findByRole('button', { name: 'Transcription' }));
+	expect(screen.queryByRole('menuitemradio', { name: /Stream/ })).not.toBeInTheDocument();
+	await user.click(screen.getByRole('menuitemradio', { name: /Batch/ }));
+	await waitFor(() => expect(saveSelection).toHaveBeenCalledWith('google', 'batch'));
+	expect(api.setProviderId).not.toHaveBeenCalled();
+	expect(api.setModelId).not.toHaveBeenCalled();
 });
 
 it('loads media defaults, hides request content, and replaces options when the model changes', async () => {
