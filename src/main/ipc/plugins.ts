@@ -1,3 +1,4 @@
+import type { ChannelRegistry } from '../channels';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
@@ -11,17 +12,19 @@ import { TrustedRenderer } from './core/trusted';
 export interface PluginsIpcDependencies {
 	windows: WindowContextManager;
 	apps: AppRegistry;
+	channels: ChannelRegistry;
 }
 
 export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 	readonly name = 'plugins';
 
-	register({ windows, apps }: PluginsIpcDependencies, eventBus: EventBus): void {
+	register({ windows, apps, channels }: PluginsIpcDependencies, eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
 		const changed = (): void => {
 			plugins.refreshPlugins();
 			refreshProviderCatalog();
 			eventBus.broadcast(AppChannels.modelsChanged);
+			void channels.reconcile();
 		};
 		plugins.watchPlugins(changed);
 

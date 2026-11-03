@@ -289,10 +289,8 @@ it.each([
 ] as const)('saves and reloads the %s model from the Channels page', async (kind, label) => {
 	const user = userEvent.setup();
 	const view = render(
-		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
-			<Routes>
-				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
-			</Routes>
+		<MemoryRouter>
+			<ChannelsConfigurationPage />
 		</MemoryRouter>
 	);
 	const button = await screen.findByRole('button', { name: label });
@@ -304,10 +302,8 @@ it.each([
 	);
 	view.unmount();
 	render(
-		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
-			<Routes>
-				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
-			</Routes>
+		<MemoryRouter>
+			<ChannelsConfigurationPage />
 		</MemoryRouter>
 	);
 	await waitFor(() =>
@@ -318,10 +314,8 @@ it.each([
 it('keeps media-model changes scoped to the channels profile', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter initialEntries={['/settings/channels/telegram/default']}>
-			<Routes>
-				<Route path="/settings/channels/:pluginId/:channelId" element={<ChannelDetailsPage />} />
-			</Routes>
+		<MemoryRouter>
+			<ChannelsConfigurationPage />
 		</MemoryRouter>
 	);
 	const button = await screen.findByRole('button', { name: 'Image' });

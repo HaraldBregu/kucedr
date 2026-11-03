@@ -138,7 +138,7 @@ export function registerIpcHandlers(
 		new SkillsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('plugins', () =>
-		new PluginsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
+		new PluginsIpc().register({ windows: windowContextManager, apps: appRegistry, channels: channelRegistry }, eventBus)
 	);
 	safeRegister('scripts', () =>
 		new ScriptsIpc().register({ windows: windowContextManager, apps: appRegistry })

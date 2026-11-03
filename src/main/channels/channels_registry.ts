@@ -1,6 +1,7 @@
 import type { ChannelStatusEvent, ChannelType, StoredChannelProvider } from '../../shared';
-import { pathToFileURL } from 'node:url';
-import { resolveChannel } from './catalog';
+import { createRequire } from 'node:module';
+import { statSync } from 'node:fs';
+import { discoverChannels, resolveChannel } from './catalog';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
 import type { EventBus } from '../event_bus';
 import type { LoggerService } from '../shared';
@@ -44,6 +45,7 @@ export interface ChannelRegistry {
 	start(channel: ChannelType): Promise<void>;
 	stop(channel: ChannelType): Promise<void>;
 	restart(channel: ChannelType): Promise<void>;
+	reconcile(): Promise<void>;
 	send(message: ChannelOutboundMessage): Promise<ChannelMessageReceipt>;
 	getStatus(channel: ChannelType): ChannelStatusEvent | undefined;
 	destroy(): Promise<void>;
@@ -71,6 +73,24 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 		});
 	const adapters = new Map<ChannelType, ChannelAdapter>();
 	const statusCache = new Map<ChannelType, ChannelStatusEvent>();
+	const revisions = new Map<ChannelType, string>();
+	let lifecycle = Promise.resolve();
+
+	function enqueue(operation: () => Promise<void>): Promise<void> {
+		const result = lifecycle.then(operation);
+		lifecycle = result.catch(() => {});
+		return result;
+	}
+
+	function revision(contribution: ReturnType<typeof resolveChannel>): string {
+		if (!contribution) return '';
+		let entryVersion = '';
+		try {
+			const stat = statSync(contribution.entry);
+			entryVersion = `${stat.mtimeMs}:${stat.size}`;
+		} catch {}
+		return JSON.stringify([contribution, entryVersion]);
+	}
 
 	function channelCredential(channel: ChannelType): StoredChannelProvider | undefined {
 		return getChannelProvider(channel);
@@ -193,7 +213,9 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 		const loadAdapter =
 			dependencies.loadAdapter ??
 			(async (entry, options) => {
-				const module = await import(/* @vite-ignore */ pathToFileURL(entry).href);
+				const require = createRequire(import.meta.url);
+				delete require.cache[require.resolve(entry)];
+				const module = require(entry);
 				return module.createChannelAdapter(options) as ChannelAdapter;
 			});
 		const adapter = await loadAdapter(contribution.entry, { channel, credentials });
@@ -204,6 +226,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 
 		await adapter.start();
 		adapters.set(channel, adapter);
+		revisions.set(channel, revision(contribution));
 		logger.info('ChannelRegistry', `Started ${channel} channel`);
 	}
 
@@ -214,6 +237,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 			await adapter.stop();
 		} finally {
 			adapters.delete(channel);
+			revisions.delete(channel);
 		}
 	}
 
@@ -226,19 +250,33 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 	}
 
 	return {
-		start,
-		stop,
-		async restart(channel) {
+		start: (channel) => enqueue(() => start(channel)),
+		stop: (channel) => enqueue(() => stop(channel)),
+		restart: (channel) => enqueue(async () => {
 			await stop(channel);
 			await start(channel);
-		},
+		}),
+		reconcile: () => enqueue(async () => {
+			const available = new Map(discoverChannels().map((channel) => [channel.id, channel]));
+			for (const channel of adapters.keys()) {
+				const contribution = available.get(channel);
+				if (!contribution || revisions.get(channel) !== revision(contribution)) await stop(channel);
+			}
+			for (const channel of available.keys()) {
+				try {
+					await start(channel);
+				} catch (error) {
+					logger.error('ChannelRegistry', `Failed to start ${channel} channel`, error);
+				}
+			}
+		}),
 		send,
 		getStatus(channel) {
 			return statusCache.get(channel);
 		},
-		async destroy() {
+		destroy: () => enqueue(async () => {
 			await Promise.all([...adapters.keys()].map(stop));
-		},
+		}),
 	};
 }
 
