@@ -220,7 +220,7 @@ export const app: AppApi = {
 	uploadProvider: (): Promise<string | null> => {
 		return typedInvokeUnwrap(AppChannels.uploadProvider);
 	},
-	getChannelsStatus: (type?: ChannelType): Promise<ChannelStatusEvent | undefined> => {
+	getChannelsStatus: (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {
 		return typedInvokeUnwrap(AppChannels.getChannelsStatus, type);
 	},
 	startChannel: (type: ChannelType): Promise<ChannelStatusEvent | undefined> => {

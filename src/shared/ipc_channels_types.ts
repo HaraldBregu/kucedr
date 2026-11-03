@@ -827,7 +827,7 @@ export interface AppInvokeChannelMap {
 		result: string | null;
 	};
 	[AppChannels.getChannelsStatus]: {
-		args: [type?: import('./channels_types').ChannelType];
+		args: [type: import('./channels_types').ChannelType];
 		result: import('./channels_types').ChannelStatusEvent | undefined;
 	};
 	[AppChannels.startChannel]: {

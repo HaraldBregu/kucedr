@@ -674,7 +674,7 @@ export interface AppApi extends AppStorageApi {
 	showAudioContextMenu: (path: string) => Promise<void>;
 	/** Pick a provider folder and copy it into the providers catalog; null when canceled. */
 	uploadProvider: () => Promise<string | null>;
-	getChannelsStatus: (type?: ChannelType) => Promise<ChannelStatusEvent | undefined>;
+	getChannelsStatus: (type: ChannelType) => Promise<ChannelStatusEvent | undefined>;
 	startChannel: (type: ChannelType) => Promise<ChannelStatusEvent | undefined>;
 	stopChannel: (type: ChannelType) => Promise<void>;
 	restartChannel: (type: ChannelType) => Promise<ChannelStatusEvent | undefined>;

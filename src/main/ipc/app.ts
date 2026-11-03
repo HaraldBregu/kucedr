@@ -854,7 +854,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.getChannelsStatus,
-			wrapSimpleHandler((type?: ChannelType): ChannelStatusEvent | undefined => {
+			wrapSimpleHandler((type: ChannelType): ChannelStatusEvent | undefined => {
 				return channelRegistry.getStatus(type);
 			}, AppChannels.getChannelsStatus)
 		);
