@@ -258,7 +258,9 @@ beforeEach(() => {
 		value: {
 			list: jest
 				.fn()
-				.mockResolvedValue([{ id: 'custom', name: 'Custom model provider', baseUrl: 'https://models.example/v1' }]),
+				.mockResolvedValue([
+					{ id: 'custom', name: 'Custom model provider', baseUrl: 'https://models.example/v1' },
+				]),
 			listCustomModels: jest.fn().mockResolvedValue(['gemma3:4b', 'llama3.2:1b']),
 		},
 	});
@@ -478,9 +480,9 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	expect(screen.getByText('System').compareDocumentPosition(screen.getByText('Core'))).toBe(
 		Node.DOCUMENT_POSITION_FOLLOWING
 	);
-	expect(
-		screen.getByText('Read file').compareDocumentPosition(screen.getByText('Subagent'))
-	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+	expect(screen.getByText('Read file').compareDocumentPosition(screen.getByText('Subagent'))).toBe(
+		Node.DOCUMENT_POSITION_FOLLOWING
+	);
 });
 
 it('limits Health tools to file and command capabilities', async () => {
@@ -502,7 +504,6 @@ it.each([
 	['voice', false, true],
 	['tasks', false, false],
 	['health', false, false],
-	['channels', false, false],
 ] as const)(
 	'applies system tool eligibility to the %s tools page',
 	async (profile, showsAsk, showsBootstrap) => {

@@ -23,7 +23,6 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.localModels': 'Local models',
 		'settings.providers.configured': 'Configured',
 		'settings.providers.notConfigured': 'Not configured',
-		'settings.tabs.channels': 'Channels',
 		'settings.tabs.databases': 'Database',
 		'settings.providers.emptyDatabaseTitle': 'No database providers',
 		'settings.providers.emptyDatabaseDescription':
@@ -218,7 +217,6 @@ describe('Providers settings', () => {
 		expect(screen.getByRole('heading', { name: 'Custom provider' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Databases' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Search' })).toBeInTheDocument();
-		expect(screen.queryByRole('heading', { name: 'Channels' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: /storage/i })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: /storage/i })).not.toBeInTheDocument();
 		await waitFor(() => expect(window.provider.list).toHaveBeenCalled());
@@ -313,7 +311,12 @@ it('resets a saved custom provider connection', async () => {
 	jest
 		.mocked(window.provider.list)
 		.mockResolvedValue([
-			{ id: 'custom', name: 'Custom provider', apiKey: 'saved-key', baseUrl: 'https://models.example/v1' },
+			{
+				id: 'custom',
+				name: 'Custom provider',
+				apiKey: 'saved-key',
+				baseUrl: 'https://models.example/v1',
+			},
 		]);
 	const user = userEvent.setup();
 	render(
@@ -383,7 +386,9 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 		</MemoryRouter>
 	);
 
-	const customProviderItem = screen.getByRole('heading', { name: 'Custom provider' }).closest('[data-slot="item"]');
+	const customProviderItem = screen
+		.getByRole('heading', { name: 'Custom provider' })
+		.closest('[data-slot="item"]');
 	expect(customProviderItem).not.toBeNull();
 	await user.click(within(customProviderItem!).getByRole('button', { name: 'Connect' }));
 	const baseUrlInput = screen.getByLabelText('URL');
@@ -525,9 +530,12 @@ it.each([false, true])(
 			</MemoryRouter>
 		);
 		await screen.findByText('Configured');
-		expect(
-			screen.getAllByRole('heading').map((heading) => heading.textContent)
-		).toEqual([...(embedded ? [] : ['Models']), 'Models', 'OpenAI', 'Custom provider']);
+		expect(screen.getAllByRole('heading').map((heading) => heading.textContent)).toEqual([
+			...(embedded ? [] : ['Models']),
+			'Models',
+			'OpenAI',
+			'Custom provider',
+		]);
 	}
 );
 

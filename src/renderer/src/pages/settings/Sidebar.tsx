@@ -16,12 +16,9 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'general',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			[
-				'/settings/account',
-				'/settings/settings',
-				'/settings/cloud',
-				'/settings/models',
-			].includes(item.path)
+			['/settings/account', '/settings/settings', '/settings/cloud', '/settings/models'].includes(
+				item.path
+			)
 		),
 	},
 	{
@@ -37,11 +34,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
 			...SETTINGS_NAVIGATION.filter((item) =>
-				[
-					'/settings/voice',
-					'/settings/tasks',
-					'/settings/health',
-				].includes(item.path)
+				['/settings/voice', '/settings/tasks', '/settings/health'].includes(item.path)
 			),
 		],
 	},

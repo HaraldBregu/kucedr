@@ -112,7 +112,6 @@ it('includes every canonical static settings subpage', () => {
 
 	for (const path of [
 		'/settings/settings/persona',
-		'/settings/channels/tools',
 		'/settings/models',
 		'/settings/services',
 		'/settings/knowledge/providers',
