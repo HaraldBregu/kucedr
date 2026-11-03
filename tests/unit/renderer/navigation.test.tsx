@@ -365,7 +365,7 @@ it('uses the audio waveform icon for Voice', () => {
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
 });
 
-it('places Models and Web Search after Storage without a Providers entry in the sidebar', () => {
+it('places Web Search after Storage without a Providers entry in the sidebar', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/storage']}>
 			<Routes>
@@ -385,7 +385,7 @@ it('places Models and Web Search after Storage without a Providers entry in the 
 	expect(
 		within(group as HTMLElement).queryByRole('link', { name: 'settings.tabs.providers' })
 	).not.toBeInTheDocument();
-	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(storage) + 3).map((link) => link.getAttribute('href'))).toEqual([
+	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(storage) + 2).map((link) => link.getAttribute('href'))).toEqual([
 		'/settings/services',
 	]);
 	for (const path of [

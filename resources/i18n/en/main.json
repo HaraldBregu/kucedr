@@ -1953,7 +1953,6 @@
 			"noResults": "No matches found.",
 			"retry": "Retry",
 			"embeddingTitle": "Embedding",
-			"configureModels": "Configure models",
 			"configureDatabases": "Configure databases",
 			"storageTitle": "Storage",
 			"localDatabase": "Local SQLite",
