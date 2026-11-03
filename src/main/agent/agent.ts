@@ -258,7 +258,7 @@ export class Agent {
 					source:
 						request.category === 'main'
 							? 'interactive'
-							: : request.category === 'task'
+							: request.category === 'task'
 									? 'task'
 									: request.category === 'health'
 										? 'health'
