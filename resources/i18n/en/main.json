@@ -300,7 +300,7 @@
 				"services": "Application",
 				"assistant": "Agents",
 				"brain": "Brain",
-				"data": "Data",
+				"data": "Data & files",
 				"extensions": "Extensions",
 				"configuration": "Configuration"
 			},
