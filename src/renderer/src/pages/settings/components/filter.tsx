@@ -16,6 +16,7 @@ interface SettingsFilterProps {
 	readonly categories: readonly string[];
 	readonly category: string;
 	readonly onCategoryChange: (category: string) => void;
+	readonly categoryLabels?: Readonly<Record<string, string>>;
 }
 
 export function SettingsFilter({
@@ -24,10 +25,11 @@ export function SettingsFilter({
 	categories,
 	category,
 	onCategoryChange,
+	categoryLabels,
 }: SettingsFilterProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const label = (value: string): string =>
-		t(`settings.filter.categories.${value}`, { defaultValue: value });
+		categoryLabels?.[value] ?? t(`settings.filter.categories.${value}`, { defaultValue: value });
 	return (
 		<div className="mb-3 flex items-center gap-2">
 			<div className="relative flex-1">

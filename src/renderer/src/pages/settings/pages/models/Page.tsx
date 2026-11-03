@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Boxes, Search } from 'lucide-react';
+import { AlertTriangle, Boxes } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { ProviderAvatar } from '@/components/provider-avatar';
 import type { CatalogModel, ModelCapability } from '@shared/model_types';
 import {
 	SettingsEmptyState,
@@ -12,6 +12,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 } from '../../components';
+import { SettingsFilter } from '../../components/filter';
 
 const TYPES: readonly ModelCapability[] = [
 	'text-to-image',
@@ -30,12 +31,15 @@ export default function ModelsPage(): React.JSX.Element {
 	const [models, setModels] = useState<readonly CatalogModel[] | null>(null);
 	const [error, setError] = useState(false);
 	const [query, setQuery] = useState('');
+	const [category, setCategory] = useState('all');
 	const search = query.trim().toLocaleLowerCase();
 	const visibleModels = models?.filter((model) =>
-		`${model.name} ${model.id} ${model.provider.name} ${model.provider.plugin?.name ?? ''}`
+		(category === 'all' || model.type === category) && `${model.name} ${model.id} ${model.provider.name} ${model.provider.plugin?.name ?? ''}`
 			.toLocaleLowerCase()
 			.includes(search)
 	);
+	const categories = TYPES.filter((type) => models?.some((model) => model.type === type));
+	const categoryLabels = Object.fromEntries(categories.map((type) => [type, t(`settings.models.types.${type}`)]));
 
 	useEffect(() => {
 		let active = true;
@@ -88,22 +92,9 @@ export default function ModelsPage(): React.JSX.Element {
 				title={t('settings.tabs.models')}
 				description={t('settings.overview.descriptions.models')}
 			/>
-			<div className="relative mb-3">
-				<Search
-					className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
-					aria-hidden="true"
-				/>
-				<Input
-					type="search"
-					className="h-8 pl-8"
-					value={query}
-					onChange={(event) => setQuery(event.target.value)}
-					placeholder={t('settings.modelServices.searchModels')}
-					aria-label={t('settings.modelServices.searchModels')}
-				/>
-			</div>
+			<SettingsFilter query={query} onQueryChange={setQuery} categories={categories} category={category} onCategoryChange={setCategory} categoryLabels={categoryLabels} />
 			{error && (
-				<SettingsNotice variant="destructive">{t('settings.models.loadError')}</SettingsNotice>
+				<SettingsNotice variant="destructive" icon={AlertTriangle}>{t('settings.models.loadError')}</SettingsNotice>
 			)}
 			{models === null && !error && (
 				<SettingsPanel>
@@ -128,13 +119,16 @@ export default function ModelsPage(): React.JSX.Element {
 							<div className="grid grid-cols-1 gap-3">
 								{group.map((model) => (
 									<Card key={`${model.provider.id}/${model.id}`} size="sm">
-										<CardHeader>
+										<CardHeader className="flex flex-1 items-center gap-3">
+											<ProviderAvatar providerId={model.provider.id} name={model.provider.name} iconDarkUrl={model.provider.iconDarkUrl} iconLightUrl={model.provider.iconLightUrl} className="size-12 rounded-xl" />
+											<div className="flex min-w-0 flex-1 flex-col gap-1">
 											<CardTitle className="break-words">{model.name}</CardTitle>
 											<CardDescription className="break-words text-xs">
 												{model.provider.name}
 												{model.provider.plugin?.name !== model.provider.name &&
 													` · ${model.provider.plugin?.name}`}
 											</CardDescription>
+											</div>
 										</CardHeader>
 									</Card>
 								))}
