@@ -1,4 +1,5 @@
 const mockGetChannelProvider = jest.fn();
+const mockDiscoverChannels = jest.fn();
 const mockGetChannelModelSelection = jest.fn();
 const mockAdapterStart = jest.fn();
 const mockAdapterStop = jest.fn();
@@ -16,6 +17,7 @@ jest.mock('../../../../src/main/models/transcribe', () => ({ toText: jest.fn() }
 jest.mock('../../../../src/main/models/voice', () => ({ synthesize: jest.fn() }));
 
 jest.mock('../../../../src/main/channels/catalog', () => ({
+	discoverChannels: () => mockDiscoverChannels(),
 	resolveChannel: (id: string) =>
 		id === 'unsupported'
 			? undefined
@@ -69,6 +71,7 @@ describe('createChannelRegistry', () => {
 			dmPolicy: 'open',
 		});
 		mockGetChannelModelSelection.mockReturnValue({});
+		mockDiscoverChannels.mockReturnValue([]);
 		mockAdapterStart.mockResolvedValue(undefined);
 		mockAdapterStop.mockResolvedValue(undefined);
 		mockAdapterSend.mockResolvedValue({
@@ -84,6 +87,26 @@ describe('createChannelRegistry', () => {
 			return jest.fn();
 		});
 		mockAdapterOnStatus.mockReturnValue(jest.fn());
+	});
+
+	it('reconciles installed, updated, and disabled channels', async () => {
+		const registry = createChannelRegistry(deps());
+		const contribution = {
+			id: 'telegram', entry: '/channel.cjs', credentials: [{ key: 'apiKey', required: true }],
+			plugin: { id: 'telegram', name: 'Telegram', version: '1' },
+		};
+		mockDiscoverChannels.mockReturnValue([contribution]);
+		await registry.reconcile();
+		expect(mockAdapterStart).toHaveBeenCalledTimes(1);
+		await registry.reconcile();
+		expect(mockAdapterStart).toHaveBeenCalledTimes(1);
+		mockDiscoverChannels.mockReturnValue([{ ...contribution, plugin: { ...contribution.plugin, version: '2' } }]);
+		await registry.reconcile();
+		expect(mockAdapterStop).toHaveBeenCalledTimes(1);
+		expect(mockAdapterStart).toHaveBeenCalledTimes(2);
+		mockDiscoverChannels.mockReturnValue([]);
+		await registry.reconcile();
+		expect(mockAdapterStop).toHaveBeenCalledTimes(2);
 	});
 
 	it('returns undefined status before any channel starts', () => {
