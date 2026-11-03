@@ -6,17 +6,33 @@ is partly done. The rest is still a proposal. [PLUGINS.md](PLUGINS.md) describes
 today.
 
 This document plans how the Kucedr desktop app installs, loads, and distributes plugins. A plugin is
-one package that can contain four kinds of contributions:
+one package that can contain several kinds of contributions:
 
-| Kind | What it adds | Where it runs |
-| --- | --- | --- |
-| **apps** | HTML/JS/CSS apps shown inside Kucedr (extension mode), or in their own window, as the app manifest's `mode` says | Sandboxed iframe in the host UI, or sandboxed app window |
-| **mcp** | Agent tools served over MCP: local stdio servers or remote http servers | Separate process, or remote |
-| **providers** | Provider manifests: models (remote API models and local model files), vector databases, web search, storage, and remote MCP services | Remote API, or local through Ollama |
-| **skills** | `SKILL.md` instruction packages for the agent | No code |
+| Kind          | What it adds                                                                                                                         | Where it runs                                            |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| **channels**  | Messaging channel adapters                                                                                                           | Main process                                             |
+| **apps**      | HTML/JS/CSS apps shown inside Kucedr (extension mode), or in their own window, as the app manifest's `mode` says                     | Sandboxed iframe in the host UI, or sandboxed app window |
+| **mcp**       | Agent tools served over MCP: local stdio servers or remote http servers                                                              | Separate process, or remote                              |
+| **providers** | Provider manifests: models (remote API models and local model files), vector databases, web search, storage, and remote MCP services | Remote API, or local through Ollama                      |
+| **skills**    | `SKILL.md` instruction packages for the agent                                                                                        | No code                                                  |
 
 Users install plugins from the in-app catalog, from an https URL, or by uploading a folder or `.tgz`
 archive. The CLI is not part of this plan.
+
+## Channel adapter contract
+
+A channel contribution lives in `channels/<id>/`. Its manifest declares the folder-matching ID,
+name, relative executable entry, and credential fields. Fields have a `key`, `label`, `type`
+(`text` or `password`), and `required` flag. `instructions` is optional. See
+`resources/plugins/telegram/channels/default/manifest.json` for an example. Settings stores the
+credential values securely and passes them to the adapter; the channel ID is `<plugin-id>/<id>`.
+
+The entry exports `createChannelAdapter({ channel, credentials })`. It returns an adapter with
+`start()`, `stop()`, `send(message)`, `onMessage(handler)`, and `onStatus(handler)` methods. The
+message, receipt, and status shapes are defined in `src/main/channels/channels_types.ts`. Inbound
+messages and receipts must use the supplied channel ID. Bundle runtime dependencies with the entry
+so the contribution works after installation. Channel entries run in the main process and must be
+trusted code.
 
 ## 1. Goals and non-goals
 
@@ -35,17 +51,17 @@ Non-goals for v1:
 
 ## 2. What already exists
 
-| Need | Existing piece |
-| --- | --- |
-| Manifest validation | Manifest v4 zod schema in `packages/cli/src/manifest.ts` (`pluginManifestSchema`), entry checks in `entries.ts`, and path safety in `pluginpath.ts`. Section 4 extends this. |
-| Remote models | `readCatalog()` in `src/main/models.ts` reads providers from built-in plugin manifests (`resources/plugins/<id>/manifest.json`) and `~/.kucedr/providers/<id>/`. |
-| Running unknown providers | `streamProvider()` in `src/main/models/adapters/llm/llm_model.ts` falls back to OpenAI-compatible chat for any provider id it doesn't recognize. |
-| Local models | The `ollama` provider (`resources/plugins/ollama`) plus `ModelLocation = 'remote' \| 'local'` in `src/shared/provider_types.ts`. |
-| Apps | `src/main/apps/*` (`appsRoot`, `appDirectory`, `AppRegistry`, `app_manifest_validate`, and `render` in `app_render.ts`). |
-| MCP servers | Local stdio servers are folders with `mcp.json` (see `resources/plugins/kucedr/mcp/configured-demo-server`), read by `readLocalMcpServer()` and discovered through `mcpLocalDiscoveryRoots()` in `src/main/mcp/mcp_local_root.ts`. |
-| Skills | `src/main/agent/skills/*` (`skillsRoot`, `skills_list.ts`, `skills_resolve_folder.ts`). |
-| Atomic install | `src/main/agent/skills/skills_import.ts`: copy into a staging folder, validate, then rename. |
-| Settings UI | `src/renderer/src/pages/settings/pages/plugins/` (today it lists built-in integrations). |
+| Need                      | Existing piece                                                                                                                                                                                                                     |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Manifest validation       | Manifest v4 zod schema in `packages/cli/src/manifest.ts` (`pluginManifestSchema`), entry checks in `entries.ts`, and path safety in `pluginpath.ts`. Section 4 extends this.                                                       |
+| Remote models             | `readCatalog()` in `src/main/models.ts` reads providers from built-in plugin manifests (`resources/plugins/<id>/manifest.json`) and `~/.kucedr/providers/<id>/`.                                                                   |
+| Running unknown providers | `streamProvider()` in `src/main/models/adapters/llm/llm_model.ts` falls back to OpenAI-compatible chat for any provider id it doesn't recognize.                                                                                   |
+| Local models              | The `ollama` provider (`resources/plugins/ollama`) plus `ModelLocation = 'remote' \| 'local'` in `src/shared/provider_types.ts`.                                                                                                   |
+| Apps                      | `src/main/apps/*` (`appsRoot`, `appDirectory`, `AppRegistry`, `app_manifest_validate`, and `render` in `app_render.ts`).                                                                                                           |
+| MCP servers               | Local stdio servers are folders with `mcp.json` (see `resources/plugins/kucedr/mcp/configured-demo-server`), read by `readLocalMcpServer()` and discovered through `mcpLocalDiscoveryRoots()` in `src/main/mcp/mcp_local_root.ts`. |
+| Skills                    | `src/main/agent/skills/*` (`skillsRoot`, `skills_list.ts`, `skills_resolve_folder.ts`).                                                                                                                                            |
+| Atomic install            | `src/main/agent/skills/skills_import.ts`: copy into a staging folder, validate, then rename.                                                                                                                                       |
+| Settings UI               | `src/renderer/src/pages/settings/pages/plugins/` (today it lists built-in integrations).                                                                                                                                           |
 
 What's missing: the plugin installer, loading `~/.kucedr/plugins/*`, local model
 downloads, the catalog, and the management UI.
@@ -73,6 +89,9 @@ contribution kind in its own folder:
   manifest.json              plugin info, plus provider services (models, mcp_servers,
                              vector_databases, web_search, storage, bots) when it is a provider
   assets/                    images and other data, including the plugin and provider icons
+  channels/<channel-id>/
+    manifest.json            channel configuration and executable entry
+    index.cjs                adapter implementation
   apps/<app-id>/
     manifest.json            title, description, mode, metadata, window
     index.html
@@ -165,6 +184,7 @@ Field rules:
 - `permissions` lists what the plugin's apps may do through the bridge in
   section 9. They are shown to the user before install, and anything not listed is denied.
 - On install, each contribution must also be readable by its loader (`validatePluginContents()`):
+  - a channel needs a valid channel `manifest.json` and entry file;
   - an app needs a valid app `manifest.json` and entry file;
   - every `mcp` id needs either a folder `mcp/<id>/` with a valid `mcp.json` or an entry in
     `mcp/servers.json`, but not both;
@@ -184,10 +204,10 @@ Apps load through the existing apps pipeline: `app_list.ts` and `appDirectory()`
 installed or debug app with the same id wins. The app manifest's optional `mode` picks where it
 opens:
 
-| `mode` | Where it opens |
-| --- | --- |
-| `extension` (default) | Inside the main window, in place of the chat (`ExtensionPage`) |
-| `window` | Its own window, rendered by `render()` in `app_render.ts` with its `window` settings |
+| `mode`                | Where it opens                                                                       |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| `extension` (default) | Inside the main window, in place of the chat (`ExtensionPage`)                       |
+| `window`              | Its own window, rendered by `render()` in `app_render.ts` with its `window` settings |
 
 In extension mode the app's entry loads from `kucedr-app://<app-id>/<entry>` in a **sandboxed
 iframe** (`sandbox="allow-scripts"`): no preload, no Node, no `window.api`, and a CSP that blocks
@@ -345,17 +365,17 @@ The UI keeps calling the same APIs it calls today. No new "plugin models" or "pl
 are added. Each existing list function also reads enabled plugins, so the UI receives bundled,
 user, and plugin entries in one list.
 
-| UI API (IPC channel) | Main function | Plugin source added |
-| --- | --- | --- |
-| `AppChannels.models` | `loadModels()` (`src/main/models.ts`) | plugin `manifest.json` → `models` |
-| `AppChannels.vectorDatabases` | `loadVectorDatabases()` | plugin `manifest.json` → `vector_databases` |
-| `AppChannels.webSearches` | `loadWebSearches()` | plugin `manifest.json` → `web_search` |
-| `AppChannels.storages` | `loadStorages()` | plugin `manifest.json` → `storage` |
-| `AppChannels.mcps` | `loadMcps()` | plugin `manifest.json` → `mcp_servers` (remote catalog services) |
-| MCP server list (`src/main/ipc/mcp.ts`) | `mcp_local_list.ts` via `mcpLocalDiscoveryRoots()` | `mcp/*/mcp.json` (stdio) and `mcp/servers.json` (stdio and http) |
-| `SkillsChannels.list` | `skills.list()` (`skills_list.ts`) | `skills/*/SKILL.md` |
-| Apps list (`src/main/ipc/apps.ts`) | `listApps()` | `apps/*` |
-| Provider lookups (`ipc/provider.ts`, `ipc/agent.ts`) | `loadProviders()`, `findModel()`, `modelsFor()`, and the rest | Same catalog, so plugin providers resolve everywhere |
+| UI API (IPC channel)                                 | Main function                                                 | Plugin source added                                              |
+| ---------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `AppChannels.models`                                 | `loadModels()` (`src/main/models.ts`)                         | plugin `manifest.json` → `models`                                |
+| `AppChannels.vectorDatabases`                        | `loadVectorDatabases()`                                       | plugin `manifest.json` → `vector_databases`                      |
+| `AppChannels.webSearches`                            | `loadWebSearches()`                                           | plugin `manifest.json` → `web_search`                            |
+| `AppChannels.storages`                               | `loadStorages()`                                              | plugin `manifest.json` → `storage`                               |
+| `AppChannels.mcps`                                   | `loadMcps()`                                                  | plugin `manifest.json` → `mcp_servers` (remote catalog services) |
+| MCP server list (`src/main/ipc/mcp.ts`)              | `mcp_local_list.ts` via `mcpLocalDiscoveryRoots()`            | `mcp/*/mcp.json` (stdio) and `mcp/servers.json` (stdio and http) |
+| `SkillsChannels.list`                                | `skills.list()` (`skills_list.ts`)                            | `skills/*/SKILL.md`                                              |
+| Apps list (`src/main/ipc/apps.ts`)                   | `listApps()`                                                  | `apps/*`                                                         |
+| Provider lookups (`ipc/provider.ts`, `ipc/agent.ts`) | `loadProviders()`, `findModel()`, `modelsFor()`, and the rest | Same catalog, so plugin providers resolve everywhere             |
 
 How it works:
 
@@ -369,6 +389,7 @@ How it works:
 
    The built-in providers arrive through their own built-in plugins like any other plugin's. The user's
    `~/.kucedr/providers` loads last, so user overrides still win.
+
 2. **Local MCP servers:** `mcpLocalDiscoveryRoots()` returns
    `[localRoot, ...pluginDirs('mcp')]`.
 3. **Skills and apps** scan `pluginDirs('skills')` and `pluginDirs('apps')` after their own roots.
@@ -383,6 +404,7 @@ How it works:
    The field is absent for bundled and user entries. The UI can show a "from Acme Tools" badge and
    filter by plugin without another request. Plugin MCP servers keep `source: 'local'` and add
    the `plugin` field.
+
 5. **Disabled or unavailable plugins are left out.** `pluginDirs()` only returns enabled,
    available plugins, so their entries disappear from every list at once.
 6. **Ids:** a plugin provider id that matches a core provider id is rejected at install. For
@@ -398,20 +420,20 @@ How it works:
 
 Following the `src/main/apps/` style, each file holds one function:
 
-| File | Responsibility |
-| --- | --- |
-| `plugins_root.ts` | `pluginsRoot()` returns `path.join(userDataLocation(), 'plugins')`. |
-| `plugins_list.ts` | Reads each `<root>/<id>/manifest.json` with the shared schema. A plugin that fails validation is listed as **unavailable**, with the reason, instead of being skipped. The other plugins keep loading. |
-| `plugins_enabled.ts` | Stores enabled plugin ids in electron-store. New installs start enabled. |
-| `plugins_dirs.ts` | `pluginDirs(kind)` returns the `<plugin>/<kind>` folders of enabled, available plugins. All loaders call this one function. |
-| `plugins_install.ts` | Takes a source folder, copies it to `<root>/.install-<uuid>/`, validates the manifest, entries, `minAppVersion`, and per-kind checks, then renames it to `<root>/<id>`. Re-installing the same id replaces the old version. If anything fails, the staging folder is deleted. |
-| `plugins_upload.ts` | Opens a picker for a folder or `.tgz`, extracts the archive if needed, then installs. |
-| `plugins_download.ts` | Downloads an https `.tgz` with `fetch` and a size cap, checks `integrity` when one is given, extracts it to a temp folder, then installs. |
-| `plugins_remove.ts` | Deletes `<root>/<id>` and its enabled entry, and optionally its downloaded model weights. |
-| `plugins_catalog.ts` | Fetches and caches the catalog `index.json` (section 10). |
-| `plugins_config.ts` | Reads and writes plugin config values; `sensitive` values go to the credential store. |
-| `plugins_protocol.ts` | Serves `kucedr-plugin://<plugin-id>/...` from the plugin folder and rejects any path that escapes it. |
-| `models_download.ts` | Downloads local model weights through Ollama pull, or by URL plus a `sha256` check. |
+| File                  | Responsibility                                                                                                                                                                                                                                                                |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `plugins_root.ts`     | `pluginsRoot()` returns `path.join(userDataLocation(), 'plugins')`.                                                                                                                                                                                                           |
+| `plugins_list.ts`     | Reads each `<root>/<id>/manifest.json` with the shared schema. A plugin that fails validation is listed as **unavailable**, with the reason, instead of being skipped. The other plugins keep loading.                                                                        |
+| `plugins_enabled.ts`  | Stores enabled plugin ids in electron-store. New installs start enabled.                                                                                                                                                                                                      |
+| `plugins_dirs.ts`     | `pluginDirs(kind)` returns the `<plugin>/<kind>` folders of enabled, available plugins. All loaders call this one function.                                                                                                                                                   |
+| `plugins_install.ts`  | Takes a source folder, copies it to `<root>/.install-<uuid>/`, validates the manifest, entries, `minAppVersion`, and per-kind checks, then renames it to `<root>/<id>`. Re-installing the same id replaces the old version. If anything fails, the staging folder is deleted. |
+| `plugins_upload.ts`   | Opens a picker for a folder or `.tgz`, extracts the archive if needed, then installs.                                                                                                                                                                                         |
+| `plugins_download.ts` | Downloads an https `.tgz` with `fetch` and a size cap, checks `integrity` when one is given, extracts it to a temp folder, then installs.                                                                                                                                     |
+| `plugins_remove.ts`   | Deletes `<root>/<id>` and its enabled entry, and optionally its downloaded model weights.                                                                                                                                                                                     |
+| `plugins_catalog.ts`  | Fetches and caches the catalog `index.json` (section 10).                                                                                                                                                                                                                     |
+| `plugins_config.ts`   | Reads and writes plugin config values; `sensitive` values go to the credential store.                                                                                                                                                                                         |
+| `plugins_protocol.ts` | Serves `kucedr-plugin://<plugin-id>/...` from the plugin folder and rejects any path that escapes it.                                                                                                                                                                         |
+| `models_download.ts`  | Downloads local model weights through Ollama pull, or by URL plus a `sha256` check.                                                                                                                                                                                           |
 
 Archives are extracted with `tar` (already used by the CLI; add it to the root `dependencies`).
 Extraction rejects symlinks and entries that escape the target folder. npm tarballs unpack into
@@ -426,16 +448,16 @@ a restart.
 These follow the existing pattern in `src/main/ipc/mcp.ts`, `src/preload/mcp.ts`, and
 `src/shared/ipc_channels_*`:
 
-| Channel | Purpose |
-| --- | --- |
-| `plugins:list` | Lists installed plugins with their manifest, enabled state, availability, and contributions. |
-| `plugins:catalog` | Returns the remote catalog with an `installed` / `update available` state for each entry. |
-| `plugins:install-url` | Installs from an https URL (used by catalog installs too). |
-| `plugins:upload` | Opens the picker and installs the selection. |
-| `plugins:remove` | Uninstalls a plugin. |
-| `plugins:set-enabled` | Enables or disables a plugin. |
-| `plugins:config-get` / `plugins:config-set` | Reads and writes values for the `configSchema` form. |
-| `models:download` / `models:download-progress` | Downloads a local model and streams its progress. |
+| Channel                                        | Purpose                                                                                      |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `plugins:list`                                 | Lists installed plugins with their manifest, enabled state, availability, and contributions. |
+| `plugins:catalog`                              | Returns the remote catalog with an `installed` / `update available` state for each entry.    |
+| `plugins:install-url`                          | Installs from an https URL (used by catalog installs too).                                   |
+| `plugins:upload`                               | Opens the picker and installs the selection.                                                 |
+| `plugins:remove`                               | Uninstalls a plugin.                                                                         |
+| `plugins:set-enabled`                          | Enables or disables a plugin.                                                                |
+| `plugins:config-get` / `plugins:config-set`    | Reads and writes values for the `configSchema` form.                                         |
+| `models:download` / `models:download-progress` | Downloads a local model and streams its progress.                                            |
 
 ## 8. UI (Settings → Plugins)
 
@@ -464,15 +486,15 @@ Apps in extension mode share one host, `ExtensionPage`, on the home page.
   `postMessage({ id, method, params })`. The host checks each call against the plugin's declared
   `permissions` and rejects anything not listed. Initial methods:
 
-  | Method | Permission | Purpose |
-  | --- | --- | --- |
-  | `theme.get` | none | Returns theme tokens; updates are pushed too. |
-  | `config.get` | none | Returns the plugin's own non-sensitive config. |
-  | `storage.get` / `storage.set` | none | Per-plugin key-value storage. |
-  | `composer.insert` | `composer.insert` | Inserts text into the message composer. |
-  | `agent.prompt` | `agent.prompt` | Sends a prompt to the agent; the user sees it in the conversation. |
-  | `mcp.call` | `mcp.call` | Calls a tool on one of the plugin's *own* MCP servers. |
-  | `app.open` | none | Opens one of the plugin's own apps. |
+  | Method                        | Permission        | Purpose                                                            |
+  | ----------------------------- | ----------------- | ------------------------------------------------------------------ |
+  | `theme.get`                   | none              | Returns theme tokens; updates are pushed too.                      |
+  | `config.get`                  | none              | Returns the plugin's own non-sensitive config.                     |
+  | `storage.get` / `storage.set` | none              | Per-plugin key-value storage.                                      |
+  | `composer.insert`             | `composer.insert` | Inserts text into the message composer.                            |
+  | `agent.prompt`                | `agent.prompt`    | Sends a prompt to the agent; the user sees it in the conversation. |
+  | `mcp.call`                    | `mcp.call`        | Calls a tool on one of the plugin's _own_ MCP servers.             |
+  | `app.open`                    | none              | Opens one of the plugin's own apps.                                |
 
 - **Network is opt-in.** Plugin pages get the CSP `default-src 'self' kucedr-plugin:`. Each
   `network:<origin>` permission adds that origin to `connect-src`.

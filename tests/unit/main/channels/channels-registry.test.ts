@@ -16,7 +16,10 @@ jest.mock('../../../../src/main/models/transcribe', () => ({ toText: jest.fn() }
 jest.mock('../../../../src/main/models/voice', () => ({ synthesize: jest.fn() }));
 
 jest.mock('../../../../src/main/channels/catalog', () => ({
-	resolveChannel: (id: string) => id === 'unsupported' ? undefined : ({ id, entry: '/channel.cjs', credentials: [{ key: 'apiKey', required: true }] }),
+	resolveChannel: (id: string) =>
+		id === 'unsupported'
+			? undefined
+			: { id, entry: '/channel.cjs', credentials: [{ key: 'apiKey', required: true }] },
 }));
 
 import { createChannelRegistry } from '../../../../src/main/channels/channels_registry';
@@ -30,7 +33,13 @@ function deps(agentService?: Agent) {
 		logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as LoggerService,
 		eventBus: { emit: jest.fn(), broadcast: jest.fn() } as unknown as EventBus,
 		agentService,
-		loadAdapter: async () => ({ start: mockAdapterStart, stop: mockAdapterStop, send: mockAdapterSend, onMessage: mockAdapterOnMessage, onStatus: mockAdapterOnStatus }),
+		loadAdapter: async () => ({
+			start: mockAdapterStart,
+			stop: mockAdapterStop,
+			send: mockAdapterSend,
+			onMessage: mockAdapterOnMessage,
+			onStatus: mockAdapterOnStatus,
+		}),
 	};
 }
 
