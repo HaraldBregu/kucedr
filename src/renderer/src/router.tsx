@@ -60,6 +60,7 @@ const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Pag
 const KnowledgePage = lazy(() => import('./pages/settings/pages/knowledge/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
+const BotsPage = lazy(() => import('./pages/settings/pages/bots/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
