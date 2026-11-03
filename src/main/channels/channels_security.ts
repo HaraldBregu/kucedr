@@ -12,7 +12,7 @@ export function canReceive(
 	message: ChannelInboundMessage,
 	credential: StoredChannelProvider | undefined
 ): ChannelSecurityDecision {
-	if (!credential?.apiKey.trim()) {
+	if (!credential) {
 		return { allowed: false, reason: 'channel_not_configured' };
 	}
 	if (message.content.type === 'text' && !message.content.text.trim()) {

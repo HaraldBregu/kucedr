@@ -58,7 +58,15 @@ export function ChannelConfiguration({
 		setSaving(true);
 		setError(null);
 		try {
-			const saved = await window.provider.setChannel(next);
+			const credentials = Object.fromEntries(
+				Object.entries(next.credentials ?? {}).map(([key, value]) => [key, value.trim()])
+			);
+			const saved = await window.provider.setChannel({
+				...next,
+				credentials,
+				apiKey: credentials.apiKey ?? next.apiKey,
+			});
+			await window.app.restartChannel(providerId);
 			setCredential({ ...saved, apiKey: '', credentials: {} });
 			setConfigured(saved.configured);
 			return true;
@@ -116,7 +124,12 @@ export function ChannelConfiguration({
 									autoComplete="off"
 									value={credential.credentials?.[field.key] ?? ''}
 									disabled={saving}
-									onChange={(event) => setCredential({ ...credential, credentials: { ...credential.credentials, [field.key]: event.target.value } })}
+									onChange={(event) =>
+										setCredential({
+											...credential,
+											credentials: { ...credential.credentials, [field.key]: event.target.value },
+										})
+									}
 									className="h-8 min-w-0 flex-1 text-xs sm:w-64"
 									aria-label={field.label}
 									required={field.required}
@@ -125,12 +138,24 @@ export function ChannelConfiguration({
 						}
 					/>
 				))}
-				{(service.credentials ?? []).length > 0 && (
-					<SettingsRow title={t('common.save')} actions={
-						<Button type="button" size="sm" disabled={saving || !Object.values(credential.credentials ?? {}).some((value) => value.trim())} onClick={() => void save(credential)}>
-							{t('common.save')}
-						</Button>
-					} />
+				{((service.credentials ?? []).length > 0 || !configured) && (
+					<SettingsRow
+						title={t('common.save')}
+						actions={
+							<Button
+								type="button"
+								size="sm"
+								disabled={
+									saving ||
+									(configured &&
+										!Object.values(credential.credentials ?? {}).some((value) => value.trim()))
+								}
+								onClick={() => void save(credential)}
+							>
+								{t('common.save')}
+							</Button>
+						}
+					/>
 				)}
 				<SettingsRow
 					title={t('settings.channels.dmPolicy')}

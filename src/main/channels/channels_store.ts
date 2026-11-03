@@ -63,7 +63,10 @@ export function listChannelProviders(): StoredChannelProvider[] {
 	let migrated = false;
 	const providers = state.providers.map((provider) => {
 		const { apiKey: plaintextApiKey, ...metadata } = provider;
-		let { apiKey, credentials } = volatileApiKeys.get(provider.id) ?? { apiKey: '', credentials: undefined };
+		let { apiKey, credentials } = volatileApiKeys.get(provider.id) ?? {
+			apiKey: '',
+			credentials: undefined,
+		};
 		if (plaintextApiKey) {
 			apiKey = plaintextApiKey;
 			migrated = true;
@@ -114,12 +117,21 @@ export function setChannelProvider(provider: StoredChannelProvider): StoredChann
 	if (provider.apiKey || Object.keys(provider.credentials ?? {}).length) {
 		if (isSafeStorageAvailable()) {
 			encryptedApiKeys[provider.id] = safeStorage
-				.encryptString(JSON.stringify({ id: provider.id, apiKey: provider.apiKey, ...(provider.credentials ? { credentials: provider.credentials } : {}) }))
+				.encryptString(
+					JSON.stringify({
+						id: provider.id,
+						apiKey: provider.apiKey,
+						...(provider.credentials ? { credentials: provider.credentials } : {}),
+					})
+				)
 				.toString('base64');
 			volatileApiKeys.delete(provider.id);
 		} else {
 			delete encryptedApiKeys[provider.id];
-			volatileApiKeys.set(provider.id, { apiKey: provider.apiKey, credentials: provider.credentials });
+			volatileApiKeys.set(provider.id, {
+				apiKey: provider.apiKey,
+				credentials: provider.credentials,
+			});
 		}
 	} else {
 		delete encryptedApiKeys[provider.id];
