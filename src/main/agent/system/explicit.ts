@@ -22,7 +22,5 @@ export function requiresExplicitRequest(tool: Tool): boolean {
 		'update_task',
 		'delete_task',
 		'run_task_now',
-		'delegate_a2a',
-		'cancel_a2a_task',
 	].includes(tool.id);
 }
