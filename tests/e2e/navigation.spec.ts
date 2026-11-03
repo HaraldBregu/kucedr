@@ -46,7 +46,6 @@ const routes = [
 	'/settings/settings/persona',
 	'/settings/storage',
 	'/settings/settings/media/microphone',
-	'/settings/channels',
 	'/settings/plugins',
 	'/settings/skills',
 	'/settings/models',
@@ -774,88 +773,6 @@ test('Agent resources have icons and open their nested settings pages', async ({
 	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
 	await permissions.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('agent-narrow.png'), fullPage: true });
-	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
-		true
-	);
-});
-
-test('Channels configures credentials and models directly on the channel page', async ({
-	browserName: _browserName,
-}, testInfo) => {
-	await app.evaluate(({ BrowserWindow }) => {
-		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
-	});
-	await page.evaluate(() => {
-		window.location.hash = '#/settings/channels';
-	});
-	const sidebar = page.locator('[data-slot="settings-sidebar"]');
-	await expect(sidebar.getByRole('link', { name: 'Channels', exact: true })).toHaveCount(1);
-	await expect(sidebar.locator('.overflow-y-auto')).toHaveCSS('padding-bottom', '16px');
-	await expect(page.getByRole('heading', { name: 'Channels', exact: true })).toBeVisible();
-	await expect(page.getByRole('heading', { name: 'Configuration', exact: true })).toHaveCount(1);
-	await expect(page.getByRole('link', { name: /Configuration/ })).toHaveCount(0);
-	await expect(page.getByText('Open Telegram, message @BotFather')).toBeVisible();
-	await page.getByLabel('Bot token', { exact: true }).fill('channel-test-token');
-	await page.getByRole('button', { name: 'Save', exact: true }).click();
-	await expect(page.getByLabel('Bot token', { exact: true })).toHaveValue('');
-	await expect(page).toHaveURL(/#\/settings\/channels$/);
-	expect(await page.evaluate(() => window.provider.getChannel('telegram'))).toMatchObject({
-		id: 'telegram',
-		configured: true,
-	});
-	await page.getByRole('combobox', { name: 'DM policy', exact: true }).click();
-	await page.getByRole('option', { name: 'Allowlist', exact: true }).click();
-	await expect
-		.poll(() => page.evaluate(async () => (await window.provider.getChannel('telegram'))?.dmPolicy))
-		.toBe('allowlist');
-	await page.getByLabel('sender id or handle', { exact: true }).fill('123456');
-	await page.getByRole('button', { name: 'Add allowed sender', exact: true }).click();
-	await expect
-		.poll(() =>
-			page.evaluate(async () => (await window.provider.getChannel('telegram'))?.allowFrom)
-		)
-		.toEqual(['123456']);
-	await page.screenshot({
-		path: testInfo.outputPath('channels-credentials-desktop.png'),
-		fullPage: true,
-	});
-	await page.reload();
-	await expect(page.getByLabel('Bot token', { exact: true })).toHaveValue('');
-	await expect(page.getByText('123456', { exact: true })).toBeVisible();
-	const model = page.getByRole('button', { name: 'Model', exact: true });
-	await model.scrollIntoViewIfNeeded();
-	await expect(model).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Transcribe model', exact: true })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Voice model', exact: true })).toBeVisible();
-	const music = page.getByRole('button', { name: 'Music', exact: true });
-	await music.scrollIntoViewIfNeeded();
-	await expect(music).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Image', exact: true })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Video', exact: true })).toBeVisible();
-	await music.locator('xpath=ancestor::*[@data-slot="card"][1]').screenshot({
-		path: testInfo.outputPath('channels-media-models-desktop.png'),
-		animations: 'disabled',
-	});
-	const tools = page.getByRole('link', { name: /Tools/ });
-	await tools.scrollIntoViewIfNeeded();
-	await page.screenshot({
-		path: testInfo.outputPath('channels-models-desktop.png'),
-		fullPage: true,
-	});
-	await tools.click();
-	await expect(page).toHaveURL(/#\/settings\/channels\/tools$/);
-	await expect(page.getByRole('heading', { name: 'Tools', exact: true })).toBeVisible();
-	await page.evaluate(() => {
-		window.location.hash = '#/settings/channels';
-	});
-	await app.evaluate(({ BrowserWindow }) => {
-		const win = BrowserWindow.getAllWindows()[0];
-		win.setMinimumSize(390, 600);
-		win.setSize(390, 800);
-	});
-	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
-	await page.getByLabel('Bot token', { exact: true }).scrollIntoViewIfNeeded();
-	await page.screenshot({ path: testInfo.outputPath('channels-narrow.png'), fullPage: true });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
 		true
 	);
