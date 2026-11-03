@@ -260,7 +260,13 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 			const available = new Map(discoverChannels().map((channel) => [channel.id, channel]));
 			for (const channel of adapters.keys()) {
 				const contribution = available.get(channel);
-				if (!contribution || revisions.get(channel) !== revision(contribution)) await stop(channel);
+				if (!contribution || revisions.get(channel) !== revision(contribution)) {
+					try {
+						await stop(channel);
+					} catch (error) {
+						logger.error('ChannelRegistry', `Failed to stop ${channel} channel`, error);
+					}
+				}
 			}
 			for (const channel of available.keys()) {
 				try {

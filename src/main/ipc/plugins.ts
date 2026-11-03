@@ -1,3 +1,4 @@
+import type { LoggerService } from '../shared';
 import type { ChannelRegistry } from '../channels';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
@@ -13,18 +14,19 @@ export interface PluginsIpcDependencies {
 	windows: WindowContextManager;
 	apps: AppRegistry;
 	channels: ChannelRegistry;
+	logger: LoggerService;
 }
 
 export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 	readonly name = 'plugins';
 
-	register({ windows, apps, channels }: PluginsIpcDependencies, eventBus: EventBus): void {
+	register({ windows, apps, channels, logger }: PluginsIpcDependencies, eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
 		const changed = (): void => {
 			plugins.refreshPlugins();
 			refreshProviderCatalog();
 			eventBus.broadcast(AppChannels.modelsChanged);
-			void channels.reconcile();
+			void channels.reconcile().catch((error) => logger.error('Plugins', 'Failed to reconcile channels', error));
 		};
 		plugins.watchPlugins(changed);
 
