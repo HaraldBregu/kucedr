@@ -13,7 +13,7 @@ it('loads the bundled OpenRouter provider and its icon', () => {
 			baseUrl: 'https://openrouter.ai/api/v1',
 			modelsUrl: 'https://openrouter.ai/api/v1/models',
 			modelUrl: 'https://openrouter.ai/{id}',
-			models: [expect.objectContaining({ id: 'openrouter/auto' })],
+			models: [expect.objectContaining({ id: 'openrouter/auto', metadata: expect.objectContaining({ inputs: {}, discoveryInputs: expect.objectContaining({ reasoning: expect.objectContaining({ properties: expect.objectContaining({ effort: expect.objectContaining({ enum: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'] }) }) }) }) }) })],
 		},
 	});
 });
