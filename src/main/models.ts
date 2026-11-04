@@ -221,6 +221,7 @@ function toPublicProvider(
 			(service) => service.url?.startsWith('http')
 		)?.url ??
 		'';
+	const discoveryInputs = entry.models?.find((model) => model.discoveryOnly && model.metadata?.discoveryInputs)?.metadata?.discoveryInputs;
 	const iconDarkUrl = iconUrl(providerDir, entry.icon_dark_url);
 	const iconLightUrl = iconUrl(providerDir, entry.icon_light_url);
 	return {
@@ -231,9 +232,7 @@ function toPublicProvider(
 		...(entry.apiKeyUrl ? { apiKeyUrl: entry.apiKeyUrl } : {}),
 		...(entry.modelsUrl ? { modelsUrl: entry.modelsUrl } : {}),
 		...(entry.modelUrl ? { modelUrl: entry.modelUrl } : {}),
-		...(entry.models?.find((model) => model.discoveryOnly && model.metadata?.discoveryInputs)?.metadata?.discoveryInputs
-			? { discoveryInputs: entry.models.find((model) => model.discoveryOnly && model.metadata?.discoveryInputs)!.metadata!.discoveryInputs }
-			: {}),
+		...(discoveryInputs ? { discoveryInputs } : {}),
 		...(iconDarkUrl ? { iconDarkUrl } : {}),
 		...(iconLightUrl ? { iconLightUrl } : {}),
 		...(plugin ? { plugin } : {}),

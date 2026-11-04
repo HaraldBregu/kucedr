@@ -243,7 +243,7 @@ export function ModelProviderSelect({
 						const isSelected = value === `${providerId}${VALUE_SEPARATOR}${modelId}`;
 						return (
 							<React.Fragment key={value}>
-							{compactPopover && model.discovered && !matchingModels[index - 1]?.model.discovered && (
+							{model.discovered && (!matchingModels[index - 1]?.model.discovered || matchingModels[index - 1]?.group.id !== group.id) && (
 								<div className="px-2 pt-2 pb-1 text-xs text-muted-foreground">Remote</div>
 							)}
 							<button

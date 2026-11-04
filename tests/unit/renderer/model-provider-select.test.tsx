@@ -112,3 +112,15 @@ it('keeps the prompt picker open after selecting a model until clicking outside'
 	await user.click(screen.getByRole('button', { name: 'Outside' }));
 	await waitFor(() => expect(screen.queryByRole('menuitemradio', { name: 'Model B' })).not.toBeInTheDocument());
 });
+
+
+it('lists auto and discovered remote models in the provider picker', async () => {
+	const user = userEvent.setup();
+	const onChange = jest.fn();
+	render(<ModelProviderSelect idPrefix="openrouter" providerGroups={[{ id: 'openrouter', models: [{ id: 'openrouter/auto', name: 'Auto Router' }, { id: 'example/model', name: 'Remote Model', discovered: true }] }]} providerId="openrouter" modelId="openrouter/auto" onChange={onChange} buttonDropdown compactPopover labels={{ label: 'Change model' }} />);
+	await user.click(screen.getByRole('button', { name: 'Change model' }));
+	expect(screen.getByRole('menuitemradio', { name: 'Auto Router' })).toBeInTheDocument();
+	expect(screen.getByText('Remote', { exact: true })).toBeInTheDocument();
+	await user.click(screen.getByRole('menuitemradio', { name: 'Remote Model' }));
+	expect(onChange).toHaveBeenCalledWith('openrouter', 'example/model');
+});
