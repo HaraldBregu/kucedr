@@ -1,6 +1,6 @@
 import React, { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, ChevronDown } from 'lucide-react';
+import { Check, ChevronDown, Search } from 'lucide-react';
 import { providerIdsFor, providerModels } from '@/lib/providers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -104,6 +104,7 @@ export function ModelProviderSelect({
 	const { t } = useTranslation();
 	const [buttonOpen, setButtonOpen] = useState(false);
 	const [modelSearch, setModelSearch] = useState('');
+	const [activeProviderId, setActiveProviderId] = useState(providerId);
 	const selectedGroup = providerGroups.find((group) => group.id === providerId);
 	const selectedModel = selectedGroup?.models.find((model) => model.id === modelId);
 	const selectedLabel =
@@ -116,7 +117,7 @@ export function ModelProviderSelect({
 		: (labels?.placeholder ?? t('settings.modelServices.modelPlaceholder'));
 	const normalizedModelSearch = modelSearch.trim().toLocaleLowerCase();
 	const matchingModels = providerGroups.flatMap((group) =>
-		group.models
+		(compactPopover && group.id !== activeProviderId ? [] : group.models)
 			.filter((model) => {
 				if (!normalizedModelSearch) return true;
 				return [model.id, model.name, providerName(group)].some((value) =>
@@ -131,6 +132,7 @@ export function ModelProviderSelect({
 			open={buttonOpen}
 			onOpenChange={(open) => {
 				setButtonOpen(open);
+				if (open) setActiveProviderId(providerId || providerGroups[0]?.id || '');
 				if (!open) setModelSearch('');
 			}}
 		>
@@ -143,6 +145,19 @@ export function ModelProviderSelect({
 					aria-label={accessibleLabel}
 					className={cn('min-w-40 max-w-full justify-between text-xs', buttonClassName)}
 				>
+					{compactPopover &&
+						selectedGroup &&
+						(() => {
+							const provider = getProviderCatalogItem(selectedGroup.id);
+							const light = provider.iconLightUrl ?? provider.iconDarkUrl;
+							const dark = provider.iconDarkUrl ?? provider.iconLightUrl;
+							return light && dark ? (
+								<span className="size-4 shrink-0">
+									<img src={light} alt="" className="size-full object-contain dark:hidden" />
+									<img src={dark} alt="" className="hidden size-full object-contain dark:block" />
+								</span>
+							) : null;
+						})()}
 					<span className="min-w-0 truncate capitalize">{buttonLabel}</span>
 					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
 				</Button>
@@ -150,19 +165,70 @@ export function ModelProviderSelect({
 			<PopoverContent
 				align="end"
 				collisionPadding={12}
-				className="flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-72 max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1"
+				className={cn(
+					'flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-72 max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1',
+					compactPopover && 'w-80 p-0'
+				)}
 			>
-				<Input
-					aria-label={t('settings.modelServices.searchModels')}
-					className="mb-1 h-8 shrink-0 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0"
-					placeholder={t('settings.modelServices.searchModels')}
-					value={modelSearch}
-					onChange={(event) => setModelSearch(event.target.value)}
-				/>
+				{compactPopover && (
+					<div className="flex shrink-0 overflow-x-auto border-b px-1" aria-label="Providers">
+						{providerGroups
+							.filter((group) => group.models.length > 0)
+							.map((group) => {
+								const provider = getProviderCatalogItem(group.id);
+								const light = provider.iconLightUrl ?? provider.iconDarkUrl;
+								const dark = provider.iconDarkUrl ?? provider.iconLightUrl;
+								return (
+									<button
+										key={group.id}
+										type="button"
+										aria-label={providerName(group)}
+										aria-pressed={activeProviderId === group.id}
+										title={providerName(group)}
+										onClick={() => setActiveProviderId(group.id)}
+										className="relative flex size-10 shrink-0 items-center justify-center text-muted-foreground outline-none hover:text-foreground focus-visible:bg-accent aria-pressed:text-foreground after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full aria-pressed:after:bg-foreground"
+									>
+										{light && dark ? (
+											<span className="size-5">
+												<img src={light} alt="" className="size-full object-contain dark:hidden" />
+												<img
+													src={dark}
+													alt=""
+													className="hidden size-full object-contain dark:block"
+												/>
+											</span>
+										) : (
+											<span className="text-xs font-medium">
+												{providerName(group).slice(0, 2).toUpperCase()}
+											</span>
+										)}
+									</button>
+								);
+							})}
+					</div>
+				)}
+				<div className={cn('relative shrink-0', compactPopover && 'border-b')}>
+					{compactPopover && (
+						<Search
+							className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+							aria-hidden="true"
+						/>
+					)}
+					<Input
+						aria-label={t('settings.modelServices.searchModels')}
+						className={cn(
+							'mb-1 h-8 shrink-0 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0',
+							compactPopover && 'mb-0 h-10 rounded-none border-0 bg-transparent pl-9 shadow-none'
+						)}
+						placeholder={t('settings.modelServices.searchModels')}
+						value={modelSearch}
+						onChange={(event) => setModelSearch(event.target.value)}
+					/>
+				</div>
 				<div
 					role="menu"
 					aria-label={accessibleLabel}
-					className="min-h-0 min-w-0 flex-1 overflow-y-auto"
+					className={cn('min-h-0 min-w-0 flex-1 overflow-y-auto', compactPopover && 'p-1')}
 				>
 					{matchingModels.map(({ group, model }) => {
 						const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
@@ -184,9 +250,11 @@ export function ModelProviderSelect({
 									<span className="min-w-0 truncate whitespace-nowrap text-sm text-foreground capitalize">
 										{modelName(model)}
 									</span>
-									<span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground capitalize">
-										{providerName(group)}
-									</span>
+									{!compactPopover && (
+										<span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground capitalize">
+											{providerName(group)}
+										</span>
+									)}
 								</span>
 								<Check
 									className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
