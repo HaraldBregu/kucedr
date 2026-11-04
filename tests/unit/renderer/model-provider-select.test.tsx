@@ -96,3 +96,18 @@ it('shows the compact model name without a High suffix and keeps the dropdown ch
 	await user.click(trigger);
 	expect(screen.getByRole('menuitemradio', { name: /Opus 5 High/ })).toBeInTheDocument();
 });
+
+
+it('keeps the prompt picker open after selecting a model until clicking outside', async () => {
+	const user = userEvent.setup();
+	function Picker(): React.JSX.Element {
+		const [modelId, setModelId] = useState('a');
+		return <><button type="button">Outside</button><ModelProviderSelect idPrefix="prompt" providerGroups={[{ id: 'openai', models: [{ id: 'a', name: 'Model A' }, { id: 'b', name: 'Model B' }] }]} providerId="openai" modelId={modelId} onChange={(_, id) => setModelId(id)} buttonDropdown compactPopover labels={{ label: 'Change model' }} /></>;
+	}
+	render(<Picker />);
+	await user.click(screen.getByRole('button', { name: 'Change model' }));
+	await user.click(screen.getByRole('menuitemradio', { name: 'Model B' }));
+	expect(screen.getByRole('menuitemradio', { name: 'Model B' })).toHaveAttribute('aria-checked', 'true');
+	await user.click(screen.getByRole('button', { name: 'Outside' }));
+	await waitFor(() => expect(screen.queryByRole('menuitemradio', { name: 'Model B' })).not.toBeInTheDocument());
+});
