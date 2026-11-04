@@ -13,11 +13,11 @@ export function Toggle({ showTitle = false }: { showTitle?: boolean }): ReactEle
 			aria-label="Toggle Sidebar" aria-controls="split-pane-sidebar"
 			aria-expanded={isMobile ? state.sidebarOpenMobile : state.sidebarOpen}
 			title="Toggle Sidebar" onClick={toggleSidebar}
-			className="mr-2 size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground aria-expanded:hover:bg-muted aria-expanded:hover:text-foreground dark:aria-expanded:hover:bg-muted/50"
+			className={`${showTitle ? '' : 'mr-2'} size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground aria-expanded:hover:bg-muted aria-expanded:hover:text-foreground dark:aria-expanded:hover:bg-muted/50`}
 			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
 			<PanelLeft className="size-4" strokeWidth={1.8} />
 		</Button>
-		{showTitle && <span className="mx-3 text-sm font-medium">Kucedr</span>}
+		{showTitle && <span className="ml-2 mr-3 text-sm font-medium">Kucedr</span>}
 		<Button type="button" variant="ghost" size="icon" aria-label="Go back" title="Go back"
 			onClick={() => navigate(-1)}
 			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
