@@ -10,10 +10,10 @@ export function options(provider: string, request: LlmStreamRequest): Record<str
 		configured.reasoning_effort = request.effort === 'none' ? 'none' : 'high';
 	if (!request.effort) return configured;
 	if (provider === 'openrouter') {
-		configured.reasoning = {
-			...(configured.reasoning as Record<string, unknown> | undefined),
-			effort: request.effort === 'max' ? 'xhigh' : request.effort,
-		};
+		const { max_tokens: _budget, enabled: _enabled, ...reasoning } =
+			(configured.reasoning as Record<string, unknown> | undefined) ?? {};
+		delete configured.reasoning_effort;
+		configured.reasoning = { ...reasoning, effort: request.effort }; 
 	} else if (provider === 'anthropic') {
 		const output = configured.output_config as Record<string, unknown> | undefined;
 		configured.output_config = {

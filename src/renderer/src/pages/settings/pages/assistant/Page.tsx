@@ -177,7 +177,12 @@ const AssistantPage: React.FC = () => {
 	}, [hasLoadedLocalModels, state.loading]);
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
-		saveModelOptions(updateModelOptions(modelOptions, path, value));
+		let next = updateModelOptions(modelOptions, path, value);
+		if (state.providerId === 'openrouter' && path[0] === 'reasoning' && value !== undefined && value !== '') {
+			if (path[1] === 'effort') next = updateModelOptions(next, ['reasoning', 'max_tokens'], undefined);
+			if (path[1] === 'max_tokens') next = updateModelOptions(next, ['reasoning', 'effort'], undefined);
+		}
+		saveModelOptions(next);
 	};
 
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {
