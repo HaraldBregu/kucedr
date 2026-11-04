@@ -126,16 +126,29 @@ it('does not send an empty reply or discard its selected context', async () => {
 it('shows submitted file metadata immediately in an attachment-only turn', async () => {
 	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
 	const file = new File(['notes'], 'brief.txt', { type: 'text/plain' });
-	Object.defineProperty(file, 'arrayBuffer', { value: async () => new TextEncoder().encode('notes').buffer });
+	Object.defineProperty(file, 'arrayBuffer', {
+		value: async () => new TextEncoder().encode('notes').buffer,
+	});
 	await act(async () => {
 		expect(await result.current.handleSubmit([file])).toBe(true);
 	});
 
-	expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({
-		type: 'submit_user_message',
-		content: '',
-		attachments: [expect.objectContaining({ type: 'attachment', kind: 'text', name: 'brief.txt', mimeType: 'text/plain', bytes: 5, file })],
-	}));
+	expect(mockDispatch).toHaveBeenCalledWith(
+		expect.objectContaining({
+			type: 'submit_user_message',
+			content: '',
+			attachments: [
+				expect.objectContaining({
+					type: 'attachment',
+					kind: 'text',
+					name: 'brief.txt',
+					mimeType: 'text/plain',
+					bytes: 5,
+					file,
+				}),
+			],
+		})
+	);
 });
 
 it('keeps goal commands separate from reply context', async () => {
@@ -181,4 +194,25 @@ it('preserves the pending reply when implementing a plan', async () => {
 	expect(send.mock.calls[0][1]).not.toHaveProperty('replyTo');
 	expect(result.current.replyTo).toEqual(firstMessage);
 	expect(result.current.input).toBe('Draft for later');
+});
+
+it('uses the saved effort for the selected model when sending a prompt', async () => {
+	localStorage.setItem(`model-effort:${JSON.stringify(['openai', 'model-a'])}`, 'high');
+	Object.assign(window.agent, {
+		getProvider: jest.fn().mockResolvedValue({ id: 'openai' }),
+		getModelId: jest.fn().mockResolvedValue('model-a'),
+	});
+	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
+	await act(async () => {
+		result.current.setInput('Hello');
+	});
+	await act(async () => {
+		await result.current.handleSubmit();
+	});
+	expect(send).toHaveBeenCalledWith(
+		'Hello',
+		expect.objectContaining({ effort: 'high' }),
+		expect.any(Function)
+	);
+	localStorage.clear();
 });
