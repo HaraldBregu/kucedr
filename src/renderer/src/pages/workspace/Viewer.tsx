@@ -274,14 +274,6 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 							</ButtonGroup>
 						</LayoutGroup>
 					) : null}
-					<Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}>
-						<SelectTrigger size="sm" aria-label="Text size" className="h-6! w-36 text-[11px]">
-							<SelectValue>{TEXT_SIZES.find(({ size }) => size === textSize)?.label}</SelectValue>
-						</SelectTrigger>
-						<SelectContent>
-							{TEXT_SIZES.map(({ size, label }) => <SelectItem key={size} value={size}>{label}</SelectItem>)}
-						</SelectContent>
-					</Select>
 				</footer>
 			) : null}
 		</section>
