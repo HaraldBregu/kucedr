@@ -247,7 +247,7 @@ export function AssistantMessage({
 		selecting: t('chat.toolSelection.selecting'),
 		selected: (names) => t('chat.toolSelection.selected', { tools: names }),
 	});
-	const labelContent = statusLabelContent(message, isStreaming, label, elapsedSeconds);
+	const labelContent = statusLabelContent(message, isStreaming, label);
 	const statusClassName = cn(
 		'truncate py-1 text-base font-medium',
 		message.state === 'error' ? 'text-destructive' : 'text-muted-foreground'
