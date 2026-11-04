@@ -344,7 +344,7 @@ test('the navbar opens Search and Workspace keeps its sidebar footer', async () 
 	await expect(page.getByRole('textbox', { name: 'Message your assistant' })).toHaveCount(0);
 	await page
 		.locator('[data-slot="workspace-sidebar"]')
-		.getByRole('link', { name: 'Return to Home' })
+		.getByRole('button', { name: 'Return to Home' })
 		.click();
 	await expect(page).toHaveURL(/#\/home$/);
 });
@@ -474,7 +474,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 	await expect(fileInformation).toHaveText(footerBeforeRefresh ?? '');
 	await page
 		.locator('[data-slot="workspace-sidebar"]')
-		.getByRole('link', { name: 'Return to Home' })
+		.getByRole('button', { name: 'Return to Home' })
 		.click();
 	await page.evaluate(() => {
 		window.location.hash = '#/workspace';
