@@ -10,6 +10,7 @@ import { expandTaskCommand, parseGoalCommand } from './commands';
 import { filesToAgentInput } from './files';
 import { attachmentPath } from '../attachments/path';
 import { useInteractionMode } from './mode';
+import { readEffort } from '../effort/read';
 
 type WindowWithOptionalAgent = Window & {
 	agent?: Window['agent'];
@@ -167,7 +168,11 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					content: displayContent,
 					attachments: files.map((file) => ({
 						type: 'attachment',
-						kind: file.type.startsWith('image/') ? 'image' : file.type === 'application/pdf' ? 'document' : 'text',
+						kind: file.type.startsWith('image/')
+							? 'image'
+							: file.type === 'application/pdf'
+								? 'document'
+								: 'text',
 						name: file.name,
 						mimeType: file.type || 'application/octet-stream',
 						bytes: file.size,
@@ -194,8 +199,15 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			try {
 				const inputFiles = files.length > 0 ? await filesToAgentInput(files) : [];
 				if (requestIdRef.current !== requestId) return false;
+				const [selectedProvider, selectedModel] = await Promise.all([
+					agent.getProvider?.(),
+					agent.getModelId?.(),
+				]);
+				if (requestIdRef.current !== requestId) return false;
+				const selectedEffort = readEffort(selectedProvider?.id ?? '', selectedModel ?? '');
 				const runtimeOptions = {
 					...runtimeOptionsForPrompt(trimmed),
+					...(selectedEffort ? { effort: selectedEffort } : {}),
 					runId,
 					sessionId,
 					interactionMode: sendOptions.interactionMode ?? interactionMode,

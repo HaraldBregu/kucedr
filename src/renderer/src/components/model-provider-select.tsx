@@ -15,6 +15,7 @@ import {
 import { SettingsField } from '@pages/settings/components';
 import { getProviderCatalogItem } from '@pages/start/setupConstants';
 import { cn } from '@/lib/utils';
+import type { ModelReasoningEffort } from '@shared/agent_types';
 
 export interface ModelProviderGroup {
 	readonly id: string;
@@ -85,6 +86,9 @@ interface ModelProviderSelectProps {
 	readonly buttonClassName?: string;
 	readonly showFieldLabel?: boolean;
 	readonly labels?: ModelProviderSelectLabels;
+	readonly effortLevels?: readonly ModelReasoningEffort[];
+	readonly effort?: ModelReasoningEffort;
+	readonly onEffortChange?: (effort?: ModelReasoningEffort) => void;
 }
 
 export function ModelProviderSelect({
@@ -100,6 +104,9 @@ export function ModelProviderSelect({
 	buttonClassName,
 	showFieldLabel = true,
 	labels,
+	effortLevels = [],
+	effort,
+	onEffortChange,
 }: ModelProviderSelectProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [buttonOpen, setButtonOpen] = useState(false);
@@ -269,6 +276,24 @@ export function ModelProviderSelect({
 						</p>
 					)}
 				</div>
+				{compactPopover && effortLevels.length > 0 && onEffortChange && (
+					<div className="shrink-0 border-t px-3 py-3">
+						<div className="mb-2 text-center text-xs font-medium capitalize text-foreground">
+							{effort ?? 'Automatic'}
+						</div>
+						<input
+							type="range"
+							aria-label="Reasoning effort"
+							aria-valuetext={effort ?? 'Automatic'}
+							min={0}
+							max={effortLevels.length}
+							step={1}
+							value={effort ? Math.max(0, effortLevels.indexOf(effort) + 1) : 0}
+							onChange={(event) => onEffortChange(effortLevels[Number(event.target.value) - 1])}
+							className="h-2 w-full cursor-pointer accent-foreground"
+						/>
+					</div>
+				)}
 			</PopoverContent>
 		</Popover>
 	);

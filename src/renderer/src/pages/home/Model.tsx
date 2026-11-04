@@ -2,6 +2,10 @@ import { useEffect, useState, type ReactElement } from 'react';
 import { ModelProviderSelect } from '@/components/model-provider-select';
 import { liveProviderModels, providerIdsFor, providerModels, providers } from '@/lib/providers';
 import { modelContextWindow } from '@shared/model_context';
+import { modelEfforts } from '@shared/effort';
+import type { ModelReasoningEffort } from '@shared/agent_types';
+import { readEffort } from './effort/read';
+import { saveEffort } from './effort/save';
 import type { ProviderModel } from '@shared/model_types';
 import { welcomeMessage } from './context';
 import type { HomeChatMessage } from './context/state';
@@ -21,6 +25,7 @@ export function Model({
 	const [groups, setGroups] = useState<{ id: string; models: ProviderModel[] }[]>([]);
 	const [providerId, setProviderId] = useState('');
 	const [modelId, setModelId] = useState('');
+	const [effort, setEffort] = useState<ModelReasoningEffort>();
 	const [localProvider, setLocalProvider] =
 		useState<Awaited<ReturnType<NonNullable<typeof window.provider>['list']>>[number]>();
 	const [saving, setSaving] = useState(false);
@@ -32,11 +37,7 @@ export function Model({
 			void window.agent
 				.getContextWindow()
 				.then((value) => {
-					if (
-						active &&
-						value.modelId === modelId &&
-						value.providerId === 'custom'
-					)
+					if (active && value.modelId === modelId && value.providerId === 'custom')
 						setLocalContextWindow(value.contextWindow);
 				})
 				.catch(() => undefined);
@@ -76,6 +77,7 @@ export function Model({
 				setLocalProvider(custom);
 				setProviderId(storedProvider?.id ?? '');
 				setModelId(storedModelId ?? '');
+				setEffort(readEffort(storedProvider?.id ?? '', storedModelId ?? ''));
 			} catch {
 				if (active) setError(true);
 			}
@@ -102,6 +104,7 @@ export function Model({
 			if (nextProviderId !== 'custom') await window.agent.setModelOptions({});
 			setProviderId(nextProviderId);
 			setModelId(nextModelId);
+			setEffort(readEffort(nextProviderId, nextModelId));
 		} catch {
 			setError(true);
 		} finally {
@@ -109,12 +112,17 @@ export function Model({
 		}
 	};
 
+	const selectedModel = groups
+		.find((group) => group.id === providerId)
+		?.models.find((model) => model.id === modelId);
+	const effortLevels = modelEfforts(selectedModel?.metadata);
+	const selectedEffort = effort && effortLevels.includes(effort) ? effort : undefined;
+
 	const contextWindow =
 		localContextWindow ??
 		modelContextWindow(
-			groups
-				.find((group) => group.id === providerId)
-				?.models.find((model) => model.id === modelId)?.metadata
+			groups.find((group) => group.id === providerId)?.models.find((model) => model.id === modelId)
+				?.metadata
 		);
 	useEffect(() => {
 		onContext?.({ providerId, modelId, contextWindow });
@@ -132,6 +140,16 @@ export function Model({
 				inline
 				buttonDropdown
 				compactPopover
+				effortLevels={effortLevels}
+				effort={selectedEffort}
+				onEffortChange={(nextEffort) => {
+					try {
+						saveEffort(providerId, modelId, nextEffort);
+						setEffort(nextEffort);
+					} catch {
+						setError(true);
+					}
+				}}
 				showFieldLabel={false}
 				buttonClassName="h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground"
 				labels={{ label: 'Change model' }}

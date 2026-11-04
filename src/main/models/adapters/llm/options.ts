@@ -9,17 +9,14 @@ export function options(provider: string, request: LlmStreamRequest): Record<str
 	)
 		configured.reasoning_effort = request.effort === 'none' ? 'none' : 'high';
 	if (!request.effort) return configured;
-	if (
-		provider === 'anthropic'
-	) {
+	if (provider === 'anthropic') {
 		const output = configured.output_config as Record<string, unknown> | undefined;
 		configured.output_config = {
 			...output,
 			effort: request.effort === 'none' || request.effort === 'minimal' ? 'low' : request.effort,
 		};
-	} else if (provider === 'xai' && request.model === 'grok-4.7') {
-		configured.reasoning_effort =
-			request.effort === 'none' || request.effort === 'minimal' ? 'low' : request.effort;
+	} else if (provider === 'xai') {
+		configured.reasoning_effort = request.effort;
 	} else if (provider === 'zai' && /^glm-5\.3/.test(request.model)) {
 		configured.thinking = {
 			...(configured.thinking as Record<string, unknown> | undefined),

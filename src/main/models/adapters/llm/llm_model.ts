@@ -210,7 +210,7 @@ export class LlmModel implements LlmAdapter {
 		if (!provider) throw new Error('LlmModel requires a provider for LLM streaming.');
 
 		const id = provider.id.toLowerCase();
-		if (id === 'openai' || id === 'anthropic') {
+		if (id === 'openai' || id === 'anthropic' || id === 'xai' || id === 'deepseek') {
 			const model = providerModels(id, 'llm').find((item) => item.id === req.model);
 			req = { ...req, effort: resolveModelEffort(req.effort, modelEfforts(model?.metadata)) };
 		}
