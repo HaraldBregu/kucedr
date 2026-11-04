@@ -67,12 +67,12 @@ function message(content: string, tools: AgentMessage['tools'] = []): AgentMessa
 	};
 }
 
-it('shows a lightbulb beside the active Thinking label', () => {
+it('shows the active Churning label with its timer', () => {
 	const thinking = { ...message(''), state: 'thinking' as const };
-	const { container } = render(<AssistantMessage message={thinking} isStreaming />);
+	render(<AssistantMessage message={thinking} isStreaming />);
 
-	expect(screen.getByText('Thinking')).toBeInTheDocument();
-	expect(container.querySelector('.lucide-lightbulb')).toBeInTheDocument();
+	expect(screen.getByText('Churning')).toBeInTheDocument();
+	expect(screen.getByRole('timer')).toBeInTheDocument();
 });
 
 it('shows a failed MCP tool before its authorization request', () => {
