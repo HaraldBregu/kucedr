@@ -291,7 +291,7 @@ export function AssistantMessage({
 				<ToolActivityGroup
 					tools={activityTools}
 					isActive={isRunning}
-					elapsedSeconds={elapsedSeconds}
+					startedAtMs={message.startedAtMs}
 				/>
 			)}
 			{cardTools.map((tool) => {
