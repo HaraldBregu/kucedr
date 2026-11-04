@@ -216,3 +216,16 @@ it('uses the saved effort for the selected model when sending a prompt', async (
 	);
 	localStorage.clear();
 });
+
+it('does not send an outdated OpenRouter effort that the model no longer supports', async () => {
+	localStorage.setItem(`model-effort:${JSON.stringify(['openrouter', 'model-a'])}`, 'none');
+	Object.assign(window.agent, {
+		getProvider: jest.fn().mockResolvedValue({ id: 'openrouter' }),
+		getModelId: jest.fn().mockResolvedValue('model-a'),
+	});
+	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
+	await act(async () => { result.current.setInput('Hello'); });
+	await act(async () => { await result.current.handleSubmit(); });
+	expect(send.mock.calls[0][1].effort).toBeUndefined();
+	localStorage.clear();
+});
