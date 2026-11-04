@@ -207,7 +207,11 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				const selectedEffort = readEffort(selectedProvider?.id ?? '', selectedModel ?? '');
 				const runtimeOptions = {
 					...runtimeOptionsForPrompt(trimmed),
-					...(selectedEffort ? { effort: selectedEffort } : {}),
+					...(selectedEffort
+						? { effort: selectedEffort }
+						: selectedProvider?.id === 'openrouter'
+							? { effort: undefined }
+							: {}),
 					runId,
 					sessionId,
 					interactionMode: sendOptions.interactionMode ?? interactionMode,
