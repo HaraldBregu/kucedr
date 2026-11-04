@@ -485,7 +485,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 	await expect(workspace.getByText('Loading files…')).toHaveCount(0);
 	await page
 		.locator('[data-slot="workspace-sidebar"]')
-		.getByRole('link', { name: 'Return to Home' })
+		.getByRole('button', { name: 'Return to Home' })
 		.click();
 	await page.evaluate(async () => {
 		await new Promise<void>((resolve, reject) => {
