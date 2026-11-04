@@ -101,7 +101,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			type="button"
 			variant={chatButtonVariant}
 			size="sm"
-			className={showChatGroup ? '!rounded-l-full !rounded-r-none text-xs' : 'rounded-full text-xs dark:hover:bg-accent'}
+			className="!rounded-l-full !rounded-r-none text-xs"
 			onClick={() => navigate('/home')}
 			aria-label={homeLabel}
 			aria-current={isHome ? 'page' : undefined}
@@ -118,7 +118,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	);
 	const navigationButtons = showWorkspace ? (
 		<>
-			{showChatGroup ? (
 			<ButtonGroup role="group" aria-label={homeLabel}>
 				{chatButtonTooltip}
 				<DropdownMenu
@@ -202,7 +201,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</ButtonGroup>
-			) : chatButtonTooltip}
 			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
 			<Tooltip>
 				<TooltipTrigger render={
