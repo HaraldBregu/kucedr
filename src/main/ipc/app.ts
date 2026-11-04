@@ -202,7 +202,7 @@ const darkThemeColors: AppThemeColors = {
 	'app-window-background-base': 'oklch(0 0 0)',
 	'app-surface-background-base': 'oklch(0.1400 0 0)',
 	'app-popover-background-base': 'oklch(0.1800 0 0)',
-	'app-sidebar-background-base': 'oklch(0.1400 0 0)',
+	'app-sidebar-background-base': 'oklch(0.0800 0 0)',
 	'app-window-background':
 		'color-mix(in oklch, var(--app-window-background-base) calc(var(--app-bg-opacity) * 100%), transparent)',
 	'app-surface-background':
@@ -254,7 +254,7 @@ const darkThemeColors: AppThemeColors = {
 	background: 'oklch(0 0 0)',
 	card: 'oklch(0.1400 0 0)',
 	popover: 'oklch(0.1800 0 0)',
-	sidebar: 'oklch(0.1400 0 0)',
+	sidebar: 'oklch(0.0800 0 0)',
 };
 
 function getThemeData(): AppThemeData {
