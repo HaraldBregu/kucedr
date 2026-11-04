@@ -664,7 +664,7 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
-			AppChannels.getWorkspaceZoom,
+			AppChannels.getWorkspaceTextSize,
 			wrapSimpleHandler(() => {
 				return getStoredWorkspaceTextSize();
 			}, AppChannels.getWorkspaceTextSize)
