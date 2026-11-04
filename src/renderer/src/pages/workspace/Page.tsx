@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
@@ -11,6 +11,7 @@ const SELECTED_FILE_KEY = 'workspace-selected-file';
 export default function WorkspacePage(): React.JSX.Element {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const navigationType = useNavigationType();
 	const [files, setFiles] = useState<WorkspaceTreeEntry[]>([]);
 	const [wide, setWide] = useState(false);
 	const flushRef = useRef<() => Promise<void>>(null);
@@ -32,8 +33,8 @@ export default function WorkspacePage(): React.JSX.Element {
 		if (initialized.current) return;
 		initialized.current = true;
 		const saved = localStorage.getItem(SELECTED_FILE_KEY);
-		if (!path && saved) selectFile({ type: 'file', path: saved, name: saved.split(/[\\/]/).pop() ?? saved }, true);
-	}, [path, selectFile]);
+		if (!path && saved && (navigationType !== 'POP' || location.key === 'default')) selectFile({ type: 'file', path: saved, name: saved.split(/[\\/]/).pop() ?? saved }, true);
+	}, [location.key, navigationType, path, selectFile]);
 	useEffect(() => {
 		void window.app.getWorkspaceWideContent().then(setWide);
 	}, []);
