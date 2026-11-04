@@ -18,6 +18,9 @@ interface SplitProps extends Omit<React.ComponentProps<'div'>, 'children'> {
 	readonly sidebarLabel?: string;
 	readonly navigationContent?: ReactNode;
 	readonly navigationActions?: ReactNode;
+	readonly rightSidebar?: ReactNode;
+	readonly rightSidebarOpen?: boolean;
+	readonly onRightSidebarOpenChange?: (open: boolean) => void;
 }
 
 export function Split({
@@ -26,6 +29,9 @@ export function Split({
 	sidebarLabel = 'Navigation',
 	navigationContent,
 	navigationActions,
+	rightSidebar,
+	rightSidebarOpen = false,
+	onRightSidebarOpenChange,
 	className,
 	style,
 	...props
@@ -155,6 +161,22 @@ export function Split({
 				<NavigationBar showWorkspace contextContent={navigationContent} rightContent={navigationActions} startContent={isMobile || !state.sidebarOpen ? <Toggle /> : undefined} />
 				<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
 			</main>
+			{isMobile ? (
+				<Sheet open={rightSidebarOpen} onOpenChange={onRightSidebarOpenChange}>
+					<SheetContent side="right" className="bg-sidebar p-0 text-sidebar-foreground" style={{ width: 'min(18rem, calc(100vw - 3rem))', maxWidth: 'none' }}>
+						<SheetHeader className="sr-only">
+							<SheetTitle>Chat information</SheetTitle>
+							<SheetDescription>Chat information</SheetDescription>
+						</SheetHeader>
+						<aside id="chat-information" aria-label="Chat information" className="h-full">{rightSidebar}</aside>
+					</SheetContent>
+				</Sheet>
+			) : rightSidebarOpen ? (
+				<aside id="chat-information" aria-label="Chat information" className="flex w-64 shrink-0 flex-col overflow-hidden border-l border-sidebar-border/60 bg-sidebar text-sidebar-foreground">
+					<header className="flex h-12 shrink-0 items-center px-3 text-sm font-medium" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}>Chat information</header>
+					<div className="min-h-0 flex-1">{rightSidebar}</div>
+				</aside>
+			) : null}
 		</div>
 	);
 }
