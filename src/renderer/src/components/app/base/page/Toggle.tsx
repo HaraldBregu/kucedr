@@ -8,7 +8,7 @@ export function Toggle({ showTitle = false }: { showTitle?: boolean }): ReactEle
 	const { state, isMobile, toggleSidebar } = usePageContext();
 	const navigate = useNavigate();
 	return (
-		<div className="flex items-center -space-x-2">
+		<div className={`flex items-center -space-x-2 ${showTitle ? 'w-full' : ''}`}>
 		<Button type="button" variant="ghost" size="icon" data-slot="split-pane-toggle"
 			aria-label="Toggle Sidebar" aria-controls="split-pane-sidebar"
 			aria-expanded={isMobile ? state.sidebarOpenMobile : state.sidebarOpen}
@@ -18,6 +18,7 @@ export function Toggle({ showTitle = false }: { showTitle?: boolean }): ReactEle
 			<PanelLeft className="size-4" strokeWidth={1.8} />
 		</Button>
 		{showTitle && <span className="ml-2 mr-3 text-sm font-medium">Kucedr</span>}
+		{showTitle && <span className="min-w-0 flex-1" />}
 		<Button type="button" variant="ghost" size="icon" aria-label="Go back" title="Go back"
 			onClick={() => navigate(-1)}
 			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
