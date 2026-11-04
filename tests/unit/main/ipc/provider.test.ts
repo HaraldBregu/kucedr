@@ -31,10 +31,9 @@ jest.mock('../../../../src/main/providers/providers_store', () => ({
 }));
 
 jest.mock('../../../../src/main/models', () => ({
-	modelsFor: () => [{ provider: { id: 'openrouter' }, metadata: require('../../../../resources/plugins/openrouter/models/auto/manifest.json').metadata }],
 	loadProviders: () => [
 		{ id: 'openai', name: 'OpenAI', baseUrl: 'https://api.openai.com/v1' },
-		{ id: 'openrouter', name: 'OpenRouter', modelsUrl: 'https://openrouter.ai/api/v1/models' },
+		{ id: 'openrouter', name: 'OpenRouter', modelsUrl: 'https://openrouter.ai/api/v1/models', discoveryInputs: require('../../../../resources/plugins/openrouter/models/remote/manifest.json').metadata.discoveryInputs },
 	],
 	loadVectorDatabases: () => [
 		{

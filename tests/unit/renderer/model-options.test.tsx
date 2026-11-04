@@ -170,7 +170,7 @@ it('shows OpenRouter model-specific options from the model response', async () =
 	const inputs = openrouterInputs({
 		supported_parameters: ['reasoning', 'temperature'],
 		reasoning: { supported_efforts: ['max', 'low'], default_effort: 'max', supports_max_tokens: true },
-	}, require('../../../resources/plugins/openrouter/models/auto/manifest.json').metadata.discoveryInputs as Record<string, ModelInputSchema>);
+	}, require('../../../resources/plugins/openrouter/models/remote/manifest.json').metadata.discoveryInputs as Record<string, ModelInputSchema>);
 	render(<ModelOptions inputs={inputs} values={{}} inlineAdvanced onChange={jest.fn()} />);
 	expect(screen.getByText('reasoning max tokens')).toBeInTheDocument();
 	expect(screen.getByText('temperature')).toBeInTheDocument();
