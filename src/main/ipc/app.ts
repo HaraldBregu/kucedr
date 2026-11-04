@@ -49,6 +49,8 @@ import {
 	setSoundFeedbackEnabled as setStoredSoundFeedbackEnabled,
 	getWorkspaceWideContent as getStoredWorkspaceWideContent,
 	setWorkspaceWideContent as setStoredWorkspaceWideContent,
+	getWorkspaceZoom as getStoredWorkspaceZoom,
+	setWorkspaceZoom as setStoredWorkspaceZoom,
 	getLanguage as getStoredLanguage,
 	setLanguage as setStoredLanguage,
 	getTheme as getStoredTheme,
