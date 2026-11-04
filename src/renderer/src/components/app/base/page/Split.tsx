@@ -159,17 +159,9 @@ export function Split({
 				className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background"
 			>
 				<NavigationBar showWorkspace contextContent={navigationContent} rightContent={navigationActions} startContent={isMobile || !state.sidebarOpen ? <Toggle /> : undefined} />
-				<div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
-					<div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{children}</div>
-					{!isMobile && rightSidebarOpen && (
-						<aside id="chat-information" aria-label="Chat information" className="flex w-64 shrink-0 flex-col overflow-hidden border-l border-sidebar-border/60 bg-sidebar text-sidebar-foreground">
-							<header className="flex h-12 shrink-0 items-center px-3 text-sm font-medium">Chat information</header>
-							<div className="min-h-0 flex-1">{rightSidebar}</div>
-						</aside>
-					)}
-				</div>
+				<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
 			</main>
-			{isMobile && (
+			{isMobile ? (
 				<Sheet open={rightSidebarOpen} onOpenChange={onRightSidebarOpenChange}>
 					<SheetContent side="right" className="bg-sidebar p-0 text-sidebar-foreground" style={{ width: 'min(18rem, calc(100vw - 3rem))', maxWidth: 'none' }}>
 						<SheetHeader className="flex h-12 shrink-0 justify-center px-3 py-0">
@@ -179,7 +171,12 @@ export function Split({
 						<aside id="chat-information" aria-label="Chat information" className="min-h-0 flex-1">{rightSidebar}</aside>
 					</SheetContent>
 				</Sheet>
-			)}
+			) : rightSidebarOpen ? (
+				<aside id="chat-information" aria-label="Chat information" className="flex w-64 shrink-0 flex-col overflow-hidden border-l border-sidebar-border/60 bg-sidebar text-sidebar-foreground">
+					<header className="flex h-12 shrink-0 items-center px-3 text-sm font-medium" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}>Chat information</header>
+					<div className="min-h-0 flex-1">{rightSidebar}</div>
+				</aside>
+			) : null}
 		</div>
 	);
 }
