@@ -236,7 +236,7 @@ export function ModelProviderSelect({
 				<div
 					role="menu"
 					aria-label={accessibleLabel}
-					className={cn('min-h-0 min-w-0 flex-1 overflow-y-auto', compactPopover && 'p-1')}
+					className={cn('min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto', compactPopover && 'p-1')}
 				>
 					{matchingModels.map(({ group, model }) => {
 						const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
