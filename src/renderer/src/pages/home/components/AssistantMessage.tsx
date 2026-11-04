@@ -134,9 +134,16 @@ function normalizeImageLinks(content: string): string {
 	});
 }
 
-function statusLabelContent(message: AgentMessage, isStreaming: boolean, label: string): ReactNode {
+function statusLabelContent(
+	message: AgentMessage,
+	isStreaming: boolean,
+	label: string,
+	elapsedSeconds?: number
+): ReactNode {
 	if (isStreaming && isRunningState(message.state)) {
-		return <TextShimmer>{label}</TextShimmer>;
+		return (
+			<TextShimmer>{elapsedSeconds === undefined ? label : `${label} ${elapsedSeconds}s`}</TextShimmer>
+		);
 	}
 
 	return label;
