@@ -33,6 +33,7 @@ import type {
 	AppThemeColors,
 	TrayClickAction,
 	VoiceAgentAppearance,
+	WorkspaceTextSize,
 } from '../../shared/app_types';
 import { TRAY_CLICK_ACTIONS } from '../../shared/app_types';
 import { wrapIpcHandler, wrapSimpleHandler } from './core/error_handler';
@@ -49,8 +50,8 @@ import {
 	setSoundFeedbackEnabled as setStoredSoundFeedbackEnabled,
 	getWorkspaceWideContent as getStoredWorkspaceWideContent,
 	setWorkspaceWideContent as setStoredWorkspaceWideContent,
-	getWorkspaceZoom as getStoredWorkspaceZoom,
-	setWorkspaceZoom as setStoredWorkspaceZoom,
+	getWorkspaceTextSize as getStoredWorkspaceTextSize,
+	setWorkspaceTextSize as setStoredWorkspaceTextSize,
 	getLanguage as getStoredLanguage,
 	setLanguage as setStoredLanguage,
 	getTheme as getStoredTheme,
@@ -656,17 +657,17 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
-			AppChannels.setWorkspaceZoom,
-			wrapSimpleHandler((zoom: number) => {
-				setStoredWorkspaceZoom(zoom);
-			}, AppChannels.setWorkspaceZoom)
+			AppChannels.setWorkspaceTextSize,
+			wrapSimpleHandler((size: WorkspaceTextSize) => {
+				setStoredWorkspaceTextSize(size);
+			}, AppChannels.setWorkspaceTextSize)
 		);
 
 		ipcMain.handle(
 			AppChannels.getWorkspaceZoom,
 			wrapSimpleHandler(() => {
-				return getStoredWorkspaceZoom();
-			}, AppChannels.getWorkspaceZoom)
+				return getStoredWorkspaceTextSize();
+			}, AppChannels.getWorkspaceTextSize)
 		);
 
 		ipcMain.handle(
