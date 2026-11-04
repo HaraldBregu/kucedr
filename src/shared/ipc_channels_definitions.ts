@@ -246,6 +246,8 @@ export const AppChannels = {
 	soundFeedbackEnabledChanged: 'app:sound-feedback-enabled-changed',
 	setWorkspaceWideContent: 'app:set-workspace-wide-content',
 	getWorkspaceWideContent: 'app:get-workspace-wide-content',
+	setWorkspaceZoom: 'app:set-workspace-zoom',
+	getWorkspaceZoom: 'app:get-workspace-zoom',
 	setLanguage: 'app:set-language',
 	getLanguage: 'app:get-language',
 	setTheme: 'app:set-theme',
