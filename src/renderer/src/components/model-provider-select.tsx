@@ -281,18 +281,28 @@ export function ModelProviderSelect({
 						<div className="mb-2 text-center text-xs font-medium capitalize text-foreground">
 							{effortLevels.length ? (effort ?? 'Automatic') : 'Effort unavailable for this model'}
 						</div>
-						<input
-							type="range"
-							aria-label="Reasoning effort"
-							aria-valuetext={effort ?? 'Automatic'}
-							min={0}
-							max={Math.max(1, effortLevels.length)}
-							disabled={effortLevels.length === 0}
-							step={1}
-							value={effort ? Math.max(0, effortLevels.indexOf(effort) + 1) : 0}
-							onChange={(event) => onEffortChange(effortLevels[Number(event.target.value) - 1])}
-							className="h-2 w-full cursor-pointer accent-foreground disabled:cursor-not-allowed disabled:opacity-40"
-						/>
+						<div className="relative flex h-8 items-center rounded-full bg-muted px-3">
+							<div
+								className="pointer-events-none absolute inset-x-3 flex items-center justify-between"
+								aria-hidden="true"
+							>
+								{Array.from({ length: Math.max(2, effortLevels.length + 1) }, (_, index) => (
+									<span key={index} className="size-1 rounded-full bg-muted-foreground/60" />
+								))}
+							</div>
+							<input
+								type="range"
+								aria-label="Reasoning effort"
+								aria-valuetext={effort ?? 'Automatic'}
+								min={0}
+								max={Math.max(1, effortLevels.length)}
+								disabled={effortLevels.length === 0}
+								step={1}
+								value={effort ? Math.max(0, effortLevels.indexOf(effort) + 1) : 0}
+								onChange={(event) => onEffortChange(effortLevels[Number(event.target.value) - 1])}
+								className="relative h-8 w-full cursor-pointer appearance-none bg-transparent focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40 [&::-webkit-slider-thumb]:size-7 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground [&::-webkit-slider-thumb]:shadow-sm focus-visible:[&::-webkit-slider-thumb]:ring-2 focus-visible:[&::-webkit-slider-thumb]:ring-ring focus-visible:[&::-webkit-slider-thumb]:ring-offset-2"
+							/>
+						</div>
 					</div>
 				)}
 			</PopoverContent>
