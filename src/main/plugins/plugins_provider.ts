@@ -21,7 +21,8 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 	} = manifest;
 	if (Object.keys(fields).length === 0) return undefined;
 	const model = Array.isArray(fields.models)
-		? fields.models.find((item) => item && typeof item === 'object' && 'modelsUrl' in item) ?? fields.models[0]
+		? (fields.models.find((item) => item && typeof item === 'object' && 'modelsUrl' in item) ??
+			fields.models[0])
 		: undefined;
 	const modelUrls =
 		model && typeof model === 'object' && !Array.isArray(model)
