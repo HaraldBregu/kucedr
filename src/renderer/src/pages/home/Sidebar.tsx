@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactElement, type ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronRight, Folder, LayoutPanelLeft, Library, MoreVertical, Pin, PinOff, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronRight, Folder, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
@@ -32,7 +32,6 @@ interface HomeSidebarProps {
 export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const libraryOpen = useLocation().pathname === '/home/library';
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -167,7 +166,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 
 	const renderSession = (session: AgentSessionSummary): ReactElement => {
 		const title = session.title.trim() || t('settings.chatHistory.untitled');
-		const isActive = !libraryOpen && session.id === currentSessionId;
+		const isActive = session.id === currentSessionId;
 		const isCompacting = compactingSessionId === session.id;
 		const openMenu = (): void => {
 			void window.win
@@ -323,20 +322,6 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						>
 							<Folder className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							type="button"
-							className={cn('px-2.5 text-sm', libraryOpen && SPLIT_ITEM_ACTIVE_CLASS)}
-							aria-current={libraryOpen ? 'page' : undefined}
-							onClick={() => {
-								playSound('navigate');
-								navigate('/home/library');
-							}}
-						>
-							<Library className="size-4 shrink-0" />
-							<span className="truncate">{t('settings.library.title', 'Library')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					{openExtension && (

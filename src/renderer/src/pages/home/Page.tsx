@@ -29,7 +29,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { LibraryFile } from '../../../../shared/library_types';
 import { workspaceFileType } from '../../../../shared/workspace';
 import { PageContainer, Split } from '@/components/app/base/page';
-import LibraryContent from '../settings/pages/library/Page';
 import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -458,7 +457,6 @@ function PageContent(): ReactElement {
 	}, []);
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
 	const location = useLocation();
-	const showLibrary = location.pathname === '/home/library';
 	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(
 		(location.state as { openExtension?: OpenExtension } | null)?.openExtension ?? null
 	);
@@ -857,7 +855,7 @@ function PageContent(): ReactElement {
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
-				navigationActions={!showEmptyConversation && !openExtension && !showLibrary ? <Tooltip>
+				navigationActions={!showEmptyConversation && !openExtension ? <Tooltip>
 					<TooltipTrigger render={<Button type="button" variant={detailsOpen ? 'secondary' : 'ghost'} size="icon" className="rounded-full" aria-label={detailsOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={detailsOpen} aria-controls="chat-information" onClick={() => setDetailsOpen((open) => !open)}><PanelRight className="size-4" strokeWidth={1.8} /></Button>} />
 					<TooltipContent side="bottom">{detailsOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
 				</Tooltip> : undefined}
@@ -868,12 +866,7 @@ function PageContent(): ReactElement {
 					/>
 				}
 			>
-				{showLibrary && (
-					<div className="min-h-0 flex-1 overflow-y-auto">
-						<LibraryContent />
-					</div>
-				)}
-				{openExtension && !showLibrary && (
+				{openExtension && (
 					<ExtensionPage extension={openExtension} onClose={() => setOpenExtension(null)} />
 				)}
 				<div
@@ -881,7 +874,7 @@ function PageContent(): ReactElement {
 					data-slot="home-workspace"
 					className={cn(
 						'@container/chat relative flex min-h-0 min-w-0 flex-1 flex-col bg-background text-foreground',
-						(openExtension || showLibrary) && 'hidden',
+						openExtension && 'hidden',
 						showEmptyConversation && 'overflow-y-auto'
 					)}
 				>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, FilePlus, Folder, FolderPlus, Library } from 'lucide-react';
+import { ArrowLeft, FilePlus, Folder, FolderPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -305,12 +305,6 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 						<SidebarMenuButton type="button" className={cn('px-2.5 text-sm', SPLIT_ITEM_ACTIVE_CLASS)} aria-current="page">
 							<Folder className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-					<SidebarMenuItem>
-						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/home/library')}>
-							<Library className="size-4 shrink-0" />
-							<span className="truncate">{t('settings.library.title', 'Library')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>

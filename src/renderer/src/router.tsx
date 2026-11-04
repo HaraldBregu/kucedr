@@ -133,7 +133,7 @@ function RootRouteComponent(): React.JSX.Element {
 
 	const { phase } = useOnboarding();
 	const { state: authState, skipSignIn } = useAuth();
-	const isHome = location.pathname === '/home' || location.pathname === '/home/library';
+	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
 	const isSettings = location.pathname.startsWith('/settings');
 	const hasSidebar =
@@ -235,7 +235,7 @@ const routes: RouteObject[] = [
 				element: <Navigate to="/start" replace />,
 			},
 			{
-				path: 'home/*',
+				path: 'home',
 				element: (
 					<RouteWrapper fallback={<HomePageLoadingSkeleton />}>
 						<HomePage />

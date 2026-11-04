@@ -71,7 +71,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const { open: openCommandMenu } = useCommandMenu();
 	const { sessionId, sessionTitle, setSessionId, setSessionTitle } = useChatSession();
 	const { state, isMobile } = usePageContext();
-	const isLibrary = location.pathname === '/home/library';
 	const sidebarExpanded = showWorkspace && !isMobile && state.sidebarOpen;
 	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
 	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
@@ -79,7 +78,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const chatSessionsRef = useRef<HTMLDivElement>(null);
 
 	const isHome = location.pathname === '/home';
-	const isHomeRoute = isHome || isLibrary;
+	const isHomeRoute = isHome;
 	const isWorkspace = location.pathname === '/workspace';
 	const showChatGroup = isHomeRoute || isWorkspace;
 	const isCode = location.pathname === '/code' || location.pathname.startsWith('/code/');
@@ -277,7 +276,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 
 					{showWorkspace && (
 						<div data-slot="navigationbar-context" className="flex min-w-0 items-center gap-3 px-3 text-sm" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-							<span className="shrink-0 font-medium text-muted-foreground">{isHome ? homeLabel : isWorkspace ? workspaceLabel : isLibrary ? t('settings.library.title', 'Library') : t('settings.title')}</span>
+							<span className="shrink-0 font-medium text-muted-foreground">{isHome ? homeLabel : isWorkspace ? workspaceLabel : t('settings.title')}</span>
 							{contextContent}
 							{isHome && <><span aria-hidden="true" className="text-muted-foreground/50">/</span><span className="truncate font-medium">{sessionTitle || newChatLabel}</span></>}
 						</div>
