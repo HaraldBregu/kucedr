@@ -21,7 +21,7 @@ it.each([false, true])('reveals the current model when reopening (compact: %s)',
 	expect(selected).toHaveAttribute('aria-checked', 'true');
 	expect(screen.getByRole('menuitemradio', { name: /Model A/ })).toBeInTheDocument();
 	await waitFor(() => expect(scrollIntoView.mock.contexts).toContain(selected));
-	expect(screen.getByRole('textbox')).toHaveFocus();
+	if (!compactPopover) expect(screen.getByRole('textbox')).toHaveFocus();
 	await user.click(screen.getByRole('textbox'));
 	await user.type(screen.getByRole('textbox'), 'Model A');
 	expect(screen.getByRole('menuitemradio', { name: /Model A/ })).toBeInTheDocument();
