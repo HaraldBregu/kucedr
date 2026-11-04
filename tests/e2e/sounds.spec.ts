@@ -113,7 +113,7 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 			)
 			.toBe(4);
 		await page
-			.locator('[data-slot="home-sidebar"] nav')
+			.locator('[data-slot="home-sidebar"]')
 			.getByRole('button', { name: 'Settings', exact: true })
 			.click();
 		await expect(page.getByRole('switch', { name: 'Sound feedback' })).toBeChecked();
