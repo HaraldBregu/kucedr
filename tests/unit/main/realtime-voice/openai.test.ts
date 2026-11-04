@@ -289,6 +289,38 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		}
 	);
 
+	it('avoids duplicate cancellation on speech and ignores cancellation races', async () => {
+		const socket = new FakeSocket();
+		const events: Array<{ type: string; message?: string }> = [];
+		const adapter = new OpenAIRealtimeVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1000
+		);
+		const connecting = adapter.connect(
+			{ modelId: 'gpt-realtime-2.1', voice: 'marin', instructions: '', history: [], tools: [] },
+			(event) => events.push(event)
+		);
+		socket.open();
+		socket.event({ type: 'session.updated' });
+		const connection = await connecting;
+		socket.event({ type: 'response.created', response: { id: 'first' } });
+		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'user' });
+		await connection.interrupt();
+		expect(socket.sent.filter((event) => event.type === 'response.cancel')).toHaveLength(0);
+		socket.event({ type: 'response.done', response: { id: 'first', status: 'cancelled' } });
+		socket.event({ type: 'response.created', response: { id: 'second' } });
+		await connection.interrupt();
+		await connection.interrupt();
+		expect(socket.sent.filter((event) => event.type === 'response.cancel')).toHaveLength(1);
+		socket.event({
+			type: 'error',
+			error: { code: 'response_cancel_not_active', message: 'Cancellation failed: no active response found' },
+		});
+		expect(events.filter((event) => event.type === 'error')).toEqual([]);
+		await connection.stop();
+	});
+
 	it('reports SDK protocol errors once and gives actionable authentication failures', async () => {
 		const socket = new FakeSocket();
 		const events: Array<{ type: string; message?: string }> = [];
