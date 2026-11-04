@@ -2,8 +2,8 @@ import type { AgentMessage, AgentRunState } from '../context';
 
 const runStateLabels: Record<AgentRunState, string> = {
 	idle: 'Ready',
-	thinking: 'Thinking',
-	reasoning: 'Thinking',
+	thinking: 'Churning',
+	reasoning: 'Churning',
 	using_tools: 'Using tools',
 	awaiting_input: 'Awaiting input',
 	answering: 'Answering',
