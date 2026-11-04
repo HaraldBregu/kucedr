@@ -233,8 +233,8 @@ export function AssistantMessage({
 	});
 	const labelContent = statusLabelContent(message, isStreaming, label);
 	const statusClassName = cn(
-		'inline-flex min-h-6 max-w-full items-center rounded-full px-2 py-0.5 text-xs font-semibold',
-		stateTone(message.state)
+		'truncate py-1 text-base font-medium',
+		message.state === 'error' ? 'text-destructive' : 'text-muted-foreground'
 	);
 
 	const copyMessage = (): void => {
