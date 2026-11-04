@@ -47,6 +47,8 @@ export type SystemPreferencePaneId = 'Accessibility' | 'ScreenCapture' | 'Camera
 
 export type AppLanguage = 'en' | 'it';
 
+export type WorkspaceTextSize = 'small' | 'medium' | 'large';
+
 export type AppTheme = 'light' | 'dark' | 'system';
 
 export type VoiceAgentAppearance = 'persona' | 'orb-07';
