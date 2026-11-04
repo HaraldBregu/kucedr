@@ -15,6 +15,7 @@ it.each([false, true])('reveals the current model when reopening (compact: %s)',
 	await user.click(screen.getByRole('button', { name: 'Change model' }));
 	if (!compactPopover) await user.type(screen.getByRole('textbox'), 'Model B');
 	await user.click(screen.getByRole('menuitemradio', { name: /Model B/ }));
+	if (compactPopover) await user.click(document.body);
 	await user.click(screen.getByRole('button', { name: 'Change model' }));
 	const selected = screen.getByRole('menuitemradio', { name: /Model B/ });
 	expect(selected).toHaveAttribute('aria-checked', 'true');
