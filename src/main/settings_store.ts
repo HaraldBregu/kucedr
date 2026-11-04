@@ -39,6 +39,7 @@ export type AppSettingsState = {
 	keepAwake: boolean;
 	soundFeedbackEnabled: boolean;
 	workspaceWideContent: boolean;
+	workspaceZoom: number;
 	language: AppLanguage;
 	theme: AppTheme;
 	windowSize: WindowSize;
