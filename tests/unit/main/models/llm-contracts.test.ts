@@ -135,3 +135,17 @@ it('preserves GIF image data in compatibility chat requests', async () => {
 		{ type: 'image_url', image_url: { url: 'data:image/gif;base64,R0lGODlh' } },
 	]);
 });
+
+it.each([true, false])('sends the selected OpenRouter effort with streaming=%s', async (streaming) => {
+	const create = jest.fn().mockImplementation(async () => streaming
+		? (async function* () { yield { choices: [{ delta: { content: 'answer' }, finish_reason: 'stop' }] }; })()
+		: { choices: [{ message: { content: 'answer' }, finish_reason: 'stop' }], usage: {} });
+	const model = new LlmModel({ openAIClientFactory: () => ({ chat: { completions: { create } } }) as never });
+	for await (const _event of model.stream({
+		provider: { id: 'openrouter', apiKey: 'key', baseURL: 'https://openrouter.ai/api/v1' },
+		model: 'example/model', effort: 'max', options: { reasoning: { max_tokens: 1024, exclude: true }, reasoning_effort: 'low', temperature: 0.5 },
+		messages: [{ role: 'user', content: 'hello' }], maxTokens: 4096, streaming,
+	})) { /* consume stream */ }
+	expect(create.mock.calls[0][0]).toEqual(expect.objectContaining({ reasoning: { effort: 'max', exclude: true }, temperature: 0.5 }));
+	expect(create.mock.calls[0][0]).not.toHaveProperty('reasoning_effort');
+});
