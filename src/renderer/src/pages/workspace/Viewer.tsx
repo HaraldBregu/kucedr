@@ -251,6 +251,14 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 						{file.createdAt ? <time dateTime={file.createdAt} title={new Date(file.createdAt).toLocaleString()}>Created {new Date(file.createdAt).toLocaleString()}</time> : null}
 						{file.updatedAt ? <time dateTime={file.updatedAt} title={new Date(file.updatedAt).toLocaleString()}>Updated {new Date(file.updatedAt).toLocaleString()}</time> : null}
 					</div>
+					<Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}>
+						<SelectTrigger size="sm" aria-label="Text size" className="h-6! w-36 text-[11px]">
+							<SelectValue>{TEXT_SIZES.find(({ size }) => size === textSize)?.label}</SelectValue>
+						</SelectTrigger>
+						<SelectContent>
+							{TEXT_SIZES.map(({ size, label }) => <SelectItem key={size} value={size}>{label}</SelectItem>)}
+						</SelectContent>
+					</Select>
 					{kind === 'markdown' ? (
 						<LayoutGroup id="workspace-markdown-mode">
 							<ButtonGroup role="group" aria-label={t('workspaceSidebar.markdownView', 'Markdown view')}>
