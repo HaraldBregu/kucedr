@@ -117,8 +117,12 @@ export async function liveProviderModels(
 	providerId: string,
 	fallback: ProviderModel[]
 ): Promise<ProviderModel[]> {
-	if (!providers().find((provider) => provider.id === providerId)?.modelsUrl) return fallback;
+	const provider = providers().find((item) => item.id === providerId);
+	if (!provider?.modelsUrl) return fallback;
 	const models = await window.provider.listModels(providerId).catch(() => []);
+	catalog = mergeModels(catalog, models.map((model): CatalogModel => ({ ...model, type: 'llm', location: 'remote', provider })), (model) =>
+		JSON.stringify([model.provider.id, model.type, model.id])
+	);
 	return mergeModels(fallback, models);
 }
 

@@ -46,6 +46,7 @@ jest.mock('../../../../src/main/models', () => ({
 }));
 
 import type { EventBus } from '../../../../src/main/event_bus';
+import type { ModelInputSchema } from '../../../../src/shared/model_types';
 import { ProviderStoreIpc } from '../../../../src/main/ipc/provider';
 import { ProviderChannels } from '../../../../src/shared/ipc_channels_definitions';
 
@@ -320,7 +321,7 @@ it('exposes OpenRouter model capabilities and exact reasoning levels from its mo
 			'openrouter'
 		)) as Array<{
 			id: string;
-			metadata: { documentationStatus: string; inputs: Record<string, any> };
+			metadata: { documentationStatus: string; inputs: Record<string, ModelInputSchema> };
 		}>;
 		const known = models.find((item) => item.id === 'known')!.metadata;
 		expect(known.documentationStatus).toBe('verified');
@@ -337,7 +338,7 @@ it('exposes OpenRouter model capabilities and exact reasoning levels from its mo
 			},
 		});
 		expect(
-			models.find((item) => item.id === 'null')!.metadata.inputs.reasoning.properties.effort.enum
+			models.find((item) => item.id === 'null')!.metadata.inputs.reasoning.properties?.effort.enum
 		).toEqual(['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']);
 		expect(models.find((item) => item.id === 'missing')!.metadata.inputs.reasoning).toBeUndefined();
 		expect(

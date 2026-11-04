@@ -11,6 +11,8 @@ import { filesToAgentInput } from './files';
 import { attachmentPath } from '../attachments/path';
 import { useInteractionMode } from './mode';
 import { readEffort } from '../effort/read';
+import { providerModels } from '@/lib/providers';
+import { modelEfforts } from '@shared/effort';
 
 type WindowWithOptionalAgent = Window & {
 	agent?: Window['agent'];
@@ -204,7 +206,10 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					agent.getModelId?.(),
 				]);
 				if (requestIdRef.current !== requestId) return false;
-				const selectedEffort = readEffort(selectedProvider?.id ?? '', selectedModel ?? '');
+				const savedEffort = readEffort(selectedProvider?.id ?? '', selectedModel ?? '');
+				const selectedEffort = selectedProvider?.id === 'openrouter' && savedEffort
+					? modelEfforts(providerModels('openrouter', 'llm').find((model) => model.id === selectedModel)?.metadata).includes(savedEffort) ? savedEffort : undefined
+					: savedEffort;
 				const runtimeOptions = {
 					...runtimeOptionsForPrompt(trimmed),
 					...(selectedEffort
