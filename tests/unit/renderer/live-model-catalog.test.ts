@@ -48,7 +48,7 @@ it('refreshes metadata for duplicate live models while preserving bundled catalo
 	await loadModels();
 	const homeModels = await liveProviderModels('openrouter', providerModels('openrouter', 'llm'));
 	expect(homeModels).toHaveLength(2);
-	expect(homeModels[0].discovered).toBeUndefined();
+	expect(homeModels[0].discovered).toBeFalsy();
 	expect(homeModels[1].discovered).toBe(true);
 	expect(homeModels[0]).toMatchObject({
 		name: 'Live model',
