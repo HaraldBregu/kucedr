@@ -194,7 +194,6 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 						</div>
 				</div>
 			) : null}
-			<div className="flex min-h-0 flex-1 flex-col" style={{ zoom: TEXT_SIZES.find(({ size }) => size === textSize)?.zoom }}>
 			{!file ? (
 				<div className="flex flex-1 items-center justify-center px-6 text-center text-sm text-muted-foreground">
 					{t('workspaceSidebar.noSelection', 'Choose a file to view it here.')}
