@@ -315,7 +315,10 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		expect(socket.sent.filter((event) => event.type === 'response.cancel')).toHaveLength(1);
 		socket.event({
 			type: 'error',
-			error: { code: 'response_cancel_not_active', message: 'Cancellation failed: no active response found' },
+			error: {
+				code: 'response_cancel_not_active',
+				message: 'Cancellation failed: no active response found',
+			},
 		});
 		expect(events.filter((event) => event.type === 'error')).toEqual([]);
 		await connection.stop();
