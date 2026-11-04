@@ -63,6 +63,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 	const pendingContent = useRef<string | null>(null);
 	const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const saveQueue = useRef(Promise.resolve());
+	const zoom = TEXT_SIZES.find(({ size }) => size === textSize)?.zoom;
 	const filePath = file?.path;
 	const kind = file ? workspaceFileType(file.path).kind : null;
 	const media = kind === 'image' || kind === 'audio' || kind === 'video' || kind === 'pdf';
