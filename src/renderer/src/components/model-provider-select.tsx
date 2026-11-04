@@ -283,7 +283,7 @@ export function ModelProviderSelect({
 						</div>
 						<div className="relative flex h-8 items-center rounded-full bg-muted px-3">
 							<div
-								className="pointer-events-none absolute inset-x-3 flex items-center justify-between"
+								className="pointer-events-none absolute inset-x-[26px] flex items-center justify-between"
 								aria-hidden="true"
 							>
 								{Array.from({ length: Math.max(2, effortLevels.length + 1) }, (_, index) => (
