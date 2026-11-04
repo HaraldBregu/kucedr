@@ -14,6 +14,7 @@ export default function WorkspacePage(): React.JSX.Element {
 	const [files, setFiles] = useState<WorkspaceTreeEntry[]>([]);
 	const [wide, setWide] = useState(false);
 	const flushRef = useRef<() => Promise<void>>(null);
+	const initialized = useRef(false);
 	const path = new URLSearchParams(location.search).get('file');
 	const pending = [...files];
 	let selectedFile: WorkspaceTreeEntry | null = path ? { type: 'file', path, name: path.split(/[\\/]/).pop() ?? path } : null;
@@ -28,9 +29,11 @@ export default function WorkspacePage(): React.JSX.Element {
 		navigate({ pathname: '/workspace', search: `?${search}` }, { replace });
 	}, [navigate, path]);
 	useEffect(() => {
+		if (initialized.current) return;
+		initialized.current = true;
 		const saved = localStorage.getItem(SELECTED_FILE_KEY);
 		if (!path && saved) selectFile({ type: 'file', path: saved, name: saved.split(/[\\/]/).pop() ?? saved }, true);
-	}, []);
+	}, [path, selectFile]);
 	useEffect(() => {
 		void window.app.getWorkspaceWideContent().then(setWide);
 	}, []);
