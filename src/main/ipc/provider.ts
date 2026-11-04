@@ -189,6 +189,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 					name?: unknown;
 					context_length?: unknown;
 					context_window?: unknown;
+					supported_parameters?: unknown;
 					architecture?: { output_modalities?: unknown };
 					pricing?: { parameters?: Record<string, unknown> };
 				};
@@ -205,7 +206,19 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 						metadata: {
 							documentationUrl: modelUrl?.replace('{id}', model.id) ?? modelsUrl,
 							promptAttachments: [],
-							inputs: {},
+							inputs:
+								id === 'openrouter' &&
+								Array.isArray(model.supported_parameters) &&
+								(model.supported_parameters.includes('reasoning') ||
+									model.supported_parameters.includes('reasoning_effort'))
+									? {
+											reasoning: {
+												properties: {
+													effort: { enum: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'] },
+												},
+											},
+										}
+									: {},
 							...(contextWindow ? { contextWindow } : {}),
 						},
 					},
@@ -233,5 +246,4 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		}
 		return value as Record<string, unknown>;
 	}
-
 }

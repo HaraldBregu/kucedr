@@ -276,21 +276,22 @@ export function ModelProviderSelect({
 						</p>
 					)}
 				</div>
-				{compactPopover && effortLevels.length > 0 && onEffortChange && (
+				{compactPopover && onEffortChange && (
 					<div className="shrink-0 border-t px-3 py-3">
 						<div className="mb-2 text-center text-xs font-medium capitalize text-foreground">
-							{effort ?? 'Automatic'}
+							{effortLevels.length ? (effort ?? 'Automatic') : 'Effort unavailable for this model'}
 						</div>
 						<input
 							type="range"
 							aria-label="Reasoning effort"
 							aria-valuetext={effort ?? 'Automatic'}
 							min={0}
-							max={effortLevels.length}
+							max={Math.max(1, effortLevels.length)}
+							disabled={effortLevels.length === 0}
 							step={1}
 							value={effort ? Math.max(0, effortLevels.indexOf(effort) + 1) : 0}
 							onChange={(event) => onEffortChange(effortLevels[Number(event.target.value) - 1])}
-							className="h-2 w-full cursor-pointer accent-foreground"
+							className="h-2 w-full cursor-pointer accent-foreground disabled:cursor-not-allowed disabled:opacity-40"
 						/>
 					</div>
 				)}
