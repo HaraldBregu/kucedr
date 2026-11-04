@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useChatSession } from '@/contexts/chat-session';
+import { playSound } from '@/lib/sounds/play';
 import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 
 export function AppSidebarFooter(): React.JSX.Element {
@@ -105,7 +106,10 @@ export function AppSidebarFooter(): React.JSX.Element {
 							size="icon"
 							className="absolute right-11 top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary"
 							aria-label={t('settings.title')}
-							onClick={() => navigate('/settings/settings')}
+							onClick={() => {
+								playSound('navigate');
+								navigate('/settings/settings');
+							}}
 						>
 							<Settings className="size-4" strokeWidth={1.8} />
 						</Button>
