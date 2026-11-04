@@ -142,15 +142,16 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 			contentType: 'application/json',
 		});
 		expect(playback.map((record) => path.basename(record.source).split('-')[0])).toEqual([
-			'click_001',
-			'pluck_001',
+			'bencho_click',
+			'bencho_click',
 			'question_003',
 			'confirmation_001',
-			'click_001',
-			'toggle_004',
-			'click_001',
+			'bencho_click',
+			'bencho_click',
+			'bencho_click',
 		]);
-		expect(playback.every((record) => !record.error && record.volume <= 0.3)).toBe(true);
+		expect(playback.every((record) => !record.error)).toBe(true);
+		expect(playback.map((record) => record.volume)).toEqual([1, 1, 0.3, 0.3, 1, 1, 1]);
 		await page.getByRole('switch', { name: 'Sound feedback' }).click();
 		await expect(page.getByRole('switch', { name: 'Sound feedback' })).not.toBeChecked();
 		await expect.poll(() => page.evaluate(() => window.app.getSoundFeedbackEnabled())).toBe(false);

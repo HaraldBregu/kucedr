@@ -9,7 +9,7 @@ export function playSound(sound: FeedbackSound): void {
 		let player = soundState.players.get(sound);
 		if (!player) {
 			player = new Audio(soundSources[sound]);
-			player.volume = sound === 'navigate' || sound === 'theme' ? 0.2 : 0.3;
+			player.volume = sound === 'thinking' || sound === 'response' ? 0.3 : 1;
 			soundState.players.set(sound, player);
 		}
 		player.currentTime = 0;
