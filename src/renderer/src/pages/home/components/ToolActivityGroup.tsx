@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import type { AgentToolPart } from '../context';
-import { Elapsed } from './Elapsed';
 import { isToolRunning, toolActivityLabel, toolPartLabel } from './tool-label';
 
 function thoughtLabel(ms: number): string {
