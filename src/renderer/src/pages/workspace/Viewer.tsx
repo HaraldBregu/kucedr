@@ -31,9 +31,13 @@ interface WorkspaceViewerProps {
 	readonly ref?: React.Ref<() => Promise<void>>;
 	readonly wide: boolean;
 	readonly onWideChange: (wide: boolean) => void;
+	readonly textSize: WorkspaceTextSize;
+	readonly onTextSizeChange: (size: WorkspaceTextSize) => void;
 }
 
-export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange }: WorkspaceViewerProps): React.JSX.Element {
+const TEXT_SIZES = [{ size: 'small', label: 'Small', zoom: 0.875 }, { size: 'medium', label: 'Medium', zoom: 1 }, { size: 'large', label: 'Large', zoom: 1.25 }] as const;
+
+export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
