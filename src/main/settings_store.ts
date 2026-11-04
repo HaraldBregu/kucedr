@@ -180,6 +180,15 @@ export function setWorkspaceWideContent(enabled: boolean): void {
 	store.set('workspaceWideContent', enabled);
 }
 
+export function getWorkspaceZoom(): number {
+	return store.get('workspaceZoom');
+}
+
+export function setWorkspaceZoom(zoom: number): void {
+	if (!Number.isInteger(zoom) || zoom < 50 || zoom > 200) throw new Error('Invalid workspace zoom setting.');
+	store.set('workspaceZoom', zoom);
+}
+
 export function getLanguage(): AppLanguage {
 	return store.get('language');
 }
