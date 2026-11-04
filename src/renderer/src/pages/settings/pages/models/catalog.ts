@@ -1,4 +1,5 @@
 import type { CatalogModel } from '@shared/model_types';
+import { mergeModels } from '@/lib/merge-models';
 
 export async function loadModelCatalog(): Promise<CatalogModel[]> {
 	const [catalog, providers] = await Promise.all([
@@ -15,9 +16,7 @@ export async function loadModelCatalog(): Promise<CatalogModel[]> {
 			)
 	);
 	const pluginModels = catalog.filter((model) => model.provider.plugin);
-	const ids = new Set(pluginModels.map((model) => `${model.provider.id}/${model.id}`));
-	return [
-		...pluginModels,
-		...live.flat().filter((model) => !ids.has(`${model.provider.id}/${model.id}`)),
-	];
+	return mergeModels(pluginModels, live.flat(), (model) =>
+		JSON.stringify([model.provider.id, model.type, model.id])
+	);
 }

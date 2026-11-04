@@ -11,6 +11,7 @@ import type {
 	ProviderModel,
 	SpeechToTextApiType,
 } from '@shared/model_types';
+import { mergeModels } from './merge-models';
 
 let catalog: readonly CatalogModel[] = [];
 let modelProviders: readonly PublicProvider[] = [];
@@ -38,11 +39,9 @@ export async function loadModels(): Promise<void> {
 				)
 			)
 	);
-	const ids = new Set(catalog.map((model) => `${model.provider.id}/${model.id}`));
-	catalog = [
-		...catalog,
-		...liveModels.flat().filter((model) => !ids.has(`${model.provider.id}/${model.id}`)),
-	];
+	catalog = mergeModels(catalog, liveModels.flat(), (model) =>
+		JSON.stringify([model.provider.id, model.type, model.id])
+	);
 }
 
 export function models(): readonly CatalogModel[] {
@@ -120,8 +119,7 @@ export async function liveProviderModels(
 ): Promise<ProviderModel[]> {
 	if (!providers().find((provider) => provider.id === providerId)?.modelsUrl) return fallback;
 	const models = await window.provider.listModels(providerId).catch(() => []);
-	const ids = new Set(fallback.map((model) => model.id));
-	return [...fallback, ...models.filter((model) => !ids.has(model.id))];
+	return mergeModels(fallback, models);
 }
 
 /** Provider marked `default` for a capability, else the first one declaring it. */
