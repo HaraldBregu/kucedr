@@ -416,7 +416,6 @@ export function AssistantMessage({
 			{showActivity && !hasTools && (
 				<div className="flex w-full flex-col">
 					<span className={statusClassName}>
-						{label === 'Thinking' && <Lightbulb className="mr-1 size-3.5" aria-hidden="true" />}
 						{labelContent}
 					</span>
 				</div>
