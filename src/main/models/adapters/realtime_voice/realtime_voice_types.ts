@@ -157,7 +157,7 @@ export type RealtimeVoiceServerEvent =
 			name: string;
 			arguments: string;
 	  }
-	| { type: 'error'; error: { message: string } };
+	| { type: 'error'; error: { message: string; code?: string } };
 
 export interface RealtimeVoiceSocket {
 	readonly socket: {

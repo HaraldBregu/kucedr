@@ -201,6 +201,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		this.generation += 1;
 		if (this.transcriptTimer) clearTimeout(this.transcriptTimer);
 		if (this.closed || !this.responseActive) return;
+		this.responseActive = false;
 		this.realtime.send({ type: 'response.cancel' });
 	}
 
@@ -302,6 +303,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			return;
 		}
 		if (event.type === 'input_audio_buffer.speech_started') {
+			if (this.manualResponse) this.responseActive = false;
 			this.generation += 1;
 			if (this.transcriptTimer) clearTimeout(this.transcriptTimer);
 			this.emit({ type: 'input_speech_started', itemId: event.item_id });
@@ -391,7 +393,10 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			});
 			return;
 		}
-		if (event.type === 'error') this.emit({ type: 'error', message: event.error.message });
+		if (event.type === 'error') {
+			if (event.error.code === 'response_cancel_not_active') return;
+			this.emit({ type: 'error', message: event.error.message });
+		}
 	}
 
 	private registerToolCall(responseId: string, callId: string): void {
