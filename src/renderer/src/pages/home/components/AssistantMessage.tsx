@@ -176,11 +176,6 @@ export function AssistantMessage({
 	const { t } = useTranslation();
 	const { speak, isSpeaking, errorMessage: speakErrorMessage, clearError } = useReadMessageAloud();
 	const isRunning = isStreaming && isRunningState(message.state);
-	const now = useNow(isRunning, 1000);
-	const elapsedSeconds =
-		isRunning && message.startedAtMs !== undefined
-			? Math.max(0, Math.floor((now - message.startedAtMs) / 1000))
-			: undefined;
 
 	const parsedPlan = parsePlanEnvelope(message.content, isStreaming);
 	const displayContent = parsedPlan.kind === 'markdown' ? message.content : parsedPlan.content;
