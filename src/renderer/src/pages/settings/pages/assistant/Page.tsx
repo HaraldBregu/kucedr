@@ -19,6 +19,8 @@ import { ModelOptions } from '@/components/model-options';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import { updateModelOptions } from '@/lib/options';
 import { updateOpenRouterOptions } from '@/lib/openrouter-options';
+import { saveEffort } from '@pages/home/effort/save';
+import type { ModelReasoningEffort } from '@shared/agent_types';
 import type { Model } from '@/lib/compat';
 import type { PublicProvider } from '../../../../../../shared';
 import {
@@ -178,6 +180,12 @@ const AssistantPage: React.FC = () => {
 	}, [hasLoadedLocalModels, state.loading]);
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
+		if (state.providerId === 'openrouter' && path[0] === 'reasoning' && ['effort', 'max_tokens', 'enabled'].includes(path[1])) {
+			const levels = model?.metadata?.inputs.reasoning?.properties?.effort?.enum ?? [];
+			const effort = path[1] === 'effort' && typeof value === 'string' && levels.includes(value)
+				? value as ModelReasoningEffort : undefined;
+			try { saveEffort(state.providerId, state.modelId, effort); } catch { return; }
+		}
 		saveModelOptions(state.providerId === 'openrouter'
 			? updateOpenRouterOptions(modelOptions, path, value)
 			: updateModelOptions(modelOptions, path, value));

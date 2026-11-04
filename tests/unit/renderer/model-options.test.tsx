@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { openrouterInputs } from '../../../src/main/ipc/openrouter';
 import { ModelOptions } from '../../../src/renderer/src/components/model-options';
 
 describe('ModelOptions', () => {
@@ -160,4 +161,20 @@ describe('ModelOptions', () => {
 		fireEvent.change(input, { target: { value: '["request-1"]' } });
 		expect(onChange).toHaveBeenLastCalledWith(['previous_request_ids'], ['request-1']);
 	});
+});
+
+
+it('shows OpenRouter model-specific options from the model response', async () => {
+	const user = userEvent.setup();
+	const inputs = openrouterInputs({
+		supported_parameters: ['reasoning', 'temperature'],
+		reasoning: { supported_efforts: ['max', 'low'], default_effort: 'max', supports_max_tokens: true },
+	});
+	render(<ModelOptions inputs={inputs} values={{}} inlineAdvanced onChange={jest.fn()} />);
+	expect(screen.getByText('reasoning max tokens')).toBeInTheDocument();
+	expect(screen.getByText('temperature')).toBeInTheDocument();
+	await user.click(screen.getByRole('combobox', { name: 'reasoning effort' }));
+	expect(screen.getByRole('option', { name: 'max', hidden: true })).toBeInTheDocument();
+	expect(screen.getByRole('option', { name: 'low', hidden: true })).toBeInTheDocument();
+	expect(screen.queryByRole('option', { name: 'high', hidden: true })).not.toBeInTheDocument();
 });
