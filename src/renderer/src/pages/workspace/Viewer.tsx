@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, LoaderCircle, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
+import type { WorkspaceTextSize } from '@shared/app_types';
 import { workspaceFileType } from '@shared/workspace';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
