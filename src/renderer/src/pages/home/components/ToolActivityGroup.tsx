@@ -16,10 +16,12 @@ function thoughtLabel(ms: number): string {
 export function ToolActivityGroup({
 	tools,
 	isActive = false,
+	elapsedSeconds,
 	className,
 }: {
 	readonly tools: readonly AgentToolPart[];
 	readonly isActive?: boolean;
+	readonly elapsedSeconds?: number;
 	readonly className?: string;
 }): ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
