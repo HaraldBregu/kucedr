@@ -136,7 +136,7 @@ function normalizeImageLinks(content: string): string {
 
 function statusLabelContent(message: AgentMessage, isStreaming: boolean, label: string): ReactNode {
 	if (isStreaming && isRunningState(message.state)) {
-		return <TextShimmer className="text-sm">{label}</TextShimmer>;
+		return <TextShimmer>{label}</TextShimmer>;
 	}
 
 	return label;
