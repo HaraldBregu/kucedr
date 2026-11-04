@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { usePageContext } from './hooks/use-page-context';
 
-export function Toggle(): ReactElement {
+export function Toggle({ showTitle = false }: { showTitle?: boolean }): ReactElement {
 	const { state, isMobile, toggleSidebar } = usePageContext();
 	const navigate = useNavigate();
 	return (
@@ -17,6 +17,7 @@ export function Toggle(): ReactElement {
 			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
 			<PanelLeft className="size-4" strokeWidth={1.8} />
 		</Button>
+		{showTitle && <span className="mx-3 text-sm font-medium">Kucedr</span>}
 		<Button type="button" variant="ghost" size="icon" aria-label="Go back" title="Go back"
 			onClick={() => navigate(-1)}
 			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"

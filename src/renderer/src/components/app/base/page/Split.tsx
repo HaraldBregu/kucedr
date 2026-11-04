@@ -85,7 +85,7 @@ export function Split({
 					>
 						<div className="flex h-full min-h-0 flex-col" style={{ width: 'var(--split-pane-sidebar-width)' }}>
 							<header data-slot="sidebar-header" className={cn('flex h-12 shrink-0 items-center gap-2 pr-3', navigator.platform.startsWith('Mac') ? 'pl-20' : 'pl-3')} style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}>
-								<Toggle />
+								<Toggle showTitle />
 							</header>
 							<div className="min-h-0 flex-1">{sidebar}</div>
 						</div>
