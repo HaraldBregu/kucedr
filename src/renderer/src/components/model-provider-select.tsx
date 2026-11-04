@@ -179,7 +179,7 @@ export function ModelProviderSelect({
 				)}
 			>
 				{compactPopover && (
-					<div className="flex shrink-0 overflow-x-auto border-b px-1" aria-label="Providers">
+					<div className="flex shrink-0 overflow-x-auto border-b px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Providers">
 						{providerGroups
 							.filter((group) => group.models.length > 0)
 							.map((group) => {
