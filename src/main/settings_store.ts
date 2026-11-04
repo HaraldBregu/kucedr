@@ -186,7 +186,7 @@ export function getWorkspaceTextSize(): WorkspaceTextSize {
 }
 
 export function setWorkspaceTextSize(size: WorkspaceTextSize): void {
-	if (!['small', 'medium', 'large'].includes(size)) throw new Error('Invalid workspace text size setting.');
+	if (!['extra-small', 'small', 'medium', 'large', 'extra-large'].includes(size)) throw new Error('Invalid workspace text size setting.');
 	store.set('workspaceTextSize', size);
 }
 
