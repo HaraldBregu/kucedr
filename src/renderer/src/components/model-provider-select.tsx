@@ -172,6 +172,7 @@ export function ModelProviderSelect({
 			<PopoverContent
 				align="end"
 				collisionPadding={12}
+				onEscapeKeyDown={compactPopover ? (event) => event.preventDefault() : undefined}
 				className={cn(
 					'flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-72 max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1',
 					compactPopover && 'w-80 p-0'
@@ -248,8 +249,10 @@ export function ModelProviderSelect({
 								aria-checked={isSelected}
 								onClick={() => {
 									onChange(group.id, model.id);
-									setButtonOpen(false);
-									setModelSearch('');
+									if (!compactPopover) {
+										setButtonOpen(false);
+										setModelSearch('');
+									}
 								}}
 								className="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent aria-checked:bg-accent aria-checked:text-accent-foreground"
 							>
