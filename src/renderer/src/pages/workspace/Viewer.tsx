@@ -225,7 +225,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 				</div>
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
 				<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-					<WorkspaceMarkdownEditor ref={textRef} onMatchCount={setTextMatchCount} path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} onFind={() => setFindOpen(true)} onOpenLink={(href) => {
+					<WorkspaceMarkdownEditor ref={textRef} onMatchCount={setTextMatchCount} path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} zoom={zoom} onFind={() => setFindOpen(true)} onOpenLink={(href) => {
 						if (/^[a-z][a-z\d+.-]*:/i.test(href)) void window.app.openExternalUrl(href);
 						else {
 							const path = decodeURIComponent(new URL(workspaceResourceUrl(file.path, href)).pathname.slice(1));
