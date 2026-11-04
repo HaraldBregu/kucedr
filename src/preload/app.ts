@@ -114,11 +114,11 @@ export const app: AppApi = {
 	getWorkspaceWideContent: (): Promise<boolean> => {
 		return typedInvokeUnwrap(AppChannels.getWorkspaceWideContent);
 	},
-	setWorkspaceZoom: (zoom: number): Promise<void> => {
-		return typedInvokeUnwrap(AppChannels.setWorkspaceZoom, zoom);
+	setWorkspaceTextSize: (size) => {
+		return typedInvokeUnwrap(AppChannels.setWorkspaceTextSize, size);
 	},
-	getWorkspaceZoom: (): Promise<number> => {
-		return typedInvokeUnwrap(AppChannels.getWorkspaceZoom);
+	getWorkspaceTextSize: () => {
+		return typedInvokeUnwrap(AppChannels.getWorkspaceTextSize);
 	},
 	setLanguage: (language) => {
 		return typedInvokeUnwrap(AppChannels.setLanguage, language);
