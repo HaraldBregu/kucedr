@@ -14,6 +14,7 @@ export default function WorkspacePage(): React.JSX.Element {
 	const navigationType = useNavigationType();
 	const [files, setFiles] = useState<WorkspaceTreeEntry[]>([]);
 	const [wide, setWide] = useState(false);
+	const [textSize, setTextSize] = useState<WorkspaceTextSize>('medium');
 	const flushRef = useRef<() => Promise<void>>(null);
 	const initialized = useRef(false);
 	const path = new URLSearchParams(location.search).get('file');
