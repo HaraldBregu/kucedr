@@ -287,7 +287,8 @@ export function AssistantMessage({
 			{activityTools.length > 0 && (
 				<ToolActivityGroup
 					tools={activityTools}
-					isActive={isStreaming && isRunningState(message.state)}
+					isActive={isRunning}
+					elapsedSeconds={elapsedSeconds}
 				/>
 			)}
 			{cardTools.map((tool) => {
