@@ -8,6 +8,9 @@ export function options(provider: string, request: LlmStreamRequest): Record<str
 		/^command-a-(?:plus-05-2026|reasoning-08-2025)$/.test(request.model)
 	)
 		configured.reasoning_effort = request.effort === 'none' ? 'none' : 'high';
+	if (provider === 'openrouter' && (request.effort || configured.reasoning || configured.reasoning_effort)) {
+		configured.provider = { ...(configured.provider as Record<string, unknown> | undefined), require_parameters: true };
+	}
 	if (!request.effort) return configured;
 	if (provider === 'openrouter') {
 		const { max_tokens: _budget, enabled: _enabled, ...reasoning } =

@@ -143,9 +143,9 @@ it.each([true, false])('sends the selected OpenRouter effort with streaming=%s',
 	const model = new LlmModel({ openAIClientFactory: () => ({ chat: { completions: { create } } }) as never });
 	for await (const _event of model.stream({
 		provider: { id: 'openrouter', apiKey: 'key', baseURL: 'https://openrouter.ai/api/v1' },
-		model: 'example/model', effort: 'max', options: { reasoning: { max_tokens: 1024, exclude: true }, reasoning_effort: 'low', temperature: 0.5 },
+		model: 'example/model', effort: 'max', options: { reasoning: { max_tokens: 1024, exclude: true }, reasoning_effort: 'low', temperature: 0.5, provider: { order: ['Example'] } },
 		messages: [{ role: 'user', content: 'hello' }], maxTokens: 4096, streaming,
 	})) { /* consume stream */ }
-	expect(create.mock.calls[0][0]).toEqual(expect.objectContaining({ reasoning: { effort: 'max', exclude: true }, temperature: 0.5 }));
+	expect(create.mock.calls[0][0]).toEqual(expect.objectContaining({ reasoning: { effort: 'max', exclude: true }, temperature: 0.5, provider: { order: ['Example'], require_parameters: true } }));
 	expect(create.mock.calls[0][0]).not.toHaveProperty('reasoning_effort');
 });
