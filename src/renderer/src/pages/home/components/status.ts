@@ -22,13 +22,6 @@ export function isRunningState(state: AgentRunState): boolean {
 	);
 }
 
-export function stateTone(state: AgentRunState): string {
-	if (state === 'error') return 'bg-destructive/10 text-destructive';
-	if (state === 'cancelled') return 'bg-muted text-muted-foreground';
-	if (state === 'completed') return 'bg-success/10 text-success';
-	return 'bg-info/10 text-info';
-}
-
 function formatElapsedSeconds(message: AgentMessage): string | undefined {
 	if (message.startedAtMs === undefined || message.completedAtMs === undefined) {
 		return undefined;
