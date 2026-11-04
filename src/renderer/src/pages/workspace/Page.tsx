@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
+import type { WorkspaceTextSize } from '@shared/app_types';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
 import { WorkspaceViewer } from './Viewer';
