@@ -47,6 +47,7 @@ export function WorkspaceMarkdownEditor({
 	onOpenLink,
 	wide,
 	onWideChange,
+	zoom,
 	onFind,
 	onMatchCount,
 	ref,
