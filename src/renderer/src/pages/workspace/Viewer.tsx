@@ -240,7 +240,6 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 					) : codeEditor}
 				</div>
 			)}
-			</div>
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
 			{file ? (
 				<footer aria-label="File information" className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t bg-muted/20 px-2 py-1.5 sm:px-3">
