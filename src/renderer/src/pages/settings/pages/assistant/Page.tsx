@@ -184,7 +184,7 @@ const AssistantPage: React.FC = () => {
 			const levels = model?.metadata?.inputs.reasoning?.properties?.effort?.enum ?? [];
 			const effort = path[1] === 'effort' && typeof value === 'string' && levels.includes(value)
 				? value as ModelReasoningEffort : undefined;
-			try { saveEffort(state.providerId, state.modelId, effort); } catch { return; }
+			saveEffort(state.providerId, state.modelId, effort);
 		}
 		saveModelOptions(state.providerId === 'openrouter'
 			? updateOpenRouterOptions(modelOptions, path, value)
