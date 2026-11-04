@@ -656,6 +656,20 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
+			AppChannels.setWorkspaceZoom,
+			wrapSimpleHandler((zoom: number) => {
+				setStoredWorkspaceZoom(zoom);
+			}, AppChannels.setWorkspaceZoom)
+		);
+
+		ipcMain.handle(
+			AppChannels.getWorkspaceZoom,
+			wrapSimpleHandler(() => {
+				return getStoredWorkspaceZoom();
+			}, AppChannels.getWorkspaceZoom)
+		);
+
+		ipcMain.handle(
 			AppChannels.setLanguage,
 			wrapSimpleHandler((language: AppLanguage) => {
 				setStoredLanguage(language);
