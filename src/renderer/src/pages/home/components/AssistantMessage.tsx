@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import { type AgentMessage, type AgentToolPart } from '../context';
 import { useReadMessageAloud } from '../hooks';
 import { markdownComponents } from './markdown';
-import { statusLabel, isRunningState, stateTone } from './status';
+import { statusLabel, isRunningState } from './status';
 import { UserInputCard } from './UserInputCard';
 import { ScreenSourceCard } from './ScreenSourceCard';
 import { McpAuthorizationCard } from './McpAuthorizationCard';
