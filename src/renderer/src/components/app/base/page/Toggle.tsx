@@ -17,7 +17,7 @@ export function Toggle({ showTitle = false }: { showTitle?: boolean }): ReactEle
 			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
 			<PanelLeft className="size-4" strokeWidth={1.8} />
 		</Button>
-		{showTitle && <span className="ml-2 mr-3 text-sm font-medium">Kucedr</span>}
+		{showTitle && <span className="ml-4 mr-3 text-sm font-medium">Kucedr</span>}
 		{showTitle && <span className="min-w-0 flex-1" />}
 		<Button type="button" variant="ghost" size="icon" aria-label="Go back" title="Go back"
 			onClick={() => navigate(-1)}
