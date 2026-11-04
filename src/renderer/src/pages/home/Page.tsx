@@ -758,9 +758,9 @@ function PageContent(): ReactElement {
 			)}
 		>
 			{showEmptyConversation ? null : (
-				<div className={cn('pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background', detailsOpen && 'max-w-[60.5rem] pr-[12.5rem] bg-clip-content')} />
+				<div className="pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background" />
 			)}
-			<div className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl', !showEmptyConversation && detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}>
+			<div className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl')}>
 				{libraryDropError && <p role="alert" className="mb-2 text-xs text-destructive">Could not attach Library files. Please try again.</p>}
 				<RecorderErrorMessage
 					message={voiceErrorMessage}
@@ -855,6 +855,17 @@ function PageContent(): ReactElement {
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
+				rightSidebarOpen={detailsOpen && !showEmptyConversation && !openExtension}
+				onRightSidebarOpenChange={setDetailsOpen}
+				rightSidebar={<ChatDetails messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0}onAttach={addLibraryFiles} onWorkspaceAttach={(files) => setAttachments((current) => [...current, ...filesToAttachments(files)])} onJump={(messageId, toolCallId) => {
+									const scroll = chatScrollRef.current;
+									const viewport = scroll?.scrollRef.current;
+									const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
+									const anchor = toolCallId ? Array.from(response?.querySelectorAll<HTMLElement>('[data-chat-script]') ?? []).find((element) => element.dataset.chatScript === toolCallId) : response;
+									if (!scroll || !viewport || !anchor) return;
+									scroll.stopScroll();
+									viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+								}} />}
 				navigationActions={!showEmptyConversation && !openExtension ? <Tooltip>
 					<TooltipTrigger render={<Button type="button" variant={detailsOpen ? 'secondary' : 'ghost'} size="icon" className="rounded-full" aria-label={detailsOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={detailsOpen} aria-controls="chat-information" onClick={() => setDetailsOpen((open) => !open)}><PanelRight className="size-4" strokeWidth={1.8} /></Button>} />
 					<TooltipContent side="bottom">{detailsOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
@@ -894,7 +905,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-3xl gap-5 pl-10 pr-4 pt-6 transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'pr-[16.5rem] max-w-[calc(48rem+12.5rem)]')}>
+								<ChatContainerContent className="mx-auto min-h-full w-full max-w-3xl gap-5 pl-10 pr-4 pt-6">
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
@@ -908,7 +919,7 @@ function PageContent(): ReactElement {
 								</ChatContainerContent>
 								<ChatOutline key={chatSessionId} messages={visibleMessages} />
 								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+0.75rem)] z-30 px-4">
-									<div className={cn('mx-auto flex w-full max-w-3xl justify-center transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}>
+									<div className="mx-auto flex w-full max-w-3xl justify-center">
 										<ScrollButton
 											type="button"
 											aria-label="Scroll to latest"
@@ -916,15 +927,7 @@ function PageContent(): ReactElement {
 										/>
 									</div>
 								</div>
-								<ChatDetails open={detailsOpen} messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0}onAttach={addLibraryFiles} onWorkspaceAttach={(files) => setAttachments((current) => [...current, ...filesToAttachments(files)])} onJump={(messageId, toolCallId) => {
-									const scroll = chatScrollRef.current;
-									const viewport = scroll?.scrollRef.current;
-									const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
-									const anchor = toolCallId ? Array.from(response?.querySelectorAll<HTMLElement>('[data-chat-script]') ?? []).find((element) => element.dataset.chatScript === toolCallId) : response;
-									if (!scroll || !viewport || !anchor) return;
-									scroll.stopScroll();
-									viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-								}} />
+
 							</ChatContainerRoot>
 							{composer}
 						</>
