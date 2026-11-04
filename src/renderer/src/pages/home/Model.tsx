@@ -70,6 +70,7 @@ export function Model({
 						.catch(() => []);
 					catalogGroups.push({
 						id: 'custom',
+						discoveryLabel: undefined,
 						models: models.map((id) => ({ id, name: id })),
 					});
 				}

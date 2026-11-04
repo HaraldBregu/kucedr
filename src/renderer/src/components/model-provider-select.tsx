@@ -246,7 +246,7 @@ export function ModelProviderSelect({
 						return (
 							<React.Fragment key={value}>
 							{group.discoveryLabel && model.discovered && (!matchingModels[index - 1]?.model.discovered || matchingModels[index - 1]?.group.id !== group.id) && (
-								<div className="px-2 pt-2 pb-1 text-xs text-muted-foreground">{group.discoveryLabel}</div>
+								<div role="presentation" className="px-2 pt-2 pb-1 text-xs text-muted-foreground">{group.discoveryLabel}</div>
 							)}
 							<button
 								type="button"
