@@ -106,6 +106,7 @@ export function providerModels(providerId: string, type: ModelCapability): Provi
 		.map((model) => ({
 			id: model.id,
 			name: model.name,
+			...(model.discovered ? { discovered: true } : {}),
 			...(model.metadata ? { metadata: model.metadata } : {}),
 			...(model.apiTypes ? { apiTypes: model.apiTypes } : {}),
 			...(model.realtime ? { realtime: model.realtime } : {}),

@@ -8,7 +8,7 @@ import type { ProviderModel } from '../../shared/model_types';
 import { ProviderStoreChannels } from '../../shared/ipc_channels_definitions';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
-import { loadProviders, loadVectorDatabases, modelsFor } from '../models';
+import { loadProviders, loadVectorDatabases } from '../models';
 import { loadStorages } from '../models';
 import { getEnabledPluginProviders, setPluginProviderEnabled } from '../providers/providers_store';
 import { deleteProvider, getProvider, listProviders, setProvider } from '../settings_store';
@@ -179,7 +179,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const provider = loadProviders().find((entry) => entry.id === id);
 		if (!provider?.modelsUrl) throw new Error('This provider has no live model list.');
 		const { modelsUrl, modelUrl } = provider;
-		const discoveryInputs = modelsFor('llm').find((model) => model.provider.id === id && model.metadata?.discoveryInputs)?.metadata?.discoveryInputs;
+		const { discoveryInputs } = provider;
 		const response = await fetch(modelsUrl, { signal: AbortSignal.timeout(10_000) });
 		if (!response.ok) throw new Error('Could not load models from the provider.');
 		const body = (await response.json()) as { data?: unknown };
@@ -206,6 +206,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 				return [
 					{
 						id: model.id,
+						discovered: true,
 						name: typeof model.name === 'string' && model.name.trim() ? model.name : model.id,
 						metadata: {
 							documentationUrl: modelUrl?.replace('{id}', model.id) ?? modelsUrl,

@@ -20,7 +20,7 @@ import type { ModelReasoningEffort } from '@shared/agent_types';
 export interface ModelProviderGroup {
 	readonly id: string;
 	readonly name?: string;
-	readonly models: readonly { readonly id: string; readonly name: string }[];
+	readonly models: readonly { readonly id: string; readonly name: string; readonly discovered?: boolean }[];
 }
 
 export function llmProviderGroups(): readonly ModelProviderGroup[] {
@@ -43,7 +43,7 @@ export function resolveStoredModelProvider(
 export function toModelProviderGroups(
 	groups: readonly {
 		readonly provider: { readonly id: string; readonly name: string };
-		readonly models: readonly { readonly id: string; readonly name: string }[];
+		readonly models: readonly { readonly id: string; readonly name: string; readonly discovered?: boolean }[];
 	}[]
 ): readonly ModelProviderGroup[] {
 	return groups.map((group) => ({
@@ -238,12 +238,15 @@ export function ModelProviderSelect({
 					aria-label={accessibleLabel}
 					className={cn('min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto', compactPopover && 'p-1')}
 				>
-					{matchingModels.map(({ group, model }) => {
+					{matchingModels.map(({ group, model }, index) => {
 						const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
 						const isSelected = value === `${providerId}${VALUE_SEPARATOR}${modelId}`;
 						return (
+							<React.Fragment key={value}>
+							{compactPopover && model.discovered && !matchingModels[index - 1]?.model.discovered && (
+								<div className="px-2 pt-2 pb-1 text-xs text-muted-foreground">Remote</div>
+							)}
 							<button
-								key={value}
 								type="button"
 								role="menuitemradio"
 								aria-checked={isSelected}
@@ -271,6 +274,7 @@ export function ModelProviderSelect({
 									aria-hidden="true"
 								/>
 							</button>
+							</React.Fragment>
 						);
 					})}
 					{matchingModels.length === 0 && (

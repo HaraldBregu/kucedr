@@ -1,0 +1,105 @@
+{
+	"id": "remote",
+	"name": "Remote models",
+	"type": "large-language-model",
+	"authentication": "api-key",
+	"url": "https://openrouter.ai/api/v1",
+	"apiKeyUrl": "https://openrouter.ai/settings/keys",
+	"baseUrl": "https://openrouter.ai/api/v1",
+	"modelsUrl": "https://openrouter.ai/api/v1/models",
+	"modelUrl": "https://openrouter.ai/{id}",
+	"location": "remote",
+	"discoveryOnly": true,
+	"metadata": {
+		"promptAttachments": [],
+		"inputs": {},
+		"discoveryInputs": {
+			"temperature": {
+				"type": "number",
+				"minimum": 0,
+				"maximum": 2
+			},
+			"top_p": {
+				"type": "number",
+				"minimum": 0,
+				"maximum": 1
+			},
+			"top_k": {
+				"type": "integer",
+				"minimum": 0
+			},
+			"min_p": {
+				"type": "number",
+				"minimum": 0,
+				"maximum": 1
+			},
+			"top_a": {
+				"type": "number",
+				"minimum": 0,
+				"maximum": 1
+			},
+			"frequency_penalty": {
+				"type": "number",
+				"minimum": -2,
+				"maximum": 2
+			},
+			"presence_penalty": {
+				"type": "number",
+				"minimum": -2,
+				"maximum": 2
+			},
+			"repetition_penalty": {
+				"type": "number"
+			},
+			"seed": {
+				"type": "integer"
+			},
+			"logprobs": {
+				"type": "boolean"
+			},
+			"top_logprobs": {
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 20
+			},
+			"parallel_tool_calls": {
+				"type": "boolean"
+			},
+			"include_reasoning": {
+				"type": "boolean"
+			},
+			"verbosity": {
+				"type": "string",
+				"enum": [
+					"low",
+					"medium",
+					"high"
+				]
+			},
+			"reasoning": {
+				"type": "object",
+				"properties": {
+					"effort": {
+						"type": "string",
+						"enum": [
+							"none",
+							"minimal",
+							"low",
+							"medium",
+							"high",
+							"xhigh",
+							"max"
+						]
+					},
+					"max_tokens": {
+						"type": "integer",
+						"minimum": 0
+					},
+					"enabled": {
+						"type": "boolean"
+					}
+				}
+			}
+		}
+	}
+}

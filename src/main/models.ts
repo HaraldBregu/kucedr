@@ -231,6 +231,9 @@ function toPublicProvider(
 		...(entry.apiKeyUrl ? { apiKeyUrl: entry.apiKeyUrl } : {}),
 		...(entry.modelsUrl ? { modelsUrl: entry.modelsUrl } : {}),
 		...(entry.modelUrl ? { modelUrl: entry.modelUrl } : {}),
+		...(entry.models?.find((model) => model.discoveryOnly && model.metadata?.discoveryInputs)?.metadata?.discoveryInputs
+			? { discoveryInputs: entry.models.find((model) => model.discoveryOnly && model.metadata?.discoveryInputs)!.metadata!.discoveryInputs }
+			: {}),
 		...(iconDarkUrl ? { iconDarkUrl } : {}),
 		...(iconLightUrl ? { iconLightUrl } : {}),
 		...(plugin ? { plugin } : {}),

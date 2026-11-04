@@ -60,6 +60,7 @@ export interface ModelMetadata {
 }
 
 export interface ProviderModel {
+	readonly discovered?: boolean;
 	readonly id: string;
 	readonly name: string;
 	/** Speech-to-text only: transcription APIs this model supports. */

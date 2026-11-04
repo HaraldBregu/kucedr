@@ -19,6 +19,7 @@ export function mergeModels<T extends ProviderModel>(
 		result[index] = {
 			...previous,
 			...model,
+			discovered: previous.discovered ?? false,
 			...(model.metadata && previous.metadata
 				? { metadata: { ...previous.metadata, ...model.metadata } }
 				: {}),
