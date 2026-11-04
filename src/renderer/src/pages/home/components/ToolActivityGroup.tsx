@@ -31,9 +31,7 @@ export function ToolActivityGroup({
 		running.length > 0
 			? toolActivityLabel(running[running.length - 1])
 			: isActive
-				? elapsedSeconds === undefined
-					? 'Thinking…'
-					: `Thinking… ${elapsedSeconds}s`
+				? 'Thinking…'
 				: thoughtLabel(tools.reduce((total, tool) => total + (tool.durationMs ?? 0), 0));
 
 	return (
