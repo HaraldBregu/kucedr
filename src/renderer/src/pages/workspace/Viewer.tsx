@@ -217,7 +217,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 			) : kind === 'pdf' ? (
 				<iframe title={file.name} src={mediaUrl?.toString()} className="min-h-0 flex-1" />
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' && content.includes('<!--') ? (
-				<div className="min-h-0 flex-1 overflow-auto">
+				<div className="min-h-0 flex-1 overflow-auto" style={{ zoom }}>
 					<article className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12`}>
 						<p className="mb-3 text-xs text-muted-foreground">{t('workspaceSidebar.commentSourceOnly', 'This file contains Markdown comments. Edit it in Source to preserve them.')}</p>
 						<Markdown className="w-full break-words" components={{ ...markdownComponents, img: ({ src, alt }) => <img src={typeof src === 'string' ? workspaceResourceUrl(file.path, src) : undefined} alt={alt ?? ''} /> }}>{content}</Markdown>
