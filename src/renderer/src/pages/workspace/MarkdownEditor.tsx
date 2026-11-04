@@ -203,7 +203,7 @@ export function WorkspaceMarkdownEditor({
 				event.target.value = '';
 			}} />
 			<div className="relative flex min-h-0 flex-1 flex-col">
-			<div ref={scrollRef} className="min-h-0 flex-1 overflow-auto">
+			<div ref={scrollRef} className="min-h-0 flex-1 overflow-auto" style={{ zoom }}>
 			<EditorContent
 				editor={editor}
 				className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} break-words px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12`}
