@@ -17,6 +17,7 @@ import {
 	type AppTheme,
 	type TrayClickAction,
 	type VoiceAgentAppearance,
+	type WorkspaceTextSize,
 } from '../shared/app_types';
 import {
 	getModelProvidersState,
@@ -39,7 +40,7 @@ export type AppSettingsState = {
 	keepAwake: boolean;
 	soundFeedbackEnabled: boolean;
 	workspaceWideContent: boolean;
-	workspaceZoom: number;
+	workspaceTextSize: WorkspaceTextSize;
 	language: AppLanguage;
 	theme: AppTheme;
 	windowSize: WindowSize;
@@ -56,7 +57,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	keepAwake: false,
 	soundFeedbackEnabled: false,
 	workspaceWideContent: false,
-	workspaceZoom: 100,
+	workspaceTextSize: 'medium',
 	language: 'en',
 	theme: 'dark',
 	windowSize: '1200x800',
@@ -180,13 +181,13 @@ export function setWorkspaceWideContent(enabled: boolean): void {
 	store.set('workspaceWideContent', enabled);
 }
 
-export function getWorkspaceZoom(): number {
-	return store.get('workspaceZoom');
+export function getWorkspaceTextSize(): WorkspaceTextSize {
+	return store.get('workspaceTextSize');
 }
 
-export function setWorkspaceZoom(zoom: number): void {
-	if (!Number.isInteger(zoom) || zoom < 50 || zoom > 200) throw new Error('Invalid workspace zoom setting.');
-	store.set('workspaceZoom', zoom);
+export function setWorkspaceTextSize(size: WorkspaceTextSize): void {
+	if (!['small', 'medium', 'large'].includes(size)) throw new Error('Invalid workspace text size setting.');
+	store.set('workspaceTextSize', size);
 }
 
 export function getLanguage(): AppLanguage {
