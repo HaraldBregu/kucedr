@@ -22,7 +22,7 @@ export function Model({
 	hasAttachments?: boolean;
 	onContext?: (context: { providerId: string; modelId: string; contextWindow?: number }) => void;
 }): ReactElement {
-	const [groups, setGroups] = useState<{ id: string; models: ProviderModel[] }[]>([]);
+	const [groups, setGroups] = useState<{ id: string; discoveryLabel?: string; models: ProviderModel[] }[]>([]);
 	const [providerId, setProviderId] = useState('');
 	const [modelId, setModelId] = useState('');
 	const [effort, setEffort] = useState<ModelReasoningEffort>();
@@ -60,6 +60,7 @@ export function Model({
 				const catalogGroups = await Promise.all(
 					providerIdsFor('llm').map(async (id) => ({
 						id,
+						discoveryLabel: providers().find((provider) => provider.id === id)?.discoveryLabel,
 						models: await liveProviderModels(id, providerModels(id, 'llm')),
 					}))
 				);

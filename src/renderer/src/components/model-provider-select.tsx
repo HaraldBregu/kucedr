@@ -20,6 +20,7 @@ import type { ModelReasoningEffort } from '@shared/agent_types';
 export interface ModelProviderGroup {
 	readonly id: string;
 	readonly name?: string;
+	readonly discoveryLabel?: string;
 	readonly models: readonly { readonly id: string; readonly name: string; readonly discovered?: boolean }[];
 }
 
@@ -42,13 +43,14 @@ export function resolveStoredModelProvider(
 
 export function toModelProviderGroups(
 	groups: readonly {
-		readonly provider: { readonly id: string; readonly name: string };
+		readonly provider: { readonly id: string; readonly name: string; readonly discoveryLabel?: string };
 		readonly models: readonly { readonly id: string; readonly name: string; readonly discovered?: boolean }[];
 	}[]
 ): readonly ModelProviderGroup[] {
 	return groups.map((group) => ({
 		id: group.provider.id,
 		name: group.provider.name,
+		discoveryLabel: group.provider.discoveryLabel,
 		models: group.models,
 	}));
 }
@@ -243,8 +245,8 @@ export function ModelProviderSelect({
 						const isSelected = value === `${providerId}${VALUE_SEPARATOR}${modelId}`;
 						return (
 							<React.Fragment key={value}>
-							{model.discovered && (!matchingModels[index - 1]?.model.discovered || matchingModels[index - 1]?.group.id !== group.id) && (
-								<div className="px-2 pt-2 pb-1 text-xs text-muted-foreground">Remote</div>
+							{group.discoveryLabel && model.discovered && (!matchingModels[index - 1]?.model.discovered || matchingModels[index - 1]?.group.id !== group.id) && (
+								<div className="px-2 pt-2 pb-1 text-xs text-muted-foreground">{group.discoveryLabel}</div>
 							)}
 							<button
 								type="button"

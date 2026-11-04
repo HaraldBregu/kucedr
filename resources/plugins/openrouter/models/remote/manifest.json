@@ -1,6 +1,6 @@
 {
 	"id": "remote",
-	"name": "Remote models",
+	"name": "Remote",
 	"type": "large-language-model",
 	"authentication": "api-key",
 	"url": "https://openrouter.ai/api/v1",
