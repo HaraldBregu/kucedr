@@ -141,17 +141,7 @@ function statusLabelContent(
 	label: string
 ): ReactNode {
 	if (isStreaming && isRunningState(message.state)) {
-		return (
-			<TextShimmer>
-				{label}
-				{message.startedAtMs !== undefined && (
-					<>
-						{' '}
-						<Elapsed startedAtMs={message.startedAtMs} />
-					</>
-				)}
-			</TextShimmer>
-		);
+		return <LoadingState label={label} startedAtMs={message.startedAtMs} />;
 	}
 
 	return label;
