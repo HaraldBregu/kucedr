@@ -16,6 +16,7 @@ import type { WindowContextManager } from '../window_context';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
+import { openrouterInputs } from './openrouter';
 
 export interface ProviderStoreIpcDeps {
 	windows: WindowContextManager;
@@ -190,6 +191,8 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 					context_length?: unknown;
 					context_window?: unknown;
 					supported_parameters?: unknown;
+					default_parameters?: unknown;
+					reasoning?: unknown;
 					architecture?: { output_modalities?: unknown };
 					pricing?: { parameters?: Record<string, unknown> };
 				};
@@ -206,19 +209,8 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 						metadata: {
 							documentationUrl: modelUrl?.replace('{id}', model.id) ?? modelsUrl,
 							promptAttachments: [],
-							inputs:
-								id === 'openrouter' &&
-								Array.isArray(model.supported_parameters) &&
-								(model.supported_parameters.includes('reasoning') ||
-									model.supported_parameters.includes('reasoning_effort'))
-									? {
-											reasoning: {
-												properties: {
-													effort: { enum: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'] },
-												},
-											},
-										}
-									: {},
+							inputs: id === 'openrouter' ? openrouterInputs(model) : {},
+							...(id === 'openrouter' ? { documentationStatus: 'verified' as const } : {}),
 							...(contextWindow ? { contextWindow } : {}),
 						},
 					},
