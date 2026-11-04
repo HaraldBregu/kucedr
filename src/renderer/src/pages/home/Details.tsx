@@ -1,5 +1,6 @@
 import { ArrowUpRight, ChevronDown, File, FileCode, Files, Gauge, Hash, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import type { HomeChatMessage } from './context/state';
 import { chatAssets } from './components/assets';
@@ -9,7 +10,8 @@ import { ChatLibrary } from './Library';
 import { ChatWorkspace } from './Workspace';
 import type { LibraryFile } from '@shared/library_types';
 
-export function ChatDetails({ messages, model, draft, hasAttachments, onJump, onAttach, onWorkspaceAttach }: {
+export function ChatDetails({ open, messages, model, draft, hasAttachments, onJump, onAttach, onWorkspaceAttach }: {
+	readonly open: boolean;
 	readonly messages: readonly HomeChatMessage[];
 	readonly model?: { providerId: string; modelId: string; contextWindow?: number };
 	readonly draft: string;
@@ -23,8 +25,10 @@ export function ChatDetails({ messages, model, draft, hasAttachments, onJump, on
 	const assets = chatAssets(responses);
 	const scripts = chatScripts(responses);
 	return (
-		<div className="no-scrollbar h-full overflow-y-auto py-3">
-				<div className="space-y-2 px-3 pb-3 text-sm">
+		<aside id="chat-information" aria-label="Chat information" className={`absolute right-6 top-6 z-20 max-h-[calc(100%-2.25rem-var(--composer-height,7rem))] w-56 max-w-[calc(100%-3rem)] flex-col ${open ? 'flex' : 'hidden'}`}>
+			<Card size="sm" className="min-h-0 overflow-hidden rounded-2xl border border-border bg-card ring-0 data-[size=sm]:gap-0">
+				<div className="no-scrollbar min-h-0 overflow-y-auto">
+				<CardContent className="space-y-2 pb-3 pt-0 text-sm">
 					<div className="flex min-h-7 items-center gap-2 text-muted-foreground">
 						<MessageSquare className="size-4 shrink-0" aria-hidden />
 						<span className="flex-1">Responses</span>
@@ -36,7 +40,7 @@ export function ChatDetails({ messages, model, draft, hasAttachments, onJump, on
 						<span className="flex-1">Context</span>
 						<Usage className="h-7 rounded-md px-0 text-xs tabular-nums text-foreground" providerId={model?.providerId ?? ''} modelId={model?.modelId ?? ''} contextWindow={model?.contextWindow} messages={messages} draft={draft} hasAttachments={hasAttachments} />
 					</div>
-				</div>
+				</CardContent>
 				<Collapsible>
 					<CollapsibleTrigger render={<Button variant="ghost" className="group h-8 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
 						<Files className="size-4 text-muted-foreground" aria-hidden />
@@ -73,6 +77,8 @@ export function ChatDetails({ messages, model, draft, hasAttachments, onJump, on
 				</Collapsible>
 				<ChatLibrary refreshKey={`${latest?.id}:${latest?.completedAtMs}:${assets.map((asset) => asset.path).join('\n')}`} onAttach={onAttach} />
 				<ChatWorkspace onAttach={onWorkspaceAttach} />
-		</div>
+				</div>
+			</Card>
+		</aside>
 	);
 }

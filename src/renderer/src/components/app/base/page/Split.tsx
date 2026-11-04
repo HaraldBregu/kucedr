@@ -10,7 +10,7 @@ import {
 	SheetTitle,
 } from '@/components/ui/sheet';
 import { usePageContext } from './hooks/use-page-context';
-import { DEFAULT_SIDEBAR_WIDTH, MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH } from './context/state';
+import { MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH } from './context/state';
 
 interface SplitProps extends Omit<React.ComponentProps<'div'>, 'children'> {
 	readonly children: ReactNode;
@@ -18,9 +18,6 @@ interface SplitProps extends Omit<React.ComponentProps<'div'>, 'children'> {
 	readonly sidebarLabel?: string;
 	readonly navigationContent?: ReactNode;
 	readonly navigationActions?: ReactNode;
-	readonly rightSidebar?: ReactNode;
-	readonly rightSidebarOpen?: boolean;
-	readonly onRightSidebarOpenChange?: (open: boolean) => void;
 }
 
 export function Split({
@@ -29,26 +26,12 @@ export function Split({
 	sidebarLabel = 'Navigation',
 	navigationContent,
 	navigationActions,
-	rightSidebar,
-	rightSidebarOpen = false,
-	onRightSidebarOpenChange,
 	className,
 	style,
 	...props
 }: SplitProps): React.JSX.Element {
 	const { state, dispatch, isMobile, sidebarWidth, setSidebarWidth } =
 		usePageContext();
-	const [rightSidebarWidth, setRightSidebarWidthState] = React.useState(() => {
-		const storedWidth = Number(window.localStorage.getItem('kucedr_right_sidebar_width'));
-		return Number.isFinite(storedWidth) && storedWidth > 0
-			? Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, storedWidth))
-			: DEFAULT_SIDEBAR_WIDTH;
-	});
-	const setRightSidebarWidth = (width: number): void => {
-		const nextWidth = Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, width));
-		setRightSidebarWidthState(nextWidth);
-		window.localStorage.setItem('kucedr_right_sidebar_width', String(nextWidth));
-	};
 
 	return (
 		<div
@@ -172,63 +155,6 @@ export function Split({
 				<NavigationBar showWorkspace contextContent={navigationContent} rightContent={navigationActions} startContent={isMobile || !state.sidebarOpen ? <Toggle /> : undefined} />
 				<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
 			</main>
-			{isMobile ? (
-				<Sheet open={rightSidebarOpen} onOpenChange={onRightSidebarOpenChange}>
-					<SheetContent side="right" className="bg-sidebar p-0 text-sidebar-foreground" style={{ width: 'min(18rem, calc(100vw - 3rem))', maxWidth: 'none' }}>
-						<SheetHeader className="flex h-12 shrink-0 justify-center px-3 py-0">
-							<SheetTitle>Chat information</SheetTitle>
-							<SheetDescription className="sr-only">Chat information</SheetDescription>
-						</SheetHeader>
-						<aside id="chat-information" aria-label="Chat information" className="min-h-0 flex-1">{rightSidebar}</aside>
-					</SheetContent>
-				</Sheet>
-			) : rightSidebarOpen ? (
-				<aside id="chat-information" aria-label="Chat information" className="relative flex shrink-0 flex-col overflow-hidden border-l border-sidebar-border/60 bg-sidebar text-sidebar-foreground" style={{ width: rightSidebarWidth }}>
-					<header className="flex h-12 shrink-0 items-center px-3 text-sm font-medium" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}>Chat information</header>
-					<div className="min-h-0 flex-1">{rightSidebar}</div>
-					<button
-						type="button"
-						data-slot="split-pane-right-resizer"
-						role="separator"
-						aria-label="Resize chat information sidebar"
-						aria-orientation="vertical"
-						aria-valuemin={MIN_SIDEBAR_WIDTH}
-						aria-valuemax={MAX_SIDEBAR_WIDTH}
-						aria-valuenow={rightSidebarWidth}
-						title="Resize chat information sidebar"
-						className="absolute inset-y-0 left-0 z-20 w-1.5 cursor-col-resize touch-none outline-none after:absolute after:inset-y-0 after:left-0 after:w-px hover:after:bg-sidebar-border focus-visible:after:bg-ring"
-						onKeyDown={(event) => {
-							if (event.key === 'ArrowLeft') { event.preventDefault(); setRightSidebarWidth(rightSidebarWidth + 8); }
-							if (event.key === 'ArrowRight') { event.preventDefault(); setRightSidebarWidth(rightSidebarWidth - 8); }
-							if (event.key === 'Home') { event.preventDefault(); setRightSidebarWidth(MIN_SIDEBAR_WIDTH); }
-							if (event.key === 'End') { event.preventDefault(); setRightSidebarWidth(MAX_SIDEBAR_WIDTH); }
-						}}
-						onPointerDown={(event) => {
-							if (event.button !== 0) return;
-							event.preventDefault();
-							const startX = event.clientX;
-							const startWidth = rightSidebarWidth;
-							const previousCursor = document.body.style.cursor;
-							const previousUserSelect = document.body.style.userSelect;
-							document.body.style.cursor = 'col-resize';
-							document.body.style.userSelect = 'none';
-							const handlePointerMove = (moveEvent: PointerEvent): void => {
-								setRightSidebarWidth(startWidth + startX - moveEvent.clientX);
-							};
-							const stopResizing = (): void => {
-								window.removeEventListener('pointermove', handlePointerMove);
-								window.removeEventListener('pointerup', stopResizing);
-								window.removeEventListener('pointercancel', stopResizing);
-								document.body.style.cursor = previousCursor;
-								document.body.style.userSelect = previousUserSelect;
-							};
-							window.addEventListener('pointermove', handlePointerMove);
-							window.addEventListener('pointerup', stopResizing);
-							window.addEventListener('pointercancel', stopResizing);
-						}}
-					/>
-				</aside>
-			) : null}
 		</div>
 	);
 }
