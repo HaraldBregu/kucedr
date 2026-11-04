@@ -31,7 +31,10 @@ jest.mock('../../../../src/main/providers/providers_store', () => ({
 }));
 
 jest.mock('../../../../src/main/models', () => ({
-	loadProviders: () => [{ id: 'openai', name: 'OpenAI', baseUrl: 'https://api.openai.com/v1' }],
+	loadProviders: () => [
+		{ id: 'openai', name: 'OpenAI', baseUrl: 'https://api.openai.com/v1' },
+		{ id: 'openrouter', name: 'OpenRouter', modelsUrl: 'https://openrouter.ai/api/v1/models' },
+	],
 	loadVectorDatabases: () => [
 		{
 			id: 'pinecone',
@@ -279,5 +282,68 @@ describe('provider credential IPC boundary', () => {
 			'Unknown plugin provider'
 		);
 	});
+});
 
+it('exposes OpenRouter model capabilities and exact reasoning levels from its model list', async () => {
+	register();
+	const originalFetch = global.fetch;
+	global.fetch = jest.fn().mockResolvedValue({
+		ok: true,
+		json: async () => ({
+			data: [
+				{
+					id: 'known',
+					name: 'Known',
+					supported_parameters: ['reasoning', 'temperature', 'top_p', 'seed', 'unknown'],
+					default_parameters: { temperature: 0.7, top_p: null, seed: 7 },
+					reasoning: {
+						mandatory: true,
+						supported_efforts: ['none', 'high', 'low'],
+						default_effort: 'high',
+						supports_max_tokens: true,
+					},
+					context_length: 8192,
+				},
+				{
+					id: 'null',
+					supported_parameters: ['reasoning_effort'],
+					reasoning: { supported_efforts: null },
+				},
+				{ id: 'missing', supported_parameters: ['reasoning'], reasoning: {} },
+				{ id: 'unsupported', supported_parameters: ['temperature'] },
+			],
+		}),
+	});
+	try {
+		const models = (await handler(registerQueryWithEvent, ProviderChannels.listModels)(
+			{},
+			'openrouter'
+		)) as Array<{
+			id: string;
+			metadata: { documentationStatus: string; inputs: Record<string, any> };
+		}>;
+		const known = models.find((item) => item.id === 'known')!.metadata;
+		expect(known.documentationStatus).toBe('verified');
+		expect(known.inputs).toEqual({
+			temperature: { type: 'number', minimum: 0, maximum: 2, default: 0.7 },
+			top_p: { type: 'number', minimum: 0, maximum: 1 },
+			seed: { type: 'integer', default: 7 },
+			reasoning: {
+				type: 'object',
+				properties: {
+					effort: { type: 'string', enum: ['low', 'high'], default: 'high' },
+					max_tokens: { type: 'integer', minimum: 0 },
+				},
+			},
+		});
+		expect(
+			models.find((item) => item.id === 'null')!.metadata.inputs.reasoning.properties.effort.enum
+		).toEqual(['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']);
+		expect(models.find((item) => item.id === 'missing')!.metadata.inputs.reasoning).toBeUndefined();
+		expect(
+			models.find((item) => item.id === 'unsupported')!.metadata.inputs.reasoning
+		).toBeUndefined();
+	} finally {
+		global.fetch = originalFetch;
+	}
 });

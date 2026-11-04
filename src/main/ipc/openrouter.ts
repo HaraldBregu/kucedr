@@ -38,7 +38,9 @@ export function openrouterInputs(model: {
 		const value = defaults[name];
 		inputs[name] = {
 			...schema,
-			...(typeof value === schema.type && (typeof value !== 'number' || Number.isFinite(value))
+			...((typeof value === schema.type ||
+				(schema.type === 'integer' && typeof value === 'number' && Number.isInteger(value))) &&
+			(typeof value !== 'number' || Number.isFinite(value))
 				? { default: value as string | number | boolean }
 				: {}),
 		};
