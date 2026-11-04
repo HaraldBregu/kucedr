@@ -45,6 +45,13 @@ export default function WorkspacePage(): React.JSX.Element {
 	useEffect(() => {
 		if (path) localStorage.setItem(SELECTED_FILE_KEY, path);
 	}, [path]);
+	useEffect(() => {
+		void window.app.getWorkspaceTextSize().then(setTextSize);
+	}, []);
+	const handleTextSizeChange = useCallback((next: WorkspaceTextSize) => {
+		setTextSize(next);
+		void window.app.setWorkspaceTextSize(next);
+	}, []);
 	const handleFilesLoaded = useCallback((next: WorkspaceTreeEntry[]) => setFiles(next), []);
 	const sidebar = <WorkspaceSidebar onFileSelect={selectFile} onFilesLoaded={handleFilesLoaded} onEntryRenamed={(sourcePath, nextPath) => {
 		if (!path) return;
