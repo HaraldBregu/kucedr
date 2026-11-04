@@ -8,7 +8,7 @@ import type { ProviderModel } from '../../shared/model_types';
 import { ProviderStoreChannels } from '../../shared/ipc_channels_definitions';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
-import { loadProviders, loadVectorDatabases } from '../models';
+import { loadProviders, loadVectorDatabases, modelsFor } from '../models';
 import { loadStorages } from '../models';
 import { getEnabledPluginProviders, setPluginProviderEnabled } from '../providers/providers_store';
 import { deleteProvider, getProvider, listProviders, setProvider } from '../settings_store';
@@ -179,6 +179,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const provider = loadProviders().find((entry) => entry.id === id);
 		if (!provider?.modelsUrl) throw new Error('This provider has no live model list.');
 		const { modelsUrl, modelUrl } = provider;
+		const discoveryInputs = modelsFor('llm').find((model) => model.provider.id === id && model.metadata?.discoveryInputs)?.metadata?.discoveryInputs;
 		const response = await fetch(modelsUrl, { signal: AbortSignal.timeout(10_000) });
 		if (!response.ok) throw new Error('Could not load models from the provider.');
 		const body = (await response.json()) as { data?: unknown };
@@ -209,8 +210,8 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 						metadata: {
 							documentationUrl: modelUrl?.replace('{id}', model.id) ?? modelsUrl,
 							promptAttachments: [],
-							inputs: id === 'openrouter' ? openrouterInputs(model) : {},
-							...(id === 'openrouter' ? { documentationStatus: 'verified' as const } : {}),
+							inputs: discoveryInputs ? openrouterInputs(model, discoveryInputs) : {},
+							...(discoveryInputs ? { documentationStatus: 'verified' as const } : {}),
 							...(contextWindow ? { contextWindow } : {}),
 						},
 					},

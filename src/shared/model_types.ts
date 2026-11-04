@@ -56,6 +56,7 @@ export interface ModelMetadata {
 	readonly promptAttachments?: readonly PromptAttachmentRule[];
 	/** API request fields supported by this exact service or model. */
 	readonly inputs: Readonly<Record<string, ModelInputSchema>>;
+	readonly discoveryInputs?: Readonly<Record<string, ModelInputSchema>>;
 }
 
 export interface ProviderModel {
