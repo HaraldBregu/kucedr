@@ -197,7 +197,7 @@ export function ModelProviderSelect({
 										className="relative flex size-10 shrink-0 items-center justify-center text-muted-foreground outline-none hover:text-foreground focus-visible:bg-accent aria-pressed:text-foreground after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full aria-pressed:after:bg-foreground"
 									>
 										{light && dark ? (
-											<span className="size-5">
+											<span className="size-4">
 												<img src={light} alt="" className="size-full object-contain dark:hidden" />
 												<img
 													src={dark}
