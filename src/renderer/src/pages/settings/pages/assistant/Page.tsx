@@ -18,6 +18,7 @@ import { liveProviderModels, providerIdsFor, providerModels } from '@/lib/provid
 import { ModelOptions } from '@/components/model-options';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import { updateModelOptions } from '@/lib/options';
+import { updateOpenRouterOptions } from '@/lib/openrouter-options';
 import type { Model } from '@/lib/compat';
 import type { PublicProvider } from '../../../../../../shared';
 import {
@@ -177,12 +178,9 @@ const AssistantPage: React.FC = () => {
 	}, [hasLoadedLocalModels, state.loading]);
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
-		let next = updateModelOptions(modelOptions, path, value);
-		if (state.providerId === 'openrouter' && path[0] === 'reasoning' && value !== undefined && value !== '') {
-			if (path[1] === 'effort') next = updateModelOptions(next, ['reasoning', 'max_tokens'], undefined);
-			if (path[1] === 'max_tokens') next = updateModelOptions(next, ['reasoning', 'effort'], undefined);
-		}
-		saveModelOptions(next);
+		saveModelOptions(state.providerId === 'openrouter'
+			? updateOpenRouterOptions(modelOptions, path, value)
+			: updateModelOptions(modelOptions, path, value));
 	};
 
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {

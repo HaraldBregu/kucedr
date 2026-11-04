@@ -14,6 +14,7 @@ import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { ModelOptions } from '@/components/model-options';
 import { updateModelOptions } from '@/lib/options';
+import { updateOpenRouterOptions } from '@/lib/openrouter-options';
 import { modelsFor, providerIdsFor, providerModels, providers } from '@/lib/providers';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import {
@@ -156,12 +157,9 @@ const TasksPage: React.FC = () => {
 	};
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
-		let next = updateModelOptions(modelOptions, path, value);
-		if (providerId === 'openrouter' && path[0] === 'reasoning' && value !== undefined && value !== '') {
-			if (path[1] === 'effort') next = updateModelOptions(next, ['reasoning', 'max_tokens'], undefined);
-			if (path[1] === 'max_tokens') next = updateModelOptions(next, ['reasoning', 'effort'], undefined);
-		}
-		saveModelOptions(next);
+		saveModelOptions(providerId === 'openrouter'
+			? updateOpenRouterOptions(modelOptions, path, value)
+			: updateModelOptions(modelOptions, path, value));
 	};
 
 	const handleTaskEnabledChange = async (taskId: string, enabled: boolean): Promise<void> => {
