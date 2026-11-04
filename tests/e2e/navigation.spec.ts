@@ -476,9 +476,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 		.locator('[data-slot="workspace-sidebar"]')
 		.getByRole('button', { name: 'Return to Home' })
 		.click();
-	await page.evaluate(() => {
-		window.location.hash = '#/workspace';
-	});
+	await page.getByRole('button', { name: 'Workspace', exact: true }).click();
 	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute(
 		'aria-current',
 		'page'
@@ -500,9 +498,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 			window.agent.writeWorkspaceFile('Return/state.json', '{"current": 2}').catch(reject);
 		});
 	});
-	await page.evaluate(() => {
-		window.location.hash = '#/workspace';
-	});
+	await page.getByRole('button', { name: 'Workspace', exact: true }).click();
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 2');
 });
 
