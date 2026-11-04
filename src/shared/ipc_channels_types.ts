@@ -687,6 +687,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: boolean;
 	};
+	[AppChannels.setWorkspaceZoom]: {
+		args: [zoom: number];
+		result: void;
+	};
+	[AppChannels.getWorkspaceZoom]: {
+		args: [];
+		result: number;
+	};
 	[AppChannels.getLanguage]: {
 		args: [];
 		result: import('./app_types').AppLanguage;
