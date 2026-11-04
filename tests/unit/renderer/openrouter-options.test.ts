@@ -1,5 +1,9 @@
 import { updateOpenRouterOptions } from '../../../src/renderer/src/lib/openrouter-options';
 
+beforeAll(() => {
+	Object.defineProperty(globalThis, 'structuredClone', { configurable: true, value: (value: unknown) => JSON.parse(JSON.stringify(value)) });
+});
+
 it('keeps reasoning effort and token budget mutually exclusive', () => {
 	const configured = { temperature: 0.5, reasoning: { max_tokens: 2048, enabled: false } };
 	expect(updateOpenRouterOptions(configured, ['reasoning', 'effort'], 'max')).toEqual({
