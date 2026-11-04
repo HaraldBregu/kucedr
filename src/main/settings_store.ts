@@ -56,6 +56,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	keepAwake: false,
 	soundFeedbackEnabled: false,
 	workspaceWideContent: false,
+	workspaceZoom: 100,
 	language: 'en',
 	theme: 'dark',
 	windowSize: '1200x800',
