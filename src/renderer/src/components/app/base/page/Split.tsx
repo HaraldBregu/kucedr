@@ -164,11 +164,11 @@ export function Split({
 			{isMobile ? (
 				<Sheet open={rightSidebarOpen} onOpenChange={onRightSidebarOpenChange}>
 					<SheetContent side="right" className="bg-sidebar p-0 text-sidebar-foreground" style={{ width: 'min(18rem, calc(100vw - 3rem))', maxWidth: 'none' }}>
-						<SheetHeader className="sr-only">
+						<SheetHeader className="flex h-12 shrink-0 justify-center px-3 py-0">
 							<SheetTitle>Chat information</SheetTitle>
-							<SheetDescription>Chat information</SheetDescription>
+							<SheetDescription className="sr-only">Chat information</SheetDescription>
 						</SheetHeader>
-						<aside id="chat-information" aria-label="Chat information" className="h-full">{rightSidebar}</aside>
+						<aside id="chat-information" aria-label="Chat information" className="min-h-0 flex-1">{rightSidebar}</aside>
 					</SheetContent>
 				</Sheet>
 			) : rightSidebarOpen ? (
