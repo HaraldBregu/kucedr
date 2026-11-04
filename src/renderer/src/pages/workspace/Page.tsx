@@ -23,9 +23,10 @@ export default function WorkspacePage(): React.JSX.Element {
 		if (entry.children) pending.push(...entry.children);
 	}
 	const selectFile = useCallback((file: WorkspaceTreeEntry, replace = false) => {
+		if (file.path === path) return;
 		const search = new URLSearchParams({ file: file.path }).toString();
 		navigate({ pathname: '/workspace', search: `?${search}` }, { replace });
-	}, [navigate]);
+	}, [navigate, path]);
 	useEffect(() => {
 		const saved = localStorage.getItem(SELECTED_FILE_KEY);
 		if (!path && saved) selectFile({ type: 'file', path: saved, name: saved.split(/[\\/]/).pop() ?? saved }, true);

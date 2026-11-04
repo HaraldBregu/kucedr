@@ -349,6 +349,34 @@ test('the navbar opens Search and Workspace keeps its sidebar footer', async () 
 	await expect(page).toHaveURL(/#\/home$/);
 });
 
+test('Workspace file routes support back and forward', async () => {
+	await page.evaluate(async () => {
+		localStorage.removeItem('workspace-selected-file');
+		await window.agent.createWorkspaceDirectory('', 'History');
+		await window.agent.createWorkspaceFile('History', 'first.json');
+		await window.agent.createWorkspaceFile('History', 'second.json');
+		await window.agent.writeWorkspaceFile('History/first.json', '{"page": "first"}');
+		await window.agent.writeWorkspaceFile('History/second.json', '{"page": "second"}');
+		window.location.hash = '#/workspace';
+	});
+	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
+	await workspace.getByText('History', { exact: true }).click();
+	await workspace.getByRole('button', { name: 'first.json' }).click();
+	await expect(page).toHaveURL(/file=History%2Ffirst.json/);
+	await workspace.getByRole('button', { name: 'second.json' }).click();
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('second');
+	await page.getByRole('button', { name: 'Go back' }).first().click();
+	await expect(page).toHaveURL(/file=History%2Ffirst.json/);
+	await expect(workspace.getByRole('button', { name: 'first.json' })).toHaveAttribute('aria-current', 'page');
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('first');
+	await page.getByRole('button', { name: 'Go forward' }).first().click();
+	await expect(page).toHaveURL(/file=History%2Fsecond.json/);
+	await expect(workspace.getByRole('button', { name: 'second.json' })).toHaveAttribute('aria-current', 'page');
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('second');
+	await page.reload();
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('second');
+});
+
 test('Workspace breadcrumbs browse folders and sibling files', async ({ browserName: _browserName }, testInfo) => {
 	const longName = `${'very-long-file-name-'.repeat(9)}.md`;
 	await page.evaluate(async (name) => {
