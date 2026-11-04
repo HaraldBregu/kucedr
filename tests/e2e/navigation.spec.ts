@@ -477,6 +477,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 		.getByRole('button', { name: 'Return to Home' })
 		.click();
 	await page.getByRole('button', { name: 'Workspace', exact: true }).click();
+	await workspace.getByText('Return', { exact: true }).click();
 	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute(
 		'aria-current',
 		'page'
