@@ -1,6 +1,6 @@
 import { useState, type ReactElement } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
+import { LoadingState } from '@/components/loading-state';
 import { Tool } from '@/components/prompt-kit/tool';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
