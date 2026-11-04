@@ -200,7 +200,7 @@ const lightThemeColors: AppThemeColors = {
 const darkThemeColors: AppThemeColors = {
 	...lightThemeColors,
 	'app-window-background-base': 'oklch(0 0 0)',
-	'app-surface-background-base': 'oklch(0.1400 0 0)',
+	'app-surface-background-base': 'oklch(0.0800 0 0)',
 	'app-popover-background-base': 'oklch(0.1800 0 0)',
 	'app-sidebar-background-base': 'oklch(0.0800 0 0)',
 	'app-window-background':
@@ -252,7 +252,7 @@ const darkThemeColors: AppThemeColors = {
 	'link-on-primary': 'oklch(0.45 0.18 254)',
 	command: 'oklch(0.68 0.15 300)',
 	background: 'oklch(0 0 0)',
-	card: 'oklch(0.1400 0 0)',
+	card: 'oklch(0.0800 0 0)',
 	popover: 'oklch(0.1800 0 0)',
 	sidebar: 'oklch(0.0800 0 0)',
 };
