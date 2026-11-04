@@ -49,19 +49,7 @@ export function ToolActivityGroup({
 						className="p-0! h-auto w-full justify-start rounded-md bg-transparent! py-1 font-normal text-muted-foreground transition-colors hover:bg-transparent hover:text-foreground"
 					>
 						<span className="truncate text-base font-medium">
-							{isBusy ? (
-								<TextShimmer>
-									{label}
-									{isActive && startedAtMs !== undefined && (
-										<>
-											{' '}
-											<Elapsed startedAtMs={startedAtMs} />
-										</>
-									)}
-								</TextShimmer>
-							) : (
-								label
-							)}
+							{isBusy ? <LoadingState label={label} startedAtMs={startedAtMs} /> : label}
 						</span>
 						<ChevronDown
 							className={cn('size-3.5 shrink-0 transition-transform', isOpen && 'rotate-180')}
