@@ -364,18 +364,6 @@ export function CommandMenu({
 			)),
 		},
 		{
-			category: 'scripts',
-			items: scripts.map((script) => (
-				<ImageMenuItem
-					key={script.name}
-					title={script.title}
-					description={script.description}
-					fallbackIcon={getSettingsRouteIcon('/settings/scripts')}
-					onSelect={() => navigateTo(`/settings/scripts/${encodeURIComponent(script.name)}`)}
-				/>
-			)),
-		},
-		{
 			category: 'models',
 			items: models.map((model) => (
 				<ImageMenuItem
