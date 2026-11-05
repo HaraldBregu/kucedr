@@ -532,6 +532,12 @@ test('Workspace editor options share the file container and control its styles',
 	const details = content.getByRole('complementary', { name: 'Workspace editor options' });
 	await expect(details).toBeVisible();
 	await expect(details).toContainText('Styles');
+	await expect(details.getByRole('heading', { name: 'View', exact: true })).toHaveCount(0);
+	const editor = content.getByRole('textbox', { name: 'Markdown preview editor' });
+	await editor.click();
+	await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+	await details.getByRole('button', { name: 'Bold', exact: true }).click();
+	await expect(editor.locator('strong')).toHaveText('Workspace details test');
 	await expect(content.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
 	await expect(content.locator('footer[aria-label="File information"]')).toBeVisible();
 	await details.getByRole('button', { name: /Full width/ }).click();
