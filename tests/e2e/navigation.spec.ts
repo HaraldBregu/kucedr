@@ -675,6 +675,7 @@ test('Workspace AI captures text selected after opening the prompt', async () =>
 		await expect(composer.getByRole('status')).toHaveText('Selected 7–12');
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('Make it friendly');
 	await expect(composer.getByRole('status')).toHaveText('Selected 7–12');
+	await expect(editor.locator('.bg-selection')).toHaveText('world');
 	await composer.getByRole('button', { name: 'Send message', exact: true }).click();
 	await expect(composer).toHaveCount(0);
 	await expect(editor).toHaveText('Hello friends today');

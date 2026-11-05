@@ -5,7 +5,7 @@ import { Image } from '@tiptap/extension-image';
 import { TableKit } from '@tiptap/extension-table';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
-import { Placeholder } from '@tiptap/extensions';
+import { Placeholder, Selection as SelectionHighlight } from '@tiptap/extensions';
 import { Markdown } from '@tiptap/markdown';
 import { NodeSelection, Selection, TextSelection } from '@tiptap/pm/state';
 import { EditorContent, ReactNodeViewRenderer, useEditor } from '@tiptap/react';
@@ -79,6 +79,7 @@ export function WorkspaceMarkdownEditor({
 				},
 			}),
 			Placeholder.configure({ placeholder: 'Start writing, or paste an image…' }),
+			SelectionHighlight.configure({ className: 'bg-selection text-selection-foreground' }),
 			Markdown.configure({ markedOptions: { gfm: true } }),
 			WorkspaceSearch.configure({ onMatchCount }),
 			Extension.create({
