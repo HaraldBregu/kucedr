@@ -168,9 +168,9 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 			event.stopPropagation();
 			openFind();
 		}}>
-			{kind === 'markdown' && visibleMarkdownMode === 'preview' && !content.includes('<!--') ? <div ref={setToolbarTarget} className="shrink-0 border-b" /> : null}
 			<div className="relative flex min-h-0 min-w-0 flex-1">
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
+			{kind === 'markdown' && visibleMarkdownMode === 'preview' && !content.includes('<!--') ? <div ref={setToolbarTarget} className="shrink-0 border-b" /> : null}
 			{searchable && (kind !== 'markdown' || visibleMarkdownMode === 'source' || content.includes('<!--')) ? (
 				<div role="toolbar" aria-label="File tools" className="flex shrink-0 items-center border-b px-2 py-1 sm:px-3">
 					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} />

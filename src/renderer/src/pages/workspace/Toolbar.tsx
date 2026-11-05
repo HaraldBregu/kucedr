@@ -227,7 +227,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	const toolbar = toolbarTarget ? createPortal(<div className="flex items-center gap-2 overflow-x-auto px-3 py-1">
+	const toolbar = toolbarTarget ? createPortal(<div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-center gap-2 px-5 py-1 sm:px-8 lg:px-12`}>
 		{[
 			{ title: 'Text', labels: [...groups[1], ...groups[2]].map((action) => action.label) },
 			{ title: 'Blocks', labels: groups[3].map((action) => action.label) },
