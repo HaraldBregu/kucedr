@@ -220,6 +220,7 @@ export function WorkspaceMarkdownEditor({
 					.then((data) => insertFiles([new File([new Uint8Array(data)], file.name)]))
 					.catch((cause: unknown) => onError(cause instanceof Error ? cause.message : 'Unable to add file.'));
 			}} /> : null}
+			{previewImage ? <WorkspaceImagePreview {...previewImage} onClose={() => setPreviewImage(null)} /> : null}
 			<input ref={fileInputRef} type="file" multiple hidden accept="image/*,audio/*,video/*,application/pdf" onChange={(event) => {
 				insertFiles(Array.from(event.target.files ?? []));
 				event.target.value = '';
