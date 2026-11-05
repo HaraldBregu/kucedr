@@ -181,6 +181,7 @@ function toProviderModel(model: CatalogModel): ProviderModel {
 		name: model.name,
 		...(model.apiTypes ? { apiTypes: model.apiTypes } : {}),
 		...(model.realtime ? { realtime: model.realtime } : {}),
+		...(model.metadata ? { metadata: model.metadata } : {}),
 	};
 }
 
