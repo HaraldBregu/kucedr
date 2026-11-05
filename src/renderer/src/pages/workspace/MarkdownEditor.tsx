@@ -79,6 +79,8 @@ export function WorkspaceMarkdownEditor({
 			Image.extend({
 				renderHTML({ HTMLAttributes }) {
 					const src = typeof HTMLAttributes.src === 'string' ? workspaceResourceUrl(path, HTMLAttributes.src) : HTMLAttributes.src;
+					// ponytail: audio lives in the image node so `![alt](file.mp3)` round-trips through markdown; give it its own node if it needs more than playback
+					if (typeof src === 'string' && workspaceFileType(src).kind === 'audio') return ['audio', { controls: 'true', src, 'aria-label': HTMLAttributes.alt, class: 'w-full' }];
 					return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { src })];
 				},
 			}),
