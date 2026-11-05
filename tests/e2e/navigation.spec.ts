@@ -531,6 +531,7 @@ test('Workspace editor options share the file container and control its styles',
 	await page.getByRole('button', { name: 'Editor options', exact: true }).click();
 	const details = content.getByRole('complementary', { name: 'Workspace editor options' });
 	await expect(details).toBeVisible();
+	await page.screenshot({ path: '/private/tmp/workspace-options.png' });
 	await expect(details).toContainText('Styles');
 	await expect(content.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
 	await expect(content.locator('footer[aria-label="File information"]')).toBeVisible();
