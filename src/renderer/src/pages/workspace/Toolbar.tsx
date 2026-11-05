@@ -126,7 +126,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		const update = (): void => {
 			const { from, empty, $from } = editor.state.selection;
 			const before = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
-			const match = empty && editor.isFocused ? before.match(/\/([^\s/]*)$/) : null;
+			const match = empty && editor.isFocused ? before.match(/\/([^/]*)$/) : null;
 			const start = match ? from - match[0].length : null;
 			setSlash(start !== null && start !== dismissed ? { from: start, to: from, query: match![1] } : null);
 			setSelection(!empty && editor.isFocused);

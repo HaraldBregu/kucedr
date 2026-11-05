@@ -179,7 +179,6 @@ export function WorkspaceMarkdownEditor({
 				event.stopPropagation();
 			}}
 		>
-			<WorkspaceToolbar editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
 			{script?.fence ? <WorkspaceScriptForm script={script} value={(script.inputSchema?.examples?.[0] ?? {}) as Record<string, unknown>} submitLabel="Insert" onClose={() => setScript(null)} onSubmit={(input) => {
 				setScript(null);
 				editor.chain().focus().insertContent({
@@ -216,6 +215,7 @@ export function WorkspaceMarkdownEditor({
 				}}
 			/>
 			</div>
+			<WorkspaceToolbar editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
 			<WorkspaceOutline editor={editor} container={scrollRef} />
 			</div>
 		</div>
