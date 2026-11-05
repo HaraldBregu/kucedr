@@ -35,7 +35,21 @@
 				]
 			},
 			"resolution": {
-				"type": "string"
+				"type": "string",
+				"default": "1k",
+				"enum": [
+					"1k",
+					"2k"
+				]
+			},
+			"quality": {
+				"type": "string",
+				"default": "auto",
+				"enum": [
+					"low",
+					"medium",
+					"auto"
+				]
 			},
 			"response_format": {
 				"type": "string",
