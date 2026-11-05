@@ -30,7 +30,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 				<li key={entry.path} className="min-w-0">
 					{renamingPath === entry.path ? (
 						<div className="flex min-h-8 items-center gap-2 rounded-md px-2 text-sm">
-							{entry.type === 'directory' ? <span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium uppercase">{Array.from(entry.name)[0]}</span> : <File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />}
+							{entry.type === 'directory' ? <span aria-hidden="true" className="flex size-5 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium uppercase">{Array.from(entry.name)[0]}</span> : <File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />}
 							<WorkspaceRenameInput name={entry.name} busy={renameBusy} onCancel={onRenameCancel} onConfirm={onRename} />
 						</div>
 					) : entry.type === 'directory' ? (
@@ -67,7 +67,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							event.stopPropagation();
 							onEntryContextMenu(entry);
 						}}>
-								<span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium uppercase">
+								<span aria-hidden="true" className="flex size-5 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium uppercase">
 									<span className="group-hover/row:hidden group-focus-visible/row:hidden">{Array.from(entry.name)[0]}</span>
 									<ChevronRight className={`hidden size-4 group-hover/row:block group-focus-visible/row:block ${expanded || openDirectories.has(entry.path) ? 'rotate-90' : ''}`} strokeWidth={1.8} />
 								</span>
