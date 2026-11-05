@@ -338,7 +338,7 @@ function PageContent(): ReactElement {
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
-										voiceMode={voiceMode !== null}
+										voiceMode={mode === 'voice'}
 										activeAgentId={agent.chatState.activeAgentId}
 										onEdit={agent.editUserMessage}
 										onReply={agent.replyToMessage}
