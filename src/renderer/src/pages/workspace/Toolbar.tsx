@@ -25,6 +25,7 @@ import {
 	List,
 	ListChecks,
 	ListOrdered,
+	Loader2,
 	Minus,
 	Quote,
 	Redo2,
@@ -103,7 +104,7 @@ interface WorkspaceToolbarProps {
 }
 
 export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
-	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean } | null>(null);
+	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const requestId = useRef(0);
 	useEffect(() => () => { requestId.current++; }, []);
 	const [href, setHref] = useState('');
@@ -180,7 +181,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	const openAi = (instruction = ''): void => {
 		const { from, to } = editor.state.selection;
 		const text = editor.state.doc.textBetween(from, to, '\n');
-		const value = { from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false };
+		const value = { from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false, autoApply: Boolean(instruction) };
 		setAi(value);
 		if (instruction) generate(value);
 	};
@@ -190,7 +191,12 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		setAi({ ...value, loading: true, error: '', result: '' });
 		const prompt = `Return only the resulting text in the original language, preserving relevant Markdown formatting. ${value.text ? `Edit the following text: ${value.prompt}\n\nText:\n${value.text}` : `Write text following this instruction: ${value.prompt}`}`;
 		void window.models.text.generateText({ prompt }).then((result) => {
-			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, result } : null);
+			if (requestId.current !== id) return;
+			if (value.autoApply && result.trim()) {
+				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) { setAi((current) => current ? { ...current, loading: false, error: 'The document changed. Please start again.' } : null); return; }
+				editor.chain().focus().insertContentAt({ from: value.from, to: value.to }, result, { contentType: 'markdown' }).run();
+				setAi(null);
+			} else setAi((current) => current ? { ...current, loading: false, result, error: result.trim() ? '' : 'No text was generated. Please try again.' } : null);
 		}).catch((error: unknown) => {
 			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate text.' } : null);
 		});
@@ -219,8 +225,8 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	return (
 		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
 			{ai ? <div className="w-80 space-y-2 p-2">
-				<form onSubmit={(event) => { event.preventDefault(); generate(ai); }} className="flex gap-1"><Input autoFocus aria-label="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onChange={(event) => setAi({ ...ai, prompt: event.target.value })} /><Button type="submit" size="sm" disabled={ai.loading || !ai.prompt.trim()}>Generate</Button></form>
-				{ai.loading ? <p className="text-sm text-muted-foreground">Generating…</p> : null}
+				<form onSubmit={(event) => { event.preventDefault(); generate(ai); }} className="flex gap-1"><Input autoFocus disabled={ai.loading} aria-label="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onChange={(event) => setAi({ ...ai, prompt: event.target.value })} /><Button type="submit" size="sm" disabled={ai.loading || !ai.prompt.trim()}>Generate</Button></form>
+				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
 				{ai.result ? <div className="max-h-60 overflow-auto whitespace-pre-wrap text-sm">{ai.result}</div> : null}
 				<div className="flex justify-end gap-1"><Button type="button" variant="ghost" size="sm" onClick={() => { requestId.current++; setAi(null); editor.commands.focus(); }}>Discard</Button>{ai.result ? <Button type="button" size="sm" onClick={() => { if (JSON.stringify(editor.state.doc.toJSON()) !== ai.doc) { setAi({ ...ai, error: 'The document changed. Please start again.', result: '' }); return; } editor.chain().focus().insertContentAt({ from: ai.from, to: ai.to }, ai.result, { contentType: 'markdown' }).run(); setAi(null); }}>Apply</Button> : null}</div>
