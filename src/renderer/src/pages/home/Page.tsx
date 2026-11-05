@@ -216,74 +216,8 @@ function PageContent(): ReactElement {
 	}, [showEmptyConversation]);
 	const hasPromptText = agent.input.trim().length > 0;
 	const hasGoalObjective = agent.input.replace(/^\/goal\s*/i, '').trim().length > 0;
-	const dictationStatus = dictation.status;
-	const cancelDictationSession = dictation.cancel;
-	const recorderStatus = recorder.status;
-	const cancelRecordingSession = recorder.cancel;
-	const dictationBusy =
-		dictationStatus === 'checking-permission' ||
-		dictationStatus === 'connecting' ||
-		dictationStatus === 'finishing';
-	const recordingBusy =
-		recorderStatus === 'checking-permission' ||
-		recorderStatus === 'stopping' ||
-		transcribingRecording;
-	const voiceBusy = dictationBusy || recordingBusy;
-	const attachmentDisabled = voiceMode !== null || voiceBusy;
-	const activeVoiceElapsedMs =
-		activeDictationMode === 'record' ? recorder.elapsedMs : dictation.elapsedMs;
-	const activeVoiceMuted = activeDictationMode === 'record' ? recorder.isMuted : dictation.isMuted;
-	const activeVoiceStream = activeDictationMode === 'record' ? recorder.stream : dictation.stream;
-	const activeVoiceSetMuted =
-		activeDictationMode === 'record' ? recorder.setMuted : dictation.setMuted;
-	const voiceErrorMessage =
-		transcriptionErrorMessage ?? recorder.errorMessage ?? dictation.errorMessage;
-	const voiceErrorAction = voiceErrorMessage?.toLowerCase().includes('microphone')
-		? {
-				label: 'Open Microphone settings',
-				action: () => navigate('/settings/settings/media/microphone'),
-			}
-		: undefined;
-	const voiceButtonDisabledReason =
-		voiceButtonMode === 'disabled'
-			? 'Choose a speech-to-text provider and model in Settings.'
-			: voiceBusy
-				? 'Wait for the current voice operation to finish.'
-				: agent.isLoading
-					? 'Wait for the current response to finish.'
-					: undefined;
-
-	useEffect(() => {
-		if (mode !== 'chat') return;
-		if (
-			dictationStatus === 'checking-permission' ||
-			dictationStatus === 'connecting' ||
-			dictationStatus === 'recording'
-		) {
-			void cancelDictationSession();
-		}
-		if (
-			recorderStatus === 'checking-permission' ||
-			recorderStatus === 'recording' ||
-			recorderStatus === 'stopping'
-		) {
-			void cancelRecordingSession();
-		}
-	}, [cancelDictationSession, cancelRecordingSession, dictationStatus, mode, recorderStatus]);
 
 	useEffect(() => () => setMode('chat'), [setMode]);
-
-	const removeAttachment = useCallback((id: string): void => {
-		setAttachments((current) =>
-			current.filter((attachment) => {
-				if (attachment.id !== id) return true;
-				if (attachment.url) {
-					URL.revokeObjectURL(attachment.url);
-				}
-				return false;
-			})
-		);
-	}, []);
 
 	const clearAttachments = useCallback((): void => {
 		setAttachments((current) => {
