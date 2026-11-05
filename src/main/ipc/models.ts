@@ -15,6 +15,7 @@ import {
 	VideoChannels,
 } from '../../shared/ipc_channels_definitions';
 import { embedding, image, sound, text, video, voice } from '../models/index';
+import { saveMedia } from '../shared/media';
 import {
 	getModelId,
 	getOptions,
