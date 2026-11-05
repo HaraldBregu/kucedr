@@ -253,7 +253,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 	});
 
 	const toolbar = toolbarTarget ? createPortal(<div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-start px-5 py-2 sm:px-8 lg:px-12`}>
-		<div className="flex max-w-full flex-wrap items-center gap-2 rounded-lg border p-1">
+		<div className="flex w-full flex-wrap items-center gap-2 rounded-lg border p-1">
 		{[
 			{ title: 'History', labels: ['Undo', 'Redo'] },
 			{ title: 'Text', labels: groups[2].map((action) => action.label) },
