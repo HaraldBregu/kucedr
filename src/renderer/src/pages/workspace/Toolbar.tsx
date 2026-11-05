@@ -237,7 +237,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 	}, [editor, floatingElement, linkOpen, onLinkOpenChange]);
 
 	const openAi = (instruction = ''): void => {
-		setImageMode(false);
+		setMode('text');
 		const { from, to } = editor.state.selection;
 		const text = editor.state.doc.textBetween(from, to, '\n');
 		const value = { from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false, autoApply: Boolean(instruction) };
