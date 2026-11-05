@@ -224,7 +224,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	if ((!slash || !commands.length) && !selection && !linkOpen && !ai) return <></>;
 	return (
 		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
-			{ai ? <div className="w-80 space-y-2 p-2">
+			{ai && !ai.autoApply ? <div className="w-80 space-y-2 p-2">
 				<form onSubmit={(event) => { event.preventDefault(); generate(ai); }} className="flex gap-1"><Input autoFocus disabled={ai.loading} aria-label="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onChange={(event) => setAi({ ...ai, prompt: event.target.value })} /><Button type="submit" size="sm" disabled={ai.loading || !ai.prompt.trim()}>Generate</Button></form>
 				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
@@ -257,9 +257,10 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 					{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} className={`rounded-lg ${state.active[5 + index] ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} className={`rounded-lg ${state.link ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => onLinkOpenChange(true)}><Link /></Button>
 				</div>
+				{ai?.autoApply && ai.error ? <p role="alert" className="max-w-64 px-2 text-sm text-destructive">{ai.error}</p> : null}
 				<div className="mx-1 h-px bg-border" />
 				<div className="flex flex-col">
-					{['Improve writing', 'Fix spelling and grammar', 'Make shorter', 'Make longer', 'Edit with AI'].map((label) => <Button key={label} type="button" variant="ghost" size="sm" className="h-8 justify-start gap-2 px-2" onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}><Sparkles className="text-muted-foreground" />{label}</Button>)}
+					{['Improve writing', 'Fix spelling and grammar', 'Make shorter', 'Make longer', 'Edit with AI'].map((label) => <Button key={label} type="button" variant="ghost" size="sm" className="h-8 justify-start gap-2 px-2" onMouseDown={(event) => event.preventDefault()} disabled={ai?.loading} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin text-muted-foreground" /> : <Sparkles className="text-muted-foreground" />}{label}</Button>)}
 				</div>
 				<div className="mx-1 h-px bg-border" />
 				<div className="flex flex-col">
