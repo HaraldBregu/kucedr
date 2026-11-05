@@ -20,7 +20,6 @@ import {
 	MonitorUp,
 	Info,
 	Plus,
-	Square,
 	TableIcon,
 	X,
 } from 'lucide-react';
