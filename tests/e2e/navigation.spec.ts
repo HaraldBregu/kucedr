@@ -571,7 +571,7 @@ test('Markdown editor offers selection formatting and searchable slash commands'
 	await page.getByRole('menu', { name: 'Text styles' }).getByRole('menuitem', { name: 'Heading 1' }).click();
 	await expect(editor.locator('h1')).toHaveText('Hello world');
 	await formatting.getByRole('button', { name: 'Text style' }).click();
-	await page.getByRole('menuitem', { name: 'Normal text' }).click();
+	await page.getByRole('menuitem', { name: 'Default text' }).click();
 	await formatting.getByRole('button', { name: 'Bold' }).click();
 	await expect(editor.locator('strong')).toHaveText('Hello');
 	await page.keyboard.press('End');
