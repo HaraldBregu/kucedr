@@ -45,11 +45,9 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 								return next;
 							});
 						}}>
-						<summary draggable data-path={entry.path} data-selected={selection.has(entry.path) || undefined} className="group/row flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[drop-target]:bg-sidebar-accent data-[drop-target]:ring-2 data-[drop-target]:ring-sidebar-ring data-[selected]:bg-sidebar-accent" onClick={(event) => {
-							if (!onSelect(entry, event)) event.preventDefault();
-						}} onDragStart={(event) => {
+						<summary draggable data-path={entry.path} className="group/row flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[drop-target]:bg-sidebar-accent data-[drop-target]:ring-2 data-[drop-target]:ring-sidebar-ring" onDragStart={(event) => {
 							event.stopPropagation();
-							event.dataTransfer.setData('application/x-workspace-path', dragPaths(entry));
+							event.dataTransfer.setData('application/x-workspace-path', entry.path);
 						}} onDragOver={(event) => {
 							if (!event.dataTransfer.types.includes('application/x-workspace-path')) return;
 							event.preventDefault();

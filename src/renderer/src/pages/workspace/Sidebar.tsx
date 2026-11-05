@@ -57,7 +57,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		const paths = visibleItems().map((item) => item.dataset.path ?? '');
 		const from = paths.indexOf(anchorPath.current ?? path);
 		const to = paths.indexOf(path);
-		const range = paths.slice(Math.min(from, to), Math.max(from, to) + 1);
+		const range = paths.slice(Math.min(from, to), Math.max(from, to) + 1).filter((item) => flatten(entries).some((entry) => entry.path === item && entry.type === 'file'));
 		setSelection((current) => new Set(extend ? [...current, ...range] : range));
 	};
 	const selectEntry = (entry: WorkspaceTreeEntry, event: { metaKey: boolean; ctrlKey: boolean; shiftKey: boolean }): boolean => {
@@ -110,6 +110,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			const nextPath = next?.dataset.path;
 			if (!next || nextPath === undefined) return;
 			next.focus();
+			if (next.tagName === 'SUMMARY') return;
 			if (event.shiftKey) selectRange(nextPath, false);
 			else {
 				anchorPath.current = nextPath;
@@ -124,7 +125,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		else if (event.key === 'ArrowRight' && details) details.open = true;
 		else if (event.key === 'ArrowLeft' && details?.open) details.open = false;
 		else if (event.key === 'ArrowLeft') focusItem(target.closest('li')?.parentElement?.closest('details')?.querySelector<HTMLElement>(':scope > summary') ?? undefined);
-		else if (event.key === 'a' && mod) setSelection(new Set(items.map((item) => item.dataset.path ?? '')));
+		else if (event.key === 'a' && mod) setSelection(new Set(items.filter (item => item.tagName !== 'SUMMARY').map((item) => item.dataset.path ?? '')));
 		else if (event.key === 'Escape') setSelection(new Set());
 		else if (event.key === 'F2') setRenamingEntry(flatten(entries).find((item) => item.path === path) ?? null);
 		else if (event.key === 'Delete' || event.key === 'Backspace') {
@@ -168,7 +169,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 
 	const showEntryMenu = (entry?: WorkspaceTreeEntry): void => {
 		const multiple = entry && selection.size > 1 && selection.has(entry.path);
-		if (entry && !selection.has(entry.path)) {
+		if (entry?.type === 'file' && !selection.has(entry.path)) {
 			anchorPath.current = entry.path;
 			setSelection(new Set([entry.path]));
 		}
