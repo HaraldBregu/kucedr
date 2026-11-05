@@ -208,6 +208,10 @@ export function WorkspaceMarkdownEditor({
 			}} /> : null}
 			{libraryOpen ? <WorkspaceLibraryPicker onClose={() => setLibraryOpen(false)} onPick={(file) => {
 				setLibraryOpen(false);
+				if (workspaceFileType(file.name).kind === 'image') {
+					editor.chain().focus().setImage({ src: libraryFileUrl(file.path), alt: file.name.replace(/\.[^.]+$/, '') }).run();
+					return;
+				}
 				void window.agent.readPromptFile(file.path)
 					.then((data) => insertFiles([new File([new Uint8Array(data)], file.name)]))
 					.catch((cause: unknown) => onError(cause instanceof Error ? cause.message : 'Unable to add file.'));
