@@ -381,7 +381,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 	if (inlineActive) return <>{toolbar}{inlineAi}</>;
 	if ((!slash || !commands.length) && !selection && !linkOpen && (!ai || !ai.autoApply)) return <>{toolbar}{inlineAi}</>;
 	return (<>{toolbar}{inlineAi}{createPortal(
-		<div ref={setFloating} style={floatingStyles} className={`z-50 overflow-y-auto border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-full py-2' : 'rounded-md'}`}>
+		<div ref={setFloating} style={floatingStyles} className={`z-50 overflow-y-auto border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
 			{linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
 				event.preventDefault();
 				const chain = editor.chain().focus().extendMarkRange('link');
