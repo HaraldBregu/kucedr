@@ -130,6 +130,22 @@ describe('PromptEditor', () => {
 		expect(attachmentButton).toHaveFocus();
 	});
 
+	it('hides the prompt text input while keeping the controls when hideEditor is set', () => {
+		render(
+			<PromptEditor
+				value=""
+				detachedControls
+				hideEditor
+				leadingAction={<button>Voice</button>}
+				trailingAction={<button>Generate</button>}
+			/>
+		);
+
+		expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Voice' })).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Generate' })).toBeInTheDocument();
+	});
+
 	it('shows only the persona and a top-right stop control during Voice', () => {
 		const onVoiceEnd = jest.fn();
 		const { container } = render(
