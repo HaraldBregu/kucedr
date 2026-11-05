@@ -300,7 +300,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		</div>
 	</div></div>, toolbarTarget) : null;
 	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
-				<PromptEditor detachedControls expanded={false} ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={submitAi} isLoading={ai.loading} maxHeight={360} wrapperClassName="max-w-none" className="w-full" footerContent={<div className="flex min-w-0 items-center text-[11px] text-muted-foreground"><Model onContext={setAiModel} /></div>} trailingAction={<PromptInputActions className="justify-end gap-1.5"><PromptSubmit isLoading={ai.loading} onAction={submitAi} /></PromptInputActions>} />
+				<Composer ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi((current) => current ? { ...current, prompt } : null)} onSubmit={submitAi} isLoading={ai.loading} mode={aiMode} setMode={setAiMode} attachments={aiAttachments} setAttachments={setAiAttachments} inputClassName="min-h-[114px]" />
 				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
 				{ai.result ? <div className="max-h-60 overflow-auto whitespace-pre-wrap text-sm">{ai.result}</div> : null}
