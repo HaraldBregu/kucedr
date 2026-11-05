@@ -335,14 +335,6 @@ export function CommandMenu({
 		void loadModelCatalog()
 			.then(setModels)
 			.catch(() => setModels([]));
-		void window.skills
-			.list()
-			.then(setSkills)
-			.catch(() => setSkills([]));
-		void window.mcp
-			.registry()
-			.then((registry) => setMcpServers(registry.servers))
-			.catch(() => setMcpServers([]));
 	}, [open]);
 
 	const sections = [
