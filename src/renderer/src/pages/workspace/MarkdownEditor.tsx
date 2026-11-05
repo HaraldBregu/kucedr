@@ -183,6 +183,7 @@ export function WorkspaceMarkdownEditor({
 				event.preventDefault();
 			}}
 			onPasteCapture={(event) => {
+				if ((event.target as HTMLElement).closest('[data-slot="inline-ai-composer"]')) return;
 				if (!insertFiles(Array.from(event.clipboardData.files))) return;
 				event.preventDefault();
 				event.stopPropagation();
