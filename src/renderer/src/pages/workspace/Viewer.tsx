@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ChevronDown, ChevronUp, LoaderCircle, MoveHorizontal, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, LoaderCircle, MoveHorizontal, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -225,10 +225,11 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 			</div>
 			{detailsOpen ? <aside aria-label="Workspace editor options" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col border-l bg-background shadow-lg sm:relative sm:max-w-[50%] sm:shrink-0 sm:shadow-none">
 				<div className="flex shrink-0 items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-medium">Editor</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
-				{file ? <div className="min-h-0 flex-1 space-y-3 overflow-auto px-4 py-3 text-sm">{searchable ? <Button type="button" variant="ghost" size="sm" className="w-full justify-start gap-2 px-0 text-muted-foreground" onClick={() => setFindOpen(!findOpen)}><Search className="size-4" />Find in file</Button> : null}			{searchable && findOpen ? (
+				{file ? <div className="min-h-0 flex-1 space-y-3 overflow-auto px-4 py-3 text-sm">{searchable ? (
 				<div className="border-b pb-3">
 						<div role="search" className="flex min-w-0 flex-wrap items-center gap-1">
 							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-8 w-full min-w-0 text-xs" onChange={(event) => {
+								setFindOpen(Boolean(event.target.value));
 								setFindQuery(event.target.value);
 								if (event.target.value) finder.current?.find(event.target.value, 'next');
 								else finder.current?.clearSearch();
@@ -249,7 +250,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, true)}>All</Button>
 								</>
 							) : null}
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Close find" onClick={closeFind}><X /></Button>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Clear search" onClick={closeFind}><X /></Button>
 						</div>
 				</div>
 			) : null}<div ref={setSidebarTarget} /></div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}

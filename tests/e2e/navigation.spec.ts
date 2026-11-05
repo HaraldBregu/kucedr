@@ -533,10 +533,9 @@ test('Workspace editor options share the file container and control its styles',
 	await expect(details).toBeVisible();
 	await expect(details).toContainText('Blocks');
 
-	await details.getByRole('button', { name: 'Find in file' }).click();
 	await details.getByRole('textbox', { name: 'Find in file' }).fill('Workspace');
 	await expect(details).toContainText('1 match');
-	await details.getByRole('button', { name: 'Close find' }).click();
+	await details.getByRole('button', { name: 'Clear search' }).click();
 	await expect(details.getByRole('combobox', { name: 'Sidebar text size' })).toHaveCount(0);
 	await expect(details.getByRole('separator', { name: 'Resize editor options' })).toHaveCount(0);
 	await expect(details.getByRole('heading', { name: 'View', exact: true })).toHaveCount(0);
