@@ -129,9 +129,8 @@ interface WorkspaceToolbarProps {
 export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
-	const [imageMode, setImageMode] = useState(false);
-	const [imageOptions, setImageOptions] = useState<ImageOptions>({});
-	const [imageSelection, setImageSelection] = useState({ providerId: '', modelId: '' });
+	const [mode, setMode] = useState<'text' | 'image' | 'voice'>('text');
+	const [mediaSelection, setMediaSelection] = useState({ providerId: '', modelId: '' });
 	const requestId = useRef(0);
 	const streamId = useRef<string | null>(null);
 	useEffect(() => () => { requestId.current++; if (streamId.current) void window.models.text.cancelStream(streamId.current); }, []);
