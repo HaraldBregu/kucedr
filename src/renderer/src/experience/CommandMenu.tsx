@@ -22,11 +22,26 @@ import {
 	SETTINGS_NAVIGATION,
 	type SettingsDetailItem,
 } from '@/pages/settings/navigation';
+import { loadModelCatalog } from '@/pages/settings/pages/models/catalog';
 import { useOpenApp } from '@/hooks/app';
 import type { App } from '@shared/installed_app_types';
-import type { PluginInfo } from '@shared/plugin_types';
+import type { McpServerInfo } from '@shared/mcp_types';
+import type { CatalogModel } from '@shared/model_types';
+import type { PluginInfo, PluginScriptInfo } from '@shared/plugin_types';
+import type { CatalogWebSearch } from '@shared/provider_types';
+import type { SkillInfo } from '@shared/skills_types';
 
-const CATEGORIES = ['all', 'apps', 'plugins', 'other'] as const;
+const CATEGORIES = [
+	'all',
+	'apps',
+	'plugins',
+	'services',
+	'scripts',
+	'models',
+	'skills',
+	'mcp',
+	'other',
+] as const;
 type Category = (typeof CATEGORIES)[number];
 
 interface AppRouteItem {
@@ -252,6 +267,11 @@ export function CommandMenu({
 	const [category, setCategory] = useState<Category>('all');
 	const [plugins, setPlugins] = useState<PluginInfo[]>([]);
 	const [apps, setApps] = useState<App[]>([]);
+	const [services, setServices] = useState<CatalogWebSearch[]>([]);
+	const [scripts, setScripts] = useState<PluginScriptInfo[]>([]);
+	const [models, setModels] = useState<CatalogModel[]>([]);
+	const [skills, setSkills] = useState<SkillInfo[]>([]);
+	const [mcpServers, setMcpServers] = useState<readonly McpServerInfo[]>([]);
 	const listRef = useRef<HTMLDivElement>(null);
 	const { visibleItems, searchOnlyItems } = useMemo(() => buildCommandItems(t), [t]);
 	const isSearching = search.trim().length >= MIN_SEARCH_LENGTH;
@@ -318,6 +338,25 @@ export function CommandMenu({
 			.list()
 			.then(setApps)
 			.catch(() => setApps([]));
+		void window.services
+			.list()
+			.then(setServices)
+			.catch(() => setServices([]));
+		void window.scripts
+			.list()
+			.then(setScripts)
+			.catch(() => setScripts([]));
+		void loadModelCatalog()
+			.then(setModels)
+			.catch(() => setModels([]));
+		void window.skills
+			.list()
+			.then(setSkills)
+			.catch(() => setSkills([]));
+		void window.mcp
+			.registry()
+			.then((registry) => setMcpServers(registry.servers))
+			.catch(() => setMcpServers([]));
 	}, [open]);
 
 	const sections = [
@@ -354,6 +393,76 @@ export function CommandMenu({
 					iconDark={plugin.iconDark}
 					fallbackIcon={Puzzle}
 					onSelect={() => navigateTo(`/settings/plugins/${plugin.id}`)}
+				/>
+			)),
+		},
+		{
+			category: 'services',
+			items: services.map((service) => (
+				<ImageMenuItem
+					key={`${service.provider.id}/${service.id}`}
+					title={service.name}
+					description={service.provider.name}
+					fallbackIcon={getSettingsRouteIcon('/settings/services')}
+					onSelect={() =>
+						navigateTo(
+							`/settings/services/${encodeURIComponent(service.provider.id)}/${encodeURIComponent(service.id)}`
+						)
+					}
+				/>
+			)),
+		},
+		{
+			category: 'scripts',
+			items: scripts.map((script) => (
+				<ImageMenuItem
+					key={script.name}
+					title={script.title}
+					description={script.description}
+					fallbackIcon={getSettingsRouteIcon('/settings/scripts')}
+					onSelect={() => navigateTo(`/settings/scripts/${encodeURIComponent(script.name)}`)}
+				/>
+			)),
+		},
+		{
+			category: 'models',
+			items: models.map((model) => (
+				<ImageMenuItem
+					key={`${model.provider.id}/${model.type}/${model.id}`}
+					title={`${model.name} · ${model.provider.name}`}
+					description={`${model.type} ${model.id}`}
+					fallbackIcon={getSettingsRouteIcon('/settings/models')}
+					onSelect={() =>
+						navigateTo(
+							`/settings/models/${encodeURIComponent(model.type)}/${encodeURIComponent(model.provider.id)}/${encodeURIComponent(model.id)}`
+						)
+					}
+				/>
+			)),
+		},
+		{
+			category: 'skills',
+			items: skills.map((skill) => (
+				<ImageMenuItem
+					key={skill.id}
+					title={skill.manifest.name}
+					description={skill.manifest.description}
+					fallbackIcon={getSettingsRouteIcon('/settings/skills')}
+					onSelect={() =>
+						navigateTo(`/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`)
+					}
+				/>
+			)),
+		},
+		{
+			category: 'mcp',
+			items: mcpServers.map((server) => (
+				<ImageMenuItem
+					key={server.id}
+					title={server.data.name ?? server.id}
+					description={server.id}
+					fallbackIcon={getSettingsRouteIcon('/settings/mcp')}
+					onSelect={() => navigateTo(`/settings/mcp/${encodeURIComponent(server.id)}`)}
 				/>
 			)),
 		},

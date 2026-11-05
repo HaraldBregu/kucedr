@@ -94,6 +94,11 @@
 			"routes": "Routes",
 			"apps": "Apps",
 			"plugins": "Plugins",
+			"services": "Services",
+			"scripts": "Scripts",
+			"models": "Models",
+			"skills": "Skills",
+			"mcp": "MCP",
 			"other": "Other"
 		},
 		"routes": {

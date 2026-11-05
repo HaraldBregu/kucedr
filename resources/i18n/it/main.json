@@ -94,6 +94,11 @@
 			"routes": "Pagine",
 			"apps": "App",
 			"plugins": "Plugin",
+			"services": "Servizi",
+			"scripts": "Script",
+			"models": "Modelli",
+			"skills": "Abilità",
+			"mcp": "MCP",
 			"other": "Altro"
 		},
 		"routes": {
