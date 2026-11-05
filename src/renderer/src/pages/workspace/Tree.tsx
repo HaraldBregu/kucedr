@@ -30,7 +30,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 				<li key={entry.path} className="min-w-0">
 					{renamingPath === entry.path ? (
 						<div className="flex min-h-8 items-center gap-2 rounded-md px-2 text-sm">
-							{entry.type === 'directory' ? <span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-[10px] font-medium">{Array.from(entry.name)[0]}</span> : <File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />}
+							{entry.type === 'directory' ? <span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium">{Array.from(entry.name)[0]}</span> : <File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />}
 							<WorkspaceRenameInput name={entry.name} busy={renameBusy} onCancel={onRenameCancel} onConfirm={onRename} />
 						</div>
 					) : entry.type === 'directory' ? (
@@ -69,7 +69,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							event.stopPropagation();
 							onEntryContextMenu(entry);
 						}}>
-								<span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-[10px] font-medium">{Array.from(entry.name)[0]}</span>
+								<span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium">{Array.from(entry.name)[0]}</span>
 								<span className="truncate" title={entry.path}>{entry.name}</span>
 							</summary>
 							{entry.children?.length ? (
