@@ -56,6 +56,7 @@ function PromptEditor({
 	onGoalCommandChange,
 	expanded,
 	value,
+	hideEditor,
 	...props
 }: PromptEditorProps): ReactElement {
 	const [hasMultipleVisualLines, setHasMultipleVisualLines] = useState(false);
