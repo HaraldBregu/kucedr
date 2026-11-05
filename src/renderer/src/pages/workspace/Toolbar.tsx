@@ -7,7 +7,7 @@ import { PromptSubmit } from '@/components/prompt-submit';
 import { PromptInputActions } from '@/components/ui/prompt-input';
 import { Model } from '../home/Model';
 import { readEffort } from '../home/effort/read';
-import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
+import { autoUpdate, flip, offset, shift, size, useFloating } from '@floating-ui/react-dom';
 import type { ChainedCommands, Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import {
@@ -133,7 +133,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState<number | null>(null);
 	const { byFence } = usePluginScripts();
-	const { refs: { setReference, setFloating }, elements: { floating: floatingElement }, floatingStyles, update: updatePosition } = useFloating({ placement: slash ? 'bottom-start' : 'top', middleware: [offset(8), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
+	const { refs: { setReference, setFloating }, elements: { floating: floatingElement }, floatingStyles, update: updatePosition } = useFloating({ placement: slash ? 'bottom-start' : 'top', middleware: [offset(8), flip(), shift({ padding: 8 }), size({ padding: 8, apply({ availableHeight, elements }) { elements.floating.style.maxHeight = `${Math.max(0, availableHeight)}px`; } })], whileElementsMounted: autoUpdate });
 	const { refs: { setReference: setStyleReference, setFloating: setStyleFloating }, floatingStyles: stylePosition } = useFloating({ placement: 'bottom-start', middleware: [offset(8), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
 	const state = useEditorState({ editor, selector: ({ editor: current }) => ({
 		active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
@@ -344,7 +344,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 	if (inlineActive) return <>{toolbar}{inlineAi}</>;
 	if ((!slash || !commands.length) && !selection && !linkOpen && (!ai || !ai.autoApply)) return <>{toolbar}{inlineAi}</>;
 	return (<>{toolbar}{inlineAi}{createPortal(
-		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
+		<div ref={setFloating} style={floatingStyles} className={`z-50 overflow-y-auto border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
 			{linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
 				event.preventDefault();
 				const chain = editor.chain().focus().extendMarkRange('link');
@@ -365,11 +365,11 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 					<span className="flex-1 truncate text-left">{[...groups[1], ...groups[3].slice(0, 3)].find((action) => action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)))?.label ?? 'Default text'}</span>
 					<ChevronDown className="size-3.5 text-muted-foreground" />
 				</Button>
-				{stylesOpen ? <div ref={setStyleFloating} style={stylePosition} role="menu" aria-label="Text styles" className="z-50 w-52 rounded-xl border bg-popover p-1.5 text-popover-foreground shadow-lg">
+				{stylesOpen ? createPortal(<div ref={setStyleFloating} style={stylePosition} role="menu" aria-label="Text styles" className="z-50 w-52 rounded-xl border bg-popover p-1.5 text-popover-foreground shadow-lg">
 					<div className="px-2 pb-1 pt-1 text-[11px] font-medium text-muted-foreground">Turn into</div>
 					<button type="button" role="menuitem" className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { editor.chain().focus().clearNodes().setParagraph().run(); setStylesOpen(false); }}><span className="flex size-7 items-center justify-center rounded-md border bg-muted/40"><Type className="size-4" /></span><span className="flex-1">Default text</span>{editor.isActive('paragraph') && !editor.isActive('bulletList') && !editor.isActive('orderedList') && !editor.isActive('taskList') && !editor.isActive('blockquote') ? <Check className="size-4 text-muted-foreground" /> : null}</button>
 					{[...groups[1], ...groups[3].slice(0, 3)].map((action) => <button key={action.label} type="button" role="menuitem" className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { action.run(editor.chain().focus()).run(); setStylesOpen(false); }}><span className="flex size-7 items-center justify-center rounded-md border bg-muted/40"><action.icon className="size-4" /></span><span className="flex-1">{action.label}</span>{action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)) ? <Check className="size-4 text-muted-foreground" /> : null}</button>)}
-				</div> : null}
+				</div>, document.body) : null}
 				<div className="mx-1 h-px bg-border" />
 				<div className="flex flex-wrap items-center justify-center gap-0.5">
 					{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} className={`rounded-lg ${state.active[5 + index] ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
