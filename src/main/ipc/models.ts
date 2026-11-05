@@ -1,4 +1,5 @@
 import type { IpcModule } from './core/module';
+import { streamText } from '../models/text/stream';
 import { ModelRenderer } from './core/model';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
@@ -86,6 +87,18 @@ export class ModelsIpc implements IpcModule<ModelsIpcDependencies> {
 			return getOptions('sound');
 		});
 
+		const textStreams = new Map<string, AbortController>();
+		trusted.commandWithEvent(TextChannels.streamText, async (event, id, request) => {
+			if (typeof id !== 'string' || !id.trim()) throw new Error('Invalid stream id.');
+			const key = `${event.sender.id}:${id}`;
+			if (textStreams.has(key)) throw new Error('Stream already exists.');
+			const controller = new AbortController();
+			textStreams.set(key, controller);
+			try {
+				await streamText(request, controller.signal, (delta) => { if (!event.sender.isDestroyed() && !controller.signal.aborted) event.sender.send(TextChannels.delta, { id, delta }); });
+			} finally { textStreams.delete(key); }
+		});
+		trusted.commandWithEvent(TextChannels.cancelStream, (event, id) => { textStreams.get(`${event.sender.id}:${id}`)?.abort(); });
 		trusted.command(TextChannels.generateText, (request) => text.generateText(request));
 		trusted.query(TextChannels.getProviderId, () => getProviderId('text'));
 		trusted.command(TextChannels.setProviderId, (providerId) => setProviderId('text', providerId));

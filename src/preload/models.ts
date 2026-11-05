@@ -139,6 +139,11 @@ export const models: ModelsApi = {
 			typedInvokeUnwrap(SoundChannels.setOptions, normalizeOptions(options) ?? {}),
 	},
 	text: {
+		streamText: async (id, request, onDelta) => {
+			const unsubscribe = typedOn(TextChannels.delta, (event) => { if (event.id === id) onDelta(event.delta); });
+			try { await typedInvokeUnwrap(TextChannels.streamText, id, request); } finally { unsubscribe(); }
+		},
+		cancelStream: (id) => typedInvokeUnwrap(TextChannels.cancelStream, id),
 		generateText: (request) => {
 			const prompt = optionalTrimmedString(request?.prompt);
 			if (!prompt) throw new Error('Invalid text prompt.');

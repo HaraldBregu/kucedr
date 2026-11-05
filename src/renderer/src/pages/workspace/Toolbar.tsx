@@ -124,7 +124,8 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
 	const requestId = useRef(0);
-	useEffect(() => () => { requestId.current++; }, []);
+	const streamId = useRef<string | null>(null);
+	useEffect(() => () => { requestId.current++; if (streamId.current) void window.models.text.cancelStream(streamId.current); }, []);
 	const [href, setHref] = useState('');
 	const [selection, setSelection] = useState(false);
 	const [stylesOpen, setStylesOpen] = useState(false);
@@ -217,25 +218,42 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		const id = ++requestId.current;
 		setAi({ ...value, loading: true, error: '', result: '' });
 		const prompt = `Return only the resulting text in the original language, preserving relevant Markdown formatting. ${value.text ? `Edit the following text: ${value.prompt}\n\nText:\n${value.text}` : `Complete the document at the cursor following this instruction: ${value.prompt}\n\nReturn only the new text to insert, without repeating the existing text.\n\nBefore the cursor:\n${editor.state.doc.textBetween(0, value.from, '\n')}\n\nAfter the cursor:\n${editor.state.doc.textBetween(value.to, editor.state.doc.content.size, '\n')}`}`;
+		const stream = crypto.randomUUID();
+		streamId.current = stream;
+		let output = '';
+		let end = value.to;
+		let expectedDoc = value.doc;
 		void window.app.getWorkspaceModel().then(({ providerId, modelId }) => {
 			if (!providerId || !modelId) throw new Error('Select a workspace model first.');
-			return window.models.text.generateText({ prompt, providerId, modelId, effort: readEffort(providerId, modelId) });
-		}).then((result) => {
 			if (requestId.current !== id) return;
-			if (value.autoApply && result.trim()) {
-				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) { setAi((current) => current ? { ...current, loading: false, error: 'The document changed. Please start again.' } : null); return; }
-				editor.chain().focus().insertContentAt({ from: value.from, to: value.to }, result, { contentType: 'markdown' }).run();
-				setAi(null);
-			} else setAi((current) => current ? { ...current, loading: false, result, error: result.trim() ? '' : 'No text was generated. Please try again.' } : null);
+			return window.models.text.streamText(stream, { prompt, providerId, modelId, effort: readEffort(providerId, modelId) }, (delta) => {
+				if (requestId.current !== id) return;
+				if (JSON.stringify(editor.state.doc.toJSON()) !== expectedDoc) {
+					requestId.current++;
+					void window.models.text.cancelStream(stream);
+					setAi((current) => current ? { ...current, loading: false, error: 'The document changed. Please start again.' } : null);
+					return;
+				}
+				output += delta;
+				const size = editor.state.doc.content.size;
+				editor.commands.insertContentAt({ from: value.from, to: end }, output, { contentType: 'markdown' });
+				end += editor.state.doc.content.size - size;
+				expectedDoc = JSON.stringify(editor.state.doc.toJSON());
+			});
+		}).then(() => {
+			if (requestId.current !== id) return;
+			if (output.trim()) setAi(null);
+			else setAi((current) => current ? { ...current, loading: false, error: 'No text was generated. Please try again.' } : null);
 		}).catch((error: unknown) => {
 			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate text.' } : null);
-		});
+		}).finally(() => { if (streamId.current === stream) streamId.current = null; });
 	};
 	const submitAi = (): void => {
 		if (!ai) return;
 		if (!ai.loading) { generate(ai); return; }
 		requestId.current++;
-		setAi({ ...ai, loading: false });
+		if (streamId.current) void window.models.text.cancelStream(streamId.current);
+		setAi(null);
 	};
 	const inlineActive = Boolean(ai && !ai.autoApply);
 	useEffect(() => {
@@ -296,8 +314,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 				<PromptEditor detachedControls expanded={false} ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={submitAi} isLoading={ai.loading} maxHeight={360} wrapperClassName="max-w-none" className="w-full" footerContent={<div className="flex min-w-0 items-center text-[11px] text-muted-foreground"><Model workspace /></div>} trailingAction={<PromptInputActions className="justify-end gap-1.5"><PromptSubmit isLoading={ai.loading} onAction={submitAi} /></PromptInputActions>} />
 				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
-				{ai.result ? <div className="max-h-60 overflow-auto whitespace-pre-wrap text-sm">{ai.result}</div> : null}
-				<div className="flex justify-end gap-1"><Button type="button" variant="ghost" size="sm" onClick={() => { requestId.current++; setAi(null); editor.commands.focus(); }}>Discard</Button>{ai.result ? <Button type="button" size="sm" onClick={() => { if (JSON.stringify(editor.state.doc.toJSON()) !== ai.doc) { setAi({ ...ai, error: 'The document changed. Please start again.', result: '' }); return; } editor.chain().focus().insertContentAt({ from: ai.from, to: ai.to }, ai.result, { contentType: 'markdown' }).run(); setAi(null); }}>Apply</Button> : null}</div>
+				<div className="flex justify-end gap-1"><Button type="button" variant="ghost" size="sm" onClick={() => { requestId.current++; if (streamId.current) void window.models.text.cancelStream(streamId.current); setAi(null); editor.commands.focus(); }}>Close</Button></div>
 			</div>, aiTarget) : null;
 	if (inlineActive) return <>{toolbar}{inlineAi}</>;
 	if ((!slash || !commands.length) && !selection && !linkOpen && (!ai || !ai.autoApply)) return <>{toolbar}{inlineAi}</>;

@@ -529,6 +529,8 @@ export interface ModelsApi {
 	};
 	text: {
 		generateText: (request: TextRequest) => Promise<string>;
+		streamText: (id: string, request: TextRequest, onDelta: (delta: string) => void) => Promise<void>;
+		cancelStream: (id: string) => Promise<void>;
 		getProviderId: () => Promise<string | undefined>;
 		setProviderId: (providerId: string) => Promise<void>;
 		getModelId: () => Promise<string | undefined>;

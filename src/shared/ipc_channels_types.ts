@@ -1097,6 +1097,8 @@ export interface VideoInvokeChannelMap {
 }
 
 export interface TextInvokeChannelMap {
+	[TextChannels.streamText]: { args: [id: string, request: TextRequest]; result: void };
+	[TextChannels.cancelStream]: { args: [id: string]; result: void };
 	[TextChannels.generateText]: {
 		args: [request: TextRequest];
 		result: string;
@@ -1453,8 +1455,13 @@ export interface CloudEventChannelMap {
 	[CloudChannels.sessionChanged]: { data: import('./cloud_types').CloudChange };
 }
 
+export interface TextEventChannelMap {
+	[TextChannels.delta]: { data: { id: string; delta: string } };
+}
+
 export interface EventChannelMap
 	extends
+		TextEventChannelMap,
 		AppEventChannelMap,
 		AgentEventChannelMap,
 		CodingEventChannelMap,

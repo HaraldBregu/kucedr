@@ -440,6 +440,9 @@ export const SttChannels = {
 
 export const TextChannels = {
 	generateText: 'text:generate-text',
+	streamText: 'text:stream-text',
+	cancelStream: 'text:cancel-stream',
+	delta: 'text:delta',
 	getModelId: 'text:get-model-id',
 	getProviderId: 'text:get-provider-id',
 	setModelId: 'text:set-model-id',
