@@ -6,7 +6,7 @@ import { PromptEditor } from '@/components/prompt-editor';
 import { PromptSubmit } from '@/components/prompt-submit';
 import { PromptInputActions } from '@/components/ui/prompt-input';
 import { Model } from '../home/Model';
-import { ImageModel } from './ImageModel';
+import { ImageModel, type ImageOptions } from './ImageModel';
 import { readEffort } from '../home/effort/read';
 import { autoUpdate, flip, offset, shift, size, useFloating } from '@floating-ui/react-dom';
 import type { ChainedCommands, Editor } from '@tiptap/core';
