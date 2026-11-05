@@ -28,7 +28,8 @@ const WorkspaceMarkdownEditor = lazy(async () => {
 });
 
 interface WorkspaceViewerProps {
-	readonly details?: React.ReactNode;
+	readonly detailsOpen: boolean;
+	readonly onDetailsClose: () => void;
 	readonly file: WorkspaceTreeEntry | null;
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 	readonly ref?: React.Ref<() => Promise<void>>;
@@ -46,7 +47,7 @@ const TEXT_SIZES = [
 	{ size: 'extra-large', label: 'Extra large', zoom: 1.5 },
 ] as const;
 
-export function WorkspaceViewer({ details, file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
+export function WorkspaceViewer({ detailsOpen, onDetailsClose, file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
@@ -246,7 +247,10 @@ export function WorkspaceViewer({ details, file, onFileSelect, ref, wide, onWide
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
 			</div>
-			{details}
+			{detailsOpen ? <aside aria-label="Workspace editor options" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col overflow-auto border-l bg-background shadow-lg sm:relative sm:shrink-0 sm:shadow-none">
+				<div className="flex items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-semibold">Editor options</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
+				{file ? <div className="space-y-4 p-4 text-sm"><h3 className="font-medium">Styles</h3><div className="space-y-1"><span className="text-xs text-muted-foreground">Text size</span><Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}><SelectTrigger aria-label="Sidebar text size" className="w-full"><SelectValue>{TEXT_SIZES.find(({ size }) => size === textSize)?.label}</SelectValue></SelectTrigger><SelectContent>{TEXT_SIZES.map(({ size, label }) => <SelectItem key={size} value={size}>{label}</SelectItem>)}</SelectContent></Select></div><Button type="button" variant="outline" size="sm" className="w-full justify-start" aria-pressed={wide} onClick={() => onWideChange(!wide)}>Full width</Button>{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start" onClick={() => setFindOpen(true)}>Find in file</Button> : null}{kind === 'markdown' ? <div className="space-y-2 border-t pt-4"><h3 className="font-medium">View</h3><ButtonGroup role="group" aria-label="Sidebar Markdown view">{(['source', 'preview'] as const).map((mode) => <Button key={mode} type="button" variant="outline" size="sm" aria-pressed={visibleMarkdownMode === mode} onClick={() => { closeFind(); setMarkdownMode(mode); }}>{mode === 'source' ? 'Raw' : 'Text'}</Button>)}</ButtonGroup></div> : null}</div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
+			</aside> : null}
 			</div>
 			{file ? (
 				<footer aria-label="File information" className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t bg-muted/20 px-2 py-1.5 sm:px-3">
