@@ -46,6 +46,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
@@ -253,10 +254,13 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 
 	const toolbar = toolbarTarget ? createPortal(<div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-start gap-2 px-5 py-1 sm:px-8 lg:px-12`}>
 		{[
-			{ title: 'Text', labels: [...groups[1], ...groups[2]].map((action) => action.label) },
+			{ title: 'Text', labels: groups[2].map((action) => action.label) },
 			{ title: 'Blocks', labels: groups[3].map((action) => action.label) },
 			{ title: 'Insert & tools', labels: allCommands.filter((command) => !scriptCommands.includes(command) && !groups.flat().some((action) => action.label === command.label) && !['Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label).concat(['Undo', 'Redo']) },
-		].map(({ title, labels }) => <section key={title} className="max-w-full shrink-0 border-r pr-2"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap items-center justify-start gap-0.5">{allCommands.filter((command) => !scriptCommands.includes(command) && labels.includes(command.label)).map((command) => {
+		].map(({ title, labels }) => <section key={title} className="max-w-full shrink-0 border-r pr-2"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap items-center justify-start gap-0.5">{title === 'Text' ? <Select value={groups[1].find((action) => action.active && typeof action.active !== 'string' && editor.isActive(...action.active))?.label ?? 'Text'} onValueChange={(value) => {
+			if (value === 'Text') editor.chain().focus().setParagraph().run();
+			else groups[1].find((action) => action.label === value)?.run(editor.chain().focus()).run();
+		}}><SelectTrigger size="sm" aria-label="Heading"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="Text">Text</SelectItem>{groups[1].map((action) => <SelectItem key={action.label} value={action.label}>{action.label}</SelectItem>)}</SelectContent></Select> : null}{allCommands.filter((command) => !scriptCommands.includes(command) && labels.includes(command.label)).map((command) => {
 			const action = groups.flat().find((item) => item.label === command.label);
 			const active = action?.active ? typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active) : false;
 			return <Tooltip key={command.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={command.label} disabled={(command.label === 'Undo' && !state.canUndo) || (command.label === 'Redo' && !state.canRedo)} aria-pressed={action?.active ? active : undefined} className={active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon /></Button>} /><TooltipContent>{command.label}</TooltipContent></Tooltip>;
