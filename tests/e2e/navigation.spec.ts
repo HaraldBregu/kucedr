@@ -520,6 +520,21 @@ test('Workspace releases its mounted UI before navigating from Home to Settings'
 	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
 });
 
+test('clicking above workspace text keeps the cursor at the start', async () => {
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceFile('', 'scroll-click-test.md');
+		await window.agent.writeWorkspaceFile('scroll-click-test.md', Array.from({ length: 100 }, (_, index) => `Paragraph ${index}`).join('\n\n'));
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'scroll-click-test.md' }).click();
+	const content = page.locator('.workspace-markdown-content');
+	const scroll = content.locator('..');
+	await content.click({ position: { x: 20, y: 10 } });
+	await expect.poll(() => scroll.evaluate((element) => element.scrollTop)).toBe(0);
+	await page.keyboard.type('Start ');
+	await expect(content.locator('p').first()).toHaveText('Start Paragraph 0');
+});
+
 test('Workspace editor options share the file container and control its styles', async () => {
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceFile('', 'details-test.md');
