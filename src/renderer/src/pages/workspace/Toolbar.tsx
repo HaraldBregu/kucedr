@@ -46,6 +46,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import type { PluginScriptInfo } from '../../../../shared/plugin_types';
@@ -131,6 +132,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
 		table: current.isActive('table'), link: current.isActive('link'), canUndo: current.can().undo(), canRedo: current.can().redo(),
 	}) });
+	const scriptCommands = [...byFence].map(([, script]) => ({ label: script.title, icon: FileBox, run: () => onInsertScript(script) }));
 	const allCommands = [
 		...groups.flat().filter((action) => !((action.label === 'Undo' && !state.canUndo) || (action.label === 'Redo' && !state.canRedo))).map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })),
 		...(state.table ? tableActions.map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })) : []),
@@ -139,7 +141,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		{ label: 'Insert from computer', icon: HardDrive, run: onInsertFromComputer },
 		{ label: 'Insert from library', icon: Library, run: onInsertFromLibrary },
 		{ label: 'Insert from URL', icon: Globe, run: onInsertFromUrl },
-		...[...byFence].map(([, script]) => ({ label: script.title, icon: FileBox, run: () => onInsertScript(script) })),
+		...scriptCommands,
 		{ label: 'Find in file', icon: Search, run: onFind },
 		{ label: 'Full width', icon: MoveHorizontal, run: () => onWideChange(!wide) },
 	];
@@ -253,12 +255,15 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		{[
 			{ title: 'Text', labels: [...groups[1], ...groups[2]].map((action) => action.label) },
 			{ title: 'Blocks', labels: groups[3].map((action) => action.label) },
-			{ title: 'Insert & tools', labels: allCommands.filter((command) => !groups.flat().some((action) => action.label === command.label) && !['Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label).concat(['Undo', 'Redo']) },
-		].map(({ title, labels }) => <section key={title} className="max-w-full shrink-0 border-r pr-2"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap items-center justify-start gap-0.5">{allCommands.filter((command) => labels.includes(command.label)).map((command) => {
+			{ title: 'Insert & tools', labels: allCommands.filter((command) => !scriptCommands.includes(command) && !groups.flat().some((action) => action.label === command.label) && !['Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label).concat(['Undo', 'Redo']) },
+		].map(({ title, labels }) => <section key={title} className="max-w-full shrink-0 border-r pr-2"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap items-center justify-start gap-0.5">{allCommands.filter((command) => !scriptCommands.includes(command) && labels.includes(command.label)).map((command) => {
 			const action = groups.flat().find((item) => item.label === command.label);
 			const active = action?.active ? typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active) : false;
 			return <Tooltip key={command.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={command.label} aria-pressed={action?.active ? active : undefined} className={active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon /></Button>} /><TooltipContent>{command.label}</TooltipContent></Tooltip>;
-		})}</div></section>)}
+		})}{title === 'Insert & tools' && scriptCommands.length > 0 ? <DropdownMenu>
+			<DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon-sm" aria-label="Insert script" className="text-muted-foreground hover:text-foreground" onMouseDown={(event) => event.preventDefault()}><FileBox /></Button></DropdownMenuTrigger>
+			<DropdownMenuContent align="start">{scriptCommands.map((command, index) => <DropdownMenuItem key={[...byFence][index][0]} onSelect={command.run}>{command.label}</DropdownMenuItem>)}</DropdownMenuContent>
+		</DropdownMenu> : null}</div></section>)}
 		<section className="shrink-0"><div role="toolbar" aria-label="AI writing" className="flex flex-wrap items-center justify-start gap-0.5">{[{ label: 'Edit with AI', icon: Sparkles }, { label: 'Improve writing', icon: Sparkles }, { label: 'Fix spelling and grammar', icon: SpellCheck }, { label: 'Make shorter', icon: Shrink }, { label: 'Make longer', icon: Expand }].map(({ label, icon: Icon }) => <Tooltip key={label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={label} disabled={ai?.loading || (label !== 'Edit with AI' && editor.state.selection.empty)} onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin" /> : <Icon />}</Button>} /><TooltipContent>{label}</TooltipContent></Tooltip>)}</div></section>
 	</div>, toolbarTarget) : null;
 	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
