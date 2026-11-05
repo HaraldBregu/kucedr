@@ -225,7 +225,7 @@ export function WorkspaceMarkdownEditor({
 					if (href) {
 						event.preventDefault();
 						onOpenLink(href);
-					} else if (event.target === event.currentTarget) editor.commands.focus('end');
+					} else if (event.target === event.currentTarget) editor.commands.focus(event.clientY < editor.view.dom.getBoundingClientRect().top ? 'start' : 'end');
 				}}
 			/>
 			</div>
