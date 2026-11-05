@@ -1,4 +1,4 @@
-import type { AgentInputFile, ModelReasoningEffort } from './agent_types';
+import type { ModelReasoningEffort } from './agent_types';
 
 export interface TextRequest {
 	prompt: string;
@@ -6,5 +6,4 @@ export interface TextRequest {
 	modelId?: string;
 	maxTokens?: number;
 	effort?: ModelReasoningEffort;
-	files?: AgentInputFile[];
 }
