@@ -109,7 +109,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	const [dismissed, setDismissed] = useState<number | null>(null);
 	const { byFence } = usePluginScripts();
 	const { refs: { setReference, setFloating }, elements: { floating: floatingElement }, floatingStyles, update: updatePosition } = useFloating({ placement: slash ? 'bottom-start' : 'top', middleware: [offset(8), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
-	const { refs: styleRefs, floatingStyles: stylePosition } = useFloating({ placement: 'right-start', middleware: [offset(4), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
+	const { refs: { setReference: setStyleReference, setFloating: setStyleFloating }, floatingStyles: stylePosition } = useFloating({ placement: 'right-start', middleware: [offset(4), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
 	const state = useEditorState({ editor, selector: ({ editor: current }) => ({
 		active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
 		table: current.isActive('table'), link: current.isActive('link'), canUndo: current.can().undo(), canRedo: current.can().redo(),
@@ -206,12 +206,12 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 			</form> : slash ? <div role="listbox" aria-label="Editor commands" className="max-h-72 w-64 overflow-auto">
 				{commands.map((command, index) => <button key={command.label} type="button" role="option" aria-selected={index === selected} className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm ${index === selected ? 'bg-accent text-accent-foreground' : ''}`} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setSelected(index)} onClick={() => execute(index)}><command.icon className="size-4" />{command.label}</button>)}
 			</div> : <div role="toolbar" aria-label="Selection formatting" className="w-48">
-				<Button ref={styleRefs.setReference} type="button" variant="ghost" className="h-9 w-full justify-start gap-2 px-2" aria-label="Text style" aria-expanded={stylesOpen} aria-haspopup="menu" onMouseDown={(event) => event.preventDefault()} onClick={() => setStylesOpen(!stylesOpen)}>
+				<Button ref={setStyleReference} type="button" variant="ghost" className="h-9 w-full justify-start gap-2 px-2" aria-label="Text style" aria-expanded={stylesOpen} aria-haspopup="menu" onMouseDown={(event) => event.preventDefault()} onClick={() => setStylesOpen(!stylesOpen)}>
 					<Type className="size-4" />
 					<span className="flex-1 text-left">{[...groups[1], ...groups[3].slice(0, 5)].find((action) => action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)))?.label ?? 'Normal text'}</span>
 					<ChevronRight className="size-4" />
 				</Button>
-				{stylesOpen ? <div ref={styleRefs.setFloating} style={stylePosition} role="menu" aria-label="Text styles" className="z-50 w-48 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+				{stylesOpen ? <div ref={setStyleFloating} style={stylePosition} role="menu" aria-label="Text styles" className="z-50 w-48 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
 					<button type="button" role="menuitem" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { editor.chain().focus().clearNodes().setParagraph().run(); setStylesOpen(false); }}><Type className="size-4" />Normal text</button>
 					{[...groups[1], ...groups[3].slice(0, 5)].map((action) => <button key={action.label} type="button" role="menuitem" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { action.run(editor.chain().focus()).run(); setStylesOpen(false); }}><action.icon className="size-4" />{action.label}</button>)}
 				</div> : null}
