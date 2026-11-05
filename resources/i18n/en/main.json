@@ -1254,6 +1254,8 @@
 			"description": "Configure the workspace editor and its AI model.",
 			"model": "AI model",
 			"modelDescription": "Model used to edit text in the workspace.",
+			"imageModel": "Image model",
+			"imageModelDescription": "Model used to generate images in the workspace.",
 			"wide": "Full width",
 			"wideDescription": "Expand the document to the available width.",
 			"textSize": "Text size",

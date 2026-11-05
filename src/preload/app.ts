@@ -108,6 +108,8 @@ export const app: AppApi = {
 	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void): (() => void) => {
 		return typedOn(AppChannels.soundFeedbackEnabledChanged, callback);
 	},
+	getWorkspaceImageModel: () => typedInvokeUnwrap(AppChannels.getWorkspaceImageModel),
+	setWorkspaceImageModel: (model) => typedInvokeUnwrap(AppChannels.setWorkspaceImageModel, model),
 	getWorkspaceModel: () => typedInvokeUnwrap(AppChannels.getWorkspaceModel),
 	setWorkspaceModel: (model) => typedInvokeUnwrap(AppChannels.setWorkspaceModel, model),
 	setWorkspaceWideContent: (enabled: boolean): Promise<void> => {

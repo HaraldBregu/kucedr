@@ -679,6 +679,8 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: boolean;
 	};
+	[AppChannels.getWorkspaceImageModel]: { args: []; result: { providerId: string; modelId: string } };
+	[AppChannels.setWorkspaceImageModel]: { args: [model: { providerId: string; modelId: string }]; result: void };
 	[AppChannels.getWorkspaceModel]: { args: []; result: { providerId: string; modelId: string } };
 	[AppChannels.setWorkspaceModel]: { args: [model: { providerId: string; modelId: string }]; result: void };
 	[AppChannels.setWorkspaceWideContent]: {

@@ -6,6 +6,7 @@ import { PromptEditor } from '@/components/prompt-editor';
 import { PromptSubmit } from '@/components/prompt-submit';
 import { PromptInputActions } from '@/components/ui/prompt-input';
 import { Model } from '../home/Model';
+import { ImageModel } from './ImageModel';
 import { readEffort } from '../home/effort/read';
 import { autoUpdate, flip, offset, shift, size, useFloating } from '@floating-ui/react-dom';
 import type { ChainedCommands, Editor } from '@tiptap/core';
@@ -31,6 +32,7 @@ import {
 	Expand,
 	Globe,
 	Library,
+	ImageIcon,
 	Italic,
 	Link,
 	List,
@@ -106,6 +108,7 @@ const tableActions: Action[] = [
 ];
 
 interface WorkspaceToolbarProps {
+	readonly path: string;
 	readonly toolbarTarget: HTMLElement | null;
 	readonly scrollbarWidth: number;
 	readonly editor: Editor;
@@ -120,9 +123,10 @@ interface WorkspaceToolbarProps {
 	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
+	const [imageMode, setImageMode] = useState(false);
 	const requestId = useRef(0);
 	const streamId = useRef<string | null>(null);
 	useEffect(() => () => { requestId.current++; if (streamId.current) void window.models.text.cancelStream(streamId.current); }, []);
@@ -229,6 +233,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 	}, [editor, floatingElement, linkOpen, onLinkOpenChange]);
 
 	const openAi = (instruction = ''): void => {
+		setImageMode(false);
 		const { from, to } = editor.state.selection;
 		const text = editor.state.doc.textBetween(from, to, '\n');
 		const value = { from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false, autoApply: Boolean(instruction) };
@@ -246,6 +251,28 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		if (!value.prompt.trim()) return;
 		const id = ++requestId.current;
 		setAi({ ...value, loading: true, error: '', result: '' });
+		if (imageMode && !value.autoApply) {
+			void window.app.getWorkspaceImageModel().then(async ({ providerId, modelId }) => {
+				if (!providerId || !modelId) throw new Error('Select a workspace image model first.');
+				if (requestId.current !== id) return;
+				const prompt = value.text ? `${value.prompt}\n\nSelected text:\n${value.text}` : value.prompt;
+				const result = await window.models.image.createImage({ prompt, providerId, modelId });
+				if (requestId.current !== id) return;
+				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
+				const extensions: Record<string, string> = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' };
+				const extension = extensions[result.mimeType];
+				if (!extension) throw new Error('Unsupported generated image format.');
+				const bytes = Uint8Array.from(atob(result.base64), (character) => character.charCodeAt(0));
+				const src = await window.agent.importWorkspaceAsset(path, `generated-image.${extension}`, bytes);
+				if (requestId.current !== id) return;
+				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
+				editor.chain().focus().insertContentAt({ from: value.from, to: value.to }, { type: 'image', attrs: { src, alt: value.prompt.trim() } }).run();
+				setAi(null);
+			}).catch((error: unknown) => {
+				if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate image.' } : null);
+			});
+			return;
+		}
 		const prompt = `Return only the resulting text in the original language, preserving relevant Markdown formatting. ${value.text ? `Edit the following text: ${value.prompt}\n\nText:\n${value.text}` : `Complete the document at the cursor following this instruction: ${value.prompt}\n\nReturn only the new text to insert, without repeating the existing text.\n\nBefore the cursor:\n${editor.state.doc.textBetween(0, value.from, '\n')}\n\nAfter the cursor:\n${editor.state.doc.textBetween(value.to, editor.state.doc.content.size, '\n')}`}`;
 		const stream = crypto.randomUUID();
 		streamId.current = stream;
@@ -349,8 +376,8 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 	</div></div>, toolbarTarget) : null;
 	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
 				{ai.text ? <span role="status" className="inline-flex rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">Selected {ai.from}–{ai.to}</span> : null}
-				<PromptEditor detachedControls expanded={false} ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={submitAi} isLoading={ai.loading} maxHeight={360} wrapperClassName="max-w-none" className="w-full" footerContent={<div className="flex min-w-0 items-center text-[11px] text-muted-foreground"><Model workspace /></div>} trailingAction={<PromptInputActions className="justify-end gap-1.5"><PromptSubmit isLoading={ai.loading} onAction={submitAi} /></PromptInputActions>} />
-				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
+				<PromptEditor detachedControls expanded={false} ariaLabel="AI instruction" placeholder={imageMode ? "Describe an image" : "Ask anything"} value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={submitAi} isLoading={ai.loading} maxHeight={360} wrapperClassName="max-w-none" className="w-full" leadingAction={<Button type="button" variant={imageMode ? "secondary" : "ghost"} size="sm" aria-pressed={imageMode} disabled={ai.loading} onClick={(event) => { event.stopPropagation(); setImageMode(!imageMode); }}><ImageIcon />Image</Button>} footerContent={<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">{imageMode ? <ImageModel /> : <Model workspace />}</div>} trailingAction={<PromptInputActions className="justify-end gap-1.5"><PromptSubmit isLoading={ai.loading} onAction={submitAi} /></PromptInputActions>} />
+				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />{imageMode ? 'Generating image…' : 'Improving text…'}</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
 				<div className="flex justify-end gap-1"><Button type="button" variant="ghost" size="sm" onClick={() => { requestId.current++; if (streamId.current) void window.models.text.cancelStream(streamId.current); setAi(null); editor.commands.focus(); }}>Close</Button></div>
 			</div>, aiTarget) : null;

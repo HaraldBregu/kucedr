@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTextSize } from '@shared/app_types';
 import { Model } from '@/pages/home/Model';
+import { ImageModel } from '@/pages/workspace/ImageModel';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { SettingsPageHeader, SettingsPageShell, SettingsPanel, SettingsRow } from '../../components';
@@ -31,6 +32,7 @@ export default function WriterPage(): React.JSX.Element {
 			<SettingsPageHeader title={t('settings.writer.title')} description={t('settings.writer.description')} />
 			<SettingsPanel>
 				<SettingsRow title={t('settings.writer.model')} description={t('settings.writer.modelDescription')} actionClassName="w-auto justify-end" actions={<Model workspace />} />
+				<SettingsRow title={t('settings.writer.imageModel')} description={t('settings.writer.imageModelDescription')} actionClassName="w-auto justify-end" actions={<ImageModel />} />
 				<SettingsRow title={t('settings.writer.wide')} description={t('settings.writer.wideDescription')} actionClassName="w-auto justify-end" actions={<Switch aria-label={t('settings.writer.wide')} disabled={!loaded} checked={wide} onCheckedChange={(next) => { setWide(next); void window.app.setWorkspaceWideContent(next); }} />} />
 				<SettingsRow title={t('settings.writer.textSize')} description={t('settings.writer.textSizeDescription')} actionClassName="w-auto justify-end" actions={
 					<Select value={size} disabled={!loaded} onValueChange={(next) => { if (next) { setSize(next); void window.app.setWorkspaceTextSize(next); } }}>
