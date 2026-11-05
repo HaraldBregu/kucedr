@@ -683,6 +683,37 @@ test('Workspace AI captures text selected after opening the prompt', async () =>
 	await expect(editor).toHaveText('Hello friends today');
 });
 
+test('Workspace AI generates and inserts an image using its image model', async () => {
+	await app.evaluate(({ ipcMain }) => {
+		ipcMain.removeHandler('image:create-image');
+		ipcMain.handle('image:create-image', async (_event, request) => {
+			if (request.providerId !== 'openai' || request.modelId !== 'test-image' || request.prompt !== 'A blue bird') throw new Error('Wrong image request');
+			return { success: true, data: { mimeType: 'image/png', base64: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/aXkAAAAASUVORK5CYII=' } };
+		});
+	});
+	await page.evaluate(async () => {
+		await window.app.setWorkspaceImageModel({ providerId: 'openai', modelId: 'test-image' });
+		await window.agent.createWorkspaceFile('', 'generated-image-test.md');
+		await window.agent.writeWorkspaceFile('generated-image-test.md', 'Notes');
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'generated-image-test.md' }).click();
+	const editor = page.getByRole('textbox', { name: 'Markdown preview editor' });
+	await editor.click();
+	await page.keyboard.press('End');
+	await page.keyboard.type('/ai');
+	await page.getByRole('option', { name: 'Edit with AI', exact: true }).click();
+	const composer = editor.locator('[data-slot="inline-ai-composer"]');
+	await composer.getByRole('button', { name: 'Image', exact: true }).click();
+	await expect(composer.getByRole('button', { name: 'Image', exact: true })).toHaveAttribute('aria-pressed', 'true');
+	await expect(composer.getByRole('button', { name: 'Change image model' })).toBeVisible();
+	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('A blue bird');
+	await composer.getByRole('button', { name: 'Send message' }).click();
+	await expect(composer).toHaveCount(0);
+	await expect(editor.locator('img[alt="A blue bird"]')).toBeVisible();
+	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('generated-image-test.md'))).toContain('generated-image.png');
+});
+
 test('Workspace shows a slash hint in the focused empty paragraph', async () => {
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceFile('', 'paragraph-hint.md');
