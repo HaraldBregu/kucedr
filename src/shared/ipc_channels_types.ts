@@ -681,6 +681,10 @@ export interface AppInvokeChannelMap {
 	};
 	[AppChannels.getWorkspaceImageModel]: { args: []; result: { providerId: string; modelId: string } };
 	[AppChannels.setWorkspaceImageModel]: { args: [model: { providerId: string; modelId: string }]; result: void };
+	[AppChannels.getWorkspaceVoiceModel]: { args: []; result: { providerId: string; modelId: string } };
+	[AppChannels.setWorkspaceVoiceModel]: { args: [model: { providerId: string; modelId: string }]; result: void };
+	[AppChannels.getWorkspaceModelOptions]: { args: []; result: Record<string, Record<string, string>> };
+	[AppChannels.setWorkspaceModelOption]: { args: [option: { key: string; name: string; value: string }]; result: void };
 	[AppChannels.getWorkspaceModel]: { args: []; result: { providerId: string; modelId: string } };
 	[AppChannels.setWorkspaceModel]: { args: [model: { providerId: string; modelId: string }]; result: void };
 	[AppChannels.setWorkspaceWideContent]: {
