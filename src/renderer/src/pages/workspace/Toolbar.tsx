@@ -244,27 +244,27 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 			</div> : <div role="toolbar" aria-label="Selection formatting" className="flex flex-col gap-1">
 				<Button ref={setStyleReference} type="button" variant="ghost" size="sm" className="h-8 w-full justify-start gap-1.5 rounded-lg px-2 text-xs font-medium" aria-label="Text style" aria-expanded={stylesOpen} aria-haspopup="menu" onMouseDown={(event) => event.preventDefault()} onClick={() => setStylesOpen(!stylesOpen)}>
 					<Type className="size-4 text-muted-foreground" />
-					<span className="flex-1 truncate text-left">{[...groups[1], ...groups[3].slice(0, 5)].find((action) => action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)))?.label ?? 'Default text'}</span>
+					<span className="flex-1 truncate text-left">{[...groups[1], ...groups[3].slice(0, 3)].find((action) => action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)))?.label ?? 'Default text'}</span>
 					<ChevronDown className="size-3.5 text-muted-foreground" />
 				</Button>
 				{stylesOpen ? <div ref={setStyleFloating} style={stylePosition} role="menu" aria-label="Text styles" className="z-50 w-52 rounded-xl border bg-popover p-1.5 text-popover-foreground shadow-lg">
 					<div className="px-2 pb-1 pt-1 text-[11px] font-medium text-muted-foreground">Turn into</div>
 					<button type="button" role="menuitem" className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { editor.chain().focus().clearNodes().setParagraph().run(); setStylesOpen(false); }}><span className="flex size-7 items-center justify-center rounded-md border bg-muted/40"><Type className="size-4" /></span><span className="flex-1">Default text</span>{editor.isActive('paragraph') && !editor.isActive('bulletList') && !editor.isActive('orderedList') && !editor.isActive('taskList') && !editor.isActive('blockquote') ? <Check className="size-4 text-muted-foreground" /> : null}</button>
-					{[...groups[1], ...groups[3].slice(0, 5)].map((action) => <button key={action.label} type="button" role="menuitem" className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { action.run(editor.chain().focus()).run(); setStylesOpen(false); }}><span className="flex size-7 items-center justify-center rounded-md border bg-muted/40"><action.icon className="size-4" /></span><span className="flex-1">{action.label}</span>{action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)) ? <Check className="size-4 text-muted-foreground" /> : null}</button>)}
+					{[...groups[1], ...groups[3].slice(0, 3)].map((action) => <button key={action.label} type="button" role="menuitem" className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { action.run(editor.chain().focus()).run(); setStylesOpen(false); }}><span className="flex size-7 items-center justify-center rounded-md border bg-muted/40"><action.icon className="size-4" /></span><span className="flex-1">{action.label}</span>{action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)) ? <Check className="size-4 text-muted-foreground" /> : null}</button>)}
 				</div> : null}
 				<div className="mx-1 h-px bg-border" />
 				<div className="flex items-center gap-0.5">
 					{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} className={`rounded-lg ${state.active[5 + index] ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} className={`rounded-lg ${state.link ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => onLinkOpenChange(true)}><Link /></Button>
 				</div>
+				<div className="mx-1 h-px bg-border" />
+				<div className="flex flex-col">
+					{groups[3].slice(0, 3).map((action, index) => <Button key={action.label} type="button" variant="ghost" size="sm" aria-pressed={state.active[11 + index]} className={`h-8 justify-start gap-2 rounded-lg px-2 ${state.active[11 + index] ? 'bg-accent text-accent-foreground' : ''}`} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon className="text-muted-foreground" />{action.label}</Button>)}
+				</div>
 				{ai?.autoApply && ai.error ? <p role="alert" className="max-w-64 px-2 text-sm text-destructive">{ai.error}</p> : null}
 				<div className="mx-1 h-px bg-border" />
 				<div className="flex flex-col">
 					{['Improve writing', 'Fix spelling and grammar', 'Make shorter', 'Make longer', 'Edit with AI'].map((label) => <Button key={label} type="button" variant="ghost" size="sm" className="h-8 justify-start gap-2 px-2" onMouseDown={(event) => event.preventDefault()} disabled={ai?.loading} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin text-muted-foreground" /> : <Sparkles className="text-muted-foreground" />}{label}</Button>)}
-				</div>
-				<div className="mx-1 h-px bg-border" />
-				<div className="flex flex-col">
-					{groups[3].slice(0, 5).map((action, index) => <Button key={action.label} type="button" variant="ghost" size="sm" aria-pressed={state.active[11 + index]} className={`h-8 justify-start gap-2 rounded-lg px-2 ${state.active[11 + index] ? 'bg-accent text-accent-foreground' : ''}`} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon className="text-muted-foreground" />{action.label}</Button>)}
 				</div>
 			</div>}
 		</div>
