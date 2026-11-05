@@ -657,8 +657,9 @@ test('Workspace AI captures text selected after opening the prompt', async () =>
 	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'selection-after-prompt.md' }).click();
 	const editor = page.getByRole('textbox', { name: 'Markdown preview editor' });
 	await editor.click();
-	await page.getByRole('toolbar', { name: 'AI writing' }).getByRole('button', { name: 'AI writing' }).click();
-	await page.getByRole('menuitem', { name: 'Edit with AI' }).click();
+	await page.keyboard.press('End');
+	await page.keyboard.type('/ai');
+	await page.getByRole('option', { name: 'Edit with AI', exact: true }).click();
 	const composer = editor.locator('[data-slot="inline-ai-composer"]');
 	await expect(composer).toBeVisible();
 	await editor.locator('p').first().click();
