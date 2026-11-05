@@ -556,10 +556,13 @@ test('Workspace editor options share the file container and control its styles',
 });
 
 test('Workspace slash AI opens a Home-style composer inline', async () => {
+	await app.evaluate(({ ipcMain }) => {
+		ipcMain.removeHandler('text:generate-text');
+		ipcMain.handle('text:generate-text', async () => ({ success: true, data: 'Generated paragraph' }));
+	});
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceFile('', 'inline-ai.md');
 		await window.agent.writeWorkspaceFile('inline-ai.md', 'Original text');
-		window.models.text.generateText = async () => 'Generated paragraph';
 		window.location.hash = '#/workspace';
 	});
 	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'inline-ai.md' }).click();
