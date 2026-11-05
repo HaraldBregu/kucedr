@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, FilePlus, Folder, FolderPlus, Search } from 'lucide-react';
+import { ArrowLeft, FilePlus, Folder, FolderPlus, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -9,6 +9,7 @@ import { SPLIT_ITEM_ACTIVE_CLASS } from '@/components/app/base/page';
 import { cn } from '@/lib/utils';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -324,22 +325,22 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					}}><Search /></Button>} />
 					<TooltipContent side="bottom">{t('workspaceSidebar.search', 'Search files')}</TooltipContent>
 				</Tooltip>
-				{([
-					{ kind: 'create-file', label: t('workspaceSidebar.newFile', 'New file'), icon: FilePlus },
-					{ kind: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder'), icon: FolderPlus },
-				] as const).map(({ kind, label, icon: Icon }) => (
-					<Tooltip key={kind}>
-						<TooltipTrigger render={
-							<Button type="button" variant="ghost" size="icon-xs" aria-label={label} className="text-muted-foreground" onClick={() => {
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button type="button" variant="ghost" size="icon-xs" aria-label={t('workspaceSidebar.create', 'Create')} className="text-muted-foreground"><Plus /></Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						{([
+							{ kind: 'create-file', label: t('workspaceSidebar.newFile', 'New file'), icon: FilePlus },
+							{ kind: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder'), icon: FolderPlus },
+						] as const).map(({ kind, label, icon: Icon }) => (
+							<DropdownMenuItem key={kind} onSelect={() => {
 								setActionError('');
 								setPendingAction({ kind, parentPath: '' });
-							}}>
-								<Icon />
-							</Button>
-						} />
-						<TooltipContent side="bottom">{label}</TooltipContent>
-					</Tooltip>
-				))}
+							}}><Icon />{label}</DropdownMenuItem>
+						))}
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 			{searchOpen ? <div className="shrink-0 px-2 pt-2">
 				<div className="relative">
