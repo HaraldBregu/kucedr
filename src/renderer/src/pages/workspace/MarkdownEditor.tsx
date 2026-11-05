@@ -107,10 +107,10 @@ export function WorkspaceMarkdownEditor({
 		const update = (): void => { setScrollbarWidth(scroll.offsetWidth - scroll.clientWidth); };
 		const observer = new ResizeObserver(update);
 		observer.observe(scroll);
-		observer.observe(editor.view.dom);
+		if (scroll.firstElementChild) observer.observe(scroll.firstElementChild);
 		update();
 		return () => observer.disconnect();
-	}, [editor, toolbarTarget, zoom]);
+	}, [toolbarTarget, zoom]);
 
 	useImperativeHandle(ref, () => {
 		const select = (query: string, direction: 'next' | 'previous'): { from: number; to: number } | undefined => {
