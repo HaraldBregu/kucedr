@@ -28,87 +28,23 @@ import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { ReplyPreview } from './components/Reply';
-import { LibraryPicker } from './components/LibraryPicker';
 import { Messages } from './Messages';
 import { ChatOutline } from './Outline';
 import { ChatDetails } from './Details';
-import { LIBRARY_DRAG_TYPE } from '../settings/pages/library/drag';
-import { droppedLibraryFiles } from './attachments/library';
+import { Composer } from './Composer';
 import { Provider, welcomeMessage } from './context';
-import {
-	useAudioRecorder,
-	useHomeAgent,
-	useRealtimeDictation,
-	useVoiceButtonMode,
-	type VoiceButtonMode,
-} from './hooks';
-import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
+import { useHomeAgent } from './hooks';
 import type { PromptAttachment } from './attachments/types';
-import { Preview } from './attachments/Preview';
-import { formatFileSize } from './attachments/size';
+import { libraryAttachments } from './attachments/entries';
+import { filesToAttachments } from './attachments/files';
+import { attachmentId } from './attachments/id';
 import { attachmentPath } from './attachments/path';
 import { readDraftAttachments } from './attachments/read';
 import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
 import { ExtensionPage, type OpenExtension } from './components/ExtensionPage';
-import { Model } from './Model';
 
 const StableHomeSidebar = memo(HomeSidebar);
-const StableModel = memo(Model);
-
-function attachmentId(): string {
-	if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
-	return `attachment-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
-
-function formatDuration(durationMs: number): string {
-	const totalSeconds = Math.max(0, Math.floor(durationMs / 1000));
-	const hours = Math.floor(totalSeconds / 3600);
-	const minutes = Math.floor((totalSeconds % 3600) / 60);
-	const seconds = totalSeconds % 60;
-	return hours > 0
-		? `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-		: `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
-
-function filesToAttachments(files: File[]): PromptAttachment[] {
-	return files.map((file) => ({
-		id: attachmentId(),
-		kind: 'file',
-		file,
-		path: attachmentPath(file) || undefined,
-	}));
-}
-
-function RecorderErrorMessage({
-	message,
-	actionLabel,
-	onAction,
-}: {
-	readonly message: string | null;
-	readonly actionLabel?: string;
-	readonly onAction?: () => void;
-}): ReactElement | null {
-	if (!message) return null;
-
-	return (
-		<div className="mb-2 flex min-w-0 items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-destructive shadow-sm">
-			<AlertCircle className="size-4 shrink-0" />
-			<p className="min-w-0 flex-1 truncate text-xs font-medium">{message}</p>
-			{actionLabel && onAction ? (
-				<Button
-					type="button"
-					variant="outline"
-					size="xs"
-					className="shrink-0 border-destructive/30 bg-background/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
-					onClick={onAction}
-				>
-					{actionLabel}
-				</Button>
-			) : null}
-		</div>
-	);
-}
 
 function EmptyConversation(): ReactElement {
 	const hour = new Date().getHours();
