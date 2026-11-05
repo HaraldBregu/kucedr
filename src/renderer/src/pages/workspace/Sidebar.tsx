@@ -309,15 +309,11 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem>
-						<SidebarMenuButton type="button" className={cn('px-2.5 text-sm', SPLIT_ITEM_ACTIVE_CLASS)} aria-current="page">
+						<SidebarMenuButton type="button" className={cn('px-2.5 pr-20 text-sm', SPLIT_ITEM_ACTIVE_CLASS)} aria-current="page">
 							<Folder className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
 						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
-			</header>
-			<div className="flex shrink-0 items-center gap-1 px-4 pb-1 pt-3">
-				<span className="flex-1 text-xs font-medium text-muted-foreground">{t('workspaceSidebar.files', 'Workspace files')}</span>
+						<div className="absolute inset-y-0 right-1 flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger render={<Button type="button" variant="ghost" size="icon-xs" aria-label={t('workspaceSidebar.search', 'Search files')} aria-expanded={searchOpen} className="text-muted-foreground" onClick={() => {
 						if (searchOpen) setQuery('');
@@ -341,7 +337,10 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 						))}
 					</DropdownMenuContent>
 				</DropdownMenu>
-			</div>
+						</div>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</header>
 			{searchOpen ? <div className="shrink-0 px-2 pt-2">
 				<div className="relative">
 					<Search aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
