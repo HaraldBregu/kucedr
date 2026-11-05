@@ -28,7 +28,6 @@ import type { App } from '@shared/installed_app_types';
 import type { CatalogModel } from '@shared/model_types';
 import type { PluginInfo, PluginScriptInfo } from '@shared/plugin_types';
 import type { CatalogWebSearch } from '@shared/provider_types';
-import type { SkillInfo } from '@shared/skills_types';
 
 const CATEGORIES = ['all', 'apps', 'plugins', 'services', 'scripts', 'models', 'other'] as const;
 type Category = (typeof CATEGORIES)[number];
