@@ -209,7 +209,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 			</div> : <div role="toolbar" aria-label="Selection formatting" className="flex flex-col gap-1">
 				<Button ref={setStyleReference} type="button" variant="ghost" size="sm" className="h-8 w-full justify-start gap-1.5 rounded-lg px-2 text-xs font-medium" aria-label="Text style" aria-expanded={stylesOpen} aria-haspopup="menu" onMouseDown={(event) => event.preventDefault()} onClick={() => setStylesOpen(!stylesOpen)}>
 					<Type className="size-4 text-muted-foreground" />
-					<span className="flex-1 truncate text-left">{[...groups[1], ...groups[3].slice(0, 5)].find((action) => action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)))?.label ?? 'Text'}</span>
+					<span className="flex-1 truncate text-left">{[...groups[1], ...groups[3].slice(0, 5)].find((action) => action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)))?.label ?? 'Default text'}</span>
 					<ChevronDown className="size-3.5 text-muted-foreground" />
 				</Button>
 				{stylesOpen ? <div ref={setStyleFloating} style={stylePosition} role="menu" aria-label="Text styles" className="z-50 w-52 rounded-xl border bg-popover p-1.5 text-popover-foreground shadow-lg">
