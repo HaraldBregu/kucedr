@@ -528,6 +528,7 @@ test('Workspace editor options share the file container and control its styles',
 	});
 	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'details-test.md' }).click();
 	const content = page.locator('[data-slot="workspace-content"]');
+	await content.getByRole('textbox', { name: 'Markdown preview editor' }).click();
 	await page.keyboard.press(process.platform === 'darwin' ? 'Meta+f' : 'Control+f');
 	const details = content.getByRole('search');
 	await expect(details).toBeVisible();
