@@ -29,6 +29,8 @@ const WorkspaceMarkdownEditor = lazy(async () => {
 
 interface WorkspaceViewerProps {
 	readonly detailsOpen: boolean;
+	readonly detailsWidth: number;
+	readonly onDetailsWidthChange: (width: number) => void;
 	readonly onDetailsClose: () => void;
 	readonly file: WorkspaceTreeEntry | null;
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
@@ -47,10 +49,11 @@ const TEXT_SIZES = [
 	{ size: 'extra-large', label: 'Extra large', zoom: 1.5 },
 ] as const;
 
-export function WorkspaceViewer({ detailsOpen, onDetailsClose, file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
+export function WorkspaceViewer({ detailsOpen, detailsWidth, onDetailsWidthChange, onDetailsClose, file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
+	const resizeStart = useRef<{ x: number; width: number } | null>(null);
 	const [sidebarTarget, setSidebarTarget] = useState<HTMLDivElement | null>(null);
 	const [content, setContent] = useState('');
 	const [loading, setLoading] = useState(() => file !== null && !['image', 'audio', 'video', 'pdf', 'unsupported'].includes(workspaceFileType(file.path).kind));
@@ -248,9 +251,10 @@ export function WorkspaceViewer({ detailsOpen, onDetailsClose, file, onFileSelec
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
 			</div>
-			{detailsOpen ? <aside aria-label="Workspace editor options" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col overflow-auto border-l bg-background shadow-lg sm:relative sm:shrink-0 sm:shadow-none">
+			{detailsOpen ? <aside aria-label="Workspace editor options" style={{ width: detailsWidth }} className="absolute inset-y-0 right-0 z-20 flex max-w-full flex-col border-l bg-background shadow-lg sm:relative sm:max-w-[50%] sm:shrink-0 sm:shadow-none">
+				<button type="button" role="separator" aria-label="Resize editor options" aria-orientation="vertical" aria-valuemin={224} aria-valuemax={560} aria-valuenow={detailsWidth} className="absolute inset-y-0 -left-1.5 z-20 hidden w-3 cursor-col-resize touch-none outline-none after:absolute after:inset-y-0 after:left-1/2 after:w-px hover:after:bg-border focus-visible:after:bg-ring sm:block" onKeyDown={(event) => { const next = event.key === 'ArrowLeft' ? detailsWidth + 8 : event.key === 'ArrowRight' ? detailsWidth - 8 : event.key === 'Home' ? 224 : event.key === 'End' ? 560 : null; if (next !== null) { event.preventDefault(); onDetailsWidthChange(Math.max(224, Math.min(560, next))); } }} onPointerDown={(event) => { if (event.button !== 0) return; event.preventDefault(); resizeStart.current = { x: event.clientX, width: detailsWidth }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (resizeStart.current) onDetailsWidthChange(Math.max(224, Math.min(560, resizeStart.current.width + resizeStart.current.x - event.clientX))); }} onPointerUp={() => { resizeStart.current = null; }} onPointerCancel={() => { resizeStart.current = null; }} />
 				<div className="flex items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-semibold">Editor options</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
-				{file ? <div className="space-y-4 p-4 text-sm"><h3 className="font-medium">Styles</h3><div className="space-y-1"><span className="text-xs text-muted-foreground">Text size</span><Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}><SelectTrigger aria-label="Sidebar text size" className="w-full"><SelectValue>{TEXT_SIZES.find(({ size }) => size === textSize)?.label}</SelectValue></SelectTrigger><SelectContent>{TEXT_SIZES.map(({ size, label }) => <SelectItem key={size} value={size}>{label}</SelectItem>)}</SelectContent></Select></div><Button type="button" variant="outline" size="sm" className={`w-full justify-start ${wide ? 'bg-accent text-accent-foreground' : ''}`} aria-pressed={wide} onClick={() => onWideChange(!wide)}>Full width</Button>{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start" onClick={() => setFindOpen(true)}>Find in file</Button> : null}<div ref={setSidebarTarget} /></div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
+				{file ? <div className="min-h-0 flex-1 space-y-4 overflow-auto p-4 text-sm"><h3 className="font-medium">Styles</h3><Button type="button" variant="outline" size="sm" className={`w-full justify-start ${wide ? 'bg-accent text-accent-foreground' : ''}`} aria-pressed={wide} onClick={() => onWideChange(!wide)}>Full width</Button>{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start" onClick={() => setFindOpen(true)}>Find in file</Button> : null}<div ref={setSidebarTarget} /></div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
 			</aside> : null}
 			</div>
 			{file ? (
