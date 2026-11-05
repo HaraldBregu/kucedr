@@ -254,7 +254,6 @@ export function CommandMenu({
 	const [category, setCategory] = useState<Category>('all');
 	const [plugins, setPlugins] = useState<PluginInfo[]>([]);
 	const [apps, setApps] = useState<App[]>([]);
-	const [services, setServices] = useState<CatalogWebSearch[]>([]);
 	const [scripts, setScripts] = useState<PluginScriptInfo[]>([]);
 	const [models, setModels] = useState<CatalogModel[]>([]);
 	const listRef = useRef<HTMLDivElement>(null);
