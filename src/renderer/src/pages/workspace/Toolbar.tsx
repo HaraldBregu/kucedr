@@ -180,7 +180,9 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	const openAi = (instruction = ''): void => {
 		const { from, to } = editor.state.selection;
 		const text = editor.state.doc.textBetween(from, to, '\n');
-		setAi({ from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false });
+		const value = { from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false };
+		setAi(value);
+		if (instruction) generate(value);
 	};
 	const generate = (value: NonNullable<typeof ai>): void => {
 		if (!value.prompt.trim()) return;
