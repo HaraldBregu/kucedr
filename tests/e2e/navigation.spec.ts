@@ -532,6 +532,7 @@ test('Workspace editor options share the file container and control its styles',
 	const details = content.getByRole('complementary', { name: 'Workspace editor options' });
 	await expect(details).toBeVisible();
 	await expect(details).toContainText('Blocks');
+	await page.screenshot({ path: '/private/tmp/workspace-polished.png' });
 	await details.getByRole('button', { name: 'Find in file' }).click();
 	await details.getByRole('textbox', { name: 'Find in file' }).fill('Workspace');
 	await expect(details).toContainText('1 match');
