@@ -640,6 +640,7 @@ input[type='range']:hover::-moz-range-thumb {
 	max-width: 100%;
 	height: auto;
 	border-radius: var(--radius-lg);
+	cursor: zoom-in;
 }
 
 .workspace-markdown-preview img.ProseMirror-selectednode {
