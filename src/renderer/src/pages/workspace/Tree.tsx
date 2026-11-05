@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, File, FileImage, FileMusic, FileText, FileVideo, Folder } from 'lucide-react';
+import { File, FileImage, FileMusic, FileText, FileVideo, Folder } from 'lucide-react';
 import { workspaceFileType } from '@shared/workspace';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { WorkspaceRenameInput } from './RenameInput';
@@ -69,7 +69,6 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							event.stopPropagation();
 							onEntryContextMenu(entry);
 						}}>
-								<ChevronRight className="size-3 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" strokeWidth={1.8} />
 								<Folder className="size-4 shrink-0" strokeWidth={1.8} />
 								<span className="truncate" title={entry.path}>{entry.name}</span>
 							</summary>
