@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, FilePlus, Folder, FolderPlus } from 'lucide-react';
+import { ArrowLeft, FilePlus, Folder, FolderPlus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -39,6 +39,11 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 	const anchorPath = useRef<string | null>(null);
 	const navRef = useRef<HTMLElement>(null);
 	const [query, setQuery] = useState('');
+	const [searchOpen, setSearchOpen] = useState(false);
+	const searchRef = useRef<HTMLInputElement>(null);
+	useEffect(() => {
+		if (searchOpen) searchRef.current?.focus();
+	}, [searchOpen]);
 	const filter = (list: WorkspaceTreeEntry[], text: string): WorkspaceTreeEntry[] => list.flatMap((item) => {
 		if (item.name.toLowerCase().includes(text)) return [item];
 		const children = filter(item.children ?? [], text);
@@ -312,6 +317,13 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			</header>
 			<div className="flex shrink-0 items-center gap-1 px-4 pb-1 pt-3">
 				<span className="flex-1 text-xs font-medium text-muted-foreground">{t('workspaceSidebar.files', 'Workspace files')}</span>
+				<Tooltip>
+					<TooltipTrigger render={<Button type="button" variant="ghost" size="icon-xs" aria-label={t('workspaceSidebar.search', 'Search files')} aria-expanded={searchOpen} className="text-muted-foreground" onClick={() => {
+						if (searchOpen) setQuery('');
+						setSearchOpen(!searchOpen);
+					}}><Search /></Button>} />
+					<TooltipContent side="bottom">{t('workspaceSidebar.search', 'Search files')}</TooltipContent>
+				</Tooltip>
 				{([
 					{ kind: 'create-file', label: t('workspaceSidebar.newFile', 'New file'), icon: FilePlus },
 					{ kind: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder'), icon: FolderPlus },
@@ -329,9 +341,9 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					</Tooltip>
 				))}
 			</div>
-			<div className="shrink-0 px-2 pt-2">
-				<Input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('workspaceSidebar.search', 'Search files')} aria-label={t('workspaceSidebar.search', 'Search files')} className="h-8" />
-			</div>
+			{searchOpen ? <div className="shrink-0 px-2 pt-2">
+				<Input ref={searchRef} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('workspaceSidebar.search', 'Search files')} aria-label={t('workspaceSidebar.search', 'Search files')} className="h-8" />
+			</div> : null}
 			<nav ref={navRef} onKeyDown={handleTreeKey} aria-label={t('workspaceSidebar.files', 'Workspace files')} className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2" onContextMenu={(event) => {
 				event.preventDefault();
 				showEntryMenu();
