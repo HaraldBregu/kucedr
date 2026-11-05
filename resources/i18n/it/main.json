@@ -1249,6 +1249,21 @@
 		"code": {
 			"description": "Sfoglia i progetti di codice e i loro file"
 		},
+		"writer": {
+			"title": "Writer",
+			"description": "Configura l’editor del workspace e il suo modello AI.",
+			"model": "Modello AI",
+			"modelDescription": "Modello usato per modificare il testo nel workspace.",
+			"wide": "Larghezza completa",
+			"wideDescription": "Espandi il documento alla larghezza disponibile.",
+			"textSize": "Dimensione del testo",
+			"textSizeDescription": "Regola la dimensione del testo del documento.",
+			"extraSmall": "Molto piccola",
+			"small": "Piccola",
+			"medium": "Media",
+			"large": "Grande",
+			"extraLarge": "Molto grande"
+		},
 		"workspace": {
 			"title": "Workspace",
 			"description": "Sfoglia gli elementi del workspace e i loro contenuti",

@@ -14,6 +14,7 @@ import {
 	Library,
 	ListChecks,
 	MessageCircle,
+	PenLine,
 	Boxes,
 	Plug,
 	PlugZap,
@@ -334,6 +335,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		descriptionKey: 'settings.code.description',
 		icon: Code2,
 		comingSoon: true,
+	},
+	{
+		path: '/settings/writer',
+		labelKey: 'settings.writer.title',
+		descriptionKey: 'settings.writer.description',
+		icon: PenLine,
 	},
 	{
 		path: '/settings/voice',

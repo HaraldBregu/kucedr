@@ -27,7 +27,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
 			...SETTINGS_NAVIGATION.filter((item) =>
-				['/settings/voice', '/settings/tasks', '/settings/health'].includes(item.path)
+				['/settings/writer', '/settings/voice', '/settings/tasks', '/settings/health'].includes(item.path)
 			),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/knowledge'),

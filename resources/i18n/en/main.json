@@ -1249,6 +1249,21 @@
 		"code": {
 			"description": "Browse your code projects and files"
 		},
+		"writer": {
+			"title": "Writer",
+			"description": "Configure the workspace editor and its AI model.",
+			"model": "AI model",
+			"modelDescription": "Model used to edit text in the workspace.",
+			"wide": "Full width",
+			"wideDescription": "Expand the document to the available width.",
+			"textSize": "Text size",
+			"textSizeDescription": "Adjust the size of document text.",
+			"extraSmall": "Extra small",
+			"small": "Small",
+			"medium": "Medium",
+			"large": "Large",
+			"extraLarge": "Extra large"
+		},
 		"workspace": {
 			"title": "Workspace",
 			"description": "Browse your workspace items and their contents",
