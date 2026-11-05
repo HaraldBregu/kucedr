@@ -20,6 +20,13 @@ export function ImageModel({ options, onOptionsChange }: { readonly options: Ima
 		const unsubscribe = window.app.onModelsChanged(refresh);
 		return () => { active = false; unsubscribe(); };
 	}, []);
+	const metadata = groups.find(({ id }) => id === selection.providerId)?.models.find(({ id }) => id === selection.modelId)?.metadata;
+	const inputs = metadata?.documentationStatus === 'verified' ? metadata.inputs : {};
+	const ratioName = inputs.aspect_ratio ? 'aspect_ratio' : 'size';
+	const ratio = inputs[ratioName];
+	const ratioChoices = ratio?.oneOf?.map((choice) => ({ value: String(choice.const), label: choice.title ?? String(choice.const) })) ?? ratio?.enum?.map((choice) => ({ value: String(choice), label: String(choice) })) ?? [];
+	const modelKey = `${selection.providerId}:${selection.modelId}`;
+	const ratioValue = options[modelKey]?.[ratioName] ?? String(ratio?.default ?? ratioChoices[0]?.value ?? '');
 	return <div className="flex min-w-0 items-center gap-1">
 		<ModelProviderSelect idPrefix="workspace-image" providerGroups={groups} providerId={selection.providerId} modelId={selection.modelId} onChange={(providerId, modelId) => {
 			setSaving(true);
