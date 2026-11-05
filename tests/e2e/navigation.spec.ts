@@ -555,6 +555,29 @@ test('Workspace editor options share the file container and control its styles',
 	await expect(page.getByRole('button', { name: 'Search sidebar', exact: true })).toHaveCount(0);
 });
 
+test('Workspace slash AI opens a Home-style composer inline', async () => {
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceFile('', 'inline-ai.md');
+		await window.agent.writeWorkspaceFile('inline-ai.md', 'Original text');
+		window.models.text.generateText = async () => 'Generated paragraph';
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'inline-ai.md' }).click();
+	const editor = page.getByRole('textbox', { name: 'Markdown preview editor' });
+	await editor.click();
+	await page.keyboard.press('End');
+	await page.keyboard.type('/ai');
+	await page.getByRole('option', { name: 'Edit with AI', exact: true }).click();
+	const composer = editor.locator('[data-slot="inline-ai-composer"]');
+	await expect(composer).toBeVisible();
+	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('Write a paragraph');
+	await composer.getByRole('button', { name: 'Generate', exact: true }).click();
+	await expect(composer).toContainText('Generated paragraph');
+	await composer.getByRole('button', { name: 'Apply', exact: true }).click();
+	await expect(composer).toHaveCount(0);
+	await expect(editor).toContainText('Generated paragraph');
+});
+
 test('editing Markdown Preview keeps table and task content', async () => {
 	const markdown = '# Notes\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n- [x] Done';
 	await page.evaluate(async (content) => {
