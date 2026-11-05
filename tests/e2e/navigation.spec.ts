@@ -571,6 +571,7 @@ test('Markdown editor offers selection formatting and searchable slash commands'
 	await page.keyboard.press('End');
 	await page.keyboard.type('/heading');
 	await expect(page.getByRole('option', { name: 'Heading 2' })).toBeVisible();
+	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
 	await expect(editor.locator('h2')).toContainText('Hello world');
 	await expect(editor).not.toContainText('/heading');
