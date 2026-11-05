@@ -18,6 +18,7 @@ import type { CodeMirrorEditorHandle } from './Editor';
 import { searchKey, WorkspaceSearch } from './Search';
 import { workspaceResourceUrl } from './Resource';
 import { WorkspaceLibraryPicker } from './LibraryPicker';
+import { WorkspaceImagePreview } from './Preview';
 import { WorkspaceOutline } from './Outline';
 import { WorkspaceToolbar } from './Toolbar';
 import { WorkspaceScriptForm } from './ScriptForm';
