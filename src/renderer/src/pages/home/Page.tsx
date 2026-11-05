@@ -9,12 +9,43 @@ import {
 	type ReactElement,
 } from 'react';
 import { resize } from 'motion/react';
-import { Info } from 'lucide-react';
+import {
+	AlertCircle,
+	FileAudioIcon,
+	FileCodeIcon,
+	FileImageIcon,
+	FileTextIcon,
+	Library,
+	Mic,
+	MonitorUp,
+	Info,
+	Plus,
+	TableIcon,
+	X,
+} from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { LibraryFile } from '../../../../shared/library_types';
+import { workspaceFileType } from '../../../../shared/workspace';
 import { PageContainer, Split } from '@/components/app/base/page';
+import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+	Attachment,
+	AttachmentAction,
+	AttachmentActions,
+	AttachmentContent,
+	AttachmentDescription,
+	AttachmentGroup,
+	AttachmentMedia,
+	AttachmentTitle,
+} from '@/components/ui/attachment';
 import {
 	ChatContainerContent,
 	ChatContainerRoot,
@@ -22,29 +53,101 @@ import {
 } from '@/components/ui/chat-container';
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 import { LogoView } from '@/components/app/base/logo-view';
+import { PromptEditor } from '@/components/prompt-editor';
+import { PromptSubmit } from '@/components/prompt-submit';
+import {
+	PromptInputAction,
+	PromptInputActions,
+	usePromptInput,
+	type PromptInputVoiceMode,
+} from '@/components/ui/prompt-input';
 import { ScrollButton } from '@/components/ui/scroll-button';
-import { useChatMode } from '@/contexts/chat-mode';
+import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { ReplyPreview } from './components/Reply';
+import { LibraryPicker } from './components/LibraryPicker';
 import { Messages } from './Messages';
 import { ChatOutline } from './Outline';
 import { ChatDetails } from './Details';
-import { Composer } from './Composer';
+import { LIBRARY_DRAG_TYPE } from '../settings/pages/library/drag';
+import { droppedLibraryFiles } from './attachments/library';
 import { Provider, welcomeMessage } from './context';
-import { useHomeAgent } from './hooks';
+import {
+	useAudioRecorder,
+	useHomeAgent,
+	useRealtimeDictation,
+	useVoiceButtonMode,
+	type VoiceButtonMode,
+} from './hooks';
+import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
 import type { PromptAttachment } from './attachments/types';
-import { libraryAttachments } from './attachments/entries';
-import { filesToAttachments } from './attachments/files';
-import { attachmentId } from './attachments/id';
+import { Preview } from './attachments/Preview';
+import { formatFileSize } from './attachments/size';
 import { attachmentPath } from './attachments/path';
 import { readDraftAttachments } from './attachments/read';
 import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
 import { ExtensionPage, type OpenExtension } from './components/ExtensionPage';
+import { Model } from './Model';
 
 const StableHomeSidebar = memo(HomeSidebar);
+const StableModel = memo(Model);
+
+function attachmentId(): string {
+	if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+	return `attachment-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function formatDuration(durationMs: number): string {
+	const totalSeconds = Math.max(0, Math.floor(durationMs / 1000));
+	const hours = Math.floor(totalSeconds / 3600);
+	const minutes = Math.floor((totalSeconds % 3600) / 60);
+	const seconds = totalSeconds % 60;
+	return hours > 0
+		? `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+		: `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function filesToAttachments(files: File[]): PromptAttachment[] {
+	return files.map((file) => ({
+		id: attachmentId(),
+		kind: 'file',
+		file,
+		path: attachmentPath(file) || undefined,
+	}));
+}
+
+function RecorderErrorMessage({
+	message,
+	actionLabel,
+	onAction,
+}: {
+	readonly message: string | null;
+	readonly actionLabel?: string;
+	readonly onAction?: () => void;
+}): ReactElement | null {
+	if (!message) return null;
+
+	return (
+		<div className="mb-2 flex min-w-0 items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-destructive shadow-sm">
+			<AlertCircle className="size-4 shrink-0" />
+			<p className="min-w-0 flex-1 truncate text-xs font-medium">{message}</p>
+			{actionLabel && onAction ? (
+				<Button
+					type="button"
+					variant="outline"
+					size="xs"
+					className="shrink-0 border-destructive/30 bg-background/60 text-destructive hover:bg-destructive/10 hover:text-destructive"
+					onClick={onAction}
+				>
+					{actionLabel}
+				</Button>
+			) : null}
+		</div>
+	);
+}
 
 function EmptyConversation(): ReactElement {
 	const hour = new Date().getHours();
@@ -58,6 +161,157 @@ function EmptyConversation(): ReactElement {
 				</EmptyTitle>
 			</EmptyHeader>
 		</Empty>
+	);
+}
+
+function AttachmentTray({
+	attachments,
+	onRemove,
+}: {
+	readonly attachments: readonly PromptAttachment[];
+	readonly onRemove: (id: string) => void;
+}): ReactElement | null {
+	if (attachments.length === 0) return null;
+
+	return (
+		<AttachmentGroup className="w-full" onClick={(event) => event.stopPropagation()}>
+			{attachments.map((attachment) => {
+				const isAudio = attachment.kind === 'audio';
+				const title = isAudio
+					? `Audio ${formatDuration(attachment.durationMs ?? 0)}`
+					: attachment.file.name;
+				const extension = attachment.file.name.split('.').pop()?.toUpperCase() ?? 'FILE';
+				const isImage = attachment.file.type.startsWith('image/');
+				const Icon =
+					isAudio || attachment.file.type.startsWith('audio/')
+						? FileAudioIcon
+						: isImage
+							? FileImageIcon
+							: /\.(csv|xlsx?|ods)$/i.test(attachment.file.name)
+								? TableIcon
+								: /\.(jsx?|tsx?|json|html|css|py|sh)$/i.test(attachment.file.name)
+									? FileCodeIcon
+									: FileTextIcon;
+
+				return (
+					<Attachment
+						key={attachment.id}
+						size="sm"
+						className={cn(
+							'rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5',
+							isAudio ? 'w-80' : 'w-64'
+						)}
+					>
+						<AttachmentMedia variant={isImage ? 'image' : 'icon'}>
+							{isImage ? (
+								<Preview
+									file={attachment.file}
+									path={attachment.path}
+									name={attachment.file.name}
+									mimeType={attachment.file.type}
+								/>
+							) : (
+								<Icon />
+							)}
+						</AttachmentMedia>
+						<AttachmentContent>
+							<AttachmentTitle title={title}>{title}</AttachmentTitle>
+							<AttachmentDescription>
+								{extension} · {formatFileSize(attachment.file.size)}
+							</AttachmentDescription>
+						</AttachmentContent>
+						<AttachmentActions>
+							<AttachmentAction
+								type="button"
+								aria-label={`Remove ${title}`}
+								onClick={() => onRemove(attachment.id)}
+							>
+								<X className="size-3.5" />
+							</AttachmentAction>
+						</AttachmentActions>
+						{isAudio && attachment.url ? (
+							<AudioPlayer
+								src={attachment.url}
+								className="basis-full border-0 bg-transparent px-1 py-1"
+							/>
+						) : null}
+					</Attachment>
+				);
+			})}
+		</AttachmentGroup>
+	);
+}
+
+function AttachmentButton({
+	disabled,
+	onLibrarySelect,
+}: {
+	readonly disabled?: boolean;
+	readonly onLibrarySelect: () => void;
+}): ReactElement {
+	const { triggerFileUpload } = usePromptInput();
+	return (
+		<DropdownMenu>
+			<PromptInputAction tooltip="Add attachment">
+				<DropdownMenuTrigger asChild>
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon"
+						className="size-9 rounded-full text-foreground hover:bg-muted"
+						aria-label="Add attachment"
+						disabled={disabled}
+					>
+						<Plus className="size-4" />
+					</Button>
+				</DropdownMenuTrigger>
+			</PromptInputAction>
+			<DropdownMenuContent align="start" side="top" className="w-52">
+				<DropdownMenuItem onSelect={onLibrarySelect}>
+					<Library className="size-4" />
+					From Library
+				</DropdownMenuItem>
+				<DropdownMenuItem onSelect={triggerFileUpload}>
+					<MonitorUp className="size-4" />
+					From computer
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+}
+
+function VoiceButton({
+	onVoiceModeRequest,
+	disabled,
+	disabledReason,
+	mode,
+}: {
+	readonly onVoiceModeRequest: () => void;
+	readonly disabled?: boolean;
+	readonly disabledReason?: string;
+	readonly mode: VoiceButtonMode;
+}): ReactElement {
+	const label = mode === 'record' ? 'Record voice' : 'Dictate';
+	const isDisabled = disabled || mode === 'disabled';
+	const tooltip =
+		mode === 'disabled'
+			? 'Choose a speech-to-text provider and model in Settings.'
+			: (disabledReason ?? label);
+
+	return (
+		<PromptInputAction tooltip={tooltip} showTooltipWhenDisabled={isDisabled}>
+			<Button
+				type="button"
+				variant="ghost"
+				size="icon"
+				className="size-9 rounded-full text-foreground hover:bg-muted"
+				aria-label={tooltip}
+				disabled={isDisabled}
+				onClick={onVoiceModeRequest}
+			>
+				<Mic className="size-5" />
+			</Button>
+		</PromptInputAction>
 	);
 }
 
@@ -113,7 +367,22 @@ function PageContent(): ReactElement {
 	const workspaceRef = useRef<HTMLDivElement>(null);
 	const composerRef = useRef<HTMLDivElement>(null);
 	const chatScrollRef = useRef<StickToBottomContext>(null);
-	const agent = useHomeAgent({ setMode });
+	const [voiceMode, setVoiceMode] = useState<PromptInputVoiceMode | null>(null);
+	const [activeDictationMode, setActiveDictationMode] = useState<VoiceButtonMode | null>(null);
+	const updateMode = useCallback(
+		(nextMode: ChatMode): void => {
+			if (nextMode === 'chat') {
+				setActiveDictationMode(null);
+				setVoiceMode(null);
+			}
+			setMode(nextMode);
+		},
+		[setMode]
+	);
+	const closeVoiceUi = useCallback((): void => {
+		updateMode('chat');
+	}, [updateMode]);
+	const agent = useHomeAgent({ setMode: updateMode });
 	const [focusRequest, setFocusRequest] = useState(0);
 	useEffect(() => {
 		const requestFocus = (): void => setFocusRequest((current) => current + 1);
@@ -122,13 +391,20 @@ function PageContent(): ReactElement {
 	}, []);
 	useEffect(() => {
 		if (focusRequest === 0 || agent.historyLoading) return;
-		setMode('chat');
+		updateMode('chat');
 		const frame = window.requestAnimationFrame(() => {
 			composerRef.current?.querySelector<HTMLElement>('[role="textbox"]')?.focus();
 		});
 		return () => window.cancelAnimationFrame(frame);
-	}, [focusRequest, chatSessionId, agent.historyLoading, setMode]);
+	}, [focusRequest, chatSessionId, agent.historyLoading, updateMode]);
+	const dictation = useRealtimeDictation({
+		value: agent.input,
+		onValueChange: agent.setInput,
+	});
+	const recorder = useAudioRecorder();
+	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
+	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
 	const [detailsOpen, setDetailsOpen] = useState(() => window.matchMedia('(min-width: 1280px)').matches);
 	useEffect(() => {
 		const query = window.matchMedia('(min-width: 1280px)');
@@ -153,7 +429,7 @@ function PageContent(): ReactElement {
 		const close = (): void => setOpenExtension(null);
 		const show = (): void => {
 			close();
-			setMode('chat');
+			updateMode('chat');
 		};
 		window.addEventListener('kucedr:open-extension', open);
 		window.addEventListener('kucedr:focus-chat-input', close);
@@ -163,7 +439,7 @@ function PageContent(): ReactElement {
 			window.removeEventListener('kucedr:focus-chat-input', close);
 			window.removeEventListener('kucedr:show-chat', show);
 		};
-	}, [setMode]);
+	}, [updateMode]);
 	const [attachmentsSessionId, setAttachmentsSessionId] = useState<string | null>(null);
 	useEffect(() => {
 		let active = true;
@@ -197,6 +473,10 @@ function PageContent(): ReactElement {
 	}, [attachments, attachmentsSessionId, chatSessionId]);
 	const [planCommandActive, setPlanCommandActive] = useState(false);
 	const [goalCommandActive, setGoalCommandActive] = useState(false);
+	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
+	const [libraryDropError, setLibraryDropError] = useState(false);
+	const [transcribingRecording, setTranscribingRecording] = useState(false);
+	const transcriptionRunRef = useRef(0);
 	const visibleMessages = useMemo(
 		() => agent.chatState.messages.filter((message) => message.id !== welcomeMessage.id),
 		[agent.chatState.messages]
@@ -216,8 +496,74 @@ function PageContent(): ReactElement {
 	}, [showEmptyConversation]);
 	const hasPromptText = agent.input.trim().length > 0;
 	const hasGoalObjective = agent.input.replace(/^\/goal\s*/i, '').trim().length > 0;
+	const dictationStatus = dictation.status;
+	const cancelDictationSession = dictation.cancel;
+	const recorderStatus = recorder.status;
+	const cancelRecordingSession = recorder.cancel;
+	const dictationBusy =
+		dictationStatus === 'checking-permission' ||
+		dictationStatus === 'connecting' ||
+		dictationStatus === 'finishing';
+	const recordingBusy =
+		recorderStatus === 'checking-permission' ||
+		recorderStatus === 'stopping' ||
+		transcribingRecording;
+	const voiceBusy = dictationBusy || recordingBusy;
+	const attachmentDisabled = voiceMode !== null || voiceBusy;
+	const activeVoiceElapsedMs =
+		activeDictationMode === 'record' ? recorder.elapsedMs : dictation.elapsedMs;
+	const activeVoiceMuted = activeDictationMode === 'record' ? recorder.isMuted : dictation.isMuted;
+	const activeVoiceStream = activeDictationMode === 'record' ? recorder.stream : dictation.stream;
+	const activeVoiceSetMuted =
+		activeDictationMode === 'record' ? recorder.setMuted : dictation.setMuted;
+	const voiceErrorMessage =
+		transcriptionErrorMessage ?? recorder.errorMessage ?? dictation.errorMessage;
+	const voiceErrorAction = voiceErrorMessage?.toLowerCase().includes('microphone')
+		? {
+				label: 'Open Microphone settings',
+				action: () => navigate('/settings/settings/media/microphone'),
+			}
+		: undefined;
+	const voiceButtonDisabledReason =
+		voiceButtonMode === 'disabled'
+			? 'Choose a speech-to-text provider and model in Settings.'
+			: voiceBusy
+				? 'Wait for the current voice operation to finish.'
+				: agent.isLoading
+					? 'Wait for the current response to finish.'
+					: undefined;
+
+	useEffect(() => {
+		if (mode !== 'chat') return;
+		if (
+			dictationStatus === 'checking-permission' ||
+			dictationStatus === 'connecting' ||
+			dictationStatus === 'recording'
+		) {
+			void cancelDictationSession();
+		}
+		if (
+			recorderStatus === 'checking-permission' ||
+			recorderStatus === 'recording' ||
+			recorderStatus === 'stopping'
+		) {
+			void cancelRecordingSession();
+		}
+	}, [cancelDictationSession, cancelRecordingSession, dictationStatus, mode, recorderStatus]);
 
 	useEffect(() => () => setMode('chat'), [setMode]);
+
+	const removeAttachment = useCallback((id: string): void => {
+		setAttachments((current) =>
+			current.filter((attachment) => {
+				if (attachment.id !== id) return true;
+				if (attachment.url) {
+					URL.revokeObjectURL(attachment.url);
+				}
+				return false;
+			})
+		);
+	}, []);
 
 	const clearAttachments = useCallback((): void => {
 		setAttachments((current) => {
@@ -229,7 +575,21 @@ function PageContent(): ReactElement {
 	}, []);
 
 	const addLibraryFiles = useCallback((files: LibraryFile[]): void => {
-		setAttachments((current) => [...current, ...libraryAttachments(files)]);
+		setAttachments((current) => [
+			...current,
+			...files.map((entry) => {
+				const file = new File([], entry.name, {
+					type: workspaceFileType(entry.name).mimeType ?? '',
+				});
+				attachmentPath(file, entry.path);
+				return {
+					id: attachmentId(),
+					kind: 'file' as const,
+					file,
+					path: entry.path,
+				};
+			}),
+		]);
 	}, []);
 
 	const submitPrompt = async (): Promise<void> => {
@@ -245,10 +605,110 @@ function PageContent(): ReactElement {
 		await agent.handleSubmit(submittedFiles, planCommandActive ? 'plan' : undefined);
 	};
 
+	const returnToChat = (): void => {
+		closeVoiceUi();
+	};
+
+	const startDictation = async (): Promise<void> => {
+		setTranscriptionErrorMessage(null);
+		if (voiceButtonMode === 'disabled') {
+			setTranscriptionErrorMessage('Choose a speech-to-text provider and model in Settings.');
+			return;
+		}
+		if (voiceButtonMode === 'record') {
+			const started = await recorder.start();
+			if (!started) {
+				updateMode('chat');
+				return;
+			}
+			setActiveDictationMode('record');
+			setVoiceMode('dictation');
+			updateMode('voice');
+			return;
+		}
+
+		const started = await dictation.start();
+		if (!started) {
+			updateMode('chat');
+			return;
+		}
+		setActiveDictationMode('dictate');
+		setVoiceMode('dictation');
+		updateMode('voice');
+	};
+
+	const cancelDictation = async (): Promise<void> => {
+		transcriptionRunRef.current += 1;
+		setTranscribingRecording(false);
+		if (activeDictationMode === 'record') {
+			await recorder.cancel();
+		} else {
+			await dictation.cancel();
+		}
+		returnToChat();
+	};
+
+	const confirmDictation = async (): Promise<void> => {
+		if (activeDictationMode === 'record') {
+			const runId = transcriptionRunRef.current + 1;
+			transcriptionRunRef.current = runId;
+			setTranscribingRecording(true);
+			setTranscriptionErrorMessage(null);
+
+			try {
+				const recording = await recorder.stop();
+				if (!recording) {
+					returnToChat();
+					return;
+				}
+
+				try {
+					const result = await window.models.transcribe.transcribe({
+						audio: await fileToSttAudioInput(recording.file),
+					});
+					if (transcriptionRunRef.current === runId) {
+						agent.setInput(appendTranscriptionText(agent.input, result.text));
+					}
+				} finally {
+					if (recording.url) URL.revokeObjectURL(recording.url);
+				}
+			} catch (error) {
+				const message =
+					error instanceof Error && error.message.trim()
+						? error.message
+						: 'Speech transcription failed.';
+				if (transcriptionRunRef.current === runId) setTranscriptionErrorMessage(message);
+			} finally {
+				if (transcriptionRunRef.current === runId) {
+					setTranscribingRecording(false);
+					returnToChat();
+				}
+			}
+			return;
+		}
+
+		await dictation.finish();
+		returnToChat();
+	};
+
 	const composer = (
 		<div
 			ref={composerRef}
 			data-slot="home-composer-shell"
+			onDragOverCapture={(event) => {
+				if (attachmentDisabled || !event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
+				event.preventDefault();
+				event.stopPropagation();
+				event.dataTransfer.dropEffect = 'copy';
+			}}
+			onDropCapture={(event) => {
+				if (!event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
+				event.preventDefault();
+				event.stopPropagation();
+				if (attachmentDisabled) return;
+				setLibraryDropError(false);
+				void droppedLibraryFiles(event.dataTransfer.getData(LIBRARY_DRAG_TYPE)).then(addLibraryFiles).catch(() => setLibraryDropError(true));
+			}}
 			className={cn(
 				'z-20 flex justify-center px-4',
 				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
@@ -257,38 +717,95 @@ function PageContent(): ReactElement {
 			{showEmptyConversation ? null : (
 				<div className={cn('pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background', detailsOpen && 'max-w-[60.5rem] pr-[12.5rem] bg-clip-content')} />
 			)}
-			<Composer
-				className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl', !showEmptyConversation && detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}
-				fade={!showEmptyConversation}
-				placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
-				ariaLabel="Message your assistant"
-				value={agent.input}
-				onValueChange={agent.setInput}
-				onPlanCommandChange={(active) => {
-					setPlanCommandActive(active);
-					agent.setInteractionMode(active ? 'plan' : 'default');
-				}}
-				onGoalCommandChange={setGoalCommandActive}
-				isLoading={agent.isLoading}
-				mode={mode}
-				setMode={setMode}
-				attachments={attachments}
-				setAttachments={setAttachments}
-				onSubmit={() => void submitPrompt()}
-				textareaRef={agent.inputRef}
-				header={
-					agent.replyTo ? (
-						<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
-					) : undefined
-				}
-				messages={agent.chatState.messages}
-				onContext={setModelContext}
-				inputClassName={cn(
-					showEmptyConversation && 'min-h-[114px]',
-					planCommandActive && 'plan-prompt-frame',
-					goalCommandActive && 'goal-prompt-frame'
+			<div className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl', !showEmptyConversation && detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}>
+				{libraryDropError && <p role="alert" className="mb-2 text-xs text-destructive">Could not attach Library files. Please try again.</p>}
+				<RecorderErrorMessage
+					message={voiceErrorMessage}
+					actionLabel={voiceErrorAction?.label}
+					onAction={voiceErrorAction?.action}
+				/>
+				{attachments.length > 0 ? (
+					<div className="mb-2">
+						<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
+					</div>
+				) : null}
+				<div data-slot="home-composer-container" className="relative flex flex-col bg-background">
+				{showEmptyConversation ? null : (
+					<div className="pointer-events-none absolute inset-x-0 bottom-full h-12 bg-gradient-to-b from-transparent to-background" />
 				)}
-			/>
+					<PromptEditor
+						placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
+						ariaLabel="Message your assistant"
+						value={agent.input}
+						expanded={false}
+						onValueChange={agent.setInput}
+						onPlanCommandChange={(active) => {
+							setPlanCommandActive(active);
+							agent.setInteractionMode(active ? 'plan' : 'default');
+						}}
+						onGoalCommandChange={setGoalCommandActive}
+						isLoading={agent.isLoading}
+						maxHeight={360}
+						onSubmit={() => void submitPrompt()}
+						textareaRef={agent.inputRef}
+						header={
+							agent.replyTo ? (
+								<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
+							) : undefined
+						}
+						leadingAction={
+							voiceMode === 'dictation' ? undefined : (
+								<AttachmentButton
+									disabled={attachmentDisabled}
+									onLibrarySelect={() => setLibraryPickerOpen(true)}
+								/>
+							)
+						}
+						voiceMode={voiceMode === 'dictation' ? voiceMode : null}
+						voiceElapsedMs={activeVoiceElapsedMs}
+						voiceMuted={activeVoiceMuted}
+						voiceMediaStream={activeVoiceStream}
+						voiceAnalyser={null}
+						voiceStatus={activeDictationMode === 'record' ? 'Recording' : 'Listening'}
+						voiceWaveformActive={true}
+						onVoiceMutedChange={activeVoiceSetMuted}
+						onVoiceCancel={() => void cancelDictation()}
+						onVoiceConfirm={() => void confirmDictation()}
+						onFilesChange={(files) => {
+							setAttachments((current) => [...current, ...filesToAttachments(files)]);
+						}}
+						wrapperClassName="max-w-none"
+						detachedControls
+						footerContent={
+							<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
+								<StableModel
+									messages={agent.chatState.messages}
+									draft={agent.input}
+									hasAttachments={attachments.length > 0}
+									onContext={setModelContext}
+								/>
+							</div>
+						}
+						className="w-full"
+						inputClassName={cn(
+							showEmptyConversation && 'min-h-[114px]',
+							planCommandActive && 'plan-prompt-frame',
+							goalCommandActive && 'goal-prompt-frame'
+						)}
+						trailingAction={
+							<PromptInputActions className="justify-end gap-1.5">
+								<VoiceButton
+									onVoiceModeRequest={() => void startDictation()}
+									disabled={voiceBusy || agent.isLoading}
+									disabledReason={voiceButtonDisabledReason}
+									mode={voiceButtonMode}
+								/>
+								<PromptSubmit isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
+							</PromptInputActions>
+						}
+					/>
+				</div>
+			</div>
 		</div>
 	);
 
@@ -338,7 +855,7 @@ function PageContent(): ReactElement {
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
-										voiceMode={mode === 'voice'}
+										voiceMode={voiceMode !== null}
 										activeAgentId={agent.chatState.activeAgentId}
 										onEdit={agent.editUserMessage}
 										onReply={agent.replyToMessage}
@@ -371,6 +888,11 @@ function PageContent(): ReactElement {
 					)}
 				</div>
 			</Split>
+			<LibraryPicker
+				open={libraryPickerOpen}
+				onOpenChange={setLibraryPickerOpen}
+				onSelect={addLibraryFiles}
+			/>
 		</PageContainer>
 	);
 }
