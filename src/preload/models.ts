@@ -19,7 +19,6 @@ import { normalizeSpeechSynthesisRequest } from '../shared/speech_types';
 import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../shared/realtime_voice';
 import { normalizeImageSource } from '../shared/image_types';
 import { optionalTrimmedString } from './normalize';
-import { normalizeAgentInputFiles } from '../shared/agent_files';
 
 function isSttRealtimeSessionId(value: unknown): value is string {
 	return typeof value === 'string' && value.trim().length > 0;
@@ -155,7 +154,6 @@ export const models: ModelsApi = {
 				...(modelId ? { modelId } : {}),
 				...(maxTokens ? { maxTokens } : {}),
 				...(request?.effort ? { effort: request.effort } : {}),
-				...(request?.files ? { files: normalizeAgentInputFiles(request.files) } : {}),
 			});
 		},
 		getProviderId: () => {
