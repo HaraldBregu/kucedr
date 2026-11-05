@@ -691,8 +691,8 @@ test('Workspace shows a slash hint in the focused empty paragraph', async () => 
 	});
 	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'paragraph-hint.md' }).click();
 	const editor = page.getByRole('textbox', { name: 'Markdown preview editor' });
-	await editor.click();
-	await page.keyboard.press('End');
+	await editor.locator('p').first().click();
+	await page.keyboard.press(process.platform === 'darwin' ? 'Meta+ArrowRight' : 'End');
 	await page.keyboard.press('Enter');
 	const paragraph = editor.locator('p.is-empty');
 	await expect(paragraph).toHaveAttribute('data-placeholder', 'Type / for options…');
