@@ -800,7 +800,7 @@ function PageContent(): ReactElement {
 									disabledReason={voiceButtonDisabledReason}
 									mode={voiceButtonMode}
 								/>
-								<SubmitButton isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
+								<PromptSubmit isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
 							</PromptInputActions>
 						}
 					/>
