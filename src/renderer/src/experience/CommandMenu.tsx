@@ -419,32 +419,6 @@ export function CommandMenu({
 			)),
 		},
 		{
-			category: 'skills',
-			items: skills.map((skill) => (
-				<ImageMenuItem
-					key={skill.id}
-					title={skill.manifest.name}
-					description={skill.manifest.description}
-					fallbackIcon={getSettingsRouteIcon('/settings/skills')}
-					onSelect={() =>
-						navigateTo(`/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`)
-					}
-				/>
-			)),
-		},
-		{
-			category: 'mcp',
-			items: mcpServers.map((server) => (
-				<ImageMenuItem
-					key={server.id}
-					title={server.data.name ?? server.id}
-					description={server.id}
-					fallbackIcon={getSettingsRouteIcon('/settings/mcp')}
-					onSelect={() => navigateTo(`/settings/mcp/${encodeURIComponent(server.id)}`)}
-				/>
-			)),
-		},
-		{
 			category: 'other',
 			items: otherItems.map((item) => (
 				<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
