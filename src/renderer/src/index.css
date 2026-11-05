@@ -727,7 +727,7 @@ input[type='range']:hover::-moz-range-thumb {
 .workspace-markdown-content li > p,
 .workspace-markdown-content li > :is(ul, ol) { margin: 0; }
 .workspace-markdown-content a { cursor: pointer; }
-.workspace-markdown-content [data-slot='inline-ai-composer'] :is(p, img) { margin: 0; }
+.workspace-markdown-content [data-slot='inline-ai-composer'] :is(p, img) { margin: 0; cursor: inherit; }
 
 .plan-prompt-frame {
 	position: relative;
