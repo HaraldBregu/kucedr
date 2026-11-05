@@ -199,6 +199,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 			const target = document.createElement('div');
 			target.contentEditable = 'false';
 			target.className = 'my-4 w-full';
+			target.dataset.position = String(editor.state.selection.$to.depth ? editor.state.selection.$to.after(1) : to);
 			setAiTarget(target);
 		}
 		if (instruction) generate(value);
@@ -219,13 +220,15 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate text.' } : null);
 		});
 	};
+	const inlineActive = Boolean(ai && !ai.autoApply);
 	useEffect(() => {
-		if (!aiTarget || !ai || ai.autoApply) return;
-		const selection = editor.state.doc.resolve(Math.min(ai.to, editor.state.doc.content.size));
-		const position = selection.depth ? selection.after(1) : selection.pos;
+		if (!aiTarget || !inlineActive) return;
+		const position = Number(aiTarget.dataset.position);
 		editor.registerPlugin(new Plugin({ key: inlineAiKey, props: { decorations(state) { return DecorationSet.create(state.doc, [Decoration.widget(Math.min(position, state.doc.content.size), aiTarget, { side: 1, stopEvent: () => true, ignoreSelection: true })]); } } }));
-		return () => { editor.unregisterPlugin(inlineAiKey); };
-	}, [editor, aiTarget, ai?.autoApply, ai?.to]);
+		const timer = setTimeout(() => aiTarget.querySelector<HTMLElement>('[contenteditable="true"]')?.focus(), 0);
+		return () => { clearTimeout(timer); editor.unregisterPlugin(inlineAiKey); };
+	}, [editor, aiTarget, inlineActive]);
+
 	const execute = (index: number): void => {
 		const command = commands[index];
 		if (!command || !slash) return;
@@ -265,6 +268,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 				{ai.result ? <div className="max-h-60 overflow-auto whitespace-pre-wrap text-sm">{ai.result}</div> : null}
 				<div className="flex justify-end gap-1"><Button type="button" variant="ghost" size="sm" onClick={() => { requestId.current++; setAi(null); editor.commands.focus(); }}>Discard</Button>{ai.result ? <Button type="button" size="sm" onClick={() => { if (JSON.stringify(editor.state.doc.toJSON()) !== ai.doc) { setAi({ ...ai, error: 'The document changed. Please start again.', result: '' }); return; } editor.chain().focus().insertContentAt({ from: ai.from, to: ai.to }, ai.result, { contentType: 'markdown' }).run(); setAi(null); }}>Apply</Button> : null}</div>
 			</div>, aiTarget) : null;
+	if (inlineActive) return <>{toolbar}{inlineAi}</>;
 	if ((!slash || !commands.length) && !selection && !linkOpen && (!ai || !ai.autoApply)) return <>{toolbar}{inlineAi}</>;
 	return (<>{toolbar}{inlineAi}
 		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
