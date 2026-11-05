@@ -182,7 +182,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 					const range = editor.view.dom.ownerDocument.getSelection();
 					if (range && range.rangeCount && !range.isCollapsed) return range.getRangeAt(0).getBoundingClientRect();
 				}
-				const pos = editor.view.coordsAtPos(slash?.to ?? editor.state.selection.from);
+				const pos = editor.view.coordsAtPos(Math.min(slash?.to ?? editor.state.selection.from, editor.state.doc.content.size));
 				return new DOMRect(pos.left, pos.top, pos.right - pos.left, pos.bottom - pos.top);
 			},
 		});
