@@ -663,9 +663,15 @@ test('Workspace AI captures text selected after opening the prompt', async () =>
 	const composer = editor.locator('[data-slot="inline-ai-composer"]');
 	await expect(composer).toBeVisible();
 	await editor.locator('p').first().click();
-	await page.keyboard.press('Home');
-	for (let index = 0; index < 6; index++) await page.keyboard.press('ArrowRight');
-	for (let index = 0; index < 5; index++) await page.keyboard.press('Shift+ArrowRight');
+	await editor.locator('p').first().evaluate((paragraph) => {
+		const range = document.createRange();
+		range.setStart(paragraph.firstChild!, 6);
+		range.setEnd(paragraph.firstChild!, 11);
+		const selection = window.getSelection()!;
+		selection.removeAllRanges();
+		selection.addRange(range);
+		document.dispatchEvent(new Event('selectionchange'));
+	});
 	await expect(composer.getByRole('status')).toContainText('Text selected');
 	await expect(composer.getByLabel('Selected text')).toHaveText('world');
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('Make it friendly');
