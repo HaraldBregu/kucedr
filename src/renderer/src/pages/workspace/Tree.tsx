@@ -71,7 +71,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 						}}>
 								<span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium uppercase">
 									<span className="group-hover/row:hidden group-focus-visible/row:hidden">{Array.from(entry.name)[0]}</span>
-									<ChevronRight className="hidden size-4 group-hover/row:block group-focus-visible/row:block group-open:rotate-90" strokeWidth={1.8} />
+									<ChevronRight className={`hidden size-4 group-hover/row:block group-focus-visible/row:block ${expanded || openDirectories.has(entry.path) ? 'rotate-90' : ''}`} strokeWidth={1.8} />
 								</span>
 								<span className="truncate" title={entry.path}>{entry.name}</span>
 							</summary>
