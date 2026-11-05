@@ -12,20 +12,20 @@
 				"type": "string",
 				"title": "Voice",
 				"default": "alloy",
-				"enum": [
-					"alloy",
-					"ash",
-					"ballad",
-					"coral",
-					"echo",
-					"fable",
-					"onyx",
-					"nova",
-					"sage",
-					"shimmer",
-					"verse",
-					"marin",
-					"cedar"
+				"oneOf": [
+					{ "const": "alloy", "title": "Alloy" },
+					{ "const": "ash", "title": "Ash" },
+					{ "const": "ballad", "title": "Ballad" },
+					{ "const": "coral", "title": "Coral" },
+					{ "const": "echo", "title": "Echo" },
+					{ "const": "fable", "title": "Fable" },
+					{ "const": "onyx", "title": "Onyx" },
+					{ "const": "nova", "title": "Nova" },
+					{ "const": "sage", "title": "Sage" },
+					{ "const": "shimmer", "title": "Shimmer" },
+					{ "const": "verse", "title": "Verse" },
+					{ "const": "marin", "title": "Marin" },
+					{ "const": "cedar", "title": "Cedar" }
 				]
 			},
 			"custom_voice_id": {
