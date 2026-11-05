@@ -371,11 +371,6 @@ function PageContent(): ReactElement {
 					)}
 				</div>
 			</Split>
-			<LibraryPicker
-				open={libraryPickerOpen}
-				onOpenChange={setLibraryPickerOpen}
-				onSelect={addLibraryFiles}
-			/>
 		</PageContainer>
 	);
 }
