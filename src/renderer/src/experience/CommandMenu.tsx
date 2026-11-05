@@ -29,7 +29,7 @@ import type { CatalogModel } from '@shared/model_types';
 import type { PluginInfo, PluginScriptInfo } from '@shared/plugin_types';
 import type { CatalogWebSearch } from '@shared/provider_types';
 
-const CATEGORIES = ['all', 'apps', 'plugins', 'services', 'scripts', 'models', 'other'] as const;
+const CATEGORIES = ['all', 'plugins', 'apps', 'scripts', 'models', 'other'] as const;
 type Category = (typeof CATEGORIES)[number];
 
 interface AppRouteItem {
