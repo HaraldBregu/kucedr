@@ -112,6 +112,7 @@ const tableActions: Action[] = [
 ];
 
 interface WorkspaceToolbarProps {
+	readonly path: string;
 	readonly toolbarTarget: HTMLElement | null;
 	readonly scrollbarWidth: number;
 	readonly editor: Editor;
