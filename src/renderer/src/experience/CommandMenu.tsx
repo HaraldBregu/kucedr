@@ -26,7 +26,7 @@ import { loadModelCatalog } from '@/pages/settings/pages/models/catalog';
 import { useOpenApp } from '@/hooks/app';
 import type { App } from '@shared/installed_app_types';
 import type { CatalogModel } from '@shared/model_types';
-import type { PluginInfo, PluginScriptInfo } from '@shared/plugin_types';
+import type { PluginInfo } from '@shared/plugin_types';
 
 const CATEGORIES = ['all', 'plugins', 'apps', 'models', 'other'] as const;
 type Category = (typeof CATEGORIES)[number];
