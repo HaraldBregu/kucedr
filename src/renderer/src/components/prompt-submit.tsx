@@ -7,9 +7,11 @@ import { PromptInputAction } from '@/components/ui/prompt-input';
 export function PromptSubmit({
 	isLoading,
 	onAction,
+	disabled,
 }: {
 	readonly isLoading: boolean;
 	readonly onAction: () => void;
+	readonly disabled?: boolean;
 }): ReactElement {
 	const label = isLoading ? 'Stop generation' : 'Send message';
 	const iconKey = isLoading ? 'stop' : 'send';
@@ -27,6 +29,7 @@ export function PromptSubmit({
 				size="icon"
 				className="size-9 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
 				aria-label={label}
+				disabled={disabled}
 				onClick={onAction}
 			>
 				<AnimatePresence mode="wait" initial={false}>
