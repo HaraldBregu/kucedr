@@ -255,12 +255,31 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		if (!value.prompt.trim()) return;
 		const id = ++requestId.current;
 		setAi({ ...value, loading: true, error: '', result: '' });
-		if (imageMode && !value.autoApply) {
-			void window.app.getWorkspaceImageModel().then(async ({ providerId, modelId }) => {
+		if (mode === 'voice' && !value.autoApply) {
+			void Promise.all([window.app.getWorkspaceVoiceModel(), window.app.getWorkspaceModelOptions()]).then(async ([{ providerId, modelId }, options]) => {
+				if (!providerId || !modelId) throw new Error('Select a workspace voice model first.');
+				if (requestId.current !== id) return;
+				const voice = modelChoice('text-to-speech', VOICE_INPUTS, providerId, modelId, options)?.value;
+				const result = await window.models.voice.synthesize({ text: value.prompt, providerId, modelId, voice });
+				if (requestId.current !== id) return;
+				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
+				const extension = result.mimeType === 'audio/mpeg' ? 'mp3' : result.mimeType.split('/')[1];
+				const src = await window.agent.importWorkspaceAsset(path, `voice.${extension}`, Uint8Array.from(atob(result.audio), (character) => character.charCodeAt(0)));
+				if (requestId.current !== id) return;
+				editor.chain().focus().insertContentAt(value.to, { type: 'image', attrs: { src, alt: 'Generated voice' } }).run();
+				setAi(null);
+			}).catch((error: unknown) => {
+				if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate voice.' } : null);
+			});
+			return;
+		}
+		if (mode === 'image' && !value.autoApply) {
+			void Promise.all([window.app.getWorkspaceImageModel(), window.app.getWorkspaceModelOptions()]).then(async ([{ providerId, modelId }, options]) => {
 				if (!providerId || !modelId) throw new Error('Select a workspace image model first.');
 				if (requestId.current !== id) return;
 				const prompt = value.text ? `${value.prompt}\n\nSelected text:\n${value.text}` : value.prompt;
-				const result = await window.models.image.createImage({ prompt, providerId, modelId, options: imageOptions[`${providerId}:${modelId}`] });
+				const ratio = modelChoice('text-to-image', RATIO_INPUTS, providerId, modelId, options);
+				const result = await window.models.image.createImage({ prompt, providerId, modelId, options: ratio ? { [ratio.name]: ratio.value } : undefined });
 				if (requestId.current !== id) return;
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
 				if (!result.path) throw new Error('Unable to save the generated image.');
