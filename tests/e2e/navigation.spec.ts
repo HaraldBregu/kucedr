@@ -577,7 +577,9 @@ test('Markdown editor offers selection formatting and searchable slash commands'
 	await expect(page.getByRole('toolbar', { name: 'Formatting', exact: true })).toHaveCount(0);
 	await page.keyboard.press('Home');
 	await page.keyboard.press('ArrowRight');
-	await page.keyboard.type('/quote');
+	await page.keyboard.type('/quotex');
+	await expect(page.getByRole('listbox', { name: 'Editor commands' })).toHaveCount(0);
+	await page.keyboard.press('Backspace');
 	await expect(page.getByRole('option', { name: 'Quote', exact: true })).toBeVisible();
 	await page.keyboard.press('Escape');
 	await expect(page.getByRole('listbox', { name: 'Editor commands' })).toHaveCount(0);

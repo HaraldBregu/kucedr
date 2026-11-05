@@ -174,7 +174,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		command.run();
 	};
 	useEffect(() => {
-		if (!slash) return;
+		if (!slash || !commands.length) return;
 		const keydown = (event: KeyboardEvent): void => {
 			if (!slash) return;
 			if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setDismissed(slash.from); setSlash(null); }
@@ -186,7 +186,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	if (!slash && !selection && !linkOpen) return <></>;
+	if ((!slash || !commands.length) && !selection && !linkOpen) return <></>;
 	return (
 		<div ref={setFloating} style={floatingStyles} className="z-50 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
 			{linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
@@ -199,7 +199,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 				<Button type="submit" size="sm">Apply</Button>
 				{state.link ? <Button type="button" variant="ghost" size="sm" onClick={() => { editor.chain().focus().extendMarkRange('link').unsetLink().run(); onLinkOpenChange(false); }}>Remove</Button> : null}
 			</form> : slash ? <div role="listbox" aria-label="Editor commands" className="max-h-72 w-64 overflow-auto">
-				{commands.length ? commands.map((command, index) => <button key={command.label} type="button" role="option" aria-selected={index === selected} className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm ${index === selected ? 'bg-accent text-accent-foreground' : ''}`} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setSelected(index)} onClick={() => execute(index)}><command.icon className="size-4" />{command.label}</button>) : <div className="px-2 py-3 text-sm text-muted-foreground">No commands found</div>}
+				{commands.map((command, index) => <button key={command.label} type="button" role="option" aria-selected={index === selected} className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm ${index === selected ? 'bg-accent text-accent-foreground' : ''}`} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setSelected(index)} onClick={() => execute(index)}><command.icon className="size-4" />{command.label}</button>)}
 			</div> : <div role="toolbar" aria-label="Selection formatting" className="flex items-center">
 				{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
 				<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} onMouseDown={(event) => event.preventDefault()} onClick={() => onLinkOpenChange(true)}><Link /></Button>
