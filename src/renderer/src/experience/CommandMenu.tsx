@@ -322,10 +322,6 @@ export function CommandMenu({
 			.list()
 			.then(setApps)
 			.catch(() => setApps([]));
-		void window.services
-			.list()
-			.then(setServices)
-			.catch(() => setServices([]));
 		void window.scripts
 			.list()
 			.then(setScripts)
