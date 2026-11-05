@@ -166,23 +166,26 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 			setSelection(!empty && editor.isFocused && !selecting);
 			if (start === null || start !== dismissed) setDismissed(null);
 		};
-		const startPointerSelection = (): void => { selecting = true; setSelection(false); };
+		const startPointerSelection = (event: PointerEvent): void => {
+			if (!editor.isInitialized || !(event.target instanceof Node) || !editor.view.dom.contains(event.target)) return;
+			cancelAnimationFrame(frame);
+			selecting = true;
+			setSelection(false);
+		};
 		const finishPointerSelection = (): void => {
 			if (!selecting) return;
 			selecting = false;
 			cancelAnimationFrame(frame);
 			frame = requestAnimationFrame(update);
 		};
-		const dom = editor.view.dom;
-		const ownerDocument = dom.ownerDocument;
-		dom.addEventListener('pointerdown', startPointerSelection);
-		ownerDocument.addEventListener('pointerup', finishPointerSelection);
-		ownerDocument.addEventListener('pointercancel', finishPointerSelection);
+		document.addEventListener('pointerdown', startPointerSelection);
+		document.addEventListener('pointerup', finishPointerSelection);
+		document.addEventListener('pointercancel', finishPointerSelection);
 		editor.on('transaction', update);
 		editor.on('focus', update);
 		editor.on('blur', update);
 		update();
-		return () => { cancelAnimationFrame(frame); dom.removeEventListener('pointerdown', startPointerSelection); ownerDocument.removeEventListener('pointerup', finishPointerSelection); ownerDocument.removeEventListener('pointercancel', finishPointerSelection); editor.off('transaction', update); editor.off('focus', update); editor.off('blur', update); };
+		return () => { cancelAnimationFrame(frame); document.removeEventListener('pointerdown', startPointerSelection); document.removeEventListener('pointerup', finishPointerSelection); document.removeEventListener('pointercancel', finishPointerSelection); editor.off('transaction', update); editor.off('focus', update); editor.off('blur', update); };
 	}, [editor, dismissed]);
 
 	useEffect(() => { if (!selection) setStylesOpen(false); }, [selection]);
