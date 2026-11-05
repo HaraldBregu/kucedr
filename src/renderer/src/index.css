@@ -589,6 +589,13 @@ input[type='range']:hover::-moz-range-thumb {
 	color: var(--muted-foreground);
 }
 
+.workspace-markdown-preview .workspace-selection {
+	background-color: var(--selection);
+	color: var(--selection-foreground);
+	padding-block: max(0px, calc((1lh - 1em) / 2));
+	box-decoration-break: clone;
+}
+
 .workspace-markdown-preview p {
 	margin: 0.5rem 0;
 }

@@ -79,7 +79,7 @@ export function WorkspaceMarkdownEditor({
 				},
 			}),
 			Placeholder.configure({ placeholder: 'Start writing, or paste an image…' }),
-			SelectionHighlight.configure({ className: 'bg-selection text-selection-foreground' }),
+			SelectionHighlight.configure({ className: 'workspace-selection' }),
 			Markdown.configure({ markedOptions: { gfm: true } }),
 			WorkspaceSearch.configure({ onMatchCount }),
 			Extension.create({
