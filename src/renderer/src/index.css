@@ -708,7 +708,6 @@ input[type='range']:hover::-moz-range-thumb {
 .workspace-markdown-content li > :is(ul, ol) { margin: 0; }
 .workspace-markdown-content a { cursor: pointer; }
 .workspace-markdown-content [data-slot='inline-ai-composer'] :is(p, img) { margin: 0; }
-.workspace-markdown-content [data-slot='inline-ai-composer'] img { display: inline; border-radius: 0; }
 
 .plan-prompt-frame {
 	position: relative;
