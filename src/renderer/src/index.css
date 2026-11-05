@@ -639,11 +639,11 @@ input[type='range']:hover::-moz-range-thumb {
 .workspace-markdown-preview img {
 	max-width: 100%;
 	height: auto;
+	border-radius: var(--radius-lg);
 }
 
 .workspace-markdown-preview img.ProseMirror-selectednode {
 	outline: 2px solid var(--ring);
-	border-radius: 0.25rem;
 }
 
 .workspace-markdown-preview :not(pre) > code {
