@@ -129,6 +129,7 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
 	const [imageMode, setImageMode] = useState(false);
 	const [imageOptions, setImageOptions] = useState<ImageOptions>({});
+	const [imageSelection, setImageSelection] = useState({ providerId: '', modelId: '' });
 	const requestId = useRef(0);
 	const streamId = useRef<string | null>(null);
 	useEffect(() => () => { requestId.current++; if (streamId.current) void window.models.text.cancelStream(streamId.current); }, []);
