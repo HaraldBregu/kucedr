@@ -105,7 +105,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState<number | null>(null);
 	const { byFence } = usePluginScripts();
-	const { refs, floatingStyles, update: updatePosition } = useFloating({ placement: slash ? 'bottom-start' : 'top', middleware: [offset(8), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
+	const { refs: { setReference, setFloating }, elements: { floating: floatingElement }, floatingStyles, update: updatePosition } = useFloating({ placement: slash ? 'bottom-start' : 'top', middleware: [offset(8), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
 	const state = useEditorState({ editor, selector: ({ editor: current }) => ({
 		active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
 		table: current.isActive('table'), link: current.isActive('link'), canUndo: current.can().undo(), canRedo: current.can().redo(),
@@ -140,10 +140,10 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	}, [editor, dismissed]);
 
 	useEffect(() => { setSelected(0); }, [slash?.query]);
-	useEffect(() => { refs.floating.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' }); }, [selected, refs.floating]);
+	useEffect(() => { floatingElement?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' }); }, [selected, floatingElement]);
 	useEffect(() => {
 		if (!slash && !selection && !linkOpen) return;
-		refs.setReference({
+		setReference({
 			contextElement: editor.view.dom,
 			getBoundingClientRect: () => {
 				if (!slash) {
@@ -155,7 +155,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 			},
 		});
 		void updatePosition();
-	}, [editor, slash, selection, linkOpen, refs, updatePosition]);
+	}, [editor, slash, selection, linkOpen, setReference, updatePosition]);
 	useEffect(() => { if (linkOpen) setHref(editor.getAttributes('link').href ?? ''); }, [editor, linkOpen]);
 
 	const execute = (index: number): void => {
@@ -179,7 +179,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 
 	if (!slash && !selection && !linkOpen) return <></>;
 	return (
-		<div ref={refs.setFloating} style={floatingStyles} className="z-50 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+		<div ref={setFloating} style={floatingStyles} className="z-50 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
 			{linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
 				event.preventDefault();
 				const chain = editor.chain().focus().extendMarkRange('link');
