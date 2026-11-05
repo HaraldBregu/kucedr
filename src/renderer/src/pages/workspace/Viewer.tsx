@@ -40,7 +40,7 @@ interface WorkspaceViewerProps {
 const TEXT_SIZES = [
 	{ size: 'extra-small', label: 'Extra small', zoom: 0.75 },
 	{ size: 'small', label: 'Small', zoom: 0.875 },
-	{ size: 'medium', label: 'Medium (default)', zoom: 1 },
+	{ size: 'medium', label: 'Medium', zoom: 1 },
 	{ size: 'large', label: 'Large', zoom: 1.25 },
 	{ size: 'extra-large', label: 'Extra large', zoom: 1.5 },
 ] as const;
