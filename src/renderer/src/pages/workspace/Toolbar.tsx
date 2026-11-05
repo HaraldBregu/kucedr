@@ -119,6 +119,7 @@ interface WorkspaceToolbarProps {
 export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
+	const [aiModel, setAiModel] = useState<{ providerId: string; modelId: string }>();
 	const requestId = useRef(0);
 	useEffect(() => () => { requestId.current++; }, []);
 	const [href, setHref] = useState('');
