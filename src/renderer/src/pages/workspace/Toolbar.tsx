@@ -254,9 +254,10 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 
 	const toolbar = toolbarTarget ? createPortal(<div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-start gap-2 px-5 py-1 sm:px-8 lg:px-12`}>
 		{[
+			{ title: 'History', labels: ['Undo', 'Redo'] },
 			{ title: 'Text', labels: groups[2].map((action) => action.label) },
 			{ title: 'Blocks', labels: groups[3].map((action) => action.label) },
-			{ title: 'Insert & tools', labels: allCommands.filter((command) => !scriptCommands.includes(command) && !groups.flat().some((action) => action.label === command.label) && !['Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label).concat(['Undo', 'Redo']) },
+			{ title: 'Insert & tools', labels: allCommands.filter((command) => !scriptCommands.includes(command) && !groups.flat().some((action) => action.label === command.label) && !['Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label) },
 		].map(({ title, labels }) => <section key={title} className="max-w-full shrink-0 border-r pr-2"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap items-center justify-start gap-0.5">{title === 'Text' ? <Select value={groups[1].find((action) => action.active && typeof action.active !== 'string' && editor.isActive(...action.active))?.label ?? 'Text'} onValueChange={(value) => {
 			if (value === 'Text') editor.chain().focus().setParagraph().run();
 			else groups[1].find((action) => action.label === value)?.run(editor.chain().focus()).run();
