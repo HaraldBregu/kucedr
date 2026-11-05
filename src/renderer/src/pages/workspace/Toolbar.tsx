@@ -19,6 +19,9 @@ import {
 	MoveHorizontal,
 	Search,
 	Sparkles,
+	SpellCheck,
+	Shrink,
+	Expand,
 	Globe,
 	Library,
 	Italic,
@@ -224,7 +227,7 @@ export function WorkspaceToolbar({ sidebarTarget, editor, linkOpen, onLinkOpenCh
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	const sidebar = sidebarTarget ? createPortal(<div className="space-y-3 border-t pt-4"><h3 className="font-medium">Editor actions</h3><div role="toolbar" aria-label="Editor actions" className="grid grid-cols-6 gap-1">{allCommands.filter((command) => command.label !== 'Find in file' && command.label !== 'Full width').map((command) => <Tooltip key={command.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={command.label} onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon /></Button>} /><TooltipContent>{command.label}</TooltipContent></Tooltip>)}</div><h3 className="font-medium">AI writing</h3><div role="toolbar" aria-label="AI writing" className="grid grid-cols-6 gap-1">{['Improve writing', 'Fix spelling and grammar', 'Make shorter', 'Make longer'].map((label) => <Tooltip key={label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={label} disabled={ai?.loading || editor.state.selection.empty} onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin" /> : <Sparkles />}</Button>} /><TooltipContent>{label}</TooltipContent></Tooltip>)}</div></div>, sidebarTarget) : null;
+	const sidebar = sidebarTarget ? createPortal(<div className="space-y-3 border-t pt-4"><h3 className="font-medium">Editor actions</h3><div role="toolbar" aria-label="Editor actions" className="grid grid-cols-6 gap-1">{allCommands.filter((command) => command.label !== 'Find in file' && command.label !== 'Full width').map((command) => <Tooltip key={command.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={command.label} onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon /></Button>} /><TooltipContent>{command.label}</TooltipContent></Tooltip>)}</div><h3 className="font-medium">AI writing</h3><div role="toolbar" aria-label="AI writing" className="grid grid-cols-6 gap-1">{[{ label: 'Improve writing', icon: Sparkles }, { label: 'Fix spelling and grammar', icon: SpellCheck }, { label: 'Make shorter', icon: Shrink }, { label: 'Make longer', icon: Expand }].map(({ label, icon: Icon }) => <Tooltip key={label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={label} disabled={ai?.loading || editor.state.selection.empty} onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin" /> : <Icon />}</Button>} /><TooltipContent>{label}</TooltipContent></Tooltip>)}</div></div>, sidebarTarget) : null;
 	if ((!slash || !commands.length) && !selection && !linkOpen && !ai) return <>{sidebar}</>;
 	return (<>{sidebar}
 		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
