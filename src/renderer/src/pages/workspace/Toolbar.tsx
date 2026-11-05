@@ -252,7 +252,8 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	const toolbar = toolbarTarget ? createPortal(<div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-start gap-2 px-5 py-2 sm:px-8 lg:px-12`}>
+	const toolbar = toolbarTarget ? createPortal(<div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-start px-5 py-2 sm:px-8 lg:px-12`}>
+		<div className="flex max-w-full flex-wrap items-center gap-2 rounded-lg border p-1">
 		{[
 			{ title: 'History', labels: ['Undo', 'Redo'] },
 			{ title: 'Text', labels: groups[2].map((action) => action.label) },
@@ -275,6 +276,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 				<DropdownMenuContent align="start">{[{ label: 'Edit with AI', icon: Sparkles }, { label: 'Improve writing', icon: Sparkles }, { label: 'Fix spelling and grammar', icon: SpellCheck }, { label: 'Make shorter', icon: Shrink }, { label: 'Make longer', icon: Expand }].map(({ label, icon: Icon }) => <DropdownMenuItem key={label} disabled={label !== 'Edit with AI' && editor.state.selection.empty} onSelect={() => openAi(label === 'Edit with AI' ? '' : label)}><Icon />{label}</DropdownMenuItem>)}</DropdownMenuContent>
 			</DropdownMenu>
 		</div></section>
+		</div>
 	</div>, toolbarTarget) : null;
 	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
 				<PromptEditor detachedControls ariaLabel="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={() => generate(ai)} disabled={ai.loading} isLoading={ai.loading} trailingAction={<Button type="button" size="icon-sm" aria-label="Generate" disabled={ai.loading || !ai.prompt.trim()} onClick={() => generate(ai)}><Sparkles /></Button>} />
