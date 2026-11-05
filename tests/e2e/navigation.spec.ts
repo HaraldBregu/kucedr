@@ -572,10 +572,16 @@ test('Workspace editor options share the file container and control its styles',
 
 test('Workspace slash AI opens a Home-style composer inline', async () => {
 	await app.evaluate(({ ipcMain }) => {
-		ipcMain.removeHandler('text:generate-text');
-		ipcMain.handle('text:generate-text', async () => ({ success: true, data: 'Generated paragraph' }));
+		ipcMain.removeHandler('text:stream-text');
+		ipcMain.handle('text:stream-text', async (event, id) => {
+			event.sender.send('text:delta', { id, delta: 'Generated' });
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			event.sender.send('text:delta', { id, delta: ' paragraph' });
+			return { success: true };
+		});
 	});
 	await page.evaluate(async () => {
+		await window.app.setWorkspaceModel({ providerId: 'openai', modelId: 'test-model' });
 		await window.agent.createWorkspaceFile('', 'inline-ai.md');
 		await window.agent.writeWorkspaceFile('inline-ai.md', 'Original text');
 		window.location.hash = '#/workspace';
@@ -590,10 +596,10 @@ test('Workspace slash AI opens a Home-style composer inline', async () => {
 	await expect(composer).toBeVisible();
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('Write a paragraph');
 	await composer.getByRole('button', { name: 'Generate', exact: true }).click();
-	await expect(composer).toContainText('Generated paragraph');
-	await composer.getByRole('button', { name: 'Apply', exact: true }).click();
-	await expect(composer).toHaveCount(0);
+	await expect(editor).toContainText('Generated');
+	await expect(composer).toBeVisible();
 	await expect(editor).toContainText('Generated paragraph');
+	await expect(composer).toHaveCount(0);
 });
 
 test('editing Markdown Preview keeps table and task content', async () => {
