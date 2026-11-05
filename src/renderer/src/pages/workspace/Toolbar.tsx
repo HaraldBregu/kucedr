@@ -205,6 +205,8 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		const text = editor.state.doc.textBetween(from, to, '\n');
 		const value = { from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false, autoApply: Boolean(instruction) };
 		setAi(value);
+		setAiAttachments([]);
+		setAiMode('chat');
 		if (!instruction) {
 			const target = document.createElement('div');
 			target.contentEditable = 'false';
