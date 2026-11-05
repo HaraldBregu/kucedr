@@ -68,13 +68,13 @@ function PromptEditor({
 			value={value}
 			{...props}
 		>
-			<PromptEditorArea
+			{hideEditor ? null : <PromptEditorArea
 				placeholder={placeholder}
 				ariaLabel={ariaLabel}
 				onVisualLineChange={autoExpand ? setHasMultipleVisualLines : undefined}
 				onPlanCommandChange={onPlanCommandChange}
 				onGoalCommandChange={onGoalCommandChange}
-			/>
+			/>}
 		</PromptInput>
 	);
 }
