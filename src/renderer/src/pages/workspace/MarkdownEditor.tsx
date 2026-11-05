@@ -219,7 +219,7 @@ export function WorkspaceMarkdownEditor({
 			<div ref={scrollRef} className="min-h-0 flex-1 overflow-auto" style={{ zoom }}>
 			<EditorContent
 				editor={editor}
-				className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} break-words px-5 pb-16 pt-20 text-[15px] leading-7 sm:px-8 lg:px-12`}
+				className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} break-words px-5 pb-16 pt-16 text-[15px] leading-7 sm:px-8 lg:px-12`}
 				onClick={(event) => {
 					const href = (event.target as HTMLElement).closest('a')?.getAttribute('href');
 					if (href) {
