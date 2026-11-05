@@ -369,22 +369,6 @@ export function CommandMenu({
 			)),
 		},
 		{
-			category: 'services',
-			items: services.map((service) => (
-				<ImageMenuItem
-					key={`${service.provider.id}/${service.id}`}
-					title={service.name}
-					description={service.provider.name}
-					fallbackIcon={getSettingsRouteIcon('/settings/services')}
-					onSelect={() =>
-						navigateTo(
-							`/settings/services/${encodeURIComponent(service.provider.id)}/${encodeURIComponent(service.id)}`
-						)
-					}
-				/>
-			)),
-		},
-		{
 			category: 'scripts',
 			items: scripts.map((script) => (
 				<ImageMenuItem
