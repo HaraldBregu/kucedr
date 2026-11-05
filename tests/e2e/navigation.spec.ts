@@ -538,17 +538,7 @@ test('Workspace editor options share the file container and control its styles',
 	await expect(details).toContainText('1 match');
 	await details.getByRole('button', { name: 'Close find' }).click();
 	await expect(details.getByRole('combobox', { name: 'Sidebar text size' })).toHaveCount(0);
-	const resizer = details.getByRole('separator', { name: 'Resize editor options' });
-	await resizer.focus();
-	await page.keyboard.press('ArrowLeft');
-	await expect(resizer).toHaveAttribute('aria-valuenow', '296');
-	const bounds = await resizer.boundingBox();
-	if (!bounds) throw new Error('Resize handle is not visible');
-	await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + 30);
-	await page.mouse.down();
-	await page.mouse.move(bounds.x - 40, bounds.y + 30);
-	await page.mouse.up();
-	await expect.poll(async () => Number(await resizer.getAttribute('aria-valuenow'))).toBeGreaterThan(296);
+	await expect(details.getByRole('separator', { name: 'Resize editor options' })).toHaveCount(0);
 	await expect(details.getByRole('heading', { name: 'View', exact: true })).toHaveCount(0);
 	const editor = content.getByRole('textbox', { name: 'Markdown preview editor' });
 	await editor.click();
