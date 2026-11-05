@@ -71,13 +71,13 @@ export default function WorkspacePage(): React.JSX.Element {
 		}
 	}} selectedPath={path} beforeEntryChange={() => flushRef.current?.() ?? Promise.resolve()} />;
 	const details = (
-		{detailsOpen ? <aside aria-label="Workspace details" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col overflow-auto border-l bg-background shadow-lg sm:relative sm:shrink-0 sm:shadow-none">
+		detailsOpen ? <aside aria-label="Workspace details" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col overflow-auto border-l bg-background shadow-lg sm:relative sm:shrink-0 sm:shadow-none">
 			<div className="flex items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-semibold">File details</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close file details" onClick={() => setDetailsOpen(false)}><X /></Button></div>
 			{selectedFile ? <div className="space-y-5 p-4 text-sm">
 				<div className="space-y-2"><h3 className="font-medium">Details</h3><dl className="space-y-2 text-muted-foreground"><div><dt className="text-xs">Name</dt><dd className="break-all text-foreground">{selectedFile.name}</dd></div><div><dt className="text-xs">Path</dt><dd className="break-all text-foreground">{selectedFile.path}</dd></div>{typeof selectedFile.size === 'number' ? <div><dt className="text-xs">Size</dt><dd className="text-foreground">{formatFileSize(selectedFile.size)}</dd></div> : null}{selectedFile.createdAt ? <div><dt className="text-xs">Created</dt><dd className="text-foreground">{new Date(selectedFile.createdAt).toLocaleString()}</dd></div> : null}{selectedFile.updatedAt ? <div><dt className="text-xs">Updated</dt><dd className="text-foreground">{new Date(selectedFile.updatedAt).toLocaleString()}</dd></div> : null}</dl></div>
 				<div className="space-y-3 border-t pt-4"><h3 className="font-medium">Styles</h3><label className="block space-y-1 text-xs text-muted-foreground"><span>Text size</span><Select value={textSize} onValueChange={(value) => { if (value) handleTextSizeChange(value); }}><SelectTrigger aria-label="Sidebar text size" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{(['extra-small', 'small', 'medium', 'large', 'extra-large'] as const).map((size) => <SelectItem key={size} value={size}>{size === 'medium' ? 'Medium (default)' : size.replace('-', ' ')}</SelectItem>)}</SelectContent></Select></label><Button type="button" variant="outline" size="sm" className="w-full justify-start" aria-pressed={wide} onClick={() => handleWideChange(!wide)}>Full width {wide ? 'on' : 'off'}</Button></div>
 			</div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see its details and options.</p>}
-		</aside> : null}
+		</aside> : null
 	);
 	const viewer = <WorkspaceViewer details={details} ref={flushRef} key={path} file={selectedFile} onFileSelect={selectFile} wide={wide} onWideChange={handleWideChange} textSize={textSize} onTextSizeChange={handleTextSizeChange} />;
 	return (
