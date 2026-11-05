@@ -9,43 +9,12 @@ import {
 	type ReactElement,
 } from 'react';
 import { resize } from 'motion/react';
-import {
-	AlertCircle,
-	FileAudioIcon,
-	FileCodeIcon,
-	FileImageIcon,
-	FileTextIcon,
-	Library,
-	Mic,
-	MonitorUp,
-	Info,
-	Plus,
-	TableIcon,
-	X,
-} from 'lucide-react';
+import { Info } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { LibraryFile } from '../../../../shared/library_types';
-import { workspaceFileType } from '../../../../shared/workspace';
 import { PageContainer, Split } from '@/components/app/base/page';
-import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-	Attachment,
-	AttachmentAction,
-	AttachmentActions,
-	AttachmentContent,
-	AttachmentDescription,
-	AttachmentGroup,
-	AttachmentMedia,
-	AttachmentTitle,
-} from '@/components/ui/attachment';
 import {
 	ChatContainerContent,
 	ChatContainerRoot,
