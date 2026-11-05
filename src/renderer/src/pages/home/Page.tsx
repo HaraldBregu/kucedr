@@ -197,10 +197,6 @@ function PageContent(): ReactElement {
 	}, [attachments, attachmentsSessionId, chatSessionId]);
 	const [planCommandActive, setPlanCommandActive] = useState(false);
 	const [goalCommandActive, setGoalCommandActive] = useState(false);
-	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
-	const [libraryDropError, setLibraryDropError] = useState(false);
-	const [transcribingRecording, setTranscribingRecording] = useState(false);
-	const transcriptionRunRef = useRef(0);
 	const visibleMessages = useMemo(
 		() => agent.chatState.messages.filter((message) => message.id !== welcomeMessage.id),
 		[agent.chatState.messages]
