@@ -134,7 +134,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 	}) });
 	const scriptCommands = [...byFence].map(([, script]) => ({ label: script.title, icon: FileBox, run: () => onInsertScript(script) }));
 	const allCommands = [
-		...groups.flat().filter((action) => !((action.label === 'Undo' && !state.canUndo) || (action.label === 'Redo' && !state.canRedo))).map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })),
+		...groups.flat().map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })),
 		...(state.table ? tableActions.map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })) : []),
 		{ label: 'Edit with AI', icon: Sparkles, run: () => openAi() },
 		{ label: 'Link', icon: Link, run: () => onLinkOpenChange(true) },
@@ -145,7 +145,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		{ label: 'Find in file', icon: Search, run: onFind },
 		{ label: 'Full width', icon: MoveHorizontal, run: () => onWideChange(!wide) },
 	];
-	const commands = allCommands.filter((command) => command.label.toLowerCase().includes(slash?.query.toLowerCase() ?? ''));
+	const commands = allCommands.filter((command) => !((command.label === 'Undo' && !state.canUndo) || (command.label === 'Redo' && !state.canRedo)) && command.label.toLowerCase().includes(slash?.query.toLowerCase() ?? ''));
 
 	useEffect(() => {
 		const update = (): void => {
@@ -259,7 +259,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		].map(({ title, labels }) => <section key={title} className="max-w-full shrink-0 border-r pr-2"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap items-center justify-start gap-0.5">{allCommands.filter((command) => !scriptCommands.includes(command) && labels.includes(command.label)).map((command) => {
 			const action = groups.flat().find((item) => item.label === command.label);
 			const active = action?.active ? typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active) : false;
-			return <Tooltip key={command.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={command.label} aria-pressed={action?.active ? active : undefined} className={active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon /></Button>} /><TooltipContent>{command.label}</TooltipContent></Tooltip>;
+			return <Tooltip key={command.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={command.label} disabled={(command.label === 'Undo' && !state.canUndo) || (command.label === 'Redo' && !state.canRedo)} aria-pressed={action?.active ? active : undefined} className={active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon /></Button>} /><TooltipContent>{command.label}</TooltipContent></Tooltip>;
 		})}{title === 'Insert & tools' && scriptCommands.length > 0 ? <DropdownMenu>
 			<DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon-sm" aria-label="Insert script" className="text-muted-foreground hover:text-foreground" onMouseDown={(event) => event.preventDefault()}><FileBox /></Button></DropdownMenuTrigger>
 			<DropdownMenuContent align="start">{[...byFence].map(([fence, script]) => <DropdownMenuItem key={fence} onSelect={() => onInsertScript(script)}>{script.title}</DropdownMenuItem>)}</DropdownMenuContent>
