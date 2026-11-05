@@ -188,6 +188,18 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		return () => { cancelAnimationFrame(frame); document.removeEventListener('pointerdown', startPointerSelection); document.removeEventListener('pointerup', finishPointerSelection); document.removeEventListener('pointercancel', finishPointerSelection); editor.off('transaction', update); editor.off('focus', update); editor.off('blur', update); };
 	}, [editor, dismissed]);
 
+	useEffect(() => {
+		const updateSelection = (): void => {
+			if (!editor.isFocused) return;
+			const { from, to } = editor.state.selection;
+			const text = editor.state.doc.textBetween(from, to, '\n');
+			const doc = JSON.stringify(editor.state.doc.toJSON());
+			setAi((current) => current && !current.loading && !current.autoApply ? { ...current, from, to, text, doc, error: '' } : current);
+		};
+		editor.on('selectionUpdate', updateSelection);
+		return () => { editor.off('selectionUpdate', updateSelection); };
+	}, [editor]);
+
 	useEffect(() => { if (!selection) setStylesOpen(false); }, [selection]);
 	useEffect(() => { setSelected(0); }, [slash?.query]);
 	useEffect(() => { floatingElement?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' }); }, [selected, floatingElement]);
@@ -336,7 +348,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		</div>
 	</div></div>, toolbarTarget) : null;
 	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
-				{ai.text ? <div className="max-h-24 overflow-auto whitespace-pre-wrap rounded-md border bg-muted/50 px-3 py-2 text-sm text-muted-foreground" aria-label="Selected text">{ai.text}</div> : null}
+				{ai.text ? <div className="rounded-md border bg-muted/50 px-3 py-2 text-sm text-muted-foreground" role="status"><div className="font-medium">Text selected</div><div className="max-h-24 overflow-auto whitespace-pre-wrap" aria-label="Selected text">{ai.text}</div></div> : null}
 				<PromptEditor detachedControls expanded={false} ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={submitAi} isLoading={ai.loading} maxHeight={360} wrapperClassName="max-w-none" className="w-full" footerContent={<div className="flex min-w-0 items-center text-[11px] text-muted-foreground"><Model workspace /></div>} trailingAction={<PromptInputActions className="justify-end gap-1.5"><PromptSubmit isLoading={ai.loading} onAction={submitAi} /></PromptInputActions>} />
 				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
