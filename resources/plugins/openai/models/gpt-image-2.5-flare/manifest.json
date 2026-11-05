@@ -11,8 +11,21 @@
 		"inputs": {
 			"size": {
 				"type": "string",
+				"title": "Aspect ratio",
 				"default": "auto",
-				"description": "WIDTHxHEIGHT or auto; multiples of 16, aspect ratio 1:3 to 3:1, edges at most 3840, 655360 to 8294400 pixels."
+				"description": "WIDTHxHEIGHT or auto; multiples of 16, aspect ratio 1:3 to 3:1, edges at most 3840, 655360 to 8294400 pixels.",
+				"oneOf": [
+					{ "const": "auto", "title": "Auto" },
+					{ "const": "1024x1024", "title": "1:1" },
+					{ "const": "1536x1024", "title": "3:2" },
+					{ "const": "1024x1536", "title": "2:3" },
+					{ "const": "1408x1056", "title": "4:3" },
+					{ "const": "1056x1408", "title": "3:4" },
+					{ "const": "1536x864", "title": "16:9" },
+					{ "const": "864x1536", "title": "9:16" },
+					{ "const": "1792x768", "title": "21:9" },
+					{ "const": "768x1792", "title": "9:21" }
+				]
 			},
 			"quality": {
 				"type": "string",
