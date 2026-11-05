@@ -103,6 +103,7 @@ const tableActions: Action[] = [
 
 interface WorkspaceToolbarProps {
 	readonly toolbarTarget: HTMLElement | null;
+	readonly scrollbarWidth: number;
 	readonly editor: Editor;
 	readonly linkOpen: boolean;
 	readonly onLinkOpenChange: (open: boolean) => void;
@@ -115,7 +116,7 @@ interface WorkspaceToolbarProps {
 	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
 	const requestId = useRef(0);
@@ -252,7 +253,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	const toolbar = toolbarTarget ? createPortal(<div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-start px-5 py-2 sm:px-8 lg:px-12`}>
+	const toolbar = toolbarTarget ? createPortal(<div style={{ paddingRight: scrollbarWidth }}><div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-start px-5 py-2 sm:px-8 lg:px-12`}>
 		<div className="flex w-full flex-wrap items-center gap-2 rounded-lg border p-1">
 		{[
 			{ title: 'History', labels: ['Undo', 'Redo'] },
@@ -277,7 +278,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 			</DropdownMenu>
 		</div></section>
 		</div>
-	</div>, toolbarTarget) : null;
+	</div></div>, toolbarTarget) : null;
 	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
 				<PromptEditor detachedControls ariaLabel="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={() => generate(ai)} disabled={ai.loading} isLoading={ai.loading} trailingAction={<Button type="button" size="icon-sm" aria-label="Generate" disabled={ai.loading || !ai.prompt.trim()} onClick={() => generate(ai)}><Sparkles /></Button>} />
 				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}

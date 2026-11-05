@@ -54,6 +54,7 @@ export function WorkspaceMarkdownEditor({
 	onMatchCount,
 	ref,
 }: WorkspaceMarkdownEditorProps): React.JSX.Element {
+	const [scrollbarWidth, setScrollbarWidth] = useState(0);
 	const [linkOpen, setLinkOpen] = useState(false);
 	const [libraryOpen, setLibraryOpen] = useState(false);
 	const [urlOpen, setUrlOpen] = useState(false);
@@ -103,12 +104,12 @@ export function WorkspaceMarkdownEditor({
 	useEffect(() => {
 		const scroll = scrollRef.current;
 		if (!scroll || !toolbarTarget) return;
-		const update = (): void => { toolbarTarget.style.paddingRight = `${scroll.offsetWidth - scroll.clientWidth}px`; };
+		const update = (): void => { setScrollbarWidth(scroll.offsetWidth - scroll.clientWidth); };
 		const observer = new ResizeObserver(update);
 		observer.observe(scroll);
 		observer.observe(editor.view.dom);
 		update();
-		return () => { observer.disconnect(); toolbarTarget.style.paddingRight = ''; };
+		return () => observer.disconnect();
 	}, [editor, toolbarTarget, zoom]);
 
 	useImperativeHandle(ref, () => {
@@ -228,7 +229,7 @@ export function WorkspaceMarkdownEditor({
 				}}
 			/>
 			</div>
-			<WorkspaceToolbar toolbarTarget={toolbarTarget} editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
+			<WorkspaceToolbar scrollbarWidth={scrollbarWidth} toolbarTarget={toolbarTarget} editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
 			<WorkspaceOutline editor={editor} container={scrollRef} />
 			</div>
 		</div>
