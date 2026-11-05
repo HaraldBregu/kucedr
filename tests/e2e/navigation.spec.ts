@@ -520,6 +520,29 @@ test('Workspace releases its mounted UI before navigating from Home to Settings'
 	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
 });
 
+test('Workspace file details sidebar shares the file container and controls its styles', async () => {
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceFile('', 'details-test.md');
+		await window.agent.writeWorkspaceFile('details-test.md', 'Workspace details test');
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'details-test.md' }).click();
+	const content = page.locator('[data-slot="workspace-content"]');
+	await page.getByRole('button', { name: 'File details', exact: true }).click();
+	const details = content.getByRole('complementary', { name: 'Workspace details' });
+	await expect(details).toBeVisible();
+	await expect(details).toContainText('details-test.md');
+	await expect(content.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
+	await expect(content.getByRole('contentinfo', { name: 'File information' })).toBeVisible();
+	await details.getByRole('button', { name: /Full width/ }).click();
+	await expect(details.getByRole('button', { name: /Full width/ })).toHaveAttribute('aria-pressed', 'true');
+	await details.getByRole('button', { name: /Full width/ }).click();
+	await details.getByRole('button', { name: 'Close file details' }).click();
+	await expect(details).toHaveCount(0);
+	await page.evaluate(() => { window.location.hash = '#/home'; });
+	await expect(page.getByRole('button', { name: 'File details', exact: true })).toHaveCount(0);
+});
+
 test('editing Markdown Preview keeps table and task content', async () => {
 	const markdown = '# Notes\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n- [x] Done';
 	await page.evaluate(async (content) => {
