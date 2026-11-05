@@ -239,8 +239,11 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 				<Input autoFocus aria-label="Link URL" placeholder="https://" value={href} className="h-8 text-sm" onChange={(event) => setHref(event.target.value)} />
 				<Button type="submit" size="sm">Apply</Button>
 				{state.link ? <Button type="button" variant="ghost" size="sm" onClick={() => { editor.chain().focus().extendMarkRange('link').unsetLink().run(); onLinkOpenChange(false); }}>Remove</Button> : null}
-			</form> : slash ? <div role="listbox" aria-label="Editor commands" className="max-h-72 w-64 overflow-auto">
+			</form> : slash ? <div className="flex w-64 flex-col">
+				<div role="listbox" aria-label="Editor commands" className="max-h-72 min-h-0 overflow-auto">
 				{commands.map((command, index) => <button key={command.label} type="button" role="option" aria-selected={index === selected} className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm ${index === selected ? 'bg-accent text-accent-foreground' : ''}`} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setSelected(index)} onClick={() => execute(index)}><command.icon className="size-4" />{command.label}</button>)}
+				</div>
+				<div className="mt-1 flex shrink-0 items-center justify-between gap-2 border-t px-2 pb-1 pt-2 text-[11px] text-muted-foreground"><span>↑↓ Navigate</span><span>↵ Select</span><span>Esc Close</span></div>
 			</div> : <div role="toolbar" aria-label="Selection formatting" className="flex flex-col gap-1">
 				<Button ref={setStyleReference} type="button" variant="ghost" size="sm" className="h-8 w-full justify-start gap-1.5 rounded-lg px-2 text-xs font-medium" aria-label="Text style" aria-expanded={stylesOpen} aria-haspopup="menu" onMouseDown={(event) => event.preventDefault()} onClick={() => setStylesOpen(!stylesOpen)}>
 					<Type className="size-4 text-muted-foreground" />
