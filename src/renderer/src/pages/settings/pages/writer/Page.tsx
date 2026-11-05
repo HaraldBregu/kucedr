@@ -35,7 +35,10 @@ export default function WriterPage(): React.JSX.Element {
 			<SettingsPageHeader title={t('settings.writer.title')} description={t('settings.writer.description')} />
 			<SettingsPanel>
 				<SettingsRow title={t('settings.writer.model')} description={t('settings.writer.modelDescription')} actionClassName="w-auto justify-end" actions={<Model workspace />} />
-				<SettingsRow title={t('settings.writer.imageModel')} description={t('settings.writer.imageModelDescription')} actionClassName="w-auto justify-end" actions={<ImageModel />} />
+				<SettingsRow title={t('settings.writer.imageModel')} description={t('settings.writer.imageModelDescription')} actionClassName="w-auto justify-end" actions={<MediaModel kind="image" onSelectionChange={setImageSelection} />} />
+				<SettingsRow title={t('settings.writer.aspectRatio')} description={t('settings.writer.aspectRatioDescription')} actionClassName="w-auto justify-end" actions={<Option capability="text-to-image" names={['aspect_ratio', 'size']} label={t('settings.writer.aspectRatio')} {...imageSelection} />} />
+				<SettingsRow title={t('settings.writer.voiceModel')} description={t('settings.writer.voiceModelDescription')} actionClassName="w-auto justify-end" actions={<MediaModel kind="voice" onSelectionChange={setVoiceSelection} />} />
+				<SettingsRow title={t('settings.writer.voice')} description={t('settings.writer.voiceDescription')} actionClassName="w-auto justify-end" actions={<Option capability="text-to-speech" names={['voice', 'voice_id']} label={t('settings.writer.voice')} {...voiceSelection} />} />
 				<SettingsRow title={t('settings.writer.wide')} description={t('settings.writer.wideDescription')} actionClassName="w-auto justify-end" actions={<Switch aria-label={t('settings.writer.wide')} disabled={!loaded} checked={wide} onCheckedChange={(next) => { setWide(next); void window.app.setWorkspaceWideContent(next); }} />} />
 				<SettingsRow title={t('settings.writer.textSize')} description={t('settings.writer.textSizeDescription')} actionClassName="w-auto justify-end" actions={
 					<Select value={size} disabled={!loaded} onValueChange={(next) => { if (next) { setSize(next); void window.app.setWorkspaceTextSize(next); } }}>
