@@ -10,16 +10,57 @@
 		"inputs": {
 			"voice_id": {
 				"type": "string",
-				"default": "eve"
+				"title": "Voice",
+				"default": "eve",
+				"oneOf": [
+					{ "const": "eve", "title": "Eve" },
+					{ "const": "ara", "title": "Ara" },
+					{ "const": "rex", "title": "Rex" },
+					{ "const": "sal", "title": "Sal" },
+					{ "const": "leo", "title": "Leo" }
+				]
 			},
 			"language": {
 				"type": "string",
-				"default": "auto"
+				"default": "auto",
+				"enum": [
+					"auto",
+					"en",
+					"ar-EG",
+					"ar-SA",
+					"ar-AE",
+					"bn",
+					"zh",
+					"fr",
+					"de",
+					"hi",
+					"id",
+					"it",
+					"ja",
+					"ko",
+					"pt-BR",
+					"pt-PT",
+					"ru",
+					"es-MX",
+					"es-ES",
+					"tr",
+					"vi"
+				]
 			},
 			"speed": {
 				"type": "number",
 				"minimum": 0.7,
-				"maximum": 1.5
+				"maximum": 1.5,
+				"default": 1
+			},
+			"optimize_streaming_latency": {
+				"type": "integer",
+				"default": 0,
+				"enum": [
+					0,
+					1,
+					2
+				]
 			},
 			"output_format": {
 				"type": "object",
