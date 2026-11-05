@@ -21,6 +21,8 @@ export default function WriterPage(): React.JSX.Element {
 	const [wide, setWide] = useState(false);
 	const [size, setSize] = useState<WorkspaceTextSize>('medium');
 	const [loaded, setLoaded] = useState(false);
+	const [imageSelection, setImageSelection] = useState({ providerId: '', modelId: '' });
+	const [voiceSelection, setVoiceSelection] = useState({ providerId: '', modelId: '' });
 	useEffect(() => {
 		void Promise.all([window.app.getWorkspaceWideContent(), window.app.getWorkspaceTextSize()]).then(([nextWide, nextSize]) => {
 			setWide(nextWide);
