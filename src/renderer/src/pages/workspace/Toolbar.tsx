@@ -157,6 +157,14 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		void updatePosition();
 	}, [editor, slash, selection, linkOpen, setReference, updatePosition]);
 	useEffect(() => { if (linkOpen) setHref(editor.getAttributes('link').href ?? ''); }, [editor, linkOpen]);
+	useEffect(() => {
+		if (!linkOpen) return;
+		const dismiss = (event: PointerEvent): void => {
+			if (event.target instanceof Node && !floatingElement?.contains(event.target) && !editor.view.dom.contains(event.target)) onLinkOpenChange(false);
+		};
+		document.addEventListener('pointerdown', dismiss);
+		return () => document.removeEventListener('pointerdown', dismiss);
+	}, [editor, floatingElement, linkOpen, onLinkOpenChange]);
 
 	const execute = (index: number): void => {
 		const command = commands[index];
