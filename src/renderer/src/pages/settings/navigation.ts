@@ -8,7 +8,7 @@ import {
 	Code2,
 	FileCode,
 	Folder,
-	Galaxy,
+	FolderTree,
 	HeartPulse,
 	Settings,
 	Library,
@@ -326,7 +326,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/workspace',
 		labelKey: 'settings.workspace.title',
 		descriptionKey: 'settings.workspace.description',
-		icon: Galaxy,
+		icon: FolderTree,
 	},
 	{
 		path: '/settings/code',
