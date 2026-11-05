@@ -339,6 +339,20 @@ export function CommandMenu({
 			)),
 		},
 		{
+			category: 'plugins',
+			items: plugins.map((plugin) => (
+				<ImageMenuItem
+					key={plugin.id}
+					title={plugin.name}
+					description={plugin.description}
+					icon={plugin.icon}
+					iconDark={plugin.iconDark}
+					fallbackIcon={Puzzle}
+					onSelect={() => navigateTo(`/settings/plugins/${plugin.id}`)}
+				/>
+			)),
+		},
+		{
 			category: 'apps',
 			items: apps.map((app) => (
 				<ImageMenuItem
@@ -351,20 +365,6 @@ export function CommandMenu({
 						setOpen(false);
 						void openApp(app);
 					}}
-				/>
-			)),
-		},
-		{
-			category: 'plugins',
-			items: plugins.map((plugin) => (
-				<ImageMenuItem
-					key={plugin.id}
-					title={plugin.name}
-					description={plugin.description}
-					icon={plugin.icon}
-					iconDark={plugin.iconDark}
-					fallbackIcon={Puzzle}
-					onSelect={() => navigateTo(`/settings/plugins/${plugin.id}`)}
 				/>
 			)),
 		},
