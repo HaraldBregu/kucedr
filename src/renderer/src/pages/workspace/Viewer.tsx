@@ -29,6 +29,7 @@ const WorkspaceMarkdownEditor = lazy(async () => {
 
 interface WorkspaceViewerProps {
 	readonly detailsOpen: boolean;
+	readonly onDetailsOpen: () => void;
 	readonly detailsWidth: number;
 	readonly onDetailsWidthChange: (width: number) => void;
 	readonly onDetailsClose: () => void;
@@ -49,7 +50,7 @@ const TEXT_SIZES = [
 	{ size: 'extra-large', label: 'Extra large', zoom: 1.5 },
 ] as const;
 
-export function WorkspaceViewer({ detailsOpen, detailsWidth, onDetailsWidthChange, onDetailsClose, file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
+export function WorkspaceViewer({ detailsOpen, onDetailsOpen, detailsWidth, onDetailsWidthChange, onDetailsClose, file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
@@ -89,6 +90,7 @@ export function WorkspaceViewer({ detailsOpen, detailsWidth, onDetailsWidthChang
 			editorRef.current?.wrapSelection(items.map(({ file: asset, src, image }) => `${image ? '!' : ''}[${asset.name.replace(/\.[^.]+$/, '')}](${src})`).join('\n\n'), '');
 		}).catch((cause: unknown) => setSaveError(cause instanceof Error ? cause.message : 'Unable to add file.'));
 	};
+	const openFind = (): void => { onDetailsOpen(); setFindOpen(true); };
 	const closeFind = (): void => {
 		setFindOpen(false);
 		setFindQuery('');
@@ -166,7 +168,7 @@ export function WorkspaceViewer({ detailsOpen, detailsWidth, onDetailsWidthChang
 			if (!searchable || !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'f') return;
 			event.preventDefault();
 			event.stopPropagation();
-			setFindOpen(true);
+			openFind();
 		}}>
 			<div className="relative flex min-h-0 min-w-0 flex-1">
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
@@ -175,34 +177,7 @@ export function WorkspaceViewer({ detailsOpen, detailsWidth, onDetailsWidthChang
 					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={() => setFindOpen(true)} />
 				</div>
 			) : null}
-			{searchable && findOpen ? (
-				<div className="flex shrink-0 flex-wrap items-center gap-1 border-b px-2 py-1 sm:px-3">
-						<div role="search" className="ml-auto flex min-w-0 flex-wrap items-center gap-1">
-							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-40" onChange={(event) => {
-								setFindQuery(event.target.value);
-								if (event.target.value) finder.current?.find(event.target.value, 'next');
-								else finder.current?.clearSearch();
-							}} onKeyDown={(event) => {
-								if (event.key === 'Escape') closeFind();
-								if (event.key === 'Enter') finder.current?.find(findQuery, event.shiftKey ? 'previous' : 'next');
-							}} />
-							<span aria-live="polite" className="shrink-0 text-[11px] text-muted-foreground">{findQuery ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'Find'}</span>
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Previous match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'previous')}><ChevronUp /></Button>
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'next')}><ChevronDown /></Button>
-							{kind === 'markdown' ? (
-								<>
-									<Input aria-label="Replace with" placeholder="Replace" value={replaceText} className="h-7 w-24 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-32" onChange={(event) => setReplaceText(event.target.value)} onKeyDown={(event) => {
-										if (event.key === 'Escape') closeFind();
-										if (event.key === 'Enter') finder.current?.replace(findQuery, replaceText, event.metaKey || event.ctrlKey);
-									}} />
-									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, false)}>Replace</Button>
-									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, true)}>All</Button>
-								</>
-							) : null}
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Close find" onClick={closeFind}><X /></Button>
-						</div>
-				</div>
-			) : null}
+
 			{!file ? (
 				<div className="flex flex-1 items-center justify-center px-6 text-center text-sm text-muted-foreground">
 					{t('workspaceSidebar.noSelection', 'Choose a file to view it here.')}
@@ -254,7 +229,34 @@ export function WorkspaceViewer({ detailsOpen, detailsWidth, onDetailsWidthChang
 			{detailsOpen ? <aside aria-label="Workspace editor options" style={{ width: detailsWidth }} className="absolute inset-y-0 right-0 z-20 flex max-w-full flex-col border-l bg-background shadow-lg sm:relative sm:max-w-[50%] sm:shrink-0 sm:shadow-none">
 				<button type="button" role="separator" aria-label="Resize editor options" aria-orientation="vertical" aria-valuemin={224} aria-valuemax={560} aria-valuenow={detailsWidth} className="absolute inset-y-0 -left-1.5 z-20 hidden w-3 cursor-col-resize touch-none outline-none after:absolute after:inset-y-0 after:left-1/2 after:w-px hover:after:bg-border focus-visible:after:bg-ring sm:block" onKeyDown={(event) => { const next = event.key === 'ArrowLeft' ? detailsWidth + 8 : event.key === 'ArrowRight' ? detailsWidth - 8 : event.key === 'Home' ? 224 : event.key === 'End' ? 560 : null; if (next !== null) { event.preventDefault(); onDetailsWidthChange(Math.max(224, Math.min(560, next))); } }} onPointerDown={(event) => { if (event.button !== 0) return; event.preventDefault(); resizeStart.current = { x: event.clientX, width: detailsWidth }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (resizeStart.current) onDetailsWidthChange(Math.max(224, Math.min(560, resizeStart.current.width + resizeStart.current.x - event.clientX))); }} onPointerUp={() => { resizeStart.current = null; }} onPointerCancel={() => { resizeStart.current = null; }} />
 				<div className="flex items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-semibold">Editor options</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
-				{file ? <div className="min-h-0 flex-1 space-y-4 overflow-auto p-4 text-sm"><h3 className="font-medium">Styles</h3>{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start" onClick={() => setFindOpen(true)}>Find in file</Button> : null}<div ref={setSidebarTarget} /></div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
+				{file ? <div className="min-h-0 flex-1 space-y-4 overflow-auto p-4 text-sm"><h3 className="font-medium">Styles</h3>{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start" onClick={() => setFindOpen(true)}>Find in file</Button> : null}			{searchable && findOpen ? (
+				<div className="flex flex-wrap items-center gap-1 border-b pb-2">
+						<div role="search" className="flex min-w-0 flex-wrap items-center gap-1">
+							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-40" onChange={(event) => {
+								setFindQuery(event.target.value);
+								if (event.target.value) finder.current?.find(event.target.value, 'next');
+								else finder.current?.clearSearch();
+							}} onKeyDown={(event) => {
+								if (event.key === 'Escape') closeFind();
+								if (event.key === 'Enter') finder.current?.find(findQuery, event.shiftKey ? 'previous' : 'next');
+							}} />
+							<span aria-live="polite" className="shrink-0 text-[11px] text-muted-foreground">{findQuery ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'Find'}</span>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Previous match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'previous')}><ChevronUp /></Button>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'next')}><ChevronDown /></Button>
+							{kind === 'markdown' ? (
+								<>
+									<Input aria-label="Replace with" placeholder="Replace" value={replaceText} className="h-7 w-24 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-32" onChange={(event) => setReplaceText(event.target.value)} onKeyDown={(event) => {
+										if (event.key === 'Escape') closeFind();
+										if (event.key === 'Enter') finder.current?.replace(findQuery, replaceText, event.metaKey || event.ctrlKey);
+									}} />
+									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, false)}>Replace</Button>
+									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, true)}>All</Button>
+								</>
+							) : null}
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Close find" onClick={closeFind}><X /></Button>
+						</div>
+				</div>
+			) : null}<div ref={setSidebarTarget} /></div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
 			</aside> : null}
 			</div>
 			{file ? (
