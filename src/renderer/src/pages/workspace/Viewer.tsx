@@ -202,7 +202,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, detailsWidth, onDe
 				<iframe title={file.name} src={mediaUrl?.toString()} className="min-h-0 flex-1" />
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' && content.includes('<!--') ? (
 				<div className="min-h-0 flex-1 overflow-auto" style={{ zoom }}>
-					<article className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} px-5 pb-16 pt-12 text-[15px] leading-7 sm:px-8 lg:px-12`}>
+					<article className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} px-5 pb-16 pt-16 text-[15px] leading-7 sm:px-8 lg:px-12`}>
 						<p className="mb-3 text-xs text-muted-foreground">{t('workspaceSidebar.commentSourceOnly', 'This file contains Markdown comments. Edit it in Source to preserve them.')}</p>
 						<Markdown className="w-full break-words" components={{ ...markdownComponents, img: ({ src, alt }) => <img src={typeof src === 'string' ? workspaceResourceUrl(file.path, src) : undefined} alt={alt ?? ''} /> }}>{content}</Markdown>
 					</article>
@@ -220,7 +220,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, detailsWidth, onDe
 			) : (
 				<div className="min-h-0 flex-1 overflow-auto" style={{ zoom }}>
 					{kind === 'markdown' ? (
-						<article className={`relative mx-auto flex min-h-full w-full ${wide ? '' : 'max-w-[920px]'} flex-col px-5 pb-12 pt-12 sm:px-8 lg:px-12`} onPasteCapture={(event) => pasteRawAssets(event, event.clipboardData.files)} onDropCapture={(event) => pasteRawAssets(event, event.dataTransfer.files)}>{codeEditor}</article>
+						<article className={`relative mx-auto flex min-h-full w-full ${wide ? '' : 'max-w-[920px]'} flex-col px-5 pb-12 pt-16 sm:px-8 lg:px-12`} onPasteCapture={(event) => pasteRawAssets(event, event.clipboardData.files)} onDropCapture={(event) => pasteRawAssets(event, event.dataTransfer.files)}>{codeEditor}</article>
 					) : codeEditor}
 				</div>
 			)}
