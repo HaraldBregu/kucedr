@@ -10,6 +10,8 @@ import { Markdown } from '@tiptap/markdown';
 import { NodeSelection, Selection, TextSelection } from '@tiptap/pm/state';
 import { EditorContent, ReactNodeViewRenderer, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { workspaceFileType } from '@shared/workspace';
+import { libraryFileUrl } from '@/pages/settings/pages/library/url';
 import { importWorkspaceAssets } from './Assets';
 import { WorkspaceCodeBlock } from './CodeBlock';
 import type { CodeMirrorEditorHandle } from './Editor';
