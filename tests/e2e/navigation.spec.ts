@@ -631,7 +631,7 @@ test('Workspace AI uses and replaces selected text', async () => {
 	for (let index = 0; index < 5; index++) await page.keyboard.press('Shift+ArrowRight');
 	await page.getByRole('toolbar', { name: 'Selection formatting' }).getByRole('button', { name: 'Edit with AI' }).click();
 	const composer = editor.locator('[data-slot="inline-ai-composer"]');
-	await expect(composer.getByLabel('Selected text')).toHaveText('world');
+	await expect(composer.getByRole('status')).toHaveText('Selected 7–12');
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('Make it friendly');
 	await composer.getByRole('button', { name: 'Send message', exact: true }).click();
 	await expect(editor).toContainText('Hello friend today');
@@ -672,10 +672,9 @@ test('Workspace AI captures text selected after opening the prompt', async () =>
 		selection.addRange(range);
 		document.dispatchEvent(new Event('selectionchange'));
 	});
-	await expect(composer.getByRole('status')).toContainText('Text selected');
-	await expect(composer.getByLabel('Selected text')).toHaveText('world');
+		await expect(composer.getByRole('status')).toHaveText('Selected 7–12');
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('Make it friendly');
-	await expect(composer.getByLabel('Selected text')).toHaveText('world');
+	await expect(composer.getByRole('status')).toHaveText('Selected 7–12');
 	await composer.getByRole('button', { name: 'Send message', exact: true }).click();
 	await expect(composer).toHaveCount(0);
 	await expect(editor).toHaveText('Hello friends today');
