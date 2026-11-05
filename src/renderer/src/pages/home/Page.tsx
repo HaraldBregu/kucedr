@@ -163,7 +163,7 @@ function PageContent(): ReactElement {
 			window.removeEventListener('kucedr:focus-chat-input', close);
 			window.removeEventListener('kucedr:show-chat', show);
 		};
-	}, [updateMode]);
+	}, [setMode]);
 	const [attachmentsSessionId, setAttachmentsSessionId] = useState<string | null>(null);
 	useEffect(() => {
 		let active = true;
