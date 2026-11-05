@@ -520,7 +520,7 @@ test('Workspace releases its mounted UI before navigating from Home to Settings'
 	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
 });
 
-test('Workspace file details sidebar shares the file container and controls its styles', async () => {
+test('Workspace editor options share the file container and control its styles', async () => {
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceFile('', 'details-test.md');
 		await window.agent.writeWorkspaceFile('details-test.md', 'Workspace details test');
@@ -533,7 +533,7 @@ test('Workspace file details sidebar shares the file container and controls its 
 	await expect(details).toBeVisible();
 	await expect(details).toContainText('Styles');
 	await expect(content.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
-	await expect(content.getByRole('contentinfo', { name: 'File information' })).toBeVisible();
+	await expect(content.locator('footer[aria-label="File information"]')).toBeVisible();
 	await details.getByRole('button', { name: /Full width/ }).click();
 	await expect(details.getByRole('button', { name: /Full width/ })).toHaveAttribute('aria-pressed', 'true');
 	await details.getByRole('button', { name: /Full width/ }).click();
