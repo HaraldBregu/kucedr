@@ -24,6 +24,7 @@ import type { PluginScriptInfo } from '../../../../shared/plugin_types';
 import { pluginScriptRef } from '../../../../shared/plugin_script_ref';
 
 interface WorkspaceMarkdownEditorProps {
+	readonly sidebarTarget: HTMLElement | null;
 	readonly path: string;
 	readonly value: string;
 	readonly onChange: (value: string) => void;
@@ -39,6 +40,7 @@ interface WorkspaceMarkdownEditorProps {
 }
 
 export function WorkspaceMarkdownEditor({
+	sidebarTarget,
 	path,
 	value,
 	onChange,
@@ -215,7 +217,7 @@ export function WorkspaceMarkdownEditor({
 				}}
 			/>
 			</div>
-			<WorkspaceToolbar editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
+			<WorkspaceToolbar sidebarTarget={sidebarTarget} editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
 			<WorkspaceOutline editor={editor} container={scrollRef} />
 			</div>
 		</div>

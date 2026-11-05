@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import type { ChainedCommands, Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
@@ -91,6 +92,7 @@ const tableActions: Action[] = [
 ];
 
 interface WorkspaceToolbarProps {
+	readonly sidebarTarget: HTMLElement | null;
 	readonly editor: Editor;
 	readonly linkOpen: boolean;
 	readonly onLinkOpenChange: (open: boolean) => void;
@@ -103,7 +105,7 @@ interface WorkspaceToolbarProps {
 	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ sidebarTarget, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const requestId = useRef(0);
 	useEffect(() => () => { requestId.current++; }, []);
@@ -120,7 +122,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
 		table: current.isActive('table'), link: current.isActive('link'), canUndo: current.can().undo(), canRedo: current.can().redo(),
 	}) });
-	const commands = [
+	const allCommands = [
 		...groups.flat().filter((action) => !((action.label === 'Undo' && !state.canUndo) || (action.label === 'Redo' && !state.canRedo))).map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })),
 		...(state.table ? tableActions.map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })) : []),
 		{ label: 'Edit with AI', icon: Sparkles, run: () => openAi() },
@@ -131,7 +133,8 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		...[...byFence].map(([, script]) => ({ label: script.title, icon: FileBox, run: () => onInsertScript(script) })),
 		{ label: 'Find in file', icon: Search, run: onFind },
 		{ label: 'Full width', icon: MoveHorizontal, run: () => onWideChange(!wide) },
-	].filter((command) => command.label.toLowerCase().includes(slash?.query.toLowerCase() ?? ''));
+	];
+	const commands = allCommands.filter((command) => command.label.toLowerCase().includes(slash?.query.toLowerCase() ?? ''));
 
 	useEffect(() => {
 		const update = (): void => {
@@ -221,8 +224,9 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	if ((!slash || !commands.length) && !selection && !linkOpen && !ai) return <></>;
-	return (
+	const sidebar = sidebarTarget ? createPortal(<div className="space-y-4 border-t pt-4"><h3 className="font-medium">Editor actions</h3><div className="flex flex-col">{allCommands.map((command) => <Button key={command.label} type="button" variant="ghost" size="sm" className="justify-start gap-2" onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon />{command.label}</Button>)}</div><h3 className="font-medium">AI writing</h3><div className="flex flex-col">{['Improve writing', 'Fix spelling and grammar', 'Make shorter', 'Make longer'].map((label) => <Button key={label} type="button" variant="ghost" size="sm" className="justify-start gap-2" disabled={ai?.loading || editor.state.selection.empty} onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin" /> : <Sparkles />}{label}</Button>)}</div></div>, sidebarTarget) : null;
+	if ((!slash || !commands.length) && !selection && !linkOpen && !ai) return <>{sidebar}</>;
+	return (<>{sidebar}
 		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
 			{ai && !ai.autoApply ? <div className="w-80 space-y-2 p-2">
 				<form onSubmit={(event) => { event.preventDefault(); generate(ai); }} className="flex gap-1"><Input autoFocus disabled={ai.loading} aria-label="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onChange={(event) => setAi({ ...ai, prompt: event.target.value })} /><Button type="submit" size="sm" disabled={ai.loading || !ai.prompt.trim()}>Generate</Button></form>
@@ -270,6 +274,6 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 					{['Improve writing', 'Fix spelling and grammar', 'Make shorter', 'Make longer', 'Edit with AI'].map((label) => <Button key={label} type="button" variant="ghost" size="sm" className="h-8 justify-start gap-2 px-2" onMouseDown={(event) => event.preventDefault()} disabled={ai?.loading} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin text-muted-foreground" /> : <Sparkles className="text-muted-foreground" />}{label}</Button>)}
 				</div>
 			</div>}
-		</div>
+		</div></>
 	);
 }

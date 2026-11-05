@@ -51,6 +51,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsClose, file, onFileSelec
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
+	const [sidebarTarget, setSidebarTarget] = useState<HTMLDivElement | null>(null);
 	const [content, setContent] = useState('');
 	const [loading, setLoading] = useState(() => file !== null && !['image', 'audio', 'video', 'pdf', 'unsupported'].includes(workspaceFileType(file.path).kind));
 	const [error, setError] = useState('');
@@ -230,7 +231,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsClose, file, onFileSelec
 				</div>
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
 				<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-					<WorkspaceMarkdownEditor ref={textRef} onMatchCount={setTextMatchCount} path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} zoom={zoom} onFind={() => setFindOpen(true)} onOpenLink={(href) => {
+					<WorkspaceMarkdownEditor sidebarTarget={sidebarTarget} ref={textRef} onMatchCount={setTextMatchCount} path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} zoom={zoom} onFind={() => setFindOpen(true)} onOpenLink={(href) => {
 						if (/^[a-z][a-z\d+.-]*:/i.test(href)) void window.app.openExternalUrl(href);
 						else {
 							const path = decodeURIComponent(new URL(workspaceResourceUrl(file.path, href)).pathname.slice(1));
@@ -249,7 +250,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsClose, file, onFileSelec
 			</div>
 			{detailsOpen ? <aside aria-label="Workspace editor options" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col overflow-auto border-l bg-background shadow-lg sm:relative sm:shrink-0 sm:shadow-none">
 				<div className="flex items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-semibold">Editor options</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
-				{file ? <div className="space-y-4 p-4 text-sm"><h3 className="font-medium">Styles</h3><div className="space-y-1"><span className="text-xs text-muted-foreground">Text size</span><Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}><SelectTrigger aria-label="Sidebar text size" className="w-full"><SelectValue>{TEXT_SIZES.find(({ size }) => size === textSize)?.label}</SelectValue></SelectTrigger><SelectContent>{TEXT_SIZES.map(({ size, label }) => <SelectItem key={size} value={size}>{label}</SelectItem>)}</SelectContent></Select></div><Button type="button" variant="outline" size="sm" className={`w-full justify-start ${wide ? 'bg-accent text-accent-foreground' : ''}`} aria-pressed={wide} onClick={() => onWideChange(!wide)}>Full width</Button>{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start" onClick={() => setFindOpen(true)}>Find in file</Button> : null}{kind === 'markdown' ? <div className="space-y-2 border-t pt-4"><h3 className="font-medium">View</h3><ButtonGroup role="group" aria-label="Sidebar Markdown view">{(['source', 'preview'] as const).map((mode) => <Button key={mode} type="button" variant="outline" size="sm" className={visibleMarkdownMode === mode ? 'bg-accent text-accent-foreground' : ''} aria-pressed={visibleMarkdownMode === mode} onClick={() => { closeFind(); setMarkdownMode(mode); }}>{mode === 'source' ? 'Raw' : 'Text'}</Button>)}</ButtonGroup></div> : null}</div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
+				{file ? <div className="space-y-4 p-4 text-sm"><h3 className="font-medium">Styles</h3><div className="space-y-1"><span className="text-xs text-muted-foreground">Text size</span><Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}><SelectTrigger aria-label="Sidebar text size" className="w-full"><SelectValue>{TEXT_SIZES.find(({ size }) => size === textSize)?.label}</SelectValue></SelectTrigger><SelectContent>{TEXT_SIZES.map(({ size, label }) => <SelectItem key={size} value={size}>{label}</SelectItem>)}</SelectContent></Select></div><Button type="button" variant="outline" size="sm" className={`w-full justify-start ${wide ? 'bg-accent text-accent-foreground' : ''}`} aria-pressed={wide} onClick={() => onWideChange(!wide)}>Full width</Button>{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start" onClick={() => setFindOpen(true)}>Find in file</Button> : null}<div ref={setSidebarTarget} /></div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
 			</aside> : null}
 			</div>
 			{file ? (
