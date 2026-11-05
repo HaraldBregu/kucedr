@@ -110,6 +110,10 @@ export const app: AppApi = {
 	},
 	getWorkspaceImageModel: () => typedInvokeUnwrap(AppChannels.getWorkspaceImageModel),
 	setWorkspaceImageModel: (model) => typedInvokeUnwrap(AppChannels.setWorkspaceImageModel, model),
+	getWorkspaceVoiceModel: () => typedInvokeUnwrap(AppChannels.getWorkspaceVoiceModel),
+	setWorkspaceVoiceModel: (model) => typedInvokeUnwrap(AppChannels.setWorkspaceVoiceModel, model),
+	getWorkspaceModelOptions: () => typedInvokeUnwrap(AppChannels.getWorkspaceModelOptions),
+	setWorkspaceModelOption: (option) => typedInvokeUnwrap(AppChannels.setWorkspaceModelOption, option),
 	getWorkspaceModel: () => typedInvokeUnwrap(AppChannels.getWorkspaceModel),
 	setWorkspaceModel: (model) => typedInvokeUnwrap(AppChannels.setWorkspaceModel, model),
 	setWorkspaceWideContent: (enabled: boolean): Promise<void> => {
