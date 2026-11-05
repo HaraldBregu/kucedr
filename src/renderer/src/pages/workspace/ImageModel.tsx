@@ -33,7 +33,7 @@ export function ImageModel({ options = {}, onOptionsChange }: { readonly options
 			setError(false);
 			void window.app.setWorkspaceImageModel({ providerId, modelId }).then(() => setSelection({ providerId, modelId })).catch(() => setError(true)).finally(() => setSaving(false));
 		}} disabled={saving || groups.length === 0} inline buttonDropdown compactPopover showFieldLabel={false} buttonClassName="h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground" labels={{ label: 'Change image model' }} />
-		{ratioChoices.length > 0 ? <Select value={ratioValue} onValueChange={(value) => onOptionsChange({ ...options, [modelKey]: { [ratioName]: String(value) } })}>
+		{onOptionsChange && ratioChoices.length > 0 ? <Select value={ratioValue} onValueChange={(value) => onOptionsChange({ ...options, [modelKey]: { [ratioName]: String(value) } })}>
 			<SelectTrigger aria-label="Aspect ratio" className="h-9 w-auto rounded-full border-0 bg-transparent px-2 text-sm capitalize text-foreground shadow-none">
 				<SelectValue>{ratioChoices.find((choice) => choice.value === ratioValue)?.label}</SelectValue>
 			</SelectTrigger>
