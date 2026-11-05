@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Decoration, DecorationSet } from '@tiptap/pm/view';
+import { PromptEditor } from '@/components/prompt-editor';
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import type { ChainedCommands, Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
@@ -46,6 +49,8 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import type { PluginScriptInfo } from '../../../../shared/plugin_types';
+
+const inlineAiKey = new PluginKey('workspaceInlineAi');
 
 const mod = navigator.platform.startsWith('Mac') ? '⌘' : 'Ctrl+';
 const alt = navigator.platform.startsWith('Mac') ? '⌥' : 'Alt+';
@@ -110,6 +115,7 @@ interface WorkspaceToolbarProps {
 
 export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
+	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
 	const requestId = useRef(0);
 	useEffect(() => () => { requestId.current++; }, []);
 	const [href, setHref] = useState('');
@@ -189,6 +195,12 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		const text = editor.state.doc.textBetween(from, to, '\n');
 		const value = { from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false, autoApply: Boolean(instruction) };
 		setAi(value);
+		if (!instruction) {
+			const target = document.createElement('div');
+			target.contentEditable = 'false';
+			target.className = 'my-4 w-full';
+			setAiTarget(target);
+		}
 		if (instruction) generate(value);
 	};
 	const generate = (value: NonNullable<typeof ai>): void => {
@@ -207,6 +219,13 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate text.' } : null);
 		});
 	};
+	useEffect(() => {
+		if (!aiTarget || !ai || ai.autoApply) return;
+		const selection = editor.state.doc.resolve(Math.min(ai.to, editor.state.doc.content.size));
+		const position = selection.depth ? selection.after(1) : selection.pos;
+		editor.registerPlugin(new Plugin({ key: inlineAiKey, props: { decorations(state) { return DecorationSet.create(state.doc, [Decoration.widget(Math.min(position, state.doc.content.size), aiTarget, { side: 1, stopEvent: () => true, ignoreSelection: true })]); } } }));
+		return () => { editor.unregisterPlugin(inlineAiKey); };
+	}, [editor, aiTarget, ai?.autoApply, ai?.to]);
 	const execute = (index: number): void => {
 		const command = commands[index];
 		if (!command || !slash) return;
@@ -239,16 +258,17 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		})}</div></section>)}
 		<section className="shrink-0"><div role="toolbar" aria-label="AI writing" className="flex flex-wrap items-center justify-start gap-0.5">{[{ label: 'Edit with AI', icon: Sparkles }, { label: 'Improve writing', icon: Sparkles }, { label: 'Fix spelling and grammar', icon: SpellCheck }, { label: 'Make shorter', icon: Shrink }, { label: 'Make longer', icon: Expand }].map(({ label, icon: Icon }) => <Tooltip key={label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={label} disabled={ai?.loading || (label !== 'Edit with AI' && editor.state.selection.empty)} onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin" /> : <Icon />}</Button>} /><TooltipContent>{label}</TooltipContent></Tooltip>)}</div></section>
 	</div>, toolbarTarget) : null;
-	if ((!slash || !commands.length) && !selection && !linkOpen && !ai) return <>{toolbar}</>;
-	return (<>{toolbar}
-		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
-			{ai && !ai.autoApply ? <div className="w-80 space-y-2 p-2">
-				<form onSubmit={(event) => { event.preventDefault(); generate(ai); }} className="flex gap-1"><Input autoFocus disabled={ai.loading} aria-label="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onChange={(event) => setAi({ ...ai, prompt: event.target.value })} /><Button type="submit" size="sm" disabled={ai.loading || !ai.prompt.trim()}>Generate</Button></form>
+	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
+				<PromptEditor ariaLabel="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={() => generate(ai)} disabled={ai.loading} isLoading={ai.loading} trailingAction={<Button type="button" size="icon-sm" aria-label="Generate" disabled={ai.loading || !ai.prompt.trim()} onClick={() => generate(ai)}><Sparkles /></Button>} />
 				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
 				{ai.result ? <div className="max-h-60 overflow-auto whitespace-pre-wrap text-sm">{ai.result}</div> : null}
 				<div className="flex justify-end gap-1"><Button type="button" variant="ghost" size="sm" onClick={() => { requestId.current++; setAi(null); editor.commands.focus(); }}>Discard</Button>{ai.result ? <Button type="button" size="sm" onClick={() => { if (JSON.stringify(editor.state.doc.toJSON()) !== ai.doc) { setAi({ ...ai, error: 'The document changed. Please start again.', result: '' }); return; } editor.chain().focus().insertContentAt({ from: ai.from, to: ai.to }, ai.result, { contentType: 'markdown' }).run(); setAi(null); }}>Apply</Button> : null}</div>
-			</div> : linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
+			</div>, aiTarget) : null;
+	if ((!slash || !commands.length) && !selection && !linkOpen && (!ai || !ai.autoApply)) return <>{toolbar}{inlineAi}</>;
+	return (<>{toolbar}{inlineAi}
+		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
+			{linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
 				event.preventDefault();
 				const chain = editor.chain().focus().extendMarkRange('link');
 				if (href.trim()) chain.setLink({ href: href.trim() }).run(); else chain.unsetLink().run();
