@@ -5,7 +5,7 @@ import { providerIdsFor, providerModels } from '@/lib/providers';
 
 export type ImageOptions = Readonly<Record<string, Readonly<Record<string, string>>>>;
 
-export function ImageModel({ options, onOptionsChange }: { readonly options: ImageOptions; readonly onOptionsChange: (options: ImageOptions) => void }): React.JSX.Element {
+export function ImageModel({ options = {}, onOptionsChange }: { readonly options?: ImageOptions; readonly onOptionsChange?: (options: ImageOptions) => void }): React.JSX.Element {
 	const [selection, setSelection] = useState({ providerId: '', modelId: '' });
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState(false);
