@@ -9,13 +9,28 @@
 		"documentationStatus": "verified",
 		"inputs": {
 			"image": {
-				"type": "string",
-				"required": true
+				"type": "string"
 			},
 			"duration": {
 				"type": "integer",
 				"minimum": 1,
-				"maximum": 15
+				"maximum": 15,
+				"default": 8
+			},
+			"aspect_ratio": {
+				"type": "string",
+				"default": "16:9",
+				"enum": [
+					"1:1",
+					"16:9",
+					"9:16",
+					"4:3",
+					"3:4",
+					"3:2",
+					"2:3",
+					"21:9",
+					"5:2"
+				]
 			},
 			"resolution": {
 				"type": "string",
@@ -25,6 +40,22 @@
 					"720p",
 					"1080p"
 				]
+			},
+			"generate_audio": {
+				"type": "boolean",
+				"default": true
+			},
+			"last_frame": {
+				"type": "string"
+			},
+			"keyframes": {
+				"type": "array"
+			},
+			"reference_images": {
+				"type": "array"
+			},
+			"reference_audios": {
+				"type": "array"
 			}
 		}
 	},
