@@ -111,7 +111,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		table: current.isActive('table'), link: current.isActive('link'), canUndo: current.can().undo(), canRedo: current.can().redo(),
 	}) });
 	const commands = [
-		...groups.flat().map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run(), disabled: (action.label === 'Undo' && !state.canUndo) || (action.label === 'Redo' && !state.canRedo) })),
+		...groups.flat().filter((action) => !((action.label === 'Undo' && !state.canUndo) || (action.label === 'Redo' && !state.canRedo))).map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })),
 		...(state.table ? tableActions.map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })) : []),
 		{ label: 'Link', icon: Link, run: () => onLinkOpenChange(true) },
 		{ label: 'Insert from computer', icon: HardDrive, run: onInsertFromComputer },
@@ -120,13 +120,13 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		...[...byFence].map(([, script]) => ({ label: script.title, icon: FileBox, run: () => onInsertScript(script) })),
 		{ label: 'Find in file', icon: Search, run: onFind },
 		{ label: 'Full width', icon: MoveHorizontal, run: () => onWideChange(!wide) },
-	].filter((command) => !command.disabled && command.label.toLowerCase().includes(slash?.query.toLowerCase() ?? ''));
+	].filter((command) => command.label.toLowerCase().includes(slash?.query.toLowerCase() ?? ''));
 
 	useEffect(() => {
 		const update = (): void => {
-			const { from, to, empty, $from } = editor.state.selection;
+			const { from, empty, $from } = editor.state.selection;
 			const before = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
-			const match = empty ? before.match(/\/([^\s/]*)$/) : null;
+			const match = empty && editor.isFocused ? before.match(/\/([^\s/]*)$/) : null;
 			const start = match ? from - match[0].length : null;
 			setSlash(start !== null && start !== dismissed ? { from: start, to: from, query: match![1] } : null);
 			setSelection(!empty && editor.isFocused);
@@ -140,9 +140,10 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	}, [editor, dismissed]);
 
 	useEffect(() => { setSelected(0); }, [slash?.query]);
+	useEffect(() => { floating.refs.floating.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' }); }, [selected, floating.refs.floating]);
 	useEffect(() => {
 		if (!slash && !selection && !linkOpen) return;
-		floating.refs.setPositionReference({
+		floating.refs.setReference({
 			contextElement: editor.view.dom,
 			getBoundingClientRect: () => {
 				if (!slash) {
