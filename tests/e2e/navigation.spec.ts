@@ -595,7 +595,7 @@ test('Workspace slash AI opens a Home-style composer inline', async () => {
 	const composer = editor.locator('[data-slot="inline-ai-composer"]');
 	await expect(composer).toBeVisible();
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('Write a paragraph');
-	await composer.getByRole('button', { name: 'Generate', exact: true }).click();
+	await composer.getByRole('button', { name: 'Send message', exact: true }).click();
 	await expect(editor).toContainText('Generated');
 	await expect(composer).toBeVisible();
 	await expect(editor).toContainText('Generated paragraph');
