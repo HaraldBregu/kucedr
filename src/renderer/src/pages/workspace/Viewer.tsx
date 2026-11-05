@@ -167,7 +167,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 		}}>
 			<div className="relative flex min-h-0 min-w-0 flex-1">
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
-			{kind === 'markdown' && visibleMarkdownMode === 'preview' && !content.includes('<!--') ? <div ref={setToolbarTarget} className="shrink-0" /> : null}
+			{kind === 'markdown' && visibleMarkdownMode === 'preview' && !content.includes('<!--') ? <div ref={setToolbarTarget} hidden /> : null}
 			{searchable && findOpen ? (
 				<div role="search" className="mx-auto w-full max-w-[920px] space-y-1 px-5 py-2 sm:px-8 lg:px-12">
 					<div className="flex min-w-0 items-center gap-1">
