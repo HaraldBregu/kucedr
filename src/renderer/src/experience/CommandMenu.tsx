@@ -31,17 +31,7 @@ import type { PluginInfo, PluginScriptInfo } from '@shared/plugin_types';
 import type { CatalogWebSearch } from '@shared/provider_types';
 import type { SkillInfo } from '@shared/skills_types';
 
-const CATEGORIES = [
-	'all',
-	'apps',
-	'plugins',
-	'services',
-	'scripts',
-	'models',
-	'skills',
-	'mcp',
-	'other',
-] as const;
+const CATEGORIES = ['all', 'apps', 'plugins', 'services', 'scripts', 'models', 'other'] as const;
 type Category = (typeof CATEGORIES)[number];
 
 interface AppRouteItem {
