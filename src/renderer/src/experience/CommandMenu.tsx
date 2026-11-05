@@ -26,7 +26,7 @@ import { useOpenApp } from '@/hooks/app';
 import type { App } from '@shared/installed_app_types';
 import type { PluginInfo } from '@shared/plugin_types';
 
-const CATEGORIES = ['all', 'routes', 'apps', 'plugins', 'other'] as const;
+const CATEGORIES = ['all', 'apps', 'plugins', 'other'] as const;
 type Category = (typeof CATEGORIES)[number];
 
 interface AppRouteItem {
