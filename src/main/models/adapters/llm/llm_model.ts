@@ -22,6 +22,7 @@ import type {
 import { LlmContextOverflowError, LlmProviderAuthError } from './llm_types';
 import { anthropic as completeAnthropic } from './anthropic';
 import { chat as completeChat } from './chat';
+import { dsml } from './dsml';
 import { responses as completeResponses } from './responses';
 import {
 	llmBuildAnthropicMessages,
