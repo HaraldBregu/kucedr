@@ -569,12 +569,19 @@ test('Markdown editor offers selection formatting and searchable slash commands'
 	await page.getByRole('toolbar', { name: 'Selection formatting' }).getByRole('button', { name: 'Bold' }).click();
 	await expect(editor.locator('strong')).toHaveText('Hello');
 	await page.keyboard.press('End');
-	await page.keyboard.type('/heading');
+	await page.keyboard.type('/heading 2');
 	await expect(page.getByRole('option', { name: 'Heading 2' })).toBeVisible();
-	await page.keyboard.press('ArrowDown');
 	await page.keyboard.press('Enter');
 	await expect(editor.locator('h2')).toContainText('Hello world');
 	await expect(editor).not.toContainText('/heading');
+	await expect(page.getByRole('toolbar', { name: 'Formatting', exact: true })).toHaveCount(0);
+	await page.keyboard.press('Home');
+	await page.keyboard.press('ArrowRight');
+	await page.keyboard.type('/quote');
+	await expect(page.getByRole('option', { name: 'Quote', exact: true })).toBeVisible();
+	await page.keyboard.press('Escape');
+	await expect(page.getByRole('listbox', { name: 'Editor commands' })).toHaveCount(0);
+	await expect(editor).toContainText('H/quoteello world');
 });
 
 test('Markdown comments stay in Source editing mode', async () => {
