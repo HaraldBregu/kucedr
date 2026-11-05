@@ -11,6 +11,7 @@ export type PromptEditorProps = Omit<PromptInputProps, 'children'> & {
 	readonly ariaLabel?: string;
 	readonly onPlanCommandChange?: (active: boolean) => void;
 	readonly onGoalCommandChange?: (active: boolean) => void;
+	readonly hideEditor?: boolean;
 };
 
 function PromptEditorArea({
