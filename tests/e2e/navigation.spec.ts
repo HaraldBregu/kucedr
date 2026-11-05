@@ -1,5 +1,5 @@
 import { expect, test, type ElectronApplication, type Page } from '@playwright/test';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { closeApp } from './close';
 import { launchApp } from './helpers';
@@ -712,6 +712,11 @@ test('Workspace AI generates and inserts an image using its image model', async 
 	await expect(composer).toHaveCount(0);
 	await expect(editor.locator('img[alt="A blue bird"]')).toBeVisible();
 	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('generated-image-test.md'))).toContain('generated-image.png');
+	const settings = JSON.parse(readFileSync(path.join(userDataDir, 'settings', 'editor.json'), 'utf8'));
+	expect(settings.imageModel).toEqual({ providerId: 'openai', modelId: 'test-image' });
+	await page.evaluate(() => { window.location.hash = '#/settings/writer'; });
+	await expect(page.getByText('Image model', { exact: true })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Change image model' })).toBeVisible();
 });
 
 test('Workspace shows a slash hint in the focused empty paragraph', async () => {
