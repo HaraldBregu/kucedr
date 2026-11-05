@@ -113,22 +113,7 @@ function PageContent(): ReactElement {
 	const workspaceRef = useRef<HTMLDivElement>(null);
 	const composerRef = useRef<HTMLDivElement>(null);
 	const chatScrollRef = useRef<StickToBottomContext>(null);
-	const [voiceMode, setVoiceMode] = useState<PromptInputVoiceMode | null>(null);
-	const [activeDictationMode, setActiveDictationMode] = useState<VoiceButtonMode | null>(null);
-	const updateMode = useCallback(
-		(nextMode: ChatMode): void => {
-			if (nextMode === 'chat') {
-				setActiveDictationMode(null);
-				setVoiceMode(null);
-			}
-			setMode(nextMode);
-		},
-		[setMode]
-	);
-	const closeVoiceUi = useCallback((): void => {
-		updateMode('chat');
-	}, [updateMode]);
-	const agent = useHomeAgent({ setMode: updateMode });
+	const agent = useHomeAgent({ setMode });
 	const [focusRequest, setFocusRequest] = useState(0);
 	useEffect(() => {
 		const requestFocus = (): void => setFocusRequest((current) => current + 1);
