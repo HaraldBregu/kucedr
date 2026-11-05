@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { File, FileImage, FileMusic, FileText, FileVideo } from 'lucide-react';
+import { ChevronRight, File, FileImage, FileMusic, FileText, FileVideo } from 'lucide-react';
 import { workspaceFileType } from '@shared/workspace';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { WorkspaceRenameInput } from './RenameInput';
@@ -45,7 +45,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 								return next;
 							});
 						}}>
-						<summary draggable data-path={entry.path} data-selected={selection.has(entry.path) || undefined} className="flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[drop-target]:bg-sidebar-accent data-[drop-target]:ring-2 data-[drop-target]:ring-sidebar-ring data-[selected]:bg-sidebar-accent" onClick={(event) => {
+						<summary draggable data-path={entry.path} data-selected={selection.has(entry.path) || undefined} className="group/row flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[drop-target]:bg-sidebar-accent data-[drop-target]:ring-2 data-[drop-target]:ring-sidebar-ring data-[selected]:bg-sidebar-accent" onClick={(event) => {
 							if (!onSelect(entry, event)) event.preventDefault();
 						}} onDragStart={(event) => {
 							event.stopPropagation();
@@ -69,7 +69,10 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							event.stopPropagation();
 							onEntryContextMenu(entry);
 						}}>
-								<span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium uppercase">{Array.from(entry.name)[0]}</span>
+								<span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center rounded bg-sidebar-accent text-xs font-medium uppercase">
+									<span className="group-hover/row:hidden group-focus-visible/row:hidden">{Array.from(entry.name)[0]}</span>
+									<ChevronRight className="hidden size-4 group-hover/row:block group-focus-visible/row:block group-open:rotate-90" strokeWidth={1.8} />
+								</span>
 								<span className="truncate" title={entry.path}>{entry.name}</span>
 							</summary>
 							{entry.children?.length ? (
