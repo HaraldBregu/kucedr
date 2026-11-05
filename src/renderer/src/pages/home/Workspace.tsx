@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, File, FolderOpen, Plus } from 'lucide-react';
+import { ChevronDown, File, Galaxy, Plus } from 'lucide-react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { workspaceFileType } from '@shared/workspace';
 import { Button } from '@/components/ui/button';
@@ -57,7 +57,7 @@ export function ChatWorkspace({ onAttach }: {
 	return (
 		<Collapsible onOpenChange={(open) => { if (!open) setVisibleCount(BATCH_SIZE); }}>
 			<CollapsibleTrigger render={<Button variant="ghost" className="group h-8 w-full justify-start gap-2 rounded-none px-3 font-medium aria-expanded:bg-transparent" />}>
-				<FolderOpen className="size-4 text-muted-foreground" aria-hidden />
+				<Galaxy className="size-4 text-muted-foreground" aria-hidden />
 				<span className="flex-1 text-left">Workspace</span>
 				<span className="text-xs tabular-nums text-muted-foreground">{files.length}</span>
 				<ChevronDown className="size-4 text-muted-foreground transition-transform group-data-open:rotate-180" aria-hidden />
