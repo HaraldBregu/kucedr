@@ -231,7 +231,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		{[
 			{ title: 'Text', labels: [...groups[1], ...groups[2]].map((action) => action.label) },
 			{ title: 'Blocks', labels: groups[3].map((action) => action.label) },
-			{ title: 'Insert & tools', labels: allCommands.filter((command) => !groups.flat().some((action) => action.label === command.label) && !['Find in file', 'Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label).concat(['Undo', 'Redo']) },
+			{ title: 'Insert & tools', labels: allCommands.filter((command) => !groups.flat().some((action) => action.label === command.label) && !['Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label).concat(['Undo', 'Redo']) },
 		].map(({ title, labels }) => <section key={title} className="max-w-full shrink-0 border-r pr-2"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap items-center justify-start gap-0.5">{allCommands.filter((command) => labels.includes(command.label)).map((command) => {
 			const action = groups.flat().find((item) => item.label === command.label);
 			const active = action?.active ? typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active) : false;

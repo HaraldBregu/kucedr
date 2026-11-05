@@ -528,8 +528,8 @@ test('Workspace editor options share the file container and control its styles',
 	});
 	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'details-test.md' }).click();
 	const content = page.locator('[data-slot="workspace-content"]');
-	await page.getByRole('button', { name: 'Search sidebar', exact: true }).click();
-	const details = content.getByRole('complementary', { name: 'Workspace search' });
+	await page.keyboard.press(process.platform === 'darwin' ? 'Meta+f' : 'Control+f');
+	const details = content.getByRole('search');
 	await expect(details).toBeVisible();
 	await expect(content.getByRole('toolbar', { name: 'Blocks', exact: true })).toBeVisible();
 
@@ -549,8 +549,7 @@ test('Workspace editor options share the file container and control its styles',
 	await content.locator('footer').getByRole('button', { name: 'Full width' }).click();
 	await expect(content.locator('footer').getByRole('button', { name: 'Full width' })).toHaveAttribute('aria-pressed', 'true');
 	await content.locator('footer').getByRole('button', { name: 'Full width' }).click();
-	await details.getByRole('button', { name: 'Close search sidebar' }).click();
-	await expect(details).toHaveCount(0);
+	await expect(content.getByRole('complementary', { name: 'Workspace search' })).toHaveCount(0);
 	await page.evaluate(() => { window.location.hash = '#/home'; });
 	await expect(page.getByRole('button', { name: 'Search sidebar', exact: true })).toHaveCount(0);
 });

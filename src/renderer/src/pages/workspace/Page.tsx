@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PanelRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { WorkspaceTextSize } from '@shared/app_types';
@@ -16,7 +14,6 @@ export default function WorkspacePage(): React.JSX.Element {
 	const navigate = useNavigate();
 	const navigationType = useNavigationType();
 	const [files, setFiles] = useState<WorkspaceTreeEntry[]>([]);
-	const [detailsOpen, setDetailsOpen] = useState(false);
 	const [wide, setWide] = useState(false);
 	const [textSize, setTextSize] = useState<WorkspaceTextSize>('medium');
 	const flushRef = useRef<() => Promise<void>>(null);
@@ -68,10 +65,10 @@ export default function WorkspacePage(): React.JSX.Element {
 			navigate('/workspace', { replace: true });
 		}
 	}} selectedPath={path} beforeEntryChange={() => flushRef.current?.() ?? Promise.resolve()} />;
-	const viewer = <WorkspaceViewer onDetailsOpen={() => setDetailsOpen(true)} detailsOpen={detailsOpen} onDetailsClose={() => setDetailsOpen(false)} ref={flushRef} key={path} file={selectedFile} onFileSelect={selectFile} wide={wide} onWideChange={handleWideChange} textSize={textSize} onTextSizeChange={handleTextSizeChange} />;
+	const viewer = <WorkspaceViewer ref={flushRef} key={path} file={selectedFile} onFileSelect={selectFile} wide={wide} onWideChange={handleWideChange} textSize={textSize} onTextSizeChange={handleTextSizeChange} />;
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
-			<Split navigationActions={<Button type="button" variant="ghost" size="icon-sm" aria-label="Search sidebar" aria-expanded={detailsOpen} onClick={() => setDetailsOpen(!detailsOpen)}><PanelRight /></Button>} sidebar={sidebar} sidebarLabel="Workspace files" navigationContent={selectedFile ? <WorkspaceBreadcrumb entries={files} path={selectedFile.path} onFileSelect={selectFile} /> : undefined}>
+			<Split sidebar={sidebar} sidebarLabel="Workspace files" navigationContent={selectedFile ? <WorkspaceBreadcrumb entries={files} path={selectedFile.path} onFileSelect={selectFile} /> : undefined}>
 				{viewer}
 
 			</Split>
