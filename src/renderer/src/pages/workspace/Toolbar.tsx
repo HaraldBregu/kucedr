@@ -256,7 +256,7 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 		if (instruction) generate(value);
 	};
 	const generate = (value: NonNullable<typeof ai>): void => {
-		if (!value.prompt.trim()) return;
+		if (!(mode === 'voice' && !value.autoApply ? value.text : value.prompt).trim()) return;
 		const id = ++requestId.current;
 		setAi({ ...value, loading: true, error: '', result: '' });
 		if (mode === 'voice' && !value.autoApply) {
