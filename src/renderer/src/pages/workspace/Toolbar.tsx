@@ -264,7 +264,7 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 				if (!providerId || !modelId) throw new Error('Select a workspace voice model first.');
 				if (requestId.current !== id) return;
 				const voice = modelChoice('text-to-speech', VOICE_INPUTS, providerId, modelId, options)?.value;
-				const result = await window.models.voice.synthesize({ text: value.prompt, providerId, modelId, voice });
+				const result = await window.models.voice.synthesize({ text: value.text, providerId, modelId, voice });
 				if (requestId.current !== id) return;
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
 				const extension = result.mimeType === 'audio/mpeg' ? 'mp3' : result.mimeType.split('/')[1];
