@@ -5,7 +5,9 @@ import { getModelId, getProviderId } from '../agent/agent_store';
 
 type WorkspaceModel = { providerId: string; modelId: string };
 
-const store = new Store<{ model?: WorkspaceModel; imageModel?: WorkspaceModel }>({
+type WorkspaceModelOptions = Record<string, Record<string, string>>;
+
+const store = new Store<{ model?: WorkspaceModel; imageModel?: WorkspaceModel; voiceModel?: WorkspaceModel; modelOptions?: WorkspaceModelOptions }>({
 	name: 'editor',
 	cwd: path.resolve(userDataLocation(), 'settings'),
 });
