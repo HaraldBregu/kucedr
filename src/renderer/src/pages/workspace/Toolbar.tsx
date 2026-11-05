@@ -166,6 +166,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		command.run();
 	};
 	useEffect(() => {
+		if (!slash) return;
 		const keydown = (event: KeyboardEvent): void => {
 			if (!slash) return;
 			if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setDismissed(slash.from); setSlash(null); }
