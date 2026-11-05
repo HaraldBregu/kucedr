@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ChevronDown, ChevronUp, LoaderCircle, MoveHorizontal, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, LoaderCircle, MoveHorizontal, Search, SlidersHorizontal, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -226,13 +226,13 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, detailsWidth, onDe
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
 			</div>
-			{detailsOpen ? <aside aria-label="Workspace editor options" style={{ width: detailsWidth }} className="absolute inset-y-0 right-0 z-20 flex max-w-full flex-col border-l bg-background shadow-lg sm:relative sm:max-w-[50%] sm:shrink-0 sm:shadow-none">
+			{detailsOpen ? <aside aria-label="Workspace editor options" style={{ width: detailsWidth }} className="absolute inset-y-0 right-0 z-20 flex max-w-full flex-col border-l bg-muted/20 shadow-lg sm:relative sm:max-w-[50%] sm:shrink-0 sm:shadow-none">
 				<button type="button" role="separator" aria-label="Resize editor options" aria-orientation="vertical" aria-valuemin={224} aria-valuemax={560} aria-valuenow={detailsWidth} className="absolute inset-y-0 -left-1.5 z-20 hidden w-3 cursor-col-resize touch-none outline-none after:absolute after:inset-y-0 after:left-1/2 after:w-px hover:after:bg-border focus-visible:after:bg-ring sm:block" onKeyDown={(event) => { const next = event.key === 'ArrowLeft' ? detailsWidth + 8 : event.key === 'ArrowRight' ? detailsWidth - 8 : event.key === 'Home' ? 224 : event.key === 'End' ? 560 : null; if (next !== null) { event.preventDefault(); onDetailsWidthChange(Math.max(224, Math.min(560, next))); } }} onPointerDown={(event) => { if (event.button !== 0) return; event.preventDefault(); resizeStart.current = { x: event.clientX, width: detailsWidth }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { if (resizeStart.current) onDetailsWidthChange(Math.max(224, Math.min(560, resizeStart.current.width + resizeStart.current.x - event.clientX))); }} onPointerUp={() => { resizeStart.current = null; }} onPointerCancel={() => { resizeStart.current = null; }} />
-				<div className="flex items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-semibold">Editor options</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
-				{file ? <div className="min-h-0 flex-1 space-y-4 overflow-auto p-4 text-sm"><h3 className="font-medium">Styles</h3>{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start" onClick={() => setFindOpen(true)}>Find in file</Button> : null}			{searchable && findOpen ? (
-				<div className="flex flex-wrap items-center gap-1 border-b pb-2">
+				<div className="flex shrink-0 items-center justify-between border-b px-4 py-2"><div className="flex items-center gap-2"><SlidersHorizontal className="size-4 text-muted-foreground" /><h2 className="text-sm font-medium">Editor</h2></div><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
+				{file ? <div className="min-h-0 flex-1 space-y-5 overflow-auto p-4 text-sm">{searchable ? <Button type="button" variant="outline" size="sm" className="w-full justify-start gap-2 bg-background text-muted-foreground" onClick={() => setFindOpen(!findOpen)}><Search className="size-4" />Find in file</Button> : null}			{searchable && findOpen ? (
+				<div className="rounded-lg border bg-background p-2">
 						<div role="search" className="flex min-w-0 flex-wrap items-center gap-1">
-							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-40" onChange={(event) => {
+							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-8 w-full min-w-0 text-xs" onChange={(event) => {
 								setFindQuery(event.target.value);
 								if (event.target.value) finder.current?.find(event.target.value, 'next');
 								else finder.current?.clearSearch();
@@ -245,7 +245,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, detailsWidth, onDe
 							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'next')}><ChevronDown /></Button>
 							{kind === 'markdown' ? (
 								<>
-									<Input aria-label="Replace with" placeholder="Replace" value={replaceText} className="h-7 w-24 shrink-0 border-0 bg-muted/70 px-2 text-xs focus-visible:outline-none! focus-visible:ring-0 focus-visible:ring-offset-0 sm:w-32" onChange={(event) => setReplaceText(event.target.value)} onKeyDown={(event) => {
+									<Input aria-label="Replace with" placeholder="Replace" value={replaceText} className="mt-1 h-8 w-full min-w-0 text-xs" onChange={(event) => setReplaceText(event.target.value)} onKeyDown={(event) => {
 										if (event.key === 'Escape') closeFind();
 										if (event.key === 'Enter') finder.current?.replace(findQuery, replaceText, event.metaKey || event.ctrlKey);
 									}} />
