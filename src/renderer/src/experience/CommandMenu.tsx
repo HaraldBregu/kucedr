@@ -321,10 +321,6 @@ export function CommandMenu({
 			.list()
 			.then(setApps)
 			.catch(() => setApps([]));
-		void window.scripts
-			.list()
-			.then(setScripts)
-			.catch(() => setScripts([]));
 		void loadModelCatalog()
 			.then(setModels)
 			.catch(() => setModels([]));
