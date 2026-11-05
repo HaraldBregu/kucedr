@@ -234,16 +234,24 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 					setAi((current) => current ? { ...current, loading: false, error: 'The document changed. Please start again.' } : null);
 					return;
 				}
+				if (!delta) return;
+				const from = output ? end : value.from;
+				const transaction = editor.state.tr.insertText(delta, from, end);
+				end = transaction.mapping.map(end, 1);
+				editor.view.dispatch(transaction);
 				output += delta;
-				const size = editor.state.doc.content.size;
-				editor.commands.insertContentAt({ from: value.from, to: end }, output, { contentType: 'markdown' });
-				end += editor.state.doc.content.size - size;
 				expectedDoc = JSON.stringify(editor.state.doc.toJSON());
 			});
 		}).then(() => {
 			if (requestId.current !== id) return;
-			if (output.trim()) setAi(null);
-			else setAi((current) => current ? { ...current, loading: false, error: 'No text was generated. Please try again.' } : null);
+			if (output.trim()) {
+				if (JSON.stringify(editor.state.doc.toJSON()) !== expectedDoc) {
+					setAi((current) => current ? { ...current, loading: false, error: 'The document changed. Please start again.' } : null);
+					return;
+				}
+				editor.commands.insertContentAt({ from: value.from, to: end }, output, { contentType: 'markdown' });
+				setAi(null);
+			} else setAi((current) => current ? { ...current, loading: false, error: 'No text was generated. Please try again.' } : null);
 		}).catch((error: unknown) => {
 			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate text.' } : null);
 		}).finally(() => { if (streamId.current === stream) streamId.current = null; });

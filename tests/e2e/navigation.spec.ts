@@ -574,9 +574,10 @@ test('Workspace slash AI opens a Home-style composer inline', async () => {
 	await app.evaluate(({ ipcMain }) => {
 		ipcMain.removeHandler('text:stream-text');
 		ipcMain.handle('text:stream-text', async (event, id) => {
-			event.sender.send('text:delta', { id, delta: 'Generated' });
-			await new Promise((resolve) => setTimeout(resolve, 500));
-			event.sender.send('text:delta', { id, delta: ' paragraph' });
+			for (const delta of ['Generated', ' ', '**bold', '**', '\n\n', 'Next paragraph']) {
+				event.sender.send('text:delta', { id, delta });
+				await new Promise((resolve) => setTimeout(resolve, 250));
+			}
 			return { success: true };
 		});
 	});
@@ -598,8 +599,11 @@ test('Workspace slash AI opens a Home-style composer inline', async () => {
 	await composer.getByRole('button', { name: 'Send message', exact: true }).click();
 	await expect(editor).toContainText('Generated');
 	await expect(composer).toBeVisible();
-	await expect(editor).toContainText('Generated paragraph');
+	await expect.poll(() => editor.textContent()).toContain('Generated **bold');
 	await expect(composer).toHaveCount(0);
+	await expect(editor.locator('strong')).toHaveText('bold');
+	await expect(editor).toContainText('Next paragraph');
+	await expect(editor).toContainText('Original text');
 });
 
 test('editing Markdown Preview keeps table and task content', async () => {
