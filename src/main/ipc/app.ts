@@ -62,7 +62,7 @@ import {
 	setVoiceAgentAppearance as setStoredVoiceAgentAppearance,
 	getLaunchState as getStoredLaunchState,
 } from '../settings_store';
-import { getWorkspaceImageModel, setWorkspaceImageModel, getWorkspaceModel, setWorkspaceModel } from '../workspace/store';
+import { getWorkspaceImageModel, setWorkspaceImageModel, getWorkspaceModel, setWorkspaceModel } from '../editor/store';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
 import {
 	loadMcps,
