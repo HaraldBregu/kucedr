@@ -257,7 +257,7 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 				if (!providerId || !modelId) throw new Error('Select a workspace image model first.');
 				if (requestId.current !== id) return;
 				const prompt = value.text ? `${value.prompt}\n\nSelected text:\n${value.text}` : value.prompt;
-				const result = await window.models.image.createImage({ prompt, providerId, modelId });
+				const result = await window.models.image.createImage({ prompt, providerId, modelId, options: imageOptions[`${providerId}:${modelId}`] });
 				if (requestId.current !== id) return;
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
 				const extensions: Record<string, string> = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' };
