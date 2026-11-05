@@ -56,7 +56,12 @@ export class ModelsIpc implements IpcModule<ModelsIpcDependencies> {
 		trusted.query(EmbeddingChannels.getModelId, () => getModelId('embedding'));
 		trusted.command(EmbeddingChannels.setModelId, (modelId) => setModelId('embedding', modelId));
 
-		trusted.command(ImageChannels.createImage, (request) => image.createImage(request));
+		trusted.command(ImageChannels.createImage, async (request) => {
+			const result = await image.createImage(request);
+			const extension = result.mimeType.split('/')[1]?.split('+')[0] || 'png';
+			await saveMedia('image', extension, result.base64);
+			return result;
+		});
 		trusted.query(ImageChannels.getProviderId, () => getProviderId('image'));
 		trusted.command(ImageChannels.setProviderId, (providerId) =>
 			setProviderId('image', providerId)
