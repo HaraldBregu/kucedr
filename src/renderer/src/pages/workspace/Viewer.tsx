@@ -17,6 +17,7 @@ import type { CodeMirrorEditorHandle } from './Editor';
 import { importWorkspaceAssets } from './Assets';
 import { WorkspaceViewActions } from './Actions';
 import { workspaceResourceUrl } from './Resource';
+import { workspaceMarkdownUrl } from './Url';
 
 const CodeMirrorEditor = lazy(async () => {
 	const module = await import('./Editor');
