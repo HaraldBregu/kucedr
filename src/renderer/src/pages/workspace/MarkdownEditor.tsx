@@ -100,6 +100,17 @@ export function WorkspaceMarkdownEditor({
 		},
 	});
 
+	useEffect(() => {
+		const scroll = scrollRef.current;
+		if (!scroll || !toolbarTarget) return;
+		const update = (): void => { toolbarTarget.style.paddingRight = `${scroll.offsetWidth - scroll.clientWidth}px`; };
+		const observer = new ResizeObserver(update);
+		observer.observe(scroll);
+		observer.observe(editor.view.dom);
+		update();
+		return () => { observer.disconnect(); toolbarTarget.style.paddingRight = ''; };
+	}, [editor, toolbarTarget, zoom]);
+
 	useImperativeHandle(ref, () => {
 		const select = (query: string, direction: 'next' | 'previous'): { from: number; to: number } | undefined => {
 			const { view } = editor;
@@ -204,7 +215,7 @@ export function WorkspaceMarkdownEditor({
 				event.target.value = '';
 			}} />
 			<div className="relative flex min-h-0 flex-1 flex-col">
-			<div ref={scrollRef} className="min-h-0 flex-1 overflow-x-auto overflow-y-scroll" style={{ zoom }}>
+			<div ref={scrollRef} className="min-h-0 flex-1 overflow-auto" style={{ zoom }}>
 			<EditorContent
 				editor={editor}
 				className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} break-words px-5 pb-16 pt-24 text-[15px] leading-7 sm:px-8 lg:px-12`}
