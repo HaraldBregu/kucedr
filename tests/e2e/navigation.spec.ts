@@ -704,8 +704,12 @@ test('Workspace AI generates and inserts an image using its image model', async 
 	await page.keyboard.type('/ai');
 	await page.getByRole('option', { name: 'Edit with AI', exact: true }).click();
 	const composer = editor.locator('[data-slot="inline-ai-composer"]');
-	await composer.getByRole('button', { name: 'Image', exact: true }).click();
-	await expect(composer.getByRole('button', { name: 'Image', exact: true })).toHaveAttribute('aria-pressed', 'true');
+	const mode = composer.getByRole('button', { name: 'Generation type' });
+	await expect(mode).toHaveText('Text');
+	await mode.click();
+	await expect(page.getByRole('menuitem', { name: 'Text', exact: true })).toBeVisible();
+	await page.getByRole('menuitem', { name: 'Image', exact: true }).click();
+	await expect(mode).toHaveText('Image');
 	await expect(composer.getByRole('button', { name: 'Change image model' })).toBeVisible();
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('A blue bird');
 	await composer.getByRole('button', { name: 'Send message' }).click();
