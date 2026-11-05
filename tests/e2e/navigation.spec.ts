@@ -606,6 +606,39 @@ test('Workspace slash AI opens a Home-style composer inline', async () => {
 	await expect(editor).toContainText('Original text');
 });
 
+test('Workspace AI uses and replaces selected text', async () => {
+	await app.evaluate(({ ipcMain }) => {
+		ipcMain.removeHandler('text:stream-text');
+		ipcMain.handle('text:stream-text', async (event, id, request) => {
+			if (!request.prompt.includes('Text:\nworld') || !request.prompt.includes('Make it friendly')) throw new Error('Selected text or instruction missing');
+			event.sender.send('text:delta', { id, delta: 'friend' });
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			event.sender.send('text:delta', { id, delta: 's' });
+			return { success: true };
+		});
+	});
+	await page.evaluate(async () => {
+		await window.app.setWorkspaceModel({ providerId: 'openai', modelId: 'test-model' });
+		await window.agent.createWorkspaceFile('', 'selection-ai.md');
+		await window.agent.writeWorkspaceFile('selection-ai.md', 'Hello world today');
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'selection-ai.md' }).click();
+	const editor = page.getByRole('textbox', { name: 'Markdown preview editor' });
+	await editor.click();
+	await page.keyboard.press('Home');
+	for (let index = 0; index < 6; index++) await page.keyboard.press('ArrowRight');
+	for (let index = 0; index < 5; index++) await page.keyboard.press('Shift+ArrowRight');
+	await page.getByRole('toolbar', { name: 'Selection formatting' }).getByRole('button', { name: 'Edit with AI' }).click();
+	const composer = editor.locator('[data-slot="inline-ai-composer"]');
+	await expect(composer.getByLabel('Selected text')).toHaveText('world');
+	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('Make it friendly');
+	await composer.getByRole('button', { name: 'Send message', exact: true }).click();
+	await expect(editor).toContainText('Hello friend today');
+	await expect(composer).toHaveCount(0);
+	await expect(editor).toHaveText('Hello friends today');
+});
+
 test('editing Markdown Preview keeps table and task content', async () => {
 	const markdown = '# Notes\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n- [x] Done';
 	await page.evaluate(async (content) => {
