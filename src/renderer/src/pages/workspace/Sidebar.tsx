@@ -306,8 +306,8 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 							<span className="truncate">{t('settings.returnToChat', 'Return to Home')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
-					<SidebarMenuItem>
-						<div className="flex h-8 items-center gap-2 rounded-md px-2.5 pr-20 text-sm hover:bg-sidebar-accent">
+					<SidebarMenuItem className="rounded-md hover:bg-sidebar-accent">
+						<div className="flex h-8 items-center gap-2 px-2.5 pr-20 text-sm">
 							<Folder className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
 						</div>
