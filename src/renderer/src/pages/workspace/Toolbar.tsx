@@ -156,7 +156,6 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 
 	useEffect(() => {
 		let selecting = false;
-		let keyboardSelecting = false;
 		let frame = 0;
 		const update = (): void => {
 			const { from, empty, $from } = editor.state.selection;
@@ -164,7 +163,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 			const match = empty && editor.isFocused ? before.match(/\/([^/]*)$/) : null;
 			const start = match ? from - match[0].length : null;
 			setSlash(start !== null && start !== dismissed ? { from: start, to: from, query: match![1] } : null);
-			setSelection(!empty && editor.isFocused && !selecting && !keyboardSelecting);
+			setSelection(!empty && editor.isFocused && !selecting);
 			if (start === null || start !== dismissed) setDismissed(null);
 		};
 		const startPointerSelection = (): void => { selecting = true; setSelection(false); };
@@ -174,25 +173,16 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 			cancelAnimationFrame(frame);
 			frame = requestAnimationFrame(update);
 		};
-		const startKeyboardSelection = (event: KeyboardEvent): void => {
-			if (event.shiftKey && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'].includes(event.key)) {
-				keyboardSelecting = true;
-				setSelection(false);
-			}
-		};
-		const finishKeyboardSelection = (): void => { if (keyboardSelecting) { keyboardSelecting = false; update(); } };
 		const dom = editor.view.dom;
 		const ownerDocument = dom.ownerDocument;
 		dom.addEventListener('pointerdown', startPointerSelection);
 		ownerDocument.addEventListener('pointerup', finishPointerSelection);
 		ownerDocument.addEventListener('pointercancel', finishPointerSelection);
-		dom.addEventListener('keydown', startKeyboardSelection);
-		ownerDocument.addEventListener('keyup', finishKeyboardSelection);
 		editor.on('transaction', update);
 		editor.on('focus', update);
 		editor.on('blur', update);
 		update();
-		return () => { cancelAnimationFrame(frame); dom.removeEventListener('pointerdown', startPointerSelection); ownerDocument.removeEventListener('pointerup', finishPointerSelection); ownerDocument.removeEventListener('pointercancel', finishPointerSelection); dom.removeEventListener('keydown', startKeyboardSelection); ownerDocument.removeEventListener('keyup', finishKeyboardSelection); editor.off('transaction', update); editor.off('focus', update); editor.off('blur', update); };
+		return () => { cancelAnimationFrame(frame); dom.removeEventListener('pointerdown', startPointerSelection); ownerDocument.removeEventListener('pointerup', finishPointerSelection); ownerDocument.removeEventListener('pointercancel', finishPointerSelection); editor.off('transaction', update); editor.off('focus', update); editor.off('blur', update); };
 	}, [editor, dismissed]);
 
 	useEffect(() => { if (!selection) setStylesOpen(false); }, [selection]);
