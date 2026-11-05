@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { ContextMenuDescriptor } from '@shared/window_types';
 import { workspaceFileType } from '@shared/workspace';
-import { SPLIT_ITEM_ACTIVE_CLASS } from '@/components/app/base/page';
-import { cn } from '@/lib/utils';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -309,10 +307,10 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem>
-						<SidebarMenuButton type="button" className={cn('px-2.5 pr-20 text-sm', SPLIT_ITEM_ACTIVE_CLASS)} aria-current="page">
+						<div className="flex h-8 items-center gap-2 px-2.5 pr-20 text-sm">
 							<Folder className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
-						</SidebarMenuButton>
+						</div>
 						<div className="absolute inset-y-0 right-1 flex items-center gap-1">
 				<Tooltip>
 					<TooltipTrigger render={<Button type="button" variant="ghost" size="icon-xs" aria-label={t('workspaceSidebar.search', 'Search files')} aria-expanded={searchOpen} className="text-muted-foreground" onClick={() => {
