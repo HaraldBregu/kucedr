@@ -551,6 +551,31 @@ test('editing Markdown Preview keeps table and task content', async () => {
 		.toContain('- [x] Done');
 });
 
+test('Markdown editor offers selection formatting and searchable slash commands', async () => {
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceFile('', 'commands.md');
+		await window.agent.writeWorkspaceFile('commands.md', 'Hello world');
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'commands.md' }).click();
+	const editor = page.getByRole('textbox', { name: 'Markdown preview editor' });
+	await editor.click();
+	await page.keyboard.press('Home');
+	await page.keyboard.press('Shift+ArrowRight');
+	await page.keyboard.press('Shift+ArrowRight');
+	await page.keyboard.press('Shift+ArrowRight');
+	await page.keyboard.press('Shift+ArrowRight');
+	await page.keyboard.press('Shift+ArrowRight');
+	await page.getByRole('toolbar', { name: 'Selection formatting' }).getByRole('button', { name: 'Bold' }).click();
+	await expect(editor.locator('strong')).toHaveText('Hello');
+	await page.keyboard.press('End');
+	await page.keyboard.type('/heading');
+	await expect(page.getByRole('option', { name: 'Heading 2' })).toBeVisible();
+	await page.keyboard.press('Enter');
+	await expect(editor.locator('h2')).toContainText('Hello world');
+	await expect(editor).not.toContainText('/heading');
+});
+
 test('Markdown comments stay in Source editing mode', async () => {
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceFile('', 'comments.md');
