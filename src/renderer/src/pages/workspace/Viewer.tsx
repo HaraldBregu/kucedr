@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useIsDark } from '@/hooks/use-is-dark';
 import { markdownComponents } from '@/pages/home/components/markdown';
+import { formatFileSize } from '@/pages/home/attachments/size';
 import type { CodeMirrorEditorHandle } from './Editor';
 import { importWorkspaceAssets } from './Assets';
 import { WorkspaceViewActions } from './Actions';
@@ -247,7 +248,10 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 			{file ? (
 				<footer aria-label="File information" className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 px-2 py-1.5 sm:px-3">
 					<div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
-						{file.updatedAt ? <time dateTime={file.updatedAt} title={new Date(file.updatedAt).toLocaleString()}>Updated {new Date(file.updatedAt).toLocaleDateString()}</time> : null}
+						{typeof file.size === 'number' ? <span>{formatFileSize(file.size)}</span> : null}
+						{kind === 'markdown' ? <span>{content.split(/\s+/).filter(Boolean).length} words</span> : null}
+						{file.createdAt ? <time dateTime={file.createdAt} title={new Date(file.createdAt).toLocaleString()}>Created {new Date(file.createdAt).toLocaleString()}</time> : null}
+						{file.updatedAt ? <time dateTime={file.updatedAt} title={new Date(file.updatedAt).toLocaleString()}>Updated {new Date(file.updatedAt).toLocaleString()}</time> : null}
 					</div>
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="Full width" aria-pressed={wide} className={wide ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'} onClick={() => onWideChange(!wide)}><MoveHorizontal /></Button>
 					<Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}>
