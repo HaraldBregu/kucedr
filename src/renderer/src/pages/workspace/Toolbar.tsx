@@ -343,7 +343,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 			</div>, aiTarget) : null;
 	if (inlineActive) return <>{toolbar}{inlineAi}</>;
 	if ((!slash || !commands.length) && !selection && !linkOpen && (!ai || !ai.autoApply)) return <>{toolbar}{inlineAi}</>;
-	return (<>{toolbar}{inlineAi}
+	return (<>{toolbar}{inlineAi}{createPortal(
 		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
 			{linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
 				event.preventDefault();
@@ -385,6 +385,6 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 					{['Improve writing', 'Fix spelling and grammar', 'Make shorter', 'Make longer', 'Edit with AI'].map((label) => <Button key={label} type="button" variant="ghost" size="sm" className="h-8 justify-start gap-2 px-2" onMouseDown={(event) => event.preventDefault()} disabled={ai?.loading} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin text-muted-foreground" /> : <Sparkles className="text-muted-foreground" />}{label}</Button>)}
 				</div>
 			</div>}
-		</div></>
+		</div>, document.body)}</>
 	);
 }
