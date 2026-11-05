@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import type { ChainedCommands, Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import {
@@ -12,7 +13,8 @@ import {
 	Heading2,
 	Heading3,
 	HardDrive,
-	ImagePlus,
+	MoveHorizontal,
+	Search,
 	Globe,
 	Library,
 	Italic,
@@ -31,11 +33,8 @@ import {
 	Undo2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { WorkspaceViewActions } from './Actions';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import type { PluginScriptInfo } from '../../../../shared/plugin_types';
 
@@ -101,128 +100,100 @@ interface WorkspaceToolbarProps {
 
 export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [href, setHref] = useState('');
+	const [selection, setSelection] = useState(false);
+	const [slash, setSlash] = useState<{ from: number; to: number; query: string } | null>(null);
+	const [selected, setSelected] = useState(0);
+	const [dismissed, setDismissed] = useState<number | null>(null);
 	const { byFence } = usePluginScripts();
-	const state = useEditorState({
-		editor,
-		selector: ({ editor: current }) => ({
-			active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
-			table: current.isActive('table'),
-			link: current.isActive('link'),
-			canUndo: current.can().undo(),
-			canRedo: current.can().redo(),
-		}),
+	const floating = useFloating({ placement: slash ? 'bottom-start' : 'top', middleware: [offset(8), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
+	const state = useEditorState({ editor, selector: ({ editor: current }) => ({
+		active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
+		table: current.isActive('table'), link: current.isActive('link'), canUndo: current.can().undo(), canRedo: current.can().redo(),
+	}) });
+	const commands = [
+		...groups.flat().map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run(), disabled: (action.label === 'Undo' && !state.canUndo) || (action.label === 'Redo' && !state.canRedo) })),
+		...(state.table ? tableActions.map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })) : []),
+		{ label: 'Link', icon: Link, run: () => onLinkOpenChange(true) },
+		{ label: 'Insert from computer', icon: HardDrive, run: onInsertFromComputer },
+		{ label: 'Insert from library', icon: Library, run: onInsertFromLibrary },
+		{ label: 'Insert from URL', icon: Globe, run: onInsertFromUrl },
+		...[...byFence].map(([, script]) => ({ label: script.title, icon: FileBox, run: () => onInsertScript(script) })),
+		{ label: 'Find in file', icon: Search, run: onFind },
+		{ label: 'Full width', icon: MoveHorizontal, run: () => onWideChange(!wide) },
+	].filter((command) => !command.disabled && command.label.toLowerCase().includes(slash?.query.toLowerCase() ?? ''));
+
+	useEffect(() => {
+		const update = (): void => {
+			const { from, to, empty, $from } = editor.state.selection;
+			const before = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc');
+			const match = empty ? before.match(/\/([^\s/]*)$/) : null;
+			const start = match ? from - match[0].length : null;
+			setSlash(start !== null && start !== dismissed ? { from: start, to: from, query: match![1] } : null);
+			setSelection(!empty && editor.isFocused);
+			if (start === null || start !== dismissed) setDismissed(null);
+		};
+		editor.on('transaction', update);
+		editor.on('focus', update);
+		editor.on('blur', update);
+		update();
+		return () => { editor.off('transaction', update); editor.off('focus', update); editor.off('blur', update); };
+	}, [editor, dismissed]);
+
+	useEffect(() => { setSelected(0); }, [slash?.query]);
+	useEffect(() => {
+		if (!slash && !selection && !linkOpen) return;
+		floating.refs.setPositionReference({
+			contextElement: editor.view.dom,
+			getBoundingClientRect: () => {
+				if (!slash) {
+					const range = editor.view.dom.ownerDocument.getSelection();
+					if (range && range.rangeCount && !range.isCollapsed) return range.getRangeAt(0).getBoundingClientRect();
+				}
+				const pos = editor.view.coordsAtPos(slash?.to ?? editor.state.selection.from);
+				return new DOMRect(pos.left, pos.top, pos.right - pos.left, pos.bottom - pos.top);
+			},
+		});
+		void floating.update();
+	}, [editor, slash, selection, linkOpen, floating.refs, floating.update]);
+	useEffect(() => { if (linkOpen) setHref(editor.getAttributes('link').href ?? ''); }, [editor, linkOpen]);
+
+	const execute = (index: number): void => {
+		const command = commands[index];
+		if (!command || !slash) return;
+		editor.chain().focus().deleteRange({ from: slash.from, to: slash.to }).run();
+		setSlash(null);
+		command.run();
+	};
+	useEffect(() => {
+		const keydown = (event: KeyboardEvent): void => {
+			if (!slash) return;
+			if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setDismissed(slash.from); setSlash(null); }
+			else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); event.stopPropagation(); setSelected((index) => commands.length ? (index + (event.key === 'ArrowDown' ? 1 : -1) + commands.length) % commands.length : 0); }
+			else if (event.key === 'Enter' && commands[selected]) { event.preventDefault(); event.stopPropagation(); execute(selected); }
+		};
+		const dom = editor.view.dom;
+		dom.addEventListener('keydown', keydown, true);
+		return () => dom.removeEventListener('keydown', keydown, true);
 	});
-	const button = (action: Action, active: boolean, disabled = false, destructive = false, onClick = (): void => { action.run(editor.chain().focus()).run(); }): React.JSX.Element => (
-		<Tooltip key={action.label}>
-			<TooltipTrigger render={
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-sm"
-					aria-label={action.label}
-					aria-pressed={action.active ? active : undefined}
-					disabled={disabled}
-					className={`${active ? 'bg-muted text-foreground' : 'text-muted-foreground'} ${destructive ? 'text-destructive' : ''}`}
-					onMouseDown={(event) => event.preventDefault()}
-					onClick={onClick}
-				>
-					<action.icon />
-				</Button>
-			} />
-			<TooltipContent side="bottom">{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent>
-		</Tooltip>
-	);
-	let index = 0;
+
+	if (!slash && !selection && !linkOpen) return <></>;
 	return (
-		<div role="toolbar" aria-label="Formatting" className="flex w-full shrink-0 flex-wrap items-center gap-0.5 border-b bg-background px-2 py-1 sm:px-3">
-			{groups.map((group, groupIndex) => (
-				<div key={groupIndex} className="flex items-center gap-0.5 not-first:border-l not-first:pl-1 not-first:ml-1">
-					{group.map((action) => {
-						const active = state.active[index++];
-						const disabled = (action.label === 'Undo' && !state.canUndo) || (action.label === 'Redo' && !state.canRedo);
-						return button(action, active, disabled);
-					})}
-					{groupIndex === 2 ? (
-						<Popover open={linkOpen} onOpenChange={(open) => {
-							if (open) setHref(editor.getAttributes('link').href ?? '');
-							onLinkOpenChange(open);
-						}}>
-							<Tooltip>
-								<TooltipTrigger render={
-									<PopoverTrigger asChild>
-										<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} className={state.link ? 'bg-muted text-foreground' : 'text-muted-foreground'} onMouseDown={(event) => event.preventDefault()}>
-											<Link />
-										</Button>
-									</PopoverTrigger>
-								} />
-								<TooltipContent side="bottom">Link<span className="opacity-60">{mod}K</span></TooltipContent>
-							</Tooltip>
-							<PopoverContent align="start" className="w-80 p-2" onOpenAutoFocus={() => setHref(editor.getAttributes('link').href ?? '')}>
-								<form className="flex items-center gap-1" onSubmit={(event) => {
-									event.preventDefault();
-									const chain = editor.chain().focus().extendMarkRange('link');
-									if (href.trim()) chain.setLink({ href: href.trim() }).run();
-									else chain.unsetLink().run();
-									onLinkOpenChange(false);
-								}}>
-									<Input autoFocus aria-label="Link URL" placeholder="https://" value={href} className="h-8 text-sm" onChange={(event) => setHref(event.target.value)} />
-									<Button type="submit" size="sm">Apply</Button>
-									{state.link ? <Button type="button" variant="ghost" size="sm" onClick={() => {
-										editor.chain().focus().extendMarkRange('link').unsetLink().run();
-										onLinkOpenChange(false);
-									}}>Remove</Button> : null}
-								</form>
-							</PopoverContent>
-						</Popover>
-					) : null}
-					{groupIndex === 3 ? (
-						<DropdownMenu>
-							<Tooltip>
-								<TooltipTrigger render={
-									<DropdownMenuTrigger asChild>
-										<Button type="button" variant="ghost" size="icon-sm" aria-label="Insert image or file" className="text-muted-foreground" onMouseDown={(event) => event.preventDefault()}>
-											<ImagePlus />
-										</Button>
-									</DropdownMenuTrigger>
-								} />
-								<TooltipContent side="bottom">Insert image or file</TooltipContent>
-							</Tooltip>
-							<DropdownMenuContent align="start" onCloseAutoFocus={(event) => event.preventDefault()}>
-								<DropdownMenuItem onSelect={onInsertFromComputer}><HardDrive />From computer…<span className="ml-auto pl-4 text-xs text-muted-foreground">{mod}⇧I</span></DropdownMenuItem>
-								<DropdownMenuItem onSelect={onInsertFromLibrary}><Library />From library…</DropdownMenuItem>
-								<DropdownMenuItem onSelect={onInsertFromUrl}><Globe />From URL…</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					) : null}
-					{groupIndex === 3 && byFence.size > 0 ? (
-						<DropdownMenu>
-							<Tooltip>
-								<TooltipTrigger render={
-									<DropdownMenuTrigger asChild>
-										<Button type="button" variant="ghost" size="icon-sm" aria-label="Insert script" className="text-muted-foreground" onMouseDown={(event) => event.preventDefault()}>
-											<FileBox />
-										</Button>
-									</DropdownMenuTrigger>
-								} />
-								<TooltipContent side="bottom">Insert script</TooltipContent>
-							</Tooltip>
-							<DropdownMenuContent align="start" onCloseAutoFocus={(event) => event.preventDefault()}>
-								{[...byFence].map(([fence, script]) => (
-									<DropdownMenuItem key={fence} onSelect={() => onInsertScript(script)}>
-										{script.title}
-									</DropdownMenuItem>
-								))}
-							</DropdownMenuContent>
-						</DropdownMenu>
-					) : null}
-				</div>
-			))}
-			{state.table ? (
-				<div className="flex items-center gap-0.5 border-l pl-1 ml-1">
-					{tableActions.map((action) => button(action, false, false, action.label.startsWith('Delete')))}
-				</div>
-			) : null}
-			<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={onFind} />
+		<div ref={floating.refs.setFloating} style={floating.floatingStyles} className="z-50 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+			{linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
+				event.preventDefault();
+				const chain = editor.chain().focus().extendMarkRange('link');
+				if (href.trim()) chain.setLink({ href: href.trim() }).run(); else chain.unsetLink().run();
+				onLinkOpenChange(false);
+			}} onKeyDown={(event) => { if (event.key === 'Escape') { onLinkOpenChange(false); editor.commands.focus(); } }}>
+				<Input autoFocus aria-label="Link URL" placeholder="https://" value={href} className="h-8 text-sm" onChange={(event) => setHref(event.target.value)} />
+				<Button type="submit" size="sm">Apply</Button>
+				{state.link ? <Button type="button" variant="ghost" size="sm" onClick={() => { editor.chain().focus().extendMarkRange('link').unsetLink().run(); onLinkOpenChange(false); }}>Remove</Button> : null}
+			</form> : slash ? <div role="listbox" aria-label="Editor commands" className="max-h-72 w-64 overflow-auto">
+				{commands.length ? commands.map((command, index) => <button key={command.label} type="button" role="option" aria-selected={index === selected} className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm ${index === selected ? 'bg-accent text-accent-foreground' : ''}`} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setSelected(index)} onClick={() => execute(index)}><command.icon className="size-4" />{command.label}</button>) : <div className="px-2 py-3 text-sm text-muted-foreground">No commands found</div>}
+			</div> : <div role="toolbar" aria-label="Selection formatting" className="flex items-center">
+				{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
+				<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} onMouseDown={(event) => event.preventDefault()} onClick={() => onLinkOpenChange(true)}><Link /></Button>
+			</div>}
 		</div>
 	);
 }
