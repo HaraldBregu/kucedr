@@ -15,6 +15,7 @@ import { autoUpdate, flip, offset, shift, size, useFloating } from '@floating-ui
 import type { ChainedCommands, Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import {
+	AudioLines,
 	Bold,
 	Code,
 	Check,
