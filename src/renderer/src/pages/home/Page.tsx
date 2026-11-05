@@ -153,7 +153,7 @@ function PageContent(): ReactElement {
 		const close = (): void => setOpenExtension(null);
 		const show = (): void => {
 			close();
-			updateMode('chat');
+			setMode('chat');
 		};
 		window.addEventListener('kucedr:open-extension', open);
 		window.addEventListener('kucedr:focus-chat-input', close);
