@@ -19,10 +19,10 @@
 
 @theme inline {
 	--font-sans: var(--font-sans);
-	--font-heading: var(--font-heading);
+	--font-heading: var(--font-sans);
 	--font-mono: var(--font-mono);
 	--font-serif: var(--font-serif);
-	--font-chat: 'Geist Variable', sans-serif;
+	--font-chat: var(--font-sans);
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
