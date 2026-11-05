@@ -1,4 +1,5 @@
 import { LlmModel } from '../adapters/llm';
+import { preflightPromptAttachments, resolvePromptInputCapabilities } from '../../agent/attachments';
 import type { TextRequest } from '../../../shared/text_types';
 import { getResolvedProvider } from '../../settings_store';
 import { getModelId, getProviderId } from '../selection';
@@ -19,10 +20,15 @@ export async function generateText(request: TextRequest): Promise<string> {
 	const provider = getResolvedProvider(providerId);
 	if (!provider) throw new Error(`Provider not configured: ${providerId}`);
 
+	const capabilities = resolvePromptInputCapabilities(providerId, modelId);
+	if (request.files?.length && !capabilities) throw new Error('Attachments require a valid configured prompt model.');
+	const files = request.files?.length && capabilities ? preflightPromptAttachments(request.files, capabilities) : [];
+
 	const response = await llmModel.generate({
 		provider,
 		model: modelId,
-		messages: [{ role: 'user', content: prompt }],
+		effort: request.effort,
+		messages: [{ role: 'user', content: files.length ? [{ type: 'text', text: prompt }, ...files] : prompt }],
 		maxTokens: request.maxTokens ?? MAX_TOKENS,
 	});
 	return response.content;
