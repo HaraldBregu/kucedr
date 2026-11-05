@@ -683,6 +683,24 @@ test('Workspace AI captures text selected after opening the prompt', async () =>
 	await expect(editor).toHaveText('Hello friends today');
 });
 
+test('Workspace shows a slash hint in the focused empty paragraph', async () => {
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceFile('', 'paragraph-hint.md');
+		await window.agent.writeWorkspaceFile('paragraph-hint.md', 'First paragraph');
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'paragraph-hint.md' }).click();
+	const editor = page.getByRole('textbox', { name: 'Markdown preview editor' });
+	await editor.click();
+	await page.keyboard.press('End');
+	await page.keyboard.press('Enter');
+	const paragraph = editor.locator('p.is-empty');
+	await expect(paragraph).toHaveAttribute('data-placeholder', 'Type / for options…');
+	await expect.poll(() => paragraph.evaluate((element) => getComputedStyle(element, '::before').content)).toContain('Type / for options');
+	await page.keyboard.type('Hello');
+	await expect(editor.locator('p.is-empty')).toHaveCount(0);
+});
+
 test('editing Markdown Preview keeps table and task content', async () => {
 	const markdown = '# Notes\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n- [x] Done';
 	await page.evaluate(async (content) => {

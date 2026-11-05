@@ -589,6 +589,18 @@ input[type='range']:hover::-moz-range-thumb {
 	color: var(--muted-foreground);
 }
 
+.workspace-markdown-preview p.is-empty::before {
+	content: attr(data-placeholder);
+	color: var(--muted-foreground);
+	float: left;
+	height: 0;
+	pointer-events: none;
+}
+
+.workspace-markdown-preview:not(.ProseMirror-focused) p.is-empty::before {
+	content: none;
+}
+
 .workspace-markdown-preview .workspace-selection {
 	background-color: var(--selection);
 	color: var(--selection-foreground);

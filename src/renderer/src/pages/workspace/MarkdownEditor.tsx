@@ -78,7 +78,7 @@ export function WorkspaceMarkdownEditor({
 					return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { src })];
 				},
 			}),
-			Placeholder.configure({ placeholder: 'Start writing, or paste an image…' }),
+			Placeholder.configure({ placeholder: ({ node }) => node.type.name === 'paragraph' ? 'Type / for options…' : '', showOnlyCurrent: true }),
 			SelectionHighlight.configure({ className: 'workspace-selection' }),
 			Markdown.configure({ markedOptions: { gfm: true } }),
 			WorkspaceSearch.configure({ onMatchCount }),
