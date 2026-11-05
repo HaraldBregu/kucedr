@@ -1,0 +1,51 @@
+{
+	"id": "grok-imagine-video-1.5-lite",
+	"name": "Grok Imagine Video 1.5 Lite",
+	"authentication": "api-key",
+	"type": "text-to-video-model",
+	"url": "https://api.x.ai/v1",
+	"metadata": {
+		"documentationUrl": "https://docs.x.ai/developers/model-capabilities/video/generation",
+		"documentationStatus": "verified",
+		"inputs": {
+			"image": {
+				"type": "string"
+			},
+			"duration": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 15,
+				"default": 8
+			},
+			"aspect_ratio": {
+				"type": "string",
+				"default": "16:9",
+				"enum": [
+					"1:1",
+					"16:9",
+					"9:16",
+					"4:3",
+					"3:4",
+					"3:2",
+					"2:3",
+					"21:9",
+					"5:2"
+				]
+			},
+			"resolution": {
+				"type": "string",
+				"default": "480p",
+				"enum": [
+					"480p",
+					"720p",
+					"1080p"
+				]
+			},
+			"generate_audio": {
+				"type": "boolean",
+				"default": true
+			}
+		}
+	},
+	"location": "remote"
+}
