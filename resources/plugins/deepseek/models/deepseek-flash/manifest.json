@@ -42,20 +42,28 @@
 			},
 			"reasoning_effort": {
 				"type": "string",
+				"default": "high",
 				"enum": [
+					"none",
+					"low",
 					"high",
 					"max"
 				]
 			},
 			"max_tokens": {
 				"type": "integer",
-				"maximum": 384000
+				"minimum": 1,
+				"maximum": 393216
 			},
 			"temperature": {
-				"type": "number"
+				"type": "number",
+				"minimum": 0,
+				"maximum": 2,
+				"default": 1
 			},
 			"top_p": {
-				"type": "number"
+				"type": "number",
+				"maximum": 1
 			},
 			"top_k": {
 				"type": "integer"
