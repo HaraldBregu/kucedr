@@ -1,0 +1,77 @@
+{
+	"id": "gpt-image-2.6-sunburst",
+	"name": "GPT Image 2.6 Sunburst",
+	"type": "text-to-image-model",
+	"authentication": "api-key",
+	"url": "https://api.openai.com/v1",
+	"location": "remote",
+	"metadata": {
+		"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-image-2.6-sunburst",
+		"documentationStatus": "verified",
+		"inputs": {
+			"size": {
+				"type": "string",
+				"title": "Aspect ratio",
+				"default": "auto",
+				"oneOf": [
+					{ "const": "auto", "title": "Auto" },
+					{ "const": "1024x1024", "title": "1:1" },
+					{ "const": "1536x1024", "title": "3:2" },
+					{ "const": "1024x1536", "title": "2:3" }
+				]
+			},
+			"quality": {
+				"type": "string",
+				"enum": [
+					"low",
+					"medium",
+					"high",
+					"xhigh",
+					"max",
+					"auto"
+				],
+				"default": "auto"
+			},
+			"complexity": {
+				"type": "string",
+				"enum": [
+					"low",
+					"medium",
+					"high"
+				],
+				"default": "high"
+			},
+			"background": {
+				"type": "string",
+				"enum": [
+					"auto",
+					"opaque",
+					"transparent"
+				],
+				"default": "auto"
+			},
+			"output_format": {
+				"type": "string",
+				"enum": [
+					"png",
+					"jpeg",
+					"webp"
+				],
+				"default": "png"
+			},
+			"output_compression": {
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 100
+			},
+			"moderation": {
+				"type": "string",
+				"enum": [
+					"auto",
+					"low"
+				],
+				"default": "auto"
+			}
+		}
+	}
+}
