@@ -552,9 +552,9 @@ test('Workspace editor options share the file container and control its styles',
 	await expect(editor.locator('strong')).toHaveText('Workspace details test');
 	await expect(content.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
 	await expect(content.locator('footer[aria-label="File information"]')).toBeVisible();
-	await details.getByRole('button', { name: /Full width/ }).click();
-	await expect(details.getByRole('button', { name: /Full width/ })).toHaveAttribute('aria-pressed', 'true');
-	await details.getByRole('button', { name: /Full width/ }).click();
+	await content.locator('footer').getByRole('button', { name: 'Full width' }).click();
+	await expect(content.locator('footer').getByRole('button', { name: 'Full width' })).toHaveAttribute('aria-pressed', 'true');
+	await content.locator('footer').getByRole('button', { name: 'Full width' }).click();
 	await details.getByRole('button', { name: 'Close editor options' }).click();
 	await expect(details).toHaveCount(0);
 	await page.evaluate(() => { window.location.hash = '#/home'; });
