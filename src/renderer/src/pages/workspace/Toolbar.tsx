@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
-import type { ChatMode } from '@/contexts/chat-mode';
-import { Composer } from '../home/Composer';
-import type { PromptAttachment } from '../home/attachments/types';
-import { readEffort } from '../home/effort/read';
-import { filesToAgentInput } from '../home/hooks/files';
+import { PromptEditor } from '@/components/prompt-editor';
+import { PromptSubmit } from '@/components/prompt-submit';
+import { PromptInputActions } from '@/components/ui/prompt-input';
+import { Model } from '../home/Model';
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import type { ChainedCommands, Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
@@ -123,8 +122,6 @@ interface WorkspaceToolbarProps {
 export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
-	const [aiAttachments, setAiAttachments] = useState<PromptAttachment[]>([]);
-	const [aiMode, setAiMode] = useState<ChatMode>('chat');
 	const requestId = useRef(0);
 	useEffect(() => () => { requestId.current++; }, []);
 	const [href, setHref] = useState('');
@@ -205,8 +202,6 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		const text = editor.state.doc.textBetween(from, to, '\n');
 		const value = { from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false, autoApply: Boolean(instruction) };
 		setAi(value);
-		setAiAttachments([]);
-		setAiMode('chat');
 		if (!instruction) {
 			const target = document.createElement('div');
 			target.contentEditable = 'false';
@@ -221,15 +216,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		const id = ++requestId.current;
 		setAi({ ...value, loading: true, error: '', result: '' });
 		const prompt = `Return only the resulting text in the original language, preserving relevant Markdown formatting. ${value.text ? `Edit the following text: ${value.prompt}\n\nText:\n${value.text}` : `Write text following this instruction: ${value.prompt}`}`;
-		void Promise.all([
-			window.models.text.getProviderId(),
-			window.models.text.getModelId(),
-			Promise.all(aiAttachments.map(async ({ file, path }) => path && !file.size ? new File([new Uint8Array(await window.agent.readPromptFile(path))], file.name, { type: file.type }) : file)).then(filesToAgentInput),
-		]).then(([providerId, modelId, files]) => window.models.text.generateText({
-			prompt,
-			...(providerId && modelId ? { effort: readEffort(providerId, modelId) } : {}),
-			...(!value.autoApply && files.length ? { files } : {}),
-		})).then((result) => {
+		void window.models.text.generateText({ prompt, ...(value.autoApply ? {} : { providerId: aiModel?.providerId, modelId: aiModel?.modelId }) }).then((result) => {
 			if (requestId.current !== id) return;
 			if (value.autoApply && result.trim()) {
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) { setAi((current) => current ? { ...current, loading: false, error: 'The document changed. Please start again.' } : null); return; }
@@ -302,7 +289,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		</div>
 	</div></div>, toolbarTarget) : null;
 	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
-				<Composer ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi((current) => current ? { ...current, prompt } : null)} onSubmit={submitAi} isLoading={ai.loading} mode={aiMode} setMode={setAiMode} attachments={aiAttachments} setAttachments={setAiAttachments} inputClassName="min-h-[114px]" />
+				<PromptEditor detachedControls expanded={false} ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={submitAi} isLoading={ai.loading} maxHeight={360} wrapperClassName="max-w-none" className="w-full" footerContent={<div className="flex min-w-0 items-center text-[11px] text-muted-foreground"><Model onContext={setAiModel} /></div>} trailingAction={<PromptInputActions className="justify-end gap-1.5"><PromptSubmit isLoading={ai.loading} onAction={submitAi} /></PromptInputActions>} />
 				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
 				{ai.result ? <div className="max-h-60 overflow-auto whitespace-pre-wrap text-sm">{ai.result}</div> : null}
