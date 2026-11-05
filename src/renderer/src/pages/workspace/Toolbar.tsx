@@ -266,7 +266,7 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 				const src = await window.agent.importWorkspaceAsset(path, `generated-image.${extension}`, bytes);
 				if (requestId.current !== id) return;
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
-				editor.chain().focus().insertContentAt({ from: value.from, to: value.to }, { type: 'image', attrs: { src, alt: value.prompt.trim() } }).run();
+				editor.chain().focus().insertContentAt(value.to, { type: 'image', attrs: { src, alt: value.prompt.trim() } }).run();
 				setAi(null);
 			}).catch((error: unknown) => {
 				if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate image.' } : null);

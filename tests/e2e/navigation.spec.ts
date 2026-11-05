@@ -687,7 +687,7 @@ test('Workspace AI generates and inserts an image using its image model', async 
 	await app.evaluate(({ ipcMain }) => {
 		ipcMain.removeHandler('image:create-image');
 		ipcMain.handle('image:create-image', async (_event, request) => {
-			if (request.providerId !== 'openai' || request.modelId !== 'test-image' || request.prompt !== 'A blue bird') throw new Error('Wrong image request');
+			if (request.providerId !== 'openai' || request.modelId !== 'test-image' || request.prompt !== 'A blue bird\n\nSelected text:\nNotes') throw new Error('Wrong image request');
 			return { success: true, data: { mimeType: 'image/png', base64: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/aXkAAAAASUVORK5CYII=' } };
 		});
 	});
@@ -711,10 +711,21 @@ test('Workspace AI generates and inserts an image using its image model', async 
 	await page.getByRole('menuitem', { name: 'Image', exact: true }).click();
 	await expect(mode).toHaveText('Image');
 	await expect(composer.getByRole('button', { name: 'Change image model' })).toBeVisible();
+	await editor.locator('p').first().click();
+	await editor.locator('p').first().evaluate((paragraph) => {
+		const range = document.createRange();
+		range.selectNodeContents(paragraph);
+		const selection = window.getSelection()!;
+		selection.removeAllRanges();
+		selection.addRange(range);
+		document.dispatchEvent(new Event('selectionchange'));
+	});
+	await expect(composer.getByRole('status')).toContainText('Selected');
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('A blue bird');
 	await composer.getByRole('button', { name: 'Send message' }).click();
 	await expect(composer).toHaveCount(0);
 	await expect(editor.locator('img[alt="A blue bird"]')).toBeVisible();
+	await expect(editor).toContainText('Notes');
 	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('generated-image-test.md'))).toContain('generated-image.png');
 	const settings = JSON.parse(readFileSync(path.join(userDataDir, 'settings', 'editor.json'), 'utf8'));
 	expect(settings.imageModel).toEqual({ providerId: 'openai', modelId: 'test-image' });
