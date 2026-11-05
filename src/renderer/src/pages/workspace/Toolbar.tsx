@@ -262,14 +262,8 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 				const result = await window.models.image.createImage({ prompt, providerId, modelId, options: imageOptions[`${providerId}:${modelId}`] });
 				if (requestId.current !== id) return;
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
-				const extensions: Record<string, string> = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' };
-				const extension = extensions[result.mimeType];
-				if (!extension) throw new Error('Unsupported generated image format.');
-				const bytes = Uint8Array.from(atob(result.base64), (character) => character.charCodeAt(0));
-				const src = await window.agent.importWorkspaceAsset(path, `generated-image.${extension}`, bytes);
-				if (requestId.current !== id) return;
-				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
-				editor.chain().focus().insertContentAt(value.to, { type: 'image', attrs: { src, alt: value.prompt.trim() } }).run();
+				if (!result.path) throw new Error('Unable to save the generated image.');
+				editor.chain().focus().insertContentAt(value.to, { type: 'image', attrs: { src: libraryFileUrl(result.path), alt: value.prompt.trim() } }).run();
 				setAi(null);
 			}).catch((error: unknown) => {
 				if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate image.' } : null);
