@@ -17,6 +17,7 @@ export interface ImageRequest {
 export interface ImageResult {
 	base64: string;
 	mimeType: string;
+	path?: string;
 }
 
 export function normalizeImageSource(source: ImageSource | undefined): ImageSource | undefined {
