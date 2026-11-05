@@ -124,7 +124,7 @@ interface WorkspaceToolbarProps {
 	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const [aiTarget, setAiTarget] = useState<HTMLElement | null>(null);
 	const [imageMode, setImageMode] = useState(false);
