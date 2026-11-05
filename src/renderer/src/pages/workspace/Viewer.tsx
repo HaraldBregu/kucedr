@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ChevronDown, ChevronUp, LoaderCircle, MoveHorizontal, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronUp, Replace, ReplaceAll, LoaderCircle, MoveHorizontal, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -60,6 +60,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 	const [markdownMode, setMarkdownMode] = useState<'preview' | 'source'>('preview');
 	const [findOpen, setFindOpen] = useState(false);
 	const [findQuery, setFindQuery] = useState('');
+	const [replaceOpen, setReplaceOpen] = useState(false);
 	const [replaceText, setReplaceText] = useState('');
 	const editorRef = useRef<CodeMirrorEditorHandle>(null);
 	const textRef = useRef<Pick<CodeMirrorEditorHandle, 'find' | 'replace' | 'clearSearch'>>(null);
@@ -226,32 +227,24 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 			{detailsOpen ? <aside aria-label="Workspace editor options" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col border-l bg-background shadow-lg sm:relative sm:max-w-[50%] sm:shrink-0 sm:shadow-none">
 				<div className="flex shrink-0 items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-medium">Editor</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
 				{file ? <div className="min-h-0 flex-1 space-y-3 overflow-auto px-4 py-3 text-sm">{searchable ? (
-				<div className="border-b pb-3">
-						<div role="search" className="flex min-w-0 flex-wrap items-center gap-1">
-							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-8 w-full min-w-0 text-xs" onChange={(event) => {
-								setFindOpen(Boolean(event.target.value));
-								setFindQuery(event.target.value);
-								if (event.target.value) finder.current?.find(event.target.value, 'next');
-								else finder.current?.clearSearch();
-							}} onKeyDown={(event) => {
-								if (event.key === 'Escape') closeFind();
-								if (event.key === 'Enter') finder.current?.find(findQuery, event.shiftKey ? 'previous' : 'next');
-							}} />
-							<span aria-live="polite" className="shrink-0 text-[11px] text-muted-foreground">{findQuery ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'Find'}</span>
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Previous match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'previous')}><ChevronUp /></Button>
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'next')}><ChevronDown /></Button>
-							{kind === 'markdown' ? (
-								<>
-									<Input aria-label="Replace with" placeholder="Replace" value={replaceText} className="mt-1 h-8 w-full min-w-0 text-xs" onChange={(event) => setReplaceText(event.target.value)} onKeyDown={(event) => {
-										if (event.key === 'Escape') closeFind();
-										if (event.key === 'Enter') finder.current?.replace(findQuery, replaceText, event.metaKey || event.ctrlKey);
-									}} />
-									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, false)}>Replace</Button>
-									<Button type="button" variant="ghost" size="xs" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, true)}>All</Button>
-								</>
-							) : null}
-							<Button type="button" variant="ghost" size="icon-sm" aria-label="Clear search" onClick={closeFind}><X /></Button>
-						</div>
+				<div role="search" className="space-y-1 border-b pb-3">
+					<div className="flex min-w-0 items-center gap-1">
+						{kind === 'markdown' ? <Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" aria-label="Toggle replace" aria-expanded={replaceOpen} onClick={() => setReplaceOpen(!replaceOpen)}>{replaceOpen ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</Button> : null}
+						<Input autoFocus aria-label="Find in file" placeholder="Find" value={findQuery} className="h-7 min-w-0 flex-1 rounded-sm bg-muted/40 px-2 text-xs" onChange={(event) => {
+							setFindOpen(Boolean(event.target.value));
+							setFindQuery(event.target.value);
+							if (event.target.value) finder.current?.find(event.target.value, 'next'); else finder.current?.clearSearch();
+						}} onKeyDown={(event) => { if (event.key === 'Escape') closeFind(); if (event.key === 'Enter') finder.current?.find(findQuery, event.shiftKey ? 'previous' : 'next'); }} />
+						<Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" title="Previous match" aria-label="Previous match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'previous')}><ChevronUp className="size-3.5" /></Button>
+						<Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" title="Next match" aria-label="Next match" disabled={!matchCount} onClick={() => finder.current?.find(findQuery, 'next')}><ChevronDown className="size-3.5" /></Button>
+						<Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" title="Clear search" aria-label="Clear search" onClick={closeFind}><X className="size-3.5" /></Button>
+					</div>
+					{kind === 'markdown' && replaceOpen ? <div className="flex min-w-0 items-center gap-1 pl-6 pr-6">
+						<Input aria-label="Replace with" placeholder="Replace" value={replaceText} className="h-7 min-w-0 flex-1 rounded-sm bg-muted/40 px-2 text-xs" onChange={(event) => setReplaceText(event.target.value)} onKeyDown={(event) => { if (event.key === 'Escape') closeFind(); if (event.key === 'Enter') finder.current?.replace(findQuery, replaceText, event.metaKey || event.ctrlKey); }} />
+						<Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" title="Replace" aria-label="Replace" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, false)}><Replace className="size-3.5" /></Button>
+						<Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" title="Replace all" aria-label="Replace all" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, true)}><ReplaceAll className="size-3.5" /></Button>
+					</div> : null}
+					{findQuery ? <p aria-live="polite" className={`pl-6 pt-1 text-[11px] ${matchCount ? 'text-muted-foreground' : 'text-destructive'}`}>{matchCount ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'No results'}</p> : null}
 				</div>
 			) : null}<div ref={setSidebarTarget} /></div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
 			</aside> : null}
