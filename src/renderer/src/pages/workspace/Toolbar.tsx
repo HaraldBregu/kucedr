@@ -5,6 +5,7 @@ import { useEditorState } from '@tiptap/react';
 import {
 	Bold,
 	Code,
+	ChevronRight,
 	Columns3,
 	Eraser,
 	FileBox,
@@ -29,6 +30,7 @@ import {
 	Strikethrough,
 	Table,
 	Trash2,
+	Type,
 	Underline,
 	Undo2,
 } from 'lucide-react';
@@ -101,11 +103,13 @@ interface WorkspaceToolbarProps {
 export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [href, setHref] = useState('');
 	const [selection, setSelection] = useState(false);
+	const [stylesOpen, setStylesOpen] = useState(false);
 	const [slash, setSlash] = useState<{ from: number; to: number; query: string } | null>(null);
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState<number | null>(null);
 	const { byFence } = usePluginScripts();
 	const { refs: { setReference, setFloating }, elements: { floating: floatingElement }, floatingStyles, update: updatePosition } = useFloating({ placement: slash ? 'bottom-start' : 'top', middleware: [offset(8), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
+	const { refs: styleRefs, floatingStyles: stylePosition } = useFloating({ placement: 'right-start', middleware: [offset(4), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
 	const state = useEditorState({ editor, selector: ({ editor: current }) => ({
 		active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
 		table: current.isActive('table'), link: current.isActive('link'), canUndo: current.can().undo(), canRedo: current.can().redo(),
@@ -139,6 +143,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		return () => { editor.off('transaction', update); editor.off('focus', update); editor.off('blur', update); };
 	}, [editor, dismissed]);
 
+	useEffect(() => { if (!selection) setStylesOpen(false); }, [selection]);
 	useEffect(() => { setSelected(0); }, [slash?.query]);
 	useEffect(() => { floatingElement?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' }); }, [selected, floatingElement]);
 	useEffect(() => {
@@ -200,9 +205,20 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 				{state.link ? <Button type="button" variant="ghost" size="sm" onClick={() => { editor.chain().focus().extendMarkRange('link').unsetLink().run(); onLinkOpenChange(false); }}>Remove</Button> : null}
 			</form> : slash ? <div role="listbox" aria-label="Editor commands" className="max-h-72 w-64 overflow-auto">
 				{commands.map((command, index) => <button key={command.label} type="button" role="option" aria-selected={index === selected} className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm ${index === selected ? 'bg-accent text-accent-foreground' : ''}`} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setSelected(index)} onClick={() => execute(index)}><command.icon className="size-4" />{command.label}</button>)}
-			</div> : <div role="toolbar" aria-label="Selection formatting" className="flex items-center">
-				{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
-				<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} onMouseDown={(event) => event.preventDefault()} onClick={() => onLinkOpenChange(true)}><Link /></Button>
+			</div> : <div role="toolbar" aria-label="Selection formatting" className="w-48">
+				<Button ref={styleRefs.setReference} type="button" variant="ghost" className="h-9 w-full justify-start gap-2 px-2" aria-label="Text style" aria-expanded={stylesOpen} aria-haspopup="menu" onMouseDown={(event) => event.preventDefault()} onClick={() => setStylesOpen(!stylesOpen)}>
+					<Type className="size-4" />
+					<span className="flex-1 text-left">{[...groups[1], ...groups[3].slice(0, 5)].find((action) => action.active && (typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active)))?.label ?? 'Normal text'}</span>
+					<ChevronRight className="size-4" />
+				</Button>
+				{stylesOpen ? <div ref={styleRefs.setFloating} style={stylePosition} role="menu" aria-label="Text styles" className="z-50 w-48 rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+					<button type="button" role="menuitem" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { editor.chain().focus().clearNodes().setParagraph().run(); setStylesOpen(false); }}><Type className="size-4" />Normal text</button>
+					{[...groups[1], ...groups[3].slice(0, 5)].map((action) => <button key={action.label} type="button" role="menuitem" className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent" onMouseDown={(event) => event.preventDefault()} onClick={() => { action.run(editor.chain().focus()).run(); setStylesOpen(false); }}><action.icon className="size-4" />{action.label}</button>)}
+				</div> : null}
+				<div className="mt-1 grid grid-cols-4 gap-0.5 border-t pt-1">
+					{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} className={state.active[5 + index] ? 'bg-muted' : ''} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
+					<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} className={state.link ? 'bg-muted' : ''} onMouseDown={(event) => event.preventDefault()} onClick={() => onLinkOpenChange(true)}><Link /></Button>
+				</div>
 			</div>}
 		</div>
 	);
