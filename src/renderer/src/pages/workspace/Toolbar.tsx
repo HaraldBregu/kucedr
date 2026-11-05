@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import type { ChainedCommands, Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
@@ -17,6 +17,7 @@ import {
 	HardDrive,
 	MoveHorizontal,
 	Search,
+	Sparkles,
 	Globe,
 	Library,
 	Italic,
@@ -102,6 +103,9 @@ interface WorkspaceToolbarProps {
 }
 
 export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
+	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean } | null>(null);
+	const requestId = useRef(0);
+	useEffect(() => () => { requestId.current++; }, []);
 	const [href, setHref] = useState('');
 	const [selection, setSelection] = useState(false);
 	const [stylesOpen, setStylesOpen] = useState(false);
@@ -118,6 +122,7 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 	const commands = [
 		...groups.flat().filter((action) => !((action.label === 'Undo' && !state.canUndo) || (action.label === 'Redo' && !state.canRedo))).map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })),
 		...(state.table ? tableActions.map((action) => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run() })) : []),
+		{ label: 'Edit with AI', icon: Sparkles, run: () => openAi() },
 		{ label: 'Link', icon: Link, run: () => onLinkOpenChange(true) },
 		{ label: 'Insert from computer', icon: HardDrive, run: onInsertFromComputer },
 		{ label: 'Insert from library', icon: Library, run: onInsertFromLibrary },
@@ -172,6 +177,22 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		return () => document.removeEventListener('pointerdown', dismiss);
 	}, [editor, floatingElement, linkOpen, onLinkOpenChange]);
 
+	const openAi = (instruction = ''): void => {
+		const { from, to } = editor.state.selection;
+		const text = editor.state.doc.textBetween(from, to, '\n');
+		setAi({ from, to, text, doc: JSON.stringify(editor.state.doc.toJSON()), prompt: instruction, result: '', error: '', loading: false });
+	};
+	const generate = (value: NonNullable<typeof ai>): void => {
+		if (!value.prompt.trim()) return;
+		const id = ++requestId.current;
+		setAi({ ...value, loading: true, error: '', result: '' });
+		const prompt = `Return only the resulting text in the original language, preserving relevant Markdown formatting. ${value.text ? `Edit the following text: ${value.prompt}\n\nText:\n${value.text}` : `Write text following this instruction: ${value.prompt}`}`;
+		void window.models.text.generateText({ prompt }).then((result) => {
+			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, result } : null);
+		}).catch((error: unknown) => {
+			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate text.' } : null);
+		});
+	};
 	const execute = (index: number): void => {
 		const command = commands[index];
 		if (!command || !slash) return;
@@ -192,10 +213,16 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	if ((!slash || !commands.length) && !selection && !linkOpen) return <></>;
+	if ((!slash || !commands.length) && !selection && !linkOpen && !ai) return <></>;
 	return (
 		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
-			{linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
+			{ai ? <div className="w-80 space-y-2 p-2">
+				<form onSubmit={(event) => { event.preventDefault(); generate(ai); }} className="flex gap-1"><Input autoFocus aria-label="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onChange={(event) => setAi({ ...ai, prompt: event.target.value })} /><Button type="submit" size="sm" disabled={ai.loading || !ai.prompt.trim()}>Generate</Button></form>
+				{ai.loading ? <p className="text-sm text-muted-foreground">Generating…</p> : null}
+				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
+				{ai.result ? <div className="max-h-60 overflow-auto whitespace-pre-wrap text-sm">{ai.result}</div> : null}
+				<div className="flex justify-end gap-1"><Button type="button" variant="ghost" size="sm" onClick={() => { requestId.current++; setAi(null); editor.commands.focus(); }}>Discard</Button>{ai.result ? <Button type="button" size="sm" onClick={() => { if (JSON.stringify(editor.state.doc.toJSON()) !== ai.doc) { setAi({ ...ai, error: 'The document changed. Please start again.', result: '' }); return; } editor.chain().focus().insertContentAt({ from: ai.from, to: ai.to }, ai.result, { contentType: 'markdown' }).run(); setAi(null); }}>Apply</Button> : null}</div>
+			</div> : linkOpen ? <form className="flex w-80 items-center gap-1" onSubmit={(event) => {
 				event.preventDefault();
 				const chain = editor.chain().focus().extendMarkRange('link');
 				if (href.trim()) chain.setLink({ href: href.trim() }).run(); else chain.unsetLink().run();
@@ -221,6 +248,10 @@ export function WorkspaceToolbar({ editor, linkOpen, onLinkOpenChange, onInsertF
 				<div className="flex items-center gap-0.5">
 					{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} className={`rounded-lg ${state.active[5 + index] ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} className={`rounded-lg ${state.link ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => onLinkOpenChange(true)}><Link /></Button>
+				</div>
+				<div className="mx-1 h-px bg-border" />
+				<div className="flex flex-col">
+					{['Improve writing', 'Fix spelling and grammar', 'Make shorter', 'Make longer', 'Edit with AI'].map((label) => <Button key={label} type="button" variant="ghost" size="sm" className="h-8 justify-start gap-2 px-2" onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}><Sparkles className="text-muted-foreground" />{label}</Button>)}
 				</div>
 				<div className="mx-1 h-px bg-border" />
 				<div className="flex flex-col">
