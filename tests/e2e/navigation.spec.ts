@@ -528,19 +528,19 @@ test('Workspace file details sidebar shares the file container and controls its 
 	});
 	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'details-test.md' }).click();
 	const content = page.locator('[data-slot="workspace-content"]');
-	await page.getByRole('button', { name: 'File details', exact: true }).click();
-	const details = content.getByRole('complementary', { name: 'Workspace details' });
+	await page.getByRole('button', { name: 'Editor options', exact: true }).click();
+	const details = content.getByRole('complementary', { name: 'Workspace editor options' });
 	await expect(details).toBeVisible();
-	await expect(details).toContainText('details-test.md');
+	await expect(details).toContainText('Styles');
 	await expect(content.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
 	await expect(content.getByRole('contentinfo', { name: 'File information' })).toBeVisible();
 	await details.getByRole('button', { name: /Full width/ }).click();
 	await expect(details.getByRole('button', { name: /Full width/ })).toHaveAttribute('aria-pressed', 'true');
 	await details.getByRole('button', { name: /Full width/ }).click();
-	await details.getByRole('button', { name: 'Close file details' }).click();
+	await details.getByRole('button', { name: 'Close editor options' }).click();
 	await expect(details).toHaveCount(0);
 	await page.evaluate(() => { window.location.hash = '#/home'; });
-	await expect(page.getByRole('button', { name: 'File details', exact: true })).toHaveCount(0);
+	await expect(page.getByRole('button', { name: 'Editor options', exact: true })).toHaveCount(0);
 });
 
 test('editing Markdown Preview keeps table and task content', async () => {
