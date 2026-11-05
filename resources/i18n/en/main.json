@@ -94,7 +94,6 @@
 			"routes": "Routes",
 			"apps": "Apps",
 			"plugins": "Plugins",
-			"scripts": "Scripts",
 			"models": "Models",
 			"other": "Other"
 		},
