@@ -267,7 +267,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 	useEffect(() => {
 		if (!aiTarget || !inlineActive) return;
 		const position = Number(aiTarget.dataset.position);
-		editor.registerPlugin(new Plugin({ key: inlineAiKey, props: { decorations(state) { return DecorationSet.create(state.doc, [Decoration.widget(Math.min(position, state.doc.content.size), aiTarget, { side: 1, stopEvent: () => true, ignoreSelection: true })]); } } }));
+		editor.registerPlugin(new Plugin({ key: inlineAiKey, state: { init: (_, state) => DecorationSet.create(state.doc, [Decoration.widget(Math.min(position, state.doc.content.size), aiTarget, { side: 1, stopEvent: () => true, ignoreSelection: true })]), apply: (transaction, decorations) => decorations.map(transaction.mapping, transaction.doc) }, props: { decorations(state) { return inlineAiKey.getState(state); } } }));
 		const timer = setTimeout(() => aiTarget.querySelector<HTMLElement>('[contenteditable="true"]')?.focus(), 0);
 		return () => { clearTimeout(timer); editor.unregisterPlugin(inlineAiKey); };
 	}, [editor, aiTarget, inlineActive]);
