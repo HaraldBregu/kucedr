@@ -182,7 +182,7 @@ const codeEditorTheme = EditorView.theme({
 	'&': { height: '100%', backgroundColor: 'transparent', color: 'var(--foreground)' },
 	'&.cm-focused': { outline: 'none' },
 	'.cm-scroller': { overflow: 'auto', fontFamily: 'var(--font-sans)' },
-	'.cm-content': { minHeight: '100%', padding: '44px 0 12px', caretColor: 'var(--primary)' },
+	'.cm-content': { minHeight: '100%', padding: '76px 0 12px', caretColor: 'var(--primary)' },
 	'.cm-line': { padding: '0 16px' },
 	'.cm-gutters': {
 		backgroundColor: 'color-mix(in oklch, var(--muted) 35%, transparent)',
