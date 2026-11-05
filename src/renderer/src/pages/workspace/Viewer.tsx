@@ -28,6 +28,7 @@ const WorkspaceMarkdownEditor = lazy(async () => {
 });
 
 interface WorkspaceViewerProps {
+	readonly details?: React.ReactNode;
 	readonly file: WorkspaceTreeEntry | null;
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 	readonly ref?: React.Ref<() => Promise<void>>;
@@ -45,7 +46,7 @@ const TEXT_SIZES = [
 	{ size: 'extra-large', label: 'Extra large', zoom: 1.5 },
 ] as const;
 
-export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
+export function WorkspaceViewer({ details, file, onFileSelect, ref, wide, onWideChange, textSize, onTextSizeChange }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
@@ -162,6 +163,8 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 			event.stopPropagation();
 			setFindOpen(true);
 		}}>
+			<div className="relative flex min-h-0 min-w-0 flex-1">
+			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
 			{searchable && (kind !== 'markdown' || visibleMarkdownMode === 'source' || content.includes('<!--')) ? (
 				<div role="toolbar" aria-label="File tools" className="flex shrink-0 items-center border-b px-2 py-1 sm:px-3">
 					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={() => setFindOpen(true)} />
@@ -242,6 +245,9 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 				</div>
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
+			</div>
+			{details}
+			</div>
 			{file ? (
 				<footer aria-label="File information" className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t bg-muted/20 px-2 py-1.5 sm:px-3">
 					<div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
