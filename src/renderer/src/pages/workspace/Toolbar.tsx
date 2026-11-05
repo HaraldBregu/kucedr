@@ -224,6 +224,12 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 			if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate text.' } : null);
 		});
 	};
+	const submitAi = (): void => {
+		if (!ai) return;
+		if (!ai.loading) { generate(ai); return; }
+		requestId.current++;
+		setAi({ ...ai, loading: false });
+	};
 	const inlineActive = Boolean(ai && !ai.autoApply);
 	useEffect(() => {
 		if (!aiTarget || !inlineActive) return;
