@@ -8,10 +8,9 @@ import {
 	useState,
 	type ReactElement,
 } from 'react';
-import { AnimatePresence, motion, resize } from 'motion/react';
+import { resize } from 'motion/react';
 import {
 	AlertCircle,
-	ArrowUp,
 	FileAudioIcon,
 	FileCodeIcon,
 	FileImageIcon,
