@@ -95,7 +95,7 @@ const tableActions: Action[] = [
 ];
 
 interface WorkspaceToolbarProps {
-	readonly sidebarTarget: HTMLElement | null;
+	readonly toolbarTarget: HTMLElement | null;
 	readonly editor: Editor;
 	readonly linkOpen: boolean;
 	readonly onLinkOpenChange: (open: boolean) => void;
@@ -108,7 +108,7 @@ interface WorkspaceToolbarProps {
 	readonly onWideChange: (wide: boolean) => void;
 }
 
-export function WorkspaceToolbar({ sidebarTarget, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
+export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenChange, onInsertFromComputer, onInsertFromLibrary, onInsertFromUrl, onInsertScript, wide, onWideChange, onFind }: WorkspaceToolbarProps): React.JSX.Element {
 	const [ai, setAi] = useState<{ from: number; to: number; text: string; doc: string; prompt: string; result: string; error: string; loading: boolean; autoApply: boolean } | null>(null);
 	const requestId = useRef(0);
 	useEffect(() => () => { requestId.current++; }, []);
@@ -227,20 +227,20 @@ export function WorkspaceToolbar({ sidebarTarget, editor, linkOpen, onLinkOpenCh
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	const sidebar = sidebarTarget ? createPortal(<div className="divide-y">
+	const toolbar = toolbarTarget ? createPortal(<div className="flex items-center gap-2 overflow-x-auto px-3 py-1">
 		{[
 			{ title: 'Text', labels: [...groups[1], ...groups[2]].map((action) => action.label) },
 			{ title: 'Blocks', labels: groups[3].map((action) => action.label) },
 			{ title: 'Insert & tools', labels: allCommands.filter((command) => !groups.flat().some((action) => action.label === command.label) && !['Find in file', 'Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label).concat(['Undo', 'Redo']) },
-		].map(({ title, labels }) => <section key={title} className="space-y-2 py-3 first:pt-0"><h3 className="text-xs font-medium text-muted-foreground">{title}</h3><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap gap-1">{allCommands.filter((command) => labels.includes(command.label)).map((command) => {
+		].map(({ title, labels }) => <section key={title} className="shrink-0 border-r pr-2"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex items-center gap-0.5">{allCommands.filter((command) => labels.includes(command.label)).map((command) => {
 			const action = groups.flat().find((item) => item.label === command.label);
 			const active = action?.active ? typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active) : false;
 			return <Tooltip key={command.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={command.label} aria-pressed={action?.active ? active : undefined} className={active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon /></Button>} /><TooltipContent>{command.label}</TooltipContent></Tooltip>;
 		})}</div></section>)}
-		<section className="space-y-2 py-3"><h3 className="text-xs font-medium text-muted-foreground">AI writing</h3><div role="toolbar" aria-label="AI writing" className="flex flex-wrap gap-1">{[{ label: 'Edit with AI', icon: Sparkles }, { label: 'Improve writing', icon: Sparkles }, { label: 'Fix spelling and grammar', icon: SpellCheck }, { label: 'Make shorter', icon: Shrink }, { label: 'Make longer', icon: Expand }].map(({ label, icon: Icon }) => <Tooltip key={label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={label} disabled={ai?.loading || (label !== 'Edit with AI' && editor.state.selection.empty)} onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin" /> : <Icon />}</Button>} /><TooltipContent>{label}</TooltipContent></Tooltip>)}</div></section>
-	</div>, sidebarTarget) : null;
-	if ((!slash || !commands.length) && !selection && !linkOpen && !ai) return <>{sidebar}</>;
-	return (<>{sidebar}
+		<section className="shrink-0"><div role="toolbar" aria-label="AI writing" className="flex items-center gap-0.5">{[{ label: 'Edit with AI', icon: Sparkles }, { label: 'Improve writing', icon: Sparkles }, { label: 'Fix spelling and grammar', icon: SpellCheck }, { label: 'Make shorter', icon: Shrink }, { label: 'Make longer', icon: Expand }].map(({ label, icon: Icon }) => <Tooltip key={label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={label} disabled={ai?.loading || (label !== 'Edit with AI' && editor.state.selection.empty)} onMouseDown={(event) => event.preventDefault()} onClick={() => openAi(label === 'Edit with AI' ? '' : label)}>{ai?.loading && ai.prompt === label ? <Loader2 className="animate-spin" /> : <Icon />}</Button>} /><TooltipContent>{label}</TooltipContent></Tooltip>)}</div></section>
+	</div>, toolbarTarget) : null;
+	if ((!slash || !commands.length) && !selection && !linkOpen && !ai) return <>{toolbar}</>;
+	return (<>{toolbar}
 		<div ref={setFloating} style={floatingStyles} className={`z-50 border bg-popover p-1 text-popover-foreground shadow-lg ${!slash && !linkOpen ? 'rounded-xl py-2' : 'rounded-md'}`}>
 			{ai && !ai.autoApply ? <div className="w-80 space-y-2 p-2">
 				<form onSubmit={(event) => { event.preventDefault(); generate(ai); }} className="flex gap-1"><Input autoFocus disabled={ai.loading} aria-label="AI instruction" placeholder="Ask AI to write or edit…" value={ai.prompt} onChange={(event) => setAi({ ...ai, prompt: event.target.value })} /><Button type="submit" size="sm" disabled={ai.loading || !ai.prompt.trim()}>Generate</Button></form>

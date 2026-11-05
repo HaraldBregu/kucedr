@@ -52,7 +52,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
-	const [sidebarTarget, setSidebarTarget] = useState<HTMLDivElement | null>(null);
+	const [toolbarTarget, setToolbarTarget] = useState<HTMLDivElement | null>(null);
 	const [content, setContent] = useState('');
 	const [loading, setLoading] = useState(() => file !== null && !['image', 'audio', 'video', 'pdf', 'unsupported'].includes(workspaceFileType(file.path).kind));
 	const [error, setError] = useState('');
@@ -168,11 +168,12 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 			event.stopPropagation();
 			openFind();
 		}}>
+			{kind === 'markdown' && visibleMarkdownMode === 'preview' && !content.includes('<!--') ? <div ref={setToolbarTarget} className="shrink-0 border-b" /> : null}
 			<div className="relative flex min-h-0 min-w-0 flex-1">
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
 			{searchable && (kind !== 'markdown' || visibleMarkdownMode === 'source' || content.includes('<!--')) ? (
 				<div role="toolbar" aria-label="File tools" className="flex shrink-0 items-center border-b px-2 py-1 sm:px-3">
-					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={() => setFindOpen(true)} />
+					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} />
 				</div>
 			) : null}
 
@@ -207,7 +208,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 				</div>
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
 				<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-					<WorkspaceMarkdownEditor sidebarTarget={sidebarTarget} ref={textRef} onMatchCount={setTextMatchCount} path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} zoom={zoom} onFind={() => setFindOpen(true)} onOpenLink={(href) => {
+					<WorkspaceMarkdownEditor toolbarTarget={toolbarTarget} ref={textRef} onMatchCount={setTextMatchCount} path={file.path} value={content} onChange={handleMarkdownChange} onSave={save} onError={setSaveError} wide={wide} onWideChange={onWideChange} zoom={zoom} onFind={openFind} onOpenLink={(href) => {
 						if (/^[a-z][a-z\d+.-]*:/i.test(href)) void window.app.openExternalUrl(href);
 						else {
 							const path = decodeURIComponent(new URL(workspaceResourceUrl(file.path, href)).pathname.slice(1));
@@ -224,8 +225,8 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
 			</div>
-			{detailsOpen ? <aside aria-label="Workspace editor options" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col border-l bg-background shadow-lg sm:relative sm:max-w-[50%] sm:shrink-0 sm:shadow-none">
-				<div className="flex shrink-0 items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-medium">Editor</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close editor options" onClick={onDetailsClose}><X /></Button></div>
+			{detailsOpen ? <aside aria-label="Workspace search" className="absolute inset-y-0 right-0 z-20 flex w-72 max-w-full flex-col border-l bg-background shadow-lg sm:relative sm:max-w-[50%] sm:shrink-0 sm:shadow-none">
+				<div className="flex shrink-0 items-center justify-between border-b px-4 py-2"><h2 className="text-sm font-medium">Search</h2><Button type="button" variant="ghost" size="icon-sm" aria-label="Close search sidebar" onClick={onDetailsClose}><X /></Button></div>
 				{file ? <div className="min-h-0 flex-1 space-y-3 overflow-auto px-4 py-3 text-sm">{searchable ? (
 				<div role="search" className="space-y-1 border-b pb-3">
 					<div className="flex min-w-0 items-center gap-1">
@@ -246,7 +247,7 @@ export function WorkspaceViewer({ detailsOpen, onDetailsOpen, onDetailsClose, fi
 					</div> : null}
 					{findQuery ? <p aria-live="polite" className={`pl-6 pt-1 text-[11px] ${matchCount ? 'text-muted-foreground' : 'text-destructive'}`}>{matchCount ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'No results'}</p> : null}
 				</div>
-			) : null}<div ref={setSidebarTarget} /></div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to see editor options.</p>}
+			) : null}</div> : <p className="p-4 text-sm text-muted-foreground">Choose a file to search its content.</p>}
 			</aside> : null}
 			</div>
 			{file ? (

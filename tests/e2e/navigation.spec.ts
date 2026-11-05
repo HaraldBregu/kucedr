@@ -528,10 +528,10 @@ test('Workspace editor options share the file container and control its styles',
 	});
 	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'details-test.md' }).click();
 	const content = page.locator('[data-slot="workspace-content"]');
-	await page.getByRole('button', { name: 'Editor options', exact: true }).click();
-	const details = content.getByRole('complementary', { name: 'Workspace editor options' });
+	await page.getByRole('button', { name: 'Search sidebar', exact: true }).click();
+	const details = content.getByRole('complementary', { name: 'Workspace search' });
 	await expect(details).toBeVisible();
-	await expect(details).toContainText('Blocks');
+	await expect(content.getByRole('toolbar', { name: 'Blocks', exact: true })).toBeVisible();
 
 	await details.getByRole('textbox', { name: 'Find in file' }).fill('Workspace');
 	await expect(details).toContainText('1 match');
@@ -542,17 +542,17 @@ test('Workspace editor options share the file container and control its styles',
 	const editor = content.getByRole('textbox', { name: 'Markdown preview editor' });
 	await editor.click();
 	await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
-	await details.getByRole('button', { name: 'Bold', exact: true }).click();
+	await content.getByRole('toolbar', { name: 'Editor actions' }).getByRole('button', { name: 'Bold', exact: true }).click();
 	await expect(editor.locator('strong')).toHaveText('Workspace details test');
 	await expect(content.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
 	await expect(content.locator('footer[aria-label="File information"]')).toBeVisible();
 	await content.locator('footer').getByRole('button', { name: 'Full width' }).click();
 	await expect(content.locator('footer').getByRole('button', { name: 'Full width' })).toHaveAttribute('aria-pressed', 'true');
 	await content.locator('footer').getByRole('button', { name: 'Full width' }).click();
-	await details.getByRole('button', { name: 'Close editor options' }).click();
+	await details.getByRole('button', { name: 'Close search sidebar' }).click();
 	await expect(details).toHaveCount(0);
 	await page.evaluate(() => { window.location.hash = '#/home'; });
-	await expect(page.getByRole('button', { name: 'Editor options', exact: true })).toHaveCount(0);
+	await expect(page.getByRole('button', { name: 'Search sidebar', exact: true })).toHaveCount(0);
 });
 
 test('editing Markdown Preview keeps table and task content', async () => {
