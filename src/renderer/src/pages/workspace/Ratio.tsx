@@ -21,7 +21,7 @@ export function Ratio({ providerId, modelId, options, disabled, onChange }: Rati
 	const key = `${providerId}:${modelId}`;
 	const value = options[key]?.[name] ?? String(input?.default ?? choices[0].value);
 	return <Select value={value} disabled={disabled} onValueChange={(next) => onChange({ ...options, [key]: { [name]: String(next) } })}>
-		<SelectTrigger aria-label="Aspect ratio" className="h-7 rounded-[min(var(--radius-md),12px)] border-0 px-2.5 text-[0.8rem] capitalize hover:bg-muted">
+		<SelectTrigger aria-label="Aspect ratio" className="h-7 rounded-full border-0 px-2.5 text-[0.8rem] capitalize hover:bg-muted">
 			<SelectValue>{choices.find((choice) => choice.value === value)?.label}</SelectValue>
 		</SelectTrigger>
 		<SelectContent>
