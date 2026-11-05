@@ -153,6 +153,8 @@ export const models: ModelsApi = {
 				...(providerId ? { providerId } : {}),
 				...(modelId ? { modelId } : {}),
 				...(maxTokens ? { maxTokens } : {}),
+				...(request?.effort ? { effort: request.effort } : {}),
+				...(request?.files ? { files: normalizeAgentInputFiles(request.files) } : {}),
 			});
 		},
 		getProviderId: () => {
