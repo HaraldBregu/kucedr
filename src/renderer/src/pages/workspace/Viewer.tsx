@@ -246,7 +246,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 
 			</div>
 			{file ? (
-				<footer aria-label="File information" className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t bg-muted/20 px-2 py-1.5 sm:px-3">
+				<footer aria-label="File information" className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 bg-muted/20 px-2 py-1.5 sm:px-3">
 					<div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
 						{typeof file.size === 'number' ? <span>{formatFileSize(file.size)}</span> : null}
 						{kind === 'markdown' ? <span>{content.split(/\s+/).filter(Boolean).length} words</span> : null}
