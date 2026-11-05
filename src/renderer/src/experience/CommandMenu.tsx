@@ -258,8 +258,6 @@ export function CommandMenu({
 	const [services, setServices] = useState<CatalogWebSearch[]>([]);
 	const [scripts, setScripts] = useState<PluginScriptInfo[]>([]);
 	const [models, setModels] = useState<CatalogModel[]>([]);
-	const [skills, setSkills] = useState<SkillInfo[]>([]);
-	const [mcpServers, setMcpServers] = useState<readonly McpServerInfo[]>([]);
 	const listRef = useRef<HTMLDivElement>(null);
 	const { visibleItems, searchOnlyItems } = useMemo(() => buildCommandItems(t), [t]);
 	const isSearching = search.trim().length >= MIN_SEARCH_LENGTH;
