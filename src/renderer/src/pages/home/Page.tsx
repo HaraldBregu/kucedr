@@ -257,95 +257,38 @@ function PageContent(): ReactElement {
 			{showEmptyConversation ? null : (
 				<div className={cn('pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background', detailsOpen && 'max-w-[60.5rem] pr-[12.5rem] bg-clip-content')} />
 			)}
-			<div className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl', !showEmptyConversation && detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}>
-				{libraryDropError && <p role="alert" className="mb-2 text-xs text-destructive">Could not attach Library files. Please try again.</p>}
-				<RecorderErrorMessage
-					message={voiceErrorMessage}
-					actionLabel={voiceErrorAction?.label}
-					onAction={voiceErrorAction?.action}
-				/>
-				{attachments.length > 0 ? (
-					<div className="mb-2">
-						<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
-					</div>
-				) : null}
-				<div data-slot="home-composer-container" className="relative flex flex-col bg-background">
-				{showEmptyConversation ? null : (
-					<div className="pointer-events-none absolute inset-x-0 bottom-full h-12 bg-gradient-to-b from-transparent to-background" />
+			<Composer
+				className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl', !showEmptyConversation && detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}
+				fade={!showEmptyConversation}
+				placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
+				ariaLabel="Message your assistant"
+				value={agent.input}
+				onValueChange={agent.setInput}
+				onPlanCommandChange={(active) => {
+					setPlanCommandActive(active);
+					agent.setInteractionMode(active ? 'plan' : 'default');
+				}}
+				onGoalCommandChange={setGoalCommandActive}
+				isLoading={agent.isLoading}
+				mode={mode}
+				setMode={setMode}
+				attachments={attachments}
+				setAttachments={setAttachments}
+				onSubmit={() => void submitPrompt()}
+				textareaRef={agent.inputRef}
+				header={
+					agent.replyTo ? (
+						<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
+					) : undefined
+				}
+				messages={agent.chatState.messages}
+				onContext={setModelContext}
+				inputClassName={cn(
+					showEmptyConversation && 'min-h-[114px]',
+					planCommandActive && 'plan-prompt-frame',
+					goalCommandActive && 'goal-prompt-frame'
 				)}
-					<PromptEditor
-						placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
-						ariaLabel="Message your assistant"
-						value={agent.input}
-						expanded={false}
-						onValueChange={agent.setInput}
-						onPlanCommandChange={(active) => {
-							setPlanCommandActive(active);
-							agent.setInteractionMode(active ? 'plan' : 'default');
-						}}
-						onGoalCommandChange={setGoalCommandActive}
-						isLoading={agent.isLoading}
-						maxHeight={360}
-						onSubmit={() => void submitPrompt()}
-						textareaRef={agent.inputRef}
-						header={
-							agent.replyTo ? (
-								<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
-							) : undefined
-						}
-						leadingAction={
-							voiceMode === 'dictation' ? undefined : (
-								<AttachmentButton
-									disabled={attachmentDisabled}
-									onLibrarySelect={() => setLibraryPickerOpen(true)}
-								/>
-							)
-						}
-						voiceMode={voiceMode === 'dictation' ? voiceMode : null}
-						voiceElapsedMs={activeVoiceElapsedMs}
-						voiceMuted={activeVoiceMuted}
-						voiceMediaStream={activeVoiceStream}
-						voiceAnalyser={null}
-						voiceStatus={activeDictationMode === 'record' ? 'Recording' : 'Listening'}
-						voiceWaveformActive={true}
-						onVoiceMutedChange={activeVoiceSetMuted}
-						onVoiceCancel={() => void cancelDictation()}
-						onVoiceConfirm={() => void confirmDictation()}
-						onFilesChange={(files) => {
-							setAttachments((current) => [...current, ...filesToAttachments(files)]);
-						}}
-						wrapperClassName="max-w-none"
-						detachedControls
-						footerContent={
-							<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-								<StableModel
-									messages={agent.chatState.messages}
-									draft={agent.input}
-									hasAttachments={attachments.length > 0}
-									onContext={setModelContext}
-								/>
-							</div>
-						}
-						className="w-full"
-						inputClassName={cn(
-							showEmptyConversation && 'min-h-[114px]',
-							planCommandActive && 'plan-prompt-frame',
-							goalCommandActive && 'goal-prompt-frame'
-						)}
-						trailingAction={
-							<PromptInputActions className="justify-end gap-1.5">
-								<VoiceButton
-									onVoiceModeRequest={() => void startDictation()}
-									disabled={voiceBusy || agent.isLoading}
-									disabledReason={voiceButtonDisabledReason}
-									mode={voiceButtonMode}
-								/>
-								<PromptSubmit isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
-							</PromptInputActions>
-						}
-					/>
-				</div>
-			</div>
+			/>
 		</div>
 	);
 
