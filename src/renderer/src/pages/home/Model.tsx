@@ -16,10 +16,12 @@ export function Model({
 	draft = '',
 	hasAttachments = false,
 	onContext,
+	workspace = false,
 }: {
 	messages?: readonly HomeChatMessage[];
 	draft?: string;
 	hasAttachments?: boolean;
+	workspace?: boolean;
 	onContext?: (context: { providerId: string; modelId: string; contextWindow?: number }) => void;
 }): ReactElement {
 	const [groups, setGroups] = useState<{ id: string; discoveryLabel?: string; models: ProviderModel[] }[]>([]);
@@ -51,9 +53,8 @@ export function Model({
 		let active = true;
 		const refresh = async (): Promise<void> => {
 			try {
-				const [storedProvider, storedModelId, configuredProviders] = await Promise.all([
-					window.agent.getProvider(),
-					window.agent.getModelId(),
+				const [selection, configuredProviders] = await Promise.all([
+					workspace ? window.app.getWorkspaceModel() : Promise.all([window.agent.getProvider(), window.agent.getModelId()]).then(([provider, modelId]) => ({ providerId: provider?.id ?? '', modelId: modelId ?? '' })),
 					window.provider?.list('models').catch(() => []) ?? Promise.resolve([]),
 				]);
 				const custom = configuredProviders.find((provider) => provider.id === 'custom');
@@ -77,9 +78,9 @@ export function Model({
 				if (!active) return;
 				setGroups(catalogGroups);
 				setLocalProvider(custom);
-				setProviderId(storedProvider?.id ?? '');
-				setModelId(storedModelId ?? '');
-				setEffort(readEffort(storedProvider?.id ?? '', storedModelId ?? ''));
+				setProviderId(selection.providerId);
+				setModelId(selection.modelId);
+				setEffort(readEffort(selection.providerId, selection.modelId));
 			} catch {
 				if (active) setError(true);
 			}
@@ -90,7 +91,7 @@ export function Model({
 			active = false;
 			unsubscribe();
 		};
-	}, []);
+	}, [workspace]);
 
 	const changeModel = async (nextProviderId: string, nextModelId: string): Promise<void> => {
 		const provider =
@@ -101,9 +102,12 @@ export function Model({
 		setSaving(true);
 		setError(false);
 		try {
-			if (!(await window.agent.setProvider(provider))) throw new Error('Provider was not saved');
-			if (!(await window.agent.setModelId(nextModelId))) throw new Error('Model was not saved');
-			if (nextProviderId !== 'custom') await window.agent.setModelOptions({});
+			if (workspace) await window.app.setWorkspaceModel({ providerId: nextProviderId, modelId: nextModelId });
+			else {
+				if (!(await window.agent.setProvider(provider))) throw new Error('Provider was not saved');
+				if (!(await window.agent.setModelId(nextModelId))) throw new Error('Model was not saved');
+				if (nextProviderId !== 'custom') await window.agent.setModelOptions({});
+			}
 			setProviderId(nextProviderId);
 			setModelId(nextModelId);
 			setEffort(readEffort(nextProviderId, nextModelId));

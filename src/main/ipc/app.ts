@@ -62,6 +62,7 @@ import {
 	setVoiceAgentAppearance as setStoredVoiceAgentAppearance,
 	getLaunchState as getStoredLaunchState,
 } from '../settings_store';
+import { getWorkspaceModel, setWorkspaceModel } from '../workspace/store';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
 import {
 	loadMcps,
@@ -641,6 +642,9 @@ export class AppIpc implements IpcModule {
 				return getStoredSoundFeedbackEnabled();
 			}, AppChannels.getSoundFeedbackEnabled)
 		);
+
+		ipcMain.handle(AppChannels.getWorkspaceModel, wrapSimpleHandler(() => getWorkspaceModel(), AppChannels.getWorkspaceModel));
+		ipcMain.handle(AppChannels.setWorkspaceModel, wrapSimpleHandler((model: { providerId: string; modelId: string }) => setWorkspaceModel(model), AppChannels.setWorkspaceModel));
 
 		ipcMain.handle(
 			AppChannels.setWorkspaceWideContent,

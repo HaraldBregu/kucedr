@@ -618,6 +618,8 @@ export interface AppApi extends AppStorageApi {
 	setSoundFeedbackEnabled: (enabled: boolean) => Promise<void>;
 	getSoundFeedbackEnabled: () => Promise<boolean>;
 	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void) => () => void;
+	getWorkspaceModel: () => Promise<{ providerId: string; modelId: string }>;
+	setWorkspaceModel: (model: { providerId: string; modelId: string }) => Promise<void>;
 	setWorkspaceWideContent: (enabled: boolean) => Promise<void>;
 	getWorkspaceWideContent: () => Promise<boolean>;
 	setWorkspaceTextSize: (size: import('./app_types').WorkspaceTextSize) => Promise<void>;

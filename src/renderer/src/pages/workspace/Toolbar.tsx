@@ -217,7 +217,10 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		const id = ++requestId.current;
 		setAi({ ...value, loading: true, error: '', result: '' });
 		const prompt = `Return only the resulting text in the original language, preserving relevant Markdown formatting. ${value.text ? `Edit the following text: ${value.prompt}\n\nText:\n${value.text}` : `Complete the document at the cursor following this instruction: ${value.prompt}\n\nReturn only the new text to insert, without repeating the existing text.\n\nBefore the cursor:\n${editor.state.doc.textBetween(0, value.from, '\n')}\n\nAfter the cursor:\n${editor.state.doc.textBetween(value.to, editor.state.doc.content.size, '\n')}`}`;
-		void Promise.all([window.models.text.getProviderId(), window.models.text.getModelId()]).then(([providerId, modelId]) => window.models.text.generateText({ prompt, effort: providerId && modelId ? readEffort(providerId, modelId) : undefined })).then((result) => {
+		void window.app.getWorkspaceModel().then(({ providerId, modelId }) => {
+			if (!providerId || !modelId) throw new Error('Select a workspace model first.');
+			return window.models.text.generateText({ prompt, providerId, modelId, effort: readEffort(providerId, modelId) });
+		}).then((result) => {
 			if (requestId.current !== id) return;
 			if (value.autoApply && result.trim()) {
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) { setAi((current) => current ? { ...current, loading: false, error: 'The document changed. Please start again.' } : null); return; }
@@ -290,7 +293,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		</div>
 	</div></div>, toolbarTarget) : null;
 	const inlineAi = ai && !ai.autoApply && aiTarget ? createPortal(<div className="space-y-2" data-slot="inline-ai-composer">
-				<PromptEditor detachedControls expanded={false} ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={submitAi} isLoading={ai.loading} maxHeight={360} wrapperClassName="max-w-none" className="w-full" footerContent={<div className="flex min-w-0 items-center text-[11px] text-muted-foreground"><Model /></div>} trailingAction={<PromptInputActions className="justify-end gap-1.5"><PromptSubmit isLoading={ai.loading} onAction={submitAi} /></PromptInputActions>} />
+				<PromptEditor detachedControls expanded={false} ariaLabel="AI instruction" placeholder="Ask anything" value={ai.prompt} onValueChange={(prompt) => setAi({ ...ai, prompt })} onSubmit={submitAi} isLoading={ai.loading} maxHeight={360} wrapperClassName="max-w-none" className="w-full" footerContent={<div className="flex min-w-0 items-center text-[11px] text-muted-foreground"><Model workspace /></div>} trailingAction={<PromptInputActions className="justify-end gap-1.5"><PromptSubmit isLoading={ai.loading} onAction={submitAi} /></PromptInputActions>} />
 				{ai.loading ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin motion-reduce:animate-none" />Improving text…</p> : null}
 				{ai.error ? <p role="alert" className="text-sm text-destructive">{ai.error}</p> : null}
 				{ai.result ? <div className="max-h-60 overflow-auto whitespace-pre-wrap text-sm">{ai.result}</div> : null}
