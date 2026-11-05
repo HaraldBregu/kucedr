@@ -60,8 +60,7 @@ export class ModelsIpc implements IpcModule<ModelsIpcDependencies> {
 		trusted.command(ImageChannels.createImage, async (request) => {
 			const result = await image.createImage(request);
 			const extension = result.mimeType.split('/')[1]?.split('+')[0] || 'png';
-			await saveMedia('image', extension, result.base64);
-			return result;
+			return { ...result, path: await saveMedia('image', extension, result.base64) };
 		});
 		trusted.query(ImageChannels.getProviderId, () => getProviderId('image'));
 		trusted.command(ImageChannels.setProviderId, (providerId) =>
