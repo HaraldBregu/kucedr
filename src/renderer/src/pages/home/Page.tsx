@@ -22,16 +22,8 @@ import {
 } from '@/components/ui/chat-container';
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 import { LogoView } from '@/components/app/base/logo-view';
-import { PromptEditor } from '@/components/prompt-editor';
-import { PromptSubmit } from '@/components/prompt-submit';
-import {
-	PromptInputAction,
-	PromptInputActions,
-	usePromptInput,
-	type PromptInputVoiceMode,
-} from '@/components/ui/prompt-input';
 import { ScrollButton } from '@/components/ui/scroll-button';
-import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
+import { useChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
