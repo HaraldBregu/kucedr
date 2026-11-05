@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { CalendarDays, ChevronDown, ChevronRight, ChevronUp, Replace, ReplaceAll, LoaderCircle, MoveHorizontal, X } from 'lucide-react';
+import { History, ChevronDown, ChevronRight, ChevronUp, Replace, ReplaceAll, LoaderCircle, MoveHorizontal, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -250,7 +250,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 					<div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
 						{typeof file.size === 'number' ? <span>{formatFileSize(file.size)}</span> : null}
 						{kind === 'markdown' ? <span>{content.split(/\s+/).filter(Boolean).length} words</span> : null}
-						{file.updatedAt || file.createdAt ? <time dateTime={file.updatedAt || file.createdAt} aria-label={`${file.updatedAt ? 'Updated' : 'Created'} ${new Date((file.updatedAt || file.createdAt)!).toLocaleString()}`} className="inline-flex items-center gap-1"><CalendarDays className="size-3" aria-hidden="true" />{new Date((file.updatedAt || file.createdAt)!).toLocaleString()}</time> : null}
+						{file.updatedAt || file.createdAt ? <time dateTime={file.updatedAt || file.createdAt} aria-label={`${file.updatedAt ? 'Updated' : 'Created'} ${new Date((file.updatedAt || file.createdAt)!).toLocaleString()}`} className="inline-flex items-center gap-1"><History className="size-3" aria-hidden="true" />{new Date((file.updatedAt || file.createdAt)!).toLocaleString()}</time> : null}
 					</div>
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="Full width" aria-pressed={wide} className={wide ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'} onClick={() => onWideChange(!wide)}><MoveHorizontal /></Button>
 					<Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}>
