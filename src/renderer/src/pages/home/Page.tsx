@@ -54,6 +54,7 @@ import {
 import { Empty, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 import { LogoView } from '@/components/app/base/logo-view';
 import { PromptEditor } from '@/components/prompt-editor';
+import { PromptSubmit } from '@/components/prompt-submit';
 import {
 	PromptInputAction,
 	PromptInputActions,
