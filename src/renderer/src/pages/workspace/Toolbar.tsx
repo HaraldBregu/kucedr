@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Plugin, PluginKey, TextSelection } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import { PromptEditor } from '@/components/prompt-editor';
 import { PromptSubmit } from '@/components/prompt-submit';
@@ -167,7 +167,7 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 			const match = empty && editor.isFocused ? before.match(/\/([^/]*)$/) : null;
 			const start = match ? from - match[0].length : null;
 			setSlash(start !== null && start !== dismissed ? { from: start, to: from, query: match![1] } : null);
-			setSelection(!empty && editor.isFocused && !selecting);
+			setSelection(editor.state.selection instanceof TextSelection && !empty && editor.isFocused && !selecting);
 			if (start === null || start !== dismissed) setDismissed(null);
 		};
 		const startPointerSelection = (event: PointerEvent): void => {

@@ -724,7 +724,11 @@ test('Workspace AI generates and inserts an image using its image model', async 
 	await composer.getByRole('textbox', { name: 'AI instruction' }).fill('A blue bird');
 	await composer.getByRole('button', { name: 'Send message' }).click();
 	await expect(composer).toHaveCount(0);
-	await expect(editor.locator('img[alt="A blue bird"]')).toBeVisible();
+	const image = editor.locator('img[alt="A blue bird"]');
+	await expect(image).toBeVisible();
+	await image.click();
+	await expect(image).toHaveClass(/ProseMirror-selectednode/);
+	await expect(page.getByRole('toolbar', { name: 'Selection formatting' })).toHaveCount(0);
 	await expect(editor).toContainText('Notes');
 	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('generated-image-test.md'))).toContain('generated-image.png');
 	const settings = JSON.parse(readFileSync(path.join(userDataDir, 'settings', 'editor.json'), 'utf8'));
