@@ -213,7 +213,7 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		const id = ++requestId.current;
 		setAi({ ...value, loading: true, error: '', result: '' });
 		const prompt = `Return only the resulting text in the original language, preserving relevant Markdown formatting. ${value.text ? `Edit the following text: ${value.prompt}\n\nText:\n${value.text}` : `Write text following this instruction: ${value.prompt}`}`;
-		void window.models.text.generateText({ prompt }).then((result) => {
+		void window.models.text.generateText({ prompt, ...(value.autoApply ? {} : { providerId: aiModel?.providerId, modelId: aiModel?.modelId }) }).then((result) => {
 			if (requestId.current !== id) return;
 			if (value.autoApply && result.trim()) {
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) { setAi((current) => current ? { ...current, loading: false, error: 'The document changed. Please start again.' } : null); return; }
