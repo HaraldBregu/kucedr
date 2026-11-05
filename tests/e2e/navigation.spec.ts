@@ -576,7 +576,7 @@ test('Workspace slash AI opens a Home-style composer inline', async () => {
 		ipcMain.handle('text:stream-text', async (event, id) => {
 			for (const delta of ['Generated', ' ', '**bold', '**', '\n\n', 'Next paragraph']) {
 				event.sender.send('text:delta', { id, delta });
-				await new Promise((resolve) => setTimeout(resolve, 250));
+				await new Promise((resolve) => setTimeout(resolve, 1000));
 			}
 			return { success: true };
 		});
