@@ -33,3 +33,22 @@ export function setWorkspaceImageModel(model: WorkspaceModel): void {
 	if (typeof model?.providerId !== 'string' || typeof model?.modelId !== 'string' || !model.providerId.trim() || !model.modelId.trim()) throw new Error('Invalid workspace image model.');
 	store.set('imageModel', { providerId: model.providerId.trim(), modelId: model.modelId.trim() });
 }
+
+export function getWorkspaceVoiceModel(): WorkspaceModel {
+	return store.get('voiceModel') ?? { providerId: '', modelId: '' };
+}
+
+export function setWorkspaceVoiceModel(model: WorkspaceModel): void {
+	if (typeof model?.providerId !== 'string' || typeof model?.modelId !== 'string' || !model.providerId.trim() || !model.modelId.trim()) throw new Error('Invalid workspace voice model.');
+	store.set('voiceModel', { providerId: model.providerId.trim(), modelId: model.modelId.trim() });
+}
+
+export function getWorkspaceModelOptions(): WorkspaceModelOptions {
+	return store.get('modelOptions') ?? {};
+}
+
+export function setWorkspaceModelOption(option: { key: string; name: string; value: string }): void {
+	if (typeof option?.key !== 'string' || typeof option?.name !== 'string' || typeof option?.value !== 'string' || !option.key || !option.name || !option.value) throw new Error('Invalid workspace model option.');
+	const options = getWorkspaceModelOptions();
+	store.set('modelOptions', { ...options, [option.key]: { ...options[option.key], [option.name]: option.value } });
+}
