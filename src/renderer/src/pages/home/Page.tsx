@@ -122,20 +122,13 @@ function PageContent(): ReactElement {
 	}, []);
 	useEffect(() => {
 		if (focusRequest === 0 || agent.historyLoading) return;
-		updateMode('chat');
+		setMode('chat');
 		const frame = window.requestAnimationFrame(() => {
 			composerRef.current?.querySelector<HTMLElement>('[role="textbox"]')?.focus();
 		});
 		return () => window.cancelAnimationFrame(frame);
-	}, [focusRequest, chatSessionId, agent.historyLoading, updateMode]);
-	const dictation = useRealtimeDictation({
-		value: agent.input,
-		onValueChange: agent.setInput,
-	});
-	const recorder = useAudioRecorder();
-	const voiceButtonMode = useVoiceButtonMode();
+	}, [focusRequest, chatSessionId, agent.historyLoading, setMode]);
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
-	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
 	const [detailsOpen, setDetailsOpen] = useState(() => window.matchMedia('(min-width: 1280px)').matches);
 	useEffect(() => {
 		const query = window.matchMedia('(min-width: 1280px)');
