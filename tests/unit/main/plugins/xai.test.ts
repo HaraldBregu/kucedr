@@ -6,13 +6,16 @@ it('loads every bundled xAI model', () => {
 
 	expect(plugin.provider?.models?.map((model) => model.id).sort()).toEqual([
 		'grok-4.3',
+		'grok-4.5',
 		'grok-4.6',
 		'grok-4.7',
 		'grok-build-0.1',
 		'grok-imagine-image',
 		'grok-imagine-image-2.0',
 		'grok-imagine-image-quality',
+		'grok-imagine-video',
 		'grok-imagine-video-1.5',
+		'grok-imagine-video-1.5-lite',
 		'grok-voice-latest',
 		'xai-stt-batch',
 		'xai-stt-streaming',
