@@ -1,0 +1,17 @@
+{
+	"id": "qwen/qwen3.8-flash",
+	"name": "Qwen 3.8 Flash",
+	"type": "large-language-model",
+	"authentication": "api-key",
+	"url": "https://api.iteracompute.com/v1",
+	"apiKeyUrl": "https://platform.iteracompute.com",
+	"baseUrl": "https://api.iteracompute.com/v1",
+	"metadata": {
+		"promptAttachments": [],
+		"documentationUrl": "https://iteracompute.com/docs.html",
+		"documentationStatus": "unverified",
+		"contextWindow": 1048576,
+		"inputs": {}
+	},
+	"location": "remote"
+}
