@@ -10,6 +10,7 @@ import {
 	loadMessages,
 	renameSession as renameStoredSession,
 	pinSession as pinStoredSession,
+	archiveSession as archiveStoredSession,
 	resolveSessionId,
 	resolveStoredSessionId,
 	tryAppendRun,
