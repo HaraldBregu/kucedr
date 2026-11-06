@@ -36,7 +36,7 @@ import {
 	SettingsSection,
 } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
-import { SEARCH_ENGINES } from '../../search/catalog';
+import type { CatalogWebSearch } from '../../../../../../../shared/provider_types';
 import type { SearchEngineId, SearchSettings } from '../../../../../../../shared/search_types';
 import type {
 	AgentToolConfiguration,
@@ -242,16 +242,17 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat' }) => {
 	const { t } = useTranslation();
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
+	const [searchServices, setSearchServices] = useState<CatalogWebSearch[]>([]);
 	const [searchEngineError, setSearchEngineError] = useState<string | null>(null);
 	const [searchSavingEngineId, setSearchSavingEngineId] = useState<SearchEngineId | null>(null);
 	const [toolProfile, setToolProfile] = useState<AgentToolProfile | null>(null);
 	const [fileToolsSaving, setFileToolsSaving] = useState(false);
 	const [fileToolsError, setFileToolsError] = useState<string | null>(null);
-	const selectedSearchEngine = SEARCH_ENGINES.find(
-		(engine) => engine.id === searchSettings?.engineId
+	const selectedSearchEngine = searchServices.find(
+		(service) => `${service.provider.id}/${service.id}` === searchSettings?.engineId
 	);
 	const selectedSearchEngineDescription = selectedSearchEngine
-		? t(selectedSearchEngine.descriptionKey)
+		? selectedSearchEngine.description ?? selectedSearchEngine.provider.name
 		: t('settings.searchEngine.defaultDescription');
 	const filteredToolGroups = ORDERED_AGENT_TOOL_GROUPS.map((group) => ({
 		...group,
@@ -263,10 +264,11 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 	useEffect(() => {
 		if (profile !== 'chat') return;
 		let mounted = true;
-		void window.search.getSettings().then(
-			(next) => {
+		void Promise.all([window.search.getSettings(), window.services.list()]).then(
+			([next, services]) => {
 				if (!mounted) return;
 				setSearchSettings(next);
+				setSearchServices(services.filter((service) => service.type === 'SEARCH_ENGINE'));
 				setSearchEngineError(null);
 			},
 			(error) => {
@@ -444,17 +446,17 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 																	<SelectValue
 																		placeholder={t('settings.searchEngine.defaultTitle')}
 																	>
-																		{selectedSearchEngine?.name}
+																				{selectedSearchEngine ? `${selectedSearchEngine.provider.name} - ${selectedSearchEngine.name}` : undefined}
 																	</SelectValue>
 																</SelectTrigger>
 																<SelectContent>
-																	{SEARCH_ENGINES.map((engine) => (
+																			{searchServices.map((service) => (
 																		<SelectItem
-																			key={engine.id}
-																			value={engine.id}
-																			disabled={!searchSettings?.configured[engine.id]}
+																					key={`${service.provider.id}/${service.id}`}
+																					value={`${service.provider.id}/${service.id}`}
+																					disabled={!searchSettings?.configured[`${service.provider.id}/${service.id}`]}
 																		>
-																			{engine.name}
+																					{service.provider.name} - {service.name}
 																		</SelectItem>
 																	))}
 																</SelectContent>
