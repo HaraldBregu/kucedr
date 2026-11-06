@@ -506,7 +506,8 @@ async function* loop(
 				memoryContext
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
-			const runtimeContext = activeGoalContext;
+			if (mode.prompt) systemPrompt += `\n\n${mode.prompt}`;
+			const runtimeContext = behaviorContext;
 			const messages = promptCapabilities
 				? projectPromptAttachments(session.messages, promptCapabilities)
 				: session.messages;
