@@ -28,7 +28,7 @@ export function SettingsBreadcrumb(): React.JSX.Element {
 			aria-label={t('settings.breadcrumb.label')}
 			className="flex min-w-0 items-center text-xs text-muted-foreground"
 		>
-			<BreadcrumbMenu label={t('settings.title')} activePath={sectionPath} options={sections} />
+			<BreadcrumbMenu label={t('settings.title')} activePath={sectionPath} options={sections} showArrow={false} />
 			{items.map((item, index) => (
 				<React.Fragment key={`${item.label}-${index}`}>
 					<ChevronRight aria-hidden="true" className="mx-0.5 size-3 shrink-0 text-muted-foreground/60" strokeWidth={1.8} />
