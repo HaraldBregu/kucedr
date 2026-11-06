@@ -307,7 +307,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem className="rounded-md hover:bg-sidebar-accent">
-						<div className="flex h-8 items-center gap-2 px-2.5 pr-20 text-sm">
+						<div className="flex h-9 items-center gap-2 px-2.5 pr-20 text-sm">
 							<FolderTree className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
 						</div>
