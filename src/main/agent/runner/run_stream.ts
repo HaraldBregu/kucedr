@@ -226,26 +226,22 @@ async function* loop(
 		? [...options.tools]
 		: bootstrap
 			? [updateIdentityTool, updateSoulTool, updateUserTool, completeBootstrapTool]
-			: builtinTools(config, options.sandbox!, input.interactionMode);
+			: builtinTools(config, options.sandbox!, mode);
 	if (backgroundBrowser)
 		tools = tools.map((tool) => (tool.id === backgroundBrowser.id ? backgroundBrowser : tool));
-	if (!options.tools && !bootstrap && input.interactionMode !== 'plan') {
+	if (!options.tools && !bootstrap && !mode.restricted) {
 		tools.push(
 			undoFileTool(session.runContext.fileHistory),
 			redoFileTool(session.runContext.fileHistory)
 		);
 	}
-	if (
-		!options.tools &&
-		!bootstrap &&
-		session.category === 'main' &&
-		input.interactionMode !== 'plan' &&
-		session.folderName !== '' &&
-		readGoal(sessionDir(session))?.status === 'active'
-	) {
-		tools.push(...goalTools(sessionDir(session)));
-	}
-	tools = filterPlanTools(tools, input.interactionMode);
+	const behaviorsApply = session.category === 'main' && !mode.restricted && session.folderName !== '';
+	const behaviorTools =
+		!options.tools && !bootstrap && behaviorsApply
+			? behaviors.flatMap((behavior) => behavior.tools(sessionDir(session)))
+			: [];
+	tools.push(...behaviorTools);
+	tools = filterModeTools(tools, mode);
 	tools = filterRuntimeTools(tools);
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
