@@ -58,9 +58,9 @@ export class ExecSandbox {
 		commandId: string,
 		signal?: AbortSignal,
 		approvedRoots: readonly string[] = [],
-		interactionMode: AgentInteractionMode = 'default'
+		readOnly = false
 	): Promise<SandboxedCommand> {
-		if (interactionMode === 'plan') return this.wrapPlan(command, commandId);
+		if (readOnly) return this.wrapReadOnly(command, commandId);
 		await this.ensureReady();
 		if (process.platform === 'win32' && approvedRoots.length > 0) {
 			throw new Error(
