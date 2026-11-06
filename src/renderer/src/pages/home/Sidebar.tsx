@@ -186,7 +186,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				</SidebarGroup>
 			);
 		return (
-			<Collapsible defaultOpen className={cn('group/collapsible', className)}>
+			<Collapsible defaultOpen={!collapsed} className={cn('group/collapsible', className)}>
 				<SidebarGroup>
 					<CollapsibleTrigger
 						nativeButton={false}
