@@ -15,7 +15,8 @@ export function latestUuidSessionId(
 				(entry) =>
 					entry.isDirectory() &&
 					isUuid(entry.name) &&
-					sessionType(sessionsPath, entry.name) === category
+					sessionType(sessionsPath, entry.name) === category &&
+					!isArchived(sessionsPath, entry.name)
 			)
 			.map((entry) => {
 				const stats = statSync(sessionPath(sessionsPath, entry.name));
