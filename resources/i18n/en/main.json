@@ -813,6 +813,8 @@
 				"delete": "Could not delete chat history.",
 				"clear": "Could not clear the chat history.",
 				"compact": "Could not compact the conversation.",
+				"archive": "Could not update the archived chats.",
+				"pin": "Could not update the pinned chats.",
 				"openFolder": "Could not open the chat history folder."
 			}
 		},
