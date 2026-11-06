@@ -257,7 +257,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					if (action === 'clear' || action === 'compact')
 						setPendingAction({ action, id: session.id, title });
 					if (action === 'pin') togglePin(targets);
-					if (action === 'archive') archiveSessions(targets, !allArchived);
+					if (action === 'archive') archiveSessions(targets);
 					if (action === 'delete') deleteSessions(targets);
 				});
 		};
