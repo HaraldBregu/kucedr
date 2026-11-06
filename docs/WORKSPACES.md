@@ -6,7 +6,8 @@ Status: proposal. Nothing here is implemented. Today the workspace is fixed at
 ## Goal
 
 Users can create several named workspaces and switch between them. Each workspace has a display
-name, and its folder is named with a generated ID, so renaming never moves files or breaks paths.
+name and an optional image, and its folder is named with a generated ID, so renaming never moves
+files or breaks paths.
 
 Each workspace separates **files only**. Chats, memory, settings, providers, skills, and Library
 stay shared across workspaces.
