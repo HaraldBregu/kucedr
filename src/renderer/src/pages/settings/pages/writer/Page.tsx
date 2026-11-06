@@ -34,7 +34,6 @@ export default function WriterPage(): React.JSX.Element {
 		<SettingsPageShell>
 			<SettingsPageHeader title={t('settings.writer.title')} description={t('settings.writer.description')} />
 			<SettingsPanel>
-				<SettingsRow title={t('settings.writer.model')} description={t('settings.writer.modelDescription')} actionClassName="w-auto justify-end" actions={<Model workspace />} />
 				<SettingsRow title={t('settings.writer.wide')} description={t('settings.writer.wideDescription')} actionClassName="w-auto justify-end" actions={<Switch aria-label={t('settings.writer.wide')} disabled={!loaded} checked={wide} onCheckedChange={(next) => { setWide(next); void window.app.setWorkspaceWideContent(next); }} />} />
 				<SettingsRow title={t('settings.writer.textSize')} description={t('settings.writer.textSizeDescription')} actionClassName="w-auto justify-end" actions={
 					<Select value={size} disabled={!loaded} onValueChange={(next) => { if (next) { setSize(next); void window.app.setWorkspaceTextSize(next); } }}>
