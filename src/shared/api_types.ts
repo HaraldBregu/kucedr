@@ -178,6 +178,7 @@ export interface AgentApi {
 	openSessionFolder: (sessionId: string) => Promise<void>;
 	renameSession: (sessionId: string, title: string) => Promise<void>;
 	pinSession: (sessionId: string, pinned: boolean) => Promise<void>;
+	archiveSession: (sessionId: string, archived: boolean) => Promise<void>;
 	getLastMessages: (sessionId: string) => Promise<AgentHistoryMessage[]>;
 	getSessionSnapshot: (sessionId: string) => Promise<AgentSessionSnapshot>;
 	compactSession: (sessionId: string) => Promise<AgentCompactSessionResult>;
