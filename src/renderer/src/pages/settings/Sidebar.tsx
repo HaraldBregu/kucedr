@@ -51,7 +51,7 @@ const SETTINGS_SIDEBAR_FOOTER_ITEMS = SETTINGS_NAVIGATION.filter(
 	(item) => item.path === '/settings/plugins'
 );
 
-const SETTINGS_SIDEBAR_ITEMS = SETTINGS_SIDEBAR_GROUPS.flatMap<SettingsNavigationItem>(
+export const SETTINGS_SIDEBAR_ITEMS = SETTINGS_SIDEBAR_GROUPS.flatMap<SettingsNavigationItem>(
 	(group) => group.items
 ).concat(SETTINGS_SIDEBAR_FOOTER_ITEMS);
 
