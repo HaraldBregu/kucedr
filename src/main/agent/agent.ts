@@ -742,7 +742,7 @@ function runtimeEventToAgentEvents(
 			{
 				type: 'run_started',
 				sessionId: event.sessionId,
-				interactionMode: event.interactionMode,
+				modeIds: event.modeIds,
 				agentId,
 				runId,
 			},
