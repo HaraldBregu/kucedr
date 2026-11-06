@@ -628,7 +628,7 @@ async function* loop(
 				runId,
 				...(input.scope ? { scope: input.scope } : {}),
 				budget,
-				interactionMode: input.interactionMode,
+				mode,
 				toolProfile,
 				...(input.approvalWindowId === undefined ? {} : { windowId: input.approvalWindowId }),
 			};
