@@ -7,7 +7,6 @@ import { SettingsSidebar } from './Sidebar';
 export function Layout(): React.JSX.Element {
 	const { pathname } = useLocation();
 	const isWorkbench = pathname === '/settings/code' || pathname.startsWith('/settings/code/');
-	const isSubroute = pathname.slice('/settings/'.length).includes('/');
 
 	return (
 		<PageContainer className="bg-muted/20">
