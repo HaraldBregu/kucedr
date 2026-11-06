@@ -853,7 +853,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-4xl gap-5 pl-8 pr-2 pt-18 transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'pr-[16rem] max-w-[68.5rem]')}>
+								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-[57rem] gap-5 px-2 pt-18 transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'ml-auto mr-0 max-w-[72.5rem] pr-[16rem]')}>
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
@@ -866,8 +866,8 @@ function PageContent(): ReactElement {
 									<ChatContainerScrollAnchor className="h-[calc(var(--composer-height,7rem)+3rem)]" />
 								</ChatContainerContent>
 								<ChatOutline key={chatSessionId} messages={visibleMessages} />
-								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+0.75rem)] z-30 px-4">
-									<div className={cn('mx-auto flex w-full max-w-4xl justify-center transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'max-w-[68.5rem] pr-[12.5rem]')}>
+								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+0.75rem)] z-30 px-2">
+									<div className={cn('mx-auto flex w-full max-w-4xl justify-center transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'ml-auto mr-0 max-w-[71.5rem] pr-[15.5rem]')}>
 										<ScrollButton
 											type="button"
 											aria-label="Scroll to latest"
