@@ -1,0 +1,11 @@
+{
+	"schemaVersion": 5,
+	"id": "fast",
+	"title": "Fast",
+	"version": "1.0.0",
+	"description": "Answer faster with less reasoning, on models that support it.",
+	"categories": [
+		"Modes"
+	],
+	"author": "Kucedr"
+}
