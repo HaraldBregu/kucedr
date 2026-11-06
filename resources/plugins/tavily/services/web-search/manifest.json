@@ -71,6 +71,17 @@
 			"auto_parameters": {
 				"type": "boolean"
 			}
+		},
+		"search": {
+			"method": "POST",
+			"query": "query",
+			"count": "max_results",
+			"apiKeyHeader": "Authorization",
+			"apiKeyPrefix": "Bearer ",
+			"resultsPath": [
+				"results"
+			],
+			"descriptionField": "content"
 		}
 	}
 }

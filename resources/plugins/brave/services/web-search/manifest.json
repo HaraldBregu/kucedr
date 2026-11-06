@@ -49,6 +49,18 @@
 			"goggles": {
 				"type": "array"
 			}
+		},
+		"search": {
+			"method": "GET",
+			"query": "q",
+			"count": "count",
+			"apiKeyHeader": "X-Subscription-Token",
+			"apiKeyPrefix": "",
+			"resultsPath": [
+				"web",
+				"results"
+			],
+			"descriptionField": "description"
 		}
 	}
 }
