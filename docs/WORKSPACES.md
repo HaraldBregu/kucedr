@@ -126,9 +126,14 @@ load ([protocol.ts](../src/main/protocol.ts)).
 
 Add a switcher to the Workspace sidebar
 ([Sidebar.tsx](../src/renderer/src/pages/workspace/Sidebar.tsx)), using the `DropdownMenu` it
-already imports. It shows the active name, lists the other workspaces, and offers **New workspace**
-and **Rename**. Names are entered in the existing dialog and input components. Only names are shown,
-not IDs. All new text goes through `react-i18next`.
+already imports. It shows the active image and name, lists the other workspaces, and offers
+**New workspace** and **Edit**. The create and edit dialogs use the existing dialog and input
+components, and let the user choose or remove an image. Only names are shown, not IDs. All new text
+goes through `react-i18next`.
+
+Images render through the existing `Avatar` component
+([avatar.tsx](../src/renderer/src/components/ui/avatar.tsx)). Its fallback shows the name's first
+letter when a workspace has no image or the file fails to load.
 
 The Home `ChatWorkspace` panel needs no change because it lists the active workspace's files.
 
