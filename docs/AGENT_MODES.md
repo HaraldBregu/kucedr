@@ -154,10 +154,12 @@ Each step should leave the app working.
 
 ### 3. Add the bundled plugins
 
-- `resources/plugins/plan/`: `manifest.json` plus `modes/plan/{mode.json,prompt.md}`, using today's
-  prompt text.
-- `resources/plugins/fast/`: `effort` only. This proves a new mode needs no host change.
-- `resources/plugins/goal/`: `behavior: "goal"`.
+Each plugin gets a `manifest.json` plus its mode folder:
+
+- `resources/plugins/plan/modes/plan/`: `mode.json` and `prompt.md`, using today's prompt text.
+- `resources/plugins/fast/modes/fast/`: `mode.json` with `effort` only. This proves a new mode needs no
+  host change.
+- `resources/plugins/goal/modes/goal/`: `mode.json` with `behavior: "goal"`.
 
 ### 4. Isolate goal
 
