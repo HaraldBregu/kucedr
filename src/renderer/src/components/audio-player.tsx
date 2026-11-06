@@ -27,6 +27,7 @@ export function AudioPlayer({
 	readonly onContextMenu?: MouseEventHandler<HTMLElement>;
 }): ReactElement {
 	const player = useAudioPlayer({ src, preload });
+	const VolumeIcon = player.muted || player.volume === 0 ? VolumeX : player.volume < 0.34 ? Volume : player.volume < 0.67 ? Volume1 : Volume2;
 	const media = useRef<HTMLSpanElement>(null);
 	useEffect(() => {
 		if (player.element) media.current?.append(player.element);
