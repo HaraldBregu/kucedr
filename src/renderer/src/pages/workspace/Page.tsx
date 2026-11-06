@@ -68,7 +68,7 @@ export default function WorkspacePage(): React.JSX.Element {
 	const viewer = <WorkspaceViewer ref={flushRef} key={path} file={selectedFile} onFileSelect={selectFile} wide={wide} onWideChange={handleWideChange} textSize={textSize} onTextSizeChange={handleTextSizeChange} />;
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
-			<Split sidebar={sidebar} sidebarLabel="Workspace files" navigationContent={<WorkspaceBreadcrumb entries={files} path={selectedFile?.path ?? ''} onFileSelect={selectFile} />}>
+			<Split overlayNavigation sidebar={sidebar} sidebarLabel="Workspace files" navigationContent={<WorkspaceBreadcrumb entries={files} path={selectedFile?.path ?? ''} onFileSelect={selectFile} />}>
 				{viewer}
 
 			</Split>
