@@ -125,7 +125,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						setChatSessionsLoading(true);
 						setChatSessionsLoadError(false);
 						void window.agent.listSessions().then(
-							(sessions) => setChatSessions(sessions),
+							(sessions) => setChatSessions(sessions.filter((session) => !session.archived)),
 							() => setChatSessionsLoadError(true)
 						).finally(() => setChatSessionsLoading(false));
 					}}
