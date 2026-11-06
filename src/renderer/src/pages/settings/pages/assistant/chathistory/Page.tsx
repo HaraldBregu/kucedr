@@ -89,6 +89,18 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 		}
 	};
 
+	const handleUnarchive = async (session: AgentSessionSummary): Promise<void> => {
+		setError(null);
+		try {
+			await window.agent.archiveSession(session.id, false);
+			setSessions((current) =>
+				current.map((entry) => (entry.id === session.id ? { ...entry, archived: false } : entry))
+			);
+		} catch (unarchiveError) {
+			setError(firstErrorMessage(unarchiveError, t('settings.chatHistory.errors.archive')));
+		}
+	};
+
 	const handleDeleteAll = async (): Promise<void> => {
 		if (!window.confirm(t('settings.chatHistory.confirmDelete'))) return;
 		setActionsOpen(false);
