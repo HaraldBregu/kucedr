@@ -13,6 +13,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { workspaceFileType } from '@shared/workspace';
 import { libraryFileUrl } from '@/pages/settings/pages/library/url';
 import { importWorkspaceAssets } from './Assets';
+import { WorkspaceAudio } from './Audio';
 import { WorkspaceCodeBlock } from './CodeBlock';
 import type { CodeMirrorEditorHandle } from './Editor';
 import { searchKey, WorkspaceSearch } from './Search';
