@@ -27,6 +27,13 @@ export function validatePluginContents(directory: string, manifest: ReadPlugin):
 	}
 	for (const id of manifest.contributes.scripts)
 		readPluginScript(path.join(directory, 'scripts', id));
+	for (const id of manifest.contributes.modes) {
+		readMode(
+			path.join(directory, 'modes', id),
+			{ id: manifest.id, name: manifest.title, version: manifest.version },
+			false
+		);
+	}
 	for (const id of manifest.contributes.skills) {
 		const validation = validateSkill(path.join(directory, 'skills', id));
 		if (!validation.valid) {
