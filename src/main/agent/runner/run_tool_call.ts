@@ -95,6 +95,7 @@ export async function* runToolCall(
 	let authorizationRequired: ReturnType<typeof mcpAuthorizationRequired>;
 	let permissionOutcome: 'allow' | 'deny' | 'approve' | 'approve_always' | 'reject' | undefined;
 
+	const mode = security.mode ?? NO_MODE;
 	const budgetError = security.budget?.admit(tool, canonicalInput);
 	if (budgetError) {
 		output = budgetError;
