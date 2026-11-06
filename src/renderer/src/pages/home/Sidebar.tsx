@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactElement, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, FolderTree, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus } from 'lucide-react';
+import { ChevronRight, Folders, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
@@ -320,7 +320,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 								navigate('/workspace');
 							}}
 						>
-							<FolderTree className="size-4 shrink-0" />
+							<Folders className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
