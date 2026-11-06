@@ -1,0 +1,11 @@
+{
+	"schemaVersion": 5,
+	"id": "goal",
+	"title": "Goal",
+	"version": "1.0.0",
+	"description": "Work toward a durable goal with success criteria across runs.",
+	"categories": [
+		"Modes"
+	],
+	"author": "Kucedr"
+}
