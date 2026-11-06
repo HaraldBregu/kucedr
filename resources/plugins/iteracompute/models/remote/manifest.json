@@ -1,0 +1,16 @@
+{
+	"id": "remote",
+	"name": "Remote",
+	"type": "large-language-model",
+	"authentication": "api-key",
+	"url": "https://api.iteracompute.com/v1",
+	"apiKeyUrl": "https://platform.iteracompute.com",
+	"baseUrl": "https://api.iteracompute.com/v1",
+	"modelsUrl": "https://api.iteracompute.com/v1/models",
+	"location": "remote",
+	"discoveryOnly": true,
+	"metadata": {
+		"promptAttachments": [],
+		"inputs": {}
+	}
+}
