@@ -85,8 +85,8 @@ contribution kind in its own folder:
   skills/<skill-id>/
     SKILL.md
   modes/<mode-id>/           proposed, see AGENT_MODES.md
-    mode.json
-    prompt.md
+    mode.json                title, command, restrictions, output, action
+    prompt.md                optional: instructions the mode adds to the prompt
 ```
 
 Rules:
