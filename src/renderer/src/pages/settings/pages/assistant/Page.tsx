@@ -40,6 +40,7 @@ import {
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import { AgentMediaModelConfiguration } from './media';
 import { ProfileMediaModels } from './profilemodels';
+import { SearchEngineService } from './search';
 
 type CatalogProvider = PublicProvider;
 
