@@ -35,7 +35,14 @@ export function createElevenLabsMusicAdapter(spec: MusicProviderSpec): MusicAdap
 				},
 				body: JSON.stringify(
 					soundEffects
-						? { text: request.prompt, ...options, model_id: 'eleven_text_to_sound_v2' }
+						? {
+								text: request.prompt,
+								...options,
+								model_id:
+									request.modelId === 'elevenlabs-sound-effects'
+										? 'eleven_text_to_sound_v2'
+										: request.modelId,
+							}
 						: {
 								prompt: request.prompt,
 								...options,
