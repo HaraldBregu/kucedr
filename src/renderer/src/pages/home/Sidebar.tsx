@@ -310,10 +310,13 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						className={cn(
 							SPLIT_ITEM_CLASS,
 							'h-7 min-w-0 flex-1 text-muted-foreground group-hover/item:bg-sidebar-accent',
-							isActive && SPLIT_ITEM_ACTIVE_CLASS
+							isActive && SPLIT_ITEM_ACTIVE_CLASS,
+							isSelected && 'bg-sidebar-accent text-sidebar-accent-foreground ring-1 ring-inset ring-sidebar-ring'
 						)}
+						aria-pressed={isSelected ? true : undefined}
 						data-run-status={session.runStatus}
-						onClick={() => {
+						onClick={(event) => {
+							if (select(event)) return;
 							setSessionId(session.id);
 							setSessionTitle?.(title, session.id);
 							navigate('/home');
