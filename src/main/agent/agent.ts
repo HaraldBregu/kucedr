@@ -388,12 +388,14 @@ export class Agent {
 					this.emit(record, responseEvent);
 				}
 			}
-			if (result && request.category === 'main' && session.folderName !== '') {
-				accountGoalRun(
-					sessionDir(session),
-					result.usage ?? { inputTokens: 0, outputTokens: 0 },
-					result.toolCalls.length
-				);
+			if (result && request.category === 'main' && session.folderName !== '' && !mode?.restricted) {
+				for (const behavior of behaviors) {
+					behavior.account(
+						sessionDir(session),
+						result.usage ?? { inputTokens: 0, outputTokens: 0 },
+						result.toolCalls.length
+					);
+				}
 			}
 			return {
 				text: response,
