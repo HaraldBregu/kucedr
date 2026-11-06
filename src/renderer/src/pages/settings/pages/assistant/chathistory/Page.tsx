@@ -12,6 +12,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
+	SettingsSection,
 } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 
