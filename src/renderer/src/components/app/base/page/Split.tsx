@@ -18,6 +18,7 @@ interface SplitProps extends Omit<React.ComponentProps<'div'>, 'children'> {
 	readonly sidebarLabel?: string;
 	readonly navigationContent?: ReactNode;
 	readonly navigationActions?: ReactNode;
+	readonly overlayNavigation?: boolean;
 }
 
 export function Split({
@@ -26,6 +27,7 @@ export function Split({
 	sidebarLabel = 'Navigation',
 	navigationContent,
 	navigationActions,
+	overlayNavigation = false,
 	className,
 	style,
 	...props
@@ -152,7 +154,7 @@ export function Split({
 				data-slot="split-pane-content"
 				className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background"
 			>
-				<NavigationBar showWorkspace contextContent={navigationContent} rightContent={navigationActions} startContent={isMobile || !state.sidebarOpen ? <Toggle /> : undefined} />
+				<NavigationBar className={overlayNavigation ? 'absolute inset-x-0 top-0 bg-background/70 backdrop-blur-md' : undefined} showWorkspace contextContent={navigationContent} rightContent={navigationActions} startContent={isMobile || !state.sidebarOpen ? <Toggle /> : undefined} />
 				<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
 			</main>
 		</div>

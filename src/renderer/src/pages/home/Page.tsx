@@ -813,6 +813,7 @@ function PageContent(): ReactElement {
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
+				overlayNavigation={!openExtension}
 				navigationActions={!showEmptyConversation && !openExtension ? <Tooltip>
 					<TooltipTrigger render={<Button type="button" variant={detailsOpen ? 'secondary' : 'ghost'} size="icon" className="rounded-full" aria-label={detailsOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={detailsOpen} aria-controls="chat-information" onClick={() => setDetailsOpen((open) => !open)}><Info className="size-4" strokeWidth={1.8} /></Button>} />
 					<TooltipContent side="bottom">{detailsOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
@@ -852,7 +853,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-4xl gap-5 pl-8 pr-2 pt-6 transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'pr-[16rem] max-w-[68.5rem]')}>
+								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-4xl gap-5 pl-8 pr-2 pt-18 transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'pr-[16rem] max-w-[68.5rem]')}>
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
