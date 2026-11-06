@@ -63,6 +63,7 @@ import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import type { PluginScriptInfo } from '../../../../shared/plugin_types';
 
 const inlineAiKey = new PluginKey('workspaceInlineAi');
+const promptPosition = (state: EditorState): number => inlineAiKey.getState(state)?.find()[0]?.from ?? state.selection.to;
 
 const mod = navigator.platform.startsWith('Mac') ? '⌘' : 'Ctrl+';
 const alt = navigator.platform.startsWith('Mac') ? '⌥' : 'Alt+';
