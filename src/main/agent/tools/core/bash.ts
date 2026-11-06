@@ -417,7 +417,7 @@ export function execTool(
 		...configured,
 		parseInput(raw: unknown): Record<string, unknown> {
 			const input = configured.parseInput(raw);
-			if (interactionMode === 'plan' || input.elevated === true) return input;
+			if (readOnly || input.elevated === true) return input;
 			const roots = resolveExecRoots(input, agentLocation());
 			const requested = ((input.additionalRoots as string[] | undefined) ?? []).map((root) => resolveUserPath(root, roots[0] ?? agentLocation()));
 			const required = sandbox.requiredRoots(requested);
