@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, FilePlus, FolderPlus, FolderTree, Plus, Search } from 'lucide-react';
+import { ArrowLeft, FilePlus, FolderPlus, Folders, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -308,7 +308,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					</SidebarMenuItem>
 					<SidebarMenuItem className="rounded-md hover:bg-sidebar-accent">
 						<div className="flex h-9 items-center gap-2 px-2.5 pr-20 text-sm">
-							<FolderTree className="size-4 shrink-0" />
+							<Folders className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
 						</div>
 						<div className="absolute inset-y-0 right-1 flex items-center gap-1">
