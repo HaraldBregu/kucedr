@@ -77,7 +77,9 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 				} else if (process.platform === 'win32' && /^\/[A-Za-z]:/.test(pathname)) {
 					pathname = pathname.slice(1);
 				}
-				// Forward headers so media Range requests get 206 responses for seeking.
+				const range = request.headers.get('range');
+				const partial = range ? await rangeResponse(pathname, range) : null;
+				if (partial) return partial;
 				return await net.fetch(pathToFileURL(pathname).toString(), {
 					headers: request.headers,
 				});
