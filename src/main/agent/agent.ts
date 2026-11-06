@@ -489,6 +489,14 @@ export class Agent {
 		);
 	}
 
+	archiveSession(sessionId: string, archived: boolean): Promise<void> {
+		return this.scheduler.run(
+			sessionId,
+			async () => archiveStoredSession(sessionId, this.config.location, archived),
+			{ priority: 'high' }
+		);
+	}
+
 	getLastMessages(sessionId: string): AgentHistoryMessage[] {
 		return loadMessages(this.config, sessionId).flatMap(toHistoryMessages);
 	}
