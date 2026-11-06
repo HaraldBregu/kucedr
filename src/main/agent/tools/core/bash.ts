@@ -281,7 +281,7 @@ async function runExec(
 		let aborted = false;
 		let ownedSessionId: string | undefined;
 		let timeoutTimer: NodeJS.Timeout | undefined;
-		const yieldTimer = planMode ? undefined : setTimeout(() => {
+		const yieldTimer = readOnly ? undefined : setTimeout(() => {
 			if (settled || aborted) return;
 			settled = true;
 
