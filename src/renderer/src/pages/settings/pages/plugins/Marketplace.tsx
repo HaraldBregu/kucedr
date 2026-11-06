@@ -126,7 +126,7 @@ export default function MarketplacePage(): React.JSX.Element {
 						<a
 							href={plugin.website}
 							onClick={handleExternalLinkClick}
-							className="mt-2 inline-block text-sm text-primary underline-offset-4 hover:underline"
+							className="mt-2 block w-fit text-sm text-primary underline-offset-4 hover:underline"
 						>
 							{t('settings.integrations.plugin.website')}
 						</a>
