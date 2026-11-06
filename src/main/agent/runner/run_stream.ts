@@ -218,7 +218,7 @@ async function* loop(
 		config,
 		input.contextMode,
 		session.category,
-		input.interactionMode,
+		mode.restricted,
 		options.instructions !== undefined
 	);
 
