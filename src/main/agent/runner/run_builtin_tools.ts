@@ -46,15 +46,15 @@ import { useWebBrowserTool } from '../tools/web/use_web_browser';
 export function builtinTools(
 	config: Config,
 	sandbox: ExecSandbox,
-	interactionMode: AgentInteractionMode = 'default'
+	mode: ModePolicy = NO_MODE
 ): Tool[] {
 	return [
 		readTool,
-		...(interactionMode === 'plan' ? [requestUserInputTool] : []),
+		...(mode.restricted ? [requestUserInputTool] : []),
 		writeTool,
 		editTool,
 		applyPatchTool,
-		execTool(sandbox, interactionMode),
+		execTool(sandbox, mode.shell === 'read-only'),
 		processTool,
 		...getSearchWebTools(),
 		fetchWebPageTool,
