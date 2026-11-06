@@ -1,0 +1,26 @@
+{
+	"schemaVersion": 5,
+	"id": "elevenlabs",
+	"title": "ElevenLabs",
+	"version": "1.2.0",
+	"description": "Lifelike voices, transcription, music, and sound effects.",
+	"categories": [
+		"AUDIO",
+		"TTS",
+		"STT"
+	],
+	"author": "Harald Bregu",
+	"website": "https://elevenlabs.io",
+	"icon": "elevenlabs-light.svg",
+	"iconDark": "elevenlabs-dark.svg",
+	"apiKeyUrl": "https://elevenlabs.io/app/settings/api-keys",
+	"settings": {
+		"inputSchema": {
+			"type": "object",
+			"properties": {
+				"apiKey": { "type": "string", "title": "API key", "format": "password" }
+			},
+			"required": ["apiKey"]
+		}
+	}
+}
