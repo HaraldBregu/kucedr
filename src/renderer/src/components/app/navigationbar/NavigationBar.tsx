@@ -1,12 +1,11 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ChevronDown, Menu, MessageCircle, Moon, Plus, Search, Sun } from 'lucide-react';
+import { ChevronDown, Menu, Moon, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
 import { NavigationBarLeftContainer } from './NavigationBarLeftContainer';
 import { Button } from '@/components/ui/button';
-import { ButtonGroup } from '@/components/ui/button-group';
 import { useApp } from '@/contexts';
 import { usePageContext } from '@/components/app/base/page/hooks/use-page-context';
 import { NavigationBarProvider } from './context/NavigationBarContext';
@@ -80,7 +79,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isHome = location.pathname === '/home';
 	const isHomeRoute = isHome;
 	const isWorkspace = location.pathname === '/workspace';
-	const showChatGroup = isHomeRoute || isWorkspace;
 	const isCode = location.pathname === '/code' || location.pathname.startsWith('/code/');
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
@@ -90,31 +88,10 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const workspaceLabel = t('settings.workspace.title', 'Workspace');
 	const chatHistoryLabel = t('settings.chatHistory.title');
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
-	const chatButtonVariant = showChatGroup || isSettings ? 'secondary' : 'ghost';
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
 	useEffect(() => {
 		if (!chatSessionsLoading && chatSessionsRef.current) revealSelection(chatSessionsRef.current);
 	}, [activeChatSessionId, chatSessions, chatSessionsLoading]);
-	const chatNavigationButton = (
-		<Button
-			type="button"
-			variant={chatButtonVariant}
-			size="sm"
-			className="!rounded-l-full !rounded-r-none text-xs"
-			onClick={() => navigate('/home')}
-			aria-label={homeLabel}
-			aria-current={isHome ? 'page' : undefined}
-		>
-			<MessageCircle className="size-3.5" strokeWidth={1.8} />
-			<span>{homeLabel}</span>
-		</Button>
-	);
-	const chatButtonTooltip = (
-		<Tooltip>
-			<TooltipTrigger render={chatNavigationButton} />
-			<TooltipContent side="bottom">{homeLabel}</TooltipContent>
-		</Tooltip>
-	);
 	const chatHistoryDropdown = (trigger: ReactNode, align: "start" | "end" = "end") => (
 				<DropdownMenu
 					onOpenChange={(open) => {
@@ -187,22 +164,8 @@ export const NavigationBar = React.memo(function NavigationBar({
 					</DropdownMenuContent>
 				</DropdownMenu>
 	);
-	const chatButtonGroup = showWorkspace && !(isHome && sidebarExpanded) ? (
-		<>
-			<ButtonGroup role="group" aria-label={homeLabel}>
-				{chatButtonTooltip}
-				{chatHistoryDropdown(
-					<Button type="button" variant={chatButtonVariant} size="icon-sm" className="!rounded-l-none !rounded-r-full border-l-0" aria-label={chatHistoryLabel}>
-						<ChevronDown className="size-4" strokeWidth={1.8} />
-					</Button>
-				)}
-			</ButtonGroup>
-			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
-		</>
-	) : null;
 	const navigationButtons = showWorkspace ? (
 		<>
-			{chatButtonGroup}
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
