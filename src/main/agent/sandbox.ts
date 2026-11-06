@@ -18,7 +18,6 @@ import { userDataLocation } from '../shared/user_data_location';
 import { resolveUserPath } from '../shared/user_path';
 import { permissionFor } from './permissions/permission_for';
 import { recursivePermissionRule } from './permissions/recursive_permission_rule';
-import type { AgentInteractionMode } from '../../shared/agent_types';
 import { agentLocation } from '../shared/agent_location';
 import { sandboxSystemReads } from './sandbox/reads';
 import { realPath } from '../shared/real_path';
