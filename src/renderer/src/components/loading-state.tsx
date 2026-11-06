@@ -1,111 +1,26 @@
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from 'react';
+import { LoaderIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-const KEYFRAMES = `
-@keyframes su-pixel-on { 0%, 100% { opacity: 0.15 } 40% { opacity: 1 } }
-@keyframes su-shimmer-text { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
-`;
-
-const chevron = Array.from({ length: 9 }, (_, i) => {
-  const r = Math.floor(i / 3),
-    c = i % 3;
-  return (c + Math.abs(r - 1)) * 90;
-});
-
-const ORBIT_ORDER = [0, 1, 2, 5, 8, 7, 6, 3];
-const orbit = Array.from({ length: 9 }, (_, i) => {
-  const k = ORBIT_ORDER.indexOf(i);
-  return k === -1 ? null : k * 110;
-});
-
-export type LoadingStateVariant = "Drive" | "Dots" | "Orbit";
-
-const PATTERNS: Record<
-  LoadingStateVariant,
-  { delays: (number | null)[]; dur: number; round: boolean }
-> = {
-  Drive: { delays: chevron, dur: 650, round: false },
-  Dots: { delays: chevron, dur: 650, round: true },
-  Orbit: { delays: orbit, dur: 950, round: false },
-};
-
-function useElapsed(startedAtMs?: number) {
+export function LoadingState({ label = 'Churning', startedAtMs, className }: {
+  label?: string;
+  startedAtMs?: number;
+  className?: string;
+}) {
   const [start] = useState(() => startedAtMs ?? Date.now());
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 100);
-    return () => clearInterval(t);
+    const timer = setInterval(() => setNow(Date.now()), 100);
+    return () => clearInterval(timer);
   }, []);
   const total = Math.floor(Math.max(0, now - start) / 100) / 10;
-  if (total < 60) return `${total.toFixed(1)}s`;
-  return `${Math.floor(total / 60)}m ${(total % 60).toFixed(1)}s`;
-}
-
-export interface LoadingStateProps {
-  label?: string;
-  variant?: LoadingStateVariant;
-  startedAtMs?: number;
-  className?: string;
-}
-
-export function LoadingState({
-  label = "Churning",
-  variant = "Drive",
-  startedAtMs,
-  className,
-}: LoadingStateProps) {
-  const elapsed = useElapsed(startedAtMs);
-  const { delays, dur, round } = PATTERNS[variant] ?? PATTERNS.Drive;
+  const elapsed = total < 60 ? `${total.toFixed(1)}s` : `${Math.floor(total / 60)}m ${(total % 60).toFixed(1)}s`;
 
   return (
-    <span
-      className={cn(
-        "flex w-fit items-center gap-2.5 text-neutral-900 dark:text-neutral-100",
-        className,
-      )}
-    >
-      <style dangerouslySetInnerHTML={{ __html: KEYFRAMES }} />
-
-      <span aria-hidden className="grid grid-cols-[repeat(3,4px)] gap-[1.5px]">
-        {delays.map((d, i) => (
-          <span
-            key={i}
-            className={cn(
-              "size-[4px] bg-current motion-reduce:!animate-none",
-              round ? "rounded-full" : "rounded-[1px]",
-            )}
-            style={{
-              opacity: d === null ? 0.07 : 0.15,
-              animation:
-                d === null
-                  ? "none"
-                  : `su-pixel-on ${dur}ms ease-in-out ${d}ms infinite`,
-            }}
-          />
-        ))}
-      </span>
-
-      <span
-        className="bg-clip-text text-[13px] font-medium text-transparent motion-reduce:!animate-none motion-reduce:!text-current"
-        style={{
-          backgroundImage:
-            "linear-gradient(90deg, #a3a3a3 35%, currentColor 50%, #a3a3a3 65%)",
-          backgroundSize: "200% 100%",
-          animation: "su-shimmer-text 1.4s linear infinite",
-        }}
-      >
-        {label}
-      </span>
-
-      <span
-        role="timer"
-        aria-label={`Elapsed time ${elapsed}`}
-        className="font-mono text-[12px] tabular-nums text-neutral-400 dark:text-neutral-500"
-      >
-        {elapsed}
-      </span>
+    <span className={cn('flex w-fit items-center gap-2.5 text-neutral-900 dark:text-neutral-100', className)}>
+      <LoaderIcon role="status" aria-label="Loading" className="size-4 animate-spin motion-reduce:animate-none" />
+      <span className="text-[13px] font-medium">{label}</span>
+      <span role="timer" aria-label={`Elapsed time ${elapsed}`} className="font-mono text-[12px] tabular-nums text-neutral-400 dark:text-neutral-500">{elapsed}</span>
     </span>
   );
 }
-
-export default LoadingState;
