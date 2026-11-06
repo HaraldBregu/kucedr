@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, FolderOpen, LoaderCircle, MoreHorizontal, Trash2 } from 'lucide-react';
+import { AlertTriangle, ArchiveRestore, FolderOpen, LoaderCircle, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { AgentSessionCategory, AgentSessionSummary } from '@/lib/compat';
