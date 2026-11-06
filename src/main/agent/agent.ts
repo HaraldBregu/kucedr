@@ -388,7 +388,7 @@ export class Agent {
 					this.emit(record, responseEvent);
 				}
 			}
-			if (result && request.category === 'main' && session.folderName !== '' && !mode?.restricted) {
+			if (result && request.category === 'main' && session.folderName !== '' && !mode.restricted) {
 				for (const behavior of behaviors) {
 					behavior.account(
 						sessionDir(session),
