@@ -1,5 +1,6 @@
 import React from 'react';
 import { Folder, Play, Video, Volume2 } from 'lucide-react';
+import { AudioPlayer } from '@/components/audio-player';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { libraryFileIcon } from './icon';
 import { libraryFileUrl } from './url';
