@@ -159,20 +159,26 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		}
 	}, [currentSessionId, sessions, setSessionTitle, t]);
 
-	const togglePin = (session: AgentSessionSummary): void => {
-		const pinned = !session.pinned;
-		void window.agent.pinSession(session.id, pinned).then(() =>
-			setSessions((current) =>
-				current.map((item) => (item.id === session.id ? { ...item, pinned } : item))
+	const togglePin = (targets: AgentSessionSummary[]): void => {
+		const pinned = !targets.every((item) => item.pinned);
+		const ids = new Set(targets.map((item) => item.id));
+		setActionError('');
+		clearSelection();
+		void Promise.all(targets.map((item) => window.agent.pinSession(item.id, pinned)))
+			.then(() =>
+				setSessions((current) =>
+					current.map((item) => (ids.has(item.id) ? { ...item, pinned } : item))
+				)
 			)
-		);
+			.catch(() => setActionError(t('settings.chatHistory.errors.pin')));
 	};
 
-	const pinnedSessions = sessions.filter((session) => session.pinned);
-	const recentSessions = sessions.filter((session) => !session.pinned);
+	const pinnedSessions = activeSessions.filter((session) => session.pinned);
+	const recentSessions = activeSessions.filter((session) => !session.pinned);
+	const archivedSessions = sessions.filter((session) => session.archived);
 
-	const renderGroup = (label: string, count: number, content: ReactNode, className?: string): ReactElement => {
-		if (count < 10)
+	const renderGroup = (label: string, count: number, content: ReactNode, className?: string, collapsed?: boolean): ReactElement => {
+		if (count < 10 && !collapsed)
 			return (
 				<SidebarGroup className={className}>
 					<SidebarGroupLabel>{label}</SidebarGroupLabel>
