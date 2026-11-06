@@ -11,13 +11,21 @@ export function createElevenLabsMusicAdapter(spec: MusicProviderSpec): MusicAdap
 
 	return {
 		generate(request) {
-			const soundEffects = ['elevenlabs-sound-effects', 'eleven_text_to_sound_v2'].includes(
-				request.modelId
-			);
-			const { output_format: outputFormat, ...options } = request.options ?? {};
+			const soundEffects = [
+				'elevenlabs-sound-effects',
+				'eleven_text_to_sound_v2',
+				'eleven_text_to_sound_v3',
+			].includes(request.modelId);
+			const {
+				output_format: outputFormat,
+				enable_logging: enableLogging,
+				...options
+			} = request.options ?? {};
 			const endpoint = new URL(`${baseURL}/${soundEffects ? 'sound-generation' : 'music'}`);
 			if (typeof outputFormat === 'string')
 				endpoint.searchParams.set('output_format', outputFormat);
+			if (typeof enableLogging === 'boolean')
+				endpoint.searchParams.set('enable_logging', String(enableLogging));
 			return requestAudio(spec.name, endpoint.toString(), {
 				method: 'POST',
 				headers: {
