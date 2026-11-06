@@ -41,6 +41,8 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const [editingTitle, setEditingTitle] = useState('');
 	const [compactingSessionId, setCompactingSessionId] = useState<string>();
 	const [pendingAction, setPendingAction] = useState<{ action: 'clear' | 'compact'; id: string; title: string }>();
+	const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(new Set());
+	const [selectionAnchor, setSelectionAnchor] = useState<string>();
 
 	useEffect(() => {
 		let active = true;
