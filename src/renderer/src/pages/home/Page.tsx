@@ -867,7 +867,7 @@ function PageContent(): ReactElement {
 								</ChatContainerContent>
 								<ChatOutline key={chatSessionId} messages={visibleMessages} />
 								<div className="pointer-events-none absolute inset-x-0 bottom-[calc(var(--composer-height,7rem)+0.75rem)] z-30 px-4">
-									<div className={cn('mx-auto flex w-full max-w-4xl justify-center transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'max-w-[68.5rem] pr-[12.5rem]')}>
+									<div className={cn('mx-auto flex w-full max-w-4xl justify-center transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'max-w-[71.5rem] pr-[15.5rem]')}>
 										<ScrollButton
 											type="button"
 											aria-label="Scroll to latest"
