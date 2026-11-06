@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, FolderTree } from 'lucide-react';
+import { ChevronRight, Folders } from 'lucide-react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -27,7 +27,7 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 			<DropdownMenu open={openPath === ''} onOpenChange={(open) => setOpenPath(open ? '' : null)}>
 				<DropdownMenuTrigger asChild>
 					<Button type="button" variant="ghost" size="icon-sm" className="size-7 shrink-0 aria-expanded:bg-transparent!" aria-label="Browse workspace root">
-						<FolderTree aria-hidden="true" className="size-4" />
+						<Folders aria-hidden="true" className="size-4" />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start" className="max-h-80 min-w-64 overflow-y-auto p-0">
