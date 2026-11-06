@@ -313,7 +313,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 						</div>
 						<div className="absolute inset-y-0 right-1 flex items-center gap-1">
 				<Tooltip>
-					<TooltipTrigger render={<Button type="button" variant="ghost" size="icon-xs" aria-label={t('workspaceSidebar.search', 'Search files')} aria-expanded={searchOpen} className="text-muted-foreground" onClick={() => {
+					<TooltipTrigger render={<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.search', 'Search files')} aria-expanded={searchOpen} className="text-muted-foreground" onClick={() => {
 						if (searchOpen) setQuery('');
 						setSearchOpen(!searchOpen);
 					}}><Search /></Button>} />
@@ -321,7 +321,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				</Tooltip>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button type="button" variant="ghost" size="icon-xs" aria-label={t('workspaceSidebar.create', 'Create')} className="text-muted-foreground"><Plus /></Button>
+						<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.create', 'Create')} className="text-muted-foreground"><Plus /></Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
 						{([
