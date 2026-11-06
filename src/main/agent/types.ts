@@ -82,7 +82,7 @@ export type JsonToolConfig = {
 	inputExamples?: readonly unknown[];
 	timeoutMs?: number;
 	maxOutputBytes?: number;
-	planSafe?: boolean;
+	readOnly?: boolean;
 	hardApproval?: boolean | ((input: Record<string, unknown>) => boolean);
 	capability?: import('./execution/capability').ToolCapability;
 	policy?: AgentToolReference;
