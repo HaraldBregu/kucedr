@@ -409,6 +409,7 @@ export const SpeechChannels = {
 	setModelId: 'speech:set-model-id',
 	setProviderId: 'speech:set-provider-id',
 	synthesize: 'speech:synthesize',
+	createVoice: 'speech:create-voice',
 } as const;
 
 export const RealtimeVoiceChannels = {
