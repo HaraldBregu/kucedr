@@ -426,13 +426,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					)}
 				</SidebarMenu>
 			</header>
-			<section
-				className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3"
-				aria-busy={loading}
-				onKeyDown={(event) => {
-					if (event.key === 'Escape') clearSelection();
-				}}
-			>
+			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>
 				{pinnedSessions.length > 0 &&
 					renderGroup(
 						t('settings.chatHistory.pinned', 'Pinned'),
