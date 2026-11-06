@@ -11,8 +11,6 @@ import { VolumeControlMute, VolumeControlSlider } from '@/components/ui/volume-c
 import { useAudioPlayer } from '@/hooks/use-audio-player';
 import { cn } from '@/lib/utils';
 
-const VOLUME_ICONS = { muted: VolumeX, low: Volume, medium: Volume1, high: Volume2 };
-
 export function AudioPlayer({
 	src,
 	className,
