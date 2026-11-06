@@ -45,8 +45,10 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		let active = true;
 		void Promise.all([window.plugins.list(), window.plugins.available()])
 			.then(([installed, available]) => {
-				const plugin = [...installed, ...available].find((item) => item.id === pluginId);
-				if (active && plugin) setPluginLabel({ id: pluginId, label: plugin.name });
+				const label =
+					installed.find((item) => item.id === pluginId)?.name ??
+					available.find((item) => item.id === pluginId)?.title;
+				if (active && label) setPluginLabel({ id: pluginId, label });
 			})
 			.catch(() => undefined);
 
