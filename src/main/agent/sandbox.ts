@@ -42,7 +42,7 @@ export class ExecSandbox {
 	private transition: Promise<void> = Promise.resolve();
 	private readonly children = new Set<ChildProcess>();
 	private readonly temporaryDirectory = path.join(userDataLocation(), 'sandbox');
-	private readonly planSettings = new Map<string, string>();
+	private readonly readOnlySettings = new Map<string, string>();
 
 	requiredRoots(roots: readonly string[]): string[] {
 		const resolved = roots.map(realPath);
