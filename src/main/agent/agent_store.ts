@@ -38,6 +38,7 @@ import {
 export type SearchEngineSettings = {
 	providerId: string;
 	providerName: string;
+	serviceId?: string;
 	enabled: boolean;
 };
 

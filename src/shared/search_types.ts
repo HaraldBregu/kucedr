@@ -1,6 +1,4 @@
-export const SEARCH_ENGINE_IDS = ['brave', 'tavily'] as const;
-
-export type SearchEngineId = (typeof SEARCH_ENGINE_IDS)[number];
+export type SearchEngineId = string;
 
 export interface SearchEngineInput {
 	apiKey: string;
