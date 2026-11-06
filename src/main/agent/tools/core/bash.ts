@@ -13,9 +13,8 @@ import type { ExecSandbox } from '../../sandbox';
 import type { ExecutionMode } from '../../../../shared/sandbox';
 import { approvedExecRoots } from '../../permissions/approved_exec_roots';
 import { resolveExecRoots } from '../../permissions/resolve_exec_roots';
-import type { AgentInteractionMode } from '../../../../shared/agent_types';
 import path from 'node:path';
-import { planCommandError } from '../../plan/command';
+import { readOnlyShellError } from '../../modes/shell';
 
 interface ExecResult {
 	command: string;
