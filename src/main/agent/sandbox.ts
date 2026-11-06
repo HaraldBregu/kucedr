@@ -288,7 +288,7 @@ export class ExecSandbox {
 		};
 	}
 
-	private async wrapPlan(command: string, commandId: string): Promise<SandboxedCommand> {
+	private async wrapReadOnly(command: string, commandId: string): Promise<SandboxedCommand> {
 		await this.configuration();
 		const permissions = getPermissions();
 		const deniedReads = [...permissions.exec.deny, ...permissions.read.deny];
