@@ -24,9 +24,7 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 			...(typeof event.sessionId === 'string' ? { sessionId: event.sessionId } : {}),
 			...(typeof event.model === 'string' ? { model: event.model } : {}),
 			...(typeof event.providerId === 'string' ? { providerId: event.providerId } : {}),
-			...(typeof event.interactionMode === 'string'
-				? { interactionMode: event.interactionMode }
-				: {}),
+			...(Array.isArray(event.modeIds) ? { modeIds: event.modeIds } : {}),
 			localToolCount: activeTools.filter((id) => !id.startsWith('mcp__')).length,
 			mcpToolCount: activeTools.filter((id) => id.startsWith('mcp__')).length,
 			skillDiagnosticCount: Array.isArray(event.skillDiagnostics)
