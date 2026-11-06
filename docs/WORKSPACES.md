@@ -45,6 +45,7 @@ The registry lives in `~/.kucedr/settings/workspaces.json`:
   chat history can contain its absolute path.
 - **Invalid data:** the file can be edited by hand, so an ID must be `default` or a UUID before it
   is joined into a path. If `active` is missing from the list or invalid, fall back to `default`.
+  An `image` must be a UUID plus an allowed extension, otherwise it is ignored.
 
 ## Main process changes
 
