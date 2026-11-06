@@ -364,13 +364,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	};
 
 	return (
-		<div
-			data-slot="home-sidebar"
-			className="flex h-full min-h-0 flex-col"
-			onKeyDown={(event) => {
-				if (event.key === 'Escape') clearSelection();
-			}}
-		>
+		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="shrink-0 px-2 pt-2">
 				<SidebarMenu>
 					<SidebarMenuItem>
