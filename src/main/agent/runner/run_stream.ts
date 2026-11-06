@@ -481,7 +481,8 @@ async function* loop(
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt = [
-				input.interactionMode === 'plan' ? addPlanPrompt(loadedSkillPrompt) : loadedSkillPrompt,
+				loadedSkillPrompt,
+				mode.protectedPrompt,
 				finalization?.instruction,
 				synthesisOnly
 					? 'Provide a non-empty final answer using the available results. Do not call tools or claim unexecuted actions succeeded.'
