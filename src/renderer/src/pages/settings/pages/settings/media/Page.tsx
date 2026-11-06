@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
 import { Play, RotateCcw, Settings, ShieldCheck, Square } from 'lucide-react';
+import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { MicrophoneSystemPermissionStatus, SystemPreferencePaneId } from '@shared/app_types';
