@@ -465,6 +465,7 @@ export class Agent {
 				updatedAtMs: Math.max(stored?.updatedAtMs ?? 0, record.request.queuedAt),
 				title: stored?.title ?? record.request.message.slice(0, 80),
 				pinned: stored?.pinned,
+				archived: stored?.archived,
 				category,
 				runStatus: record.lifecycle.status,
 			});
