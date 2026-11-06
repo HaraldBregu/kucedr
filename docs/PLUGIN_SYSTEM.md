@@ -399,6 +399,13 @@ How it works:
    and app lists are read fresh on each call. `watchPlugins()` watches both plugin folders, so
    plugins edited on disk during development reload too.
 
+### 5.7 Modes (proposed)
+
+Not built yet. A mode lives in `modes/<mode-id>/`, and the folder name is its id. `mode.json` is
+required and describes the mode. `prompt.md` is optional and holds any instructions the mode adds to
+the prompt. A plugin can ship several modes. The mode loader would scan `pluginDirs('modes')`.
+[Pluggable agent modes](AGENT_MODES.md) has the fields, safety rules, and refactor steps.
+
 ## 6. Main-process module: `src/main/plugins/`
 
 Following the `src/main/apps/` style, each file holds one function:
