@@ -115,10 +115,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			<TooltipContent side="bottom">{homeLabel}</TooltipContent>
 		</Tooltip>
 	);
-	const chatButtonGroup = showWorkspace && !(isHome && sidebarExpanded) ? (
-		<>
-			<ButtonGroup role="group" aria-label={homeLabel}>
-				{chatButtonTooltip}
+	const chatHistoryDropdown = (trigger: ReactNode) => (
 				<DropdownMenu
 					onOpenChange={(open) => {
 						if (!open) return;
@@ -130,17 +127,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						).finally(() => setChatSessionsLoading(false));
 					}}
 				>
-					<DropdownMenuTrigger asChild>
-						<Button
-							type="button"
-							variant={chatButtonVariant}
-							size="icon-sm"
-							className="!rounded-l-none !rounded-r-full border-l-0"
-							aria-label={chatHistoryLabel}
-						>
-							<ChevronDown className="size-4" strokeWidth={1.8} />
-						</Button>
-					</DropdownMenuTrigger>
+					<DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" side="bottom" className="w-72 overflow-hidden">
 						<div className="flex items-center justify-between gap-2 px-2 py-1.5">
 							<DropdownMenuLabel className="p-0">{chatHistoryLabel}</DropdownMenuLabel>
@@ -199,6 +186,16 @@ export const NavigationBar = React.memo(function NavigationBar({
 						</div>
 					</DropdownMenuContent>
 				</DropdownMenu>
+	);
+	const chatButtonGroup = showWorkspace && !(isHome && sidebarExpanded) ? (
+		<>
+			<ButtonGroup role="group" aria-label={homeLabel}>
+				{chatButtonTooltip}
+				{chatHistoryDropdown(
+					<Button type="button" variant={chatButtonVariant} size="icon-sm" className="!rounded-l-none !rounded-r-full border-l-0" aria-label={chatHistoryLabel}>
+						<ChevronDown className="size-4" strokeWidth={1.8} />
+					</Button>
+				)}
 			</ButtonGroup>
 			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
 		</>
@@ -281,7 +278,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 
 					{showWorkspace && (
 						<div data-slot="navigationbar-context" className="flex min-w-0 items-center gap-3 px-3 text-sm" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-							{!(isWorkspace && (isMobile ? state.sidebarOpenMobile : state.sidebarOpen)) && <span className="shrink-0 font-medium text-muted-foreground">{isHome ? homeLabel : isWorkspace ? workspaceLabel : t('settings.title')}</span>}
+							{!(isWorkspace && (isMobile ? state.sidebarOpenMobile : state.sidebarOpen)) && (isHome ? chatHistoryDropdown(<Button type="button" variant="ghost" size="sm" className="h-auto shrink-0 gap-1 px-0 font-medium text-muted-foreground" aria-label={chatHistoryLabel}>{homeLabel}<ChevronDown className="size-3.5" /></Button>) : <span className="shrink-0 font-medium text-muted-foreground">{isWorkspace ? workspaceLabel : t('settings.title')}</span>)}
 							{contextContent}
 							{isHome && <><span aria-hidden="true" className="text-muted-foreground/50">/</span><span className="truncate font-medium">{sessionTitle || newChatLabel}</span></>}
 						</div>
