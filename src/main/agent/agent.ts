@@ -315,9 +315,9 @@ export class Agent {
 				request.category,
 				this.sessions
 			);
-			if (parsedGoalCommand) {
-				const reply = applyGoalCommand(sessionDir(session), parsedGoalCommand);
-				if (parsedGoalCommand.action === 'create') {
+			if (modeCommand) {
+				const reply = modeCommand.apply(sessionDir(session));
+				if (modeCommand.continues) {
 					response = reply;
 				} else {
 					addAssistantMessage(session, reply, []);
