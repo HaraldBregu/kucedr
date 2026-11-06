@@ -172,10 +172,9 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 
 	const pinnedSessions = activeSessions.filter((session) => session.pinned);
 	const recentSessions = activeSessions.filter((session) => !session.pinned);
-	const archivedSessions = sessions.filter((session) => session.archived);
 
-	const renderGroup = (label: string, count: number, content: ReactNode, className?: string, collapsed?: boolean): ReactElement => {
-		if (count < 10 && !collapsed)
+	const renderGroup = (label: string, count: number, content: ReactNode, className?: string): ReactElement => {
+		if (count < 10)
 			return (
 				<SidebarGroup className={className}>
 					<SidebarGroupLabel>{label}</SidebarGroupLabel>
