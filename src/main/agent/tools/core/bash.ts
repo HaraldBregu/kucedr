@@ -109,9 +109,8 @@ async function runExec(
 		elevated: elevatedInput,
 		host: hostInput,
 	} = input;
-	const planMode = interactionMode === 'plan';
-	if (planMode) {
-		const policyError = planCommandError(input, agentLocation());
+	if (readOnly) {
+		const policyError = readOnlyShellError(input, agentLocation());
 		if (policyError) throw new Error(policyError);
 	}
 
