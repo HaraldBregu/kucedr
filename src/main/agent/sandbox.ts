@@ -331,7 +331,7 @@ export class ExecSandbox {
 				: {}),
 		};
 		await fs.writeFile(settingsPath, JSON.stringify(config), { mode: 0o600 });
-		this.planSettings.set(commandId, settingsPath);
+		this.readOnlySettings.set(commandId, settingsPath);
 		const cliPath = this.unpackedPath(
 			path.resolve(path.dirname(VENDORED_SRT_WIN_EXE), '..', '..', '..', 'dist', 'cli.js')
 		);
