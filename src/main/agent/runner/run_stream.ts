@@ -405,7 +405,7 @@ async function* loop(
 		if (
 			requestedUncatalogedMcp &&
 			input.approvalWindowId !== undefined &&
-			input.interactionMode === 'default'
+			!mode.restricted
 		) {
 			const authorizationCall: ToolCall = {
 				id: crypto.randomUUID(),
