@@ -146,6 +146,8 @@ The Home `ChatWorkspace` panel needs no change because it lists the active works
 - **Deleting a workspace:** left out of the first version. The folder can be removed by hand, but
   the registry entry would remain.
 - **One window, one workspace:** a single app instance has one active workspace at a time.
+- **Backups:** the registry and images live under `settings/`, which backups don't cover. Restoring
+  on a new machine brings back the ID-named folders, but not their names or images.
 
 ## Implementation order
 
