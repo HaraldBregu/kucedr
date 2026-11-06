@@ -109,8 +109,8 @@ export async function* runToolCall(
 	} else if (parseError) {
 		output = `Error: invalid input for '${toolCall.name}': ${parseError instanceof Error ? parseError.message : String(parseError)}`;
 		isError = true;
-	} else if (security.interactionMode === 'plan' && tool.planSafe !== true) {
-		output = `Error: tool '${toolCall.name}' is unavailable in Plan mode`;
+	} else if (!allowsTool(mode, tool)) {
+		output = `Error: tool '${toolCall.name}' is unavailable in the active mode`;
 		isError = true;
 	} else if (
 		security.toolProfile &&
