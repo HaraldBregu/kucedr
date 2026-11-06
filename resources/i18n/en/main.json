@@ -2405,6 +2405,8 @@
 		"newFile": "New file",
 		"newFolder": "New folder",
 		"rename": "Rename",
+		"pin": "Pin",
+		"unpin": "Unpin",
 		"delete": "Delete",
 		"revealInFinder": "Reveal in Finder",
 		"revealInFileManager": "Show in file manager",
