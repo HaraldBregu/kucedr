@@ -88,7 +88,7 @@ resources/plugins/
 
 | Field                        | Values                                                                                | Third-party                    |
 | ---------------------------- | ------------------------------------------------------------------------------------- | ------------------------------ |
-| `id`, `title`, `description` | Strings                                                                               | Yes                            |
+| `title`, `description`       | Strings                                                                               | Yes                            |
 | `command`                    | Such as `/plan`; the first plugin to claim one wins, with a warning                   | Yes                            |
 | `prompt`                     | Relative path, size-capped, checked with `src/shared/plugin_path.ts`                  | Yes, normal instructions slot  |
 | `protectedPrompt`            | Boolean                                                                               | Bundled only                   |
