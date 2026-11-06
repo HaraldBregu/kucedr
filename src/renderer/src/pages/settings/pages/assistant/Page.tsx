@@ -358,6 +358,12 @@ const AssistantPage: React.FC = () => {
 				</SettingsPanel>
 			</SettingsSection>
 
+			<SettingsSection title={t('settings.tabs.services')}>
+				<SettingsPanel>
+					<SearchEngineService />
+				</SettingsPanel>
+			</SettingsSection>
+
 			<SettingsPanel>
 				<Link to="/settings/agent/tools" className="block hover:bg-muted/40">
 					<SettingsRow
