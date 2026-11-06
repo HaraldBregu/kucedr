@@ -567,6 +567,7 @@ export interface ModelsApi {
 	};
 	voice: {
 		synthesize: (request: SpeechSynthesisRequest) => Promise<SpeechSynthesisResult>;
+		createVoice: (request: SpeechSynthesisRequest) => Promise<SpeechSynthesisResult & { path: string }>;
 		getOptions: () => Promise<Record<string, unknown>>;
 		setOptions: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
 		getProviderId: () => Promise<string | undefined>;
