@@ -15,11 +15,15 @@ export async function synthesizeDialogue(
 			? request.options.output_format
 			: 'mp3_44100_128';
 	endpoint.searchParams.set('output_format', output);
+	for (const name of ['language_code', 'seed', 'apply_text_normalization', 'enable_logging']) {
+		const value = request.options?.[name];
+		if (value !== undefined) endpoint.searchParams.set(name, String(value));
+	}
 	const voice =
 		request.voice ??
 		(typeof request.options?.voice_id === 'string'
 			? request.options.voice_id
-			: '21m00Tcm4TlvDq8ikWAM');
+			: 'WQP7cQUF5aAS6Axh5yaa');
 	const socket = new WebSocket(endpoint, { headers: { 'xi-api-key': provider.apiKey } });
 	const chunks: Buffer[] = [];
 	const audio = await new Promise<Buffer>((resolve, reject) => {
