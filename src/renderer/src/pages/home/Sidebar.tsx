@@ -135,17 +135,14 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			.catch(() => setActionError(t('settings.chatHistory.errors.delete')));
 	};
 
-	const archiveSessions = (targets: AgentSessionSummary[], archived: boolean): void => {
+	const archiveSessions = (targets: AgentSessionSummary[]): void => {
 		const ids = new Set(targets.map((item) => item.id));
 		setActionError('');
 		clearSelection();
-		void Promise.all(targets.map((item) => window.agent.archiveSession(item.id, archived)))
+		void Promise.all(targets.map((item) => window.agent.archiveSession(item.id, true)))
 			.then(() => {
-				setSessions((current) =>
-					current.map((item) => (ids.has(item.id) ? { ...item, archived } : item))
-				);
-				if (archived && currentSessionId && ids.has(currentSessionId))
-					setSessionId(crypto.randomUUID());
+				setSessions((current) => current.filter((item) => !ids.has(item.id)));
+				if (currentSessionId && ids.has(currentSessionId)) setSessionId(crypto.randomUUID());
 			})
 			.catch(() => setActionError(t('settings.chatHistory.errors.archive')));
 	};
