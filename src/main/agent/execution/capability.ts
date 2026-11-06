@@ -51,7 +51,6 @@ export function builtinCapability(
 ): ToolCapability | undefined {
 	if (READ.has(id)) return { effects: ['read'] };
 	if (WRITE.has(id)) return { effects: ['write'] };
-	if (GOAL.has(id)) return { effects: ['persistence'] };
 	if (PERSIST.has(id)) return { effects: ['write', 'persistence'] };
 	if (id === 'microphone_recorder' || id === 'screen_recorder') {
 		return { effects: ['sensor', 'write'] };
