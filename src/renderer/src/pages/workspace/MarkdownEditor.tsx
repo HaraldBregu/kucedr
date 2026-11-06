@@ -79,9 +79,19 @@ export function WorkspaceMarkdownEditor({
 			Image.extend({
 				renderHTML({ HTMLAttributes }) {
 					const src = typeof HTMLAttributes.src === 'string' ? workspaceResourceUrl(path, HTMLAttributes.src) : HTMLAttributes.src;
-					// ponytail: audio lives in the image node so `![alt](file.mp3)` round-trips through markdown; give it its own node if it needs more than playback
-					if (typeof src === 'string' && workspaceFileType(src).kind === 'audio') return ['audio', { controls: 'true', src, 'aria-label': HTMLAttributes.alt, class: 'w-full' }];
 					return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { src })];
+				},
+				// ponytail: audio lives in the image node so `![alt](file.mp3)` round-trips through markdown; give it its own node if it needs more than playback
+				addNodeView() {
+					const audio = ReactNodeViewRenderer((props: NodeViewProps) => <WorkspaceAudio {...props} path={path} />, { stopEvent: () => true });
+					return (props) => {
+						if (workspaceFileType(String(props.node.attrs.src ?? '')).kind === 'audio') return audio(props);
+						const dom = document.createElement('img');
+						const attributes = mergeAttributes(this.options.HTMLAttributes, props.HTMLAttributes);
+						for (const [name, value] of Object.entries(attributes)) if (value != null) dom.setAttribute(name, String(value));
+						if (typeof attributes.src === 'string') dom.src = workspaceResourceUrl(path, attributes.src);
+						return { dom };
+					};
 				},
 			}),
 			Placeholder.configure({ placeholder: ({ node }) => node.type.name === 'paragraph' ? 'Type / for options…' : '', showOnlyCurrent: true }),
