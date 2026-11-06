@@ -17,7 +17,6 @@ const READ = new Set([
 	'list_tasks',
 	'list_skills',
 	'load_skill',
-	'get_goal',
 	'ask',
 	'subagent',
 	'subagents',
