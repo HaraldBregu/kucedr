@@ -246,10 +246,7 @@ async function* loop(
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
 		let filtered = filterRuntimeTools(
-			filterPlanTools(
-				filterTools(candidates, input.toolsAllow, input.toolsDeny),
-				input.interactionMode
-			)
+			filterModeTools(filterTools(candidates, input.toolsAllow, input.toolsDeny), mode)
 		);
 		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
