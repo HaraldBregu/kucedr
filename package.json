@@ -123,7 +123,7 @@
 		"@tiptap/extension-table": "^3.32.0",
 		"@tiptap/extension-task-item": "^3.32.0",
 		"@tiptap/extension-task-list": "^3.32.0",
-		"@tiptap/extensions": "^3.32.0",
+		"@tiptap/extensions": "^3.32.2",
 		"@tiptap/markdown": "^3.32.0",
 		"@tiptap/pm": "^3.32.0",
 		"@tiptap/react": "^3.32.0",
