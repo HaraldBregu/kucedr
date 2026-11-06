@@ -5,7 +5,7 @@ import type { SpeechSynthesisResult } from '../../../../shared/speech_types';
 
 const ELEVENLABS_TTS_PATH = 'text-to-speech';
 const ELEVENLABS_API_KEY_HEADER = 'xi-api-key';
-const ELEVENLABS_DEFAULT_VOICE_ID = '21m00Tcm4TlvDq8ikWAM';
+const ELEVENLABS_DEFAULT_VOICE_ID = 'WQP7cQUF5aAS6Axh5yaa';
 
 export function createElevenLabsSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
 	return {
