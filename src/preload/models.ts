@@ -291,6 +291,9 @@ export const models: ModelsApi = {
 		synthesize: (request) => {
 			return typedInvokeUnwrap(SpeechChannels.synthesize, normalizeSpeechSynthesisRequest(request));
 		},
+		createVoice: (request) => {
+			return typedInvokeUnwrap(SpeechChannels.createVoice, normalizeSpeechSynthesisRequest(request));
+		},
 		getProviderId: () => {
 			return typedInvokeUnwrap(SpeechChannels.getProviderId);
 		},
