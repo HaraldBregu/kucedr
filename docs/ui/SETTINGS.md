@@ -55,7 +55,9 @@ search also matches individual settings by label, description, and keywords.
 - `Cmd+,` should navigate directly to Settings on macOS.
 - Search results should include deep pages such as Persona, provider API keys, individual model
   services, assistant data, and media permissions.
-- Breadcrumbs should link detail pages back to their Settings parent.
+- Breadcrumbs should link detail pages back to their Settings parent. The Settings crumb should open
+  a menu of all sections, and the current crumb should open a menu of its section's subpages when
+  it has any.
 - Legacy service and knowledge paths should redirect to their current nested routes.
 - An unknown Settings route should use the application 404 recovery view.
 
