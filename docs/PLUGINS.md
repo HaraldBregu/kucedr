@@ -167,6 +167,7 @@ the built entry file.
 - A host bridge (theme tokens, conversation, agent) for apps opened in extension mode.
 - An install confirmation dialog listing what a plugin adds.
 - Local model downloads, the plugin catalog, and updates.
+- Agent modes in `modes/<mode-id>/` (`mode.json`, optional `prompt.md`). See [Pluggable agent modes](AGENT_MODES.md).
 
 ## CLI
 
