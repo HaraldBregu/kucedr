@@ -125,15 +125,15 @@ async function runExec(
 
 	const roots = resolveExecRoots(input, agentLocation());
 	const cwd = roots[0] ?? resolveUserPath(workdir ?? '.', agentLocation());
-	if (planMode) {
+	if (readOnly) {
 		const relative = path.relative(agentLocation(), cwd);
 		if (relative.startsWith('..') || path.isAbsolute(relative))
-			throw new Error('Plan commands must run inside the workspace.');
+			throw new Error('Read-only commands must run inside the workspace.');
 	}
-	const planTimeoutSeconds = Math.min(timeoutInput ?? 60, 120);
+	const readOnlyTimeoutSeconds = Math.min(timeoutInput ?? 60, 120);
 	const yieldMs = yieldMsInput ?? 10000;
-	const timeoutMs = planMode
-		? planTimeoutSeconds * 1000
+	const timeoutMs = readOnly
+		? readOnlyTimeoutSeconds * 1000
 		: timeoutInput === undefined
 			? undefined
 			: timeoutInput * 1000;
