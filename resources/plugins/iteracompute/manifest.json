@@ -1,0 +1,23 @@
+{
+	"schemaVersion": 5,
+	"id": "iteracompute",
+	"title": "IteraCompute",
+	"version": "1.1.0",
+	"description": "Open and frontier models through one OpenAI-compatible API.",
+	"categories": [
+		"LLM"
+	],
+	"author": "Harald Bregu",
+	"website": "https://iteracompute.com",
+	"icon": "iteracompute.svg",
+	"authentication": "api-key",
+	"settings": {
+		"inputSchema": {
+			"type": "object",
+			"properties": {
+				"apiKey": { "type": "string", "title": "API key", "format": "password" }
+			},
+			"required": ["apiKey"]
+		}
+	}
+}
