@@ -236,13 +236,16 @@ export class Agent {
 		let timeoutTimer: ReturnType<typeof setTimeout> | undefined;
 		try {
 			if (controller.signal.aborted) return { text: '', stopReason: 'cancelled' };
-			const parsedGoalCommand =
-				request.category === 'main' ? parseGoalCommand(request.message) : undefined;
-			const parsedSkillCommand = parseSkillCommand(
-				parsedGoalCommand?.action === 'create' ? parsedGoalCommand.objective : request.message
-			);
+			const modes = request.category === 'main' ? listModes() : [];
+			const mode = request.category === 'main' ? resolveModes(options.modeIds ?? [], modes) : NO_MODE;
+			const behaviors = enabledBehaviors(modes);
+			const modeCommand = behaviors
+				.find((behavior) => behavior.id === mode.behavior)
+				?.parse(request.message);
+			const parsedSkillCommand = parseSkillCommand(modeCommand?.message ?? request.message);
 			const providerId = options.providerId;
-			const modelId = options.model ?? options.modelId;
+			const modelId = mode.model ?? options.model ?? options.modelId;
+			const effort = modeEffort(mode.effort, providerId, modelId) ?? options.effort;
 			const promptCapabilities = resolvePromptInputCapabilities(providerId, modelId);
 			const files = options.files?.length
 				? promptCapabilities
