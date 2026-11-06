@@ -8,7 +8,7 @@ import { TaskList } from '@tiptap/extension-task-list';
 import { Placeholder, Selection as SelectionHighlight } from '@tiptap/extensions';
 import { Markdown } from '@tiptap/markdown';
 import { NodeSelection, Selection, TextSelection } from '@tiptap/pm/state';
-import { EditorContent, ReactNodeViewRenderer, useEditor } from '@tiptap/react';
+import { EditorContent, ReactNodeViewRenderer, useEditor, type NodeViewProps } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { workspaceFileType } from '@shared/workspace';
 import { libraryFileUrl } from '@/pages/settings/pages/library/url';
