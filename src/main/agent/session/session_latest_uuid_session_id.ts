@@ -2,6 +2,7 @@ import { existsSync, readdirSync, statSync } from 'node:fs';
 import type { SessionCategory } from './session_types';
 import { sessionPath } from './session_session_path';
 import { sessionType } from './session_session_type';
+import { isArchived } from './session_is_archived';
 import { isUuid } from './session_is_uuid';
 
 export function latestUuidSessionId(
