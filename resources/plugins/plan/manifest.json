@@ -1,0 +1,11 @@
+{
+	"schemaVersion": 5,
+	"id": "plan",
+	"title": "Plan",
+	"version": "1.0.0",
+	"description": "Inspect and propose a plan without changing anything.",
+	"categories": [
+		"Modes"
+	],
+	"author": "Kucedr"
+}
