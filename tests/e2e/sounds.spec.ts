@@ -144,7 +144,7 @@ test('bundled feedback plays for chat and navigation and stays muted after reloa
 		expect(playback.map((record) => path.basename(record.source).split('-')[0])).toEqual([
 			'bencho_click',
 			'bencho_click',
-			'bencho_click',
+			'bencho_thinking',
 			'bencho_click',
 			'bencho_click',
 			'bencho_click',
