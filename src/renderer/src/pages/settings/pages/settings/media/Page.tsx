@@ -264,7 +264,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 										className="aspect-video w-full rounded-md bg-black/80"
 									/>
 								) : (
-									<audio src={recordedUrl} controls className="w-full" />
+									<AudioPlayer src={recordedUrl} />
 								)}
 							</div>
 						)}
