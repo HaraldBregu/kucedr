@@ -2405,6 +2405,8 @@
 		"newFile": "Nuovo file",
 		"newFolder": "Nuova cartella",
 		"rename": "Rinomina",
+		"pin": "Fissa",
+		"unpin": "Rimuovi",
 		"delete": "Elimina",
 		"revealInFinder": "Mostra nel Finder",
 		"revealInFileManager": "Mostra nel gestore file",
