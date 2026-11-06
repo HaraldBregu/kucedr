@@ -93,7 +93,7 @@ async function runExec(
 	sandbox: ExecSandbox,
 	input: z.infer<typeof execInputSchema>,
 	abortSignal?: AbortSignal,
-	interactionMode: AgentInteractionMode = 'default'
+	readOnly = false
 ): Promise<ExecResult> {
 	abortSignal?.throwIfAborted();
 	const scope = executionScope.getStore();
