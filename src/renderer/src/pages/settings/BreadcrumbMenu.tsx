@@ -14,9 +14,10 @@ interface BreadcrumbMenuProps {
 	readonly label: string;
 	readonly activePath: string;
 	readonly options: readonly { readonly path: string; readonly label: string }[];
+	readonly showArrow?: boolean;
 }
 
-export function BreadcrumbMenu({ label, activePath, options }: BreadcrumbMenuProps): React.JSX.Element {
+export function BreadcrumbMenu({ label, activePath, options, showArrow = true }: BreadcrumbMenuProps): React.JSX.Element {
 	const navigate = useNavigate();
 
 	return (
