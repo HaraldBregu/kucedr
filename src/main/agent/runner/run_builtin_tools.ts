@@ -70,7 +70,7 @@ export function builtinTools(
 		cameraRecorderStatusTool,
 		cameraRecorderStopTool,
 		screenRecorderTool(),
-		...(interactionMode === 'default' ? [selectScreenSourceTool] : []),
+		...(mode.restricted ? [] : [selectScreenSourceTool]),
 		screenRecorderStatusTool,
 		screenRecorderStopTool,
 		...getKnowledgeTools(),
