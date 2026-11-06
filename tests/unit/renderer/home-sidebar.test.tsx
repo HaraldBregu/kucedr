@@ -268,6 +268,8 @@ it('renames a chat from its context menu without item action buttons', async () 
 		{ id: 'clear', label: 'settings.chatHistory.clear' },
 		{ id: 'compact', label: 'settings.chatHistory.compact' },
 		{ id: 'open-location', label: 'navigationBar.openLocation' },
+		{ id: 'pin', label: 'common.pin' },
+		{ id: 'archive', label: 'settings.chatHistory.archive' },
 		{ id: 'delete', label: 'common.delete' },
 	]);
 	const input = await screen.findByRole('textbox', { name: 'Rename Latest chat' });
