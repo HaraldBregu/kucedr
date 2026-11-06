@@ -554,12 +554,12 @@ async function* loop(
 			}
 			if (
 				turn.toolCalls.length === 0 &&
-				input.interactionMode === 'plan' &&
-				!isPlanOutputValid(turn.content)
+				mode.output &&
+				!isEnvelopeValid(turn.content, mode.output.envelope)
 			) {
 				recordTurn(session, turn);
 				throw new Error(
-					'Plan response must contain exactly one non-empty <proposed_plan> envelope and no other text.'
+					`The response must contain exactly one non-empty <${mode.output.envelope}> envelope and no other text.`
 				);
 			}
 
