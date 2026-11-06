@@ -100,13 +100,7 @@ export function LibraryPreview({
 		return (
 			<div className="flex h-48 w-full flex-col items-center justify-center gap-4 rounded-md bg-muted/40 px-4">
 				<Volume2 className="size-10 text-muted-foreground" />
-				<audio
-					src={url}
-					controls
-					preload="none"
-					aria-label={file.name}
-					className="h-10 w-full min-w-0"
-				/>
+				<AudioPlayer src={url} preload="none" ariaLabel={file.name} />
 			</div>
 		);
 	}
