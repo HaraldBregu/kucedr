@@ -77,7 +77,6 @@ async function summarize(
 			message: '',
 			agentId: 'compaction',
 			contextMode: 'minimal',
-			interactionMode: 'default',
 		};
 		const iterator = runModelTurn(
 			input,
