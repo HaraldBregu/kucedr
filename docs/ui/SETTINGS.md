@@ -30,7 +30,7 @@ workspace below the application title bar.
   shared with Home and restored from local storage.
 - On mobile, the sidebar should open in a left-side sheet.
 - **Return to Home** should navigate to `/home` and close the mobile sheet.
-- The title bar should show breadcrumbs for deep Settings pages and expose route search.
+- The title bar should show the Settings breadcrumb on every Settings page and expose route search.
 - Pages should use a centered column, page header, compact sections, and shared loading, notice,
   empty-state, row, and panel components.
 
