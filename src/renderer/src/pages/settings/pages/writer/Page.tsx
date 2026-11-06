@@ -43,6 +43,9 @@ export default function WriterPage(): React.JSX.Element {
 				} />
 			</SettingsPanel>
 			<SettingsPanel>
+				<SettingsRow title={t('settings.writer.model')} description={t('settings.writer.modelDescription')} actionClassName="w-auto justify-end" actions={<Model workspace />} />
+			</SettingsPanel>
+			<SettingsPanel>
 				<SettingsRow title={t('settings.writer.imageModel')} description={t('settings.writer.imageModelDescription')} actionClassName="w-auto justify-end" actions={<MediaModel kind="image" onSelectionChange={setImageSelection} />} />
 				<SettingsRow title={t('settings.writer.aspectRatio')} description={t('settings.writer.aspectRatioDescription')} actionClassName="w-auto justify-end" actions={<Option capability="text-to-image" names={['aspect_ratio', 'size']} label={t('settings.writer.aspectRatio')} {...imageSelection} />} />
 			</SettingsPanel>
