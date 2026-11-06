@@ -539,6 +539,16 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.archiveSession,
+			wrapAgentHandler(
+				mainAccess,
+				(sessionId: unknown, archived: unknown): Promise<void> =>
+					agent.archiveSession(requireUuidSessionId(sessionId), archived === true),
+				AgentChannels.archiveSession
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.lastMessages,
 			wrapAgentHandler(
 				mainAccess,
