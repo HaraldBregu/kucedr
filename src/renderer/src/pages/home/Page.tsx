@@ -788,6 +788,7 @@ function PageContent(): ReactElement {
 						}
 						className="w-full"
 						inputClassName={cn(
+							'rounded-xl',
 							showEmptyConversation && 'min-h-[114px]',
 							planCommandActive && 'plan-prompt-frame',
 							goalCommandActive && 'goal-prompt-frame'
