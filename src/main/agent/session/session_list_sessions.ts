@@ -73,6 +73,7 @@ export function listSessions(
 					lastMessageAtMs: existsSync(messagesPath) ? statSync(messagesPath).mtimeMs : undefined,
 					title: sessionTitle(entry.name, location),
 					pinned: sessionPinned(entry.name, location),
+					archived: isArchived(root, entry.name),
 					category,
 				};
 			})
