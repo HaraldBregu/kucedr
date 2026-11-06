@@ -54,7 +54,7 @@ export async function runChild(
 		message: task,
 		agentId: 'subagent',
 		contextMode: 'minimal' as const,
-		interactionMode: runtime.interactionMode,
+		mode: runtime.mode,
 		...(runtime.toolProfile ? { toolProfile: runtime.toolProfile } : {}),
 		toolsAllow: [...tools.map((candidate) => candidate.id), 'tool_search'],
 		...(runtime.providerId ? { providerId: runtime.providerId } : {}),
