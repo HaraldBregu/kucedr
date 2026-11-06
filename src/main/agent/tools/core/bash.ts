@@ -400,7 +400,7 @@ async function runExec(
 
 export function execTool(
 	sandbox: ExecSandbox,
-	interactionMode: AgentInteractionMode = 'default'
+	readOnly = false
 ) {
 	const configured = tool({
 		id: 'bash',
