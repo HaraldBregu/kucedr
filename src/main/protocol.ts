@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { resolveWorkspaceFile } from './ipc/workspace';
+import { rangeResponse } from './range';
 import { agentLocation } from './shared/agent_location';
 import type { LoggerService } from './shared';
 import type { AppRegistry } from './apps/app_registry';
