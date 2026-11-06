@@ -325,7 +325,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						onKeyDown={(event) => {
 							if (event.key !== 'Delete' && event.key !== 'Backspace') return;
 							event.preventDefault();
-							deleteSession(session.id, title, isActive);
+							deleteSessions(selectionTargets(session));
 						}}
 						onContextMenu={(event) => {
 							event.preventDefault();
