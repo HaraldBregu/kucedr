@@ -31,16 +31,48 @@ They are discovered through `pluginDirs('modes')`, as `src/main/plugins/scripts/
 does for scripts, and validated in `plugins_validate_contents.ts`. Reload and enable/disable reuse the
 existing plugin code.
 
+Each mode lives in its own folder at `plugins/<plugin-name>/modes/<mode-name>/`, in both the bundled
+root (`resources/plugins/`) and the installed root (`~/.kucedr/plugins/`). A plugin can ship several
+modes, one folder each. The mode id is the folder name, like other contributions.
+
 ```text
-resources/plugins/plan/
-  manifest.json
-  modes/plan/mode.json
-  modes/plan/prompt.md
+plugins/
+  <plugin-name>/
+    manifest.json
+    modes/
+      <mode-name>/
+        mode.json
+        prompt.md
+      <mode-name>/
+        mode.json
 ```
+
+The bundled modes:
+
+```text
+resources/plugins/
+  plan/
+    manifest.json
+    modes/
+      plan/
+        mode.json
+        prompt.md
+  goal/
+    manifest.json
+    modes/
+      goal/
+        mode.json
+  fast/
+    manifest.json
+    modes/
+      fast/
+        mode.json
+```
+
+`modes/plan/mode.json`:
 
 ```json
 {
-	"id": "plan",
 	"title": "Plan",
 	"description": "Inspect and propose a plan without changing anything.",
 	"command": "/plan",
