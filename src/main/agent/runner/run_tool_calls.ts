@@ -31,7 +31,7 @@ export async function* runToolCalls(
 			signal?.aborted ||
 			mcpAuthorizationStopped(toolCall) ||
 			(security?.windowId !== undefined &&
-				security.interactionMode === 'default' &&
+				!security.mode?.restricted &&
 				Boolean(toolCall.result?.authorizationRequired))
 		) break;
 	}
