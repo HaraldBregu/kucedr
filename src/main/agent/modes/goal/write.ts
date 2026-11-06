@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { atomicWriteFile } from '../session/session_atomic_write';
+import { atomicWriteFile } from '../../session/session_atomic_write';
 import { goalPath } from './path';
 import type { SessionGoal } from './types';
 
