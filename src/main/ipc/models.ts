@@ -128,6 +128,11 @@ export class ModelsIpc implements IpcModule<ModelsIpcDependencies> {
 		});
 
 		trusted.command(SpeechChannels.synthesize, (request) => voice.synthesize(request));
+		trusted.command(SpeechChannels.createVoice, async (request) => {
+			const result = await voice.synthesize(request);
+			const extension = result.mimeType === 'audio/mpeg' ? 'mp3' : result.mimeType.split('/')[1]?.split('+')[0] || 'mp3';
+			return { ...result, path: await saveMedia('voice', extension, result.audio) };
+		});
 		trusted.query(SpeechChannels.getProviderId, () => getProviderId('voice'));
 		trusted.query(SpeechChannels.getOptions, () => getOptions('voice'));
 		trusted.command(SpeechChannels.setOptions, (options) => {
