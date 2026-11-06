@@ -213,7 +213,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 					<img src={mediaUrl?.toString()} alt={file.name} className="max-h-full max-w-full object-contain" />
 				</div>
 			) : kind === 'audio' ? (
-				<div className="flex flex-1 items-center justify-center p-4"><audio controls src={mediaUrl?.toString()} /></div>
+				<div className="flex flex-1 items-center justify-center p-4"><AudioPlayer src={mediaUrl?.toString() ?? ''} ariaLabel={file.name} className="max-w-xl" /></div>
 			) : kind === 'video' ? (
 				<div className="flex min-h-0 flex-1 items-center justify-center p-4"><video controls src={mediaUrl?.toString()} className="max-h-full max-w-full" /></div>
 			) : kind === 'pdf' ? (
