@@ -272,10 +272,7 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 				const result = await window.models.voice.createVoice({ text: speechText, providerId, modelId, voice });
 				if (requestId.current !== id) return;
 				if (JSON.stringify(editor.state.doc.toJSON()) !== value.doc) throw new Error('The document changed. Please start again.');
-				const extension = result.mimeType === 'audio/mpeg' ? 'mp3' : result.mimeType.split('/')[1];
-				const src = await window.agent.importWorkspaceAsset(path, `voice.${extension}`, Uint8Array.from(atob(result.audio), (character) => character.charCodeAt(0)));
-				if (requestId.current !== id) return;
-				editor.chain().focus().insertContentAt(promptPosition(editor.state), { type: 'image', attrs: { src, alt: 'Generated voice' } }).run();
+				editor.chain().focus().insertContentAt(promptPosition(editor.state), { type: 'image', attrs: { src: libraryFileUrl(result.path), alt: 'Generated voice' } }).run();
 				setAi(null);
 			}).catch((error: unknown) => {
 				if (requestId.current === id) setAi((current) => current ? { ...current, loading: false, error: error instanceof Error ? error.message : 'Unable to generate voice.' } : null);
