@@ -11,6 +11,7 @@ export const AgentChannels = {
 	openSessionFolder: 'agent:session:open-folder',
 	renameSession: 'agent:rename-session',
 	pinSession: 'agent:pin-session',
+	archiveSession: 'agent:archive-session',
 	lastMessages: 'agent:last-messages',
 	sessionSnapshot: 'agent:session-snapshot',
 	compactSession: 'agent:compact-session',
