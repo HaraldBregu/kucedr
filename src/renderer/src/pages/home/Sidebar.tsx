@@ -354,7 +354,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							variant="ghost"
 							size="icon-xs"
 							aria-label={session.pinned ? t('common.unpin', 'Unpin') : t('common.pin', 'Pin')}
-							onClick={() => togglePin(session)}
+							onClick={() => togglePin([session])}
 						>
 							{session.pinned ? <PinOff /> : <Pin />}
 						</Button>
