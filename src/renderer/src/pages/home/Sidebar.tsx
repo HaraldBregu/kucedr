@@ -203,17 +203,57 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		);
 	};
 
-	const renderSession = (session: AgentSessionSummary): ReactElement => {
+	const renderSession = (session: AgentSessionSummary, index: number, group: AgentSessionSummary[]): ReactElement => {
 		const title = session.title.trim() || t('settings.chatHistory.untitled');
 		const isActive = session.id === currentSessionId;
 		const isCompacting = compactingSessionId === session.id;
+		const isSelected = selectedIds.has(session.id);
+		const select = (event: React.MouseEvent): boolean => {
+			if (event.metaKey || event.ctrlKey) {
+				const next = new Set(selectedIds.size || !currentSessionId ? selectedIds : [currentSessionId]);
+				if (!next.delete(session.id)) next.add(session.id);
+				setSelectedIds(next);
+				setSelectionAnchor(session.id);
+				return true;
+			}
+			if (event.shiftKey) {
+				const anchor = group.findIndex((item) => item.id === (selectionAnchor ?? currentSessionId));
+				const range = group.slice(Math.min(anchor < 0 ? index : anchor, index), Math.max(anchor, index) + 1);
+				setSelectedIds(new Set(range.map((item) => item.id)));
+				return true;
+			}
+			clearSelection();
+			return false;
+		};
 		const openMenu = (): void => {
+			const targets = selectionTargets(session);
+			if (!isSelected) clearSelection();
+			const isBulk = targets.length > 1;
+			const allPinned = targets.every((item) => item.pinned);
+			const allArchived = targets.every((item) => item.archived);
 			void window.win
 				.showContextMenu([
-					{ id: 'rename', label: t('common.rename', 'Rename') },
-					{ id: 'clear', label: t('settings.chatHistory.clear') },
-					{ id: 'compact', label: t('settings.chatHistory.compact') },
-					{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
+					...(isBulk
+						? [
+								{
+									id: 'selection',
+									label: t('settings.chatHistory.selectedCount', { total: targets.length }),
+									enabled: false,
+								},
+							]
+						: [
+								{ id: 'rename', label: t('common.rename', 'Rename') },
+								{ id: 'clear', label: t('settings.chatHistory.clear') },
+								{ id: 'compact', label: t('settings.chatHistory.compact') },
+								{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
+							]),
+					{ id: 'pin', label: allPinned ? t('common.unpin', 'Unpin') : t('common.pin', 'Pin') },
+					{
+						id: 'archive',
+						label: allArchived
+							? t('settings.chatHistory.unarchive')
+							: t('settings.chatHistory.archive'),
+					},
 					{ id: 'delete', label: t('common.delete', 'Delete') },
 				])
 				.then((action) => {
