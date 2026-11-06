@@ -126,6 +126,56 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 		}
 	};
 
+	const activeSessions = sessions.filter((session) => !session.archived);
+	const archivedSessions = sessions.filter((session) => session.archived);
+
+	const renderSession = (session: AgentSessionSummary): React.JSX.Element => {
+		const title = session.title.trim() || t('settings.chatHistory.untitled');
+		const isDeleting = deletingSessionId === session.id;
+		return (
+			<SettingsRow
+				key={session.id}
+				title={title}
+				description={formatSessionDate(session.createdAtMs)}
+				className="grid-cols-[minmax(0,1fr)_auto]"
+				actionClassName="w-auto justify-end"
+				actions={
+					<div className="flex items-center gap-1">
+						{session.archived && (
+							<Button
+								type="button"
+								variant="outline"
+								size="icon"
+								className="size-8"
+								disabled={deletingAll || deletingSessionId !== null}
+								aria-label={`${t('settings.chatHistory.unarchive')} ${title}`}
+								title={t('settings.chatHistory.unarchive')}
+								onClick={() => void handleUnarchive(session)}
+							>
+								<ArchiveRestore className="size-3" />
+							</Button>
+						)}
+						<Button
+							type="button"
+							variant="destructive"
+							size="icon"
+							className="size-8"
+							disabled={deletingAll || deletingSessionId !== null}
+							aria-label={t('settings.chatHistory.deleteSession', { title })}
+							onClick={() => void handleDelete(session)}
+						>
+							{isDeleting ? (
+								<LoaderCircle className="size-3 animate-spin" />
+							) : (
+								<Trash2 className="size-3" />
+							)}
+						</Button>
+					</div>
+				}
+			/>
+		);
+	};
+
 	const content = (
 		<>
 			{error && (
@@ -137,44 +187,21 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 			<SettingsPanel>
 				{loading ? (
 					<SettingsLoadingRows rows={4} />
-				) : sessions.length === 0 ? (
+				) : activeSessions.length === 0 ? (
 					<SettingsEmptyState
 						title={t(emptyTitleKey)}
 						description={t(emptyDescriptionKey)}
 					/>
 				) : (
-					sessions.map((session) => {
-						const title = session.title.trim() || t('settings.chatHistory.untitled');
-						const isDeleting = deletingSessionId === session.id;
-						return (
-							<SettingsRow
-								key={session.id}
-								title={title}
-								description={formatSessionDate(session.createdAtMs)}
-								className="grid-cols-[minmax(0,1fr)_auto]"
-								actionClassName="w-auto justify-end"
-								actions={
-									<Button
-										type="button"
-										variant="destructive"
-										size="icon"
-										className="size-8"
-										disabled={deletingAll || deletingSessionId !== null}
-										aria-label={t('settings.chatHistory.deleteSession', { title })}
-										onClick={() => void handleDelete(session)}
-									>
-										{isDeleting ? (
-											<LoaderCircle className="size-3 animate-spin" />
-										) : (
-											<Trash2 className="size-3" />
-										)}
-									</Button>
-								}
-							/>
-						);
-					})
+					activeSessions.map(renderSession)
 				)}
 			</SettingsPanel>
+
+			{archivedSessions.length > 0 && (
+				<SettingsSection title={t('settings.chatHistory.archived')}>
+					<SettingsPanel>{archivedSessions.map(renderSession)}</SettingsPanel>
+				</SettingsSection>
+			)}
 		</>
 	);
 
