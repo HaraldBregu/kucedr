@@ -84,6 +84,9 @@ contribution kind in its own folder:
     server.mjs, ...          stdio servers only
   skills/<skill-id>/
     SKILL.md
+  modes/<mode-id>/           proposed, see AGENT_MODES.md
+    mode.json
+    prompt.md
 ```
 
 Rules:
