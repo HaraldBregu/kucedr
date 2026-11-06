@@ -149,6 +149,9 @@ export function WorkspaceToolbar({ path, toolbarTarget, scrollbarWidth, editor, 
 	const { byFence } = usePluginScripts();
 	const { refs: { setReference, setFloating }, elements: { floating: floatingElement }, floatingStyles, update: updatePosition } = useFloating({ placement: slash ? 'bottom-start' : 'top', middleware: [offset(8), flip(), shift({ padding: 8 }), size({ padding: 8, apply({ availableHeight, elements }) { elements.floating.style.maxHeight = `${Math.max(0, availableHeight)}px`; } })], whileElementsMounted: autoUpdate });
 	const { refs: { setReference: setStyleReference, setFloating: setStyleFloating }, floatingStyles: stylePosition } = useFloating({ placement: 'bottom-start', middleware: [offset(8), flip(), shift({ padding: 8 })], whileElementsMounted: autoUpdate });
+	const textBeforePrompt = useEditorState({ editor, selector: ({ editor: current }) => mode === 'voice' ? current.state.doc.textBetween(0, promptPosition(current.state), '\n').trim() : '' });
+	const speechText = ai?.text.trim() || textBeforePrompt;
+	const speechTooLong = speechText.length > SPEECH_MAX_TEXT_LENGTH;
 	const state = useEditorState({ editor, selector: ({ editor: current }) => ({
 		active: groups.flat().map((action) => action.active ? typeof action.active === 'string' ? current.isActive(action.active) : current.isActive(...action.active) : false),
 		table: current.isActive('table'), link: current.isActive('link'), canUndo: current.can().undo(), canRedo: current.can().redo(),
