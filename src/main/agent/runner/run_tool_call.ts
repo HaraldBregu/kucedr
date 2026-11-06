@@ -132,12 +132,12 @@ export async function* runToolCall(
 		const screenSelection = toolCall.name === 'select_screen_source';
 		if (
 			security.windowId === undefined ||
-			(!screenSelection && security.interactionMode !== 'plan') ||
-			(screenSelection && security.interactionMode !== 'default')
+			(!screenSelection && !mode.restricted) ||
+			(screenSelection && mode.restricted)
 		) {
 			output = screenSelection
 				? 'Error: screen source selection is only available in an interactive chat run.'
-				: 'Error: structured user input is only available in an interactive Plan run.';
+				: 'Error: structured user input is only available in an interactive restricted run.';
 			isError = true;
 		} else {
 			const questions = screenSelection
