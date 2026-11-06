@@ -66,7 +66,7 @@ export type ToolConfig<T extends z.ZodType> = {
 	inputExamples?: readonly unknown[];
 	timeoutMs?: number;
 	maxOutputBytes?: number;
-	planSafe?: boolean;
+	readOnly?: boolean;
 	hardApproval?: boolean | ((input: z.infer<T>) => boolean);
 	capability?: import('./execution/capability').ToolCapability;
 	policy?: AgentToolReference;
