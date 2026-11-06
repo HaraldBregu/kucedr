@@ -115,7 +115,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			<TooltipContent side="bottom">{homeLabel}</TooltipContent>
 		</Tooltip>
 	);
-	const navigationButtons = showWorkspace ? (
+	const chatButtonGroup = showWorkspace && !(isHome && sidebarExpanded) ? (
 		<>
 			<ButtonGroup role="group" aria-label={homeLabel}>
 				{chatButtonTooltip}
