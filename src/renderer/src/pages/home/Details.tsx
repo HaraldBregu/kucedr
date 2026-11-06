@@ -25,7 +25,7 @@ export function ChatDetails({ open, messages, model, draft, hasAttachments, onJu
 	const assets = chatAssets(responses);
 	const scripts = chatScripts(responses);
 	return (
-		<aside id="chat-information" aria-label="Chat information" className={`absolute right-6 top-6 z-20 max-h-[calc(100%-2.25rem-var(--composer-height,7rem))] w-56 max-w-[calc(100%-3rem)] flex-col ${open ? 'flex' : 'hidden'}`}>
+		<aside id="chat-information" aria-label="Chat information" className={`absolute right-6 top-18 z-20 max-h-[calc(100%-5.25rem-var(--composer-height,7rem))] w-56 max-w-[calc(100%-3rem)] flex-col ${open ? 'flex' : 'hidden'}`}>
 			<Card size="sm" className="min-h-0 overflow-hidden rounded-2xl border border-border bg-card ring-0 data-[size=sm]:gap-0">
 				<div className="no-scrollbar min-h-0 overflow-y-auto">
 				<CardContent className="space-y-2 pb-3 pt-0 text-sm">
