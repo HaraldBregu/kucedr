@@ -1,10 +1,14 @@
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
-import type { Tool } from '../types';
-import { tool } from '../tools/tool';
+import type { ToolCapability } from '../../execution/capability';
+import type { Tool } from '../../types';
+import { tool } from '../../tools/tool';
 import { readGoal } from './read';
 import { updateGoalStatus } from './status';
 import { writeGoal } from './write';
+
+const READS: ToolCapability = { effects: ['read'] };
+const PERSISTS: ToolCapability = { effects: ['persistence'] };
 
 export function goalTools(sessionDirectory: string): Tool[] {
 	return [
@@ -13,6 +17,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 			category: 'goal',
 			name: 'get_goal',
 			description: 'Read the active conversation goal, criteria, plan, evidence, and budget.',
+			capability: READS,
 			inputSchema: z.object({}),
 			execute: () => readGoal(sessionDirectory) ?? { goal: null },
 		}),
@@ -21,6 +26,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 			category: 'goal',
 			name: 'update_goal_plan',
 			description: 'Replace the operational steps for the active goal. Do not change its success criteria.',
+			capability: PERSISTS,
 			inputSchema: z.object({
 				steps: z.array(z.object({ description: z.string().min(1), status: z.enum(['pending', 'active', 'completed']) })).max(12),
 			}),
@@ -39,6 +45,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 			category: 'goal',
 			name: 'record_goal_evidence',
 			description: 'Record concise evidence obtained from tool output for a goal criterion.',
+			capability: PERSISTS,
 			inputSchema: z.object({ criterionId: z.string(), source: z.string(), summary: z.string().min(1).max(1000) }),
 			execute: ({ criterionId, source, summary }) => {
 				const goal = readGoal(sessionDirectory);
@@ -58,6 +65,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 			category: 'goal',
 			name: 'request_goal_completion',
 			description: 'Request completion. The runtime rejects completion unless every criterion has recorded evidence.',
+			capability: PERSISTS,
 			inputSchema: z.object({ summary: z.string().min(1).max(1000) }),
 			execute: ({ summary }) => {
 				const goal = readGoal(sessionDirectory);
@@ -72,6 +80,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 			category: 'goal',
 			name: 'report_goal_blocker',
 			description: 'Stop an active goal when a concrete blocker prevents further progress.',
+			capability: PERSISTS,
 			inputSchema: z.object({ reason: z.string().min(1).max(1000) }),
 			execute: ({ reason }) => updateGoalStatus(sessionDirectory, 'blocked', reason),
 		}),
