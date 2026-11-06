@@ -1132,6 +1132,10 @@ export interface SpeechInvokeChannelMap {
 		args: [request: SpeechSynthesisRequest];
 		result: SpeechSynthesisResult;
 	};
+	[SpeechChannels.createVoice]: {
+		args: [request: SpeechSynthesisRequest];
+		result: SpeechSynthesisResult & { path: string };
+	};
 	[SpeechChannels.getProviderId]: {
 		args: [];
 		result: string | undefined;
