@@ -46,12 +46,7 @@ export function AudioPlayer({
 			<AudioPlayerSeek className="min-w-12" />
 			<AudioPlayerTime type="duration" />
 			<AudioPlayerVolume className="w-auto shrink-0 gap-1">
-				<VolumeControlMute
-					render={(props, { level }) => {
-						const Icon = VOLUME_ICONS[level as keyof typeof VOLUME_ICONS];
-						return <button {...props}><Icon /></button>;
-					}}
-				/>
+				<VolumeControlMute><VolumeIcon /></VolumeControlMute>
 				<VolumeControlSlider className="w-16 max-sm:hidden" />
 			</AudioPlayerVolume>
 		</AudioPlayerRoot>
