@@ -37,6 +37,9 @@ The registry lives in `~/.kucedr/settings/workspaces.json`:
 
 - **IDs:** generated with `crypto.randomUUID()` and never shown as the primary label.
 - **Names:** trimmed, 1–64 characters, and unique ignoring case. Renaming only changes the registry.
+- **Images:** optional. `image` is a generated file name in `~/.kucedr/settings/workspace-images/`.
+  Images stay outside the workspace folders so they don't appear in the file tree or become
+  readable by the agent as workspace files.
 - **Missing file:** behaves as a single `default` workspace named "Personal", so existing installs
   need no migration. The existing folder is not moved, because saved permission rules, backups, and
   chat history can contain its absolute path.
