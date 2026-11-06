@@ -178,7 +178,7 @@ Names and IDs match the bundled manifests. Model metadata links to the official 
 
 | Provider | Cataloged models |
 | --- | --- |
-| ElevenLabs | Eleven Music (`eleven-music`); ElevenLabs Sound Effects (`elevenlabs-sound-effects`); Eleven Music v2 (`music_v2`); Eleven Music v2.5 (`music_v2_5`); Eleven Sound Effects v2 (`eleven_text_to_sound_v2`) |
+| ElevenLabs | Eleven Music (`eleven-music`); ElevenLabs Sound Effects (`elevenlabs-sound-effects`); Eleven Music v2 (`music_v2`); Eleven Music v2.5 (`music_v2_5`); Eleven Sound Effects v2 (`eleven_text_to_sound_v2`); Eleven Sound Effects v3 (`eleven_text_to_sound_v3`) |
 | Google DeepMind / Google | Lyria 3.5 (`lyria-3.5`); Lyria 3 Pro Preview (`lyria-3-pro-preview`); Lyria 3 Clip Preview (`lyria-3-clip-preview`); Lyria Realtime (`lyria-realtime`) |
 | Kuaishou / Kling AI | Kling Audio (`kling-audio`) |
 | MiniMax | Music 3.0 (`music-3.0`); Music 2.6 (`music-2.6`); Music Cover (`music-cover`) |
