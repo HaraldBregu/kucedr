@@ -160,22 +160,14 @@ async function runExec(
 	const approvedRoots = approvedExecRoots.getStore() ?? [];
 	const wrapped =
 		executionMode === 'sandbox'
-			? interactionMode === 'plan'
-				? await sandbox.wrap(
-						pty ? ptyCommand : command,
-						cwd,
-						commandId,
-						abortSignal,
-						approvedRoots,
-						'plan'
-					)
-				: await sandbox.wrap(
-						pty ? ptyCommand : command,
-						cwd,
-						commandId,
-						abortSignal,
-						approvedRoots
-					)
+			? await sandbox.wrap(
+					pty ? ptyCommand : command,
+					cwd,
+					commandId,
+					abortSignal,
+					approvedRoots,
+					readOnly
+				)
 			: undefined;
 	const spawnCommand = wrapped?.command ?? hostCommand;
 	const spawnArgs = wrapped?.args ?? hostArgs;
