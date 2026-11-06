@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Plugin, PluginKey, TextSelection } from '@tiptap/pm/state';
+import { Plugin, PluginKey, TextSelection, type EditorState } from '@tiptap/pm/state';
+import { SPEECH_MAX_TEXT_LENGTH } from '@shared/speech_types';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import { PromptEditor } from '@/components/prompt-editor';
 import { PromptSubmit } from '@/components/prompt-submit';
