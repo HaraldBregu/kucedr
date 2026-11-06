@@ -7,6 +7,7 @@ export interface PluginDirectory {
 	/** `<plugin>/<kind>`: each child folder is one contribution. */
 	readonly directory: string;
 	readonly plugin: PluginSource;
+	readonly builtIn: boolean;
 }
 
 export function pluginDirs(kind: PluginKind): PluginDirectory[] {
