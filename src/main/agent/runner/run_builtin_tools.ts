@@ -1,6 +1,6 @@
 import type { Config, Tool } from '../types';
 import type { ExecSandbox } from '../sandbox';
-import type { AgentInteractionMode } from '../../../shared/agent_types';
+import { NO_MODE, type ModePolicy } from '../modes/types';
 import { completeBootstrapTool } from '../tools/assistant/complete_bootstrap';
 import { applyPatchTool } from '../tools/core/patch';
 import { editTool } from '../tools/core/edit';
