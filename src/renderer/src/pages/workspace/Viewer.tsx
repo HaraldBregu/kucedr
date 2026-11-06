@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { WorkspaceTextSize } from '@shared/app_types';
 import { workspaceFileType } from '@shared/workspace';
+import { AudioPlayer } from '@/components/audio-player';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
