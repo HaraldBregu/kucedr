@@ -464,7 +464,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							{t('settings.chatHistory.refresh')}
 						</Button>
 					</div>
-				) : sessions.length === 0 ? (
+				) : activeSessions.length === 0 ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">
 						{t('settings.chatHistory.empty')}
 					</p>
