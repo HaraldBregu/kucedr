@@ -38,14 +38,20 @@ modes, one folder each. The mode id is the folder name, like other contributions
 ```text
 plugins/
   <plugin-name>/
-    manifest.json
+    manifest.json            plugin info; doesn't list modes, they're found from the folders
     modes/
       <mode-name>/
-        mode.json
-        prompt.md
+        mode.json            required: the mode's definition (fields below)
+        prompt.md            optional: instructions added to the prompt, named by `prompt`
       <mode-name>/
         mode.json
 ```
+
+| File                                | Required | Purpose                                                                 |
+| ----------------------------------- | -------- | ----------------------------------------------------------------------- |
+| `<plugin-name>/manifest.json`       | Yes      | The normal plugin manifest. No new fields are needed for modes          |
+| `modes/<mode-name>/mode.json`       | Yes      | The mode's title, command, restrictions, output, and action             |
+| `modes/<mode-name>/prompt.md`       | No       | Text the mode adds to the prompt. Any relative file name inside the mode folder works, as long as `prompt` names it |
 
 The bundled modes:
 
@@ -55,18 +61,18 @@ resources/plugins/
     manifest.json
     modes/
       plan/
-        mode.json
-        prompt.md
+        mode.json            read-only tools and shell, output envelope, Implement action
+        prompt.md            today's plan prompt
   goal/
     manifest.json
     modes/
       goal/
-        mode.json
+        mode.json            `behavior: "goal"`; the prompt and tools come from host code
   fast/
     manifest.json
     modes/
       fast/
-        mode.json
+        mode.json            `effort` only
 ```
 
 `modes/plan/mode.json`:
