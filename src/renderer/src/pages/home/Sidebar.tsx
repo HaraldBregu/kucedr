@@ -85,7 +85,16 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			});
 	};
 
-	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? sessions[0]?.id : sessionId;
+	const activeSessions = sessions.filter((session) => !session.archived);
+	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? activeSessions[0]?.id : sessionId;
+	const clearSelection = (): void => {
+		setSelectedIds(new Set());
+		setSelectionAnchor(undefined);
+	};
+	const selectionTargets = (session: AgentSessionSummary): AgentSessionSummary[] =>
+		selectedIds.has(session.id) && selectedIds.size > 1
+			? sessions.filter((item) => selectedIds.has(item.id))
+			: [session];
 	const confirmAction = (): void => {
 		if (!pendingAction) return;
 		const { action, id } = pendingAction;
