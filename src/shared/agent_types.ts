@@ -190,6 +190,7 @@ export interface AgentSessionSummary {
 	lastMessageAtMs?: number;
 	title: string;
 	pinned?: boolean;
+	archived?: boolean;
 	category: AgentSessionCategory;
 	runStatus?: 'queued' | 'running' | 'cancelling';
 }
