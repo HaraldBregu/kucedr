@@ -14,9 +14,6 @@ import {
 	persistSystemPrompt,
 	sessionDir,
 } from '../session';
-import { goalContext } from '../goal/context';
-import { goalTools } from '../goal/tools';
-import { readGoal } from '../goal/read';
 import { rememberSkill } from '../context';
 import {
 	buildLoadedSkillPrompt,
