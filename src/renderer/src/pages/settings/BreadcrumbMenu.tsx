@@ -25,7 +25,7 @@ export function BreadcrumbMenu({ label, activePath, options, showArrow = true }:
 			<DropdownMenuTrigger asChild>
 				<Button type="button" variant="ghost" size="sm" className="h-6 max-w-48 min-w-0 gap-1 px-1.5 text-xs font-medium">
 					<span className="truncate">{label}</span>
-					<ChevronDown aria-hidden="true" className="size-3 shrink-0" />
+					{showArrow && <ChevronDown aria-hidden="true" className="size-3 shrink-0" />}
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="start" className="max-h-80 min-w-48 overflow-y-auto">
