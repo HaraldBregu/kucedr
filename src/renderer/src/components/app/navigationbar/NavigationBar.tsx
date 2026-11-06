@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ChevronDown, Menu, Moon, Plus, Search, Sun } from 'lucide-react';
+import { ChevronDown, Folders, Menu, Moon, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -241,7 +241,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 
 					{showWorkspace && (
 						<div data-slot="navigationbar-context" className="flex min-w-0 items-center gap-3 px-3 text-sm" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-							{!(isWorkspace && (isMobile ? state.sidebarOpenMobile : state.sidebarOpen)) && (isHome && !(isMobile ? state.sidebarOpenMobile : state.sidebarOpen) ? chatHistoryDropdown(<button type="button" className="inline-flex shrink-0 items-center gap-1 font-medium text-muted-foreground" aria-label={chatHistoryLabel}>{homeLabel}<ChevronDown className="size-3.5" /></button>, "start") : <span className="shrink-0 font-medium text-muted-foreground">{isHome ? homeLabel : isWorkspace ? workspaceLabel : t('settings.title')}</span>)}
+							{!(isWorkspace && (isMobile ? state.sidebarOpenMobile : state.sidebarOpen)) && (isHome && !(isMobile ? state.sidebarOpenMobile : state.sidebarOpen) ? chatHistoryDropdown(<button type="button" className="inline-flex shrink-0 items-center gap-1 font-medium text-muted-foreground" aria-label={chatHistoryLabel}>{homeLabel}<ChevronDown className="size-3.5" /></button>, "start") : isWorkspace ? <button type="button" className="inline-flex shrink-0 items-center gap-2 font-medium text-muted-foreground" onClick={() => navigate('/workspace')}><Folders className="size-4" />{workspaceLabel}</button> : <span className="shrink-0 font-medium text-muted-foreground">{isHome ? homeLabel : t('settings.title')}</span>)}
 							{contextContent}
 							{isHome && <><span aria-hidden="true" className="text-muted-foreground/50">/</span><span className="truncate font-medium">{sessionTitle || newChatLabel}</span></>}
 						</div>
