@@ -420,7 +420,7 @@ async function* loop(
 				{
 					runId,
 					budget,
-					interactionMode: input.interactionMode,
+					mode,
 					toolProfile,
 					windowId: input.approvalWindowId,
 				},
