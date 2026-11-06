@@ -282,7 +282,7 @@ async function* loop(
 		if (!options.tools) {
 			if (
 				!bootstrap &&
-				input.interactionMode !== 'plan' &&
+				!mode.restricted &&
 				(input.toolsAllow === undefined ||
 					input.toolsAllow.some((toolId) => toolId.startsWith('mcp__')))
 			) {
