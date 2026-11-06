@@ -356,14 +356,10 @@ async function* loop(
 				'subagents',
 				'load_script',
 				'run_script',
-				...(input.interactionMode === 'plan' ? ['ask'] : []),
+				...(mode.restricted ? ['ask'] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
-				'get_goal',
-				'update_goal_plan',
-				'record_goal_evidence',
-				'request_goal_completion',
-				'report_goal_blocker',
+				...behaviorTools.map((tool) => tool.id),
 			]);
 			search = createToolSearch({
 				eligible: filterEligibleTools(tools),
