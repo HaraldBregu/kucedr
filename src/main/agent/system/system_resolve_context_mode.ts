@@ -1,4 +1,4 @@
-import type { AgentContextMode, AgentInteractionMode } from '../../../shared/agent_types';
+import type { AgentContextMode } from '../../../shared/agent_types';
 import type { SessionCategory } from '../session';
 import type { Config } from '../types';
 import { readBootstrap } from './system_read_bootstrap';
@@ -7,13 +7,13 @@ export async function resolveContextMode(
 	config: Config,
 	requestedMode: AgentContextMode,
 	category: SessionCategory,
-	interactionMode: AgentInteractionMode,
+	restricted: boolean,
 	hasCustomInstructions: boolean
 ): Promise<AgentContextMode> {
 	if (
 		requestedMode === 'workspace' ||
 		category !== 'main' ||
-		interactionMode === 'plan' ||
+		restricted ||
 		hasCustomInstructions
 	) {
 		return requestedMode;
