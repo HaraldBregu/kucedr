@@ -710,12 +710,12 @@ function PageContent(): ReactElement {
 				void droppedLibraryFiles(event.dataTransfer.getData(LIBRARY_DRAG_TYPE)).then(addLibraryFiles).catch(() => setLibraryDropError(true));
 			}}
 			className={cn(
-				'z-20 flex justify-center px-4',
+				'z-20 flex justify-center px-2',
 				showEmptyConversation ? 'w-full shrink-0' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
 			)}
 		>
 			{showEmptyConversation ? null : (
-				<div className={cn('pointer-events-none absolute inset-x-4 bottom-0 mx-auto h-10 max-w-3xl bg-background', detailsOpen && 'max-w-[60.5rem] pr-[12.5rem] bg-clip-content')} />
+				<div className={cn('pointer-events-none absolute inset-x-2 bottom-0 mx-auto h-10 max-w-3xl bg-background', detailsOpen && 'max-w-[60.5rem] pr-[12.5rem] bg-clip-content')} />
 			)}
 			<div className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-2xl' : 'max-w-3xl', !showEmptyConversation && detailsOpen && 'max-w-[60.5rem] pr-[12.5rem]')}>
 				{libraryDropError && <p role="alert" className="mb-2 text-xs text-destructive">Could not attach Library files. Please try again.</p>}
@@ -852,7 +852,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-3xl gap-5 pl-10 pr-4 pt-6 transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'pr-[16.5rem] max-w-[calc(48rem+12.5rem)]')}>
+								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-3xl gap-5 pl-8 pr-2 pt-6 transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'pr-[16rem] max-w-[calc(48rem+12.5rem)]')}>
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
