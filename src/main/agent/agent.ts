@@ -277,9 +277,9 @@ export class Agent {
 				contextMode:
 					options.contextMode ??
 					(options.lightContext === true || request.category !== 'main' ? 'minimal' : 'workspace'),
-				interactionMode:
-					request.category === 'main' && options.interactionMode === 'plan' ? 'plan' : 'default',
-				...(options.effort ? { effort: options.effort } : {}),
+				mode,
+				behaviors,
+				...(effort ? { effort } : {}),
 				...(options.toolsDeny ? { toolsDeny: options.toolsDeny } : {}),
 				...(files.length ? { files } : {}),
 				...(promptCapabilities ? { promptCapabilities } : {}),
