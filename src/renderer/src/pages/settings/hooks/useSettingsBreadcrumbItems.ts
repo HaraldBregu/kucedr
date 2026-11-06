@@ -34,6 +34,26 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	const appDetailMatch = useMatch('/settings/apps/:appId');
 	const appId = decodeURIComponent(appDetailMatch?.params.appId ?? '');
 	const [appLabel, setAppLabel] = useState<{ id: string; label: string } | null>(null);
+	const installedPluginMatch = useMatch('/settings/plugins/:pluginId');
+	const marketplacePluginMatch = useMatch('/settings/plugins/marketplace/:pluginId');
+	const pluginId = installedPluginMatch?.params.pluginId ?? marketplacePluginMatch?.params.pluginId ?? '';
+	const [pluginLabel, setPluginLabel] = useState<{ id: string; label: string } | null>(null);
+
+	useEffect(() => {
+		if (!pluginId) return;
+
+		let active = true;
+		void Promise.all([window.plugins.list(), window.plugins.available()])
+			.then(([installed, available]) => {
+				const plugin = [...installed, ...available].find((item) => item.id === pluginId);
+				if (active && plugin) setPluginLabel({ id: pluginId, label: plugin.name });
+			})
+			.catch(() => undefined);
+
+		return () => {
+			active = false;
+		};
+	}, [pluginId]);
 
 	useEffect(() => {
 		if (!appId) return;
