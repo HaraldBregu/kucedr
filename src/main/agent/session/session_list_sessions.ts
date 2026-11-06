@@ -3,6 +3,7 @@ import type { AgentSessionSummary } from '../../../shared/agent_types';
 import type { SessionCategory } from './session_types';
 import { DEFAULT_CATEGORY } from './session_types';
 import { infoFile } from './session_info_file';
+import { isArchived } from './session_is_archived';
 import { isUuid } from './session_is_uuid';
 import { loadMessagesBySessionId } from './session_load_messages_by_session_id';
 import { sessionPath } from './session_session_path';
