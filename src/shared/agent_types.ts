@@ -107,7 +107,7 @@ export interface AgentRunOptions {
 	modelOptions?: Record<string, unknown>;
 	effort?: ModelReasoningEffort;
 	contextMode?: AgentContextMode;
-	interactionMode?: AgentInteractionMode;
+	modeIds?: string[];
 	toolsAllow?: string[];
 	toolsDeny?: string[];
 	files?: AgentInputFile[];
