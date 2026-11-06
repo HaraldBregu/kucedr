@@ -116,16 +116,38 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			.finally(() => setCompactingSessionId(undefined));
 	};
 
-	const deleteSession = (id: string, title: string, isActive: boolean): void => {
-		if (!window.confirm(t('settings.chatHistory.confirmDeleteSession', { title }))) return;
+	const deleteSessions = (targets: AgentSessionSummary[]): void => {
+		const message =
+			targets.length === 1
+				? t('settings.chatHistory.confirmDeleteSession', {
+						title: targets[0].title.trim() || t('settings.chatHistory.untitled'),
+					})
+				: t('settings.chatHistory.confirmDeleteSessions', { total: targets.length });
+		if (!window.confirm(message)) return;
+		const ids = new Set(targets.map((item) => item.id));
 		setActionError('');
-		void window.agent
-			.deleteSession(id)
+		clearSelection();
+		void Promise.all(targets.map((item) => window.agent.deleteSession(item.id)))
 			.then(() => {
-				setSessions((current) => current.filter((item) => item.id !== id));
-				if (isActive) setSessionId(crypto.randomUUID());
+				setSessions((current) => current.filter((item) => !ids.has(item.id)));
+				if (currentSessionId && ids.has(currentSessionId)) setSessionId(crypto.randomUUID());
 			})
 			.catch(() => setActionError(t('settings.chatHistory.errors.delete')));
+	};
+
+	const archiveSessions = (targets: AgentSessionSummary[], archived: boolean): void => {
+		const ids = new Set(targets.map((item) => item.id));
+		setActionError('');
+		clearSelection();
+		void Promise.all(targets.map((item) => window.agent.archiveSession(item.id, archived)))
+			.then(() => {
+				setSessions((current) =>
+					current.map((item) => (ids.has(item.id) ? { ...item, archived } : item))
+				);
+				if (archived && currentSessionId && ids.has(currentSessionId))
+					setSessionId(crypto.randomUUID());
+			})
+			.catch(() => setActionError(t('settings.chatHistory.errors.archive')));
 	};
 
 	useEffect(() => {
