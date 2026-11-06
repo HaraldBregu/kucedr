@@ -37,12 +37,6 @@ const PERSIST = new Set([
 	'update_soul',
 	'update_user',
 ]);
-const GOAL = new Set([
-	'update_goal_plan',
-	'record_goal_evidence',
-	'request_goal_completion',
-	'report_goal_blocker',
-]);
 const RECORD = new Set(['camera_recorder', 'microphone_recorder', 'screen_recorder']);
 const CONTROL = new Set([
 	'camera_recorder_stop',
