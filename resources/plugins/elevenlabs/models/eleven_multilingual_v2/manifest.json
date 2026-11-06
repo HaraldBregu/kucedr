@@ -1,0 +1,275 @@
+{
+	"id": "eleven_multilingual_v2",
+	"name": "Eleven Multilingual v2",
+	"type": "text-to-speech-model",
+	"authentication": "api-key",
+	"url": "https://api.elevenlabs.io/v1",
+	"metadata": {
+		"documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-speech/convert",
+		"documentationStatus": "verified",
+		"inputs": {
+			"voice_id": {
+				"type": "string",
+				"title": "Voice",
+				"default": "WQP7cQUF5aAS6Axh5yaa",
+				"oneOf": [
+					{
+						"const": "BFd5oBc2DDna33pSi4Gf",
+						"title": "Alicia - Polished Global Anchor"
+					},
+					{
+						"const": "jSuBIjxMKhqIfb0wCK1F",
+						"title": "Baxter - Dry Calm Aussie"
+					},
+					{
+						"const": "AaOhDHYJ1XLZk74lXhdE",
+						"title": "Caleb - Trusted Guide"
+					},
+					{
+						"const": "fs2OqxduwXgp9foh2xjK",
+						"title": "Callum - Husky Trickster"
+					},
+					{
+						"const": "gOupLcAkjEnguROwi4oS",
+						"title": "Darian - Warm Grounded Storyteller"
+					},
+					{
+						"const": "l7kNoIfnJKPg7779LI2t",
+						"title": "Eddie - Natural and Helpful"
+					},
+					{
+						"const": "WQP7cQUF5aAS6Axh5yaa",
+						"title": "Elara - Crisp Pro Narrator"
+					},
+					{
+						"const": "6WwXjDDEMyNmFG95zycZ",
+						"title": "Eldrin - Crisp British Baritone"
+					},
+					{
+						"const": "dvbL7qkNGZY1IqPGZAjM",
+						"title": "Elowen - Upbeat Modern Narrator"
+					},
+					{
+						"const": "fnYMz3F5gMEDGMWcH1ex",
+						"title": "Finley - Articulate Anchor"
+					},
+					{
+						"const": "22N9cF8z0o7y23njdyaY",
+						"title": "Florence - Atmospheric Storyteller"
+					},
+					{
+						"const": "g7LVvkPWALzPxOQbF6OE",
+						"title": "Jade - Upbeat and Natural"
+					},
+					{
+						"const": "10NkTYmU7tSz3Kkl3Lex",
+						"title": "Kaelen - Amateur Warrior"
+					},
+					{
+						"const": "ktkP7Nsj67dw2zcplQYt",
+						"title": "Lawrence - Bright and Informative"
+					},
+					{
+						"const": "QtY3JBOUKEB5xzrRfOKc",
+						"title": "Maisie - Friendly Casual Neighbor"
+					},
+					{
+						"const": "8dEUmyPMdDdK91vboYih",
+						"title": "Sawyer - Midnight Storyteller"
+					},
+					{
+						"const": "OZ0L6eISlOejga3XjDFt",
+						"title": "Talia - Warm Soft Guide"
+					},
+					{
+						"const": "7QN34D2r3hCNwbOYIeK0",
+						"title": "Warren - Effortless and Cool"
+					},
+					{
+						"const": "FrS6cKLB1wg4WYgPa9GW",
+						"title": "Wyatt - Seasoned Mentor"
+					}
+				]
+			},
+			"voice_settings": {
+				"type": "object",
+				"properties": {
+					"stability": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1,
+						"default": 0.5,
+						"description": "Lower values give a broader emotional range."
+					},
+					"similarity_boost": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1,
+						"default": 0.75,
+						"description": "How closely the output adheres to the original voice."
+					},
+					"style": {
+						"type": "number",
+						"default": 0,
+						"description": "Style exaggeration; values above 0 may increase latency."
+					},
+					"use_speaker_boost": {
+						"type": "boolean",
+						"default": true,
+						"description": "Boosts similarity to the original speaker at a slight latency cost."
+					},
+					"speed": {
+						"type": "number",
+						"minimum": 0.7,
+						"maximum": 1.2,
+						"default": 1
+					},
+					"clone_strength": {
+						"type": "number",
+						"minimum": 0,
+						"maximum": 1,
+						"description": "0 is recommended for most use cases."
+					}
+				}
+			},
+			"output_format": {
+				"type": "string",
+				"default": "mp3_44100_128",
+				"description": "MP3 at 192 kbps requires Creator tier or above; PCM and WAV at 44.1 kHz require Pro tier or above.",
+				"enum": [
+					"alaw_8000",
+					"mp3_22050_32",
+					"mp3_24000_48",
+					"mp3_44100_32",
+					"mp3_44100_64",
+					"mp3_44100_96",
+					"mp3_44100_128",
+					"mp3_44100_192",
+					"opus_48000_32",
+					"opus_48000_64",
+					"opus_48000_96",
+					"opus_48000_128",
+					"opus_48000_192",
+					"pcm_8000",
+					"pcm_16000",
+					"pcm_22050",
+					"pcm_24000",
+					"pcm_32000",
+					"pcm_44100",
+					"pcm_48000",
+					"ulaw_8000",
+					"wav_8000",
+					"wav_16000",
+					"wav_22050",
+					"wav_24000",
+					"wav_32000",
+					"wav_44100",
+					"wav_48000"
+				]
+			},
+			"enable_logging": {
+				"type": "boolean",
+				"default": true,
+				"description": "false enables zero retention mode, available to enterprise customers only."
+			},
+			"optimize_streaming_latency": {
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 4,
+				"description": "Deprecated by ElevenLabs. 4 turns the text normalizer off and can mispronounce numbers and dates."
+			},
+			"seed": {
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 4294967295,
+				"description": "Best-effort determinism; not guaranteed."
+			},
+			"pronunciation_dictionary_locators": {
+				"type": "array",
+				"description": "Up to 3 locators, applied in order.",
+				"items": {
+					"type": "object",
+					"properties": {
+						"pronunciation_dictionary_id": {
+							"type": "string"
+						},
+						"version_id": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"previous_text": {
+				"type": "string",
+				"description": "Text before this request, for continuity. Ignored when previous_request_ids is sent."
+			},
+			"next_text": {
+				"type": "string",
+				"description": "Text after this request, for continuity. Ignored when next_request_ids is sent."
+			},
+			"previous_request_ids": {
+				"type": "array",
+				"description": "Up to 3 request IDs.",
+				"items": {
+					"type": "string"
+				}
+			},
+			"next_request_ids": {
+				"type": "array",
+				"description": "Up to 3 request IDs.",
+				"items": {
+					"type": "string"
+				}
+			},
+			"apply_text_normalization": {
+				"type": "string",
+				"default": "auto",
+				"enum": [
+					"auto",
+					"on",
+					"off"
+				]
+			},
+			"apply_language_text_normalization": {
+				"type": "boolean",
+				"default": false,
+				"description": "Japanese only; can heavily increase latency."
+			},
+			"use_pvc_as_ivc": {
+				"type": "boolean",
+				"default": false,
+				"description": "Uses the IVC version of a professional voice."
+			},
+			"audio_effects": {
+				"type": "object",
+				"description": "Reverb or a non-zero pan is rejected for ulaw, alaw, and pcm formats.",
+				"properties": {
+					"filter_preset_id": {
+						"type": "string"
+					},
+					"distance": {
+						"type": "number",
+						"default": 0
+					},
+					"environment_id": {
+						"type": "string"
+					},
+					"background_noise_id": {
+						"type": "string"
+					},
+					"send_level": {
+						"type": "number",
+						"default": 1
+					},
+					"pan": {
+						"type": "number",
+						"minimum": -1,
+						"maximum": 1,
+						"default": 0
+					}
+				}
+			}
+		}
+	},
+	"location": "remote"
+}

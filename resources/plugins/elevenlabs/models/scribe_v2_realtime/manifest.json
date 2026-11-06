@@ -1,0 +1,63 @@
+{
+	"id": "scribe_v2_realtime",
+	"name": "Scribe v2 Realtime",
+	"apiTypes": [
+		"stream"
+	],
+	"realtime": true,
+	"type": "speech-to-text-model",
+	"authentication": "api-key",
+	"url": "https://api.elevenlabs.io/v1",
+	"sampleRate": 16000,
+	"metadata": {
+		"documentationUrl": "https://elevenlabs.io/docs/api-reference/speech-to-text/v-1-speech-to-text-realtime",
+		"documentationStatus": "verified",
+		"inputs": {
+			"language_code": {
+				"type": "string"
+			},
+			"commit_strategy": {
+				"type": "string",
+				"enum": [
+					"manual",
+					"vad",
+					"turn_prediction"
+				]
+			},
+			"vad_silence_threshold_secs": {
+				"type": "number"
+			},
+			"vad_threshold": {
+				"type": "number"
+			},
+			"min_speech_duration_ms": {
+				"type": "integer"
+			},
+			"min_silence_duration_ms": {
+				"type": "integer"
+			},
+			"include_timestamps": {
+				"type": "boolean",
+				"default": false,
+				"description": "Adds word-level timestamps to committed transcripts."
+			},
+			"include_language_detection": {
+				"type": "boolean",
+				"default": false
+			},
+			"enable_logging": {
+				"type": "boolean",
+				"default": true,
+				"description": "false enables zero retention mode, available to enterprise customers only."
+			},
+			"keyterms": {
+				"type": "array",
+				"description": "Terms the model is biased towards.",
+				"items": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"location": "remote"
+}

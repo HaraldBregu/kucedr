@@ -1,0 +1,127 @@
+{
+	"id": "scribe_v2",
+	"name": "Scribe v2",
+	"apiTypes": [
+		"batch"
+	],
+	"type": "speech-to-text-model",
+	"authentication": "api-key",
+	"url": "https://api.elevenlabs.io/v1",
+	"sampleRate": 16000,
+	"metadata": {
+		"documentationUrl": "https://elevenlabs.io/docs/api-reference/speech-to-text/convert",
+		"documentationStatus": "verified",
+		"inputs": {
+			"language_code": {
+				"type": "string",
+				"description": "ISO-639-1 or ISO-639-3 code; detected automatically when omitted."
+			},
+			"tag_audio_events": {
+				"type": "boolean",
+				"description": "Tags events such as laughter and footsteps."
+			},
+			"num_speakers": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 32
+			},
+			"timestamps_granularity": {
+				"type": "string",
+				"enum": [
+					"word",
+					"character"
+				]
+			},
+			"diarize": {
+				"type": "boolean",
+				"description": "Annotates which speaker is talking."
+			},
+			"diarization_threshold": {
+				"type": "number",
+				"description": "Only with diarize on and num_speakers unset. Higher values predict fewer speakers."
+			},
+			"additional_formats": {
+				"type": "array",
+				"description": "Extra transcript export formats.",
+				"items": {
+					"type": "object"
+				}
+			},
+			"file_format": {
+				"type": "string",
+				"enum": [
+					"pcm_s16le_16",
+					"other"
+				]
+			},
+			"temperature": {
+				"type": "number",
+				"minimum": 0,
+				"maximum": 2
+			},
+			"seed": {
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 2147483647,
+				"description": "Best-effort determinism."
+			},
+			"use_multi_channel": {
+				"type": "boolean",
+				"description": "Each channel holds one speaker; up to 5 channels, each billed at full duration."
+			},
+			"multichannel_output_style": {
+				"type": "string",
+				"default": "separate",
+				"enum": [
+					"separate",
+					"combined"
+				]
+			},
+			"entity_detection": {
+				"type": "string",
+				"description": "all, a type, or a category: pii, phi, pci, other, offensive_language."
+			},
+			"entity_redaction": {
+				"type": "string",
+				"description": "Same format as entity_detection and must be a subset of it."
+			},
+			"entity_redaction_mode": {
+				"type": "string",
+				"enum": [
+					"redacted",
+					"entity_type",
+					"enumerated_entity_type"
+				]
+			},
+			"no_verbatim": {
+				"type": "boolean",
+				"description": "Removes filler words, false starts, and non-speech sounds."
+			},
+			"use_speaker_library": {
+				"type": "boolean",
+				"description": "Matches speakers to the workspace speaker library; requires diarize."
+			},
+			"detect_speaker_roles": {
+				"type": "boolean",
+				"description": "Labels speakers agent and customer; requires diarize; 10% surcharge."
+			},
+			"keyterms": {
+				"type": "array",
+				"description": "Up to 1000 terms of at most 50 characters and 5 words; 20% surcharge.",
+				"items": {
+					"type": "string"
+				}
+			},
+			"transcript_edit": {
+				"type": "string",
+				"description": "Up to 2000 characters; not with entity options or multi-channel; 30% surcharge."
+			},
+			"enable_logging": {
+				"type": "boolean",
+				"default": true,
+				"description": "false enables zero retention mode, available to enterprise customers only."
+			}
+		}
+	},
+	"location": "remote"
+}
