@@ -212,7 +212,7 @@ export type RuntimeEvent =
 	| {
 			type: 'run_started';
 			sessionId: string;
-			interactionMode: import('../../shared/agent_types').AgentInteractionMode;
+			modeIds: readonly string[];
 			model: string;
 			providerId: string;
 			tools: string[];
