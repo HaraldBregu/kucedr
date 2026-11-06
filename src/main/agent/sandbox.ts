@@ -121,9 +121,9 @@ export class ExecSandbox {
 
 	cleanup(commandId?: string): void {
 		if (commandId) {
-			const settings = this.planSettings.get(commandId);
+			const settings = this.readOnlySettings.get(commandId);
 			if (settings) {
-				this.planSettings.delete(commandId);
+				this.readOnlySettings.delete(commandId);
 				void fs.unlink(settings).catch(() => undefined);
 			}
 		}
