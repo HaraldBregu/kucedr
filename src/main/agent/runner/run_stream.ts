@@ -157,11 +157,13 @@ async function* loop(
 			output: MAX_TOOL_OUTPUT_BYTES,
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
+	const mode = input.mode ?? NO_MODE;
+	const behaviors = input.behaviors ?? [];
 	let mcpServerHint: string | undefined;
 	const bootstrap =
 		!options.tools &&
 		session.category === 'main' &&
-		input.interactionMode !== 'plan' &&
+		!mode.restricted &&
 		path.resolve(config.location) === path.resolve(agentLocation()) &&
 		(await profileStatus(config.location)).missing.length > 0;
 	const bootstrapTools = new Set([
