@@ -105,8 +105,22 @@ Add these channels with the usual `wrapIpcHandler` and renderer checks:
 | `create` | Validate the name, generate the ID, save, and create the folder |
 | `rename` | Validate the name and update the registry                    |
 | `switch` | Validate that the ID exists, save `active`, and relaunch     |
+| `pickImage` | Open the file dialog, copy the chosen image, and update the registry |
+| `removeImage` | Clear `image` and delete its file                         |
 
 Save the registry with the existing `atomic_write` helper.
+
+### Set an image
+
+The main process opens the file dialog, so the renderer never supplies a source path:
+
+- **Allowed files:** PNG, JPEG, and WebP up to 5 MB. SVG is excluded because it can contain scripts.
+- **Validation:** check the file's size and leading bytes in the main process, not just its extension.
+- **Saving:** copy the file to `workspace-images/<new uuid>.<ext>`, update the registry, then delete
+  the previous image. A new file name on each change also stops the old image being served from cache.
+
+`list` returns each image as a `local-resource://file/...` URL, which the main window can already
+load ([protocol.ts](../src/main/protocol.ts)).
 
 ## Interface
 
