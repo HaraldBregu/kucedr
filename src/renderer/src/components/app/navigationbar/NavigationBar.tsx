@@ -201,6 +201,11 @@ export const NavigationBar = React.memo(function NavigationBar({
 				</DropdownMenu>
 			</ButtonGroup>
 			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
+		</>
+	) : null;
+	const navigationButtons = showWorkspace ? (
+		<>
+			{chatButtonGroup}
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
