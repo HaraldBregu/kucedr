@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { usePageContext } from '@/components/app/base/page/hooks/use-page-context';
 import { ChevronRight, Folders } from 'lucide-react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { Button } from '@/components/ui/button';
@@ -12,6 +14,9 @@ interface WorkspaceBreadcrumbProps {
 }
 
 export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBreadcrumbProps): React.JSX.Element {
+	const { t } = useTranslation();
+	const { state, isMobile } = usePageContext();
+	const sidebarOpen = isMobile ? state.sidebarOpenMobile : state.sidebarOpen;
 	const [openPath, setOpenPath] = useState<string | null>(null);
 	const segments = path.split(/[\\/]/).filter(Boolean);
 	const crumbs: { key: string; label: string; entries: WorkspaceTreeEntry[]; file: boolean }[] = [];
@@ -24,16 +29,17 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 	}
 	return (
 		<nav aria-label="File path" className="flex min-w-0 flex-1 items-center text-xs [&_button:hover]:bg-transparent! [&_button:hover]:text-inherit!" title={path}>
-			<DropdownMenu open={openPath === ''} onOpenChange={(open) => setOpenPath(open ? '' : null)}>
+			{(!sidebarOpen || path) && <DropdownMenu open={openPath === ''} onOpenChange={(open) => setOpenPath(open ? '' : null)}>
 				<DropdownMenuTrigger asChild>
-					<Button type="button" variant="ghost" size="icon-sm" className="size-7 shrink-0 aria-expanded:bg-transparent!" aria-label="Browse workspace root">
+					<Button type="button" variant="ghost" size="sm" className="h-7 shrink-0 gap-2 px-1 aria-expanded:bg-transparent!" aria-label="Browse workspace root">
 						<Folders aria-hidden="true" className="size-4" />
+						{!sidebarOpen && <span>{t('settings.workspace.title', 'Workspace')}</span>}
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start" className="max-h-80 min-w-64 overflow-y-auto p-0">
 					<WorkspaceBreadcrumbTree entries={entries} selectedPath={path} onFileSelect={(entry) => { setOpenPath(null); onFileSelect(entry); }} />
 				</DropdownMenuContent>
-			</DropdownMenu>
+			</DropdownMenu>}
 			{crumbs.map((crumb) => (
 				<span key={crumb.key} className={crumb.file ? 'flex min-w-0 flex-1 items-center' : 'flex min-w-0 shrink items-center'}>
 					<ChevronRight aria-hidden="true" className="mx-0.5 size-3 shrink-0 text-muted-foreground" />
