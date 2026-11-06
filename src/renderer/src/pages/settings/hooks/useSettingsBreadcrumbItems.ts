@@ -173,6 +173,13 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		];
 	}
 
+	if (pluginId) {
+		return [
+			{ label: t('settings.tabs.plugins'), path: '/settings/plugins' },
+			{ label: pluginLabel?.id === pluginId ? pluginLabel.label : formatAppLabel(pluginId) },
+		];
+	}
+
 	if (appDetailMatch) {
 		return [
 			{ label: t('settings.tabs.apps'), path: '/settings/apps' },
