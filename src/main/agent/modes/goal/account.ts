@@ -1,4 +1,4 @@
-import type { SessionUsage } from '../session';
+import type { SessionUsage } from '../../session';
 import { readGoal } from './read';
 import { writeGoal } from './write';
 
