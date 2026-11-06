@@ -32,6 +32,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [SDK](../packages/sdk/README.md): embedded app bridge and optional HTTP client contract.
 - [CLI](../packages/cli/README.md): desktop launch, plugin installation, and terminal interface.
 - [Terminal](TERMINAL.md): native terminal lifecycle and IPC.
+- [Multiple workspaces plan](WORKSPACES.md): proposed named workspaces, with folders named by ID.
 - [Contributing](../CONTRIBUTING.md): repository workflow and contribution rules.
 
 ## Operate and maintain
