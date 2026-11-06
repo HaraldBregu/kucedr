@@ -1,7 +1,5 @@
 export type ModelReasoningEffort = 'none' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
 
-export type AgentInteractionMode = 'default' | 'plan';
-
 export type AgentRunState =
 	| 'idle'
 	| 'thinking'
