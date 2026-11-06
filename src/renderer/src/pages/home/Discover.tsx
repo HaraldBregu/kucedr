@@ -33,7 +33,8 @@ export function Discover(): ReactElement {
 			(items) => {
 				if (!active) return;
 				setSessions(
-					[...items]
+					items
+						.filter((item) => !item.archived)
 						.sort((a, b) => (b.updatedAtMs ?? b.createdAtMs) - (a.updatedAtMs ?? a.createdAtMs))
 						.slice(0, 8)
 				);
