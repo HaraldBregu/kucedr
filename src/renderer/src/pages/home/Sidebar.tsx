@@ -266,7 +266,9 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					}
 					if (action === 'clear' || action === 'compact')
 						setPendingAction({ action, id: session.id, title });
-					if (action === 'delete') deleteSession(session.id, title, isActive);
+					if (action === 'pin') togglePin(targets);
+					if (action === 'archive') archiveSessions(targets, !allArchived);
+					if (action === 'delete') deleteSessions(targets);
 				});
 		};
 		return (
