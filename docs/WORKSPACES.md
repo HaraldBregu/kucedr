@@ -157,6 +157,8 @@ The Home `ChatWorkspace` panel needs no change because it lists the active works
 4. IPC and relaunch → verify: switching changes the file tree and the agent's working directory.
 5. Backup folders → verify: both workspace locations back up and restore.
 6. Switcher interface → verify: create, rename, and switch work, and renaming leaves the folder as is.
+7. Workspace images → verify: an image can be set, replaced, and removed; a renamed `.txt` is rejected;
+   and a workspace with no image shows its first letter.
 
 ## Open questions
 
