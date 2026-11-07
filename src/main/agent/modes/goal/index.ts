@@ -15,8 +15,7 @@ export const goalBehavior: ModeBehavior = {
 	},
 	catalog: () => goalTools(''),
 	parse(message) {
-		const command = parseGoalCommand(`/goal ${message}`);
-		if (!command) return undefined;
+		const command = parseGoalCommand(message);
 		return {
 			message: command.action === 'create' ? command.objective : message,
 			continues: command.action === 'create',
