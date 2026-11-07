@@ -214,7 +214,6 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 	'tasks',
 	'health',
 	'coordination',
-	'goals',
 ].map((titleKey) => AGENT_TOOL_GROUPS.find((group) => group.titleKey === titleKey)!);
 
 const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat' }) => {
