@@ -493,7 +493,6 @@ function PageContent(): ReactElement {
 		return resize(composer, updateSpacing);
 	}, [showEmptyConversation]);
 	const hasPromptText = agent.input.trim().length > 0;
-	const hasGoalObjective = agent.input.replace(/^\/goal\s*/i, '').trim().length > 0;
 	const dictationStatus = dictation.status;
 	const cancelDictationSession = dictation.cancel;
 	const recorderStatus = recorder.status;
