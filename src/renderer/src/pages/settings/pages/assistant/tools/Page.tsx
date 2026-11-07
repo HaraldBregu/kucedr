@@ -52,6 +52,7 @@ type AgentTool = readonly [name: string, id: string, description: string];
 
 type AgentToolGroup = {
 	readonly titleKey: string;
+	readonly title?: string;
 	readonly icon: LucideIcon;
 	readonly tools: readonly AgentTool[];
 };
