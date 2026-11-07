@@ -8,7 +8,7 @@ import { attachRouteNavigation } from './attach_route_navigation';
 import { getWindowSize } from './settings_store';
 import { WINDOW_SIZES } from '../shared/window_size';
 
-const MINIMUM_WINDOW_WIDTH = 768;
+const MINIMUM_WINDOW_WIDTH = 650;
 const MINIMUM_WINDOW_HEIGHT = 600;
 const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 
