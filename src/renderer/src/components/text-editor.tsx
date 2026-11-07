@@ -176,7 +176,7 @@ function TextEditor({
 
 	useEffect(() => {
 		if (!editor || chipIds(editor).join('\n') === modeIds.join('\n')) return;
-		editor.commands.command(({ tr }) => {
+		const chain = editor.chain().command(({ tr }) => {
 			const positions: number[] = [];
 			tr.doc.descendants((node, position) => {
 				if (node.type.name === ModeCommand.name) positions.push(position);
@@ -187,7 +187,8 @@ function TextEditor({
 			}
 			return true;
 		});
-		if (modeIds.length > 0) editor.commands.insertContentAt(1, chips(modeIds));
+		if (modeIds.length > 0) chain.insertContentAt(1, chips(modeIds));
+		chain.run();
 	}, [editor, modeIds]);
 
 	useEffect(() => {
