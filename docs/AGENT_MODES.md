@@ -41,18 +41,18 @@ plugins/
     manifest.json            plugin info; doesn't list modes, they're found from the folders
     modes/
       <mode-name>/
-        mode.json            required: the mode's definition (fields below)
-        prompt.md            required: instructions added to the prompt, named by `prompt`
+        manifest.json        required: the mode's definition (fields below)
+        SYSTEM_PROMPT.md     required: instructions the mode adds to the system prompt
       <mode-name>/
-        mode.json
-        prompt.md
+        manifest.json
+        SYSTEM_PROMPT.md
 ```
 
-| File                                | Required | Purpose                                                                 |
-| ----------------------------------- | -------- | ----------------------------------------------------------------------- |
-| `<plugin-name>/manifest.json`       | Yes      | The normal plugin manifest. No new fields are needed for modes          |
-| `modes/<mode-name>/mode.json`       | Yes      | The mode's title, command, restrictions, output, and action             |
-| `modes/<mode-name>/prompt.md`       | Yes      | Text the mode adds to the prompt. Any relative file name inside the mode folder works, as long as `prompt` names it |
+| File                                   | Required | Purpose                                                                 |
+| -------------------------------------- | -------- | ----------------------------------------------------------------------- |
+| `<plugin-name>/manifest.json`          | Yes      | The normal plugin manifest. No new fields are needed for modes          |
+| `modes/<mode-name>/manifest.json`      | Yes      | The mode's title, command, restrictions, output, and action             |
+| `modes/<mode-name>/SYSTEM_PROMPT.md`   | Yes      | Non-empty text the mode adds to the system prompt, capped at 64 KB      |
 
 The bundled modes:
 
