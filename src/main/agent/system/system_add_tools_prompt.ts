@@ -22,8 +22,12 @@ export function addToolsPrompt(
 	const categories = new Map<ToolCategory, Tool[]>();
 	for (const tool of tools)
 		categories.set(tool.category, [...(categories.get(tool.category) ?? []), tool]);
-	for (const [category, metadata] of Object.entries(toolCategoryRegistry)) {
-		const categoryTools = categories.get(category as ToolCategory);
+	const registry = {
+		...toolCategoryRegistry,
+		...Object.fromEntries(Object.values(BEHAVIORS).map(({ id, category }) => [id, category])),
+	};
+	for (const [category, metadata] of Object.entries(registry)) {
+		const categoryTools = categories.get(category);
 		if (!categoryTools) continue;
 		prompt += `\n\n### ${metadata.label}\n${metadata.description}`;
 		for (const tool of categoryTools) {
