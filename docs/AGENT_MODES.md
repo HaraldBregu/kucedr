@@ -215,7 +215,6 @@ Still open after this refactor:
 
 | #   | Issue                                                                                                                                | Where                                         |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
-| 2   | Any text outside the `<proposed_plan>` envelope fails the run with no retry, and the plan isn't saved to history                     | `runner/run_stream.ts:563-572`                |
 | 7   | `run_script` is marked `readOnly` but spawns plugin code outside the sandbox with the full `process.env`                             | `plugins/scripts/plugin_script_render.ts:23`  |
 | 8   | The Plan shell runs `app.asar.unpacked/.../dist/cli.js`, but `asarUnpack` lists only `vendor/**`, so it may fail in packaged builds | `sandbox.ts:336`, `electron-builder.json:36`  |
 | 9   | Plan sandbox settings are written to a directory the sandboxed command can write to. This is hardening, not a demonstrated exploit   | `sandbox.ts:297,320`                          |
