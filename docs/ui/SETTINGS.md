@@ -288,7 +288,7 @@ required. Filesystem policy should:
 - [Provider settings](../../src/renderer/src/pages/settings/pages/providers/Page.tsx)
 - [Storage settings](../../src/renderer/src/pages/settings/pages/storage/Page.tsx)
 - [Task settings](../../src/renderer/src/pages/settings/pages/tasks/Page.tsx)
-- [System media settings](../../src/renderer/src/pages/settings/pages/settings/media/)
+- [System media settings](../../src/renderer/src/pages/settings/pages/general/media/)
 - [Knowledge settings](../../src/renderer/src/pages/settings/pages/knowledge/Page.tsx)
 - [Permissions settings](../../src/renderer/src/pages/settings/pages/permissions/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
