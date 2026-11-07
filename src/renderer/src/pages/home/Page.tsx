@@ -783,8 +783,7 @@ function PageContent(): ReactElement {
 						className="w-full"
 						inputClassName={cn(
 							'rounded-xl',
-							showEmptyConversation && 'min-h-[114px]',
-							agent.modeIds.length > 0 && 'mode-prompt-frame'
+							showEmptyConversation && 'min-h-[114px]'
 						)}
 						trailingAction={
 							<PromptInputActions className="justify-end gap-1.5">
