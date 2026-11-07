@@ -2,6 +2,8 @@ import { app, BrowserWindow, Menu as ElectronMenu } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import { loadTranslations } from './i18n';
 import { openAppWindows } from './apps/app_render';
+import { getWindowSize, setWindowSize } from './settings_store';
+import { WINDOW_SIZES, type WindowSize } from '../shared/window_size';
 
 interface MenuManagerCallbacks {
 	onLanguageChange: (lng: string) => void;
