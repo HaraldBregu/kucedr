@@ -7,7 +7,7 @@ export const getIdentityTool = tool({
 	category: 'bootstrap',
 	name: 'Get identity',
 	description: 'Get the assistant identity.',
-	planSafe: true,
+	readOnly: true,
 	inputSchema: z.object({}),
 	execute: () => getIdentity(),
 });
