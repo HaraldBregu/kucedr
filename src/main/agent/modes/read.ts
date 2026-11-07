@@ -45,11 +45,12 @@ export function readMode(directory: string, plugin: PluginSource, builtIn: boole
 		const field = BUNDLED_ONLY.find((name) => mode[name] !== undefined);
 		if (field) throw new Error(`modes/${id}: "${field}" is limited to bundled plugins.`);
 	}
-	const file = path.join(directory, ...mode.prompt.split('/'));
+	const file = path.join(directory, 'SYSTEM_PROMPT.md');
+	if (!existsSync(file)) throw new Error(`modes/${id} needs a SYSTEM_PROMPT.md.`);
 	if (statSync(file).size > MAX_PROMPT_BYTES) {
-		throw new Error(`modes/${id}: ${mode.prompt} is larger than 64 KB.`);
+		throw new Error(`modes/${id}: SYSTEM_PROMPT.md is larger than 64 KB.`);
 	}
 	const prompt = readFileSync(file, 'utf8').trim();
-	if (!prompt) throw new Error(`modes/${id}: ${mode.prompt} is empty.`);
+	if (!prompt) throw new Error(`modes/${id}: SYSTEM_PROMPT.md is empty.`);
 	return { ...mode, id, prompt, plugin };
 }
