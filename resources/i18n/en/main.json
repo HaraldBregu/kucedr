@@ -1757,6 +1757,16 @@
 			"fence": "Code fence",
 			"plugin": "Plugin"
 		},
+		"modes": {
+			"title": "Installed modes",
+			"description": "Browse the chat modes provided by your plugins. Type a mode's command at the start of a message to use it.",
+			"empty": "No modes installed",
+			"emptyDescription": "Install a plugin that provides modes.",
+			"loadError": "Unable to load modes.",
+			"command": "Command",
+			"persistent": "Stays on",
+			"plugin": "Plugin"
+		},
 		"services": {
 			"title": "Installed services",
 			"information": "Service information",
