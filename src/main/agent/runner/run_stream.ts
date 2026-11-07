@@ -555,14 +555,14 @@ async function* loop(
 			}
 			if (
 				turn.toolCalls.length === 0 &&
+				!finalization &&
+				turn.content.trim() &&
 				mode.output &&
 				!isEnvelopeValid(turn.content, mode.output.envelope)
 			) {
 				recordTurn(session, turn);
-				const rule = `The response must contain exactly one non-empty <${mode.output.envelope}> envelope and no other text.`;
-				if (finalization) throw new Error(rule);
 				finalization = {
-					instruction: `Your previous final response was rejected. ${rule} Write the complete final response again in that form.`,
+					instruction: `Your previous final response was rejected. The response must contain exactly one non-empty <${mode.output.envelope}> envelope and no other text. Write the complete final response again in that form.`,
 				};
 				continue;
 			}
