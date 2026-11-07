@@ -220,6 +220,10 @@ export interface AgentInvokeChannelMap {
 		args: [];
 		result: import('./agent_types').AgentPromptInputCapabilities | null;
 	};
+	[AgentChannels.listModes]: {
+		args: [];
+		result: import('./agent_types').AgentModeInfo[];
+	};
 	[AgentChannels.lastMessages]: {
 		args: [sessionId: string];
 		result: import('./agent_types').AgentHistoryMessage[];
