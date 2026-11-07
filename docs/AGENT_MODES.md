@@ -210,7 +210,7 @@ Fixed by this refactor:
 | 4   | A pasted `/plan ...` isn't recognized and runs in default mode with write tools                                                      | `components/plan-command.ts:25`                     |
 | 5   | The saved per-session mode is overwritten on mount and never restored, and nothing clears the chip on a new chat                     | `components/text-editor.tsx:95`, `home/Page.tsx:474` |
 | 6   | Plan runs count against a goal's budget even though goal is hidden during them (goal budgets no longer exist)                        | `agent.ts:386`, `goal/account.ts:12-25`             |
-| 2   | Text outside the envelope now gets one rewrite retry before the run fails; the chat card shows the last envelope                     | `runner/run_stream.ts`, `components/envelope.ts`    |
+| 2   | Text outside the envelope gets one rewrite retry; if that also fails, the answer is kept as a normal message without the card        | `runner/run_stream.ts`, `components/envelope.ts`    |
 
 Still open after this refactor:
 
