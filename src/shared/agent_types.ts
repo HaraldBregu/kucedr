@@ -115,7 +115,6 @@ export interface AgentRunOptions {
 	lightContext?: boolean;
 }
 
-/** An enabled mode, as the chat input and settings show it. */
 export interface AgentModeInfo {
 	id: string;
 	title: string;
