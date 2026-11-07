@@ -148,6 +148,9 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			if (!sendOptions.preserveInput) {
 				setInput('');
 				setReplyTo(null);
+				setModeIds(
+					runModeIds.filter((id) => modes.find((mode) => mode.id === id)?.persistent === true)
+				);
 			}
 			setIsLoading(true);
 			const agentMessageId = messageId('agent');
