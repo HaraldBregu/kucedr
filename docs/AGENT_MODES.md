@@ -219,7 +219,7 @@ The refactor will need the existing test suite run, which [CLAUDE.md](../CLAUDE.
 asked, so that run needs explicit approval at that point.
 
 1. Typecheck, lint, and tests pass.
-2. `git grep` finds no `interactionMode`, `'plan'`, or goal imports in `src/main/agent/runner`.
+2. `git grep` finds no `interactionMode`, `planSafe`, or mode-specific code anywhere in `src`.
 3. In the running app:
    - **`bootstrap` disabled:** no commands appear, and a normal chat with file edits works.
    - **Plan:** `/plan` blocks writes, renders the card, and Implement leaves Plan mode,
