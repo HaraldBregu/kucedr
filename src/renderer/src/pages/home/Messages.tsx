@@ -14,7 +14,8 @@ export const Messages = memo(function Messages({
 	activeAgentId,
 	onEdit,
 	onReply,
-	onImplement,
+	modes,
+	onAction,
 }: {
 	readonly messages: readonly HomeChatMessage[];
 	readonly isLoading: boolean;
