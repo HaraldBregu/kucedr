@@ -567,6 +567,7 @@ function PageContent(): ReactElement {
 	useEffect(() => () => setMode('chat'), [setMode]);
 
 	const removeAttachment = useCallback((id: string): void => {
+		setAttachmentError(null);
 		setAttachments((current) =>
 			current.filter((attachment) => {
 				if (attachment.id !== id) return true;
