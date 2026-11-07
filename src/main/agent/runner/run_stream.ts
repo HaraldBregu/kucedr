@@ -558,10 +558,37 @@ async function* loop(
 				!isEnvelopeValid(turn.content, mode.output.envelope)
 			) {
 				recordTurn(session, turn);
-				throw new Error(
-					`The response must contain exactly one non-empty <${mode.output.envelope}> envelope and no other text.`
-				);
+				const rule = `The response must contain exactly one non-empty <${mode.output.envelope}> envelope and no other text.`;
+				if (finalization) throw new Error(rule);
+				finalization = {
+					instruction: `Your previous final response was rejected. ${rule} Write the complete final response again in that form.`,
+				};
+				continue;
 			}
+
+			const unfinished =
+				turn.toolCalls.length === 0 && !synthesisOnly && !continued && !isExhausted(session)
+					? unfinishedModes(stateDirectory, mode.ids, statefulModes)
+					: [];
+			if (unfinished.length > 0) {
+				recordTurn(session, turn);
+				yield { type: 'assistant_message', content: turn.content, toolCalls: turn.toolCalls };
+				addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems, {
+					context: turn.usage?.context,
+					inputTokens: turn.usage?.inputTokens ?? 0,
+					outputTokens: turn.usage?.outputTokens ?? 0,
+				});
+				addUserMessage(session, [
+					{
+						type: 'text',
+						internal: true,
+						text: `<mode_continue>The tracked state of ${unfinished.map((entry) => entry.id).join(', ')} is not finished, so the run continues. Keep working on the open items without asking the user. Call update_mode_state with status "completed" once every item is done, or "blocked" with a note if something concretely prevents progress.</mode_continue>`,
+					},
+				]);
+				continued = true;
+				continue;
+			}
+			continued = false;
 
 			if (turn.toolCalls.length === 0) {
 				recordTurn(session, turn);
