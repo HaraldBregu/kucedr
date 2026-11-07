@@ -1,17 +1,23 @@
 import { InputRule, Node } from '@tiptap/core';
 import type { AgentModeInfo } from '@shared/agent_types';
 
-export type ModeCommandOptions = {
-	readonly lookup: (command: string) => AgentModeInfo | undefined;
+export type ModeCommandStorage = {
+	modes: readonly AgentModeInfo[];
 };
 
-export const ModeCommand = Node.create<ModeCommandOptions>({
+declare module '@tiptap/core' {
+	interface Storage {
+		modeCommand: ModeCommandStorage;
+	}
+}
+
+export const ModeCommand = Node.create<object, ModeCommandStorage>({
 	name: 'modeCommand',
 	group: 'inline',
 	inline: true,
 	atom: true,
 	selectable: false,
-	addOptions: () => ({ lookup: () => undefined }),
+	addStorage: () => ({ modes: [] }),
 	addAttributes: () => ({
 		id: { default: '', parseHTML: (element) => element.getAttribute('data-mode-command') ?? '' },
 		title: { default: '', parseHTML: (element) => element.textContent ?? '' },
