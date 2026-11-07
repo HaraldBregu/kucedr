@@ -21,7 +21,7 @@ export interface ModeDefinition {
 	readonly model?: string;
 	readonly output?: { readonly envelope: string };
 	readonly action?: { readonly label: string; readonly prompt: string };
-	readonly behavior?: 'goal';
+	readonly behavior?: string;
 	readonly plugin: PluginSource;
 }
 
