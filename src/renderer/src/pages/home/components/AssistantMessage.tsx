@@ -178,7 +178,7 @@ export function AssistantMessage({
 				: []
 		)
 		.find(({ parsed }) => parsed.kind !== 'markdown');
-	const parsed = output?.parsed ?? { kind: 'markdown', content: message.content };
+	const parsed: ParsedEnvelope = output?.parsed ?? { kind: 'markdown', content: message.content };
 	const action = output?.mode.action;
 	const displayContent = parsed.content;
 	const messageText = displayContent.trim();
