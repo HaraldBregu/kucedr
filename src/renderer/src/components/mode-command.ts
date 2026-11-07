@@ -63,7 +63,7 @@ export const ModeCommand = Node.create<object, ModeCommandStorage>({
 					});
 					if (present) return null;
 					state.tr.replaceWith(range.from, range.to, [
-						type.create({ id: mode.id, title: mode.title }),
+						type.create({ id: mode.id, command: mode.command }),
 						state.schema.text(' '),
 					]);
 					return undefined;
