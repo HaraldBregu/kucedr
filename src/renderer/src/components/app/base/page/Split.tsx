@@ -34,6 +34,11 @@ export function Split({
 }: SplitProps): React.JSX.Element {
 	const { state, dispatch, isMobile, sidebarWidth, setSidebarWidth } =
 		usePageContext();
+	const header = (
+		<header data-slot="sidebar-header" className={cn('flex h-12 shrink-0 items-center gap-2 pr-3', navigator.platform.startsWith('Mac') ? 'pl-20' : 'pl-3')} style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}>
+			<Toggle showTitle />
+		</header>
+	);
 
 	return (
 		<div
@@ -54,8 +59,9 @@ export function Split({
 				>
 					<SheetContent
 						side="left"
-						className="bg-background p-0 text-sidebar-foreground"
+						className="gap-0 bg-background p-0 text-sidebar-foreground"
 						style={{ width: 'min(18rem, calc(100vw - 3rem))', maxWidth: 'none' }}
+						showCloseButton={false}
 					>
 						<SheetHeader className="sr-only">
 							<SheetTitle>{sidebarLabel}</SheetTitle>
@@ -65,9 +71,10 @@ export function Split({
 							id="split-pane-sidebar"
 							data-slot="split-pane-sidebar"
 							aria-label={sidebarLabel}
-							className="h-full"
+							className="flex h-full min-h-0 flex-col"
 						>
-							{sidebar}
+							{header}
+							<div className="min-h-0 flex-1">{sidebar}</div>
 						</aside>
 					</SheetContent>
 				</Sheet>
