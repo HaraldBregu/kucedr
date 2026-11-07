@@ -132,7 +132,7 @@ export async function* runToolCall(
 		const screenSelection = toolCall.name === 'select_screen_source';
 		if (
 			security.windowId === undefined ||
-			(!screenSelection && !mode.restricted) ||
+			(!screenSelection && !mode.ask) ||
 			(screenSelection && mode.restricted)
 		) {
 			output = screenSelection
