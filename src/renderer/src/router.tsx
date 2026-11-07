@@ -720,6 +720,14 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
+						path: 'modes',
+						element: (
+							<SettingsRouteWrapper>
+								<ModesPage />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
 						path: 'model-services/:serviceId/details/*',
 						element: <ModelServiceLegacyRedirect />,
 					},
