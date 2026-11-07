@@ -908,7 +908,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-4xl gap-5 px-12 pt-18 transition-[padding] duration-200 motion-reduce:transition-none', detailsOpen && 'pr-[18.5rem] max-w-[71.5rem]')}>
+								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-4xl gap-5 px-12 pt-18 transition-[padding] duration-200 motion-reduce:transition-none', detailsDocked && 'pr-[18.5rem] max-w-[71.5rem]')}>
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
