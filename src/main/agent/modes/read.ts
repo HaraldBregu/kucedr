@@ -6,7 +6,7 @@ import type { ModeDefinition } from './types';
 
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const MAX_PROMPT_BYTES = 64 * 1024;
-const BUNDLED_ONLY = ['protectedPrompt', 'model', 'behavior'] as const;
+const BUNDLED_ONLY = ['protectedPrompt', 'model'] as const;
 const text = z.string().trim().min(1);
 
 const modeSchema = z
