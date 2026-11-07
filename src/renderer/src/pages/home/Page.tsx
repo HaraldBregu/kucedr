@@ -414,6 +414,19 @@ function PageContent(): ReactElement {
 		return () => query.removeEventListener('change', onChange);
 	}, []);
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
+	const [filesAccept, setFilesAccept] = useState<string>();
+	useEffect(() => {
+		let active = true;
+		void window.agent
+			.getPromptInputCapabilities()
+			.then((capabilities) => {
+				if (active) setFilesAccept(capabilities?.accept);
+			})
+			.catch(() => undefined);
+		return () => {
+			active = false;
+		};
+	}, [modelContext?.providerId, modelContext?.modelId]);
 	const location = useLocation();
 	const [openExtension, setOpenExtension] = useState<OpenExtension | null>(
 		(location.state as { openExtension?: OpenExtension } | null)?.openExtension ?? null
