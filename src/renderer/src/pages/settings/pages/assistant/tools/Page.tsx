@@ -47,13 +47,11 @@ import type {
 import { isAgentToolAllowedForProfile } from '../../../../../../../shared/agent_tools';
 import { isAgentToolConfigurable } from '../../../../../../../shared/agent_tools';
 import { ToolPermissionControl } from './Permission';
-import { useModes } from '@/hooks/use-modes';
 
 type AgentTool = readonly [name: string, id: string, description: string];
 
 type AgentToolGroup = {
 	readonly titleKey: string;
-	readonly title?: string;
 	readonly icon: LucideIcon;
 	readonly tools: readonly AgentTool[];
 };
