@@ -329,7 +329,7 @@ export function normalizeAgentSendRuntimeOptions(options: unknown): AgentRunOpti
 		optionalTrimmedString(options.sessionId) ?? optionalTrimmedString(options.agentRuntime);
 	const files = normalizeAgentInputFiles(options.files);
 	return {
-		interactionMode: options.interactionMode === 'plan' ? 'plan' : 'default',
+		...(options.modeIds === undefined ? {} : { modeIds: options.modeIds as string[] }),
 		...(optionalTrimmedString(options.runId)
 			? { runId: optionalTrimmedString(options.runId) }
 			: {}),
