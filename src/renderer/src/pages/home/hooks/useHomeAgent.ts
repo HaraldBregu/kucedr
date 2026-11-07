@@ -350,6 +350,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		localInteractionRef.current = true;
 		setInput('');
 		setReplyTo(null);
+		setModeIds([]);
 		setIsLoading(false);
 		dispatchChat({ type: 'reset' });
 	}, [dispatchChat]);
