@@ -114,8 +114,7 @@ How the bundled modes use this:
 ## Safety rules
 
 1. **Fail closed:** an unknown or disabled mode id is an error, never a silent run with full tools.
-   This is the biggest trap, because `src/main/ipc/agent.ts:327` and `src/preload/agent.ts:59` turn
-   anything unrecognized into `default` today.
+   IPC rejects a malformed `modeIds` list instead of dropping it.
 2. **Narrow only:** no field can add a tool or relax a sandbox.
 3. **Trust comes from load location, not id:** an installed plugin can override a bundled one with the
    same id. A bundled-only field in an installed plugin fails validation.
