@@ -417,4 +417,10 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		descriptionKey: 'settings.overview.descriptions.scripts',
 		icon: FileCode,
 	},
+	{
+		path: '/settings/modes',
+		labelKey: 'settings.tabs.modes',
+		descriptionKey: 'settings.overview.descriptions.modes',
+		icon: ToggleRight,
+	},
 ] satisfies readonly SettingsNavigationItem[];
