@@ -29,7 +29,7 @@ const modeSchema = z
 	})
 	.strict();
 
-/** Reads and validates `modes/<id>/mode.json`. Trust comes from where the plugin loaded, not its id. */
+/** Reads and validates `modes/<id>/manifest.json` and `SYSTEM_PROMPT.md`. Trust comes from where the plugin loaded, not its id. */
 export function readMode(directory: string, plugin: PluginSource, builtIn: boolean): ModeDefinition {
 	const id = path.basename(directory);
 	if (!ID.test(id)) throw new Error(`modes/${id} must be a kebab-case folder name.`);
