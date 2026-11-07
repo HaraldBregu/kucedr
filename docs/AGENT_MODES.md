@@ -200,7 +200,7 @@ Fixed by this refactor:
 | 3   | Subagents inherit the plan prompt and output check, so plain findings fail and are lost                                              | `tools/core/subagents.ts:57`                        |
 | 4   | A pasted `/plan ...` isn't recognized and runs in default mode with write tools                                                      | `components/plan-command.ts:25`                     |
 | 5   | The saved per-session mode is overwritten on mount and never restored, and nothing clears the chip on a new chat                     | `components/text-editor.tsx:95`, `home/Page.tsx:474` |
-| 6   | Plan runs count against a goal's budget even though goal is hidden during them                                                       | `agent.ts:386`, `goal/account.ts:12-25`             |
+| 6   | Plan runs count against a goal's budget even though goal is hidden during them (goal budgets no longer exist)                        | `agent.ts:386`, `goal/account.ts:12-25`             |
 
 Still open after this refactor:
 
