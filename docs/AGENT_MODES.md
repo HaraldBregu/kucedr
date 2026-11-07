@@ -63,14 +63,8 @@ resources/plugins/
       plan/
         mode.json            read-only tools and shell, output envelope, Implement action
         prompt.md            today's plan prompt
-  goal/
-    manifest.json
-    modes/
       goal/
         mode.json            `behavior: "goal"`; the prompt and tools come from host code
-  fast/
-    manifest.json
-    modes/
       fast/
         mode.json            `effort` only
 ```
