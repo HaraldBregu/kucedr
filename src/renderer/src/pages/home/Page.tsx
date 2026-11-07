@@ -854,7 +854,8 @@ function PageContent(): ReactElement {
 										activeAgentId={agent.chatState.activeAgentId}
 										onEdit={agent.editUserMessage}
 										onReply={agent.replyToMessage}
-										onImplement={agent.implementPlan}
+										modes={agent.modes}
+										onAction={agent.runModeAction}
 									/>
 									<ChatContainerScrollAnchor className="h-[calc(var(--composer-height,7rem)+3rem)]" />
 								</ChatContainerContent>
