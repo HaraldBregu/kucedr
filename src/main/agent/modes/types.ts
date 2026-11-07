@@ -44,6 +44,7 @@ export const NO_MODE: ModePolicy = {
 	ids: [],
 	restricted: false,
 	readOnly: false,
+	ask: false,
 	permissions: 'default',
 	shell: 'default',
 	prompt: '',
