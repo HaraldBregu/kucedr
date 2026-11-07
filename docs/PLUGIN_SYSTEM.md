@@ -402,9 +402,9 @@ How it works:
 
 ### 5.7 Modes (proposed)
 
-Not built yet. A mode lives in `modes/<mode-id>/`, and the folder name is its id. `mode.json` is
-required and describes the mode. `prompt.md` is optional and holds any instructions the mode adds to
-the prompt. A plugin can ship several modes. The mode loader would scan `pluginDirs('modes')`.
+Not built yet. A mode lives in `modes/<mode-id>/`, and the folder name is its id. `manifest.json` is
+required and describes the mode. `SYSTEM_PROMPT.md` is required and holds the instructions the mode
+adds to the system prompt. A plugin can ship several modes. The mode loader would scan `pluginDirs('modes')`.
 [Pluggable agent modes](AGENT_MODES.md) has the fields, safety rules, and refactor steps.
 
 ## 6. Main-process module: `src/main/plugins/`
