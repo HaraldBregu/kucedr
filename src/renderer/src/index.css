@@ -729,12 +729,12 @@ input[type='range']:hover::-moz-range-thumb {
 .workspace-markdown-content a { cursor: pointer; }
 .workspace-markdown-content [data-slot='inline-ai-composer'] :is(p, img) { margin: 0; cursor: inherit; }
 
-.plan-prompt-frame {
+.mode-prompt-frame {
 	position: relative;
 	border-color: transparent;
 }
 
-.plan-prompt-frame::before {
+.mode-prompt-frame::before {
 	content: '';
 	position: absolute;
 	inset: -0.5px;
