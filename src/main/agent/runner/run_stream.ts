@@ -359,7 +359,7 @@ async function* loop(
 				'subagents',
 				'load_script',
 				'run_script',
-				...(mode.restricted ? ['ask'] : []),
+				...(mode.ask ? ['ask'] : []),
 				...(statefulModes.length > 0 ? [MODE_STATE_TOOL_ID] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
