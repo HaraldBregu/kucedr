@@ -9,7 +9,7 @@ const searchWebTool = tool({
 	name: 'Search web',
 	description:
 		'Search the web for current information using the configured search engine. Returns a list of results with title, url, and description.',
-	planSafe: true,
+	readOnly: true,
 	inputSchema: z.object({
 		query: z.string().min(1).describe('Search query.'),
 		count: z
