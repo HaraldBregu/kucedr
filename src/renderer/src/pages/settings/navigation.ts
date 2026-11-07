@@ -315,8 +315,8 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 	},
 	{
 		path: '/settings/general',
-		labelKey: 'settings.tabs.settings',
-		descriptionKey: 'settings.overview.descriptions.settings',
+		labelKey: 'settings.tabs.general',
+		descriptionKey: 'settings.overview.descriptions.general',
 		icon: Settings,
 	},
 	{
