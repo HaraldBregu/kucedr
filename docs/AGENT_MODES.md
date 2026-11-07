@@ -227,12 +227,12 @@ asked, so that run needs explicit approval at that point.
 1. Typecheck, lint, and tests pass.
 2. `git grep` finds no `interactionMode`, `'plan'`, or goal imports in `src/main/agent/runner`.
 3. In the running app:
-   - **Plugins disabled:** no commands appear, and a normal chat with file edits works.
-   - **Plan enabled:** `/plan` blocks writes, renders the card, and Implement leaves Plan mode,
+   - **`bootstrap` disabled:** no commands appear, and a normal chat with file edits works.
+   - **Plan:** `/plan` blocks writes, renders the card, and Implement leaves Plan mode,
      including with a pasted `/plan x`.
-   - **Plan disabled mid-session:** a send carrying that mode id returns an error.
-   - **Goal enabled:** create, pause, resume, and clear work on an existing saved goal.
-   - **Fast enabled:** the run uses the mode's effort.
+   - **`bootstrap` disabled mid-session:** a send carrying a mode id returns an error.
+   - **Goal:** create, pause, resume, and clear work on an existing saved goal.
+   - **Fast:** the run uses the mode's effort.
 4. An installed plugin with `protectedPrompt` fails validation.
 5. A packaged build runs one Plan `bash` command (issue 8).
 
