@@ -317,8 +317,13 @@ function wrapAgentHandler<TArgs extends unknown[], TResult>(
 }
 
 export function normalizeAgentSendRuntimeOptions(options: unknown): AgentRunOptions {
-	if (options === undefined || options === null) return { interactionMode: 'default' };
+	if (options === undefined || options === null) return {};
 	if (!isRecord(options)) throw new Error('Invalid assistant runtime options.');
+	if (
+		options.modeIds !== undefined &&
+		(!Array.isArray(options.modeIds) || options.modeIds.some((id) => typeof id !== 'string'))
+	)
+		throw new Error('Invalid assistant modes.');
 
 	const sessionId =
 		optionalTrimmedString(options.sessionId) ?? optionalTrimmedString(options.agentRuntime);
