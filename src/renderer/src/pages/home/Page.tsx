@@ -622,7 +622,7 @@ function PageContent(): ReactElement {
 				};
 			}),
 		]);
-	}, []);
+	}, [keepAccepted]);
 
 	const submitPrompt = async (): Promise<void> => {
 		if (agent.isLoading) {
