@@ -20,7 +20,7 @@ export interface ModeDefinition {
 	readonly model?: string;
 	readonly output?: { readonly envelope: string };
 	readonly action?: { readonly label: string; readonly prompt: string };
-	readonly state?: { readonly evidence?: boolean };
+	readonly state?: { readonly evidence?: boolean; readonly continue?: boolean };
 	readonly plugin: PluginSource;
 }
 
