@@ -1,0 +1,14 @@
+{
+	"title": "Plan",
+	"description": "Inspect and propose a plan without changing anything.",
+	"command": "/plan",
+	"protectedPrompt": true,
+	"tools": "read-only",
+	"permissions": "deny-asks",
+	"shell": "read-only",
+	"output": { "envelope": "proposed_plan" },
+	"action": {
+		"label": "Implement",
+		"prompt": "Implement the approved plan. Re-read the relevant files, make the changes, and verify them."
+	}
+}
