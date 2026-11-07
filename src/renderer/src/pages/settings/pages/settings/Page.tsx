@@ -309,7 +309,7 @@ const SettingsPage: React.FC = () => {
 						title={t('settings.theme.title')}
 						media={<SunMoon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						actionClassName="w-auto justify-end"
-						actions={<ThemeSwitcher value={theme} onChange={setTheme} />}
+						actions={<ThemePicker value={theme} onChange={setTheme} />}
 					/>
 				</SettingsPanel>
 			</SettingsSection>
