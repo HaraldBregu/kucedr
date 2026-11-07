@@ -328,17 +328,18 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 	// }, [dispatchChat]);
 
 	const handleSubmit = useCallback(
-		(files?: File[], interactionModeOverride?: AgentInteractionMode): Promise<boolean> => {
+		(files?: File[]): Promise<boolean> => {
 			if (isLoading) {
 				stopResponse();
 				return Promise.resolve(false);
 			}
-			return sendPrompt(input, files, {
-				interactionMode: interactionModeOverride,
+			const leading = leadingModes(input, modes);
+			return sendPrompt(leading.prompt, files, {
+				modeIds: [...new Set([...modeIds, ...leading.modeIds])],
 				replyTo: replyTo?.content,
 			});
 		},
-		[input, isLoading, replyTo, sendPrompt, stopResponse]
+		[input, isLoading, modeIds, modes, replyTo, sendPrompt, stopResponse]
 	);
 
 	const resetChat = useCallback((): void => {
