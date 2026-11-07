@@ -175,18 +175,17 @@ export class Menu {
 					},
 					{
 						label: m.windowSize,
-						submenu: [
-							[1024, 768],
-							[1280, 800],
-							[1440, 900],
-							[1920, 1080],
-						].map(([width, height]) => ({
-							label: `${width} × ${height}`,
+						submenu: (Object.keys(WINDOW_SIZES) as WindowSize[]).map((size) => ({
+							label: size.replace('x', '×'),
+							type: 'radio' as const,
+							checked: getWindowSize() === size,
 							click: (): void => {
 								const win = BrowserWindow.getFocusedWindow();
 								if (!win) return;
+								if (win.isMaximized()) win.unmaximize();
+								const { width, height } = WINDOW_SIZES[size];
 								win.setSize(width, height, true);
-								win.center();
+								setWindowSize(size);
 							},
 						})),
 					},
