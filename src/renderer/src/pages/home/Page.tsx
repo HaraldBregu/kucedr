@@ -839,7 +839,7 @@ function PageContent(): ReactElement {
 						}
 						className="w-full"
 						inputClassName={cn(
-							'rounded-xl',
+							'rounded-xl px-4',
 							showEmptyConversation && 'min-h-[114px]'
 						)}
 						trailingAction={
