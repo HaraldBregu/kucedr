@@ -1,6 +1,6 @@
 {
 	"title": "Goal",
-	"description": "Work toward a durable goal with success criteria across runs.",
+	"description": "Work toward a goal with clear success criteria until it is met.",
 	"command": "/goal",
-	"behavior": "goal"
+	"persistent": true
 }
