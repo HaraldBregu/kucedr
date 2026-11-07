@@ -47,6 +47,7 @@ import type {
 import { isAgentToolAllowedForProfile } from '../../../../../../../shared/agent_tools';
 import { isAgentToolConfigurable } from '../../../../../../../shared/agent_tools';
 import { ToolPermissionControl } from './Permission';
+import { useModes } from '@/hooks/use-modes';
 
 type AgentTool = readonly [name: string, id: string, description: string];
 
