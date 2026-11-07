@@ -767,44 +767,14 @@ input[type='range']:hover::-moz-range-thumb {
 	mask-composite: exclude;
 }
 
-@keyframes plan-prompt-rainbow {
+@keyframes mode-prompt-rainbow {
 	to {
 		background-position: 300% 0;
 	}
 }
 
-.goal-prompt-frame {
-	position: relative;
-	border-color: transparent;
-	background:
-		linear-gradient(var(--card), var(--card)) padding-box,
-		linear-gradient(120deg, #059669, #34d399, #10b981, #047857) border-box;
-	box-shadow:
-		0 0 0 1px rgba(16, 185, 129, 0.1),
-		0 8px 28px rgba(5, 150, 105, 0.14);
-}
-
-.goal-prompt-frame::before {
-	content: '';
-	position: absolute;
-	inset: -1px;
-	border: 1px solid rgba(52, 211, 153, 0.55);
-	border-radius: inherit;
-	box-shadow: 0 0 16px rgba(16, 185, 129, 0.22);
-	animation: goal-prompt-glow 2.4s ease-in-out infinite;
-	pointer-events: none;
-}
-
-@keyframes goal-prompt-glow {
-	50% {
-		border-color: rgba(110, 231, 183, 0.9);
-		box-shadow: 0 0 22px rgba(16, 185, 129, 0.35);
-	}
-}
-
 @media (prefers-reduced-motion: reduce) {
-	.plan-prompt-frame::before,
-	.goal-prompt-frame::before {
+	.mode-prompt-frame::before {
 		animation: none;
 	}
 }
