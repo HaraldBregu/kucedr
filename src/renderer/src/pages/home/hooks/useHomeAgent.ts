@@ -464,13 +464,14 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		input,
 		inputRef,
 		isLoading,
-		interactionMode,
-		implementPlan,
+		modeIds,
+		modes,
 		replyTo,
 		replyToMessage,
 		resetChat,
+		runModeAction,
 		setInput,
-		setInteractionMode,
+		setModeIds,
 		switchToTyping,
 	};
 }
