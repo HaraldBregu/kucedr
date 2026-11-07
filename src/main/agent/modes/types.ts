@@ -1,7 +1,5 @@
 import type { ModelReasoningEffort } from '../../../shared/agent_types';
 import type { PluginSource } from '../../../shared/plugin_types';
-import type { SessionUsage } from '../session';
-import type { Tool } from '../types';
 
 export type ModePermissions = 'default' | 'deny-asks';
 export type ModeShell = 'default' | 'read-only' | 'none';
@@ -21,7 +19,6 @@ export interface ModeDefinition {
 	readonly model?: string;
 	readonly output?: { readonly envelope: string };
 	readonly action?: { readonly label: string; readonly prompt: string };
-	readonly behavior?: string;
 	readonly plugin: PluginSource;
 }
 
@@ -38,7 +35,6 @@ export interface ModePolicy {
 	readonly effort?: ModelReasoningEffort;
 	readonly model?: string;
 	readonly output?: { readonly envelope: string };
-	readonly behavior?: string;
 }
 
 export const NO_MODE: ModePolicy = {
@@ -50,20 +46,3 @@ export const NO_MODE: ModePolicy = {
 	prompt: '',
 	protectedPrompt: '',
 };
-
-export interface ModeCommand {
-	readonly message: string;
-	readonly continues: boolean;
-	apply(sessionDirectory: string): string;
-}
-
-/** Host code that a bundled mode can switch on, for what data can't express. */
-export interface ModeBehavior {
-	readonly id: string;
-	readonly category: { readonly label: string; readonly description: string };
-	catalog(): Tool[];
-	parse(message: string): ModeCommand | undefined;
-	tools(sessionDirectory: string): Tool[];
-	context(sessionDirectory: string): string;
-	account(sessionDirectory: string, usage: SessionUsage, toolCalls: number): void;
-}
