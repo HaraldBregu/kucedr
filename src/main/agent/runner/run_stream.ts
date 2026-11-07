@@ -593,6 +593,7 @@ async function* loop(
 					},
 				]);
 				continued = true;
+				nudges -= 1;
 				continue;
 			}
 			continued = false;
