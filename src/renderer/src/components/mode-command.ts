@@ -36,12 +36,12 @@ export const ModeCommand = Node.create<object, ModeCommandStorage>({
 	renderMarkdown: () => '',
 	addInputRules() {
 		const type = this.type;
-		const lookup = this.options.lookup;
+		const storage = this.storage;
 		return [
 			new InputRule({
 				find: /\/[a-z0-9]+(?:-[a-z0-9]+)*$/,
 				handler: ({ state, range, match }) => {
-					const mode = lookup(match[0]);
+					const mode = storage.modes.find((candidate) => candidate.command === match[0]);
 					if (!mode || state.doc.textBetween(1, range.from).trim()) return null;
 					let present = false;
 					state.doc.descendants((node) => {
