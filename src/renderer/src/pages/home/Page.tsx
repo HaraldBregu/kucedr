@@ -486,7 +486,7 @@ function PageContent(): ReactElement {
 		if (attachmentsSessionId === chatSessionId) saveDraftAttachments(chatSessionId, attachments);
 	}, [attachments, attachmentsSessionId, chatSessionId]);
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
-	const [libraryDropError, setLibraryDropError] = useState(false);
+	const [attachmentError, setAttachmentError] = useState<string | null>(null);
 	const [transcribingRecording, setTranscribingRecording] = useState(false);
 	const transcriptionRunRef = useRef(0);
 	const visibleMessages = useMemo(
