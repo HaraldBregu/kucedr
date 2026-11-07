@@ -116,8 +116,8 @@ How the bundled modes use this:
 
 | Mode | Uses                                                                      |
 | ---- | ------------------------------------------------------------------------- |
-| Plan | Protected prompt, read-only tools and shell, deny-asks, envelope, action, state |
-| Goal | Prompt, `persistent`, and state with evidence                                    |
+| Plan | Protected prompt, `ask`, read-only tools and shell, deny-asks, envelope, action, state |
+| Goal | Prompt, `persistent`, and state with evidence and `continue`; no `ask`                 |
 
 ## Safety rules
 
