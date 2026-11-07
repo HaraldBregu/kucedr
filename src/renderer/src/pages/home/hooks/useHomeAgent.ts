@@ -219,7 +219,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 							: {}),
 					runId,
 					sessionId,
-					interactionMode: sendOptions.interactionMode ?? interactionMode,
+					modeIds: runModeIds,
 					...(sendOptions.replyTo ? { replyTo: sendOptions.replyTo } : {}),
 					...(sendOptions.replaceMessageId ? { reuseLastUserMessage: true } : {}),
 					...(inputFiles.length > 0 ? { files: inputFiles } : {}),
