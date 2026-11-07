@@ -75,9 +75,9 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	}, [appId]);
 
 	if (location.pathname === '/settings') return [];
-	if (location.pathname === '/settings/settings/persona') {
+	if (location.pathname === '/settings/general/persona') {
 		return [
-			{ label: t('settings.tabs.settings'), path: '/settings/settings' },
+			{ label: t('settings.tabs.general'), path: '/settings/general' },
 			{ label: t('settings.voiceAgent.title') },
 		];
 	}
