@@ -493,7 +493,6 @@ async function* loop(
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			if (mode.prompt) systemPrompt += `\n\n${mode.prompt}`;
-			const runtimeContext = behaviorContext;
 			const messages = promptCapabilities
 				? projectPromptAttachments(session.messages, promptCapabilities)
 				: session.messages;
