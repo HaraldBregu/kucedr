@@ -66,6 +66,7 @@ const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
 const ScriptsPage = lazy(() => import('./pages/settings/pages/scripts/Page'));
 const ScriptDetailsPage = lazy(() => import('./pages/settings/pages/scripts/details/Page'));
+const ModesPage = lazy(() => import('./pages/settings/pages/modes/Page'));
 const ServicesPage = lazy(() => import('./pages/settings/pages/services/Page'));
 const ServiceDetailsPage = lazy(() => import('./pages/settings/pages/services/details/Page'));
 
