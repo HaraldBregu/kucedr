@@ -34,11 +34,11 @@ export function readMode(directory: string, plugin: PluginSource, builtIn: boole
 	const id = path.basename(directory);
 	if (!ID.test(id)) throw new Error(`modes/${id} must be a kebab-case folder name.`);
 	const parsed = modeSchema.safeParse(
-		JSON.parse(readFileSync(path.join(directory, 'mode.json'), 'utf8'))
+		JSON.parse(readFileSync(path.join(directory, 'manifest.json'), 'utf8'))
 	);
 	if (!parsed.success) {
 		const issue = parsed.error.issues[0];
-		throw new Error(`modes/${id}/mode.json: ${issue?.path.join('.')} ${issue?.message}`);
+		throw new Error(`modes/${id}/manifest.json: ${issue?.path.join('.')} ${issue?.message}`);
 	}
 	const mode = parsed.data;
 	if (!builtIn) {
