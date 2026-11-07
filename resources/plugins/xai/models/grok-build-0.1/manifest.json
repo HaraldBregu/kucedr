@@ -16,7 +16,8 @@
 					".jpg",
 					".jpeg",
 					".png"
-				]
+				],
+				"maxBytes": 20971520
 			}
 		],
 		"documentationUrl": "https://docs.x.ai/developers/models",
