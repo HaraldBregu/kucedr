@@ -309,28 +309,6 @@ export class Agent {
 				request.category,
 				this.sessions
 			);
-			if (modeCommand) {
-				const reply = modeCommand.apply(sessionDir(session));
-				if (modeCommand.continues) {
-					response = reply;
-				} else {
-					addAssistantMessage(session, reply, []);
-					this.emit(record, {
-						type: 'text_delta',
-						delta: reply,
-						agentId: request.agentId,
-						runId: request.id,
-					});
-					this.emit(record, {
-						type: 'run_finished',
-						stopReason: 'end_turn',
-						outputChars: reply.length,
-						agentId: request.agentId,
-						runId: request.id,
-					});
-					return { text: reply, stopReason: 'end_turn' };
-				}
-			}
 			tryAppendRun(session, {
 				type: 'run_queue_metrics',
 				queueDelayMs: Date.now() - request.queuedAt,
