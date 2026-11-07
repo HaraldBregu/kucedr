@@ -23,6 +23,14 @@ export const ModeCommand = Node.create<object, ModeCommandStorage>({
 	atom: true,
 	selectable: false,
 	addStorage: () => ({ modes: [] }),
+	addCommands() {
+		return {
+			setModes: (modes) => () => {
+				this.storage.modes = modes;
+				return true;
+			},
+		};
+	},
 	addAttributes: () => ({
 		id: { default: '', parseHTML: (element) => element.getAttribute('data-mode-command') ?? '' },
 		title: { default: '', parseHTML: (element) => element.textContent ?? '' },
