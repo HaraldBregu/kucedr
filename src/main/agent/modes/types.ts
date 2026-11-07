@@ -60,6 +60,10 @@ export interface ModeCommand {
 /** Host code that a bundled mode can switch on, for what data can't express. */
 export interface ModeBehavior {
 	readonly id: string;
+	/** Prompt heading for the tools this behavior adds; their `category` is the behavior id. */
+	readonly category: { readonly label: string; readonly description: string };
+	/** Every tool the behavior can add, for settings and permission checks. */
+	catalog(): Tool[];
 	parse(message: string): ModeCommand | undefined;
 	tools(sessionDirectory: string): Tool[];
 	context(sessionDirectory: string): string;
