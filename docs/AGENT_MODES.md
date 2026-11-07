@@ -18,9 +18,14 @@ Decisions:
   prompts and model overrides are limited to bundled plugins.
 - **No mode code in the host:** every mode, including Plan and Goal, is a `manifest.json` and a
   `SYSTEM_PROMPT.md`. The host only provides generic primitives: tool filters, shell and permission
-  policies, effort and model overrides, output envelopes, and actions.
-- **Goal:** has no saved state, goal tools, or budget. It is a persistent mode whose prompt keeps the
-  objective and success criteria across messages.
+  policies, effort and model overrides, output envelopes, actions, and tracked state.
+- **Tracked state:** a mode with `state` keeps its progress in the session, in
+  `<session>/modes/<mode-id>.json`: an objective, ordered items (pending, in progress, or done, with
+  optional evidence), and a status (active, completed, or blocked). The host code is in
+  `src/main/agent/modes/state/`. On every turn it adds the current state to the system prompt and
+  offers one tool, `update_mode_state`. It refuses `completed` until every item is done, and with
+  `evidence` every item also needs evidence. A state stays tracked after its mode is turned off until
+  it is completed or blocked, so the run that implements a plan updates the plan's items.
 
 These follow the [plugin security model](PLUGIN_SYSTEM.md#9-security-model): no plugin code runs in
 the main process. A plugin declares a mode as data, and the host enforces it.
@@ -66,10 +71,10 @@ resources/plugins/
     manifest.json
     modes/
       plan/
-        manifest.json        read-only tools and shell, output envelope, Implement action
+        manifest.json        read-only tools and shell, output envelope, Implement action, state
         SYSTEM_PROMPT.md     today's plan prompt
       goal/
-        manifest.json        persistent, with no restrictions
+        manifest.json        persistent, state with evidence, with no restrictions
         SYSTEM_PROMPT.md     how to work toward a goal and report its criteria
 ```
 
@@ -86,7 +91,8 @@ resources/plugins/
 	"permissions": "deny-asks",
 	"shell": "read-only",
 	"output": { "envelope": "proposed_plan" },
-	"action": { "label": "Implement", "prompt": "Implement the approved plan." }
+	"action": { "label": "Implement", "prompt": "Implement the approved plan." },
+	"state": {}
 }
 ```
 
@@ -95,6 +101,7 @@ resources/plugins/
 | `title`, `description`       | Strings                                                                               | Yes                            |
 | `command`                    | Such as `/plan`; the first plugin to claim one wins, with a warning                   | Yes                            |
 | `persistent`                 | Boolean; the mode stays on after a message is sent, until removed or its action runs  | Yes                            |
+| `ask`                        | Boolean; offers the host `ask` tool, which pauses the run with selectable questions   | Yes                            |
 | `protectedPrompt`            | Boolean; puts `SYSTEM_PROMPT.md` in the protected slot instead of the normal one      | Bundled only                   |
 | `tools`                      | `"read-only"` (tools marked `readOnly`) or a tool id list; always intersected with what's allowed | Yes                  |
 | `permissions`                | `"default"` or `"deny-asks"`                                                          | Yes                            |
@@ -103,13 +110,14 @@ resources/plugins/
 | `model`                      | Model override                                                                        | Bundled only                   |
 | `output`                     | `{ "envelope": "<tag>" }`                                                             | Yes                            |
 | `action`                     | `{ "label", "prompt" }` on the output card; running it turns the modes off             | Yes                            |
+| `state`                      | `{ "evidence"?: boolean }`; the host tracks the mode's progress (see Tracked state)    | Yes                            |
 
 How the bundled modes use this:
 
 | Mode | Uses                                                                      |
 | ---- | ------------------------------------------------------------------------- |
-| Plan | Protected prompt, read-only tools and shell, deny-asks, envelope, action  |
-| Goal | Prompt and `persistent` only                                              |
+| Plan | Protected prompt, read-only tools and shell, deny-asks, envelope, action, state |
+| Goal | Prompt, `persistent`, and state with evidence                                    |
 
 ## Safety rules
 
