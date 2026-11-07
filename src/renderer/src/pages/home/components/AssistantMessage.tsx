@@ -19,7 +19,10 @@ import { UserInputCard } from './UserInputCard';
 import { ScreenSourceCard } from './ScreenSourceCard';
 import { McpAuthorizationCard } from './McpAuthorizationCard';
 import { PluginScriptCard } from './PluginScriptCard';
-import { parsePlanEnvelope } from './plan';
+import { parseEnvelope, type ParsedEnvelope } from './envelope';
+import type { AgentModeInfo } from '@shared/agent_types';
+
+const NO_MODES: readonly AgentModeInfo[] = [];
 import { ImageGallery } from './ImageGallery';
 import { generatedMedia } from './media';
 import { useTranslation } from 'react-i18next';
