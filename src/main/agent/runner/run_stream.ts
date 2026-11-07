@@ -5,6 +5,7 @@ import { getAgentProfileModel } from '../agent_profiles';
 import {
 	addAssistantMessage,
 	addToolResults,
+	addUserMessage,
 	isExhausted,
 	recordTurn,
 	tryAppendRun,
