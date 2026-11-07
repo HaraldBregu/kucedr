@@ -419,6 +419,10 @@ function PageContent(): ReactElement {
 		query.addEventListener('change', onChange);
 		return () => query.removeEventListener('change', onChange);
 	}, []);
+	const compactDetails = useIsMobile('(max-width: 1000px)');
+	const [detailsPopoverOpen, setDetailsPopoverOpen] = useState(false);
+	const detailsDocked = detailsOpen && !compactDetails;
+	const infoOpen = compactDetails ? detailsPopoverOpen : detailsOpen;
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
 	const [capabilities, setCapabilities] = useState<AgentPromptInputCapabilities | null>();
 	const filesAccept =
