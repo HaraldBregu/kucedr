@@ -102,16 +102,14 @@ resources/plugins/
 | `effort`                     | Applied only if the selected model supports it                                        | Yes                            |
 | `model`                      | Model override                                                                        | Bundled only                   |
 | `output`                     | `{ "envelope": "<tag>" }`                                                             | Yes                            |
-| `action`                     | `{ "label", "prompt" }` on the output card                                            | Yes                            |
-| `behavior`                   | An id registered in `src/main/agent/modes/behaviors.ts`, such as `"goal"`             | Bundled only                   |
+| `action`                     | `{ "label", "prompt" }` on the output card; running it turns the modes off             | Yes                            |
 
-How the three planned modes use this:
+How the bundled modes use this:
 
-| Mode | Needs                                                      | Plugin contents                 |
-| ---- | ---------------------------------------------------------- | ------------------------------- |
-| Fast | Prompt and effort override                                 | `prompt`, `effort`              |
-| Plan | Prompt, tool filter, shell policy, and output check        | Data, using host primitives     |
-| Goal | Prompt, saved state, 5 tools, lifecycle commands, budget accounting | `prompt`, `behavior: "goal"`, host code |
+| Mode | Uses                                                                      |
+| ---- | ------------------------------------------------------------------------- |
+| Plan | Protected prompt, read-only tools and shell, deny-asks, envelope, action  |
+| Goal | Prompt and `persistent` only                                              |
 
 ## Safety rules
 
