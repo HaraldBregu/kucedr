@@ -42,9 +42,10 @@ plugins/
     modes/
       <mode-name>/
         mode.json            required: the mode's definition (fields below)
-        prompt.md            optional: instructions added to the prompt, named by `prompt`
+        prompt.md            required: instructions added to the prompt, named by `prompt`
       <mode-name>/
         mode.json
+        prompt.md
 ```
 
 | File                                | Required | Purpose                                                                 |
