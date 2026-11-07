@@ -173,6 +173,7 @@ export interface AgentApi {
 	) => Promise<boolean>;
 	getPromptInputCapabilities: () => Promise<AgentPromptInputCapabilities | null>;
 	getContextWindow: () => Promise<{ providerId: string; modelId: string; contextWindow?: number }>;
+	listModes: () => Promise<import('./agent_types').AgentModeInfo[]>;
 	listSessions: (includeAll?: boolean) => Promise<AgentSessionSummary[]>;
 	openSessionsFolder: () => Promise<void>;
 	openSessionFolder: (sessionId: string) => Promise<void>;
