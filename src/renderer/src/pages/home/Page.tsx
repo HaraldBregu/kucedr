@@ -869,10 +869,15 @@ function PageContent(): ReactElement {
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
 				overlayNavigation={!openExtension}
-				navigationActions={!showEmptyConversation && !openExtension ? <Tooltip>
-					<TooltipTrigger render={<Button type="button" variant={detailsOpen ? 'secondary' : 'ghost'} size="icon" className="rounded-full" aria-label={detailsOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={detailsOpen} aria-controls="chat-information" onClick={() => setDetailsOpen((open) => !open)}><Info className="size-4" strokeWidth={1.8} /></Button>} />
-					<TooltipContent side="bottom">{detailsOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
-				</Tooltip> : undefined}
+				navigationActions={!showEmptyConversation && !openExtension ? <Popover open={compactDetails && detailsPopoverOpen} onOpenChange={setDetailsPopoverOpen}>
+					<Tooltip>
+						<TooltipTrigger render={compactDetails ? <PopoverTrigger asChild>{infoButton}</PopoverTrigger> : infoButton} />
+						<TooltipContent side="bottom">{infoOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
+					</Tooltip>
+					<PopoverContent align="end" className="w-64 border-0 bg-transparent p-0 shadow-lg">
+						{chatDetails(true, true)}
+					</PopoverContent>
+				</Popover> : undefined}
 				sidebar={
 					<StableHomeSidebar
 						refreshKey={`${chatSessionId}:${visibleMessages.length}:${agent.isLoading}`}
