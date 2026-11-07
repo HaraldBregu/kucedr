@@ -148,7 +148,6 @@ type RuntimeInputBase = Pick<
 	agentId: string;
 	contextMode: 'minimal' | 'workspace';
 	mode?: import('./modes/types').ModePolicy;
-	behaviors?: readonly import('./modes/types').ModeBehavior[];
 	toolProfile?: AgentToolProfileId;
 	toolsDeny?: string[];
 	approvalWindowId?: number;
