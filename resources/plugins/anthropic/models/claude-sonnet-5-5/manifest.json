@@ -20,7 +20,10 @@
 					".png",
 					".gif",
 					".webp"
-				]
+				],
+				"maxFiles": 600,
+				"maxBytes": 7864320,
+				"maxTotalBytes": 100663296
 			},
 			{
 				"kind": "document",
@@ -29,7 +32,8 @@
 				],
 				"extensions": [
 					".pdf"
-				]
+				],
+				"maxTotalBytes": 100663296
 			}
 		],
 		"documentationUrl": "https://platform.claude.com/docs/en/models/sonnet-5-5/overview",
