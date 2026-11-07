@@ -41,11 +41,11 @@ const routes = [
 	'/home',
 	'/workspace',
 	'/settings',
-	'/settings/settings',
+	'/settings/general',
 	'/settings/library',
-	'/settings/settings/persona',
+	'/settings/general/persona',
 	'/settings/storage',
-	'/settings/settings/media/microphone',
+	'/settings/general/media/microphone',
 	'/settings/plugins',
 	'/settings/skills',
 	'/settings/services',
@@ -514,7 +514,7 @@ test('Workspace releases its mounted UI before navigating from Home to Settings'
 		.click();
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toHaveCount(0);
 	await page.evaluate(() => {
-		window.location.hash = '#/settings/settings';
+		window.location.hash = '#/settings/general';
 	});
 	await expect(page.locator('[data-slot="settings-workspace"]')).toBeVisible();
 	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
