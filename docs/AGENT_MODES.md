@@ -62,24 +62,23 @@ resources/plugins/
     manifest.json
     modes/
       plan/
-        mode.json            read-only tools and shell, output envelope, Implement action
-        prompt.md            today's plan prompt
+        manifest.json        read-only tools and shell, output envelope, Implement action
+        SYSTEM_PROMPT.md     today's plan prompt
       goal/
-        mode.json            `behavior: "goal"`; the tools and active goal context come from host code
-        prompt.md            how to work toward a goal
+        manifest.json        `behavior: "goal"`; the tools and active goal context come from host code
+        SYSTEM_PROMPT.md     how to work toward a goal
       fast/
-        mode.json            `effort`, with no restrictions
-        prompt.md            how to answer quickly
+        manifest.json        `effort`, with no restrictions
+        SYSTEM_PROMPT.md     how to answer quickly
 ```
 
-`modes/plan/mode.json`:
+`modes/plan/manifest.json`:
 
 ```json
 {
 	"title": "Plan",
 	"description": "Inspect and propose a plan without changing anything.",
 	"command": "/plan",
-	"prompt": "prompt.md",
 	"protectedPrompt": true,
 	"tools": "read-only",
 	"permissions": "deny-asks",
