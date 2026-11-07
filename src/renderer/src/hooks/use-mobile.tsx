@@ -1,19 +1,19 @@
 import * as React from 'react';
 
-const MOBILE_BREAKPOINT = 768;
+const MOBILE_QUERY = '(max-width: 767px)';
 
-export function useIsMobile(breakpoint = MOBILE_BREAKPOINT) {
-	const [isMobile, setIsMobile] = React.useState(() => window.innerWidth < breakpoint);
+export function useIsMobile(query = MOBILE_QUERY) {
+	const [isMobile, setIsMobile] = React.useState(() => window.matchMedia(query).matches);
 
 	React.useEffect(() => {
-		const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+		const mql = window.matchMedia(query);
 		const onChange = () => {
-			setIsMobile(window.innerWidth < breakpoint);
+			setIsMobile(mql.matches);
 		};
 		onChange();
 		mql.addEventListener('change', onChange);
 		return () => mql.removeEventListener('change', onChange);
-	}, [breakpoint]);
+	}, [query]);
 
 	return isMobile;
 }
