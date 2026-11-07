@@ -43,7 +43,7 @@ The visible sidebar is grouped as follows:
 | Brain      | Memory, Knowledge                                         |
 | Extensions | Plugins, Apps                    |
 
-The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
+The `/settings` route redirects to `/settings/general`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open Settings directly.
 
 ## Route search and deep pages
