@@ -126,7 +126,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			prompt: string,
 			files: File[] = [],
 			sendOptions: {
-				interactionMode?: AgentInteractionMode;
+				modeIds?: readonly string[];
 				preserveInput?: boolean;
 				replyTo?: string;
 				replaceMessageId?: string;
@@ -134,11 +134,8 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		): Promise<boolean> => {
 			const trimmed = expandTaskCommand(prompt.trim());
 			if (!trimmed && files.length === 0) return false;
-			const goalObjective = parseGoalCommand(trimmed);
-			const displayContent = formatReplyMessage(
-				goalObjective === undefined ? trimmed : goalObjective,
-				sendOptions.replyTo
-			);
+			const runModeIds = [...(sendOptions.modeIds ?? modeIds)];
+			const displayContent = formatReplyMessage(trimmed, sendOptions.replyTo);
 
 			const requestId = requestIdRef.current + 1;
 			const runId = crypto.randomUUID();
