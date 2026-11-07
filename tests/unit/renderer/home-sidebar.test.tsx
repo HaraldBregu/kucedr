@@ -436,7 +436,7 @@ it('shows Settings as a sidebar item above the footer', async () => {
 					}
 				/>
 				<Route path="/settings/apps" element={<p>Apps page</p>} />
-				<Route path="/settings/settings" element={<p>Settings page</p>} />
+				<Route path="/settings/general" element={<p>Settings page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
