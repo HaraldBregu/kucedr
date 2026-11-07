@@ -111,6 +111,5 @@ export function preflightPromptAttachments(
 				text,
 				...(file.path ? { path: file.path } : {}),
 			};
-		})
-		.filter((file): file is PromptAttachmentBlock => file !== undefined);
+		});
 }
