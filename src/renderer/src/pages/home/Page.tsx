@@ -594,12 +594,11 @@ function PageContent(): ReactElement {
 			await agent.handleSubmit();
 			return;
 		}
-		if ((planCommandActive && !hasPromptText) || (goalCommandActive && !hasGoalObjective)) return;
+		if (agent.modeIds.length > 0 && !hasPromptText) return;
 		const submittedFiles = attachments.map((attachment) => attachment.file);
 		saveDraftAttachments(chatSessionId, []);
 		clearAttachments();
-		if (goalCommandActive) setGoalCommandActive(false);
-		await agent.handleSubmit(submittedFiles, planCommandActive ? 'plan' : undefined);
+		await agent.handleSubmit(submittedFiles);
 	};
 
 	const returnToChat = (): void => {
