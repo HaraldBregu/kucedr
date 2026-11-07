@@ -115,6 +115,18 @@ export interface AgentRunOptions {
 	lightContext?: boolean;
 }
 
+/** An enabled mode, as the chat input and settings show it. */
+export interface AgentModeInfo {
+	id: string;
+	title: string;
+	description: string;
+	command: string;
+	persistent: boolean;
+	output?: { envelope: string };
+	action?: { label: string; prompt: string };
+	tools: { id: string; name: string; description: string }[];
+}
+
 export interface WorkspaceChangeEvent {
 	type: 'add' | 'change' | 'unlink' | 'addDir' | 'unlinkDir';
 	path: string;
