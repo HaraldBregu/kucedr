@@ -151,23 +151,33 @@ export function AssistantMessage({
 	isStreaming = false,
 	className,
 	onReply,
-	canImplement = false,
-	onImplement,
+	modes = NO_MODES,
+	canAct = false,
+	onAction,
 }: {
 	readonly message: AgentMessage;
 	readonly isStreaming?: boolean;
 	readonly showHeader?: boolean;
 	readonly className?: string;
 	readonly onReply?: (message: Pick<AgentMessage, 'id' | 'content'>) => void;
-	readonly canImplement?: boolean;
-	readonly onImplement?: () => void;
+	readonly modes?: readonly AgentModeInfo[];
+	readonly canAct?: boolean;
+	readonly onAction?: (prompt: string) => void;
 }): ReactElement {
 	const { t } = useTranslation();
 	const { speak, isSpeaking, errorMessage: speakErrorMessage, clearError } = useReadMessageAloud();
 	const isRunning = isStreaming && isRunningState(message.state);
 
-	const parsedPlan = parsePlanEnvelope(message.content, isStreaming);
-	const displayContent = parsedPlan.kind === 'markdown' ? message.content : parsedPlan.content;
+	const output = modes
+		.flatMap((mode) =>
+			mode.output
+				? [{ mode, parsed: parseEnvelope(message.content, mode.output.envelope, isStreaming) }]
+				: []
+		)
+		.find(({ parsed }) => parsed.kind !== 'markdown');
+	const parsed = output?.parsed ?? { kind: 'markdown', content: message.content };
+	const action = output?.mode.action;
+	const displayContent = parsed.content;
 	const messageText = displayContent.trim();
 	const hasTools = message.tools.length > 0;
 	const cardTools = message.tools.filter(isCardTool);
