@@ -3,7 +3,6 @@ import type { AgentModeInfo } from '../../../shared/agent_types';
 
 let request: Promise<AgentModeInfo[]> | undefined;
 
-/** The modes of enabled plugins, reloaded when plugins change. */
 export function useModes(): readonly AgentModeInfo[] {
 	const [modes, setModes] = useState<readonly AgentModeInfo[]>([]);
 	useEffect(() => {
