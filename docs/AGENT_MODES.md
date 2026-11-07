@@ -111,7 +111,7 @@ resources/plugins/
 | `model`                      | Model override                                                                        | Bundled only                   |
 | `output`                     | `{ "envelope": "<tag>" }`                                                             | Yes                            |
 | `action`                     | `{ "label", "prompt" }` on the output card; running it turns the modes off             | Yes                            |
-| `state`                      | `{ "evidence"?: boolean, "continue"?: boolean }`; the host tracks the mode's progress (see Tracked state). With `continue`, a final answer while the state is still open gets a hidden nudge and the run goes on, until the state is completed or blocked, the turn limit is reached, or two answers in a row come without a tool call | Yes |
+| `state`                      | `{ "evidence"?: boolean, "continue"?: boolean }`; the host tracks the mode's progress (see Tracked state). With `continue`, a final answer while the state is still open gets a hidden nudge and the run goes on, until the state is completed or blocked, the turn limit is reached, two answers in a row come without a tool call, or three nudges were used in the run | Yes |
 
 How the bundled modes use this:
 
