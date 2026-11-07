@@ -14,7 +14,7 @@ Decisions:
 
 - **Mode authors:** bundled and third-party plugins can both ship declarative modes. Protected
   prompts, model overrides, and host behaviors are limited to bundled plugins.
-- **Plan:** becomes a bundled data plugin.
+- **Plan:** becomes a data mode in the bundled `bootstrap` plugin.
 - **Goal:** becomes a bundled plugin that switches on host code. Its code stays in the host as an
   isolated module, because data can't express saved state, tools, and budget accounting.
 
