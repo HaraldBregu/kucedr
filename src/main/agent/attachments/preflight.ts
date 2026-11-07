@@ -68,7 +68,7 @@ export function preflightPromptAttachments(
 						candidate.mimeTypes.includes(mimeType) &&
 						candidate.extensions.includes(extension)
 				);
-				if (!rule) return undefined;
+				if (!rule) throw unsupported;
 				return image
 					? {
 							type: 'image',
