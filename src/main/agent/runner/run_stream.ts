@@ -470,7 +470,6 @@ async function* loop(
 
 		let finalization: { instruction: string; stopReason?: string } | undefined;
 		let continued = false;
-		// ponytail: fixed nudge cap per run; make it a mode field if a mode needs longer autonomy
 		let nudges = 3;
 		while (true) {
 			if (signal.aborted) return;
