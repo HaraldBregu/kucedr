@@ -369,10 +369,10 @@ export function AssistantMessage({
 										{normalizeImageLinks(markdownContent)}
 									</Markdown>
 								</CardContent>
-								{canImplement && onImplement ? (
+								{canAct && action && onAction ? (
 									<CardFooter className="justify-end px-4">
-										<Button type="button" size="sm" onClick={onImplement}>
-											Implement
+										<Button type="button" size="sm" onClick={() => onAction(action.prompt)}>
+											{action.label}
 										</Button>
 									</CardFooter>
 								) : null}
