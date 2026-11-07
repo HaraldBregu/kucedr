@@ -225,8 +225,7 @@ asked, so that run needs explicit approval at that point.
    - **Plan:** `/plan` blocks writes, renders the card, and Implement leaves Plan mode,
      including with a pasted `/plan x`.
    - **`bootstrap` disabled mid-session:** a send carrying a mode id returns an error.
-   - **Goal:** create, pause, resume, and clear work on an existing saved goal.
-   - **Fast:** the run uses the mode's effort.
+   - **Goal:** `/goal x` stays on for the following messages until its chip is removed.
 4. An installed plugin with `protectedPrompt` fails validation.
 5. A packaged build runs one Plan `bash` command (issue 8).
 
