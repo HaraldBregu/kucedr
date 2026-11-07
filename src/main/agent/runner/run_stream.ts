@@ -507,7 +507,7 @@ async function* loop(
 				modelOptions,
 				undefined,
 				protectedSkillPrompt,
-				runtimeContext ? [{ role: 'user', content: runtimeContext }] : [],
+				[],
 				options.streaming ?? true,
 				options.providerLimiter,
 				(acceptedSystemPrompt) => {
