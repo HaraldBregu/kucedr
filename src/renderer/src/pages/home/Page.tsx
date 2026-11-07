@@ -800,9 +800,8 @@ function PageContent(): ReactElement {
 						onVoiceMutedChange={activeVoiceSetMuted}
 						onVoiceCancel={() => void cancelDictation()}
 						onVoiceConfirm={() => void confirmDictation()}
-						onFilesChange={(files) => {
-							setAttachments((current) => [...current, ...filesToAttachments(files)]);
-						}}
+						onFilesChange={addFiles}
+						filesAccept={filesAccept}
 						wrapperClassName="max-w-none"
 						detachedControls
 						footerContent={
