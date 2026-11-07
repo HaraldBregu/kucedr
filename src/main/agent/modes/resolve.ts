@@ -17,9 +17,6 @@ export function resolveModes(
 	if (active.filter((mode) => mode.output).length > 1) {
 		throw new Error('Only one active mode can define an output format.');
 	}
-	if (active.filter((mode) => mode.behavior).length > 1) {
-		throw new Error('Only one active mode can define a behavior.');
-	}
 
 	const lists = active.flatMap((mode) => (Array.isArray(mode.tools) ? [mode.tools as string[]] : []));
 	const toolIds = lists.length
