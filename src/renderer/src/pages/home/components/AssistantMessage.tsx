@@ -355,10 +355,10 @@ export function AssistantMessage({
 							hasTools && 'border-t border-border/50 pt-3'
 						)}
 					>
-						{parsedPlan.kind === 'complete' ? (
+						{output && parsed.kind === 'complete' ? (
 							<Card className="w-full gap-4 border-info/30 py-4">
 								<CardHeader className="px-4">
-									<CardTitle className="text-sm">Proposed plan</CardTitle>
+									<CardTitle className="text-sm">{output.mode.title}</CardTitle>
 								</CardHeader>
 								<CardContent className="px-4">
 									<Markdown
