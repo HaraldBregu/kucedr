@@ -27,7 +27,10 @@ const modeSchema = z
 			.strict()
 			.optional(),
 		action: z.object({ label: text.max(40), prompt: text.max(1024) }).strict().optional(),
-		behavior: z.literal('goal').optional(),
+		behavior: z
+			.string()
+			.refine((id) => Object.hasOwn(BEHAVIORS, id), 'behavior is not provided by Kucedr')
+			.optional(),
 	})
 	.strict();
 
