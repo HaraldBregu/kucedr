@@ -737,8 +737,8 @@ function PageContent(): ReactElement {
 				event.preventDefault();
 				event.stopPropagation();
 				if (attachmentDisabled) return;
-				setLibraryDropError(false);
-				void droppedLibraryFiles(event.dataTransfer.getData(LIBRARY_DRAG_TYPE)).then(addLibraryFiles).catch(() => setLibraryDropError(true));
+				setAttachmentError(null);
+				void droppedLibraryFiles(event.dataTransfer.getData(LIBRARY_DRAG_TYPE)).then(addLibraryFiles).catch(() => setAttachmentError('Could not attach Library files. Please try again.'));
 			}}
 			className={cn(
 				'z-20 flex justify-center',
