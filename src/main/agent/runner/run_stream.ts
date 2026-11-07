@@ -234,12 +234,6 @@ async function* loop(
 			redoFileTool(session.runContext.fileHistory)
 		);
 	}
-	const behaviorsApply = session.category === 'main' && !mode.restricted && session.folderName !== '';
-	const behaviorTools =
-		!options.tools && !bootstrap && behaviorsApply
-			? behaviors.flatMap((behavior) => behavior.tools(sessionDir(session)))
-			: [];
-	tools.push(...behaviorTools);
 	tools = filterModeTools(tools, mode);
 	tools = filterRuntimeTools(tools);
 	const skillToolScopes: Array<string[] | undefined> = [];
