@@ -7,7 +7,7 @@ export const getUserTool = tool({
 	category: 'bootstrap',
 	name: 'Get user',
 	description: 'Get the user profile.',
-	planSafe: true,
+	readOnly: true,
 	inputSchema: z.object({}),
 	execute: () => getUser(),
 });
