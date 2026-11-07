@@ -1,6 +1,5 @@
 import type { AgentModeInfo } from '@shared/agent_types';
 
-/** Splits mode commands typed or pasted at the start of a prompt from the rest of it. */
 export function leadingModes(
 	prompt: string,
 	modes: readonly AgentModeInfo[]
