@@ -482,12 +482,6 @@ async function* loop(
 			]
 				.filter(Boolean)
 				.join('\n\n');
-			const behaviorContext = behaviorsApply
-				? behaviors
-						.map((behavior) => behavior.context(sessionDir(session)))
-						.filter(Boolean)
-						.join('\n\n')
-				: '';
 			const memoryContext =
 				session.category === 'main' && options.memory?.getConfig().includeInPrompt
 					? await options.memory.read().catch(() => '')
