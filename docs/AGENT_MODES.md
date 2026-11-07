@@ -69,11 +69,8 @@ resources/plugins/
         manifest.json        read-only tools and shell, output envelope, Implement action
         SYSTEM_PROMPT.md     today's plan prompt
       goal/
-        manifest.json        `behavior: "goal"`; the tools and active goal context come from host code
-        SYSTEM_PROMPT.md     how to work toward a goal
-      fast/
-        manifest.json        `effort`, with no restrictions
-        SYSTEM_PROMPT.md     how to answer quickly
+        manifest.json        persistent, with no restrictions
+        SYSTEM_PROMPT.md     how to work toward a goal and report its criteria
 ```
 
 `modes/plan/manifest.json`:
