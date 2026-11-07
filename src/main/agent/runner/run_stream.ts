@@ -233,6 +233,12 @@ async function* loop(
 			redoFileTool(session.runContext.fileHistory)
 		);
 	}
+	const stateDirectory = sessionDir(session);
+	const statefulModes =
+		!options.tools && !bootstrap && session.category === 'main'
+			? trackedModes(stateDirectory, mode.ids, listModes())
+			: [];
+	if (statefulModes.length > 0) tools.push(modeStateTool(stateDirectory, statefulModes));
 	tools = filterModeTools(tools, mode);
 	tools = filterRuntimeTools(tools);
 	const skillToolScopes: Array<string[] | undefined> = [];
