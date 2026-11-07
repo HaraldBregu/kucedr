@@ -103,7 +103,7 @@ resources/plugins/
 | `model`                      | Model override                                                                        | Bundled only                   |
 | `output`                     | `{ "envelope": "<tag>" }`                                                             | Yes                            |
 | `action`                     | `{ "label", "prompt" }` on the output card                                            | Yes                            |
-| `behavior`                   | `"goal"`                                                                              | Bundled only                   |
+| `behavior`                   | An id registered in `src/main/agent/modes/behaviors.ts`, such as `"goal"`             | Bundled only                   |
 
 How the three planned modes use this:
 
