@@ -43,7 +43,7 @@ export const ModeCommand = Node.create<object, ModeCommandStorage>({
 			class: 'font-semibold text-primary',
 			contenteditable: 'false',
 		},
-		node.attrs.title,
+		node.attrs.command,
 	],
 	renderText: () => '',
 	renderMarkdown: () => '',
