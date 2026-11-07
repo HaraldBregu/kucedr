@@ -51,4 +51,4 @@ export const toolCategoryRegistry = {
 	},
 } as const;
 
-export type ToolCategory = keyof typeof toolCategoryRegistry | (string & {});
+export type ToolCategory = keyof typeof toolCategoryRegistry;
