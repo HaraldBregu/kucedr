@@ -35,8 +35,8 @@ export function preflightPromptAttachments(
 	files: readonly AgentInputFile[],
 	capabilities: AgentPromptInputCapabilities
 ): PromptAttachmentBlock[] {
-	return files
-		.map((file): PromptAttachmentBlock | undefined => {
+	return files.map((file): PromptAttachmentBlock => {
+			const unsupported = new Error(`Attachment "${file.name}" is not supported by the selected model.`);
 			if (
 				!file.name ||
 				file.name !== path.basename(file.name) ||
