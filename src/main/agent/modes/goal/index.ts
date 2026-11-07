@@ -8,6 +8,12 @@ import { goalTools } from './tools';
 
 export const goalBehavior: ModeBehavior = {
 	id: 'goal',
+	category: {
+		label: 'Goals',
+		description:
+			'Create and track long-running goals, update their plans, record evidence, and report completion or blockers.',
+	},
+	catalog: () => goalTools(''),
 	parse(message) {
 		const command = parseGoalCommand(`/goal ${message}`);
 		if (!command) return undefined;
