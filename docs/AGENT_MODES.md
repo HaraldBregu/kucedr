@@ -152,14 +152,13 @@ Each step should leave the app working.
 - The `ask` tool stays host-owned and is available when a restricted mode has an approval window.
 - Subagents inherit `tools` and `shell` but not `prompt` or `output`.
 
-### 3. Add the bundled plugins
+### 3. Add the bundled modes
 
-Each mode gets its folder inside a plugin with a `manifest.json`:
+Each mode gets its folder under `resources/plugins/bootstrap/modes/`:
 
-- `resources/plugins/bootstrap/modes/plan/`: `mode.json` and `prompt.md`, using today's prompt text.
-- `resources/plugins/fast/modes/fast/`: `mode.json` with `effort` only. This proves a new mode needs no
-  host change.
-- `resources/plugins/goal/modes/goal/`: `mode.json` with `behavior: "goal"`.
+- `plan/`: `mode.json` and `prompt.md`, using today's prompt text.
+- `fast/`: `mode.json` with `effort` only. This proves a new mode needs no host change.
+- `goal/`: `mode.json` with `behavior: "goal"`.
 
 ### 4. Isolate goal
 
