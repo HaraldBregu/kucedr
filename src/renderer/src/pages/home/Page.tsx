@@ -471,8 +471,6 @@ function PageContent(): ReactElement {
 	useEffect(() => {
 		if (attachmentsSessionId === chatSessionId) saveDraftAttachments(chatSessionId, attachments);
 	}, [attachments, attachmentsSessionId, chatSessionId]);
-	const [planCommandActive, setPlanCommandActive] = useState(false);
-	const [goalCommandActive, setGoalCommandActive] = useState(false);
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
 	const [libraryDropError, setLibraryDropError] = useState(false);
 	const [transcribingRecording, setTranscribingRecording] = useState(false);
