@@ -902,7 +902,7 @@ function PageContent(): ReactElement {
 										/>
 									</div>
 								</div>
-								<ChatDetails open={detailsOpen} messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0}onAttach={addLibraryFiles} onWorkspaceAttach={(files) => setAttachments((current) => [...current, ...filesToAttachments(files)])} onJump={(messageId, toolCallId) => {
+								<ChatDetails open={detailsOpen} messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0}onAttach={addLibraryFiles} onWorkspaceAttach={addFiles} onJump={(messageId, toolCallId) => {
 									const scroll = chatScrollRef.current;
 									const viewport = scroll?.scrollRef.current;
 									const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
