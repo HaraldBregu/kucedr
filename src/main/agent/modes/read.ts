@@ -1,7 +1,6 @@
-import { readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { z } from 'zod';
-import { isPluginPath } from '../../../shared/plugin_path';
 import type { PluginSource } from '../../../shared/plugin_types';
 import type { ModeDefinition } from './types';
 
