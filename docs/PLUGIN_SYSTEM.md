@@ -85,7 +85,7 @@ contribution kind in its own folder:
     server.mjs, ...          stdio servers only
   skills/<skill-id>/
     SKILL.md
-  modes/<mode-id>/           proposed, see AGENT_MODES.md
+  modes/<mode-id>/           see AGENT_MODES.md
     manifest.json            title, command, restrictions, output, action
     SYSTEM_PROMPT.md         required: instructions the mode adds to the system prompt
 ```
