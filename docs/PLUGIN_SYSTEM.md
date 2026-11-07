@@ -14,7 +14,7 @@ one package that can contain several kinds of contributions:
 | **mcp**       | Agent tools served over MCP: local stdio servers or remote http servers                                                              | Separate process, or remote                              |
 | **providers** | Provider manifests: models (remote API models and local model files), vector databases, web search, storage, and remote MCP services | Remote API, or local through Ollama                      |
 | **skills**    | `SKILL.md` instruction packages for the agent                                                                                        | No code                                                  |
-| **modes**     | Proposed: agent modes declared in `manifest.json` and `SYSTEM_PROMPT.md`, see [AGENT_MODES.md](AGENT_MODES.md)                      | No code; the host enforces them                          |
+| **modes**     | Agent modes declared in `manifest.json` and `SYSTEM_PROMPT.md`, see [AGENT_MODES.md](AGENT_MODES.md)                      | No code; the host enforces them                          |
 
 Users install plugins from the in-app catalog, from an https URL, or by uploading a folder or `.tgz`
 archive. The CLI is not part of this plan.
