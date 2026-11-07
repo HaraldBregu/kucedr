@@ -454,6 +454,11 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.listModes,
+			wrapAgentHandler(mainAccess, () => listModes().map(modeInfo), AgentChannels.listModes)
+		);
+
+		ipcMain.handle(
 			AgentChannels.getPromptInputCapabilities,
 			wrapAgentHandler(
 				mainAccess,
