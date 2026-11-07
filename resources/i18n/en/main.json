@@ -307,7 +307,7 @@
 			},
 			"descriptions": {
 				"storage": "Upload and download files with your storage provider",
-				"settings": "App info and appearance",
+				"general": "App info and appearance",
 				"account": "Cloud identity and session",
 				"modelServices": "Model service setup",
 				"integrations": "Connected services and work apps",
