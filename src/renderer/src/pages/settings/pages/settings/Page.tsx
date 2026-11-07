@@ -15,7 +15,6 @@ import {
 	AppWindow,
 } from 'lucide-react';
 import { WINDOW_SIZES, type WindowSize } from '../../../../../../shared/window_size';
-import { ThemeSwitcher } from '@/components/kibo-ui/theme-switcher';
 import { Button } from '@/components/ui/button';
 import {
 	Select,
