@@ -352,7 +352,6 @@ async function* loop(
 				...(mode.restricted ? ['ask'] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
-				...behaviorTools.map((tool) => tool.id),
 			]);
 			search = createToolSearch({
 				eligible: filterEligibleTools(tools),
