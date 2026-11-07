@@ -1,4 +1,5 @@
 import { useState, type ReactElement } from 'react';
+import type { AgentModeInfo } from '@shared/agent_types';
 import {
 	PromptInput,
 	usePromptInput,
@@ -9,8 +10,9 @@ import { TextEditor } from './text-editor';
 export type PromptEditorProps = Omit<PromptInputProps, 'children'> & {
 	readonly placeholder?: string;
 	readonly ariaLabel?: string;
-	readonly onPlanCommandChange?: (active: boolean) => void;
-	readonly onGoalCommandChange?: (active: boolean) => void;
+	readonly modes?: readonly AgentModeInfo[];
+	readonly modeIds?: readonly string[];
+	readonly onModeIdsChange?: (modeIds: string[]) => void;
 	readonly hideEditor?: boolean;
 };
 
@@ -18,14 +20,16 @@ function PromptEditorArea({
 	placeholder,
 	ariaLabel,
 	onVisualLineChange,
-	onPlanCommandChange,
-	onGoalCommandChange,
+	modes,
+	modeIds,
+	onModeIdsChange,
 }: {
 	readonly placeholder?: string;
 	readonly ariaLabel?: string;
 	readonly onVisualLineChange?: (hasMultipleLines: boolean) => void;
-	readonly onPlanCommandChange?: (active: boolean) => void;
-	readonly onGoalCommandChange?: (active: boolean) => void;
+	readonly modes?: readonly AgentModeInfo[];
+	readonly modeIds?: readonly string[];
+	readonly onModeIdsChange?: (modeIds: string[]) => void;
 }): ReactElement {
 	const { value, setValue, onSubmit, disabled, textareaRef } = usePromptInput();
 
@@ -38,8 +42,9 @@ function PromptEditorArea({
 			placeholder={placeholder}
 			ariaLabel={ariaLabel}
 			onVisualLineChange={onVisualLineChange}
-			onPlanCommandChange={onPlanCommandChange}
-			onGoalCommandChange={onGoalCommandChange}
+			modes={modes}
+			modeIds={modeIds}
+			onModeIdsChange={onModeIdsChange}
 			onEditorReady={(editor) => {
 				// ponytail: PromptInput uses this ref to focus the editor and locate its container
 				textareaRef.current = editor.view.dom as unknown as HTMLTextAreaElement;
@@ -52,8 +57,9 @@ function PromptEditorArea({
 function PromptEditor({
 	placeholder,
 	ariaLabel,
-	onPlanCommandChange,
-	onGoalCommandChange,
+	modes,
+	modeIds,
+	onModeIdsChange,
 	expanded,
 	value,
 	hideEditor,
@@ -72,8 +78,9 @@ function PromptEditor({
 				placeholder={placeholder}
 				ariaLabel={ariaLabel}
 				onVisualLineChange={autoExpand ? setHasMultipleVisualLines : undefined}
-				onPlanCommandChange={onPlanCommandChange}
-				onGoalCommandChange={onGoalCommandChange}
+				modes={modes}
+				modeIds={modeIds}
+				onModeIdsChange={onModeIdsChange}
 			/>}
 		</PromptInput>
 	);
