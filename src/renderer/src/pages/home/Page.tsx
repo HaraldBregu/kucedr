@@ -532,7 +532,7 @@ function PageContent(): ReactElement {
 	const voiceErrorAction = voiceErrorMessage?.toLowerCase().includes('microphone')
 		? {
 				label: 'Open Microphone settings',
-				action: () => navigate('/settings/settings/media/microphone'),
+				action: () => navigate('/settings/general/media/microphone'),
 			}
 		: undefined;
 	const voiceButtonDisabledReason =
