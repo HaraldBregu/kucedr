@@ -42,6 +42,7 @@ export function resolveModes(
 		ids: active.map((mode) => mode.id),
 		restricted: readOnly || toolIds !== undefined || permissions !== 'default' || shell !== 'default',
 		readOnly,
+		ask: active.some((mode) => mode.ask === true),
 		...(toolIds ? { toolIds } : {}),
 		permissions,
 		shell,
