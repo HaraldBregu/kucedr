@@ -29,6 +29,7 @@ export interface ModePolicy {
 	readonly ids: readonly string[];
 	readonly restricted: boolean;
 	readonly readOnly: boolean;
+	readonly ask: boolean;
 	readonly toolIds?: readonly string[];
 	readonly permissions: ModePermissions;
 	readonly shell: ModeShell;
