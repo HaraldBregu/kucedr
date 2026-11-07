@@ -7,7 +7,7 @@ export const getSoulTool = tool({
 	category: 'bootstrap',
 	name: 'Get soul',
 	description: 'Get the assistant personality and interaction style.',
-	planSafe: true,
+	readOnly: true,
 	inputSchema: z.object({}),
 	execute: () => getSoul(),
 });
