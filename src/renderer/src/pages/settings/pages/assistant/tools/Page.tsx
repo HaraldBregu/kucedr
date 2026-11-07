@@ -375,7 +375,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 					return (
 						<SettingsSection
 							key={group.titleKey}
-							title={group.title ?? t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
+							title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
 						>
 							<SettingsPanel>
 								{group.titleKey === 'web' && (
