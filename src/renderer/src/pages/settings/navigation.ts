@@ -174,6 +174,13 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.scripts.description',
 		keywords: 'plugin scripts render code fence',
 	},
+	// Modes
+	{
+		path: '/settings/modes',
+		labelKey: 'settings.modes.title',
+		descriptionKey: 'settings.modes.description',
+		keywords: 'plugin modes commands plan goal slash',
+	},
 	// Skills
 	{
 		path: '/settings/skills',
