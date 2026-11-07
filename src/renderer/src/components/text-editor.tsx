@@ -3,9 +3,9 @@ import { Placeholder } from '@tiptap/extensions';
 import { Markdown } from '@tiptap/markdown';
 import { EditorContent, useEditor, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import type { AgentModeInfo } from '@shared/agent_types';
 import { cn } from '@/lib/utils';
-import { GoalCommand } from './goal-command';
-import { PlanCommand } from './plan-command';
+import { ModeCommand } from './mode-command';
 
 export type TextEditorProps = {
 	readonly value?: string;
@@ -17,9 +17,13 @@ export type TextEditorProps = {
 	readonly ariaLabel?: string;
 	readonly onEditorReady?: (editor: Editor) => void;
 	readonly onVisualLineChange?: (hasMultipleLines: boolean) => void;
-	readonly onPlanCommandChange?: (active: boolean) => void;
-	readonly onGoalCommandChange?: (active: boolean) => void;
+	readonly modes?: readonly AgentModeInfo[];
+	readonly modeIds?: readonly string[];
+	readonly onModeIdsChange?: (modeIds: string[]) => void;
 };
+
+const NO_MODES: readonly AgentModeInfo[] = [];
+const NO_MODE_IDS: readonly string[] = [];
 
 function TextEditor({
 	value,
@@ -31,40 +35,47 @@ function TextEditor({
 	ariaLabel,
 	onEditorReady,
 	onVisualLineChange,
-	onPlanCommandChange,
-	onGoalCommandChange,
+	modes = NO_MODES,
+	modeIds = NO_MODE_IDS,
+	onModeIdsChange,
 }: TextEditorProps): ReactElement {
 	const onValueChangeRef = useRef(onValueChange);
 	const onSubmitRef = useRef(onSubmit);
 	const onVisualLineChangeRef = useRef(onVisualLineChange);
-	const onPlanCommandChangeRef = useRef(onPlanCommandChange);
-	const onGoalCommandChangeRef = useRef(onGoalCommandChange);
+	const onModeIdsChangeRef = useRef(onModeIdsChange);
+	const modesRef = useRef(modes);
+	const modeIdsRef = useRef(modeIds);
 	const lastEditorValueRef = useRef<string | undefined>(undefined);
 
 	useEffect(() => {
 		onValueChangeRef.current = onValueChange;
 		onSubmitRef.current = onSubmit;
 		onVisualLineChangeRef.current = onVisualLineChange;
-		onPlanCommandChangeRef.current = onPlanCommandChange;
-		onGoalCommandChangeRef.current = onGoalCommandChange;
-	}, [onGoalCommandChange, onPlanCommandChange, onSubmit, onValueChange, onVisualLineChange]);
+		onModeIdsChangeRef.current = onModeIdsChange;
+		modesRef.current = modes;
+		modeIdsRef.current = modeIds;
+	}, [modeIds, modes, onModeIdsChange, onSubmit, onValueChange, onVisualLineChange]);
 
-	const reportPlanCommand = (updatedEditor: Editor): void => {
-		let active = false;
-		updatedEditor.state.doc.descendants((node) => {
-			if (node.type.name === PlanCommand.name) active = true;
-			return !active;
+	const chipIds = (target: Editor): string[] => {
+		const ids: string[] = [];
+		target.state.doc.descendants((node) => {
+			if (node.type.name === ModeCommand.name) ids.push(node.attrs.id as string);
 		});
-		onPlanCommandChangeRef.current?.(active);
+		return ids;
 	};
 
-	const reportGoalCommand = (updatedEditor: Editor): void => {
-		let active = false;
-		updatedEditor.state.doc.descendants((node) => {
-			if (node.type.name === GoalCommand.name) active = true;
-			return !active;
-		});
-		onGoalCommandChangeRef.current?.(active);
+	const chips = (ids: readonly string[]) =>
+		ids.flatMap((id) => [
+			{
+				type: ModeCommand.name,
+				attrs: { id, title: modesRef.current.find((mode) => mode.id === id)?.title ?? id },
+			},
+			{ type: 'text', text: ' ' },
+		]);
+
+	const reportModeIds = (updatedEditor: Editor): void => {
+		const ids = chipIds(updatedEditor);
+		if (ids.join('\n') !== modeIdsRef.current.join('\n')) onModeIdsChangeRef.current?.(ids);
 	};
 
 	const reportVisualLineChange = (updatedEditor: Editor): void => {
@@ -83,8 +94,9 @@ function TextEditor({
 		extensions: [
 			StarterKit,
 			Placeholder.configure({ placeholder }),
-			PlanCommand,
-			GoalCommand,
+			ModeCommand.configure({
+				lookup: (command) => modesRef.current.find((mode) => mode.command === command),
+			}),
 			Markdown,
 		],
 		content: value ?? '',
@@ -92,16 +104,13 @@ function TextEditor({
 		editable: !disabled,
 		onCreate: ({ editor: createdEditor }) => {
 			onEditorReady?.(createdEditor);
-			reportPlanCommand(createdEditor);
-			reportGoalCommand(createdEditor);
 			reportVisualLineChange(createdEditor);
 		},
 		onUpdate: ({ editor: updatedEditor }) => {
 			const markdown = updatedEditor.getMarkdown();
 			lastEditorValueRef.current = markdown;
 			onValueChangeRef.current?.(markdown);
-			reportPlanCommand(updatedEditor);
-			reportGoalCommand(updatedEditor);
+			reportModeIds(updatedEditor);
 			reportVisualLineChange(updatedEditor);
 		},
 		editorProps: {
@@ -154,28 +163,32 @@ function TextEditor({
 			editor.getMarkdown() === (value ?? '')
 		)
 			return;
-		let planCommandActive = false;
-		editor.state.doc.descendants((node) => {
-			if (node.type.name === PlanCommand.name) planCommandActive = true;
-			return !planCommandActive;
-		});
 		const chain = editor.chain().setContent(value ?? '', {
 			emitUpdate: false,
 			contentType: 'markdown',
 		});
-		if (planCommandActive) {
-			chain.insertContentAt(1, [
-				{ type: PlanCommand.name },
-				{ type: 'text', text: ' ' },
-			]);
-		}
+		if (modeIdsRef.current.length > 0) chain.insertContentAt(1, chips(modeIdsRef.current));
 		if (editor.isFocused) chain.focus('end');
 		chain.run();
 		lastEditorValueRef.current = value ?? '';
-		reportPlanCommand(editor);
-		reportGoalCommand(editor);
 		reportVisualLineChange(editor);
 	}, [editor, value]);
+
+	useEffect(() => {
+		if (!editor || chipIds(editor).join('\n') === modeIds.join('\n')) return;
+		editor.commands.command(({ tr }) => {
+			const positions: number[] = [];
+			tr.doc.descendants((node, position) => {
+				if (node.type.name === ModeCommand.name) positions.push(position);
+			});
+			for (const position of positions.reverse()) {
+				const end = tr.doc.textBetween(position + 1, position + 2) === ' ' ? 2 : 1;
+				tr.delete(position, position + end);
+			}
+			return true;
+		});
+		if (modeIds.length > 0) editor.commands.insertContentAt(1, chips(modeIds));
+	}, [editor, modeIds]);
 
 	useEffect(() => {
 		editor?.setEditable(!disabled);
