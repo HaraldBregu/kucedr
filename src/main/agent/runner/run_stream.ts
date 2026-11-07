@@ -158,7 +158,6 @@ async function* loop(
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
 	const mode = input.mode ?? NO_MODE;
-	const behaviors = input.behaviors ?? [];
 	let mcpServerHint: string | undefined;
 	const bootstrap =
 		!options.tools &&
