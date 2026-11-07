@@ -6,8 +6,8 @@ export const requestUserInputTool = tool({
 	category: 'system',
 	name: 'Request user input',
 	description:
-		'Pause Plan mode for one to three consequential questions. The interface adds an optional free-form Other choice to every question.',
-	planSafe: true,
+		'Pause the restricted run for one to three consequential questions. The interface adds an optional free-form Other choice to every question.',
+	readOnly: true,
 	inputSchema: z.object({
 		questions: z
 			.array(
