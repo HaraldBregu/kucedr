@@ -865,6 +865,23 @@ function PageContent(): ReactElement {
 		</div>
 	);
 
+	const infoButton = (
+		<Button type="button" variant={infoOpen ? 'secondary' : 'ghost'} size="icon" className="rounded-full" aria-label={infoOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={infoOpen} aria-controls="chat-information" onClick={compactDetails ? undefined : () => setDetailsOpen((open) => !open)}><Info className="size-4" strokeWidth={1.8} /></Button>
+	);
+
+	const chatDetails = (open: boolean, popover: boolean): ReactElement => (
+		<ChatDetails open={open} popover={popover} messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0} onAttach={addLibraryFiles} onWorkspaceAttach={addFiles} onJump={(messageId, toolCallId) => {
+			const scroll = chatScrollRef.current;
+			const viewport = scroll?.scrollRef.current;
+			const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
+			const anchor = toolCallId ? Array.from(response?.querySelectorAll<HTMLElement>('[data-chat-script]') ?? []).find((element) => element.dataset.chatScript === toolCallId) : response;
+			if (!scroll || !viewport || !anchor) return;
+			setDetailsPopoverOpen(false);
+			scroll.stopScroll();
+			viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+		}} />
+	);
+
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
