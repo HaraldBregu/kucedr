@@ -195,7 +195,7 @@ export function AssistantMessage({
 		standaloneImagePaths.length > 1
 			? removeGeneratedImageEmbeds(displayContent, standaloneImagePaths)
 			: displayContent;
-	const hasContent = markdownContent.trim().length > 0 || parsedPlan.kind === 'complete';
+	const hasContent = markdownContent.trim().length > 0 || parsed.kind === 'complete';
 	const standaloneMediaPaths = generated
 		.filter(({ kind }) => kind !== 'image')
 		.flatMap(({ kind, paths }) => paths.map((path) => ({ kind, path })))
