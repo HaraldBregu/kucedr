@@ -76,7 +76,7 @@ it('enables keep awake from Settings', async () => {
 	await act(async () => {
 		render(
 			<MemoryRouter>
-				<SettingsPage />
+				<GeneralPage />
 			</MemoryRouter>
 		);
 	});
@@ -98,7 +98,7 @@ it.each([true, false])('changes sound feedback from %s in Settings', async (enab
 	mockSoundFeedbackEnabled = enabled;
 	const { rerender } = render(
 		<MemoryRouter>
-			<SettingsPage />
+			<GeneralPage />
 		</MemoryRouter>
 	);
 	const soundFeedback = await screen.findByRole('switch', {
@@ -113,7 +113,7 @@ it.each([true, false])('changes sound feedback from %s in Settings', async (enab
 	mockSoundFeedbackEnabled = !enabled;
 	rerender(
 		<MemoryRouter>
-			<SettingsPage />
+			<GeneralPage />
 		</MemoryRouter>
 	);
 	expect(screen.getByRole('switch', {
@@ -126,7 +126,7 @@ it('saves the configured tray icon click action from Settings', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<SettingsPage />
+			<GeneralPage />
 		</MemoryRouter>
 	);
 
@@ -147,7 +147,7 @@ it('resizes the window when a size preset is selected', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<SettingsPage />
+			<GeneralPage />
 		</MemoryRouter>
 	);
 
@@ -164,7 +164,7 @@ it('resizes the window when a size preset is selected', async () => {
 it('refreshes toggles changed from the native application menu', async () => {
 	render(
 		<MemoryRouter>
-			<SettingsPage />
+			<GeneralPage />
 		</MemoryRouter>
 	);
 
@@ -184,7 +184,7 @@ it('changes the application theme from Settings', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<SettingsPage />
+			<GeneralPage />
 		</MemoryRouter>
 	);
 
@@ -202,7 +202,7 @@ it('opens Voice Agent settings from Settings', async () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/general']}>
 			<Routes>
-				<Route path="/settings/general" element={<SettingsPage />} />
+				<Route path="/settings/general" element={<GeneralPage />} />
 			<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
 			</Routes>
 		</MemoryRouter>
