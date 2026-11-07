@@ -76,7 +76,7 @@ function ModelServiceLegacyRedirect(): React.JSX.Element {
 	const decoded = decodeURIComponent(serviceId ?? '');
 	const normalized = decoded === 'kucedr' || decoded === 'main' ? 'assistant' : decoded;
 	const item = SETTINGS_MODEL_SERVICE_ITEMS.find((entry) => entry.id === normalized);
-	if (!item) return <Navigate to="/settings/settings" replace />;
+	if (!item) return <Navigate to="/settings/general" replace />;
 	const isChatHistory = location.pathname.endsWith('/chathistory');
 	return <Navigate to={isChatHistory ? `${item.path}/chathistory` : item.path} replace />;
 }
@@ -266,7 +266,7 @@ const routes: RouteObject[] = [
 				children: [
 					{
 						index: true,
-						element: <Navigate to="/settings/settings" replace />,
+						element: <Navigate to="/settings/general" replace />,
 					},
 					{
 						path: 'account',
