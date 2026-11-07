@@ -230,16 +230,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 	const selectedSearchEngineDescription = selectedSearchEngine
 		? selectedSearchEngine.description ?? selectedSearchEngine.provider.name
 		: t('settings.searchEngine.defaultDescription');
-	const modes = useModes();
-	const modeToolGroups: AgentToolGroup[] = modes
-		.filter((mode) => mode.tools.length > 0)
-		.map((mode) => ({
-			titleKey: `mode-${mode.id}`,
-			title: mode.title,
-			icon: Target,
-			tools: mode.tools.map(({ id, name, description }) => [name, id, description] as const),
-		}));
-	const filteredToolGroups = [...ORDERED_AGENT_TOOL_GROUPS, ...modeToolGroups].map((group) => ({
+	const filteredToolGroups = ORDERED_AGENT_TOOL_GROUPS.map((group) => ({
 		...group,
 		tools: group.tools.filter(([, id]) =>
 			isAgentToolAllowedForProfile(profile, { kind: 'builtin', id })
