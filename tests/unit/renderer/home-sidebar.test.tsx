@@ -203,7 +203,7 @@ it.each<[AuthState, string]>([
 	].forEach(([name, href]) => {
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
-	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.settings' })).not.toBeInTheDocument();
+	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.general' })).not.toBeInTheDocument();
 	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.providers' })).not.toBeInTheDocument();
 	expect(
 		within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })
@@ -454,7 +454,7 @@ it('shows Settings as a sidebar item above the footer', async () => {
 	await user.click(accountMenu);
 	expect(screen.queryByRole('menuitem', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('menuitem', { name: 'settings.sidebar.getHelp' })).not.toBeInTheDocument();
-	expect(screen.queryByRole('menuitem', { name: 'settings.tabs.settings' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('menuitem', { name: 'settings.tabs.general' })).not.toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.storage' }).querySelector('.lucide-hard-drive')).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.sidebar.chatSettings' }).querySelector('.lucide-message-circle')).toBeInTheDocument();
 	await user.keyboard('{Escape}');
