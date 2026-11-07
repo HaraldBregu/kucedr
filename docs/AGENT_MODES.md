@@ -120,7 +120,7 @@ How the bundled modes use this:
    same id. A bundled-only field in an installed plugin fails validation.
 4. **Pinned per run:** modes resolve at run start, so a plugin change affects the next run only.
 5. **Combining:** tools intersect, the strictest `shell` and `permissions` win, and at most one active
-   mode may set `output` or `behavior`.
+   mode may set `output`.
 
 Known limit: if the `bootstrap` plugin is disabled, `/plan foo` is plain text and runs as a normal message.
 The missing chip is the only signal.
