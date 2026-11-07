@@ -20,7 +20,10 @@
 					".png",
 					".gif",
 					".webp"
-				]
+				],
+				"maxFiles": 600,
+				"maxBytes": 33554432,
+				"maxTotalBytes": 37748736
 			}
 		],
 		"documentationUrl": "https://api-docs.deepseek.com/news/news260910/",
