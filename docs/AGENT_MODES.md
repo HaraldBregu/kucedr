@@ -93,7 +93,7 @@ resources/plugins/
 | ---------------------------- | ------------------------------------------------------------------------------------- | ------------------------------ |
 | `title`, `description`       | Strings                                                                               | Yes                            |
 | `command`                    | Such as `/plan`; the first plugin to claim one wins, with a warning                   | Yes                            |
-| `prompt`                     | Relative path, size-capped, checked with `src/shared/plugin_path.ts`                  | Yes, normal instructions slot  |
+| `prompt`                     | Required. Relative path to a non-empty file, size-capped, checked with `src/shared/plugin_path.ts`                  | Yes, normal instructions slot  |
 | `protectedPrompt`            | Boolean                                                                               | Bundled only                   |
 | `tools`                      | `"read-only"` (uses `planSafe`) or a tool id list; always intersected with what's allowed | Yes                            |
 | `permissions`                | `"default"` or `"deny-asks"`                                                          | Yes                            |
