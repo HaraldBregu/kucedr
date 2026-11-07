@@ -270,7 +270,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						<TooltipContent side="bottom">{themeLabel}</TooltipContent>
 					</Tooltip>
 					{rightContent && (
-						<div className="flex h-full items-center" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+						<div className="flex h-full items-center">
 							{rightContent}
 						</div>
 					)}
