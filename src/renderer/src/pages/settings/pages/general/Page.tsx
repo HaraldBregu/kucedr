@@ -116,8 +116,8 @@ const SettingsPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.tabs.settings')}
-				description={t('settings.tabs.settingsDescription')}
+				title={t('settings.tabs.general')}
+				description={t('settings.tabs.generalDescription')}
 			/>
 
 			<SettingsSection title={t('settings.application.information')}>
