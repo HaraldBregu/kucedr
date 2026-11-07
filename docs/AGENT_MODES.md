@@ -110,7 +110,7 @@ How the three planned modes use this:
 | ---- | ---------------------------------------------------------- | ------------------------------- |
 | Fast | Prompt and effort override                                 | `prompt`, `effort`              |
 | Plan | Prompt, tool filter, shell policy, and output check        | Data, using host primitives     |
-| Goal | Saved state, 5 tools, lifecycle commands, budget accounting | `behavior: "goal"`, host code   |
+| Goal | Prompt, saved state, 5 tools, lifecycle commands, budget accounting | `prompt`, `behavior: "goal"`, host code |
 
 ## Safety rules
 
