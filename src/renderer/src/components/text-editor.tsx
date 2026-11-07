@@ -190,7 +190,7 @@ function TextEditor({
 	}, [editor, modeIds]);
 
 	useEffect(() => {
-		if (editor) editor.storage.modeCommand.modes = modes;
+		editor?.commands.setModes(modes);
 	}, [editor, modes]);
 
 	useEffect(() => {
