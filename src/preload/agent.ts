@@ -129,6 +129,7 @@ export const agent: AgentApi = {
 		return typedInvokeUnwrap(AgentChannels.respondUserInput, scope, answers);
 	},
 	getContextWindow: () => typedInvokeUnwrap(AgentChannels.getContextWindow),
+	listModes: () => typedInvokeUnwrap(AgentChannels.listModes),
 	getPromptInputCapabilities: (): Promise<AgentPromptInputCapabilities | null> => {
 		return typedInvokeUnwrap(AgentChannels.getPromptInputCapabilities);
 	},
