@@ -15,10 +15,12 @@ mode means changing the runner.
 Decisions:
 
 - **Mode authors:** bundled and third-party plugins can both ship declarative modes. Protected
-  prompts, model overrides, and host behaviors are limited to bundled plugins.
-- **Plan:** becomes a data mode in the bundled `bootstrap` plugin.
-- **Goal:** becomes a mode in the bundled `bootstrap` plugin that switches on host code. Its code stays in the host as an
-  isolated module, because data can't express saved state, tools, and budget accounting.
+  prompts and model overrides are limited to bundled plugins.
+- **No mode code in the host:** every mode, including Plan and Goal, is a `manifest.json` and a
+  `SYSTEM_PROMPT.md`. The host only provides generic primitives: tool filters, shell and permission
+  policies, effort and model overrides, output envelopes, and actions.
+- **Goal:** has no saved state, goal tools, or budget. It is a persistent mode whose prompt keeps the
+  objective and success criteria across messages.
 
 These follow the [plugin security model](PLUGIN_SYSTEM.md#9-security-model): no plugin code runs in
 the main process. A plugin declares a mode as data, and the host enforces it.
