@@ -12,7 +12,6 @@ import {
 	type SessionState,
 	persist,
 	persistSystemPrompt,
-	sessionDir,
 } from '../session';
 import { rememberSkill } from '../context';
 import {
