@@ -936,15 +936,7 @@ function PageContent(): ReactElement {
 										/>
 									</div>
 								</div>
-								<ChatDetails open={detailsOpen} messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0}onAttach={addLibraryFiles} onWorkspaceAttach={addFiles} onJump={(messageId, toolCallId) => {
-									const scroll = chatScrollRef.current;
-									const viewport = scroll?.scrollRef.current;
-									const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
-									const anchor = toolCallId ? Array.from(response?.querySelectorAll<HTMLElement>('[data-chat-script]') ?? []).find((element) => element.dataset.chatScript === toolCallId) : response;
-									if (!scroll || !viewport || !anchor) return;
-									scroll.stopScroll();
-									viewport.scrollTo({ top: viewport.scrollTop + anchor.getBoundingClientRect().top - viewport.getBoundingClientRect().top - 24, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-								}} />
+								{compactDetails ? null : chatDetails(detailsOpen, false)}
 							</ChatContainerRoot>
 							{composer}
 						</>
