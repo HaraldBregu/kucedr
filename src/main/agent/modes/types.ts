@@ -11,6 +11,7 @@ export interface ModeDefinition {
 	readonly title: string;
 	readonly description: string;
 	readonly command: string;
+	readonly persistent?: boolean;
 	readonly prompt: string;
 	readonly protectedPrompt?: boolean;
 	readonly tools?: 'read-only' | readonly string[];
