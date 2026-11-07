@@ -184,29 +184,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		],
 	},
 	{
-		titleKey: 'goals',
-		icon: Target,
-		tools: [
-			['Get goal', 'get_goal', 'Reads the active goal, plan, criteria, and evidence.'],
-			['Update goal plan', 'update_goal_plan', 'Updates the steps for an active goal.'],
-			[
-				'Record goal evidence',
-				'record_goal_evidence',
-				'Records evidence that a goal criterion is satisfied.',
-			],
-			[
-				'Request goal completion',
-				'request_goal_completion',
-				'Requests completion after every goal criterion has evidence.',
-			],
-			[
-				'Report goal blocker',
-				'report_goal_blocker',
-				'Marks an active goal as blocked with its reason.',
-			],
-		],
-	},
-	{
 		titleKey: 'system',
 		icon: Settings,
 		tools: [
