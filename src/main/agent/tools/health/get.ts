@@ -9,7 +9,7 @@ export function getHealthTool(config: Config) {
 		category: 'bootstrap',
 		name: 'Get health',
 		description: 'Read the current HEALTH.md information.',
-		planSafe: true,
+		readOnly: true,
 		inputSchema: z.object({}),
 		execute: () => getHealth(config),
 	});
