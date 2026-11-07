@@ -45,7 +45,7 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 		name: 'Search tools',
 		description:
 			'Search for a capability only when the tools already available cannot handle the task. Matching is deterministic; selected tools become available on the next turn.',
-		planSafe: true,
+		readOnly: true,
 		capability: { effects: ['read'] },
 		inputSchema: z.object({
 			query: z.string().trim().min(1).max(240).describe('The capability needed for the next step.'),
