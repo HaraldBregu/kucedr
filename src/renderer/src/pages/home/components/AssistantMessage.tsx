@@ -365,7 +365,7 @@ export function AssistantMessage({
 								</CardHeader>
 								<CardContent className="px-4">
 									<Markdown
-										className="min-w-0 max-w-full break-words [overflow-wrap:anywhere]"
+										className="min-w-0 max-w-full break-words text-sm [overflow-wrap:anywhere]"
 										components={messageMarkdownComponents}
 										urlTransform={transformImageUrl}
 									>
@@ -382,7 +382,7 @@ export function AssistantMessage({
 							</Card>
 						) : markdownContent ? (
 							<Markdown
-								className="min-w-0 max-w-full break-words [overflow-wrap:anywhere]"
+								className="min-w-0 max-w-full break-words text-sm [overflow-wrap:anywhere]"
 								components={messageMarkdownComponents}
 								urlTransform={transformImageUrl}
 							>
