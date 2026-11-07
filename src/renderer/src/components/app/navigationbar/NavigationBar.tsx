@@ -239,7 +239,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 					)}
 
 					{showWorkspace && (
-						<div data-slot="navigationbar-context" className="flex min-w-0 items-center gap-3 px-3 text-sm" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+						<div data-slot="navigationbar-context" className="flex min-w-0 items-center gap-3 px-3 text-sm">
 							{!(isWorkspace && (isMobile ? state.sidebarOpenMobile : state.sidebarOpen)) && (isHome && !(isMobile ? state.sidebarOpenMobile : state.sidebarOpen) ? chatHistoryDropdown(<button type="button" className="inline-flex shrink-0 items-center gap-1 font-medium text-muted-foreground" aria-label={chatHistoryLabel}>{homeLabel}<ChevronDown className="size-3.5" /></button>, "start") : isWorkspace || location.pathname.startsWith('/settings') ? null : <span className="shrink-0 font-medium text-muted-foreground">{isHome ? homeLabel : t('settings.title')}</span>)}
 							{contextContent}
 							{isHome && <><span aria-hidden="true" className="text-muted-foreground/50">/</span><span className="truncate font-medium">{sessionTitle || newChatLabel}</span></>}
