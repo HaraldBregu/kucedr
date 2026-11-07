@@ -19,8 +19,12 @@ const ModesPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [query, setQuery] = useState('');
-	const visibleModes = modes.filter((mode) =>
-		`${mode.title} ${mode.command}`.toLowerCase().includes(query.trim().toLowerCase())
+	const [plugin, setPlugin] = useState('all');
+	const plugins = useMemo(() => [...new Set(modes.map((mode) => mode.plugin))].sort(), [modes]);
+	const visibleModes = modes.filter(
+		(mode) =>
+			(plugin === 'all' || mode.plugin === plugin) &&
+			`${mode.title} ${mode.command}`.toLowerCase().includes(query.trim().toLowerCase())
 	);
 
 	useEffect(() => {
