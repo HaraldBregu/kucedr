@@ -174,6 +174,23 @@ export class Menu {
 						],
 					},
 					{
+						label: m.windowSize,
+						submenu: [
+							[1024, 768],
+							[1280, 800],
+							[1440, 900],
+							[1920, 1080],
+						].map(([width, height]) => ({
+							label: `${width} × ${height}`,
+							click: (): void => {
+								const win = BrowserWindow.getFocusedWindow();
+								if (!win) return;
+								win.setSize(width, height, true);
+								win.center();
+							},
+						})),
+					},
+					{
 						label: m.language,
 						submenu: [
 							{
