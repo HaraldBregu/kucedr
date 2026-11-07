@@ -1757,6 +1757,16 @@
 			"fence": "Blocco di codice",
 			"plugin": "Plugin"
 		},
+		"modes": {
+			"title": "Modalità installate",
+			"description": "Sfoglia le modalità della chat fornite dai tuoi plugin. Digita il comando di una modalità all'inizio di un messaggio per usarla.",
+			"empty": "Nessuna modalità installata",
+			"emptyDescription": "Installa un plugin che fornisce modalità.",
+			"loadError": "Impossibile caricare le modalità.",
+			"command": "Comando",
+			"persistent": "Resta attiva",
+			"plugin": "Plugin"
+		},
 		"services": {
 			"title": "Servizi installati",
 			"information": "Informazioni sul servizio",
