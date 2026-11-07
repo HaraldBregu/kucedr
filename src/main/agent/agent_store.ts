@@ -14,6 +14,7 @@ import type {
 import { isAgentToolConfigurable } from '../../shared/agent_tools';
 import { agentLocation } from '../shared/agent_location';
 import { libraryLocation } from '../shared/library_location';
+import { behaviorTools } from './modes/catalog';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
 import {
 	type PermissionBucket,
@@ -201,7 +202,8 @@ export function setToolProfileTool(
 	settings: AgentToolConfiguration
 ): AgentToolProfile {
 	if (tool.kind === 'builtin') {
-		if (!(tool.id in RUNTIME_TOOL_KEYS)) throw new Error('Unknown built-in tool.');
+		if (!(tool.id in RUNTIME_TOOL_KEYS) && !behaviorTools().some(({ id }) => id === tool.id))
+			throw new Error('Unknown built-in tool.');
 		if (!isAgentToolConfigurable(tool) && settings.permission !== 'allow') {
 			throw new Error('Required system tools cannot be disabled.');
 		}
