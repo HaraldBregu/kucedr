@@ -33,6 +33,7 @@ import {
 	SettingsSection,
 } from '../../components';
 import { MediaPermissionsSection } from '../../components/media';
+import { ThemePicker } from '../../components/theme';
 
 interface LanguageOption {
 	readonly value: AppLanguage;
