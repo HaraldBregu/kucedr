@@ -312,7 +312,7 @@ async function* loop(
 			const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 			const childRuntime = {
 				type: input.type,
-				mode: { ...mode, prompt: '', protectedPrompt: '', output: undefined },
+				mode: { ...mode, ask: false, prompt: '', protectedPrompt: '', output: undefined },
 				...(options.resources ? { resources: options.resources } : {}),
 				...(options.providerLimiter ? { providerLimiter: options.providerLimiter } : {}),
 				...(options.subagentLimiter ? { subagentLimiter: options.subagentLimiter } : {}),
