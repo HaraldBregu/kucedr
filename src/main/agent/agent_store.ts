@@ -93,11 +93,6 @@ const RUNTIME_TOOL_KEYS = {
 	run_task_now: 'run_task_now',
 	list_skills: 'list_skills',
 	load_skill: 'load_skill',
-	get_goal: 'get_goal',
-	update_goal_plan: 'update_goal_plan',
-	record_goal_evidence: 'record_goal_evidence',
-	request_goal_completion: 'request_goal_completion',
-	report_goal_blocker: 'report_goal_blocker',
 	ask: 'request_user_input',
 	complete_bootstrap: 'complete_bootstrap',
 } as const;
