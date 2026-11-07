@@ -73,7 +73,7 @@ const TOP_LEVEL_ROUTES: readonly StaticRouteDefinition[] = [
 		labelKey: 'command.routes.settings.title',
 		descriptionKey: 'command.routes.settings.description',
 		icon: Settings,
-		path: '/settings/settings',
+		path: '/settings/general',
 		keywords: 'preferences configuration settings',
 	},
 ] as const;
@@ -399,7 +399,7 @@ export function CommandMenu({
 			if (isSettingsShortcut) {
 				e.preventDefault();
 				playSound('navigate');
-				navigateTo('/settings/settings');
+				navigateTo('/settings/general');
 				return;
 			}
 
