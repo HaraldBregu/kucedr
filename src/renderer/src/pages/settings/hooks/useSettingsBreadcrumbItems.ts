@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useMatch } from 'react-router-dom';
 import { mcps, storages, vectorDatabases } from '@/lib/providers';
 import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from '../navigation';
-import { getSystemMedia } from '../pages/settings/media/media';
+import { getSystemMedia } from '../pages/general/media/media';
 
 interface SettingsBreadcrumbItem {
 	readonly label: string;
