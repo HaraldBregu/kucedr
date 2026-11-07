@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { LibraryFile } from '../../../../shared/library_types';
+import type { AgentPromptInputCapabilities } from '../../../../shared/agent_types';
+import { attachmentLimitError } from '../../../../shared/attachment_limit';
 import { workspaceFileType } from '../../../../shared/workspace';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
