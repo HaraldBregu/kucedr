@@ -546,7 +546,7 @@ async function* loop(
 				}
 				throw new Error('Agent did not produce a non-empty final answer without tool calls.');
 			}
-			if (turn.toolCalls.length === 0 && !turn.content.trim() && !mode.output) {
+			if (turn.toolCalls.length === 0 && !turn.content.trim()) {
 				recordTurn(session, turn);
 				finalization = {
 					instruction: 'The previous model response was empty. Answer the user now.',
