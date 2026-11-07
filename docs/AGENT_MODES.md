@@ -121,7 +121,7 @@ How the three planned modes use this:
 5. **Combining:** tools intersect, the strictest `shell` and `permissions` win, and at most one active
    mode may set `output` or `behavior`.
 
-Known limit: if the Plan plugin is removed, `/plan foo` is plain text and runs as a normal message.
+Known limit: if the `bootstrap` plugin is disabled, `/plan foo` is plain text and runs as a normal message.
 The missing chip is the only signal.
 
 ## Refactor steps
