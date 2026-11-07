@@ -35,7 +35,7 @@ export function preflightPromptAttachments(
 	files: readonly AgentInputFile[],
 	capabilities: AgentPromptInputCapabilities
 ): PromptAttachmentBlock[] {
-	return files
+	const blocks = files
 		.map((file): PromptAttachmentBlock | undefined => {
 			if (
 				!file.name ||
