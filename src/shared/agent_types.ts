@@ -123,7 +123,6 @@ export interface AgentModeInfo {
 	persistent: boolean;
 	output?: { envelope: string };
 	action?: { label: string; prompt: string };
-	tools: { id: string; name: string; description: string }[];
 }
 
 export interface WorkspaceChangeEvent {
