@@ -137,7 +137,7 @@ export async function* runToolCall(
 		) {
 			output = screenSelection
 				? 'Error: screen source selection is only available in an interactive chat run.'
-				: 'Error: structured user input is only available in an interactive restricted run.';
+				: 'Error: structured user input is only available in an interactive run of a mode that asks.';
 			isError = true;
 		} else {
 			const questions = screenSelection
