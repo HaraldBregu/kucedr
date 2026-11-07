@@ -47,10 +47,11 @@ export function readMode(directory: string, plugin: PluginSource, builtIn: boole
 		const field = BUNDLED_ONLY.find((name) => mode[name] !== undefined);
 		if (field) throw new Error(`modes/${id}: "${field}" is limited to bundled plugins.`);
 	}
-	if (!mode.prompt) return { ...mode, id, plugin };
 	const file = path.join(directory, ...mode.prompt.split('/'));
 	if (statSync(file).size > MAX_PROMPT_BYTES) {
 		throw new Error(`modes/${id}: ${mode.prompt} is larger than 64 KB.`);
 	}
-	return { ...mode, id, prompt: readFileSync(file, 'utf8').trim(), plugin };
+	const prompt = readFileSync(file, 'utf8').trim();
+	if (!prompt) throw new Error(`modes/${id}: ${mode.prompt} is empty.`);
+	return { ...mode, id, prompt, plugin };
 }
