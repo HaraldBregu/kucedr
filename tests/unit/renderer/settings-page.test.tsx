@@ -1,7 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import SettingsPage from '../../../src/renderer/src/pages/settings/pages/settings/Page';
+import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
 
 
 const mockSetTheme = jest.fn();
