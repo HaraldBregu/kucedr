@@ -6,7 +6,6 @@ import type { StoredProvider as StoredProvider } from '../../../shared/provider_
 import type {
 	AgentHistoryContentBlock,
 	AgentHistoryMessage,
-	AgentInteractionMode,
 	AgentInputFile,
 	AgentResponseEvent,
 	AgentRunState,
