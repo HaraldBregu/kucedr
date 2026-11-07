@@ -26,7 +26,7 @@ These follow the [plugin security model](PLUGIN_SYSTEM.md#9-security-model): no 
 the main process. A plugin declares a mode as data, and the host enforces it.
 
 **End state:** with the `bootstrap` plugin disabled, the app behaves like today's
-default mode, with no mode commands. The runner contains no reference to plan or goal.
+default mode, with no mode commands. `src` contains no reference to a specific mode.
 
 ## Mode definition
 
