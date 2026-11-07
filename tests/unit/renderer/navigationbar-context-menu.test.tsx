@@ -16,7 +16,7 @@ jest.mock('react-i18next', () => ({
 
 const showContextMenu = jest.fn();
 const contextMenuItems = [
-	{ id: '/settings/settings', label: 'settings.tabs.settings' },
+	{ id: '/settings/general', label: 'settings.tabs.settings' },
 	{ id: '/settings/agent', label: 'settings.overview.groups.agent' },
 	{ id: '/settings/apps', label: 'settings.tabs.apps' },
 ];
@@ -44,7 +44,7 @@ beforeEach(() => {
 });
 
 it.each([
-	['settings.tabs.settings', '/settings/settings'],
+	['settings.tabs.settings', '/settings/general'],
 	['settings.overview.groups.agent', '/settings/agent'],
 	['settings.tabs.apps', '/settings/apps'],
 ])('opens a native context menu and navigates from %s to %s', async (_label, path) => {
@@ -121,7 +121,7 @@ it('omits the Account icon but keeps Search on Home', () => {
 	expect(screen.getByRole('button', { name: 'navigationBar.search' })).toBeInTheDocument();
 });
 
-it.each(['/home', '/settings/settings'])(
+it.each(['/home', '/settings/general'])(
 	'does not render the Voice button in the navbar on %s',
 	(path) => {
 		render(
@@ -176,7 +176,7 @@ it('renders one solid navigationbar color without visible title text', () => {
 
 it('omits the Account icon while viewing Settings', () => {
 	render(
-		<PageProvider><MemoryRouter initialEntries={['/settings/settings']}>
+		<PageProvider><MemoryRouter initialEntries={['/settings/general']}>
 			<NavigationBar />
 		</MemoryRouter></PageProvider>
 	);
@@ -195,7 +195,7 @@ it('does not render the sidebar toggle in the navigationbar', () => {
 	expect(screen.queryByRole('button', { name: 'navigationBar.toggleSidebar' })).not.toBeInTheDocument();
 });
 
-it.each(['/home', '/settings/settings'])('omits the Coder and standalone Workspace launch buttons on %s', (path) => {
+it.each(['/home', '/settings/general'])('omits the Coder and standalone Workspace launch buttons on %s', (path) => {
 	render(
 		<PageProvider><MemoryRouter initialEntries={[path]}>
 			<NavigationBar />
@@ -208,7 +208,7 @@ it.each(['/home', '/settings/settings'])('omits the Coder and standalone Workspa
 
 it('does not render route titles inside the navigationbar', () => {
 	const { container } = render(
-		<PageProvider><MemoryRouter initialEntries={['/settings/settings/persona']}>
+		<PageProvider><MemoryRouter initialEntries={['/settings/general/persona']}>
 			<NavigationBar />
 		</MemoryRouter></PageProvider>
 	);
