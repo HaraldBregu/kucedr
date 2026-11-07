@@ -121,6 +121,7 @@ export interface AgentModeInfo {
 	description: string;
 	command: string;
 	persistent: boolean;
+	plugin: string;
 	output?: { envelope: string };
 	action?: { label: string; prompt: string };
 }
