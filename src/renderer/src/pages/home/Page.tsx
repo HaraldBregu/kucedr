@@ -245,15 +245,17 @@ function AttachmentTray({
 
 function AttachmentButton({
 	disabled,
+	disabledReason,
 	onLibrarySelect,
 }: {
 	readonly disabled?: boolean;
+	readonly disabledReason?: string;
 	readonly onLibrarySelect: () => void;
 }): ReactElement {
 	const { triggerFileUpload } = usePromptInput();
 	return (
 		<DropdownMenu>
-			<PromptInputAction tooltip="Add attachment">
+			<PromptInputAction tooltip={disabledReason ?? 'Add attachment'} showTooltipWhenDisabled={disabled}>
 				<DropdownMenuTrigger asChild>
 					<Button
 						type="button"
