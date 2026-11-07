@@ -24,6 +24,11 @@ const IMAGE_FORMATS = [
 			bytes.toString('ascii', 0, 4) === 'RIFF' &&
 			bytes.toString('ascii', 8, 12) === 'WEBP',
 	},
+	{
+		mimeType: 'image/gif',
+		extensions: ['.gif'],
+		matches: (bytes: Buffer) => ['GIF87a', 'GIF89a'].includes(bytes.toString('ascii', 0, 6)),
+	},
 ] as const;
 
 export function preflightPromptAttachments(
