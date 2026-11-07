@@ -68,7 +68,10 @@ function TextEditor({
 		ids.flatMap((id) => [
 			{
 				type: ModeCommand.name,
-				attrs: { id, title: modesRef.current.find((mode) => mode.id === id)?.title ?? id },
+				attrs: {
+					id,
+					command: modesRef.current.find((mode) => mode.id === id)?.command ?? `/${id}`,
+				},
 			},
 			{ type: 'text', text: ' ' },
 		]);
