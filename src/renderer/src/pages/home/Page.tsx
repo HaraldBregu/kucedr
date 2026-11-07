@@ -787,7 +787,8 @@ function PageContent(): ReactElement {
 						leadingAction={
 							voiceMode === 'dictation' ? undefined : (
 								<AttachmentButton
-									disabled={attachmentDisabled}
+									disabled={attachmentDisabled || filesAccept === ''}
+									disabledReason={filesAccept === '' ? "This model doesn't accept files." : undefined}
 									onLibrarySelect={() => setLibraryPickerOpen(true)}
 								/>
 							)
