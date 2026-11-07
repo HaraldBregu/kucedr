@@ -148,7 +148,7 @@ Each step should leave the app working.
 
 - `plan/command.ts` and `wrapPlan` become read-only shell primitives.
 - `plan/output.ts` becomes an envelope check taking any tag.
-- `plan/tools.ts` becomes the policy filter, and `plan/context.ts` is replaced by `prompt.md`.
+- `plan/tools.ts` becomes the policy filter, and `plan/context.ts` is replaced by `SYSTEM_PROMPT.md`.
 - `planSafe` keeps its meaning, renamed `readOnly` across the tool definitions.
 - The `ask` tool stays host-owned and is available when a restricted mode has an approval window.
 - Subagents inherit `tools` and `shell` but not `prompt` or `output`.
