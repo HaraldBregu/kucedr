@@ -15,7 +15,6 @@ import {
 	Search as SearchIcon,
 	Settings,
 	Sparkles,
-	Target,
 	Video,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
