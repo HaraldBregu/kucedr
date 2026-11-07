@@ -469,6 +469,7 @@ async function* loop(
 		}
 
 		let finalization: { instruction: string; stopReason?: string } | undefined;
+		let continued = false;
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
