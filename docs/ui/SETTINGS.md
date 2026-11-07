@@ -11,7 +11,7 @@ for the current provider and model catalog.
 
 ```text
 Open /settings
-  -> redirect to /settings/settings
+  -> redirect to /settings/general
   -> use the sidebar or route search to choose another page
   -> load that page's stored configuration and runtime status
   -> update a selection or form
