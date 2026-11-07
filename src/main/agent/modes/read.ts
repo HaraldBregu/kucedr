@@ -2,6 +2,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { z } from 'zod';
 import type { PluginSource } from '../../../shared/plugin_types';
+import { BEHAVIORS } from './behaviors';
 import type { ModeDefinition } from './types';
 
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
