@@ -15,7 +15,7 @@ const modeSchema = z
 		title: text.max(40),
 		description: text.max(1024),
 		command: z.string().regex(/^\/[a-z0-9]+(?:-[a-z0-9]+)*$/, 'command must look like /name'),
-		prompt: z.string().refine(isPluginPath, 'prompt must be a relative path').optional(),
+		prompt: z.string().refine(isPluginPath, 'prompt must be a relative path'),
 		protectedPrompt: z.boolean().optional(),
 		tools: z.union([z.literal('read-only'), z.array(text)]).optional(),
 		permissions: z.enum(['default', 'deny-asks']).optional(),
