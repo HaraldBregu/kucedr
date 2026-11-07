@@ -61,7 +61,7 @@ export function preflightPromptAttachments(
 				const kind = image ? 'image' : 'document';
 				const mimeType = image?.mimeType ?? 'application/pdf';
 				const compatibleExtensions = image?.extensions ?? ['.pdf'];
-				if (!(compatibleExtensions as readonly string[]).includes(extension)) return undefined;
+				if (!(compatibleExtensions as readonly string[]).includes(extension)) throw unsupported;
 				const rule = capabilities.rules.find(
 					(candidate) =>
 						candidate.kind === kind &&
