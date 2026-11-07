@@ -34,6 +34,8 @@ import type {
 	AgentToolReference,
 } from '../../shared/agent_tools';
 import { normalizeAgentInputFiles } from '../../shared/agent_files';
+import { listModes } from '../agent/modes/list';
+import { modeInfo } from '../agent/modes/info';
 import { requireUuidSessionId, sessionPath, sessionsRoot } from '../agent/session';
 import { workspacePath } from '../agent/system';
 import {
