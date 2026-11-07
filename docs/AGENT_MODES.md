@@ -160,8 +160,8 @@ Each step should leave the app working.
 Each mode gets its folder under `resources/plugins/bootstrap/modes/`:
 
 - `plan/`: `mode.json` and `prompt.md`, using today's prompt text.
-- `fast/`: `mode.json` with `effort` only. This proves a new mode needs no host change.
-- `goal/`: `mode.json` with `behavior: "goal"`.
+- `fast/`: `mode.json` with `effort`, and `prompt.md`. This proves a new mode needs no host change.
+- `goal/`: `mode.json` with `behavior: "goal"`, and `prompt.md`.
 
 ### 4. Isolate goal
 
