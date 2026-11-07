@@ -10,14 +10,12 @@
 				"kind": "image",
 				"mimeTypes": [
 					"image/jpeg",
-					"image/png",
-					"image/webp"
+					"image/png"
 				],
 				"extensions": [
 					".jpg",
 					".jpeg",
-					".png",
-					".webp"
+					".png"
 				]
 			}
 		],
