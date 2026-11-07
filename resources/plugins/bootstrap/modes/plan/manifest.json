@@ -8,6 +8,7 @@
 	"permissions": "deny-asks",
 	"shell": "read-only",
 	"output": { "envelope": "proposed_plan" },
+	"state": {},
 	"action": {
 		"label": "Implement",
 		"prompt": "Implement the approved plan. Re-read the relevant files, make the changes, and verify them."
