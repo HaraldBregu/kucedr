@@ -283,7 +283,7 @@ required. Filesystem policy should:
 - [Settings layout](../../src/renderer/src/pages/settings/Layout.tsx)
 - [Settings sidebar](../../src/renderer/src/pages/settings/Sidebar.tsx)
 - [Shared Settings components](../../src/renderer/src/pages/settings/components/index.tsx)
-- [Settings](../../src/renderer/src/pages/settings/pages/settings/Page.tsx)
+- [General](../../src/renderer/src/pages/settings/pages/general/Page.tsx)
 - [Assistant settings](../../src/renderer/src/pages/settings/pages/assistant/Page.tsx)
 - [Provider settings](../../src/renderer/src/pages/settings/pages/providers/Page.tsx)
 - [Storage settings](../../src/renderer/src/pages/settings/pages/storage/Page.tsx)
