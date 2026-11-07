@@ -108,7 +108,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							aria-label={t('settings.title')}
 							onClick={() => {
 								playSound('navigate');
-								navigate('/settings/settings');
+								navigate('/settings/general');
 							}}
 						>
 							<Settings className="size-4" strokeWidth={1.8} />
