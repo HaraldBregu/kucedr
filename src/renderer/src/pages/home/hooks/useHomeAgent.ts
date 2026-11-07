@@ -284,30 +284,22 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				if (resolved?.requestId === requestId) {
 					resolvedSessionRef.current = undefined;
 					if (currentSessionIdRef.current === sessionId) {
-						finishInteractionModeMigration(resolved.sessionId);
+						adoptedSessionIdRef.current = resolved.sessionId;
 						setSessionId(resolved.sessionId);
 					}
 				}
 			}
 		},
-		[
-			dispatchChat,
-			finishInteractionModeMigration,
-			interactionMode,
-			migrateInteractionMode,
-			sessionId,
-			setSessionId,
-		]
+		[dispatchChat, modeIds, modes, sessionId, setSessionId]
 	);
 
-	const implementPlan = useCallback((): void => {
-		setInteractionMode('default');
-		void sendPrompt(
-			'Implement the approved plan. Re-read the relevant files, make the changes, and verify them.',
-			[],
-			{ interactionMode: 'default', preserveInput: true }
-		);
-	}, [sendPrompt, setInteractionMode]);
+	const runModeAction = useCallback(
+		(prompt: string): void => {
+			setModeIds([]);
+			void sendPrompt(prompt, [], { modeIds: [], preserveInput: true });
+		},
+		[sendPrompt]
+	);
 
 	const editUserMessage = useCallback(
 		async (messageId: string, userOffsetFromEnd: number, content: string): Promise<boolean> => {
