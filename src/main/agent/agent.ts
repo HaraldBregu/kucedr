@@ -17,8 +17,6 @@ import {
 	updateUserMessageBySessionId,
 	type SessionResult,
 	type SessionCategory,
-	addAssistantMessage,
-	sessionDir,
 } from './session';
 import { SessionCoordinator } from './session/coordinator';
 import { releaseSession } from './session/release';
