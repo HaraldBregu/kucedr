@@ -96,7 +96,7 @@ resources/plugins/
 | `command`                    | Such as `/plan`; the first plugin to claim one wins, with a warning                   | Yes                            |
 | `persistent`                 | Boolean; the mode stays on after a message is sent, until removed or its action runs  | Yes                            |
 | `protectedPrompt`            | Boolean; puts `SYSTEM_PROMPT.md` in the protected slot instead of the normal one      | Bundled only                   |
-| `tools`                      | `"read-only"` (uses `planSafe`) or a tool id list; always intersected with what's allowed | Yes                            |
+| `tools`                      | `"read-only"` (tools marked `readOnly`) or a tool id list; always intersected with what's allowed | Yes                  |
 | `permissions`                | `"default"` or `"deny-asks"`                                                          | Yes                            |
 | `shell`                      | `"default"`, `"read-only"`, or `"none"`                                               | Yes                            |
 | `effort`                     | Applied only if the selected model supports it                                        | Yes                            |
