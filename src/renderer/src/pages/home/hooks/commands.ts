@@ -8,11 +8,6 @@ const TASK_COMMANDS: Record<string, (rest: string) => string> = {
 		rest ? i18n.t('taskCommands.delete', { message: rest }) : i18n.t('taskCommands.deleteEmpty'),
 };
 
-export function parseGoalCommand(prompt: string): string | undefined {
-	const match = /^\/goal(?:\s+([\s\S]*))?$/i.exec(prompt.trim());
-	return match ? (match[1]?.trim() ?? '') : undefined;
-}
-
 export function expandTaskCommand(prompt: string): string {
 	// The editor emits markdown, which escapes underscores: "/task\_list".
 	const match = /^(\/(?:\w|\\_)+)\s*([\s\S]*)$/.exec(prompt);
