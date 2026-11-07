@@ -21,6 +21,7 @@ import {
 	ServerCog,
 	ShieldCheck,
 	Sparkles,
+	ToggleRight,
 	UserRound,
 	type LucideIcon,
 } from 'lucide-react';
