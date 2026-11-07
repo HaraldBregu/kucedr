@@ -233,7 +233,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					if (event.type === 'run_started') {
 						resolvedSessionId = event.sessionId;
 						if (event.sessionId !== sessionId) {
-							migrateInteractionMode(event.sessionId);
 							resolvedSessionRef.current = { requestId, sessionId: event.sessionId };
 						}
 					}
