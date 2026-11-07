@@ -19,7 +19,7 @@ export async function filesToAgentInput(files: File[]): Promise<AgentInputFile[]
 				name: file.name,
 				mimeType: file.type || 'application/octet-stream',
 				data: btoa(binary),
-				...(attachmentPath(file) ? { path: attachmentPath(file) } : {}),
+				...(path ? { path } : {}),
 			};
 		})
 	);
