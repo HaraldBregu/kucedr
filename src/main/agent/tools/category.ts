@@ -51,5 +51,4 @@ export const toolCategoryRegistry = {
 	},
 } as const;
 
-/** A built-in category, or the id of the mode behavior that adds the tool. */
 export type ToolCategory = keyof typeof toolCategoryRegistry | (string & {});
