@@ -758,7 +758,7 @@ input[type='range']:hover::-moz-range-thumb {
 		drop-shadow(0 -2px 3px rgba(234, 179, 8, 0.25))
 		drop-shadow(2px 0 3px rgba(6, 182, 212, 0.3))
 		drop-shadow(0 2px 3px rgba(168, 85, 247, 0.3));
-	animation: plan-prompt-rainbow 5s linear infinite;
+	animation: mode-prompt-rainbow 5s linear infinite;
 	pointer-events: none;
 	-webkit-mask:
 		linear-gradient(#000 0 0) content-box,
