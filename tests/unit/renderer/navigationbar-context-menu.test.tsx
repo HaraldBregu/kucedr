@@ -16,7 +16,7 @@ jest.mock('react-i18next', () => ({
 
 const showContextMenu = jest.fn();
 const contextMenuItems = [
-	{ id: '/settings/general', label: 'settings.tabs.settings' },
+	{ id: '/settings/general', label: 'settings.tabs.general' },
 	{ id: '/settings/agent', label: 'settings.overview.groups.agent' },
 	{ id: '/settings/apps', label: 'settings.tabs.apps' },
 ];
@@ -44,7 +44,7 @@ beforeEach(() => {
 });
 
 it.each([
-	['settings.tabs.settings', '/settings/general'],
+	['settings.tabs.general', '/settings/general'],
 	['settings.overview.groups.agent', '/settings/agent'],
 	['settings.tabs.apps', '/settings/apps'],
 ])('opens a native context menu and navigates from %s to %s', async (_label, path) => {
