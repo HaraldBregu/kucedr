@@ -583,7 +583,7 @@ async function* loop(
 					{
 						type: 'text',
 						internal: true,
-						text: `<mode_continue>The tracked state of ${unfinished.map((entry) => entry.id).join(', ')} is not finished, so the run continues. Keep working on the open items without asking the user. Call update_mode_state with status "completed" once every item is done, or "blocked" with a note if something concretely prevents progress.</mode_continue>`,
+						text: `<mode_continue>\nNot finished: the ${unfinished.map((entry) => entry.id).join(', ')} state is still open. Keep working on the user's request below without asking the user anything. If the state has no items yet, first record the objective and success criteria with update_mode_state. Set its status to "completed" once every item is done, or "blocked" with a note if something concretely prevents progress.\n\nUser's request:\n${input.message}\n</mode_continue>`,
 					},
 				]);
 				continued = true;
