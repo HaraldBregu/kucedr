@@ -6,7 +6,7 @@ export const requestUserInputTool = tool({
 	category: 'system',
 	name: 'Request user input',
 	description:
-		'Pause the restricted run for one to three consequential questions. The interface adds an optional free-form Other choice to every question.',
+		'Pause the run for one to three consequential questions. The interface adds an optional free-form Other choice to every question.',
 	readOnly: true,
 	inputSchema: z.object({
 		questions: z
