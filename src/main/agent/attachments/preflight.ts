@@ -89,19 +89,19 @@ export function preflightPromptAttachments(
 			}
 
 			if (!(AGENT_TEXT_ATTACHMENT_EXTENSIONS as readonly string[]).includes(extension))
-				return undefined;
+				throw unsupported;
 			if (
 				bytes.some(
 					(byte) =>
 						(byte < 0x20 && byte !== 0x09 && byte !== 0x0a && byte !== 0x0d) || byte === 0x7f
 				)
 			)
-				return undefined;
+				throw unsupported;
 			let text: string;
 			try {
 				text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
 			} catch {
-				return undefined;
+				throw unsupported;
 			}
 			return {
 				type: 'text_file',
