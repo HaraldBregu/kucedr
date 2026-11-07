@@ -9,6 +9,11 @@ declare module '@tiptap/core' {
 	interface Storage {
 		modeCommand: ModeCommandStorage;
 	}
+	interface Commands<ReturnType> {
+		modeCommand: {
+			setModes: (modes: readonly AgentModeInfo[]) => ReturnType;
+		};
+	}
 }
 
 export const ModeCommand = Node.create<object, ModeCommandStorage>({
