@@ -33,7 +33,7 @@ export const ModeCommand = Node.create<object, ModeCommandStorage>({
 	},
 	addAttributes: () => ({
 		id: { default: '', parseHTML: (element) => element.getAttribute('data-mode-command') ?? '' },
-		title: { default: '', parseHTML: (element) => element.textContent ?? '' },
+		command: { default: '', parseHTML: (element) => element.textContent ?? '' },
 	}),
 	parseHTML: () => [{ tag: 'span[data-mode-command]' }],
 	renderHTML: ({ node }) => [
