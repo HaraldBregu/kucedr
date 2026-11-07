@@ -52,7 +52,7 @@ const TRAY_CLICK_ACTION_OPTIONS = [
 
 type TrayClickAction = (typeof TRAY_CLICK_ACTION_OPTIONS)[number]['value'];
 
-const SettingsPage: React.FC = () => {
+const GeneralPage: React.FC = () => {
 	const { t } = useTranslation();
 	const { language, setLanguage, theme, setTheme, soundFeedbackEnabled, setSoundFeedbackEnabled } = useApp();
 	const [trayEnabled, setTrayEnabled] = useState(true);
