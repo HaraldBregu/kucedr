@@ -94,9 +94,7 @@ function TextEditor({
 		extensions: [
 			StarterKit,
 			Placeholder.configure({ placeholder }),
-			ModeCommand.configure({
-				lookup: (command) => modesRef.current.find((mode) => mode.command === command),
-			}),
+			ModeCommand,
 			Markdown,
 		],
 		content: value ?? '',
