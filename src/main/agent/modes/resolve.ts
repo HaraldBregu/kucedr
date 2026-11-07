@@ -37,7 +37,6 @@ export function resolveModes(
 	const effort = active.find((mode) => mode.effort)?.effort;
 	const model = active.find((mode) => mode.model)?.model;
 	const output = active.find((mode) => mode.output)?.output;
-	const behavior = active.find((mode) => mode.behavior)?.behavior;
 
 	return {
 		ids: active.map((mode) => mode.id),
