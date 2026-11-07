@@ -632,6 +632,13 @@ function PageContent(): ReactElement {
 			return;
 		}
 		if (agent.modeIds.length > 0 && !hasPromptText) return;
+		const unsupported = attachments.filter((attachment) => !accepts(attachment.file.name, filesAccept));
+		if (unsupported.length > 0) {
+			setAttachmentError(
+				`${unsupported.map((attachment) => attachment.file.name).join(', ')} can't be sent to this model. Remove it to send.`
+			);
+			return;
+		}
 		const submittedFiles = attachments.map((attachment) => attachment.file);
 		saveDraftAttachments(chatSessionId, []);
 		clearAttachments();
