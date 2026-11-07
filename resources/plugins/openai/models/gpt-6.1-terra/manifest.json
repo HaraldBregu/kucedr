@@ -18,7 +18,9 @@
 					".jpeg",
 					".png",
 					".webp"
-				]
+				],
+				"maxFiles": 1500,
+				"maxTotalBytes": 402653184
 			}
 		],
 		"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
