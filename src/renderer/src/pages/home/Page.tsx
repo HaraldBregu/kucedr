@@ -416,13 +416,15 @@ function PageContent(): ReactElement {
 		return () => query.removeEventListener('change', onChange);
 	}, []);
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
-	const [filesAccept, setFilesAccept] = useState<string>();
+	const [capabilities, setCapabilities] = useState<AgentPromptInputCapabilities | null>();
+	const filesAccept =
+		capabilities === undefined ? undefined : capabilities?.rules.length ? capabilities.accept : '';
 	useEffect(() => {
 		let active = true;
 		void window.agent
 			.getPromptInputCapabilities()
-			.then((capabilities) => {
-				if (active) setFilesAccept(capabilities?.rules.length ? capabilities.accept : '');
+			.then((result) => {
+				if (active) setCapabilities(result);
 			})
 			.catch(() => undefined);
 		return () => {
