@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { AGENT_TEXT_ATTACHMENT_EXTENSIONS } from '../../../shared/agent_files';
+import { attachmentLimitError } from '../../../shared/attachment_limit';
 import type { AgentInputFile, AgentPromptInputCapabilities } from '../../../shared/agent_types';
 import type { PromptAttachmentBlock } from './types';
 
