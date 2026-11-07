@@ -3,26 +3,21 @@ export type ParsedEnvelope =
 	| { kind: 'streaming'; content: string }
 	| { kind: 'markdown'; content: string };
 
+/** Reads the last envelope, so a response the host asked to rewrite shows its retry. */
 export function parseEnvelope(content: string, tag: string, streaming: boolean): ParsedEnvelope {
 	const open = `<${tag}>`;
 	const close = `</${tag}>`;
 	const trimmed = content.trim();
-	const openCount = trimmed.split(open).length - 1;
-	const closeCount = trimmed.split(close).length - 1;
-	if (
-		openCount === 1 &&
-		closeCount === 1 &&
-		trimmed.startsWith(open) &&
-		trimmed.endsWith(close)
-	) {
-		const body = trimmed.slice(open.length, -close.length).trim();
-		if (body.length > 0 && !body.includes(open) && !body.includes(close))
-			return { kind: 'complete', content: body };
-	}
-	if (streaming) {
-		if (trimmed && open.startsWith(trimmed)) return { kind: 'streaming', content: '' };
-		if (trimmed.startsWith(open) && closeCount === 0) {
-			let body = trimmed.slice(open.length);
+	const start = trimmed.lastIndexOf(open);
+	if (start !== -1) {
+		const rest = trimmed.slice(start + open.length);
+		const end = rest.indexOf(close);
+		if (end !== -1) {
+			const body = rest.slice(0, end).trim();
+			if (body.length > 0 && !rest.slice(end + close.length).trim())
+				return { kind: 'complete', content: body };
+		} else if (streaming) {
+			let body = rest;
 			for (let length = close.length - 1; length > 0; length--) {
 				const partial = close.slice(0, length);
 				if (body.endsWith(partial)) {
@@ -33,5 +28,6 @@ export function parseEnvelope(content: string, tag: string, streaming: boolean):
 			return { kind: 'streaming', content: body.trim() };
 		}
 	}
+	if (streaming && trimmed && open.startsWith(trimmed)) return { kind: 'streaming', content: '' };
 	return { kind: 'markdown', content };
 }
