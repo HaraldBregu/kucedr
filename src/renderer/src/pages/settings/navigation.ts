@@ -86,62 +86,62 @@ export const SETTINGS_PROVIDER_CONFIG_ITEMS: readonly SettingsProviderConfigItem
 export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	// General
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.language.title',
 		descriptionKey: 'settings.language.description',
 		keywords: 'locale english italian i18n',
 	},
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.application.menuBar',
 		descriptionKey: 'settings.application.menuBarDescription',
 		keywords: 'tray dock icon toggle',
 	},
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.application.appData',
 		descriptionKey: 'settings.application.appDataDescription',
 		keywords: 'folder files storage',
 	},
 	// Application
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.theme.title',
 		keywords: 'appearance dark light system mode',
 	},
 	{
-		path: '/settings/settings/persona',
+		path: '/settings/general/persona',
 		labelKey: 'settings.voiceAgent.title',
 		descriptionKey: 'settings.voiceAgent.description',
 		keywords: 'voice agent orb appearance idle listening thinking speaking',
 	},
 	// Media permissions
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.microphone.title',
 		descriptionKey: 'settings.microphone.systemPermissionDescription',
 		keywords: 'microphone audio recorder permission activate disable',
 	},
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.camera.title',
 		descriptionKey: 'settings.camera.systemPermissionDescription',
 		keywords: 'camera webcam video permission activate disable',
 	},
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.application.accessibility',
 		descriptionKey: 'settings.application.accessibilityDescription',
 		keywords: 'permission system',
 	},
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.application.screenRecording',
 		descriptionKey: 'settings.application.screenRecordingDescription',
 		keywords: 'permission capture screen',
 	},
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.system.capabilities.title',
 		descriptionKey: 'settings.system.capabilities.description',
 		keywords:
@@ -314,7 +314,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: UserRound,
 	},
 	{
-		path: '/settings/settings',
+		path: '/settings/general',
 		labelKey: 'settings.tabs.settings',
 		descriptionKey: 'settings.overview.descriptions.settings',
 		icon: Settings,
