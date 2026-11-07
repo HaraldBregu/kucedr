@@ -49,11 +49,7 @@ export const toolCategoryRegistry = {
 		description:
 			'Delegate independent work to subagents and follow their progress.',
 	},
-	goal: {
-		label: 'Goals',
-		description:
-			'Create and track long-running goals, update their plans, record evidence, and report completion or blockers.',
-	},
 } as const;
 
-export type ToolCategory = keyof typeof toolCategoryRegistry;
+/** A built-in category, or the id of the mode behavior that adds the tool. */
+export type ToolCategory = keyof typeof toolCategoryRegistry | (string & {});
