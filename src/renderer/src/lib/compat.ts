@@ -37,7 +37,6 @@ export type Model = ProviderModel;
 export type {
 	AgentHistoryContentBlock,
 	AgentHistoryMessage,
-	AgentInteractionMode,
 	AgentInputFile,
 	AgentResponseEvent,
 	AgentRunState,
