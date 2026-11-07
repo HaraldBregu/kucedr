@@ -43,7 +43,7 @@ export const Provider = memo(function Provider({
 			? Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, storedWidth))
 			: DEFAULT_SIDEBAR_WIDTH;
 	});
-	const isMobile = useIsMobile('(max-width: 999px), (pointer: coarse)');
+	const isMobile = useIsMobile('(max-width: 1000px), (pointer: coarse)');
 
 	const setSidebarWidth = useCallback((width: number): void => {
 		const nextWidth = Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, width));
