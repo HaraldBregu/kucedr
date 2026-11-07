@@ -340,7 +340,7 @@ const routes: RouteObject[] = [
 								path: 'media/:mediaId',
 								element: (
 									<SettingsRouteWrapper>
-										<SettingsMediaDetailPage />
+										<GeneralMediaDetailPage />
 									</SettingsRouteWrapper>
 								),
 							},
