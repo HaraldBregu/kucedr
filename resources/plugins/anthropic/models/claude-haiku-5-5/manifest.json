@@ -11,12 +11,14 @@
 				"mimeTypes": [
 					"image/jpeg",
 					"image/png",
+					"image/gif",
 					"image/webp"
 				],
 				"extensions": [
 					".jpg",
 					".jpeg",
 					".png",
+					".gif",
 					".webp"
 				]
 			},
