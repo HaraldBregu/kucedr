@@ -50,7 +50,7 @@ export function builtinTools(
 ): Tool[] {
 	return [
 		readTool,
-		...(mode.restricted ? [requestUserInputTool] : []),
+		...(mode.ask ? [requestUserInputTool] : []),
 		writeTool,
 		editTool,
 		applyPatchTool,
