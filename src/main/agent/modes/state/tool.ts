@@ -33,7 +33,7 @@ export function modeStateTool(sessionDirectory: string, modes: readonly ModeDefi
 			const previous = readState(sessionDirectory, id);
 			const next = {
 				mode: id,
-				status: status ?? (previous?.status === 'active' ? 'active' : 'active'),
+				status: status ?? 'active',
 				objective: objective ?? previous?.objective,
 				items: items ?? previous?.items ?? [],
 				...(note ? { note } : previous?.note ? { note: previous.note } : {}),
