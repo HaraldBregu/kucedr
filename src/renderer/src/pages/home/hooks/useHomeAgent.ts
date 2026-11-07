@@ -80,6 +80,8 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 	useEffect(() => {
 		currentSessionIdRef.current = sessionId;
 		setReplyTo(null);
+		if (adoptedSessionIdRef.current !== sessionId) setModeIds([]);
+		adoptedSessionIdRef.current = undefined;
 	}, [sessionId]);
 
 	const focusInput = useCallback((): void => {
