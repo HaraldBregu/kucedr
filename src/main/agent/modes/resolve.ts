@@ -50,6 +50,5 @@ export function resolveModes(
 		...(effort ? { effort } : {}),
 		...(model ? { model } : {}),
 		...(output ? { output } : {}),
-		...(behavior ? { behavior } : {}),
 	};
 }
