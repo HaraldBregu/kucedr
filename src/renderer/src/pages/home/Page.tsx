@@ -422,7 +422,7 @@ function PageContent(): ReactElement {
 		void window.agent
 			.getPromptInputCapabilities()
 			.then((capabilities) => {
-				if (active) setFilesAccept(capabilities?.accept);
+				if (active) setFilesAccept(capabilities?.rules.length ? capabilities.accept : '');
 			})
 			.catch(() => undefined);
 		return () => {
