@@ -1,9 +1,10 @@
 import { goalBehavior } from './goal';
 import type { ModeBehavior, ModeDefinition } from './types';
 
-const BEHAVIORS: Record<NonNullable<ModeDefinition['behavior']>, ModeBehavior> = {
-	goal: goalBehavior,
-};
+/** Host code that bundled modes can switch on with `behavior`, keyed by id. */
+export const BEHAVIORS: Readonly<Record<string, ModeBehavior>> = Object.fromEntries(
+	[goalBehavior].map((behavior) => [behavior.id, behavior])
+);
 
 /** The host behaviors switched on by enabled modes. */
 export function enabledBehaviors(modes: readonly ModeDefinition[]): ModeBehavior[] {
