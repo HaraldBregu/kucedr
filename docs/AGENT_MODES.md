@@ -57,7 +57,7 @@ The bundled modes:
 
 ```text
 resources/plugins/
-  plan/
+  bootstrap/
     manifest.json
     modes/
       plan/
