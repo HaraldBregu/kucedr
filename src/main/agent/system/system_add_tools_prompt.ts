@@ -1,5 +1,4 @@
 import type { Tool } from '../types';
-import { BEHAVIORS } from '../modes/behaviors';
 import { toolCategoryRegistry, type ToolCategory } from '../tools/category';
 import { requiresExplicitRequest } from './explicit';
 
