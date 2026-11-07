@@ -108,7 +108,7 @@ How the three planned modes use this:
 
 | Mode | Needs                                                      | Plugin contents                 |
 | ---- | ---------------------------------------------------------- | ------------------------------- |
-| Fast | Effort override only                                       | `effort`                        |
+| Fast | Prompt and effort override                                 | `prompt`, `effort`              |
 | Plan | Prompt, tool filter, shell policy, and output check        | Data, using host primitives     |
 | Goal | Saved state, 5 tools, lifecycle commands, budget accounting | `behavior: "goal"`, host code   |
 
