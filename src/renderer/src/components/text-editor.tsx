@@ -190,6 +190,10 @@ function TextEditor({
 	}, [editor, modeIds]);
 
 	useEffect(() => {
+		if (editor) editor.storage.modeCommand.modes = modes;
+	}, [editor, modes]);
+
+	useEffect(() => {
 		editor?.setEditable(!disabled);
 	}, [editor, disabled]);
 
