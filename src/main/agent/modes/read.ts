@@ -27,7 +27,10 @@ const modeSchema = z
 			.strict()
 			.optional(),
 		action: z.object({ label: text.max(40), prompt: text.max(1024) }).strict().optional(),
-		state: z.object({ evidence: z.boolean().optional() }).strict().optional(),
+		state: z
+			.object({ evidence: z.boolean().optional(), continue: z.boolean().optional() })
+			.strict()
+			.optional(),
 	})
 	.strict();
 
