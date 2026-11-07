@@ -585,10 +585,31 @@ function PageContent(): ReactElement {
 		});
 	}, []);
 
+	const keepAccepted = useCallback(
+		<T extends { name: string }>(files: T[]): T[] => {
+			const rejected = files.filter((file) => !accepts(file.name, filesAccept));
+			setAttachmentError(
+				rejected.length > 0
+					? `${rejected.map((file) => file.name).join(', ')} can't be attached to this model.`
+					: null
+			);
+			return files.filter((file) => accepts(file.name, filesAccept));
+		},
+		[filesAccept]
+	);
+
+	const addFiles = useCallback(
+		(files: File[]): void => {
+			setAttachments((current) => [...current, ...filesToAttachments(keepAccepted(files))]);
+		},
+		[keepAccepted]
+	);
+
 	const addLibraryFiles = useCallback((files: LibraryFile[]): void => {
+		const accepted = keepAccepted(files);
 		setAttachments((current) => [
 			...current,
-			...files.map((entry) => {
+			...accepted.map((entry) => {
 				const file = new File([], entry.name, {
 					type: workspaceFileType(entry.name).mimeType ?? '',
 				});
