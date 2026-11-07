@@ -9,7 +9,7 @@ export const readTool = tool({
 	name: 'Read file',
 	description:
 		'Read the full UTF-8 contents of a single text file. Use this before editing when you need the current file contents.',
-	planSafe: true,
+	readOnly: true,
 	inputSchema: z.object({
 		path: z
 			.string()
