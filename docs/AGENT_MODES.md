@@ -158,20 +158,13 @@ Each step should leave the app working.
 Each mode gets its folder under `resources/plugins/bootstrap/modes/`:
 
 - `plan/`: `manifest.json` and `SYSTEM_PROMPT.md`, using today's prompt text.
-- `fast/`: `manifest.json` with `effort`, and `SYSTEM_PROMPT.md`. This proves a new mode needs no host change.
-- `goal/`: `manifest.json` with `behavior: "goal"`, and `SYSTEM_PROMPT.md`.
+- `goal/`: `manifest.json` and `SYSTEM_PROMPT.md`. This proves a new mode needs no host change.
 
-### 4. Isolate goal
+### 4. Remove goal from the host
 
-- Move `src/main/agent/goal/*` to `src/main/agent/modes/goal/`, behind one entry point exposing command
-  handling, tools, context, and accounting.
-- Remove direct goal calls at `agent.ts:25-27,237,313,387` and `run_stream.ts:17-19,247,506`, and the
-  goal entries in `execution/capability.ts`, `agent_store.ts`, and
-  `settings/pages/assistant/tools/Page.tsx` where they become plugin-driven.
-- Goal stays suspended during restricted runs, as today, and those runs are no longer charged to its
-  budget.
-- Saved goal files keep their format, so no migration is needed. They stay inert while the plugin is
-  disabled.
+- Delete the goal module, its five tools, its tool category and settings group, and the command,
+  context, and accounting calls in `agent.ts` and `run_stream.ts`.
+- Saved `goal.json` files in existing sessions are no longer read.
 
 ### 5. Update the renderer
 
