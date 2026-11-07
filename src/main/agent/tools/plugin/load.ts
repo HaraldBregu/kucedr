@@ -10,7 +10,7 @@ export const loadScript = tool({
 	name: 'Load script',
 	description:
 		'Load the instructions of a script from the Scripts section: every input field, allowed values and examples. Call this before run_script.',
-	planSafe: true,
+	readOnly: true,
 	inputSchema: z.object({
 		name: z.string().describe('The script name from the Scripts section.'),
 	}),
