@@ -231,5 +231,5 @@ asked, so that run needs explicit approval at that point.
 
 ## Out of scope
 
-Third-party modes with their own code. Adding them later would need an out-of-process hook and
+Modes with their own code or saved state. Adding them later would need an out-of-process hook and
 session-state protocol.
