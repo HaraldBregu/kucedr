@@ -202,8 +202,7 @@ export function setToolProfileTool(
 	settings: AgentToolConfiguration
 ): AgentToolProfile {
 	if (tool.kind === 'builtin') {
-		if (!(tool.id in RUNTIME_TOOL_KEYS) && !behaviorTools().some(({ id }) => id === tool.id))
-			throw new Error('Unknown built-in tool.');
+		if (!(tool.id in RUNTIME_TOOL_KEYS)) throw new Error('Unknown built-in tool.');
 		if (!isAgentToolConfigurable(tool) && settings.permission !== 'allow') {
 			throw new Error('Required system tools cannot be disabled.');
 		}
