@@ -27,7 +27,8 @@ export const Messages = memo(function Messages({
 		content: string
 	) => Promise<boolean>;
 	readonly onReply: (message: { id: string; content: string }) => void;
-	readonly onImplement: () => void;
+	readonly modes: readonly AgentModeInfo[];
+	readonly onAction: (prompt: string) => void;
 }): ReactElement {
 	const { t } = useTranslation();
 	return (
