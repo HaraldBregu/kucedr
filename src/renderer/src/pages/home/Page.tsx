@@ -770,7 +770,7 @@ function PageContent(): ReactElement {
 			{showEmptyConversation ? null : (
 				<div className={cn('pointer-events-none absolute inset-x-0 bottom-0 mx-auto h-10 max-w-4xl bg-background px-8 bg-clip-content', detailsOpen && 'max-w-[71.5rem] pr-[17.5rem]')} />
 			)}
-			<div className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-3xl' : 'max-w-4xl px-8', !showEmptyConversation && detailsOpen && 'max-w-[71.5rem] pr-[17.5rem]')}>
+			<div className={cn('mx-auto w-full transition-[padding] duration-200 motion-reduce:transition-none', showEmptyConversation ? 'max-w-3xl px-8' : 'max-w-4xl px-8', !showEmptyConversation && detailsOpen && 'max-w-[71.5rem] pr-[17.5rem]')}>
 				{attachmentError && <p role="alert" className="mb-2 text-xs text-destructive">{attachmentError}</p>}
 				<RecorderErrorMessage
 					message={voiceErrorMessage}
