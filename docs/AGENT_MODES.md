@@ -1,6 +1,8 @@
 # Pluggable agent modes
 
-Status: proposed, not implemented. Plan and goal are still hard-coded in the agent today.
+Status: steps 1–5 are implemented. Plan, goal, and fast ship in the bundled `bootstrap` plugin, and the
+agent and chat input read them from `agent:list-modes` with nothing hard-coded. Step 6 (tests) is not
+done yet.
 
 This document plans how to move Kucedr's agent modes into plugins. The core agent would start with no
 modes, and adding a plugin would add a mode such as plan, goal, or fast.
