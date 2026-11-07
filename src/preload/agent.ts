@@ -56,7 +56,7 @@ function normalizeAgentSendRuntimeOptions(options?: AgentRunOptions): AgentRunOp
 			? { model: optionalTrimmedString(options.model) }
 			: {}),
 		...(isModelReasoningEffort(options.effort) ? { effort: options.effort } : {}),
-		interactionMode: options.interactionMode === 'plan' ? 'plan' : 'default',
+		...(options.modeIds === undefined ? {} : { modeIds: options.modeIds }),
 		...(options.contextMode === 'minimal' || options.contextMode === 'workspace'
 			? { contextMode: options.contextMode }
 			: typeof options.lightContext === 'boolean'
