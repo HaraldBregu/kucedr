@@ -82,10 +82,9 @@ export const Messages = memo(function Messages({
 						showHeader={showAssistantHeader}
 						className={groupedAssistantClassName}
 						onReply={onReply}
-						canImplement={
-							index === messages.length - 1 && message.state === 'completed' && !isLoading
-						}
-						onImplement={onImplement}
+						modes={modes}
+						canAct={index === messages.length - 1 && message.state === 'completed' && !isLoading}
+						onAction={onAction}
 					/>
 				);
 			})}
