@@ -273,7 +273,6 @@ export class Agent {
 					options.contextMode ??
 					(options.lightContext === true || request.category !== 'main' ? 'minimal' : 'workspace'),
 				mode,
-				behaviors,
 				...(effort ? { effort } : {}),
 				...(options.toolsDeny ? { toolsDeny: options.toolsDeny } : {}),
 				...(files.length ? { files } : {}),
