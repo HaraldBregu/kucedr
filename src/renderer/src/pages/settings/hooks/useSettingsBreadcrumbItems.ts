@@ -219,7 +219,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		});
 	}
 
-	if (location.pathname.startsWith('/settings/settings/media/')) {
+	if (location.pathname.startsWith('/settings/general/media/')) {
 		const media = getSystemMedia(decodeURIComponent(location.pathname.split('/').at(-1) ?? ''));
 		items[0] = { ...items[0], path: current.path };
 		items.push({ label: media ? t(media.titleKey) : t('settings.tabs.settings') });
