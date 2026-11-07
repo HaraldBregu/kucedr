@@ -57,6 +57,7 @@ import { listModes } from '../modes/list';
 import { trackedModes } from '../modes/state/tracked';
 import { modeStateTool, MODE_STATE_TOOL_ID } from '../modes/state/tool';
 import { stateContext } from '../modes/state/context';
+import { unfinishedModes } from '../modes/state/unfinished';
 import { sessionDir } from '../session/session_session_dir';
 import { projectPromptAttachments, resolvePromptInputCapabilities } from '../attachments';
 import { createBackgroundBrowser } from '../tools/web/browser/background';
