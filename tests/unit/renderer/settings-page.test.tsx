@@ -200,10 +200,10 @@ it('changes the application theme from Settings', async () => {
 it('opens Voice Agent settings from Settings', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter initialEntries={['/settings/settings']}>
+		<MemoryRouter initialEntries={['/settings/general']}>
 			<Routes>
-				<Route path="/settings/settings" element={<SettingsPage />} />
-			<Route path="/settings/settings/persona" element={<p>Voice Agent page</p>} />
+				<Route path="/settings/general" element={<SettingsPage />} />
+			<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
