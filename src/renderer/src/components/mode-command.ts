@@ -40,7 +40,7 @@ export const ModeCommand = Node.create<object, ModeCommandStorage>({
 		'span',
 		{
 			'data-mode-command': node.attrs.id,
-			class: 'font-semibold text-primary',
+			class: 'text-primary',
 			contenteditable: 'false',
 		},
 		node.attrs.command,
