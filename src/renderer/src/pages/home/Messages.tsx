@@ -1,5 +1,6 @@
 import { memo, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { AgentModeInfo } from '@shared/agent_types';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import type { HomeChatMessage } from './context/state';
 import { AssistantMessage } from './components/AssistantMessage';
