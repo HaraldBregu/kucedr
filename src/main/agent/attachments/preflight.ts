@@ -113,4 +113,12 @@ export function preflightPromptAttachments(
 			};
 		})
 		.filter((file): file is PromptAttachmentBlock => file !== undefined);
+	const limitError = attachmentLimitError(
+		blocks
+			.filter((block) => block.type !== 'text_file')
+			.map((block) => ({ name: block.name, size: block.bytes })),
+		capabilities.rules
+	);
+	if (limitError) throw new Error(limitError);
+	return blocks;
 }
