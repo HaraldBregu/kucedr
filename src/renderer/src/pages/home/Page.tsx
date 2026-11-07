@@ -588,44 +588,46 @@ function PageContent(): ReactElement {
 		});
 	}, []);
 
-	const keepAccepted = useCallback(
-		<T extends { name: string }>(files: T[]): T[] => {
+	const addFiles = useCallback(
+		(files: File[]): void => {
+			const accepted = files.filter((file) => accepts(file.name, filesAccept));
 			const rejected = files.filter((file) => !accepts(file.name, filesAccept));
+			const limitError = attachmentLimitError(
+				[...attachments.map((attachment) => attachment.file), ...accepted],
+				capabilities?.rules ?? []
+			);
 			setAttachmentError(
 				rejected.length > 0
 					? `${rejected.map((file) => file.name).join(', ')} can't be attached to this model.`
-					: null
+					: (limitError ?? null)
 			);
-			return files.filter((file) => accepts(file.name, filesAccept));
+			if (!limitError) setAttachments((current) => [...current, ...filesToAttachments(accepted)]);
 		},
-		[filesAccept]
+		[attachments, capabilities, filesAccept]
 	);
 
-	const addFiles = useCallback(
-		(files: File[]): void => {
-			setAttachments((current) => [...current, ...filesToAttachments(keepAccepted(files))]);
+	const addLibraryFiles = useCallback(
+		async (files: LibraryFile[]): Promise<void> => {
+			try {
+				// ponytail: reads every selected Library file before filtering; filter by name first if huge unsupported files get attached
+				addFiles(
+					await Promise.all(
+						files.map(async (entry) => {
+							const bytes = await window.agent.readPromptFile(entry.path);
+							const file = new File([new Uint8Array(bytes)], entry.name, {
+								type: workspaceFileType(entry.name).mimeType ?? '',
+							});
+							attachmentPath(file, entry.path);
+							return file;
+						})
+					)
+				);
+			} catch {
+				setAttachmentError('Could not attach Library files. Please try again.');
+			}
 		},
-		[keepAccepted]
+		[addFiles]
 	);
-
-	const addLibraryFiles = useCallback((files: LibraryFile[]): void => {
-		const accepted = keepAccepted(files);
-		setAttachments((current) => [
-			...current,
-			...accepted.map((entry) => {
-				const file = new File([], entry.name, {
-					type: workspaceFileType(entry.name).mimeType ?? '',
-				});
-				attachmentPath(file, entry.path);
-				return {
-					id: attachmentId(),
-					kind: 'file' as const,
-					file,
-					path: entry.path,
-				};
-			}),
-		]);
-	}, [keepAccepted]);
 
 	const submitPrompt = async (): Promise<void> => {
 		if (agent.isLoading) {
@@ -634,9 +636,15 @@ function PageContent(): ReactElement {
 		}
 		if (agent.modeIds.length > 0 && !hasPromptText) return;
 		const unsupported = attachments.filter((attachment) => !accepts(attachment.file.name, filesAccept));
-		if (unsupported.length > 0) {
+		const limitError = attachmentLimitError(
+			attachments.map((attachment) => attachment.file),
+			capabilities?.rules ?? []
+		);
+		if (unsupported.length > 0 || limitError) {
 			setAttachmentError(
-				`${unsupported.map((attachment) => attachment.file.name).join(', ')} can't be sent to this model. Remove it to send.`
+				unsupported.length > 0
+					? `${unsupported.map((attachment) => attachment.file.name).join(', ')} can't be sent to this model. Remove it to send.`
+					: (limitError ?? null)
 			);
 			return;
 		}
