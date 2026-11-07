@@ -80,7 +80,7 @@ it('opens Settings with the settings shortcut', () => {
 			<CommandMenu />
 			<Routes>
 				<Route path="/home" element={null} />
-				<Route path="/settings/settings" element={<p>Settings</p>} />
+				<Route path="/settings/general" element={<p>Settings</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
@@ -111,7 +111,7 @@ it('includes every canonical static settings subpage', () => {
 	);
 
 	for (const path of [
-		'/settings/settings/persona',
+		'/settings/general/persona',
 		'/settings/services',
 		'/settings/knowledge/providers',
 		'/settings/storage/providers',
