@@ -570,7 +570,11 @@ async function* loop(
 			}
 
 			const unfinished =
-				turn.toolCalls.length === 0 && !synthesisOnly && !continued && !isExhausted(session)
+				turn.toolCalls.length === 0 &&
+				!synthesisOnly &&
+				!continued &&
+				nudges > 0 &&
+				!isExhausted(session)
 					? unfinishedModes(stateDirectory, mode.ids, statefulModes)
 					: [];
 			if (unfinished.length > 0) {
