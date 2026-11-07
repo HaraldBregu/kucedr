@@ -735,11 +735,9 @@ function PageContent(): ReactElement {
 						value={agent.input}
 						expanded={false}
 						onValueChange={agent.setInput}
-						onPlanCommandChange={(active) => {
-							setPlanCommandActive(active);
-							agent.setInteractionMode(active ? 'plan' : 'default');
-						}}
-						onGoalCommandChange={setGoalCommandActive}
+						modes={agent.modes}
+						modeIds={agent.modeIds}
+						onModeIdsChange={agent.setModeIds}
 						isLoading={agent.isLoading}
 						maxHeight={360}
 						onSubmit={() => void submitPrompt()}
