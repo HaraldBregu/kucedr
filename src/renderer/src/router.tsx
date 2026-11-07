@@ -318,13 +318,13 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
-						path: 'settings',
+						path: 'general',
 						children: [
 							{
 								index: true,
 								element: (
 									<SettingsRouteWrapper>
-										<SettingsPage />
+										<GeneralPage />
 									</SettingsRouteWrapper>
 								),
 							},
