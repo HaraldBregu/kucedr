@@ -11,6 +11,7 @@ import {
 	MousePointerClick,
 	PanelTop,
 	SunMoon,
+	Type,
 	Volume2,
 	AppWindow,
 } from 'lucide-react';
