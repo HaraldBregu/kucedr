@@ -17,6 +17,8 @@ interface MenuManagerCallbacks {
 	onKeepAwakeChange?: (enabled: boolean) => void;
 	getSoundFeedbackEnabled?: () => boolean;
 	onSoundFeedbackEnabledChange?: (enabled: boolean) => void;
+	getChatTextSize?: () => ChatTextSize;
+	onChatTextSizeChange?: (size: ChatTextSize) => void;
 	getTheme?: () => 'light' | 'dark' | 'system';
 	onThemeChange?: (theme: 'light' | 'dark' | 'system') => void;
 }
