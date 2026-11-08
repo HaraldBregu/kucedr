@@ -60,27 +60,30 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 				canonicalCounts.set(id, (canonicalCounts.get(id) ?? 0) + 1);
 			}
 			const remaining = Math.max(0, TOOL_SEARCH_RUN_LIMIT - selectedCount);
-			const selected = rankTools(
+			const candidates = [...eligible.values()].filter((candidate) => {
+				if (active.has(candidate.id)) return false;
+				if (!options.mcpServerHint) return true;
+				const mcp = mcpMetadata.get(candidate.id);
+				return Boolean(
+					mcp &&
+					[mcp.serverId, mcp.serverName].some(
+						(name) => name.toLocaleLowerCase() === options.mcpServerHint
+					)
+				);
+			});
+			const exact = candidates.find((candidate) => candidate.id === query);
+			const ranked = rankTools(
 				query,
-				[...eligible.values()]
-					.filter((candidate) => {
-						if (active.has(candidate.id)) return false;
-						if (!options.mcpServerHint) return true;
-						const mcp = mcpMetadata.get(candidate.id);
-						return Boolean(
-							mcp &&
-							[mcp.serverId, mcp.serverName].some(
-								(name) => name.toLocaleLowerCase() === options.mcpServerHint
-							)
-						);
-					})
-					.map((candidate) => {
-						const mcp = mcpMetadata.get(candidate.id);
-						return {
-							value: candidate,
-							text: `${toolSearchText(candidate)} ${mcp?.serverId ?? ''} ${mcp?.serverName ?? ''} ${mcp?.tool.policy?.kind === 'mcp' ? mcp.tool.policy.toolName : ''}`,
-						};
-					})
+				candidates.map((candidate) => {
+					const mcp = mcpMetadata.get(candidate.id);
+					return {
+						value: candidate,
+						text: `${toolSearchText(candidate)} ${mcp?.serverId ?? ''} ${mcp?.serverName ?? ''} ${mcp?.tool.policy?.kind === 'mcp' ? mcp.tool.policy.toolName : ''}`,
+					};
+				})
+			);
+			const selected = (
+				exact ? [exact, ...ranked.filter((candidate) => candidate !== exact)] : ranked
 			).slice(0, Math.min(limit, remaining));
 			for (const candidate of selected) active.set(candidate.id, candidate);
 			selectedCount += selected.length;
