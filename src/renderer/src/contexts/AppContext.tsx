@@ -240,6 +240,8 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 			setSoundFeedbackEnabled,
 			voiceAgentAppearance,
 			setVoiceAgentAppearance,
+			chatTextSize,
+			setChatTextSize,
 			resetState,
 		}),
 		[
@@ -251,6 +253,7 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 			setSoundFeedbackEnabled,
 			voiceAgentAppearance,
 			setVoiceAgentAppearance,
+			chatTextSize,
 			resetState,
 		]
 	);
