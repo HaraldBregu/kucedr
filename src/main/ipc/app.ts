@@ -48,6 +48,8 @@ import {
 	setKeepAwake as setStoredKeepAwake,
 	getSoundFeedbackEnabled as getStoredSoundFeedbackEnabled,
 	setSoundFeedbackEnabled as setStoredSoundFeedbackEnabled,
+	getChatTextSize as getStoredChatTextSize,
+	setChatTextSize as setStoredChatTextSize,
 	getWorkspaceWideContent as getStoredWorkspaceWideContent,
 	setWorkspaceWideContent as setStoredWorkspaceWideContent,
 	getWorkspaceTextSize as getStoredWorkspaceTextSize,
