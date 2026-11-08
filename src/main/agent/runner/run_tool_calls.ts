@@ -12,10 +12,13 @@ export async function* runToolCalls(
 	context?: FileAccessContext,
 	security?: ToolCallSecurityContext,
 	resources?: KeyedMutex,
-	history?: FileHistory
+	history?: FileHistory,
+	eligible: readonly Tool[] = []
 ): AsyncGenerator<RuntimeEvent, void> {
 	for (const toolCall of toolCalls) {
-		const tool = tools.find((candidate) => candidate.id === toolCall.name);
+		const tool =
+			tools.find((candidate) => candidate.id === toolCall.name) ??
+			(eligible.some((candidate) => candidate.id === toolCall.name) ? 'unloaded' : undefined);
 		for await (const event of runToolCall(
 			tool,
 			toolCall,
