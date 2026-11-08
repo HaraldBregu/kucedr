@@ -80,6 +80,16 @@ function readPersistedVoiceAgentAppearance(): VoiceAgentAppearance {
 	return 'persona';
 }
 
+function readPersistedChatTextSize(): ChatTextSize {
+	try {
+		const stored = localStorage.getItem(CHAT_TEXT_SIZE_STORAGE_KEY);
+		if (stored && Object.hasOwn(CHAT_TEXT_SIZES, stored)) return stored as ChatTextSize;
+	} catch {
+		/* empty */
+	}
+	return 'medium';
+}
+
 function applyTheme(theme: AppTheme): void {
 	const dark =
 		theme === 'dark' ||
