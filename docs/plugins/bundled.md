@@ -6,17 +6,17 @@ All bundled plugins load with `builtIn: true`: they can be disabled but not remo
 |---|---|---|---|
 | `bootstrap` | 1.4.0 | CORE | apps, skills, scripts, modes |
 | `anthropic` | 1.1.0 | LLM | provider: 11 Claude models |
-| `openai` | — | LLM | provider: 30 models (chat, image, realtime, transcription, TTS, embeddings) |
-| `xai` | — | LLM | provider: 15 models (Grok chat, image, video, voice, STT/TTS) |
-| `deepseek` | — | LLM | provider: 2 models |
-| `iteracompute` | — | LLM | provider: 1 model + `remote` discovery |
-| `openrouter` | — | LLM | provider: `auto` + `remote` discovery |
+| `openai` | 1.2.0 | LLM, IMAGE, TTS, STT, REALTIME, EMBEDDING | provider: 30 models |
+| `xai` | 1.2.0 | LLM, IMAGE, VIDEO, TTS, STT, REALTIME | provider: 15 models |
+| `deepseek` | 1.2.0 | LLM | provider: 2 models |
+| `iteracompute` | 1.1.0 | LLM | provider: 1 model + `remote` discovery |
+| `openrouter` | 1.1.0 | LLM | provider: `auto` + `remote` discovery |
 | `ollama` | 1.0.1 | LLM | provider: `auto` local discovery, `authentication: none` |
-| `elevenlabs` | — | — | provider: 16 voice, music, sound-effect, and transcription models |
+| `elevenlabs` | 1.2.0 | AUDIO, TTS, STT | provider: 16 voice, music, sound-effect, and transcription models |
 | `brave` | 1.0.1 | SEARCH | provider: `services/web-search` (`SEARCH_ENGINE`) |
 | `tavily` | 1.0.1 | SEARCH | provider: `services/web-search` and remote `mcp/web-search` (OAuth) |
 
-Model counts are the folders under `models/`. See each plugin's `manifest.json` for versions marked "—".
+Model counts are the folders under `models/`.
 
 ## `bootstrap` contents
 
