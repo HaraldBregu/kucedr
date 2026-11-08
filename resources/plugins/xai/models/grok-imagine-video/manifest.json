@@ -53,7 +53,18 @@
 				"default": true
 			},
 			"reference_images": {
-				"type": "array"
+				"type": "array",
+				"description": "Reference images for subjects, style, or scenes.",
+				"items": {
+					"type": "object",
+					"properties": {
+						"url": {
+							"type": "string",
+							"description": "Public URL, base64 data URI, or local file path of a JPEG, PNG, or WebP image.",
+							"required": true
+						}
+					}
+				}
 			}
 		}
 	},
