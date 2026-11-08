@@ -23,7 +23,10 @@ export function createSoundTool(): Tool {
 				),
 		}),
 		execute: async ({ prompt, directory, ...options }, signal) => {
-			const { base64, mimeType } = await createSound({ prompt, options }, signal);
+			const { base64, mimeType } = await createSound(
+				{ prompt, options: (await inlineFiles(options)) as Record<string, unknown> },
+				signal
+			);
 			const ext = mimeType.includes('mpeg')
 				? 'mp3'
 				: mimeType.split('/')[1]?.split('+')[0] || 'mp3';
