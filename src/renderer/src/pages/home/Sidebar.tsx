@@ -173,11 +173,10 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 
 	const pinnedSessions = activeSessions.filter((session) => session.pinned);
 	const recentSessions = activeSessions.filter((session) => !session.pinned);
-	const archivedSessions = sessions.filter((session) => session.archived);
 
-	const renderGroup = (label: string, content: ReactNode, className?: string, defaultOpen = true): ReactElement => {
+	const renderGroup = (label: string, content: ReactNode, className?: string): ReactElement => {
 		return (
-			<Collapsible defaultOpen={defaultOpen} className={cn('group/collapsible', className)}>
+			<Collapsible defaultOpen className={cn('group/collapsible', className)}>
 				<SidebarGroup>
 					<CollapsibleTrigger
 						nativeButton={false}
