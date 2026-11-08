@@ -63,7 +63,7 @@ export function addBasePrompt(prompt: string, now = new Date()): string {
 	prompt +=
 		"\n- Identify the user's goal, constraints, expected output, and materially missing information before acting.";
 	prompt +=
-		'\n- Ask one focused clarification when ambiguity would materially change the outcome or make the result unsafe, otherwise proceed with a reasonable, reversible assumption and state it when it matters.';
+		'\n- Ask one focused clarification when ambiguity would materially change the outcome or make the result unsafe, otherwise proceed with a reasonable, reversible assumption and state it when it matters. When the ask tool is available, use it for that clarification so the user can pick from concrete options instead of typing an answer.';
 	prompt +=
 		'\n- Use relevant context, Memory records, retrieved data, documents, prior conversation, and tool results when they are available and applicable.';
 	prompt +=
