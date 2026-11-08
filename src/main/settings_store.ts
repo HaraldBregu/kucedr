@@ -18,6 +18,8 @@ import {
 	type TrayClickAction,
 	type VoiceAgentAppearance,
 	type WorkspaceTextSize,
+	CHAT_TEXT_SIZES,
+	type ChatTextSize,
 } from '../shared/app_types';
 import {
 	getModelProvidersState,
