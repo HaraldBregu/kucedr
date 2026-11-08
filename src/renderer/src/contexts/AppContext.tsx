@@ -14,6 +14,7 @@ import { playSound } from '@/lib/sounds/play';
 import type {
 	AppLanguage,
 	AppTheme,
+	ChatTextSize,
 	VoiceAgentAppearance,
 } from '../../../shared/app_types';
 
