@@ -163,7 +163,9 @@ async function* loop(
 			output: MAX_TOOL_OUTPUT_BYTES,
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
-	const mode = input.mode ?? NO_MODE;
+	const pinnedMode = input.mode ?? NO_MODE;
+	const mode =
+		input.approvalWindowId === undefined ? pinnedMode : { ...pinnedMode, ask: true };
 	let mcpServerHint: string | undefined;
 	const bootstrap =
 		!options.tools &&
