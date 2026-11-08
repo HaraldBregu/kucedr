@@ -231,11 +231,8 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 	}, [chatTextSize]);
 
 	useEffect(() => {
-		const onStorage = (event: StorageEvent): void => {
-			if (event.key === CHAT_TEXT_SIZE_STORAGE_KEY) setChatTextSize(readPersistedChatTextSize());
-		};
-		window.addEventListener('storage', onStorage);
-		return () => window.removeEventListener('storage', onStorage);
+		void window.app.getChatTextSize().then(setChatTextSizeState);
+		return window.app.onChatTextSizeChanged(setChatTextSizeState);
 	}, []);
 
 	const value = useMemo<AppContextValue>(
