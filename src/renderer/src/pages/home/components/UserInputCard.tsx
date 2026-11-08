@@ -109,15 +109,48 @@ export function UserInputCard({
 
 	return (
 		<Card className="max-w-2xl gap-4 border-info/30 py-4">
-			<CardHeader className="px-4">
-				<CardTitle className="text-sm">A few choices before I continue</CardTitle>
+			<CardHeader className="flex flex-row items-center justify-between gap-3 px-4">
+				<CardTitle className="text-sm">
+					{questions.length > 1 ? 'A few choices before I continue' : 'A choice before I continue'}
+				</CardTitle>
+				{questions.length > 1 ? (
+					<ol aria-label="Questions" className="flex items-center gap-1.5">
+						{questions.map((candidate, index) => (
+							<li key={candidate.id}>
+								<button
+									type="button"
+									aria-current={index === step ? 'step' : undefined}
+									disabled={submitting || index > step}
+									onClick={() => {
+										setError('');
+										setStep(index);
+									}}
+									className={cn(
+										'rounded-full px-2 py-0.5 text-xs transition-colors disabled:cursor-default',
+										index === step
+											? 'bg-primary text-primary-foreground'
+											: index < step
+												? 'bg-muted text-foreground hover:bg-muted/70'
+												: 'bg-muted/50 text-muted-foreground'
+									)}
+								>
+									{candidate.header}
+								</button>
+							</li>
+						))}
+					</ol>
+				) : null}
 			</CardHeader>
 			<form onSubmit={(event) => void submit(event)}>
 				<CardContent className="space-y-5 px-4">
-					{questions.map((question) => (
+					{[question].map((question) => (
 						<fieldset key={question.id} className="space-y-2">
 							<legend className="text-sm font-medium">
-								<span className="mr-2 text-xs text-muted-foreground">{question.header}</span>
+								{questions.length > 1 ? (
+									<span className="mr-2 text-xs text-muted-foreground">
+										{step + 1} of {questions.length}
+									</span>
+								) : null}
 								{question.question}
 							</legend>
 							{[...question.options, { label: 'Other', description: 'Enter a different answer.' }].map(
