@@ -20,6 +20,10 @@ import type {
 const LANGUAGE_STORAGE_KEY = 'app-language';
 const THEME_STORAGE_KEY = 'app-theme';
 const VOICE_AGENT_APPEARANCE_STORAGE_KEY = 'voice-agent-appearance';
+const CHAT_TEXT_SIZE_STORAGE_KEY = 'chat-text-size';
+
+export const CHAT_TEXT_SIZES = { small: '12px', medium: '13px', big: '15px' } as const;
+export type ChatTextSize = keyof typeof CHAT_TEXT_SIZES;
 
 export type { AppLanguage, AppTheme, VoiceAgentAppearance };
 export type SidebarState = 'expanded' | 'collapsed';
