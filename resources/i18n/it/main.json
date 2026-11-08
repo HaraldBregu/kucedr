@@ -601,6 +601,13 @@
 			},
 			"windowSize": "Dimensioni finestra",
 			"windowSizeDescription": "Ridimensiona questa finestra e usa le dimensioni selezionate per le nuove finestre.",
+			"chatTextSize": {
+				"title": "Dimensione testo chat",
+				"description": "Dimensione del carattere dei messaggi della chat.",
+				"small": "Piccolo",
+				"medium": "Medio",
+				"big": "Grande"
+			},
 			"keepAwake": "Mantieni il computer attivo",
 			"keepAwakeDescription": "Mantieni attivi il computer e lo schermo mentre Kucedr è in esecuzione",
 			"appData": "Dati Applicazione",
