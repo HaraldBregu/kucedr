@@ -115,7 +115,7 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 	const [voiceAgentAppearance, setVoiceAgentAppearanceState] = useState<VoiceAgentAppearance>(
 		initialState?.voiceAgentAppearance ?? readPersistedVoiceAgentAppearance()
 	);
-	const [chatTextSize, setChatTextSize] = useState<ChatTextSize>(readPersistedChatTextSize);
+	const [chatTextSize, setChatTextSizeState] = useState<ChatTextSize>(readPersistedChatTextSize);
 
 	// localStorage is the synchronous paint cache (avoids a theme/language flash);
 	// the app settings store is the durable source of truth, hydrated on mount.
