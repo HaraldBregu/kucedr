@@ -111,10 +111,10 @@ describe('addToolsPrompt', () => {
 		expect(prompt).not.toContain('### Loaded tools');
 		expect(prompt).toContain('- `read` (read) — Read a file _(Loaded.)_');
 		expect(prompt).toContain(
-			'- `write` (write) — Write a file _(Available through `tool_search`.)_'
+			'- `write` (write) — Write a file _(Not loaded — call `tool_search` first.)_'
 		);
 		expect(prompt).toContain(
-			'- `mcp__notion__notion-search` (mcp__notion__notion-search) — Search Notion _(Available through `tool_search`.)_'
+			'- `mcp__notion__notion-search` (mcp__notion__notion-search) — Search Notion _(Not loaded — call `tool_search` first.)_'
 		);
 		expect(prompt.match(/`read`/g)).toHaveLength(1);
 	});
