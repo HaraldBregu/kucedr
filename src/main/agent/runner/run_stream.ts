@@ -476,7 +476,9 @@ async function* loop(
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
 			const turnTools = synthesisOnly ? [] : (search?.active() ?? tools);
 			const eligibleTurnTools =
-				synthesisOnly || !turnTools.some((tool) => tool.id === TOOL_SEARCH_ID) ? turnTools : tools;
+				synthesisOnly || !turnTools.some((tool) => tool.id === TOOL_SEARCH_ID)
+					? turnTools
+					: (search?.eligible() ?? tools);
 			let systemPrompt = await buildSystemPrompt(
 				config,
 				turnTools,
