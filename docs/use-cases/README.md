@@ -12,6 +12,7 @@ Replace values in angle brackets with your own disposable test data. Record the 
 | Conversation    | [Chat, sessions, attachments, planning, goals, and permissions](chat.md)          |
 | Setup           | [First run, model selection, and appearance](setup.md)                            |
 | Web             | [Search engine, page extraction, and interactive browser](web.md)                 |
+| Modes           | [Plan and goal on web tasks with plugin scripts](modes.md)                        |
 | Generated media | [Images, video, music, and sound effects](media.md)                               |
 | Speech          | [Dictation, realtime conversation, and read aloud](voice.md)                      |
 | Devices         | [Microphone, camera, and screen capture](devices.md)                              |
