@@ -18,7 +18,7 @@ export function modelOptions(
 	const shape: Record<string, z.ZodType> = {};
 	for (const [key, input] of Object.entries(model.metadata.inputs)) {
 		const option = EXCLUDED_INPUTS.has(key) ? undefined : modelOption(input);
-		if (option) shape[key] = option;
+		if (option) shape[key] = option.optional();
 	}
 	return { model: model.name, shape };
 }
