@@ -43,7 +43,7 @@ export interface ToolCallSecurityContext {
 }
 
 export async function* runToolCall(
-	tool: Tool | undefined,
+	resolved: Tool | 'unloaded' | undefined,
 	toolCall: ToolCall,
 	signal?: AbortSignal,
 	context?: FileAccessContext,
