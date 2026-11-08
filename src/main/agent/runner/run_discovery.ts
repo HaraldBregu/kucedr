@@ -27,6 +27,7 @@ interface ToolSearchOptions {
 export interface ToolSearch {
 	readonly tool: Tool;
 	active(): Tool[];
+	eligible(): Tool[];
 	replaceEligible(tools: Tool[]): void;
 	replaceMcpEntries(entries: DiscoveredMcpTool[]): void;
 }
