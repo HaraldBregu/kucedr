@@ -419,7 +419,6 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				{pinnedSessions.length > 0 &&
 					renderGroup(
 						t('settings.chatHistory.pinned', 'Pinned'),
-						pinnedSessions.length,
 						<nav aria-label={t('settings.chatHistory.pinned', 'Pinned')}>
 							<ul className="flex min-w-0 flex-col gap-1">{pinnedSessions.map(renderSession)}</ul>
 						</nav>,
