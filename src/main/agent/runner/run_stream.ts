@@ -313,7 +313,9 @@ async function* loop(
 				...mcpEntries.map(({ serverId, serverName }) => ({ serverId, serverName })),
 				...uncatalogedMcp,
 			]);
-			const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
+			const childTools = filterRuntimeTools(
+				filterTools(tools, input.toolsAllow, input.toolsDeny)
+			).filter((tool) => tool.id !== 'ask');
 			const childRuntime = {
 				type: input.type,
 				mode: { ...mode, ask: false, prompt: '', protectedPrompt: '', output: undefined },
