@@ -179,6 +179,16 @@ export class Menu {
 						],
 					},
 					{
+						label: m.chatTextSize,
+						submenu: CHAT_TEXT_SIZES.map((size) => ({
+							id: `chat-text-size-${size}`,
+							label: m[`${size}ChatTextSize`],
+							type: 'radio' as const,
+							checked: (this.callbacks.getChatTextSize?.() ?? 'medium') === size,
+							click: (): void => this.callbacks.onChatTextSizeChange?.(size),
+						})),
+					},
+					{
 						label: m.windowSize,
 						submenu: (Object.keys(WINDOW_SIZES) as WindowSize[]).map((size) => ({
 							label: size.replace('x', '×'),
