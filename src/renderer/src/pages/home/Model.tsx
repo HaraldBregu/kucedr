@@ -59,7 +59,14 @@ export function Model({
 				]);
 				const custom = configuredProviders.find((provider) => provider.id === 'custom');
 				const catalogGroups = await Promise.all(
-					providerIdsFor('llm').map(async (id) => ({
+					[
+						...new Set([
+							...providerIdsFor('llm'),
+							...providers()
+								.filter((provider) => provider.modelsUrl)
+								.map((provider) => provider.id),
+						]),
+					].map(async (id) => ({
 						id,
 						discoveryLabel: providers().find((provider) => provider.id === id)?.discoveryLabel,
 						models: await liveProviderModels(id, providerModels(id, 'llm')),
