@@ -4,6 +4,7 @@ import type { Tool } from '../../types';
 import { saveMedia } from '../../../shared/media';
 import { tool } from '../tool';
 import { modelOptions } from './options';
+import { inlineFiles } from './inline';
 
 export function createSoundTool(): Tool {
 	const { model, shape } = modelOptions('sound', 'text-to-audio');
