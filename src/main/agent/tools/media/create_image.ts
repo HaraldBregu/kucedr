@@ -31,8 +31,9 @@ export function createImageTool(): Tool {
 		}),
 		execute: async ({ prompt, count, directory, ...options }, signal) => {
 			const images: Array<{ path: string; mimeType: string }> = [];
+			const inlined = (await inlineFiles(options)) as Record<string, unknown>;
 			for (let index = 0; index < count; index++) {
-				const { base64, mimeType } = await createImage({ prompt, options }, signal);
+				const { base64, mimeType } = await createImage({ prompt, options: inlined }, signal);
 				const ext = mimeType.split('/')[1]?.split('+')[0] || 'png';
 				const path = await saveMedia(
 					count === 1 ? 'image' : `image-${index + 1}`,
