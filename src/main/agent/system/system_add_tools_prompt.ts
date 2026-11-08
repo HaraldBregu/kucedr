@@ -17,7 +17,7 @@ export function addToolsPrompt(
 	const tools = [...loaded, ...discoverable];
 	prompt += '\n\n## Tools';
 	prompt +=
-		'\nLoaded tools can be called now. Tools marked as available through `tool_search` must be selected before use.';
+		'\nOnly tools marked _(Loaded.)_ can be called. To use any other tool, first call `tool_search` with its id as the query; it becomes callable on the next turn. Calling a tool that is not loaded fails.';
 	const categories = new Map<ToolCategory, Tool[]>();
 	for (const tool of tools)
 		categories.set(tool.category, [...(categories.get(tool.category) ?? []), tool]);
