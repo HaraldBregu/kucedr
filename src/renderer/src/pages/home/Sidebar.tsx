@@ -464,16 +464,19 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				)}
 					</>
 				)}
-				{archivedSessions.length > 0 &&
-					renderGroup(
+			</section>
+			{archivedSessions.length > 0 && (
+				<section className="no-scrollbar max-h-[40%] shrink-0 overflow-y-auto px-2">
+					{renderGroup(
 						t('settings.chatHistory.archived'),
 						<nav aria-label={t('settings.chatHistory.archived')}>
 							<ul className="flex min-w-0 flex-col gap-1">{archivedSessions.map(renderSession)}</ul>
 						</nav>,
-						'mt-2',
+						undefined,
 						false
 					)}
-			</section>
+				</section>
+			)}
 			<Dialog open={!!pendingAction} onOpenChange={(open) => { if (!open) setPendingAction(undefined); }}>
 				<DialogContent showCloseButton={false}>
 					<DialogHeader>
