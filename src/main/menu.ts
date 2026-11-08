@@ -4,6 +4,7 @@ import { loadTranslations } from './i18n';
 import { openAppWindows } from './apps/app_render';
 import { getWindowSize, setWindowSize } from './settings_store';
 import { WINDOW_SIZES, type WindowSize } from '../shared/window_size';
+import { CHAT_TEXT_SIZES, type ChatTextSize } from '../shared/app_types';
 
 interface MenuManagerCallbacks {
 	onLanguageChange: (lng: string) => void;
