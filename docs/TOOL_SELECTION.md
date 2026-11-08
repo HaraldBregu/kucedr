@@ -52,7 +52,7 @@ It's intermittent because it depends on whether the model calls `tool_search` fi
 
 Keep the strict lookup. Make the gate clear before the call, and make recovery take one turn.
 
-1. **Actionable error.** `ToolSearch` gets `isEligible(name): boolean`. In `runToolCalls`, when the name isn't active:
+1. **Actionable error.** In `runToolCalls`, when the name isn't active:
    - eligible → `Error: tool 'create_image' is not loaded. Call tool_search with query "create_image", then call it on the next turn.` Nothing is executed and the tool isn't activated.
    - not eligible → `Error: tool 'x' does not exist or is not available for this agent.`
    `runToolCall` takes `Tool | 'unloaded' | undefined`, so it can tell the two cases apart.
