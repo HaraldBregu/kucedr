@@ -110,6 +110,7 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 	return {
 		tool: searchTool,
 		active: () => [...active.values()],
+		eligible: () => [...eligible.values()],
 		replaceEligible(tools) {
 			eligible = new Map(allowed(tools).map((candidate) => [candidate.id, candidate]));
 			for (const id of active.keys()) {
