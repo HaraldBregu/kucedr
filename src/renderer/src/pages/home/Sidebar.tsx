@@ -426,7 +426,6 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					)}
 				{renderGroup(
 					t('settings.chatHistory.history', 'History'),
-					recentSessions.length,
 					<>
 				{actionError ? (
 					<p className="px-2 pb-2 text-xs text-destructive" role="alert">
