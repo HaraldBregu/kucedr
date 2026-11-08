@@ -30,11 +30,11 @@ export function ImageGallery({
 
 	return (
 		<div className="flex w-full min-w-0 items-start gap-2" aria-label="Generated images">
-			<div className="aspect-square min-w-0 basis-1/2 overflow-hidden rounded-lg border border-border/50 bg-muted">
+			<div className="min-w-0 basis-1/2 overflow-hidden rounded-lg border border-border/50 bg-muted">
 				<img
 					src={toSource(selectedPath)}
 					alt={`Generated image ${index + 1} of ${paths.length}`}
-					className="size-full object-contain"
+					className="block h-auto max-h-[70vh] w-full object-contain"
 					onContextMenu={() => onContextMenu(selectedPath)}
 				/>
 			</div>
