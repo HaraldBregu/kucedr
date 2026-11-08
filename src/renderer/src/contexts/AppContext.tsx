@@ -138,6 +138,10 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 		(next: VoiceAgentAppearance) => setVoiceAgentAppearanceState(next),
 		[]
 	);
+	const setChatTextSize = useCallback((size: ChatTextSize) => {
+		setChatTextSizeState(size);
+		void window.app.setChatTextSize(size);
+	}, []);
 	const resetState = useCallback(() => {
 		setLanguageState(readPersistedLanguage());
 		setThemeState(readPersistedTheme());
