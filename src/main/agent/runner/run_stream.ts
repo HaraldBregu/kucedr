@@ -248,8 +248,6 @@ async function* loop(
 			? trackedModes(stateDirectory, mode.ids, listModes())
 			: [];
 	if (statefulModes.length > 0) tools.push(modeStateTool(stateDirectory, statefulModes));
-	tools = filterModeTools(tools, mode);
-	tools = filterRuntimeTools(tools);
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
 		let filtered = filterRuntimeTools(
@@ -258,6 +256,7 @@ async function* loop(
 		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
 	};
+	tools = filterEligibleTools(tools);
 	let search: ToolSearch | undefined;
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
 		skillToolScopes.push(skill.allowedTools);
