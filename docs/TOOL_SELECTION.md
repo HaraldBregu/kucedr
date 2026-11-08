@@ -10,6 +10,10 @@ Error: unknown tool 'create_image'
 
 The tool exists, is enabled, and is allowed by mode/profile. It just isn't *loaded* for the turn in which the model calls it.
 
+## Decision
+
+`tool_search` is the only way to load a tool that isn't loaded. Calling an unloaded tool directly is never executed. The fix is to make the model use `tool_search` reliably and to recover in one turn when it doesn't, not to bypass the gate.
+
 ## How tool selection works today
 
 All in `src/main/agent/runner/run_stream.ts`, per run:
@@ -28,39 +32,38 @@ All in `src/main/agent/runner/run_stream.ts`, per run:
 
 ## Root cause
 
-The prompt and the executor disagree about which tools exist:
+The model is pushed to call unloaded tools directly, and when it does, the error doesn't tell it how to recover:
 
-- The system prompt advertises `create_image` by exact id with its description.
-- The executor only knows `search.active()`, which doesn't contain it until `tool_search` selected it.
+- The system prompt advertises `create_image` by exact id with its full description, as if it were usable. The only hint that it isn't is a trailing `_(Available through tool_search.)_`.
+- On the DSML/text tool-call path (`models/adapters/llm/dsml.ts` → `invokes.ts:19`), any `<invoke name="…">` is parsed without checking it against the schema, so the provider can't stop the call. Native tool-calling models also do this sometimes, when they trust the prompt over the schema.
+- The executor only knows `search.active()`, so the call ends as `Error: unknown tool 'create_image'`. That message is wrong (the tool is known and allowed), and it says nothing about `tool_search`. The model usually apologizes or gives up instead of searching.
 
-Models that see an exact id and a description of what it does call it directly instead of first calling `tool_search`. This is near-certain on the DSML/text tool-call path (`models/adapters/llm/dsml.ts` → `invokes.ts:19`), which parses any `<invoke name="…">` without checking it against the schema, and it happens with native tool-calling too when the model trusts the prompt over the schema. The call reaches `runToolCalls` with a name that isn't in `turnTools` → `unknown tool`.
-
-It's intermittent because it depends on the model choosing to call `tool_search` first, and on `rankTools` matching the query (e.g. "picture", "drawing", "logo" may not rank `create_image`).
+It's intermittent because it depends on whether the model calls `tool_search` first.
 
 ### Contributing problems
 
-- **Misleading error.** "unknown tool" is wrong (the tool is known and allowed) and gives the model no recovery path, so it often gives up or apologizes instead of calling `tool_search`.
-- **Extra round-trip by design.** Even when it works, image generation needs `tool_search` turn → `create_image` turn.
 - **Filter pipeline duplicated 4×** with different orderings (L249, L254, L316, L349, plus `search.replaceEligible` on MCP changes and skill activation). It's hard to tell what "eligible" means at any given point, and subagents (`childTools`) get a different list than the parent.
-- **Three lists, no owner.** `tools`, `search.active()` and `eligibleTurnTools` are all live, mutated from several callbacks (`applyActivatedSkill`, MCP `onChanged`, MCP recovery). There's no single "resolve this call name" function.
+- **Three lists, no owner.** `tools`, `search.active()` and `eligibleTurnTools` are all live, mutated from several callbacks (`applyActivatedSkill`, MCP `onChanged`, MCP recovery). Nothing can answer "is this name *unloaded* or *nonexistent*?", which is what the error needs.
 - **Voice path** (`realtime_voice/create.ts:82`, `tool_runtime.ts`) builds and resolves its own list separately.
 
 ## Refactoring plan
 
 ### Phase 1 — Fix the bug (small, safe)
 
-Resolve calls against **eligible** tools, not only active ones; promote on use.
+Keep the strict lookup. Make the gate clear before the call, and make recovery take one turn.
 
-- `ToolSearch` gets `resolve(name): Tool | undefined`: return the active tool; otherwise if the name is in `eligible`, add it to `active` and return it.
-- `runToolCalls` takes a resolver (`(name) => Tool | undefined`) instead of an array; `run_stream` passes `search ? search.resolve : (name) => tools.find(…)`.
-- Every guard in `runToolCall` stays the same (mode, profile, permission, hard approval, budget, paid-tool capability), so this doesn't widen what can run. Eligible tools have already passed all filters.
-- Change the truly-unknown message to say what to do: `Error: tool 'x' is not available. Call tool_search to find a tool for this task.`
+1. **Actionable error.** `ToolSearch` gets `isEligible(name): boolean`. In `runToolCalls`, when the name isn't active:
+   - eligible → `Error: tool 'create_image' is not loaded. Call tool_search with query "create_image", then call it on the next turn.` Nothing is executed and the tool isn't activated.
+   - not eligible → `Error: tool 'x' does not exist or is not available for this agent.`
+   `runToolCall` needs the reason, so `runToolCalls` passes it instead of only `undefined` (e.g. `{ tool } | { missing: 'unloaded' | 'unknown' }`).
+2. **Exact-id search is guaranteed.** `toolSearchText` already weights the id 4×, so a query equal to an id ranks it first in practice. Make it explicit in `createToolSearch`: if the query equals an eligible, unloaded tool id, select that tool first, before ranking. The recovery message above then always works.
+3. **Prompt states the rule.** In `addToolsPrompt`, replace the header line with: "Only tools marked _(Loaded.)_ can be called. To use any other tool, first call `tool_search` with its id as the query; it becomes callable on the next turn. Calling an unloaded tool directly fails." Change the per-tool marker to `_(Not loaded — call tool_search first.)_`.
 
 Verify:
-- Repro on a DeepSeek (DSML) model and one native-tool model: "create an image of a red fox" in a fresh chat → before: `unknown tool 'create_image'`; after: image generated in one call, no `tool_search` turn.
-- Disable `create_image` in Settings → Tools → the call still fails (not eligible).
-- In a mode that forbids it → still `unavailable in the active mode`.
-- A made-up name (`create_imagez`) → new "not available, call tool_search" message.
+- Repro on a DeepSeek (DSML) model and one native-tool model: "create an image of a red fox" in a fresh chat. Before: `unknown tool 'create_image'` and the run ends. After: either `tool_search` → `create_image` directly, or (if it calls directly) the not-loaded error → `tool_search("create_image")` → `create_image`, and an image is produced in both cases.
+- A direct call to an unloaded tool never executes: check the event stream for no `create_image` run before `tool_search`.
+- Disable `create_image` in Settings → Tools → `does not exist or is not available` and `tool_search("create_image")` returns nothing.
+- A made-up name (`create_imagez`) → the "does not exist" message.
 
 ### Phase 2 — One owner for the run's tools
 
@@ -69,36 +72,30 @@ New module `src/main/agent/runner/toolset.ts`, built once per run, replacing the
 ```ts
 interface ToolSet {
   eligible(): Tool[];                  // single filter pipeline, applied in one place
-  active(): Tool[];                    // what goes in the provider schema
-  resolve(name: string): Tool | undefined; // Phase 1 semantics
-  activate(ids: string[]): void;       // tool_search, skills
+  active(): Tool[];                    // provider schema + executor; only these run
+  lookup(name: string): { tool: Tool } | { missing: 'unloaded' | 'unknown' };
+  activate(ids: string[]): void;       // called only by tool_search (and requiredIds at start)
   replaceMcp(entries: DiscoveredMcpTool[]): void;
   restrict(allowedTools?: string[]): void; // skill tool scopes
   forChild(): Tool[];                  // subagents: same pipeline, minus `ask`
 }
 ```
 
-- One `eligibleTools(candidates, { mode, profile, toolsAllow, toolsDeny, bootstrap, skillScopes })` function: same order everywhere. Replaces L249–250, L254–260, L316–318, L349–350.
-- `createToolSearch` keeps only ranking and becomes the `tool_search` tool on top of `ToolSet` (no more own `eligible` / `active` maps).
-- `buildSystemPrompt` gets `toolset.active()` and `toolset.eligible()` from the same object, so prompt and executor can't disagree again.
+- One `eligibleTools(candidates, { mode, profile, toolsAllow, toolsDeny, bootstrap, skillScopes })` function, same order everywhere. Replaces L249–250, L254–260, L316–318, L349–350.
+- `createToolSearch` keeps only ranking (plus the exact-id rule) and becomes the `tool_search` tool on top of `ToolSet`. It no longer has its own `eligible` / `active` maps. `activate` is the only way into `active`.
+- `buildSystemPrompt` gets `toolset.active()` and `toolset.eligible()` from the same object, and `runToolCalls` uses `toolset.lookup`, so the prompt, the schema and the executor share one source.
 - MCP `onChanged`, MCP recovery and `applyActivatedSkill` call `toolset.replaceMcp` / `toolset.restrict` instead of rewriting `tools` and calling `search.replaceEligible`.
-- Voice (`realtime_voice/create.ts`) builds its list with the same `eligibleTools` function (profile `voice`) and resolves through `ToolSet.resolve`.
+- Voice (`realtime_voice/create.ts`) builds its list with the same `eligibleTools` function (profile `voice`) and resolves through `ToolSet.lookup`.
 
 Verify: behavior unchanged. Compare the `run_started.tools` event and the system-prompt Tools section before/after for: normal chat, a mode (restricted), bootstrap, a subagent, a skill with `allowedTools`, an MCP server connecting mid-run, and voice.
 
-### Phase 3 — Prompt cleanup (optional, decide after Phase 1)
-
-With Phase 1, "Available through `tool_search`" becomes advisory. Pick one:
-
-- **A (recommended):** keep listing unloaded tools but show only `id — name` (no description). The model can still call them by id, and the prompt gets shorter. `tool_search` is kept for MCP discovery, where the catalog is large.
-- **B:** stop listing unloaded tools entirely; rely on `tool_search` + the improved error. Fewer tokens but more round-trips. This is the current failure shape, so not recommended.
-
 ## Out of scope
 
-- Ranking quality of `rankTools` (synonyms like "picture" → `create_image`); this matters much less once Phase 1 lands.
-- Adding media tools to `requiredIds`; Phase 1 makes it unnecessary.
+- General ranking quality of `rankTools` (synonyms like "picture" → `create_image`). The prompt lists unloaded ids, so the model can search by exact id.
+- Adding media tools to `requiredIds`. That would bypass the gate.
+- Auto-activating unloaded tools on direct call (rejected, see Decision).
 
 ## Open questions
 
-1. Is auto-promotion on direct call acceptable, or must `tool_search` stay a hard gate (e.g. for audit/telemetry of `capability_resolution_*` events)? If it must stay a gate, Phase 1 keeps the strict lookup and only changes the error message (the model then needs one extra turn).
-2. Should the `_(Explicit user request only.)_` tools (`create_image`, recorders, `update_*`) get any extra execution-time check, given that promotion makes them one call away? Today the restriction is prompt-only.
+1. Should a direct call to an unloaded tool count against the turn/tool budget the same as a real call? Today `budget.admit` runs before the lookup, so it does. Proposal: keep that, since it discourages repeated direct calls.
+2. Voice is real-time, and the `tool_search` round-trip adds latency there. Does voice also go through `tool_search`, or keep a fixed loaded set (its current behavior)?
