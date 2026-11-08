@@ -28,10 +28,10 @@ export function createImageTool(): Tool {
 					'Optional directory to save the image in, relative to the agent workspace. Absolute paths are supported and ~ expands to the user home. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location.'
 				),
 		}),
-		execute: async ({ prompt, count, directory }, signal) => {
+		execute: async ({ prompt, count, directory, ...options }, signal) => {
 			const images: Array<{ path: string; mimeType: string }> = [];
 			for (let index = 0; index < count; index++) {
-				const { base64, mimeType } = await createImage({ prompt }, signal);
+				const { base64, mimeType } = await createImage({ prompt, options }, signal);
 				const ext = mimeType.split('/')[1]?.split('+')[0] || 'png';
 				const path = await saveMedia(
 					count === 1 ? 'image' : `image-${index + 1}`,
