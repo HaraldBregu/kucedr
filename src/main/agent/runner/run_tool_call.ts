@@ -102,7 +102,10 @@ export async function* runToolCall(
 		output = budgetError;
 		isError = true;
 	} else if (!tool) {
-		output = `Error: unknown tool '${toolCall.name}'`;
+		output =
+			resolved === 'unloaded'
+				? `Error: tool '${toolCall.name}' is not loaded. Call tool_search with query "${toolCall.name}", then call it on the next turn.`
+				: `Error: tool '${toolCall.name}' does not exist or is not available for this agent.`;
 		isError = true;
 	} else if ('__unparsed' in toolCall.args) {
 		output = `Error: tool '${toolCall.name}' arguments were not valid JSON (likely truncated by the output token limit). Retry with smaller arguments, e.g. write large files in multiple steps.`;
