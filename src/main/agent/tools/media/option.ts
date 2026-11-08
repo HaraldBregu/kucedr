@@ -8,13 +8,13 @@ export function modelOption(input: ModelInputSchema): z.ZodType | undefined {
 		.map((choice) => `${String(choice.const)} = ${choice.title}`)
 		.join(', ');
 	const description = [
-		input.title,
+		input.title && `${input.title}.`,
 		input.description,
-		titles,
-		input.default !== undefined ? `Defaults to ${String(input.default)}.` : undefined,
+		titles && `Values: ${titles}.`,
+		input.default !== undefined && `Defaults to ${String(input.default)}.`,
 	]
 		.filter(Boolean)
-		.join('. ');
+		.join(' ');
 	let schema: z.ZodType;
 	if (input.type === 'string') {
 		schema = choices?.length ? z.enum(choices as [string, ...string[]]) : z.string();
