@@ -52,7 +52,7 @@ export function UserInputCard({
 				<CardHeader className="px-4">
 					<div ref={resolvedRef} tabIndex={-1} className="outline-none">
 						<CardTitle className="text-sm">
-							{result.status === 'resolved' ? 'Planning choices' : 'Questions interrupted'}
+							{result.status === 'resolved' ? 'Your choices' : 'Questions interrupted'}
 						</CardTitle>
 					</div>
 				</CardHeader>
@@ -75,23 +75,31 @@ export function UserInputCard({
 
 	if (!pending) return null;
 
+	const answerFor = (id: string): string =>
+		(selected[id] === '__other__' ? (other[id] ?? '') : (selected[id] ?? '')).trim();
+	const question = questions[Math.min(step, questions.length - 1)];
+	const last = step >= questions.length - 1;
+
 	const submit = async (event: FormEvent): Promise<void> => {
 		event.preventDefault();
-		const answers = questions.map((question) => ({
-			questionId: question.id,
-			answer: selected[question.id] === '__other__'
-				? (other[question.id] ?? '').trim()
-				: (selected[question.id] ?? '').trim(),
-		}));
-		if (answers.some((answer) => !answer.answer)) {
-			setError('Choose an answer for every question and complete any selected Other field.');
+		if (!answerFor(question.id)) {
+			setError('Choose an answer, or complete the Other field.');
 			return;
 		}
+		setError('');
+		if (!last) {
+			setStep(step + 1);
+			return;
+		}
+		const answers = questions.map((candidate) => ({
+			questionId: candidate.id,
+			answer: answerFor(candidate.id),
+		}));
 		setSubmitting(true);
 		setError('');
 		try {
 			const accepted = await window.agent.respondUserInput(pending, answers);
-			if (!accepted) setError('These questions are no longer active. Stop and retry the plan.');
+			if (!accepted) setError('These questions are no longer active. Stop and retry.');
 		} catch (cause) {
 			setError(cause instanceof Error ? cause.message : 'Could not submit these answers.');
 		} finally {
@@ -102,7 +110,7 @@ export function UserInputCard({
 	return (
 		<Card className="max-w-2xl gap-4 border-info/30 py-4">
 			<CardHeader className="px-4">
-				<CardTitle className="text-sm">A few choices before I finish the plan</CardTitle>
+				<CardTitle className="text-sm">A few choices before I continue</CardTitle>
 			</CardHeader>
 			<form onSubmit={(event) => void submit(event)}>
 				<CardContent className="space-y-5 px-4">
@@ -155,7 +163,7 @@ export function UserInputCard({
 				</CardContent>
 				<CardFooter className="justify-end px-4 pt-4">
 					<Button type="submit" size="sm" disabled={submitting}>
-						{submitting ? 'Submitting…' : 'Continue planning'}
+						{submitting ? 'Submitting…' : 'Continue'}
 					</Button>
 				</CardFooter>
 			</form>
