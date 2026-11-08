@@ -37,6 +37,8 @@ export interface AppContextValue {
 	setSoundFeedbackEnabled: (enabled: boolean) => void;
 	voiceAgentAppearance: VoiceAgentAppearance;
 	setVoiceAgentAppearance: (appearance: VoiceAgentAppearance) => void;
+	chatTextSize: ChatTextSize;
+	setChatTextSize: (size: ChatTextSize) => void;
 	resetState: () => void;
 }
 
