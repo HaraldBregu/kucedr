@@ -1,6 +1,7 @@
-export { AppProvider, useApp } from './AppContext';
+export { AppProvider, useApp, CHAT_TEXT_SIZES } from './AppContext';
 export type {
 	AppLanguage,
+	ChatTextSize,
 	AppTheme,
 	VoiceAgentAppearance,
 	SidebarState,
