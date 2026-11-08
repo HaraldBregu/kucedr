@@ -38,7 +38,10 @@ it.each([
 		const controller = new AbortController();
 		await factory().run({ prompt: 'generate this' }, controller.signal);
 
-		expect(create).toHaveBeenCalledWith({ prompt: 'generate this' }, controller.signal);
+		expect(create).toHaveBeenCalledWith(
+			{ prompt: 'generate this', options: {} },
+			controller.signal
+		);
 		expect(saveMedia).toHaveBeenCalledWith(
 			kind,
 			extension,
