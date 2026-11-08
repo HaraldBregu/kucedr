@@ -328,7 +328,7 @@ const GeneralPage: React.FC = () => {
 							<Select value={chatTextSize} onValueChange={handleChatTextSizeChange}>
 								<SelectTrigger
 									size="sm"
-									className="w-24 text-xs [&_svg]:size-3"
+									className="w-28 text-xs [&_svg]:size-3"
 									aria-label={t('settings.application.chatTextSize.title')}
 								>
 									<SelectValue>{t(`settings.application.chatTextSize.${chatTextSize}`)}</SelectValue>
