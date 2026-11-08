@@ -237,10 +237,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 								{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
 							]),
 					{ id: 'pin', label: allPinned ? t('common.unpin', 'Unpin') : t('common.pin', 'Pin') },
-					{
-						id: 'archive',
-						label: allArchived ? t('settings.chatHistory.unarchive') : t('settings.chatHistory.archive'),
-					},
+					{ id: 'archive', label: t('settings.chatHistory.archive') },
 					{ id: 'delete', label: t('common.delete', 'Delete') },
 				])
 				.then((action) => {
