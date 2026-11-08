@@ -21,8 +21,8 @@ export function createVideoTool(): Tool {
 					'Optional directory to save the video in, relative to the agent workspace. Absolute paths are supported and ~ expands to the user home. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location.'
 				),
 		}),
-		execute: async ({ prompt, directory }, signal) => {
-			const { base64, mimeType } = await createVideo({ prompt }, signal);
+		execute: async ({ prompt, directory, ...options }, signal) => {
+			const { base64, mimeType } = await createVideo({ prompt, options }, signal);
 			const ext = mimeType.split('/')[1]?.split('+')[0] || 'mp4';
 			const filePath = await saveMedia('video', ext, base64, directory, signal);
 			return { path: filePath, mimeType };
