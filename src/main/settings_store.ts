@@ -177,7 +177,8 @@ export function setSoundFeedbackEnabled(enabled: boolean): void {
 }
 
 export function getChatTextSize(): ChatTextSize {
-	return store.get('chatTextSize');
+	const size = store.get('chatTextSize');
+	return CHAT_TEXT_SIZES.includes(size) ? size : 'medium';
 }
 
 export function setChatTextSize(size: ChatTextSize): void {
