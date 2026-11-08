@@ -1398,7 +1398,7 @@ describe('run stream system prompt', () => {
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain(mcpTool.id);
 		expect(runModelTurnMock.mock.calls[0][3]).toContain(
-			'- `mcp__billing__invoices` (Invoices) — Find customer invoices _(Available through `tool_search`.)_'
+			'- `mcp__billing__invoices` (Invoices) — Find customer invoices _(Not loaded — call `tool_search` first.)_'
 		);
 		expect(runModelTurnMock.mock.calls[1][3]).toContain(
 			'- `mcp__billing__invoices` (Invoices) — Find customer invoices _(Loaded.)_'
