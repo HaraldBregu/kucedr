@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactElement } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import type { AgentUserInputAnswer, AgentUserInputQuestion } from '@/lib/compat';
+import { cn } from '@/lib/utils';
 import type { AgentToolPart, PendingUserInput } from '../context';
 
 function resultFromTool(tool: AgentToolPart): {
@@ -36,14 +38,19 @@ export function UserInputCard({
 		(tool.input as { questions?: AgentUserInputQuestion[] } | undefined)?.questions ??
 		[]) as AgentUserInputQuestion[];
 	const result = useMemo(() => resultFromTool(tool), [tool]);
+	const [step, setStep] = useState(0);
 	const [selected, setSelected] = useState<Record<string, string>>({});
 	const [other, setOther] = useState<Record<string, string>>({});
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState('');
 	const resolvedRef = useRef<HTMLDivElement>(null);
+	const legendRef = useRef<HTMLLegendElement>(null);
 	useEffect(() => {
 		if (result) resolvedRef.current?.focus();
 	}, [result]);
+	useEffect(() => {
+		if (step > 0) legendRef.current?.focus();
+	}, [step]);
 	if (questions.length === 0) return null;
 
 	if (result) {
@@ -75,10 +82,15 @@ export function UserInputCard({
 
 	if (!pending) return null;
 
+	const many = questions.length > 1;
+	const last = step === questions.length - 1;
+	const question = questions[step];
 	const answerFor = (id: string): string =>
 		(selected[id] === '__other__' ? (other[id] ?? '') : (selected[id] ?? '')).trim();
-	const question = questions[Math.min(step, questions.length - 1)];
-	const last = step >= questions.length - 1;
+	const goTo = (index: number): void => {
+		setError('');
+		setStep(index);
+	};
 
 	const submit = async (event: FormEvent): Promise<void> => {
 		event.preventDefault();
@@ -86,9 +98,8 @@ export function UserInputCard({
 			setError('Choose an answer, or complete the Other field.');
 			return;
 		}
-		setError('');
 		if (!last) {
-			setStep(step + 1);
+			goTo(step + 1);
 			return;
 		}
 		const answers = questions.map((candidate) => ({
@@ -111,22 +122,19 @@ export function UserInputCard({
 		<Card className="max-w-2xl gap-4 border-info/30 py-4">
 			<CardHeader className="flex flex-row items-center justify-between gap-3 px-4">
 				<CardTitle className="text-sm">
-					{questions.length > 1 ? 'A few choices before I continue' : 'A choice before I continue'}
+					{many ? 'A few choices before I continue' : 'A choice before I continue'}
 				</CardTitle>
-				{questions.length > 1 ? (
-					<ol aria-label="Questions" className="flex items-center gap-1.5">
+				{many ? (
+					<ol aria-label="Questions" className="flex flex-wrap items-center justify-end gap-1.5">
 						{questions.map((candidate, index) => (
 							<li key={candidate.id}>
 								<button
 									type="button"
 									aria-current={index === step ? 'step' : undefined}
 									disabled={submitting || index > step}
-									onClick={() => {
-										setError('');
-										setStep(index);
-									}}
+									onClick={() => goTo(index)}
 									className={cn(
-										'rounded-full px-2 py-0.5 text-xs transition-colors disabled:cursor-default',
+										'rounded-full px-2 py-0.5 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 disabled:cursor-default',
 										index === step
 											? 'bg-primary text-primary-foreground'
 											: index < step
@@ -142,61 +150,72 @@ export function UserInputCard({
 				) : null}
 			</CardHeader>
 			<form onSubmit={(event) => void submit(event)}>
-				<CardContent className="space-y-5 px-4">
-					{[question].map((question) => (
-						<fieldset key={question.id} className="space-y-2">
-							<legend className="text-sm font-medium">
-								{questions.length > 1 ? (
-									<span className="mr-2 text-xs text-muted-foreground">
-										{step + 1} of {questions.length}
-									</span>
-								) : null}
-								{question.question}
-							</legend>
-							{[...question.options, { label: 'Other', description: 'Enter a different answer.' }].map(
-								(option) => {
-									const value = option.label === 'Other' ? '__other__' : option.label;
-									return (
-										<label
-											key={value}
-											className="flex cursor-pointer items-start gap-2 rounded-lg border border-border/60 p-2 text-sm focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/40"
-										>
-											<input
-												type="radio"
-												name={question.id}
-												value={value}
-												checked={selected[question.id] === value}
-												disabled={submitting}
-												onChange={() => setSelected((current) => ({ ...current, [question.id]: value }))}
-												className="mt-1"
-											/>
-											<span>
-												<span className="block font-medium">{option.label}</span>
-												<span className="block text-xs text-muted-foreground">{option.description}</span>
-											</span>
-										</label>
-									);
-								}
+				<CardContent className="space-y-2 px-4">
+					<fieldset key={question.id} className="space-y-2">
+						<legend ref={legendRef} tabIndex={-1} className="mb-2 text-sm font-medium outline-none">
+							{many ? (
+								<span className="mr-2 text-xs text-muted-foreground">
+									{step + 1} of {questions.length}
+								</span>
+							) : (
+								<span className="mr-2 text-xs text-muted-foreground">{question.header}</span>
 							)}
-							{selected[question.id] === '__other__' ? (
-								<input
-									type="text"
-									aria-label={`${question.header} other answer`}
-									value={other[question.id] ?? ''}
-									disabled={submitting}
-									onChange={(event) =>
-										setOther((current) => ({ ...current, [question.id]: event.target.value }))
-									}
-									className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40"
-								/>
-							) : null}
-						</fieldset>
-					))}
+							{question.question}
+						</legend>
+						{[...question.options, { label: 'Other', description: 'Enter a different answer.' }].map(
+							(option) => {
+								const value = option.label === 'Other' ? '__other__' : option.label;
+								return (
+									<label
+										key={value}
+										className={cn(
+											'flex cursor-pointer items-start gap-2 rounded-lg border border-border/60 p-2 text-sm focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/40',
+											selected[question.id] === value && 'border-ring bg-muted/40'
+										)}
+									>
+										<input
+											type="radio"
+											name={question.id}
+											value={value}
+											checked={selected[question.id] === value}
+											disabled={submitting}
+											onChange={() => {
+												setError('');
+												setSelected((current) => ({ ...current, [question.id]: value }));
+											}}
+											className="mt-1"
+										/>
+										<span>
+											<span className="block font-medium">{option.label}</span>
+											<span className="block text-xs text-muted-foreground">{option.description}</span>
+										</span>
+									</label>
+								);
+							}
+						)}
+						{selected[question.id] === '__other__' ? (
+							<Input
+								type="text"
+								autoFocus
+								aria-label={`${question.header} other answer`}
+								value={other[question.id] ?? ''}
+								disabled={submitting}
+								onChange={(event) =>
+									setOther((current) => ({ ...current, [question.id]: event.target.value }))
+								}
+							/>
+						) : null}
+					</fieldset>
 					<p aria-live="polite" className="text-sm text-destructive">{error}</p>
 				</CardContent>
-				<CardFooter className="justify-end px-4 pt-4">
+				<CardFooter className="justify-end gap-2 px-4 pt-4">
+					{step > 0 ? (
+						<Button type="button" variant="ghost" size="sm" disabled={submitting} onClick={() => goTo(step - 1)}>
+							Back
+						</Button>
+					) : null}
 					<Button type="submit" size="sm" disabled={submitting}>
-						{submitting ? 'Submitting…' : 'Continue'}
+						{submitting ? 'Submitting…' : last ? 'Continue' : 'Next'}
 					</Button>
 				</CardFooter>
 			</form>
