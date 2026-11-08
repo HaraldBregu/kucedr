@@ -82,7 +82,7 @@ Verify: behavior unchanged. Compare the `run_started.tools` event and the system
 - Adding media tools to `requiredIds`. That would bypass the gate.
 - Auto-activating unloaded tools on direct call (rejected, see Decision).
 
-## Open questions
+## Defaults taken
 
-1. Should a direct call to an unloaded tool count against the turn/tool budget the same as a real call? Today `budget.admit` runs before the lookup, so it does. Proposal: keep that, since it discourages repeated direct calls.
-2. Voice is real-time, and the `tool_search` round-trip adds latency there. Does voice also go through `tool_search`, or keep a fixed loaded set (its current behavior)?
+1. A direct call to an unloaded tool counts against the tool-call budget, as before (`budget.admit` runs before the lookup). This discourages repeated direct calls.
+2. Voice keeps its fixed loaded set and doesn't use `tool_search`, to avoid adding a round-trip in real time.
