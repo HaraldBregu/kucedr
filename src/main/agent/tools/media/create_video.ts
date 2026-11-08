@@ -3,6 +3,7 @@ import { createVideo } from '../../../models/video';
 import type { Tool } from '../../types';
 import { saveMedia } from '../../../shared/media';
 import { tool } from '../tool';
+import { modelOptions } from './options';
 
 export function createVideoTool(): Tool {
 	const { model, shape } = modelOptions('video', 'text-to-video');
