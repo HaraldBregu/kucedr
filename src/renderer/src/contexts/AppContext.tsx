@@ -25,10 +25,10 @@ const CHAT_TEXT_SIZE_STORAGE_KEY = 'chat-text-size';
 
 export const CHAT_TEXT_SIZES: Record<ChatTextSize, string> = {
 	'extra-small': '11px',
-	small: '12px',
-	medium: '13px',
-	large: '15px',
-	'extra-large': '17px',
+	small: '13px',
+	medium: '15px',
+	large: '17px',
+	'extra-large': '19px',
 };
 
 export type { AppLanguage, AppTheme, ChatTextSize, VoiceAgentAppearance };
