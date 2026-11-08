@@ -1,6 +1,7 @@
 import type { Tool } from '../types';
 import { toolCategoryRegistry, type ToolCategory } from '../tools/category';
 import { requiresExplicitRequest } from './explicit';
+import { toolOptions } from './system_tool_options';
 
 export function addToolsPrompt(
 	prompt: string,
