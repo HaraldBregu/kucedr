@@ -2,7 +2,7 @@
 
 ## `window.plugins` (`src/preload/plugins.ts` → `src/main/ipc/plugins.ts`)
 
-Every handler calls `TrustedRenderer.assert(event)` first, so only app windows can call it (not app/extension pages).
+Every handler calls `TrustedRenderer.assert(event)` first. It only accepts the main frame of a known Kucedr window, so iframes and app/extension views are rejected.
 
 | Method | Channel | Main side | Then |
 |---|---|---|---|
