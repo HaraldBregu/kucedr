@@ -646,6 +646,21 @@ export class AppIpc implements IpcModule {
 			}, AppChannels.getSoundFeedbackEnabled)
 		);
 
+		ipcMain.handle(
+			AppChannels.setChatTextSize,
+			wrapSimpleHandler((size: ChatTextSize) => {
+				setStoredChatTextSize(size);
+				const menuItem = Menu.getApplicationMenu()?.getMenuItemById(`chat-text-size-${size}`);
+				if (menuItem) menuItem.checked = true;
+				eventBus.broadcast(AppChannels.chatTextSizeChanged, size);
+			}, AppChannels.setChatTextSize)
+		);
+
+		ipcMain.handle(
+			AppChannels.getChatTextSize,
+			wrapSimpleHandler(() => getStoredChatTextSize(), AppChannels.getChatTextSize)
+		);
+
 		ipcMain.handle(AppChannels.getWorkspaceImageModel, wrapSimpleHandler(() => getWorkspaceImageModel(), AppChannels.getWorkspaceImageModel));
 		ipcMain.handle(AppChannels.setWorkspaceImageModel, wrapSimpleHandler((model: { providerId: string; modelId: string }) => setWorkspaceImageModel(model), AppChannels.setWorkspaceImageModel));
 		ipcMain.handle(AppChannels.getWorkspaceVoiceModel, wrapSimpleHandler(() => getWorkspaceVoiceModel(), AppChannels.getWorkspaceVoiceModel));
