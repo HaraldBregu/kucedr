@@ -66,8 +66,16 @@ it('generates and saves each requested image', async () => {
 			{ path: '/tmp/image-2.jpg', mimeType: 'image/jpeg' },
 		],
 	});
-	expect(createImage).toHaveBeenNthCalledWith(1, { prompt: 'generate this' }, undefined);
-	expect(createImage).toHaveBeenNthCalledWith(2, { prompt: 'generate this' }, undefined);
+	expect(createImage).toHaveBeenNthCalledWith(
+		1,
+		{ prompt: 'generate this', options: {} },
+		undefined
+	);
+	expect(createImage).toHaveBeenNthCalledWith(
+		2,
+		{ prompt: 'generate this', options: {} },
+		undefined
+	);
 	expect(saveMedia).toHaveBeenNthCalledWith(
 		1,
 		'image-1',
