@@ -60,7 +60,24 @@
 				]
 			},
 			"storage_options": {
-				"type": "object"
+				"type": "object",
+				"description": "Also store the generated file in xAI file storage.",
+				"properties": {
+					"filename": {
+						"type": "string",
+						"required": true
+					},
+					"expires_after": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 2592000,
+						"description": "Seconds until the stored file expires. Never expires when omitted."
+					},
+					"public_url": {
+						"type": "boolean",
+						"description": "Return a public URL for the stored file."
+					}
+				}
 			}
 		}
 	},
