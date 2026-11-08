@@ -44,7 +44,7 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 		category: 'core',
 		name: 'Search tools',
 		description:
-			'Search for a capability only when the tools already available cannot handle the task. Matching is deterministic; selected tools become available on the next turn.',
+			'Load tools that are not loaded yet. Query with a listed tool id to load that tool, or describe the capability needed. Matching is deterministic; selected tools become available on the next turn.',
 		readOnly: true,
 		capability: { effects: ['read'] },
 		inputSchema: z.object({
