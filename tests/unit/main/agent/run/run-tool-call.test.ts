@@ -166,7 +166,7 @@ describe('runToolCall', () => {
 			call,
 			new AbortController().signal,
 			undefined,
-			{ runId: 'run', windowId: 7, interactionMode: 'plan' }
+			{ runId: 'run', windowId: 7, mode: { ...NO_MODE, ask: true } }
 		);
 
 		expect((await events.next()).value).toMatchObject({ type: 'tool_call_start' });
