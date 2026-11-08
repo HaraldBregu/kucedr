@@ -67,27 +67,14 @@ Verify:
 
 ### Phase 2 — One owner for the run's tools
 
-New module `src/main/agent/runner/toolset.ts`, built once per run, replacing the scattered `tools` / `filterEligibleTools` / `search` juggling in `run_stream.ts`:
+`createToolSearch` (`run_discovery.ts`) already owned `eligible` and `active` and is the only code that adds to `active` after the run starts. A separate `toolset.ts` would duplicate it, so it stays the owner:
 
-```ts
-interface ToolSet {
-  eligible(): Tool[];                  // single filter pipeline, applied in one place
-  active(): Tool[];                    // provider schema + executor; only these run
-  lookup(name: string): { tool: Tool } | { missing: 'unloaded' | 'unknown' };
-  activate(ids: string[]): void;       // called only by tool_search (and requiredIds at start)
-  replaceMcp(entries: DiscoveredMcpTool[]): void;
-  restrict(allowedTools?: string[]): void; // skill tool scopes
-  forChild(): Tool[];                  // subagents: same pipeline, minus `ask`
-}
-```
+- `ToolSearch.eligible()` exposes its eligible list. Each turn, `run_stream.ts` builds the prompt and resolves calls from the same pair, `search.active()` / `search.eligible()`, and passes it to `buildSystemPrompt` and to `runToolCalls`. Previously the prompt used the raw `tools` array, which could include MCP tools that `onChanged` added without filtering.
+- `filterEligibleTools` (mode, profile, bootstrap, `toolsAllow`/`toolsDeny`, skill scopes) is now the single filter pipeline. It replaces the hand-ordered chains for the initial list, for subagents (`childTools`) and before search creation.
+- `runToolCalls(…, eligible)` takes the eligible list as its last argument and passes `'unloaded'` to `runToolCall` for a tool that is eligible but not active.
+- Voice is unchanged: it keeps its fixed loaded set and has no `tool_search`. Any missing tool there gets the "does not exist" message.
 
-- One `eligibleTools(candidates, { mode, profile, toolsAllow, toolsDeny, bootstrap, skillScopes })` function, same order everywhere. Replaces L249–250, L254–260, L316–318, L349–350.
-- `createToolSearch` keeps only ranking (plus the exact-id rule) and becomes the `tool_search` tool on top of `ToolSet`. It no longer has its own `eligible` / `active` maps. `activate` is the only way into `active`.
-- `buildSystemPrompt` gets `toolset.active()` and `toolset.eligible()` from the same object, and `runToolCalls` uses `toolset.lookup`, so the prompt, the schema and the executor share one source.
-- MCP `onChanged`, MCP recovery and `applyActivatedSkill` call `toolset.replaceMcp` / `toolset.restrict` instead of rewriting `tools` and calling `search.replaceEligible`.
-- Voice (`realtime_voice/create.ts`) builds its list with the same `eligibleTools` function (profile `voice`) and resolves through `ToolSet.lookup`.
-
-Verify: behavior unchanged. Compare the `run_started.tools` event and the system-prompt Tools section before/after for: normal chat, a mode (restricted), bootstrap, a subagent, a skill with `allowedTools`, an MCP server connecting mid-run, and voice.
+Verify: behavior unchanged. Compare the `run_started.tools` event and the system-prompt Tools section before/after for: normal chat, a mode (restricted), bootstrap, a subagent, a skill with `allowedTools`, and an MCP server connecting mid-run.
 
 ## Out of scope
 
