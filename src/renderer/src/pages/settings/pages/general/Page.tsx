@@ -55,7 +55,16 @@ type TrayClickAction = (typeof TRAY_CLICK_ACTION_OPTIONS)[number]['value'];
 
 const GeneralPage: React.FC = () => {
 	const { t } = useTranslation();
-	const { language, setLanguage, theme, setTheme, soundFeedbackEnabled, setSoundFeedbackEnabled } = useApp();
+	const {
+		language,
+		setLanguage,
+		theme,
+		setTheme,
+		soundFeedbackEnabled,
+		setSoundFeedbackEnabled,
+		chatTextSize,
+		setChatTextSize,
+	} = useApp();
 	const [trayEnabled, setTrayEnabled] = useState(true);
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
