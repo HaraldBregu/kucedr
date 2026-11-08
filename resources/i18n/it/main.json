@@ -604,9 +604,11 @@
 			"chatTextSize": {
 				"title": "Dimensione testo chat",
 				"description": "Dimensione del carattere dei messaggi della chat.",
+				"extra-small": "Molto piccolo",
 				"small": "Piccolo",
 				"medium": "Medio",
-				"big": "Grande"
+				"large": "Grande",
+				"extra-large": "Molto grande"
 			},
 			"keepAwake": "Mantieni il computer attivo",
 			"keepAwakeDescription": "Mantieni attivi il computer e lo schermo mentre Kucedr è in esecuzione",
