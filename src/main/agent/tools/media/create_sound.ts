@@ -5,14 +5,15 @@ import { saveMedia } from '../../../shared/media';
 import { tool } from '../tool';
 
 export function createSoundTool(): Tool {
+	const { model, shape } = modelOptions('sound', 'text-to-audio');
 	return tool({
 		id: 'create_sound',
 		category: 'media',
 		name: 'Create sound',
-		description:
-			'Generate music or a sound effect from a text prompt using the configured text-to-audio provider. Saves the audio in ~/.kucedr/library by default and returns its absolute path. If you reference it in markdown, use the returned path.',
+		description: `Generate music or a sound effect from a text prompt using the configured text-to-audio provider${model ? ` (${model})` : ''}. Saves the audio in ~/.kucedr/library by default and returns its absolute path. If you reference it in markdown, use the returned path. Only set model options when the user asks for them; omitted options use the configured settings.`,
 		inputSchema: z.object({
 			prompt: z.string().min(1).describe('Text prompt describing the music or sound to generate.'),
+			...shape,
 			directory: z
 				.string()
 				.optional()
