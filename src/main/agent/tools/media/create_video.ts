@@ -5,14 +5,15 @@ import { saveMedia } from '../../../shared/media';
 import { tool } from '../tool';
 
 export function createVideoTool(): Tool {
+	const { model, shape } = modelOptions('video', 'text-to-video');
 	return tool({
 		id: 'create_video',
 		category: 'media',
 		name: 'Create video',
-		description:
-			'Generate a video from a text prompt using the configured text-to-video provider. Saves the video in ~/.kucedr/library by default and returns its absolute path. Video generation can take several minutes; if you reference it in markdown, use the returned path.',
+		description: `Generate a video from a text prompt using the configured text-to-video provider${model ? ` (${model})` : ''}. Saves the video in ~/.kucedr/library by default and returns its absolute path. Video generation can take several minutes; if you reference it in markdown, use the returned path. Only set model options when the user asks for them; omitted options use the configured settings.`,
 		inputSchema: z.object({
 			prompt: z.string().min(1).describe('Text prompt describing the video to generate.'),
+			...shape,
 			directory: z
 				.string()
 				.optional()
