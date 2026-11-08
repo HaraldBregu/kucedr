@@ -70,6 +70,7 @@ const MEDIA_CONTENT_INPUTS = new Set([
 	'reference_audio',
 	'reference_images',
 	'session',
+	'storage_options',
 	'style_reference_images',
 	'text',
 	'transcript',
