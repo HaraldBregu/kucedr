@@ -223,7 +223,7 @@ export class LlmModel implements LlmAdapter {
 			yield* this.streamOpenAIResponses(provider, req);
 			return;
 		}
-		if (id === 'deepseek') {
+		if (id === 'deepseek' || /deepseek/i.test(req.model)) {
 			yield* dsml(this.streamOpenAIChat(provider, req));
 			return;
 		}
