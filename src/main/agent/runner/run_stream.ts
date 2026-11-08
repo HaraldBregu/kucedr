@@ -343,8 +343,7 @@ async function* loop(
 						: []
 				)
 			);
-		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
-		tools = filterModeTools(tools, mode);
+		tools = filterEligibleTools(tools);
 		if (!bootstrap && (!options.tools || options.progressiveDiscovery === true)) {
 			const taskRequest = taskToolIds.length > 0;
 			const requiredIds = new Set([
