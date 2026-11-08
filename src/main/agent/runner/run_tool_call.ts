@@ -52,6 +52,7 @@ export async function* runToolCall(
 	history?: FileHistory
 ): AsyncGenerator<RuntimeEvent, void> {
 	const startedAtMs = Date.now();
+	const tool = resolved === 'unloaded' ? undefined : resolved;
 	let canonicalInput = toolCall.args;
 	let parseError: unknown;
 	let access: ReturnType<typeof captureAccess> = [];
