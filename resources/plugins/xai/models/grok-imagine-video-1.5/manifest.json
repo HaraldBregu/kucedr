@@ -9,7 +9,15 @@
 		"documentationStatus": "verified",
 		"inputs": {
 			"image": {
-				"type": "string"
+				"type": "object",
+				"description": "First frame for image-to-video.",
+				"properties": {
+					"url": {
+						"type": "string",
+						"description": "Public URL, base64 data URI, or local file path of a JPEG, PNG, or WebP image.",
+						"required": true
+					}
+				}
 			},
 			"duration": {
 				"type": "integer",
