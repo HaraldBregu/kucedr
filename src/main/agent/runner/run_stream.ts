@@ -675,7 +675,8 @@ async function* loop(
 				session.runContext.fileAccess,
 				security,
 				options.resources,
-				session.runContext.fileHistory
+				session.runContext.fileHistory,
+				eligibleTurnTools
 			)) {
 				yield event;
 			}
