@@ -320,6 +320,30 @@ const GeneralPage: React.FC = () => {
 						}
 					/>
 					<SettingsRow
+						title={t('settings.application.chatTextSize.title')}
+						description={t('settings.application.chatTextSize.description')}
+						media={<Type className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Select value={chatTextSize} onValueChange={handleChatTextSizeChange}>
+								<SelectTrigger
+									size="sm"
+									className="w-24 text-xs [&_svg]:size-3"
+									aria-label={t('settings.application.chatTextSize.title')}
+								>
+									<SelectValue>{t(`settings.application.chatTextSize.${chatTextSize}`)}</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{Object.keys(CHAT_TEXT_SIZES).map((size) => (
+										<SelectItem key={size} value={size}>
+											{t(`settings.application.chatTextSize.${size}`)}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						}
+					/>
+					<SettingsRow
 						title={t('settings.theme.title')}
 						media={<SunMoon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						actionClassName="w-auto justify-end"
