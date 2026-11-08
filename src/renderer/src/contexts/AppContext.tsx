@@ -259,6 +259,7 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 			voiceAgentAppearance,
 			setVoiceAgentAppearance,
 			chatTextSize,
+			setChatTextSize,
 			resetState,
 		]
 	);
