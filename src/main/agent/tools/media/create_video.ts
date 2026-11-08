@@ -23,7 +23,10 @@ export function createVideoTool(): Tool {
 				),
 		}),
 		execute: async ({ prompt, directory, ...options }, signal) => {
-			const { base64, mimeType } = await createVideo({ prompt, options }, signal);
+			const { base64, mimeType } = await createVideo(
+				{ prompt, options: (await inlineFiles(options)) as Record<string, unknown> },
+				signal
+			);
 			const ext = mimeType.split('/')[1]?.split('+')[0] || 'mp4';
 			const filePath = await saveMedia('video', ext, base64, directory, signal);
 			return { path: filePath, mimeType };
