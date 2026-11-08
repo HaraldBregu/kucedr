@@ -176,6 +176,15 @@ export function setSoundFeedbackEnabled(enabled: boolean): void {
 	store.set('soundFeedbackEnabled', enabled);
 }
 
+export function getChatTextSize(): ChatTextSize {
+	return store.get('chatTextSize');
+}
+
+export function setChatTextSize(size: ChatTextSize): void {
+	if (!CHAT_TEXT_SIZES.includes(size)) throw new Error('Invalid chat text size setting.');
+	store.set('chatTextSize', size);
+}
+
 export function getWorkspaceWideContent(): boolean {
 	return store.get('workspaceWideContent');
 }
