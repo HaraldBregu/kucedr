@@ -25,8 +25,19 @@ export function modelOption(input: ModelInputSchema): z.ZodType | undefined {
 		schema = number;
 	} else if (input.type === 'boolean') {
 		schema = z.boolean();
+	} else if (input.type === 'object' && input.properties) {
+		const shape: Record<string, z.ZodType> = {};
+		for (const [key, property] of Object.entries(input.properties)) {
+			const option = modelOption(property);
+			if (option) shape[key] = property.required ? option : option.optional();
+		}
+		schema = z.object(shape);
+	} else if (input.type === 'array' && input.items) {
+		const item = modelOption(input.items);
+		if (!item) return undefined;
+		schema = z.array(item);
 	} else {
 		return undefined;
 	}
-	return (description ? schema.describe(description) : schema).optional();
+	return description ? schema.describe(description) : schema;
 }
