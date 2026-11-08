@@ -31,7 +31,7 @@ export function addToolsPrompt(
 				? ' _(Loaded.)_'
 				: ' _(Not loaded — call `tool_search` first.)_';
 			const restriction = requiresExplicitRequest(tool) ? ' _(Explicit user request only.)_' : '';
-			prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${availability}${restriction}`;
+			prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${toolOptions(tool.schema)}${availability}${restriction}`;
 		}
 	}
 
