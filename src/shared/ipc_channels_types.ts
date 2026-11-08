@@ -683,6 +683,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: boolean;
 	};
+	[AppChannels.setChatTextSize]: {
+		args: [size: import('./app_types').ChatTextSize];
+		result: void;
+	};
+	[AppChannels.getChatTextSize]: {
+		args: [];
+		result: import('./app_types').ChatTextSize;
+	};
 	[AppChannels.getWorkspaceImageModel]: { args: []; result: { providerId: string; modelId: string } };
 	[AppChannels.setWorkspaceImageModel]: { args: [model: { providerId: string; modelId: string }]; result: void };
 	[AppChannels.getWorkspaceVoiceModel]: { args: []; result: { providerId: string; modelId: string } };
