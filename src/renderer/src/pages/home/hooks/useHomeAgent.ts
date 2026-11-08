@@ -246,6 +246,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 							thinkingSoundPlayed = true;
 							playSound('thinking');
 						}
+						if (event.type === 'tool_call_start') playSound('tool');
 						if (
 							event.type === 'run_finished' &&
 							event.stopReason === 'end_turn' &&
