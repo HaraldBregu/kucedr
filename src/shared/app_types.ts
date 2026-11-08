@@ -49,7 +49,7 @@ export type AppLanguage = 'en' | 'it';
 
 export type WorkspaceTextSize = 'extra-small' | 'small' | 'medium' | 'large' | 'extra-large';
 
-export const CHAT_TEXT_SIZES = ['small', 'medium', 'big'] as const;
+export const CHAT_TEXT_SIZES = ['extra-small', 'small', 'medium', 'large', 'extra-large'] as const;
 
 export type ChatTextSize = (typeof CHAT_TEXT_SIZES)[number];
 
