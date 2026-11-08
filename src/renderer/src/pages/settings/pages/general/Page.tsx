@@ -25,7 +25,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { useApp, type AppLanguage } from '@/contexts';
+import { CHAT_TEXT_SIZES, useApp, type AppLanguage, type ChatTextSize } from '@/contexts';
 import {
 	SettingsPageHeader,
 	SettingsPageShell,
