@@ -4,16 +4,7 @@ import { findModel, providerModels } from '../../../models';
 import { getModelId, getProviderId, type MediaModelKind } from '../../../models/selection';
 import { modelOption } from './option';
 
-const EXCLUDED_INPUTS = new Set([
-	'n',
-	'response_format',
-	'image',
-	'last_frame',
-	'enable_logging',
-	'finetune_id',
-	'store_for_inpainting',
-	'sign_with_c2pa',
-]);
+const EXCLUDED_INPUTS = new Set(['n', 'response_format']);
 
 export function modelOptions(
 	kind: MediaModelKind,
