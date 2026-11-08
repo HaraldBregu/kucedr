@@ -117,6 +117,7 @@ const GeneralPage: React.FC = () => {
 
 	const handleChatTextSizeChange = (next: string | null): void => {
 		if (next && Object.hasOwn(CHAT_TEXT_SIZES, next)) setChatTextSize(next as ChatTextSize);
+
 	};
 
 	const handleWindowSizeChange = (next: string | null): void => {
