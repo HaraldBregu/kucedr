@@ -3,6 +3,7 @@ import { createImage } from '../../../models/image';
 import type { Tool } from '../../types';
 import { saveMedia } from '../../../shared/media';
 import { tool } from '../tool';
+import { modelOptions } from './options';
 
 export function createImageTool(): Tool {
 	const { model, shape } = modelOptions('image', 'text-to-image');
