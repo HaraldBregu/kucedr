@@ -55,7 +55,7 @@ Keep the strict lookup. Make the gate clear before the call, and make recovery t
 1. **Actionable error.** `ToolSearch` gets `isEligible(name): boolean`. In `runToolCalls`, when the name isn't active:
    - eligible → `Error: tool 'create_image' is not loaded. Call tool_search with query "create_image", then call it on the next turn.` Nothing is executed and the tool isn't activated.
    - not eligible → `Error: tool 'x' does not exist or is not available for this agent.`
-   `runToolCall` needs the reason, so `runToolCalls` passes it instead of only `undefined` (e.g. `{ tool } | { missing: 'unloaded' | 'unknown' }`).
+   `runToolCall` takes `Tool | 'unloaded' | undefined`, so it can tell the two cases apart.
 2. **Exact-id search is guaranteed.** `toolSearchText` already weights the id 4×, so a query equal to an id ranks it first in practice. Make it explicit in `createToolSearch`: if the query equals an eligible, unloaded tool id, select that tool first, before ranking. The recovery message above then always works.
 3. **Prompt states the rule.** In `addToolsPrompt`, replace the header line with: "Only tools marked _(Loaded.)_ can be called. To use any other tool, first call `tool_search` with its id as the query; it becomes callable on the next turn. Calling an unloaded tool directly fails." Change the per-tool marker to `_(Not loaded — call tool_search first.)_`.
 
