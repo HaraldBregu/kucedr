@@ -29,7 +29,7 @@ export function addToolsPrompt(
 			const description = (tool.description ?? '').replace(/\n/g, ' ');
 			const availability = loadedIds.has(tool.id)
 				? ' _(Loaded.)_'
-				: ' _(Available through `tool_search`.)_';
+				: ' _(Not loaded — call `tool_search` first.)_';
 			const restriction = requiresExplicitRequest(tool) ? ' _(Explicit user request only.)_' : '';
 			prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${availability}${restriction}`;
 		}
