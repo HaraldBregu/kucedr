@@ -134,7 +134,7 @@ export function UserMessage({
 						className="relative min-w-0 w-fit max-w-full overflow-hidden rounded-xl bg-primary"
 					>
 						<Markdown
-							className="min-w-0 max-w-full break-words px-5 py-3 text-[13px] font-medium leading-relaxed text-primary-foreground [overflow-wrap:anywhere] selection:bg-primary-foreground selection:text-primary"
+							className="min-w-0 max-w-full break-words px-5 py-3 text-(length:--chat-text-size) font-medium leading-relaxed text-primary-foreground [overflow-wrap:anywhere] selection:bg-primary-foreground selection:text-primary"
 							components={userMarkdownComponents}
 						>
 							{content}
