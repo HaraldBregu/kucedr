@@ -11,6 +11,8 @@ import {
 	setKeepAwake as setStoredKeepAwake,
 	getSoundFeedbackEnabled,
 	setSoundFeedbackEnabled,
+	getChatTextSize,
+	setChatTextSize,
 	getLanguage,
 	setLanguage as setStoredLanguage,
 	getTheme,
