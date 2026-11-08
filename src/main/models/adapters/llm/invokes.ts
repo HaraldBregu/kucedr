@@ -1,9 +1,9 @@
 const TAG = '[｜|]+\\s*DSML\\s*[｜|]+\\s*';
 const BLOCK = new RegExp(
-	`^<${TAG}[^\\s>]*calls\\s*>([\\s\\S]*?)(?:</${TAG}[^\\s>]*calls\\s*>)?\\s*$`
+	`^<${TAG}[^\\s>]*calls\\s*>([\\s\\S]*)</${TAG}[^\\s>]*calls\\s*>\\s*$`
 );
 const INVOKE = new RegExp(
-	`<${TAG}invoke\\s+name="([^"]+)"\\s*>([\\s\\S]*?)(?:</${TAG}invoke\\s*>|(?=<${TAG}invoke\\s)|$)`,
+	`<${TAG}invoke\\s+name="([^"]+)"\\s*>([\\s\\S]*?)</${TAG}invoke\\s*>`,
 	'g'
 );
 const PARAMETER = new RegExp(
