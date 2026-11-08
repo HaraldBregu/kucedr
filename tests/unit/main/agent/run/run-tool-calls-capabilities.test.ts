@@ -40,7 +40,10 @@ describe('runToolCalls capability changes', () => {
 			if (event.toolName === 'activate') tools.splice(0, tools.length, load);
 		}
 
-		expect(outputs).toEqual(['loaded', "Error: unknown tool 'write'"]);
+		expect(outputs).toEqual([
+			'loaded',
+			"Error: tool 'write' does not exist or is not available for this agent.",
+		]);
 	});
 
 	it('stops an aborted batch after persisting an interrupted input result', async () => {
