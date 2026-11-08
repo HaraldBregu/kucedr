@@ -213,6 +213,23 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 		if (hydrated.current) void window.app.setVoiceAgentAppearance(voiceAgentAppearance);
 	}, [voiceAgentAppearance]);
 
+	useEffect(() => {
+		document.documentElement.style.setProperty('--chat-text-size', CHAT_TEXT_SIZES[chatTextSize]);
+		try {
+			localStorage.setItem(CHAT_TEXT_SIZE_STORAGE_KEY, chatTextSize);
+		} catch {
+			/* empty */
+		}
+	}, [chatTextSize]);
+
+	useEffect(() => {
+		const onStorage = (event: StorageEvent): void => {
+			if (event.key === CHAT_TEXT_SIZE_STORAGE_KEY) setChatTextSize(readPersistedChatTextSize());
+		};
+		window.addEventListener('storage', onStorage);
+		return () => window.removeEventListener('storage', onStorage);
+	}, []);
+
 	const value = useMemo<AppContextValue>(
 		() => ({
 			language,
