@@ -52,7 +52,7 @@ export function WorkspaceOutline({ editor, container }: WorkspaceOutlineProps): 
 	if (headings.length < minimumHeadings) return null;
 	return (
 		<nav aria-label="On this page" className="group absolute right-2 top-1/2 z-10 -translate-y-1/2">
-			<div aria-hidden className="flex flex-col items-end gap-2 p-2 transition-opacity group-focus-within:opacity-0 group-hover:opacity-0">
+			<div aria-hidden className="flex flex-col items-end gap-1 p-2 transition-opacity group-focus-within:opacity-0 group-hover:opacity-0">
 				{headings.map(({ level }, index) => (
 					<span key={index} className={cn('h-0.5 rounded-full transition-colors', bars[level - 1] ?? 'w-2', index === active ? 'bg-foreground' : 'bg-muted-foreground/30')} />
 				))}
