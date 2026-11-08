@@ -220,7 +220,6 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			if (!isSelected) clearSelection();
 			const isBulk = targets.length > 1;
 			const allPinned = targets.every((item) => item.pinned);
-			const allArchived = targets.every((item) => item.archived);
 			void window.win
 				.showContextMenu([
 					...(isBulk
