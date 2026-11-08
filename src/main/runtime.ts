@@ -176,6 +176,11 @@ const menuManager = new Menu({
 		setSoundFeedbackEnabled(enabled);
 		eventBus.broadcast(AppChannels.soundFeedbackEnabledChanged, enabled);
 	},
+	getChatTextSize,
+	onChatTextSizeChange: (size) => {
+		setChatTextSize(size);
+		eventBus.broadcast(AppChannels.chatTextSizeChanged, size);
+	},
 	getTheme,
 	onThemeChange: (theme) => {
 		setStoredTheme(theme);
