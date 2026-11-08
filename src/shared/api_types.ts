@@ -623,6 +623,11 @@ export interface AppApi extends AppStorageApi {
 	setSoundFeedbackEnabled: (enabled: boolean) => Promise<void>;
 	getSoundFeedbackEnabled: () => Promise<boolean>;
 	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void) => () => void;
+	setChatTextSize: (size: import('./app_types').ChatTextSize) => Promise<void>;
+	getChatTextSize: () => Promise<import('./app_types').ChatTextSize>;
+	onChatTextSizeChanged: (
+		callback: (size: import('./app_types').ChatTextSize) => void
+	) => () => void;
 	getWorkspaceImageModel: () => Promise<{ providerId: string; modelId: string }>;
 	setWorkspaceImageModel: (model: { providerId: string; modelId: string }) => Promise<void>;
 	getWorkspaceVoiceModel: () => Promise<{ providerId: string; modelId: string }>;
