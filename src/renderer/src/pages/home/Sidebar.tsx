@@ -173,14 +173,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const pinnedSessions = activeSessions.filter((session) => session.pinned);
 	const recentSessions = activeSessions.filter((session) => !session.pinned);
 
-	const renderGroup = (label: string, count: number, content: ReactNode, className?: string): ReactElement => {
-		if (count < 10)
-			return (
-				<SidebarGroup className={className}>
-					<SidebarGroupLabel>{label}</SidebarGroupLabel>
-					<SidebarGroupContent>{content}</SidebarGroupContent>
-				</SidebarGroup>
-			);
+	const renderGroup = (label: string, content: ReactNode, className?: string): ReactElement => {
 		return (
 			<Collapsible defaultOpen className={cn('group/collapsible', className)}>
 				<SidebarGroup>
