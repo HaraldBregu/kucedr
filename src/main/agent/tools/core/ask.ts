@@ -6,7 +6,7 @@ export const requestUserInputTool = tool({
 	category: 'system',
 	name: 'Request user input',
 	description:
-		'Pause the run for one to three consequential questions. The interface adds an optional free-form Other choice to every question.',
+		'Pause the run and let the user pick from options. Call it only when you are blocked on information or a decision only the user can provide, the answer would materially change the result, and the conversation, workspace, and tools cannot resolve it with a reasonable, reversible default. Never use it for confirmations, permission, or anything you can find out yourself. Ask one to three consequential questions with two or three concrete options each. The interface adds an optional free-form Other choice to every question.',
 	readOnly: true,
 	inputSchema: z.object({
 		questions: z
