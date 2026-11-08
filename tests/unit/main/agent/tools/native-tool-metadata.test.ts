@@ -1,5 +1,5 @@
 jest.mock('../../../../../src/main/agent/agent_store', () => ({
-	getToolModel: jest.fn(),
+	getToolModel: jest.fn(() => ({ providerId: '', modelId: '', options: {} })),
 }));
 jest.mock('../../../../../src/main/models/transcribe', () => ({ transcribe: jest.fn() }));
 jest.mock('../../../../../src/main/models/voice', () => ({ synthesize: jest.fn() }));
