@@ -197,6 +197,7 @@ export interface ProviderManifest {
 	readonly vector_databases?: readonly ProviderManifestVectorDatabase[];
 	readonly storage?: ProviderManifestStorage;
 	readonly web_search?: readonly ProviderManifestWebSearch[];
+	readonly storage_services?: readonly ProviderManifestWebSearch[];
 	readonly settings?: readonly ProviderManifestSetting[];
 	readonly discoveryInputs?: ModelMetadata['discoveryInputs'];
 	readonly discoveryLabel?: string;
