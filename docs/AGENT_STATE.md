@@ -1324,7 +1324,7 @@ Each step leaves the app working and can ship alone.
 ## 6. Verification (for the implementation, later)
 
 - `npm run typecheck`, `npm run lint`, `npm run test:main:agent`, `npm run test:renderer`. Per CLAUDE.md,
-  tests are written or run only when you ask. Step 1 needs that approval, because the suite is currently
+  tests are written or run only when explicitly requested. Step 1 needs that approval, because the suite is currently
   broken.
 - In the app (`npm run dev`):
   - `/plan …` blocks writes and renders the card. Implement updates the plan items.
