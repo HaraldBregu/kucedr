@@ -83,6 +83,7 @@ export async function* runToolCall(
 			: undefined;
 	const profilePermissions = (): import('../permissions').PermissionsSchema =>
 		getPermissions(security.toolProfile ?? 'chat');
+	const permissionFallback = security.toolProfile === 'tasks' ? 'deny' : 'ask';
 
 	yield {
 		type: 'tool_call_start',
