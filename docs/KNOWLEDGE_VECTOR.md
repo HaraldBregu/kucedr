@@ -5,9 +5,9 @@ backup runs `backup-s3` (see `BACKUP.md`). The built-in one is
 `resources/plugins/bootstrap/scripts/vector-db` (Pinecone). It is only a **mirror**: the local
 SQLite store (`src/main/agent/knowledge/rag/sqlite.ts`) still indexes and serves every search.
 
-- **Settings → Scripts → Vector DB**: the API key. It is saved as the bootstrap plugin setting
-  `vector-db` (`format: password`, encrypted with `safeStorage` by `savePluginSettings`). Each
-  VECTOR script reads the plugin setting named after the script.
+- **Settings → Scripts → Vector DB**: the script's detail page holds the API key. It is saved
+  with `window.database.saveKey` in `providers/vector.json`, keyed by script name and encrypted
+  with `safeStorage`. The renderer can only ask `hasKey`; the key is never sent back.
 - **Settings → Knowledge → Storage**: select the script (`databaseProviderId: 'script'`,
   `databaseId: <script name>`) and give mirror consent. **Configure databases** opens the
   selected script's page.
