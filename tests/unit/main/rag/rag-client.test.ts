@@ -34,7 +34,7 @@ it('requires an explicit supported database selection and saved credential', () 
 	expect(() => selectedVectorDatabaseConnection({ providerId: 'other', databaseId: 'other' })).toThrow(
 		'not supported'
 	);
-	pluginSettings.mockReturnValue({});
+	vectorScriptKey.mockReturnValue(undefined);
 	expect(() =>
 		selectedVectorDatabaseConnection({ providerId: 'script', databaseId: 'vector-db' })
 	).toThrow('Settings → Scripts → Vector DB');
