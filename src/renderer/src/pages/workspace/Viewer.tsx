@@ -62,6 +62,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 	const [replaceOpen, setReplaceOpen] = useState(false);
 	const [replaceText, setReplaceText] = useState('');
 	const editorRef = useRef<CodeMirrorEditorHandle>(null);
+	const findInputRef = useRef<HTMLInputElement>(null);
 	const textRef = useRef<Pick<CodeMirrorEditorHandle, 'find' | 'replace' | 'clearSearch'>>(null);
 	const [textMatchCount, setTextMatchCount] = useState(0);
 	const pendingContent = useRef<string | null>(null);
