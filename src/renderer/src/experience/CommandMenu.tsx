@@ -256,6 +256,7 @@ export function CommandMenu({
 	const [plugins, setPlugins] = useState<PluginInfo[]>([]);
 	const [apps, setApps] = useState<App[]>([]);
 	const [models, setModels] = useState<CatalogModel[]>([]);
+	const [files, setFiles] = useState<WorkspaceTreeEntry[]>([]);
 	const listRef = useRef<HTMLDivElement>(null);
 	const { visibleItems, searchOnlyItems } = useMemo(() => buildCommandItems(t), [t]);
 	const isSearching = search.trim().length >= MIN_SEARCH_LENGTH;
