@@ -1,6 +1,6 @@
 import { exists } from './tasks_exists';
 import { requireSchedule } from './tasks_require_schedule';
-import { runner } from './tasks_module_state';
+import { runner, running } from './tasks_module_state';
 import { unscheduleJob } from './tasks_unschedule_job';
 import { trigger } from './tasks_trigger';
 import type { TaskScheduledTask } from './tasks_types';
