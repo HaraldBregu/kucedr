@@ -18,7 +18,7 @@ export function selectedVectorDatabaseConnection(
 		throw new Error('The selected vector database is not supported by Knowledge.');
 	}
 	const adapter = findVectorDatabaseAdapter(configuration.providerId, configuration.databaseId);
-	if (!adapter) throw new Error('The selected vector database is not supported by RAG.');
+	if (!adapter) throw new Error('The selected vector database is not supported by Knowledge.');
 	const apiKey = adapter.apiKey()?.trim();
 	if (!apiKey) {
 		throw new Error(
