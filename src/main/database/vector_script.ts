@@ -1,9 +1,9 @@
-import { pluginSettings } from '../plugins/plugins_settings';
 import type { PluginScript } from '../plugins/scripts/plugin_script_list';
 import { forkVectorScript } from './fork';
+import { vectorScriptKey } from './vector_keys';
 import type { VectorDatabaseAdapter } from './vector_types';
 
-/** A VECTOR script as a vector database; its API key is the plugin setting named after the script. */
+/** A VECTOR script as a vector database; its API key is saved on the script's page. */
 export function vectorScriptAdapter(script: PluginScript): VectorDatabaseAdapter {
 	return {
 		service: {
