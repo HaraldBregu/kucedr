@@ -57,41 +57,11 @@ export function createMemory(configuration: () => Config): MemoryService {
 				if (error.code === 'ENOENT') return '';
 				throw error;
 			}),
-		write: createMemoryFile,
-		writeSession: async (sessionId, markdown) => {
-			const file = sessionMemoryPath(sessionId);
-			await fs.mkdir(path.dirname(file), { recursive: true });
-			await atomicWrite(file, markdown);
-		},
+		write: (markdown) => writeMemoryFile(memoryPath(), markdown),
+		writeSession: (sessionId, markdown) =>
+			writeMemoryFile(sessionMemoryPath(sessionId), markdown),
 		removeSession: async (sessionId) => {
 			await fs.rm(sessionMemoryPath(sessionId), { force: true });
-		},
-		watchSessions: (callback) => {
-			const timers = new Map<string, NodeJS.Timeout>();
-			const watcher = watch(path.dirname(memoryPath()), (_event, filename) => {
-				const match =
-					/^([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.md$/i.exec(
-						filename?.toString() ?? ''
-					);
-				if (!match) return;
-				const id = match[1].toLowerCase();
-				const current = timers.get(id);
-				if (current) clearTimeout(current);
-				timers.set(
-					id,
-					setTimeout(() => {
-						timers.delete(id);
-						callback(id);
-					}, 250)
-				);
-			});
-			return {
-				stop: () => {
-					for (const timer of timers.values()) clearTimeout(timer);
-					timers.clear();
-					watcher.close();
-				},
-			};
 		},
 		infer: async (config, systemPrompt, request, signal) => {
 			const provider = getProvider(config.providerId, 'models');
