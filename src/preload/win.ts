@@ -1,3 +1,4 @@
+import { webFrame } from 'electron';
 import { typedInvokeUnwrap, typedSend, typedOn } from '../shared/ipc_types';
 import { WindowChannels } from '../shared/ipc_channels_definitions';
 import type { WindowApi } from './index.d';
