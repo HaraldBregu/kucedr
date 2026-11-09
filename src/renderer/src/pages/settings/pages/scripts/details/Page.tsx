@@ -12,6 +12,7 @@ import {
 } from '../../../components';
 import Meta from '../../plugins/Meta';
 import Configuration from './Configuration';
+import VectorConfiguration from './VectorConfiguration';
 
 const ScriptDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
