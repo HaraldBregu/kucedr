@@ -1,4 +1,5 @@
 import { fire } from './tasks_fire';
+import { running } from './tasks_module_state';
 import type { TaskScheduledTask } from './tasks_types';
 
 export function runScheduleNow(scheduleId: string): TaskScheduledTask {
