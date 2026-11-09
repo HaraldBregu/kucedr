@@ -5,7 +5,6 @@ import type { Config } from '../agent/types';
 import { getChatbotModel } from '../agent/agent_store';
 import { LlmModel } from '../models/adapters/llm';
 import { getProvider } from '../settings_store';
-import { atomicWrite } from '../shared/atomic_write';
 import { Memory } from './service';
 import { defaultState } from './defaults';
 import { memoryPath } from './path';
