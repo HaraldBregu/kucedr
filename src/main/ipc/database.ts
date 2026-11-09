@@ -22,5 +22,11 @@ export class DatabaseIpc implements IpcModule<DatabaseIpcDependencies> {
 		trusted.command(DatabaseChannels.saveConfiguration, (configuration) =>
 			saveDatabaseConfiguration(configuration)
 		);
+		trusted.query(DatabaseChannels.hasKey, (script) => Boolean(vectorScriptKey(vectorScript(script))));
+		trusted.command(DatabaseChannels.saveKey, (script, apiKey) => {
+			if (typeof apiKey !== 'string' || !apiKey.trim() || apiKey.length > 4_096)
+				throw new Error('The API key is invalid.');
+			saveVectorScriptKey(vectorScript(script), apiKey.trim());
+		});
 	}
 }
