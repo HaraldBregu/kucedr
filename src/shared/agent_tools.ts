@@ -46,10 +46,25 @@ const HEALTH_BUILTIN_TOOL_IDS = new Set([
 	'process',
 ]);
 
+const TASKS_EXCLUDED_BUILTIN_TOOL_IDS = new Set([
+	'update_identity',
+	'update_user',
+	'update_soul',
+	'use_web_browser',
+	'get_health',
+	'update_health',
+	'create_image',
+	'create_sound',
+	'create_video',
+]);
+
 export function isAgentToolAllowedForProfile(
 	profileId: AgentToolProfileId,
 	tool: AgentToolReference
 ): boolean {
+	if (profileId === 'tasks' && tool.kind === 'builtin' && TASKS_EXCLUDED_BUILTIN_TOOL_IDS.has(tool.id)) {
+		return false;
+	}
 	if (tool.kind === 'builtin' && tool.id === 'ask') return profileId === 'chat';
 	if (tool.kind === 'builtin' && tool.id === 'request_mcp_authorization') return profileId === 'chat';
 	if (tool.kind === 'builtin' && tool.id === 'complete_bootstrap') {
