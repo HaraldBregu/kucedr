@@ -3,6 +3,8 @@ import type { EventBus } from '../event_bus';
 import { DatabaseChannels } from '../../shared/ipc_channels_definitions';
 import { getDatabaseConfiguration, saveDatabaseConfiguration } from '../database/database_store';
 import { listVectorDatabases } from '../database/vector_adapters';
+import { saveVectorScriptKey, vectorScriptKey } from '../database/vector_keys';
+import { pluginScripts } from '../plugins';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
