@@ -37,12 +37,12 @@ beforeEach(() => {
 it('reads and writes database selection through the RAG store', () => {
 	expect(databaseConfigurationStorePath).toBe('/rag/settings.json');
 	expect(getDatabaseConfiguration()).toEqual({
-		providerId: 'pinecone',
+		providerId: 'script',
 		databaseId: 'pinecone',
 	});
 
 	saveDatabaseConfiguration({
-		providerId: 'pinecone',
+		providerId: 'script',
 		databaseId: 'pinecone',
 	});
 
@@ -67,7 +67,7 @@ it('clears remote storage consent when the user removes the database selection',
 it('preserves consent when saving the same database selection', () => {
 	const mirrorConsent = { version: 1, indexName: 'kucedr', recipient: 'same-account' };
 	getRagConfiguration.mockReturnValue({ ...ragConfiguration, mirrorConsent });
-	saveDatabaseConfiguration({ providerId: 'pinecone', databaseId: 'pinecone' });
+	saveDatabaseConfiguration({ providerId: 'script', databaseId: 'pinecone' });
 	expect(saveRagConfiguration).toHaveBeenCalledWith(expect.objectContaining({ mirrorConsent }));
 });
 
