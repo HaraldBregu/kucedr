@@ -7,4 +7,6 @@ export const database: DatabaseApi = {
 	getConfiguration: () => typedInvokeUnwrap(DatabaseChannels.getConfiguration),
 	saveConfiguration: (configuration) =>
 		typedInvokeUnwrap(DatabaseChannels.saveConfiguration, configuration),
+	hasKey: (script) => typedInvokeUnwrap(DatabaseChannels.hasKey, script),
+	saveKey: (script, apiKey) => typedInvokeUnwrap(DatabaseChannels.saveKey, script, apiKey),
 };
