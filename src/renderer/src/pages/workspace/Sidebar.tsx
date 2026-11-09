@@ -276,6 +276,10 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 
 	const confirmAction = (name: string): void => {
 		if (!pendingAction || busy) return;
+		if (!name) {
+			setPendingAction(null);
+			return;
+		}
 		setBusy(true);
 		setActionError('');
 		void (async () => {
