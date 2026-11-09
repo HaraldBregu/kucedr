@@ -29,7 +29,7 @@ function setup(initialized = true) {
  };
  const memory = new Memory(dependencies);
 	const extracted = '# Memory\n\nManual notes remain here.\n- Prefers concise answers.\n';
-	return { memory, dependencies, exists, infer, write, writeSession, removeSession, sessions, extracted, stopWatching, sessionChanged: () => sessionChanged, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
+	return { memory, dependencies, exists, infer, write, writeSession, removeSession, sessions, extracted, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
 }
 
 it('serializes cumulative session snapshots and removes them through the memory module', async () => {
