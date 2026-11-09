@@ -60,6 +60,15 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	useEffect(() => localStorage.setItem('chat-categories', JSON.stringify(categories)), [categories]);
 	useEffect(() => localStorage.setItem('chat-category-assignments', JSON.stringify(assignments)), [assignments]);
 	useEffect(() => localStorage.setItem('chat-collapsed-groups', JSON.stringify(collapsed)), [collapsed]);
+	const syncedCategories = useRef<Record<string, string | null>>({});
+	useEffect(() => {
+		for (const session of sessions) {
+			const name = categories.find((category) => category.id === assignments[session.id])?.name ?? null;
+			if (syncedCategories.current[session.id] === name) continue;
+			syncedCategories.current[session.id] = name;
+			void window.agent.categorizeSession(session.id, name).catch(() => delete syncedCategories.current[session.id]);
+		}
+	}, [sessions, categories, assignments]);
 
 	useEffect(() => {
 		let active = true;
