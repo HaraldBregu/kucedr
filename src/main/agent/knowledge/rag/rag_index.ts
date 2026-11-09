@@ -77,7 +77,7 @@ export async function indexRag(
 				.update(file)
 				.digest('hex');
 			const sourceFingerprint = createHash('sha256')
-				.update('knowledge-chunks-v2\0')
+				.update('knowledge-chunks-v3\0')
 				.update(embeddingRecipient)
 				.update('\0')
 				.update(content)
