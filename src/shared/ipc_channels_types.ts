@@ -1466,6 +1466,7 @@ export interface AppEventChannelMap {
 	[AppChannels.keepAwakeChanged]: { data: boolean };
 	[AppChannels.soundFeedbackEnabledChanged]: { data: boolean };
 	[AppChannels.chatTextSizeChanged]: { data: import('./app_types').ChatTextSize };
+	[AppChannels.zoomFactorChanged]: { data: import('./app_types').ZoomFactor };
 	[AppChannels.themeModeChanged]: { data: import('./app_types').AppThemeData };
 	[AppChannels.voiceAgentAppearanceChanged]: {
 		data: import('./app_types').VoiceAgentAppearance;
