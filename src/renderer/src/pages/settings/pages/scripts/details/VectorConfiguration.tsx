@@ -65,7 +65,7 @@ export default function VectorConfiguration({
 								value={apiKey}
 								aria-label={t('settings.scripts.apiKey')}
 								placeholder={saved ? t('settings.scripts.apiKeySaved') : ''}
-								className="w-64 max-w-full text-xs"
+								className="h-7 w-64 max-w-full px-2.5 text-xs md:text-xs"
 								disabled={saving}
 								onChange={(event) => setApiKey(event.target.value)}
 							/>
