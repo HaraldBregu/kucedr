@@ -395,6 +395,8 @@ export const DatabaseChannels = {
 	list: 'database:vector:list',
 	getConfiguration: 'database:configuration:get',
 	saveConfiguration: 'database:configuration:save',
+	hasKey: 'database:key:has',
+	saveKey: 'database:key:save',
 } as const;
 
 export const SearchChannels = {
