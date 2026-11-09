@@ -1772,7 +1772,11 @@
 			"name": "Nome",
 			"category": "Categoria",
 			"fence": "Blocco di codice",
-			"plugin": "Plugin"
+			"plugin": "Plugin",
+			"apiKey": "Chiave API",
+			"apiKeyDescription": "Salvata cifrata e inviata solo a questo script.",
+			"apiKeySaved": "Salvata",
+			"save": "Salva"
 		},
 		"modes": {
 			"title": "Modalità installate",
