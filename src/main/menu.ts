@@ -24,6 +24,8 @@ interface MenuManagerCallbacks {
 	onSoundFeedbackEnabledChange?: (enabled: boolean) => void;
 	getChatTextSize?: () => ChatTextSize;
 	onChatTextSizeChange?: (size: ChatTextSize) => void;
+	getZoomFactor?: () => ZoomFactor;
+	onZoomFactorChange?: (factor: ZoomFactor) => void;
 	getTheme?: () => 'light' | 'dark' | 'system';
 	onThemeChange?: (theme: 'light' | 'dark' | 'system') => void;
 }
