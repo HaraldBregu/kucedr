@@ -197,7 +197,7 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 							<Input
 								value={timezone}
 								aria-label={t('settings.knowledge.timezone')}
-								className="w-64 max-w-full text-xs"
+								className="h-7 w-64 max-w-full px-2.5 text-xs md:text-xs"
 								disabled={disabled}
 								onChange={(event) => setTimezone(event.target.value)}
 								onBlur={() => {
