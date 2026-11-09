@@ -28,7 +28,6 @@ import {
 	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
-import { ProfileMediaModels } from '../assistant/profilemodels';
 
 type Task = Awaited<ReturnType<typeof window.tasks.list>>[number];
 
