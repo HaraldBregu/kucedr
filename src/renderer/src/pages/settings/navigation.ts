@@ -243,13 +243,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.overview.descriptions.services',
 		keywords: 'services web search provider api key',
 	},
-	// Provider pages
-	{
-		path: '/settings/knowledge/providers',
-		labelKey: 'settings.tabs.providers',
-		descriptionKey: 'settings.overview.descriptions.databases',
-		keywords: 'database vector provider api key',
-	},
 	// Tasks
 	{
 		path: '/settings/cloud',
