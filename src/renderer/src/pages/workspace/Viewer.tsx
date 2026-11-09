@@ -145,6 +145,18 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 			});
 		return () => { active = false; };
 	}, [filePath, kind, media, t]);
+	useEffect(() => {
+		if (!searchable) return undefined;
+		const handler = (event: KeyboardEvent): void => {
+			if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey || event.key.toLowerCase() !== 'f') return;
+			event.preventDefault();
+			event.stopPropagation();
+			setFindOpen(true);
+			findInputRef.current?.select();
+		};
+		window.addEventListener('keydown', handler, true);
+		return () => window.removeEventListener('keydown', handler, true);
+	}, [searchable]);
 	const codeEditor = file ? (
 		<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
 			<CodeMirrorEditor
