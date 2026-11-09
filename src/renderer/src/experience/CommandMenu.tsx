@@ -3,7 +3,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AppWindow, Home, Puzzle, Settings, type LucideIcon } from 'lucide-react';
+import { AppWindow, FileText, Home, Puzzle, Settings, type LucideIcon } from 'lucide-react';
+import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import {
 	CommandDialog,
 	CommandEmpty,
