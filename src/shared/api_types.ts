@@ -458,6 +458,8 @@ export interface DatabaseApi {
 	list: () => Promise<VectorDatabaseService[]>;
 	getConfiguration: () => Promise<DatabaseConfiguration>;
 	saveConfiguration: (configuration: DatabaseConfiguration) => Promise<DatabaseConfiguration>;
+	hasKey: (script: string) => Promise<boolean>;
+	saveKey: (script: string, apiKey: string) => Promise<void>;
 }
 
 export interface AppsApi {
