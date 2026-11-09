@@ -290,6 +290,16 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 			}, WindowChannels.confirmSignOut)
 		);
 
+		ipcMain.handle(
+			WindowChannels.confirmDelete,
+			wrapIpcHandler(async (event, message: string, detail: string) => {
+				const options = { type: 'warning' as const, message, detail, buttons: ['Cancel', 'Delete'], defaultId: 0, cancelId: 0 };
+				const win = BrowserWindow.fromWebContents(event.sender);
+				const result = win ? await dialog.showMessageBox(win, options) : await dialog.showMessageBox(options);
+				return result.response === 1;
+			}, WindowChannels.confirmDelete)
+		);
+
 		logger.info('WindowIpc', `Registered ${this.name} module`);
 	}
 }
