@@ -691,6 +691,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: import('./app_types').ChatTextSize;
 	};
+	[AppChannels.setZoomFactor]: {
+		args: [factor: import('./app_types').ZoomFactor];
+		result: void;
+	};
+	[AppChannels.getZoomFactor]: {
+		args: [];
+		result: import('./app_types').ZoomFactor;
+	};
 	[AppChannels.getWorkspaceImageModel]: { args: []; result: { providerId: string; modelId: string } };
 	[AppChannels.setWorkspaceImageModel]: { args: [model: { providerId: string; modelId: string }]; result: void };
 	[AppChannels.getWorkspaceVoiceModel]: { args: []; result: { providerId: string; modelId: string } };
