@@ -92,9 +92,9 @@ export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, on
 								</span>
 								<span className="truncate" title={entry.path}>{entry.name}</span>
 							</summary>
-							{entry.children?.length ? (
+							{entry.children?.length || creating?.parentPath === entry.path ? (
 								<div className="ml-3 pl-1">
-									<WorkspaceTree entries={entry.children} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} onRenameStart={onRenameStart} selectedPath={selectedPath} selection={selection} onSelect={onSelect} onMove={onMove} expanded={expanded} />
+									<WorkspaceTree entries={entry.children ?? []} parentPath={entry.path} creating={creating} onCreate={onCreate} onCreateCancel={onCreateCancel} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} onRenameStart={onRenameStart} selectedPath={selectedPath} selection={selection} onSelect={onSelect} onMove={onMove} expanded={expanded} />
 								</div>
 							) : null}
 						</details>
