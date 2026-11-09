@@ -426,14 +426,6 @@ const routes: RouteObject[] = [
 									</SettingsRouteWrapper>
 								),
 							},
-							{
-								path: 'providers',
-								element: (
-									<SettingsRouteWrapper>
-										<ProvidersPage section="databases" />
-									</SettingsRouteWrapper>
-								),
-							},
 						],
 					},
 					{
