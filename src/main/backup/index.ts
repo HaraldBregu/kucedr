@@ -9,5 +9,3 @@ export {
 export { DEFAULT_SYNC_CRON_EXPRESSION, type StorageSyncLogger } from './types';
 export { StorageOperations, type StorageOperationDependencies } from './operations';
 export { forkSync } from './fork';
-export { resolveBackupService, type BackupTarget } from './resolve';
-export { listBackupServices } from './services';

@@ -1,7 +1,7 @@
 # Backup
 
 Folder backup to S3-compatible storage. A backup **service** is a plugin script of type
-`STORAGE`. The built-in one is `resources/plugins/bootstrap/scripts/cloud-sync-s3`.
+`STORAGE`. The built-in one is `resources/plugins/bootstrap/scripts/backup-s3`.
 
 - **Settings → Scripts → <script>**: the script's detail page holds the storage connection
   (bucket, region, endpoint, access key, secret key). It saves an S3 provider with
@@ -33,7 +33,7 @@ to `type === 'STORAGE'`.
 ## Data flow
 
 ```
-Scripts → cloud-sync-s3 ──saveProvider──▶ storage/providers (encrypted)   settings.providerId
+Scripts → backup-s3 ──saveProvider──▶ storage/providers (encrypted)   settings.providerId
 Settings → Cloud ──saveSettings──▶ backup/store (serviceId, paths, cron) ──▶ backup/schedule
 Upload / schedule ──▶ backup/operations ──▶ backup/fork ──▶ selected STORAGE script ──▶ S3
 ```
@@ -46,7 +46,7 @@ npx jest --selectProjects main tests/unit/main/storage tests/unit/main/ipc/stora
   tests/unit/main/preload/storage.test.ts tests/unit/main/cloud/storage-sync-schedule.test.ts
 ```
 
-Manually: save a bucket on the Cloud Sync S3 script page, select **Cloud Sync S3** under
+Manually: save a bucket on the Backup S3 script page, select **Backup S3** under
 Settings → Cloud, add a folder, and run Upload. Set the custom cron `*/1 * * * *` and check that
 "Next backup" appears; an invalid expression shows an inline error and keeps the previous
 schedule.

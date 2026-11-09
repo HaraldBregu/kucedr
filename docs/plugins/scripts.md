@@ -117,8 +117,8 @@ A fenced block whose language is a script's `fence` renders that script (`src/re
 - child → parent, one message on `process.parentPort`: `{ result }` or `{ error: string }`
 - the parent kills the child after the reply; an exit with no reply rejects
 
-`protectedRoot` is the Kucedr data folder. The script must never read or write its settings, providers, or storage subfolders. Bundled implementation: `bootstrap/scripts/cloud-sync-s3`.
+`protectedRoot` is the Kucedr data folder. The script must never read or write its settings, providers, or storage subfolders. Bundled implementation: `bootstrap/scripts/backup-s3`.
 
 ## Bundled scripts
 
-`bootstrap/scripts`: `chart` (Recharts), `maps` (OpenStreetMap), `draw`, `dither`, `organui` (all `UI`), and `cloud-sync-s3` (`STORAGE`).
+`bootstrap/scripts`: `chart` (Recharts), `maps` (OpenStreetMap), `draw`, `dither`, `organui` (all `UI`), and `backup-s3` (`STORAGE`).

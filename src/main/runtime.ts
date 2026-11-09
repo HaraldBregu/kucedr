@@ -40,7 +40,7 @@ import { registerIpcHandlers } from './ipc/core/register_ipc_handlers';
 import { setupEventLogging, setupProcessSafetyNet } from './shared/error_reporter';
 import { setupMemoryMonitor } from './shared/metrics';
 import { bootstrapServices, cleanup } from './bootstrap';
-import { startStorageSync, stopStorageSync } from './storage';
+import { startStorageSync, stopStorageSync } from './backup';
 import { startRagSchedule, stopRagSchedule } from './agent/knowledge/rag';
 import { AppChannels } from '../shared/ipc_channels_definitions';
 import { authLinks } from './cloud/links';

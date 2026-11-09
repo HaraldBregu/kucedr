@@ -1,7 +1,0 @@
-{
-	"id": "storage",
-	"name": "S3 Storage",
-	"type": "STORAGE",
-	"url": "https://s3.amazonaws.com",
-	"authentication": "api-key"
-}

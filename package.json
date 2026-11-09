@@ -15,7 +15,7 @@
 		"packages/cli",
 		"website",
 		"resources/plugins/bootstrap/scripts/chart",
-		"resources/plugins/bootstrap/scripts/cloud-sync-s3",
+		"resources/plugins/bootstrap/scripts/backup-s3",
 		"resources/plugins/bootstrap/scripts/dither",
 		"resources/plugins/bootstrap/scripts/draw",
 		"resources/plugins/bootstrap/scripts/maps",

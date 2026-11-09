@@ -6,6 +6,7 @@ export const storage: StorageApi = {
 	listProviders: () => typedInvokeUnwrap(StorageChannels.listProviders),
 	saveProvider: (input) => typedInvokeUnwrap(StorageChannels.saveProvider, input),
 	removeProvider: (id) => typedInvokeUnwrap(StorageChannels.removeProvider, id),
+	getNextRun: () => typedInvokeUnwrap(StorageChannels.getNextRun),
 	getSettings: () => typedInvokeUnwrap(StorageChannels.getSettings),
 	saveSettings: (settings) => typedInvokeUnwrap(StorageChannels.saveSettings, settings),
 	syncFolders: () => typedInvokeUnwrap(StorageChannels.syncFolders),

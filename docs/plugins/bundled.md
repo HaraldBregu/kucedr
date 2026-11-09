@@ -24,7 +24,7 @@ Model counts are the folders under `models/`.
 |---|---|
 | `apps` | `arcade` (extension; Space Invaders, Breakout, Asteroids, Lunar Lander, Galaga, Pac-Man, Snake), `tetris`, `triangle`, `taxes` |
 | `skills` | `docx`, `pdf`, `pptx`, `xlsx` |
-| `scripts` | `chart`, `maps`, `draw`, `dither`, `organui` (UI); `cloud-sync-s3` (STORAGE) |
+| `scripts` | `chart`, `maps`, `draw`, `dither`, `organui` (UI); `backup-s3` (STORAGE) |
 | `modes` | `plan`, `goal` (see [modes.md](modes.md)) |
 
 Script folders keep their `src/`, `package.json`, and sometimes `node_modules/` and `example/` for development. Only the built `dist/` entry and `instructions.md` are used at runtime. The `node_modules/.bin` links are why bundled plugins skip the no-links check.

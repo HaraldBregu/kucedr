@@ -15,6 +15,8 @@ export type StorageProviderInput = Omit<StorageProvider, 'id' | 'hasSecretAccess
 };
 
 export interface StorageSyncSettings {
+	/** Name of the STORAGE script that runs backups, e.g. `backup-s3`. */
+	serviceId?: string;
 	providerId?: string;
 	paths: string[];
 	syncEnabled: boolean;

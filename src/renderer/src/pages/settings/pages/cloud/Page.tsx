@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import type {
 	StorageOperationStatus,
-	StorageService,
+	StorageProvider,
 	StorageSyncSettings,
 } from '@shared/storage_types';
 import {
@@ -25,13 +25,15 @@ import {
 	SettingsSection,
 } from '../../components';
 import { SYNC_INTERVALS } from './constants';
+import type { PluginScriptInfo } from '@shared/plugin_types';
 import Service from './Service';
 import Restore from './Restore';
 
 const CloudPage: React.FC = () => {
 	const { t } = useTranslation();
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
-	const [services, setServices] = useState<StorageService[]>([]);
+	const [services, setServices] = useState<PluginScriptInfo[]>([]);
+	const [providers, setProviders] = useState<StorageProvider[]>([]);
 	const [nextRun, setNextRun] = useState<string>();
 	const [cronInvalid, setCronInvalid] = useState(false);
 	const [settingsLoading, setSettingsLoading] = useState(true);
@@ -61,23 +63,24 @@ const CloudPage: React.FC = () => {
 		void Promise.allSettled([
 			window.storage.getSettings(),
 			window.storage.getOperationStatus(),
-			window.storage.listServices(),
+			window.scripts.list(),
+			window.storage.listProviders(),
 			window.storage.getNextRun(),
-		]).then(([settingsResult, statusResult, servicesResult, nextRunResult]) => {
+		]).then(([settingsResult, statusResult, servicesResult, providersResult, nextRunResult]) => {
 			if (cancelled) return;
 
 			if (settingsResult.status === 'fulfilled') setSettings(settingsResult.value);
-			if (servicesResult.status === 'fulfilled') setServices(servicesResult.value);
+			if (servicesResult.status === 'fulfilled')
+				setServices(servicesResult.value.filter((script) => script.type === 'STORAGE'));
+			if (providersResult.status === 'fulfilled') setProviders(providersResult.value);
 			if (nextRunResult.status === 'fulfilled') setNextRun(nextRunResult.value);
 			if (statusResult.status === 'fulfilled' && statusResult.value) {
 				applyOperationStatus(statusResult.value);
 			}
 
-			const failed = [
-				settingsResult,
-				statusResult,
-				servicesResult,
-			].some((result) => result.status === 'rejected');
+			const failed = [settingsResult, statusResult, servicesResult, providersResult].some(
+				(result) => result.status === 'rejected'
+			);
 			setLoadFailed(failed);
 			if (failed) setError(t('settings.storage.errors.load'));
 			setSettingsLoading(false);
@@ -89,11 +92,9 @@ const CloudPage: React.FC = () => {
 		};
 	}, [applyOperationStatus, loadVersion, t]);
 
-
 	const storage = draft ?? settings;
-	const selectedService = services.find(
-		(service) => service.id === storage?.serviceId && service.configured
-	);
+	const selectedService = services.find((service) => service.name === storage?.serviceId);
+	const selectedProvider = providers.find((provider) => provider.id === storage?.providerId);
 	const runningOperation = operationStatus?.state === 'running' ? operationStatus : undefined;
 	const intervalValue = !storage?.syncEnabled
 		? 'off'
@@ -101,7 +102,7 @@ const CloudPage: React.FC = () => {
 			'custom');
 	const busy =
 		settingsLoading || operationStatusLoading || operationStarting || Boolean(runningOperation);
-	const controlsDisabled = busy || !selectedService;
+	const controlsDisabled = busy || !selectedService || !selectedProvider;
 	const operationStatusKey = operationStatus
 		? operationStatus.state === 'running' && operationStatus.trigger === 'scheduled'
 			? `settings.storage.operation.${operationStatus.operation}.scheduledRunning`
@@ -143,9 +144,7 @@ const CloudPage: React.FC = () => {
 		return queued;
 	};
 
-	const updateDraft = (
-		next: StorageSyncSettings
-	): Promise<StorageSyncSettings | undefined> => {
+	const updateDraft = (next: StorageSyncSettings): Promise<StorageSyncSettings | undefined> => {
 		setDraft(next);
 		setError(null);
 		setSyncStatus(null);
@@ -220,7 +219,6 @@ const CloudPage: React.FC = () => {
 		});
 	};
 
-
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -247,24 +245,18 @@ const CloudPage: React.FC = () => {
 				</div>
 			) : storage ? (
 				<>
-					<Service
-						services={services}
-						value={storage.serviceId}
-						disabled={busy}
-						onChange={(serviceId) => void updateDraft({ ...storage, serviceId })}
-					/>
 					<SettingsSection
 						title={t('settings.storage.sync.title')}
 						description={t('settings.storage.sync.description')}
 						action={
 							<Button
 								variant="outline"
-								size="sm"
+								size="icon-sm"
+								aria-label={t('settings.storage.sync.addFolders')}
 								disabled={busy}
 								onClick={() => void pickFolders()}
 							>
 								<Plus className="size-3" />
-								{t('settings.storage.sync.addFolders')}
 							</Button>
 						}
 					>
@@ -384,7 +376,10 @@ const CloudPage: React.FC = () => {
 															...storage,
 															syncEnabled: true,
 															syncCronExpression: cronDraft,
-														}).then((saved) => setCronInvalid(!saved));
+														}).then((saved) => {
+															setCronInvalid(!saved);
+															if (!saved) setError(null);
+														});
 												}}
 											/>
 										}
@@ -392,8 +387,11 @@ const CloudPage: React.FC = () => {
 								)}
 								{cronInvalid && (
 									<SettingsRow
-										title={t('settings.storage.autoSync.invalidCron')}
-										className="text-destructive"
+										title={
+											<span className="text-destructive">
+												{t('settings.storage.autoSync.invalidCron')}
+											</span>
+										}
 									/>
 								)}
 								{storage.syncEnabled && nextRun && !cronInvalid && (
@@ -438,7 +436,13 @@ const CloudPage: React.FC = () => {
 						</div>
 					)}
 
-
+					<Service
+						services={services}
+						value={storage.serviceId}
+						provider={selectedProvider}
+						disabled={busy}
+						onChange={(serviceId) => void updateDraft({ ...storage, serviceId })}
+					/>
 					<Restore
 						open={restoreOpen}
 						onOpenChange={setRestoreOpen}

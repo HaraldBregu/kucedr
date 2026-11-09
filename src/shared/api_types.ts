@@ -443,6 +443,7 @@ export interface StorageApi {
 	listProviders: () => Promise<StorageProvider[]>;
 	saveProvider: (input: StorageProviderInput) => Promise<StorageProvider>;
 	removeProvider: (id: string) => Promise<boolean>;
+	getNextRun: () => Promise<string | undefined>;
 	getSettings: () => Promise<StorageSyncSettings>;
 	saveSettings: (settings: StorageSyncSettings) => Promise<StorageSyncSettings>;
 	syncFolders: () => Promise<StorageSyncFolder[]>;

@@ -1,10 +1,10 @@
 import { watch, type FSWatcher } from 'chokidar';
 import type { AuthService } from '../../cloud/service';
 import { readStorageConfig } from '../local/config';
-import { runStorageSync } from '../storage_auto_sync';
+import { runStorageSync } from '../../backup/run';
 import { isProtectedStoragePath } from '../storage_protected';
-import type { StorageOperations } from '../storage_operations';
-import type { StorageSyncLogger } from '../storage_sync_types';
+import type { StorageOperations } from '../../backup/operations';
+import type { StorageSyncLogger } from '../../backup/types';
 
 export function startVersionedStorageWatch(
 	auth: AuthService,

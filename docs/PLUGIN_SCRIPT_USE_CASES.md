@@ -63,7 +63,7 @@ Rules:
    - `settings/pages/scripts/details/Page.tsx` gets a "Use cases" meta row next to `fence`, with an i18n key.
 6. **Bundled manifests** (`resources/plugins/bootstrap/scripts/*/manifest.json`) replace `type`:
    - `chart`, `dither`, `draw`, `maps`, `organui`: `["CHAT", "EDITOR"]`, which matches today's behaviour. Narrow any of them, such as `maps` to `["EDITOR"]`, if wanted.
-   - `cloud-sync-s3`: `["STORAGE"]`.
+   - `backup-s3`: `["STORAGE"]`.
 7. **`docs/PLUGIN_SCRIPTS.md`:** update the manifest example, the rules (`useCases`, `EDITOR` ⇒ `fence`, the legacy mapping) and the host sections.
 8. **`packages/sdk` and the `kucedr-plugins` repo template:** replace any `type` field the same way.
 

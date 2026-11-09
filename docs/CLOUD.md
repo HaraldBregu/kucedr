@@ -1,7 +1,7 @@
 # Account and Cloud Architecture
 
 Kucedr separates account services from folder backup. Accounts use a build-configured backend;
-folder backup uses an S3-compatible storage provider selected in Settings → Storage. Backup users
+folder backup runs a STORAGE script (such as `backup-s3`) selected in Settings → Cloud; see [Backup](BACKUP.md). Backup users
 configure the bucket, region, optional endpoint, access key, and secret key themselves.
 
 AI model, search, database, storage, and messaging providers are user-configured services.
@@ -16,11 +16,11 @@ the renderer to application services; trusted settings views can edit provider c
 | ------------------------------ | ------------------- | -------------------- | --------------------------- |
 | Account lifecycle and profile  | `cloud/service.ts`  | `AccountProvider`    | `cloud/supabase/auth.ts`    |
 | Conversation records and files | `cloud/data.ts`     | `CloudRepository`    | `cloud/supabase/records.ts` |
-| Folder backup objects          | `storage/*`         | `StorageObjectStore` | `storage/s3/store.ts`       |
+| Folder backup                  | `backup/*`          | STORAGE script       | `backup-s3`             |
 
 `bootstrap.ts` is the composition root. It creates the Supabase client for account and cloud
 record services. Folder transfers resolve the selected storage provider and create an S3 client
-for each transfer through `storage/s3/transfer.ts`.
+for each transfer through `backup/fork.ts`.
 
 Version history sync is an opt-in path described in [Cloud file synchronization design](STORAGE_SYNC.md).
 It uses the same saved S3 provider selection for public bucket settings, the account's Supabase

@@ -1436,20 +1436,20 @@
 			"description": "Carica e scarica cartelle con Amazon S3 o qualsiasi provider compatibile con S3.",
 			"sync": {
 				"title": "Cartelle",
-				"description": "Carica queste cartelle direttamente nel tuo bucket.",
+				"description": "Esegui il backup di queste cartelle nel tuo bucket.",
 				"addFolders": "Aggiungi cartelle",
-				"empty": "Aggiungi cartelle per iniziare a caricare.",
+				"empty": "Aggiungi cartelle per iniziare il backup.",
 				"folder": "Cartella selezionata",
 				"removeFolder": "Rimuovi cartella"
 			},
 			"syncSaved": "Impostazioni storage salvate.",
 			"autoSync": {
-				"sectionTitle": "Caricamenti automatici",
-				"sectionDescription": "I caricamenti pianificati vengono eseguiti mentre Kucedr è aperto.",
-				"description": "Carica le cartelle selezionate secondo una pianificazione.",
+				"sectionTitle": "Backup automatici",
+				"sectionDescription": "I backup pianificati vengono eseguiti mentre Kucedr è aperto.",
+				"description": "Esegui il backup delle cartelle selezionate secondo una pianificazione.",
 				"cronExpression": "Espressione cron",
 				"cronDescription": "Pianificazione cron a cinque campi nell'ora locale. Ad esempio, 0 3 * * * viene eseguita ogni giorno alle 03:00.",
-				"interval": "Intervallo di caricamento",
+				"interval": "Intervallo di backup",
 				"off": "Disattivata",
 				"every15m": "Ogni 15 minuti",
 				"every30m": "Ogni 30 minuti",
@@ -1460,49 +1460,52 @@
 				"every1d": "Ogni giorno",
 				"every2d": "Ogni 2 giorni",
 				"every7d": "Ogni 7 giorni",
-				"custom": "Pianificazione personalizzata"
+				"custom": "Pianificazione personalizzata",
+				"invalidCron": "Espressione cron non valida. La pianificazione precedente resta attiva.",
+				"nextRun": "Prossimo backup"
 			},
 			"errors": {
 				"load": "Impossibile caricare le impostazioni di archiviazione.",
 				"pickFolders": "Impossibile selezionare le cartelle.",
 				"saveSync": "Impossibile salvare le impostazioni storage.",
-				"push": "Impossibile caricare i file.",
-				"pull": "Impossibile scaricare i file."
+				"push": "Impossibile eseguire il backup dei file.",
+				"pull": "Impossibile ripristinare i file."
 			},
 			"folders": {
 				"agent": "Area di lavoro dell'assistente",
 				"sessions": "Conversazioni dell'assistente",
 				"skills": "Skill installate"
 			},
-			"backup": "Carica",
-			"restore": "Scarica",
+			"backup": "Backup",
+			"restore": "Ripristina",
 			"restoreDialog": {
-				"title": "Scaricare dallo storage?",
-				"description": "Scarica i file nelle cartelle locali selezionate. I file locali corrispondenti verranno sostituiti. Gli altri file locali vengono conservati.",
-				"confirm": "Scarica file"
+				"title": "Ripristinare dal backup?",
+				"description": "Ripristina i file nelle cartelle locali selezionate. I file locali corrispondenti verranno sostituiti. Gli altri file locali vengono conservati.",
+				"confirm": "Ripristina file"
 			},
 			"operation": {
 				"backup": {
-					"running": "Caricamento in esecuzione in background…",
-					"scheduledRunning": "Caricamento pianificato in esecuzione in background…",
-					"succeeded": "Caricati {{count}} file.",
-					"partial": "Caricati {{count}} file; {{failed}} non riusciti.",
-					"failed": "Caricamento non riuscito. {{error}}"
+					"running": "Backup in esecuzione in background…",
+					"scheduledRunning": "Backup pianificato in esecuzione in background…",
+					"succeeded": "Backup di {{count}} file completato.",
+					"partial": "Backup di {{count}} file; {{failed}} non riusciti.",
+					"failed": "Backup non riuscito. {{error}}"
 				},
 				"restore": {
-					"running": "Download in esecuzione in background…",
-					"succeeded": "Scaricati {{count}} file.",
-					"partial": "Scaricati {{count}} file; {{failed}} non riusciti.",
-					"failed": "Download non riuscito. {{error}}"
+					"running": "Ripristino in esecuzione in background…",
+					"succeeded": "Ripristinati {{count}} file.",
+					"partial": "Ripristinati {{count}} file; {{failed}} non riusciti.",
+					"failed": "Ripristino non riuscito. {{error}}"
 				}
 			},
-			"pushing": "Caricamento…",
-			"pulling": "Download in corso…",
+			"pushing": "Backup in corso…",
+			"pulling": "Ripristino in corso…",
 			"cancel": "Annulla",
-			"provider": {
-				"title": "Archiviazione",
-				"description": "Il bucket Amazon S3 o compatibile con S3 usato da Cloud Sync S3.",
-				"placeholder": "Non configurato"
+			"service": {
+				"title": "Servizio di archiviazione",
+				"description": "Lo script STORAGE che esegue i backup. Imposta bucket e chiavi nella pagina delle impostazioni dello script.",
+				"placeholder": "Seleziona un servizio",
+				"configure": "Configura"
 			}
 		},
 		"embedding": {

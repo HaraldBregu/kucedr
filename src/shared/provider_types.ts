@@ -174,16 +174,6 @@ export interface CatalogWebSearch extends CatalogEntryWebSearch {
 	readonly provider: PublicProvider;
 }
 
-/** A storage service a plugin offers under services/<id> with type STORAGE. */
-export interface CatalogStorageService extends CatalogEntryService {
-	readonly type: 'STORAGE';
-	readonly url: string;
-	readonly provider: PublicProvider;
-}
-
-/** Any service listed in Settings → Services. */
-export type CatalogPluginService = CatalogWebSearch | CatalogStorageService;
-
 /** Provider definition stored in resources/plugins/<id>/manifest.json. */
 export interface ProviderManifest {
 	readonly providerId: string;
@@ -207,7 +197,6 @@ export interface ProviderManifest {
 	readonly vector_databases?: readonly ProviderManifestVectorDatabase[];
 	readonly storage?: ProviderManifestStorage;
 	readonly web_search?: readonly ProviderManifestWebSearch[];
-	readonly storage_services?: readonly ProviderManifestWebSearch[];
 	readonly settings?: readonly ProviderManifestSetting[];
 	readonly discoveryInputs?: ModelMetadata['discoveryInputs'];
 	readonly discoveryLabel?: string;

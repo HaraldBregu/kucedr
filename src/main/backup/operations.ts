@@ -6,7 +6,7 @@ import type {
 	StoragePullResult,
 	StoragePushResult,
 } from '../../shared/storage_types';
-import { describeStorageError } from './storage_error';
+import { describeStorageError } from '../storage/storage_error';
 
 type StorageTransferResult = StoragePushResult | StoragePullResult;
 

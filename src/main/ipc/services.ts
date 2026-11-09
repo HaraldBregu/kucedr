@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { ServicesChannels } from '../../shared/ipc_channels_definitions';
-import { loadStorageServices, loadWebSearches } from '../models';
+import { loadWebSearches } from '../models';
 import { wrapSimpleHandler } from './core/error_handler';
 import type { IpcModule } from './core/module';
 
@@ -10,10 +10,7 @@ export class ServicesIpc implements IpcModule {
 	register(): void {
 		ipcMain.handle(
 			ServicesChannels.list,
-			wrapSimpleHandler(
-				() => [...loadWebSearches(), ...loadStorageServices()],
-				ServicesChannels.list
-			)
+			wrapSimpleHandler(() => [...loadWebSearches()], ServicesChannels.list)
 		);
 	}
 }

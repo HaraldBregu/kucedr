@@ -4,7 +4,8 @@ import type { StorageSyncSettings } from '../../shared/storage_types';
 import { restrictSettingsFile } from '../shared/restrict_settings_file';
 import { storageLocation } from '../storage/local/paths';
 import { normalizeStorageSettings } from './normalize';
-import { resolveBackupService } from './resolve';
+import { pluginScripts } from '../plugins';
+import { storageProviders } from '../storage/providers';
 import { DEFAULT_SYNC_CRON_EXPRESSION } from './types';
 
 const defaults: StorageSyncSettings = {
@@ -46,7 +47,12 @@ export function getStorageSettings(): StorageSyncSettings {
 
 export function saveStorageSettings(settings: StorageSyncSettings): StorageSyncSettings {
 	const saved = normalizeStorageSettings(settings);
-	if (saved.serviceId || saved.syncEnabled) resolveBackupService(saved.serviceId);
+	if (
+		saved.serviceId &&
+		!pluginScripts('STORAGE').some((script) => script.name === saved.serviceId)
+	)
+		throw new Error('The selected storage service was not found.');
+	if (saved.providerId || saved.syncEnabled) storageProviders.resolve(saved.providerId);
 	store.store = saved;
 	restrictSettingsFile(store.path);
 	return saved;

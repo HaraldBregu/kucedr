@@ -2,14 +2,14 @@ import type { IpcModule } from './core/module';
 import type { EventBus } from '../event_bus';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import { StorageChannels } from '../../shared/ipc_channels_definitions';
+import { pickFolders, syncFolders } from '../storage';
 import {
 	getStorageSettings,
-	pickFolders,
+	nextStorageSync,
 	rescheduleStorageSync,
 	saveStorageSettings,
-	syncFolders,
-} from '../storage';
-import type { StorageOperations } from '../storage';
+} from '../backup';
+import type { StorageOperations } from '../backup';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
@@ -58,6 +58,10 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 				rescheduleStorageSync();
 			}
 			return removed;
+		});
+		registerQueryWithEvent(StorageChannels.getNextRun, (event) => {
+			trusted.assert(event);
+			return nextStorageSync();
 		});
 		registerQueryWithEvent(StorageChannels.getSettings, (event) => {
 			trusted.assert(event);

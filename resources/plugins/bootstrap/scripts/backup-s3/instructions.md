@@ -1,4 +1,4 @@
-# cloud-sync-s3
+# backup-s3
 
 Storage script run by Kucedr in a utility process; it is not an agent tool.
 

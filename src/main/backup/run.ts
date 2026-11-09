@@ -3,7 +3,11 @@ import type { StorageOperations } from './operations';
 import type { StorageSyncLogger } from './types';
 
 export function isAutoSyncable(storage: StorageSyncSettings): boolean {
-	return Boolean(storage.serviceId) && storage.paths.length > 0 && storage.syncEnabled;
+	return (
+		Boolean(storage.serviceId && storage.providerId) &&
+		storage.paths.length > 0 &&
+		storage.syncEnabled
+	);
 }
 
 export async function runStorageSync(

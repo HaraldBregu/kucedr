@@ -380,6 +380,7 @@ export const StorageChannels = {
 	listProviders: 'storage:providers:list',
 	saveProvider: 'storage:providers:save',
 	removeProvider: 'storage:providers:remove',
+	getNextRun: 'storage:next-run:get',
 	getSettings: 'storage:settings:get',
 	saveSettings: 'storage:settings:save',
 	syncFolders: 'storage:sync-folders',

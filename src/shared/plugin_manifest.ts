@@ -36,7 +36,6 @@ export const pluginManifestSchema = z
 		mcp_servers: z.unknown().optional(),
 		vector_databases: z.unknown().optional(),
 		web_search: z.unknown().optional(),
-		storage_services: z.unknown().optional(),
 		storage: z.unknown().optional(),
 		settings: z.object({
 			inputSchema: z.object({

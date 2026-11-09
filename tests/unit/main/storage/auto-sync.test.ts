@@ -1,7 +1,8 @@
-import { isAutoSyncable, runStorageSync } from '../../../../src/main/storage/storage_auto_sync';
+import { isAutoSyncable, runStorageSync } from '../../../../src/main/backup/run';
 
 it('only schedules backups with a selected provider and enabled folders', () => {
 	const storage = {
+		serviceId: 'backup-s3',
 		providerId: 'connection',
 		paths: ['/data/agent'],
 		syncEnabled: true,

@@ -1,5 +1,5 @@
 {
-	"title": "Cloud Sync S3",
+	"title": "Backup S3",
 	"description": "Back up selected folders to an Amazon S3 or S3-compatible bucket and restore them.",
 	"author": "Harald Bregu",
 	"type": "STORAGE",

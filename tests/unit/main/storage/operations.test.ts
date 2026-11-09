@@ -1,10 +1,10 @@
 import type {
 	StorageOperationDependencies,
 	StorageOperations,
-} from '../../../../src/main/storage/storage_operations';
+} from '../../../../src/main/backup/operations';
 
 const loadOperations = async (): Promise<typeof StorageOperations> =>
-	(await import('../../../../src/main/storage/storage_operations')).StorageOperations;
+	(await import('../../../../src/main/backup/operations')).StorageOperations;
 
 describe('storage operations', () => {
 	it('returns running state immediately and retains it until deferred work finishes', async () => {

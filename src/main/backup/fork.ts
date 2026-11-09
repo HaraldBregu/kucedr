@@ -3,18 +3,21 @@ import { utilityProcess } from 'electron';
 import type { StorageOperation } from '../../shared/storage_types';
 import { pluginScripts } from '../plugins';
 import { userDataLocation } from '../shared/user_data_location';
-import { storageProviders } from './providers';
-import { transferRoots } from './roots';
-import { storagePrefix } from './storage_prefix';
-import { getStorageSettings } from './storage_store';
+import { storageProviders } from '../storage/providers';
+import { transferRoots } from '../storage/roots';
+import { storagePrefix } from '../storage/storage_prefix';
+import { getStorageSettings } from './store';
 
-/** Runs the storage plugin's sync script in a utility process and returns its result. */
+/** Runs the selected STORAGE script in a utility process and returns its result. */
 export async function forkSync<T>(operation: StorageOperation): Promise<T> {
-	const [script] = pluginScripts('STORAGE');
-	if (!script) throw new Error('No storage sync script available.');
 	const settings = getStorageSettings();
+	const script = pluginScripts('STORAGE').find((entry) => entry.name === settings.serviceId);
+	if (!script) throw new Error('Select a storage service for backup.');
 	const provider = storageProviders.resolve(settings.providerId);
-	const roots = transferRoots(settings.paths).map((root) => ({ path: root, prefix: storagePrefix(root) }));
+	const roots = transferRoots(settings.paths).map((root) => ({
+		path: root,
+		prefix: storagePrefix(root),
+	}));
 	if (!roots.length) {
 		throw new Error(
 			operation === 'backup'

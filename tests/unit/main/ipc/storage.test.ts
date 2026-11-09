@@ -26,12 +26,14 @@ jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 	registerQueryWithEvent,
 }));
 jest.mock('../../../../src/main/storage', () => ({
-	getStorageSettings,
 	pickFolders: jest.fn(),
+	syncFolders: jest.fn(),
+}));
+jest.mock('../../../../src/main/backup', () => ({
+	getStorageSettings,
+	nextStorageSync: jest.fn(),
 	rescheduleStorageSync,
 	saveStorageSettings,
-	syncFolders: jest.fn(),
-	withStorageLock: jest.fn(),
 }));
 
 import { StorageIpc } from '../../../../src/main/ipc/storage';

@@ -6,7 +6,7 @@ import type {
 	StoredProviderKind,
 } from '../shared/provider_types';
 import { userDataLocation } from './shared/user_data_location';
-import { migrateStorageSettings } from './storage/storage_store';
+import { migrateStorageSettings } from './backup/store';
 import { migrateMcpStoreFromProviders } from './mcp/mcp_store_state';
 import { getTaskState, setTaskState, taskStorePath } from './tasks/tasks_store';
 import type { PersistedTaskState } from './tasks/tasks_types';
@@ -367,4 +367,4 @@ export function getResolvedProvider(providerId: string | undefined): ResolvedPro
 	};
 }
 
-export { getStorageSettings, saveStorageSettings } from './storage/storage_store';
+export { getStorageSettings, saveStorageSettings } from './backup/store';

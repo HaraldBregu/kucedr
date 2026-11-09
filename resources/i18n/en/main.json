@@ -1436,20 +1436,20 @@
 			"description": "Upload and download folders with Amazon S3 or any S3-compatible storage provider.",
 			"sync": {
 				"title": "Folders",
-				"description": "Upload these folders directly to your storage bucket.",
+				"description": "Back up these folders to your storage bucket.",
 				"addFolders": "Add folders",
-				"empty": "Add folders to start uploading.",
+				"empty": "Add folders to start backing up.",
 				"folder": "Selected folder",
 				"removeFolder": "Remove folder"
 			},
 			"syncSaved": "Storage settings saved.",
 			"autoSync": {
-				"sectionTitle": "Automatic uploads",
-				"sectionDescription": "Scheduled uploads run while Kucedr is open.",
-				"description": "Upload the selected folders on a schedule.",
+				"sectionTitle": "Automatic backups",
+				"sectionDescription": "Scheduled backups run while Kucedr is open.",
+				"description": "Back up the selected folders on a schedule.",
 				"cronExpression": "Cron expression",
 				"cronDescription": "Five-field cron schedule in local time. For example, 0 3 * * * runs daily at 03:00.",
-				"interval": "Upload interval",
+				"interval": "Backup interval",
 				"off": "Off",
 				"every15m": "Every 15 minutes",
 				"every30m": "Every 30 minutes",
@@ -1460,49 +1460,52 @@
 				"every1d": "Every day",
 				"every2d": "Every 2 days",
 				"every7d": "Every 7 days",
-				"custom": "Custom schedule"
+				"custom": "Custom schedule",
+				"invalidCron": "Invalid cron expression. The previous schedule is still active.",
+				"nextRun": "Next backup"
 			},
 			"errors": {
 				"load": "Could not load storage settings.",
 				"pickFolders": "Could not select folders.",
 				"saveSync": "Could not save storage settings.",
-				"push": "Could not upload files.",
-				"pull": "Could not download files."
+				"push": "Could not back up files.",
+				"pull": "Could not restore files."
 			},
 			"folders": {
 				"agent": "Assistant workspace",
 				"sessions": "Assistant conversations",
 				"skills": "Installed skills"
 			},
-			"backup": "Upload",
-			"restore": "Download",
+			"backup": "Backup",
+			"restore": "Restore",
 			"restoreDialog": {
-				"title": "Download from storage?",
-				"description": "Download files into the selected local folders. Matching local files will be replaced. Other local files are kept.",
-				"confirm": "Download files"
+				"title": "Restore from backup?",
+				"description": "Restore files into the selected local folders. Matching local files will be replaced. Other local files are kept.",
+				"confirm": "Restore files"
 			},
 			"operation": {
 				"backup": {
-					"running": "Upload is running in the background…",
-					"scheduledRunning": "Scheduled upload is running in the background…",
-					"succeeded": "Uploaded {{count}} file(s).",
-					"partial": "Uploaded {{count}} file(s); {{failed}} failed.",
-					"failed": "Upload failed. {{error}}"
+					"running": "Backup is running in the background…",
+					"scheduledRunning": "Scheduled backup is running in the background…",
+					"succeeded": "Backed up {{count}} file(s).",
+					"partial": "Backed up {{count}} file(s); {{failed}} failed.",
+					"failed": "Backup failed. {{error}}"
 				},
 				"restore": {
-					"running": "Download is running in the background…",
-					"succeeded": "Downloaded {{count}} file(s).",
-					"partial": "Downloaded {{count}} file(s); {{failed}} failed.",
-					"failed": "Download failed. {{error}}"
+					"running": "Restore is running in the background…",
+					"succeeded": "Restored {{count}} file(s).",
+					"partial": "Restored {{count}} file(s); {{failed}} failed.",
+					"failed": "Restore failed. {{error}}"
 				}
 			},
-			"pushing": "Uploading…",
-			"pulling": "Downloading…",
+			"pushing": "Backing up…",
+			"pulling": "Restoring…",
 			"cancel": "Cancel",
-			"provider": {
-				"title": "Storage",
-				"description": "The Amazon S3 or S3-compatible bucket that Cloud Sync S3 uses.",
-				"placeholder": "Not configured"
+			"service": {
+				"title": "Storage service",
+				"description": "The STORAGE script that runs backups. Set its bucket and keys on the script's settings page.",
+				"placeholder": "Select a service",
+				"configure": "Configure"
 			}
 		},
 		"embedding": {

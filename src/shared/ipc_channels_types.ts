@@ -970,6 +970,10 @@ export interface StorageInvokeChannelMap {
 		args: [id: string];
 		result: boolean;
 	};
+	[StorageChannels.getNextRun]: {
+		args: [];
+		result: string | undefined;
+	};
 	[StorageChannels.getSettings]: {
 		args: [];
 		result: import('./storage_types').StorageSyncSettings;

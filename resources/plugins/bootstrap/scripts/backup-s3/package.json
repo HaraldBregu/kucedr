@@ -1,5 +1,5 @@
 {
-	"name": "@kucedr-plugins/bootstrap-cloud-sync-s3",
+	"name": "@kucedr-plugins/bootstrap-backup-s3",
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
