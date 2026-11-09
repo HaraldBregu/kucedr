@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@/components/ui/input';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { WorkspaceTree } from './Tree';
+import { WorkspaceTree, type WorkspaceAction } from './Tree';
 
 interface WorkspaceSidebarProps {
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
@@ -82,10 +82,12 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 	};
 	const deleteSelection = (targets: WorkspaceTreeEntry[]): void => {
 		if (targets.length === 0 || busy) return;
-		const message = targets.length > 1
-			? t('workspaceSidebar.deleteEntries', { count: targets.length, defaultValue: 'Delete {{count}} items' })
-			: t('workspaceSidebar.deleteEntry', { name: targets[0].name });
-		if (!window.confirm(`${message}\n\n${t('workspaceSidebar.deleteWarning', 'This permanently deletes the item and its contents.')}`)) return;
+		setPendingDelete(targets);
+	};
+	const confirmDelete = (): void => {
+		const targets = pendingDelete;
+		setPendingDelete(null);
+		if (!targets || busy) return;
 		setBusy(true);
 		setActionError('');
 		void (async () => {
