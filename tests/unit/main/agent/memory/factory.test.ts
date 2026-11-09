@@ -17,7 +17,6 @@ jest.mock('../../../../../src/main/memory/settings', () => ({
 jest.mock('../../../../../src/main/memory/migrate', () => ({ migrateWorkspaceMemory: jest.fn() }));
 
 import fs from 'node:fs/promises';
-import { watch } from 'node:fs';
 import Store from 'electron-store';
 import { createMemory } from '../../../../../src/main/memory';
 import { getChatbotModel } from '../../../../../src/main/agent/agent_store';
