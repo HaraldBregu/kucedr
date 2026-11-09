@@ -1,4 +1,4 @@
-# vector-pinecone
+# vector-db
 
 Vector script run by Kucedr in a utility process; it is not an agent tool. It mirrors the
 Knowledge index to Pinecone. Search stays on the local SQLite index.
