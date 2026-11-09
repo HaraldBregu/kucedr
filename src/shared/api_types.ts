@@ -140,6 +140,7 @@ export interface WindowApi {
 	popupMenu: () => void;
 	showContextMenu: (items: ContextMenuDescriptor[]) => Promise<string | null>;
 	confirmSignOut: () => Promise<boolean>;
+	confirmDelete: (message: string, detail: string) => Promise<boolean>;
 	isMaximized: () => Promise<boolean>;
 	onMaximizeChange: (callback: (isMaximized: boolean) => void) => () => void;
 	isFullScreen: () => Promise<boolean>;
