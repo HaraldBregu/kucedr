@@ -866,7 +866,7 @@ function PageContent(): ReactElement {
 	);
 
 	const infoButton = (
-		<Button type="button" variant={infoOpen ? 'secondary' : 'ghost'} size="icon" className="rounded-full" aria-label={infoOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={infoOpen} aria-controls="chat-information" onClick={compactDetails ? undefined : () => setDetailsOpen((open) => !open)}><Info className="size-4" strokeWidth={1.8} /></Button>
+		<Button type="button" variant={infoOpen ? 'secondary' : 'ghost'} size="icon" className="rounded-full" aria-label={infoOpen ? 'Hide chat information' : 'Show chat information'} aria-expanded={infoOpen} aria-controls="chat-information" onClick={compactDetails ? undefined : () => setDetailsOpen((open) => !open)}><List className="size-4" strokeWidth={1.8} /></Button>
 	);
 
 	const chatDetails = (open: boolean, popover: boolean): ReactElement => (
