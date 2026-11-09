@@ -1,31 +1,27 @@
-const getProvider = jest.fn();
-const loadVectorDatabases = jest.fn();
-jest.mock('../../../../src/main/settings_store', () => ({ getProvider }));
-jest.mock('../../../../src/main/models', () => ({ loadVectorDatabases }));
+const pluginSettings = jest.fn();
+jest.mock('../../../../src/main/plugins/plugins_settings', () => ({ pluginSettings }));
+jest.mock('../../../../src/main/plugins', () => ({
+	pluginScripts: () => [
+		{ name: 'vector-db', title: 'Vector DB', plugin: { id: 'bootstrap', name: 'Bootstrap' } },
+	],
+}));
 
 import { selectedVectorDatabaseConnection } from '../../../../src/main/database/vector_connection';
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	getProvider.mockReturnValue({ apiKey: ' user-database-key ' });
-	loadVectorDatabases.mockReturnValue([
-		{
-			id: 'pinecone',
-			name: 'Pinecone Vector Database',
-			provider: { id: 'pinecone', name: 'Pinecone' },
-		},
-	]);
+	pluginSettings.mockReturnValue({ 'vector-db': ' user-database-key ' });
 });
 
-it('uses only selected database credentials and never an environment fallback', () => {
+it('uses only the selected script credential and never an environment fallback', () => {
 	process.env.PINECONE_API_KEY = 'environment-key';
 	const connection = selectedVectorDatabaseConnection({
-		providerId: 'pinecone',
-		databaseId: 'pinecone',
+		providerId: 'script',
+		databaseId: 'vector-db',
 	});
-	expect(getProvider).toHaveBeenCalledWith('pinecone', 'databases');
+	expect(pluginSettings).toHaveBeenCalledWith('bootstrap');
 	expect(connection).toMatchObject({
-		configuration: { providerId: 'pinecone', databaseId: 'pinecone' },
+		configuration: { providerId: 'script', databaseId: 'vector-db' },
 		apiKey: 'user-database-key',
 	});
 	delete process.env.PINECONE_API_KEY;
@@ -38,8 +34,8 @@ it('requires an explicit supported database selection and saved credential', () 
 	expect(() => selectedVectorDatabaseConnection({ providerId: 'other', databaseId: 'other' })).toThrow(
 		'not supported'
 	);
-	getProvider.mockReturnValue(undefined);
+	pluginSettings.mockReturnValue({});
 	expect(() =>
-		selectedVectorDatabaseConnection({ providerId: 'pinecone', databaseId: 'pinecone' })
-	).toThrow('Settings → Providers → Database');
+		selectedVectorDatabaseConnection({ providerId: 'script', databaseId: 'vector-db' })
+	).toThrow('Settings → Scripts → Vector DB');
 });
