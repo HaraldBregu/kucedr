@@ -145,7 +145,7 @@ const ScriptsPage: React.FC = () => {
 												</span>
 											</div>
 										</div>
-										{script.type === 'STORAGE' && (
+										{script.type !== 'UI' && (
 											<ChevronRight className="size-4 shrink-0 text-muted-foreground" />
 										)}
 									</CardHeader>
