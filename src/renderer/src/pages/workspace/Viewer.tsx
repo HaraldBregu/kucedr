@@ -182,7 +182,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
 			{kind === 'markdown' && visibleMarkdownMode === 'preview' && !content.includes('<!--') ? <div ref={setToolbarTarget} hidden /> : null}
 			{searchable && findOpen ? (
-				<div role="search" className="pointer-events-none absolute inset-x-0 top-12 z-20 mx-auto w-full max-w-[920px] px-5 sm:px-8 lg:px-12">
+				<div role="search" className="pointer-events-none absolute right-2 top-12 z-30 w-80 max-w-[calc(100%-1rem)] sm:right-3">
 					<div className="pointer-events-auto space-y-1 rounded-lg border bg-background/70 p-1.5 shadow-sm backdrop-blur-md">
 					<div className="flex min-w-0 items-center gap-1">
 						{kind === 'markdown' ? <Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" aria-label="Toggle replace" aria-expanded={replaceOpen} onClick={() => setReplaceOpen(!replaceOpen)}>{replaceOpen ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</Button> : null}
