@@ -339,6 +339,8 @@ export interface TaskApi {
 	list: () => Promise<TaskSchedule[]>;
 	history: (scheduleId: string) => Promise<AgentSessionSummary[]>;
 	runNow: (scheduleId: string) => Promise<TaskScheduledTask>;
+	isRunning: (scheduleId: string) => Promise<boolean>;
+	stop: (scheduleId: string) => Promise<void>;
 	delete: (scheduleId: string) => Promise<void>;
 	setEnabled: (scheduleId: string, enabled: boolean) => Promise<TaskSchedule>;
 	getRuntime: () => Promise<TaskRuntime | undefined>;
