@@ -256,7 +256,10 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						setDropTarget(undefined);
 						if (!droppable || !ids) return;
 						event.preventDefault();
-						moveToCategory(ids.split('\n'), options.drop ?? undefined);
+						const dropped = ids.split('\n');
+						const pinned = sessions.filter((session) => session.pinned && dropped.includes(session.id));
+						if (pinned.length > 0) togglePin(pinned);
+						moveToCategory(dropped, options.drop ?? undefined);
 					}}
 				>
 					{category && editingCategoryId === category.id ? (
