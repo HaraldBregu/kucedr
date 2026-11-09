@@ -240,7 +240,7 @@ it('automatically generates memory from only the changed session snapshot', asyn
 		entered();
 		return h.extracted;
 	});
-	h.sessionChanged()?.('chat');
+	void h.memory.capture('chat', []);
 	await started;
 	while (h.memory.status().running) await new Promise((resolve) => setImmediate(resolve));
 	expect(request).toContain('I now use TypeScript.');
