@@ -12,12 +12,19 @@ export function fire(scheduleId: string): TaskScheduledTask | undefined {
 		return undefined;
 	}
 	const schedule = requireSchedule(scheduleId);
-	if (!runner) {
+	const run = runner;
+	if (!run) {
 		console.warn('[Task]', `Schedule ${scheduleId} skipped: no agent runner registered.`);
+	} else if (running.has(scheduleId)) {
+		console.warn('[Task]', `Schedule ${scheduleId} skipped: previous run still in progress.`);
 	} else {
-		void runner(schedule).catch((error) => {
-			console.error('[Task]', `Schedule ${scheduleId} agent run failed.`, error);
-		});
+		running.add(scheduleId);
+		void Promise.resolve()
+			.then(() => run(schedule))
+			.catch((error) => {
+				console.error('[Task]', `Schedule ${scheduleId} agent run failed.`, error);
+			})
+			.finally(() => running.delete(scheduleId));
 	}
 	return trigger(scheduleId);
 }
