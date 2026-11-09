@@ -1,5 +1,4 @@
 import type { DatabaseConfiguration } from '../../shared/database_types';
-import { getProvider } from '../settings_store';
 import { findVectorDatabaseAdapter, supportsVectorDatabase } from './vector_adapters';
 import type { VectorDatabaseAdapter } from './vector_types';
 
