@@ -1,0 +1,53 @@
+{
+	"title": "Vector Pinecone",
+	"description": "Mirror the Knowledge index to a Pinecone serverless vector database.",
+	"author": "Harald Bregu",
+	"type": "VECTOR",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "knowledge",
+		"entry": "dist/index.mjs",
+		"instructions": "instructions.md"
+	},
+	"inputSchema": {
+		"type": "object",
+		"required": ["operation", "provider", "indexName"],
+		"properties": {
+			"operation": {
+				"type": "string",
+				"title": "Operation",
+				"enum": ["upload", "discard", "purge"]
+			},
+			"provider": {
+				"type": "object",
+				"title": "Provider",
+				"description": "Pinecone connection.",
+				"required": ["apiKey"],
+				"properties": {
+					"apiKey": { "type": "string", "title": "API key" }
+				}
+			},
+			"indexName": { "type": "string", "title": "Index name" },
+			"generation": {
+				"type": "string",
+				"title": "Generation",
+				"description": "Namespace kucedr-<uuid>; optional for purge, which then deletes every kucedr-* namespace."
+			},
+			"dimensions": { "type": "number", "title": "Dimensions" },
+			"records": {
+				"type": "array",
+				"title": "Records",
+				"items": {
+					"type": "object",
+					"required": ["id", "path", "text", "vector"],
+					"properties": {
+						"id": { "type": "string" },
+						"path": { "type": "string" },
+						"text": { "type": "string" },
+						"vector": { "type": "array" }
+					}
+				}
+			}
+		}
+	}
+}
