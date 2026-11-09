@@ -565,7 +565,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						<nav aria-label={t('settings.chatHistory.pinned', 'Pinned')}>
 							<ul className="flex min-w-0 flex-col gap-1">{pinnedSessions.map(renderSession)}</ul>
 						</nav>,
-						{ className: 'mb-2' }
+						{}
 					)}
 				{categories.map((category) => {
 					const categorySessions = activeSessions.filter((session) => !session.pinned && assignments[session.id] === category.id);
