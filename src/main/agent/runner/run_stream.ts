@@ -373,10 +373,8 @@ async function* loop(
 				eligible: filterEligibleTools(tools),
 				required: mcpServerHint
 					? []
-					: filterEligibleTools(tools).filter((tool) =>
-							taskRequest ? taskToolIds.includes(tool.id) : requiredIds.has(tool.id)
-						),
-				discoveryEnabled: taskRequest ? false : searchEnabled,
+					: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
+				discoveryEnabled: searchEnabled,
 				mcpTools: mcpEntries,
 				mcpServerHint,
 				filterEligible: filterEligibleTools,
