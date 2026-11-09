@@ -359,7 +359,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				event.preventDefault();
 				moveEntries(source.split('\n'), '');
 			}}>
-				{actionError && !pendingAction ? <p className="px-2 py-1 text-xs text-destructive" role="alert">{actionError}</p> : null}
+				{actionError ? <p className="px-2 py-1 text-xs text-destructive" role="alert">{actionError}</p> : null}
 				{loading ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.loading', 'Loading files…')}</p>
 				) : error ? (
