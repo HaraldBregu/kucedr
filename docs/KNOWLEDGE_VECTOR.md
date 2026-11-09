@@ -56,7 +56,7 @@ before and after the upload rather than between batches; cancelling kills the ch
 ## Data flow
 
 ```
-Scripts → Vector DB ──plugins.saveSettings──▶ plugin secrets (encrypted)
+Scripts → Vector DB ──database.saveKey──▶ providers/vector.json (encrypted)
 Knowledge → Storage ──saveDatabaseConfiguration──▶ rag_store (databaseId = script name)
 rag_index ──▶ mirror ──▶ database/fork ──utilityProcess──▶ vector-db ──▶ Pinecone
 search ──▶ local SQLite
