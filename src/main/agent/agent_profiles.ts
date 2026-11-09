@@ -277,11 +277,16 @@ export function getAgentProfileTool(
 	tool: AgentToolReference
 ): AgentToolConfiguration {
 	const profile = read(profileId);
-	return tool.kind === 'builtin'
-		? (profile.tools[tool.id] ?? DEFAULT_TOOL_SETTINGS[tool.id] ?? DEFAULT_TOOL)
-		: (profile.mcpTools[tool.serverId]?.[tool.toolName] ?? {
-				permission: getMcpToolPermission(tool.serverId, tool.toolName) ?? DEFAULT_TOOL.permission,
-			});
+	if (tool.kind === 'builtin')
+		return (
+			profile.tools[tool.id] ??
+			(profileId === 'tasks' ? undefined : DEFAULT_TOOL_SETTINGS[tool.id]) ??
+			DEFAULT_TOOL
+		);
+	const configured = profile.mcpTools[tool.serverId]?.[tool.toolName];
+	if (configured) return configured;
+	const permission = getMcpToolPermission(tool.serverId, tool.toolName) ?? DEFAULT_TOOL.permission;
+	return { permission: profileId === 'tasks' && permission === 'ask' ? 'allow' : permission };
 }
 
 export function agentProfileStorePath(profileId: AgentToolProfileId): string {
