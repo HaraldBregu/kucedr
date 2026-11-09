@@ -1,5 +1,5 @@
 {
-	"name": "@kucedr-plugins/bootstrap-vector-pinecone",
+	"name": "@kucedr-plugins/bootstrap-vector-db",
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
