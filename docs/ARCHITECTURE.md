@@ -26,6 +26,7 @@ settles backup operations, and then destroys cloud/account/channel services.
 streamed responses. The runner in `src/main/agent/runner` builds model context and dispatches
 available tools. Main conversations, channel conversations, scheduled tasks, health runs,
 subagents, and voice sessions have explicit session categories and scheduling priorities.
+[Agent state, hooks and modes](AGENT_STATE.md) reviews run state and modes and proposes their refactor.
 
 Tools live under `src/main/agent/tools`; provider-specific text, speech, image, audio, video,
 embedding, and realtime adapters live under `src/main/models`. MCP servers provide additional
