@@ -345,6 +345,18 @@ export function CommandMenu({
 			)),
 		},
 		{
+			category: 'files',
+			items: (isSearching || category === 'files' ? files : []).map((file) => (
+				<ImageMenuItem
+					key={`file:${file.path}`}
+					title={file.name}
+					description={file.path}
+					fallbackIcon={FileText}
+					onSelect={() => navigateTo(`/workspace?${new URLSearchParams({ file: file.path })}`)}
+				/>
+			)),
+		},
+		{
 			category: 'plugins',
 			items: plugins.map((plugin) => (
 				<ImageMenuItem
