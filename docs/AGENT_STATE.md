@@ -1347,7 +1347,7 @@ Each step leaves the app working and can ship alone.
 
 ## 7. Out of scope
 
-- Resuming runs after a restart (you chose interruption only).
+- Resuming runs after a restart (the decision was interruption only).
 - Plugin-shipped hook code.
 - Moving bootstrap, budget and recorder behavior into hooks before someone touches them.
 - Voice using the run registry.
