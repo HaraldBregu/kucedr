@@ -14,7 +14,7 @@ import { scanSources } from './sources';
 import { validateConfiguration } from './configuration';
 import type { MemoryState } from './types';
 import { sessionMemoryPath } from './session_path';
-import { createMemoryFile } from './file';
+import { writeMemoryFile } from './file';
 
 export { memoryPath } from './path';
 
