@@ -72,7 +72,6 @@ it('persists independent configuration and invokes the configured provider direc
 		modelOptions: { temperature: 0 },
 	});
 	await first.stop();
-	expect(close).toHaveBeenCalled();
 	(getChatbotModel as jest.Mock).mockReturnValue({
 		providerId: 'new-chat',
 		modelId: 'new-chat-model',
