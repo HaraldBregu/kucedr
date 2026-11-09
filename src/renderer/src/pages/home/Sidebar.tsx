@@ -23,6 +23,14 @@ import type { AgentSessionSummary } from '@/lib/compat';
 import { cn } from '@/lib/utils';
 import { playSound } from '@/lib/sounds/play';
 import type { OpenExtension } from './components/ExtensionPage';
+import { stored } from './stored';
+
+const SESSION_MIME = 'application/x-chat-session';
+
+interface ChatCategory {
+	readonly id: string;
+	readonly name: string;
+}
 
 interface HomeSidebarProps {
 	readonly refreshKey: string;
