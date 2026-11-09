@@ -1,5 +1,5 @@
-const pluginSettings = jest.fn();
-jest.mock('../../../../src/main/plugins/plugins_settings', () => ({ pluginSettings }));
+const vectorScriptKey = jest.fn();
+jest.mock('../../../../src/main/database/vector_keys', () => ({ vectorScriptKey }));
 jest.mock('../../../../src/main/plugins', () => ({
 	pluginScripts: () => [
 		{ name: 'vector-db', title: 'Vector DB', plugin: { id: 'bootstrap', name: 'Bootstrap' } },
