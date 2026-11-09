@@ -88,4 +88,4 @@ export interface TaskFunctionResult {
 	run_schedule_now: TaskScheduledTask;
 }
 
-export type TaskRunner = (schedule: TaskSchedule) => Promise<unknown>;
+export type TaskRunner = (schedule: TaskSchedule, signal: AbortSignal) => Promise<unknown>;
