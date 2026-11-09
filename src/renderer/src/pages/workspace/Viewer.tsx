@@ -87,7 +87,10 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 			editorRef.current?.wrapSelection(items.map(({ file: asset, src, image }) => `${image ? '!' : ''}[${asset.name.replace(/\.[^.]+$/, '')}](${src})`).join('\n\n'), '');
 		}).catch((cause: unknown) => setSaveError(cause instanceof Error ? cause.message : 'Unable to add file.'));
 	};
-	const openFind = (): void => { setFindOpen(true); };
+	const openFind = (): void => {
+		setFindOpen(true);
+		findInputRef.current?.select();
+	};
 	const closeFind = (): void => {
 		setFindOpen(false);
 		setFindQuery('');
