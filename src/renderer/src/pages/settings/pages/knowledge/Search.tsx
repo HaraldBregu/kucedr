@@ -39,7 +39,7 @@ export default function Search({ knowledge }: { knowledge: KnowledgeState }): JS
 							step={0.05}
 							value={minimumScore}
 							aria-label={t('settings.knowledge.minimumScore')}
-							className="w-24 max-w-full text-xs"
+							className="h-7 w-24 max-w-full px-2.5 text-xs md:text-xs"
 							disabled={disabled}
 							onChange={(event) => setMinimumScore(event.target.value)}
 							onBlur={() => {
