@@ -218,12 +218,6 @@ const TasksPage: React.FC = () => {
 				</ModelProviderConfiguration>
 			</SettingsPanel>
 
-			<SettingsSection title={t('settings.overview.groups.mlModels')}>
-				<SettingsPanel>
-					<ProfileMediaModels profileId="tasks" />
-				</SettingsPanel>
-			</SettingsSection>
-
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{error}
