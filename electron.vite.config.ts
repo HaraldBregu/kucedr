@@ -23,7 +23,7 @@ export default defineConfig({
 			{
 				name: 'bootstrap-scripts',
 				buildStart() {
-					for (const script of ['chart', 'backup-s3', 'dither', 'draw', 'organui']) {
+					for (const script of ['chart', 'backup-s3', 'dither', 'draw', 'organui', 'vector-db']) {
 						execFileSync('npm', ['run', 'build'], {
 							cwd: resolve(__dirname, 'resources/plugins/bootstrap/scripts', script),
 							stdio: 'inherit',
