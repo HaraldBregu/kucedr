@@ -18,6 +18,9 @@ blocked.addSubnet('fe80::', 10, 'ipv6');
 blocked.addSubnet('ff00::', 8, 'ipv6');
 
 export function privateAddress(address: string): boolean {
+	// IPv4-mapped IPv6 (::ffff:a.b.c.d): judge the embedded IPv4, not the whole /96.
+	const mapped = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/i.exec(address);
+	if (mapped) return privateAddress(mapped[1]);
 	const family = isIP(address);
 	return family === 0 || blocked.check(address, family === 4 ? 'ipv4' : 'ipv6');
 }
