@@ -76,7 +76,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							</summary>
 							{entry.children?.length ? (
 								<div className="ml-3 pl-1">
-									<WorkspaceTree entries={entry.children} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} selectedPath={selectedPath} selection={selection} onSelect={onSelect} onMove={onMove} expanded={expanded} />
+									<WorkspaceTree entries={entry.children} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} onRenameStart={onRenameStart} selectedPath={selectedPath} selection={selection} onSelect={onSelect} onMove={onMove} expanded={expanded} />
 								</div>
 							) : null}
 						</details>
