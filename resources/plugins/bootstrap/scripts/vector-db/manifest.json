@@ -1,5 +1,5 @@
 {
-	"title": "Vector Pinecone",
+	"title": "Vector DB",
 	"description": "Mirror the Knowledge index to a Pinecone serverless vector database.",
 	"author": "Harald Bregu",
 	"type": "VECTOR",
