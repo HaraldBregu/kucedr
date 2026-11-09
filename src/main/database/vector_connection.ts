@@ -12,7 +12,7 @@ export function selectedVectorDatabaseConnection(
 	configuration: DatabaseConfiguration
 ): VectorDatabaseConnection {
 	if (!configuration.providerId || !configuration.databaseId) {
-		throw new Error('Select a vector database in RAG settings before enabling remote storage.');
+		throw new Error('Select a vector database in Knowledge settings before enabling remote storage.');
 	}
 	if (!supportsVectorDatabase(configuration.providerId, configuration.databaseId)) {
 		throw new Error('The selected vector database is not supported by RAG.');
