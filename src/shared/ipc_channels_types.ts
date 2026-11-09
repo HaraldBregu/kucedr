@@ -1017,6 +1017,14 @@ export interface DatabaseInvokeChannelMap {
 		args: [configuration: import('./database_types').DatabaseConfiguration];
 		result: import('./database_types').DatabaseConfiguration;
 	};
+	[DatabaseChannels.hasKey]: {
+		args: [script: string];
+		result: boolean;
+	};
+	[DatabaseChannels.saveKey]: {
+		args: [script: string, apiKey: string];
+		result: void;
+	};
 }
 
 export interface EmbeddingInvokeChannelMap {
