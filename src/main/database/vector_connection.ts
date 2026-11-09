@@ -15,7 +15,7 @@ export function selectedVectorDatabaseConnection(
 		throw new Error('Select a vector database in Knowledge settings before enabling remote storage.');
 	}
 	if (!supportsVectorDatabase(configuration.providerId, configuration.databaseId)) {
-		throw new Error('The selected vector database is not supported by RAG.');
+		throw new Error('The selected vector database is not supported by Knowledge.');
 	}
 	const adapter = findVectorDatabaseAdapter(configuration.providerId, configuration.databaseId);
 	if (!adapter) throw new Error('The selected vector database is not supported by RAG.');
