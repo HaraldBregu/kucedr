@@ -175,14 +175,22 @@ const TaskDetailsPage: React.FC = () => {
 				title={task.name}
 				description={task.description ?? t('settings.cron.detail.noDescription')}
 				action={
-					<Switch
-						checked={task.enabled}
-						disabled={toggling}
-						aria-label={
-							task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')
-						}
-						onCheckedChange={() => void toggleEnabled()}
-					/>
+					<div className="flex items-center gap-3">
+						{running && (
+							<Badge variant="secondary">
+								<LoaderCircle className="animate-spin" />
+								{t('settings.cron.actions.running')}
+							</Badge>
+						)}
+						<Switch
+							checked={task.enabled}
+							disabled={toggling}
+							aria-label={
+								task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')
+							}
+							onCheckedChange={() => void toggleEnabled()}
+						/>
+					</div>
 				}
 			/>
 
