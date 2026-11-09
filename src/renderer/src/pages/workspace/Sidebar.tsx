@@ -83,15 +83,13 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 	};
 	const deleteSelection = (targets: WorkspaceTreeEntry[]): void => {
 		if (targets.length === 0 || busy) return;
-		setPendingDelete(targets);
-	};
-	const confirmDelete = (): void => {
-		const targets = pendingDelete;
-		setPendingDelete(null);
-		if (!targets || busy) return;
-		setBusy(true);
-		setActionError('');
+		const message = targets.length > 1
+			? t('workspaceSidebar.deleteEntries', { count: targets.length, defaultValue: 'Delete {{count}} items' })
+			: t('workspaceSidebar.deleteEntry', { name: targets[0].name });
 		void (async () => {
+			if (!await window.win.confirmDelete(message, t('workspaceSidebar.deleteWarning', 'This permanently deletes the item and its contents.'))) return;
+			setBusy(true);
+			setActionError('');
 			for (const target of targets) {
 				if (target.type === 'directory') await window.agent.deleteWorkspaceDirectory(target.path);
 				else await window.agent.deleteWorkspaceFile(target.path);
