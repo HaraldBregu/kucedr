@@ -54,6 +54,24 @@ const TaskDetailsPage: React.FC = () => {
 		return () => {
 			mounted = false;
 		};
+	}, [decodedTaskId, running]);
+
+	useEffect(() => {
+		let mounted = true;
+		const poll = (): void => {
+			void window.tasks
+				.isRunning(decodedTaskId)
+				.then((next) => {
+					if (mounted) setRunning(next);
+				})
+				.catch(() => undefined);
+		};
+		poll();
+		const timer = window.setInterval(poll, 2000);
+		return () => {
+			mounted = false;
+			window.clearInterval(timer);
+		};
 	}, [decodedTaskId]);
 
 	if (loading) {
