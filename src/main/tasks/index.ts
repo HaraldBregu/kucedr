@@ -16,6 +16,8 @@ export { listSchedules } from './tasks_list_schedules';
 export { getRuntime } from './tasks_get_runtime';
 export { setRuntime } from './tasks_set_runtime';
 export { runScheduleNow } from './tasks_run_schedule_now';
+export { isRunning } from './tasks_is_running';
+export { stopRun } from './tasks_stop_run';
 export { createSchedule as createTask } from './tasks_create_schedule';
 export { updateSchedule as updateTask } from './tasks_update_schedule';
 export { pauseSchedule as pauseTask } from './tasks_pause_schedule';
