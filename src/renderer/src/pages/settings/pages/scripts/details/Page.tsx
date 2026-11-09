@@ -93,6 +93,7 @@ const ScriptDetailsPage: React.FC = () => {
 			</header>
 			<div className="flex flex-col gap-8 pb-8">
 				{script.type === 'STORAGE' && <Configuration />}
+				{script.type === 'VECTOR' && <VectorConfiguration script={script} />}
 			</div>
 		</SettingsPageShell>
 	);
