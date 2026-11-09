@@ -711,6 +711,10 @@ export interface AppInvokeChannelMap {
 		args: [enabled: boolean];
 		result: void;
 	};
+	[AppChannels.exportDocument]: {
+		args: [name: string, format: 'md' | 'html' | 'pdf', content: string];
+		result: boolean;
+	};
 	[AppChannels.getWorkspaceWideContent]: {
 		args: [];
 		result: boolean;
@@ -1321,6 +1325,7 @@ export interface WindowInvokeChannelMap {
 		result: string | null;
 	};
 	[WindowChannels.confirmSignOut]: { args: []; result: boolean };
+	[WindowChannels.confirmDelete]: { args: [message: string, detail: string]; result: boolean };
 }
 
 export interface WindowSendChannelMap {
