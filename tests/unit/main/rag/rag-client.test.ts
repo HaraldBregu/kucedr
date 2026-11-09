@@ -10,7 +10,7 @@ import { selectedVectorDatabaseConnection } from '../../../../src/main/database/
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	pluginSettings.mockReturnValue({ 'vector-db': ' user-database-key ' });
+	vectorScriptKey.mockReturnValue(' user-database-key ');
 });
 
 it('uses only the selected script credential and never an environment fallback', () => {
