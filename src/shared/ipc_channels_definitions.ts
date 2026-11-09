@@ -510,6 +510,7 @@ export const WindowChannels = {
 	popupMenu: 'window:popup-menu',
 	showContextMenu: 'window:context-menu:show',
 	confirmSignOut: 'window:confirm-sign-out',
+	confirmDelete: 'window:confirm-delete',
 } as const;
 
 export const TerminalChannels = {
