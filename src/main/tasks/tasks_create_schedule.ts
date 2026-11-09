@@ -10,7 +10,8 @@ export function createSchedule(request: TaskScheduleCreateRequest): TaskSchedule
 		id: randomUUID(),
 		name: request.name.trim(),
 		description: request.description?.trim(),
-		cronExpression: request.cronExpression?.trim().replace(/\s+/g, ' '),
+		cronExpression:
+			request.cronExpression === undefined ? undefined : normalizeCron(request.cronExpression),
 		enabled: request.enabled ?? true,
 		prompt: request.prompt.trim(),
 		toolsAllow: request.toolsAllow,
