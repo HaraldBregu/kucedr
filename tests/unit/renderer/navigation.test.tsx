@@ -126,7 +126,6 @@ it.each([
 	['/settings/mcp', 'settings.tabs.mcp'],
 	['/settings/services', 'settings.tabs.services'],
 	['/settings/models', 'settings.tabs.models'],
-	['/settings/knowledge/providers', 'settings.tabs.providers'],
 	['/settings/storage/providers', 'settings.tabs.providers'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/plugins', 'settings.tabs.plugins'],
