@@ -31,6 +31,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 	const [actionError, setActionError] = useState('');
 	const [pendingAction, setPendingAction] = useState<WorkspaceAction | null>(null);
 	const [renamingEntry, setRenamingEntry] = useState<WorkspaceTreeEntry | null>(null);
+	const [pendingDelete, setPendingDelete] = useState<WorkspaceTreeEntry[] | null>(null);
 	const [busy, setBusy] = useState(false);
 	const renameSubmitting = useRef(false);
 	const [selection, setSelection] = useState<ReadonlySet<string>>(new Set());
