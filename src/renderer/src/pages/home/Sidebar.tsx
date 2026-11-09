@@ -344,10 +344,26 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 								{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
 							]),
 					{ id: 'pin', label: allPinned ? t('common.unpin', 'Unpin') : t('common.pin', 'Pin') },
+					{ type: 'separator' as const },
+					...categories
+						.filter((category) => !targets.every((item) => assignments[item.id] === category.id))
+						.map((category) => ({
+							id: `move:${category.id}`,
+							label: t('settings.chatHistory.moveTo', { name: category.name, defaultValue: 'Move to {{name}}' }),
+						})),
+					...(targets.some((item) => categoryIds.has(assignments[item.id]))
+						? [{ id: 'uncategorize', label: t('settings.chatHistory.removeFromCategory', 'Remove from category') }]
+						: []),
+					{ id: 'new-category', label: t('settings.chatHistory.moveToNewCategory', 'Move to new category') },
+					{ type: 'separator' as const },
 					{ id: 'archive', label: t('settings.chatHistory.archive') },
 					{ id: 'delete', label: t('common.delete', 'Delete') },
 				])
 				.then((action) => {
+					const ids = targets.map((item) => item.id);
+					if (action?.startsWith('move:')) moveToCategory(ids, action.slice(5));
+					if (action === 'uncategorize') moveToCategory(ids, undefined);
+					if (action === 'new-category') createCategory(ids);
 					if (action === 'rename') {
 						setEditingTitle(title);
 						setEditingSessionId(session.id);
