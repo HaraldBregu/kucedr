@@ -1,7 +1,7 @@
 import type { Tool } from '../types';
 import type { ModePolicy } from './types';
 
-const HOST_TOOLS = new Set(['tool_search', 'ask']);
+const HOST_TOOLS = new Set(['tool_search', 'ask', 'update_mode_state']);
 
 export function allowsTool(mode: ModePolicy, tool: Tool): boolean {
 	if (mode.shell === 'none' && tool.id === 'bash') return false;

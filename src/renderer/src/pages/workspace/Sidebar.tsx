@@ -359,18 +359,6 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				event.preventDefault();
 				moveEntries(source.split('\n'), '');
 			}}>
-				{pendingDelete ? (
-					<div role="alertdialog" aria-label={t('workspaceSidebar.delete', 'Delete')} className="mb-2 space-y-2 rounded-md bg-sidebar-accent p-2 text-xs" onKeyDown={(event) => { if (event.key === 'Escape') setPendingDelete(null); }}>
-						<p className="font-medium">{pendingDelete.length > 1
-							? t('workspaceSidebar.deleteEntries', { count: pendingDelete.length, defaultValue: 'Delete {{count}} items' })
-							: t('workspaceSidebar.deleteEntry', { name: pendingDelete[0].name })}</p>
-						<p className="text-muted-foreground">{t('workspaceSidebar.deleteWarning', 'This permanently deletes the item and its contents.')}</p>
-						<div className="flex justify-end gap-1">
-							<Button type="button" variant="ghost" size="xs" onClick={() => setPendingDelete(null)}>{t('common.cancel', 'Cancel')}</Button>
-							<Button type="button" variant="destructive" size="xs" autoFocus onClick={confirmDelete}>{t('workspaceSidebar.delete', 'Delete')}</Button>
-						</div>
-					</div>
-				) : null}
 				{actionError ? <p className="px-2 py-1 text-xs text-destructive" role="alert">{actionError}</p> : null}
 				{loading ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.loading', 'Loading files…')}</p>

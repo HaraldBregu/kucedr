@@ -1,7 +1,0 @@
-{
-	"title": "Fast",
-	"description": "Answer faster with less reasoning, on models that support it.",
-	"command": "/fast",
-	"persistent": true,
-	"effort": "low"
-}

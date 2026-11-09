@@ -125,6 +125,7 @@ export const app: AppApi = {
 	setWorkspaceWideContent: (enabled: boolean): Promise<void> => {
 		return typedInvokeUnwrap(AppChannels.setWorkspaceWideContent, enabled);
 	},
+	exportDocument: (name, format, content) => typedInvokeUnwrap(AppChannels.exportDocument, name, format, content),
 	getWorkspaceWideContent: (): Promise<boolean> => {
 		return typedInvokeUnwrap(AppChannels.getWorkspaceWideContent);
 	},

@@ -1,7 +1,0 @@
-{
-	"title": "Goal",
-	"description": "Work toward a durable goal with success criteria across runs.",
-	"command": "/goal",
-	"prompt": "prompt.md",
-	"behavior": "goal"
-}
