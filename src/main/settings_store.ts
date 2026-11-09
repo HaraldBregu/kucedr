@@ -20,6 +20,8 @@ import {
 	type WorkspaceTextSize,
 	CHAT_TEXT_SIZES,
 	type ChatTextSize,
+	ZOOM_FACTORS,
+	type ZoomFactor,
 } from '../shared/app_types';
 import {
 	getModelProvidersState,
