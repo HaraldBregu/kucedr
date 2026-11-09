@@ -22,7 +22,7 @@ export interface MemoryState {
 export interface MemoryDependencies {
 	store: { load(): MemoryState; save(state: MemoryState): void };
 	prepare?(): Promise<void>;
-	sources(): Promise<SourceSession[]>;
+	sources(sessionId?: string): Promise<SourceSession[]>;
 	exists(): Promise<boolean>;
 	read(): Promise<string>;
 	write(markdown: string): Promise<void>;
