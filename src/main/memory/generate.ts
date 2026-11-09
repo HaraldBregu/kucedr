@@ -37,12 +37,18 @@ export async function generateMemory(
 			signal
 		)
 	).trim();
-	const existingLines = new Set(existing.split('\n'));
+	const unstamped = (line: string) => line.replace(/ <!-- kucedr:created:[^>]* -->/g, '');
+	const existingLines = new Set(existing.split('\n').map(unstamped));
 	if (
 		!markdown ||
 		markdown.length > 2_000_000 ||
-		/^```|```$/m.test(markdown) ||
-		markdown.split('\n').some((line) => privateContent(line) && !existingLines.has(line))
+		markdown
+			.split('\n')
+			.some(
+				(line) =>
+					(/^```|```$/.test(line) || privateContent(line)) &&
+					!existingLines.has(unstamped(line))
+			)
 	)
 		throw new Error('Memory model returned an invalid Markdown document.');
 	return `${markdown}\n`;
