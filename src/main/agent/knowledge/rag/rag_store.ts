@@ -27,7 +27,7 @@ const DEFAULT_RAG_CONFIGURATION: RagConfiguration = {
 	scheduleEnabled: false,
 	cronExpression: '0 3 * * *',
 	timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-	minimumScore: 0,
+	minimumScore: 0.25,
 };
 
 const configurationListeners = new Set<() => void>();
