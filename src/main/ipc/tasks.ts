@@ -45,6 +45,16 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
 			return runScheduleNow(scheduleId);
 		});
+		registerQueryWithEvent(TaskChannels.isRunning, (event, scheduleId: string) => {
+			trusted.assert(event);
+			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
+			return isRunning(scheduleId);
+		});
+		registerCommandWithEvent(TaskChannels.stop, (event, scheduleId: string) => {
+			trusted.assert(event);
+			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
+			return stopRun(scheduleId);
+		});
 		registerCommandWithEvent(TaskChannels.delete, (event, scheduleId: string) => {
 			trusted.assert(event);
 			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
