@@ -36,6 +36,12 @@ export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, on
 	const [openDirectories, setOpenDirectories] = useState(() => new Set(entries.filter((entry) => selectedPath && (selectedPath.startsWith(`${entry.path}/`) || selectedPath.startsWith(`${entry.path}\\`))).map((entry) => entry.path)));
 	return (
 		<ul className="flex min-w-0 flex-col gap-1">
+			{creating?.parentPath === parentPath ? (
+				<li className="flex min-h-8 min-w-0 items-center gap-2 rounded-md px-2 text-sm">
+					{creating.kind === 'create-folder' ? <Folder className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} /> : <File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />}
+					<WorkspaceRenameInput name="" busy={renameBusy} onCancel={onCreateCancel} onConfirm={onCreate} />
+				</li>
+			) : null}
 			{entries.map((entry) => (
 				<li key={entry.path} className="min-w-0">
 					{renamingPath === entry.path ? (
