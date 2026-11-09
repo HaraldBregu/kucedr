@@ -43,7 +43,7 @@ export function createMemory(configuration: () => Config): MemoryService {
 		},
 		validate: validateConfiguration,
 		prepare: () => migrateWorkspaceMemory(configuration()),
-		sources: () => scanSources(),
+		sources: (sessionId) => scanSources(undefined, sessionId),
 		exists: () =>
 			fs
 				.access(memoryPath())
