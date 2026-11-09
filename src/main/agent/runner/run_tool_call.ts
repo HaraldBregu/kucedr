@@ -401,7 +401,7 @@ export async function* runToolCall(
 							canonicalInput,
 							context,
 							true,
-							'ask',
+							permissionFallback,
 							profilePermissions(),
 							history,
 							profileToolConfiguration()
