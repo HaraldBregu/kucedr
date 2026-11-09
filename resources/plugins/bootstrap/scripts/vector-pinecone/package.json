@@ -1,0 +1,14 @@
+{
+	"name": "@kucedr-plugins/bootstrap-vector-pinecone",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Bootstrap plugin script that mirrors the Knowledge index to a Pinecone vector database.",
+	"scripts": {
+		"build": "esbuild src/index.mjs --bundle --platform=node --format=esm --outfile=dist/index.mjs --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\""
+	},
+	"devDependencies": {
+		"@pinecone-database/pinecone": "^8.1.0",
+		"esbuild": "^0.28.2"
+	}
+}
