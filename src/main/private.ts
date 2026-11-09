@@ -12,7 +12,6 @@ blocked.addSubnet('224.0.0.0', 4, 'ipv4');
 blocked.addSubnet('240.0.0.0', 4, 'ipv4');
 blocked.addAddress('::', 'ipv6');
 blocked.addAddress('::1', 'ipv6');
-blocked.addSubnet('::ffff:0:0', 96, 'ipv6');
 blocked.addSubnet('fc00::', 7, 'ipv6');
 blocked.addSubnet('fe80::', 10, 'ipv6');
 blocked.addSubnet('ff00::', 8, 'ipv6');
