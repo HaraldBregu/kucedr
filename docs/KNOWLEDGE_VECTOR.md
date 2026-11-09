@@ -45,6 +45,7 @@ The script replies with one message and exits:
 |---|---|
 | `fork.ts` | `forkVectorScript`: runs a VECTOR script in a `utilityProcess`. An aborted signal kills the child. |
 | `vector_script.ts` | `vectorScriptAdapter`: wraps a script as a `VectorDatabaseAdapter` with its API key, consent recipient `['script', name, indexName, apiKey]`, and upload/discard/purge. |
+| `vector_keys.ts` | Encrypted API keys per VECTOR script (`vectorScriptKey`, `saveVectorScriptKey`). |
 | `vector_adapters.ts` | Lists `pluginScripts('VECTOR')` as vector databases. |
 | `vector_connection.ts` | Resolves the selected script and its API key. |
 
