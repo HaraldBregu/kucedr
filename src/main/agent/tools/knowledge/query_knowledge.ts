@@ -16,7 +16,7 @@ export const queryKnowledgeTool = tool({
 	execute: async ({ query, count }, signal) => {
 		const configuration = getRagConfiguration();
 		const built =
-			configuration.enabled === true && readRagManifest(configuration.indexName) !== null;
+			configuration.enabled === true && readRagManifest(configuration.indexName) !== undefined;
 		const matches = built
 			? await searchRag(query, configuration.indexName, count, { signal })
 			: [];
