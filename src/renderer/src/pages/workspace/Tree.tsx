@@ -4,8 +4,17 @@ import { workspaceFileType } from '@shared/workspace';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { WorkspaceRenameInput } from './RenameInput';
 
+export interface WorkspaceAction {
+	readonly kind: 'create-file' | 'create-folder';
+	readonly parentPath: string;
+}
+
 interface WorkspaceTreeProps {
 	readonly entries: WorkspaceTreeEntry[];
+	readonly parentPath?: string;
+	readonly creating: WorkspaceAction | null;
+	readonly onCreate: (name: string) => void;
+	readonly onCreateCancel: () => void;
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 	readonly onEntryContextMenu: (entry: WorkspaceTreeEntry) => void;
 	readonly renamingPath: string | null;
@@ -63,6 +72,9 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							event.preventDefault();
 							event.stopPropagation();
 							onMove(source.split('\n'), entry.path);
+						}} onDoubleClick={(event) => {
+							event.preventDefault();
+							onRenameStart(entry);
 						}} onContextMenu={(event) => {
 							event.preventDefault();
 							event.stopPropagation();
