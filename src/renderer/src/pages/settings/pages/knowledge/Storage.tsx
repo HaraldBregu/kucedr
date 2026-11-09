@@ -39,7 +39,15 @@ export default function Storage({ knowledge }: { knowledge: KnowledgeState }): J
 					size="sm"
 					disabled={disabled}
 					nativeButton={false}
-					render={<Link to="/settings/knowledge/providers" />}
+					render={
+						<Link
+							to={
+								remoteDatabase && selectedDatabase
+									? `/settings/scripts/${encodeURIComponent(selectedDatabase.databaseId)}`
+									: '/settings/scripts'
+							}
+						/>
+					}
 				>
 					{t('settings.knowledge.configureDatabases')}
 				</Button>
