@@ -18,7 +18,7 @@ import {
 	Library,
 	Mic,
 	MonitorUp,
-	List,
+	Ellipsis,
 	Plus,
 	TableIcon,
 	X,
