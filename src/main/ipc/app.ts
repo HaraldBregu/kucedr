@@ -664,6 +664,19 @@ export class AppIpc implements IpcModule {
 			wrapSimpleHandler(() => getStoredChatTextSize(), AppChannels.getChatTextSize)
 		);
 
+		ipcMain.handle(
+			AppChannels.setZoomFactor,
+			wrapSimpleHandler((factor: ZoomFactor) => {
+				setStoredZoomFactor(factor);
+				eventBus.broadcast(AppChannels.zoomFactorChanged, factor);
+			}, AppChannels.setZoomFactor)
+		);
+
+		ipcMain.handle(
+			AppChannels.getZoomFactor,
+			wrapSimpleHandler(() => getStoredZoomFactor(), AppChannels.getZoomFactor)
+		);
+
 		ipcMain.handle(AppChannels.getWorkspaceImageModel, wrapSimpleHandler(() => getWorkspaceImageModel(), AppChannels.getWorkspaceImageModel));
 		ipcMain.handle(AppChannels.setWorkspaceImageModel, wrapSimpleHandler((model: { providerId: string; modelId: string }) => setWorkspaceImageModel(model), AppChannels.setWorkspaceImageModel));
 		ipcMain.handle(AppChannels.getWorkspaceVoiceModel, wrapSimpleHandler(() => getWorkspaceVoiceModel(), AppChannels.getWorkspaceVoiceModel));
