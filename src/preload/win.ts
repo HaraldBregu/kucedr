@@ -39,6 +39,7 @@ export const win: WindowApi = {
 	},
 	getSize: () => typedInvokeUnwrap(WindowChannels.getSize),
 	setSize: (size) => typedInvokeUnwrap(WindowChannels.setSize, size),
+	zoom: (factor) => webFrame.setZoomFactor(factor),
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void): (() => void) => {
 		return typedOn(WindowChannels.fullScreenChange, callback);
 	},
