@@ -16,12 +16,8 @@ function setup(initialized = true) {
 	const exists = jest.fn(async () => true);
  const dependencies: MemoryDependencies = {
   store: { load: () => structuredClone(state), save: (next) => { state = structuredClone(next); } },
-		sources: jest.fn(async () => structuredClone(sessions)), exists, read: async () => markdown, write,
+		sources: jest.fn(async (id?: string) => structuredClone(sessions).filter((session) => !id || session.id === id)), exists, read: async () => markdown, write,
 		writeSession, removeSession, infer,
-		watchSessions: jest.fn((callback) => {
-			sessionChanged = callback;
-			return { stop: stopWatching };
-		}),
   selection: jest.fn(() => ({ providerId: 'chat-provider', modelId: 'chat-model', modelOptions: {} })),
   validate: jest.fn(),
  };
