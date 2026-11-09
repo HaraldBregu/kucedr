@@ -185,7 +185,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 				<div role="search" className="mx-auto w-full max-w-[920px] space-y-1 px-5 pb-2 pt-14 sm:px-8 lg:px-12">
 					<div className="flex min-w-0 items-center gap-1">
 						{kind === 'markdown' ? <Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" aria-label="Toggle replace" aria-expanded={replaceOpen} onClick={() => setReplaceOpen(!replaceOpen)}>{replaceOpen ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</Button> : null}
-						<Input autoFocus aria-label="Find in file" placeholder="Find" value={findQuery} className="h-7 min-w-0 flex-1 rounded-sm bg-muted/40 px-2 text-xs" onChange={(event) => {
+						<Input ref={findInputRef} autoFocus aria-label="Find in file" placeholder="Find" value={findQuery} className="h-7 min-w-0 flex-1 rounded-sm bg-muted/40 px-2 text-xs" onChange={(event) => {
 							setFindOpen(true);
 							setFindQuery(event.target.value);
 							if (event.target.value) finder.current?.find(event.target.value, 'next'); else finder.current?.clearSearch();
