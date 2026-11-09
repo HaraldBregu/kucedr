@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import type {
 	StorageOperationStatus,
-	StorageProvider,
+	StorageService,
 	StorageSyncSettings,
 } from '@shared/storage_types';
 import {
@@ -25,13 +25,15 @@ import {
 	SettingsSection,
 } from '../../components';
 import { SYNC_INTERVALS } from './constants';
-import Provider from './Provider';
+import Service from './Service';
 import Restore from './Restore';
 
 const CloudPage: React.FC = () => {
 	const { t } = useTranslation();
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
-	const [providers, setProviders] = useState<StorageProvider[]>([]);
+	const [services, setServices] = useState<StorageService[]>([]);
+	const [nextRun, setNextRun] = useState<string>();
+	const [cronInvalid, setCronInvalid] = useState(false);
 	const [settingsLoading, setSettingsLoading] = useState(true);
 	const [draft, setDraft] = useState<StorageSyncSettings | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -59,12 +61,14 @@ const CloudPage: React.FC = () => {
 		void Promise.allSettled([
 			window.storage.getSettings(),
 			window.storage.getOperationStatus(),
-			window.storage.listProviders(),
-		]).then(([settingsResult, statusResult, providersResult]) => {
+			window.storage.listServices(),
+			window.storage.getNextRun(),
+		]).then(([settingsResult, statusResult, servicesResult, nextRunResult]) => {
 			if (cancelled) return;
 
 			if (settingsResult.status === 'fulfilled') setSettings(settingsResult.value);
-			if (providersResult.status === 'fulfilled') setProviders(providersResult.value);
+			if (servicesResult.status === 'fulfilled') setServices(servicesResult.value);
+			if (nextRunResult.status === 'fulfilled') setNextRun(nextRunResult.value);
 			if (statusResult.status === 'fulfilled' && statusResult.value) {
 				applyOperationStatus(statusResult.value);
 			}
@@ -72,7 +76,7 @@ const CloudPage: React.FC = () => {
 			const failed = [
 				settingsResult,
 				statusResult,
-				providersResult,
+				servicesResult,
 			].some((result) => result.status === 'rejected');
 			setLoadFailed(failed);
 			if (failed) setError(t('settings.storage.errors.load'));
@@ -87,7 +91,9 @@ const CloudPage: React.FC = () => {
 
 
 	const storage = draft ?? settings;
-	const selectedProvider = providers.find((provider) => provider.id === storage?.providerId);
+	const selectedService = services.find(
+		(service) => service.id === storage?.serviceId && service.configured
+	);
 	const runningOperation = operationStatus?.state === 'running' ? operationStatus : undefined;
 	const intervalValue = !storage?.syncEnabled
 		? 'off'
@@ -95,7 +101,7 @@ const CloudPage: React.FC = () => {
 			'custom');
 	const busy =
 		settingsLoading || operationStatusLoading || operationStarting || Boolean(runningOperation);
-	const controlsDisabled = busy || !selectedProvider;
+	const controlsDisabled = busy || !selectedService;
 	const operationStatusKey = operationStatus
 		? operationStatus.state === 'running' && operationStatus.trigger === 'scheduled'
 			? `settings.storage.operation.${operationStatus.operation}.scheduledRunning`
@@ -122,6 +128,7 @@ const CloudPage: React.FC = () => {
 				setSettings(saved);
 				setDraft((current) => (current === next ? null : current));
 				setSyncStatus(t('settings.storage.syncSaved'));
+				setNextRun(await window.storage.getNextRun());
 				return saved;
 			} catch {
 				setError(t('settings.storage.errors.saveSync'));
@@ -136,11 +143,13 @@ const CloudPage: React.FC = () => {
 		return queued;
 	};
 
-	const updateDraft = (next: StorageSyncSettings): void => {
+	const updateDraft = (
+		next: StorageSyncSettings
+	): Promise<StorageSyncSettings | undefined> => {
 		setDraft(next);
 		setError(null);
 		setSyncStatus(null);
-		void persistSettings(next);
+		return persistSettings(next);
 	};
 
 	const pickFolders = async (): Promise<void> => {
@@ -149,7 +158,7 @@ const CloudPage: React.FC = () => {
 		try {
 			const paths = await window.storage.pickFolders();
 			if (paths.length > 0) {
-				updateDraft({ ...storage, paths: [...new Set([...storage.paths, ...paths])] });
+				void updateDraft({ ...storage, paths: [...new Set([...storage.paths, ...paths])] });
 			}
 		} catch {
 			setError(t('settings.storage.errors.pickFolders'));
@@ -197,13 +206,14 @@ const CloudPage: React.FC = () => {
 		if (!storage || !value) return;
 		setCustomSchedule(value === 'custom');
 		setCronDraft(undefined);
+		setCronInvalid(false);
 		if (value === 'custom') return;
 		if (value === 'off') {
-			updateDraft({ ...storage, syncEnabled: false });
+			void updateDraft({ ...storage, syncEnabled: false });
 			return;
 		}
 		const cron = SYNC_INTERVALS.find((interval) => interval.key === value)?.cron;
-		updateDraft({
+		void updateDraft({
 			...storage,
 			syncEnabled: true,
 			syncCronExpression: cron ?? storage.syncCronExpression,
@@ -237,7 +247,12 @@ const CloudPage: React.FC = () => {
 				</div>
 			) : storage ? (
 				<>
-					<Provider provider={selectedProvider} />
+					<Service
+						services={services}
+						value={storage.serviceId}
+						disabled={busy}
+						onChange={(serviceId) => void updateDraft({ ...storage, serviceId })}
+					/>
 					<SettingsSection
 						title={t('settings.storage.sync.title')}
 						description={t('settings.storage.sync.description')}
@@ -272,7 +287,7 @@ const CloudPage: React.FC = () => {
 												aria-label={t('settings.storage.sync.removeFolder')}
 												disabled={busy}
 												onClick={() =>
-													updateDraft({
+													void updateDraft({
 														...storage,
 														paths: storage.paths.filter((entry) => entry !== selectedPath),
 													})
@@ -362,16 +377,29 @@ const CloudPage: React.FC = () => {
 												className="w-56 max-w-full font-mono text-xs"
 												disabled={controlsDisabled}
 												onChange={(event) => setCronDraft(event.target.value)}
+												aria-invalid={cronInvalid}
 												onBlur={() => {
 													if (cronDraft !== undefined)
-														updateDraft({
+														void updateDraft({
 															...storage,
 															syncEnabled: true,
 															syncCronExpression: cronDraft,
-														});
+														}).then((saved) => setCronInvalid(!saved));
 												}}
 											/>
 										}
+									/>
+								)}
+								{cronInvalid && (
+									<SettingsRow
+										title={t('settings.storage.autoSync.invalidCron')}
+										className="text-destructive"
+									/>
+								)}
+								{storage.syncEnabled && nextRun && !cronInvalid && (
+									<SettingsRow
+										title={t('settings.storage.autoSync.nextRun')}
+										description={new Date(nextRun).toLocaleString()}
 									/>
 								)}
 							</CardContent>
