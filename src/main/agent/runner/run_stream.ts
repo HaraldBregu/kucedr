@@ -345,8 +345,8 @@ async function* loop(
 			);
 		tools = filterEligibleTools(tools);
 		if (!bootstrap && (!options.tools || options.progressiveDiscovery === true)) {
-			const taskRequest = taskToolIds.length > 0;
 			const requiredIds = new Set([
+				...taskToolIds,
 				'read',
 				'write',
 				'edit',
