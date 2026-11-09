@@ -93,6 +93,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							onClick={(event) => {
 								if (onSelect(entry, event)) onFileSelect(entry);
 							}}
+							onDoubleClick={() => onRenameStart(entry)}
 							onContextMenu={(event) => {
 								event.preventDefault();
 								event.stopPropagation();
