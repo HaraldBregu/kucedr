@@ -628,6 +628,11 @@ export interface AppApi extends AppStorageApi {
 	onChatTextSizeChanged: (
 		callback: (size: import('./app_types').ChatTextSize) => void
 	) => () => void;
+	setZoomFactor: (factor: import('./app_types').ZoomFactor) => Promise<void>;
+	getZoomFactor: () => Promise<import('./app_types').ZoomFactor>;
+	onZoomFactorChanged: (
+		callback: (factor: import('./app_types').ZoomFactor) => void
+	) => () => void;
 	getWorkspaceImageModel: () => Promise<{ providerId: string; modelId: string }>;
 	setWorkspaceImageModel: (model: { providerId: string; modelId: string }) => Promise<void>;
 	getWorkspaceVoiceModel: () => Promise<{ providerId: string; modelId: string }>;
