@@ -73,7 +73,7 @@ export default function Search({ knowledge }: { knowledge: KnowledgeState }): JS
 							placeholder={t('settings.knowledge.searchPlaceholder')}
 							disabled={disabled}
 							onChange={(event) => setQuery(event.target.value)}
-							className="min-w-0 flex-1 text-xs"
+							className="h-7 min-w-0 flex-1 px-2.5 text-xs md:text-xs"
 						/>
 						<Button type="submit" size="sm" disabled={!canSearch} className="self-end">
 							{searching ? (
