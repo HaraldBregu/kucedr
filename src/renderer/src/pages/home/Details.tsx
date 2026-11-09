@@ -27,7 +27,7 @@ export function ChatDetails({ open, popover = false, messages, model, draft, has
 	const scripts = chatScripts(responses);
 	return (
 		<aside id="chat-information" aria-label="Chat information" className={popover ? 'flex max-h-[min(36rem,var(--radix-popover-content-available-height))] flex-col' : `absolute bottom-5 right-6 top-24 z-30 w-56 max-w-[calc(100%-3rem)] flex-col ${open ? 'flex' : 'hidden'}`}>
-			<Card size="sm" className="min-h-0 overflow-hidden rounded-2xl border border-border bg-card ring-0 data-[size=sm]:gap-0 data-[size=sm]:pb-0">
+			<Card size="sm" className="min-h-0 overflow-hidden rounded-2xl border border-border bg-card ring-0 data-[size=sm]:gap-0">
 				<div className="no-scrollbar min-h-0 overflow-y-auto">
 				<CardContent className="space-y-2 pb-3 pt-0 text-sm">
 					<div className="flex min-h-7 items-center gap-2 text-muted-foreground">
