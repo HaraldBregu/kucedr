@@ -190,6 +190,16 @@ export function setChatTextSize(size: ChatTextSize): void {
 	store.set('chatTextSize', size);
 }
 
+export function getZoomFactor(): ZoomFactor {
+	const factor = store.get('zoomFactor');
+	return ZOOM_FACTORS.includes(factor) ? factor : 1;
+}
+
+export function setZoomFactor(factor: ZoomFactor): void {
+	if (!ZOOM_FACTORS.includes(factor)) throw new Error('Invalid zoom setting.');
+	store.set('zoomFactor', factor);
+}
+
 export function getWorkspaceWideContent(): boolean {
 	return store.get('workspaceWideContent');
 }
