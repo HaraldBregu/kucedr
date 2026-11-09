@@ -14,8 +14,6 @@ function setup(initialized = true) {
 	const writeSession = jest.fn(async () => undefined);
 	const removeSession = jest.fn(async () => undefined);
 	const exists = jest.fn(async () => true);
-	const stopWatching = jest.fn();
-	let sessionChanged: ((sessionId: string) => void) | undefined;
  const dependencies: MemoryDependencies = {
   store: { load: () => structuredClone(state), save: (next) => { state = structuredClone(next); } },
 		sources: jest.fn(async () => structuredClone(sessions)), exists, read: async () => markdown, write,
