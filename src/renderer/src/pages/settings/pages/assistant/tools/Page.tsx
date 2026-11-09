@@ -306,7 +306,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 				title={t('settings.modelServices.tools')}
 				description={t('settings.modelServices.toolsDescription')}
 			/>
-			{profile !== 'health' && (
+			{profile !== 'health' && profile !== 'tasks' && (
 				<SettingsSection
 					title={t('settings.modelServices.agentTools.groups.media')}
 					className="order-2"
