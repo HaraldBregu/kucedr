@@ -180,6 +180,7 @@ export interface AgentApi {
 	openSessionFolder: (sessionId: string) => Promise<void>;
 	renameSession: (sessionId: string, title: string) => Promise<void>;
 	pinSession: (sessionId: string, pinned: boolean) => Promise<void>;
+	categorizeSession: (sessionId: string, category: string | null) => Promise<void>;
 	archiveSession: (sessionId: string, archived: boolean) => Promise<void>;
 	getLastMessages: (sessionId: string) => Promise<AgentHistoryMessage[]>;
 	getSessionSnapshot: (sessionId: string) => Promise<AgentSessionSnapshot>;
@@ -644,6 +645,7 @@ export interface AppApi extends AppStorageApi {
 	setWorkspaceModel: (model: { providerId: string; modelId: string }) => Promise<void>;
 	setWorkspaceWideContent: (enabled: boolean) => Promise<void>;
 	getWorkspaceWideContent: () => Promise<boolean>;
+	exportDocument: (name: string, format: 'md' | 'html' | 'pdf', content: string) => Promise<boolean>;
 	setWorkspaceTextSize: (size: import('./app_types').WorkspaceTextSize) => Promise<void>;
 	getWorkspaceTextSize: () => Promise<import('./app_types').WorkspaceTextSize>;
 	setLanguage: (language: AppLanguage) => Promise<void>;
