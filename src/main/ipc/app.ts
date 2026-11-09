@@ -52,6 +52,8 @@ import {
 	setSoundFeedbackEnabled as setStoredSoundFeedbackEnabled,
 	getChatTextSize as getStoredChatTextSize,
 	setChatTextSize as setStoredChatTextSize,
+	getZoomFactor as getStoredZoomFactor,
+	setZoomFactor as setStoredZoomFactor,
 	getWorkspaceWideContent as getStoredWorkspaceWideContent,
 	setWorkspaceWideContent as setStoredWorkspaceWideContent,
 	getWorkspaceTextSize as getStoredWorkspaceTextSize,
