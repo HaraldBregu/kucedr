@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, File, FileImage, FileMusic, FileText, FileVideo } from 'lucide-react';
+import { ChevronRight, File, Folder,FileImage, FileMusic, FileText, FileVideo } from 'lucide-react';
 import { workspaceFileType } from '@shared/workspace';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { WorkspaceRenameInput } from './RenameInput';
