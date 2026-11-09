@@ -581,7 +581,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 								<ul className="flex min-w-0 flex-col gap-1">{categorySessions.map(renderSession)}</ul>
 							)}
 						</nav>,
-						{ className: 'mb-2', drop: category.id }
+						{ drop: category.id }
 					);
 				})}
 				{renderGroup(
