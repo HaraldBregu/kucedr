@@ -125,6 +125,12 @@ const GeneralPage: React.FC = () => {
 		if (next && Object.hasOwn(CHAT_TEXT_SIZES, next)) setChatTextSize(next as ChatTextSize);
 	};
 
+	const handleZoomFactorChange = (next: ZoomFactor | null): void => {
+		if (next === null) return;
+		setZoomFactor(next);
+		void window.app.setZoomFactor(next);
+	};
+
 	const handleWindowSizeChange = (next: string | null): void => {
 		if (!next || !Object.hasOwn(WINDOW_SIZES, next)) return;
 		const size = next as WindowSize;
