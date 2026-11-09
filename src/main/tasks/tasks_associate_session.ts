@@ -6,5 +6,5 @@ export function associateSession(scheduleId: string, sessionId: string): TaskSch
 	const schedule = requireSchedule(scheduleId);
 	const sessionIds = schedule.sessionIds ?? [];
 	if (sessionIds.includes(sessionId)) return schedule;
-	return update(scheduleId, { sessionIds: [...sessionIds, sessionId] });
+	return update(scheduleId, { sessionIds: [...sessionIds, sessionId].slice(-50) });
 }
