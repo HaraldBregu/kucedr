@@ -720,7 +720,7 @@ it('does not fall back to local SQLite when the saved remote database is unavail
 	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
 });
 
-it('links directly to database provider configuration', async () => {
+it('links directly to vector script configuration', async () => {
 	render(
 		<MemoryRouter>
 			<KnowledgePage />
@@ -728,7 +728,7 @@ it('links directly to database provider configuration', async () => {
 	);
 	expect(await screen.findByRole('button', { name: 'Configure databases' })).toHaveAttribute(
 		'href',
-		'/settings/knowledge/providers'
+		'/settings/scripts'
 	);
 });
 
