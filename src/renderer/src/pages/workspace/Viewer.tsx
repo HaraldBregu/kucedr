@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { History, ChevronDown, ChevronRight, ChevronUp, Replace, ReplaceAll, LoaderCircle, MoveHorizontal, X } from 'lucide-react';
+import { History, ChevronDown, ChevronRight, ChevronUp, Replace, ReplaceAll, LoaderCircle, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
