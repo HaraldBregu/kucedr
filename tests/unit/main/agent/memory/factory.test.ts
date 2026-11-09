@@ -1,5 +1,4 @@
 jest.mock('electron-store', () => ({ __esModule: true, default: jest.fn() }));
-jest.mock('node:fs', () => ({ watch: jest.fn() }));
 jest.mock('node:fs/promises', () => ({ access: jest.fn(), readFile: jest.fn(), mkdir: jest.fn(), rm: jest.fn() }));
 jest.mock('../../../../../src/main/agent/agent_store', () => ({ getChatbotModel: jest.fn() }));
 jest.mock('../../../../../src/main/models/adapters/llm', () => ({ LlmModel: jest.fn() }));
