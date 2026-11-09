@@ -93,7 +93,7 @@ const ScriptsPage: React.FC = () => {
 								<Card
 									key={script.name}
 									size="sm"
-									{...(script.type === 'STORAGE' && {
+									{...(script.type !== 'UI' && {
 										role: 'link',
 										tabIndex: 0,
 										className:
