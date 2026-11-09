@@ -332,6 +332,30 @@ const GeneralPage: React.FC = () => {
 						}
 					/>
 					<SettingsRow
+						title={t('settings.application.interfaceSize.title')}
+						description={t('settings.application.interfaceSize.description')}
+						media={<ZoomIn className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Select value={zoomFactor} onValueChange={handleZoomFactorChange}>
+								<SelectTrigger
+									size="sm"
+									className="w-28 text-xs [&_svg]:size-3"
+									aria-label={t('settings.application.interfaceSize.title')}
+								>
+									<SelectValue>{`${Math.round(zoomFactor * 100)}%`}</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{ZOOM_FACTORS.map((factor) => (
+										<SelectItem key={factor} value={factor}>
+											{`${Math.round(factor * 100)}%`}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						}
+					/>
+					<SettingsRow
 						title={t('settings.application.chatTextSize.title')}
 						description={t('settings.application.chatTextSize.description')}
 						media={<Type className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
