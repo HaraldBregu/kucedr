@@ -35,6 +35,7 @@ import type {
 	VoiceAgentAppearance,
 	WorkspaceTextSize,
 	ChatTextSize,
+	ZoomFactor,
 } from '../../shared/app_types';
 import { TRAY_CLICK_ACTIONS } from '../../shared/app_types';
 import { wrapIpcHandler, wrapSimpleHandler } from './core/error_handler';
