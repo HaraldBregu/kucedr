@@ -20,8 +20,8 @@ export default function VectorConfiguration({
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		void window.plugins.getSettings(script.plugin.id).then(
-			(values) => setSaved(Boolean(values[script.name])),
+		void window.database.hasKey(script.name).then(
+			setSaved,
 			(err: unknown) => setError(getErrorMessage(err, t('settings.scripts.loadError')))
 		);
 	}, [script, t]);
