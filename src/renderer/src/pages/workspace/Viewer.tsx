@@ -203,7 +203,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 				</div>
 			) : null}
 			{searchable && (kind !== 'markdown' || visibleMarkdownMode === 'source' || content.includes('<!--')) ? (
-				<div role="toolbar" aria-label="File tools" className={`flex shrink-0 items-center border-b px-2 pb-1 ${findOpen ? 'pt-1' : 'pt-13'} sm:px-3`}>
+				<div role="toolbar" aria-label="File tools" className={`flex shrink-0 items-center border-b px-2 pb-1 pt-13 sm:px-3`}>
 					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} />
 				</div>
 			) : null}
