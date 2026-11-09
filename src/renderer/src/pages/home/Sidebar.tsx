@@ -187,20 +187,111 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			.catch(() => setActionError(t('settings.chatHistory.errors.pin')));
 	};
 
-	const pinnedSessions = activeSessions.filter((session) => session.pinned);
-	const recentSessions = activeSessions.filter((session) => !session.pinned);
+	const moveToCategory = (ids: string[], categoryId: string | undefined): void => {
+		clearSelection();
+		setAssignments((current) => {
+			const next = { ...current };
+			for (const id of ids) {
+				if (categoryId) next[id] = categoryId;
+				else delete next[id];
+			}
+			return next;
+		});
+	};
 
-	const renderGroup = (label: string, content: ReactNode, className?: string): ReactElement => {
+	const createCategory = (ids: string[]): void => {
+		const id = crypto.randomUUID();
+		setCategories((current) => [...current, { id, name: t('settings.chatHistory.newCategory', 'New category') }]);
+		moveToCategory(ids, id);
+		setEditingCategoryId(id);
+	};
+
+	const deleteCategory = (id: string): void => {
+		setCategories((current) => current.filter((category) => category.id !== id));
+		setAssignments((current) => Object.fromEntries(Object.entries(current).filter(([, value]) => value !== id)));
+		setCollapsed((current) => current.filter((key) => key !== id));
+	};
+
+	const pinnedSessions = activeSessions.filter((session) => session.pinned);
+	const categoryIds = new Set(categories.map((category) => category.id));
+	const recentSessions = activeSessions.filter((session) => !session.pinned && !categoryIds.has(assignments[session.id]));
+
+	const renderGroup = (
+		key: string,
+		label: string,
+		content: ReactNode,
+		options: { className?: string; drop?: string | null } = {}
+	): ReactElement => {
+		const category = categories.find((item) => item.id === key);
+		const droppable = options.drop !== undefined;
 		return (
-			<Collapsible defaultOpen className={cn('group/collapsible', className)}>
-				<SidebarGroup>
-					<CollapsibleTrigger
-						nativeButton={false}
-						render={<SidebarGroupLabel className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />}
-					>
-						{label}
-						<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
-					</CollapsibleTrigger>
+			<Collapsible
+				key={key}
+				open={!collapsed.includes(key)}
+				onOpenChange={(open) => setCollapsed((current) => (open ? current.filter((item) => item !== key) : [...current, key]))}
+				className={cn('group/collapsible', options.className)}
+			>
+				<SidebarGroup
+					className={cn('rounded-md', dropTarget === key && 'bg-sidebar-accent/60 ring-1 ring-inset ring-sidebar-ring')}
+					onDragOver={(event) => {
+						if (!droppable || !event.dataTransfer.types.includes(SESSION_MIME)) return;
+						event.preventDefault();
+						event.dataTransfer.dropEffect = 'move';
+						setDropTarget(key);
+					}}
+					onDragLeave={(event) => {
+						if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDropTarget(undefined);
+					}}
+					onDrop={(event) => {
+						const ids = event.dataTransfer.getData(SESSION_MIME);
+						setDropTarget(undefined);
+						if (!droppable || !ids) return;
+						event.preventDefault();
+						moveToCategory(ids.split('\n'), options.drop ?? undefined);
+					}}
+				>
+					{category && editingCategoryId === category.id ? (
+						<Input
+							autoFocus
+							maxLength={60}
+							defaultValue={category.name}
+							onKeyDown={(event) => {
+								if (event.key === 'Enter') event.currentTarget.blur();
+								if (event.key === 'Escape') {
+									event.currentTarget.value = category.name;
+									event.currentTarget.blur();
+								}
+							}}
+							onBlur={(event) => {
+								const name = event.currentTarget.value.trim();
+								setEditingCategoryId(undefined);
+								if (name) setCategories((current) => current.map((item) => (item.id === category.id ? { ...item, name } : item)));
+							}}
+							aria-label={t('common.rename', 'Rename')}
+							className="h-8"
+						/>
+					) : (
+						<CollapsibleTrigger
+							nativeButton={false}
+							render={<SidebarGroupLabel />}
+							onDoubleClick={category ? () => setEditingCategoryId(category.id) : undefined}
+							onContextMenu={category ? (event: React.MouseEvent) => {
+								event.preventDefault();
+								void window.win
+									.showContextMenu([
+										{ id: 'rename', label: t('common.rename', 'Rename') },
+										{ id: 'delete', label: t('common.delete', 'Delete') },
+									])
+									.then((action) => {
+										if (action === 'rename') setEditingCategoryId(category.id);
+										if (action === 'delete') deleteCategory(category.id);
+									});
+							} : undefined}
+						>
+							<span className="truncate">{label}</span>
+							<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
+						</CollapsibleTrigger>
+					)}
 					<CollapsibleContent>
 						<SidebarGroupContent>{content}</SidebarGroupContent>
 					</CollapsibleContent>
