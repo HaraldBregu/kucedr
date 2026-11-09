@@ -13,6 +13,8 @@ import {
 	setSoundFeedbackEnabled,
 	getChatTextSize,
 	setChatTextSize,
+	getZoomFactor,
+	setZoomFactor,
 	getLanguage,
 	setLanguage as setStoredLanguage,
 	getTheme,
