@@ -80,7 +80,7 @@ export function CodeSidebar({ basePath = '/code', title, creation, onCreationCha
 				}
 			}).catch((cause: unknown) => setActionError(cause instanceof Error ? cause.message : t('code.actionError', 'Unable to update workspace.')));
 		}}>
-			<header className="flex min-h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2 py-2">
+			<header className="flex min-h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2 pb-2">
 				{!loading && workspace ? <WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} />: <><Code2 className="size-4 shrink-0" strokeWidth={1.8} /><h1 className="flex-1 truncate text-sm font-medium">{title}</h1></>}
 			</header>
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
