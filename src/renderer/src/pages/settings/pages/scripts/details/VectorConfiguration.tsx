@@ -30,11 +30,7 @@ export default function VectorConfiguration({
 		setSaving(true);
 		setError('');
 		try {
-			const values = await window.plugins.getSettings(script.plugin.id);
-			await window.plugins.saveSettings(script.plugin.id, {
-				...values,
-				[script.name]: apiKey.trim(),
-			});
+			await window.database.saveKey(script.name, apiKey.trim());
 			setSaved(true);
 			setApiKey('');
 		} catch (err) {
