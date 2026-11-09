@@ -326,6 +326,15 @@ export function CommandMenu({
 		void loadModelCatalog()
 			.then(setModels)
 			.catch(() => setModels([]));
+		void window.agent
+			.listWorkspaceFiles()
+			.then((entries) => {
+				const flat: WorkspaceTreeEntry[] = [];
+				const walk = (items: WorkspaceTreeEntry[]): void => items.forEach((entry) => (entry.type === 'file' ? flat.push(entry) : walk(entry.children ?? [])));
+				walk(entries);
+				setFiles(flat);
+			})
+			.catch(() => setFiles([]));
 	}, [open]);
 
 	const sections = [
