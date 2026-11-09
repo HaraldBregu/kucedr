@@ -548,13 +548,32 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			>
 				{pinnedSessions.length > 0 &&
 					renderGroup(
+						'pinned',
 						t('settings.chatHistory.pinned', 'Pinned'),
 						<nav aria-label={t('settings.chatHistory.pinned', 'Pinned')}>
 							<ul className="flex min-w-0 flex-col gap-1">{pinnedSessions.map(renderSession)}</ul>
 						</nav>,
-						'mb-2'
+						{ className: 'mb-2' }
 					)}
+				{categories.map((category) => {
+					const categorySessions = activeSessions.filter((session) => !session.pinned && assignments[session.id] === category.id);
+					return renderGroup(
+						category.id,
+						category.name,
+						<nav aria-label={category.name}>
+							{categorySessions.length === 0 ? (
+								<p className="px-2 py-1 text-xs text-muted-foreground">
+									{t('settings.chatHistory.emptyCategory', 'Drag chats here')}
+								</p>
+							) : (
+								<ul className="flex min-w-0 flex-col gap-1">{categorySessions.map(renderSession)}</ul>
+							)}
+						</nav>,
+						{ className: 'mb-2', drop: category.id }
+					);
+				})}
 				{renderGroup(
+					'history',
 					t('settings.chatHistory.history', 'History'),
 					<>
 				{actionError ? (
