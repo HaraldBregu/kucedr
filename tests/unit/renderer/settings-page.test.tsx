@@ -67,6 +67,8 @@ beforeEach(() => {
 				notifyKeepAwake = callback;
 				return jest.fn();
 			}),
+			getZoomFactor: jest.fn().mockResolvedValue(1),
+			onZoomFactorChanged: jest.fn(() => jest.fn()),
 		},
 	});
 });
