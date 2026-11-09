@@ -8,7 +8,7 @@ export const readTool = tool({
 	category: 'core',
 	name: 'Read file',
 	description:
-		'Read the full UTF-8 contents of a single text file. Use this before editing when you need the current file contents.',
+		'Read the UTF-8 contents of a single text file. Use this before editing when you need the current file contents. Pass offset and limit to read only part of a large file instead of using bash.',
 	readOnly: true,
 	inputSchema: z.object({
 		path: z
@@ -17,9 +17,17 @@ export const readTool = tool({
 			.describe(
 				'Path relative to the agent filesystem root, or an absolute path. ~ is the OS user home.'
 			),
+		offset: z.number().int().min(1).optional().describe('First line to read, 1-based.'),
+		limit: z.number().int().min(1).optional().describe('Maximum number of lines to read.'),
 	}),
-	execute: async ({ path: filePath }, signal) => {
+	execute: async ({ path: filePath, offset, limit }, signal) => {
 		const resolved = authorizeFilePath(filePath);
-		return (await readFileBounded(resolved, 2 * 1024 * 1024, signal)).toString('utf8');
+		const text = (await readFileBounded(resolved, 2 * 1024 * 1024, signal)).toString('utf8');
+		if (offset === undefined && limit === undefined) return text;
+		const start = (offset ?? 1) - 1;
+		return text
+			.split('\n')
+			.slice(start, limit === undefined ? undefined : start + limit)
+			.join('\n');
 	},
 });
