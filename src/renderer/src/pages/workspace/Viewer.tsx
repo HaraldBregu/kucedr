@@ -267,7 +267,6 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 						{kind === 'markdown' ? <span>{content.split(/\s+/).filter(Boolean).length} words</span> : null}
 						{file.updatedAt || file.createdAt ? <time dateTime={file.updatedAt || file.createdAt} aria-label={`${file.updatedAt ? 'Updated' : 'Created'} ${new Date((file.updatedAt || file.createdAt)!).toLocaleString()}`} className="inline-flex items-center gap-1"><History className="size-3" aria-hidden="true" />{new Date((file.updatedAt || file.createdAt)!).toLocaleString()}</time> : null}
 					</div>
-					<Button type="button" variant="ghost" size="icon-sm" aria-label="Full width" aria-pressed={wide} className={wide ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'} onClick={() => onWideChange(!wide)}><MoveHorizontal /></Button>
 					<Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}>
 						<SelectTrigger size="sm" aria-label="Text size" className="h-6! text-[11px]">
 							<SelectValue>{TEXT_SIZES.find(({ size }) => size === textSize)?.label}</SelectValue>
