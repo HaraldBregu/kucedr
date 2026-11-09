@@ -29,6 +29,8 @@ export function chunkSpans(text: string): RagChunkSpan[] {
 		if (end === normalized.length) break;
 		let next = Math.max(start + 1, end - 200);
 		if (/[\uDC00-\uDFFF]/.test(normalized[next])) next += 1;
+		const word = normalized.slice(next, end).search(/\s/);
+		if (word > 0 && /\S/.test(normalized[next - 1])) next += word;
 		lineStart += normalized.slice(start, next).split('\n').length - 1;
 		start = next;
 	}
