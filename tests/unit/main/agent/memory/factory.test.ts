@@ -60,7 +60,7 @@ it('persists independent configuration and invokes the configured provider direc
 		`/home/test/.kucedr/memory/${sessionId}.md`,
 		expect.stringContaining('> Remember this run.')
 	);
-	expect(scanSources).toHaveBeenCalledWith();
+	expect(scanSources).toHaveBeenCalledWith(undefined, undefined);
 	await first.edit('# Memory\n');
 	expect(atomicWrite).toHaveBeenCalledWith('/home/test/.kucedr/memory/MEMORY.md', '# Memory\n');
 	expect(Store).toHaveBeenCalledWith(
