@@ -21,7 +21,7 @@ import {
 const ragConfiguration = {
 	indexName: 'kucedr',
 	databaseProviderId: 'pinecone',
-	databaseId: 'pinecone',
+	databaseId: 'vector-db',
 	embeddingProviderId: 'openai',
 	embeddingModelId: 'text-embedding-3-small',
 	folders: [],
@@ -38,18 +38,18 @@ it('reads and writes database selection through the RAG store', () => {
 	expect(databaseConfigurationStorePath).toBe('/rag/settings.json');
 	expect(getDatabaseConfiguration()).toEqual({
 		providerId: 'script',
-		databaseId: 'pinecone',
+		databaseId: 'vector-db',
 	});
 
 	saveDatabaseConfiguration({
 		providerId: 'script',
-		databaseId: 'pinecone',
+		databaseId: 'vector-db',
 	});
 
 	expect(saveRagConfiguration).toHaveBeenCalledWith({
 		...ragConfiguration,
 		databaseProviderId: 'pinecone',
-		databaseId: 'pinecone',
+		databaseId: 'vector-db',
 	});
 });
 
@@ -67,7 +67,7 @@ it('clears remote storage consent when the user removes the database selection',
 it('preserves consent when saving the same database selection', () => {
 	const mirrorConsent = { version: 1, indexName: 'kucedr', recipient: 'same-account' };
 	getRagConfiguration.mockReturnValue({ ...ragConfiguration, mirrorConsent });
-	saveDatabaseConfiguration({ providerId: 'script', databaseId: 'pinecone' });
+	saveDatabaseConfiguration({ providerId: 'script', databaseId: 'vector-db' });
 	expect(saveRagConfiguration).toHaveBeenCalledWith(expect.objectContaining({ mirrorConsent }));
 });
 
