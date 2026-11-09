@@ -89,9 +89,7 @@ export function isAgentToolAllowedForProfile(
 	profileId: AgentToolProfileId,
 	tool: AgentToolReference
 ): boolean {
-	if (profileId === 'tasks' && tool.kind === 'builtin' && TASKS_EXCLUDED_BUILTIN_TOOL_IDS.has(tool.id)) {
-		return false;
-	}
+	if (profileId === 'tasks' && tool.kind === 'builtin') return TASKS_BUILTIN_TOOL_IDS.has(tool.id);
 	if (tool.kind === 'builtin' && tool.id === 'ask') return profileId === 'chat';
 	if (tool.kind === 'builtin' && tool.id === 'request_mcp_authorization') return profileId === 'chat';
 	if (tool.kind === 'builtin' && tool.id === 'complete_bootstrap') {
