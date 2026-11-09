@@ -115,7 +115,7 @@ export default function Storage({ knowledge }: { knowledge: KnowledgeState }): J
 							value={indexName}
 							aria-label={t('settings.knowledge.indexName')}
 							placeholder={t('settings.knowledge.indexNamePlaceholder')}
-							className="w-64 max-w-full text-xs"
+							className="h-7 w-64 max-w-full px-2.5 text-xs md:text-xs"
 							maxLength={45}
 							disabled={disabled}
 							onChange={(event) => setIndexName(event.target.value)}
