@@ -51,6 +51,15 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const [pendingAction, setPendingAction] = useState<{ action: 'clear' | 'compact'; id: string; title: string }>();
 	const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(new Set());
 	const [selectionAnchor, setSelectionAnchor] = useState<string>();
+	const [categories, setCategories] = useState<ChatCategory[]>(() => stored('chat-categories', []));
+	const [assignments, setAssignments] = useState<Record<string, string>>(() => stored('chat-category-assignments', {}));
+	const [collapsed, setCollapsed] = useState<string[]>(() => stored('chat-collapsed-groups', []));
+	const [editingCategoryId, setEditingCategoryId] = useState<string>();
+	const [dropTarget, setDropTarget] = useState<string>();
+
+	useEffect(() => localStorage.setItem('chat-categories', JSON.stringify(categories)), [categories]);
+	useEffect(() => localStorage.setItem('chat-category-assignments', JSON.stringify(assignments)), [assignments]);
+	useEffect(() => localStorage.setItem('chat-collapsed-groups', JSON.stringify(collapsed)), [collapsed]);
 
 	useEffect(() => {
 		let active = true;
