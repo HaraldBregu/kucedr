@@ -71,17 +71,21 @@ const GeneralPage: React.FC = () => {
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
 	const [windowSize, setWindowSize] = useState<WindowSize>('1200x800');
+	const [zoomFactor, setZoomFactor] = useState<ZoomFactor>(1);
 
 	useEffect(() => {
 		void window.app.getTrayEnabled().then(setTrayEnabled);
 		void window.app.getTrayClickAction().then(setTrayClickAction);
 		void window.app.getKeepAwake().then(setKeepAwake);
+		void window.app.getZoomFactor().then(setZoomFactor);
 		void window.win.getSize().then(setWindowSize);
 		const offTrayEnabled = window.app.onTrayEnabledChanged(setTrayEnabled);
 		const offKeepAwake = window.app.onKeepAwakeChanged(setKeepAwake);
+		const offZoomFactor = window.app.onZoomFactorChanged(setZoomFactor);
 		return () => {
 			offTrayEnabled();
 			offKeepAwake();
+			offZoomFactor();
 		};
 	}, []);
 
