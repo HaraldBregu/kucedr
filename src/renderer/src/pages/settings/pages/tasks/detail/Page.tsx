@@ -312,9 +312,15 @@ const TaskDetailsPage: React.FC = () => {
 			</SettingsSection>
 
 			<div className="flex justify-end gap-2">
-				<Button size="sm" disabled={running || deleting || toggling} onClick={() => void runNow()}>
-					{running ? t('settings.cron.actions.running') : t('settings.cron.actions.run')}
-				</Button>
+				{running ? (
+					<Button variant="outline" size="sm" onClick={() => void stop()}>
+						{t('settings.cron.actions.stop')}
+					</Button>
+				) : (
+					<Button size="sm" disabled={deleting || toggling} onClick={() => void runNow()}>
+						{t('settings.cron.actions.run')}
+					</Button>
+				)}
 				<Button
 					variant="destructive"
 					size="sm"
