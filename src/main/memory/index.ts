@@ -1,6 +1,4 @@
 import fs from 'node:fs/promises';
-import { watch } from 'node:fs';
-import path from 'node:path';
 import Store from 'electron-store';
 import type { MemoryService } from '../../shared/memory_types';
 import type { Config } from '../agent/types';
