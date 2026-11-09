@@ -52,8 +52,6 @@ it('persists independent configuration and invokes the configured provider direc
 		apiKey: 'provider-secret',
 		baseUrl: 'https://provider.invalid',
 	});
-	const close = jest.fn();
-	(watch as jest.Mock).mockReturnValue({ close });
 	const first = createMemory(() => ({ location: '/home/test/.kucedr/workspace' }));
 	await first.start();
 	const sessionId = '11111111-1111-4111-8111-111111111111';
