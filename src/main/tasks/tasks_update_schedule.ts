@@ -12,7 +12,7 @@ export function updateSchedule(
 	if (typeof request.name === 'string') patch.name = request.name.trim();
 	if (typeof request.description === 'string') patch.description = request.description.trim();
 	if (typeof request.cronExpression === 'string') {
-		patch.cronExpression = request.cronExpression.trim().replace(/\s+/g, ' ');
+		patch.cronExpression = normalizeCron(request.cronExpression);
 	}
 	if (typeof request.enabled === 'boolean') patch.enabled = request.enabled;
 	if (typeof request.prompt === 'string') patch.prompt = request.prompt.trim();
