@@ -12,7 +12,7 @@ export function vectorScriptAdapter(script: PluginScript): VectorDatabaseAdapter
 			providerName: script.plugin.name,
 			databaseName: script.title,
 		},
-		apiKey: () => pluginSettings(script.plugin.id)[script.name],
+		apiKey: () => vectorScriptKey(script.name),
 		consentRecipient: (apiKey, indexName) => ['script', script.name, indexName, apiKey],
 		upload: async ({ apiKey, indexName, generation, dimensions, records, signal, assertCurrent }) => {
 			assertCurrent();
