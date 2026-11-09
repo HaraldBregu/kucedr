@@ -18,7 +18,7 @@ import {
 	Library,
 	Mic,
 	MonitorUp,
-	Info,
+	List,
 	Plus,
 	TableIcon,
 	X,
@@ -886,15 +886,6 @@ function PageContent(): ReactElement {
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
 				overlayNavigation={!openExtension}
-				navigationActions={!showEmptyConversation && !openExtension ? <Popover open={compactDetails && detailsPopoverOpen} onOpenChange={setDetailsPopoverOpen}>
-					<Tooltip>
-						<TooltipTrigger render={compactDetails ? <PopoverTrigger asChild>{infoButton}</PopoverTrigger> : infoButton} />
-						<TooltipContent side="bottom">{infoOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
-					</Tooltip>
-					<PopoverContent align="end" className="w-64 border-0 bg-transparent p-0 shadow-lg">
-						{chatDetails(true, true)}
-					</PopoverContent>
-				</Popover> : undefined}
 				sidebar={
 					<StableHomeSidebar
 						refreshKey={`${chatSessionId}:${visibleMessages.length}:${agent.isLoading}`}
@@ -917,6 +908,19 @@ function PageContent(): ReactElement {
 					<span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
+					{!showEmptyConversation && (
+						<div className="absolute right-2 top-12 z-40 sm:right-3">
+							<Popover open={compactDetails && detailsPopoverOpen} onOpenChange={setDetailsPopoverOpen}>
+					<Tooltip>
+						<TooltipTrigger render={compactDetails ? <PopoverTrigger asChild>{infoButton}</PopoverTrigger> : infoButton} />
+						<TooltipContent side="bottom">{infoOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
+					</Tooltip>
+					<PopoverContent align="end" className="w-64 border-0 bg-transparent p-0 shadow-lg">
+						{chatDetails(true, true)}
+					</PopoverContent>
+				</Popover>
+						</div>
+					)}
 					{showEmptyConversation ? (
 						<div className="flex min-h-[calc(50dvh+7rem)] w-full shrink-0 flex-col justify-end gap-4 pb-6 pt-10">
 							<div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4">
