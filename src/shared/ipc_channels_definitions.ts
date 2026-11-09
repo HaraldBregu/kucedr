@@ -145,6 +145,8 @@ export const TaskChannels = {
 	list: 'tasks:list',
 	history: 'tasks:history',
 	runNow: 'tasks:run-now',
+	isRunning: 'tasks:is-running',
+	stop: 'tasks:stop',
 	delete: 'tasks:delete',
 	setEnabled: 'tasks:enabled:set',
 	getRuntime: 'tasks:runtime:get',
