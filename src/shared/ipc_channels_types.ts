@@ -447,6 +447,8 @@ export interface TaskInvokeChannelMap {
 		args: [scheduleId: string];
 		result: import('../main/tasks').TaskScheduledTask;
 	};
+	[TaskChannels.isRunning]: { args: [scheduleId: string]; result: boolean };
+	[TaskChannels.stop]: { args: [scheduleId: string]; result: void };
 	[TaskChannels.delete]: { args: [scheduleId: string]; result: void };
 	[TaskChannels.setEnabled]: {
 		args: [scheduleId: string, enabled: boolean];
