@@ -49,7 +49,6 @@ const routes = [
 	'/settings/plugins',
 	'/settings/skills',
 	'/settings/services',
-	'/settings/knowledge/providers',
 	'/settings/mcp',
 	'/settings/mcp/missing',
 	'/settings/agent/rag',
