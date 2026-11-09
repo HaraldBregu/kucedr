@@ -37,7 +37,7 @@ export async function searchRag(
 		const index = vectorStore.getIndex(selectedIndexName);
 		if (!index) return [];
 		if ((index.indexName ?? DEFAULT_RAG_INDEX_NAME) !== selectedIndexName) {
-			throw new Error('Generate the selected RAG index before searching.');
+			throw new Error('Generate the selected Knowledge index before searching.');
 		}
 
 		if (
