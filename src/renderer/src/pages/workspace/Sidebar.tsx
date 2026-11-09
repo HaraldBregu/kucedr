@@ -298,7 +298,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 
 	return (
 		<div data-slot="workspace-sidebar" className="flex h-full min-h-0 flex-col">
-			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
+			<header className="shrink-0 border-b border-sidebar-border/50 px-2 pb-2">
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/home')}>
