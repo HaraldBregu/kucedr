@@ -12,6 +12,7 @@ interface WorkspaceTreeProps {
 	readonly renameBusy: boolean;
 	readonly onRename: (name: string) => void;
 	readonly onRenameCancel: () => void;
+	readonly onRenameStart: (entry: WorkspaceTreeEntry) => void;
 	readonly selectedPath: string | null;
 	readonly selection: ReadonlySet<string>;
 	readonly onSelect: (entry: WorkspaceTreeEntry, event: React.MouseEvent) => boolean;
