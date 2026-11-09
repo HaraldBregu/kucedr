@@ -106,7 +106,7 @@ export function resolveToolPermissionDetails(
 	if (decisions.includes('deny'))
 		return { mode: 'deny', kind, targets, approvalTargets, persistable: false };
 	if (
-		kind === 'read' ||
+		(kind === 'read' && fallback !== 'deny') ||
 		(targets.length > 0 && decisions.every((decision) => decision === 'allow'))
 	)
 		return { mode: 'allow', kind, targets, approvalTargets, persistable: false };
