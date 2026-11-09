@@ -27,7 +27,7 @@ export function assertRagConsent(
 			accepted.recipient !== ragRecipient('mirror', providerId, modelId, indexName, configuration)
 		)
 			throw new Error(
-				'Confirm remote vector database plaintext storage and failed-upload cleanup in RAG settings.'
+				'Confirm remote vector database plaintext storage and failed-upload cleanup in Knowledge settings.'
 			);
 	}
 }
