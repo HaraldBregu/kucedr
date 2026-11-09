@@ -111,8 +111,15 @@ const TaskDetailsPage: React.FC = () => {
 			await window.tasks.runNow(task.id);
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
-		} finally {
 			setRunning(false);
+		}
+	};
+	const stop = async (): Promise<void> => {
+		setError(null);
+		try {
+			await window.tasks.stop(task.id);
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
 		}
 	};
 	const deleteTask = async (): Promise<void> => {
