@@ -92,7 +92,7 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 	];
 	const cronExpression = configuration.cronExpression.trim().replace(/\s+/g, ' ');
 	if (configuration.scheduleEnabled && !cron.validate(cronExpression)) {
-		throw new Error('RAG indexing schedule must be a valid cron expression.');
+		throw new Error('Knowledge indexing schedule must be a valid cron expression.');
 	}
 	const timezone = configuration.timezone?.trim() || DEFAULT_RAG_CONFIGURATION.timezone!;
 	try {
