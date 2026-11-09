@@ -20,7 +20,7 @@ import {
 
 const ragConfiguration = {
 	indexName: 'kucedr',
-	databaseProviderId: 'pinecone',
+	databaseProviderId: 'script',
 	databaseId: 'vector-db',
 	embeddingProviderId: 'openai',
 	embeddingModelId: 'text-embedding-3-small',
@@ -48,7 +48,7 @@ it('reads and writes database selection through the RAG store', () => {
 
 	expect(saveRagConfiguration).toHaveBeenCalledWith({
 		...ragConfiguration,
-		databaseProviderId: 'pinecone',
+		databaseProviderId: 'script',
 		databaseId: 'vector-db',
 	});
 });
