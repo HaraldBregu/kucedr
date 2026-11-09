@@ -201,6 +201,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 						<Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" title="Replace all" aria-label="Replace all" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, true)}><ReplaceAll className="size-3.5" /></Button>
 					</div> : null}
 					{findQuery ? <p aria-live="polite" className={`pl-6 pt-1 text-[11px] ${matchCount ? 'text-muted-foreground' : 'text-destructive'}`}>{matchCount ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'No results'}</p> : null}
+					</div>
 				</div>
 			) : null}
 			{searchable && (kind !== 'markdown' || visibleMarkdownMode === 'source' || content.includes('<!--')) ? (
