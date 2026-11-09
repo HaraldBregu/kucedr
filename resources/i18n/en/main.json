@@ -1772,7 +1772,11 @@
 			"name": "Name",
 			"category": "Category",
 			"fence": "Code fence",
-			"plugin": "Plugin"
+			"plugin": "Plugin",
+			"apiKey": "API key",
+			"apiKeyDescription": "Stored encrypted and sent only to this script.",
+			"apiKeySaved": "Saved",
+			"save": "Save"
 		},
 		"modes": {
 			"title": "Installed modes",
