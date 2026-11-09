@@ -70,7 +70,7 @@ export function SettingsSidebar(): React.JSX.Element {
 
 	return (
 		<div data-slot="settings-sidebar" className="flex h-full min-h-0 flex-col">
-			<div className="shrink-0 border-b border-sidebar-border/50 p-2">
+			<div className="shrink-0 border-b border-sidebar-border/50 px-2 pb-2">
 				<Link
 					to="/home"
 					className={cn(SPLIT_ITEM_CLASS, 'group')}
