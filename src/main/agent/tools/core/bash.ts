@@ -407,11 +407,20 @@ export function execTool(
 		category: 'core',
 		name: 'Execute command',
 		description:
-			'Run a shell command in a filesystem sandbox to create, edit, move, or delete a file. Reads are allowed; writes are confined to the workspace and trusted locations. Declare outside directories that need write access in additionalRoots to request and optionally remember permission. ' +
+			'Run a shell command in a filesystem sandbox to search (grep, find), list, move or delete files, build, test, or run programs. Do not use it to read or change file contents: use read, edit, write, or patch instead of cat, sed, awk, or scripts. Chain related commands in one call instead of many small calls. ' +
+			'Writes are confined to the workspace and trusted locations. Declare outside directories that need write access in additionalRoots to request and optionally remember permission. ' +
 			'Runtime cache access may require approval for its containing cache directory. For an intentional host operation, retry with elevated: true to request approval. Set background or yieldMs for long-running commands, timeout to stop slow commands, and pty for TTY-only CLIs.',
 		readOnly,
 		inputSchema: execInputSchema,
-		execute: (input, signal) => runExec(sandbox, input, signal, readOnly),
+		execute: async (input, signal) => {
+			// The model already knows the command, workdir and roots it sent; echoing them doubles tokens per call.
+			const { command, workdir, roots, pty, executionMode, ...result } = await runExec(sandbox, input, signal, readOnly);
+			if (!result.background) {
+				const { background, pid, ...foreground } = result;
+				return foreground;
+			}
+			return result;
+		},
 	});
 	return {
 		...configured,
