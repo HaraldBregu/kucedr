@@ -137,7 +137,13 @@ export function validateProviderManifest(value: unknown): string[] {
 		errors.push('manifest.json: "services" has been replaced by capability fields.');
 	if (manifest.databases !== undefined)
 		errors.push('manifest.json: "databases" has been renamed; use "vector_databases".');
-	for (const key of ['models', 'mcp_servers', 'vector_databases', 'web_search'] as const) {
+	for (const key of [
+		'models',
+		'mcp_servers',
+		'vector_databases',
+		'web_search',
+		'storage_services',
+	] as const) {
 		const entries = manifest[key];
 		if (entries === undefined) continue;
 		if (!Array.isArray(entries)) {
