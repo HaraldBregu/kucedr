@@ -32,3 +32,9 @@ export class DatabaseIpc implements IpcModule<DatabaseIpcDependencies> {
 		});
 	}
 }
+
+function vectorScript(name: unknown): string {
+	if (!pluginScripts('VECTOR').some((script) => script.name === name))
+		throw new Error('Unknown vector script.');
+	return name as string;
+}
