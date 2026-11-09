@@ -9,7 +9,7 @@
 		"dev": "npm run build && vite --config example/vite.config.mjs"
 	},
 	"devDependencies": {
-		"@tailwindcss/cli": "^4.3.3",
+		"@tailwindcss/cli": "^4.3.4",
 		"@vitejs/plugin-react": "^6.1.2",
 		"clsx": "^2.1.1",
 		"esbuild": "^0.28.2",

@@ -10,7 +10,7 @@
 	},
 	"devDependencies": {
 		"@base-ui/react": "^1.9.0",
-		"@tailwindcss/cli": "^4.3.3",
+		"@tailwindcss/cli": "^4.3.4",
 		"@vitejs/plugin-react": "^6.1.2",
 		"class-variance-authority": "^0.7.1",
 		"cn": "^0.5.0",
