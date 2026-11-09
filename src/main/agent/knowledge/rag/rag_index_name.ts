@@ -4,7 +4,7 @@ export function normalizeRagIndexName(value: string): string {
 	const indexName = value.trim();
 	if (!INDEX_NAME_PATTERN.test(indexName)) {
 		throw new Error(
-			'RAG index name must be 1-45 lowercase letters, numbers, or hyphens, and must start and end with a letter or number.'
+			'Knowledge index name must be 1-45 lowercase letters, numbers, or hyphens, and must start and end with a letter or number.'
 		);
 	}
 	return indexName;
