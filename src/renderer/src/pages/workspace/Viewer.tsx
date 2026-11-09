@@ -177,12 +177,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 	) : null;
 
 	return (
-		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background" onKeyDown={(event) => {
-			if (!searchable || !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'f') return;
-			event.preventDefault();
-			event.stopPropagation();
-			openFind();
-		}}>
+		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
 			<div className="relative flex min-h-0 min-w-0 flex-1">
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
 			{kind === 'markdown' && visibleMarkdownMode === 'preview' && !content.includes('<!--') ? <div ref={setToolbarTarget} hidden /> : null}
