@@ -4,6 +4,9 @@ Status: steps 1–5 are implemented. Modes are pure data in the bundled `bootstr
 agent and chat input read them from `agent:list-modes`. Neither main nor the renderer contains code for
 a specific mode. Step 6 (tests) is not done yet.
 
+Next: [Agent state, hooks and modes](AGENT_STATE.md) proposes moving the mode primitives into host hooks,
+session-owned modes, and a run state machine.
+
 This document plans how to move Kucedr's agent modes into plugins. The core agent would start with no
 modes, and adding a plugin would add a mode such as plan, goal, or fast.
 
