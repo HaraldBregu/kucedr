@@ -177,7 +177,7 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 							<Input
 								value={cron}
 								aria-label={t('settings.knowledge.cronExpression')}
-								className="w-64 max-w-full font-mono text-xs"
+								className="h-7 w-64 max-w-full px-2.5 font-mono text-xs md:text-xs"
 								disabled={disabled}
 								onChange={(event) => setCron(event.target.value)}
 								onBlur={() => {
