@@ -82,6 +82,11 @@ export class Menu {
 			if (offset === -1 && history?.canGoBack()) history.goBack();
 			if (offset === 1 && history?.canGoForward()) history.goForward();
 		};
+		const zoom = (offset: -1 | 1): void => {
+			const index = ZOOM_FACTORS.indexOf(this.callbacks.getZoomFactor?.() ?? 1) + offset;
+			const factor = ZOOM_FACTORS[index];
+			if (factor) this.callbacks.onZoomFactorChange?.(factor);
+		};
 
 		const template: Electron.MenuItemConstructorOptions[] = [
 			...(isMac
