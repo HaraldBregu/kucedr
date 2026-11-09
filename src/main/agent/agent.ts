@@ -135,14 +135,17 @@ export class Agent {
 	}): void {
 		if (this.isStarted) return;
 		this.isStarted = true;
-		setTaskRunner((schedule) => {
+		setTaskRunner((schedule, signal) => {
 			const runtime = getRuntime();
 			const toolsAllow = schedule.toolsAllow;
 			const sessionId = randomUUID();
+			const runId = randomUUID();
 			associateSession(schedule.id, sessionId);
+			signal.addEventListener('abort', () => this.cancel(runId), { once: true });
 			return this.send(schedule.prompt, 'tasks', {
 				type: 'background',
 				sessionId,
+				runId,
 				...(toolsAllow?.length ? { toolsAllow } : {}),
 				toolsDeny: SCHEDULED_TASK_TOOLS_DENY,
 				streaming: false,
