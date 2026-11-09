@@ -53,6 +53,10 @@ export const CHAT_TEXT_SIZES = ['extra-small', 'small', 'medium', 'large', 'extr
 
 export type ChatTextSize = (typeof CHAT_TEXT_SIZES)[number];
 
+export const ZOOM_FACTORS = [1, 1.1, 1.25, 1.5, 1.75, 2] as const;
+
+export type ZoomFactor = (typeof ZOOM_FACTORS)[number];
+
 export type AppTheme = 'light' | 'dark' | 'system';
 
 export type VoiceAgentAppearance = 'persona' | 'orb-07';
