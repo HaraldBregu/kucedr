@@ -146,6 +146,20 @@ export class Menu {
 						: []),
 					{ label: m.reload, role: 'reload' as const },
 					{ label: m.forceReload, role: 'forceReload' as const },
+					{ type: 'separator' as const },
+					{
+						label: m.actualSize,
+						accelerator: 'CmdOrCtrl+0',
+						click: (): void => this.callbacks.onZoomFactorChange?.(1),
+					},
+					{ label: m.zoomIn, accelerator: 'CmdOrCtrl+Plus', click: (): void => zoom(1) },
+					{
+						label: m.zoomIn,
+						accelerator: 'CmdOrCtrl+=',
+						visible: false,
+						click: (): void => zoom(1),
+					},
+					{ label: m.zoomOut, accelerator: 'CmdOrCtrl+-', click: (): void => zoom(-1) },
 				],
 			},
 			{
