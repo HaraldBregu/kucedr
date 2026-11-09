@@ -91,6 +91,7 @@
 		"settings": "Settings",
 		"categories": {
 			"all": "All",
+			"files": "Files",
 			"routes": "Routes",
 			"apps": "Apps",
 			"plugins": "Plugins",
