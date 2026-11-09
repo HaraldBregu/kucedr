@@ -311,7 +311,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 							<Folders className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
 						</div>
-						<div className="absolute inset-y-0 right-1 flex items-center gap-1">
+						<div className="absolute inset-y-0 right-1 flex items-center gap-0">
 				<Tooltip>
 					<TooltipTrigger render={<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.search', 'Search files')} aria-expanded={searchOpen} className="text-muted-foreground" onClick={() => {
 						if (searchOpen) setQuery('');
