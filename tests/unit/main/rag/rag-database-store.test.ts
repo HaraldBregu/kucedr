@@ -6,13 +6,9 @@ jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({
 	ragConfigurationStorePath: '/rag/settings.json',
 	saveRagConfiguration,
 }));
-jest.mock('../../../../src/main/models', () => ({
-	loadVectorDatabases: () => [
-		{
-			id: 'pinecone',
-			name: 'Pinecone',
-			provider: { id: 'pinecone', name: 'Pinecone' },
-		},
+jest.mock('../../../../src/main/plugins', () => ({
+	pluginScripts: () => [
+		{ name: 'vector-db', title: 'Vector DB', plugin: { id: 'bootstrap', name: 'Bootstrap' } },
 	],
 }));
 
