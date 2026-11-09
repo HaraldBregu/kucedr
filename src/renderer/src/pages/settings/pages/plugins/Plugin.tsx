@@ -334,7 +334,7 @@ export default function PluginPage(): React.JSX.Element {
 				description: script.name,
 				badge: script.version,
 				path:
-					script.type === 'STORAGE'
+					script.type !== 'UI'
 						? `/settings/scripts/${encodeURIComponent(script.name)}`
 						: undefined,
 			})),
