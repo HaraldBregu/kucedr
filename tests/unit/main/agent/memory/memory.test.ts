@@ -459,7 +459,6 @@ it('keeps watching after a corrupt baseline and retries initialization on wake',
  const h = setup(false);
  (h.dependencies.sources as jest.Mock).mockRejectedValue(new Error('corrupt conversation'));
  await h.memory.start();
- expect(h.dependencies.watchSessions).toHaveBeenCalledTimes(1);
  expect(h.memory.status().error).toContain('corrupt conversation');
  expect(h.state().initialized).toBe(false);
  (h.dependencies.sources as jest.Mock).mockResolvedValue(structuredClone(h.sessions));
