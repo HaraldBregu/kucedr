@@ -20,10 +20,10 @@ export function selectedVectorDatabaseConnection(
 	}
 	const adapter = findVectorDatabaseAdapter(configuration.providerId, configuration.databaseId);
 	if (!adapter) throw new Error('The selected vector database is not supported by RAG.');
-	const apiKey = getProvider(configuration.providerId, 'databases')?.apiKey.trim();
+	const apiKey = adapter.apiKey()?.trim();
 	if (!apiKey) {
 		throw new Error(
-			`Configure your ${adapter.service.providerName} API key in Settings → Providers → Database.`
+			`Configure your ${adapter.service.databaseName} API key in Settings → Scripts → ${adapter.service.databaseName}.`
 		);
 	}
 	return { configuration, adapter, apiKey };
