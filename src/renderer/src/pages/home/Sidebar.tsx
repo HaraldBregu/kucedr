@@ -422,6 +422,12 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						)}
 						aria-pressed={isSelected ? true : undefined}
 						data-run-status={session.runStatus}
+						draggable
+						onDragStart={(event) => {
+							event.dataTransfer.setData(SESSION_MIME, selectionTargets(session).map((item) => item.id).join('\n'));
+							event.dataTransfer.effectAllowed = 'move';
+						}}
+						onDragEnd={() => setDropTarget(undefined)}
 						onClick={(event) => {
 							if (select(event)) return;
 							setSessionId(session.id);
