@@ -458,6 +458,14 @@ export class Agent {
 		);
 	}
 
+	categorizeSession(sessionId: string, category: string | null): Promise<void> {
+		return this.scheduler.run(
+			sessionId,
+			async () => categorizeStoredSession(sessionId, this.config.location, category),
+			{ priority: 'high' }
+		);
+	}
+
 	archiveSession(sessionId: string, archived: boolean): Promise<void> {
 		return this.scheduler.run(
 			sessionId,
