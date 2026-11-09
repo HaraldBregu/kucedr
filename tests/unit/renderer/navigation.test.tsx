@@ -134,8 +134,7 @@ it.each([
 		path === '/settings/general/persona' ||
 		path === '/settings/agent/tools' ||
 		path === '/settings/agent/mcp-tools' ||
-		path === '/settings/storage/providers' ||
-		path === '/settings/knowledge/providers'
+		path === '/settings/storage/providers'
 	) {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else {
