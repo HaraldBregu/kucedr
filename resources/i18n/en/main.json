@@ -610,6 +610,10 @@
 				"large": "Large",
 				"extra-large": "Extra Large"
 			},
+			"interfaceSize": {
+				"title": "Interface size",
+				"description": "Make text, icons and controls bigger across the app."
+			},
 			"keepAwake": "Keep Computer Active",
 			"keepAwakeDescription": "Keep the computer and display awake while Kucedr is running",
 			"appData": "Application Data",
