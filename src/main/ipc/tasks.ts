@@ -8,11 +8,13 @@ import {
 	deleteSchedule,
 	getSchedule,
 	getRuntime,
+	isRunning,
 	listSchedules,
 	pauseSchedule,
 	resumeSchedule,
 	runScheduleNow,
 	setRuntime,
+	stopRun,
 } from '../tasks';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
