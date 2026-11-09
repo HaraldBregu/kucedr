@@ -183,6 +183,11 @@ const menuManager = new Menu({
 		setChatTextSize(size);
 		eventBus.broadcast(AppChannels.chatTextSizeChanged, size);
 	},
+	getZoomFactor,
+	onZoomFactorChange: (factor) => {
+		setZoomFactor(factor);
+		eventBus.broadcast(AppChannels.zoomFactorChanged, factor);
+	},
 	getTheme,
 	onThemeChange: (theme) => {
 		setStoredTheme(theme);
