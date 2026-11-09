@@ -379,7 +379,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.loading', 'Loading files…')}</p>
 				) : error ? (
 					<p className="px-2 py-1 text-xs text-destructive" role="alert">{t('workspaceSidebar.error', 'Unable to load Workspace files.')}</p>
-				) : entries.length === 0 ? (
+				) : entries.length === 0 && !pendingAction ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.empty', 'Workspace is empty.')}</p>
 				) : shownEntries.length === 0 ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.noResults', 'No matching files.')}</p>
