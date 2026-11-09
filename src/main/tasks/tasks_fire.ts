@@ -18,9 +18,10 @@ export function fire(scheduleId: string): TaskScheduledTask | undefined {
 	} else if (running.has(scheduleId)) {
 		console.warn('[Task]', `Schedule ${scheduleId} skipped: previous run still in progress.`);
 	} else {
-		running.add(scheduleId);
+		const controller = new AbortController();
+		running.set(scheduleId, controller);
 		void Promise.resolve()
-			.then(() => run(schedule))
+			.then(() => run(schedule, controller.signal))
 			.catch((error) => {
 				console.error('[Task]', `Schedule ${scheduleId} agent run failed.`, error);
 			})
