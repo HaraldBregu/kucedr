@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { activate } from './tasks_activate';
 import { create } from './tasks_create';
+import { normalizeCron } from './tasks_normalize_cron';
 import type { TaskSchedule, TaskScheduleCreateRequest } from './tasks_types';
 
 export function createSchedule(request: TaskScheduleCreateRequest): TaskSchedule {
