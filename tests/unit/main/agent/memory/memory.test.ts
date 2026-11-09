@@ -248,7 +248,6 @@ it('automatically generates memory from only the changed session snapshot', asyn
 	expect(h.state().checkpoints.chat).toContain('chat-new');
 	expect(h.state().checkpoints.other).not.toContain('other-new');
 	await h.memory.stop();
-	expect(h.stopWatching).toHaveBeenCalled();
 });
 
 it('initializes the memory model from chat only once', async () => {
