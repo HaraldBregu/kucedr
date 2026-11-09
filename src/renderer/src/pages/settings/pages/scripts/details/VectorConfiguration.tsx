@@ -7,7 +7,7 @@ import type { PluginScriptInfo } from '@shared/plugin_types';
 import { getErrorMessage } from '../../../../start/setupConstants';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../../components';
 
-/** The API key a VECTOR script receives, saved as the plugin setting named after the script. */
+/** The API key a VECTOR script receives, saved encrypted for that script. */
 export default function VectorConfiguration({
 	script,
 }: {
