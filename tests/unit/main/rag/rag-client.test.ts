@@ -19,7 +19,7 @@ it('uses only the selected script credential and never an environment fallback',
 		providerId: 'script',
 		databaseId: 'vector-db',
 	});
-	expect(pluginSettings).toHaveBeenCalledWith('bootstrap');
+	expect(vectorScriptKey).toHaveBeenCalledWith('vector-db');
 	expect(connection).toMatchObject({
 		configuration: { providerId: 'script', databaseId: 'vector-db' },
 		apiKey: 'user-database-key',
