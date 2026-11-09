@@ -17,7 +17,7 @@ export function assertRagConsent(
 		consent.recipient !== ragRecipient('embedding', providerId, modelId, indexName, configuration)
 	)
 		throw new Error(
-			'Confirm remote embedding disclosure for document text and search queries in RAG settings.'
+			'Confirm remote embedding disclosure for document text and search queries in Knowledge settings.'
 		);
 	if (mirror && !isLocalRagDatabase(configuration)) {
 		const accepted = configuration.mirrorConsent;
