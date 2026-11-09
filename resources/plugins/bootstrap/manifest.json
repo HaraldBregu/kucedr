@@ -13,7 +13,14 @@
 	"settings": {
 		"inputSchema": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"vector-db": {
+					"type": "string",
+					"title": "Vector DB API key",
+					"description": "Pinecone API key used by the Vector DB script.",
+					"format": "password"
+				}
+			}
 		}
 	}
 }
