@@ -110,6 +110,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'appearance dark light system mode',
 	},
 	{
+		path: '/settings/general',
+		labelKey: 'settings.application.interfaceSize.title',
+		descriptionKey: 'settings.application.interfaceSize.description',
+		keywords: 'zoom scale font text size bigger larger accessibility',
+	},
+	{
 		path: '/settings/general/persona',
 		labelKey: 'settings.voiceAgent.title',
 		descriptionKey: 'settings.voiceAgent.description',
