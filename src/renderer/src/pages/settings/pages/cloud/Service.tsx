@@ -9,12 +9,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import type { StorageService } from '@shared/storage_types';
+import type { PluginScriptInfo } from '@shared/plugin_types';
+import type { StorageProvider } from '@shared/storage_types';
 import { SettingsPanel, SettingsRow } from '../../components';
 
 interface ServiceProps {
-	readonly services: readonly StorageService[];
+	readonly services: readonly PluginScriptInfo[];
 	readonly value?: string;
+	readonly provider?: StorageProvider;
 	readonly disabled: boolean;
 	readonly onChange: (serviceId: string) => void;
 }
@@ -22,18 +24,23 @@ interface ServiceProps {
 export default function Service({
 	services,
 	value,
+	provider,
 	disabled,
 	onChange,
 }: ServiceProps): React.JSX.Element {
 	const { t } = useTranslation();
-	const selected = services.find((service) => service.id === value);
+	const selected = services.find((service) => service.name === value);
 
 	return (
 		<SettingsPanel>
 			<SettingsRow
 				title={t('settings.storage.service.title')}
 				icon={HardDrive}
-				description={t('settings.storage.service.description')}
+				description={
+					provider
+						? `${provider.name} · ${provider.bucket}`
+						: t('settings.storage.service.description')
+				}
 				actions={
 					<div className="flex flex-wrap items-center justify-end gap-2">
 						<Select
@@ -47,27 +54,23 @@ export default function Service({
 								aria-label={t('settings.storage.service.title')}
 							>
 								<SelectValue placeholder={t('settings.storage.service.placeholder')}>
-									{selected ? `${selected.pluginName} - ${selected.name}` : undefined}
+									{selected?.title}
 								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
 								{services.map((service) => (
-									<SelectItem key={service.id} value={service.id} disabled={!service.configured}>
-										{service.pluginName} - {service.name}
+									<SelectItem key={service.name} value={service.name}>
+										{service.title}
 									</SelectItem>
 								))}
 							</SelectContent>
 						</Select>
-						{(selected ?? services[0]) && (
+						{selected && (
 							<Button
 								variant="outline"
 								size="sm"
 								nativeButton={false}
-								render={
-									<Link
-										to={`/settings/plugins/${encodeURIComponent((selected ?? services[0]).pluginId)}`}
-									/>
-								}
+								render={<Link to={`/settings/scripts/${encodeURIComponent(selected.name)}`} />}
 							>
 								{t('settings.storage.service.configure')}
 							</Button>
