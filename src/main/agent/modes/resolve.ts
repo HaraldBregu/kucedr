@@ -6,9 +6,9 @@ const SHELL_RANK: Record<ModeShell, number> = { default: 0, 'read-only': 1, none
 /** Combines modes so each one can only narrow the run. An unavailable mode is an error, never no mode. */
 export function resolveModes(
 	ids: readonly string[],
-	available: readonly ModeDefinition[] = listModes()
+	available: readonly ModeDefinition[]
 ): ModePolicy {
-	if (ids.length === 0) return NO_MODE;
+	if (ids.length === 0) return { ...NO_MODE, available };
 	const active = [...new Set(ids)].sort().map((id) => {
 		const mode = available.find((candidate) => candidate.id === id);
 		if (!mode) throw new Error(`Mode "${id}" is unavailable. Enable its plugin or remove the mode.`);
