@@ -523,29 +523,19 @@ async function* loop(
 				};
 				continue;
 			}
-			if (
-				turn.toolCalls.length === 0 &&
-				!finalization &&
-				turn.content.trim() &&
-				mode.output &&
-				!isEnvelopeValid(turn.content, mode.output.envelope)
-			) {
+			const stop: ModeStop =
+				turn.toolCalls.length === 0
+					? modeStop(turn.content, mode, statefulModes, stateDirectory, startedAt, {
+							retry: !finalization,
+							continue: !synthesisOnly && !continued && nudges > 0 && !isExhausted(session),
+						})
+					: { kind: 'accept' };
+			if (stop.kind === 'retry') {
 				recordTurn(session, turn);
-				finalization = {
-					instruction: `Your previous final response was rejected. The response must contain exactly one non-empty <${mode.output.envelope}> envelope and no other text. Write the complete final response again in that form.`,
-				};
+				finalization = { instruction: stop.instruction };
 				continue;
 			}
-
-			const unfinished =
-				turn.toolCalls.length === 0 &&
-				!synthesisOnly &&
-				!continued &&
-				nudges > 0 &&
-				!isExhausted(session)
-					? unfinishedModes(stateDirectory, mode.ids, statefulModes)
-					: [];
-			if (unfinished.length > 0) {
+			if (stop.kind === 'continue') {
 				recordTurn(session, turn);
 				yield { type: 'assistant_message', content: turn.content, toolCalls: turn.toolCalls };
 				addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems, {
