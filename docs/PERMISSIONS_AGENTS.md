@@ -22,7 +22,7 @@ What is different for the agent:
 | --- | --- | --- |
 | Media tool with no `directory` | allowed | allowed |
 | `write` / `edit` / `patch` (chat, voice) | allowed | asks, can be trusted |
-| `write` / `edit` / `patch` (tasks, health, subagents) | allowed | denied until trusted in that agent's settings |
+| `write` / `edit` / `patch` (tasks, health, subagents) | allowed | denied until Library is trusted for that agent (health has no page for it, see finding 2) |
 | `read` (chat, voice, health) | allowed | allowed (reads are open everywhere, see finding 3) |
 | `read` (tasks) | allowed | denied until trusted in Tasks → Permissions |
 
