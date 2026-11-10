@@ -224,15 +224,14 @@ describe('AgentIpc run ownership', () => {
 	});
 
 	it('rejects assistant execution and policy changes from app views', async () => {
-		const execute = jest.fn();
+		const send = jest.fn();
 		const sender = { id: 22, mainFrame: {} };
 		const event = { sender, senderFrame: sender.mainFrame };
 		(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 7, webContents: sender });
 		new AgentIpc().register(
 			{
 				logger: { info: jest.fn() } as unknown as LoggerService,
-				agent: { config: { location: '/agent' } } as unknown as Agent,
-				conversation: { execute } as unknown as Conversation,
+				agent: { send, config: { location: '/agent' } } as unknown as Agent,
 				windows: { has: () => true } as never,
 				apps: { has: () => true } as never,
 			},
