@@ -1,0 +1,12 @@
+{
+	"title": "Pre-model log",
+	"description": "Append every agent model turn, before it is sent, with the model details to a daily JSONL log in the configured directory.",
+	"author": "Harald Bregu",
+	"type": "PRE_MODEL_TURN",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "logs",
+		"entry": "index.mjs",
+		"instructions": "instructions.md"
+	}
+}
