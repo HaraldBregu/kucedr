@@ -732,7 +732,7 @@ test('Workspace AI generates and inserts an image using its image model', async 
 	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('generated-image-test.md'))).toContain('generated-image.png');
 	const settings = JSON.parse(readFileSync(path.join(userDataDir, 'settings', 'editor.json'), 'utf8'));
 	expect(settings.imageModel).toEqual({ providerId: 'openai', modelId: 'test-image' });
-	await page.evaluate(() => { window.location.hash = '#/settings/writer'; });
+	await page.evaluate(() => { window.location.hash = '#/settings/editor'; });
 	await expect(page.getByText('Image model', { exact: true })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Change image model' })).toBeVisible();
 });
