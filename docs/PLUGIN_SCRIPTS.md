@@ -11,6 +11,7 @@ Kucedr should not build charts or any other renderer itself. Plugins provide scr
 - The system prompt lists every enabled script (name, title, description, fence, instructions path) in a `# Scripts` section, but never its instructions or input schema.
 - The agent loads a script's instructions with **`load_script`** and runs it by name with **`run_script`**.
 - A script's Node entry returns HTML+JS, which Kucedr frames in the chat reply and in the workspace editor.
+- Scripts of type `PRE_TOOL_USE` and `POST_TOOL_USE` run before and after every agent tool call instead. See [PLUGIN_SCRIPT_HOOKS.md](PLUGIN_SCRIPT_HOOKS.md).
 
 The built-in charts (the `create_chart` tool, Recharts, the Chart toolbar action) are removed. The bootstrap plugin ships `chart`, `dither`, and `organui`, each documented by its own `instructions.md`.
 
