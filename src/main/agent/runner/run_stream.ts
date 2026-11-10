@@ -257,7 +257,6 @@ async function* loop(
 	}
 
 	let closeMcp: (() => Promise<void>) | undefined;
-	let unsubscribeMcp: (() => void) | undefined;
 	let mcpDiscovery: McpDiscoveryDiagnostics | undefined;
 	let mcpEntries: import('./run_discovery').DiscoveredMcpTool[] = [];
 	let uncatalogedMcp: Array<{ serverId: string; serverName: string }> = [];
