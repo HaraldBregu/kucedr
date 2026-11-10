@@ -52,11 +52,6 @@ export default function ModelsPage(): React.JSX.Element {
 				const nextModels = await loadModelCatalog();
 				if (active && current === revision) {
 					setModels(nextModels);
-					setCategory((selected) =>
-						selected === 'all' || nextModels.some((model) => model.type === selected)
-							? selected
-							: 'all'
-					);
 					setError(false);
 				}
 			} catch {
