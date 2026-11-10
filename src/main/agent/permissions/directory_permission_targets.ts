@@ -12,8 +12,7 @@ import { isMediaOutputTool } from './media_output_tool';
 const AGENT_FILES: Record<string, string> = {
 	complete_bootstrap: 'BOOTSTRAP.md',
 };
-const TASK_TOOLS = new Set(['create_task', 'update_task', 'delete_task', 'run_task_now']);
-export const TASK_MUTATION_TOOLS = new Set(['create_task', 'update_task', 'delete_task']);
+export const TASK_TOOLS = new Set(['create_task', 'update_task', 'delete_task', 'run_task_now']);
 export function isWritePermissionTool(toolName: string, args: Record<string, unknown>): boolean {
 	return (
 		toolName === 'write' ||
