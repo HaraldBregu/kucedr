@@ -163,7 +163,7 @@ This is a medium refactor: about fifteen tools get an `access` function, and fou
 2. Finding 3A — protected paths.
 3. Finding 2A — one location list.
 4. Findings 4, 5, 8, and #5, #6, #7 from the earlier review — each a few lines.
-5. Findings 6 and 7 — remove special cases.
+5. Finding 7 — remove the special case.
 
 ## How this was checked
 
