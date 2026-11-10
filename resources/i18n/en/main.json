@@ -882,13 +882,6 @@
 				"request": "Could not request camera access."
 			}
 		},
-		"editor": {
-			"font": "Font",
-			"fontDescription": "Choose the font used in the editor",
-			"fontDefault": "Default",
-			"fontSansSystem": "Sans System",
-			"fontDyslexicFriendly": "Dyslexic Friendly"
-		},
 		"developer": {
 			"mode": "Developer Mode",
 			"modeDescription": "Enable advanced developer tools and options"
