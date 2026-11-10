@@ -199,7 +199,7 @@ it('reads outside files and runs sandboxed commands from outside without approva
 });
 
 it.each(['approve', 'approve_always', 'reject'] as const)('records %s for an outside overwrite and reuses only a saved grant', async (decision) => {
-	const target = path.join(userDataLocation(), `outside-${decision}/file.txt`);
+	const target = path.join(outsideRoot, `outside-${decision}/file.txt`);
 	fs.mkdirSync(path.dirname(target), { recursive: true });
 	fs.writeFileSync(target, 'original');
 	const events = runToolCall(writeTool, { id: decision, name: 'write', args: { path: target, content: 'changed' } }, undefined, undefined, { runId: scope.runId, windowId: 1 });
