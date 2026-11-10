@@ -44,7 +44,10 @@ beforeEach(() => {
 	resetPermissions();
 });
 
-afterAll(() => fs.rmSync(userDataLocation(), { recursive: true, force: true }));
+afterAll(() => {
+	fs.rmSync(userDataLocation(), { recursive: true, force: true });
+	fs.rmSync(outsideRoot, { recursive: true, force: true });
+});
 
 it.each([undefined, 'task', 'health', 'child'] as const)('creates, reads, overwrites, edits, moves, deletes, undoes and redoes workspace files without approval (source: %s)', async (source) => {
 	const history: FileHistory = { operations: [] };
