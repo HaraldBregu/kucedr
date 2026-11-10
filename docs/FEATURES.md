@@ -210,7 +210,7 @@ Permissions use this top-level structure:
 Rule resolution is deny-first:
 
 - Any matching deny rule denies the operation, even when an allow rule also matches.
-- The workspace and Library reads and writes are trusted by default; explicit block rules remain effective.
+- The workspace is the only location trusted by default; explicit block rules remain effective.
 - If no deny matches, a matching allow rule allows the operation.
 - If neither matches, reads proceed without approval. File mutations request approval when interactive and are denied in background calls without an approval window.
 - Shell syntax does not change the permission decision. Commands using pipes, substitutions, or redirections run without a prompt when every declared location is trusted.
