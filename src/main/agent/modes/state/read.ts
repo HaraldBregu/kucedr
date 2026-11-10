@@ -6,10 +6,10 @@ import type { ModeState } from './types';
 export function readState(sessionDirectory: string, modeId: string): ModeState | undefined {
 	const file = statePath(sessionDirectory, modeId);
 	if (!fs.existsSync(file)) return undefined;
-	const parsed = stateSchema.safeParse(JSON.parse(fs.readFileSync(file, 'utf8')));
-	if (!parsed.success) {
+	try {
+		return stateSchema.parse(JSON.parse(fs.readFileSync(file, 'utf8')));
+	} catch {
 		console.warn(`[modes] Ignoring invalid state for "${modeId}".`);
 		return undefined;
 	}
-	return parsed.data;
 }
