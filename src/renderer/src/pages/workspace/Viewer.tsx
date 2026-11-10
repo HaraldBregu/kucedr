@@ -213,11 +213,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 					</div>
 				</div>
 			) : null}
-			{searchable && file && !loading ? (
-				<div className="absolute right-2 top-12 z-20 sm:right-3">
-					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} name={file.name} content={content} markdown={kind === 'markdown'} />
-				</div>
-			) : null}
+			</div> : null}
 
 			{!file ? (
 				<div className="flex flex-1 items-center justify-center px-6 text-center text-sm text-muted-foreground">
