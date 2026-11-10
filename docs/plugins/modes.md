@@ -88,7 +88,7 @@ A mode with `state` gets per-session state at `<session>/modes/<mode-id>.json` (
   - `blocked` needs a note, and a note carries over only while the status stays the same;
   - `completed` needs at least one item and every item done, with evidence when `state.evidence` is set. Otherwise the update is saved as `active` and the call fails with the open item numbers;
   - a mode without `state.continue` becomes `completed` by itself once every item is done.
-- Each turn, `stateContext()` adds a `<mode_state>` block to the system prompt with the objective, a checklist, the note, and the completion rule. The state text is model-written, so `<` is escaped.
+- Each turn, `stateContext()` adds a `<mode_state>` block to the system prompt with the objective, a checklist, the note, and the completion rule. If the mode is on for this run and its state was saved before the run started, the block says the state is from an earlier request. The state text is model-written, so `<` is escaped.
 - `state.continue`: if the model ends a turn with no tool calls and this run has not set the mode's state to `completed` or `blocked`, the runner adds an internal `<mode_continue>` message and keeps going, up to three nudges and never two in a row (`unfinishedModes()`). A finished state left by an earlier run counts as open.
 
 ## Bundled modes (`bootstrap/modes`)
