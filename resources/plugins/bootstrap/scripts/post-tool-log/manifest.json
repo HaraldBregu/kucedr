@@ -1,0 +1,11 @@
+{
+	"title": "Post-tool log",
+	"description": "Append every tool call, after it runs, with its output to a daily JSONL log in the configured directory.",
+	"author": "Harald Bregu",
+	"type": "POST_TOOL_USE",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "logs",
+		"entry": "index.mjs"
+	}
+}
