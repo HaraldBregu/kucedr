@@ -882,13 +882,6 @@
 				"request": "Impossibile richiedere l'accesso alla fotocamera."
 			}
 		},
-		"editor": {
-			"font": "Carattere",
-			"fontDescription": "Scegli il carattere utilizzato nell'editor",
-			"fontDefault": "Predefinito",
-			"fontSansSystem": "Sans di Sistema",
-			"fontDyslexicFriendly": "Adatto alla Dislessia"
-		},
 		"developer": {
 			"mode": "Modalità Sviluppatore",
 			"modeDescription": "Abilita strumenti e opzioni avanzate per sviluppatori"
