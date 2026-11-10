@@ -268,7 +268,7 @@ export function addPermissionRule(
 	);
 }
 export function resetPermissions(profileId: AgentToolProfileId = 'chat'): PermissionsSchema {
-	setAgentProfilePermissions(profileId, structuredClone(DEFAULT_AGENT_PERMISSIONS));
+	setAgentProfilePermissions(profileId, structuredClone(EMPTY_PERMISSIONS));
 	setAgentProfileDocument(profileId, {
 		...getAgentProfileDocument(profileId),
 		tools: {},
