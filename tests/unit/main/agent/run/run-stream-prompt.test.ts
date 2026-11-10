@@ -12,8 +12,7 @@ const closeMcpMock = jest.fn();
 const mockLoadMcpTools = jest.fn(async () => ({
 	tools: [],
 	entries: [],
-	onChanged: () => () => undefined,
-	diagnostics: {
+		diagnostics: {
 		configuredServers: 0,
 		enabledServers: 0,
 		connectedServers: 0,
@@ -76,8 +75,7 @@ describe('run stream system prompt', () => {
 		mockLoadMcpTools.mockReset().mockResolvedValue({
 			tools: [],
 			entries: [],
-			onChanged: () => () => undefined,
-			diagnostics: {
+						diagnostics: {
 				configuredServers: 0,
 				enabledServers: 0,
 				connectedServers: 0,
@@ -1349,8 +1347,7 @@ describe('run stream system prompt', () => {
 		mockLoadMcpTools.mockResolvedValue({
 			tools: [mcpTool],
 			entries: [{ tool: mcpTool, serverId: 'billing', serverName: 'Billing' }],
-			onChanged: () => () => undefined,
-			diagnostics: {
+						diagnostics: {
 				configuredServers: 1,
 				enabledServers: 1,
 				connectedServers: 1,
@@ -1489,8 +1486,7 @@ describe('run stream system prompt', () => {
 				tools: [],
 				entries: [],
 				uncataloged: [{ serverId: 'gmail', serverName: 'Gmail' }],
-				onChanged: () => () => undefined,
-				diagnostics: {
+								diagnostics: {
 					configuredServers: 1,
 					enabledServers: 1,
 					connectedServers: 0,
@@ -1506,8 +1502,7 @@ describe('run stream system prompt', () => {
 				tools: [gmail],
 				entries: [{ tool: gmail, serverId: 'gmail', serverName: 'Gmail' }],
 				uncataloged: [],
-				onChanged: () => () => undefined,
-				diagnostics: {
+								diagnostics: {
 					configuredServers: 1,
 					enabledServers: 1,
 					connectedServers: 0,
