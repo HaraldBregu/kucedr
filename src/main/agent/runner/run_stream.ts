@@ -165,6 +165,7 @@ async function* loop(
 	const mode =
 		input.approvalWindowId === undefined ? { ...pinnedMode, ask: false } : pinnedMode;
 	const startedAt = Date.now();
+	if (session.category === 'main') session.modeIds = mode.ids;
 	let mcpServerHint: string | undefined;
 	const bootstrap =
 		!options.tools &&
