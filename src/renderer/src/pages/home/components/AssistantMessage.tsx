@@ -173,7 +173,7 @@ export function AssistantMessage({
 
 	const output = modes
 		.flatMap((mode) =>
-			mode.output
+			mode.output && (message.modeIds?.includes(mode.id) ?? true)
 				? [{ mode, parsed: parseEnvelope(message.content, mode.output.envelope, isStreaming) }]
 				: []
 		)
