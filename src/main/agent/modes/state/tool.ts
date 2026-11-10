@@ -16,8 +16,7 @@ export function modeStateTool(sessionDirectory: string, modes: readonly ModeDefi
 		category: 'system',
 		name: MODE_STATE_TOOL_ID,
 		description:
-			'Create or update the tracked state of an active mode: its objective, its ordered items with their status and evidence, and the overall status. Items replace the previous list.',
-		readOnly: true,
+			'Create or update the tracked state of an active mode: its objective, its ordered items with their status and evidence, and the overall status. Items replace the previous list. Without a status the previous one is kept; a new objective starts an active state.',
 		capability: { effects: ['persistence'] },
 		inputSchema: z
 			.object({
@@ -31,31 +30,40 @@ export function modeStateTool(sessionDirectory: string, modes: readonly ModeDefi
 		execute: ({ mode: id, objective, items, status, note }) => {
 			const mode = modes.find((candidate) => candidate.id === id)!;
 			const previous = readState(sessionDirectory, id);
-			const next = {
+			const nextObjective = objective ?? previous?.objective;
+			if (!nextObjective) throw new Error('A new mode state needs an objective.');
+			const nextItems = items ?? previous?.items ?? [];
+			const open = nextItems.flatMap((item, index) =>
+				item.status !== 'done' || (mode.state?.evidence && !item.evidence) ? [index + 1] : []
+			);
+			const done = nextItems.length > 0 && open.length === 0;
+			const requested =
+				status ??
+				(objective && objective !== previous?.objective ? 'active' : (previous?.status ?? 'active'));
+			const nextStatus =
+				requested === 'completed' && !done
+					? 'active'
+					: requested === 'active' && done && !mode.state?.continue
+						? 'completed'
+						: requested;
+			const nextNote = note || (previous?.status === nextStatus ? previous.note : undefined);
+			if (nextStatus === 'blocked' && !nextNote) throw new Error('A blocked state needs a note.');
+			const state = writeState(sessionDirectory, {
 				mode: id,
-				status: status ?? 'active',
-				objective: objective ?? previous?.objective,
-				items: items ?? previous?.items ?? [],
-				...(note ? { note } : previous?.note ? { note: previous.note } : {}),
+				status: nextStatus,
+				objective: nextObjective,
+				items: nextItems,
+				...(nextNote ? { note: nextNote } : {}),
 				updatedAt: Date.now(),
-			};
-			if (!next.objective) throw new Error('A new mode state needs an objective.');
-			if (next.status === 'completed') {
-				const open = next.items.flatMap((item, index) =>
-					item.status !== 'done' || (mode.state?.evidence && !item.evidence) ? [index + 1] : []
+			});
+			if (requested === 'completed' && !done) {
+				throw new Error(
+					nextItems.length === 0
+						? 'Not completed: the state needs at least one item.'
+						: `Not completed: items ${open.join(', ')} must be done${mode.state?.evidence ? ' with evidence' : ''}. The items were saved.`
 				);
-				if (next.items.length === 0 || open.length > 0) {
-					return {
-						completed: false,
-						reason: mode.state?.evidence
-							? 'Every item must be done with evidence before completing.'
-							: 'Every item must be done before completing.',
-						openItems: open,
-					};
-				}
 			}
-			if (next.status === 'blocked' && !note) throw new Error('A blocked state needs a note.');
-			return writeState(sessionDirectory, { ...next, objective: next.objective });
+			return state;
 		},
 	});
 }
