@@ -96,6 +96,7 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 									{t('settings.scripts.save')}
 								</Button>
 							</form>
+							)
 						}
 					/>
 				))}
