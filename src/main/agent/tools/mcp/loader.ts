@@ -101,7 +101,6 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 		entries,
 		uncataloged,
 		diagnostics,
-		onChanged: () => () => undefined,
 		close: async () => {
 			if (closed) return;
 			closed = true;
