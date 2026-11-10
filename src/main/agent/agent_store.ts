@@ -221,8 +221,7 @@ export function getToolConfiguration(
 export function getPermissions(profileId: AgentToolProfileId = 'chat'): PermissionsSchema {
 	const permissions = withDefaultPermissions(
 		normalizePermissionsSchema(getAgentProfilePermissions(profileId), DEFAULT_AGENT_PERMISSIONS),
-		workspacePattern,
-		libraryPattern
+		workspacePattern
 	);
 	return {
 		...permissions,
