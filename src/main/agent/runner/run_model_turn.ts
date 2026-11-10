@@ -64,6 +64,28 @@ export async function* runModelTurn(
 		contextWindow,
 	};
 	yield { type: 'context_usage', context: contextUsage };
+	const hookEvent = {
+		agent: input.toolProfile ?? 'chat',
+		agentId: input.agentId,
+		runId: input.runId,
+		sessionId: input.sessionId,
+	};
+	const hookModel = {
+		id: modelId,
+		provider: provider.id,
+		effort: input.effort,
+		contextWindow,
+		maxTokens,
+		options: modelOptions,
+	};
+	const startedAt = Date.now();
+	await runPluginHooks('PRE_MODEL_TURN', {
+		...hookEvent,
+		model: hookModel,
+		estimatedInputTokens: context.estimatedTokens,
+		messageCount: context.messages.length,
+		toolCount: context.tools.length,
+	});
 	for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
 		const attemptStartedAt = Date.now();
 		let firstTokenAt: number | undefined;
