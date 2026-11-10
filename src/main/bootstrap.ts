@@ -37,7 +37,7 @@ export interface MainServices {
 	agentService: Agent;
 	memoryService: MemoryService;
 	codingService: Coding;
-	conversationService: Conversation;
+	realtimeVoiceManager: RealtimeVoiceManager;
 	windowFactory: WindowFactory;
 	windowContextManager: WindowContextManager;
 	appRegistry: AppRegistry;
