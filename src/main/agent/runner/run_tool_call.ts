@@ -129,13 +129,6 @@ export async function* runToolCall(
 	) {
 		output = `Error: tool '${toolCall.name}' is unavailable for this agent`;
 		isError = true;
-	} else if (
-		mode.shell === 'read-only' &&
-		toolCall.name === 'bash' &&
-		readOnlyShellError(canonicalInput, agentLocation())
-	) {
-		output = `Error: ${readOnlyShellError(canonicalInput, agentLocation())}`;
-		isError = true;
 	} else if (toolCall.name === 'ask' || toolCall.name === 'select_screen_source') {
 		const screenSelection = toolCall.name === 'select_screen_source';
 		if (
