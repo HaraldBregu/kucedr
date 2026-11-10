@@ -78,7 +78,6 @@ export function jsonTool({
 		maxOutputBytes,
 		readOnly,
 		policy,
-		hardApproval,
 		capability: capability ?? ((input) => builtinCapability(id, input)),
 		schema,
 		parseInput(input: unknown) {
