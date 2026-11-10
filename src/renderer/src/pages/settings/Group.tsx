@@ -13,9 +13,16 @@ interface GroupProps {
 	readonly titleKey?: string;
 	readonly activePath: string;
 	readonly className?: string;
+	readonly hideIcons?: boolean;
 }
 
-export function Group({ items, titleKey, activePath, className }: GroupProps): React.JSX.Element {
+export function Group({
+	items,
+	titleKey,
+	activePath,
+	className,
+	hideIcons,
+}: GroupProps): React.JSX.Element {
 	const { t } = useTranslation();
 
 	return (
