@@ -20,6 +20,14 @@ export function WorkspaceViewActions({ wide, onWideChange, onFind, name, content
 	const html = (): string => `<!doctype html><html><head><meta charset="utf-8"><title>${base}</title><style>body{font-family:-apple-system,system-ui,sans-serif;line-height:1.6;max-width:760px;margin:2rem auto;padding:0 1rem;color:#111}a{color:#2563eb}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:4px 8px;text-align:left}pre{background:#f4f4f5;padding:8px;border-radius:6px;overflow:auto}img{max-width:100%}</style></head><body>${marked.parse(content, { async: false })}</body></html>`;
 	return (
 		<div className="ml-auto flex items-center gap-0.5">
+			{onToolbarChange ? <Tooltip>
+				<TooltipTrigger render={
+					<Button type="button" variant="ghost" size="icon-sm" aria-label="Toolbar" aria-pressed={toolbar} className={toolbar ? 'bg-muted text-foreground' : 'text-muted-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={() => onToolbarChange(!toolbar)}>
+						<CaseSensitive />
+					</Button>
+				} />
+				<TooltipContent side="bottom">Toolbar</TooltipContent>
+			</Tooltip> : null}
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="Find in file" className="text-muted-foreground" onMouseDown={(event) => event.preventDefault()} onClick={onFind}>
