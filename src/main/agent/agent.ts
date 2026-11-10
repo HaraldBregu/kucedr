@@ -321,6 +321,7 @@ export class Agent {
 				request.category,
 				this.sessions
 			);
+			if (request.category === 'main') session.modeIds = extension?.ids ?? [];
 			tryAppendRun(session, {
 				type: 'run_queue_metrics',
 				queueDelayMs: Date.now() - request.queuedAt,
