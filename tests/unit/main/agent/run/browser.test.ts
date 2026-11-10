@@ -33,8 +33,7 @@ jest.mock('../../../../../src/main/agent/tools/mcp/loader', () => ({
 	loadMcpTools: async () => ({
 		tools: [],
 		entries: [],
-		onChanged: () => () => undefined,
-		close: async () => undefined,
+				close: async () => undefined,
 	}),
 }));
 
