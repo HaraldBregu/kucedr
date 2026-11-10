@@ -16,7 +16,7 @@ export function addScriptsPrompt(prompt: string, scripts: readonly PluginScript[
 			? path.join(script.directory, ...script.metadata.instructions.split('/'))
 			: undefined;
 		const ref = JSON.stringify({ name: script.name, version: script.metadata.version, plugin: script.plugin.id, pluginVersion: script.plugin.version });
-		prompt += `\n- \`${script.name}\` (${script.title}) — ${script.description.replace(/\n/g, ' ')}${script.fence ? ` Fence: \`${script.fence}\`. Ref: \`${ref}\`.` : ''} Instructions: \`${instructions}\``;
+		prompt += `\n- \`${script.name}\` (${script.title}) — ${script.description.replace(/\n/g, ' ')}${script.fence ? ` Fence: \`${script.fence}\`. Ref: \`${ref}\`.` : ''}${instructions ? ` Instructions: \`${instructions}\`` : ''}`;
 	}
 	return prompt;
 }
