@@ -290,7 +290,7 @@ export class ExecSandbox {
 
 	private async wrapReadOnly(command: string, commandId: string): Promise<SandboxedCommand> {
 		await this.configuration();
-		const permissions = getPermissions();
+		const permissions = this.permissions();
 		const deniedReads = [...permissions.exec.deny, ...permissions.read.deny];
 		await fs.mkdir(this.temporaryDirectory, { recursive: true });
 		const settingsPath = path.join(this.temporaryDirectory, `${commandId}.json`);
