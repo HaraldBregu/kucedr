@@ -37,13 +37,7 @@ const ModesPage: React.FC = () => {
 				description={t('settings.modes.description')}
 			/>
 
-			<SettingsFilter
-				query={query}
-				onQueryChange={setQuery}
-				categories={plugins}
-				category={plugin}
-				onCategoryChange={setPlugin}
-			/>
+			<SettingsFilter filter={filter} />
 
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
