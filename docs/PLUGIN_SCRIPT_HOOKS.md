@@ -39,7 +39,7 @@ So the hooks are added in `runToolCall` and nowhere else.
 }
 ```
 
-- `PLUGIN_SCRIPT_TYPES` becomes `['UI', 'STORAGE', 'VECTOR', 'PRE_TOOL_USE', 'POST_TOOL_USE']`. Nothing else in the manifest schema changes, because `plugin_script_read.ts` and `plugins_validate_contents.ts` already validate any type.
+- `PLUGIN_SCRIPT_TYPES` becomes `['UI', 'STORAGE', 'VECTOR', 'PRE_TOOL_USE', 'POST_TOOL_USE', 'PRE_MODEL_TURN', 'POST_MODEL_TURN']`. Nothing else in the manifest schema changes, because `plugin_script_read.ts` and `plugins_validate_contents.ts` already validate any type.
 - A script that wants both events ships as two script folders.
 - There is no `tools` filter, so every hook sees every tool call. Add a `tools: string[]` matcher if the spawn cost becomes noticeable.
 - Existing consumers stay correct without changes:
