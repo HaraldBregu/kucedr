@@ -9,4 +9,10 @@ export const scripts: ScriptsApi = {
 	render: (name: string, input: unknown, theme: 'light' | 'dark') => {
 		return typedInvokeUnwrap(ScriptsChannels.render, name, input, theme);
 	},
+	getSettings: (name: string) => {
+		return typedInvokeUnwrap(ScriptsChannels.getSettings, name);
+	},
+	saveSettings: (name: string, values: Record<string, string>) => {
+		return typedInvokeUnwrap(ScriptsChannels.saveSettings, name, values);
+	},
 };
