@@ -519,11 +519,12 @@ async function* loop(
 				};
 				continue;
 			}
-			const stop: ModeStop =
-				turn.toolCalls.length === 0
-					? modeStop(turn.content, mode, statefulModes, stateDirectory, startedAt, {
+			const stop: RunStop =
+				turn.toolCalls.length === 0 && extension
+					? extension.stop(turn.content, {
 							retry: !finalization,
-							continue: !synthesisOnly && !continued && nudges > 0 && !isExhausted(session),
+							continue:
+								extended && !synthesisOnly && !continued && nudges > 0 && !isExhausted(session),
 						})
 					: { kind: 'accept' };
 			if (stop.kind === 'retry') {
