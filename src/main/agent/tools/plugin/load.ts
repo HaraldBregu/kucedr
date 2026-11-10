@@ -24,9 +24,6 @@ export const loadScript = tool({
 		}
 		const { instructions } = found.metadata;
 		if (!instructions) throw new Error(`Plugin script "${name}" has no instructions.`);
-		return readFileSync(
-			path.join(found.directory, ...instructions.split('/')),
-			'utf8'
-		);
+		return readFileSync(path.join(found.directory, ...instructions.split('/')), 'utf8');
 	},
 });
