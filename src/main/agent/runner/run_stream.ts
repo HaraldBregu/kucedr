@@ -478,7 +478,7 @@ async function* loop(
 			systemPrompt += `\n\n${workspaceContext}`;
 			if (mode.prompt) systemPrompt += `\n\n${mode.prompt}`;
 			if (statefulModes.length > 0)
-				systemPrompt += `\n\n${stateContext(stateDirectory, statefulModes)}`;
+				systemPrompt += `\n\n${stateContext(stateDirectory, statefulModes, mode.ids)}`;
 			const messages = promptCapabilities
 				? projectPromptAttachments(session.messages, promptCapabilities)
 				: session.messages;
