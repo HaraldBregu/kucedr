@@ -202,24 +202,27 @@ async function* loop(
 		? [...options.tools]
 		: bootstrap
 			? [updateIdentityTool, updateSoulTool, updateUserTool, completeBootstrapTool]
-			: builtinTools(config, options.sandbox!, mode);
+			: builtinTools(config, options.sandbox!, {
+					ask,
+					readOnlyShell: extension?.readOnlyShell === true,
+					restricted,
+				});
 	if (backgroundBrowser)
 		tools = tools.map((tool) => (tool.id === backgroundBrowser.id ? backgroundBrowser : tool));
-	if (!options.tools && !bootstrap && !mode.restricted) {
+	if (!options.tools && !bootstrap && !restricted) {
 		tools.push(
 			undoFileTool(session.runContext.fileHistory),
 			redoFileTool(session.runContext.fileHistory)
 		);
 	}
-	const stateDirectory = sessionDir(session);
-	const statefulModes =
-		!options.tools && !bootstrap && session.category === 'main'
-			? trackedModes(stateDirectory, mode.ids, mode.available)
-			: [];
+	const extended = !options.tools && !bootstrap;
+	const extensionTools = extended ? (extension?.tools ?? []) : [];
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
 		let filtered = filterRuntimeTools(
-			filterModeTools(filterTools(candidates, input.toolsAllow, input.toolsDeny), mode)
+			filterTools(candidates, input.toolsAllow, input.toolsDeny).filter(
+				(tool) => !extension || extension.allows(tool)
+			)
 		);
 		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
