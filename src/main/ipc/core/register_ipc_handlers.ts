@@ -122,7 +122,7 @@ export function registerIpcHandlers(
 	safeRegister('realtime-voice', () =>
 		new RealtimeVoiceIpc().register(
 			{
-				conversation: conversationService,
+				voice: realtimeVoiceManager,
 				windows: windowContextManager,
 				apps: appRegistry,
 			},
