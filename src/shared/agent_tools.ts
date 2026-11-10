@@ -86,15 +86,11 @@ export function isAgentToolAllowedForProfile(
 	profileId: AgentToolProfileId,
 	tool: AgentToolReference
 ): boolean {
-	if (profileId === 'tasks' && tool.kind === 'builtin') return TASKS_BUILTIN_TOOL_IDS.has(tool.id);
-	if (tool.kind === 'builtin' && tool.id === 'ask') return profileId === 'chat';
-	if (tool.kind === 'builtin' && tool.id === 'request_mcp_authorization') return profileId === 'chat';
-	if (tool.kind === 'builtin' && tool.id === 'complete_bootstrap') {
-		return profileId === 'chat' || profileId === 'voice';
-	}
-	return (
-		profileId !== 'health' || (tool.kind === 'builtin' && HEALTH_BUILTIN_TOOL_IDS.has(tool.id))
-	);
+	if (tool.kind !== 'builtin') return profileId !== 'health';
+	if (profileId === 'tasks') return TASKS_BUILTIN_TOOL_IDS.has(tool.id);
+	if (profileId === 'health') return HEALTH_BUILTIN_TOOL_IDS.has(tool.id);
+	if (tool.id === 'ask' || tool.id === 'request_mcp_authorization') return profileId === 'chat';
+	return true;
 }
 
 export interface AgentToolProfile {
