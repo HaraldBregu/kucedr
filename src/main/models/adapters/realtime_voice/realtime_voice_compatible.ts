@@ -299,6 +299,10 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 				this.continueToolResponse(responseId, tools);
 			}
 			if (responseId && !tools) this.emit({ type: 'response_done', responseId });
+			if (this.responseQueued) {
+				this.responseQueued = false;
+				if (!this.responsePending) this.createResponse();
+			}
 			return;
 		}
 		if (
