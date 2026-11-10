@@ -7,6 +7,9 @@ const model = jest.fn();
 const launchPersistentContext = jest.fn();
 
 jest.mock('playwright-core', () => ({ chromium: { launchPersistentContext } }));
+jest.mock('../../../../../src/main/agent/session/session_session_dir', () => ({
+	sessionDir: () => '/nonexistent-session',
+}));
 jest.mock('../../../../../src/main/shared/user_data_location', () => {
 	const directory = jest
 		.requireActual<typeof fs>('node:fs')
