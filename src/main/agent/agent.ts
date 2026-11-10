@@ -69,6 +69,8 @@ import { workspacePath } from './system';
 import { compactConversation } from './compaction/compact';
 import { sessionType } from './session/session_session_type';
 import { sessionsRoot } from './session/session_sessions_root';
+import { sessionFolderName } from './session/session_session_folder_name';
+import { sessionPath } from './session/session_session_path';
 import { formatReplyMessage } from '../../shared/reply';
 import type { AgentToolProfileId } from '../../shared/agent_tools';
 
