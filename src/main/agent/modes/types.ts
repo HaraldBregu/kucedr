@@ -38,13 +38,15 @@ export interface ModePolicy {
 	readonly effort?: ModelReasoningEffort;
 	readonly model?: string;
 	readonly output?: { readonly envelope: string };
+	readonly available: readonly ModeDefinition[];
 }
 
 export const NO_MODE: ModePolicy = {
 	ids: [],
+	available: [],
 	restricted: false,
 	readOnly: false,
-	ask: false,
+	ask: true,
 	permissions: 'default',
 	shell: 'default',
 	prompt: '',
