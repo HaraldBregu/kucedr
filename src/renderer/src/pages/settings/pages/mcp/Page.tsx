@@ -154,7 +154,7 @@ const McpPage = (): React.JSX.Element => {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3">
-							{visibleServers.map((server) => {
+							{filter.items.map((server) => {
 								const title = server.data.name ?? server.id;
 								const enabled = server.data.enabled !== false;
 								const open = (): void =>
