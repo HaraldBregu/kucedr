@@ -13,7 +13,7 @@ export interface ChildRuntime extends Pick<
 	'resources' | 'providerLimiter' | 'subagentLimiter' | 'budget' | 'modelOptions'
 > {
 	type: AgentRunType;
-	mode: import('../../modes/types').ModePolicy;
+	extension?: import('../../extension').RunExtension;
 	providerId?: string;
 	model?: string;
 	effort?: RuntimeInput['effort'];
