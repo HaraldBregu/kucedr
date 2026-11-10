@@ -14,7 +14,7 @@ import type { ExecutionMode } from '../../../../shared/sandbox';
 import { approvedExecRoots } from '../../permissions/approved_exec_roots';
 import { resolveExecRoots } from '../../permissions/resolve_exec_roots';
 import path from 'node:path';
-import { readOnlyShellError } from '../../modes/shell';
+import { readOnlyShellError } from './readonly';
 
 interface ExecResult {
 	command: string;
