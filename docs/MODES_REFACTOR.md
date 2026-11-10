@@ -150,7 +150,9 @@ nudged); in Plan, `run_script` is refused; corrupt a `modes/goal.json` by hand a
   full list read once in `agent.ts`.
 - `run_stream.ts:225` uses `mode.available` instead of calling `listModes()` again.
 
-Verify: `git grep -n "listModes(" src/main` shows `agent.ts` and `ipc/agent.ts` only.
+- `resolveModes` loses its `available = listModes()` default, so the list is always passed in.
+
+Verify: `git grep -n "listModes()" src/main` shows `agent.ts` and `ipc/agent.ts` only.
 
 ### Step 3: Move mode decisions out of the loop and executor (D3, D5)
 
