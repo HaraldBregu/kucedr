@@ -27,17 +27,23 @@ const manifestSchema = z
 				version: text,
 				category: text,
 				entry: relativePath('entry'),
-				instructions: relativePath('instructions').refine(
-					(file) => file.endsWith('.md'),
-					'metadata.instructions must be a markdown file'
-				),
+				instructions: relativePath('instructions')
+					.refine(
+						(file) => file.endsWith('.md'),
+						'metadata.instructions must be a markdown file'
+					)
+					.optional(),
 			})
 			.strict(),
 		inputSchema: z.looseObject({ type: z.literal('object') }).optional(),
 		fence: z.string().regex(ID, 'fence must be kebab-case').optional(),
 		height: z.number().int().min(80).max(2000).default(320),
 	})
-	.strict();
+	.strict()
+	.refine(
+		(manifest) => HOOK_TYPES.has(manifest.type) || manifest.metadata.instructions !== undefined,
+		'metadata.instructions is required'
+	);
 
 export type PluginScriptManifest = z.infer<typeof manifestSchema> & {
 	/** The folder name. */
