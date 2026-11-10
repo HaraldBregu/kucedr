@@ -284,7 +284,7 @@ export class Agent {
 				contextMode:
 					options.contextMode ??
 					(options.lightContext === true || request.category !== 'main' ? 'minimal' : 'workspace'),
-				mode,
+				...(extension ? { extension } : {}),
 				...(effort ? { effort } : {}),
 				...(options.toolsDeny ? { toolsDeny: options.toolsDeny } : {}),
 				...(files.length ? { files } : {}),
