@@ -14,12 +14,12 @@ Plugin scripts (`<plugin>/scripts/<id>/`) have a `type`: `UI`, `STORAGE` or `VEC
 
 Every agent runs tools through one function, `runToolCall` (`src/main/agent/runner/run_tool_call.ts`), and `tool.run(...)` is called only there:
 
-| Agent | Path |
-|---|---|
-| chat, tasks, health (`AGENT_TOOL_PROFILE_IDS`) | `agent.ts` → `run_stream.ts` → `runToolCalls` → `runToolCall` |
-| subagents | `tools/core/subagents.ts` → `run_stream.ts` → same path |
-| MCP recovery | `run_mcp_recovery.ts` → `runToolCalls` |
-| voice | `realtime_voice/tool_runtime.ts` → `runToolCall` (`toolProfile: 'voice'`) |
+| Agent                                          | Path                                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| chat, tasks, health (`AGENT_TOOL_PROFILE_IDS`) | `agent.ts` → `run_stream.ts` → `runToolCalls` → `runToolCall`             |
+| subagents                                      | `tools/core/subagents.ts` → `run_stream.ts` → same path                   |
+| MCP recovery                                   | `run_mcp_recovery.ts` → `runToolCalls`                                    |
+| voice                                          | `realtime_voice/tool_runtime.ts` → `runToolCall` (`toolProfile: 'voice'`) |
 
 So the hooks are added in `runToolCall` and nowhere else.
 
@@ -30,7 +30,12 @@ So the hooks are added in `runToolCall` and nowhere else.
 	"title": "Audit log",
 	"description": "Append every tool call to a local log.",
 	"type": "PRE_TOOL_USE",
-	"metadata": { "version": "1.0.0", "category": "audit", "entry": "dist/index.mjs", "instructions": "instructions.md" }
+	"metadata": {
+		"version": "1.0.0",
+		"category": "audit",
+		"entry": "dist/index.mjs",
+		"instructions": "instructions.md"
+	}
 }
 ```
 
@@ -57,7 +62,7 @@ So the hooks are added in `runToolCall` and nowhere else.
   	"tool": {
   		"name": "bash",
   		"description": "…",
-  		"category": "system",
+  		"category": "core",
   		"source": { "kind": "builtin", "id": "bash" }
   	},
   	"input": { "command": "ls" }
@@ -65,6 +70,7 @@ So the hooks are added in `runToolCall` and nowhere else.
   ```
 
   `POST_TOOL_USE` also has `output` (the formatted string the model sees), `isError` and `durationMs`.
+
 - stdout is ignored. A non-zero exit or a timeout is logged with its stderr (`console.warn('[plugins] hook …')`) and has no other effect.
 
 ## Host changes
