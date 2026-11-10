@@ -41,7 +41,6 @@ describe('AgentIpc run ownership', () => {
 			{
 				logger,
 				agent,
-				conversation,
 				windows: { has: (id: number) => id === 7 } as never,
 				apps: { has: () => false } as never,
 			},
