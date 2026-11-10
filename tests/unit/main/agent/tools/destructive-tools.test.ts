@@ -14,12 +14,17 @@ import { userDataLocation } from '../../../../../src/main/shared/user_data_locat
 import { resetPermissions } from '../../../../../src/main/agent/agent_store';
 import { realPath } from '../../../../../src/main/shared/real_path';
 
-afterAll(() => fs.rmSync(userDataLocation(), { recursive: true, force: true }));
+const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-outside-'));
+
+afterAll(() => {
+	fs.rmSync(userDataLocation(), { recursive: true, force: true });
+	fs.rmSync(outside, { recursive: true, force: true });
+});
 
 it.each(['overwrite', 'delete', 'move'])('requests a reusable location grant before outside %s', async (operation) => {
 	resetPermissions();
-	const target = path.join(userDataLocation(), `${operation}.txt`);
-	const moved = path.join(userDataLocation(), `${operation}-moved.txt`);
+	const target = path.join(outside, `${operation}.txt`);
+	const moved = path.join(outside, `${operation}-moved.txt`);
 	fs.writeFileSync(target, 'content');
 	const tool = operation === 'overwrite' ? writeTool : applyPatchTool;
 	const args = operation === 'overwrite' ? { path: target, content: 'replacement' }
