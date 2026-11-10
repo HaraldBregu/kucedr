@@ -736,7 +736,6 @@ async function* loop(
 			}
 		}
 	} finally {
-		unsubscribeMcp?.();
 		await closeMcp?.();
 	}
 }
