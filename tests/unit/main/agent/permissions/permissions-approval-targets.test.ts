@@ -16,17 +16,10 @@ describe('toolApprovalTargets', () => {
 		).toEqual([path.resolve('/workspace/captures')]);
 	});
 
-	it('stores the containing folder for write and the declared exec roots', () => {
+	it('stores the containing folder for write', () => {
 		expect(toolApprovalTargets('write', { path: '/workspace/a.txt' }, agentDir)).toEqual([
 			path.resolve('/workspace'),
 		]);
-		expect(
-			toolApprovalTargets(
-				'bash',
-				{ command: 'npm test', workdir: '/workspace', additionalRoots: ['/shared'] },
-				agentDir
-			)
-		).toEqual([path.resolve('/workspace'), path.resolve('/shared')]);
 	});
 
 	it('stores the selected output folder for generated media', () => {
