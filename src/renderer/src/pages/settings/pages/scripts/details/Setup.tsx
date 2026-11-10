@@ -17,7 +17,9 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 	const [error, setError] = useState('');
 	const properties = Object.entries(script.settings?.properties ?? {});
 	const required = new Set(script.settings?.required ?? []);
-	const missing = [...required].some((key) => !saved[key]);
+	const missing = [...required].some(
+		(key) => !saved[key] && script.settings?.properties?.[key]?.default === undefined
+	);
 
 	useEffect(() => {
 		void window.scripts.getSettings(script.name).then(
@@ -72,31 +74,31 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 									}}
 								/>
 							) : (
-							<form
-								className="flex gap-2"
-								onSubmit={(event) => {
-									event.preventDefault();
-									void save();
-								}}
-							>
-								<Input
-									value={values[key] ?? ''}
-									aria-label={property.title ?? key}
-									className="h-7 w-64 max-w-full px-2.5 text-xs md:text-xs"
-									spellCheck={false}
-									disabled={saving}
-									onChange={(event) =>
-										setValues((current) => ({ ...current, [key]: event.target.value }))
-									}
-								/>
-								<Button
-									type="submit"
-									size="sm"
-									disabled={saving || (values[key] ?? '') === (saved[key] ?? '')}
+								<form
+									className="flex gap-2"
+									onSubmit={(event) => {
+										event.preventDefault();
+										void save();
+									}}
 								>
-									{t('settings.scripts.save')}
-								</Button>
-							</form>
+									<Input
+										value={values[key] ?? ''}
+										aria-label={property.title ?? key}
+										className="h-7 w-64 max-w-full px-2.5 text-xs md:text-xs"
+										spellCheck={false}
+										disabled={saving}
+										onChange={(event) =>
+											setValues((current) => ({ ...current, [key]: event.target.value }))
+										}
+									/>
+									<Button
+										type="submit"
+										size="sm"
+										disabled={saving || (values[key] ?? '') === (saved[key] ?? '')}
+									>
+										{t('settings.scripts.save')}
+									</Button>
+								</form>
 							)
 						}
 					/>
