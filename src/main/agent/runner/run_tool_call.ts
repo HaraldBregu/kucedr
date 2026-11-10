@@ -56,11 +56,14 @@ export async function* runToolCall(
 	let canonicalInput = toolCall.args;
 	let parseError: unknown;
 	let access: ReturnType<typeof captureAccess> = [];
-	const scope: ExecutionScope = security.scope ?? {
-		ownerId: `run:${security.runId}`,
-		source: security.windowId === undefined ? 'child' : 'interactive',
-		sessionId: security.runId,
-		runId: security.runId,
+	const scope: ExecutionScope = {
+		...(security.scope ?? {
+			ownerId: `run:${security.runId}`,
+			source: security.windowId === undefined ? 'child' : 'interactive',
+			sessionId: security.runId,
+			runId: security.runId,
+		}),
+		...(security.toolProfile ? { profile: security.toolProfile } : {}),
 	};
 	if (tool) {
 		try {
