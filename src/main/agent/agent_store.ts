@@ -238,8 +238,8 @@ export function setPermissions(
 	const { tools, ...directoryPermissions } = permissions;
 	setAgentProfilePermissions(
 		profileId,
-		withDefaultPermissions(
-			normalizePermissionsSchema(directoryPermissions, DEFAULT_AGENT_PERMISSIONS),
+		withoutDefaultPermissions(
+			normalizePermissionsSchema(directoryPermissions, EMPTY_PERMISSIONS),
 			workspacePattern
 		)
 	);
