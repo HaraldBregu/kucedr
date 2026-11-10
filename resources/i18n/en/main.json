@@ -1874,6 +1874,13 @@
 		},
 		"filter": {
 			"search": "Search",
+			"clear": "Clear search",
+			"filters": "Filters",
+			"results_one": "{{count}} result",
+			"results_other": "{{count}} results",
+			"empty": "No results found",
+			"emptyDescription": "Try a different search term or clear the filters.",
+			"reset": "Clear filters",
 			"categories": {
 				"all": "All",
 				"builtIn": "Built-in",
@@ -1881,7 +1888,28 @@
 				"game": "Game",
 				"utility": "Utility",
 				"local": "Local",
-				"remote": "Remote"
+				"remote": "Remote",
+				"games": "Games",
+				"productivity": "Productivity",
+				"data": "Data",
+				"design": "Design",
+				"knowledge": "Knowledge",
+				"logs": "Logs",
+				"sync": "Sync",
+				"web": "Web",
+				"AUDIO": "Audio",
+				"BOT": "Bot",
+				"CORE": "Core",
+				"DATABASE": "Database",
+				"EMBEDDING": "Embedding",
+				"IMAGE": "Image",
+				"REALTIME": "Realtime voice",
+				"SEARCH": "Search",
+				"SEARCH_ENGINE": "Search engine",
+				"STORAGE": "Storage",
+				"STT": "Speech to text",
+				"TTS": "Text to speech",
+				"VIDEO": "Video"
 			}
 		},
 		"plugins": {
