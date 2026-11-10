@@ -261,7 +261,7 @@ it('offers a reusable folder grant for undo outside the workspace', async () => 
 it('persists an outside command grant and reuses it without an approval window', async () => {
 	const run = jest.fn().mockResolvedValue('done');
 	const bash = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
-	const directory = path.join(userDataLocation(), 'command-output');
+	const directory = path.join(outsideRoot, 'command-output');
 	fs.mkdirSync(directory);
 	const args = { command: 'touch output.txt', workdir: directory, additionalRoots: ['.'] };
 	const events = runToolCall(bash, { id: 'command-grant', name: 'bash', args }, undefined, undefined, { runId: scope.runId, windowId: 1 });
