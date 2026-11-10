@@ -101,6 +101,7 @@ export interface Message {
 	toolCalls?: ToolCall[];
 	usage?: SessionUsage;
 	createdAtMs?: number;
+	modeIds?: readonly string[];
 }
 
 import type {
