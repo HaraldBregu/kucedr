@@ -55,7 +55,6 @@ export function jsonTool({
 	timeoutMs = 10 * 60_000,
 	maxOutputBytes = 200_000,
 	readOnly,
-	hardApproval,
 	capability,
 	policy,
 	parseInput,
