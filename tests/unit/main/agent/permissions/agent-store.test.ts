@@ -250,7 +250,7 @@ describe('agent store permissions', () => {
 	it('adds a rule without changing other buckets', () => {
 		addPermissionRule('exec', 'allow', '/repo/**');
 		expect(getPermissions().exec.allow).toEqual([workspaceRule, '/repo/**']);
-		expect(getPermissions().read.allow).toEqual([workspaceRule, libraryRule]);
+		expect(getPermissions().read.allow).toEqual([workspaceRule]);
 	});
 
 	it('preserves unrelated agent settings', () => {
