@@ -183,9 +183,15 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
 			<div className="relative flex min-h-0 min-w-0 flex-1">
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
-			{kind === 'markdown' && visibleMarkdownMode === 'preview' && !content.includes('<!--') ? <div ref={setToolbarTarget} hidden /> : null}
-			{searchable && findOpen ? (
-				<div role="search" className="pointer-events-none absolute right-[6.25rem] top-12 z-30 w-80 max-w-[calc(100%-7rem)] sm:right-[6.5rem]">
+			{searchable ? <div className="pointer-events-none absolute inset-x-2 top-12 z-20 flex flex-row-reverse flex-wrap items-start gap-1 sm:inset-x-3">
+			{file && !loading ? (
+				<div className={`pointer-events-auto flex items-start gap-2 ${toolbarVisible ? 'w-full rounded-lg border bg-background/70 p-1 shadow-sm backdrop-blur-md' : ''}`}>
+					{toolbarVisible ? <div ref={setToolbarTarget} className="min-w-0 flex-1" /> : null}
+					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} name={file.name} content={content} markdown={kind === 'markdown'} toolbar={toolbarVisible} onToolbarChange={toolbarAvailable ? (next) => { setToolbar(next); localStorage.setItem('workspace-toolbar', String(next)); } : undefined} />
+				</div>
+			) : null}
+			{findOpen ? (
+				<div role="search" className="pointer-events-none w-80 max-w-[calc(100%-8rem)]">
 					<div className="pointer-events-auto space-y-1 rounded-lg border bg-background/70 p-1.5 shadow-sm backdrop-blur-md">
 					<div className="flex min-w-0 items-center gap-1">
 						{kind === 'markdown' ? <Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" aria-label="Toggle replace" aria-expanded={replaceOpen} onClick={() => setReplaceOpen(!replaceOpen)}>{replaceOpen ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}</Button> : null}
