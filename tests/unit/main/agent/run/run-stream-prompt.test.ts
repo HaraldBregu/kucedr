@@ -693,7 +693,7 @@ describe('run stream system prompt', () => {
 					interactionMode: 'default',
 				},
 				new AbortController().signal,
-				{ tools: [], memory: { read } as never }
+				{ tools: [], memory: { read, getConfig: () => ({ includeInPrompt: true }) } as never }
 			))
 				void event;
 			expect(read).toHaveBeenCalledTimes(1);
@@ -725,7 +725,7 @@ describe('run stream system prompt', () => {
 					interactionMode: 'default',
 				},
 				new AbortController().signal,
-				{ tools: [], memory: { read } as never }
+				{ tools: [], memory: { read, getConfig: () => ({ includeInPrompt: true }) } as never }
 			))
 				void event;
 			expect(read).not.toHaveBeenCalled();
