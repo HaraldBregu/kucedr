@@ -74,16 +74,16 @@ describe('agent store permissions', () => {
 		}
 	);
 
-	it('trusts the workspace for all filesystem capabilities and Library for reads and writes', () => {
+	it('trusts only the workspace by default', () => {
 		expect(resetPermissions()).toMatchObject({
-			read: { allow: [workspaceRule, libraryRule], deny: [] },
-			write: { allow: [workspaceRule, libraryRule], deny: [] },
+			read: { allow: [workspaceRule], deny: [] },
+			write: { allow: [workspaceRule], deny: [] },
 			exec: { allow: [workspaceRule], deny: [] },
 			tools: {},
 		});
 	});
 
-	it('normalizes rules and keeps the default workspace and Library grants', () => {
+	it('normalizes rules and keeps the default workspace grant', () => {
 		const saved = setPermissions({
 			read: { allow: [' /repo/** ', '/repo/**'], deny: [] },
 			write: { allow: [], deny: ['/blocked/**'] },
