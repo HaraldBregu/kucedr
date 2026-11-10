@@ -278,11 +278,7 @@ export function getAgentProfileTool(
 ): AgentToolConfiguration {
 	const profile = read(profileId);
 	if (tool.kind === 'builtin')
-		return (
-			profile.tools[tool.id] ??
-			(profileId === 'tasks' ? undefined : DEFAULT_TOOL_SETTINGS[tool.id]) ??
-			DEFAULT_TOOL
-		);
+		return profile.tools[tool.id] ?? DEFAULT_TOOL_SETTINGS[tool.id] ?? DEFAULT_TOOL;
 	const configured = profile.mcpTools[tool.serverId]?.[tool.toolName];
 	if (configured) return configured;
 	const permission = getMcpToolPermission(tool.serverId, tool.toolName) ?? DEFAULT_TOOL.permission;
