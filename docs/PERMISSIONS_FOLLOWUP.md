@@ -1,6 +1,11 @@
 # Tools & Permissions — Follow-up Plan
 
-What is left after the path-rule fix and cleanup (see `PERMISSIONS_SECURITY.md`, `TOOL_SELECTION.md`). Status: plan only, no code changed.
+What is left after the path-rule fix and cleanup (see `PERMISSIONS_SECURITY.md`, `TOOL_SELECTION.md`).
+
+Status: items 1, 2, 3 and 5 are implemented as written; the "Verify" steps that need the running app are still to do. Item 4: 4a and 4b are done (the `main` jest project went from 216 to 130 failing tests, no new failures); 4c is open. Differences from the plan:
+- 1: workspace and library are exempt from the app data rule, so a bash root there can still be remembered.
+- 4a: the five runner suites mock `session_session_dir` instead of building real session folders. Two tests in `run-stream-prompt.test.ts` still fail: one needs real session persistence, one imports the removed Plan mode.
+- `undo`/`redo` with nothing to undo are allowed without a prompt (`resolve_tool_permission.ts`); the path-rule fix had made them ask.
 
 | # | Item | Size |
 |---|------|------|
