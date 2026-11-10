@@ -251,7 +251,10 @@ export function setAgentProfileModel(
 
 export function getAgentProfileTools(profileId: AgentToolProfileId): AgentToolProfile {
 	const profile = read(profileId);
-	return { tools: { ...profile.tools }, mcp: structuredClone(profile.mcpTools) };
+	return {
+		tools: { ...DEFAULT_TOOL_SETTINGS, ...profile.tools },
+		mcp: structuredClone(profile.mcpTools),
+	};
 }
 
 export function setAgentProfileTool(
