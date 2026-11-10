@@ -56,5 +56,22 @@ export class ScriptsIpc implements IpcModule<ScriptsIpcDependencies> {
 				return plugins.renderPluginScript(name, input, theme === 'dark' ? 'dark' : 'light');
 			}
 		);
+		registerQueryWithEvent(ScriptsChannels.getSettings, (event, name: string) => {
+			trusted.assert(event);
+			return plugins.pluginScriptSettings(name);
+		});
+		registerCommandWithEvent(
+			ScriptsChannels.saveSettings,
+			(event, name: string, values: Record<string, string>) => {
+				trusted.assert(event);
+				if (
+					typeof values !== 'object' ||
+					values === null ||
+					Object.values(values).some((value) => typeof value !== 'string')
+				)
+					throw new Error('Script settings must be a map of strings.');
+				plugins.savePluginScriptSettings(name, values);
+			}
+		);
 	}
 }
