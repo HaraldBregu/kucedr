@@ -83,7 +83,8 @@ A mode with `state` gets per-session state at `<session>/modes/<mode-id>.json` (
 - These modes get the `update_mode_state` tool (`state/tool.ts`):
   - given `items` replace the whole list;
   - a new state needs an objective;
-  - without a `status` the previous one is kept, except that a new objective starts `active`;
+  - without a `status` the previous one is kept;
+  - a new objective starts a fresh state: `active`, with none of the previous items or note;
   - `blocked` needs a note, and a note carries over only while the status stays the same;
   - `completed` needs at least one item and every item done, with evidence when `state.evidence` is set. Otherwise the update is saved as `active` and the call fails with the open item numbers;
   - a mode without `state.continue` becomes `completed` by itself once every item is done.
