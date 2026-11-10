@@ -1,7 +1,8 @@
-import { ArrowUpRight, ChevronDown, File, FileCode, Files, Gauge, Hash, MessageSquare } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, File, FileCode, Files, Gauge, Hash, MessageSquare, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { PopoverClose } from '@/components/ui/popover';
 import type { HomeChatMessage } from './context/state';
 import { chatAssets } from './components/assets';
 import { chatScripts } from './components/scripts';
