@@ -18,6 +18,12 @@ export function filterProfileTools(tools: Tool[], profileId: AgentToolProfileId)
 			profileId,
 			tool.policy ?? { kind: 'builtin', id: tool.id }
 		);
-		return settings.permission !== 'deny';
+		if (settings.permission === 'deny') return false;
+		if (profileId !== 'tasks') return true;
+		const capability =
+			typeof tool.capability === 'function' ? tool.capability({}) : tool.capability;
+		return (
+			settings.permission !== 'ask' && capability?.approval !== true && tool.hardApproval !== true
+		);
 	});
 }
