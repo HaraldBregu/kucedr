@@ -7,6 +7,7 @@ import {
 	TASK_TOOLS,
 } from './directory_permission_targets';
 import { isBroadTarget } from './broad';
+import { isMediaOutputTool } from './media_output_tool';
 import { permissionFor } from './permission_for';
 import { toolPermissionTargets } from './tool_permission_targets';
 import type { PermissionKind, PermissionMode, PermissionsSchema } from './permissions_types';
