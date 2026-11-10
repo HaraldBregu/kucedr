@@ -33,19 +33,14 @@ export default function ModelsPage(): React.JSX.Element {
 	const navigate = useNavigate();
 	const [models, setModels] = useState<readonly CatalogModel[] | null>(null);
 	const [error, setError] = useState(false);
-	const [query, setQuery] = useState('');
-	const [category, setCategory] = useState('all');
-	const search = query.trim().toLocaleLowerCase();
-	const visibleModels = models?.filter(
-		(model) =>
-			(category === 'all' || model.type === category) &&
-			`${model.name} ${model.id} ${model.provider.name} ${model.provider.plugin?.name ?? ''}`
-				.toLocaleLowerCase()
-				.includes(search)
-	);
-	const categories = TYPES.filter((type) => models?.some((model) => model.type === type));
+	const filter = useSettingsFilter(models ?? [], {
+		text: (model) =>
+			`${model.name} ${model.id} ${model.provider.name} ${model.provider.plugin?.name ?? ''}`,
+		category: (model) => model.type,
+		order: TYPES,
+	});
 	const categoryLabels = Object.fromEntries(
-		categories.map((type) => [type, t(`settings.models.types.${type}`)])
+		TYPES.map((type) => [type, t(`settings.models.types.${type}`)])
 	);
 
 	useEffect(() => {
