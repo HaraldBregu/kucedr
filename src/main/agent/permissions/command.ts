@@ -32,6 +32,10 @@ export function resolveCommandPermission(
 		targets,
 		approvalTargets,
 		reason: elevated ? 'host_execution' : 'outside_trusted_location',
-		persistable: !elevated && !decisions.includes('deny') && approvalTargets.length > 0,
+		persistable:
+			!elevated &&
+			!decisions.includes('deny') &&
+			approvalTargets.length > 0 &&
+			!approvalTargets.some(isBroadTarget),
 	};
 }
