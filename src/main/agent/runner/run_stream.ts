@@ -258,7 +258,7 @@ async function* loop(
 		if (!options.tools) {
 			if (
 				!bootstrap &&
-				!mode.restricted &&
+				!restricted &&
 				(input.toolsAllow === undefined ||
 					input.toolsAllow.some((toolId) => toolId.startsWith('mcp__')))
 			) {
