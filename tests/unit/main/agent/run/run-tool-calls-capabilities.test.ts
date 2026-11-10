@@ -1,7 +1,6 @@
 import { runToolCalls } from '../../../../../src/main/agent/runner/run_tool_calls';
 import type { Tool, ToolCall } from '../../../../../src/main/agent/types';
 import { requestUserInputTool } from '../../../../../src/main/agent/tools/core/ask';
-import { NO_MODE } from '../../../../../src/main/agent/modes/types';
 
 function fakeTool(name: string, output: string): Tool {
 	return {
