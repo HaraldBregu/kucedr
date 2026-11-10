@@ -380,6 +380,8 @@ export interface PluginsApi {
 export interface ScriptsApi {
 	list: () => Promise<PluginScriptInfo[]>;
 	render: (name: string, input: unknown, theme: 'light' | 'dark') => Promise<string>;
+	getSettings: (name: string) => Promise<Record<string, string>>;
+	saveSettings: (name: string, values: Record<string, string>) => Promise<void>;
 }
 
 export interface ServicesApi {
