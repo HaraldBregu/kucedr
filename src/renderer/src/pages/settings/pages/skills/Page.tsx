@@ -92,7 +92,7 @@ const SkillsPage: React.FC = () => {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3">
-							{visibleSkills.map((skill) => (
+							{filter.items.map((skill) => (
 								<Card
 									key={skill.id}
 									size="sm"
