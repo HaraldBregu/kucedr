@@ -1,0 +1,12 @@
+{
+	"title": "Pre-tool log",
+	"description": "Append every tool call, before it runs, to a daily JSONL log in the configured directory.",
+	"author": "Harald Bregu",
+	"type": "PRE_TOOL_USE",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "logs",
+		"entry": "index.mjs",
+		"instructions": "instructions.md"
+	}
+}
