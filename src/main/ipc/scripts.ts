@@ -3,7 +3,7 @@ import type { WindowContextManager } from '../window_context';
 import { ScriptsChannels } from '../../shared/ipc_channels_definitions';
 import { PLUGIN_SCRIPT_TYPES } from '../../shared/plugin_types';
 import * as plugins from '../plugins';
-import { registerQueryWithEvent } from './core/gateway';
+import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
 
