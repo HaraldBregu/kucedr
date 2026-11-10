@@ -14,7 +14,7 @@ export function toolApprovalTargets(
 		toolName === 'read'
 			? toolPermissionTargets(toolName, args, baseDir)
 			: directoryPermissionTargets(toolName, args, baseDir, history);
-	return toolName === 'bash' || toolName === 'process' || isMediaOutputTool(toolName, args)
+	return isMediaOutputTool(toolName, args)
 		? targets
 		: targets.map((target) => path.dirname(target));
 }
