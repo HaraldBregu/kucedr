@@ -174,7 +174,7 @@ Add the write deny above in Settings → Permissions, ask the agent to write `~/
 The user approves a harmless-looking host command (`git status`), while `env` makes it execute workspace code unsandboxed, e.g. `PATH=<workspace>/bin:$PATH` with a fake `git`, or `GIT_CONFIG_*` setting `core.fsmonitor`. The model can also hide a value from the user by naming its key `*_TOKEN`.
 
 **Fix**
-Reject `env` when `elevated: true` — same rule `modes/shell.ts` `readOnlyShellError` already applies to read-only commands. Sandboxed commands can keep `env`.
+Reject `env` when `elevated: true` — same rule `tools/core/readonly.ts` `readOnlyShellError` already applies to read-only commands. Sandboxed commands can keep `env`.
 
 ---
 
