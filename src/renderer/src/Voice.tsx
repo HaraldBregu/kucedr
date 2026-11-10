@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { loadModels } from './lib/providers';
+import { loadCatalog } from './lib/providers';
 import { VoiceWindow } from './components/voice-window';
 import { AppProvider } from './contexts';
 import './i18n';
