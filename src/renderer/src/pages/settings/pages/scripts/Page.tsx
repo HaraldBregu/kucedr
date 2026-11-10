@@ -29,17 +29,11 @@ const ScriptsPage: React.FC = () => {
 	const [scripts, setScripts] = useState<PluginScriptInfo[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
-	const [query, setQuery] = useState('');
-	const [category, setCategory] = useState('all');
-	const categories = useMemo(
-		() => [...new Set(scripts.map((script) => script.category))].sort(),
-		[scripts]
-	);
-	const visibleScripts = scripts.filter(
-		(script) =>
-			(category === 'all' || script.category === category) &&
-			`${script.title} ${script.name}`.toLowerCase().includes(query.trim().toLowerCase())
-	);
+	const filter = useSettingsFilter(scripts, {
+		text: (script) =>
+			`${script.title} ${script.name} ${script.type} ${script.category} ${script.author ?? ''} ${script.plugin.name}`,
+		category: (script) => script.category,
+	});
 
 	useEffect(() => {
 		window.scripts
