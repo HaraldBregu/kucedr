@@ -2,7 +2,7 @@
 
 Review of the chat agent permission system: `src/main/agent/permissions/*`, `src/main/agent/runner/run_tool_call.ts`, `src/main/agent/sandbox.ts`, `src/main/agent/files/*`, `src/main/agent/execution/environment.ts`, `src/main/agent/agent_profiles.ts`.
 
-Status: #1 is fixed, #3 is fixed for file tools, #8 (MCP default) is fixed. The other findings are open. Line numbers below are from the original review and have drifted.
+Status: #1 and #3 are fixed, #2 is reduced to ask-every-time (see #3), #8 (MCP default) is fixed. The other findings are open. Line numbers below are from the original review and have drifted.
 
 ## What is already solid
 
