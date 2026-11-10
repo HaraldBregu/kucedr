@@ -30,14 +30,11 @@ const ServicesPage: React.FC = () => {
 	const [settings, setSettings] = useState<SearchSettings | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
-	const [query, setQuery] = useState('');
-	const [type, setType] = useState('all');
-	const types = [...new Set(services.map((service) => service.type))].sort();
-	const visibleServices = services.filter(
-		(service) =>
-			(type === 'all' || service.type === type) &&
-			`${service.name} ${service.provider.name}`.toLowerCase().includes(query.trim().toLowerCase())
-	);
+	const filter = useSettingsFilter(services, {
+		text: (service) =>
+			`${service.name} ${service.type} ${service.provider.name} ${service.provider.plugin?.name ?? ''}`,
+		category: (service) => service.type,
+	});
 
 	useEffect(() => {
 		Promise.all([window.services.list(), window.search.getSettings()])
