@@ -99,11 +99,7 @@ export function bootstrapServices(): BootstrapResult {
 	eventBus.on('window:closed', (event) => {
 		agentService.cancelWindow((event.payload as { windowId: number }).windowId);
 		codingService.cancelWindow((event.payload as { windowId: number }).windowId);
-		void conversationService.execute({
-			type: 'voice',
-			action: 'stop-window',
-			windowId: (event.payload as { windowId: number }).windowId,
-		});
+		void realtimeVoiceManager.stopWindow((event.payload as { windowId: number }).windowId);
 	});
 
 	logger.info('Bootstrap', 'Registered global services');
