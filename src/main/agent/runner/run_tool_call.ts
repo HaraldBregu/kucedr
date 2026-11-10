@@ -393,23 +393,10 @@ export async function* runToolCall(
 				let execution: Promise<unknown> | undefined;
 				try {
 					toolSignal.throwIfAborted();
-					const current = executionScope.run(scope, () =>
-						resolveToolPermissionDetails(
-							toolCall.name,
-							canonicalInput,
-							context,
-							true,
-							permissionFallback,
-							profilePermissions(),
-							history,
-							profileToolConfiguration()
-						)
-					);
+					const current = resolvePermission();
 					if (
 						current.mode === 'deny' ||
-						(permissionOutcome === 'allow' &&
-							current.mode !== 'allow' &&
-							resolution.mode === 'allow')
+						(permissionOutcome === 'allow' && current.mode !== 'allow')
 					)
 						throw new Error('Permission changed before execution.');
 					const aborted = new Promise<never>((_, reject) => {
