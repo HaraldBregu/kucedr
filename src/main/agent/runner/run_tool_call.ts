@@ -270,26 +270,24 @@ export async function* runToolCall(
 			}
 		}
 	} else {
-		let resolution = executionScope.run(scope, () =>
-			resolveToolPermissionDetails(
-				toolCall.name,
-				canonicalInput,
-				context,
-				true,
-				permissionFallback,
-				profilePermissions(),
-				history,
-				profileToolConfiguration()
-			)
-		);
+		const resolvePermission = (): ReturnType<typeof resolveToolPermissionDetails> =>
+			executionScope.run(scope, () =>
+				resolveToolPermissionDetails(
+					toolCall.name,
+					canonicalInput,
+					context,
+					true,
+					permissionFallback,
+					profilePermissions(),
+					history,
+					profileToolConfiguration()
+				)
+			);
+		let resolution = resolvePermission();
 		const capability =
 			typeof tool.capability === 'function' ? tool.capability(canonicalInput) : tool.capability;
 		if (!capability) resolution = { ...resolution, mode: 'deny', persistable: false };
-		const hardApproval =
-			capability?.approval === true ||
-			(typeof tool.hardApproval === 'function'
-				? tool.hardApproval(canonicalInput)
-				: tool.hardApproval === true);
+		const hardApproval = capability?.approval === true;
 		if (hardApproval && resolution.mode !== 'deny') {
 			resolution = {
 				...resolution,
