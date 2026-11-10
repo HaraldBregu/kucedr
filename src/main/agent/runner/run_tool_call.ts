@@ -30,6 +30,7 @@ import { getToolConfiguration, setToolProfileTool } from '../agent_store';
 import { isAgentToolAllowedForProfile, type AgentToolProfileId } from '../../../shared/agent_tools';
 import { getMcpOauth } from '../../mcp';
 import { mcpAuthorizationRequired } from './mcp_authorization_required';
+import { runPluginHooks } from '../../plugins';
 
 export interface ToolCallSecurityContext {
 	runId: string;
@@ -366,6 +367,14 @@ export async function* runToolCall(
 		} else {
 			try {
 				if (signal?.aborted) throw signal.reason;
+				hooked = true;
+				await runPluginHooks('PRE_TOOL_USE', {
+					agent: security.toolProfile ?? 'chat',
+					runId: security.runId,
+					toolCallId: toolCall.id,
+					toolName: toolCall.name,
+					input: canonicalInput,
+				});
 				const timeoutController = new AbortController();
 				const timeoutTimer = setTimeout(
 					() => timeoutController.abort(new DOMException('Tool call timed out.', 'TimeoutError')),
@@ -464,6 +473,16 @@ export async function* runToolCall(
 	};
 
 	toolCall.durationMs = Date.now() - startedAtMs;
+	void runPluginHooks('POST_TOOL_USE', {
+		agent: security.toolProfile ?? 'chat',
+		runId: security.runId,
+		toolCallId: toolCall.id,
+		toolName: toolCall.name,
+		input: canonicalInput,
+		output: toolCall.result.content,
+		isError: Boolean(isError),
+		durationMs: toolCall.durationMs,
+	});
 
 	security.budget?.observeOutput(Buffer.byteLength(formatToolOutput(output), 'utf8'));
 	security.budget?.outcomes.set(toolCall.id, structuredClone(toolCall));
