@@ -29,7 +29,8 @@ export function modeStateTool(sessionDirectory: string, modes: readonly ModeDefi
 			.strict(),
 		execute: ({ mode: id, objective, items, status, note }) => {
 			const mode = modes.find((candidate) => candidate.id === id)!;
-			const previous = readState(sessionDirectory, id);
+			const saved = readState(sessionDirectory, id);
+			const previous = objective && objective !== saved?.objective ? undefined : saved;
 			const nextObjective = objective ?? previous?.objective;
 			if (!nextObjective) throw new Error('A new mode state needs an objective.');
 			const nextItems = items ?? previous?.items ?? [];
