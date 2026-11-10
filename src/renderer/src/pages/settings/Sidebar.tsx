@@ -92,7 +92,8 @@ export function SettingsSidebar(): React.JSX.Element {
 							key={group.id}
 							items={group.items}
 							titleKey={'titleKey' in group ? group.titleKey : undefined}
-							activePath={activePath}							className={cn('first:pt-0', index > 0 && 'mt-3')}
+							activePath={activePath}
+							className={cn('first:pt-0', index > 0 && 'mt-3')}
 						/>
 					))}
 				</div>
