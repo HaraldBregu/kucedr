@@ -155,11 +155,9 @@ async function* loop(
 			output: MAX_TOOL_OUTPUT_BYTES,
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
-	const pinnedMode = input.mode ?? NO_MODE;
-	const mode =
-		input.approvalWindowId === undefined ? { ...pinnedMode, ask: false } : pinnedMode;
-	const startedAt = Date.now();
-	if (session.category === 'main') session.modeIds = mode.ids;
+	const extension = input.extension;
+	const restricted = extension?.restricted === true;
+	const ask = input.approvalWindowId !== undefined && extension?.ask !== false;
 	let mcpServerHint: string | undefined;
 	const bootstrap =
 		!options.tools &&
