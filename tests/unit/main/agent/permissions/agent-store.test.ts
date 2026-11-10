@@ -158,7 +158,7 @@ describe('agent store permissions', () => {
 		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('ask');
 		expect(getPermissions()).toEqual(chat);
 		resetPermissions('voice');
-		expect(getPermissions('voice').read.allow).toEqual([workspaceRule, libraryRule]);
+		expect(getPermissions('voice').read.allow).toEqual([workspaceRule]);
 		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('allow');
 		expect(getPermissions()).toEqual(chat);
 	});
