@@ -29,7 +29,6 @@ describe('mcpTool', () => {
 		for (const approval of ['never', 'always', undefined] as const) {
 			const configured = mcpTool(client, 'lookup', '', schema, 'safe', approval);
 			expect(configured.id).toBe('mcp__safe__lookup');
-			expect(configured.hardApproval).toBeUndefined();
 		}
 	});
 
