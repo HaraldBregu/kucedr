@@ -237,6 +237,8 @@ export class Agent {
 		let timeoutTimer: ReturnType<typeof setTimeout> | undefined;
 		try {
 			if (controller.signal.aborted) return { text: '', stopReason: 'cancelled' };
+			if (request.category !== 'main' && options.modeIds?.length)
+				throw new Error('Modes are only available in chat runs.');
 			const mode =
 				request.category === 'main' ? resolveModes(options.modeIds ?? [], listModes()) : NO_MODE;
 			const parsedSkillCommand = parseSkillCommand(request.message);
