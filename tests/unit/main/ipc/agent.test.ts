@@ -2,7 +2,6 @@ import { BrowserWindow, ipcMain } from 'electron';
 import { AgentIpc, normalizeAgentSendRuntimeOptions } from '../../../../src/main/ipc/agent';
 import { AgentChannels } from '../../../../src/shared/ipc_channels_definitions';
 import type { Agent } from '../../../../src/main/agent/agent';
-import type { Conversation } from '../../../../src/main/agent/conversation';
 import type { EventBus } from '../../../../src/main/event_bus';
 import type { LoggerService } from '../../../../src/main/shared';
 import * as permissionsApi from '../../../../src/main/agent/permissions';
