@@ -1,5 +1,7 @@
 # Tool Selection — Analysis & Refactoring Plan
 
+> **Status:** Phase 1 and Phase 2 are implemented. "How tool selection works today", "Root cause" and "Contributing problems" describe the code before them, and their line numbers are stale. See "Current state" at the end.
+
 ## Symptom
 
 In chat, asking the agent to do something (typically "make an image of …") sometimes fails with:
