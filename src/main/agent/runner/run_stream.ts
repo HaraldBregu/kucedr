@@ -632,7 +632,7 @@ async function* loop(
 			if (
 				failedMcpCall &&
 				input.approvalWindowId !== undefined &&
-				!mode.restricted
+				!restricted
 			) {
 				const recovery = yield* runMcpRecovery({
 					session,
