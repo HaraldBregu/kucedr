@@ -111,7 +111,7 @@ export function bootstrapServices(): BootstrapResult {
 		agentService,
 		memoryService,
 		codingService,
-		conversationService,
+		realtimeVoiceManager,
 		windowFactory,
 		windowContextManager,
 		appRegistry,
