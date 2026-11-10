@@ -242,7 +242,7 @@ export function WorkspaceMarkdownEditor({
 			<EditorContent
 				editor={editor}
 				className={`workspace-markdown-content mx-auto min-h-full w-full ${wide ? '' : 'max-w-[920px]'} break-words px-5 pb-16 pt-16 text-[15px] leading-7 sm:px-8 lg:px-12`}
-				style={toolbarHeight ? { paddingTop: `calc(4rem + ${toolbarHeight / (zoom ?? 1)}px)` } : undefined}
+				style={toolbarBottom ? { paddingTop: `calc(1rem + ${toolbarBottom / (zoom ?? 1)}px)` } : undefined}
 				onClick={(event) => {
 					const href = (event.target as HTMLElement).closest('a')?.getAttribute('href');
 					if (href) {
