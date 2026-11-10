@@ -28,10 +28,6 @@ What is different for the agent:
 | `read` (chat, voice, health) | allowed | allowed (reads are open everywhere, see finding 3) |
 | `read` (tasks) | allowed | denied until trusted in Tasks → Permissions |
 
-**Existing installs keep the old rule.** Saving used to write the defaults into the profile file, so `settings/chat.json` and `settings/tasks.json` may still list Library. Remove it with the trash icon and Save; it now stays removed. Do not use Reset for this: Reset also clears that agent's choices on the Tools page (finding 8). A one-time automatic cleanup was not added, because it is a data migration.
-
-Alternative not taken: make media tools save to the workspace by default. That would remove the special case, but generated media would no longer appear in Library.
-
 ## How each agent is checked today
 
 All agents call the same `runToolCall`. They differ in the profile they read and in whether a card can be shown.
