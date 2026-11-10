@@ -4,8 +4,9 @@ import { registry } from '../tools/core/process';
 import {
 	directoryPermissionTargets,
 	isWritePermissionTool,
-	TASK_MUTATION_TOOLS,
+	TASK_TOOLS,
 } from './directory_permission_targets';
+import { isBroadTarget } from './broad';
 import { permissionFor } from './permission_for';
 import { toolPermissionTargets } from './tool_permission_targets';
 import type { PermissionKind, PermissionMode, PermissionsSchema } from './permissions_types';
