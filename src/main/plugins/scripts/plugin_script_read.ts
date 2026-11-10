@@ -39,7 +39,13 @@ const manifestSchema = z
 			.object({
 				inputSchema: z.looseObject({
 					type: z.literal('object'),
-					properties: z.record(z.string(), z.looseObject({ type: z.literal('string') })),
+					properties: z.record(
+						z.string(),
+						z.union([
+							z.looseObject({ type: z.literal('string') }),
+							z.looseObject({ type: z.literal('boolean'), default: z.boolean().optional() }),
+						])
+					),
 					required: z.array(z.string()).optional(),
 				}),
 			})
