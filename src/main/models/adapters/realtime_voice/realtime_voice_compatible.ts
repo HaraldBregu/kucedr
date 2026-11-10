@@ -416,6 +416,11 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		}
 		if (event.type === 'error') {
 			if (event.error.code === 'response_cancel_not_active') return;
+			if (event.error.code === 'conversation_already_has_active_response') {
+				this.responsePending = false;
+				this.responseQueued = true;
+				return;
+			}
 			this.emit({ type: 'error', message: event.error.message });
 		}
 	}
