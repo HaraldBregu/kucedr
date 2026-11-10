@@ -7,7 +7,8 @@ const MARKS = { pending: ' ', in_progress: '~', done: 'x' } as const;
 export function stateContext(
 	sessionDirectory: string,
 	modes: readonly ModeDefinition[],
-	activeIds: readonly string[]
+	activeIds: readonly string[],
+	since: number
 ): string {
 	const safe = (value: string): string => value.replaceAll('<', '&lt;');
 	return modes
