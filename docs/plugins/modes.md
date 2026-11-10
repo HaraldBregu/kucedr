@@ -94,5 +94,5 @@ A mode with `state` gets per-session state at `<session>/modes/<mode-id>.json` (
 
 | Mode | Command | Config |
 |---|---|---|
-| `plan` | `/plan` | persistent, `ask`, protected prompt, `tools: read-only`, `permissions: deny-asks`, `shell: read-only`, `output.envelope: proposed_plan`, empty `state` (tracked, no evidence/continue), action **Implement**. |
+| `plan` | `/plan` | persistent, protected prompt, `tools: read-only`, `permissions: deny-asks`, `shell: read-only`, `output.envelope: proposed_plan`, empty `state` (tracked, no evidence/continue), action **Implement**. |
 | `goal` | `/goal` | persistent, `state: { evidence: true, continue: true }`. Keeps working autonomously until every success criterion is done with evidence, or the state is blocked. |
