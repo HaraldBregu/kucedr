@@ -27,8 +27,6 @@ const McpPage = (): React.JSX.Element => {
 	const [error, setError] = useState('');
 	const [catalog, setCatalog] = useState<readonly CatalogService[]>([]);
 	const [connecting, setConnecting] = useState<CatalogService | null>(null);
-	const [query, setQuery] = useState('');
-	const [category, setCategory] = useState('all');
 
 	const load = useCallback(async (): Promise<void> => {
 		setLoading(true);
