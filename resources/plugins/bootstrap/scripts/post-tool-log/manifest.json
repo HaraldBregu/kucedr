@@ -7,5 +7,18 @@
 		"version": "1.0.0",
 		"category": "logs",
 		"entry": "index.mjs"
+	},
+	"settings": {
+		"inputSchema": {
+			"type": "object",
+			"required": ["directory"],
+			"properties": {
+				"directory": {
+					"type": "string",
+					"title": "Directory",
+					"description": "Absolute folder for the log files, for example ~/.kucedr/logs/tools."
+				}
+			}
+		}
 	}
 }
