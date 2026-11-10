@@ -46,10 +46,12 @@ export function WorkspaceViewActions({ wide, onWideChange, onFind, name, content
 						const rich = html();
 						void navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([rich], { type: 'text/html' }), 'text/plain': new Blob([content], { type: 'text/plain' }) })]);
 					}}><Copy />Copy as formatted text</DropdownMenuItem> : null}
-					<DropdownMenuSeparator />
-					{markdown ? <DropdownMenuItem onSelect={() => void window.app.exportDocument(base, 'md', content)}><Download />Export as Markdown</DropdownMenuItem> : null}
-					<DropdownMenuItem onSelect={() => void window.app.exportDocument(base, 'html', html())}><Download />Export as formatted text (HTML)</DropdownMenuItem>
-					<DropdownMenuItem onSelect={() => void window.app.exportDocument(base, 'pdf', html())}><Download />Export as PDF</DropdownMenuItem>
+					{markdown ? <>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onSelect={() => void window.app.exportDocument(base, 'md', content)}><Download />Export as Markdown</DropdownMenuItem>
+						<DropdownMenuItem onSelect={() => void window.app.exportDocument(base, 'html', html())}><Download />Export as formatted text (HTML)</DropdownMenuItem>
+						<DropdownMenuItem onSelect={() => void window.app.exportDocument(base, 'pdf', html())}><Download />Export as PDF</DropdownMenuItem>
+					</> : null}
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>
