@@ -18,6 +18,6 @@ Kucedr posts one message on `process.parentPort`:
 
 The script replies with one message and exits:
 
-- `{ "result": { "uploaded": [...], "failed": [{ "path", "error" }] } }` for `backup`.
+- `{ "result": { "uploaded": [...], "deleted": [...], "failed": [{ "path", "error" }] } }` for `backup`.
 - `{ "result": { "downloaded": [...], "skipped": [], "failed": [...] } }` for `restore`.
 - `{ "error": "..." }` when the operation could not run.
