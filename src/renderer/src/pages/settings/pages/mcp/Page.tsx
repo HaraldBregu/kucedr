@@ -125,13 +125,7 @@ const McpPage = (): React.JSX.Element => {
 				description="Manage remote services and local MCP server packages."
 			/>
 
-			<SettingsFilter
-				query={query}
-				onQueryChange={setQuery}
-				categories={categories}
-				category={category}
-				onCategoryChange={setCategory}
-			/>
+			<SettingsFilter filter={filter} />
 
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
