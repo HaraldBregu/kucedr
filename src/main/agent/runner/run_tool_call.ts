@@ -36,7 +36,7 @@ export interface ToolCallSecurityContext {
 	scope?: ExecutionScope;
 	budget?: ExecutionBudget;
 	windowId?: number;
-	mode?: ModePolicy;
+	extension?: RunExtension;
 	toolProfile?: AgentToolProfileId;
 }
 
