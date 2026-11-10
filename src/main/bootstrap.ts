@@ -67,7 +67,6 @@ export function bootstrapServices(): BootstrapResult {
 	});
 	const windowContextManager = new WindowContextManager(logger, eventBus);
 	const realtimeVoiceManager = createRealtimeVoiceManager(agentService, eventBus);
-	const conversationService = new Conversation(agentService, realtimeVoiceManager);
 	const cloudConfig = loadCloudConfig();
 	const authStorage = cloudConfig ? new AuthSessionStorage() : undefined;
 	const cloudClient =
