@@ -245,8 +245,7 @@ it('reuses a saved outside location for create, edit, move, delete, undo and red
 });
 
 it('offers a reusable folder grant for undo outside the workspace', async () => {
-	const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-outside-'));
-	const target = path.join(outside, 'undo-outside.txt');
+	const target = path.join(outsideRoot, 'undo-outside.txt');
 	const history: FileHistory = { operations: [] };
 	const permissions = getPermissions();
 	setPermissions({ ...permissions, write: { ...permissions.write, allow: [...permissions.write.allow, realPath(target)] } });
