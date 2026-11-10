@@ -472,9 +472,9 @@ async function* loop(
 				memoryContext
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
-			if (mode.prompt) systemPrompt += `\n\n${mode.prompt}`;
-			if (statefulModes.length > 0)
-				systemPrompt += `\n\n${stateContext(stateDirectory, statefulModes, mode.ids, startedAt)}`;
+			if (extension?.prompt) systemPrompt += `\n\n${extension.prompt}`;
+			const extensionContext = extended ? extension?.context() : '';
+			if (extensionContext) systemPrompt += `\n\n${extensionContext}`;
 			const messages = promptCapabilities
 				? projectPromptAttachments(session.messages, promptCapabilities)
 				: session.messages;
