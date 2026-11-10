@@ -233,6 +233,13 @@ export class ExecSandbox {
 		}
 	}
 
+	private permissions(): ReturnType<typeof getPermissions> {
+		// ponytail: Windows configures the sandbox once globally, so it keeps the chat profile's rules; pass a per-command config there to lift this.
+		return getPermissions(
+			process.platform === 'win32' ? 'chat' : (executionScope.getStore()?.profile ?? 'chat')
+		);
+	}
+
 	private async configuration(approvedRoots: readonly string[] = []): Promise<{
 		config: SandboxRuntimeConfig;
 		fingerprint: string;
