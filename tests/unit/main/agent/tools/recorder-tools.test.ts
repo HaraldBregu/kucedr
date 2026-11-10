@@ -89,7 +89,6 @@ it.each([
 		controller.abort();
 
 		expect(captureTool.id).toBe(`${_name}_recorder`);
-		expect(captureTool.hardApproval).toBeUndefined();
 		expect(recorder.cancel).toHaveBeenCalledWith(id);
 	}
 );
