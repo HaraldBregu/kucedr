@@ -221,7 +221,7 @@
 	--app-scrollbar-thumb-hover: color-mix(in oklch, var(--foreground) 38%, transparent);
 	--background: #141414;
 	--foreground: oklch(1 0 0);
-	--card: oklch(0.0800 0 0);
+	--card: #141414;
 	--card-foreground: oklch(1 0 0);
 	--popover: oklch(0.1800 0 0);
 	--popover-foreground: oklch(1 0 0);
