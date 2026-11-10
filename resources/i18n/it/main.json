@@ -1266,8 +1266,13 @@
 		"code": {
 			"description": "Sfoglia i progetti di codice e i loro file"
 		},
-		"writer": {
-			"title": "Writer",
+		"editor": {
+			"font": "Carattere",
+			"fontDescription": "Scegli il carattere utilizzato nell'editor",
+			"fontDefault": "Predefinito",
+			"fontSansSystem": "Sans di Sistema",
+			"fontDyslexicFriendly": "Adatto alla Dislessia",
+			"title": "Editor",
 			"description": "Configura l’editor del workspace e il suo modello AI.",
 			"model": "Modello AI",
 			"modelDescription": "Modello usato per modificare il testo nel workspace.",
