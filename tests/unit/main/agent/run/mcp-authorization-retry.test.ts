@@ -7,6 +7,9 @@ jest.mock('../../../../../src/main/mcp', () => ({
 	getMcpOauth: (id: string) => getMcpOauth(id),
 }));
 jest.mock('../../../../../src/main/mcp/manifest', () => ({ findMcpService: () => undefined }));
+jest.mock('../../../../../src/main/agent/session/session_session_dir', () => ({
+	sessionDir: () => '/nonexistent-session',
+}));
 jest.mock('../../../../../src/main/settings_store', () => ({
 	getResolvedProvider: () => ({ id: 'test-provider', apiKey: 'key' }),
 }));
