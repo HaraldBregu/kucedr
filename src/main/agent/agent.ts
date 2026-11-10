@@ -121,7 +121,8 @@ export class Agent {
 
 	constructor(
 		readonly sandbox: ExecSandbox,
-		readonly memory?: MemoryService
+		readonly memory?: MemoryService,
+		private readonly extend?: RunExtender
 	) {
 		this.config = { location: path.resolve(agentLocation()) };
 		workspacePath(this.config);
