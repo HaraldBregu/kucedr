@@ -82,13 +82,7 @@ const AppsPage: React.FC = () => {
 				description={t('settings.apps.description')}
 			/>
 
-			<SettingsFilter
-				query={query}
-				onQueryChange={setQuery}
-				categories={categories}
-				category={category}
-				onCategoryChange={setCategory}
-			/>
+			<SettingsFilter filter={filter} />
 
 			{errorMessage && (
 				<SettingsNotice
