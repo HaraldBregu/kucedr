@@ -61,7 +61,7 @@ const ModesPage: React.FC = () => {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3">
-							{visibleModes.map((mode) => (
+							{filter.items.map((mode) => (
 								<Card key={mode.id} size="sm">
 									<CardHeader className="flex flex-1 items-center gap-3">
 										<div className="flex min-w-0 flex-1 flex-col gap-1">
