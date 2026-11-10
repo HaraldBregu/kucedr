@@ -543,13 +543,7 @@ async function* loop(
 					inputTokens: turn.usage?.inputTokens ?? 0,
 					outputTokens: turn.usage?.outputTokens ?? 0,
 				});
-				addUserMessage(session, [
-					{
-						type: 'text',
-						internal: true,
-						text: `<mode_continue>\nNot finished: the ${unfinished.map((entry) => entry.id).join(', ')} state is still open. Keep working on the user's request below without asking the user anything. If the state has no items yet, first record the objective and success criteria with update_mode_state. Set its status to "completed" once every item is done, or "blocked" with a note if something concretely prevents progress.\n\nUser's request:\n${input.message}\n</mode_continue>`,
-					},
-				]);
+				addUserMessage(session, [{ type: 'text', internal: true, text: stop.message }]);
 				continued = true;
 				nudges -= 1;
 				continue;
