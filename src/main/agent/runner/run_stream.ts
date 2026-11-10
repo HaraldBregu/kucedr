@@ -162,7 +162,7 @@ async function* loop(
 	const bootstrap =
 		!options.tools &&
 		session.category === 'main' &&
-		!mode.restricted &&
+		!restricted &&
 		path.resolve(config.location) === path.resolve(agentLocation()) &&
 		(await profileStatus(config.location)).missing.length > 0;
 	const filterRuntimeTools = (candidates: Tool[]): Tool[] =>
