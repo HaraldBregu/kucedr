@@ -57,6 +57,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 	const [error, setError] = useState('');
 	const [saveError, setSaveError] = useState('');
 	const [markdownMode, setMarkdownMode] = useState<'preview' | 'source'>('preview');
+	const [toolbar, setToolbar] = useState(() => localStorage.getItem('workspace-toolbar') === 'true');
 	const [findOpen, setFindOpen] = useState(false);
 	const [findQuery, setFindQuery] = useState('');
 	const [replaceOpen, setReplaceOpen] = useState(false);
