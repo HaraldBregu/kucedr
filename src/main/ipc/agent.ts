@@ -402,24 +402,19 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					const runtimeOptions = normalizeAgentSendRuntimeOptions(options);
 					const runId = runtimeOptions.runId ?? randomUUID();
 					let finished: AgentSendResult['finished'];
-					const text = await conversation.execute({
-						type: 'text',
-						message,
-						agentId: 'main',
-						options: {
-							...runtimeOptions,
-							runId,
-							type: 'default',
-							windowId: window.id,
-							streamEvent: (responseEvent) => {
-								if (
-									responseEvent.type === 'run_finished' &&
-									responseEvent.agentId === 'main' &&
-									responseEvent.runId === runId
-								)
-									finished = responseEvent;
-								eventBus.sendTo(window.id, AgentChannels.response, responseEvent);
-							},
+					const text = await agent.send(message, 'main', {
+						...runtimeOptions,
+						runId,
+						type: 'default',
+						windowId: window.id,
+						streamEvent: (responseEvent) => {
+							if (
+								responseEvent.type === 'run_finished' &&
+								responseEvent.agentId === 'main' &&
+								responseEvent.runId === runId
+							)
+								finished = responseEvent;
+							eventBus.sendTo(window.id, AgentChannels.response, responseEvent);
 						},
 					});
 					return { text, ...(finished ? { finished } : {}) };
