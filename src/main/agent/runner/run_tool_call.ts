@@ -117,8 +117,8 @@ export async function* runToolCall(
 	} else if (parseError) {
 		output = `Error: invalid input for '${toolCall.name}': ${parseError instanceof Error ? parseError.message : String(parseError)}`;
 		isError = true;
-	} else if (!allowsTool(mode, tool)) {
-		output = `Error: tool '${toolCall.name}' is unavailable in the active mode`;
+	} else if ((gateError = modeGate(mode, tool, canonicalInput, agentLocation()))) {
+		output = `Error: ${gateError}`;
 		isError = true;
 	} else if (
 		security.toolProfile &&
