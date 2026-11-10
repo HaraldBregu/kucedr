@@ -35,6 +35,16 @@ const manifestSchema = z
 			})
 			.strict(),
 		inputSchema: z.looseObject({ type: z.literal('object') }).optional(),
+		settings: z
+			.object({
+				inputSchema: z.looseObject({
+					type: z.literal('object'),
+					properties: z.record(z.string(), z.looseObject({ type: z.literal('string') })),
+					required: z.array(z.string()).optional(),
+				}),
+			})
+			.strict()
+			.optional(),
 		fence: z.string().regex(ID, 'fence must be kebab-case').optional(),
 		height: z.number().int().min(80).max(2000).default(320),
 	})
