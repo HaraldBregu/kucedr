@@ -259,7 +259,7 @@ const darkThemeColors: AppThemeColors = {
 	link: 'oklch(0.708 0 0)',
 	'link-on-primary': 'oklch(0.45 0.18 254)',
 	command: 'oklch(0.68 0.15 300)',
-	background: 'oklch(0 0 0)',
+	background: '#141414',
 	card: 'oklch(0.0800 0 0)',
 	popover: 'oklch(0.1800 0 0)',
 	sidebar: 'oklch(0.0800 0 0)',
