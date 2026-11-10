@@ -9,7 +9,6 @@ export const runScript = tool({
 	name: 'Run script',
 	description:
 		'Run a script from the Scripts section by name, with the input documented in its instructions. Its visual result is shown to the user automatically.',
-	readOnly: true,
 	inputSchema: z.object({
 		name: z.string().describe('The script name from the Scripts section.'),
 		input: z
