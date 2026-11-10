@@ -16,12 +16,6 @@ export function toolPermissionTargets(
 					.map((target) => realPath(resolveUserPath(target, baseDir)))
 			)
 			: [];
-	if (toolName === 'bash')
-		return typeof args.command === 'string' && args.command.length > 0 ? [args.command] : [];
-	if (toolName === 'process') {
-		const session = typeof args.sessionId === 'string' ? registry.get(args.sessionId) : undefined;
-		return session?.executionMode === 'host' ? [JSON.stringify(args)] : [];
-	}
 	if (typeof args.path === 'string' && args.path.length > 0) {
 		const target = realPath(resolveUserPath(args.path, baseDir));
 		return [target];
