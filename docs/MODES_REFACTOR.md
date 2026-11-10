@@ -1,7 +1,9 @@
 # Modes refactor
 
-Status: proposal, 2026-11-10. Nothing here is implemented. Traced from the code on `dev` at `2ea2e52c3e`;
-the app and tests were not run. Paths are relative to `src/main/agent/` unless they start with `src/`,
+Status: steps 1–4 are implemented (2026-11-10). Typecheck and lint pass on the changed files; the app
+and tests were not run, so the "Verify" checks in section 4 are still to do. Sections 2 and 3 describe
+the code before the change, on `dev` at `2ea2e52c3e`. One difference from the plan: `modeStop` reads the
+state file through `unfinishedModes`, so it is not pure. Paths are relative to `src/main/agent/` unless they start with `src/`,
 `docs/` or `resources/`.
 
 This is the modes-only slice of [Agent state, hooks and modes](AGENT_STATE.md). It re-checks that
