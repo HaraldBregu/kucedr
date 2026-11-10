@@ -3,13 +3,13 @@ import { RealtimeVoiceChannels } from '../../shared/ipc_channels_definitions';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
-import type { Conversation } from '../agent/conversation';
+import type { RealtimeVoiceManager } from '../agent/realtime_voice';
 import type { IpcModule } from './core/module';
 import { openAppWindows } from '../apps/app_render';
 import { ModelRenderer } from './core/model';
 
 export interface RealtimeVoiceIpcDependencies {
-	conversation: Conversation;
+	voice: RealtimeVoiceManager;
 	windows: WindowContextManager;
 	apps: AppRegistry;
 }
@@ -17,43 +17,19 @@ export interface RealtimeVoiceIpcDependencies {
 export class RealtimeVoiceIpc implements IpcModule<RealtimeVoiceIpcDependencies> {
 	readonly name = 'realtime-voice';
 
-	register(
-		{ conversation, windows, apps }: RealtimeVoiceIpcDependencies,
-		_eventBus: EventBus
-	): void {
+	register({ voice, windows, apps }: RealtimeVoiceIpcDependencies, _eventBus: EventBus): void {
 		const trusted = new ModelRenderer(windows, apps);
 		trusted.commandWithEvent(RealtimeVoiceChannels.startSession, (event, request) =>
-			conversation.execute({
-				type: 'voice',
-				action: 'start',
-				windowId: windowId(event.sender, apps),
-				request,
-			})
+			voice.start(windowId(event.sender, apps), request)
 		);
 		trusted.commandWithEvent(RealtimeVoiceChannels.appendAudio, (event, sessionId, audio) =>
-			conversation.execute({
-				type: 'voice',
-				action: 'append-audio',
-				windowId: windowId(event.sender, apps),
-				sessionId,
-				audio,
-			})
+			voice.appendAudio(windowId(event.sender, apps), sessionId, audio)
 		);
 		trusted.commandWithEvent(RealtimeVoiceChannels.interruptSession, (event, sessionId) =>
-			conversation.execute({
-				type: 'voice',
-				action: 'interrupt',
-				windowId: windowId(event.sender, apps),
-				sessionId,
-			})
+			voice.interrupt(windowId(event.sender, apps), sessionId)
 		);
 		trusted.commandWithEvent(RealtimeVoiceChannels.stopSession, (event, sessionId) =>
-			conversation.execute({
-				type: 'voice',
-				action: 'stop',
-				windowId: windowId(event.sender, apps),
-				sessionId,
-			})
+			voice.stop(windowId(event.sender, apps), sessionId)
 		);
 	}
 }
