@@ -251,7 +251,9 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 				</Suspense>
 			) : (
 				<div className="min-h-0 flex-1 overflow-auto" style={{ zoom }}>
-					<article className={`relative mx-auto flex min-h-full w-full ${wide ? '' : 'max-w-[920px]'} flex-col px-5 pb-12 pt-24 sm:px-8 lg:px-12`} onPasteCapture={(event) => { if (kind === 'markdown') pasteRawAssets(event, event.clipboardData.files); }} onDropCapture={(event) => { if (kind === 'markdown') pasteRawAssets(event, event.dataTransfer.files); }}>{codeEditor}</article>
+					{kind === 'markdown' ? (
+						<article className={`relative mx-auto flex min-h-full w-full ${wide ? '' : 'max-w-[920px]'} flex-col px-5 pb-12 pt-24 sm:px-8 lg:px-12`} onPasteCapture={(event) => pasteRawAssets(event, event.clipboardData.files)} onDropCapture={(event) => pasteRawAssets(event, event.dataTransfer.files)}>{codeEditor}</article>
+					) : codeEditor}
 				</div>
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
