@@ -368,12 +368,18 @@ export async function* runToolCall(
 		} else {
 			try {
 				if (signal?.aborted) throw signal.reason;
-				hooked = true;
+				hookedTool = {
+					name: tool.name,
+					description: tool.description,
+					category: tool.category,
+					source: tool.policy ?? { kind: 'builtin', id: tool.id },
+				};
 				await runPluginHooks('PRE_TOOL_USE', {
 					agent: security.toolProfile ?? 'chat',
 					runId: security.runId,
 					toolCallId: toolCall.id,
 					toolName: toolCall.name,
+					tool: hookedTool,
 					input: canonicalInput,
 				});
 				const timeoutController = new AbortController();
