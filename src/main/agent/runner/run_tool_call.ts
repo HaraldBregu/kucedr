@@ -101,7 +101,7 @@ export async function* runToolCall(
 
 	const extension = security.extension;
 	let gateError: string | undefined;
-	let hooked = false;
+	let hookedTool: Record<string, unknown> | undefined;
 	const budgetError = security.budget?.admit(tool, canonicalInput);
 	if (budgetError) {
 		output = budgetError;
