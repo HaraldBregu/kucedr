@@ -1874,6 +1874,13 @@
 		},
 		"filter": {
 			"search": "Cerca",
+			"clear": "Cancella ricerca",
+			"filters": "Filtri",
+			"results_one": "{{count}} risultato",
+			"results_other": "{{count}} risultati",
+			"empty": "Nessun risultato trovato",
+			"emptyDescription": "Prova un altro termine di ricerca o cancella i filtri.",
+			"reset": "Cancella filtri",
 			"categories": {
 				"all": "Tutte",
 				"builtIn": "Integrati",
@@ -1881,7 +1888,28 @@
 				"game": "Gioco",
 				"utility": "Utilità",
 				"local": "Locale",
-				"remote": "Remoto"
+				"remote": "Remoto",
+				"games": "Giochi",
+				"productivity": "Produttività",
+				"data": "Dati",
+				"design": "Design",
+				"knowledge": "Conoscenza",
+				"logs": "Log",
+				"sync": "Sincronizzazione",
+				"web": "Web",
+				"AUDIO": "Audio",
+				"BOT": "Bot",
+				"CORE": "Core",
+				"DATABASE": "Database",
+				"EMBEDDING": "Embedding",
+				"IMAGE": "Immagini",
+				"REALTIME": "Voce in tempo reale",
+				"SEARCH": "Ricerca",
+				"SEARCH_ENGINE": "Motore di ricerca",
+				"STORAGE": "Archiviazione",
+				"STT": "Da voce a testo",
+				"TTS": "Da testo a voce",
+				"VIDEO": "Video"
 			}
 		},
 		"plugins": {
