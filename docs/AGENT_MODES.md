@@ -89,7 +89,6 @@ resources/plugins/
 	"description": "Inspect and propose a plan without changing anything.",
 	"command": "/plan",
 	"persistent": true,
-	"ask": true,
 	"protectedPrompt": true,
 	"tools": "read-only",
 	"permissions": "deny-asks",
