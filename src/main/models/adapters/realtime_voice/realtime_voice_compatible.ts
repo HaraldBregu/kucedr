@@ -218,7 +218,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		const responseId = this.callResponses.get(callId);
 		const tools = responseId ? this.responseTools.get(responseId) : undefined;
 		if (!responseId || !tools) {
-			this.realtime.send({ type: 'response.create' });
+			this.createResponse();
 			return;
 		}
 		tools.resultIds.add(callId);
