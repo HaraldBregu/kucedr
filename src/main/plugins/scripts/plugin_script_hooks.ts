@@ -22,7 +22,6 @@ export async function runPluginHooks(
 					...pluginScriptSettings(script.name),
 				};
 				const required = script.settings?.inputSchema.required ?? [];
-				if ('enabled' in properties && settings.enabled !== 'true') return [];
 				if (required.some((key) => !settings[key])) return [];
 				return [
 					spawnPluginScript(script, { event: type, ...event, settings }).catch((error: unknown) => {
