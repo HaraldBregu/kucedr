@@ -870,7 +870,7 @@ function PageContent(): ReactElement {
 	);
 
 	const chatDetails = (open: boolean, popover: boolean): ReactElement => (
-		<ChatDetails open={open} popover={popover} messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0} onAttach={addLibraryFiles} onWorkspaceAttach={addFiles} onJump={(messageId, toolCallId) => {
+		<ChatDetails open={open} popover={popover} onClose={() => (popover ? setDetailsPopoverOpen : setDetailsOpen)(false)} messages={visibleMessages} model={modelContext} draft={agent.input} hasAttachments={attachments.length > 0} onAttach={addLibraryFiles} onWorkspaceAttach={addFiles} onJump={(messageId, toolCallId) => {
 			const scroll = chatScrollRef.current;
 			const viewport = scroll?.scrollRef.current;
 			const response = Array.from(scroll?.contentRef.current?.querySelectorAll<HTMLElement>('[data-chat-response]') ?? []).find((element) => element.dataset.chatResponse === messageId);
