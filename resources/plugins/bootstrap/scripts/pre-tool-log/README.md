@@ -10,8 +10,10 @@ Each call is appended as one JSON line to `<directory>/pre-tool-use-YYYY-MM-DD.j
 
 ## Configuration
 
-`config.json`:
+Set it up in **Settings → Scripts → Pre-tool log**. The fields come from `settings.inputSchema` in `manifest.json`:
 
-- `directory`: where the log files are stored. A leading `~` is the home folder, and a relative path is resolved from this script's folder. Default `~/.kucedr/logs/tools`.
+- `directory` (required): the folder the log files are stored in. A leading `~` is the home folder.
+
+The script doesn't run until `directory` is saved. Kucedr sends the saved values to the script as `settings` in each event.
 
 Logs are never rotated or deleted, and they contain full tool inputs.
