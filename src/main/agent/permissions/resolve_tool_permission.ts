@@ -82,7 +82,10 @@ export function resolveToolPermissionDetails(
 	const decisions = targets.map((target) => permissionFor(permissions[kind], target, kind));
 	if ((toolName === 'undo' || toolName === 'redo') && targets.length === 0)
 		return { mode: 'allow', kind, targets, approvalTargets: [], persistable: false };
-	if (TASK_TOOLS.has(toolName)) {
+	if (
+		TASK_TOOLS.has(toolName) ||
+		(isMediaOutputTool(toolName, args) && typeof args.directory !== 'string')
+	) {
 		return {
 			mode: decisions.includes('deny') ? 'deny' : 'allow',
 			kind,
