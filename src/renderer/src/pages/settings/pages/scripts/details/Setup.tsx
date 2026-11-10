@@ -3,6 +3,7 @@ import { AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import type { PluginScriptInfo } from '@shared/plugin_types';
 import { getErrorMessage } from '../../../../start/setupConstants';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../../components';
