@@ -16,3 +16,5 @@ export { pluginScripts } from './scripts/plugin_script_list';
 export type { PluginScript } from './scripts/plugin_script_list';
 export { renderPluginScript } from './scripts/plugin_script_render';
 export { runPluginHooks } from './scripts/plugin_script_hooks';
+export { pluginScriptSettings } from './scripts/plugin_script_settings';
+export { savePluginScriptSettings } from './scripts/plugin_script_save_settings';
