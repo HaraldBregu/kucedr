@@ -26,14 +26,14 @@ export function WorkspaceViewActions({ wide, onWideChange, onFind, name, content
 				} />
 				<TooltipContent side="bottom">Find in file</TooltipContent>
 			</Tooltip>
-			<Tooltip>
+			{markdown ? <Tooltip>
 				<TooltipTrigger render={
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="Full width" aria-pressed={wide} className={wide ? 'bg-muted text-foreground' : 'text-muted-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={() => onWideChange(!wide)}>
 						<MoveHorizontal />
 					</Button>
 				} />
 				<TooltipContent side="bottom">Full width</TooltipContent>
-			</Tooltip>
+			</Tooltip> : null}
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="More actions" className="text-muted-foreground" onMouseDown={(event) => event.preventDefault()}>
