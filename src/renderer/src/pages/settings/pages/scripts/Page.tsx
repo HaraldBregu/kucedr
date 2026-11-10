@@ -77,7 +77,7 @@ const ScriptsPage: React.FC = () => {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3">
-							{visibleScripts.map((script) => (
+							{filter.items.map((script) => (
 								<Card
 									key={script.name}
 									size="sm"
