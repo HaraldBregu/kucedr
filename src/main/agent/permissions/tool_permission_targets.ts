@@ -1,7 +1,5 @@
 import { realPath } from '../../shared/real_path';
 import { resolveUserPath } from '../../shared/user_path';
-import { registry } from '../tools/core/process';
-
 import { parsePatch } from '../tools/core/patch/parse';
 
 export function toolPermissionTargets(
