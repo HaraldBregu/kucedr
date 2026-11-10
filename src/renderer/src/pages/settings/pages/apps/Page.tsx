@@ -33,17 +33,11 @@ const AppsPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
-	const [query, setQuery] = useState('');
-	const [category, setCategory] = useState('all');
-	const categories = useMemo(
-		() => [...new Set(apps.map((app) => app.metadata.category))].sort(),
-		[apps]
-	);
-	const visibleApps = apps.filter(
-		(app) =>
-			(category === 'all' || app.metadata.category === category) &&
-			`${app.title} ${app.description}`.toLowerCase().includes(query.trim().toLowerCase())
-	);
+	const filter = useSettingsFilter(apps, {
+		text: (app) =>
+			`${app.title} ${app.description} ${app.author ?? pluginAuthors.get(app.plugin?.id ?? '') ?? ''}`,
+		category: (app) => app.metadata.category,
+	});
 
 	const loadApps = useCallback(async (): Promise<void> => {
 		setLoading(true);
