@@ -284,10 +284,10 @@ const routes: RouteObject[] = [
 						element: <Navigate to="/workspace" replace />,
 					},
 					{
-						path: 'writer',
+						path: 'editor',
 						element: (
 							<SettingsRouteWrapper>
-								<WriterPage />
+								<EditorPage />
 							</SettingsRouteWrapper>
 						),
 					},
