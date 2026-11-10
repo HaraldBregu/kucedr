@@ -1319,12 +1319,12 @@ describe('run stream system prompt', () => {
 		).toEqual(['tool_search']);
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(['tool_search', 'bash']);
+		).toEqual(['tool_search', 'query_knowledge']);
 		expect(runModelTurnMock.mock.calls[0][3]).toContain(
-			'- `bash` (Bash) — Run a command _(Not loaded — call `tool_search` first.)_'
+			'- `query_knowledge` (Bash) — Run a command _(Not loaded — call `tool_search` first.)_'
 		);
 		expect(runModelTurnMock.mock.calls[1][3]).toContain(
-			'- `bash` (Bash) — Run a command _(Loaded.)_'
+			'- `query_knowledge` (Bash) — Run a command _(Loaded.)_'
 		);
 		expect(runModelTurnMock.mock.calls[0][3].match(/^## Tools$/gm)).toHaveLength(1);
 		expect(runModelTurnMock.mock.calls[1][3].match(/^## Tools$/gm)).toHaveLength(1);
