@@ -75,6 +75,26 @@ So the hooks are added in `runToolCall` and nowhere else.
 - `settings` holds the values saved in Settings → Scripts (see [Setup](#setup)).
 - stdout is ignored. A non-zero exit or a timeout is logged with its stderr (`console.warn('[plugins] hook …')`) and has no other effect.
 
+## Setup
+
+A script declares what the user must set up in its manifest, under `settings.inputSchema`. It uses the same shape as a plugin's `settings`, limited to string properties:
+
+```json
+"settings": {
+	"inputSchema": {
+		"type": "object",
+		"required": ["directory"],
+		"properties": {
+			"directory": { "type": "string", "title": "Directory", "description": "…" }
+		}
+	}
+}
+```
+
+- **Settings → Scripts → <script>** shows one field per property (`details/Setup.tsx`), with a notice while a required field is empty.
+- The values are saved per script name in the plugins store under `scriptSettings`. `pluginScriptSettings(name)` reads them, and `savePluginScriptSettings(name, values)` saves them, rejecting keys the manifest doesn't declare. The IPC channels are `scripts:get-settings` and `scripts:save-settings`.
+- `runPluginHooks` skips a script while any `required` setting is empty, and otherwise sends the values as `settings` in the event.
+
 ## Host changes
 
 1. **`src/main/plugins/scripts/plugin_script_spawn.ts`** (new): `spawnPluginScript(script, payload): Promise<string>`. The spawn, timeout, 2 MB cap and stderr handling move here from `plugin_script_render.ts`, and `renderPluginScript` calls it. The render cache stays in `plugin_script_render.ts`.
