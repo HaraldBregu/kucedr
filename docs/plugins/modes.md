@@ -48,19 +48,20 @@ The chat sends `options.modeIds`. For `request.category === 'main'`, `resolveMod
 - `toolIds` = intersection of all tool lists; `readOnly` if any mode is `read-only`
 - `permissions` = `deny-asks` if any mode sets it
 - `shell` = the strictest (`none` > `read-only` > `default`)
-- `ask` if any mode sets it
-- `effort`, `model`, `output` = from the first mode (in id order) that sets them
+- `ask` unless any mode sets it to `false`; runs without an approval window never have it
+- `effort` = from the first mode (in id order) that sets it
 - prompts are joined in id order, split into normal and protected
-- `restricted` = any tool, permission, or shell limit is active
+- `restricted` = any tool, permission, or shell limit is active. A restricted run loads no MCP tools, so a `tools` list can't name `mcp__…` tools
 
-Non-main runs (tasks, sub-agents) use `NO_MODE`.
+Task and health runs use `NO_MODE`, and sending `modeIds` to one is an error. Sub-agents inherit the parent's tool, shell and permission limits, but not its prompts, output, `ask`, or `update_mode_state`.
 
 ## Runtime effects (`src/main/agent/runner/`)
 
-- **Tools:** `filterModeTools()` / `allowsTool()` apply `shell`, `readOnly`, and `toolIds`. `tool_search`, `ask`, and `update_mode_state` are always allowed through `toolIds`. Undo/redo file tools are left out when the policy is restricted.
+- **Tools:** `filterModeTools()` / `allowsTool()` apply `shell`, `readOnly`, and `toolIds` when tools are listed. `tool_search`, `ask`, and `update_mode_state` are always allowed. Undo/redo file tools are left out when the policy is restricted.
 - **Prompt:** `mode.prompt` goes after the workspace context; `mode.protectedPrompt` goes in the protected block.
-- **Permissions:** in `run_tool_call.ts`, `deny-asks` turns `ask` into `deny`; `ask` is rejected unless the mode allows it; read-only bash calls are checked.
-- **Output envelope:** if a final reply (no tool calls) isn't a valid envelope (`output.ts`: exactly one opening tag at the start, one closing tag at the end, non-empty body), the turn is rejected and the model is asked to rewrite it. The renderer parses the envelope (`AssistantMessage.tsx`), shows its content, and adds the `action` button.
+- **Gate:** in `run_tool_call.ts`, `modeGate()` (`gate.ts`) refuses a call the modes don't allow, including read-only bash violations. `deny-asks` turns `ask` into `deny`.
+- **Final reply:** `modeStop()` (`stop.ts`) decides whether a reply with no tool calls is accepted, rewritten, or continued.
+- **Output envelope:** if a final reply isn't a valid envelope (`output.ts`: exactly one opening tag at the start, one closing tag at the end, non-empty body), the turn is rejected and the model is asked to rewrite it once. The rewrite is not checked again. Each assistant message stores its run's `modeIds`, and the renderer parses the envelope only with those modes (`AssistantMessage.tsx`), shows its content, and adds the `action` button. Messages saved before this field existed are tried against every mode.
 - **Effort/model:** `mode.model` overrides the chosen model; `modeEffort()` applies the mode's effort only if the model supports it.
 
 ## Tracked state
