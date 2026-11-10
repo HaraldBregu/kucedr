@@ -178,6 +178,8 @@ export const PluginsChannels = {
 export const ScriptsChannels = {
 	list: 'scripts:list',
 	render: 'scripts:render',
+	getSettings: 'scripts:get-settings',
+	saveSettings: 'scripts:save-settings',
 } as const;
 
 export const ServicesChannels = {
