@@ -78,9 +78,6 @@ const TASKS_BUILTIN_TOOL_IDS = new Set([
 	'delete_task',
 	'list_tasks',
 	'run_task_now',
-	'get_soul',
-	'get_user',
-	'get_identity',
 	'subagent',
 	'subagents',
 ]);
