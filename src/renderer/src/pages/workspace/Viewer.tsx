@@ -204,13 +204,9 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 					</div>
 				</div>
 			) : null}
-			{searchable && (kind !== 'markdown' || visibleMarkdownMode === 'source' || content.includes('<!--')) ? (
-				<div role="toolbar" aria-label="File tools" className={`flex shrink-0 items-center border-b px-2 pb-1 pt-13 sm:px-3`}>
-					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} name={file?.name ?? ''} content={content} markdown={kind === 'markdown'} />
-				</div>
-			) : searchable && file && !loading ? (
+			{searchable && file && !loading ? (
 				<div className="absolute right-2 top-12 z-20 sm:right-3">
-					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} name={file.name} content={content} markdown />
+					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} name={file.name} content={content} markdown={kind === 'markdown'} />
 				</div>
 			) : null}
 
