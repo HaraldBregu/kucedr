@@ -46,8 +46,14 @@ export interface PluginScriptSchema {
 	readonly examples?: readonly unknown[];
 }
 
-/** Where a script runs: `UI` renders inside chats and documents, `STORAGE` syncs files with cloud storage, `VECTOR` mirrors the Knowledge index to a vector database. */
-export const PLUGIN_SCRIPT_TYPES = ['UI', 'STORAGE', 'VECTOR'] as const;
+/** Where a script runs: `UI` renders inside chats and documents, `STORAGE` syncs files with cloud storage, `VECTOR` mirrors the Knowledge index to a vector database, `PRE_TOOL_USE` and `POST_TOOL_USE` run before and after every agent tool call. */
+export const PLUGIN_SCRIPT_TYPES = [
+	'UI',
+	'STORAGE',
+	'VECTOR',
+	'PRE_TOOL_USE',
+	'POST_TOOL_USE',
+] as const;
 
 export type PluginScriptType = (typeof PLUGIN_SCRIPT_TYPES)[number];
 
