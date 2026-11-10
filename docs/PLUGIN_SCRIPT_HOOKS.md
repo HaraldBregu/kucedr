@@ -54,6 +54,12 @@ So the hooks are added in `runToolCall` and nowhere else.
   	"runId": "…",
   	"toolCallId": "…",
   	"toolName": "bash",
+  	"tool": {
+  		"name": "bash",
+  		"description": "…",
+  		"category": "system",
+  		"source": { "kind": "builtin", "id": "bash" }
+  	},
   	"input": { "command": "ls" }
   }
   ```
