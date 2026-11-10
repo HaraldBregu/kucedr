@@ -77,6 +77,7 @@ export interface SessionState {
 	numTurns: number;
 	finalText: string;
 	stopReason?: string;
+	modeIds?: readonly string[];
 	sessionsPath: string;
 	folderName: string;
 	runTraceBuffer: string[];
