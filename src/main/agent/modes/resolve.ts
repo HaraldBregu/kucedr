@@ -1,4 +1,3 @@
-import { listModes } from './list';
 import { NO_MODE, type ModeDefinition, type ModePolicy, type ModeShell } from './types';
 
 const SHELL_RANK: Record<ModeShell, number> = { default: 0, 'read-only': 1, none: 2 };
