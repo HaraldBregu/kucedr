@@ -100,7 +100,6 @@ describe('AgentIpc run ownership', () => {
 			{
 				logger: { info: jest.fn() } as unknown as LoggerService,
 				agent: { config: { location: '/agent' }, sandbox: { invalidate } } as unknown as Agent,
-				conversation: { execute: jest.fn() } as unknown as Conversation,
 				windows: { has: (id: number) => id === 7 } as never,
 				apps: { has: () => false } as never,
 			},
@@ -151,7 +150,6 @@ describe('AgentIpc run ownership', () => {
 			{
 				logger: { info: jest.fn() } as unknown as LoggerService,
 				agent,
-				conversation: { execute: jest.fn() } as unknown as Conversation,
 				windows: { has: (id: number) => id === 7 } as never,
 				apps: { has: () => false } as never,
 			},
@@ -179,7 +177,6 @@ describe('AgentIpc run ownership', () => {
 			{
 				logger: { info: jest.fn() } as unknown as LoggerService,
 				agent,
-				conversation: { execute: jest.fn() } as unknown as Conversation,
 				windows: { has: (id: number) => id === 7 } as never,
 				apps: { has: () => false } as never,
 			},
@@ -205,7 +202,6 @@ describe('AgentIpc run ownership', () => {
 			{
 				logger: { info: jest.fn() } as unknown as LoggerService,
 				agent,
-				conversation: { execute: jest.fn() } as unknown as Conversation,
 				windows: { has: () => false } as never,
 				apps: { has: () => false } as never,
 			},
@@ -276,7 +272,6 @@ describe('AgentIpc run ownership', () => {
 			{
 				logger: { info: jest.fn() } as unknown as LoggerService,
 				agent: { config: { location: '/agent' } } as unknown as Agent,
-				conversation: { execute: jest.fn() } as unknown as Conversation,
 				windows: { has: (id: number) => id === 7 } as never,
 				apps: { has: () => false } as never,
 			},
