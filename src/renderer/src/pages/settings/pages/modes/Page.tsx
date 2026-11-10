@@ -12,6 +12,7 @@ import {
 	SettingsPanel,
 } from '../../components';
 import { SettingsFilter } from '../../components/filter';
+import { useSettingsFilter } from '../../hooks/filter';
 
 const ModesPage: React.FC = () => {
 	const { t } = useTranslation();
