@@ -46,15 +46,15 @@ import { useWebBrowserTool } from '../tools/web/use_web_browser';
 export function builtinTools(
 	config: Config,
 	sandbox: ExecSandbox,
-	mode: ModePolicy = NO_MODE
+	limits: { ask?: boolean; readOnlyShell?: boolean; restricted?: boolean } = {}
 ): Tool[] {
 	return [
 		readTool,
-		...(mode.ask ? [requestUserInputTool] : []),
+		...(limits.ask === false ? [] : [requestUserInputTool]),
 		writeTool,
 		editTool,
 		applyPatchTool,
-		execTool(sandbox, mode.shell === 'read-only'),
+		execTool(sandbox, limits.readOnlyShell === true),
 		processTool,
 		...getSearchWebTools(),
 		fetchWebPageTool,
