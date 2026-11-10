@@ -62,9 +62,11 @@ export function readPluginScript(directory: string): PluginScriptManifest {
 		throw new Error(`scripts/${name}/manifest.json: ${parsed.error.issues[0]?.message}`);
 	}
 	for (const field of ['entry', 'instructions'] as const) {
-		const file = path.join(directory, ...parsed.data.metadata[field].split('/'));
+		const relative = parsed.data.metadata[field];
+		if (relative === undefined) continue;
+		const file = path.join(directory, ...relative.split('/'));
 		if (!existsSync(file) || !statSync(file).isFile()) {
-			throw new Error(`scripts/${name}: ${field} ${parsed.data.metadata[field]} does not exist.`);
+			throw new Error(`scripts/${name}: ${field} ${relative} does not exist.`);
 		}
 	}
 	return { ...parsed.data, name, directory };
