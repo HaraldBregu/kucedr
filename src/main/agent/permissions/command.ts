@@ -1,5 +1,6 @@
 import { realPath } from '../../shared/real_path';
 import { resolveUserPath } from '../../shared/user_path';
+import { isBroadTarget } from './broad';
 import { permissionFor } from './permission_for';
 import { resolveExecRoots } from './resolve_exec_roots';
 import type { PermissionMode, PermissionsSchema } from './permissions_types';
