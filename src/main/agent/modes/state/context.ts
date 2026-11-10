@@ -31,10 +31,10 @@ export function stateContext(
 				`Objective: ${safe(state.objective)}`,
 				items,
 				state.note ? `Note: ${safe(state.note)}` : '',
-				state.status === 'active'
-					? `Keep this state current with update_mode_state as you make progress. ${rule}`
-					: activeIds.includes(mode.id)
-						? `This state is from an earlier request. For a new objective, call update_mode_state with the new objective and items before working. ${rule}`
+				activeIds.includes(mode.id) && state.updatedAt < since
+					? `This state is from an earlier request. For a new objective, call update_mode_state with the new objective and items before working. ${rule}`
+					: state.status === 'active'
+						? `Keep this state current with update_mode_state as you make progress. ${rule}`
 						: '',
 				'</mode_state>',
 			]
