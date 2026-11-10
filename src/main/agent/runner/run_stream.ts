@@ -163,7 +163,8 @@ async function* loop(
 	const toolProfile = input.toolProfile ?? 'chat';
 	const pinnedMode = input.mode ?? NO_MODE;
 	const mode =
-		input.approvalWindowId === undefined ? pinnedMode : { ...pinnedMode, ask: true };
+		input.approvalWindowId === undefined ? { ...pinnedMode, ask: false } : pinnedMode;
+	const startedAt = Date.now();
 	let mcpServerHint: string | undefined;
 	const bootstrap =
 		!options.tools &&
