@@ -26,6 +26,7 @@ import type { FileHistory } from '../../../../../src/main/agent/history/types';
 import type { RuntimeEvent, Tool } from '../../../../../src/main/agent/types';
 
 const workspace = agentLocation();
+const outsideRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-outside-'));
 const scope = { ownerId: 'workspace-test', source: 'interactive', sessionId: 'workspace-test', runId: 'workspace-test' } as const;
 
 async function execute(tool: Tool, args: Record<string, unknown>, history?: FileHistory, source?: 'task' | 'health' | 'child'): Promise<RuntimeEvent[]> {
