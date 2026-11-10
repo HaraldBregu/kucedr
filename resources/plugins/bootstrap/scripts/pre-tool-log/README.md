@@ -12,7 +12,7 @@ Each call is appended as one JSON line to `<directory>/pre-tool-use-YYYY-MM-DD.j
 
 Set it up in **Settings → Scripts → Pre-tool log**. The fields come from `settings.inputSchema` in `manifest.json`:
 
-- `enabled` (default off): turns the log on.
+- `enabled` (required, default off): turns the log on.
 - `directory` (required): the folder the log files are stored in. A leading `~` is the home folder.
 
 The script runs only once `enabled` is on and `directory` is saved. Kucedr sends the saved values to the script as `settings` in each event.
