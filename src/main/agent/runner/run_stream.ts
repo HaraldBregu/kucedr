@@ -388,7 +388,7 @@ async function* loop(
 				{
 					runId,
 					budget,
-					mode,
+					...(extension ? { extension } : {}),
 					toolProfile,
 					windowId: input.approvalWindowId,
 				},
