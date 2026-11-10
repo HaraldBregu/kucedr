@@ -10,7 +10,6 @@ import type { EventBus } from '../event_bus';
 import { wrapIpcHandler } from './core/error_handler';
 import { AgentChannels } from '../../shared/ipc_channels_definitions';
 import type { Agent } from '../agent/agent';
-import type { Conversation } from '../agent/conversation';
 import type { LoggerService } from '../shared';
 import type { PublicProvider } from '../../shared/provider_types';
 import { loadProviders } from '../models';
