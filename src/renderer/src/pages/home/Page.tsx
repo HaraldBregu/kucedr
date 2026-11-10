@@ -419,7 +419,7 @@ function PageContent(): ReactElement {
 		query.addEventListener('change', onChange);
 		return () => query.removeEventListener('change', onChange);
 	}, []);
-	const compactDetails = useIsMobile('(max-width: 1000px)');
+	const compactDetails = useIsMobile('(max-width: 1200px)');
 	const [detailsPopoverOpen, setDetailsPopoverOpen] = useState(false);
 	const detailsDocked = detailsOpen && !compactDetails;
 	const infoOpen = compactDetails ? detailsPopoverOpen : detailsOpen;
