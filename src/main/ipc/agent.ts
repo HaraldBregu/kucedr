@@ -109,7 +109,6 @@ type AgentSendResult = AgentInvokeChannelMap[typeof AgentChannels.send]['result'
 export interface AgentIpcDeps {
 	logger: LoggerService;
 	agent: Agent;
-	conversation: Conversation;
 	windows: WindowContextManager;
 	apps: AppRegistry;
 }
