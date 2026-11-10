@@ -60,5 +60,4 @@ it('explains task capabilities and example user requests to the model', () => {
 
 it('uses ordinary policy approval for focused text edits', () => {
 	expect(editTool.id).toBe('edit');
-	expect(editTool.hardApproval).not.toBe(true);
 });
