@@ -188,6 +188,7 @@ export interface AgentHistoryMessage {
 	status?: AgentToolResultStatus;
 	output?: unknown;
 	usage?: AgentTokenUsage;
+	modeIds?: readonly string[];
 }
 
 export type AgentSessionCategory = 'main' | 'health' | 'task' | 'subagent' | 'voice';
