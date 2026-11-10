@@ -38,9 +38,7 @@ export function modeStateTool(sessionDirectory: string, modes: readonly ModeDefi
 				item.status !== 'done' || (mode.state?.evidence && !item.evidence) ? [index + 1] : []
 			);
 			const done = nextItems.length > 0 && open.length === 0;
-			const requested =
-				status ??
-				(objective && objective !== previous?.objective ? 'active' : (previous?.status ?? 'active'));
+			const requested = status ?? previous?.status ?? 'active';
 			const nextStatus =
 				requested === 'completed' && !done
 					? 'active'
