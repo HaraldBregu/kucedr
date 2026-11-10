@@ -120,15 +120,14 @@ export function WorkspaceMarkdownEditor({
 	});
 
 	useEffect(() => {
-		const scroll = scrollRef.current;
-		if (!scroll || !toolbarTarget) return;
-		const update = (): void => { setScrollbarWidth(scroll.offsetWidth - scroll.clientWidth); };
-		const observer = new ResizeObserver(update);
-		observer.observe(scroll);
-		if (scroll.firstElementChild) observer.observe(scroll.firstElementChild);
-		update();
+		if (!toolbarTarget) {
+			setToolbarHeight(0);
+			return;
+		}
+		const observer = new ResizeObserver(() => setToolbarHeight(toolbarTarget.offsetHeight));
+		observer.observe(toolbarTarget);
 		return () => observer.disconnect();
-	}, [toolbarTarget, zoom]);
+	}, [toolbarTarget]);
 
 	useImperativeHandle(ref, () => {
 		const select = (query: string, direction: 'next' | 'previous'): { from: number; to: number } | undefined => {
