@@ -6,7 +6,6 @@
 	"metadata": {
 		"version": "1.0.0",
 		"category": "logs",
-		"entry": "index.mjs",
-		"instructions": "instructions.md"
+		"entry": "index.mjs"
 	}
 }
