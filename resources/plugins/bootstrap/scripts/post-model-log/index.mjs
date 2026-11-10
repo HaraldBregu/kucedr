@@ -6,6 +6,7 @@ let data = '';
 process.stdin.on('data', (chunk) => (data += chunk));
 process.stdin.on('end', () => {
 	const { settings, ...event } = JSON.parse(data);
+	if (settings.enabled !== 'true') return;
 	const root = path.resolve(settings.directory.replace(/^~(?=$|[/\\])/, os.homedir()));
 	const day = new Date().toISOString().slice(0, 10);
 	mkdirSync(root, { recursive: true });
