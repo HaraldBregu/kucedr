@@ -1,0 +1,90 @@
+# Plugin Script Hooks
+
+Status: planned. This extends [PLUGIN_SCRIPTS.md](PLUGIN_SCRIPTS.md).
+
+## Context
+
+Plugin scripts (`<plugin>/scripts/<id>/`) have a `type`: `UI`, `STORAGE` or `VECTOR` (`PLUGIN_SCRIPT_TYPES` in `src/shared/plugin_types.ts`). Two more types, `PRE_TOOL_USE` and `POST_TOOL_USE`, add scripts that run right before and right after every tool call, in **every agent**.
+
+- Hooks are side-effect scripts: logging, notifying, syncing, and so on. They never change, block or break a tool call.
+- Several hook scripts can be installed, and every one of the matching type runs.
+- A hook that crashes, is slow or misbehaves is logged and ignored. Tools behave exactly as they do today.
+
+## One change covers all agents
+
+Every agent runs tools through one function, `runToolCall` (`src/main/agent/runner/run_tool_call.ts`), and `tool.run(...)` is called only there:
+
+| Agent | Path |
+|---|---|
+| chat, tasks, health (`AGENT_TOOL_PROFILE_IDS`) | `agent.ts` → `run_stream.ts` → `runToolCalls` → `runToolCall` |
+| subagents | `tools/core/subagents.ts` → `run_stream.ts` → same path |
+| MCP recovery | `run_mcp_recovery.ts` → `runToolCalls` |
+| voice | `realtime_voice/tool_runtime.ts` → `runToolCall` (`toolProfile: 'voice'`) |
+
+So the hooks are added in `runToolCall` and nowhere else.
+
+## Manifest
+
+```json
+{
+	"title": "Audit log",
+	"description": "Append every tool call to a local log.",
+	"type": "PRE_TOOL_USE",
+	"metadata": { "version": "1.0.0", "category": "audit", "entry": "dist/index.mjs", "instructions": "instructions.md" }
+}
+```
+
+- `PLUGIN_SCRIPT_TYPES` becomes `['UI', 'STORAGE', 'VECTOR', 'PRE_TOOL_USE', 'POST_TOOL_USE']`. Nothing else in the manifest schema changes, because `plugin_script_read.ts` and `plugins_validate_contents.ts` already validate any type.
+- A script that wants both events ships as two script folders.
+- There is no `tools` filter, so every hook sees every tool call. Add a `tools: string[]` matcher if the spawn cost becomes noticeable.
+- Existing consumers stay correct without changes:
+  - `pluginScripts()` defaults to `'UI'`, so hooks never reach the `# Scripts` prompt, `run_script` or `renderPluginScript`.
+  - The renderer filters `type === 'UI'`, so hooks never appear in chat or the editor.
+  - Settings → Scripts lists them through the `PLUGIN_SCRIPT_TYPES.flatMap` in `ipc/scripts.ts`.
+
+## Script contract
+
+- A hook runs on Electron's Node like other scripts: `process.execPath` with `ELECTRON_RUN_AS_NODE=1`, the script folder as the working directory, and a 10 s timeout.
+- stdin gets one JSON event:
+
+  ```json
+  {
+  	"event": "PRE_TOOL_USE",
+  	"agent": "chat",
+  	"runId": "…",
+  	"toolCallId": "…",
+  	"toolName": "bash",
+  	"input": { "command": "ls" }
+  }
+  ```
+
+  `POST_TOOL_USE` also has `output` (the formatted string the model sees), `isError` and `durationMs`.
+- stdout is ignored. A non-zero exit or a timeout is logged with its stderr (`console.warn('[plugins] hook …')`) and has no other effect.
+
+## Host changes
+
+1. **`src/main/plugins/scripts/plugin_script_spawn.ts`** (new): `spawnPluginScript(script, payload): Promise<string>`. The spawn, timeout, 2 MB cap and stderr handling move here from `plugin_script_render.ts`, and `renderPluginScript` calls it. The render cache stays in `plugin_script_render.ts`.
+2. **`src/main/plugins/scripts/plugin_script_hooks.ts`** (new): `runPluginHooks(type, event): Promise<void>` runs `Promise.allSettled(pluginScripts(type).map((script) => spawnPluginScript(script, event)))` and logs each rejection. It never throws. Export it from `src/main/plugins/index.ts`, like `pluginScripts`.
+3. **`src/main/agent/runner/run_tool_call.ts`** is the only agent change:
+   - **PRE:** in the execution branch, once the permission is `allow` and before `tool.run` (inside the `try`, before `resources.acquire`), call `await runPluginHooks('PRE_TOOL_USE', { … })`. It is awaited so it really runs before the tool, and its errors are already swallowed. Only calls that are about to execute trigger it, not denied, invalid or unloaded ones.
+   - **POST:** right after `toolCall.result` is set, call `void runPluginHooks('POST_TOOL_USE', { … })`. It isn't awaited, so the agent never waits for it. It runs after both successful and failed executions, and is skipped on abort, because that path rethrows first.
+   - `agent` is `security.toolProfile ?? 'chat'`.
+4. **Bundled example:** none by default. For verification, use a throwaway script folder in a local plugin.
+5. **`docs/PLUGIN_SCRIPTS.md`:** add the two types and link to this doc.
+
+## Skipped
+
+- **Blocking or rewriting input or output.** Add it when a hook needs to act as a gate.
+- **Tool matchers.**
+- **Ordering between hooks.** They run in parallel.
+- **A Settings UI for hooks** beyond the existing script list.
+
+## Verification
+
+1. `npm run typecheck:app` and lint pass.
+2. Add two test scripts to a local plugin, `scripts/log-pre` (`PRE_TOOL_USE`) and `scripts/log-post` (`POST_TOOL_USE`), whose entry appends stdin to `/tmp/kucedr-hooks.log`.
+3. Run `npm run dev`, and in **chat** ask for a `read` and a `bash` call. The log should get a PRE line before and a POST line after each call, with a matching `toolCallId`, and the POST line should have `output`.
+4. Repeat from a **task** run, a **subagent** call and a **voice** session. The lines should show `agent` as `tasks`, `chat` and `voice`.
+5. Make the PRE script `process.exit(1)`, then make it hang with `setTimeout(() => {}, 60000)`. In both cases tools should still run and return normally (the hang adds at most 10 s), and a warning should be logged.
+6. Disable the plugin. No new log lines should appear, and no restart should be needed.
+7. Settings → Scripts should list both hook scripts. They should not appear in the chat `# Scripts` prompt or the editor's "Insert script" menu.
