@@ -22,8 +22,10 @@ export const loadScript = tool({
 				`Unknown plugin script "${name}". Available: ${scripts.map((candidate) => candidate.name).join(', ') || 'none'}.`
 			);
 		}
+		const { instructions } = found.metadata;
+		if (!instructions) throw new Error(`Plugin script "${name}" has no instructions.`);
 		return readFileSync(
-			path.join(found.directory, ...found.metadata.instructions.split('/')),
+			path.join(found.directory, ...instructions.split('/')),
 			'utf8'
 		);
 	},
