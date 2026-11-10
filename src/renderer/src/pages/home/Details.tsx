@@ -27,7 +27,7 @@ export function ChatDetails({ open, popover = false, onClose, messages, model, d
 	const assets = chatAssets(responses);
 	const scripts = chatScripts(responses);
 	return (
-		<aside id="chat-information" aria-label="Chat information" className={popover ? 'flex max-h-[min(36rem,var(--radix-popover-content-available-height))] flex-col' : `absolute bottom-5 right-6 top-24 z-30 w-56 max-w-[calc(100%-3rem)] flex-col ${open ? 'flex' : 'hidden'}`}>
+		<aside id="chat-information" aria-label="Chat information" className={popover ? 'flex max-h-[min(36rem,var(--radix-popover-content-available-height))] flex-col' : `absolute bottom-5 right-2 top-12 z-50 w-56 max-w-[calc(100%-3rem)] flex-col sm:right-3 ${open ? 'flex' : 'hidden'}`}>
 			<Card size="sm" className="min-h-0 overflow-hidden rounded-2xl border border-border bg-card ring-0 data-[size=sm]:gap-0">
 				<CardHeader className="items-center pb-2">
 					<CardTitle>Chat information</CardTitle>
