@@ -4,7 +4,6 @@ import type { ToolCall } from '../../../../../src/main/agent/types';
 import { requestUserInputTool } from '../../../../../src/main/agent/tools/core/ask';
 import { selectScreenSourceTool } from '../../../../../src/main/agent/tools/system/screen_source';
 import { respondUserInput } from '../../../../../src/main/agent/user_input/user_input_pending';
-import { NO_MODE } from '../../../../../src/main/agent/modes/types';
 
 describe('runToolCall', () => {
 	it('propagates cancellation to the tool and stops waiting', async () => {
