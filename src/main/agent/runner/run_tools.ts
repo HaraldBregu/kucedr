@@ -22,8 +22,6 @@ export function filterProfileTools(tools: Tool[], profileId: AgentToolProfileId)
 		if (profileId !== 'tasks') return true;
 		const capability =
 			typeof tool.capability === 'function' ? tool.capability({}) : tool.capability;
-		return (
-			settings.permission !== 'ask' && capability?.approval !== true && tool.hardApproval !== true
-		);
+		return settings.permission !== 'ask' && capability?.approval !== true;
 	});
 }
