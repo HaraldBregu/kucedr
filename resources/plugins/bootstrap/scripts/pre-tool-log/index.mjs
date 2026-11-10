@@ -1,14 +1,12 @@
-import { appendFileSync, mkdirSync, readFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-
-const { directory } = JSON.parse(readFileSync('config.json', 'utf8'));
-const root = path.resolve(directory.replace(/^~(?=$|[/\\])/, os.homedir()));
 
 let data = '';
 process.stdin.on('data', (chunk) => (data += chunk));
 process.stdin.on('end', () => {
-	const event = JSON.parse(data);
+	const { settings, ...event } = JSON.parse(data);
+	const root = path.resolve(settings.directory.replace(/^~(?=$|[/\\])/, os.homedir()));
 	const day = new Date().toISOString().slice(0, 10);
 	mkdirSync(root, { recursive: true });
 	appendFileSync(
