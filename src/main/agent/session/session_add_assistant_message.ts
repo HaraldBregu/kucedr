@@ -22,6 +22,7 @@ export function addAssistantMessage(
 		createdAtMs: Date.now(),
 		...(toolCalls.length > 0 ? { toolCalls } : {}),
 		...(usage ? { usage } : {}),
+		...(state.modeIds ? { modeIds: state.modeIds } : {}),
 	});
 	persist(state);
 }
