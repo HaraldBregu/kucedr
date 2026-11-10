@@ -915,7 +915,7 @@ function PageContent(): ReactElement {
 						<TooltipTrigger render={compactDetails ? <PopoverTrigger asChild>{infoButton}</PopoverTrigger> : infoButton} />
 						<TooltipContent side="bottom">{infoOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
 					</Tooltip>
-					<PopoverContent align="end" sideOffset={12} className="w-64 border-0 bg-transparent p-0 shadow-lg">
+					<PopoverContent align="end" sideOffset={-32}className="w-64 border-0 bg-transparent p-0 shadow-lg">
 						{chatDetails(true, true)}
 					</PopoverContent>
 				</Popover>
