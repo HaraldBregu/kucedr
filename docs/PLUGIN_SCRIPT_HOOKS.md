@@ -33,13 +33,13 @@ So the hooks are added in `runToolCall` and nowhere else.
 	"metadata": {
 		"version": "1.0.0",
 		"category": "audit",
-		"entry": "dist/index.mjs",
-		"instructions": "instructions.md"
+		"entry": "dist/index.mjs"
 	}
 }
 ```
 
-- `PLUGIN_SCRIPT_TYPES` becomes `['UI', 'STORAGE', 'VECTOR', 'PRE_TOOL_USE', 'POST_TOOL_USE', 'PRE_MODEL_TURN', 'POST_MODEL_TURN']`. Nothing else in the manifest schema changes, because `plugin_script_read.ts` and `plugins_validate_contents.ts` already validate any type.
+- `PLUGIN_SCRIPT_TYPES` becomes `['UI', 'STORAGE', 'VECTOR', 'PRE_TOOL_USE', 'POST_TOOL_USE', 'PRE_MODEL_TURN', 'POST_MODEL_TURN']`.
+- Hook scripts are never loaded by the agent, so `metadata.instructions` is optional for the four hook types and still required for every other type (a refine in `plugin_script_read.ts`). Each hook script explains itself in a `README.md` instead.
 - A script that wants both events ships as two script folders.
 - There is no `tools` filter, so every hook sees every tool call. Add a `tools: string[]` matcher if the spawn cost becomes noticeable.
 - Existing consumers stay correct without changes:
