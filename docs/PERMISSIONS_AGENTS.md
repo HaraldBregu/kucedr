@@ -52,7 +52,7 @@ Each one was reproduced by calling the real resolver with an isolated data folde
 | 3 | High | Reads are open everywhere; the tasks limit is bypassed by commands |
 | 4 | Medium | Media tools read any local file given as an input |
 | 5 | Low | "Trust this location" covers one tool kind only |
-| 6 | Low | Defaults are saved into the profile file |
+| 6 | Fixed | Defaults were saved into the profile file |
 | 7 | Low | Unattended runs are handled by two different mechanisms |
 | 8 | Low | Reset on the Permissions page also resets the Tools page |
 | 9 | — | Still open from `PERMISSIONS_SECURITY.md`: #5, #6, #7 |
