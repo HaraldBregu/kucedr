@@ -29,6 +29,7 @@ export class ScriptsIpc implements IpcModule<ScriptsIpcDependencies> {
 					author,
 					metadata,
 					inputSchema,
+					settings,
 					fence,
 					height,
 					plugin,
