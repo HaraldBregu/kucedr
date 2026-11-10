@@ -35,17 +35,11 @@ const SkillsPage: React.FC = () => {
 	const [skills, setSkills] = useState<SkillInfo[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
-	const [query, setQuery] = useState('');
-	const [category, setCategory] = useState('all');
-	const categoryOf = (skill: SkillInfo): string => skill.plugin?.name ?? 'local';
-	const categories = [...new Set(skills.map(categoryOf))].sort();
-	const visibleSkills = skills.filter(
-		(skill) =>
-			(category === 'all' || categoryOf(skill) === category) &&
-			`${skill.manifest.name} ${skill.manifest.description}`
-				.toLowerCase()
-				.includes(query.trim().toLowerCase())
-	);
+	const filter = useSettingsFilter(skills, {
+		text: (skill) =>
+			`${skill.manifest.name} ${skill.manifest.description} ${skill.manifest.metadata?.category ?? ''} ${skill.manifest.metadata?.author ?? ''} ${skill.plugin?.name ?? ''}`,
+		category: (skill) => skill.plugin?.name ?? 'local',
+	});
 	const open = (skill: SkillInfo): void => {
 		void navigate(`/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`);
 	};
