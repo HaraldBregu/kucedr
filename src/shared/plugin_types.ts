@@ -70,6 +70,8 @@ export interface PluginScriptInfo {
 	readonly version: string;
 	readonly category: string;
 	readonly inputSchema?: PluginScriptSchema;
+	/** The setup the user fills in Settings → Scripts, from the manifest's `settings.inputSchema`. */
+	readonly settings?: PluginScriptSchema;
 	readonly fence?: string;
 	readonly height: number;
 	readonly plugin: PluginSource;
