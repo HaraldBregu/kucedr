@@ -56,7 +56,7 @@ const KnowledgePage = lazy(() => import('./pages/settings/pages/knowledge/Page')
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
-const WriterPage = lazy(() => import('./pages/settings/pages/writer/Page'));
+const EditorPage = lazy(() => import('./pages/settings/pages/editor/Page'));
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
 const McpToolsPage = lazy(() => import('./pages/settings/pages/assistant/mcptools/Page'));
