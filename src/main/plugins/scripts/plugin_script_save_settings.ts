@@ -13,6 +13,8 @@ export function savePluginScriptSettings(name: string, values: Record<string, st
 	for (const [key, input] of Object.entries(values)) {
 		if (!(key in properties)) throw new Error('Unknown script setting.');
 		const value = input.trim();
+		if (properties[key]?.type === 'boolean' && value !== 'true' && value !== 'false')
+			throw new Error(`Script setting "${key}" must be true or false.`);
 		if (value) saved[key] = value;
 	}
 	pluginsStore.set('scriptSettings', { ...pluginsStore.get('scriptSettings'), [name]: saved });
