@@ -3,5 +3,6 @@
 	"description": "Work toward a goal with clear success criteria until it is met.",
 	"command": "/goal",
 	"persistent": true,
+	"ask": false,
 	"state": { "evidence": true, "continue": true }
 }
