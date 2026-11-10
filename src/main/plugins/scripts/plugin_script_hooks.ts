@@ -1,16 +1,18 @@
 import { pluginScripts } from './plugin_script_list';
 import { spawnPluginScript } from './plugin_script_spawn';
 
-/** Runs every enabled `PRE_TOOL_USE` or `POST_TOOL_USE` script with the event; failures are only logged. */
+/** Runs every enabled hook script of `type` with the event; failures are only logged. */
 export async function runPluginHooks(
-	type: 'PRE_TOOL_USE' | 'POST_TOOL_USE',
+	type: 'PRE_TOOL_USE' | 'POST_TOOL_USE' | 'PRE_MODEL_TURN' | 'POST_MODEL_TURN',
 	event: Record<string, unknown>
 ): Promise<void> {
 	try {
 		const results = await Promise.allSettled(
 			pluginScripts(type).map((script) =>
 				spawnPluginScript(script, { event: type, ...event }).catch((error: unknown) => {
-					throw new Error(`${script.plugin.id}/${script.name}: ${error instanceof Error ? error.message : error}`);
+					throw new Error(
+						`${script.plugin.id}/${script.name}: ${error instanceof Error ? error.message : error}`
+					);
 				})
 			)
 		);
