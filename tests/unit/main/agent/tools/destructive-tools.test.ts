@@ -36,7 +36,7 @@ it.each(['overwrite', 'delete', 'move'])('requests a reusable location grant bef
 	try {
 		expect((await events.next()).value).toMatchObject({
 			type: 'tool_permission_request', persistable: true,
-			targets: [realPath(userDataLocation())], reason: 'outside_trusted_location',
+			targets: [realPath(outside)], reason: 'outside_trusted_location',
 		});
 		expect(fs.readFileSync(target, 'utf8')).toBe('content');
 		expect(fs.existsSync(moved)).toBe(false);
