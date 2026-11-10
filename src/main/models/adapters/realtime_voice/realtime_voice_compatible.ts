@@ -262,11 +262,21 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 				},
 			});
 		}
-		if (this.manualResponse) this.realtime.send({ type: 'response.create' });
+		if (this.manualResponse) this.createResponse();
+	}
+
+	private createResponse(): void {
+		if (this.responsePending || this.activeResponseId) {
+			this.responseQueued = true;
+			return;
+		}
+		this.responsePending = true;
+		this.realtime.send({ type: 'response.create' });
 	}
 
 	private handleEvent(event: RealtimeVoiceServerEvent): void {
 		if (event.type === 'response.created') {
+			this.responsePending = false;
 			this.responseActive = true;
 			this.activeResponseId = event.response.id;
 			this.emit({ type: 'response_started', responseId: event.response.id });
