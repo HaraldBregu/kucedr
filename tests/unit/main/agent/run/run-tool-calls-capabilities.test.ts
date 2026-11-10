@@ -73,7 +73,7 @@ describe('runToolCalls capability changes', () => {
 			calls,
 			controller.signal,
 			undefined,
-			{ runId: 'run', windowId: 1, mode: { ...NO_MODE, ask: true } }
+			{ runId: 'run', windowId: 1 }
 		);
 		expect((await events.next()).value).toMatchObject({ type: 'tool_call_start' });
 		expect((await events.next()).value).toMatchObject({ type: 'user_input_request' });
