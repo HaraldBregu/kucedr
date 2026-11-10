@@ -235,6 +235,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 	private async prepareResponse(itemId: string, transcript: string): Promise<void> {
 		if (this.completedTurns.has(itemId)) return;
 		this.completedTurns.add(itemId);
+		if (this.latestTurn && itemId !== this.latestTurn) return;
 		if (this.transcriptTimer) clearTimeout(this.transcriptTimer);
 		const generation = this.generation;
 		const context = await turnContext(this.contextForTurn, transcript);
