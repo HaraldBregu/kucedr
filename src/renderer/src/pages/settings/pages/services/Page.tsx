@@ -61,13 +61,7 @@ const ServicesPage: React.FC = () => {
 				description={t('settings.services.description')}
 			/>
 
-			<SettingsFilter
-				query={query}
-				onQueryChange={setQuery}
-				categories={types}
-				category={type}
-				onCategoryChange={setType}
-			/>
+			<SettingsFilter filter={filter} />
 
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
