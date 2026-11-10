@@ -54,6 +54,5 @@ export function directoryPermissionTargets(
 		return [realPath(mediaDirectory(directory, baseDir))];
 	}
 	if (TASK_TOOLS.has(toolName)) return [realPath(taskStorePath)];
-	if (toolName === 'load_skill') return [];
 	return [];
 }
