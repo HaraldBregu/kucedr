@@ -128,11 +128,11 @@ describe('agent store permissions', () => {
 			);
 
 			expect(getAgentProfileDocument(profileId)).toMatchObject({
-				permissions: { read: { allow: [workspaceRule, libraryRule, rule], deny: [] } },
+				permissions: { read: { allow: [workspaceRule, rule], deny: [] } },
 				tools: { read: { permission: 'ask' } },
 			});
 			expect(getPermissions('chat').read.allow).toEqual(
-				profileId === 'chat' ? [workspaceRule, libraryRule, rule] : [workspaceRule, libraryRule]
+				profileId === 'chat' ? [workspaceRule, rule] : [workspaceRule]
 			);
 		}
 	);
