@@ -110,7 +110,7 @@ export function resolveToolPermissionDetails(
 		targets,
 		approvalTargets,
 		reason: 'outside_trusted_location',
-		persistable: approvalTargets.length > 0,
+		persistable: approvalTargets.length > 0 && !approvalTargets.some(isBroadTarget),
 	};
 }
 
