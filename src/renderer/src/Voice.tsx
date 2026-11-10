@@ -28,6 +28,6 @@ const render = (): void => {
 	);
 };
 
-void loadModels()
+void loadCatalog()
 	.catch(() => undefined)
 	.finally(render);
