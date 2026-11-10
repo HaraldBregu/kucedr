@@ -85,7 +85,7 @@ const ServicesPage: React.FC = () => {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3">
-							{visibleServices.map((service) => {
+							{filter.items.map((service) => {
 								const configured =
 									settings?.configured[service.provider.id as SearchEngineId] ?? false;
 								return (
