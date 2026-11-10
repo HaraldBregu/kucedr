@@ -121,10 +121,10 @@ export function WorkspaceMarkdownEditor({
 
 	useEffect(() => {
 		if (!toolbarTarget) {
-			setToolbarHeight(0);
+			setToolbarBottom(0);
 			return;
 		}
-		const observer = new ResizeObserver(() => setToolbarHeight(toolbarTarget.offsetHeight));
+		const observer = new ResizeObserver(() => setToolbarBottom(toolbarTarget.getBoundingClientRect().bottom - (scrollRef.current?.getBoundingClientRect().top ?? 0)));
 		observer.observe(toolbarTarget);
 		return () => observer.disconnect();
 	}, [toolbarTarget]);
