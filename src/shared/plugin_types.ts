@@ -41,6 +41,7 @@ export interface PluginScriptSchema {
 	readonly title?: string;
 	readonly description?: string;
 	readonly enum?: readonly string[];
+	readonly default?: unknown;
 	readonly required?: readonly string[];
 	readonly properties?: Readonly<Record<string, PluginScriptSchema>>;
 	readonly examples?: readonly unknown[];
