@@ -237,7 +237,7 @@ export class ExecSandbox {
 		config: SandboxRuntimeConfig;
 		fingerprint: string;
 	}> {
-		const permissions = getPermissions();
+		const permissions = this.permissions();
 		const resolveRules = (rules: string[]): string[] =>
 			rules.map((rule) => rule === '*' ? path.parse(os.homedir()).root : resolveUserPath(rule, os.homedir()));
 		const explicitReadDenies = resolveRules([...permissions.exec.deny, ...permissions.read.deny]);
