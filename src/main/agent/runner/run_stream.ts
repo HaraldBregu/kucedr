@@ -612,7 +612,7 @@ async function* loop(
 				runId,
 				...(input.scope ? { scope: input.scope } : {}),
 				budget,
-				mode,
+				...(extension ? { extension } : {}),
 				toolProfile,
 				...(input.approvalWindowId === undefined ? {} : { windowId: input.approvalWindowId }),
 			};
