@@ -58,19 +58,18 @@ describe('AgentIpc run ownership', () => {
 			success: true,
 			data: { text: 'reply', finished },
 		});
-		expect(execute).toHaveBeenCalledWith({
-			type: 'text',
-			message: 'hello',
-			agentId: 'main',
-			options: expect.objectContaining({
+		expect(send).toHaveBeenCalledWith(
+			'hello',
+			'main',
+			expect.objectContaining({
 				runId: 'run-1',
 				type: 'default',
 				windowId: 7,
 				replyTo: 'Earlier answer',
 				streamEvent: expect.any(Function),
-			}),
-		});
-		const streamEvent = execute.mock.calls[0][0].options.streamEvent;
+			})
+		);
+		const streamEvent = send.mock.calls[0][2].streamEvent;
 		streamEvent({ type: 'text_delta', delta: 'x', agentId: 'main', runId: 'run-1' });
 		expect(eventBus.sendTo).toHaveBeenCalledWith(
 			7,
