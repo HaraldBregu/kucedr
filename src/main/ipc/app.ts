@@ -262,7 +262,7 @@ const darkThemeColors: AppThemeColors = {
 	background: '#141414',
 	card: 'oklch(0.0800 0 0)',
 	popover: 'oklch(0.1800 0 0)',
-	sidebar: 'oklch(0.0800 0 0)',
+	sidebar: '#141414',
 };
 
 function getThemeData(): AppThemeData {
