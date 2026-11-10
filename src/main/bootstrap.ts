@@ -127,7 +127,7 @@ export async function cleanup(services: MainServices): Promise<void> {
 	const {
 		logger,
 		windowContextManager,
-		conversationService,
+		realtimeVoiceManager,
 		terminalManager,
 		cloudService,
 		authService,
