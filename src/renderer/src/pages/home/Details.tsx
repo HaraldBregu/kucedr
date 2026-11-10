@@ -29,10 +29,10 @@ export function ChatDetails({ open, popover = false, onClose, messages, model, d
 	return (
 		<aside id="chat-information" aria-label="Chat information" className={popover ? 'flex max-h-[min(36rem,var(--radix-popover-content-available-height))] flex-col' : `absolute bottom-5 right-2 top-12 z-50 w-56 max-w-[calc(100%-3rem)] flex-col sm:right-3 ${open ? 'flex' : 'hidden'}`}>
 			<Card size="sm" className="min-h-0 overflow-hidden rounded-2xl border border-border bg-card ring-0 data-[size=sm]:gap-0">
-				<CardHeader className="items-center pb-2">
+				<CardHeader className="items-center pb-3">
 					<CardTitle>Chat information</CardTitle>
 					<CardAction className="row-span-1 self-center">
-						<Button type="button" variant="ghost" size="icon-sm" className="rounded-full" aria-label="Close chat information" onClick={onClose}><X className="size-4" /></Button>
+						<Button type="button" variant="ghost" size="icon-sm" className="-my-1 -mr-1.5 rounded-full" aria-label="Close chat information" onClick={onClose}><X className="size-4" /></Button>
 					</CardAction>
 				</CardHeader>
 				<div className="no-scrollbar min-h-0 overflow-y-auto">
