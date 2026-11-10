@@ -86,12 +86,9 @@ export default function ModelsPage(): React.JSX.Element {
 			{models?.length === 0 && !error && (
 				<SettingsEmptyState icon={Boxes} title={t('settings.models.empty')} />
 			)}
-			{models && models.length > 0 && visibleModels?.length === 0 && !error && (
-				<SettingsEmptyState title={t('settings.modelServices.noMatchingModels')} />
-			)}
 			<div className="space-y-6 pb-4">
 				{TYPES.map((type) => {
-					const group = visibleModels?.filter((model) => model.type === type) ?? [];
+					const group = filter.items.filter((model) => model.type === type);
 					if (group.length === 0) return null;
 					return (
 						<section key={type} aria-labelledby={`models-${type}`}>
