@@ -47,7 +47,6 @@ export interface Tool {
 	readonly timeoutMs: number;
 	readonly maxOutputBytes: number;
 	readonly readOnly?: boolean;
-	readonly hardApproval?: boolean | ((input: Record<string, unknown>) => boolean);
 	readonly capability?:
 		| import('./execution/capability').ToolCapability
 		| ((
