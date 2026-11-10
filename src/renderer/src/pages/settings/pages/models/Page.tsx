@@ -14,6 +14,7 @@ import {
 	SettingsPanel,
 } from '../../components';
 import { SettingsFilter } from '../../components/filter';
+import { useSettingsFilter } from '../../hooks/filter';
 import { loadModelCatalog } from './catalog';
 
 const TYPES: readonly ModelCapability[] = [
