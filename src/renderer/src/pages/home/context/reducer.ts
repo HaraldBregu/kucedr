@@ -132,7 +132,12 @@ function applyResponseEvent(
 		}));
 	}
 
-	if (event.type === 'run_started') return ensured.state;
+	if (event.type === 'run_started') {
+		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
+			...message,
+			modeIds: event.modeIds,
+		}));
+	}
 	if (event.type === 'capability_resolution_start') {
 		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
 			...message,
