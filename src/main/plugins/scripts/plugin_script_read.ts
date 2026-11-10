@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { PLUGIN_SCRIPT_TYPES } from '../../../shared/plugin_types';
 
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+/** Hook scripts are never loaded by the agent, so they need no instructions. */
+const HOOK_TYPES = new Set(['PRE_TOOL_USE', 'POST_TOOL_USE', 'PRE_MODEL_TURN', 'POST_MODEL_TURN']);
 const text = z.string().trim().min(1);
 const relativePath = (field: string) =>
 	z
