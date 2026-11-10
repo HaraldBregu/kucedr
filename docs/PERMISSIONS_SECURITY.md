@@ -31,6 +31,8 @@ Keep these properties when fixing the issues below.
 
 ### 1. Critical — per-tool default `allow` bypasses all path rules
 
+**Fixed.** `resolveToolPermissionDetails` no longer returns early on a tool-level `allow`: the setting means "enabled", and directory rules decide. Deny rules win, and writes outside workspace/library ask in chat and voice. Runs without a window (tasks, health, subagents) get `deny` instead of a prompt. The four task tools stay prompt-free. The description below is the original finding.
+
 **Where**
 - `src/main/agent/agent_profiles.ts:38` — `DEFAULT_TOOL = { permission: 'allow' }`, used for every builtin tool with no stored setting (`getAgentProfileTool`, line 281). Only `camera_recorder` and `update_health` default to `ask`.
 - `src/main/agent/runner/run_tool_call.ts:281` — chat runs always pass `profileToolConfiguration()` as `configuredTool`.
