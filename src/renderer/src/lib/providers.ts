@@ -20,7 +20,7 @@ let webSearchCatalog: readonly CatalogWebSearch[] = [];
 let mcpCatalog: readonly CatalogService[] = [];
 let storageCatalog: readonly CatalogStorage[] = [];
 
-export async function loadModels(): Promise<void> {
+export async function loadCatalog(): Promise<void> {
 	[catalog, modelProviders, databaseCatalog, webSearchCatalog, mcpCatalog, storageCatalog] =
 		await Promise.all([
 			window.app.models(),
@@ -30,6 +30,10 @@ export async function loadModels(): Promise<void> {
 			window.app.mcps(),
 			window.app.storages(),
 		]);
+}
+
+export async function loadModels(): Promise<void> {
+	await loadCatalog();
 	const liveModels = await Promise.all(
 		modelProviders
 			.filter((provider) => provider.modelsUrl)
