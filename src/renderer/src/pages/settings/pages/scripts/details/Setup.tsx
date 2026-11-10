@@ -28,12 +28,12 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 		);
 	}, [script, t]);
 
-	const save = async (): Promise<void> => {
+	const save = async (next: Record<string, string> = values): Promise<void> => {
 		setSaving(true);
 		setError('');
 		try {
-			await window.scripts.saveSettings(script.name, values);
-			setSaved(values);
+			await window.scripts.saveSettings(script.name, next);
+			setSaved(next);
 		} catch (err) {
 			setError(getErrorMessage(err, t('settings.storageProviders.saveError')));
 		} finally {
@@ -48,7 +48,9 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 					{error}
 				</SettingsNotice>
 			)}
-			{missing && <SettingsNotice icon={AlertTriangle}>{t('settings.scripts.setupRequired')}</SettingsNotice>}
+			{missing && (
+				<SettingsNotice icon={AlertTriangle}>{t('settings.scripts.setupRequired')}</SettingsNotice>
+			)}
 			<SettingsPanel>
 				{properties.map(([key, property]) => (
 					<SettingsRow
