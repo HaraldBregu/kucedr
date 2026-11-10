@@ -33,7 +33,7 @@ export function Group({ items, titleKey, activePath, className }: GroupProps): R
 						return (
 							<SidebarMenuItem key={item.path}>
 								<button type="button" disabled className={cn(SPLIT_ITEM_CLASS, 'w-full opacity-50')}>
-									{!hideIcons && <Icon className="size-4 shrink-0" strokeWidth={1.8} />}
+									<Icon className="size-4 shrink-0" strokeWidth={1.8} />
 									<span>{t(item.sidebarLabelKey ?? item.labelKey)}</span>
 									<Badge variant="outline" className="ml-auto">{t('appLayout.comingSoon', 'Soon')}</Badge>
 								</button>
