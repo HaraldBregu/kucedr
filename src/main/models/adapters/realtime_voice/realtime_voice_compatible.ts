@@ -202,6 +202,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 
 	async interrupt(): Promise<void> {
 		this.generation += 1;
+		this.responseQueued = false;
 		if (this.transcriptTimer) clearTimeout(this.transcriptTimer);
 		if (this.closed || !this.responseActive) return;
 		this.responseActive = false;
