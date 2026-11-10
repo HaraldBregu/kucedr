@@ -1,6 +1,7 @@
 import { normalizeProviderId } from '../../../shared/provider_types';
 import { RealtimeVoiceChannels } from '../../../shared/ipc_channels_definitions';
 import type { Agent } from '../agent';
+import { NO_MODE } from '../modes/types';
 import { builtinTools } from '../runner/run_builtin_tools';
 import { filterProfileTools } from '../runner/run_tools';
 import { buildSystemPrompt, buildWorkspaceContext } from '../system';
