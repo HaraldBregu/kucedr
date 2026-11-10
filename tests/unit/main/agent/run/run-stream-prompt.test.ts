@@ -1198,7 +1198,7 @@ describe('run stream system prompt', () => {
 					model: 'test-model',
 					toolCalls: [
 						{ id: 'read-call', name: 'read', args: {} },
-						{ id: 'edit-call', name: 'edit', args: {} },
+						{ id: 'edit-call', name: 'edit', args: { path: 'file.txt' } },
 					],
 				};
 			})
