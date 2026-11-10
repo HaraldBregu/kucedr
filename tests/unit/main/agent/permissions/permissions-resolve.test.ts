@@ -43,7 +43,7 @@ describe('resolveToolPermission', () => {
 		expect(resolveToolPermission('mcp__records__delete')).toBe('allow');
 	});
 
-	it('honors a per-tool permission before directory rules', () => {
+	it('honors a per-tool deny and keeps directory rules for a per-tool allow', () => {
 		const configured: PermissionsSchema = {
 			...defaults,
 			tools: {
