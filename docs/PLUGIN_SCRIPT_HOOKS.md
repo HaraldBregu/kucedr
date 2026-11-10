@@ -1,6 +1,6 @@
 # Plugin Script Hooks
 
-Status: planned. This extends [PLUGIN_SCRIPTS.md](PLUGIN_SCRIPTS.md).
+Status: implemented. This extends [PLUGIN_SCRIPTS.md](PLUGIN_SCRIPTS.md).
 
 ## Context
 
