@@ -78,6 +78,8 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 	const searchable = kind !== null && !media && kind !== 'unsupported';
 	const visibleMarkdownMode = kind === 'markdown' && findOpen && content.includes('<!--') ? 'source' : markdownMode;
 	const textSearch = kind === 'markdown' && visibleMarkdownMode === 'preview';
+	const toolbarAvailable = textSearch && !content.includes('<!--');
+	const toolbarVisible = toolbarAvailable && toolbar;
 	const finder = textSearch ? textRef : editorRef;
 	const matchCount = textSearch ? textMatchCount : findQuery ? content.toLocaleLowerCase().split(findQuery.toLocaleLowerCase()).length - 1 : 0;
 	const pasteRawAssets = (event: React.ClipboardEvent | React.DragEvent, files: FileList): void => {
