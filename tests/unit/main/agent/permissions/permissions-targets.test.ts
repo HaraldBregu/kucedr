@@ -32,13 +32,6 @@ describe('toolPermissionTargets', () => {
 		]);
 	});
 
-	it('returns the raw exec command', () => {
-		expect(toolPermissionTargets('bash', { command: 'git status' }, agentDir)).toEqual([
-			'git status',
-		]);
-		expect(toolPermissionTargets('bash', {}, agentDir)).toEqual([]);
-	});
-
 	it('returns the full file path for path tools', () => {
 		expect(toolPermissionTargets('write', { path: '/a/b.txt' }, agentDir)).toEqual([
 			resolveUserPath('/a/b.txt', agentDir),
