@@ -89,8 +89,8 @@ describe('agent store permissions', () => {
 			write: { allow: [], deny: ['/blocked/**'] },
 			exec: { allow: [], deny: [] },
 		});
-		expect(saved.read.allow).toEqual([workspaceRule, libraryRule, '/repo/**']);
-		expect(saved.write.allow).toEqual([workspaceRule, libraryRule]);
+		expect(saved.read.allow).toEqual([workspaceRule, '/repo/**']);
+		expect(saved.write.allow).toEqual([workspaceRule]);
 		expect(saved.exec.allow).toEqual([workspaceRule]);
 	});
 
