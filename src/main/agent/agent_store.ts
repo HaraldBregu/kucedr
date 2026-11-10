@@ -237,8 +237,7 @@ export function setPermissions(
 		profileId,
 		withDefaultPermissions(
 			normalizePermissionsSchema(directoryPermissions, DEFAULT_AGENT_PERMISSIONS),
-			workspacePattern,
-			libraryPattern
+			workspacePattern
 		)
 	);
 	if (tools) {
