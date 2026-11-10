@@ -171,7 +171,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 				foldable={/\.(json|jsonc|json5|toml|xml|ya?ml)$/i.test(file.path)}
 				isDark={isDark}
 				path={file.path}
-				className={kind === 'markdown' ? 'min-h-[calc(100dvh-10rem)] flex-1' : 'h-full min-h-full'}
+				className="min-h-[calc(100dvh-10rem)] flex-1"
 			/>
 		</Suspense>
 	) : null;
