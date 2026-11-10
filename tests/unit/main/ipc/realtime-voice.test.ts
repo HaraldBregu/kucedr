@@ -12,17 +12,26 @@ function command(channel: string): (...args: unknown[]) => unknown {
 	return registerCommandWithEvent.mock.calls.find(([registered]) => registered === channel)?.[1];
 }
 
+function voiceManager() {
+	return {
+		start: jest.fn(async () => undefined),
+		appendAudio: jest.fn(async () => undefined),
+		interrupt: jest.fn(async () => undefined),
+		stop: jest.fn(async () => undefined),
+	};
+}
+
 beforeEach(() => {
 	jest.clearAllMocks();
 	(openAppWindows as Map<string, unknown>).clear();
 });
 
 it('routes realtime voice lifecycle commands through the invoking window owner', async () => {
-	const execute = jest.fn(async () => undefined);
+	const voice = voiceManager();
 	const mainFrame = {};
 	const sender = { mainFrame };
 	const dependencies = {
-		conversation: { execute } as never,
+		voice: voice as never,
 		windows: { has: () => true } as never,
 		apps: { has: () => false } as never,
 	};
@@ -37,41 +46,20 @@ it('routes realtime voice lifecycle commands through the invoking window owner',
 	await command(RealtimeVoiceChannels.interruptSession)(event, 'voice');
 	await command(RealtimeVoiceChannels.stopSession)(event, 'voice');
 
-	expect(execute).toHaveBeenNthCalledWith(1, {
-		type: 'voice',
-		action: 'start',
-		windowId: 42,
-		request: { chatSessionId: 'chat' },
-	});
-	expect(execute).toHaveBeenNthCalledWith(2, {
-		type: 'voice',
-		action: 'append-audio',
-		windowId: 42,
-		sessionId: 'voice',
-		audio: 'AAAA',
-	});
-	expect(execute).toHaveBeenNthCalledWith(3, {
-		type: 'voice',
-		action: 'interrupt',
-		windowId: 42,
-		sessionId: 'voice',
-	});
-	expect(execute).toHaveBeenNthCalledWith(4, {
-		type: 'voice',
-		action: 'stop',
-		windowId: 42,
-		sessionId: 'voice',
-	});
+	expect(voice.start).toHaveBeenCalledWith(42, { chatSessionId: 'chat' });
+	expect(voice.appendAudio).toHaveBeenCalledWith(42, 'voice', 'AAAA');
+	expect(voice.interrupt).toHaveBeenCalledWith(42, 'voice');
+	expect(voice.stop).toHaveBeenCalledWith(42, 'voice');
 });
 
 it('routes registered app views through their containing app window', async () => {
-	const execute = jest.fn(async () => undefined);
+	const voice = voiceManager();
 	const mainFrame = {};
 	const sender = { mainFrame };
 	const appWindow = { id: 84, isDestroyed: () => false };
 	(openAppWindows as Map<string, unknown>).set('demo', { window: appWindow });
 	const dependencies = {
-		conversation: { execute } as never,
+		voice: voice as never,
 		windows: { has: () => false } as never,
 		apps: {
 			has: () => true,
@@ -83,10 +71,5 @@ it('routes registered app views through their containing app window', async () =
 
 	await command(RealtimeVoiceChannels.startSession)(event, { chatSessionId: 'chat' });
 
-	expect(execute).toHaveBeenCalledWith({
-		type: 'voice',
-		action: 'start',
-		windowId: 84,
-		request: { chatSessionId: 'chat' },
-	});
+	expect(voice.start).toHaveBeenCalledWith(84, { chatSessionId: 'chat' });
 });
