@@ -8,6 +8,7 @@ import { LoggerService } from './shared';
 import { AppRegistry, AppStorage } from './apps/app_index';
 
 import { Agent } from './agent/agent';
+import { modeExtension } from './agent/modes/extension';
 import { Conversation } from './agent/conversation';
 import { ExecSandbox } from './agent/sandbox';
 import { createRealtimeVoiceManager } from './agent/realtime_voice';
