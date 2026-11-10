@@ -81,8 +81,16 @@ So the hooks are added in `runToolCall` and nowhere else.
    - **PRE:** in the execution branch, once the permission is `allow` and before `tool.run` (inside the `try`, before `resources.acquire`), call `await runPluginHooks('PRE_TOOL_USE', { … })`. It is awaited so it really runs before the tool, and its errors are already swallowed. Only calls that are about to execute trigger it, not denied, invalid or unloaded ones.
    - **POST:** right after `toolCall.result` is set, call `void runPluginHooks('POST_TOOL_USE', { … })`. It isn't awaited, so the agent never waits for it. It runs after both successful and failed executions, and is skipped on abort, because that path rethrows first.
    - `agent` is `security.toolProfile ?? 'chat'`.
-4. **Bundled example:** none by default. For verification, use a throwaway script folder in a local plugin.
+4. **Bundled scripts:** the bootstrap plugin ships `pre-tool-log`, `post-tool-log`, `pre-model-log` and `post-model-log`. Each appends the event as a JSON line to `<directory>/<event>-YYYY-MM-DD.jsonl`, where `directory` comes from the script's `config.json` (default `~/.kucedr/logs/tools` or `~/.kucedr/logs/models`). They have no dependencies, so `metadata.entry` is `index.mjs` and there is no build step.
 5. **`docs/PLUGIN_SCRIPTS.md`:** add the two types and link to this doc.
+
+## Model turn hooks
+
+`PRE_MODEL_TURN` and `POST_MODEL_TURN` work the same way around every model call. Every agent's model call goes through `runModelTurn` (`src/main/agent/runner/run_model_turn.ts`), called from `run_stream.ts` (chat, tasks, health, subagents) and `compaction/compact.ts`. Voice uses a realtime session instead and has no model turn hooks.
+
+- **PRE** is awaited once per turn, after the context is fitted and before the first attempt. The event has `agent`, `agentId`, `runId`, `sessionId`, `model`, `estimatedInputTokens`, `messageCount` and `toolCount`.
+- **POST** isn't awaited, and runs once a turn succeeds. It also has `stopReason`, `usage`, `retryCount`, `durationMs`, `firstTokenLatencyMs`, `content` and `toolCalls` (`id` and `name`). A turn that fails after its retries sends no POST event.
+- `model` is `{ id, provider, effort, contextWindow, maxTokens, options }`. In POST, `id` is the model the provider answered with.
 
 ## Skipped
 
