@@ -276,7 +276,7 @@ async function* loop(
 			const childTools = filterEligibleTools(tools).filter((tool) => tool.id !== 'ask');
 			const childRuntime = {
 				type: input.type,
-				mode: { ...mode, ask: false, prompt: '', protectedPrompt: '', output: undefined },
+				...(extension ? { extension: extension.child() } : {}),
 				...(options.resources ? { resources: options.resources } : {}),
 				...(options.providerLimiter ? { providerLimiter: options.providerLimiter } : {}),
 				...(options.subagentLimiter ? { subagentLimiter: options.subagentLimiter } : {}),
