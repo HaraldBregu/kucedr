@@ -12,7 +12,9 @@ export function addScriptsPrompt(prompt: string, scripts: readonly PluginScript[
 		'4. If it returns an error, fix the input using the error message and retry once. If it fails again, tell the user what went wrong.\n' +
 		"\nLeave out optional fields the user didn't ask for, and omit `title` unless the user wants a heading. Never call a script name as a tool of its own. To put a script's result into a markdown file, write a fenced code block whose language is the script's fence and whose body is `{\"script\": <the script's Ref JSON below>, \"input\": <the same input JSON>}`.";
 	for (const script of scripts) {
-		const instructions = path.join(script.directory, ...(script.metadata.instructions ?? '').split('/'));
+		const instructions = script.metadata.instructions
+			? path.join(script.directory, ...script.metadata.instructions.split('/'))
+			: undefined;
 		const ref = JSON.stringify({ name: script.name, version: script.metadata.version, plugin: script.plugin.id, pluginVersion: script.plugin.version });
 		prompt += `\n- \`${script.name}\` (${script.title}) — ${script.description.replace(/\n/g, ' ')}${script.fence ? ` Fence: \`${script.fence}\`. Ref: \`${ref}\`.` : ''} Instructions: \`${instructions}\``;
 	}
