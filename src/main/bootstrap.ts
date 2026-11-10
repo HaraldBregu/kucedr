@@ -142,7 +142,7 @@ export async function cleanup(services: MainServices): Promise<void> {
 	await memoryService.stop();
 	agentService.destroy();
 	codingService.destroy();
-	await conversationService.execute({ type: 'voice', action: 'stop-all' });
+	await realtimeVoiceManager.stopAll();
 	await windowContextManager.destroyAll();
 	await storageOperations.settle();
 	await recorderCleanup;
