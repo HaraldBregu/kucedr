@@ -1228,7 +1228,7 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
 	});
 
-	it('exposes only task-management tools for an explicit scheduled-task update', async () => {
+	it('preloads task-management tools for an explicit scheduled-task update', async () => {
 		const tools = ['read', 'complete_bootstrap', 'list_tasks', 'update_task'].map((id) =>
 			jsonTool({
 				id,
