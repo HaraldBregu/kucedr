@@ -35,7 +35,7 @@ import {
 	startRealtime,
 	transcribe as sttTranscribe,
 } from '../models/adapters/stt';
-import { getRealtimeVoiceSetup, setRealtimeVoiceSetup } from '../agent/realtime_voice/setup';
+import { getRealtimeVoiceSetup, setRealtimeVoiceSetup } from '../models/realtime';
 
 export interface ModelsIpcDependencies {
 	windows: WindowContextManager;
