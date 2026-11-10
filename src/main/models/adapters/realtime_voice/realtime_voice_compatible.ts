@@ -65,7 +65,10 @@ export class OpenAICompatibleRealtimeVoiceAdapter implements RealtimeVoiceAdapte
 class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection {
 	private closed = false;
 	private responseActive = false;
+	private responsePending = false;
+	private responseQueued = false;
 	private generation = 0;
+	private latestTurn?: string;
 	private contextItem?: string;
 	private transcriptTimer?: ReturnType<typeof setTimeout>;
 	private completedTurns = new Set<string>();
