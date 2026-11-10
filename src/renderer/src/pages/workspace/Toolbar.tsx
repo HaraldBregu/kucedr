@@ -115,7 +115,6 @@ const tableActions: Action[] = [
 
 interface WorkspaceToolbarProps {
 	readonly toolbarTarget: HTMLElement | null;
-	readonly scrollbarWidth: number;
 	readonly editor: Editor;
 	readonly linkOpen: boolean;
 	readonly onLinkOpenChange: (open: boolean) => void;
