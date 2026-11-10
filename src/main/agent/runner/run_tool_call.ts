@@ -480,12 +480,13 @@ export async function* runToolCall(
 	};
 
 	toolCall.durationMs = Date.now() - startedAtMs;
-	if (hooked) {
+	if (hookedTool) {
 		void runPluginHooks('POST_TOOL_USE', {
 			agent: security.toolProfile ?? 'chat',
 			runId: security.runId,
 			toolCallId: toolCall.id,
 			toolName: toolCall.name,
+			tool: hookedTool,
 			input: canonicalInput,
 			output: toolCall.result.content,
 			isError: Boolean(isError),
