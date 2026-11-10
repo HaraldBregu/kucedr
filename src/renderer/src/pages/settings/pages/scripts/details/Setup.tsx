@@ -59,6 +59,18 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 						description={property.description}
 						icon={SlidersHorizontal}
 						actions={
+							property.type === 'boolean' ? (
+								<Switch
+									checked={(saved[key] ?? String(property.default ?? false)) === 'true'}
+									aria-label={property.title ?? key}
+									disabled={saving}
+									onCheckedChange={(checked) => {
+										const next = { ...saved, [key]: String(checked) };
+										setValues((current) => ({ ...current, [key]: String(checked) }));
+										void save(next);
+									}}
+								/>
+							) : (
 							<form
 								className="flex gap-2"
 								onSubmit={(event) => {
