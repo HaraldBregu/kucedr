@@ -65,7 +65,8 @@ So the hooks are added in `runToolCall` and nowhere else.
   		"category": "core",
   		"source": { "kind": "builtin", "id": "bash" }
   	},
-  	"input": { "command": "ls" }
+  	"input": { "command": "ls" },
+  	"settings": { "directory": "~/.kucedr/logs/tools" }
   }
   ```
 
