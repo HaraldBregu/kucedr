@@ -10,8 +10,19 @@ export async function runPluginHooks(
 	try {
 		const results = await Promise.allSettled(
 			pluginScripts(type).flatMap((script) => {
-				const settings = pluginScriptSettings(script.name);
+				const properties = script.settings?.inputSchema.properties ?? {};
+				const settings = {
+					...Object.fromEntries(
+						Object.entries(properties).flatMap(([key, property]) =>
+							property.type === 'boolean' && property.default !== undefined
+								? [[key, String(property.default)]]
+								: []
+						)
+					),
+					...pluginScriptSettings(script.name),
+				};
 				const required = script.settings?.inputSchema.required ?? [];
+				if ('enabled' in properties && settings.enabled !== 'true') return [];
 				if (required.some((key) => !settings[key])) return [];
 				return [
 					spawnPluginScript(script, { event: type, ...event, settings }).catch((error: unknown) => {
