@@ -54,12 +54,10 @@ export function Group({ items, titleKey, activePath, className }: GroupProps): R
 									!isActive && 'group'
 								)}
 							>
-								{!hideIcons && (
-									<Icon
-										className="size-4 shrink-0 transition-transform duration-300 ease-in-out group-hover:delay-75 group-hover:scale-110 motion-reduce:transition-none"
-										strokeWidth={1.8}
-									/>
-								)}
+								<Icon
+									className="size-4 shrink-0 transition-transform duration-300 ease-in-out group-hover:delay-75 group-hover:scale-110 motion-reduce:transition-none"
+									strokeWidth={1.8}
+								/>
 								<span>{t(item.sidebarLabelKey ?? item.labelKey)}</span>
 								{item.badge && (
 									<Badge variant="outline" className="ml-auto">
