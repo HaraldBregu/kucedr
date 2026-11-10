@@ -35,7 +35,7 @@ export function registerIpcHandlers(
 		logger,
 		agentService,
 		codingService,
-		conversationService,
+		realtimeVoiceManager,
 		windowFactory,
 		appRegistry,
 		appStorage,
