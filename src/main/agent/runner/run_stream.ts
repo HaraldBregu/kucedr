@@ -221,9 +221,8 @@ async function* loop(
 	const stateDirectory = sessionDir(session);
 	const statefulModes =
 		!options.tools && !bootstrap && session.category === 'main'
-			? trackedModes(stateDirectory, mode.ids, listModes())
+			? trackedModes(stateDirectory, mode.ids, mode.available)
 			: [];
-	if (statefulModes.length > 0) tools.push(modeStateTool(stateDirectory, statefulModes));
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
 		let filtered = filterRuntimeTools(
