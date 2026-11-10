@@ -294,7 +294,7 @@ export async function* runToolCall(
 				mode: 'ask',
 				approvalTargets:
 					resolution.approvalTargets.length > 0 ? resolution.approvalTargets : resolution.targets,
-				reason: capability?.approval ? 'sensitive_operation' : 'destructive_operation',
+				reason: 'sensitive_operation',
 				persistable: false,
 			};
 		}
