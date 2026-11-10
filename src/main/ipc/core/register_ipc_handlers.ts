@@ -82,7 +82,6 @@ export function registerIpcHandlers(
 			{
 				logger,
 				agent: agentService,
-				conversation: conversationService,
 				windows: windowContextManager,
 				apps: appRegistry,
 			},
