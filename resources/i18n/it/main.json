@@ -1775,7 +1775,8 @@
 			"apiKey": "Chiave API",
 			"apiKeyDescription": "Salvata cifrata e inviata solo a questo script.",
 			"apiKeySaved": "Salvata",
-			"save": "Salva"
+			"save": "Salva",
+			"setupRequired": "Compila le impostazioni obbligatorie qui sotto. Lo script non viene eseguito finché non sono salvate."
 		},
 		"modes": {
 			"title": "Modalità installate",
