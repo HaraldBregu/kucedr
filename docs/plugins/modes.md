@@ -22,7 +22,7 @@ The folder name is the mode id (kebab-case).
 | `description` | string ≤ 1024 | Shown in the command menu and in Settings → Modes. |
 | `command` | `/kebab-name` | Slash command that turns the mode on. |
 | `persistent` | bool | Exposed to the renderer and shown as a badge in Settings → Modes. |
-| `ask` | bool | Adds the `ask` tool (structured questions to the user) and allows it in this run. |
+| `ask` | bool | Interactive runs have the `ask` tool (structured questions to the user) by default. `false` removes it. |
 | `protectedPrompt` | bool | **Bundled only.** Puts the prompt in the protected section, next to loaded skills, instead of after the workspace context. |
 | `tools` | `"read-only"` or string[] | `read-only`: only tools marked `readOnly`. A list: only those tool ids. |
 | `permissions` | `default` \| `deny-asks` | `deny-asks` turns every "ask for approval" into "deny". |
