@@ -132,8 +132,8 @@ export async function* runToolCall(
 		const screenSelection = toolCall.name === 'select_screen_source';
 		if (
 			security.windowId === undefined ||
-			(!screenSelection && !mode.ask) ||
-			(screenSelection && mode.restricted)
+			(!screenSelection && extension?.ask === false) ||
+			(screenSelection && extension?.restricted)
 		) {
 			output = screenSelection
 				? 'Error: screen source selection is only available in an interactive chat run.'
