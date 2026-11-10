@@ -371,7 +371,7 @@ export function normalizeAgentSendRuntimeOptions(options: unknown): AgentRunOpti
 export class AgentIpc implements IpcModule<AgentIpcDeps> {
 	readonly name = 'agent';
 
-	register({ logger, agent, conversation, windows, apps }: AgentIpcDeps, eventBus: EventBus): void {
+	register({ logger, agent, windows, apps }: AgentIpcDeps, eventBus: EventBus): void {
 		const renderer = new AgentRenderer(windows, apps);
 		const mainAccess = renderer.assert.bind(renderer);
 		const workspaceAccess = renderer.assertWorkspace.bind(renderer);
