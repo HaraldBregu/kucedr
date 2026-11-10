@@ -352,7 +352,7 @@ async function* loop(
 		yield {
 			type: 'run_started',
 			sessionId: session.id,
-			modeIds: mode.ids,
+			modeIds: session.modeIds ?? [],
 			model: modelId,
 			providerId: provider.id,
 			tools: (search?.active() ?? tools).map((tool) => tool.id),
