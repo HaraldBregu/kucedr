@@ -26,7 +26,7 @@ The folder name is the mode id (kebab-case).
 | `protectedPrompt` | bool | **Bundled only.** Puts the prompt in the protected section, next to loaded skills, instead of after the workspace context. |
 | `tools` | `"read-only"` or string[] | `read-only`: only tools marked `readOnly`. A list: only those tool ids. |
 | `permissions` | `default` \| `deny-asks` | `deny-asks` turns every "ask for approval" into "deny". |
-| `shell` | `default` \| `read-only` \| `none` | `none` removes `bash`. `read-only` rejects bash calls with env overrides, background, elevated, PTY, external hosts, extra roots, or a workdir outside the workspace (`shell.ts`). |
+| `shell` | `default` \| `read-only` \| `none` | `none` removes `bash` and `process`. `read-only` rejects bash calls with env overrides, background, elevated, PTY, external hosts, extra roots, or a workdir outside the workspace (`shell.ts`). |
 | `effort` | `none` … `max` | Reasoning effort, used only if the selected model supports it (`effort.ts`). |
 | `model` | string | **Bundled only.** Overrides the model id for the run. |
 | `output` | `{ envelope: "tag" }` | The final answer must be exactly one non-empty `<tag>…</tag>`. |
