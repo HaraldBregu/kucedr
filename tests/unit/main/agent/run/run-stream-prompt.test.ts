@@ -428,7 +428,7 @@ describe('run stream system prompt', () => {
 							execute: () => undefined,
 						}),
 					],
-					memory: { read } as never,
+					memory: { read, getConfig: () => ({ includeInPrompt: true }) } as never,
 				}
 			))
 				void event;
