@@ -1,11 +1,7 @@
+import type { RunStop } from '../extension';
 import { isEnvelopeValid } from './output';
 import { unfinishedModes } from './state/unfinished';
 import type { ModeDefinition, ModePolicy } from './types';
-
-export type ModeStop =
-	| { readonly kind: 'accept' }
-	| { readonly kind: 'retry'; readonly instruction: string }
-	| { readonly kind: 'continue'; readonly message: string };
 
 /** What the active modes make of a final reply. The caller owns the caps and says which outcomes are still allowed. */
 export function modeStop(
@@ -15,7 +11,7 @@ export function modeStop(
 	sessionDirectory: string,
 	since: number,
 	may: { readonly retry: boolean; readonly continue: boolean }
-): ModeStop {
+): RunStop {
 	if (may.retry && mode.output && !isEnvelopeValid(content, mode.output.envelope)) {
 		return {
 			kind: 'retry',
