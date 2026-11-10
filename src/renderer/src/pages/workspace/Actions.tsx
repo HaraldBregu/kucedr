@@ -1,4 +1,4 @@
-import { Copy, Download, MoreHorizontal, MoveHorizontal, Search } from 'lucide-react';
+import { CaseSensitive, Copy, Download, MoreHorizontal, MoveHorizontal, Search } from 'lucide-react';
 import { marked } from 'marked';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
