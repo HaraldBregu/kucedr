@@ -59,7 +59,7 @@ export function bootstrapServices(): BootstrapResult {
 	const appStorage = new AppStorage();
 	const windowFactory = new WindowFactory(logger, appRegistry);
 	const memoryService = createMemory(() => agentService.config);
-	const agentService = new Agent(new ExecSandbox(), memoryService);
+	const agentService = new Agent(new ExecSandbox(), memoryService, modeExtension);
 	const codingStore = new CodingStore();
 	const codingService = new Coding({
 		store: codingStore,
