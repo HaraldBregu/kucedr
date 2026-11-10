@@ -2,16 +2,15 @@ import type { PermissionsSchema } from './permissions_types';
 
 export function withDefaultPermissions(
 	permissions: PermissionsSchema,
-	workspacePattern: string,
-	libraryPattern: string
+	workspacePattern: string
 ): PermissionsSchema {
 	return {
 		read: {
-			allow: [...new Set([workspacePattern, libraryPattern, ...permissions.read.allow])],
+			allow: [...new Set([workspacePattern, ...permissions.read.allow])],
 			deny: [...permissions.read.deny],
 		},
 		write: {
-			allow: [...new Set([workspacePattern, libraryPattern, ...permissions.write.allow])],
+			allow: [...new Set([workspacePattern, ...permissions.write.allow])],
 			deny: [...permissions.write.deny],
 		},
 		exec: {
