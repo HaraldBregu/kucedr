@@ -106,7 +106,7 @@ const AppsPage: React.FC = () => {
 						</SettingsPanel>
 					) : (
 						<div className="grid grid-cols-1 gap-3">
-							{visibleApps.map((app) => (
+							{filter.items.map((app) => (
 								<Card
 									key={app.id}
 									size="sm"
