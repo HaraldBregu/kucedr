@@ -370,8 +370,8 @@ export function WorkspaceToolbar({ toolbarTarget, scrollbarWidth, editor, linkOp
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
-	const toolbar = toolbarTarget ? createPortal(<div style={{ paddingRight: scrollbarWidth }}><div className={`mx-auto flex w-full ${wide ? '' : 'max-w-[920px]'} flex-wrap items-center justify-start px-5 py-2 sm:px-8 lg:px-12`}>
-		<div className="flex w-full flex-wrap items-center gap-2 rounded-lg border p-1">
+	const toolbar = toolbarTarget ? createPortal(
+		<div className="flex w-full flex-wrap items-center justify-start gap-2">
 		{[
 			{ title: 'History', labels: ['Undo', 'Redo'] },
 			{ title: 'Text', labels: groups[2].map((action) => action.label) },
