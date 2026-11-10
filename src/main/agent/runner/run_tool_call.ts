@@ -195,7 +195,7 @@ export async function* runToolCall(
 			isError = !answers;
 		}
 	} else if (toolCall.name === 'request_mcp_authorization') {
-		if (security.windowId === undefined || mode.restricted) {
+		if (security.windowId === undefined || extension?.restricted) {
 			output = 'Error: MCP authorization is only available in an interactive chat run.';
 			isError = true;
 		} else {
