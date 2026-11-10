@@ -9,9 +9,8 @@ import { AppRegistry, AppStorage } from './apps/app_index';
 
 import { Agent } from './agent/agent';
 import { modeExtension } from './agent/modes/extension';
-import { Conversation } from './agent/conversation';
 import { ExecSandbox } from './agent/sandbox';
-import { createRealtimeVoiceManager } from './agent/realtime_voice';
+import { createRealtimeVoiceManager, type RealtimeVoiceManager } from './agent/realtime_voice';
 import { StorageOperations, forkSync } from './backup';
 import { withStorageLock } from './storage';
 import { preventStorageSuspension } from './storage/storage_suspension';
