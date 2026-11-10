@@ -11,7 +11,7 @@
 	"settings": {
 		"inputSchema": {
 			"type": "object",
-			"required": ["directory"],
+			"required": ["enabled", "directory"],
 			"properties": {
 				"enabled": {
 					"type": "boolean",
