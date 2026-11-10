@@ -41,10 +41,10 @@ User-installed plugins can't use `protectedPrompt` or `model`: `modes/<id>: "<fi
 
 ## Combining modes
 
-The chat sends `options.modeIds`. For `request.category === 'main'`, `resolveModes(ids)` (`resolve.ts`) builds one `ModePolicy`. Each mode can only **narrow** the run:
+The chat sends `options.modeIds`. For `request.category === 'main'`, `resolveModes(ids, listModes())` (`resolve.ts`) builds one `ModePolicy`. The mode folders are read once per run, and the policy keeps that list as `available`. Each mode can only **narrow** the run:
 
 - an unknown id is an error (`Mode "x" is unavailable. Enable its plugin or remove the mode.`), never silently ignored
-- at most one active mode may define `output`
+- at most one active mode may define `output`, and active modes may not name different `model`s
 - `toolIds` = intersection of all tool lists; `readOnly` if any mode is `read-only`
 - `permissions` = `deny-asks` if any mode sets it
 - `shell` = the strictest (`none` > `read-only` > `default`)
