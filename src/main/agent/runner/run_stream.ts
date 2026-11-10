@@ -294,7 +294,7 @@ async function* loop(
 					subagentTool(config, childTools, childRuntime),
 					subagentsTool(config, childTools, childRuntime, options.subagentLimiter)
 				);
-			if (statefulModes.length > 0) tools.push(modeStateTool(stateDirectory, statefulModes));
+			tools.push(...extensionTools);
 		}
 		if (options.tools)
 			mcpServerHint = resolveMcpServerHint(
