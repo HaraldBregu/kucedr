@@ -13,7 +13,6 @@ import type {
 } from '../../shared/agent_tools';
 import { isAgentToolConfigurable } from '../../shared/agent_tools';
 import { agentLocation } from '../shared/agent_location';
-import { libraryLocation } from '../shared/library_location';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
 import {
 	type PermissionBucket,
