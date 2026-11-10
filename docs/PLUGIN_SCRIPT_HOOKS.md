@@ -93,7 +93,9 @@ A script declares what the user must set up in its manifest, under `settings.inp
 
 - **Settings → Scripts → <script>** shows one field per property (`details/Setup.tsx`), with a notice while a required field is empty.
 - The values are saved per script name in the plugins store under `scriptSettings`. `pluginScriptSettings(name)` reads them, and `savePluginScriptSettings(name, values)` saves them, rejecting keys the manifest doesn't declare. The IPC channels are `scripts:get-settings` and `scripts:save-settings`.
-- `runPluginHooks` skips a script while any `required` setting is empty, and otherwise sends the values as `settings` in the event.
+- Properties are `string` (a text field) or `boolean` (a switch that saves on toggle, with an optional `default`). Values are stored as strings, so booleans are `"true"` or `"false"`.
+- A script that declares an `enabled` boolean runs only while it is `"true"`. The four bundled log scripts declare it with `default: false`, so they are off until the user turns them on.
+- `runPluginHooks` also skips a script while any `required` setting is empty. Otherwise it sends the values, with boolean defaults filled in, as `settings` in the event.
 
 ## Host changes
 
