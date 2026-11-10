@@ -46,11 +46,7 @@ export type SearchEngineSettings = {
 
 export const AGENT_DIRECTORY = path.resolve(agentLocation());
 const workspacePattern = `${AGENT_DIRECTORY.replaceAll(path.sep, '/')}/**`;
-const DEFAULT_AGENT_PERMISSIONS: PermissionsSchema = {
-	read: { allow: [workspacePattern], deny: [] },
-	write: { allow: [workspacePattern], deny: [] },
-	exec: { allow: [workspacePattern], deny: [] },
-};
+const legacyLibraryPattern = `${path.resolve(libraryLocation()).replaceAll(path.sep, '/')}/**`;
 const RUNTIME_TOOL_KEYS = {
 	subagent: 'subagent',
 	subagents: 'subagents',
