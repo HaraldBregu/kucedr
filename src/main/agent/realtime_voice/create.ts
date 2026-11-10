@@ -79,7 +79,10 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 						: (realtimeVoiceDefaultVoice(providerId) ?? '');
 			const supportsTools = supportsRealtimeVoiceTools(providerId, model.id);
 			const tools = supportsTools
-				? filterProfileTools(builtinTools(agent.config, agent.sandbox), 'voice')
+				? filterProfileTools(
+						builtinTools(agent.config, agent.sandbox, { ...NO_MODE, ask: false }),
+						'voice'
+					)
 				: [];
 			const instructions = await buildSystemPrompt(agent.config, tools);
 			const workspaceContext = await buildWorkspaceContext(agent.config, 'full');
