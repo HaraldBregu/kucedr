@@ -72,6 +72,7 @@ So the hooks are added in `runToolCall` and nowhere else.
 
   `POST_TOOL_USE` also has `output` (the formatted string the model sees), `isError` and `durationMs`.
 
+- `settings` holds the values saved in Settings → Scripts (see [Setup](#setup)).
 - stdout is ignored. A non-zero exit or a timeout is logged with its stderr (`console.warn('[plugins] hook …')`) and has no other effect.
 
 ## Host changes
