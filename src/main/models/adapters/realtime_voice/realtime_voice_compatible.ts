@@ -454,7 +454,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		)
 			return;
 		tools.continued = true;
-		this.realtime.send({ type: 'response.create' });
+		this.createResponse();
 		this.responseTools.delete(responseId);
 		for (const callId of tools.callIds) this.callResponses.delete(callId);
 	}
