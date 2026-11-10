@@ -68,13 +68,7 @@ const SkillsPage: React.FC = () => {
 				description={t('settings.skills.description')}
 			/>
 
-			<SettingsFilter
-				query={query}
-				onQueryChange={setQuery}
-				categories={categories}
-				category={category}
-				onCategoryChange={setCategory}
-			/>
+			<SettingsFilter filter={filter} />
 
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
