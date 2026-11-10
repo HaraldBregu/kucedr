@@ -253,7 +253,6 @@ it('offers a reusable folder grant for undo outside the workspace', async () => 
 	resetPermissions();
 	expect((await execute(undoFileTool(history), {}, history)).at(-1)).toMatchObject({ type: 'tool_permission_request', persistable: true, targets: [realPath(path.dirname(target))] });
 	expect(fs.readFileSync(target, 'utf8')).toBe('created');
-	fs.rmSync(outside, { recursive: true, force: true });
 });
 
 
