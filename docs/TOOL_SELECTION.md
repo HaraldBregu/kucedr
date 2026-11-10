@@ -91,7 +91,7 @@ Verify: behavior unchanged. Compare the `run_started.tools` event and the system
 
 ## Current state
 
-- `filterEligibleTools` in `run_stream.ts` is the single pipeline: `filterTools` (`toolsAllow`/`toolsDeny`) → `filterModeTools` → `filterProfileTools` (settings) → `isAgentToolAllowedForProfile` (per-profile allowlist) → skill scopes.
+- `filterEligibleTools` in `run_stream.ts` is the single pipeline: `filterTools` (`toolsAllow`/`toolsDeny`) → `extension.allows` (modes) → `filterProfileTools` (settings) → `isAgentToolAllowedForProfile` (per-profile allowlist) → skill scopes.
 - `list_skills`, `load_skill` and `tool_search` are created outside that pipeline, so `toolIdEnabled` in `run_stream.ts` applies the same allow/deny, settings and profile checks to them by id.
 - **Tasks profile** (runs unattended, never prompts): `filterProfileTools` also drops tools set to `ask` and tools whose capability requires approval; MCP tools whose default is `ask` are treated as `allow` (`getAgentProfileTool`); scheduled runs deny the task-mutation tools (`SCHEDULED_TASK_TOOLS_DENY` in `agent.ts`).
 - Task tools are preloaded when the message mentions tasks or schedules (`requestedTaskTools`); otherwise they load through `tool_search`.
