@@ -5,9 +5,10 @@ export const pluginsStore = new Store<{
 	disabled: string[];
 	settings: Record<string, Record<string, string>>;
 	secrets: Record<string, Record<string, string>>;
+	scriptSettings: Record<string, Record<string, string>>;
 }>({
 	name: 'settings',
 	cwd: pluginsRoot(),
 	accessPropertiesByDotNotation: false,
-	defaults: { disabled: [], settings: {}, secrets: {} },
+	defaults: { disabled: [], settings: {}, secrets: {}, scriptSettings: {} },
 });
