@@ -84,7 +84,7 @@ In `with_default_permissions.ts`, always add write + exec deny rules for every `
 
 ### 3. High — "approve always" persists over-broad grants
 
-**Fixed for file tools.** `permissions/broad.ts` marks an approval target as too broad when it is a filesystem root, the home directory or an ancestor of it, or a directory that is or contains `userDataLocation()`; the request is then approve-once only. Still open: bash `additionalRoots` in `permissions/command.ts`, and subfolders of `userDataLocation()` such as `settings/` (see #2).
+**Fixed.** `permissions/broad.ts` marks an approval target as too broad when it is a filesystem root, the home directory or an ancestor of it, a directory that contains `userDataLocation()`, or a directory inside it other than workspace and library; the request is then approve-once only. Applied to file tools and to bash roots (`permissions/command.ts`). For #2 this means writes into `settings/`, `mcp/`, `skills/` always ask and can never be remembered; they are not hard-denied.
 
 **Where**
 - `permissions/tool_approval_targets.ts` — for write tools the approval target is `path.dirname(file)`.
