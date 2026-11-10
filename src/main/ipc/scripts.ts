@@ -42,6 +42,7 @@ export class ScriptsIpc implements IpcModule<ScriptsIpcDependencies> {
 					version: metadata.version,
 					category: metadata.category,
 					...(inputSchema && { inputSchema }),
+					...(settings && { settings: settings.inputSchema }),
 					...(fence && { fence }),
 					height,
 					plugin,
