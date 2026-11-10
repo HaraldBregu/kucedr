@@ -14,6 +14,7 @@ import {
 import type { ChildProcess } from 'node:child_process';
 import type { SandboxStatus } from '../../shared/sandbox';
 import { getPermissions } from './agent_store';
+import { executionScope } from './execution/scope';
 import { userDataLocation } from '../shared/user_data_location';
 import { resolveUserPath } from '../shared/user_path';
 import { permissionFor } from './permissions/permission_for';
