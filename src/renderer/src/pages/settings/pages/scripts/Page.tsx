@@ -53,13 +53,7 @@ const ScriptsPage: React.FC = () => {
 				description={t('settings.scripts.description')}
 			/>
 
-			<SettingsFilter
-				query={query}
-				onQueryChange={setQuery}
-				categories={categories}
-				category={category}
-				onCategoryChange={setCategory}
-			/>
+			<SettingsFilter filter={filter} />
 
 			{errorMessage && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
