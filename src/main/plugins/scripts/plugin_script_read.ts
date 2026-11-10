@@ -30,10 +30,7 @@ const manifestSchema = z
 				category: text,
 				entry: relativePath('entry'),
 				instructions: relativePath('instructions')
-					.refine(
-						(file) => file.endsWith('.md'),
-						'metadata.instructions must be a markdown file'
-					)
+					.refine((file) => file.endsWith('.md'), 'metadata.instructions must be a markdown file')
 					.optional(),
 			})
 			.strict(),
