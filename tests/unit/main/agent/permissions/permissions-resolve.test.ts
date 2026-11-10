@@ -57,7 +57,7 @@ describe('resolveToolPermission', () => {
 		).toBe('deny');
 		expect(
 			resolveToolPermission('edit', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)
-		).toBe('allow');
+		).toBe('ask');
 	});
 
 	it('keeps deny precedence over allow and contextual reuse', () => {
