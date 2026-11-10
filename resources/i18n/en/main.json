@@ -1775,7 +1775,8 @@
 			"apiKey": "API key",
 			"apiKeyDescription": "Stored encrypted and sent only to this script.",
 			"apiKeySaved": "Saved",
-			"save": "Save"
+			"save": "Save",
+			"setupRequired": "Fill in the required settings below. The script doesn't run until they are saved."
 		},
 		"modes": {
 			"title": "Installed modes",
