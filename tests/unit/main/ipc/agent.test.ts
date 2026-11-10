@@ -20,7 +20,7 @@ describe('AgentIpc run ownership', () => {
 
 	it('binds sends and scoped cancellation to the originating window', async () => {
 		const finished = { type: 'run_finished', agentId: 'main', runId: 'run-1', stopReason: 'end_turn', outputChars: 5 };
-		const execute = jest.fn().mockImplementation(async ({ options }) => {
+		const send = jest.fn().mockImplementation(async (_message, _agentId, options) => {
 			options.streamEvent(finished);
 			options.streamEvent({ ...finished, runId: 'unrelated-run', stopReason: 'error' });
 			options.streamEvent({ ...finished, agentId: 'tasks', stopReason: 'error' });
@@ -28,10 +28,10 @@ describe('AgentIpc run ownership', () => {
 		});
 		const cancel = jest.fn().mockReturnValue(true);
 		const agent = {
+			send,
 			cancel,
 			config: { location: '/agent' },
 		} as unknown as Agent;
-		const conversation = { execute } as unknown as Conversation;
 		const eventBus = { sendTo: jest.fn() } as unknown as EventBus;
 		const logger = { info: jest.fn() } as unknown as LoggerService;
 		const sender = { mainFrame: {} };
