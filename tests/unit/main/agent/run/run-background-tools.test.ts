@@ -3,6 +3,9 @@ const mockRunModelTurn = jest.fn(async function* () {
 	return { content: 'done', model: 'test-model', toolCalls: [] };
 });
 
+jest.mock('../../../../../src/main/agent/session/session_session_dir', () => ({
+	sessionDir: () => '/nonexistent-session',
+}));
 jest.mock('../../../../../src/main/settings_store', () => ({
 	getResolvedProvider: jest.fn(() => ({ id: 'test-provider', apiKey: 'key' })),
 }));
