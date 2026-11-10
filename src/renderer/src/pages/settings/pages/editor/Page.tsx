@@ -16,7 +16,7 @@ const SIZES: { value: WorkspaceTextSize; key: string }[] = [
 	{ value: 'extra-large', key: 'extraLarge' },
 ];
 
-export default function WriterPage(): React.JSX.Element {
+export default function EditorPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [wide, setWide] = useState(false);
 	const [size, setSize] = useState<WorkspaceTextSize>('medium');
