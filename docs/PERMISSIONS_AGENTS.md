@@ -115,13 +115,11 @@ So the workspace is the only default location for changes, not for reads.
 
 **Better:** store the folder for read, write and exec, like the Settings form. Three lines. Later, one trusted list instead of three; the kinds only matter for blocks.
 
-### 6. Defaults are saved into the profile file
+### 6. Defaults were saved into the profile file
 
-**Where:** `agent_store.ts` `setPermissions` stores the merged result of `withDefaultPermissions`.
+**Fixed in this pass.** `setPermissions` used to store the merged result of `withDefaultPermissions`, so a dropped default stayed on disk; this is why Library remained in existing profiles. Now only the user's own rules are saved and the workspace is added on load (see "Changed in this pass").
 
-**Effect:** when a default is dropped, the old rule stays on disk. This is why Library remains in existing profiles. The same will happen with several workspaces: `WORKSPACES.md` ("Stop trusting the previous workspace") already plans special cleanup code for it.
-
-**Better:** save only what the user added (strip the default pattern before saving) and keep adding defaults on read. Defaults can then change with no cleanup code.
+Still to do for several workspaces: a profile saved by an older version contains the default workspace path, which stays trusted after switching to another workspace. The cleanup planned in `WORKSPACES.md` ("Stop trusting the previous workspace") is only needed for those old lists.
 
 ### 7. Unattended runs are handled by two mechanisms
 
