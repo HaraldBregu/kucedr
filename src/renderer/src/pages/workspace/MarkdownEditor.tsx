@@ -58,7 +58,7 @@ export function WorkspaceMarkdownEditor({
 	onMatchCount,
 	ref,
 }: WorkspaceMarkdownEditorProps): React.JSX.Element {
-	const [scrollbarWidth, setScrollbarWidth] = useState(0);
+	const [toolbarHeight, setToolbarHeight] = useState(0);
 	const [linkOpen, setLinkOpen] = useState(false);
 	const [libraryOpen, setLibraryOpen] = useState(false);
 	const [urlOpen, setUrlOpen] = useState(false);
