@@ -250,7 +250,7 @@ describe('AgentIpc run ownership', () => {
 				exec: { allow: ['*'], deny: [] },
 			})
 		).resolves.toMatchObject({ success: false });
-		expect(execute).not.toHaveBeenCalled();
+		expect(send).not.toHaveBeenCalled();
 	});
 
 	it('saves Knowledge selections atomically and routes indexing, status, and cancellation through its coordinator', async () => {
