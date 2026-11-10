@@ -540,6 +540,11 @@ export interface ScriptsInvokeChannelMap {
 		args: [name: string, input: unknown, theme: 'light' | 'dark'];
 		result: string;
 	};
+	[ScriptsChannels.getSettings]: { args: [name: string]; result: Record<string, string> };
+	[ScriptsChannels.saveSettings]: {
+		args: [name: string, values: Record<string, string>];
+		result: void;
+	};
 }
 
 export interface ServicesInvokeChannelMap {
