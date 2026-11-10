@@ -254,7 +254,7 @@ export function WorkspaceMarkdownEditor({
 				}}
 			/>
 			</div>
-			<WorkspaceToolbar scrollbarWidth={scrollbarWidth} toolbarTarget={toolbarTarget} editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
+			<WorkspaceToolbar toolbarTarget={toolbarTarget} editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
 			<WorkspaceOutline editor={editor} container={scrollRef} />
 			</div>
 		</div>
