@@ -173,44 +173,21 @@ async function* loop(
 		!mode.restricted &&
 		path.resolve(config.location) === path.resolve(agentLocation()) &&
 		(await profileStatus(config.location)).missing.length > 0;
-	const bootstrapTools = new Set([
-		'update_identity',
-		'update_soul',
-		'update_user',
-		'complete_bootstrap',
-	]);
 	const filterRuntimeTools = (candidates: Tool[]): Tool[] =>
-		filterProfileTools(candidates, toolProfile).filter(
-			(tool) =>
-				isAgentToolAllowedForProfile(
-					toolProfile,
-					tool.policy ?? { kind: 'builtin', id: tool.id }
-				) &&
-				(!bootstrap || bootstrapTools.has(tool.id))
+		filterProfileTools(candidates, toolProfile).filter((tool) =>
+			isAgentToolAllowedForProfile(toolProfile, tool.policy ?? { kind: 'builtin', id: tool.id })
 		);
-	const profileToolEnabled = (toolId: string): boolean => {
-		const settings = getToolConfiguration(toolProfile, { kind: 'builtin', id: toolId });
-		return settings.permission !== 'deny';
-	};
+	const toolIdEnabled = (id: string): boolean =>
+		!bootstrap &&
+		(input.toolsAllow === undefined || input.toolsAllow.includes(id)) &&
+		!input.toolsDeny?.includes(id) &&
+		getToolConfiguration(toolProfile, { kind: 'builtin', id }).permission !== 'deny' &&
+		isAgentToolAllowedForProfile(toolProfile, { kind: 'builtin', id });
 	const skillToolsRequested = requestsSkillTools(input.message, input.explicitSkill);
 	const taskToolIds = requestedTaskTools(input.message);
-	const skillLoadingEnabled =
-		!bootstrap &&
-		skillToolsRequested &&
-		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
-		!input.toolsDeny?.includes('load_skill') &&
-		profileToolEnabled('load_skill');
-	const skillListingEnabled =
-		!bootstrap &&
-		skillToolsRequested &&
-		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
-		!input.toolsDeny?.includes('list_skills') &&
-		profileToolEnabled('list_skills');
-	const searchEnabled =
-		!bootstrap &&
-		(input.toolsAllow === undefined || input.toolsAllow.includes('tool_search')) &&
-		!input.toolsDeny?.includes('tool_search') &&
-		profileToolEnabled('tool_search');
+	const skillLoadingEnabled = skillToolsRequested && toolIdEnabled('load_skill');
+	const skillListingEnabled = skillToolsRequested && toolIdEnabled('list_skills');
+	const searchEnabled = toolIdEnabled('tool_search');
 	const skillSnapshot =
 		skillLoadingEnabled || skillListingEnabled
 			? createSkillRegistrySnapshot({ projectRoot: config.location })
