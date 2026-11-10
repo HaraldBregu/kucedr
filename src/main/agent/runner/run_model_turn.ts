@@ -190,7 +190,7 @@ export async function* runModelTurn(
 				yield event;
 			}
 
-			return {
+			const turn: ModelTurn = {
 				content,
 				model,
 				stopReason,
@@ -202,6 +202,18 @@ export async function* runModelTurn(
 					args: parseToolArgs(toolCall.argsText),
 				})),
 			};
+			void runPluginHooks('POST_MODEL_TURN', {
+				...hookEvent,
+				model: { ...hookModel, id: model },
+				stopReason,
+				usage,
+				retryCount: attempt,
+				durationMs: Date.now() - startedAt,
+				...(firstTokenAt ? { firstTokenLatencyMs: firstTokenAt - attemptStartedAt } : {}),
+				content,
+				toolCalls: turn.toolCalls.map(({ id, name }) => ({ id, name })),
+			});
+			return turn;
 		} catch (error) {
 			if (
 				signal.aborted ||
