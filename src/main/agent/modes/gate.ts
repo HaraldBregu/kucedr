@@ -1,6 +1,6 @@
 import type { Tool } from '../types';
 import { allowsTool } from './allows';
-import { readOnlyShellError } from './shell';
+import { readOnlyShellError } from '../tools/core/readonly';
 import type { ModePolicy } from './types';
 
 /** Why the active modes refuse this call, or undefined when they allow it. */
