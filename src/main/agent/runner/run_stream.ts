@@ -326,8 +326,8 @@ async function* loop(
 				'subagents',
 				'load_script',
 				'run_script',
-				...(mode.ask ? ['ask'] : []),
-				...(statefulModes.length > 0 ? [MODE_STATE_TOOL_ID] : []),
+				...(ask ? ['ask'] : []),
+				...extensionTools.map((tool) => tool.id),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
 			]);
