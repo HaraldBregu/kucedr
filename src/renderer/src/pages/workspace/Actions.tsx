@@ -11,9 +11,11 @@ interface WorkspaceViewActionsProps {
 	readonly name: string;
 	readonly content: string;
 	readonly markdown: boolean;
+	readonly toolbar: boolean;
+	readonly onToolbarChange?: (toolbar: boolean) => void;
 }
 
-export function WorkspaceViewActions({ wide, onWideChange, onFind, name, content, markdown }: WorkspaceViewActionsProps): React.JSX.Element {
+export function WorkspaceViewActions({ wide, onWideChange, onFind, name, content, markdown, toolbar, onToolbarChange }: WorkspaceViewActionsProps): React.JSX.Element {
 	const base = name.replace(/\.[^.]+$/, '') || 'document';
 	const html = (): string => `<!doctype html><html><head><meta charset="utf-8"><title>${base}</title><style>body{font-family:-apple-system,system-ui,sans-serif;line-height:1.6;max-width:760px;margin:2rem auto;padding:0 1rem;color:#111}a{color:#2563eb}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:4px 8px;text-align:left}pre{background:#f4f4f5;padding:8px;border-radius:6px;overflow:auto}img{max-width:100%}</style></head><body>${marked.parse(content, { async: false })}</body></html>`;
 	return (
