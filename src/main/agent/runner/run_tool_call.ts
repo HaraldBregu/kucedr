@@ -296,7 +296,7 @@ export async function* runToolCall(
 		const mcpPolicy = tool.policy?.kind === 'mcp' && !hardApproval ? tool.policy : undefined;
 		const persistable = resolution.persistable || Boolean(mcpPolicy);
 		let permission = resolution.mode;
-		if (mode.permissions === 'deny-asks' && permission === 'ask') permission = 'deny';
+		if (extension?.denyAsks && permission === 'ask') permission = 'deny';
 
 		if (permission === 'ask' && security.windowId === undefined) permission = 'deny';
 
