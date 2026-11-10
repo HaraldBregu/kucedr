@@ -74,7 +74,11 @@ describe('chat agent tool controls', () => {
 					? { sources: [{ id: 'screen:1', name: 'Display 1', type: 'screen' }] }
 					: toolId === 'bash'
 						? { command: 'true' }
-						: {};
+						: toolId === 'patch'
+							? { input: '*** Begin Patch\n*** Add File: file.txt\n+text\n*** End Patch' }
+							: ['write', 'edit'].includes(toolId)
+								? { path: 'file.txt' }
+								: {};
 		const selectedTool = jsonTool({
 			id: toolId,
 			name: toolId,
