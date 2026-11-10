@@ -40,10 +40,8 @@ import {
 import { getAgentProfileDocument } from '../../../../../src/main/agent/agent_profiles';
 import { setAgentProfileTool } from '../../../../../src/main/agent/agent_profiles';
 import { resolveToolPermissionDetails } from '../../../../../src/main/agent/permissions/resolve_tool_permission';
-import { libraryLocation } from '../../../../../src/main/shared/library_location';
 
 const workspaceRule = `${AGENT_DIRECTORY.replaceAll('\\', '/')}/**`;
-const libraryRule = `${libraryLocation().replaceAll('\\', '/')}/**`;
 
 beforeEach(() => {
 	for (const profileId of ['chat', 'voice', 'health', 'tasks'] as const) {
