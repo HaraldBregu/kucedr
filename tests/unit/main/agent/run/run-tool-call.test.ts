@@ -72,7 +72,7 @@ describe('runToolCall', () => {
 			id: 'destructive_tool',
 			name: 'Destructive',
 			description: 'delete',
-			hardApproval: true,
+			capability: { effects: ['write'], approval: true },
 			schema: { type: 'object' },
 			execute: run,
 		});
