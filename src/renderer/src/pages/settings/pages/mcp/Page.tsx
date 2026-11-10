@@ -17,6 +17,7 @@ import {
 import { catalogServer } from './catalog_server';
 import { MicrosoftConnect } from './components/McpConnect';
 import { SettingsFilter } from '../../components/filter';
+import { useSettingsFilter } from '../../hooks/filter';
 
 const McpPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
