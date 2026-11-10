@@ -16,6 +16,7 @@ import {
 	SettingsPanel,
 } from '../../components';
 import { SettingsFilter } from '../../components/filter';
+import { useSettingsFilter } from '../../hooks/filter';
 import AppIcon from './AppIcon';
 
 function getErrorMessage(error: unknown, fallback: string): string {
