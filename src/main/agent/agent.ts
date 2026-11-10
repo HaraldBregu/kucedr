@@ -237,14 +237,22 @@ export class Agent {
 		let timeoutTimer: ReturnType<typeof setTimeout> | undefined;
 		try {
 			if (controller.signal.aborted) return { text: '', stopReason: 'cancelled' };
-			if (request.category !== 'main' && options.modeIds?.length)
-				throw new Error('Modes are only available in chat runs.');
-			const mode =
-				request.category === 'main' ? resolveModes(options.modeIds ?? [], listModes()) : NO_MODE;
-			const parsedSkillCommand = parseSkillCommand(request.message);
 			const providerId = options.providerId;
-			const modelId = mode.model ?? options.model ?? options.modelId;
-			const effort = modeEffort(mode.effort, providerId, modelId) ?? options.effort;
+			const extension = this.extend?.({
+				category: request.category,
+				modeIds: options.modeIds ?? [],
+				sessionDirectory: sessionPath(
+					sessionsRoot(this.config.location),
+					sessionFolderName(request.sessionId)
+				),
+				...(providerId ? { providerId } : {}),
+				...((options.model ?? options.modelId) ? { modelId: options.model ?? options.modelId } : {}),
+			});
+			if (!extension && options.modeIds?.length)
+				throw new Error('Modes are unavailable for this run.');
+			const parsedSkillCommand = parseSkillCommand(request.message);
+			const modelId = extension?.model ?? options.model ?? options.modelId;
+			const effort = extension?.effort ?? options.effort;
 			const promptCapabilities = resolvePromptInputCapabilities(providerId, modelId);
 			const files = options.files?.length
 				? promptCapabilities
