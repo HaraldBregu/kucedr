@@ -72,14 +72,7 @@ export default function ModelsPage(): React.JSX.Element {
 				title={t('settings.tabs.models')}
 				description={t('settings.overview.descriptions.models')}
 			/>
-			<SettingsFilter
-				query={query}
-				onQueryChange={setQuery}
-				categories={categories}
-				category={category}
-				onCategoryChange={setCategory}
-				categoryLabels={categoryLabels}
-			/>
+			<SettingsFilter filter={filter} categoryLabels={categoryLabels} />
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{t('settings.models.loadError')}
