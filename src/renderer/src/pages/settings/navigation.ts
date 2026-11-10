@@ -344,9 +344,9 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		comingSoon: true,
 	},
 	{
-		path: '/settings/writer',
-		labelKey: 'settings.writer.title',
-		descriptionKey: 'settings.writer.description',
+		path: '/settings/editor',
+		labelKey: 'settings.editor.title',
+		descriptionKey: 'settings.editor.description',
 		icon: PenLine,
 	},
 	{
