@@ -10,7 +10,6 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 	entries: DiscoveredMcpTool[];
 	uncataloged: Array<{ serverId: string; serverName: string }>;
 	diagnostics: McpDiscoveryDiagnostics;
-	onChanged: (listener: (entries: DiscoveredMcpTool[]) => void) => () => void;
 	close: () => Promise<void>;
 }> {
 	signal?.throwIfAborted();
