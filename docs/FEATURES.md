@@ -186,7 +186,7 @@ The Permissions screen provides persistent controls for sensitive tools:
 - Other tools use their capability policy; sensor access and external effects retain separate approval requirements.
 - An interactive permission card offers **Deny**, **Allow once**, and **Trust this location** when the grant can be persisted.
 - Trusting a location stores a recursive containing-folder glob for the requesting capability.
-- Resetting restores the default workspace path glob in all three buckets and the Library path glob in the read and write buckets.
+- Resetting restores the default workspace path glob in all three buckets and removes every other location.
 
 Permissions use this top-level structure:
 
