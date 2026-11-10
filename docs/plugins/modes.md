@@ -53,14 +53,25 @@ The chat sends `options.modeIds`. For `request.category === 'main'`, `resolveMod
 - prompts are joined in id order, split into normal and protected
 - `restricted` = any tool, permission, or shell limit is active. A restricted run loads no MCP tools, so a `tools` list can't name `mcp__…` tools
 
-Task and health runs use `NO_MODE`, and sending `modeIds` to one is an error. Sub-agents inherit the parent's tool, shell and permission limits, but not its prompts, output, `ask`, or `update_mode_state`.
+Only chat runs get modes. Sending `modeIds` to a task or health run is an error. Sub-agents inherit the parent's tool, shell and permission limits, but not its prompts, output, `ask`, or `update_mode_state`.
 
-## Runtime effects (`src/main/agent/runner/`)
+## How the agent uses modes
 
-- **Tools:** `filterModeTools()` / `allowsTool()` apply `shell`, `readOnly`, and `toolIds` when tools are listed. `tool_search`, `ask`, and `update_mode_state` are always allowed. Undo/redo file tools are left out when the policy is restricted.
-- **Prompt:** `mode.prompt` goes after the workspace context; `mode.protectedPrompt` goes in the protected block.
-- **Gate:** in `run_tool_call.ts`, `modeGate()` (`gate.ts`) refuses a call the modes don't allow, including read-only bash violations. `deny-asks` turns `ask` into `deny`.
-- **Final reply:** `modeStop()` (`stop.ts`) decides whether a reply with no tool calls is accepted, rewritten, or continued.
+The agent doesn't import modes. It defines a generic `RunExtension` (`src/main/agent/extension.ts`) and takes an optional `RunExtender` in its constructor. `bootstrap.ts` passes `modeExtension` (`modes/extension.ts`), which turns the resolved policy into an extension for chat runs. Without an extender, runs are unrestricted and any `modeIds` are rejected.
+
+| Extension member | Used by | From the modes |
+|---|---|---|
+| `restricted` | runner: no MCP, undo/redo, screen picker, auth flows, bootstrap | `restricted` |
+| `ask`, `readOnlyShell` | `builtinTools()` | `ask`, `shell: read-only` |
+| `allows(tool)` | runner tool filter (`allowsTool`) | `shell`, `readOnly`, `toolIds`; `tool_search`, `ask`, `update_mode_state` always allowed |
+| `gate(tool, input)` | `run_tool_call.ts` (`modeGate`) | refused tools, read-only bash violations |
+| `denyAsks` | `run_tool_call.ts` | `deny-asks` turns `ask` into `deny` |
+| `prompt`, `protectedPrompt` | system prompt, after the workspace context / protected block | prompts |
+| `model`, `effort` | `agent.ts` | `model`, `effort` if the model supports it |
+| `tools`, `context()` | runner, not for explicit-tool or bootstrap runs | `update_mode_state`, `<mode_state>` |
+| `stop(content)` | runner, on a reply with no tool calls | `modeStop()`: accept, rewrite the envelope, or continue |
+| `child()` | sub-agents | the limits only |
+| `ids` | stored as the run's `modeIds` | active mode ids |
 - **Output envelope:** if a final reply isn't a valid envelope (`output.ts`: exactly one opening tag at the start, one closing tag at the end, non-empty body), the turn is rejected and the model is asked to rewrite it once. The rewrite is not checked again. Each assistant message stores its run's `modeIds`, and the renderer parses the envelope only with those modes (`AssistantMessage.tsx`), shows its content, and adds the `action` button. Messages saved before this field existed are tried against every mode.
 - **Effort/model:** `mode.model` overrides the chosen model; `modeEffort()` applies the mode's effort only if the model supports it.
 
