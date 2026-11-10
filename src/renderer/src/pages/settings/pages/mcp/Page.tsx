@@ -72,12 +72,10 @@ const McpPage = (): React.JSX.Element => {
 	const servers = [...registry.servers, ...available.map(catalogServer)];
 	const categoryOf = (server: McpServerInfo): string =>
 		server.data.type === 'http' ? 'remote' : 'local';
-	const categories = [...new Set(servers.map(categoryOf))].sort();
-	const visibleServers = servers.filter(
-		(server) =>
-			(category === 'all' || categoryOf(server) === category) &&
-			`${server.data.name ?? ''} ${server.id}`.toLowerCase().includes(query.trim().toLowerCase())
-	);
+	const filter = useSettingsFilter(servers, {
+		text: (server) => `${server.data.name ?? ''} ${server.id} ${server.plugin?.name ?? ''}`,
+		category: categoryOf,
+	});
 
 	const addService = async (
 		service: CatalogService,
