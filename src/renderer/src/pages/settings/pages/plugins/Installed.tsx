@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SettingsNotice } from '../../components';
 import { SettingsFilter } from '../../components/filter';
+import { useSettingsFilter } from '../../hooks/filter';
 import Confirm from './Confirm';
 import PluginIcon from './PluginIcon';
 
