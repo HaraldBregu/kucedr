@@ -44,6 +44,11 @@ export interface PluginScriptSchema {
 	readonly default?: unknown;
 	readonly required?: readonly string[];
 	readonly properties?: Readonly<Record<string, PluginScriptSchema>>;
+	readonly items?: PluginScriptSchema;
+	readonly minimum?: number;
+	readonly maximum?: number;
+	readonly minItems?: number;
+	readonly maxItems?: number;
 	readonly examples?: readonly unknown[];
 }
 
