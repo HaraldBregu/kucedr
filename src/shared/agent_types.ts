@@ -154,6 +154,7 @@ export interface AgentTokenUsage {
 	context?: AgentContextUsage;
 	inputTokens?: number;
 	outputTokens?: number;
+	cachedTokens?: number;
 }
 
 export type AgentHistoryContentBlock =
