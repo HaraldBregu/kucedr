@@ -6,10 +6,11 @@ import { readPluginScript, type PluginScriptManifest } from './plugin_script_rea
 
 export type PluginScript = PluginScriptManifest & { readonly plugin: PluginSource };
 
-/** Every enabled plugin's scripts of one type; the first plugin to claim a name wins. */
+/** Every enabled plugin's scripts of one type; built-in plugins claim names first, then the first plugin to claim a name wins. */
 export function pluginScripts(type: PluginScriptType = 'UI'): PluginScript[] {
 	const scripts = new Map<string, PluginScript>();
-	for (const { directory, plugin } of pluginDirs('scripts')) {
+	const dirs = pluginDirs('scripts').sort((left, right) => Number(right.builtIn) - Number(left.builtIn));
+	for (const { directory, plugin } of dirs) {
 		for (const entry of readdirSync(directory, { withFileTypes: true })) {
 			if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
 			try {
