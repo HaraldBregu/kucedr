@@ -120,6 +120,7 @@ export async function* responses(
 		usage: {
 			inputTokens: response.usage?.input_tokens ?? 0,
 			outputTokens: response.usage?.output_tokens ?? 0,
+			cachedTokens: response.usage?.input_tokens_details?.cached_tokens,
 		},
 	};
 }
