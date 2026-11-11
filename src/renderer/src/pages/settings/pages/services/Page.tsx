@@ -33,7 +33,7 @@ const ServicesPage: React.FC = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const filter = useSettingsFilter(services, {
 		text: (service) =>
-			`${service.name} ${service.type} ${service.provider.name} ${service.provider.plugin?.name ?? ''}`,
+			`${service.name} ${service.provider.name} ${service.provider.plugin?.name ?? ''}`,
 		category: (service) => service.type,
 	});
 
