@@ -19,13 +19,10 @@ describe('addBasePrompt', () => {
 		expect(prompt).toContain('Do not ask for permission again in chat');
 		expect(prompt).toContain('use the matching Tasks tools');
 		expect(prompt).toContain('Use list_tasks first when task ids are not already known');
-		expect(prompt).toContain('## Current UTC date and time');
+		expect(prompt).not.toContain('## Current UTC date and time');
 		expect(prompt).toContain('## Voice');
 		expect(prompt).toContain('## Workspace contract');
 		expect(prompt).toContain('## Agent acceptance contract');
-		expect(prompt.indexOf('## Core instructions')).toBeLessThan(
-			prompt.indexOf('## Current UTC date and time')
-		);
 		expect(prompt.indexOf('## Core instructions')).toBeLessThan(prompt.indexOf('## Voice'));
 	});
 	it('directs the assistant to retain durable user context automatically', () => {
