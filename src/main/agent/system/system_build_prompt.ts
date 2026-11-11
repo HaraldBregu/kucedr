@@ -1,5 +1,6 @@
 import type { LoadedSkill } from '../context';
 import type { Config, Tool } from '../types';
+import { addClockPrompt } from './clock';
 import { addBasePrompt } from './system_add_base_prompt';
 import { addFilesystemPrompt } from './system_add_filesystem_prompt';
 import { pluginScripts } from '../../plugins';
@@ -27,5 +28,5 @@ export async function buildSystemPrompt(
 	if (eligibleTools.some((tool) => tool.id === 'run_script')) {
 		prompt = addScriptsPrompt(prompt, pluginScripts());
 	}
-	return prompt;
+	return basePrompt === undefined ? addClockPrompt(prompt) : prompt;
 }
