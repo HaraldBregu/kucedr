@@ -35,7 +35,7 @@ How several main chat sessions run at the same time, what happens to a run when 
 | Events | `src/main/ipc/agent.ts:410-418` | Sent only to the window that started the run. |
 | Snapshot | `agent.ts:409-426` | Messages read from disk, plus all events of the session's active run. |
 
-A run ends when it finishes, on `agent.cancel(runId)`, when its window closes (`bootstrap.ts:100`), when its lease is invalidated, or after ten idle minutes.
+A run ends when it finishes, on `agent.cancel(runId)`, when its window closes (`src/main/bootstrap.ts:100`), when its lease is invalidated, or after ten idle minutes.
 
 ### Renderer
 
