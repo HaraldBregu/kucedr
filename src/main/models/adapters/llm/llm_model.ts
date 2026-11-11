@@ -574,6 +574,7 @@ export class LlmModel implements LlmAdapter {
 							(event.message.usage.cache_creation_input_tokens ?? 0) +
 							(event.message.usage.cache_read_input_tokens ?? 0);
 						usage.outputTokens = event.message.usage.output_tokens ?? usage.outputTokens;
+						usage.cachedTokens = event.message.usage.cache_read_input_tokens ?? 0;
 					}
 				}
 			}
