@@ -20,6 +20,7 @@ const PluginsPage = (): React.JSX.Element => {
 			/>
 			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 			<Tabs
+				className="gap-4"
 				value={searchParams.get('tab') === 'marketplace' ? 'marketplace' : 'installed'}
 				onValueChange={(tab) => setSearchParams({ tab: String(tab) }, { replace: true })}
 			>
