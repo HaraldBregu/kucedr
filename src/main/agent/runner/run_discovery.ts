@@ -61,17 +61,7 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 				canonicalCounts.set(id, (canonicalCounts.get(id) ?? 0) + 1);
 			}
 			const remaining = Math.max(0, TOOL_SEARCH_RUN_LIMIT - selectedCount);
-			const candidates = [...eligible.values()].filter((candidate) => {
-				if (active.has(candidate.id)) return false;
-				if (!options.mcpServerHint) return true;
-				const mcp = mcpMetadata.get(candidate.id);
-				return Boolean(
-					mcp &&
-					[mcp.serverId, mcp.serverName].some(
-						(name) => name.toLocaleLowerCase() === options.mcpServerHint
-					)
-				);
-			});
+			const candidates = [...eligible.values()].filter((candidate) => !active.has(candidate.id));
 			const exact = candidates.find((candidate) => candidate.id === query);
 			const ranked = rankTools(
 				query,
