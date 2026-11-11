@@ -109,19 +109,16 @@ const mediaTools = [
 	{
 		toolCallId: 'image-call',
 		toolName: 'create_image',
-		generatedPath: '/tmp/generated-image.png',
 		restoredPath: '/tmp/restored-image.png',
 	},
 	{
 		toolCallId: 'audio-call',
 		toolName: 'create_sound',
-		generatedPath: '/tmp/generated-audio.mp3',
 		restoredPath: '/tmp/restored-audio.mp3',
 	},
 	{
 		toolCallId: 'video-call',
 		toolName: 'create_video',
-		generatedPath: '/tmp/generated-video.mp4',
 		restoredPath: '/tmp/restored-video.mp4',
 	},
 ] as const;
