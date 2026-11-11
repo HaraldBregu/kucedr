@@ -20,7 +20,7 @@ const ModesPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
 	const filter = useSettingsFilter(modes, {
-		text: (mode) => `${mode.title} ${mode.description} ${mode.command} ${mode.plugin}`,
+		text: (mode) => `${mode.title} ${mode.description} ${mode.command}`,
 		category: (mode) => mode.plugin,
 	});
 
