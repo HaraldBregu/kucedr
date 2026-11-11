@@ -23,7 +23,7 @@ export function options(provider: string, request: LlmStreamRequest): Record<str
 			...output,
 			effort: request.effort === 'none' || request.effort === 'minimal' ? 'low' : request.effort,
 		};
-	} else if (provider === 'xai') {
+	} else if (provider === 'xai' || provider === 'deepseek') {
 		configured.reasoning_effort = request.effort;
 	} else if (provider === 'zai' && /^glm-5\.3/.test(request.model)) {
 		configured.thinking = {
