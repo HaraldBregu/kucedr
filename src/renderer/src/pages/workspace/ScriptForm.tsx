@@ -34,7 +34,7 @@ export function WorkspaceScriptForm({ script, value, submitLabel, onClose, onSub
 						<DialogTitle>{script.title}</DialogTitle>
 						<DialogDescription>{script.plugin.name}</DialogDescription>
 					</DialogHeader>
-					<div className="grid max-h-[65vh] gap-4 overflow-y-auto md:grid-cols-[18rem_minmax(0,1fr)]">
+					<div className="grid max-h-[65vh] gap-4 overflow-y-auto md:grid-cols-[24rem_minmax(0,1fr)]">
 						{script.inputSchema ? <ScriptProperties schema={script.inputSchema} value={draft} onChange={(next) => setDraft(next as Record<string, unknown>)} /> : null}
 						<div className="min-w-0 rounded-md border p-2">
 							<PluginScriptFrame script={script} input={preview} />
