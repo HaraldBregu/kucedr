@@ -519,6 +519,7 @@ export class LlmModel implements LlmAdapter {
 		try {
 			const stream = client.messages.stream(
 				{
+					cache_control: { type: 'ephemeral' },
 					...requestOptions(provider.id.toLowerCase(), req),
 					model: req.model,
 					system: req.system,
