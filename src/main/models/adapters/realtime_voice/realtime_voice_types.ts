@@ -73,14 +73,12 @@ export type RealtimeVoiceClientEvent =
 	| { type: 'session.update'; session: Record<string, unknown> }
 	| { type: 'input_audio_buffer.append'; audio: string }
 	| { type: 'response.cancel' }
-	| { type: 'conversation.item.delete'; item_id: string }
 	| {
 			type: 'conversation.item.create';
 			item:
 				| { type: 'function_call_output'; call_id: string; output: string }
 				| {
 						type: 'message';
-						id?: string;
 						role: 'user';
 						content: [{ type: 'input_text'; text: string }];
 				  }
