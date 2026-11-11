@@ -75,11 +75,10 @@ function openAISession(request: RealtimeVoiceAdapterRequest): Record<string, unk
 			input: {
 				format: { type: 'audio/pcm', rate: 24_000 },
 				noise_reduction: { type: 'near_field' },
-				transcription: { model: 'gpt-4o-mini-transcribe' },
 				turn_detection: {
 					type: 'server_vad',
 					silence_duration_ms: 1_200,
-					create_response: !request.contextForTurn,
+					create_response: true,
 					interrupt_response: true,
 				},
 			},
