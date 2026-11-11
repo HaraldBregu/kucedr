@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SettingsNotice } from '../../components';
 import { SettingsFilter } from '../../components/filter';
+import { useSettingsFilter } from '../../hooks/filter';
 import PluginIcon from './PluginIcon';
 
 export default function Available({
