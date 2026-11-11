@@ -653,6 +653,7 @@ describe('useRealtimeVoice', () => {
 		}
 
 		render(<AssistantMessage message={message} />);
+		await userEvent.setup().click(screen.getByRole('button', { name: /^Thought for/ }));
 		expect(screen.getAllByLabelText('Completed')).toHaveLength(3);
 		expect(screen.getByRole('img', { name: 'Generated image' })).toHaveAttribute(
 			'src',
