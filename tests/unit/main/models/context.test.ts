@@ -49,6 +49,23 @@ describe('catalog context resolution', () => {
 		expect(fetcher).not.toHaveBeenCalled();
 	});
 
+	it('reads the limit of a live-list model from the provider once per provider', async () => {
+		jest.spyOn(catalog, 'findModel').mockReturnValue(undefined);
+		jest
+			.spyOn(catalog, 'loadProviders')
+			.mockReturnValue([{ id: 'live', modelsUrl: 'https://models.example/v1/models' }] as never);
+		const fetcher = jest.spyOn(globalThis, 'fetch').mockResolvedValue({
+			json: async () => ({ data: [{ id: 'big', context_length: 1_000_000 }, { id: 'plain' }] }),
+		} as never);
+		await expect(resolveContextWindow({ id: 'live', apiKey: 'key' }, 'big')).resolves.toBe(
+			1_000_000
+		);
+		await expect(
+			resolveContextWindow({ id: 'live', apiKey: 'key' }, 'plain')
+		).resolves.toBeUndefined();
+		expect(fetcher).toHaveBeenCalledTimes(1);
+	});
+
 	it('leaves the context limit unavailable when no provider is selected', async () => {
 		const find = jest.spyOn(catalog, 'findModel');
 		await expect(resolveContextWindow(undefined, 'model')).resolves.toBeUndefined();
