@@ -453,7 +453,7 @@ function validatedVideoPath(requestedPath: string): string {
 			// Root or file missing under this root; try the next one.
 		}
 	}
-	throw new Error('Video path must be inside the agent or video data directory.');
+	throw new Error('Video path must be a video file inside the agent or video data directory.');
 }
 
 function showVideoContextMenu(event: IpcMainInvokeEvent, requestedPath: string): void {
