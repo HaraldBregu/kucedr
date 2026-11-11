@@ -1,3 +1,4 @@
+import { isAgentToolAllowedForProfile } from '../../../shared/agent_tools';
 import { normalizeProviderId } from '../../../shared/provider_types';
 import { RealtimeVoiceChannels } from '../../../shared/ipc_channels_definitions';
 import type { Agent } from '../agent';
