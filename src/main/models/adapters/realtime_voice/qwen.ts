@@ -84,7 +84,6 @@ export function createQwenRealtimeVoiceAdapter(
 					});
 					const events = new EventEmitter();
 					const resample = createPcmResampler();
-					const contexts = new Map<string, string>();
 					const send = (event: object): void =>
 						socket.send(JSON.stringify({ event_id: randomUUID(), ...event }));
 					socket.on('message', (message) => {
