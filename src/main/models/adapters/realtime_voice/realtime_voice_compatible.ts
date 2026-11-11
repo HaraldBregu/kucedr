@@ -62,6 +62,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 	private responseActive = false;
 	private responsePending = false;
 	private responseQueued = false;
+	private userSpeaking = false;
 	private activeResponseId?: string;
 	private readonly responseTools = new Map<
 		string,
