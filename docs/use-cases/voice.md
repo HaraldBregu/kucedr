@@ -15,7 +15,7 @@ Configure the relevant model in Agent settings and check microphone permission u
 2. Say: “What are two ways to remember a short shopping list?” Follow with “Repeat the second way.”
 3. End the voice conversation.
 
-**Pass:** User and assistant transcripts appear in the same chat, audio plays, the follow-up uses the prior answer, and capture stops when the panel ends.
+**Pass:** The assistant transcript appears in the same chat, audio plays, the follow-up uses the prior answer, and capture stops when the panel ends. These models produce no user transcript, because Voice uses no transcription model.
 
 ## Read an answer aloud
 
