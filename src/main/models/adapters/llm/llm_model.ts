@@ -464,11 +464,13 @@ export class LlmModel implements LlmAdapter {
 			case 'response.completed':
 				usage.inputTokens = event.response.usage?.input_tokens ?? usage.inputTokens;
 				usage.outputTokens = event.response.usage?.output_tokens ?? usage.outputTokens;
+				usage.cachedTokens = event.response.usage?.input_tokens_details?.cached_tokens;
 				setStopReason(llmHasFunctionCall(event.response.output) ? 'tool_calls' : 'end_turn');
 				break;
 			case 'response.incomplete':
 				usage.inputTokens = event.response.usage?.input_tokens ?? usage.inputTokens;
 				usage.outputTokens = event.response.usage?.output_tokens ?? usage.outputTokens;
+				usage.cachedTokens = event.response.usage?.input_tokens_details?.cached_tokens;
 				setStopReason(
 					event.response.incomplete_details?.reason === 'max_output_tokens'
 						? 'max_tokens'
