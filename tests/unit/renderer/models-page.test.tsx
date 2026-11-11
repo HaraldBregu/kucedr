@@ -53,7 +53,7 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 	fireEvent.change(screen.getByRole('searchbox', { name: 'settings.filter.search' }), {
 		target: { value: 'missing' },
 	});
-	expect(screen.getByText('settings.modelServices.noMatchingModels')).toBeInTheDocument();
+	expect(screen.getByText('settings.filter.empty')).toBeInTheDocument();
 	models.mockResolvedValue([]);
 	act(() => changed());
 	await waitFor(() => expect(screen.getByText('settings.models.empty')).toBeInTheDocument());
