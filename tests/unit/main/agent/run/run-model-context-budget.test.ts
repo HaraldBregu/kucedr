@@ -43,6 +43,40 @@ describe('fitModelContext', () => {
 		expect(result.estimatedTokens).toBeLessThanOrEqual(900);
 	});
 
+	it('keeps current-turn results and omits the oldest of them only while that turn does not fit', () => {
+		const read = (letter: string) => ({
+			role: 'assistant' as const,
+			content: '',
+			toolCalls: [
+				{ id: letter, name: 'read', args: {}, result: { content: letter.repeat(9_000) } },
+			],
+		});
+		const fit = (maxInputTokens: number) =>
+			JSON.stringify(
+				fitModelContext({
+					systemPrompt: 'System safety rules.',
+					messages: [
+						{ role: 'user', content: `old request ${'x'.repeat(8_000)}` },
+						{ role: 'assistant', content: 'old answer' },
+						{ role: 'user', content: 'current request' },
+						read('a'),
+						read('b'),
+					],
+					tools: [makeTool('read')],
+					maxInputTokens,
+				}).messages
+			);
+
+		const roomy = fit(7_000);
+		expect(roomy).not.toContain('old request');
+		expect(roomy).toContain('a'.repeat(9_000));
+		expect(roomy).toContain('b'.repeat(9_000));
+
+		const tight = fit(4_000);
+		expect(tight).not.toContain('a'.repeat(9_000));
+		expect(tight).toContain('b'.repeat(9_000));
+	});
+
 	it('keeps every tool schema by trimming optional system context first', () => {
 		const input: ModelContextBudgetInput = {
 			systemPrompt: `System rules. ${'context '.repeat(700)}`,
