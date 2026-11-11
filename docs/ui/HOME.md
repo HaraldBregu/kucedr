@@ -190,8 +190,9 @@ panel and start capture, playback, and a realtime session for the selected chat.
 Voice runs on realtime models only and never configures a separate transcription model. User
 speech becomes a user message only when the realtime model returns its transcript itself (GPT Live,
 Gemini Live); OpenAI Realtime, xAI, and Qwen sessions keep the assistant side only, and the provider
-starts each reply when the user stops speaking. Assistant transcripts, audio, tool calls, permission
-requests, and generated media should use the same conversation components as text chat. New user
+starts each reply when the user stops speaking. Voice has no tools backed by another model, so no
+image, video, or sound generation and no knowledge search. Assistant transcripts, audio, tool calls,
+and permission requests should use the same conversation components as text chat. New user
 speech should stop current assistant playback so the user can interrupt. Ending the panel,
 switching sessions, or leaving Home should stop the session and release audio resources.
 
