@@ -82,6 +82,13 @@ const TASKS_BUILTIN_TOOL_IDS = new Set([
 	'subagents',
 ]);
 
+const MODEL_BACKED_TOOL_IDS = new Set([
+	'create_image',
+	'create_video',
+	'create_sound',
+	'query_knowledge',
+]);
+
 export function isAgentToolAllowedForProfile(
 	profileId: AgentToolProfileId,
 	tool: AgentToolReference
@@ -89,6 +96,7 @@ export function isAgentToolAllowedForProfile(
 	if (tool.kind !== 'builtin') return profileId !== 'health';
 	if (profileId === 'tasks') return TASKS_BUILTIN_TOOL_IDS.has(tool.id);
 	if (profileId === 'health') return HEALTH_BUILTIN_TOOL_IDS.has(tool.id);
+	if (profileId === 'voice' && MODEL_BACKED_TOOL_IDS.has(tool.id)) return false;
 	if (tool.id === 'ask' || tool.id === 'request_mcp_authorization') return profileId === 'chat';
 	return true;
 }
