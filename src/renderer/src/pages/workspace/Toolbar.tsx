@@ -77,6 +77,13 @@ interface Action {
 	readonly run: (chain: ChainedCommands) => ChainedCommands;
 }
 
+interface ToolbarItem {
+	readonly label: string;
+	readonly icon: typeof Bold;
+	readonly run: () => void;
+	readonly active?: boolean;
+}
+
 const groups: Action[][] = [
 	[
 		{ label: 'Undo', icon: Undo2, shortcut: `${mod}Z`, run: (chain) => chain.undo() },
