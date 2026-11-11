@@ -30,9 +30,9 @@ export const updateTaskRequestSchema = z
 			.optional()
 			.describe('Replacement five-field cron expression for recurring execution.'),
 		enabled: z
-			.boolean()
+			.literal(false)
 			.optional()
-			.describe('True to activate scheduled execution, false to pause it.'),
+			.describe('False to pause scheduled execution. Only the user can enable a task.'),
 		prompt: z
 			.string()
 			.optional()
