@@ -31,12 +31,6 @@ export default function VoicePage(): React.JSX.Element {
 				/>
 			</SettingsPanel>
 
-			<SettingsSection title={t('settings.overview.groups.mlModels')}>
-				<SettingsPanel>
-					<ProfileMediaModels profileId="voice" />
-				</SettingsPanel>
-			</SettingsSection>
-
 			<SettingsPanel>
 				<Link to="/settings/voice/tools" className="block hover:bg-muted/40">
 					<SettingsRow
