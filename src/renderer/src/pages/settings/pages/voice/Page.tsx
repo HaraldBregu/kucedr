@@ -6,10 +6,8 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
-	SettingsSection,
 } from '../../components';
 import VoiceConfiguration from '../assistant/voice';
-import { ProfileMediaModels } from '../assistant/profilemodels';
 
 export default function VoicePage(): React.JSX.Element {
 	const { t } = useTranslation();
