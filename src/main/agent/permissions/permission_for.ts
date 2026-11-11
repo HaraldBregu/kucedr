@@ -11,13 +11,15 @@ export function permissionFor(
 	kind: PermissionKind,
 	elevated = false
 ): PermissionMode | undefined {
+	const fold = (value: string): string =>
+		process.platform === 'darwin' || process.platform === 'win32' ? value.toLowerCase() : value;
 	const matches = (rule: string): boolean => {
 		if (rule === '*') return true;
 		const rawPattern = resolveUserPath(rule, os.homedir());
 		const recursiveRoot = rawPattern.endsWith(`${path.sep}**`)
-			? permissionRuleRoot(rawPattern)
+			? fold(permissionRuleRoot(rawPattern))
 			: undefined;
-		const resolvedTarget = realPath(target);
+		const resolvedTarget = fold(realPath(target));
 		if (
 			recursiveRoot &&
 			(resolvedTarget === recursiveRoot || resolvedTarget.startsWith(`${recursiveRoot}${path.sep}`))
