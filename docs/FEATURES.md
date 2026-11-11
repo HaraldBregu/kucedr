@@ -369,8 +369,9 @@ The built-in catalog contains 22 provider manifests.
 Model-provider entries include capability labels and an external setup link.
 
 Realtime voice has IPC and execution adapters for supported OpenAI and xAI models. Home connects
-these models to microphone capture, assistant audio playback, transcripts, tools, and generated
-media in the current chat session.
+these models to microphone capture, assistant audio playback, transcripts, and tools in the current
+chat session. Voice uses realtime models only: it has no transcription model, no image, video, or
+sound generation tools, and no knowledge search, because each of those calls another model.
 
 ### Speech services
 
