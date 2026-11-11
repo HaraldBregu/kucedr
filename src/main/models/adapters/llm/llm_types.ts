@@ -54,6 +54,7 @@ export interface LlmProviderSpec {
 export interface LlmUsage {
 	inputTokens: number;
 	outputTokens: number;
+	cachedTokens?: number;
 }
 
 export type LlmProviderEvent =
