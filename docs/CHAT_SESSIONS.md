@@ -107,7 +107,7 @@ On its own this step leaves a returning user with the frozen chat of S6, so it s
 - `src/preload/agent.ts`: add `onResponse(listener)`, returning an unsubscribe function.
 - `useHomeAgent.ts`: subscribe once per mount. Apply an event when `event.sessionId` is the chat on screen. `sendPrompt` stops passing `onEvent`, and the `resolvedSessionId` bookkeeping goes away.
 - Completion comes from the `run_finished` event, not from the `send()` promise. The reducer settles the active message by `stopReason`. `run_finished` carries the final text, which main already has in `result.text`, for an answer that produced no deltas. The promise is kept only to report a rejection that produced no `run_finished`.
-- `contexts/chat-session.ts`: `readPersistedChatSessionId` creates and stores a UUID when nothing is stored, so the renderer never sends `home`.
+- `src/renderer/src/contexts/chat-session.ts`: `readPersistedChatSessionId` creates and stores a UUID when nothing is stored, so the renderer never sends `home`.
 - Verify: S6 — chat A keeps advancing after the remount and ends "ready". S8 — chunks appear while the first chat streams.
 
 ### Step 3 — One drawing path for a run in flight (F3, F9)
