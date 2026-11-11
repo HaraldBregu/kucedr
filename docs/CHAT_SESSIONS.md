@@ -1,6 +1,8 @@
 # Chat Sessions — Concurrency Analysis & Plan
 
-> **Status:** analysis and plan, 2026-11-11. Nothing here is implemented. Paths are relative to the repo root.
+> **Status:** analysis and plan, 2026-11-11. Nothing here is implemented.
+>
+> Short paths: `agent.ts`, `agent_scheduler.ts`, `limiter.ts`, `mutex.ts`, `state/`, `session/` and `runner/` are under `src/main/agent/`. `useHomeAgent.ts`, `reducer.ts` and `Sidebar.tsx` are under `src/renderer/src/pages/home/`. Every other path starts at the repo root.
 
 ## Scope
 
