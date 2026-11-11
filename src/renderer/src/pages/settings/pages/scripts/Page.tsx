@@ -31,8 +31,7 @@ const ScriptsPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
 	const filter = useSettingsFilter(scripts, {
-		text: (script) =>
-			`${script.title} ${script.name} ${script.type} ${script.category} ${script.author ?? ''} ${script.plugin.name}`,
+		text: (script) => `${script.title} ${script.name} ${script.type} ${script.category}`,
 		category: (script) => script.category,
 	});
 
