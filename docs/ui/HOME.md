@@ -185,7 +185,9 @@ control.
 
 Starting Voice should verify that a supported realtime model is configured, audio
 capture is available, and microphone permission is granted. It should then open the large persona
-panel and start capture, playback, and a realtime session for the selected chat.
+panel and start capture, playback, and a realtime session for the selected chat. Speech captured
+while the session is still connecting should be kept, up to about two seconds, and sent as soon as
+the session is ready.
 
 Voice runs on realtime models only and never configures a separate transcription model. User
 speech becomes a user message only when the realtime model returns its transcript itself (GPT Live,
