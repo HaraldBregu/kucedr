@@ -2,7 +2,7 @@ import type { PluginManifest } from './plugin_manifest';
 export const PLUGIN_KINDS = ['apps', 'mcp', 'providers', 'skills', 'scripts', 'modes'] as const;
 
 /** The built-in plugin that ships Kucedr's own apps, MCP servers, and skills; it can't be disabled or replaced. */
-export const CORE_PLUGIN_ID = 'kucedr';
+export const CORE_PLUGIN_ID = 'bootstrap';
 
 export type PluginKind = (typeof PLUGIN_KINDS)[number];
 
