@@ -314,13 +314,23 @@ export function useRealtimeVoice({
 
 				await startPlayback();
 				if (startRunRef.current !== runId) return false;
+				const earlyAudio: string[] = [];
+				let earlyAudioLength = 0;
+				const sendAudio = (sessionId: string, audio: string): void => {
+					void window.models.realtimeVoice
+						.appendAudio(sessionId, audio)
+						.catch((error) => failSession(error, sessionId));
+				};
 				await startCapture((audio) => {
 					const sessionId = sessionIdRef.current;
 					if (sessionId) {
-						void window.models.realtimeVoice
-							.appendAudio(sessionId, audio)
-							.catch((error) => failSession(error, sessionId));
+						sendAudio(sessionId, audio);
+						return;
 					}
+					earlyAudio.push(audio);
+					earlyAudioLength += audio.length;
+					while (earlyAudioLength > EARLY_AUDIO_LIMIT)
+						earlyAudioLength -= earlyAudio.shift()?.length ?? 0;
 				});
 				if (startRunRef.current !== runId) {
 					releaseAudio();
