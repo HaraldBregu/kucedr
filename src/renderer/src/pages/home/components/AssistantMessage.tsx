@@ -229,6 +229,10 @@ export function AssistantMessage({
 					/>
 				);
 			}
+			if (!localPath && safeSource && /^https?:/i.test(safeSource)) {
+				const Link = markdownComponents.a ?? 'a';
+				return <Link href={safeSource}>{alt || safeSource}</Link>;
+			}
 			return (
 				<img
 					src={localPath ? localResourceUrl(localPath) : safeSource}
