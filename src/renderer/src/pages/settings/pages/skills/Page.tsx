@@ -37,8 +37,7 @@ const SkillsPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
 	const filter = useSettingsFilter(skills, {
-		text: (skill) =>
-			`${skill.manifest.name} ${skill.manifest.description} ${skill.manifest.metadata?.category ?? ''} ${skill.manifest.metadata?.author ?? ''} ${skill.plugin?.name ?? ''}`,
+		text: (skill) => `${skill.manifest.name} ${skill.manifest.description}`,
 		category: (skill) => skill.plugin?.name ?? 'local',
 	});
 	const open = (skill: SkillInfo): void => {
