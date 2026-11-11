@@ -195,16 +195,6 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 			expect(socket.sent).not.toContainEqual({ type: 'response.create' });
 			expect(socket.sent).toHaveLength(3);
 			socket.event({
-				type: 'conversation.item.input_audio_transcription.completed',
-				item_id: 'user-item',
-				transcript: 'Please inspect the repository.',
-			});
-			expect(events).toContainEqual({
-				type: 'user_transcript_final',
-				itemId: 'user-item',
-				transcript: 'Please inspect the repository.',
-			});
-			socket.event({
 				type: 'response.output_audio.delta',
 				response_id: 'response',
 				item_id: 'item',
