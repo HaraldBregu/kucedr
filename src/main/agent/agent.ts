@@ -533,6 +533,7 @@ export class Agent {
 			async () => {
 				await Promise.allSettled(completions);
 				clearSessionMessages(createSessionState(), this.config, resolvedSessionId, this.sessions);
+				this.histories.delete(resolvedSessionId);
 				await this.memory?.remove(resolvedSessionId).catch(() => undefined);
 			},
 			{ priority: 'high' }
@@ -547,6 +548,7 @@ export class Agent {
 			async () => {
 				await Promise.allSettled(completions);
 				deleteStoredSession(createSessionState(), this.config, resolvedSessionId, this.sessions);
+				this.histories.delete(resolvedSessionId);
 				await this.memory?.remove(resolvedSessionId).catch(() => undefined);
 			},
 			{ priority: 'high' }
