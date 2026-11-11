@@ -11,7 +11,7 @@ export const runTaskNowTool = tool({
 	inputSchema: taskIdSchema,
 	execute: ({ taskId }) => {
 		if (!getTask(taskId).enabled)
-			throw new Error('Task is disabled. Ask the user to enable it from the Tasks page first.');
+			throw new Error('Task is disabled. Ask the user to enable it in Settings > Tasks first.');
 		return runTaskNow(taskId);
 	},
 });
