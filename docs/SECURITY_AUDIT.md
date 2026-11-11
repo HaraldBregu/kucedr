@@ -50,7 +50,7 @@ Keep these properties when changing the code below.
 | 23 | Low | `select_screen_source` in voice blocks the tool queue for 10 minutes | Fixed: voice builds tools with `restricted: true` |
 | 24 | Low | CSP `unsafe-inline` + CDN scripts; `local-resource://file` serves any path | Open |
 | 25 | Low | Updater: `allowPrerelease`, unsigned Linux, Windows `forceCodeSigning: false` | Decision |
-| 26 | Low | `SECURITY.md` describes messaging channels that no longer exist | Open |
+| 26 | Low | `SECURITY.md` describes messaging channels that no longer exist | Fixed |
 
 ---
 
