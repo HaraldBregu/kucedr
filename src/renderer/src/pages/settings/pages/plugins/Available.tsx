@@ -19,8 +19,6 @@ export default function Available({
 	const [plugins, setPlugins] = useState<AvailablePlugin[] | null>(null);
 	const [installing, setInstalling] = useState<string | null>(null);
 	const [error, setError] = useState('');
-	const [query, setQuery] = useState('');
-	const [category, setCategory] = useState('all');
 
 	useEffect(() => {
 		window.plugins
