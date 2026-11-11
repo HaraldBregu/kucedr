@@ -116,6 +116,8 @@ export class Agent {
 	readonly sessions = new SessionCoordinator();
 	private readonly providerLimiter = new KeyedLimiter(3);
 	private readonly subagentLimiter = new KeyedLimiter(3);
+	// ponytail: kept in memory per chat, so undo history is lost on restart; persist it if that matters
+	private readonly histories = new Map<string, import('./history/types').FileHistory>();
 	private isStarted = false;
 	readonly config: Config;
 
