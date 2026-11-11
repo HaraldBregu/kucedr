@@ -16,7 +16,6 @@ import { getModelId, getOptions, getProviderId } from '../../models/selection';
 import { getProvider } from '../../settings_store';
 import { realtimeVoiceConversationFactory } from './conversation';
 import { RealtimeVoiceManager } from './manager';
-import { openAppWindows } from '../../apps/app_render';
 
 export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): RealtimeVoiceManager {
 	const manager = new RealtimeVoiceManager({
