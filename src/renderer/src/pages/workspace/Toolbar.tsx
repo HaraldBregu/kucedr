@@ -45,7 +45,6 @@ import {
 	ListOrdered,
 	Loader2,
 	Minus,
-	Plus,
 	Quote,
 	Redo2,
 	Rows3,
