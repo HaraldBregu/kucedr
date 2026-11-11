@@ -644,6 +644,25 @@ input:focus-visible {
 	border: 1px solid var(--border);
 	padding: 0.25rem 0.75rem;
 	line-height: 1.4;
+	position: relative;
+}
+
+.workspace-markdown-preview .tableWrapper {
+	overflow-x: auto;
+}
+
+.workspace-markdown-preview .column-resize-handle {
+	position: absolute;
+	top: 0;
+	right: -2px;
+	bottom: -1px;
+	width: 3px;
+	background-color: var(--ring);
+	pointer-events: none;
+}
+
+.workspace-markdown-preview.resize-cursor {
+	cursor: col-resize;
 }
 
 .workspace-markdown-preview th {
