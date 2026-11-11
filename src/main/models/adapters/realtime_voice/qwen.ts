@@ -41,7 +41,6 @@ export function createQwenRealtimeVoiceAdapter(
 			const session: Record<string, unknown> = {
 				instructions,
 				modalities: ['text', 'audio'],
-				input_audio_transcription: { model: 'qwen3-asr-flash-realtime' },
 				turn_detection: { type: 'server_vad', threshold: 0.5, silence_duration_ms: 800 },
 				audio: {
 					input: {
