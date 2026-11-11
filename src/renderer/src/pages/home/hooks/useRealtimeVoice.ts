@@ -15,6 +15,7 @@ import { usePcmPlayback } from './usePcmPlayback';
 export type RealtimeVoiceUiStatus = 'idle' | 'checking-permission' | RealtimeVoiceState | 'error';
 
 const CLOCK_INTERVAL_MS = 250;
+const EARLY_AUDIO_LIMIT = REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH / 2;
 const HOME_AGENT_ID = 'main';
 const NOOP_CHAT_DISPATCH = (): void => undefined;
 
