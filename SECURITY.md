@@ -72,8 +72,6 @@ app-store JSON values, prompts, shared logs, or committed MCP manifests.
   background tasks from using actions already allowed by their configuration.
 - MCP approval follows each server's settings. Local stdio servers run as local processes, and remote
   servers receive data supplied to their tools. Review servers and their approval settings before enabling them.
-- Channel access follows configured direct-message policies and group allowlists. An open direct-message
-  policy permits any sender; choose the access policy appropriate for your account.
 - Coder tools and native terminal processes can execute with the desktop user's authority. A project
   working directory is not a security sandbox. See the [SDK boundaries](packages/sdk/README.md#whats-available).
 
