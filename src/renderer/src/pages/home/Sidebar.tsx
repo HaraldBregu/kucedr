@@ -532,14 +532,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							type="button"
 							className="px-2.5 text-sm"
 							aria-label={t('navigationBar.newChat', 'New chat')}
-							onClick={() => {
-								playSound('navigate');
-								setSessionId(crypto.randomUUID());
-								navigate('/home');
-								if (sessions.length === 0)
-									setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
-								window.dispatchEvent(new Event('kucedr:focus-chat-input'));
-							}}
+							onClick={() => startChat()}
 						>
 							<Plus className="size-4 shrink-0" />
 							<span className="truncate">{t('navigationBar.newChat', 'New Chat')}</span>
