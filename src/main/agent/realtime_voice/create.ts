@@ -77,6 +77,11 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 				? filterProfileTools(
 						builtinTools(agent.config, agent.sandbox, { ask: false, restricted: true }),
 						'voice'
+					).filter((tool) =>
+						isAgentToolAllowedForProfile(
+							'voice',
+							tool.policy ?? { kind: 'builtin', id: tool.id }
+						)
 					)
 				: [];
 			const instructions = await buildSystemPrompt(agent.config, tools);
