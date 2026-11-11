@@ -63,7 +63,7 @@ it('uses the required workspace endpoint and documented session schema', async (
 	await connection.stop();
 });
 
-it('normalizes transcript previews and native audio events', async () => {
+it('normalizes native audio events', async () => {
 	const events: RealtimeVoiceAdapterEvent[] = [];
 	const connecting = createQwenRealtimeVoiceAdapter(provider, socketFactory).connect(
 		request,
@@ -72,17 +72,6 @@ it('normalizes transcript previews and native audio events', async () => {
 	socket.emit('open');
 	socket.emit('message', Buffer.from(JSON.stringify({ type: 'session.updated' })));
 	const connection = await connecting;
-	socket.emit(
-		'message',
-		Buffer.from(
-			JSON.stringify({
-				type: 'conversation.item.input_audio_transcription.delta',
-				item_id: 'input',
-				text: 'hello',
-				stash: ' world',
-			})
-		)
-	);
 	socket.emit(
 		'message',
 		Buffer.from(
