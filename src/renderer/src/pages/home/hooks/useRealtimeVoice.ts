@@ -2,10 +2,11 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { modelsFor } from '@/lib/providers';
 import { HomeAgentContext } from '../context/context';
 import type { PendingToolPermission } from '../context/state';
-import type {
-	RealtimeVoiceEvent,
-	RealtimeVoiceState,
-	RealtimeVoiceToolEvent,
+import {
+	REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH,
+	type RealtimeVoiceEvent,
+	type RealtimeVoiceState,
+	type RealtimeVoiceToolEvent,
 } from '@shared/realtime_voice';
 import { canCaptureAudio, dictationErrorMessage, ensureAppMicrophoneAccess } from './audio';
 import { usePcmCapture } from './usePcmCapture';
