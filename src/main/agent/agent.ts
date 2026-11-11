@@ -233,6 +233,11 @@ export class Agent {
 		const toolProfile = AGENT_TOOL_PROFILES[request.agentId] ?? 'chat';
 		const session = createSessionState();
 		if (!beginRun(record, session)) return { text: '', stopReason: 'cancelled' };
+		if (request.category === 'main') {
+			const history = this.histories.get(request.sessionId);
+			if (history) session.runContext.fileHistory = history;
+			else this.histories.set(request.sessionId, session.runContext.fileHistory);
+		}
 
 		let response = '';
 		let result: SessionResult | undefined;
