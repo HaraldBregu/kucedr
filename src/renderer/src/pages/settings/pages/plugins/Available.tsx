@@ -39,18 +39,13 @@ export default function Available({
 		}
 	};
 
-	const normalizedQuery = query.trim().toLocaleLowerCase();
-	const categories = [...new Set((plugins ?? []).flatMap((plugin) => plugin.categories))].sort();
-	const visible = (plugins ?? []).filter(
-		(plugin) =>
-			(category === 'all' || plugin.categories.includes(category)) &&
-			[plugin.title, plugin.description, plugin.id, plugin.author].some((value) =>
-				value.toLocaleLowerCase().includes(normalizedQuery)
-			)
-	);
+	const filter = useSettingsFilter(plugins ?? [], {
+		text: (plugin) => `${plugin.title} ${plugin.description} ${plugin.id} ${plugin.author}`,
+		category: (plugin) => plugin.categories,
+	});
 
 	return (
-		<section className="pb-4">
+		<section className="flex flex-col gap-4 pb-4">
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{plugins === null && !error && (
 				<p className="text-sm text-muted-foreground">
