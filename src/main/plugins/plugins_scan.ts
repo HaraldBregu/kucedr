@@ -4,6 +4,7 @@ import { bundledPluginsRoot } from './plugins_bundled_root';
 import { pluginsRoot } from './plugins_root';
 import { readPlugin, type ReadPlugin } from './plugins_read';
 import { compareVersions } from './plugins_version_compare';
+import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
 
 export interface ScannedPlugin {
 	readonly id: string;
