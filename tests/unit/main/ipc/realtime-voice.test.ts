@@ -52,24 +52,20 @@ it('routes realtime voice lifecycle commands through the invoking window owner',
 	expect(voice.stop).toHaveBeenCalledWith(42, 'voice');
 });
 
-it('routes registered app views through their containing app window', async () => {
+it('rejects realtime voice commands from app views', () => {
 	const voice = voiceManager();
 	const mainFrame = {};
 	const sender = { mainFrame };
-	const appWindow = { id: 84, isDestroyed: () => false };
-	(openAppWindows as Map<string, unknown>).set('demo', { window: appWindow });
 	const dependencies = {
 		voice: voice as never,
 		windows: { has: () => false } as never,
-		apps: {
-			has: () => true,
-			resolve: () => 'demo',
-		} as never,
+		apps: { has: () => true } as never,
 	};
 	new RealtimeVoiceIpc().register(dependencies, {} as never);
 	const event = { sender, senderFrame: mainFrame };
 
-	await command(RealtimeVoiceChannels.startSession)(event, { chatSessionId: 'chat' });
-
-	expect(voice.start).toHaveBeenCalledWith(84, { chatSessionId: 'chat' });
+	expect(() =>
+		command(RealtimeVoiceChannels.startSession)(event, { chatSessionId: 'chat' })
+	).toThrow('Privileged IPC is unavailable to app views.');
+	expect(voice.start).not.toHaveBeenCalled();
 });
