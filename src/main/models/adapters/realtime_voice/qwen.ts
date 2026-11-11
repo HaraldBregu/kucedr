@@ -109,25 +109,6 @@ export function createQwenRealtimeVoiceAdapter(
 								if (audio.length) send({ ...event, audio: audio.toString('base64') });
 								return;
 							}
-							if (event.type === 'conversation.item.create' && event.item.type === 'message') {
-								contexts.set(
-									event.item.role === 'user' ? (event.item.id ?? 'context') : 'context',
-									event.item.content[0].text
-								);
-								send({
-									type: 'session.update',
-									session: { instructions: [instructions, ...contexts.values()].join('\n\n') },
-								});
-								return;
-							}
-							if (event.type === 'conversation.item.delete') {
-								contexts.delete(event.item_id);
-								send({
-									type: 'session.update',
-									session: { instructions: [instructions, ...contexts.values()].join('\n\n') },
-								});
-								return;
-							}
 							send(event);
 						},
 						close: (props) => socket.close(props?.code ?? 1000, props?.reason),
