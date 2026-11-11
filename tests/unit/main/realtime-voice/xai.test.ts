@@ -101,15 +101,13 @@ describe('XAIRealtimeVoiceAdapter', () => {
 				},
 				parallel_tool_calls: false,
 				audio: {
-					input: {
-						format: { type: 'audio/pcm', rate: 24_000 },
-						transcription: { model: 'grok-transcribe' },
-					},
+					input: { format: { type: 'audio/pcm', rate: 24_000 } },
 					output: { format: { type: 'audio/pcm', rate: 24_000 } },
 				},
 				tools: [{ type: 'function', name: 'read' }],
 			},
 		});
+		expect(socket.sent[0]).not.toHaveProperty('session.audio.input.transcription');
 		expect(socket.sent).toHaveLength(1);
 
 		socket.event({ type: 'session.updated' });
