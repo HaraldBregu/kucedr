@@ -92,7 +92,9 @@ Not done:
 - Automatic compaction. `compactConversation` replaces older messages in the chat view for good, so it stays a manual action until that is decided.
 - Correctness item 7. The cumulative `argsText` on `tool_call_args_delta` is part of the event type the SDK package exports, so dropping it is an API change for apps.
 - The 8,192 output default for live-list models, the 3-bytes-per-token estimator, and the remaining tools, skills and MCP points above.
-- Tests were neither changed nor run. These encode the old behaviour: `system/system-prompt.test.ts`, `system/system-filesystem.test.ts`, `run/run-stream-prompt.test.ts`, `run/run-model-context-budget.test.ts`, `run/run-discovery.test.ts`, and any test of `resolveMcpServerHint` or the run timeout.
+- Tests for the timeout, undo history, hook check, deepseek effort and error classification.
+
+Tests: the five that encoded the old behaviour were updated (`system-prompt`, `run-discovery`, `run-stream-prompt`, `llm-nonstream`) and two were added (current-turn trimming in `run-model-context-budget`, the live-list window in `models/context`). Compared with the commit before this work, these changes add no failures to the main suite. 56 of its files still fail for reasons that predate this work or come from other changes.
 
 ## Re-measuring
 
