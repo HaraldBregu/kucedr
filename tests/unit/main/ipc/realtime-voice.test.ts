@@ -1,12 +1,10 @@
 const registerCommandWithEvent = jest.fn();
 
 jest.mock('../../../../src/main/ipc/core/gateway', () => ({ registerCommandWithEvent }));
-jest.mock('../../../../src/main/apps/app_render', () => ({ openAppWindows: new Map() }));
 
 import { BrowserWindow } from 'electron';
 import { RealtimeVoiceIpc } from '../../../../src/main/ipc/realtime_voice';
 import { RealtimeVoiceChannels } from '../../../../src/shared/ipc_channels_definitions';
-import { openAppWindows } from '../../../../src/main/apps/app_render';
 
 function command(channel: string): (...args: unknown[]) => unknown {
 	return registerCommandWithEvent.mock.calls.find(([registered]) => registered === channel)?.[1];
