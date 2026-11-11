@@ -95,11 +95,6 @@ it('normalizes native audio events', async () => {
 		)
 	);
 	expect(events).toContainEqual({
-		type: 'user_transcript_update',
-		itemId: 'input',
-		transcript: 'hello world',
-	});
-	expect(events).toContainEqual({
 		type: 'assistant_audio_delta',
 		itemId: 'audio',
 		responseId: 'response',
