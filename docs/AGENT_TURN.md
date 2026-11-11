@@ -73,7 +73,23 @@ Already fixed before this work: the `unknown tool` errors (61, all older than th
 
 ## Current state
 
-Implementation in progress; this section is replaced when it lands.
+Landed on 2026-11-11:
+
+- **Stable prefix.** The clock moved out of `addBasePrompt` into `system/clock.ts` and is appended last by `buildSystemPrompt`. `run_stream.ts` builds the prompt once per tool set and reuses it across turns, so the clock and the directory listing are fixed for the run. The clock is therefore the run's start time, not the turn's.
+- **Cached tokens.** `LlmUsage.cachedTokens` is filled by all six adapter paths and written to `model_call_end` in `run.jsonl`. The Anthropic requests send top-level `cache_control`.
+- **MCP hint.** A named server's tools are preloaded next to the built-ins; the hint no longer removes or hides anything, and the "<word> mcp" branch is gone.
+- **Context budget.** Results of the current turn are omitted oldest first and only while that turn does not fit. `resolveContextWindow` reads the window from the provider's live model list when the catalog has none (one lookup per provider per app run).
+- **Timeout.** Ten minutes without any event, paused while waiting on `ask`, MCP authorization or a permission prompt, and reported as `timeout`.
+- **Small ones.** Undo history is kept per main chat in memory; effort is sent to deepseek as `reasoning_effort`; provider errors with status 429 or 5xx are no longer classified as context overflow; a hook whose required boolean is off is not spawned.
+
+Checked: `typecheck:node` and eslint pass; the budget, hint, effort and trace changes were run as bundled modules. Not confirmed when this was written: a live model call, the prompt-prefix and hook checks, and the live window lookup.
+
+Not done:
+
+- Cross-run caching of the history. The clock still sits in the system prompt, so the first turn of each run misses; it needs the clock in the message stream.
+- Automatic compaction. `compactConversation` replaces older messages in the chat view for good, so it stays a manual action until that is decided.
+- The 8,192 output default for live-list models, the 3-bytes-per-token estimator, correctness item 7, and the open tools, skills and MCP points above.
+- Tests were neither changed nor run. These encode the old behaviour: `system/system-prompt.test.ts`, `system/system-filesystem.test.ts`, `run/run-stream-prompt.test.ts`, `run/run-model-context-budget.test.ts`, `run/run-discovery.test.ts`, and any test of `resolveMcpServerHint` or the run timeout.
 
 ## Re-measuring
 
