@@ -90,6 +90,10 @@ export async function* chat(
 		usage: {
 			inputTokens: response.usage?.prompt_tokens ?? 0,
 			outputTokens: response.usage?.completion_tokens ?? 0,
+			cachedTokens:
+				response.usage?.prompt_tokens_details?.cached_tokens ??
+				(response.usage as { prompt_cache_hit_tokens?: number } | undefined)
+					?.prompt_cache_hit_tokens,
 		},
 	};
 }
