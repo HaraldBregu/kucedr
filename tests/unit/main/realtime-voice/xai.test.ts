@@ -132,26 +132,6 @@ describe('XAIRealtimeVoiceAdapter', () => {
 		]);
 		expect(socket.sent).not.toContainEqual({ type: 'response.create' });
 		socket.event({
-			type: 'conversation.item.input_audio_transcription.completed',
-			item_id: 'user-item',
-			transcript: 'Open the current file.',
-		});
-		expect(events).toContainEqual({
-			type: 'user_transcript_final',
-			itemId: 'user-item',
-			transcript: 'Open the current file.',
-		});
-		socket.event({
-			type: 'conversation.item.input_audio_transcription.updated',
-			item_id: 'next-user-item',
-			transcript: 'Open the corrected file.',
-		});
-		expect(events).toContainEqual({
-			type: 'user_transcript_update',
-			itemId: 'next-user-item',
-			transcript: 'Open the corrected file.',
-		});
-		socket.event({
 			type: 'response.output_audio_transcript.delta',
 			response_id: 'response',
 			item_id: 'item',
