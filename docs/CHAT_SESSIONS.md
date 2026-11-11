@@ -17,7 +17,7 @@ How several main chat sessions run at the same time, what happens to a run when 
 
 ## Method
 
-- Read the path end to end: `src/main/agent/agent.ts`, `agent_scheduler.ts`, `state/`, `session/coordinator.ts`, `src/main/ipc/agent.ts`, `src/preload/agent.ts`, `src/renderer/src/pages/home/hooks/useHomeAgent.ts`, `context/reducer.ts`, `Sidebar.tsx`.
+- Read the path end to end: `agent.ts`, `agent_scheduler.ts`, `state/`, `session/coordinator.ts`, `src/main/ipc/agent.ts`, `src/preload/agent.ts`, `useHomeAgent.ts` (in `hooks/`), `reducer.ts` (in `context/`) and `Sidebar.tsx`.
 - Mined the local run traces (`~/.kucedr/sessions/*/run.jsonl`, read-only): 354 runs in 53 chats.
 - Reproduced in the real app: Playwright `_electron`, isolated profile (`KUCEDR_E2E_DATA_ROOT`), the dev renderer, the `out/main` build of 2026-11-11 15:28. The provider was a local OpenAI-compatible mock that streams 40 chunks at 250 ms and records whether the app closed the connection early. No real provider and no stored key were used.
 
