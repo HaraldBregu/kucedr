@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
+import { commandEnvironment } from '../../agent/execution/environment';
 import type { PluginScript } from './plugin_script_list';
 
 const TIMEOUT_MS = 10_000;
