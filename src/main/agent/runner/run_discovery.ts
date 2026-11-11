@@ -20,7 +20,6 @@ interface ToolSearchOptions {
 	required: Tool[];
 	discoveryEnabled?: boolean;
 	mcpTools?: DiscoveredMcpTool[];
-	mcpServerHint?: string;
 	filterEligible?: (tools: Tool[]) => Tool[];
 }
 
