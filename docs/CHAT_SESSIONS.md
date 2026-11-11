@@ -136,7 +136,7 @@ This is the part of AGENT_STATE §3.1 that parallel chats need. The rest of that
 
 ### Order and size
 
-Steps 1 to 3 touch `agent.ts`, `state/state_types.ts`, `src/preload/agent.ts`, `src/shared/agent_types.ts`, `useHomeAgent.ts`, `context/reducer.ts` and `contexts/chat-session.ts`. No new module, no new dependency, no change to stored data.
+Steps 1 to 3 touch `agent.ts`, `state/state_types.ts`, `src/preload/agent.ts`, `src/shared/agent_types.ts`, `useHomeAgent.ts`, `reducer.ts` and `src/renderer/src/contexts/chat-session.ts`. No new module, no new dependency, no change to stored data.
 
 ## Not planned
 
