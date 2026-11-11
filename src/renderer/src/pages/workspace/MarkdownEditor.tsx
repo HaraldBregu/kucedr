@@ -74,7 +74,7 @@ export function WorkspaceMarkdownEditor({
 		extensions: [
 			StarterKit.configure({ codeBlock: false, link: { openOnClick: false } }),
 			CodeBlock.extend({ addNodeView: () => ReactNodeViewRenderer(WorkspaceCodeBlock) }),
-			TableKit.configure({ table: { resizable: false } }),
+			TableKit.configure({ table: { resizable: true } }),
 			TaskList,
 			TaskItem.configure({ nested: true }),
 			Image.extend({
