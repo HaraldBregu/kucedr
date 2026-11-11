@@ -313,9 +313,21 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 									});
 							} : undefined}
 						>
-							<span className="truncate">{label}</span>
+							<span className={cn('truncate', category && 'mr-7')}>{label}</span>
 							<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
 						</CollapsibleTrigger>
+					)}
+					{category && editingCategoryId !== category.id && (
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-xs"
+							className="absolute top-1 right-7 text-sidebar-foreground/70"
+							aria-label={t('settings.chatHistory.newChatIn', { name: category.name, defaultValue: 'New chat in {{name}}' })}
+							onClick={() => startChat(category.id)}
+						>
+							<Plus />
+						</Button>
 					)}
 					<CollapsibleContent>
 						<SidebarGroupContent>{content}</SidebarGroupContent>
