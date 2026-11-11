@@ -8,7 +8,7 @@ import {
 import { pluginWebsites } from '../../shared/plugin_websites';
 import { pluginIcon } from './plugins_icon';
 import { scanPlugins } from './plugins_scan';
-import { pluginsStore } from './plugins_store';
+import { disabledPlugins } from './plugins_disabled';
 
 export function listPlugins(): PluginInfo[] {
 	const disabled = new Set(pluginsStore.get('disabled'));
