@@ -58,15 +58,10 @@ class FakeSocket implements RealtimeVoiceSocket {
 }
 
 describe('OpenAIRealtimeVoiceAdapter', () => {
-	it('refreshes remembered context before each response and discards it after cancellation', async () => {
+	it('leaves replies to the provider, serializes tool follow-ups, and uses no transcription model', async () => {
 		const socket = new FakeSocket();
-		let resolveContext: (value: string) => void = () => undefined;
-		const contextForTurn = jest.fn(
-			() =>
-				new Promise<string>((resolve) => {
-					resolveContext = resolve;
-				})
-		);
+		const contextForTurn = jest.fn(async () => 'Remembered context');
+		const events: Array<{ type: string; message?: string }> = [];
 		const adapter = new OpenAIRealtimeVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			() => socket,
@@ -81,87 +76,45 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 				tools: [],
 				contextForTurn,
 			},
-			() => undefined
+			(event) => events.push(event)
 		);
+		const creates = (): number =>
+			socket.sent.filter((event) => event.type === 'response.create').length;
 		socket.open();
 		expect(socket.sent[0]).toMatchObject({
-			session: { audio: { input: { turn_detection: { create_response: false } } } },
+			session: { audio: { input: { turn_detection: { create_response: true } } } },
 		});
+		expect(socket.sent[0]).not.toHaveProperty('session.audio.input.transcription');
 		socket.event({ type: 'session.updated' });
 		const connection = await connecting;
-		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'one' });
-		socket.event({
-			type: 'conversation.item.input_audio_transcription.completed',
-			item_id: 'one',
-			transcript: 'What are my preferences?',
-		});
-		expect(contextForTurn).toHaveBeenCalledWith('What are my preferences?');
-		expect(socket.sent.some((event) => event.type === 'response.create')).toBe(false);
-		resolveContext('Prefers concise answers');
-		await new Promise((resolve) => setTimeout(resolve, 0));
-		expect(socket.sent.at(-2)).toMatchObject({
-			type: 'conversation.item.create',
-			item: {
-				id: expect.stringMatching(/^memory_[0-9a-f]{25}$/),
-				role: 'user',
-				content: [{ type: 'input_text', text: expect.stringContaining('Prefers concise answers') }],
-			},
-		});
-		expect(socket.sent.at(-1)).toEqual({ type: 'response.create' });
-		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'two' });
-		socket.event({
-			type: 'conversation.item.input_audio_transcription.completed',
-			item_id: 'two',
-			transcript: 'New topic',
-		});
-		resolveContext('Different preference');
-		await new Promise((resolve) => setTimeout(resolve, 0));
-		expect(socket.sent.filter((event) => event.type === 'conversation.item.delete')).toHaveLength(
-			1
-		);
-		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'three' });
-		socket.event({
-			type: 'conversation.item.input_audio_transcription.completed',
-			item_id: 'three',
-			transcript: 'Stop',
-		});
-		await connection.stop();
-		const count = socket.sent.length;
-		resolveContext('Must not send');
-		await new Promise((resolve) => setTimeout(resolve, 0));
-		expect(socket.sent).toHaveLength(count);
-	});
 
-	it('continues a voice response when context lookup fails', async () => {
-		const socket = new FakeSocket();
-		const adapter = new OpenAIRealtimeVoiceAdapter(
-			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
-			() => socket,
-			1000
-		);
-		const connecting = adapter.connect(
-			{
-				modelId: 'gpt-realtime-2.1',
-				voice: 'marin',
-				instructions: '',
-				history: [],
-				tools: [],
-				contextForTurn: async () => {
-					throw new Error('Unavailable');
-				},
-			},
-			() => undefined
-		);
-		socket.open();
-		socket.event({ type: 'session.updated' });
-		await connecting;
-		socket.event({
-			type: 'conversation.item.input_audio_transcription.completed',
-			item_id: 'one',
-			transcript: 'Hello',
-		});
-		await new Promise((resolve) => setTimeout(resolve, 0));
+		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'one' });
+		socket.event({ type: 'input_audio_buffer.speech_stopped', item_id: 'one' });
+		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'two' });
+		socket.event({ type: 'input_audio_buffer.speech_stopped', item_id: 'two' });
+		expect(contextForTurn).not.toHaveBeenCalled();
+		expect(creates()).toBe(0);
+
+		socket.event({ type: 'response.created', response: { id: 'reply' } });
+		await connection.addToolResult('call', 'ok');
+		expect(creates()).toBe(0);
+		socket.event({ type: 'response.done', response: { id: 'reply', status: 'completed' } });
 		expect(socket.sent.at(-1)).toEqual({ type: 'response.create' });
+
+		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'three' });
+		socket.event({ type: 'response.created', response: { id: 'follow-up' } });
+		expect(socket.sent.at(-1)).toEqual({ type: 'response.cancel' });
+		expect(events).not.toContainEqual({ type: 'response_started', responseId: 'follow-up' });
+
+		socket.event({
+			type: 'error',
+			error: {
+				code: 'conversation_already_has_active_response',
+				message: 'Conversation already has an active response in progress: resp_1.',
+			},
+		});
+		expect(events.filter((event) => event.type === 'error')).toEqual([]);
+		await connection.stop();
 	});
 
 	it.each(['gpt-realtime-2.1', 'gpt-realtime-2.1-mini'])(
