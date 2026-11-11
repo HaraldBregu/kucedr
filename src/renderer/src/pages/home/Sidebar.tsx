@@ -221,6 +221,19 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		setCollapsed((current) => current.filter((key) => key !== id));
 	};
 
+	const startChat = (categoryId?: string): void => {
+		const id = crypto.randomUUID();
+		playSound('navigate');
+		if (categoryId) {
+			moveToCategory([id], categoryId);
+			setCollapsed((current) => current.filter((key) => key !== categoryId));
+		}
+		setSessionId(id);
+		navigate('/home');
+		if (sessions.length === 0) setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
+		window.dispatchEvent(new Event('kucedr:focus-chat-input'));
+	};
+
 	const pinnedSessions = activeSessions.filter((session) => session.pinned);
 	const categoryIds = new Set(categories.map((category) => category.id));
 	const recentSessions = activeSessions.filter((session) => !session.pinned && !categoryIds.has(assignments[session.id]));
