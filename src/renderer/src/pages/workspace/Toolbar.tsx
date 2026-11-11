@@ -25,6 +25,7 @@ import {
 	Eraser,
 	FileBox,
 	FileCode,
+	FileIcon,
 	Heading1,
 	Heading2,
 	Heading3,
