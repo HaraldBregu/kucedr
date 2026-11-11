@@ -38,6 +38,7 @@ export function ChatDetails({ open, popover = false, onClose, scroll, messages, 
 						<Button type="button" variant="ghost" size="icon-sm" className="-my-1 -mr-1.5 rounded-full" aria-label="Close chat information" onClick={onClose}><X className="size-4" /></Button>
 					</CardAction>
 				</CardHeader>
+				<ChatSearch scroll={scroll} active={open} refreshKey={messages} />
 				<div className="no-scrollbar min-h-0 overflow-y-auto">
 				<CardContent className="space-y-2 pb-3 pt-0 text-sm">
 					<div className="flex min-h-7 items-center gap-2 text-muted-foreground">
