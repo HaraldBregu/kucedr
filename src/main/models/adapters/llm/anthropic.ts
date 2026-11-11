@@ -15,6 +15,7 @@ export async function* anthropic(
 	}));
 	const response = await client.messages.create(
 		{
+			cache_control: { type: 'ephemeral' },
 			...options('anthropic', req),
 			model: req.model,
 			system: req.system,
@@ -55,6 +56,7 @@ export async function* anthropic(
 				(response.usage.cache_creation_input_tokens ?? 0) +
 				(response.usage.cache_read_input_tokens ?? 0),
 			outputTokens: response.usage.output_tokens,
+			cachedTokens: response.usage.cache_read_input_tokens ?? 0,
 		},
 	};
 }
