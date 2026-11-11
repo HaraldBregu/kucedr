@@ -185,7 +185,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 			<div className="flex min-h-0 min-w-0 flex-1 flex-col">
 			{searchable ? <div className="pointer-events-none absolute inset-x-2 top-12 z-20 flex flex-row-reverse flex-wrap items-start gap-1 sm:inset-x-3">
 			{file && !loading ? (
-				<div className={`pointer-events-auto flex items-start gap-2 ${toolbarVisible ? 'w-full rounded-lg border bg-background/70 p-1 shadow-sm backdrop-blur-md' : ''}`}>
+				<div className={`pointer-events-auto flex items-start gap-2 rounded-lg border bg-background/70 p-1 shadow-sm backdrop-blur-md ${toolbarVisible ? 'w-full' : ''}`}>
 					{toolbarVisible ? <div ref={setToolbarTarget} className="min-w-0 flex-1" /> : null}
 					<WorkspaceViewActions wide={wide} onWideChange={onWideChange} onFind={openFind} name={file.name} content={content} markdown={kind === 'markdown'} toolbar={toolbarVisible} onToolbarChange={toolbarAvailable ? (next) => { setToolbar(next); localStorage.setItem('workspace-toolbar', String(next)); } : undefined} />
 				</div>
