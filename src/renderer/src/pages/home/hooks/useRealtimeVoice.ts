@@ -347,6 +347,7 @@ export function useRealtimeVoice({
 
 				sessionIdRef.current = session.id;
 				sessionChatIdRef.current = chatSessionId;
+				for (const audio of earlyAudio.splice(0)) sendAudio(session.id, audio);
 				setStatus('listening');
 				const pendingEvents = pendingSessionEventsRef.current;
 				pendingSessionEventsRef.current = [];
