@@ -1,7 +1,7 @@
 import type { PluginSource } from '../../shared/plugin_types';
 import type { ProviderManifest } from '../../shared/provider_types';
 import { scanPlugins } from './plugins_scan';
-import { pluginsStore } from './plugins_store';
+import { disabledPlugins } from './plugins_disabled';
 
 export interface PluginProvider {
 	/** The plugin folder; the provider's `/assets/...` icon paths resolve against it. */
