@@ -446,7 +446,8 @@ function validatedVideoPath(requestedPath: string): string {
 		try {
 			const realRoot = realpathSync(path.resolve(root));
 			const real = realpathSync(path.resolve(root, requestedPath));
-			if (real.startsWith(realRoot + path.sep)) return real;
+			if (real.startsWith(realRoot + path.sep) && workspaceFileType(real).kind === 'video')
+				return real;
 		} catch {
 			// Root or file missing under this root; try the next one.
 		}
