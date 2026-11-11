@@ -434,6 +434,8 @@ async function* loop(
 		let finalization: { instruction: string; stopReason?: string } | undefined;
 		let continued = false;
 		let nudges = 3;
+		let promptKey: string | undefined;
+		let builtPrompt = '';
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
@@ -442,15 +444,22 @@ async function* loop(
 				synthesisOnly || !turnTools.some((tool) => tool.id === TOOL_SEARCH_ID)
 					? turnTools
 					: (search?.eligible() ?? tools);
-			let systemPrompt = await buildSystemPrompt(
-				config,
-				turnTools,
-				session.runContext.loadedSkills,
-				options.instructions,
-				contextMode,
-				turnTools.some((tool) => tool.id === 'load_skill'),
-				eligibleTurnTools
-			);
+			const turnKey = [turnTools, eligibleTurnTools]
+				.map((list) => list.map((tool) => tool.id).join())
+				.join('|');
+			if (turnKey !== promptKey) {
+				builtPrompt = await buildSystemPrompt(
+					config,
+					turnTools,
+					session.runContext.loadedSkills,
+					options.instructions,
+					contextMode,
+					turnTools.some((tool) => tool.id === 'load_skill'),
+					eligibleTurnTools
+				);
+				promptKey = turnKey;
+			}
+			let systemPrompt = builtPrompt;
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt = [
 				loadedSkillPrompt,
