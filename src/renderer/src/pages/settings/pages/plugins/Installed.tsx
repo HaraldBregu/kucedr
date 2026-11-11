@@ -48,8 +48,7 @@ export default function Installed(): React.JSX.Element {
 	};
 
 	const filter = useSettingsFilter(plugins, {
-		text: (plugin) =>
-			`${plugin.name} ${plugin.description ?? ''} ${plugin.id} ${plugin.author ?? ''}`,
+		text: (plugin) => `${plugin.name} ${plugin.description ?? ''} ${plugin.id}`,
 		category: (plugin) => [plugin.builtIn ? 'builtIn' : 'downloaded', ...plugin.categories],
 		order: ['builtIn', 'downloaded'],
 	});
