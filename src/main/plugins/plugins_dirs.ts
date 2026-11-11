@@ -11,7 +11,7 @@ export interface PluginDirectory {
 }
 
 export function pluginDirs(kind: PluginKind): PluginDirectory[] {
-	const disabled = new Set(pluginsStore.get('disabled'));
+	const disabled = disabledPlugins();
 	return scanPlugins().flatMap(({ id, directory, builtIn, manifest }) =>
 		manifest && !disabled.has(id) && manifest.contributes[kind].length > 0
 			? [{ directory: path.join(directory, kind), plugin: { id, name: manifest.title, version: manifest.version }, builtIn }]
