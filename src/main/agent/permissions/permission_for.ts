@@ -26,7 +26,7 @@ export function permissionFor(
 		)
 			return true;
 		try {
-			const pattern = realPath(rawPattern);
+			const pattern = fold(realPath(rawPattern));
 			return resolvedTarget === pattern || path.matchesGlob(resolvedTarget, pattern);
 		} catch {
 			return false;
