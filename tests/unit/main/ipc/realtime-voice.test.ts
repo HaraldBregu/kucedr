@@ -21,7 +21,6 @@ function voiceManager() {
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	(openAppWindows as Map<string, unknown>).clear();
 });
 
 it('routes realtime voice lifecycle commands through the invoking window owner', async () => {
