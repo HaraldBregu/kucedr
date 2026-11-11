@@ -11,7 +11,7 @@ import { scanPlugins } from './plugins_scan';
 import { disabledPlugins } from './plugins_disabled';
 
 export function listPlugins(): PluginInfo[] {
-	const disabled = new Set(pluginsStore.get('disabled'));
+	const disabled = disabledPlugins();
 	return scanPlugins().map(({ id, directory, builtIn, manifest, error }) => ({
 		id,
 		name: manifest?.title ?? id,
