@@ -22,7 +22,7 @@ export async function addFilesystemPrompt(config: Config, prompt: string): Promi
 	prompt += '\n\n## Agent filesystem';
 	prompt += `\nRoot directory: ${JSON.stringify(root)}`;
 	prompt +=
-		'\nThis inventory is refreshed before every model turn and contains path names only, not file contents.';
+		'\nThis inventory was taken at the start of the run and contains path names only, not file contents. Files created since then are not listed.';
 	prompt +=
 		'\nOnly files and folders directly inside the root directory are listed. Folder names end with `/`.';
 	prompt +=
