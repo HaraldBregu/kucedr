@@ -70,7 +70,7 @@ export function SettingsFilter({ filter, categoryLabels }: SettingsFilterProps):
 							className="h-7 max-w-full min-w-0 gap-1.5 rounded-full px-3 text-xs text-muted-foreground data-[pressed]:border-primary data-[pressed]:bg-primary data-[pressed]:text-primary-foreground"
 						>
 							<span className="truncate first-letter:uppercase">{label(value)}</span>
-							<span className="tabular-nums opacity-60">{filter.counts.get(value) ?? 0}</span>
+							<span className="opacity-70">{filter.counts.get(value) ?? 0}</span>
 						</ToggleGroupItem>
 					))}
 				</ToggleGroup>
