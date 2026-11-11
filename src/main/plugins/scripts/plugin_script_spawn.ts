@@ -9,14 +9,20 @@ const MAX_OUTPUT = 2 * 1024 * 1024;
 export function spawnPluginScript(script: PluginScript, payload: unknown): Promise<string> {
 	const { name } = script;
 	return new Promise<string>((resolve, reject) => {
-		const child = spawn(process.execPath, [path.join(script.directory, ...script.metadata.entry.split('/'))], {
-			cwd: script.directory,
-			env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' },
-			timeout: TIMEOUT_MS,
-		});
+		const child = spawn(
+			process.execPath,
+			[path.join(script.directory, ...script.metadata.entry.split('/'))],
+			{
+				cwd: script.directory,
+				env: { ...commandEnvironment(), ELECTRON_RUN_AS_NODE: '1' },
+				timeout: TIMEOUT_MS,
+				killSignal: 'SIGKILL',
+			}
+		);
 		const stdout: Buffer[] = [];
 		const stderr: Buffer[] = [];
 		let size = 0;
+		let stderrSize = 0;
 		child.stdout.on('data', (chunk: Buffer) => {
 			size += chunk.length;
 			if (size > MAX_OUTPUT) child.kill();
