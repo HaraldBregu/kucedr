@@ -73,8 +73,8 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 			<div contentEditable={false} className="relative">
 				{script.inputSchema && input !== null && typeof input === 'object' && !Array.isArray(input) ? (
 					<>
-						<Button type="button" variant="outline" size="icon-sm" aria-label={`${script.title} properties`} className="absolute right-2 top-2 z-10" onClick={() => setFormOpen(true)}>
-							<Settings2 />
+						<Button type="button" variant="outline" size="sm" aria-label={`${script.title} properties`} className="absolute right-2 top-2 z-10" onClick={() => setFormOpen(true)}>
+							<Settings2 />Edit
 						</Button>
 						{formOpen ? (
 							<WorkspaceScriptForm script={script} value={input as Record<string, unknown>} submitLabel="Save" onClose={() => setFormOpen(false)} onSubmit={(next) => {
