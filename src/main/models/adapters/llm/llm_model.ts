@@ -667,6 +667,9 @@ export class LlmModel implements LlmAdapter {
 				if (chunk.usage) {
 					usage.inputTokens = chunk.usage.prompt_tokens ?? usage.inputTokens;
 					usage.outputTokens = chunk.usage.completion_tokens ?? usage.outputTokens;
+					usage.cachedTokens =
+						chunk.usage.prompt_tokens_details?.cached_tokens ??
+						(chunk.usage as { prompt_cache_hit_tokens?: number }).prompt_cache_hit_tokens;
 				}
 
 				const choice = chunk.choices?.[0];
