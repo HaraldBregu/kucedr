@@ -426,7 +426,7 @@ export function execTool(
 		...configured,
 		parseInput(raw: unknown): Record<string, unknown> {
 			const input = configured.parseInput(raw);
-			if (input.elevated === true && input.env && Object.keys(input.env).length > 0)
+			if (input.elevated === true && input.env && typeof input.env === 'object' && Object.keys(input.env).length > 0)
 				throw new Error('Elevated commands cannot override the environment.');
 			if (readOnly || input.elevated === true) return input;
 			const roots = resolveExecRoots(input, agentLocation());
