@@ -46,31 +46,20 @@ export default function Installed(): React.JSX.Element {
 		}
 	};
 
-	const normalizedQuery = query.trim().toLocaleLowerCase();
-	const categories = [...new Set(plugins.flatMap((plugin) => plugin.categories))].sort();
-	const visible = plugins.filter(
-		(plugin) =>
-			(category === 'all' ||
-				(plugin.builtIn ? 'builtIn' : 'downloaded') === category ||
-				plugin.categories.includes(category)) &&
-			[plugin.name, plugin.description ?? '', plugin.id].some((value) =>
-				value.toLocaleLowerCase().includes(normalizedQuery)
-			)
-	);
+	const filter = useSettingsFilter(plugins, {
+		text: (plugin) =>
+			`${plugin.name} ${plugin.description ?? ''} ${plugin.id} ${plugin.author ?? ''}`,
+		category: (plugin) => [plugin.builtIn ? 'builtIn' : 'downloaded', ...plugin.categories],
+		order: ['builtIn', 'downloaded'],
+	});
 
 	return (
 		<>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
-			<section className="pb-4">
-				<SettingsFilter
-					query={query}
-					onQueryChange={setQuery}
-					categories={['builtIn', 'downloaded', ...categories]}
-					category={category}
-					onCategoryChange={setCategory}
-				/>
+			<section className="flex flex-col gap-4 pb-4">
+				<SettingsFilter filter={filter} />
 				<div className="grid grid-cols-1 gap-3">
-					{visible.map((plugin) => (
+					{filter.items.map((plugin) => (
 						<Card
 							key={plugin.id}
 							size="sm"
