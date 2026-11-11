@@ -187,7 +187,10 @@ Starting Voice should verify that a supported realtime model is configured, audi
 capture is available, and microphone permission is granted. It should then open the large persona
 panel and start capture, playback, and a realtime session for the selected chat.
 
-User transcripts should become user messages. Assistant transcripts, audio, tool calls, permission
+Voice runs on realtime models only and never configures a separate transcription model. User
+speech becomes a user message only when the realtime model returns its transcript itself (GPT Live,
+Gemini Live); OpenAI Realtime, xAI, and Qwen sessions keep the assistant side only, and the provider
+starts each reply when the user stops speaking. Assistant transcripts, audio, tool calls, permission
 requests, and generated media should use the same conversation components as text chat. New user
 speech should stop current assistant playback so the user can interrupt. Ending the panel,
 switching sessions, or leaving Home should stop the session and release audio resources.
