@@ -48,13 +48,15 @@ it('uses the required workspace endpoint and documented session schema', async (
 		session: {
 			instructions: expect.stringContaining('Prior request'),
 			temperature: 0.6,
-			input_audio_transcription: { model: 'qwen3-asr-flash-realtime' },
 			audio: {
 				input: { format: { sample_rate: 16000, channels: 1 } },
 				output: { voice: 'Tina', format: { sample_rate: 24000 } },
 			},
 		},
 	});
+	expect(JSON.parse(socket.send.mock.calls[0]![0])).not.toHaveProperty(
+		'session.input_audio_transcription'
+	);
 	socket.emit('message', Buffer.from(JSON.stringify({ type: 'session.updated' })));
 	const connection = await connecting;
 	expect(socket.send).toHaveBeenCalledTimes(1);
