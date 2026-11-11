@@ -1454,16 +1454,18 @@ describe('run stream system prompt', () => {
 				contextMode: 'minimal',
 			},
 			new AbortController().signal,
-			{ tools: [health], progressiveDiscovery: true }
+			{ tools: [health, read, gmail], progressiveDiscovery: true }
 		))
 			void _event;
 
-		expect(session.toolCalls.find((call) => call.id === 'find-gmail')?.result?.content).toContain(
-			'"selectedToolIds":[]'
+		const firstTurn = (runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map(
+			(tool) => tool.id
 		);
+		expect(firstTurn).toEqual(expect.arrayContaining(['read', 'mcp__gmail__search_threads']));
+		expect(firstTurn).not.toContain('get_health');
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).not.toContain('get_health');
+		).toContain('get_health');
 	});
 
 	it('reloads a named MCP catalog after authorization before searching tools', async () => {
