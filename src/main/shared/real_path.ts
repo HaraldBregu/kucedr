@@ -12,5 +12,5 @@ export function realPath(targetPath: string): string {
 		existingPath = parent;
 	}
 
-	return path.resolve(fs.realpathSync(existingPath), ...missingSegments);
+	return path.resolve(fs.realpathSync.native(existingPath), ...missingSegments);
 }
