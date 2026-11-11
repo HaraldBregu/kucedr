@@ -57,17 +57,9 @@ export default function Available({
 					{t('settings.integrations.marketplace.empty')}
 				</p>
 			)}
-			{plugins && plugins.length > 0 && (
-				<SettingsFilter
-					query={query}
-					onQueryChange={setQuery}
-					categories={categories}
-					category={category}
-					onCategoryChange={setCategory}
-				/>
-			)}
+			{plugins && plugins.length > 0 && <SettingsFilter filter={filter} />}
 			<div className="grid grid-cols-1 gap-3">
-				{visible.map((plugin) => (
+				{filter.items.map((plugin) => (
 					<Card
 						key={plugin.id}
 						size="sm"
