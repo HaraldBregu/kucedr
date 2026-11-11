@@ -333,12 +333,14 @@ async function* loop(
 			]);
 			search = createToolSearch({
 				eligible: filterEligibleTools(tools),
-				required: mcpServerHint
-					? []
-					: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
+				required: filterEligibleTools(tools).filter(
+					(tool) =>
+						requiredIds.has(tool.id) ||
+						(tool.policy?.kind === 'mcp' &&
+							tool.policy.serverId.toLocaleLowerCase() === mcpServerHint)
+				),
 				discoveryEnabled: searchEnabled,
 				mcpTools: mcpEntries,
-				mcpServerHint,
 				filterEligible: filterEligibleTools,
 			});
 		}
