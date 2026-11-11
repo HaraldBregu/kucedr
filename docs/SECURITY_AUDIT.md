@@ -39,7 +39,7 @@ Keep these properties when changing the code below.
 | 12 | Medium | `AppIpc` has no caller check; `openVideo` launches any file type | Partial: `openVideo` only opens video files; other unchecked handlers open |
 | 13 | Medium | MCP OAuth authorization URL opened without scheme check | Fixed: passes `externalUrl()` (http/https/mailto) |
 | 14 | Medium | MCP server marks its own tools read-only to skip approval | Decision |
-| 15 | Medium | Plugin script name collision hands over S3 credentials | Open |
+| 15 | Medium | Plugin script name collision hands over S3 credentials | Fixed: built-in plugin scripts claim names first |
 | 16 | Medium | `update_soul` / `update_user` / `update_identity` always allowed (`PERMISSIONS_SECURITY.md` #7) | Decision |
 | 17 | Medium | *Suspected:* cloud restore can plant plugins, MCP servers, skills | Decision |
 | 18 | Medium | *Suspected:* no Electron fuses; entitlements allow library injection | Decision |
