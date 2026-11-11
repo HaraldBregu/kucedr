@@ -17,6 +17,8 @@ export async function downloadPlugin(url: string, integrity?: string): Promise<P
 	if (target.protocol !== 'https:') throw new Error('Plugins can only be downloaded over https.');
 
 	const response = await fetch(target);
+	if (new URL(response.url).protocol !== 'https:')
+		throw new Error('Plugins can only be downloaded over https.');
 	if (!response.ok || !response.body) throw new Error(`Download failed (HTTP ${response.status}).`);
 	const tooLarge = new Error('The plugin archive is larger than 200 MB.');
 	if (Number(response.headers.get('content-length')) > MAX_DOWNLOAD_BYTES) throw tooLarge;
