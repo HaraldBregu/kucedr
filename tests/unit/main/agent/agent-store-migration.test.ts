@@ -136,11 +136,17 @@ it('keeps model selections isolated between agent profiles', () => {
 	});
 	for (const [profileId, providerId, modelId] of [
 		['chat', 'openai', 'chat-image'],
-		['voice', 'google', 'voice-image'],
 		['tasks', 'xai', 'tasks-image'],
 	] as const) {
 		setAgentProfileModel(profileId, 'image', { providerId, modelId, options: {} });
 	}
+	expect(() =>
+		setAgentProfileModel('voice', 'image', {
+			providerId: 'google',
+			modelId: 'voice-image',
+			options: {},
+		})
+	).toThrow('Unsupported image model for voice.');
 
 	expect(getAgentProfileModel('tasks', 'textToText')).toEqual({
 		providerId: 'anthropic',
