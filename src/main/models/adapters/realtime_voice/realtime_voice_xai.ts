@@ -65,10 +65,7 @@ function xaiSession(request: RealtimeVoiceAdapterRequest): Record<string, unknow
 		},
 		parallel_tool_calls: false,
 		audio: {
-			input: {
-				format: { type: 'audio/pcm', rate: 24_000 },
-				transcription: { model: 'grok-transcribe' },
-			},
+			input: { format: { type: 'audio/pcm', rate: 24_000 } },
 			output: { format: { type: 'audio/pcm', rate: 24_000 } },
 		},
 		tools: request.tools.map((tool) => ({
