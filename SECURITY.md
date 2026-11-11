@@ -35,7 +35,7 @@ Reports about these repository components are in scope:
 
 - Electron sandbox, context isolation, navigation, preload, or IPC bypasses.
 - Unauthorized file access, path traversal, command execution, or permission bypasses.
-- Exposure or unauthorized use of provider credentials, MCP OAuth tokens, channel tokens, or account sessions.
+- Exposure or unauthorized use of provider credentials, MCP OAuth tokens, or account sessions.
 - Cross-app access to another app's data or privileged Coder and terminal APIs.
 - Exposure of conversations, memory, Library files, Workspace data, or synchronized content.
 - Vulnerabilities in the SDK, CLI plugin handling, bundled MCP servers, or checked-in backend functions.
