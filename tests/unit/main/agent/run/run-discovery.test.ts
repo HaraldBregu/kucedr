@@ -26,6 +26,11 @@ describe('tool search', () => {
 			])
 		).toBe('gmail');
 		expect(resolveMcpServerHint('use mcp tools', [])).toBeUndefined();
+		expect(
+			resolveMcpServerHint('delete the old mcp config file', [
+				{ serverId: 'gmail', serverName: 'Gmail' },
+			])
+		).toBeUndefined();
 	});
 	it('starts with required tools and searches schema metadata', async () => {
 		const read = fakeTool('read', 'Read a file');
