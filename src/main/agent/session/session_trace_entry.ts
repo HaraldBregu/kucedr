@@ -141,6 +141,9 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 				? {
 						usage: {
 							...(typeof usage.inputTokens === 'number' ? { inputTokens: usage.inputTokens } : {}),
+							...(typeof usage.cachedTokens === 'number'
+								? { cachedTokens: usage.cachedTokens }
+								: {}),
 							...(typeof usage.outputTokens === 'number'
 								? { outputTokens: usage.outputTokens }
 								: {}),
