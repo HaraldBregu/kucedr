@@ -58,7 +58,7 @@ describe('agent store permissions', () => {
 		});
 	});
 
-	it.each(['chat', 'voice', 'tasks'] as const)(
+	it.each(['chat', 'tasks'] as const)(
 		'stores media models independently in the %s profile',
 		(profileId) => {
 			setToolModel(
@@ -73,6 +73,12 @@ describe('agent store permissions', () => {
 			});
 		}
 	);
+
+	it('keeps media models out of the voice profile', () => {
+		expect(() =>
+			setToolModel('image', { providerId: 'google', modelId: 'voice-image', options: {} }, 'voice')
+		).toThrow('Unsupported image model for voice.');
+	});
 
 	it('trusts only the workspace by default', () => {
 		expect(resetPermissions()).toMatchObject({
