@@ -769,7 +769,7 @@ export class LlmModel implements LlmAdapter {
 		const status = (err as { status?: number }).status ?? 0;
 		const msg = (err as Error).message ?? String(err);
 		if (status === 401 || status === 403) throw new LlmProviderAuthError(msg);
-		if (/context|too long|max.*tokens|exceed/i.test(msg)) {
+		if (status !== 429 && status < 500 && /context|too long|max.*tokens|exceed/i.test(msg)) {
 			throw new LlmContextOverflowError(msg);
 		}
 		throw err;
