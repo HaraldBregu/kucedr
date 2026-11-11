@@ -337,7 +337,10 @@ export class Agent {
 			const timeoutController = new AbortController();
 			const startTimeout = (): void => {
 				clearTimeout(timeoutTimer);
-				timeoutTimer = setTimeout(() => timeoutController.abort(), 10 * 60_000);
+				timeoutTimer = setTimeout(
+					() => timeoutController.abort(new DOMException('Run timed out.', 'TimeoutError')),
+					10 * 60_000
+				);
 			};
 			startTimeout();
 			const runSignal = AbortSignal.any([
