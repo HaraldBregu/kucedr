@@ -614,7 +614,7 @@ describe('useRealtimeVoice', () => {
 		expect(close).toHaveBeenCalled();
 	});
 
-	it('restores persisted realtime image, audio, and video tool results', () => {
+	it('restores persisted realtime image, audio, and video tool results', async () => {
 		const history: AgentHistoryMessage[] = [
 			{ role: 'user', content: 'Create three assets.' },
 			...mediaTools.flatMap<AgentHistoryMessage>(({ toolCallId, toolName, restoredPath }) => {
