@@ -50,18 +50,22 @@ describe('addBasePrompt', () => {
 		expect(prompt).toContain('Do not delegate a simple follow-up');
 		expect(prompt).toContain('Never claim that an action succeeded unless');
 	});
+	it('appends to any existing prompt', () => {
+		expect(addBasePrompt('PRE')).toMatch(/^PRE/);
+	});
+});
+
+describe('addClockPrompt', () => {
+	afterEach(() => jest.useRealTimers());
 	it('adds the current UTC time when the prompt is built', () => {
-		const now = new Date('2026-10-08T13:45:12.345Z');
-		const prompt = addBasePrompt('', now);
+		jest.useFakeTimers().setSystemTime(new Date('2026-10-08T13:45:12.345Z'));
+		const prompt = addClockPrompt('');
 		expect(prompt).toContain('## Current UTC date and time');
 		expect(prompt).toContain('- 2026-10-08T13:45:12.345Z');
 		expect(prompt).toContain('in the timezone from the USER profile');
 		expect(prompt).toContain('If the USER profile has no timezone, use UTC');
 		expect(prompt).not.toContain('Local:');
 		expect(prompt).not.toContain('Time zone:');
-	});
-	it('appends to any existing prompt', () => {
-		expect(addBasePrompt('PRE')).toMatch(/^PRE/);
 	});
 });
 
