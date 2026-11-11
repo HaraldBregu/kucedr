@@ -304,10 +304,12 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 								event.preventDefault();
 								void window.win
 									.showContextMenu([
+										{ id: 'new-chat', label: t('navigationBar.newChat', 'New chat') },
 										{ id: 'rename', label: t('common.rename', 'Rename') },
 										{ id: 'delete', label: t('common.delete', 'Delete') },
 									])
 									.then((action) => {
+										if (action === 'new-chat') startChat(category.id);
 										if (action === 'rename') setEditingCategoryId(category.id);
 										if (action === 'delete') deleteCategory(category.id);
 									});
