@@ -1,7 +1,7 @@
 import path from 'node:path';
 import type { PluginKind, PluginSource } from '../../shared/plugin_types';
 import { scanPlugins } from './plugins_scan';
-import { pluginsStore } from './plugins_store';
+import { disabledPlugins } from './plugins_disabled';
 
 export interface PluginDirectory {
 	/** `<plugin>/<kind>`: each child folder is one contribution. */
