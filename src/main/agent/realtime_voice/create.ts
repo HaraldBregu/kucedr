@@ -30,11 +30,6 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 		),
 		emit: (windowId, event) => {
 			eventBus.sendTo(windowId, RealtimeVoiceChannels.sessionEvent, event);
-			for (const appWindow of openAppWindows.values()) {
-				if (appWindow.window.id === windowId && !appWindow.contents?.isDestroyed()) {
-					appWindow.contents?.send(RealtimeVoiceChannels.sessionEvent, event);
-				}
-			}
 		},
 		resolveConfiguration: async () => {
 			const configuredProviderId = getProviderId('realtimeVoice');
