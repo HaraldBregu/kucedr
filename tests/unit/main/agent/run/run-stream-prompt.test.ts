@@ -1404,12 +1404,29 @@ describe('run stream system prompt', () => {
 		expect(execute).not.toHaveBeenCalled();
 	});
 
-	it('does not discover health for a request explicitly naming Gmail MCP', async () => {
+	it('preloads a named MCP server next to the required tools and keeps the rest discoverable', async () => {
 		const health = jsonTool({
 			id: 'get_health',
 			category: 'bootstrap',
 			name: 'Get health',
 			description: 'Read the current HEALTH.md information.',
+			schema: { type: 'object' },
+			execute: jest.fn(),
+		});
+		const read = jsonTool({
+			id: 'read',
+			category: 'core',
+			name: 'Read',
+			description: 'Read a file.',
+			schema: { type: 'object' },
+			execute: jest.fn(),
+		});
+		const gmail = jsonTool({
+			id: 'mcp__gmail__search_threads',
+			category: 'integration',
+			name: 'Search threads',
+			description: 'Search Gmail inbox threads',
+			policy: { kind: 'mcp', serverId: 'gmail', toolName: 'search_threads' },
 			schema: { type: 'object' },
 			execute: jest.fn(),
 		});
@@ -1419,13 +1436,7 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [
-						{
-							id: 'find-gmail',
-							name: 'tool_search',
-							args: { query: 'read latest received Gmail message inbox' },
-						},
-					],
+					toolCalls: [{ id: 'find-health', name: 'tool_search', args: { query: 'get_health' } }],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
