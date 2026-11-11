@@ -8,12 +8,15 @@ import { chatScripts } from './components/scripts';
 import { Usage } from './Usage';
 import { ChatLibrary } from './Library';
 import { ChatWorkspace } from './Workspace';
+import { ChatSearch } from './Search';
 import type { LibraryFile } from '@shared/library_types';
+import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 
-export function ChatDetails({ open, popover = false, onClose, messages, model, draft, hasAttachments, onJump, onAttach, onWorkspaceAttach }: {
+export function ChatDetails({ open, popover = false, onClose, scroll, messages, model, draft, hasAttachments, onJump, onAttach, onWorkspaceAttach }: {
 	readonly open: boolean;
 	readonly popover?: boolean;
 	readonly onClose: () => void;
+	readonly scroll: React.RefObject<StickToBottomContext | null>;
 	readonly messages: readonly HomeChatMessage[];
 	readonly model?: { providerId: string; modelId: string; contextWindow?: number };
 	readonly draft: string;
