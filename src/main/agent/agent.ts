@@ -360,14 +360,9 @@ export class Agent {
 
 			const streamingToolArgs = new Map<string, { name: string; argsText: string }>();
 			for await (const event of events) {
-				if (
-					event.type === 'user_input_request' &&
-					event.questions.some((question) => question.id === 'mcp-authorization')
-				) {
+				if (event.type === 'user_input_request' || event.type === 'tool_permission_request')
 					clearTimeout(timeoutTimer);
-				} else if (event.type === 'user_input_result') {
-					startTimeout();
-				}
+				else startTimeout();
 				if (event.type === 'model_call_delta') response += event.delta;
 				if (event.type === 'run_finished') {
 					result = event.result;
