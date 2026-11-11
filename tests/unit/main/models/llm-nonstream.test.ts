@@ -132,6 +132,7 @@ describe('LlmModel non-streaming transport', () => {
 
 		expect(create).toHaveBeenCalledWith(
 			expect.objectContaining({
+				cache_control: { type: 'ephemeral' },
 				stream: false,
 				model: 'model',
 				tools: [
