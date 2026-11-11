@@ -1,79 +1,118 @@
 import { useState } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import type { PluginScriptSchema } from '../../../../shared/plugin_types';
+import { inferScriptSchema } from './Infer';
 
 interface PropertiesProps {
 	readonly schema: PluginScriptSchema;
-	readonly value: Record<string, unknown>;
-	readonly onChange: (value: Record<string, unknown>) => void;
+	readonly value: unknown;
+	readonly onChange: (value: unknown) => void;
+	readonly id?: string;
+	readonly inline?: boolean;
 }
 
-/** A form for a script's top-level input properties; nested objects and arrays are edited as JSON. */
-export function ScriptProperties({ schema, value, onChange }: PropertiesProps): React.JSX.Element {
-	const [invalid, setInvalid] = useState<string | null>(null);
-	const set = (key: string, next: unknown): void => {
-		const { [key]: _, ...rest } = value;
-		onChange(next === undefined || next === '' ? rest : { ...rest, [key]: next });
-	};
+/** A form for a script's input: one field per property, rows for lists, and JSON only for values with no known shape. */
+export function ScriptProperties({ schema, value, onChange, id = 'script-property', inline }: PropertiesProps): React.JSX.Element {
+	const [invalid, setInvalid] = useState(false);
 
-	return (
-		<div className="flex flex-col gap-3">
-			{Object.entries(schema.properties ?? {}).map(([key, property]) => {
-				const id = `script-property-${key}`;
-				const label = `${property.title ?? key}${schema.required?.includes(key) ? ' *' : ''}`;
-				const current = value[key];
-				return (
-					<div key={key} className="flex flex-col gap-1.5">
-						<Label htmlFor={id}>{label}</Label>
-						{property.enum ? (
-							<Select value={typeof current === 'string' ? current : ''} onValueChange={(next) => set(key, next ?? undefined)}>
-								<SelectTrigger id={id} size="sm" className="w-full">
-									<SelectValue>{typeof current === 'string' ? current : ''}</SelectValue>
-								</SelectTrigger>
-								<SelectContent>
-									{property.enum.map((option) => (
-										<SelectItem key={option} value={option}>{option}</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						) : property.type === 'string' || property.type === 'number' || property.type === 'integer' ? (
-							<Input
-								id={id}
-								className="h-8 text-sm"
-								type={property.type === 'string' ? 'text' : 'number'}
-								value={typeof current === 'string' || typeof current === 'number' ? current : ''}
-								onChange={(event) => set(key, property.type === 'string' || event.target.value === '' ? event.target.value : Number(event.target.value))}
-							/>
-						) : (
-							<Textarea
-								key={JSON.stringify(current)}
-								id={id}
-								className="min-h-24 font-mono text-xs"
-								spellCheck={false}
-								defaultValue={current === undefined ? '' : JSON.stringify(current, null, 2)}
-								aria-invalid={invalid === key}
-								onBlur={(event) => {
-									const text = event.target.value.trim();
-									try {
-										set(key, text ? JSON.parse(text) : undefined);
-										setInvalid(null);
-									} catch {
-										setInvalid(key);
-									}
-								}}
-							/>
-						)}
-						{invalid === key ? (
-							<p className="text-xs text-destructive">Invalid JSON</p>
-						) : property.description ? (
-							<p className="text-xs text-muted-foreground">{property.description}</p>
-						) : null}
+	if (schema.enum) {
+		return (
+			<Select value={typeof value === 'string' ? value : ''} onValueChange={(next) => onChange(next ?? undefined)}>
+				<SelectTrigger id={id} size="sm" className="w-full">
+					<SelectValue>{typeof value === 'string' ? value : ''}</SelectValue>
+				</SelectTrigger>
+				<SelectContent>
+					{schema.enum.map((option) => (
+						<SelectItem key={option} value={option}>{option}</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+		);
+	}
+	if (schema.type === 'boolean') return <Switch id={id} checked={value === true} onCheckedChange={onChange} />;
+	if (schema.type === 'string' || schema.type === 'number' || schema.type === 'integer') {
+		return (
+			<Input
+				id={id}
+				className="h-8 text-sm"
+				type={schema.type === 'string' ? 'text' : 'number'}
+				min={schema.minimum}
+				max={schema.maximum}
+				step={schema.type === 'number' ? 'any' : undefined}
+				value={typeof value === 'string' || typeof value === 'number' ? value : ''}
+				onChange={(event) => onChange(schema.type === 'string' ? event.target.value : event.target.value === '' ? undefined : Number(event.target.value))}
+			/>
+		);
+	}
+	if (schema.type === 'array') {
+		const items = Array.isArray(value) ? value : [];
+		const inferred = inferScriptSchema(items.some((item) => item && typeof item === 'object') ? Object.assign({}, ...items) : items[0]);
+		const itemSchema: PluginScriptSchema = { ...inferred, ...schema.items, properties: inferred.properties || schema.items?.properties ? { ...inferred.properties, ...schema.items?.properties } : undefined };
+		const last = items.at(-1);
+		const blank = last && typeof last === 'object'
+			? Object.fromEntries(Object.entries(last).filter(([, item]) => typeof item !== 'object').map(([key, item]) => [key, typeof item === 'number' ? 0 : typeof item === 'boolean' ? false : '']))
+			: itemSchema.type === 'string' ? '' : itemSchema.type === 'number' || itemSchema.type === 'integer' ? 0 : {};
+		return (
+			<div className="flex flex-col gap-2">
+				{items.map((item, index) => (
+					<div key={index} className="flex items-end gap-1 rounded-md border p-2">
+						<div className="min-w-0 flex-1">
+							<ScriptProperties inline id={`${id}-${index}`} schema={itemSchema} value={item} onChange={(next) => onChange(items.map((current, position) => position === index ? next : current))} />
+						</div>
+						<Button type="button" variant="ghost" size="icon-sm" aria-label="Remove" disabled={items.length <= (schema.minItems ?? 0)} onClick={() => onChange(items.filter((_, position) => position !== index))}>
+							<Trash2 />
+						</Button>
 					</div>
-				);
-			})}
-		</div>
+				))}
+				<Button type="button" variant="outline" size="sm" className="self-start" disabled={items.length >= (schema.maxItems ?? Infinity)} onClick={() => onChange([...items, blank])}>
+					<Plus />Add
+				</Button>
+			</div>
+		);
+	}
+	if (schema.properties) {
+		const object = value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
+		return (
+			<div className={inline ? 'flex flex-wrap gap-2' : 'flex flex-col gap-3'}>
+				{Object.entries(schema.properties).map(([key, property]) => (
+					<div key={key} className="flex min-w-24 flex-1 flex-col gap-1.5">
+						<Label htmlFor={`${id}-${key}`}>{property.title ?? key}{schema.required?.includes(key) ? ' *' : ''}</Label>
+						<ScriptProperties inline id={`${id}-${key}`} schema={property} value={object[key]} onChange={(next) => {
+							const { [key]: _, ...rest } = object;
+							onChange(next === undefined || next === '' ? rest : { ...object, [key]: next });
+						}} />
+						{property.description ? <p className="text-xs text-muted-foreground">{property.description}</p> : null}
+					</div>
+				))}
+			</div>
+		);
+	}
+	return (
+		<>
+			<Textarea
+				key={JSON.stringify(value)}
+				id={id}
+				className="min-h-24 font-mono text-xs"
+				spellCheck={false}
+				defaultValue={value === undefined ? '' : JSON.stringify(value, null, 2)}
+				aria-invalid={invalid}
+				onBlur={(event) => {
+					const text = event.target.value.trim();
+					try {
+						onChange(text ? JSON.parse(text) : undefined);
+						setInvalid(false);
+					} catch {
+						setInvalid(true);
+					}
+				}}
+			/>
+			{invalid ? <p className="text-xs text-destructive">Invalid JSON</p> : null}
+		</>
 	);
 }
