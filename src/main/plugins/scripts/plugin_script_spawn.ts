@@ -28,7 +28,10 @@ export function spawnPluginScript(script: PluginScript, payload: unknown): Promi
 			if (size > MAX_OUTPUT) child.kill();
 			else stdout.push(chunk);
 		});
-		child.stderr.on('data', (chunk: Buffer) => stderr.push(chunk));
+		child.stderr.on('data', (chunk: Buffer) => {
+			stderrSize += chunk.length;
+			if (stderrSize <= MAX_OUTPUT) stderr.push(chunk);
+		});
 		child.on('error', reject);
 		child.on('close', (code) => {
 			if (size > MAX_OUTPUT) return reject(new Error(`${name}: output is larger than 2 MB.`));
