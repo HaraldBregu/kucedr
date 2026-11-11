@@ -97,12 +97,6 @@ export function createQwenRealtimeVoiceAdapter(
 						if (typeof data.type !== 'string') return;
 						if (data.type.startsWith('response.audio'))
 							data.type = data.type.replace('response.audio', 'response.output_audio');
-						if (data.type === 'conversation.item.input_audio_transcription.delta') {
-							data.type = 'conversation.item.input_audio_transcription.updated';
-							data.transcript = `${typeof data.text === 'string' ? data.text : ''}${typeof data.stash === 'string' ? data.stash : ''}`;
-						}
-						if (data.type === 'conversation.item.input_audio_transcription.failed')
-							data.type = 'error';
 						events.emit('event', data as unknown as RealtimeVoiceServerEvent);
 					});
 					socket.on('error', (error) => events.emit('error', error));
