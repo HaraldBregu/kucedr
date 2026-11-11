@@ -230,10 +230,12 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 
 	private handleEvent(event: RealtimeVoiceServerEvent): void {
 		if (event.type === 'response.created') {
+			const overlapsSpeech = this.responsePending && this.userSpeaking;
 			this.responsePending = false;
 			this.responseActive = true;
 			this.activeResponseId = event.response.id;
-			this.emit({ type: 'response_started', responseId: event.response.id });
+			if (overlapsSpeech) void this.interrupt();
+			else this.emit({ type: 'response_started', responseId: event.response.id });
 			return;
 		}
 		if (event.type === 'response.done') {
