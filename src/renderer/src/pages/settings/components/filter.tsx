@@ -35,7 +35,7 @@ export function SettingsFilter({ filter, categoryLabels }: SettingsFilterProps):
 				/>
 				{filter.query && (
 					<div className="absolute inset-y-0 right-1.5 z-10 flex items-center gap-1.5">
-						<span className="text-xs text-muted-foreground tabular-nums" aria-live="polite">
+						<span className="text-xs text-muted-foreground" aria-live="polite">
 							{t('settings.filter.results', { count: filter.items.length })}
 						</span>
 						<Button
