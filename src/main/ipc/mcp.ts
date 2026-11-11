@@ -294,7 +294,10 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 					}
 					if (!authorizationUrl)
 						throw new Error(`MCP server "${id}" did not return an authorization URL.`);
-					await shell.openExternal(authorizationUrl);
+					const target = externalUrl(authorizationUrl);
+					if (!target)
+						throw new Error(`MCP server "${id}" returned an unsupported authorization URL.`);
+					await shell.openExternal(target);
 					const code = await callback.code;
 					const finish = await auth(provider, { serverUrl, authorizationCode: code });
 					if (finish !== 'AUTHORIZED') throw new Error(`OAuth authorization failed for "${id}".`);
