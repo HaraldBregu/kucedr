@@ -25,6 +25,7 @@ export function scanPlugins(): readonly ScannedPlugin[] {
 		if (!existsSync(root)) continue;
 		for (const entry of readdirSync(root, { withFileTypes: true })) {
 			if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
+			if (!builtIn && entry.name === CORE_PLUGIN_ID) continue;
 			const directory = path.join(root, entry.name);
 			try {
 				const manifest = readPlugin(directory, entry.name, builtIn);
