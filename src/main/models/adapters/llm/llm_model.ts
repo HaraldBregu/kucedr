@@ -508,7 +508,7 @@ export class LlmModel implements LlmAdapter {
 
 		yield { type: 'message_start' };
 
-		const usage = { inputTokens: 0, outputTokens: 0 };
+		const usage: LlmUsage = { inputTokens: 0, outputTokens: 0 };
 		let stopReason = 'end_turn';
 		const blockIndexToToolUseId = new Map<number, string>();
 		const thinkingBlocks = new Map<
