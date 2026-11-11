@@ -68,8 +68,28 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 	}
 
 	const messages = structuredClone(input.messages);
-	for (const message of messages) {
+	let latestUserIndex = -1;
+	for (let index = messages.length - 1; index >= 0; index -= 1) {
+		if (messages[index].role !== 'user') continue;
+		latestUserIndex = index;
+		break;
+	}
+	if (latestUserIndex < 0) latestUserIndex = Math.max(0, messages.length - 1);
+	for (const [index, message] of messages.entries()) {
 		if (message.role !== 'assistant') continue;
+		if (
+			index > latestUserIndex &&
+			Math.ceil(
+				contextBytes({
+					systemPrompt: combinedSystemPrompt,
+					messages: [...requiredContextMessages, ...messages.slice(latestUserIndex)],
+					tools: toolView,
+				}) / CONTEXT_BYTES_PER_TOKEN
+			) +
+				32 <=
+				maxInputTokens
+		)
+			break;
 		if (Array.isArray(message.content)) {
 			message.content = message.content.map((block) => {
 				if (block.type !== 'provider_item') return block;
@@ -101,13 +121,6 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 		});
 	}
 
-	let latestUserIndex = -1;
-	for (let index = messages.length - 1; index >= 0; index -= 1) {
-		if (messages[index].role !== 'user') continue;
-		latestUserIndex = index;
-		break;
-	}
-	if (latestUserIndex < 0) latestUserIndex = Math.max(0, messages.length - 1);
 	let selectedMessages = messages.slice(latestUserIndex);
 
 	const minimumSystem = (input.systemPrompt ?? '').slice(0, 1_536);
