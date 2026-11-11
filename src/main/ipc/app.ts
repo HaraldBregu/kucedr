@@ -38,6 +38,7 @@ import type {
 	ZoomFactor,
 } from '../../shared/app_types';
 import { TRAY_CLICK_ACTIONS } from '../../shared/app_types';
+import { workspaceFileType } from '../../shared/workspace';
 import { wrapIpcHandler, wrapSimpleHandler } from './core/error_handler';
 import { setKeepAwake as applyKeepAwake } from '../keep_awake';
 import { exportDocument } from '../export';
