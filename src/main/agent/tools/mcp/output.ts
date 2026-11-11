@@ -13,7 +13,12 @@ export function mcpOutputText(result: McpCallResult): string {
 						typeof (block as { text?: unknown }).text === 'string'
 				)
 				.map((block) => block.text)
-				.join('\n') || JSON.stringify(content)
+				.join('\n') ||
+			JSON.stringify(content, (key, value: unknown) =>
+				(key === 'data' || key === 'blob') && typeof value === 'string'
+					? `[${value.length} base64 characters omitted]`
+					: value
+			)
 		: content === undefined
 			? ''
 			: JSON.stringify(content);
