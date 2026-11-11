@@ -152,6 +152,18 @@ describe('buildSystemPrompt', () => {
 		expect(prompt).toContain('- `read` (read) — Read a file');
 		expect(prompt).toContain('- `write` (write) — Write a file');
 	});
+
+	it('puts the clock last so everything before it stays the same across builds', async () => {
+		const build = () =>
+			buildSystemPrompt({ location: '/workspace' }, [tool('read', 'Read a file')], [], undefined, 'minimal');
+		const first = await build();
+		const clock = first.lastIndexOf('\n## ');
+		expect(first.slice(clock)).toContain('## Current UTC date and time');
+		expect((await build()).slice(0, clock)).toBe(first.slice(0, clock));
+		expect(await buildSystemPrompt({ location: '/workspace' }, [], [], 'Custom instructions.')).not.toContain(
+			'## Current UTC date and time'
+		);
+	});
 });
 
 describe('addSkillPrompt', () => {
