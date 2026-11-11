@@ -25,19 +25,19 @@ Keep these properties when changing the code below.
 
 | # | Severity | Issue | Status |
 |---|----------|-------|--------|
-| 1 | High | App named `coder` / `workspace` gets privileged IPC by folder name | Open |
-| 2 | High | Plugins enabled by presence on disk; scripts run unsandboxed with full `process.env` | Open |
-| 3 | High | User plugin with a bundled id replaces it and inherits its secrets | Open |
-| 4 | High | Prompt injection persists as a scheduled task that never asks | Open |
-| 5 | High | App views can drive the voice agent and read its tool results | Open |
-| 6 | High | Read anywhere + open network + auto-loaded remote images = exfiltration | Open |
+| 1 | High | App named `coder` / `workspace` gets privileged IPC by folder name | Decision (no bundled origin to anchor to; needs #2 install records) |
+| 2 | High | Plugins enabled by presence on disk; scripts run unsandboxed with full `process.env` | Partial: scripts get the `commandEnvironment()` allowlist; install records are a Decision |
+| 3 | High | User plugin with a bundled id replaces it and inherits its secrets | Partial: `CORE_PLUGIN_ID = 'bootstrap'`, a user `bootstrap` folder is ignored, core is never disabled; provider-id override is documented (`PLUGIN_SYSTEM.md`), Decision |
+| 4 | High | Prompt injection persists as a scheduled task that never asks | Fixed: agent can only pause; prompt/cron edits disable; `run_task_now` refuses disabled tasks |
+| 5 | High | App views can drive the voice agent and read its tool results | Fixed: voice IPC uses `TrustedRenderer`; no events forwarded to apps |
+| 6 | High | Read anywhere + open network + auto-loaded remote images = exfiltration | Partial: remote images in assistant messages render as links; credential deny list is a Decision |
 | 7 | Medium | Voice runs side-effect tools unattended | Decision |
-| 8 | Medium | `env` on elevated host commands (`PERMISSIONS_SECURITY.md` #6) | Open |
-| 9 | Medium | macOS case-insensitive deny bypass (`PERMISSIONS_SECURITY.md` #5) | Open |
-| 10 | Medium | Microphone and full-screen recording without approval | Open |
-| 11 | Medium | Workspace skills override trusted skills of the same name | Open |
-| 12 | Medium | `AppIpc` has no caller check; `openVideo` launches any file type | Open |
-| 13 | Medium | MCP OAuth authorization URL opened without scheme check | Open |
+| 8 | Medium | `env` on elevated host commands (`PERMISSIONS_SECURITY.md` #6) | Fixed: rejected in `parseInput`, before approval |
+| 9 | Medium | macOS case-insensitive deny bypass (`PERMISSIONS_SECURITY.md` #5) | Fixed: `realpathSync.native` + case-insensitive compare on darwin/win32 |
+| 10 | Medium | Microphone and full-screen recording without approval | Decision (approval removed on purpose in `29710d7216`) |
+| 11 | Medium | Workspace skills override trusted skills of the same name | Decision (`FEATURES.md` documents project-first precedence) |
+| 12 | Medium | `AppIpc` has no caller check; `openVideo` launches any file type | Partial: `openVideo` only opens video files; other unchecked handlers open |
+| 13 | Medium | MCP OAuth authorization URL opened without scheme check | Fixed: passes `externalUrl()` (http/https/mailto) |
 | 14 | Medium | MCP server marks its own tools read-only to skip approval | Decision |
 | 15 | Medium | Plugin script name collision hands over S3 credentials | Open |
 | 16 | Medium | `update_soul` / `update_user` / `update_identity` always allowed (`PERMISSIONS_SECURITY.md` #7) | Decision |
