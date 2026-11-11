@@ -293,6 +293,14 @@
 	::selection {
 		@apply bg-selection text-selection-foreground;
 	}
+	::highlight(chat-search) {
+		background-color: oklch(0.9 0.16 95);
+		color: oklch(0.2 0 0);
+	}
+	::highlight(chat-search-current) {
+		background-color: oklch(0.78 0.17 60);
+		color: oklch(0.2 0 0);
+	}
 	html,
 	body,
 	#root {
