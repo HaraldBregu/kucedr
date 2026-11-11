@@ -35,8 +35,7 @@ const AppsPage: React.FC = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
 	const filter = useSettingsFilter(apps, {
-		text: (app) =>
-			`${app.title} ${app.description} ${app.author ?? pluginAuthors.get(app.plugin?.id ?? '') ?? ''}`,
+		text: (app) => `${app.title} ${app.description}`,
 		category: (app) => app.metadata.category,
 	});
 
