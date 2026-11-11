@@ -53,7 +53,7 @@ const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelKey[]> = {
 	chat: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
-	voice: ['realtimeVoice', 'image', 'audio', 'video'],
+	voice: ['realtimeVoice'],
 	tasks: ['textToText', 'image', 'audio', 'video'],
 	health: ['textToText'],
 };
