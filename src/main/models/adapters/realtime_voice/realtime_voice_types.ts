@@ -112,16 +112,6 @@ export type RealtimeVoiceServerEvent =
 	| { type: 'input_audio_buffer.speech_started'; item_id: string }
 	| { type: 'input_audio_buffer.speech_stopped'; item_id: string }
 	| {
-			type: 'conversation.item.input_audio_transcription.updated';
-			item_id: string;
-			transcript: string;
-	  }
-	| {
-			type: 'conversation.item.input_audio_transcription.completed';
-			item_id: string;
-			transcript: string;
-	  }
-	| {
 			type: 'response.output_audio_transcript.delta';
 			item_id: string;
 			response_id: string;
