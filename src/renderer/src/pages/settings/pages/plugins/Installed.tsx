@@ -24,8 +24,6 @@ export default function Installed(): React.JSX.Element {
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
 	const [pendingRemoval, setPendingRemoval] = useState<PluginInfo | null>(null);
-	const [query, setQuery] = useState('');
-	const [category, setCategory] = useState('all');
 
 	const load = useCallback(async (): Promise<void> => {
 		setPlugins(await window.plugins.list());
