@@ -11,7 +11,7 @@ export interface PluginProvider {
 }
 
 export function pluginProviders(): PluginProvider[] {
-	const disabled = new Set(pluginsStore.get('disabled'));
+	const disabled = disabledPlugins();
 	return scanPlugins().flatMap(({ id, directory, manifest }) =>
 		manifest?.provider && !disabled.has(id)
 			? [{ directory, manifest: manifest.provider, plugin: { id, name: manifest.title } }]
