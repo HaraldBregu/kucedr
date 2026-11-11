@@ -369,24 +369,24 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		return () => dom.removeEventListener('keydown', keydown, true);
 	});
 
+	const isActive = (action: Action): boolean => action.active ? typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active) : false;
+	const item = (action: Action): ToolbarItem => ({ label: action.label, icon: action.icon, run: () => action.run(editor.chain().focus()).run(), active: action.active ? isActive(action) : undefined });
+	const button = ({ label, icon: Icon, run, active }: ToolbarItem, disabled?: boolean): React.JSX.Element => <Tooltip key={label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={label} disabled={disabled} aria-pressed={active} className={active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={run}><Icon /></Button>} /><TooltipContent>{label}</TooltipContent></Tooltip>;
+	const menu = (label: string, items: ToolbarItem[], Icon?: typeof Bold): React.JSX.Element => <DropdownMenu key={label}>
+		<DropdownMenuTrigger asChild><Button type="button" variant="ghost" size={Icon ? 'sm' : 'icon-sm'} aria-label={label} className={`${Icon ? 'gap-0.5 px-1.5' : ''} ${items.some((entry) => entry.active) ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`} onMouseDown={(event) => event.preventDefault()}>{Icon ? <Icon className="size-4" /> : null}<ChevronDown /></Button></DropdownMenuTrigger>
+		<DropdownMenuContent align="start" onCloseAutoFocus={(event) => event.preventDefault()}>{items.map((entry) => <DropdownMenuItem key={entry.label} onSelect={entry.run}><entry.icon />{entry.label}{entry.active ? <Check className="ml-auto" /> : null}</DropdownMenuItem>)}</DropdownMenuContent>
+	</DropdownMenu>;
+	const lists = groups[3].slice(0, 3);
+	const section = (label: string, children: React.ReactNode): React.JSX.Element => <section className="max-w-full shrink-0"><div role="toolbar" aria-label={label} className="flex flex-wrap items-center justify-start gap-0.5">{children}</div></section>;
 	const toolbar = toolbarTarget ? createPortal(
 		<div className="flex w-full flex-wrap items-center justify-start gap-2">
-		{[
-			{ title: 'History', labels: ['Undo', 'Redo'] },
-			{ title: 'Text', labels: groups[2].map((action) => action.label) },
-			{ title: 'Blocks', labels: groups[3].map((action) => action.label) },
-			{ title: 'Insert & tools', labels: allCommands.filter((command) => !scriptCommands.includes(command) && !groups.flat().some((action) => action.label === command.label) && !['Full width', 'Edit with AI'].includes(command.label)).map((command) => command.label) },
-		].map(({ title, labels }) => <section key={title} className="max-w-full shrink-0"><div role="toolbar" aria-label={title === 'Text' ? 'Editor actions' : title} className="flex flex-wrap items-center justify-start gap-0.5">{title === 'Text' ? <Select value={groups[1].find((action) => action.active && typeof action.active !== 'string' && editor.isActive(...action.active))?.label ?? 'Text'} onValueChange={(value) => {
+		{section('History', <>{button(item(groups[0][0]), !state.canUndo)}{button(item(groups[0][1]), !state.canRedo)}</>)}
+		{section('Editor actions', <><Select value={groups[1].find(isActive)?.label ?? 'Text'} onValueChange={(value) => {
 			if (value === 'Text') editor.chain().focus().setParagraph().run();
 			else groups[1].find((action) => action.label === value)?.run(editor.chain().focus()).run();
-		}}><SelectTrigger size="sm" aria-label="Heading" className="w-28"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="Text">Text</SelectItem>{groups[1].map((action) => <SelectItem key={action.label} value={action.label}>{action.label}</SelectItem>)}</SelectContent></Select> : null}{allCommands.filter((command) => !scriptCommands.includes(command) && labels.includes(command.label)).map((command) => {
-			const action = groups.flat().find((item) => item.label === command.label);
-			const active = action?.active ? typeof action.active === 'string' ? editor.isActive(action.active) : editor.isActive(...action.active) : false;
-			return <Tooltip key={command.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={command.label} disabled={(command.label === 'Undo' && !state.canUndo) || (command.label === 'Redo' && !state.canRedo)} aria-pressed={action?.active ? active : undefined} className={active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'} onMouseDown={(event) => event.preventDefault()} onClick={command.run}><command.icon /></Button>} /><TooltipContent>{command.label}</TooltipContent></Tooltip>;
-		})}{title === 'Insert & tools' && scriptCommands.length > 0 ? <DropdownMenu>
-			<DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon-sm" aria-label="Insert script" className="text-muted-foreground hover:text-foreground" onMouseDown={(event) => event.preventDefault()}><FileBox /></Button></DropdownMenuTrigger>
-			<DropdownMenuContent align="start">{[...byFence].map(([fence, script]) => <DropdownMenuItem key={fence} onSelect={() => onInsertScript(script)}>{script.title}</DropdownMenuItem>)}</DropdownMenuContent>
-		</DropdownMenu> : null}</div></section>)}
+		}}><SelectTrigger size="sm" aria-label="Heading" className="w-28"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="Text">Text</SelectItem>{groups[1].map((action) => <SelectItem key={action.label} value={action.label}>{action.label}</SelectItem>)}</SelectContent></Select>{groups[2].slice(0, 3).map((action) => button(item(action)))}{menu('More formatting', groups[2].slice(3).map(item))}</>)}
+		{section('Blocks', <>{menu('Lists', lists.map(item), lists.find(isActive)?.icon ?? List)}{groups[3].slice(3, 5).map((action) => button(item(action)))}</>)}
+		{section('Insert & tools', <>{button({ label: 'Link', icon: Link, run: () => onLinkOpenChange(true), active: state.link })}{menu('Insert', [...groups[3].slice(5).map(item), { label: 'Insert from computer', icon: HardDrive, run: onInsertFromComputer }, { label: 'Insert from library', icon: Library, run: onInsertFromLibrary }, { label: 'Insert from URL', icon: Globe, run: onInsertFromUrl }, ...scriptCommands], Plus)}{state.table ? menu('Table actions', tableActions.map(item), Table) : null}</>)}
 		<section className="shrink-0"><div role="toolbar" aria-label="AI writing" className="flex items-center">
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild><Button type="button" variant="ghost" size="icon-sm" aria-label="AI writing" disabled={ai?.loading} onMouseDown={(event) => event.preventDefault()}><Sparkles /></Button></DropdownMenuTrigger>
