@@ -82,13 +82,16 @@ Landed on 2026-11-11:
 - **Timeout.** Ten minutes without any event, paused while waiting on `ask`, MCP authorization or a permission prompt, and reported as `timeout`.
 - **Small ones.** Undo history is kept per main chat in memory; effort is sent to deepseek as `reasoning_effort`; provider errors with status 429 or 5xx are no longer classified as context overflow; a hook whose required boolean is off is not spawned.
 
-Checked: `typecheck:node` and eslint pass; the budget, hint, effort and trace changes were run as bundled modules. Not confirmed when this was written: a live model call, the prompt-prefix and hook checks, and the live window lookup.
+- **MCP output.** A result with no text block keeps its structure, but its base64 `data` and `blob` fields are replaced by a length note, so an image no longer fills the context.
+
+Checked: `typecheck:node` and eslint pass. Every change except the run loop itself was run as a bundled module with stand-ins for Electron and the settings store: budget, hint, effort, trace, prompt prefix, hook spawning, MCP output, and the live window lookup (the OpenRouter and iteraCompute DeepSeek models both resolve to 1,048,576). Not confirmed: a live model call. The dev app has to be restarted to load the main-process changes; a run made at 09:57 on 2026-11-11 was still on the old build.
 
 Not done:
 
-- Cross-run caching of the history. The clock still sits in the system prompt, so the first turn of each run misses; it needs the clock in the message stream.
+- Cross-run caching of the history. The first turn of each run still misses, because three things in the system prompt can change between runs: the clock (always), the directory listing (when files were added) and the memory block (when the memory module updated it). All three would have to move behind the history, as context attached to the newest message.
 - Automatic compaction. `compactConversation` replaces older messages in the chat view for good, so it stays a manual action until that is decided.
-- The 8,192 output default for live-list models, the 3-bytes-per-token estimator, correctness item 7, and the open tools, skills and MCP points above.
+- Correctness item 7. The cumulative `argsText` on `tool_call_args_delta` is part of the event type the SDK package exports, so dropping it is an API change for apps.
+- The 8,192 output default for live-list models, the 3-bytes-per-token estimator, and the remaining tools, skills and MCP points above.
 - Tests were neither changed nor run. These encode the old behaviour: `system/system-prompt.test.ts`, `system/system-filesystem.test.ts`, `run/run-stream-prompt.test.ts`, `run/run-model-context-budget.test.ts`, `run/run-discovery.test.ts`, and any test of `resolveMcpServerHint` or the run timeout.
 
 ## Re-measuring
