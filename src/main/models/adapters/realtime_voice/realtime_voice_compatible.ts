@@ -280,10 +280,12 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		if (event.type === 'input_audio_buffer.speech_started') {
 			if (this.serverInterrupts) this.responseActive = false;
 			this.responseQueued = false;
+			this.userSpeaking = true;
 			this.emit({ type: 'input_speech_started', itemId: event.item_id });
 			return;
 		}
 		if (event.type === 'input_audio_buffer.speech_stopped') {
+			this.userSpeaking = false;
 			this.emit({ type: 'input_speech_stopped', itemId: event.item_id });
 			return;
 		}
