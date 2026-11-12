@@ -87,7 +87,8 @@ export type ProviderModelType =
 	| 'text-to-image-model'
 	| 'text-to-video-model'
 	| 'text-to-audio-model'
-	| 'embedding-model';
+	| 'embedding-model'
+	| 'coding-agent-model';
 
 export interface ProviderManifestModel extends Omit<CatalogEntryModel, 'type'> {
 	readonly type: ProviderModelType;
