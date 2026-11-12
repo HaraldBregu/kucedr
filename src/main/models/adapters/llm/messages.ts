@@ -1,0 +1,70 @@
+import Anthropic from '@anthropic-ai/sdk';
+import { breakpoint } from './breakpoint';
+import { tokens } from './tokens';
+import type { ModelCache } from '../../../../shared/model_types';
+import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
+import { llmBuildMessages } from './llm_shared';
+
+export async function* messages(
+	client: Anthropic,
+	req: LlmStreamRequest,
+	cache?: ModelCache
+): AsyncIterable<LlmProviderEvent> {
+	const tools: Anthropic.Messages.Tool[] = req.tools.map((tool) => ({
+		name: tool.name,
+		description: tool.description,
+		input_schema: tool.schema as Anthropic.Messages.Tool.InputSchema,
+		...(tool.inputExamples?.length ? { input_examples: [...tool.inputExamples] } : {}),
+	}));
+	const response = await client.messages.create(
+		{
+			cache_control: { type: 'ephemeral' },
+			...req.options,
+			model: req.model,
+			system: breakpoint(req.system, cache?.breakpoints?.includes('system')),
+			max_tokens: req.maxTokens,
+			tools: tools.length > 0 ? tools : undefined,
+			messages: llmBuildMessages(req.messages),
+			stream: false,
+		},
+		{ signal: req.signal }
+	);
+
+	yield { type: 'message_start' };
+	for (const block of response.content) {
+		if (block.type === 'thinking' || block.type === 'redacted_thinking') {
+			yield { type: 'reasoning_item', provider: 'anthropic', item: block };
+			continue;
+		}
+		if (block.type === 'text' && block.text) {
+			yield { type: 'text_delta', text: block.text };
+			continue;
+		}
+		if (block.type === 'tool_use') {
+			yield { type: 'tool_call_start', id: block.id, name: block.name };
+			yield {
+				type: 'tool_call_args_delta',
+				id: block.id,
+				jsonDelta: JSON.stringify(block.input ?? {}),
+			};
+			yield { type: 'tool_call_end', id: block.id };
+		}
+	}
+	yield {
+		type: 'message_end',
+		stopReason: response.stop_reason ?? 'end_turn',
+		usage: tokens(
+			{
+				inputTokens:
+					response.usage.input_tokens +
+					(response.usage.cache_creation_input_tokens ?? 0) +
+					(response.usage.cache_read_input_tokens ?? 0),
+				outputTokens: response.usage.output_tokens,
+				cachedTokens: response.usage.cache_read_input_tokens ?? 0,
+				cacheWriteTokens: response.usage.cache_creation_input_tokens ?? 0,
+			},
+			response,
+			cache
+		),
+	};
+}
