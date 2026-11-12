@@ -12,13 +12,16 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 		description: _description,
 		categories: _categories,
 		author: _author,
-		website: _website,
+		website,
 		minAppVersion: _minAppVersion,
 		icon,
 		iconDark,
-		settings: _settings,
+		iconFullBleed,
+		order,
+		settings,
 		...fields
 	} = manifest;
+	const baseUrlSetting = settings?.inputSchema.properties.baseUrl;
 	if (Object.keys(fields).length === 0) return undefined;
 	const model = Array.isArray(fields.models)
 		? (fields.models.find((item) => item && typeof item === 'object' && 'modelsUrl' in item) ??
