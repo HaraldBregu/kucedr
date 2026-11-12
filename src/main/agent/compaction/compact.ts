@@ -47,9 +47,11 @@ export async function compactConversation(
 }
 
 function retainedStart(messages: Message[]): number {
-	const userIndexes = messages.flatMap((message, index) => (message.role === 'user' ? [index] : []));
+	const userIndexes = messages.flatMap((message, index) =>
+		message.role === 'user' && !isInternalMessage(message) ? [index] : []
+	);
 	if (userIndexes.length <= RETAINED_USER_TURNS) return 0;
-	return userIndexes.at(-RETAINED_USER_TURNS) ?? 0;
+	return turnStart(messages, userIndexes.at(-RETAINED_USER_TURNS) ?? 0);
 }
 
 async function summarize(
