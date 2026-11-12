@@ -430,6 +430,10 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 				contextUsage: message.usage?.context,
 				inputTokens: (last.inputTokens ?? 0) + (message.usage?.inputTokens ?? 0),
 				outputTokens: (last.outputTokens ?? 0) + (message.usage?.outputTokens ?? 0),
+				cachedTokens:
+					message.usage?.cachedTokens === undefined
+						? last.cachedTokens
+						: (last.cachedTokens ?? 0) + message.usage.cachedTokens,
 			};
 			return;
 		}
