@@ -68,9 +68,6 @@ const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descript
 		},
 	};
 
-/** Providers pinned on top of the start-flow models list. */
-const FEATURED_PROVIDER_IDS = ['openai', 'anthropic', 'deepseek', 'elevenlabs'] as const;
-
 function allCatalogItems(section?: ProviderSetupSection): readonly ProviderCatalogItem[] {
 	if (section === 'databases') return databaseCatalog();
 	return [...actionableProviderCatalog(), ...actionableSearchCatalog()];
