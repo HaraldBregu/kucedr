@@ -1,37 +1,43 @@
-import { createZaiSttAdapter } from './stt_zai';
-import { createCartesiaSttAdapter } from './stt_cartesia';
-import { createCohereSttAdapter } from './stt_cohere';
-import { normalizeProviderId } from '../../../../shared/provider_types';
-import { createDeepgramSttAdapter } from './stt_deepgram';
-import { createElevenLabsSttAdapter } from './stt_elevenlabs';
-import { createGoogleSttAdapter } from './stt_google';
-import { createMistralSttAdapter } from './stt_mistral';
-import { createMiniMaxSttAdapter } from './stt_minimax';
-import { createOpenAISttAdapter } from './stt_openai';
-import { createQwenSttAdapter } from './stt_qwen';
-import { createXaiSttAdapter } from './stt_xai';
+import { createPaasSttAdapter } from './stt_paas';
+import { createWebsocketSttAdapter } from './stt_websocket';
+import { createFormSttAdapter } from './stt_form';
+import { createListenSttAdapter } from './stt_listen';
+import { createSpeechSttAdapter } from './stt_speech';
+import { createInteractionsSttAdapter } from './stt_interactions';
+import { createStreamSttAdapter } from './stt_stream';
+import { createHeaderSttAdapter } from './stt_header';
+import { createTranscriptionsSttAdapter } from './stt_transcriptions';
+import { createGenerationSttAdapter } from './stt_generation';
+import { createDuplexSttAdapter } from './stt_duplex';
+import { createSessionSttAdapter } from './stt_session';
+import { createPlainSttAdapter } from './stt_plain';
 import { SttProviderUnsupportedError } from './stt_errors';
 import type { SttAdapter, SttProviderSpec } from './stt_types';
 
-const STT_ADAPTERS: Readonly<Record<string, (spec: SttProviderSpec) => SttAdapter>> = {
-	cartesia: createCartesiaSttAdapter,
-	cohere: createCohereSttAdapter,
-	deepgram: createDeepgramSttAdapter,
-	google: createGoogleSttAdapter,
-	elevenlabs: createElevenLabsSttAdapter,
-	mistral: createMistralSttAdapter,
-	minimax: createMiniMaxSttAdapter,
-	openai: createOpenAISttAdapter,
-	zai: createZaiSttAdapter,
-	qwen: createQwenSttAdapter,
-	xai: createXaiSttAdapter,
+const STT_PROTOCOLS: Readonly<Record<string, (spec: SttProviderSpec) => SttAdapter>> = {
+	transcriptions: createTranscriptionsSttAdapter,
+	'transcriptions-intent': createTranscriptionsSttAdapter,
+	'transcriptions-form': createFormSttAdapter,
+	'transcription-stream': createStreamSttAdapter,
+	'transcription-session': createSessionSttAdapter,
+	listen: createListenSttAdapter,
+	'listen-v2': createListenSttAdapter,
+	'speech-to-text': createSpeechSttAdapter,
+	'speech-to-text-header': createHeaderSttAdapter,
+	stt: createPlainSttAdapter,
+	'stt-websocket': createWebsocketSttAdapter,
+	interactions: createInteractionsSttAdapter,
+	'paas-transcriptions': createPaasSttAdapter,
+	'multimodal-generation': createGenerationSttAdapter,
+	'duplex-asr': createDuplexSttAdapter,
 };
 
-export function buildSttAdapter(provider: SttProviderSpec): SttAdapter {
-	const id = normalizeProviderId(provider.id);
-	const create = STT_ADAPTERS[id];
+export function buildSttAdapter(provider: SttProviderSpec, modelName: string): SttAdapter {
+	const create = provider.protocol ? STT_PROTOCOLS[provider.protocol] : undefined;
 	if (!create) {
-		throw new SttProviderUnsupportedError(`Speech-to-text provider is not supported: ${id}`);
+		throw new SttProviderUnsupportedError(
+			`${modelName} (${provider.name}) declares no supported protocol.`
+		);
 	}
-	return create({ ...provider, id });
+	return create(provider);
 }
