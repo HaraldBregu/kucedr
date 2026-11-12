@@ -586,6 +586,7 @@ export default function PluginPage(): React.JSX.Element {
 									? section.title
 									: `${section.title} · ${section.rows.length}`
 							}
+							action={section.action}
 						>
 							<SettingsPanel>
 								{section.rows.map((row) => (
