@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { pluginWebsites } from '../../shared/plugin_websites';
 import { pluginVersionSchema } from '../../shared/plugin_manifest';
 import { PLUGIN_KINDS, type CatalogPlugin, type PluginKind } from '../../shared/plugin_types';
 
