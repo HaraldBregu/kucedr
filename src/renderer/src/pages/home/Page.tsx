@@ -305,19 +305,27 @@ function VoiceButton({
 	readonly className?: string;
 }): ReactElement {
 	const isDisabled = disabled || mode === 'disabled';
-	const tooltip =
-		mode === 'disabled'
-			? 'Choose a speech-to-text provider and model in Settings.'
-			: (disabledReason ?? 'Dictate');
+	const reason =
+		mode === 'disabled' ? 'Choose a speech-to-text provider and model in Settings.' : disabledReason;
 
 	return (
-		<PromptInputAction tooltip={tooltip} showTooltipWhenDisabled={isDisabled}>
+		<PromptInputAction
+			tooltip={
+				<>
+					<span>Dictate</span>
+					{reason ? <span className="opacity-70">{reason}</span> : null}
+				</>
+			}
+			className="flex-col items-start gap-1"
+			showTooltipWhenDisabled={isDisabled}
+		>
 			<Button
 				type="button"
 				variant="ghost"
 				size="icon"
 				className={cn('size-9 rounded-full text-foreground hover:bg-muted [&_svg]:size-5', className)}
-				aria-label={tooltip}
+				aria-label="Dictate"
+				aria-description={reason}
 				disabled={isDisabled}
 				onClick={onVoiceModeRequest}
 			>
