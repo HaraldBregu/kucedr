@@ -155,7 +155,11 @@ export function validateProviderManifest(value: unknown): string[] {
 			if (!isNonEmptyString(entry.id)) errors.push(`${itemPath}.id must be a non-empty string.`);
 			if (!isNonEmptyString(entry.name))
 				errors.push(`${itemPath}.name must be a non-empty string.`);
-			if (!isNonEmptyString(entry.url)) errors.push(`${itemPath}.url must be a non-empty string.`);
+			if (
+				!isNonEmptyString(entry.url) &&
+				!(key === 'models' && entry.type === 'coding-agent-model' && entry.url === undefined)
+			)
+				errors.push(`${itemPath}.url must be a non-empty string.`);
 			if (
 				!AUTHENTICATION_TYPES.includes(
 					entry.authentication as (typeof AUTHENTICATION_TYPES)[number]
