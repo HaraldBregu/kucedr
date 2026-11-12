@@ -207,6 +207,8 @@ export interface ProviderManifest {
 	readonly settings?: readonly ProviderManifestSetting[];
 	readonly discoveryInputs?: ModelMetadata['discoveryInputs'];
 	readonly discoveryLabel?: string;
+	readonly iconFullBleed?: boolean;
+	readonly order?: number;
 }
 
 export interface ModelSelection {
