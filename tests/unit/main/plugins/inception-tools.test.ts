@@ -1,4 +1,5 @@
 import path from 'node:path';
+import OpenAI from 'openai';
 import { readPlugin } from '../../../../src/main/plugins/plugins_read';
 import { modelTools } from '../../../../src/main/agent/tools/model/tools';
 
@@ -46,6 +47,29 @@ it('validates and sends decision, FIM and edit requests using the OpenAI SDK tra
 	const fim = tools.find((entry) => entry.id === 'mdl__inception__mercury-edit-2_fim')!;
 	await expect(fim.run({ prompt: 'hello', top_k: 0 })).rejects.toThrow();
 	expect(fetchMock).toHaveBeenCalledTimes(3);
+	} finally {
+		fetchMock.mockRestore();
+	}
+});
+
+it('sends model operation schemas as OpenAI chat function tools', async () => {
+	const fetchMock = jest.spyOn(globalThis, 'fetch').mockImplementation(async () =>
+		new Response(JSON.stringify({ choices: [{ message: { role: 'assistant', content: 'ok' }, finish_reason: 'stop', index: 0 }] }),
+			{ status: 200, headers: { 'content-type': 'application/json' } })
+	);
+	try {
+		const tools = modelTools();
+		const client = new OpenAI({ apiKey: 'test-key', baseURL: 'https://api.inceptionlabs.ai/v1' });
+		await client.chat.completions.create({
+			model: 'mercury-3', messages: [{ role: 'user', content: 'hello' }],
+			tools: tools.map((tool) => ({ type: 'function', function: {
+				name: tool.id, description: tool.description, parameters: tool.schema,
+			} })),
+		});
+		const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+		expect(body.tools).toHaveLength(3);
+		expect(body.tools.map((entry: { function: { parameters: { type: string } } }) => entry.function.parameters.type))
+			.toEqual(['object', 'object', 'object']);
 	} finally {
 		fetchMock.mockRestore();
 	}
