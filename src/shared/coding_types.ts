@@ -18,7 +18,7 @@ export type CodingRunMode = 'agent' | 'shell';
 export interface CodingSettings {
 	readonly runtime: CoderHarness;
 	readonly workingDirectory?: string;
-	readonly providerId: CodingProviderId;
+	readonly providerId: string;
 	readonly modelId: string;
 	readonly thinkingLevel: CodingThinkingLevel;
 	readonly toolMode: CodingToolMode;
