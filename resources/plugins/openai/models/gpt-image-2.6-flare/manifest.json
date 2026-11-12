@@ -7,6 +7,11 @@
 	"location": "remote",
 	"metadata": {
 		"protocol": "images",
+		"promptAttachments": [{
+			"kind": "image",
+			"mimeTypes": ["image/png", "image/jpeg", "image/webp"],
+			"extensions": [".png", ".jpg", ".jpeg", ".webp"]
+		}],
 		"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-image-2.6-flare",
 		"documentationStatus": "verified",
 		"inputs": {
@@ -15,22 +20,10 @@
 				"title": "Aspect ratio",
 				"default": "auto",
 				"oneOf": [
-					{
-						"const": "auto",
-						"title": "Auto"
-					},
-					{
-						"const": "1024x1024",
-						"title": "1:1"
-					},
-					{
-						"const": "1536x1024",
-						"title": "3:2"
-					},
-					{
-						"const": "1024x1536",
-						"title": "2:3"
-					}
+					{ "const": "auto", "title": "Auto" },
+					{ "const": "1024x1024", "title": "1:1" },
+					{ "const": "1536x1024", "title": "3:2" },
+					{ "const": "1024x1536", "title": "2:3" }
 				]
 			},
 			"quality": {
@@ -85,22 +78,6 @@
 				],
 				"default": "auto"
 			}
-		},
-		"promptAttachments": [
-			{
-				"kind": "image",
-				"mimeTypes": [
-					"image/png",
-					"image/jpeg",
-					"image/webp"
-				],
-				"extensions": [
-					".png",
-					".jpg",
-					".jpeg",
-					".webp"
-				]
-			}
-		]
+		}
 	}
 }

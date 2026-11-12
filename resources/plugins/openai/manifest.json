@@ -22,15 +22,9 @@
 		"inputSchema": {
 			"type": "object",
 			"properties": {
-				"apiKey": {
-					"type": "string",
-					"title": "API key",
-					"format": "password"
-				}
+				"apiKey": { "type": "string", "title": "API key", "format": "password" }
 			},
-			"required": [
-				"apiKey"
-			]
+			"required": ["apiKey"]
 		}
 	}
 }
