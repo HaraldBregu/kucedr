@@ -175,7 +175,7 @@ export class Coder {
 		const session = this.requireSession(id);
 		this.assertProject(session, projectId);
 		if (session.nativeSessionId)
-			await this.harnesses[session.runtime].deleteSession?.(session.nativeSessionId);
+			await this.requireHarness(session.runtime).deleteSession?.(session.nativeSessionId);
 		return this.sessions.delete(id);
 	}
 	async saveSessionSettings(projectId: string, id: string, settings: CodingSettings) {
