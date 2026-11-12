@@ -21,6 +21,7 @@ import { SttProviderAuthError, SttProviderUnsupportedError } from './stt_errors'
 import type { SttActiveRealtimeSession, SttProviderSpec } from './stt_types';
 import {
 	loadProviders,
+	findModel,
 	providerIdsFor,
 	providerModels,
 	speechToTextApiTypes,
@@ -135,7 +136,7 @@ export async function startRealtime(
 		providerId,
 		providerName: provider.name,
 		modelId,
-		sampleRate: normalized.sampleRate ?? realtimeSampleRate(providerId),
+		sampleRate: normalized.sampleRate ?? findModel(providerId, 'speech-to-text', modelId)?.sampleRate ?? realtimeSampleRate(providerId),
 		format: 'pcm16',
 	};
 	const emit = (event: SttRealtimeEvent): void => {
