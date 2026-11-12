@@ -141,7 +141,9 @@ export class AppServerRpc {
 				try {
 					this.onNotification?.(message.method, message.params ?? {});
 				} catch (error) {
-					this.fail(error instanceof Error ? error : new Error('Codex event delivery failed.'));
+					this.fail(
+						error instanceof Error ? error : new Error(`${this.name} event delivery failed.`)
+					);
 				}
 			}
 			return;
