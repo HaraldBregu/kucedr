@@ -280,7 +280,7 @@ export class AppServerHarness implements CodingHarness {
 		};
 		const abort = (): void => {
 			if (loginId) void rpc.request('account/login/cancel', { loginId }).catch(() => undefined);
-			fail(new Error('Codex login cancelled.'));
+			fail(new Error(`${this.name} login cancelled.`));
 			this.close(rpc);
 		};
 		signal.addEventListener('abort', abort, { once: true });
