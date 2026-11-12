@@ -7,6 +7,7 @@ import {
 	addToolResults,
 	addUserMessage,
 	addRunContext,
+	addInternalMessage,
 	isExhausted,
 	recordTurn,
 	tryAppendRun,
