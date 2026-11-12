@@ -6,20 +6,13 @@ import type {
 import type { CatalogModel } from '../../shared/model_types';
 import { normalizeProviderId } from '../../shared/provider_types';
 import { getVoiceModel, setVoiceModel } from '../agent/agent_store';
-import { findModel } from '../models';
-import { realtimeVoiceModelRefs, supportsRealtimeVoiceModel } from './adapters/realtime_voice';
+import { findModel, modelsFor } from '../models';
 
 function supportedModels(): RealtimeVoiceModelRef[] {
-	const seen = new Set<string>();
-	return realtimeVoiceModelRefs().flatMap((reference) => {
-		const providerId = normalizeProviderId(reference.providerId);
-		const modelId = reference.modelId.trim();
-		const key = `${providerId}:${modelId}`;
-		if (!providerId || !modelId || seen.has(key)) return [];
-		if (!findModel(providerId, 'realtime-voice', modelId)) return [];
-		seen.add(key);
-		return [{ providerId, modelId }];
-	});
+	return modelsFor('realtime-voice').map((model) => ({
+		providerId: model.provider.id,
+		modelId: model.id,
+	}));
 }
 
 function canonicalOptions(
