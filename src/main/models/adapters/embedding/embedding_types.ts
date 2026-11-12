@@ -1,9 +1,11 @@
+import type { ModelMetadata } from '../../../../shared/model_types';
+
 export interface EmbeddingProviderSpec {
-	id: string;
 	name: string;
 	apiKey: string;
 	model: string;
 	baseURL: string;
+	metadata?: ModelMetadata;
 }
 
 export interface EmbeddingAdapterRequest {
