@@ -1,7 +1,6 @@
 import { safeStorage } from 'electron';
 import { mkdirSync, existsSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import path from 'node:path';
-import type { CoderHarness } from '../../shared/coding_types';
 import { userDataLocation } from '../shared/user_data_location';
 
 export class CoderCredentials {
@@ -10,15 +9,15 @@ export class CoderCredentials {
 		mkdirSync(directory, { recursive: true });
 		this.file = path.join(directory, 'credentials.json');
 	}
-	get(provider: 'openai', runtime: CoderHarness = 'codex'): string | undefined {
+	get(key: string): string | undefined {
 		if (!existsSync(this.file)) return undefined;
 		const values = JSON.parse(readFileSync(this.file, 'utf8')) as Record<string, string>;
-		if (!values[`${runtime}:${provider}`]) return undefined;
+		if (!values[key]) return undefined;
 		if (!safeStorage.isEncryptionAvailable())
 			throw new Error('Secure credential storage is unavailable.');
-		return safeStorage.decryptString(Buffer.from(values[`${runtime}:${provider}`], 'base64'));
+		return safeStorage.decryptString(Buffer.from(values[key], 'base64'));
 	}
-	set(provider: 'openai', value: string, runtime: CoderHarness = 'codex'): void {
+	set(key: string, value: string): void {
 		if (!safeStorage.isEncryptionAvailable())
 			throw new Error('Secure credential storage is unavailable.');
 		if (process.platform === 'linux' && safeStorage.getSelectedStorageBackend() === 'basic_text')
@@ -26,9 +25,8 @@ export class CoderCredentials {
 		const values: Record<string, string> = existsSync(this.file)
 			? JSON.parse(readFileSync(this.file, 'utf8'))
 			: {};
-		if (value.trim())
-			values[`${runtime}:${provider}`] = safeStorage.encryptString(value.trim()).toString('base64');
-		else delete values[`${runtime}:${provider}`];
+		if (value.trim()) values[key] = safeStorage.encryptString(value.trim()).toString('base64');
+		else delete values[key];
 		writeFileSync(this.file + '.tmp', JSON.stringify(values), { mode: 0o600 });
 		renameSync(this.file + '.tmp', this.file);
 	}

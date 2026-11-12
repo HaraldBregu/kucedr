@@ -67,9 +67,6 @@ export function setRealtimeVoiceSetup(request: RealtimeVoiceSetupRequest): Realt
 	if (!request.options || typeof request.options !== 'object' || Array.isArray(request.options)) {
 		throw new Error('Invalid realtime voice options.');
 	}
-	if (!supportsRealtimeVoiceModel(providerId, modelId)) {
-		throw new Error('This model does not support realtime voice conversations.');
-	}
 	const model = findModel(providerId, 'realtime-voice', modelId);
 	if (!model) throw new Error('The selected realtime voice model is not available.');
 	const options = canonicalOptions(model, request.options);

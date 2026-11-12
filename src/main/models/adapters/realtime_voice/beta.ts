@@ -66,9 +66,10 @@ export function createBetaRealtimeVoiceAdapter(
 				const value = request.options?.[key];
 				if (typeof value === 'number') session[key] = value;
 			}
-			const compatible = new OpenAICompatibleRealtimeVoiceAdapter({
+			const compatible = new CompatibleRealtimeVoiceAdapter({
 				provider,
-				modelIds: QWEN_REALTIME_VOICE_MODELS,
+				model,
+				serverInterrupts: false,
 				session: () => session,
 				socketFactory: () => {
 					const socket = socketFactory(url.toString(), {
