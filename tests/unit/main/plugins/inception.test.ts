@@ -17,7 +17,7 @@ it('loads the documented Inception chat models and their API contracts', () => {
 	const plugin = readPlugin(path.resolve('resources/plugins/inception'), 'inception', true);
 	expect(plugin.provider).toBeDefined();
 	expect(loadProviders()).toContainEqual(expect.objectContaining({ id: 'inception' }));
-	const models = loadModels().filter((model) => model.provider.id === 'inception');
+	const models = loadModels().filter((model) => model.provider.id === 'inception' && model.type === 'llm');
 	expect(models.map((model) => model.id).sort()).toEqual([
 		'mercury-2',
 		'mercury-2.5',
@@ -31,6 +31,23 @@ it('loads the documented Inception chat models and their API contracts', () => {
 			metadata: { protocol: 'chat-completions' },
 		});
 	}
+});
+
+it('loads specialized models as distinct capabilities with their operations', () => {
+	const models = loadModels().filter((model) => model.provider.id === 'inception');
+	const decision = models.find((model) => model.id === 'mercury-decide');
+	const edit = models.find((model) => model.id === 'mercury-edit-2');
+	expect(decision).toMatchObject({
+		type: 'decision',
+		metadata: { operations: { decision: { endpoint: '/decisions', inputSchema: { required: ['state', 'questions'] } } } },
+	});
+	expect(edit).toMatchObject({
+		type: 'code-completion',
+		metadata: { operations: {
+			fim: { endpoint: '/fim/completions', inputSchema: { required: ['prompt'] } },
+			edit: { endpoint: '/edit/completions', inputSchema: { required: ['messages'] } },
+		} },
+	});
 });
 
 it.each([

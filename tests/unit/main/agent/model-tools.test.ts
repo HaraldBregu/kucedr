@@ -35,7 +35,7 @@ it('exposes configured model operations and calls the documented endpoint throug
 	post.mockResolvedValue({ answers: { result: true } });
 	const [tool] = modelTools();
 	const signal = new AbortController().signal;
-	expect(tool.id).toBe('mdl__example__special-model__decision');
+	expect(tool.id).toBe('mdl__example__special-model_decision');
 	expect(tool.parseInput({ state: 'text' })).toEqual({ state: 'text' });
 	expect(() => tool.parseInput({})).toThrow();
 	await expect(tool.run({ state: 'text' }, signal)).resolves.toEqual({ answers: { result: true } });
