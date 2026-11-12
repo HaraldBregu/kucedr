@@ -5,14 +5,14 @@
 	"authentication": "api-key",
 	"url": "https://api.inceptionlabs.ai/v1",
 	"metadata": {
-		"description": "A text-in, text-out language model optimized for voice agents. It requires a separate speech-to-text and text-to-speech stack and is available to enterprise customers.",
+		"description": "A text-in, text-out language model optimized for voice agents. It requires separate speech-to-text and text-to-speech services and enterprise access. Confirm the API model ID with Inception.",
 		"protocol": "chat-completions",
 		"clampEffort": true,
 		"effort": {
 			"path": "reasoning_effort"
 		},
 		"documentationUrl": "https://docs.inceptionlabs.ai/api-reference/chat/create-a-chat-completion",
-		"documentationStatus": "verified",
+		"documentationStatus": "unverified",
 		"contextWindow": 128000,
 		"contextWindowDocumentationUrl": "https://docs.inceptionlabs.ai/get-started/models",
 		"inputs": {
