@@ -21,6 +21,7 @@
 				},
 				"directory": {
 					"type": "string",
+					"format": "directory",
 					"title": "Directory",
 					"description": "Absolute folder for the log files, for example ~/.kucedr/logs/models."
 				}
