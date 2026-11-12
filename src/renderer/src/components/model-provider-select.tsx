@@ -85,6 +85,7 @@ interface ModelProviderSelectProps {
 	readonly inline?: boolean;
 	readonly buttonDropdown?: boolean;
 	readonly compactPopover?: boolean;
+	readonly nameOnly?: boolean;
 	readonly buttonClassName?: string;
 	readonly showFieldLabel?: boolean;
 	readonly labels?: ModelProviderSelectLabels;
