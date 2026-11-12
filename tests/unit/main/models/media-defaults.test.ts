@@ -10,6 +10,9 @@ class ProviderError extends Error {}
 
 jest.mock('../../../../src/main/models', () => ({
 	loadProviders: () => [],
+	findModel: (providerId: string, _type: string, modelId: string) => ({
+		id: modelId, provider: { id: providerId, baseUrl: '' }, url: 'https://example.test',
+	}),
 	providerModels,
 	supportsCapability: () => true,
 }));
