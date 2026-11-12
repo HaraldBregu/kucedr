@@ -96,6 +96,10 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 		},
 	});
 	if (options.discoveryEnabled !== false) active.set(searchTool.id, searchTool);
+	for (const id of options.restored ?? []) {
+		const candidate = eligible.get(id);
+		if (candidate && !active.has(id)) active.set(id, candidate);
+	}
 
 	return {
 		tool: searchTool,
