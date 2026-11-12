@@ -26,17 +26,19 @@ type Model = {
 	supportedReasoningEfforts: { reasoningEffort: string }[];
 };
 
-export class CodexHarness implements CodingHarness {
-	private readonly connections = new Set<CodexRpc>();
+export class AppServerHarness implements CodingHarness {
+	private readonly connections = new Set<AppServerRpc>();
+	private readonly directory: string;
+	private readonly name: string;
 
-	constructor(
-		private readonly directory: string,
-		private readonly getApiKey: () => string | undefined
-	) {}
+	constructor(private readonly options: HarnessOptions) {
+		this.directory = options.directory;
+		this.name = options.name;
+	}
 
 	async run(input: string, context: HarnessContext): Promise<string> {
 		context.signal.throwIfAborted();
-		const apiKey = this.getApiKey();
+		const apiKey = this.options.getApiKey();
 		const rpc = await this.open(Boolean(apiKey));
 		let threadId: string | undefined;
 		let turnId: string | undefined;
