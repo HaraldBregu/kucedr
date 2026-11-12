@@ -58,12 +58,16 @@ it.each([true, false])('routes bundled GPT-5.4 Mini and Mercury 3 with streaming
 		const events = [];
 		for await (const event of model.stream({
 			provider: { id: provider, apiKey: 'test' }, model: modelId,
-			messages: [{ role: 'user', content: 'Hello' }], maxTokens: 100, streaming,
+			messages: [{ role: 'user', content: 'Hello' }], maxTokens: 100, effort: 'low', streaming,
 		})) events.push(event);
 		expect(events).toContainEqual({ type: 'model_call_delta', delta: answer });
 	}
 	expect(responses).toHaveBeenCalledTimes(1);
-	expect(responses.mock.calls[0][0]).toEqual(expect.objectContaining({ model: 'gpt-5.4-mini', stream: streaming }));
+	expect(responses.mock.calls[0][0]).toEqual(expect.objectContaining({
+		model: 'gpt-5.4-mini', stream: streaming, reasoning: { effort: 'low' },
+	}));
 	expect(completions).toHaveBeenCalledTimes(1);
-	expect(completions.mock.calls[0][0]).toEqual(expect.objectContaining({ model: 'mercury-3', stream: streaming }));
+	expect(completions.mock.calls[0][0]).toEqual(expect.objectContaining({
+		model: 'mercury-3', stream: streaming, reasoning_effort: 'low',
+	}));
 });
