@@ -68,7 +68,7 @@ it.each([
 				model: 'mercury-3',
 				messages: [{ role: 'user', content: 'hello' }],
 				temperature: 0.7,
-				max_tokens: 123,
+				max_completion_tokens: 123,
 				reasoning_effort: effort,
 				stream: streaming,
 			})
