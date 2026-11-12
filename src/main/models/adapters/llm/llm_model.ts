@@ -651,16 +651,11 @@ export class LlmModel implements LlmAdapter {
 
 		try {
 			const params: Record<string, unknown> = {
-				...requestOptions(provider.id.toLowerCase(), req),
+				...req.options,
 				model: req.model,
 				messages: llmBuildChatMessages(req.system, req.messages, {
 					includeReasoningContent: reasoningContentEnabled,
-					contentProfile:
-						provider.id.toLowerCase() === 'reka'
-							? 'reka'
-							: provider.id.toLowerCase() === 'mistral'
-								? 'mistral'
-								: 'image-only',
+					model,
 					cacheSystem: model?.cache?.breakpoints?.includes('system'),
 				}),
 				tools: tools.length > 0 ? tools : undefined,
