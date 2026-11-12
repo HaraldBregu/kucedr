@@ -30,11 +30,11 @@ type ListenTranscriptionResponse = {
 	};
 };
 
-export interface DeepgramSttAdapterOptions extends SttProviderSpec {
+export interface ListenSttAdapterOptions extends SttProviderSpec {
 	fetchFactory?: typeof fetch;
 }
 
-export function createDeepgramSttAdapter(opts: DeepgramSttAdapterOptions): SttAdapter {
+export function createListenSttAdapter(opts: ListenSttAdapterOptions): SttAdapter {
 	if (!opts.apiKey) throw new SttProviderAuthError(`${opts.name} API key not configured.`);
 	const provider = opts;
 	const fetcher = opts.fetchFactory ?? fetch;
