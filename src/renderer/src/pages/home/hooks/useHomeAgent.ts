@@ -244,7 +244,13 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					if (event.agentId !== HOME_AGENT_ID) return;
 					if (event.type === 'run_started') {
 						resolvedSessionId = event.sessionId;
-						if (!readRuntime(event.sessionId)) saveRuntime(event.sessionId, chatRuntime);
+						const savedRuntime = readRuntime(event.sessionId);
+						const nextRuntime = ratchetRuntime(savedRuntime, chatRuntime);
+						if (
+							nextRuntime.effort !== savedRuntime?.effort ||
+							nextRuntime.lightContext !== savedRuntime?.lightContext
+						)
+							saveRuntime(event.sessionId, nextRuntime);
 						if (event.sessionId !== sessionId) {
 							resolvedSessionRef.current = { requestId, sessionId: event.sessionId };
 						}
