@@ -250,10 +250,11 @@ export function isCodingSettings(value: unknown): value is CodingSettings {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
 	const settings = value as Partial<CodingSettings>;
 	return (
-		CODER_HARNESSES.includes(settings.runtime as CoderHarness) &&
+		typeof settings.runtime === 'string' &&
+		settings.runtime.length > 0 &&
 		(settings.workingDirectory === undefined || typeof settings.workingDirectory === 'string') &&
 		typeof settings.providerId === 'string' &&
-		CODING_PROVIDER_IDS.includes(settings.providerId as CodingProviderId) &&
+		settings.providerId.length > 0 &&
 		typeof settings.modelId === 'string' &&
 		typeof settings.thinkingLevel === 'string' &&
 		CODING_THINKING_LEVELS.includes(settings.thinkingLevel as CodingThinkingLevel) &&
