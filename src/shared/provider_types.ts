@@ -46,6 +46,7 @@ export type PublicProvider = Omit<Provider, 'apiKey'> & {
 	readonly settings?: readonly ProviderManifestSetting[];
 	readonly discoveryInputs?: ModelMetadata['discoveryInputs'];
 	readonly discoveryLabel?: string;
+	readonly discoveryMetadata?: ModelMetadata;
 };
 
 /** A plugin-wide value the user sets once, e.g. an OAuth client shared by all its services. */
