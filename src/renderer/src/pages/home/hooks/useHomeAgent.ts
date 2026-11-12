@@ -56,8 +56,17 @@ export function resolvePromptReasoningEffort(prompt: string): {
 	return { effort: 'none', lightContext: true };
 }
 
-function runtimeOptionsForPrompt(prompt: string, sessionId: string) {
-	return readRuntime(sessionId) ?? resolvePromptReasoningEffort(prompt);
+const EFFORT_ORDER: readonly ModelReasoningEffort[] = ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'];
+
+function ratchetRuntime(
+	saved: ReturnType<typeof resolvePromptReasoningEffort> | undefined,
+	next: ReturnType<typeof resolvePromptReasoningEffort>
+): ReturnType<typeof resolvePromptReasoningEffort> {
+	if (!saved) return next;
+	return {
+		effort: EFFORT_ORDER.indexOf(saved.effort) > EFFORT_ORDER.indexOf(next.effort) ? saved.effort : next.effort,
+		lightContext: saved.lightContext && next.lightContext,
+	};
 }
 
 export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) => void }) {
