@@ -63,7 +63,9 @@ async function streaming(
 		}
 		if (event.header?.event === 'task-started') resolveStarted();
 		if (event.header?.event === 'task-failed') {
-			const error = new Error(event.header.error_message || 'Qwen transcription failed.');
+			const error = new Error(
+				event.header.error_message || `${request.providerName} transcription failed.`
+			);
 			rejectStarted(error);
 			emit({ type: 'error', sessionId: request.sessionId, message: error.message });
 			socket.close();
