@@ -93,7 +93,7 @@ export function ScriptProperties({ schema, value, onChange, id = 'script-propert
 						<Label htmlFor={`${id}-${key}`}>{property.title ?? key}{schema.required?.includes(key) ? ' *' : ''}</Label>
 						<ScriptProperties inline root={root} id={`${id}-${key}`} schema={property} value={object[key]} onChange={(next) => {
 							const { [key]: _, ...rest } = object;
-							const example = property.enum ? schema.examples?.find((item) => (item as Record<string, unknown> | null)?.[key] === next) : undefined;
+							const example = property.enum && (schema.examples?.length ?? 0) > 1 ? schema.examples?.find((item) => (item as Record<string, unknown> | null)?.[key] === next) : undefined;
 							if (example) return onChange(example);
 							onChange(next === undefined || next === '' ? rest : { ...object, [key]: next });
 						}} />
