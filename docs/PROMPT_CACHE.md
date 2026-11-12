@@ -177,3 +177,59 @@ Only after steps 1–3, and only if traces show chats reaching the limit.
 ## Not planned
 - Caching responses locally. Agent turns are rarely identical, and a stale answer is worse than a slow one.
 - Picking `openrouter/auto` alternatives automatically. Routing is the user's choice; step 5 makes its cache cost visible instead.
+
+## Landed (2026-11-12)
+
+**Step 1, measuring**
+- `cacheWriteTokens` is read from OpenAI `input_tokens_details.cache_write_tokens` and Anthropic `cache_creation_input_tokens`.
+- `SessionUsage` sums `cachedTokens` and `cacheWriteTokens` in `recordTurn`. They stay undefined when a provider never reports them.
+- Both are passed through message usage, `run_finished.usage` and `run.jsonl`.
+- `model_call_start` carries `prefix: { tools, system, messages[] }` (`runner/run_prefix_hashes.ts`): 10-hex hashes with sorted keys, one per message. The first differing hash between two calls names the cause of a miss.
+- The session id now reaches the adapters as `LlmStreamRequest.sessionId`.
+
+**Step 2, append-only history**
+- The run context (file listing, clock, memory) is saved once per run as an internal user message just before the user's message (`session/session_add_run_context.ts`).
+  - The file listing is replaced by "Unchanged since the previous run context." when it matches the last full one. Memory is always sent in full, so trimming cannot lose it.
+  - Edit-and-resend replaces the stale context in front of the reused message.
+  - Deferred runs insert it into `pendingMessages`.
+- Loaded skill instructions, mode state, finalization and synthesis notes are added as internal messages after the history (`session/session_add_internal_message.ts`), once each time they change. The system prompt keeps only the mode's static protected prompt.
+- Internal messages are hidden from the chat history, memory snapshots, compaction transcripts, voice history and the chat title fallback.
+- `fitModelContext` and compaction do not treat them as user turns (`runner/run_internal.ts`, `runner/run_turn_start.ts`).
+- For Mistral, a note that follows a tool result is folded into the tool message, because Mistral rejects a user message right after a tool message.
+- `run_attach_context.ts` is deleted.
+
+**Step 3, stable tools**
+- Tools loaded by `tool_search` are restored from the chat history at run start, after `tool_search`, in their original order (`runner/run_discovered.ts`, `restored` in `run_discovery.ts`).
+- Task tools, skill tools and MCP-hint preloads are worked out from every user message in the chat, not just the current one (`runner/run_user_texts.ts`). A `/skill` run tags its skill message so the skill tools also stay in later runs. The MCP authorization prompt still reacts only to the current message.
+- The Tools section has no Loaded or Not-loaded markers and lists the eligible tools in a fixed order.
+- Synthesis turns keep the tools. A tool call there is skipped with one re-prompt, and that retry turn sends no tools, as before, so it cannot loop or fail on tool calls.
+- A skill's `allowed-tools` is enforced in the runner (`skillBlocked` with `selectSkillTools`) instead of removing tools from the request.
+
+**Step 4, manifest cache data** (`src/shared/model_types.ts`)
+- **New metadata fields:** `cache` (`readTokens`, `writeTokens`, `requestDefaults`, `sessionKey`, `breakpoints`), plus the flags `clampEffort`, `dsml`, `reasoningContent` and `families`.
+- **New adapter helpers:** `models/adapters/llm/metadata.ts` (catalog first, then the provider's discovery manifest with `families`), `tokens.ts` (usage path overrides) and `breakpoint.ts` (`cache_control` on the system block, for Anthropic and the Chat path).
+- **Manifests:**
+  - `sessionKey: "prompt_cache_key"` on gpt-5.4 and gpt-5.5, all variants.
+  - `breakpoints: ["system"]` on all Anthropic models.
+  - `clampEffort` on the openai, anthropic, xai and deepseek models, replacing the 4-id effort lookup.
+  - `dsml` and `reasoningContent` on the DeepSeek models.
+  - A `deepseek` family with `dsml` on the openrouter, iteraCompute and ollama discovery manifests, replacing `/deepseek/i`.
+- **Still hardcoded:** the reka and mistral content profiles and `reka-flash-3` tool stripping, because no reka or mistral manifest ships; the `anthropic` and `openai` API dispatch; and the provider branches in `options.ts`.
+- **Edge cases:** a model id outside the catalog on openai, anthropic, xai or deepseek no longer gets effort clamping or DSML. A user-defined provider serving DeepSeek needs its own `dsml` family.
+
+**Step 5, renderer**
+- Effort and context mode are kept per chat in `localStorage` (`chat-runtime:<sessionId>`). They only move up, so effort is the highest seen and context switches to workspace once any prompt needs it. A user-saved effort still wins.
+- The context meter's tooltip shows "Cached N% of input last turn, M% this chat". It is hidden when the provider reports nothing, and the last-turn value clears when the latest turn reported nothing.
+
+**Checked**
+- `typecheck:node` passes. `typecheck:web` passes except the existing `hideIcons` error in `settings/Group.tsx`. eslint is clean on the changed files.
+- A bundled check confirmed that run N's last request and final history are byte prefixes of run N+1's first request for the Chat, Anthropic and Responses builders. It also covered:
+  - run-context dedupe and edit replacement;
+  - trimming that keeps the current turn and its context;
+  - a Tools section that does not change after a load;
+  - the same tool order across runs;
+  - usage totals, trace fields and the Mistral fold.
+- The step 4 agent compared 18 provider/model cases with the old provider-id logic, and the step 5 agent checked the tooltip and the ratchet in a built app with a mock provider.
+- An independent review with skeptic verification found 7 real issues. All are fixed above.
+
+**Not confirmed:** live provider calls, and the unit suite. Tests that encode the old layout will need updating: Loaded markers, run context in the system prompt, synthesis with no tools. Restart the dev app before measuring.
