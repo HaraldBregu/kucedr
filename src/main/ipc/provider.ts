@@ -212,11 +212,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 						metadata: {
 							documentationUrl: modelUrl?.replace('{id}', model.id) ?? modelsUrl,
 							promptAttachments: [],
-							inputs: discoveryInputs
-								? openrouterInputs(model, discoveryInputs)
-								: model.model_disclosure?.model_parameters?.features?.reasoning === true
-									? { reasoning_effort: { type: 'string', enum: ['none', 'high'] } }
-									: {},
+							inputs: discoveryInputs ? openrouterInputs(model, discoveryInputs) : {},
 							...(discoveryInputs ? { documentationStatus: 'verified' as const } : {}),
 							...(contextWindow ? { contextWindow } : {}),
 						},
