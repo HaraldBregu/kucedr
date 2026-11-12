@@ -22,7 +22,6 @@ it('loads the documented Inception chat models and their API contracts', () => {
 		'mercury-2',
 		'mercury-2.5',
 		'mercury-3',
-		'mercury-voice',
 	]);
 	for (const model of models) {
 		expect(model).toMatchObject({
@@ -41,17 +40,7 @@ it('classifies every documented model by its API capability', () => {
 		['mercury-3', 'llm'],
 		['mercury-decide', 'decision'],
 		['mercury-edit-2', 'code-completion'],
-		['mercury-voice', 'llm'],
 	]);
-	expect(models.find((model) => model.id === 'mercury-voice')).toMatchObject({
-		metadata: {
-			protocol: 'chat-completions',
-			documentationStatus: 'unverified',
-			contextWindow: 128000,
-			promptAttachments: [],
-			inputs: { reasoning_effort: { enum: ['low', 'medium', 'high'] } },
-		},
-	});
 });
 
 it('loads specialized models as distinct capabilities with their operations', () => {
