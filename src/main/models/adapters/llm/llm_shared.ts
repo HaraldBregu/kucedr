@@ -280,13 +280,13 @@ export function llmHasFunctionCall(output: ResponseOutputItem[] | undefined): bo
 	return output?.some((item) => item.type === 'function_call') ?? false;
 }
 
-export function llmBuildAnthropicMessages(
+export function llmBuildMessages(
 	transcript: LlmTranscriptEntry[]
 ): Anthropic.Messages.MessageParam[] {
 	const msgs: Anthropic.Messages.MessageParam[] = [];
 	for (const entry of transcript) {
 		if (entry.role === 'user') {
-			msgs.push({ role: 'user', content: toAnthropicUserContent(entry.content) });
+			msgs.push({ role: 'user', content: toMessagesUserContent(entry.content) });
 			continue;
 		}
 		if (entry.role === 'assistant') {
