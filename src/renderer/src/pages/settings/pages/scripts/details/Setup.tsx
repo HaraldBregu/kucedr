@@ -116,6 +116,9 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 										className="h-7 w-64 max-w-full px-2.5 text-xs md:text-xs"
 										spellCheck={false}
 										disabled={saving}
+										onBlur={() => {
+											if ((values[key] ?? '') !== (saved[key] ?? '')) void save();
+										}}
 										onChange={(event) =>
 											setValues((current) => ({ ...current, [key]: event.target.value }))
 										}
