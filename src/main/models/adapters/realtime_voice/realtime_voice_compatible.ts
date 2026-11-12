@@ -54,7 +54,7 @@ export class CompatibleRealtimeVoiceAdapter implements RealtimeVoiceAdapter {
 	}
 }
 
-class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection {
+class CompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection {
 	private closed = false;
 	private responseActive = false;
 	private responsePending = false;
