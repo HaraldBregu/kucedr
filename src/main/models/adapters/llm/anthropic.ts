@@ -1,11 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { breakpoint } from './breakpoint';
 import { options } from './options';
+import { tokens } from './tokens';
+import type { ModelCache } from '../../../../shared/model_types';
 import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
 import { llmBuildAnthropicMessages } from './llm_shared';
 
 export async function* anthropic(
 	client: Anthropic,
-	req: LlmStreamRequest
+	req: LlmStreamRequest,
+	cache?: ModelCache
 ): AsyncIterable<LlmProviderEvent> {
 	const tools: Anthropic.Messages.Tool[] = req.tools.map((tool) => ({
 		name: tool.name,
