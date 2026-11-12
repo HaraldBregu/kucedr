@@ -1,9 +1,7 @@
 import path from 'node:path';
-import OpenAI from 'openai';
 import { readPlugin } from '../../../../src/main/plugins/plugins_read';
 import { modelTools } from '../../../../src/main/agent/tools/model/tools';
 
-jest.mock('openai');
 jest.mock('../../../../src/main/settings_store', () => ({
 	getProvider: () => ({ apiKey: 'test-key', baseUrl: 'https://api.inceptionlabs.ai/v1' }),
 }));
@@ -15,9 +13,11 @@ jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
 	},
 }));
 
-it('validates and sends decision, FIM and edit requests using the plugin contracts', async () => {
-	const post = jest.fn().mockResolvedValue({ result: 'ok' });
-	jest.mocked(OpenAI).mockImplementation(() => ({ post }) as never);
+it('validates and sends decision, FIM and edit requests using the OpenAI SDK transport', async () => {
+	const fetchMock = jest.spyOn(globalThis, 'fetch').mockImplementation(async () =>
+		new Response(JSON.stringify({ result: 'ok' }), { status: 200, headers: { 'content-type': 'application/json' } })
+	);
+	try {
 	const tools = modelTools();
 	const requests = [
 		['mdl__inception__mercury-decide_decision', '/decisions', 'mercury-decide', {
@@ -37,6 +37,16 @@ it('validates and sends decision, FIM and edit requests using the plugin contrac
 		const operation = tools.find((entry) => entry.id === id);
 		expect(operation).toBeDefined();
 		await expect(operation!.run(input)).resolves.toEqual({ result: 'ok' });
-		expect(post).toHaveBeenLastCalledWith(endpoint, { body: { ...input, model }, signal: undefined });
+		const [url, init] = fetchMock.mock.calls.at(-1)!;
+		expect(String(url)).toBe(`https://api.inceptionlabs.ai/v1${endpoint}`);
+		expect(init?.method).toBe('POST');
+		expect(new Headers(init?.headers).get('authorization')).toBe('Bearer test-key');
+		expect(JSON.parse(String(init?.body))).toEqual({ ...input, model });
+	}
+	const fim = tools.find((entry) => entry.id === 'mdl__inception__mercury-edit-2_fim')!;
+	await expect(fim.run({ prompt: 'hello', top_k: 0 })).rejects.toThrow();
+	expect(fetchMock).toHaveBeenCalledTimes(3);
+	} finally {
+		fetchMock.mockRestore();
 	}
 });
