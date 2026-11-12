@@ -57,9 +57,7 @@ export function resolvePromptReasoningEffort(prompt: string): {
 }
 
 function runtimeOptionsForPrompt(prompt: string, sessionId: string) {
-	const runtime = readRuntime(sessionId) ?? resolvePromptReasoningEffort(prompt);
-	saveRuntime(sessionId, runtime);
-	return runtime;
+	return readRuntime(sessionId) ?? resolvePromptReasoningEffort(prompt);
 }
 
 export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) => void }) {
