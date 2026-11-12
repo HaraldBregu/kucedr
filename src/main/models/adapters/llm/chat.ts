@@ -1,8 +1,10 @@
 import OpenAI from 'openai';
 import { content } from './content';
 import type { ModelReasoningEffort } from '../../../../shared/agent_types';
+import type { ModelCache } from '../../../../shared/model_types';
 import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
 import { llmBuildChatMessages, llmToDeepSeekReasoningEffort } from './llm_shared';
+import { tokens } from './tokens';
 
 export async function* chat(
 	client: OpenAI,
@@ -12,6 +14,7 @@ export async function* chat(
 		reasoningEffortEnabled: boolean;
 		thinkingModeEnabled: boolean;
 		contentProfile: 'image-only' | 'reka' | 'mistral';
+		cache?: ModelCache;
 	}
 ): AsyncIterable<LlmProviderEvent> {
 	const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map(
