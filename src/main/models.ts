@@ -224,6 +224,7 @@ function toPublicProvider(
 		'';
 	const discoveryModel = entry.models?.find((model) => model.discoveryOnly && model.metadata?.discoveryInputs);
 	const discoveryInputs = discoveryModel?.metadata?.discoveryInputs;
+	const discoveryMetadata = entry.models?.find((model) => model.discoveryOnly)?.metadata;
 	const iconDarkUrl = iconUrl(providerDir, entry.icon_dark_url);
 	const iconLightUrl = iconUrl(providerDir, entry.icon_light_url);
 	return {
