@@ -370,7 +370,7 @@ export function llmBuildChatMessages(
 	transcript: LlmTranscriptEntry[],
 	options: {
 		includeReasoningContent?: boolean;
-		contentProfile?: LlmChatContentProfile;
+		model?: ModelMetadata;
 		cacheSystem?: boolean;
 	} = {}
 ): OpenAI.ChatCompletionMessageParam[] {
