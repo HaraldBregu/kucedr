@@ -79,38 +79,28 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 		</pre>
 	);
 	if (!script) return <NodeViewWrapper>{code}</NodeViewWrapper>;
-	const update = (next: Record<string, unknown>): void => {
-		const pos = getPos();
-		if (pos === undefined) return;
-		editor
-			.chain()
-			.command(({ tr }) => {
-				tr.replaceWith(pos + 1, pos + node.nodeSize - 1, editor.schema.text(JSON.stringify({ script: pluginScriptRef(script.name, script.version, script.plugin, ref?.createdAt), input: next }, null, 2)));
-				return true;
-			})
-			.run();
-	};
+	const editable = script.inputSchema && input !== null && typeof input === 'object' && !Array.isArray(input);
 	return (
 		<NodeViewWrapper className="my-5">
 			<div contentEditable={false} className="relative">
-				{script.inputSchema && input !== null && typeof input === 'object' && !Array.isArray(input) ? (
-					<>
-						<Button type="button" variant="outline" size="sm" aria-label={`${script.title} properties`} className="absolute right-2 top-2 z-10" onClick={() => setFormOpen(true)}>
-							<Settings2 />Edit
-						</Button>
-						{formOpen ? (
-							<WorkspaceScriptForm script={script} value={input as Record<string, unknown>} submitLabel="Save" onClose={() => setFormOpen(false)} onSubmit={(next) => {
-								setFormOpen(false);
-								update(next);
-							}} />
-						) : null}
-					</>
+				{editable && editor.isEditable ? (
+					<Button type="button" variant="outline" size="sm" aria-label={`${script.title} properties`} aria-expanded={formOpen} className="absolute right-2 top-2 z-10" onClick={() => {
+						setDraft(undefined);
+						setFormOpen(!formOpen);
+					}}>
+						<Settings2 />{formOpen ? 'Done' : 'Edit'}
+					</Button>
 				) : null}
 				{input !== undefined ? (
 					<PluginScriptFrame script={script} input={input} />
 				) : (
 					<p className="mb-1 text-xs text-destructive">Invalid {script.title} JSON</p>
 				)}
+				{editable && formOpen && script.inputSchema ? (
+					<div role="group" aria-label={`${script.title} properties`} className="mt-2 rounded-md border p-3 text-sm leading-normal">
+						<ScriptProperties schema={script.inputSchema} value={draft ?? input} onChange={(next) => setDraft(next as Record<string, unknown>)} />
+					</div>
+				) : null}
 			</div>
 			{code}
 		</NodeViewWrapper>
