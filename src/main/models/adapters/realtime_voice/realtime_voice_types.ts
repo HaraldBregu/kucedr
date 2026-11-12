@@ -164,5 +164,5 @@ export interface RealtimeVoiceSocket {
 
 export type RealtimeVoiceSocketFactory = (
 	provider: RealtimeVoiceProviderSpec,
-	modelId: string
+	model: RealtimeVoiceModelSpec
 ) => RealtimeVoiceSocket;
