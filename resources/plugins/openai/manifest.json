@@ -2,7 +2,7 @@
 	"schemaVersion": 5,
 	"id": "openai",
 	"title": "OpenAI",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"description": "GPT models for chat, images, speech, realtime voice, and embeddings.",
 	"categories": [
 		"LLM",
@@ -22,9 +22,15 @@
 		"inputSchema": {
 			"type": "object",
 			"properties": {
-				"apiKey": { "type": "string", "title": "API key", "format": "password" }
+				"apiKey": {
+					"type": "string",
+					"title": "API key",
+					"format": "password"
+				}
 			},
-			"required": ["apiKey"]
+			"required": [
+				"apiKey"
+			]
 		}
 	}
 }

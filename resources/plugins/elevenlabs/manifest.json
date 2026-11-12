@@ -2,7 +2,7 @@
 	"schemaVersion": 5,
 	"id": "elevenlabs",
 	"title": "ElevenLabs",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "Lifelike voices, transcription, music, and sound effects.",
 	"categories": [
 		"AUDIO",
@@ -19,9 +19,15 @@
 		"inputSchema": {
 			"type": "object",
 			"properties": {
-				"apiKey": { "type": "string", "title": "API key", "format": "password" }
+				"apiKey": {
+					"type": "string",
+					"title": "API key",
+					"format": "password"
+				}
 			},
-			"required": ["apiKey"]
+			"required": [
+				"apiKey"
+			]
 		}
 	}
 }
