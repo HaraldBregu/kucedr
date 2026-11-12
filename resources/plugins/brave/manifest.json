@@ -10,6 +10,7 @@
 	"author": "Harald Bregu",
 	"website": "https://brave.com/search/",
 	"icon": "brave.svg",
+	"iconFullBleed": true,
 	"apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys",
 	"settings": {
 		"inputSchema": {
