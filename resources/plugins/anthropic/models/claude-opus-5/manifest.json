@@ -5,6 +5,12 @@
 	"authentication": "api-key",
 	"url": "https://api.anthropic.com",
 	"metadata": {
+		"clampEffort": true,
+		"cache": {
+			"breakpoints": [
+				"system"
+			]
+		},
 		"promptAttachments": [
 			{
 				"kind": "image",
