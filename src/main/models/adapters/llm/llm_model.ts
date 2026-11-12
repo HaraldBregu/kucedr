@@ -477,6 +477,7 @@ export class LlmModel implements LlmAdapter {
 				usage.cacheWriteTokens = (
 					event.response.usage?.input_tokens_details as { cache_write_tokens?: number } | undefined
 				)?.cache_write_tokens;
+				Object.assign(usage, tokens(usage, event.response, cache));
 				setStopReason(llmHasFunctionCall(event.response.output) ? 'tool_calls' : 'end_turn');
 				break;
 			case 'response.incomplete':
