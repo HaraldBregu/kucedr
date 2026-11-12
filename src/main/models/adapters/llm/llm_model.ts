@@ -503,12 +503,13 @@ export class LlmModel implements LlmAdapter {
 
 	private async *streamAnthropic(
 		provider: LlmProviderSpec,
-		req: LlmStreamRequest
+		req: LlmStreamRequest,
+		cache: ModelCache | undefined
 	): AsyncIterable<LlmProviderEvent> {
 		const client = this.createAnthropicClient(provider);
 		if (req.streaming === false) {
 			try {
-				yield* completeAnthropic(client, req);
+				yield* completeAnthropic(client, req, cache);
 			} catch (error) {
 				this.throwProviderError(error);
 			}
