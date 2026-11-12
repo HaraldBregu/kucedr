@@ -133,7 +133,15 @@ export async function* runModelTurn(
 				options: modelOptions,
 				signal,
 				streaming,
+				...(input.sessionId ? { sessionId: input.sessionId } : {}),
 			})) {
+				if (event.type === 'model_call_start') {
+					yield {
+						...event,
+						prefix: prefixHashes(context.systemPrompt, context.tools, context.messages),
+					};
+					continue;
+				}
 				if (
 					event.type === 'model_call_delta' ||
 					event.type === 'model_tool_call_start' ||
