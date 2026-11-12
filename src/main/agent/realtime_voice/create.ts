@@ -43,18 +43,17 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 			}
 
 			const models = loadModels().filter(
-				(model) =>
-					model.provider.id === providerId &&
-					model.type === 'realtime-voice' &&
-					supportsRealtimeVoiceModel(providerId, model.id)
+				(model) => model.provider.id === providerId && model.type === 'realtime-voice'
 			);
 			const configuredModelId = getModelId('realtimeVoice');
 			const model = configuredModelId
 				? models.find((candidate) => candidate.id === configuredModelId)
 				: (models.find((candidate) => candidate.default) ?? models[0]);
 			if (!model) throw new Error('Configured realtime voice model is not supported.');
+			const providerName = provider?.name || model.provider.name;
+			const protocol = realtimeVoiceProtocol(model, providerName);
 
-			const options = getOptions('realtimeVoice');
+			const options = { ...model.metadata?.requestDefaults, ...getOptions('realtimeVoice') };
 			const configuredVoice = options.voice;
 			const metadataVoice = model.metadata?.inputs.voice?.default;
 			const supportedVoices = (model.metadata?.inputs.voice?.enum ?? []).filter(
