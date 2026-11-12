@@ -2,7 +2,8 @@ import path from 'node:path';
 import { readPlugin } from '../../../../src/main/plugins/plugins_read';
 import { loadModels } from '../../../../src/main/models';
 import { createImage } from '../../../../src/main/models/image/image_create';
-import { transcribe } from '../../../../src/main/models/adapters/stt/stt_transcribe';
+import { startRealtime, transcribe } from '../../../../src/main/models/adapters/stt/stt_transcribe';
+import * as sttFactory from '../../../../src/main/models/adapters/stt/stt_factory';
 
 jest.mock('@mistralai/mistralai', () => ({ Mistral: jest.fn() }));
 jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
@@ -45,4 +46,15 @@ it('routes the selected transcription model using its own protocol', async () =>
 		expect(String(fetcher.mock.calls[0][0])).toBe('https://api.elevenlabs.io/v1/speech-to-text');
 		expect((fetcher.mock.calls[0][1]?.body as FormData).get('model_id')).toBe('scribe_v2');
 	} finally { fetcher.mockRestore(); }
+});
+
+it('passes the selected realtime model metadata and sample rate to its adapter', async () => {
+	const start = jest.fn().mockResolvedValue({ appendAudio: jest.fn(), finish: jest.fn(), cancel: jest.fn() });
+	const factory = jest.spyOn(sttFactory, 'buildSttAdapter').mockReturnValue({ transcribe: jest.fn(), startRealtime: start });
+	try {
+		const session = await startRealtime({ providerId: 'elevenlabs', modelId: 'scribe_v2_realtime' }, jest.fn());
+		expect(session.sampleRate).toBe(16000);
+		expect(factory.mock.calls[0][0].protocol).toBe('speech-to-text');
+		expect(start.mock.calls[0][0]).toMatchObject({ modelId: 'scribe_v2_realtime', sampleRate: 16000, metadata: { protocol: 'speech-to-text' } });
+	} finally { factory.mockRestore(); }
 });
