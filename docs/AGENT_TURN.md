@@ -99,3 +99,46 @@ Tests: the five that encoded the old behaviour were updated (`system-prompt`, `r
 ## Re-measuring
 
 The baseline numbers above come from `run.jsonl`. After the changes, `model_call_end` also records `cachedTokens`, so the cache hit rate is `cachedTokens / inputTokens` per call. Expect it near zero on the first turn of a run and high on later turns.
+
+## Round 2 (2026-11-12)
+
+Goal: faster first response and fewer seconds to finish a task. Analysis only; no code changed.
+
+### Measurements
+
+Traces since 2026-11-06: 131 runs. Only 13 runs were made after the round-1 fixes, so the cache numbers are a small sample.
+
+| Measure | Value |
+|---|---|
+| Model turns per run | median 4, avg 7, p90 18; 4 runs hit the turn cap |
+| Model call duration | median 5.3 s, p90 21 s |
+| Tool calls per model turn | ~1.0 |
+| Tool time | small: `bash` avg 0.3 s; `ask` 719 s total is time waiting on the user |
+| Cache hit rate after round 1 | 0.73 on turns 2+, ~0 on turn 1 of each run |
+| Local work between turns, startup | still ~20 ms and under 100 ms |
+
+Time to first token by provider, same model family:
+
+| Route | TTFT median | Cached tokens reported |
+|---|---|---|
+| `openrouter/~deepseek/deepseek-flash-latest` | 2.9 s | 0 (pre-fix runs) |
+| `iteracompute/deepseek/deepseek-v4.1-flash-1017` | 10.7 s | 0, also after the fix |
+
+Each turn is one model round trip, so the number of turns is the main reason tasks take long. Local code is still not worth touching.
+
+### Findings, largest expected win first
+
+1. **Turn 1 of every run misses the cache for the whole history.** `system/clock.ts` puts `new Date()` in the system prompt. Memory (`options.memory.read()`) and the directory listing (`addWorkspacePrompt`) are in it too (`runner/run_stream.ts:453-485`). Messages come after the system prompt, so a 60–80K-token history is processed again on every new user message. Fix: move the clock, memory and directory listing out of the system prompt and into an internal context block on the newest user message. This is the "cross-run caching" item already under "Not done".
+2. **Each `tool_search` load breaks the cache in the middle of a run.** Loading a tool changes `turnKey`, so `buildSystemPrompt` runs again (`run_stream.ts:452`). That changes the `## Tools` section (18 KB, near the top), takes a new clock reading, lists the directory again and changes the tool schemas. Fixes, cheapest first: preload the most-searched tools (`use_web_browser`, `process`, the `create_*` tools) so the search turn goes away, and take the clock reading once per run.
+3. **Tools run one at a time and the prompt never asks for batching.** `runner/run_tool_calls.ts:18` is a sequential `for`, and no prompt text tells the model to send independent tool calls together. The round-1 estimate (parallel execution saves 0.3%) was measured on models that were never asked to batch. Fix: add one prompt line asking for independent calls in a single response, and run read-only calls (`tools/core/readonly.ts`) at the same time. This cuts turns, which is the main cost.
+4. **The provider route changes time to first token 3–4× on the same model.** This is configuration, not code: show it to the user or default to the faster route.
+
+Not worth doing: session persistence, settings and memory reads, startup, MCP startup.
+
+### Order of work
+
+3 (batching: one prompt line and concurrent read-only tools) → 2 (preloading and a single clock reading per run) → 1 (moving the per-run context next to the newest message).
+
+### Re-measuring
+
+Measure turns per run, the turn-1 cache hit rate and the median run time from `run.jsonl` (`model_call_end` has `durationMs`, `firstTokenLatencyMs` and `usage.cachedTokens`; `run_finished` has `numTurns`), then compare them with the tables above.
