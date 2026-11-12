@@ -810,13 +810,23 @@ function PageContent(): ReactElement {
 								<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
 							) : undefined
 						}
-						leadingAction={
-							voiceMode === 'dictation' ? undefined : (
-								<AttachmentButton
-									disabled={attachmentDisabled || filesAccept === ''}
-									disabledReason={filesAccept === '' ? "This model doesn't accept files." : undefined}
-									onLibrarySelect={() => setLibraryPickerOpen(true)}
-								/>
+						leadingAction={showEmptyConversation ? attachmentButton : undefined}
+						belowContent={
+							showEmptyConversation ? undefined : (
+								<div className="flex items-center justify-between pt-1">
+									{attachmentButton ?? <span />}
+									{modelContext?.modelId ? (
+										<Usage
+											className="h-6"
+											providerId={modelContext.providerId}
+											modelId={modelContext.modelId}
+											contextWindow={modelContext.contextWindow}
+											messages={agent.chatState.messages}
+											draft={agent.input}
+											hasAttachments={attachments.length > 0}
+										/>
+									) : null}
+								</div>
 							)
 						}
 						voiceMode={voiceMode === 'dictation' ? voiceMode : null}
