@@ -85,7 +85,7 @@ export function createBidiVoiceAdapter(
 			await new Promise<void>((resolve, reject) => {
 				let ready = false;
 				const timer = setTimeout(() => {
-					reject(new Error('Google voice connection timed out.'));
+					reject(new Error(`${provider.name} voice connection timed out.`));
 					void stop();
 				}, 15000);
 				timer.unref?.();
