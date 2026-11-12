@@ -58,7 +58,7 @@ export class LiveVoiceAdapter implements RealtimeVoiceAdapter {
 	}
 }
 
-class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
+class LiveVoiceConnection implements RealtimeVoiceConnection {
 	private closed = false;
 	private inputTranscript = '';
 	private inputTurn = 0;
