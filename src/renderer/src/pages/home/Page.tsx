@@ -295,11 +295,13 @@ function VoiceButton({
 	disabled,
 	disabledReason,
 	mode,
+	className,
 }: {
 	readonly onVoiceModeRequest: () => void;
 	readonly disabled?: boolean;
 	readonly disabledReason?: string;
 	readonly mode: VoiceButtonMode;
+	readonly className?: string;
 }): ReactElement {
 	const isDisabled = disabled || mode === 'disabled';
 	const tooltip =
