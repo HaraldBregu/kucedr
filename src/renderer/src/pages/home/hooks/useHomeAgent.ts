@@ -221,7 +221,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				const selectedEffort = selectedProvider?.id === 'openrouter' && savedEffort
 					? modelEfforts(providerModels('openrouter', 'llm').find((model) => model.id === selectedModel)?.metadata).includes(savedEffort) ? savedEffort : undefined
 					: savedEffort;
-				const chatRuntime = runtimeOptionsForPrompt(trimmed, sessionId);
+				const chatRuntime = ratchetRuntime(readRuntime(sessionId), resolvePromptReasoningEffort(trimmed));
 				const runtimeOptions = {
 					...chatRuntime,
 					...(selectedEffort
