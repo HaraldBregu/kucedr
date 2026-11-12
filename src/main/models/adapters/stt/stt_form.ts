@@ -33,7 +33,7 @@ export function createFormSttAdapter(provider: SttProviderSpec): SttAdapter {
 					providerId: provider.id,
 					providerName: provider.name,
 					modelId: request.modelId,
-					language: String(form.get('language')),
+					...(language !== undefined ? { language: String(language) } : {}),
 					createdAt: new Date().toISOString(),
 				},
 			};
