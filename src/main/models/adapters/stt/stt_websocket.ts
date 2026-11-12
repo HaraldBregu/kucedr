@@ -47,9 +47,9 @@ export function createWebsocketSttAdapter(provider: SttProviderSpec): SttAdapter
 			endpoint.searchParams.set('encoding', 'pcm_s16le');
 			endpoint.searchParams.set('sample_rate', String(request.sampleRate));
 			endpoint.searchParams.set('cartesia_version', '2026-08-14');
-			if (request.modelId === 'ink-whisper' && request.language)
+			if (request.metadata?.inputs.language && request.language)
 				endpoint.searchParams.set('language', request.language);
-			if (request.modelId === 'ink-2' && request.prompt)
+			if (request.metadata?.inputs.keyterm && request.prompt)
 				endpoint.searchParams.set('keyterm', request.prompt);
 			const socket = new WebSocket(endpoint, { headers: { 'X-API-Key': provider.apiKey } });
 			let transcript = '';
