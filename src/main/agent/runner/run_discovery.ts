@@ -18,6 +18,7 @@ export interface DiscoveredMcpTool {
 interface ToolSearchOptions {
 	eligible: Tool[];
 	required: Tool[];
+	restored?: string[];
 	discoveryEnabled?: boolean;
 	mcpTools?: DiscoveredMcpTool[];
 	filterEligible?: (tools: Tool[]) => Tool[];
