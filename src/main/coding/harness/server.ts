@@ -238,11 +238,11 @@ export class AppServerHarness implements CodingHarness {
 			return {
 				providers: [
 					{
-						id: 'openai-codex',
-						name: 'OpenAI Codex',
-						authentication: 'oauth',
-						configured: Boolean(account.account || this.getApiKey()),
-						authType: this.getApiKey()
+						id: this.options.provider.id,
+						name: this.options.provider.name,
+						authentication: this.options.provider.authentication === 'oauth2' ? 'oauth' : 'api-key',
+						configured: Boolean(account.account || this.options.getApiKey()),
+						authType: this.options.getApiKey()
 							? 'api_key'
 							: account.account?.type === 'chatgpt'
 								? 'oauth'
