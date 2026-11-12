@@ -5,6 +5,7 @@
 	"authentication": "api-key",
 	"url": "https://api.inceptionlabs.ai/v1",
 	"metadata": {
+		"description": "Decision model for classification, scoring, and extraction from structured input; it does not generate chat responses.",
 		"documentationUrl": "https://docs.inceptionlabs.ai/api-reference/decisions/create-a-decision",
 		"documentationStatus": "verified",
 		"inputs": {},

@@ -5,6 +5,7 @@
 	"authentication": "api-key",
 	"url": "https://api.inceptionlabs.ai/v1",
 	"metadata": {
+		"description": "Code model for fill-in-the-middle completion and next-edit prediction; it does not support chat completions.",
 		"documentationUrl": "https://docs.inceptionlabs.ai/get-started/models",
 		"documentationStatus": "verified",
 		"inputs": {},

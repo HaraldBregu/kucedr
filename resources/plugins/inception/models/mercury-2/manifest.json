@@ -5,6 +5,7 @@
 	"authentication": "api-key",
 	"url": "https://api.inceptionlabs.ai/v1",
 	"metadata": {
+		"description": "Text reasoning model for chat, tool calling, and structured output.",
 		"protocol": "chat-completions",
 		"clampEffort": true,
 		"effort": {
