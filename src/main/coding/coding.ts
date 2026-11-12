@@ -83,21 +83,22 @@ export class Coder {
 	saveLayout(layout: CoderLayout): CoderLayout {
 		return this.dependencies.store.setLayout(layout);
 	}
-	setApiKey(provider: 'openai', key: string, runtime?: CoderHarness): void {
-		if (provider !== 'openai' || typeof key !== 'string') throw new Error('Invalid Coder API key.');
-		this.credentials.set(provider, key, this.getSettings(runtime).runtime);
+	setApiKey(key: string, runtime?: CoderHarness): void {
+		if (typeof key !== 'string') throw new Error('Invalid Coder API key.');
+		this.credentials.set(this.entry(this.getSettings(runtime).runtime).credentialKey, key);
 	}
 	listModels(runtime?: CoderHarness) {
-		const selected = this.getSettings(runtime).runtime;
-		return this.harnesses[selected].listModels();
+		return this.requireHarness(this.getSettings(runtime).runtime).listModels();
 	}
 	listProjects() {
 		return this.dependencies.projects.list();
 	}
 	addProject(input?: CodingProjectCreate) {
+		if (input?.settings) this.validateSettings(input.settings);
 		return this.dependencies.projects.create(input);
 	}
 	updateProject(id: string, input: CodingProjectCreate) {
+		if (input?.settings) this.validateSettings(input.settings);
 		return this.dependencies.projects.update(id, input);
 	}
 	removeProject(id: string) {
