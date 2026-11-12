@@ -268,7 +268,6 @@ export class LlmModel implements LlmAdapter {
 			strict: false,
 		}));
 		const responseOptions = req.options as Partial<ResponseCreateParamsStreaming> | undefined;
-		const configuredReasoning = responseOptions?.reasoning;
 
 		const params: ResponseCreateParamsStreaming = {
 			...responseOptions,
