@@ -242,6 +242,8 @@ function toPublicProvider(
 		...(iconLightUrl ? { iconLightUrl } : {}),
 		...(entry.iconFullBleed ? { iconFullBleed: true } : {}),
 		...(entry.order !== undefined ? { order: entry.order } : {}),
+		...(entry.website ? { website: entry.website } : {}),
+		...(entry.baseUrlSetting ? { baseUrlSetting: entry.baseUrlSetting } : {}),
 		...(plugin ? { plugin } : {}),
 		...(entry.settings ? { settings: entry.settings } : {}),
 	};
