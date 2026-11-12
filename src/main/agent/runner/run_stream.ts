@@ -249,8 +249,6 @@ async function* loop(
 			resources: skill.resources,
 			warnings: skill.warnings,
 		});
-		tools = filterEligibleTools(tools);
-		search?.replaceEligible(filterEligibleTools(tools));
 	};
 	if (!options.tools && skillListingEnabled) tools.push(listSkillsTool(skillSnapshot));
 	if (!options.tools && skillLoadingEnabled) {
