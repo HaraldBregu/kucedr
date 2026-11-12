@@ -275,10 +275,12 @@ async function* loop(
 				closeMcp = mcp.close;
 				mcpDiscovery = mcp.diagnostics;
 			}
-			mcpServerHint = resolveMcpServerHint(input.message, [
+			const mcpServers = [
 				...mcpEntries.map(({ serverId, serverName }) => ({ serverId, serverName })),
 				...uncatalogedMcp,
-			]);
+			];
+			mcpServerHint = resolveMcpServerHint(input.message, mcpServers);
+			preloadedMcpServers = mcpServerHints(mcpServers);
 			const childTools = filterEligibleTools(tools).filter((tool) => tool.id !== 'ask');
 			const childRuntime = {
 				type: input.type,
