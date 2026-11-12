@@ -6,6 +6,7 @@ export type {
 	LlmContentBlock,
 	LlmEvent,
 	LlmJsonSchema,
+	LlmPrefixHashes,
 	LlmProviderEvent,
 	LlmProviderSpec,
 	LlmRequest,
