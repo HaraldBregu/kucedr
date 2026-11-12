@@ -20,10 +20,18 @@ export class AppServerRpc {
 	onRequest?: (method: string, params: Params) => Promise<unknown>;
 	onClose?: (error: Error) => void;
 
-	constructor(executable: string, directory: string, ephemeralCredentials = false) {
-		const environment: NodeJS.ProcessEnv = { ...process.env, CODEX_HOME: directory };
-		delete environment.OPENAI_API_KEY;
-		delete environment.CODEX_API_KEY;
+	constructor(
+		executable: string,
+		directory: string,
+		ephemeralCredentials: boolean,
+		harness: Pick<ModelHarness, 'homeEnv' | 'clearEnv'>,
+		private readonly name: string
+	) {
+		const environment: NodeJS.ProcessEnv = {
+			...process.env,
+			...(harness.homeEnv ? { [harness.homeEnv]: directory } : {}),
+		};
+		for (const key of harness.clearEnv ?? []) delete environment[key];
 		this.process = spawn(
 			executable,
 			[
@@ -48,7 +56,7 @@ export class AppServerRpc {
 		this.process.on('error', (error) => this.fail(error));
 		this.process.stdin.on('error', (error) => this.fail(error));
 		this.process.on('exit', (code) =>
-			this.fail(new Error(`Codex exited (${code ?? 'signal'}). ${this.stderr.trim()}`))
+			this.fail(new Error(`${this.name} exited (${code ?? 'signal'}). ${this.stderr.trim()}`))
 		);
 		createInterface({ input: this.process.stdout }).on('line', (line) => this.receive(line));
 	}
