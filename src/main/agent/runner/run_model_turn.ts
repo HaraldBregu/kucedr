@@ -46,7 +46,9 @@ export async function* runModelTurn(
 		provider.id,
 		modelId,
 		modelOptions,
-		(await liveModelLimits(provider.id, modelId))?.maxOutputTokens
+		findModel(provider.id, 'llm', modelId)
+			? undefined
+			: (await liveModelLimits(provider.id, modelId))?.maxOutputTokens
 	);
 	const maxTokens = contextWindow
 		? Math.min(outputLimit, Math.max(1, contextWindow - MODEL_CONTEXT_SAFETY_TOKENS - 2_048))
