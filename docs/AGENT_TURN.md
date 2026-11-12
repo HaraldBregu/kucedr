@@ -150,3 +150,128 @@ Checked: `typecheck:node` and eslint pass. A bundled check confirmed that two pr
 ### Re-measuring
 
 Measure turns per run, the turn-1 cache hit rate and the median run time from `run.jsonl` (`model_call_end` has `durationMs`, `firstTokenLatencyMs` and `usage.cachedTokens`; `run_finished` has `numTurns`), then compare them with the tables above.
+
+## Round 3 (2026-11-12)
+
+Goal: speed and efficiency of the agent code itself. Analysis only; no code changed.
+
+### Method and limits
+
+- **No new traces.** The last real run is from 2026-11-11 21:08, and the newest `run.jsonl` (2026-11-12 12:42) is empty. Nothing from round 2 is measured on the current build.
+- **What was used instead:**
+  - The saved histories: 61 sessions, 8.5 MB of `messages.json`, 1,566 tool results.
+  - The saved system prompts.
+  - Benchmarks against a read-only copy of the session data.
+  - Reading the turn path, the adapters, persistence and the tool layer.
+- **Work in progress elsewhere.** While this analysis ran, another session was editing `run_stream.ts`: `run_attach_context.ts` deleted, `addRunContext` saving the run context into the history, which is `PROMPT_CACHE.md` step 2, plus MCP preload changes. The line numbers below are from before those edits.
+
+### Findings, largest first
+
+**1. DeepSeek reasoning is saved as one block per streamed token (measured).**
+- **Where:** `llm_model.ts:688-694` yields a `reasoning_item` for every `reasoning_content` delta. `run_model_turn.ts:155-160` pushes each one as its own `provider_item` block.
+- **Size:**
+  - `provider_item` blocks are 93.6% of all saved history bytes: 8.0 of 8.5 MB, about 130K blocks of ~60 bytes, each wrapping ~5 bytes of text.
+  - The largest file (1.94 MB) holds 76 KB of reasoning text in 1.78 MB of blocks. Merging adjacent blocks makes it 5.2× smaller.
+- **Effect on the wire:** none. `llm_shared.ts:407-415` joins the text before sending.
+- **Effect on every per-turn cost that scales with the history:** persist (finding 2), the per-turn stringify and hash (finding 4) and the IPC snapshot (finding 5).
+- **Effect on the token estimate:** it is inflated up to 9×.
+  - Session `49ca98a0`: estimated ~263K tokens for the history, ~29K with the blocks merged; the provider billed 40–42K for the whole call.
+  - Native DeepSeek has a 1M window, so this does not trim there today.
+  - On the 128K fallback it would trim early, and it cannot reclaim anything. `run_model_context_budget.ts:96-101` omits only provider items above 2,048 tokens, so the 60-byte blocks always survive while tool results and earlier turns are dropped. The context meter shows the inflated number until real usage arrives.
+- **Mistral:** same pattern (`llm_model.ts:699-709`, by reading). Its chunks are sent back as an array (`llm_shared.ts:400-404`), so there the request grows too.
+- **Fix:** in `run_model_turn.ts`, append a string item to the previous `provider_item` when the provider is the same. Merge old sessions on load in app code; do not run a script over `~/.kucedr`.
+- **Checked:** sending DeepSeek reasoning back is correct and must stay. DeepSeek's thinking-mode docs require the `reasoning_content` of all earlier turns whenever the request carries `tools`, or the API returns 400.
+
+**2. Every persist rewrites the whole session synchronously, twice per tool turn (measured).**
+- **Where:** `session_persist.ts:17-21` and `session_write_messages.ts:5-9`. Each call:
+  - stringifies every message with tab indentation;
+  - runs `readFileSync` and `JSON.parse` on the current file only to validate it as a backup;
+  - writes twice atomically.
+- **When:** it runs from both `addAssistantMessage` and `addToolResults`.
+- **Cost:** about 10 ms per call on the 1.9 MB file, so about 20 ms of main-thread blocking per tool turn. This is most of the ~20 ms "local work between turns" from round 1, and it grows with the session, so it is O(n²) over a chat.
+- **Fix:** finding 1 cuts it about 5×. Then drop the indent and make the backup by rename or copy instead of a re-parse.
+
+**3. Attachments are re-processed on every persist (by reading).**
+- **Where:** `session_externalize_attachments.ts:19-34`. For every in-memory base64 attachment, it decodes it, computes sha256 and reads the stored blob back to compare.
+- **Cost:** about 4× the attachment bytes of sync work, twice per turn (estimated; not measured).
+- **Fix:** remember the blob id per block, and skip the read-back when the file exists.
+
+**4. The whole context is serialized twice per model call (measured).**
+- **Where:** `prefixHashes` (`run_prefix_hashes.ts`) stringifies and hashes every message, base64 included: 3.4 ms on the 1.9 MB session. `fitModelContext` → `contextBytes` stringifies everything again with a replacer.
+- **Fix:** messages are append-only, so cache each message's hash and byte count in a `WeakMap` keyed by the message.
+
+**5. Every event of a run is kept and re-sent (by reading; one cost measured).**
+- **Where:** `agent.ts:405` keeps all events in `record.responseEvents`, including every text delta and every cumulative `argsText`. `getSessionSnapshot` (`agent.ts:421`) copies the list over IPC. The renderer reads `argsText` (`tool-parts.ts:75-84`), not `jsonDelta`.
+- **Cost:** a 20 KB argument in 4-character deltas takes 5.8 ms to structured-clone across IPC (measured).
+- **Fix:** do not keep delta events; rebuild text and arguments from the final events.
+
+**6. One IPC message and one React update per token (speculative).**
+- **Where:** `event_bus.ts:44-49` sends each event on its own. Each delta copies the messages array and the content string (`reducer.ts:51-55`, `:280-295`).
+- **Fix:** batch per animation frame. Measure renderer frame time first.
+
+**7. The `## Tools` section repeats what the schemas already carry (measured on the saved prompt).**
+- **Size:** 18.5 KB of a 41 KB system prompt.
+  - The 20 loaded tools take 6.3 KB, and their descriptions are sent again in the tool schemas.
+  - The not-loaded tools take most of the rest, with full descriptions: about 4.6 KB for the recorders and 2.6 KB for the task tools.
+- **Fix:**
+  - Loaded tools: id and name only.
+  - Not-loaded tools: id, name and one short line; `tool_search` returns the full description when it loads one.
+  - This saves an estimated 3–4K tokens per call.
+- **When it pays:** on cache misses, which are turn 1, every call on iteraCompute (no cache field reported) and every turn after a `tool_search` load.
+- **Do it together with `PROMPT_CACHE.md` step 3**, which takes the loaded markers out of this section.
+
+**8. Hooks sit on the critical path (measured spawn, the rest by reading).**
+- **Where:** `run_model_turn.ts:92` and `run_tool_call.ts:377` await `runPluginHooks`.
+- **Cost:** each call runs `pluginScripts()`, a sync directory scan plus a zod parse per script folder (about 0.5 ms, estimated). An enabled hook spawns Electron-as-node, about 30 ms warm, before the model call or tool starts.
+- **Fix:** cache `pluginScripts()` per type and clear it on plugin refresh. Fire PRE hooks without awaiting, unless a hook can block.
+
+**9. Run startup re-reads settings files hundreds of times (measured).**
+- **Where:** `filterEligibleTools` runs about 6 times at startup (`run_stream.ts:227-343`), with `getToolConfiguration` per tool. `electron-store` re-reads the file on each access.
+- **Cost:** about 660 reads, about 7 ms per run.
+- **MCP:** it is O(tools × servers). `getMcpToolPermission` calls `getMcpServers()` twice per tool (decrypt plus folder rescan), and `getMcpToolCatalog` calls it once per server.
+- **Fix:** read the profile and the server list once per run and pass them in.
+
+**10. Knowledge search reopens the database and scans every chunk (by reading).**
+- **Where:** `knowledge/rag/vector.ts:6` opens a new `DatabaseSync` per query (DDL and prepared statements). `sqlite.ts:189` loads every chunk's text and vector and scores them in JS on the main thread.
+- **Cost:** small today (528 KB database); it grows linearly with the index.
+- **Fix:** keep one database open, score on id and vector only, and fetch text for the top K.
+
+**11. Tool output limits are a ceiling risk, not a current cost (measured).**
+- **Limits:**
+  - The default limit is 200 KB per result (`tools/tool.ts:18`).
+  - `read` has no default line cap.
+  - `bash` buffers 200,000 characters per stream.
+  - The `use_web_browser` element list is uncapped (`use_web_browser.ts:139-153`).
+- **Real sizes in the saved histories:** median 426 B, p90 4.2 KB, p99 18 KB. Only 4 of 1,566 results exceeded 30 KB (3 browser, 1 bash).
+- **The real defect:** `limitToolOutput` (`run_limit_output.ts:12`) keeps the head of the serialized JSON. A large bash stdout therefore cuts off `stderr`, `timedOut` and the truncation flags, and the model gets invalid JSON.
+- **Fix:** truncate each stream inside the tool and keep its tail. Cap the browser element list at about 200, with a count of the rest.
+
+**12. Small token waste (by reading).**
+- `bash` declares `host`, `security` and `node`, which are always rejected or ignored, at about 250 B per call (`bash.ts:79-89`).
+- `search_web`, `fetch_web_page` and `query_knowledge` pretty-print their JSON, which adds roughly 10–20% to those results.
+
+### Checked and fine
+- Ajv per MCP tool: 0.23 ms each against 0.15 ms shared, over 64 tools.
+- `zod.toJSONSchema`: 0.045 ms per tool.
+- The sandbox is set up once.
+- Subagents reuse the parent's tools and lazy MCP connections, and their summaries are capped at 12K characters.
+- `run.jsonl` writes are buffered and skip deltas.
+- The adapters accumulate linearly and parse tool arguments once.
+- `limiter.ts` is O(1).
+- No `spawnSync` or `execSync` on the tool path.
+- `process` output is paged.
+
+### Order of work
+1. **Restart the dev app and collect traces.** Round 2 and the run-context work now in progress are unmeasured; turns per run and the turn-1 cache hit rate decide what comes next.
+2. **Merge streamed provider items (finding 1).** It is a few lines, it is the largest local win, and it makes the token estimate honest.
+3. **Persist (findings 2 and 3):** no indent, backup by rename, remember attachment blob ids.
+4. **Slim the `## Tools` section (finding 7),** together with `PROMPT_CACHE.md` step 3.
+5. **The rest, as needed:**
+   - per-message hash cache (4);
+   - no retained delta events (5);
+   - hook cache and non-blocking PRE hooks (8);
+   - settings read once per run (9);
+   - tail-keeping bash truncation and the browser element cap (11).
+   - IPC batching (6) only after a renderer measurement.
+
+Model round trips are still about 86% of run time (round 1), so items 2, 3 and 5 make the app lighter but will not make tasks finish much sooner. Item 4 and the cache work in `PROMPT_CACHE.md` are what reduce time to first token.
