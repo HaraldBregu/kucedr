@@ -1,9 +1,8 @@
 import type { EmbeddingRequest, EmbeddingResult } from '../../../shared/embedding_types';
 import { generateEmbeddings } from '../adapters/embedding';
 import { defaultProviderId, providerModels } from '../../models';
-import { getProvider } from '../../settings_store';
 import { getModelId, getProviderId } from '../selection';
-import { EMBEDDING_PROVIDERS } from './embedding_providers';
+import { embeddingEndpoint } from './endpoint';
 import { validateEmbeddingVectors } from '../adapters/embedding/validate';
 
 export async function createEmbedding(
@@ -23,49 +22,27 @@ export async function createEmbedding(
 		defaultProviderId('embedding') ??
 		''
 	).trim();
-	const provider = EMBEDDING_PROVIDERS[providerId];
-	if (!provider) throw new Error(`Embedding provider is not supported: ${providerId}`);
-	if (request.requireRemote && provider.local) {
-		throw new Error('A remote embedding provider is required.');
-	}
 	const modelId =
 		(request.modelId ?? getModelId('embedding'))?.trim() ||
 		providerModels(providerId, 'embedding')[0]?.id;
 	if (!modelId) throw new Error(`No embedding models available for provider: ${providerId}`);
-	const stored = getProvider(providerId);
-	const apiKey = stored?.apiKey.trim() ?? '';
-	if (!apiKey && !provider.local) {
-		throw new Error(`${provider.name} API key not configured.`);
+	const { model, url, apiKey } = embeddingEndpoint(providerId, modelId);
+	if (request.requireRemote && model.location === 'local') {
+		throw new Error('A remote embedding provider is required.');
 	}
-	let baseURL = (provider.local && process.env.BGE_BASE_URL?.trim()) || provider.url;
-	if (providerId === 'qwen') {
-		const endpoint = new URL(stored?.baseUrl || 'https://dashscope-intl.aliyuncs.com');
-		if (
-			endpoint.protocol !== 'https:' ||
-			!/^[a-z0-9][a-z0-9-]*\.(ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com$/i.test(
-				endpoint.hostname
-			)
-		) {
-			throw new Error(
-				'Set the Qwen provider base URL to https://{workspace}.{region}.maas.aliyuncs.com/compatible-mode/v1 for embeddings.'
-			);
-		}
-		endpoint.pathname = '/compatible-mode/v1/embeddings';
-		endpoint.search = '';
-		endpoint.hash = '';
-		baseURL = endpoint.toString();
+	if (!apiKey && model.location !== 'local' && model.authentication !== 'none') {
+		throw new Error(`${model.provider.name} API key not configured.`);
 	}
 
 	const embeddings = await generateEmbeddings({
-		providerId,
+		model,
 		apiKey,
-		modelId,
-		baseURL,
+		baseURL: url,
 		texts,
 		inputType: request.inputType,
 		signal,
 	});
 	signal?.throwIfAborted();
-	const dimensions = validateEmbeddingVectors(embeddings, texts.length, provider.name);
+	const dimensions = validateEmbeddingVectors(embeddings, texts.length, model.provider.name);
 	return { providerId, modelId, dimensions, embeddings };
 }
