@@ -37,7 +37,7 @@ Every handler calls `TrustedRenderer.assert(event)` first. It only accepts the m
 | Onboarding | `pages/start/components/SetupPluginsStep.tsx` | list, available, installCatalog |
 | Settings → Apps / Skills / MCP / Scripts / Modes / Models / Services | `pages/settings/pages/*` | show the owning `plugin` for each item |
 | Chat | `pages/home/components/PluginScriptCard.tsx`, `AssistantMessage.tsx` | script frames, mode envelopes and action buttons |
-| Documents | `pages/workspace/CodeBlock.tsx`, `ScriptForm.tsx` | script fences |
+| Documents | `pages/workspace/CodeBlock.tsx`, `Properties.tsx` | script fences |
 | Prompt editor | `components/text-editor.tsx`, `mode-command` | slash commands → mode chips |
 
 Renderer caches (`useModes`, `usePluginScripts`, model lists) are cleared on `window.app.onModelsChanged`.
