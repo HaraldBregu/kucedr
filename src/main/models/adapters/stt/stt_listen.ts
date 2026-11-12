@@ -113,7 +113,7 @@ type ListenRealtimeResponse = {
 	};
 };
 
-function createDeepgramRealtimeConnection(
+function createListenRealtimeConnection(
 	socket: WebSocket,
 	request: SttAdapterRealtimeStartRequest,
 	emit: SttRealtimeEventHandler
