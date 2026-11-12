@@ -1,6 +1,7 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { app } from 'electron';
+import type { ModelHarness } from '../../../shared/model_types';
 
 type Params = Record<string, unknown>;
 type Pending = {
