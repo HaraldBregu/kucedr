@@ -85,9 +85,10 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 			return {
 				provider: {
 					id: providerId,
-					name: provider?.name || model.provider.name,
+					name: providerName,
 					apiKey,
 				},
+				model: { id: model.id, name: model.name, url: model.url, metadata: model.metadata },
 				modelId: model.id,
 				options,
 				voice,
