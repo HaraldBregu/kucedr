@@ -340,7 +340,7 @@ export function llmBuildMessages(
 	return msgs;
 }
 
-function toAnthropicUserContent(
+function toMessagesUserContent(
 	content: string | LlmUserContentBlock[]
 ): string | Anthropic.Messages.ContentBlockParam[] {
 	if (typeof content === 'string') return content;
