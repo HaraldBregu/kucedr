@@ -74,6 +74,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
 	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
 	const [chatSessionsLoadError, setChatSessionsLoadError] = useState(false);
+	const [voiceError, setVoiceError] = useState<string | null>(null);
 	const chatSessionsRef = useRef<HTMLDivElement>(null);
 
 	const isHome = location.pathname === '/home';
