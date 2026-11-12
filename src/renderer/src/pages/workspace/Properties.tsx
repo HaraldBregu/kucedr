@@ -102,6 +102,18 @@ export function ScriptProperties({ schema, value, onChange, id = 'script-propert
 						{property.description ? <p className="text-xs text-muted-foreground">{property.description}</p> : null}
 					</div>
 				))}
+				{free ? (
+					<div className="flex w-full gap-1">
+						{/* ponytail: new fields start as text; edit the block's JSON for numbers or nested values */}
+						<Input aria-label="New field name" placeholder="New field" className="h-8 text-sm" value={name} onChange={(event) => setName(event.target.value)} />
+						<Button type="button" variant="outline" size="sm" disabled={!name.trim() || name.trim() in object} onClick={() => {
+							onChange({ ...object, [name.trim()]: '' });
+							setName('');
+						}}>
+							<Plus />Add
+						</Button>
+					</div>
+				) : null}
 			</div>
 		);
 	}
