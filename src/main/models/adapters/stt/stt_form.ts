@@ -9,10 +9,8 @@ export function createFormSttAdapter(provider: SttProviderSpec): SttAdapter {
 		async transcribe(request) {
 			const form = new FormData();
 			form.append('model', request.modelId);
-			form.append(
-				'language',
-				request.language ?? String(inputDefault(request.metadata, ['language']))
-			);
+			const language = request.language ?? inputDefault(request.metadata, ['language']);
+			if (language !== undefined) form.append('language', String(language));
 			if (typeof request.temperature === 'number')
 				form.append('temperature', String(request.temperature));
 			form.append('file', await createAudioFile(request.audio));
