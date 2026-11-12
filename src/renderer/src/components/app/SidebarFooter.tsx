@@ -1,6 +1,6 @@
 import {
+	Cloud,
 	Download,
-	Folder,
 	HardDrive,
 	Layers,
 	Library,
