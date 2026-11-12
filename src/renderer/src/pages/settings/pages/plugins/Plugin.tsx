@@ -363,7 +363,7 @@ export default function PluginPage(): React.JSX.Element {
 						: undefined,
 			})),
 		},
-	].filter((section) => section.rows.length > 0);
+	].filter((section) => section.rows.length > 0 || section.action);
 
 	return (
 		<SettingsPageShell>
