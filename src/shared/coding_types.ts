@@ -11,7 +11,6 @@ export const CODING_THINKING_LEVELS = [
 ] as const;
 export const CODING_TOOL_MODES = ['read-only', 'coding'] as const;
 
-export type CodingProviderId = (typeof CODING_PROVIDER_IDS)[number];
 export type CodingThinkingLevel = (typeof CODING_THINKING_LEVELS)[number];
 export type CodingToolMode = (typeof CODING_TOOL_MODES)[number];
 export type CodingRunMode = 'agent' | 'shell';
