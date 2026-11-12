@@ -104,6 +104,7 @@ export function ModelProviderSelect({
 	inline = false,
 	buttonDropdown = false,
 	compactPopover = false,
+	nameOnly = false,
 	buttonClassName,
 	showFieldLabel = true,
 	labels,
