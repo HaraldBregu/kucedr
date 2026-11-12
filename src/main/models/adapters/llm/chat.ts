@@ -34,7 +34,9 @@ export async function* chat(
 		}),
 		tools: tools.length > 0 ? tools : undefined,
 		tool_choice: tools.length > 0 ? 'auto' : undefined,
-		max_tokens: req.maxTokens,
+		...(options.model?.outputTokensField === 'max_completion_tokens'
+			? { max_tokens: undefined, max_completion_tokens: req.maxTokens ?? req.options?.max_completion_tokens }
+			: { max_tokens: req.maxTokens }),
 		stream: false,
 		stream_options: undefined,
 	};

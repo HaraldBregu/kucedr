@@ -82,6 +82,8 @@ export interface ModelMetadata {
 	readonly contextWindowDocumentationUrl?: string;
 	/** Provider-recommended output limit when the user has not configured one. */
 	readonly defaultOutputTokens?: number;
+	/** Chat completions request field used for the output token budget. */
+	readonly outputTokensField?: 'max_tokens' | 'max_completion_tokens';
 	/** Native prompt attachments accepted by this exact model. */
 	readonly promptAttachments?: readonly PromptAttachmentRule[];
 	/** API request fields supported by this exact service or model. */
