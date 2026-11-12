@@ -540,7 +540,7 @@ export class LlmModel implements LlmAdapter {
 					cache_control: { type: 'ephemeral' },
 					...requestOptions(provider.id.toLowerCase(), req),
 					model: req.model,
-					system: req.system,
+					system: breakpoint(req.system, cache?.breakpoints?.includes('system')),
 					max_tokens: req.maxTokens,
 					tools: tools.length > 0 ? tools : undefined,
 					messages: llmBuildAnthropicMessages(req.messages),
