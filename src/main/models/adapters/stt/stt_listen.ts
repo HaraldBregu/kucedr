@@ -43,22 +43,19 @@ export function createListenSttAdapter(opts: ListenSttAdapterOptions): SttAdapte
 		async transcribe(request: SttAdapterTranscriptionRequest): Promise<SttTranscriptionResult> {
 			const file = await createAudioFile(request.audio);
 			const body = Buffer.from(await file.arrayBuffer());
-			const endpoint = new URL(
-				DEEPGRAM_LISTEN_PATH,
-				`${provider.baseURL ?? speechToTextBaseUrl('deepgram')}/`
-			);
+			const endpoint = new URL(LISTEN_PATH, `${provider.baseURL}/`);
 			endpoint.searchParams.set('model', request.modelId);
 			if (request.language) endpoint.searchParams.set('language', request.language);
 			if (request.prompt)
 				endpoint.searchParams.set(
-					request.modelId.startsWith('nova-3') ? 'keyterm' : 'keywords',
+					request.metadata?.inputs.keyterm ? 'keyterm' : 'keywords',
 					request.prompt
 				);
 
 			const response = await fetcher(endpoint, {
 				method: 'POST',
 				headers: {
-					Authorization: `${DEEPGRAM_AUTH_SCHEME} ${provider.apiKey}`,
+					Authorization: `${LISTEN_AUTH_SCHEME} ${provider.apiKey}`,
 					'Content-Type': request.audio.mimeType,
 				},
 				body,
