@@ -881,9 +881,10 @@ function PageContent(): ReactElement {
 						detachedControls
 						footerContent={showEmptyConversation ? modelSelect : undefined}
 						className="w-full"
+						singleLine={!showEmptyConversation && voiceMode !== 'dictation'}
 						inputClassName={cn(
-							'rounded-xl px-2 pt-4',
-							showEmptyConversation && 'min-h-[114px]'
+							'rounded-xl px-2',
+							showEmptyConversation && 'min-h-[114px] pt-4'
 						)}
 						trailingAction={
 							<PromptInputActions className="justify-end gap-1.5">
