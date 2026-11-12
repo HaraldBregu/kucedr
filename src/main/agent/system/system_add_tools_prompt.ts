@@ -8,17 +8,15 @@ export function addToolsPrompt(
 	loadedTools: readonly Tool[],
 	eligibleTools: readonly Tool[] = loadedTools
 ): string {
-	const loaded = [...new Map(loadedTools.map((tool) => [tool.id, tool])).values()];
-	const loadedIds = new Set(loaded.map((tool) => tool.id));
-	const discoverable = [...new Map(eligibleTools.map((tool) => [tool.id, tool])).values()].filter(
-		(tool) => !loadedIds.has(tool.id)
-	);
-	if (loaded.length === 0 && discoverable.length === 0) return prompt;
+	const tools = [
+		...new Map([...eligibleTools, ...loadedTools].map((tool) => [tool.id, tool])).values(),
+	];
+	if (tools.length === 0) return prompt;
 
-	const tools = [...loaded, ...discoverable];
 	prompt += '\n\n## Tools';
-	prompt +=
-		'\nOnly tools marked _(Loaded.)_ can be called. To use any other tool, first call `tool_search` with its id as the query; it becomes callable on the next turn. Calling a tool that is not loaded fails.';
+	if (loadedTools.some((tool) => tool.id === 'tool_search'))
+		prompt +=
+			'\nOnly tools whose definitions are attached to the request can be called. To use any other tool listed here, first call `tool_search` with its id as the query; it becomes callable on the next turn. Calling a tool that is not attached fails.';
 	prompt +=
 		'\nWhen several tool calls do not depend on each other\'s results, request them together in one response instead of one per turn.';
 	const categories = new Map<ToolCategory, Tool[]>();
