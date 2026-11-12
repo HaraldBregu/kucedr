@@ -84,6 +84,7 @@ export interface CodingProjectInstructions {
 	readonly projectId: string;
 	readonly activeFilePath: string;
 	readonly activeFileName: string;
+	readonly defaultFileName: string;
 	readonly content: string;
 	readonly exists: boolean;
 	readonly editable: boolean;
