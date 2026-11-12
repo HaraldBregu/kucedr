@@ -31,14 +31,7 @@
 					"ecg-trace",
 					"growth-chart",
 					"anatomy-tree",
-					"image-viewer",
-					"dna-helix",
-					"ai-note",
-					"clinical-sources",
-					"clinical-citation",
-					"differential-list",
-					"clinician-review",
-					"ai-disclaimer"
+					"image-viewer"
 				]
 			},
 			"title": {
