@@ -19,19 +19,22 @@ function sessionTitle(sessionId: string, location: string): string {
 	} catch {
 		void 0;
 	}
-	const firstUserMessage = loadMessagesBySessionId(sessionId, location).find(
-		(message) => message.role === 'user'
-	);
-	if (!firstUserMessage) return '';
 	const text =
-		typeof firstUserMessage.content === 'string'
-			? firstUserMessage.content
-			: firstUserMessage.content
-					.map((block) =>
-						block.type === 'text' && typeof block.text === 'string' ? block.text : ''
-					)
-					.filter(Boolean)
-					.join(' ');
+		loadMessagesBySessionId(sessionId, location)
+			.filter((message) => message.role === 'user')
+			.map((message) =>
+				typeof message.content === 'string'
+					? message.content
+					: message.content
+							.map((block) =>
+								block.type === 'text' && typeof block.text === 'string' && block.internal !== true
+									? block.text
+									: ''
+							)
+							.filter(Boolean)
+							.join(' ')
+			)
+			.find((candidate) => candidate.trim()) ?? '';
 	return text.trim().replace(/\s+/g, ' ').slice(0, 60);
 }
 
