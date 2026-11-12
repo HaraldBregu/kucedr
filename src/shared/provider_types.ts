@@ -98,6 +98,8 @@ export type ProviderModelType =
 	| 'text-to-video-model'
 	| 'text-to-audio-model'
 	| 'embedding-model'
+	| 'decision-model'
+	| 'code-completion-model'
 	| 'coding-agent-model';
 
 export interface ProviderManifestModel extends Omit<CatalogEntryModel, 'type'> {

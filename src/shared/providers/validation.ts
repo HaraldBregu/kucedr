@@ -10,6 +10,8 @@ const MODEL_SERVICE_TYPES = [
 	'text-to-video-model',
 	'text-to-audio-model',
 	'embedding-model',
+	'decision-model',
+	'code-completion-model',
 	'coding-agent-model',
 ] as const;
 

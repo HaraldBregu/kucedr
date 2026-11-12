@@ -25,6 +25,8 @@ const TYPES: readonly ModelCapability[] = [
 	'speech-to-text',
 	'realtime-voice',
 	'embedding',
+	'decision',
+	'code-completion',
 	'llm',
 	'research-chat',
 ];

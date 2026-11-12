@@ -12,6 +12,8 @@ export type ModelCapability =
 	| 'text-to-video'
 	| 'text-to-audio'
 	| 'embedding'
+	| 'decision'
+	| 'code-completion'
 	| 'coding-agent';
 
 export interface ModelInputChoice {
@@ -90,6 +92,11 @@ export interface ModelMetadata {
 	readonly discoveryInputs?: Readonly<Record<string, ModelInputSchema>>;
 	/** Wire protocol id that selects the adapter for this model. */
 	readonly protocol?: string;
+	readonly operations?: Readonly<Record<string, {
+		readonly endpoint: string;
+		readonly description: string;
+		readonly inputSchema: Readonly<Record<string, unknown>>;
+	}>>;
 	/** WebSocket endpoint for socket protocols; `{key}` is filled from request options. */
 	readonly socketUrl?: string;
 	/** Request values merged under the user's options. */

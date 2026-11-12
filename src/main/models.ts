@@ -200,6 +200,8 @@ function toModelCapability(type: string): ModelCapability | undefined {
 		'text-to-video-model': 'text-to-video',
 		'text-to-audio-model': 'text-to-audio',
 		'embedding-model': 'embedding',
+		'decision-model': 'decision',
+		'code-completion-model': 'code-completion',
 		'coding-agent-model': 'coding-agent',
 	};
 	return capabilities[type];
