@@ -49,17 +49,29 @@ export function Model({
 					window.provider?.list('models').catch(() => []) ?? Promise.resolve([]),
 				]);
 				const custom = configuredProviders.find((provider) => provider.id === 'custom');
+				const groupIds = [
+					...new Set([
+						...providerIdsFor('llm'),
+						...providers()
+							.filter((provider) => provider.modelsUrl)
+							.map((provider) => provider.id),
+					]),
+				];
+				const discoveryLabel = (id: string): string | undefined =>
+					providers().find((provider) => provider.id === id)?.discoveryLabel;
+				if (!active) return;
+				setGroups((current) =>
+					current.length > 0
+						? current
+						: groupIds.map((id) => ({ id, discoveryLabel: discoveryLabel(id), models: providerModels(id, 'llm') }))
+				);
+				setProviderId(selection.providerId);
+				setModelId(selection.modelId);
+				setEffort(readEffort(selection.providerId, selection.modelId));
 				const catalogGroups = await Promise.all(
-					[
-						...new Set([
-							...providerIdsFor('llm'),
-							...providers()
-								.filter((provider) => provider.modelsUrl)
-								.map((provider) => provider.id),
-						]),
-					].map(async (id) => ({
+					groupIds.map(async (id) => ({
 						id,
-						discoveryLabel: providers().find((provider) => provider.id === id)?.discoveryLabel,
+						discoveryLabel: discoveryLabel(id),
 						models: await liveProviderModels(id, providerModels(id, 'llm')),
 					}))
 				);
