@@ -1,4 +1,5 @@
 import type { PublicProvider } from '../../../../shared';
+import type { ProviderBaseUrlSetting } from '@shared/provider_types';
 import type { Model } from '@/lib/compat';
 
 export type ProviderOption = {
