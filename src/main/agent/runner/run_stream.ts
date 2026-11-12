@@ -492,7 +492,11 @@ async function* loop(
 			let systemPrompt = builtPrompt;
 			const loadedSkills = session.runContext.loadedSkills;
 			if (loadedSkills.length > notedSkills) {
-				addInternalMessage(session, buildLoadedSkillPrompt(loadedSkills.slice(notedSkills)));
+				addInternalMessage(
+					session,
+					buildLoadedSkillPrompt(loadedSkills.slice(notedSkills)),
+					'skill'
+				);
 				notedSkills = loadedSkills.length;
 			}
 			const extensionContext = extended ? (extension?.context() ?? '') : '';
