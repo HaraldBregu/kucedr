@@ -6,7 +6,9 @@ export function metadata(providerId: string, modelId: string): ModelMetadata | u
 	const model = findModel(providerId, 'llm', modelId)?.metadata;
 	if (model) return model;
 	const normalized = normalizeProviderId(providerId);
-	const discovery = loadProviders().find((provider) => provider.id === normalized)?.discoveryMetadata;
+	const discovery = loadProviders().find(
+		(provider) => provider.id === normalized
+	)?.discoveryMetadata;
 	const family = discovery?.families?.find((item) =>
 		modelId.toLowerCase().includes(item.match.toLowerCase())
 	);
