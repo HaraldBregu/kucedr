@@ -11,6 +11,7 @@
 	"website": "https://www.anthropic.com",
 	"icon": "anthropic-light.svg",
 	"iconDark": "anthropic-dark.svg",
+	"order": 2,
 	"apiKeyUrl": "https://console.anthropic.com/settings/keys",
 	"settings": {
 		"inputSchema": {
