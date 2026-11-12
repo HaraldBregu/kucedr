@@ -74,7 +74,7 @@ export class AppServerRpc {
 		return new Promise<T>((resolve, reject) => {
 			const timer = setTimeout(() => {
 				this.pending.delete(id);
-				reject(new Error(`Codex request timed out: ${method}`));
+				reject(new Error(`${this.name} request timed out: ${method}`));
 			}, 60_000);
 			this.pending.set(id, { resolve: (value) => resolve(value as T), reject, timer });
 			this.write({ id, method, params });
