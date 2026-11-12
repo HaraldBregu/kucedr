@@ -659,12 +659,15 @@ export class LlmModel implements LlmAdapter {
 					cacheSystem: model?.cache?.breakpoints?.includes('system'),
 				}),
 				tools: tools.length > 0 ? tools : undefined,
-				tool_choice: tools.length > 0 ? 'auto' : undefined,
+				tool_choice: tools.length > 0 ? (req.options?.tool_choice ?? 'auto') : undefined,
 				...(model?.outputTokensField === 'max_completion_tokens'
 					? { max_tokens: undefined, max_completion_tokens: req.maxTokens ?? req.options?.max_completion_tokens }
 					: { max_tokens: req.maxTokens }),
 				stream: true,
-				stream_options: { include_usage: true },
+				stream_options: {
+					include_usage: true,
+					...(llmIsRecord(req.options?.stream_options) ? req.options.stream_options : {}),
+				},
 			};
 			if (this.thinkingModeEnabled) {
 				params.thinking = { type: req.effort === 'none' ? 'disabled' : 'enabled' };

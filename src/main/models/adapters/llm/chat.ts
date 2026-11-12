@@ -33,7 +33,7 @@ export async function* chat(
 			cacheSystem: options.model?.cache?.breakpoints?.includes('system'),
 		}),
 		tools: tools.length > 0 ? tools : undefined,
-		tool_choice: tools.length > 0 ? 'auto' : undefined,
+		tool_choice: tools.length > 0 ? (req.options?.tool_choice ?? 'auto') : undefined,
 		...(options.model?.outputTokensField === 'max_completion_tokens'
 			? { max_tokens: undefined, max_completion_tokens: req.maxTokens ?? req.options?.max_completion_tokens }
 			: { max_tokens: req.maxTokens }),
