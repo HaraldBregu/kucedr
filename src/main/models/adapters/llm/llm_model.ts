@@ -26,18 +26,18 @@ import type {
 	LlmUsage,
 } from './llm_types';
 import { LlmContextOverflowError, LlmProviderAuthError } from './llm_types';
-import { anthropic as completeAnthropic } from './anthropic';
 import { chat as completeChat } from './chat';
 import { dsml } from './dsml';
+import { messages as completeMessages } from './messages';
 import { responses as completeResponses } from './responses';
 import {
-	llmBuildAnthropicMessages,
 	llmBuildChatMessages,
+	llmBuildMessages,
 	llmBuildResponseInput,
 	llmHasFunctionCall,
 	llmIsRecord,
 	llmParseToolArgs,
-	llmToDeepSeekReasoningEffort,
+	llmThinkingEffort,
 	llmToTranscriptEntry,
 } from './llm_shared';
 
@@ -51,8 +51,8 @@ interface LlmClientFactoryInput {
 export interface LlmModelOptions {
 	provider?: LlmProviderSpec;
 	providerModelFactory?: LlmModelFactory;
-	openAIClientFactory?: (opts: LlmClientFactoryInput) => OpenAI;
-	anthropicClientFactory?: (opts: LlmClientFactoryInput) => Anthropic;
+	chatClientFactory?: (opts: LlmClientFactoryInput) => OpenAI;
+	messagesClientFactory?: (opts: LlmClientFactoryInput) => Anthropic;
 	reasoningEffortEnabled?: boolean;
 	reasoningContentEnabled?: boolean;
 	thinkingModeEnabled?: boolean;
