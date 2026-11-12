@@ -368,10 +368,14 @@ function toAnthropicUserContent(
 export function llmBuildChatMessages(
 	system: string,
 	transcript: LlmTranscriptEntry[],
-	options: { includeReasoningContent?: boolean; contentProfile?: LlmChatContentProfile } = {}
+	options: {
+		includeReasoningContent?: boolean;
+		contentProfile?: LlmChatContentProfile;
+		cacheSystem?: boolean;
+	} = {}
 ): OpenAI.ChatCompletionMessageParam[] {
 	const msgs: OpenAI.ChatCompletionMessageParam[] = [];
-	if (system) msgs.push({ role: 'system', content: system });
+	if (system) msgs.push({ role: 'system', content: breakpoint(system, options.cacheSystem) });
 
 	for (const entry of transcript) {
 		if (entry.role === 'user') {
