@@ -31,10 +31,10 @@
 			"reasoning_effort": {
 				"type": "string",
 				"enum": [
-					"none",
 					"low",
 					"medium",
-					"high"
+					"high",
+					"xhigh"
 				]
 			},
 			"temperature": {
