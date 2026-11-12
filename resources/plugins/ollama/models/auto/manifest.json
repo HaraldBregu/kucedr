@@ -9,6 +9,14 @@
 	"modelsUrl": "http://localhost:11434/v1/models",
 	"modelUrl": "http://localhost:11434/v1/models/{id}",
 	"metadata": {
+		"families": [
+			{
+				"match": "deepseek",
+				"metadata": {
+					"dsml": true
+				}
+			}
+		],
 		"promptAttachments": [],
 		"inputs": {}
 	},
