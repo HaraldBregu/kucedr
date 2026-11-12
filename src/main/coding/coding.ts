@@ -86,7 +86,7 @@ export class Coder {
 	setApiKey(provider: string, key: string, runtime?: CoderHarness): void {
 		if (typeof key !== 'string') throw new Error('Invalid Coder API key.');
 		const entry = this.entry(this.getSettings(runtime).runtime);
-		if (provider !== entry.info.provider.id) throw new Error('Invalid Coder provider.');
+		if (provider !== entry.model.provider.id) throw new Error('Invalid Coder provider.');
 		this.credentials.set(entry.credentialKey, key);
 	}
 	listModels(runtime?: CoderHarness) {
