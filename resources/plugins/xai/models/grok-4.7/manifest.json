@@ -46,9 +46,6 @@
 			"max_tokens": {
 				"type": "integer"
 			},
-			"stop": {
-				"type": "array"
-			},
 			"response_format": {
 				"type": "object"
 			},
