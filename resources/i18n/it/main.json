@@ -368,7 +368,9 @@
 				"text-to-speech": "Da testo a voce",
 				"speech-to-text": "Da voce a testo",
 				"realtime-voice": "Voce in tempo reale",
-				"embedding": "Embedding"
+				"embedding": "Embedding",
+				"decision": "Decisione",
+				"code-completion": "Completamento del codice"
 			}
 		},
 		"tabs": {
