@@ -852,7 +852,7 @@ function PageContent(): ReactElement {
 										{modelSelect}
 										{modelContext?.modelId ? (
 											<Usage
-												className="h-6"
+												className="h-7"
 												providerId={modelContext.providerId}
 												modelId={modelContext.modelId}
 												contextWindow={modelContext.contextWindow}
