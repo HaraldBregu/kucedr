@@ -52,7 +52,7 @@ From `~/.kucedr/sessions/*/run.jsonl`, calls since 2026-11-11 that report `cache
 ### 3. Show it in the UI
 - Next to the context-usage meter on the home page, show "cached N% of input" for the last turn and for the session, using the existing components and tooltip patterns (no new visual pattern).
 - Hide it when the provider reports no cached field, rather than showing 0%.
-- Verify: drive the built app with the mock provider ([[app-verification-recipe]]) and screenshot the tooltip.
+- Verify: drive the built app with Playwright and the mock provider, then screenshot the tooltip.
 
 ### 4. Provider cache behaviour from manifests, not code
 Add an optional `cache` block to a model or provider manifest under `resources/plugins/<provider>/models/*/manifest.json`, read generically by the adapters:
