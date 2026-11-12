@@ -865,19 +865,6 @@ function PageContent(): ReactElement {
 							</PromptInputActions>
 						}
 					/>
-					{!showEmptyConversation && modelContext?.modelId ? (
-						<div className="flex justify-end pt-1">
-							<Usage
-								className="h-6"
-								providerId={modelContext.providerId}
-								modelId={modelContext.modelId}
-								contextWindow={modelContext.contextWindow}
-								messages={agent.chatState.messages}
-								draft={agent.input}
-								hasAttachments={attachments.length > 0}
-							/>
-						</div>
-					) : null}
 				</div>
 			</div>
 		</div>
