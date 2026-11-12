@@ -49,3 +49,16 @@ it('does not expose operations without a configured API key', () => {
 	jest.mocked(getProvider).mockReturnValue(undefined);
 	expect(modelTools()).toEqual([]);
 });
+
+it('ignores malformed operation schemas without preventing other tools from loading', () => {
+	const model = jest.mocked(loadModels)()[0];
+	const valid = model.metadata!.operations!.decision;
+	jest.mocked(loadModels).mockReturnValue([{
+		...model,
+		metadata: { ...model.metadata!, operations: {
+			bad: { endpoint: '/bad', description: 'Bad', inputSchema: { type: 'invalid' } },
+			decision: valid,
+		} },
+	}] as never);
+	expect(modelTools().map((entry) => entry.id)).toEqual(['mdl__example__special-model_decision']);
+});

@@ -103,7 +103,7 @@
 			},
 			"edit": {
 				"endpoint": "/edit/completions",
-				"description": "Predict a code edit from a single user message with tagged file context, editable region, and cursor.",
+				"description": "Predict an edit to a code region using one user message containing the documented tagged file context, recent snippets, and edit history.",
 				"inputSchema": {
 					"properties": {
 						"messages": {
@@ -130,7 +130,7 @@
 											}
 										],
 										"title": "Content",
-										"description": "The content of the edit request. Must contain the required edit prompt tags."
+										"description": "Use <|recently_viewed_code_snippets|>...<|/recently_viewed_code_snippets|>, then <|current_file_content|> with current_file_path and <|code_to_edit|>...<|cursor|>...<|/code_to_edit|> around the editable region, then <|/current_file_content|>, and <|edit_diff_history|>...<|/edit_diff_history|>. Use empty snippets and history sections if unavailable; format history as chronological unified diffs with the latest last."
 									}
 								},
 								"type": "object",
@@ -144,7 +144,8 @@
 							"type": "array",
 							"title": "Messages",
 							"minItems": 1,
-							"maxItems": 1
+							"maxItems": 1,
+							"description": "Exactly one user message containing the tagged next-edit prompt. Include recently viewed snippets and edit history sections even when empty."
 						},
 						"max_tokens": {
 							"type": "integer",
