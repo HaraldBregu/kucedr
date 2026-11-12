@@ -867,11 +867,7 @@ function PageContent(): ReactElement {
 						filesAccept={filesAccept}
 						wrapperClassName="max-w-none"
 						detachedControls
-						footerContent={
-							<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-								<StableModel onContext={setModelContext} />
-							</div>
-						}
+						footerContent={showEmptyConversation ? modelSelect : undefined}
 						className="w-full"
 						inputClassName={cn(
 							'rounded-xl px-2 pt-4',
