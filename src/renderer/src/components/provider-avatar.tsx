@@ -16,12 +16,14 @@ export function ProviderAvatar({
 	name,
 	iconDarkUrl,
 	iconLightUrl,
+	fullBleed,
 	className,
 }: {
 	readonly providerId: string;
 	readonly name: string;
 	readonly iconDarkUrl?: string;
 	readonly iconLightUrl?: string;
+	readonly fullBleed?: boolean;
 	readonly className?: string;
 }): React.JSX.Element {
 	if (iconDarkUrl && iconLightUrl) {
@@ -29,10 +31,7 @@ export function ProviderAvatar({
 			<div
 				className={cn(
 					'flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-background p-1',
-					(providerId === 'brave' ||
-						providerId === 'reka' ||
-						providerId === 'tavily') &&
-						'p-0',
+					fullBleed && 'p-0',
 					className
 				)}
 			>
