@@ -57,6 +57,7 @@ export async function* anthropic(
 				(response.usage.cache_read_input_tokens ?? 0),
 			outputTokens: response.usage.output_tokens,
 			cachedTokens: response.usage.cache_read_input_tokens ?? 0,
+			cacheWriteTokens: response.usage.cache_creation_input_tokens ?? 0,
 		},
 	};
 }
