@@ -219,21 +219,19 @@ function createListenRealtimeConnection(
 	};
 }
 
-function deepgramRealtimeUrl(
-	baseURL: string | undefined,
+function listenRealtimeUrl(
+	provider: SttProviderSpec,
 	request: SttAdapterRealtimeStartRequest
 ): string {
-	const path = request.modelId.startsWith('flux-')
-		? DEEPGRAM_FLUX_LISTEN_PATH
-		: DEEPGRAM_LISTEN_PATH;
-	const url = new URL(path, `${baseURL ?? speechToTextBaseUrl('deepgram')}/`);
+	const v2 = provider.protocol === LISTEN_V2_PROTOCOL;
+	const url = new URL(v2 ? LISTEN_V2_PATH : LISTEN_PATH, `${provider.baseURL}/`);
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	url.searchParams.set('model', request.modelId);
-	url.searchParams.set('encoding', DEEPGRAM_LINEAR16_ENCODING);
+	url.searchParams.set('encoding', LINEAR16_ENCODING);
 	url.searchParams.set('sample_rate', String(request.sampleRate));
-	if (request.modelId.startsWith('flux-')) {
+	if (v2) {
 		if (request.prompt) url.searchParams.set('keyterm', request.prompt);
-		if (request.modelId === 'flux-general-multi' && request.language)
+		if (request.metadata?.inputs.language_hint && request.language)
 			url.searchParams.set('language_hint', request.language);
 	} else {
 		url.searchParams.set('channels', '1');
