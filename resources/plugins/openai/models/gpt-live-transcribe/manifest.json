@@ -11,6 +11,7 @@
 	"sampleRate": 24000,
 	"location": "remote",
 	"metadata": {
+		"protocol": "transcriptions-intent",
 		"documentationUrl": "https://developers.openai.com/api/docs/guides/realtime-transcription",
 		"documentationStatus": "verified",
 		"inputs": {

@@ -11,6 +11,7 @@
 	"default": true,
 	"sampleRate": 24000,
 	"metadata": {
+		"protocol": "transcriptions",
 		"documentationUrl": "https://platform.openai.com/docs/api-reference",
 		"documentationStatus": "verified",
 		"inputs": {

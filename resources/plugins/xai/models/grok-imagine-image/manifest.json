@@ -5,6 +5,7 @@
 	"type": "text-to-image-model",
 	"url": "https://api.x.ai/v1",
 	"metadata": {
+		"protocol": "images-sdk",
 		"documentationUrl": "https://docs.x.ai/developers/models",
 		"documentationStatus": "verified",
 		"inputs": {

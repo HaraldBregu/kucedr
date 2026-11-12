@@ -10,6 +10,7 @@
 	"default": true,
 	"sampleRate": 24000,
 	"metadata": {
+		"protocol": "transcriptions",
 		"documentationUrl": "https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create",
 		"documentationStatus": "verified",
 		"inputs": {

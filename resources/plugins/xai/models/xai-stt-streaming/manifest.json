@@ -10,6 +10,7 @@
 	"url": "https://api.x.ai/v1",
 	"sampleRate": 24000,
 	"metadata": {
+		"protocol": "stt",
 		"documentationUrl": "https://docs.x.ai/developers/models",
 		"documentationStatus": "unverified",
 		"inputs": {}

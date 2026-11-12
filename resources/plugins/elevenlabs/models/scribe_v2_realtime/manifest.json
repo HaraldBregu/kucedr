@@ -10,6 +10,7 @@
 	"url": "https://api.elevenlabs.io/v1",
 	"sampleRate": 16000,
 	"metadata": {
+		"protocol": "speech-to-text",
 		"documentationUrl": "https://elevenlabs.io/docs/api-reference/speech-to-text/v-1-speech-to-text-realtime",
 		"documentationStatus": "verified",
 		"inputs": {
