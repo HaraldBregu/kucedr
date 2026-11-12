@@ -24,6 +24,7 @@ export type ProviderCatalogItem = {
 	apiConfigurationUrl?: string;
 	iconDarkUrl?: string;
 	iconLightUrl?: string;
+	order?: number;
 };
 
 export type ProviderModelGroup = {
