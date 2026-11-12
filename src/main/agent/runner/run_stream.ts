@@ -610,6 +610,8 @@ async function* loop(
 				context: turn.usage?.context,
 				inputTokens: turn.usage?.inputTokens ?? 0,
 				outputTokens: turn.usage?.outputTokens ?? 0,
+				cachedTokens: turn.usage?.cachedTokens,
+				cacheWriteTokens: turn.usage?.cacheWriteTokens,
 			});
 			const pendingToolCalls = turn.toolCalls;
 			const budgetExceeded = budget.wouldExceed(
