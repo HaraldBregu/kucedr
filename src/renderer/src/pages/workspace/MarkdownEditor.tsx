@@ -22,7 +22,6 @@ import { WorkspaceLibraryPicker } from './LibraryPicker';
 import { WorkspaceImagePreview } from './Preview';
 import { WorkspaceOutline } from './Outline';
 import { WorkspaceToolbar } from './Toolbar';
-import { WorkspaceScriptForm } from './ScriptForm';
 import { WorkspaceUrlDialog } from './UrlDialog';
 import type { PluginScriptInfo } from '../../../../shared/plugin_types';
 import { pluginScriptRef } from '../../../../shared/plugin_script_ref';
