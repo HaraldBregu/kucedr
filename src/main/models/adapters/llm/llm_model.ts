@@ -474,6 +474,9 @@ export class LlmModel implements LlmAdapter {
 				usage.inputTokens = event.response.usage?.input_tokens ?? usage.inputTokens;
 				usage.outputTokens = event.response.usage?.output_tokens ?? usage.outputTokens;
 				usage.cachedTokens = event.response.usage?.input_tokens_details?.cached_tokens;
+				usage.cacheWriteTokens = (
+					event.response.usage?.input_tokens_details as { cache_write_tokens?: number } | undefined
+				)?.cache_write_tokens;
 				setStopReason(
 					event.response.incomplete_details?.reason === 'max_output_tokens'
 						? 'max_tokens'
