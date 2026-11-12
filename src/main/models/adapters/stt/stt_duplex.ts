@@ -101,7 +101,7 @@ async function streaming(
 		emit({ type: 'error', sessionId: request.sessionId, message: error.message });
 	});
 	socket.once('close', () => {
-		rejectStarted(new Error('Qwen transcription connection closed.'));
+		rejectStarted(new Error(`${request.providerName} transcription connection closed.`));
 		if (!closed) {
 			closed = true;
 			emit({ type: 'closed', sessionId: request.sessionId });
