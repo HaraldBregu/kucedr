@@ -11,15 +11,12 @@ export function createPaasSttAdapter(provider: SttProviderSpec): SttAdapter {
 			form.append('stream', 'false');
 			form.append('file', await createAudioFile(request.audio));
 			if (request.prompt) form.append('prompt', request.prompt);
-			const response = await fetch(
-				new URL('/api/paas/v4/audio/transcriptions', provider.baseURL ?? 'https://api.z.ai'),
-				{
-					method: 'POST',
-					headers: { Authorization: `Bearer ${provider.apiKey}` },
-					body: form,
-					signal: request.signal,
-				}
-			);
+			const response = await fetch(new URL('/api/paas/v4/audio/transcriptions', provider.baseURL), {
+				method: 'POST',
+				headers: { Authorization: `Bearer ${provider.apiKey}` },
+				body: form,
+				signal: request.signal,
+			});
 			if (response.status === 401 || response.status === 403)
 				throw new SttProviderAuthError(await response.text());
 			if (!response.ok) throw new SttProviderRequestError(await response.text());
