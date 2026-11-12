@@ -1,6 +1,6 @@
 import type { StoredProvider } from '../../shared/provider_types';
 import { getSearchProviders } from './search_store';
-import { SEARCH_PROVIDERS } from './catalog';
+import { loadWebSearches } from '../models';
 import { pluginSettings } from '../plugins/plugins_settings';
 
 export function getStoredSearchProviders(): StoredProvider[] {
@@ -15,11 +15,11 @@ export function getStoredSearchProviders(): StoredProvider[] {
 			typeof value.apiKey === 'string' &&
 			typeof value.baseUrl === 'string'
 	);
-	for (const catalog of SEARCH_PROVIDERS) {
-		const apiKey = pluginSettings(catalog.id).apiKey;
+	for (const service of loadWebSearches()) {
+		const apiKey = pluginSettings(service.provider.id).apiKey;
 		if (!apiKey) continue;
-		const index = providers.findIndex((provider) => provider.id === catalog.id);
-		const provider = { ...catalog, apiKey };
+		const index = providers.findIndex((provider) => provider.id === service.provider.id);
+		const provider = { id: service.provider.id, name: service.provider.name, baseUrl: service.url, apiKey };
 		if (index < 0) providers.push(provider);
 		else providers[index] = provider;
 	}
