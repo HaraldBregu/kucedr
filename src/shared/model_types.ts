@@ -57,6 +57,24 @@ export interface ModelMetadata {
 	/** API request fields supported by this exact service or model. */
 	readonly inputs: Readonly<Record<string, ModelInputSchema>>;
 	readonly discoveryInputs?: Readonly<Record<string, ModelInputSchema>>;
+	readonly cache?: ModelCache;
+	readonly clampEffort?: boolean;
+	readonly dsml?: boolean;
+	readonly reasoningContent?: 'roundtrip';
+	readonly families?: readonly ModelFamily[];
+}
+
+export interface ModelCache {
+	readonly readTokens?: readonly string[];
+	readonly writeTokens?: readonly string[];
+	readonly requestDefaults?: Readonly<Record<string, unknown>>;
+	readonly sessionKey?: string;
+	readonly breakpoints?: readonly 'system'[];
+}
+
+export interface ModelFamily {
+	readonly match: string;
+	readonly metadata: Partial<ModelMetadata>;
 }
 
 export interface ProviderModel {
