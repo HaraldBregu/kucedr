@@ -1,0 +1,21 @@
+{
+	"id": "codex",
+	"name": "Codex",
+	"type": "coding-agent-model",
+	"authentication": "oauth2",
+	"default": true,
+	"metadata": {
+		"documentationUrl": "https://developers.openai.com/codex/app-server",
+		"documentationStatus": "unverified",
+		"inputs": {},
+		"protocol": "app-server",
+		"harness": {
+			"package": "@openai/codex",
+			"binary": "codex",
+			"homeEnv": "CODEX_HOME",
+			"clearEnv": ["OPENAI_API_KEY", "CODEX_API_KEY"],
+			"instructionFiles": ["AGENTS.override.md", "AGENTS.md"]
+		}
+	},
+	"location": "local"
+}
