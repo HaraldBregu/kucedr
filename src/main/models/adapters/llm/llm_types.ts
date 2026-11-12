@@ -176,6 +176,7 @@ export interface LlmStreamRequest {
 	maxTokens: number;
 	signal?: AbortSignal;
 	streaming?: boolean;
+	sessionId?: string;
 }
 
 export interface LlmAdapter {
