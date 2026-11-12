@@ -10,6 +10,7 @@ const MODEL_SERVICE_TYPES = [
 	'text-to-video-model',
 	'text-to-audio-model',
 	'embedding-model',
+	'coding-agent-model',
 ] as const;
 
 const AUTHENTICATION_TYPES = ['api-key', 'oauth2', 'none'] as const;
