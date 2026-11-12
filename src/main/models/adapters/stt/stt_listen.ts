@@ -89,16 +89,16 @@ export function createListenSttAdapter(opts: ListenSttAdapterOptions): SttAdapte
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
-			const socket = new WebSocket(deepgramRealtimeUrl(provider.baseURL, request), {
-				headers: { Authorization: `${DEEPGRAM_AUTH_SCHEME} ${provider.apiKey}` },
+			const socket = new WebSocket(listenRealtimeUrl(provider, request), {
+				headers: { Authorization: `${LISTEN_AUTH_SCHEME} ${provider.apiKey}` },
 			});
 			await waitForOpen(socket);
-			return createDeepgramRealtimeConnection(socket, request, emit);
+			return createListenRealtimeConnection(socket, request, emit);
 		},
 	};
 }
 
-type DeepgramRealtimeResponse = {
+type ListenRealtimeResponse = {
 	type?: string;
 	event?: string;
 	transcript?: string;
