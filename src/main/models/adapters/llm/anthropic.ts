@@ -22,7 +22,7 @@ export async function* anthropic(
 			cache_control: { type: 'ephemeral' },
 			...options('anthropic', req),
 			model: req.model,
-			system: req.system,
+			system: breakpoint(req.system, cache?.breakpoints?.includes('system')),
 			max_tokens: req.maxTokens,
 			tools: tools.length > 0 ? tools : undefined,
 			messages: llmBuildAnthropicMessages(req.messages),
