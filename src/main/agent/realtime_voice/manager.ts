@@ -27,11 +27,15 @@ export interface ResolvedRealtimeVoiceConfiguration extends Omit<
 	'history'
 > {
 	provider: RealtimeVoiceProviderSpec;
+	model: RealtimeVoiceModelSpec;
 	context: readonly RealtimeVoiceHistoryMessage[];
 }
 
 export interface RealtimeVoiceManagerDependencies {
-	createAdapter(provider: RealtimeVoiceProviderSpec): RealtimeVoiceAdapter;
+	createAdapter(
+		provider: RealtimeVoiceProviderSpec,
+		model: RealtimeVoiceModelSpec
+	): RealtimeVoiceAdapter;
 	resolveConfiguration(): Promise<ResolvedRealtimeVoiceConfiguration>;
 	createConversation: RealtimeVoiceConversationFactory;
 	resources: KeyedMutex;
