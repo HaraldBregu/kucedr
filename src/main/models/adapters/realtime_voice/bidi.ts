@@ -48,7 +48,7 @@ export function createBidiVoiceAdapter(
 			const calls = new Map<string, string>();
 			const send = (event: object): void => {
 				if (closed || socket.readyState !== WebSocket.OPEN)
-					throw new Error('Google voice connection is closed.');
+					throw new Error(`${provider.name} voice connection is closed.`);
 				socket.send(JSON.stringify(event));
 			};
 			const beginResponse = (): string => {
