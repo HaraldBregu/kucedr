@@ -58,6 +58,7 @@ export type LlmEvent =
 
 export interface LlmProviderSpec {
 	id: string;
+	name?: string;
 	apiKey: string;
 	baseURL?: string;
 	authentication?: import('../../../../shared/provider_types').AuthenticationType;
