@@ -32,9 +32,6 @@ export async function* responses(
 				llmBuildResponseInput(req.messages),
 			previous_response_id: req.previousResponseId,
 			tools: tools.length > 0 ? tools : undefined,
-			reasoning: req.effort
-				? { ...(configuredReasoning ?? {}), effort: req.effort }
-				: configuredReasoning,
 			max_output_tokens: req.maxTokens,
 			include: ['reasoning.encrypted_content'],
 			stream: false,
