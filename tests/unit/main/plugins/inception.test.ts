@@ -33,6 +33,26 @@ it('loads the documented Inception chat models and their API contracts', () => {
 	}
 });
 
+it('classifies every documented model by its API capability', () => {
+	const models = loadModels().filter((model) => model.provider.id === 'inception');
+	expect(models.map(({ id, type }) => [id, type]).sort()).toEqual([
+		['mercury-2', 'llm'],
+		['mercury-2.5', 'llm'],
+		['mercury-3', 'llm'],
+		['mercury-decide', 'decision'],
+		['mercury-edit-2', 'code-completion'],
+		['mercury-voice', 'llm'],
+	]);
+	expect(models.find((model) => model.id === 'mercury-voice')).toMatchObject({
+		metadata: {
+			protocol: 'chat-completions',
+			contextWindow: 128000,
+			promptAttachments: [],
+			inputs: { reasoning_effort: { enum: ['low', 'medium', 'high'] } },
+		},
+	});
+});
+
 it('loads specialized models as distinct capabilities with their operations', () => {
 	const models = loadModels().filter((model) => model.provider.id === 'inception');
 	const decision = models.find((model) => model.id === 'mercury-decide');
