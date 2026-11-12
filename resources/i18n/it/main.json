@@ -357,7 +357,8 @@
 				"documentation": "Documentazione",
 				"contextDocumentation": "Documentazione della finestra di contesto",
 				"attachments": "Allegati",
-				"inputs": "Input supportati"
+				"inputs": "Input supportati",
+				"operations": "Operazioni"
 			},
 			"types": {
 				"llm": "Modello linguistico di grandi dimensioni",

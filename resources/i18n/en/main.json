@@ -357,7 +357,8 @@
 				"documentation": "Documentation",
 				"contextDocumentation": "Context window documentation",
 				"attachments": "Attachments",
-				"inputs": "Supported inputs"
+				"inputs": "Supported inputs",
+				"operations": "Operations"
 			},
 			"types": {
 				"llm": "Large language model",

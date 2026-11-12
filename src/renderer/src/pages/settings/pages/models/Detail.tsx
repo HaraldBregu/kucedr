@@ -142,6 +142,23 @@ export default function ModelDetail(): React.JSX.Element {
 						</dl>
 					</SettingsPanel>
 				</SettingsSection>
+				{metadata?.operations && Object.keys(metadata.operations).length > 0 && (
+					<SettingsSection title={t('settings.models.details.operations')}>
+						<SettingsPanel>
+							<dl className="divide-y divide-border">
+								{Object.entries(metadata.operations).map(([name, operation]) => (
+									<div key={name} className="grid gap-1 px-4 py-3 text-sm sm:grid-cols-[12rem_minmax(0,1fr)]">
+										<dt className="font-medium">{name}</dt>
+										<dd className="min-w-0 space-y-1">
+											<p>{operation.description}</p>
+											<p className="break-all text-muted-foreground">{operation.endpoint}</p>
+										</dd>
+									</div>
+								))}
+							</dl>
+						</SettingsPanel>
+					</SettingsSection>
+				)}
 				{metadata?.promptAttachments && metadata.promptAttachments.length > 0 && (
 					<SettingsSection title={t('settings.models.details.attachments')}>
 						<SettingsPanel>
