@@ -284,7 +284,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					savedApiKey: '',
 					apiKeySaved: false,
 					editing: false,
-					...(providerId === 'qwen' ? { baseUrl: '', savedBaseUrl: '' } : {}),
+					...(allCatalogItems(section).some(
+						(item) => item.id === providerId && item.baseUrlSetting
+					)
+						? { baseUrl: '', savedBaseUrl: '' }
+						: {}),
 				});
 			}
 		} catch (err) {
@@ -379,30 +383,34 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					className={cn(
 						'ml-auto flex-none justify-end gap-2',
 						editing && 'w-full sm:w-auto',
-						editing && provider.id === 'qwen' && 'w-full flex-wrap sm:w-full'
+						editing && provider.baseUrlSetting && 'w-full flex-wrap sm:w-full'
 					)}
 				>
 					{editing && entry ? (
 						<>
-							{provider.id === 'qwen' && (
+							{provider.baseUrlSetting && (
 								<div className="grid w-full gap-1.5">
-									<Label htmlFor="qwen-workspace-url">Workspace URL</Label>
+									<Label htmlFor={`${provider.id}-base-url`}>{provider.baseUrlSetting.title}</Label>
 									<Input
-										id="qwen-workspace-url"
-										aria-describedby="qwen-workspace-help"
+										id={`${provider.id}-base-url`}
+										aria-describedby={
+											provider.baseUrlSetting.description ? `${provider.id}-base-url-help` : undefined
+										}
 										autoComplete="off"
 										className="h-8 min-w-0 text-xs"
 										disabled={savingThisProvider}
-										placeholder="https://{workspace}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"
+										placeholder={provider.baseUrlSetting.examples?.[0]}
 										value={entry.baseUrl ?? ''}
 										onChange={(event) => {
 											updateProviderEntry(provider.id, { baseUrl: event.target.value });
 											setError(null);
 										}}
 									/>
-									<p id="qwen-workspace-help" className="text-xs text-muted-foreground">
-										For embeddings, replace the workspace and region with your own.
-									</p>
+									{provider.baseUrlSetting.description && (
+										<p id={`${provider.id}-base-url-help`} className="text-xs text-muted-foreground">
+											{provider.baseUrlSetting.description}
+										</p>
+									)}
 								</div>
 							)}
 							<Input
