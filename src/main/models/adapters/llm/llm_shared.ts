@@ -10,6 +10,7 @@ import type { Message } from '../../../agent/types';
 import { hasAssistantPayload } from '../../../agent/session/session_has_assistant_payload';
 import { formatUploadedTextFile } from '../../../agent/attachments/text';
 import { breakpoint } from './breakpoint';
+import type { ModelMetadata } from '../../../../shared/model_types';
 import type {
 	LlmContentBlock,
 	LlmStreamRequest,
