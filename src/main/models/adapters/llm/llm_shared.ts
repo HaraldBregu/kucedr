@@ -387,7 +387,7 @@ export function llmBuildChatMessages(
 						? entry.content.map((block) => block.text).join('\n')
 						: undefined;
 			if (
-				options.contentProfile === 'mistral' &&
+				options.model?.mergeUserAfterTool &&
 				previous?.role === 'tool' &&
 				typeof previous.content === 'string' &&
 				text !== undefined
