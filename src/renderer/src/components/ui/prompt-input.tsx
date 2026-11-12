@@ -638,6 +638,7 @@ function PromptInput({
 								</div>
 							</div>
 						</motion.div>
+						{belowContent}
 					</div>
 				) : (
 					<div
