@@ -769,7 +769,7 @@ function PageContent(): ReactElement {
 				disabled={attachmentDisabled || filesAccept === ''}
 				disabledReason={filesAccept === '' ? "This model doesn't accept files." : undefined}
 				onLibrarySelect={() => setLibraryPickerOpen(true)}
-				className={showEmptyConversation ? undefined : 'size-7 rounded-md dark:hover:bg-accent'}
+				className={showEmptyConversation ? undefined : 'size-7 rounded-md'}
 			/>
 		);
 
