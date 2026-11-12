@@ -432,7 +432,7 @@ export interface ProviderApi {
 	remove: (id: string, kind: Exclude<ProviderCredentialKind, 'search_engines'>) => Promise<void>;
 	list: (kind?: Exclude<ProviderCredentialKind, 'search_engines'>) => Promise<StoredProvider[]>;
 	listCustomModels: (input: { baseUrl: string; apiKey: string }) => Promise<string[]>;
-	listModels: (providerId: string) => Promise<ProviderModel[]>;
+	listModels: (providerId: string, refresh?: boolean) => Promise<ProviderModel[]>;
 	listEnabledPlugins: () => Promise<EnabledPluginProviders>;
 	setPluginEnabled: (
 		kind: PluginProviderKind,
