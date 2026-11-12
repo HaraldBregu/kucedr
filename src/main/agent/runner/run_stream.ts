@@ -491,22 +491,22 @@ async function* loop(
 			]
 				.filter(Boolean)
 				.join('\n\n');
-			const memoryContext =
-				session.category === 'main' && options.memory?.getConfig().includeInPrompt
-					? await options.memory.read().catch(() => '')
-					: '';
 			const workspaceContext = await buildWorkspaceContext(
 				config,
-				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core',
-				memoryContext
+				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core'
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			if (extension?.prompt) systemPrompt += `\n\n${extension.prompt}`;
 			const extensionContext = extended ? extension?.context() : '';
 			if (extensionContext) systemPrompt += `\n\n${extensionContext}`;
-			const messages = promptCapabilities
-				? projectPromptAttachments(session.messages, promptCapabilities)
-				: session.messages;
+			if (runMessageIndex === -1) systemPrompt += `\n\n${runContext}`;
+			const messages = attachRunContext(
+				promptCapabilities
+					? projectPromptAttachments(session.messages, promptCapabilities)
+					: session.messages,
+				runMessageIndex,
+				runContext
+			);
 			const turn = yield* runModelTurn(
 				input,
 				provider,
