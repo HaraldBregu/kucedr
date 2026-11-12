@@ -219,6 +219,8 @@ export interface ProviderManifest {
 	readonly discoveryLabel?: string;
 	readonly iconFullBleed?: boolean;
 	readonly order?: number;
+	readonly website?: string;
+	readonly baseUrlSetting?: ProviderBaseUrlSetting;
 }
 
 export interface ModelSelection {
