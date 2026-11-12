@@ -464,6 +464,7 @@
 				"remove": "Disinstalla",
 				"disabledNotice": "Questo plugin è disattivato, quindi i suoi contenuti non sono caricati. Attivalo per vederli.",
 				"models": "Modelli",
+				"refreshModels": "Aggiorna modelli",
 				"remoteMcp": "Server MCP remoti",
 				"vectorDatabases": "Database vettoriali",
 				"services": "Servizi",
