@@ -14,7 +14,9 @@ export function realtimeVoiceHistory(messages: readonly Message[]): RealtimeVoic
 				? message.content
 				: message.content
 						.map((block) =>
-							block.type === 'text' && typeof block.text === 'string' ? block.text : ''
+							block.type === 'text' && typeof block.text === 'string' && block.internal !== true
+								? block.text
+								: ''
 						)
 						.filter(Boolean)
 						.join('\n')
