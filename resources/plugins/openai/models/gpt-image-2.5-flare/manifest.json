@@ -133,6 +133,22 @@
 				],
 				"default": "auto"
 			}
-		}
+		},
+		"promptAttachments": [
+			{
+				"kind": "image",
+				"mimeTypes": [
+					"image/png",
+					"image/jpeg",
+					"image/webp"
+				],
+				"extensions": [
+					".png",
+					".jpg",
+					".jpeg",
+					".webp"
+				]
+			}
+		]
 	}
 }
