@@ -46,6 +46,7 @@ it('classifies every documented model by its API capability', () => {
 	expect(models.find((model) => model.id === 'mercury-voice')).toMatchObject({
 		metadata: {
 			protocol: 'chat-completions',
+			documentationStatus: 'unverified',
 			contextWindow: 128000,
 			promptAttachments: [],
 			inputs: { reasoning_effort: { enum: ['low', 'medium', 'high'] } },
