@@ -55,7 +55,7 @@ interface PendingInteraction {
 export class Coder {
 	private readonly sessions: CoderSessions;
 	private readonly credentials: Pick<CoderCredentials, 'get' | 'set'>;
-	private readonly harnesses: Record<CoderHarness, CodingHarness>;
+	private readonly harnesses = new Map<string, CodingHarness>();
 	private readonly runs = new Map<string, ActiveRun>();
 	private readonly interactions = new Map<string, PendingInteraction>();
 	private readonly auth = new Map<number, AbortController>();
