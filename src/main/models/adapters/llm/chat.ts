@@ -91,13 +91,17 @@ export async function* chat(
 	yield {
 		type: 'message_end',
 		stopReason,
-		usage: {
-			inputTokens: response.usage?.prompt_tokens ?? 0,
-			outputTokens: response.usage?.completion_tokens ?? 0,
-			cachedTokens:
-				response.usage?.prompt_tokens_details?.cached_tokens ??
-				(response.usage as { prompt_cache_hit_tokens?: number } | undefined)
-					?.prompt_cache_hit_tokens,
-		},
+		usage: tokens(
+			{
+				inputTokens: response.usage?.prompt_tokens ?? 0,
+				outputTokens: response.usage?.completion_tokens ?? 0,
+				cachedTokens:
+					response.usage?.prompt_tokens_details?.cached_tokens ??
+					(response.usage as { prompt_cache_hit_tokens?: number } | undefined)
+						?.prompt_cache_hit_tokens,
+			},
+			response,
+			options.cache
+		),
 	};
 }
