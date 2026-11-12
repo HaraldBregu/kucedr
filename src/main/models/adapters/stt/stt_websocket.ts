@@ -91,7 +91,7 @@ export function createWebsocketSttAdapter(provider: SttProviderSpec): SttAdapter
 					emit({
 						type: 'error',
 						sessionId: request.sessionId,
-						message: data.message ?? 'Cartesia transcription failed.',
+						message: data.message ?? `${request.providerName} transcription failed.`,
 					});
 			});
 			socket.once('close', emitClosed);
