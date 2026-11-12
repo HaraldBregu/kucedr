@@ -89,12 +89,13 @@ export class CodingInstructions {
 	async save(
 		project: CodingProject,
 		update: CodingProjectInstructionsUpdate,
-		runtime: CoderHarness = 'codex'
+		runtime: CoderHarness,
+		files: readonly string[]
 	): Promise<CodingProjectInstructions> {
 		if (Buffer.byteLength(update.content, 'utf8') > MAX_FILE_SIZE) {
 			throw new Error('Coding project instructions exceed the 256 KiB limit.');
 		}
-		const current = await this.get(project, runtime);
+		const current = await this.get(project, runtime, files);
 		if (current.revision !== update.expectedRevision) {
 			throw new Error('Coding project instructions changed outside Kucedr. Reload before saving.');
 		}
