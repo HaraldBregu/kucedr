@@ -236,6 +236,7 @@ export function actionableProviderCatalog(): readonly ProviderCatalogItem[] {
 		apiConfigurationUrl: getProviderApiConfigurationUrl(provider),
 		iconDarkUrl: provider.iconDarkUrl,
 		iconLightUrl: provider.iconLightUrl,
+		order: provider.order,
 	}));
 }
 
