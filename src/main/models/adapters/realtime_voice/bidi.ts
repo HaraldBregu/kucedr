@@ -238,9 +238,10 @@ export function createBidiVoiceAdapter(
 					signal?.removeEventListener('abort', abort);
 					const error = closed
 						? null
-						: realtimeVoiceCloseError(code, reason, 'Google voice connection closed');
+						: realtimeVoiceCloseError(code, reason, `${provider.name} voice connection closed`);
 					closed = true;
-					if (!ready) reject(error ?? new Error('Google voice connection closed before setup.'));
+					if (!ready)
+						reject(error ?? new Error(`${provider.name} voice connection closed before setup.`));
 					else if (error) emit({ type: 'error', message: error.message });
 					else emit({ type: 'closed' });
 				});
