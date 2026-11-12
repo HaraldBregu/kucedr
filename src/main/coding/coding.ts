@@ -36,7 +36,7 @@ import { deleteMarkdownFile } from './delete';
 interface CodingDependencies {
 	readonly store: CodingStore;
 	readonly projects: CodingProjectStore;
-	readonly harnesses?: Partial<Record<CoderHarness, CodingHarness>>;
+	readonly harnesses?: Readonly<Record<string, CodingHarness>>;
 	readonly sessions?: CoderSessions;
 	readonly credentials?: Pick<CoderCredentials, 'get' | 'set'>;
 }
