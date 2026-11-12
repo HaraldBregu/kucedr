@@ -119,16 +119,16 @@ export function AppSidebarFooter(): React.JSX.Element {
 							variant="ghost"
 							size="icon"
 							className="absolute right-2 top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary"
-							aria-label={t('settings.tabs.storage')}
+							aria-label={t('settings.tabs.plugins')}
 							onClick={() => {
 								playSound('navigate');
-								navigate('/settings/cloud');
+								navigate('/settings/plugins');
 							}}
 						>
-							<Cloud className="size-4" strokeWidth={1.8} />
+							<Plug className="size-4" strokeWidth={1.8} />
 						</Button>
 						} />
-						<TooltipContent>{t('settings.tabs.storage')}</TooltipContent>
+						<TooltipContent>{t('settings.tabs.plugins')}</TooltipContent>
 						</Tooltip>
 						<DropdownMenuContent
 							className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
