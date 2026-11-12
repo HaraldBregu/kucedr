@@ -1,6 +1,6 @@
 # Prompt Cache — Hits, Misses and Plan
 
-> **Status:** analysis and plan, 2026-11-12 (revised the same day after an audit against the OpenAI prompt-caching guide, the Anthropic prompt-caching docs and the DeepSeek KV-cache docs). No code changed for this plan.
+> **Status:** analysis and plan, 2026-11-12 (revised the same day after an audit against the OpenAI prompt-caching guide, the Anthropic prompt-caching docs and the DeepSeek KV-cache docs). Steps 1–5 implemented the same day; see "Landed" at the end. Step 6 is not done.
 
 ## Why
 
