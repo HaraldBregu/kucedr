@@ -15,6 +15,7 @@ import { retryAfterMs } from './run_retry_after';
 import { resolveContextWindow } from '../../models/context';
 import { liveModelLimits } from '../../models/live';
 import { findModel } from '../../models';
+import { prefixHashes } from './run_prefix_hashes';
 import { runPluginHooks } from '../../plugins';
 
 export interface ModelTurnStream {
