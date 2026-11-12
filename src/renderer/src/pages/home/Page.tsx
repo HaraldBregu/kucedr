@@ -759,6 +759,15 @@ function PageContent(): ReactElement {
 			/>
 		);
 
+	const voiceButton = (
+		<VoiceButton
+			onVoiceModeRequest={() => void startDictation()}
+			disabled={voiceBusy || agent.isLoading}
+			disabledReason={voiceButtonDisabledReason}
+			mode={voiceButtonMode}
+		/>
+	);
+
 	const composer = (
 		<div
 			ref={composerRef}
