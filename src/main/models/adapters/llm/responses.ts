@@ -22,7 +22,6 @@ export async function* responses(
 		strict: false,
 	}));
 	const responseOptions = req.options as Partial<ResponseCreateParamsNonStreaming> | undefined;
-	const configuredReasoning = responseOptions?.reasoning;
 	const response = await client.responses.create(
 		{
 			...responseOptions,
