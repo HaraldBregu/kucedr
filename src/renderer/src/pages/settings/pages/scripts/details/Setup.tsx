@@ -123,6 +123,23 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 											setValues((current) => ({ ...current, [key]: event.target.value }))
 										}
 									/>
+									{property.format === 'directory' && (
+										<Button
+											type="button"
+											variant="outline"
+											size="sm"
+											disabled={saving}
+											onClick={() =>
+												void window.agent.ragPickFolder().then((folder) => {
+													if (!folder) return;
+													setValues((current) => ({ ...current, [key]: folder }));
+													void save({ ...values, [key]: folder });
+												})
+											}
+										>
+											{t('settings.knowledge.pickFolder')}
+										</Button>
+									)}
 									<Button
 										type="submit"
 										size="sm"
