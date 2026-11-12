@@ -13,6 +13,13 @@ export interface LlmRequest {
 	tools?: Tool[];
 	signal?: AbortSignal;
 	streaming?: boolean;
+	sessionId?: string;
+}
+
+export interface LlmPrefixHashes {
+	tools: string;
+	system: string;
+	messages: string[];
 }
 
 export interface LlmResponse {
