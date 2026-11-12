@@ -13,14 +13,15 @@ import type {
 	CoderInteractionResponse,
 	CodingProjectInstructionsUpdate,
 } from '../../shared/coding_types';
-import { CODER_HARNESSES, isCodingSettings } from '../../shared/coding_types';
+import { isCodingSettings } from '../../shared/coding_types';
 import type { CoderLayout } from '../../shared/coder_layout';
 import { userDataLocation } from '../shared/user_data_location';
 import { CodingStore } from './store';
 import { CodingProjectStore } from './projects';
 import { CoderSessions, type CoderSession } from './sessions';
 import { CoderCredentials } from './credentials';
-import { CodexHarness } from './harness/codex';
+import { codingHarnesses, type CodingHarnessEntry } from './harnesses';
+import { HARNESS_PROTOCOLS } from './harness/protocols';
 import type { CodingHarness, HarnessContext, HarnessEvent } from './harness/types';
 import { executeCommand } from './shell';
 import { CodingInstructions } from './instructions';
