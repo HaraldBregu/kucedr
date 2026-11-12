@@ -12,11 +12,17 @@ export function modelTools(): Tool[] {
 	for (const model of loadModels()) {
 		if (!model.metadata?.operations || !model.url || !getProvider(model.provider.id)?.apiKey.trim()) continue;
 		for (const [operation, contract] of Object.entries(model.metadata.operations)) {
-			if (!/^\/[a-zA-Z0-9][a-zA-Z0-9/_-]*$/.test(contract.endpoint)) continue;
+			if (!contract || typeof contract.endpoint !== 'string' || typeof contract.description !== 'string' ||
+				!/^\/[a-zA-Z0-9][a-zA-Z0-9/_-]*$/.test(contract.endpoint)) continue;
+			const schema = contract.inputSchema as JSONSchema;
+			let parseInput: (input: unknown) => Record<string, unknown>;
+			try {
+				parseInput = mcpInputParser(schema);
+			} catch {
+				continue;
+			}
 			const rawName = mcpToolName(model.provider.id, `${model.id}__${operation}`, used);
 			used.add(rawName);
-			const schema = contract.inputSchema as JSONSchema;
-			const parseInput = mcpInputParser(schema);
 			tools.push(jsonTool({
 				id: rawName.replace(/^mcp__/, 'mdl__'),
 				category: 'integration',

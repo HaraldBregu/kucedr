@@ -30,7 +30,7 @@ it('validates and sends decision, FIM and edit requests using the OpenAI SDK tra
 			prompt: 'return ', suffix: '\n', max_tokens: 256,
 		}],
 		['mdl__inception__mercury-edit-2_edit', '/edit/completions', 'mercury-edit-2', {
-			messages: [{ role: 'user', content: '<|code_to_edit|>x<|cursor|><|/code_to_edit|>' }],
+			messages: [{ role: 'user', content: '<|recently_viewed_code_snippets|>\n<|/recently_viewed_code_snippets|>\n<|edit_diff_history|>\n<|/edit_diff_history|>\n<|current_file_content|>\nx\n<|/current_file_content|>\n<|code_to_edit|>\nx<|cursor|>\n<|/code_to_edit|>' }],
 		}],
 	] as const;
 	for (const [id, endpoint, model, input] of requests) {
