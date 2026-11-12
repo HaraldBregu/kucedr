@@ -70,8 +70,8 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 	const messages = structuredClone(input.messages);
 	let latestUserIndex = -1;
 	for (let index = messages.length - 1; index >= 0; index -= 1) {
-		if (messages[index].role !== 'user') continue;
-		latestUserIndex = index;
+		if (messages[index].role !== 'user' || isInternalMessage(messages[index])) continue;
+		latestUserIndex = turnStart(messages, index);
 		break;
 	}
 	if (latestUserIndex < 0) latestUserIndex = Math.max(0, messages.length - 1);
