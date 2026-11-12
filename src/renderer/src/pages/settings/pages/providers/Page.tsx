@@ -217,24 +217,20 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setSavingProviderId(providerId);
 		setError(null);
 		try {
-			const baseUrl = providerId === 'qwen' ? entry.baseUrl?.trim() : undefined;
-			if (baseUrl) {
-				const endpoint = new URL(baseUrl);
-				if (
-					endpoint.protocol !== 'https:' ||
-					!/^[a-z0-9][a-z0-9-]*\.(ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com$/i.test(
-						endpoint.hostname
-					)
-				)
-					throw new Error('Enter a Qwen workspace URL for Singapore, Beijing, or Hong Kong.');
-			}
+			const provider = allCatalogItems(section).find((item) => item.id === providerId);
+			const setting = provider?.baseUrlSetting;
+			const baseUrl = setting ? entry.baseUrl?.trim() : undefined;
+			if (setting && baseUrl && !acceptsBaseUrl(setting, baseUrl))
+				throw new Error(
+					setting.errorMessage ?? `Enter a valid ${provider.name} ${setting.title ?? 'base URL'}.`
+				);
 			await window.provider.set({ id: providerId, apiKey, kind, ...(baseUrl ? { baseUrl } : {}) });
 			updateProviderEntry(providerId, {
 				apiKey,
 				savedApiKey: apiKey,
 				apiKeySaved: true,
 				editing: false,
-				...(providerId === 'qwen' ? { baseUrl, savedBaseUrl: baseUrl } : {}),
+				...(setting ? { baseUrl, savedBaseUrl: baseUrl } : {}),
 			});
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save provider API key.'));
