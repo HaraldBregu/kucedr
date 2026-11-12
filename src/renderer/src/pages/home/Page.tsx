@@ -298,12 +298,11 @@ function VoiceButton({
 	readonly disabledReason?: string;
 	readonly mode: VoiceButtonMode;
 }): ReactElement {
-	const label = mode === 'record' ? 'Record voice' : 'Dictate';
 	const isDisabled = disabled || mode === 'disabled';
 	const tooltip =
 		mode === 'disabled'
 			? 'Choose a speech-to-text provider and model in Settings.'
-			: (disabledReason ?? label);
+			: (disabledReason ?? 'Dictate');
 
 	return (
 		<PromptInputAction tooltip={tooltip} showTooltipWhenDisabled={isDisabled}>
