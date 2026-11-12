@@ -157,6 +157,7 @@ export function ModelProviderSelect({
 					className={cn('min-w-40 max-w-full justify-between text-xs', buttonClassName)}
 				>
 					{compactPopover &&
+						!nameOnly &&
 						selectedGroup &&
 						(() => {
 							const provider = getProviderCatalogItem(selectedGroup.id);
