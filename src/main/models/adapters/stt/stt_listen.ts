@@ -250,7 +250,7 @@ async function waitForOpen(socket: WebSocket): Promise<void> {
 	});
 }
 
-function toUsage(metadata: DeepgramTranscriptionResponse['metadata']): SttUsage | undefined {
+function toUsage(metadata: ListenTranscriptionResponse['metadata']): SttUsage | undefined {
 	if (!metadata || typeof metadata.duration !== 'number') return undefined;
 	return { durationSeconds: metadata.duration };
 }
