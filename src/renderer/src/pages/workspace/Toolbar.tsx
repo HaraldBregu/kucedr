@@ -384,7 +384,6 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 		<DropdownMenuTrigger asChild><Button type="button" variant="ghost" size={Icon ? 'sm' : 'icon-sm'} aria-label={label} className={`${Icon ? 'gap-0.5 px-1.5' : ''} ${items.some((entry) => entry.active) ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`} onMouseDown={(event) => event.preventDefault()}>{Icon ? <Icon className="size-4" /> : null}<ChevronDown /></Button></DropdownMenuTrigger>
 		<DropdownMenuContent align="start" onCloseAutoFocus={(event) => { event.preventDefault(); if (document.activeElement === document.body) editor.commands.focus(); }}>{items.map((entry) => <DropdownMenuItem key={entry.label} onSelect={entry.run}><entry.icon />{entry.label}{entry.active ? <Check className="ml-auto" /> : null}</DropdownMenuItem>)}</DropdownMenuContent>
 	</DropdownMenu>;
-	const lists = groups[3].slice(0, 3);
 	const section = (label: string, children: React.ReactNode): React.JSX.Element => <section className="max-w-full shrink-0"><div role="toolbar" aria-label={label} className="flex flex-wrap items-center justify-start gap-0.5">{children}</div></section>;
 	const toolbar = toolbarTarget ? createPortal(
 		<div className="flex w-full flex-wrap items-center justify-start gap-2">
