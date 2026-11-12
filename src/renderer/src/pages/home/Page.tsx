@@ -750,6 +750,15 @@ function PageContent(): ReactElement {
 		returnToChat();
 	};
 
+	const attachmentButton =
+		voiceMode === 'dictation' ? undefined : (
+			<AttachmentButton
+				disabled={attachmentDisabled || filesAccept === ''}
+				disabledReason={filesAccept === '' ? "This model doesn't accept files." : undefined}
+				onLibrarySelect={() => setLibraryPickerOpen(true)}
+			/>
+		);
+
 	const composer = (
 		<div
 			ref={composerRef}
