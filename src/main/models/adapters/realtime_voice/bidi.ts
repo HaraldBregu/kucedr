@@ -229,9 +229,9 @@ export function createBidiVoiceAdapter(
 				socket.on('error', () => {
 					clearTimeout(timer);
 					if (!ready) {
-						reject(new Error('Google voice connection failed.'));
+						reject(new Error(`${provider.name} voice connection failed.`));
 						void stop();
-					} else emit({ type: 'error', message: 'Google voice connection failed.' });
+					} else emit({ type: 'error', message: `${provider.name} voice connection failed.` });
 				});
 				socket.on('close', (code, reason) => {
 					clearTimeout(timer);
