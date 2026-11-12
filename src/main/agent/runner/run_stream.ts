@@ -474,7 +474,7 @@ async function* loop(
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
-			const turnTools = search?.active() ?? tools;
+			const turnTools = synthesisRetries === 0 ? [] : (search?.active() ?? tools);
 			const eligibleTurnTools = !turnTools.some((tool) => tool.id === TOOL_SEARCH_ID)
 				? turnTools
 				: (search?.eligible() ?? tools);
