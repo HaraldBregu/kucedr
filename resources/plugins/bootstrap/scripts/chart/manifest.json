@@ -39,6 +39,10 @@
 				"description": "1–200 rows, one per x-axis point or slice.",
 				"minItems": 1,
 				"maxItems": 200,
+				"keys": [
+					{ "from": "xKey", "type": "string" },
+					{ "from": "series.key", "type": "number" }
+				],
 				"items": { "type": "object" }
 			}
 		},
