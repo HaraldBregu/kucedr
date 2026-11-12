@@ -27,7 +27,7 @@ export function PromptSubmit({
 				type="button"
 				variant="default"
 				size="icon"
-				className="h-9 w-12 overflow-hidden rounded-md bg-foreground text-background hover:bg-foreground/90"
+				className="h-9 w-12 overflow-hidden rounded-none bg-foreground text-background hover:bg-foreground/90"
 				aria-label={label}
 				disabled={disabled}
 				onClick={onAction}
