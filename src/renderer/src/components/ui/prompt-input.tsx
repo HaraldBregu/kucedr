@@ -520,7 +520,8 @@ function PromptInput({
 											{detached ? (
 												<PromptInputField
 													header={header}
-													className={cn('min-h-[98px]', inputClassName)}
+													className={cn(!singleLine && 'min-h-[98px]', inputClassName)}
+													singleLine={singleLine}
 													controls={
 														<PromptInputControls
 														leadingAction={isDictationMode ? undefined : leadingAction}
