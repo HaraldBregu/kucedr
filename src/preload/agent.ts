@@ -24,6 +24,7 @@ import { optionalStringList, optionalTrimmedString } from './normalize';
 
 const MODEL_REASONING_EFFORTS: readonly ModelReasoningEffort[] = [
 	'none',
+	'instant',
 	'minimal',
 	'low',
 	'medium',

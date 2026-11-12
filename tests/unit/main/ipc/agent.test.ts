@@ -338,3 +338,7 @@ it('allows a resubmission to reuse the edited user message', () => {
 		'reuseLastUserMessage'
 	);
 });
+
+it('accepts instant reasoning effort from the renderer', () => {
+	expect(normalizeAgentSendRuntimeOptions({ effort: 'instant' })).toMatchObject({ effort: 'instant' });
+});

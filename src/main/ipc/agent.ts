@@ -168,6 +168,7 @@ function toUserInputAnswers(value: unknown): AgentUserInputAnswer[] {
 
 const MODEL_REASONING_EFFORTS: readonly ModelReasoningEffort[] = [
 	'none',
+	'instant',
 	'minimal',
 	'low',
 	'medium',

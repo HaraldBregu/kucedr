@@ -68,7 +68,13 @@
 				"type": "boolean"
 			}
 		},
-		"promptAttachments": []
+		"promptAttachments": [],
+		"cache": {
+			"readTokens": [
+				"usage.cached_input_tokens"
+			]
+		},
+		"outputTokensField": "max_completion_tokens"
 	},
 	"location": "remote"
 }

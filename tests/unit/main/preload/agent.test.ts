@@ -134,3 +134,8 @@ it('queries and cancels background Knowledge indexing through typed channels', a
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.ragGetStatus);
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.ragCancelIndex);
 });
+
+it('forwards instant reasoning effort to the main process', async () => {
+	await agent.send('Hello', { runId: 'instant-run', effort: 'instant' });
+	expect(invoke).toHaveBeenCalledWith(AgentChannels.send, 'Hello', expect.objectContaining({ effort: 'instant' }));
+});
