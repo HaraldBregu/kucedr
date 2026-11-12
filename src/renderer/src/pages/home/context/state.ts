@@ -61,6 +61,7 @@ export interface AgentMessage {
 	readonly contextUsage?: import('@shared/agent_types').AgentContextUsage;
 	readonly inputTokens?: number;
 	readonly outputTokens?: number;
+	readonly cachedTokens?: number;
 	readonly settledOutputTokens?: number;
 	readonly streamedChars?: number;
 	readonly toolSelection?: {
