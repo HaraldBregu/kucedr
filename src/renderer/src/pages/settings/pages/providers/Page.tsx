@@ -649,12 +649,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	};
 
 	const modelCatalog = actionableProviderCatalog();
-	const featuredIds = new Set<string>(FEATURED_PROVIDER_IDS);
-	const featuredProviders = FEATURED_PROVIDER_IDS.flatMap((id) =>
-		modelCatalog.filter((provider) => provider.id === id)
+	const orderedModelProviders = connectedFirst(
+		[...modelCatalog].sort(
+			(first, second) =>
+				(first.order ?? Number.MAX_SAFE_INTEGER) - (second.order ?? Number.MAX_SAFE_INTEGER)
+		),
+		'models'
 	);
-	const otherProviders = modelCatalog.filter((provider) => !featuredIds.has(provider.id));
-	const orderedModelProviders = connectedFirst([...featuredProviders, ...otherProviders], 'models');
 	const searchCatalog = connectedFirst(actionableSearchCatalog(), 'search');
 	const databaseProviders = connectedFirst(databaseCatalog(enabledDatabaseIds), 'databases');
 	const mcpCatalog = mcps();
