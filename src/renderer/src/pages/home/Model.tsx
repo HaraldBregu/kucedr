@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import { ModelProviderSelect } from '@/components/model-provider-select';
+import { cn } from '@/lib/utils';
 import { liveProviderModels, providerIdsFor, providerModels, providers } from '@/lib/providers';
 import { modelContextWindow } from '@shared/model_context';
 import { modelEfforts } from '@shared/effort';
