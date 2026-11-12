@@ -1,0 +1,73 @@
+{
+	"id": "mercury-2.5",
+	"name": "Mercury 2.5",
+	"type": "large-language-model",
+	"authentication": "api-key",
+	"url": "https://api.inceptionlabs.ai/v1",
+	"metadata": {
+		"protocol": "chat-completions",
+		"clampEffort": true,
+		"effort": {
+			"path": "reasoning_effort"
+		},
+		"documentationUrl": "https://docs.inceptionlabs.ai/api-reference/chat/create-a-chat-completion",
+		"documentationStatus": "verified",
+		"contextWindow": 260000,
+		"contextWindowDocumentationUrl": "https://docs.inceptionlabs.ai/get-started/models",
+		"inputs": {
+			"reasoning_effort": {
+				"type": "string",
+				"enum": [
+					"instant",
+					"low",
+					"medium",
+					"high"
+				],
+				"default": "medium"
+			},
+			"temperature": {
+				"type": "number",
+				"minimum": 0.5,
+				"maximum": 1
+			},
+			"max_tokens": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 65536
+			},
+			"max_completion_tokens": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 65536
+			},
+			"stop": {
+				"type": "array"
+			},
+			"tools": {
+				"type": "array"
+			},
+			"tool_choice": {
+				"type": "object"
+			},
+			"response_format": {
+				"type": "object"
+			},
+			"stream": {
+				"type": "boolean"
+			},
+			"stream_options": {
+				"type": "object"
+			},
+			"realtime": {
+				"type": "boolean"
+			},
+			"reasoning_summary": {
+				"type": "boolean"
+			},
+			"reasoning_summary_wait": {
+				"type": "boolean"
+			}
+		}
+	},
+	"location": "remote"
+}

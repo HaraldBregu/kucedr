@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 5,
+	"id": "inception",
+	"title": "Inception",
+	"version": "1.0.0",
+	"description": "Mercury diffusion language models for text generation.",
+	"categories": [
+		"LLM"
+	],
+	"author": "Harald Bregu",
+	"website": "https://www.inceptionlabs.ai",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://platform.inceptionlabs.ai",
+	"settings": {
+		"inputSchema": {
+			"type": "object",
+			"properties": {
+				"apiKey": {
+					"type": "string",
+					"title": "API key",
+					"format": "password"
+				}
+			},
+			"required": [
+				"apiKey"
+			]
+		}
+	}
+}
