@@ -48,7 +48,7 @@ export function Microphone({ disabled }: { readonly disabled?: boolean }): React
 						type="button"
 						variant="ghost"
 						size="icon"
-						className="size-7 rounded-md text-foreground hover:bg-muted dark:hover:bg-accent"
+						className="h-7 w-4 rounded-md text-foreground hover:bg-muted dark:hover:bg-accent"
 						aria-label={label}
 						disabled={disabled}
 					>
