@@ -44,7 +44,7 @@ export function createKeyedImageAdapter(
 					})
 				: await requestJson<KeyedResponse>(
 						spec.name,
-						`${baseURL}${request.endpoint ?? '/v1/ideogram-v3/generate'}`,
+						`${baseURL}${request.endpoint ?? `/${request.modelId}`}`,
 						{
 							method: 'POST',
 							headers: form ? { 'Api-Key': spec.apiKey } : headers,
