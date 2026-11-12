@@ -552,6 +552,14 @@ async function* loop(
 					);
 					addToolResults(session, turn.toolCalls);
 				}
+				if (synthesisRetries > 0) {
+					synthesisRetries -= 1;
+					addInternalMessage(
+						session,
+						'A final answer is required now. Do not call tools; answer the user with the results above.'
+					);
+					continue;
+				}
 				throw new Error('Agent did not produce a non-empty final answer without tool calls.');
 			}
 			if (turn.toolCalls.length === 0 && !turn.content.trim()) {
