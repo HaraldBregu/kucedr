@@ -6,6 +6,7 @@ import {
 	addAssistantMessage,
 	addToolResults,
 	addUserMessage,
+	addRunContext,
 	isExhausted,
 	recordTurn,
 	tryAppendRun,
