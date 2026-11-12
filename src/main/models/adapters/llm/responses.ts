@@ -11,6 +11,7 @@ import { tokens } from './tokens';
 export async function* responses(
 	client: OpenAI,
 	req: LlmStreamRequest,
+	name: string,
 	cache?: ModelCache
 ): AsyncIterable<LlmProviderEvent> {
 	const tools: FunctionTool[] = req.tools.map((tool) => ({
