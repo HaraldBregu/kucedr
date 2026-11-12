@@ -32,7 +32,7 @@ type SavedCredentialKind = Exclude<ProviderCredentialKind, 'search_engines'>;
 export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	readonly name = 'provider-store';
 
-	register({ windows, apps }: ProviderStoreIpcDeps, _eventBus: EventBus): void {
+	register({ windows, apps }: ProviderStoreIpcDeps, eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
 		registerQueryWithEvent(ProviderStoreChannels.get, (event, id, kind) => {
 			trusted.assert(event);
