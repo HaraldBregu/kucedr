@@ -80,28 +80,6 @@ export default function Setup({ script }: { script: PluginScriptInfo }): React.J
 										void save(next);
 									}}
 								/>
-							) : property.enum ? (
-								<Select
-									value={saved[key] ?? String(property.default ?? '')}
-									disabled={saving}
-									onValueChange={(option) => {
-										if (!option) return;
-										const next = { ...saved, [key]: option };
-										setValues((current) => ({ ...current, [key]: option }));
-										void save(next);
-									}}
-								>
-									<SelectTrigger size="sm" aria-label={property.title ?? key} className="w-64 max-w-full">
-										<SelectValue>{saved[key] ?? String(property.default ?? '')}</SelectValue>
-									</SelectTrigger>
-									<SelectContent>
-										{property.enum.map((option) => (
-											<SelectItem key={option} value={option}>
-												{option}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
 							) : (
 								<form
 									className="flex gap-2"
