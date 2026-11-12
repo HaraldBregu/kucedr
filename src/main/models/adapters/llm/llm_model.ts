@@ -794,12 +794,3 @@ export class LlmModel implements LlmAdapter {
 function isLlmRequest(request: LlmRequest | LlmStreamRequest): request is LlmRequest {
 	return 'provider' in request;
 }
-
-function llmBaseUrl(provider: LlmProviderSpec): string | undefined {
-	if (
-		provider.id.toLowerCase() === 'cohere' &&
-		(!provider.baseURL || /^https:\/\/api\.cohere\.(?:com|ai)\/v[12]\/?$/.test(provider.baseURL))
-	)
-		return 'https://api.cohere.ai/compatibility/v1';
-	return provider.baseURL;
-}
