@@ -315,12 +315,12 @@ function VoiceButton({
 				type="button"
 				variant="ghost"
 				size="icon"
-				className="size-9 rounded-full text-foreground hover:bg-muted"
+				className={cn('size-9 rounded-full text-foreground hover:bg-muted [&_svg]:size-5', className)}
 				aria-label={tooltip}
 				disabled={isDisabled}
 				onClick={onVoiceModeRequest}
 			>
-				<Mic className="size-5" />
+				<Mic />
 			</Button>
 		</PromptInputAction>
 	);
