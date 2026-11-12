@@ -335,14 +335,20 @@ export class AppServerHarness implements CodingHarness {
 		this.connections.clear();
 	}
 
-	private async open(ephemeralCredentials = false): Promise<CodexRpc> {
+	private async open(ephemeralCredentials = false): Promise<AppServerRpc> {
 		await mkdir(this.directory, { recursive: true });
-		const rpc = new CodexRpc(codexExecutable(), this.directory, ephemeralCredentials);
+		const rpc = new AppServerRpc(
+			harnessExecutable(this.options.harness, this.name),
+			this.directory,
+			ephemeralCredentials,
+			this.options.harness,
+			this.name
+		);
 		this.connections.add(rpc);
 		return rpc;
 	}
 
-	private close(rpc: CodexRpc): void {
+	private close(rpc: AppServerRpc): void {
 		this.connections.delete(rpc);
 		rpc.close();
 	}
