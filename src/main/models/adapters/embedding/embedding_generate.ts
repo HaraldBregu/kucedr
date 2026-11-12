@@ -1,12 +1,12 @@
-import { buildEmbeddingAdapter } from './embedding_factory';
+import type { CatalogModel } from '../../../../shared/model_types';
+import { embeddingProtocol } from './embedding_factory';
 import { validateEmbeddingVectors } from './validate';
 
 const BATCH_SIZE = 64;
 
 export interface GenerateEmbeddingsOptions {
-	providerId: string;
+	model: CatalogModel;
 	apiKey: string;
-	modelId: string;
 	baseURL: string;
 	texts: string[];
 	inputType?: 'document' | 'query';
@@ -14,31 +14,29 @@ export interface GenerateEmbeddingsOptions {
 }
 
 export async function generateEmbeddings(options: GenerateEmbeddingsOptions): Promise<number[][]> {
-	const adapter = buildEmbeddingAdapter({
-		id: options.providerId,
-		name: options.providerId,
+	const { model } = options;
+	const protocol = embeddingProtocol(model);
+	const adapter = protocol.create({
+		name: model.provider.name,
 		apiKey: options.apiKey,
-		model: options.modelId,
+		model: model.id,
 		baseURL: options.baseURL,
+		metadata: model.metadata,
 	});
+	const inputType = options.inputType ?? 'document';
+	const template = model.metadata?.inputTemplates?.[inputType];
+	const inputs = template
+		? options.texts.map((text) => template.split('{text}').join(text))
+		: options.texts;
 	const embeddings: number[][] = [];
-	const batchSize =
-		options.providerId === 'qwen'
-			? options.modelId === 'qwen3.7-text-embedding'
-				? 20
-				: 10
-			: BATCH_SIZE;
+	const batchSize = model.metadata?.inputs?.[protocol.inputField]?.maxItems ?? BATCH_SIZE;
 	let dimensions: number | undefined;
-	for (let start = 0; start < options.texts.length; start += batchSize) {
+	for (let start = 0; start < inputs.length; start += batchSize) {
 		options.signal?.throwIfAborted();
-		const texts = options.texts.slice(start, start + batchSize);
-		const batch = await adapter.embed({
-			texts,
-			inputType: options.inputType ?? 'document',
-			signal: options.signal,
-		});
+		const texts = inputs.slice(start, start + batchSize);
+		const batch = await adapter.embed({ texts, inputType, signal: options.signal });
 		options.signal?.throwIfAborted();
-		const batchDimensions = validateEmbeddingVectors(batch, texts.length, options.providerId);
+		const batchDimensions = validateEmbeddingVectors(batch, texts.length, model.provider.name);
 		dimensions ??= batchDimensions;
 		if (dimensions !== batchDimensions) {
 			throw new Error('Embedding dimensions changed between batches.');
