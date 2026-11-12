@@ -46,7 +46,7 @@ export function createBetaRealtimeVoiceAdapter(
 						},
 					},
 					output: {
-						voice: request.voice.trim() || 'Tina',
+						voice: request.voice.trim(),
 						format: { type: 'pcm', sample_rate: 24000 },
 					},
 				},
