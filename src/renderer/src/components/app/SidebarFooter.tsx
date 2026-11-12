@@ -117,7 +117,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							type="button"
 							variant="ghost"
 							size="icon"
-							className="absolute right-2 top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary"
+							className="absolute right-11 top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary"
 							aria-label={t('settings.tabs.plugins')}
 							onClick={() => {
 								playSound('navigate');
