@@ -56,6 +56,20 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 		},
 	});
 
+	useEffect(() => {
+		if (!script || !draft) return;
+		// ponytail: fixed 400ms debounce so each keystroke doesn't spawn a script render
+		const timer = setTimeout(() => {
+			const pos = getPos();
+			if (pos === undefined) return;
+			const current = editor.state.doc.nodeAt(pos);
+			const next = JSON.stringify({ script: pluginScriptRef(script.name, script.version, script.plugin, ref?.createdAt), input: draft }, null, 2);
+			if (!current || current.textContent === next) return;
+			editor.view.dispatch(editor.state.tr.replaceWith(pos + 1, pos + current.nodeSize - 1, editor.schema.text(next)));
+		}, 400);
+		return () => clearTimeout(timer);
+	}, [draft, script, editor, getPos, ref?.createdAt]);
+
 	const code = (
 		<pre className={cn(input !== undefined && !editing && 'hidden')}>
 			<NodeViewContent<'code'>
