@@ -217,7 +217,7 @@ export class LlmModel implements LlmAdapter {
 		const id = provider.id.toLowerCase();
 		const model = metadata(id, req.model);
 		const cache = model?.cache;
-		const options: Record<string, unknown> = { ...cache?.requestDefaults, ...req.options };
+		const options: Record<string, unknown> = { ...model?.requestDefaults, ...req.options };
 		if (cache?.sessionKey && req.sessionId && options[cache.sessionKey] === undefined)
 			options[cache.sessionKey] = req.sessionId;
 		req = { ...req, options };
