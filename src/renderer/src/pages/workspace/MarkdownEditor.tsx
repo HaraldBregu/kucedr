@@ -246,7 +246,13 @@ export function WorkspaceMarkdownEditor({
 				}}
 			/>
 			</div>
-			<WorkspaceToolbar toolbarTarget={toolbarTarget} editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={setScript} wide={wide} onWideChange={onWideChange} onFind={onFind} />
+			<WorkspaceToolbar toolbarTarget={toolbarTarget} editor={editor} linkOpen={linkOpen} onLinkOpenChange={setLinkOpen} onInsertFromComputer={() => fileInputRef.current?.click()} onInsertFromLibrary={() => setLibraryOpen(true)} onInsertFromUrl={() => setUrlOpen(true)} onInsertScript={(script) => {
+				editor.chain().focus().insertContent({
+					type: 'codeBlock',
+					attrs: { language: script.fence },
+					content: [{ type: 'text', text: JSON.stringify({ script: pluginScriptRef(script.name, script.version, script.plugin), input: script.inputSchema?.examples?.[0] ?? {} }, null, 2) }],
+				}).run();
+			}}wide={wide} onWideChange={onWideChange} onFind={onFind} />
 			<WorkspaceOutline editor={editor} container={scrollRef} />
 			</div>
 		</div>
