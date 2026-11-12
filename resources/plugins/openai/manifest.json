@@ -16,6 +16,7 @@
 	"website": "https://openai.com",
 	"icon": "openai-light.svg",
 	"iconDark": "openai-dark.svg",
+	"order": 1,
 	"apiKeyUrl": "https://platform.openai.com/api-keys",
 	"settings": {
 		"inputSchema": {
