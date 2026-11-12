@@ -103,6 +103,6 @@ export class CodingInstructions {
 			throw new Error('Coding project instructions cannot be edited through a symbolic link.');
 		}
 		await atomicWrite(current.activeFilePath, update.content);
-		return this.get(project, runtime);
+		return this.get(project, runtime, files);
 	}
 }
