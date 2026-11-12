@@ -22,7 +22,8 @@ import {
 	buildWorkspaceContext,
 	resolveContextMode,
 } from '../system';
-import { attachRunContext } from './run_attach_context';
+import { userTexts } from './run_user_texts';
+import { discoveredToolIds } from './run_discovered';
 import { loadMcpTools } from '../tools/mcp/loader';
 import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
 import { testMcpServer } from '../../mcp';
