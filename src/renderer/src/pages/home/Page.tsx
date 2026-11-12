@@ -308,30 +308,29 @@ function VoiceButton({
 	const reason =
 		mode === 'disabled' ? 'Choose a speech-to-text provider and model in Settings.' : disabledReason;
 
-	return (
-		<PromptInputAction
-			tooltip={
-				<>
-					<span>Dictate</span>
-					{reason ? <span className="opacity-70">{reason}</span> : null}
-				</>
-			}
-			className="flex-col items-start gap-1"
-			showTooltipWhenDisabled={isDisabled}
+	const button = (
+		<Button
+			type="button"
+			variant="ghost"
+			size="icon"
+			className={cn('size-9 rounded-full text-foreground hover:bg-muted dark:hover:bg-accent [&_svg]:size-5', className)}
+			aria-label="Dictate"
+			aria-description={reason}
+			disabled={isDisabled}
+			onClick={onVoiceModeRequest}
 		>
-			<Button
-				type="button"
-				variant="ghost"
-				size="icon"
-				className={cn('size-9 rounded-full text-foreground hover:bg-muted dark:hover:bg-accent [&_svg]:size-5', className)}
-				aria-label="Dictate"
-				aria-description={reason}
-				disabled={isDisabled}
-				onClick={onVoiceModeRequest}
-			>
-				<Mic />
-			</Button>
-		</PromptInputAction>
+			<Mic />
+		</Button>
+	);
+
+	return (
+		<Tooltip>
+			<TooltipTrigger render={isDisabled ? <span className="inline-flex">{button}</span> : button} />
+			<TooltipContent side="top" className="flex-col items-start gap-1">
+				<span>Dictate</span>
+				{reason ? <span className="opacity-70">{reason}</span> : null}
+			</TooltipContent>
+		</Tooltip>
 	);
 }
 
