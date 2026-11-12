@@ -7,9 +7,10 @@ export function options(
 	effort: ModelEffort | undefined,
 	request: LlmStreamRequest
 ): Record<string, unknown> {
-	let configured: Record<string, unknown> = structuredClone({ ...request.options });
+	let configured: Record<string, unknown> = { ...request.options };
 	if (!effort) return configured;
 	if (request.effort) {
+		if (effort.unset?.length) configured = structuredClone(configured);
 		for (const path of effort.unset ?? []) {
 			const keys = path.split('.');
 			const parent = keys
@@ -17,13 +18,13 @@ export function options(
 				.reduce<unknown>((value, key) => (llmIsRecord(value) ? value[key] : undefined), configured);
 			if (llmIsRecord(parent)) delete parent[keys[keys.length - 1]];
 		}
-		const value = effort.map?.[request.effort] ?? request.effort;
-		configured = merge(
-			configured,
-			effort.path
-				.split('.')
-				.reduceRight<Record<string, unknown>>((nested, key) => ({ [key]: nested }), value as never)
-		);
+		const written = effort.path
+			.split('.')
+			.reduceRight<unknown>(
+				(nested, key) => ({ [key]: nested }),
+				effort.map?.[request.effort] ?? request.effort
+			) as Record<string, unknown>;
+		configured = merge(configured, written);
 		if (effort.set) configured = merge(configured, effort.set);
 	}
 	const roots = [effort.path, ...(effort.unset ?? [])].map((path) => path.split('.')[0]);
