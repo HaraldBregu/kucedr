@@ -7,20 +7,11 @@ import type { ModelReasoningEffort } from '@shared/agent_types';
 import { readEffort } from './effort/read';
 import { saveEffort } from './effort/save';
 import type { ProviderModel } from '@shared/model_types';
-import { welcomeMessage } from './context';
-import type { HomeChatMessage } from './context/state';
-import { Usage } from './Usage';
 
 export function Model({
-	messages = [],
-	draft = '',
-	hasAttachments = false,
 	onContext,
 	workspace = false,
 }: {
-	messages?: readonly HomeChatMessage[];
-	draft?: string;
-	hasAttachments?: boolean;
 	workspace?: boolean;
 	onContext?: (context: { providerId: string; modelId: string; contextWindow?: number }) => void;
 }): ReactElement {
