@@ -4,9 +4,12 @@ import type { ModelCache, ModelMetadata } from '../../../../shared/model_types';
 import Anthropic from '@anthropic-ai/sdk';
 import { breakpoint } from './breakpoint';
 import { content } from './content';
+import { findModel, loadProviders } from '../../../models';
+import { normalizeProviderId } from '../../../../shared/provider_types';
 import { metadata } from './metadata';
 import { options as requestOptions } from './options';
 import { tokens } from './tokens';
+import { url } from './url';
 import OpenAI from 'openai';
 import type {
 	FunctionTool,
