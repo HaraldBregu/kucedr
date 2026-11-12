@@ -55,7 +55,13 @@ export function ScriptProperties({ schema, value, onChange, id = 'script-propert
 	if (schema.type === 'array') {
 		const items = Array.isArray(value) ? value : [];
 		const inferred = inferScriptSchema(items.some((item) => item && typeof item === 'object') ? Object.assign({}, ...items) : items[0]);
-		const itemSchema: PluginScriptSchema = { ...inferred, ...schema.items, properties: inferred.properties || schema.items?.properties ? { ...inferred.properties, ...schema.items?.properties } : undefined };
+		const hinted = Object.fromEntries((schema.keys ?? []).flatMap(({ from, type }) => {
+			const [head, tail] = from.split('.');
+			const source = (root as Record<string, unknown> | undefined)?.[head];
+			const names: unknown[] = tail ? (Array.isArray(source) ? source.map((entry) => (entry as Record<string, unknown> | null)?.[tail]) : []) : [source];
+			return names.filter((name) => typeof name === 'string' && name).map((name) => [name as string, { type }]);
+		}));
+		const itemSchema: PluginScriptSchema = { ...inferred, ...schema.items, properties: inferred.properties || schema.items?.properties || schema.keys ? { ...hinted, ...inferred.properties, ...schema.items?.properties } : undefined };
 		const last = items.at(-1);
 		const blank = last && typeof last === 'object'
 			? Object.fromEntries(Object.entries(last).filter(([, item]) => typeof item !== 'object').map(([key, item]) => [key, typeof item === 'number' ? 0 : typeof item === 'boolean' ? false : '']))
