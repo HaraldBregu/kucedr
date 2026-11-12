@@ -11,23 +11,24 @@ import type {
 import { atomicWrite } from '../shared/atomic_write';
 import { userDataLocation } from '../shared/user_data_location';
 
-const DEFAULT_FILE_NAME = 'AGENTS.md';
 const MAX_FILE_SIZE = 256 * 1024;
 
 export class CodingInstructions {
 	async get(
 		project: CodingProject,
-		runtime: CoderHarness = 'codex'
+		runtime: CoderHarness,
+		files: readonly string[]
 	): Promise<CodingProjectInstructions> {
 		const workspaceDirectory = path.resolve(project.directory);
 		const agentDirectory = path.join(userDataLocation(), 'coder', runtime);
-		const contextFiles = loadInstructionSources(workspaceDirectory, agentDirectory);
+		const contextFiles = loadInstructionSources(workspaceDirectory, agentDirectory, files);
 		const workspaceSource = contextFiles.find(
 			(source) => path.dirname(path.resolve(source.path)) === workspaceDirectory
 		);
+		const defaultFileName = files[files.length - 1];
 		const activeFilePath = workspaceSource
 			? path.resolve(workspaceSource.path)
-			: path.join(workspaceDirectory, DEFAULT_FILE_NAME);
+			: path.join(workspaceDirectory, defaultFileName);
 		let content = '';
 		let exists = false;
 		let editable = true;
