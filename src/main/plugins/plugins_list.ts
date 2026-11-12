@@ -5,7 +5,6 @@ import {
 	type PluginInfo,
 	type PluginKind,
 } from '../../shared/plugin_types';
-import { pluginWebsites } from '../../shared/plugin_websites';
 import { pluginIcon } from './plugins_icon';
 import { scanPlugins } from './plugins_scan';
 import { disabledPlugins } from './plugins_disabled';
