@@ -276,6 +276,17 @@ describe('provider manifest validation', () => {
 		expect(errors).toContainEqual(expect.stringContaining('promptAttachments must be declared'));
 	});
 
+	it.each([null, [], { broken: null }, { broken: { endpoint: '/run', description: 'Run', inputSchema: null } }])(
+		'rejects malformed model operations: %p',
+		(operations) => {
+			const errors = validateProviderManifest({
+				providerId: 'acme', providerName: 'Acme',
+				models: [{ id: 'model', name: 'Model', type: 'decision-model', url: 'https://api.acme.test', authentication: 'api-key', location: 'remote', metadata: { operations } }],
+			});
+			expect(errors).toContainEqual(expect.stringContaining('metadata.operations'));
+		}
+	);
+
 	it('rejects empty MCP server descriptions', () => {
 		const errors = validateProviderManifest({
 			providerId: 'acme',
