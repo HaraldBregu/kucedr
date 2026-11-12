@@ -76,8 +76,8 @@ interface ChatToolCallState {
 export class LlmModel implements LlmAdapter {
 	private readonly provider?: LlmProviderSpec;
 	private readonly providerModelFactory?: LlmModelFactory;
-	private readonly openAIClientFactory?: (opts: LlmClientFactoryInput) => OpenAI;
-	private readonly anthropicClientFactory?: (opts: LlmClientFactoryInput) => Anthropic;
+	private readonly chatClientFactory?: (opts: LlmClientFactoryInput) => OpenAI;
+	private readonly messagesClientFactory?: (opts: LlmClientFactoryInput) => Anthropic;
 	private readonly reasoningEffortEnabled: boolean;
 	private readonly reasoningContentEnabled: boolean;
 	private readonly thinkingModeEnabled: boolean;
