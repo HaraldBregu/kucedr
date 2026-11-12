@@ -834,12 +834,7 @@ function PageContent(): ReactElement {
 						detachedControls
 						footerContent={
 							<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-								<StableModel
-									messages={agent.chatState.messages}
-									draft={agent.input}
-									hasAttachments={attachments.length > 0}
-									onContext={setModelContext}
-								/>
+								<StableModel onContext={setModelContext} />
 							</div>
 						}
 						className="w-full"
