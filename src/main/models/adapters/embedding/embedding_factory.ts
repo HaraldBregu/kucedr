@@ -24,6 +24,7 @@ const PROTOCOLS: Record<string, EmbeddingProtocol> = {
 export function embeddingProtocol(model: CatalogModel): EmbeddingProtocol {
 	const protocol = model.metadata?.protocol;
 	const entry = protocol && Object.hasOwn(PROTOCOLS, protocol) ? PROTOCOLS[protocol] : undefined;
-	if (!entry) throw new Error(`${model.name} (${model.provider.name}) declares no supported protocol.`);
+	if (!entry)
+		throw new Error(`${model.name} (${model.provider.name}) declares no supported protocol.`);
 	return entry;
 }
