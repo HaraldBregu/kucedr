@@ -3,12 +3,15 @@ import type {
 	FunctionTool,
 	ResponseCreateParamsNonStreaming,
 } from 'openai/resources/responses/responses';
+import type { ModelCache } from '../../../../shared/model_types';
 import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
 import { llmBuildResponseInput, llmHasFunctionCall, llmIsRecord } from './llm_shared';
+import { tokens } from './tokens';
 
 export async function* responses(
 	client: OpenAI,
-	req: LlmStreamRequest
+	req: LlmStreamRequest,
+	cache?: ModelCache
 ): AsyncIterable<LlmProviderEvent> {
 	const tools: FunctionTool[] = req.tools.map((tool) => ({
 		type: 'function',
