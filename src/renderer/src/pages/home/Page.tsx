@@ -252,10 +252,12 @@ function AttachmentButton({
 	disabled,
 	disabledReason,
 	onLibrarySelect,
+	className,
 }: {
 	readonly disabled?: boolean;
 	readonly disabledReason?: string;
 	readonly onLibrarySelect: () => void;
+	readonly className?: string;
 }): ReactElement {
 	const { triggerFileUpload } = usePromptInput();
 	return (
