@@ -216,7 +216,7 @@ export function llmBuildResponseInput(transcript: LlmTranscriptEntry[]): Respons
 
 			for (const block of entry.content) {
 				const item =
-					isOpenAIReasoningBlock(block) || block.type === 'provider_item'
+					isResponsesReasoningBlock(block) || block.type === 'provider_item'
 						? asResponseInputItem(block.item)
 						: null;
 				if (item) input.push(item);
