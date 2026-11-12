@@ -6,6 +6,7 @@
 	"url": "https://api.x.ai/v1",
 	"metadata": {
 		"protocol": "chat-completions",
+		"unsupportedOptions": ["stop", "presence_penalty", "frequency_penalty"],
 		"effort": {
 			"path": "reasoning_effort"
 		},

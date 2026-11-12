@@ -101,6 +101,7 @@ export interface ModelMetadata {
 	readonly socketUrl?: string;
 	/** Request values merged under the user's options. */
 	readonly requestDefaults?: Readonly<Record<string, unknown>>;
+	readonly unsupportedOptions?: readonly string[];
 	/** Stored provider base URLs this model accepts. */
 	readonly baseUrlRule?: { readonly pattern: string; readonly example?: string };
 	readonly effort?: ModelEffort;

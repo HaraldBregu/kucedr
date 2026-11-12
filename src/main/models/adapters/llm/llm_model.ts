@@ -222,6 +222,7 @@ export class LlmModel implements LlmAdapter {
 		const model = metadata(id, req.model);
 		const cache = model?.cache;
 		const options: Record<string, unknown> = { ...model?.requestDefaults, ...req.options };
+		for (const key of model?.unsupportedOptions ?? []) delete options[key];
 		if (cache?.sessionKey && req.sessionId && options[cache.sessionKey] === undefined)
 			options[cache.sessionKey] = req.sessionId;
 		req = { ...req, options };
