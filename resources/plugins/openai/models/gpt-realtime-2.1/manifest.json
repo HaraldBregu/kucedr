@@ -7,6 +7,7 @@
 	"default": true,
 	"sampleRate": 24000,
 	"metadata": {
+		"protocol": "realtime",
 		"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-realtime-2.1",
 		"documentationStatus": "verified",
 		"contextWindow": 128000,
