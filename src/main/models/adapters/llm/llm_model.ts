@@ -503,7 +503,7 @@ export class LlmModel implements LlmAdapter {
 				);
 				break;
 			case 'response.failed':
-				throw new Error(event.response.error?.message ?? 'OpenAI response failed.');
+				throw new Error(event.response.error?.message ?? `${name} response failed.`);
 			case 'error':
 				throw new Error(event.message);
 		}
