@@ -268,7 +268,7 @@ function AttachmentButton({
 						type="button"
 						variant="ghost"
 						size="icon"
-						className="size-9 rounded-full text-foreground hover:bg-muted"
+						className={cn('size-9 rounded-full text-foreground hover:bg-muted', className)}
 						aria-label="Add attachment"
 						disabled={disabled}
 					>
