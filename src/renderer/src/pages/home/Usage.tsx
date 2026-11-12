@@ -74,7 +74,7 @@ export function Usage({
 						strokeLinecap="round"
 					/>
 				</svg>
-				<span>{percent === undefined ? '—' : `${percent}%`}</span>
+				{ringOnly ? null : <span>{percent === undefined ? '—' : `${percent}%`}</span>}
 			</TooltipTrigger>
 			<TooltipContent className="flex-col items-start gap-1">
 				<span>{label}</span>
