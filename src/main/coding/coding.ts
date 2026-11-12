@@ -63,12 +63,11 @@ export class Coder {
 	constructor(private readonly dependencies: CodingDependencies) {
 		this.sessions = dependencies.sessions ?? new CoderSessions();
 		this.credentials = dependencies.credentials ?? new CoderCredentials();
-		this.harnesses = {
-			codex: new CodexHarness(path.join(userDataLocation(), 'coder', 'codex'), () =>
-				this.credentials.get('openai', 'codex')
-			),
-			...dependencies.harnesses,
-		};
+		for (const [id, harness] of Object.entries(dependencies.harnesses ?? {}))
+			this.harnesses.set(id, harness);
+	}
+	listHarnesses() {
+		return codingHarnesses().map((entry) => entry.info);
 	}
 	getSettings(runtime?: CoderHarness): CodingSettings {
 		this.validateHarness(runtime);
