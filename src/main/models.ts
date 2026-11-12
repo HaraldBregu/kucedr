@@ -236,6 +236,7 @@ function toPublicProvider(
 		...(entry.modelsUrl ? { modelsUrl: entry.modelsUrl } : {}),
 		...(entry.modelUrl ? { modelUrl: entry.modelUrl } : {}),
 		...(discoveryInputs ? { discoveryInputs, discoveryLabel: discoveryModel?.name } : {}),
+		...(discoveryMetadata ? { discoveryMetadata } : {}),
 		...(iconDarkUrl ? { iconDarkUrl } : {}),
 		...(iconLightUrl ? { iconLightUrl } : {}),
 		...(plugin ? { plugin } : {}),
