@@ -229,13 +229,11 @@ async function* loop(
 	const extensionTools = extended ? (extension?.tools ?? []) : [];
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
-		let filtered = filterRuntimeTools(
+		return filterRuntimeTools(
 			filterTools(candidates, input.toolsAllow, input.toolsDeny).filter(
 				(tool) => !extension || extension.allows(tool)
 			)
 		);
-		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
-		return filtered;
 	};
 	tools = filterEligibleTools(tools);
 	let search: ToolSearch | undefined;
