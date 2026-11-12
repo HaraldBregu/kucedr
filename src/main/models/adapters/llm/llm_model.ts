@@ -702,14 +702,14 @@ export class LlmModel implements LlmAdapter {
 
 				const text = content(delta.content);
 				if (text) yield { type: 'text_delta', text };
-				if (provider.id.toLowerCase() === 'mistral' && typeof delta.content === 'string') {
+				if (model?.contentChunks === 'roundtrip' && typeof delta.content === 'string') {
 					yield {
 						type: 'reasoning_item',
 						provider: 'mistral',
 						item: { type: 'text', text: delta.content },
 					};
 				}
-				if (provider.id.toLowerCase() === 'mistral' && Array.isArray(delta.content)) {
+				if (model?.contentChunks === 'roundtrip' && Array.isArray(delta.content)) {
 					for (const item of delta.content)
 						yield { type: 'reasoning_item', provider: 'mistral', item };
 				}
