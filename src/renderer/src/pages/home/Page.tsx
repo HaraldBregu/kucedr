@@ -855,7 +855,7 @@ function PageContent(): ReactElement {
 								<div className="flex items-center justify-between pt-0.5">
 									<div className="flex items-center gap-1.5">
 										{attachmentButton}
-										<div className="flex items-center">
+										<div className="group/mic flex items-center">
 											{voiceButton}
 											<Microphone disabled={voiceBusy} />
 										</div>
