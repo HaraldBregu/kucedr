@@ -28,11 +28,15 @@ interface LiveSocket {
 	close(code?: number, reason?: string): void;
 }
 
-type LiveSocketFactory = (provider: RealtimeVoiceProviderSpec) => LiveSocket;
+type LiveSocketFactory = (
+	provider: RealtimeVoiceProviderSpec,
+	model: RealtimeVoiceModelSpec
+) => LiveSocket;
 
-export class OpenAILiveVoiceAdapter implements RealtimeVoiceAdapter {
+export class LiveVoiceAdapter implements RealtimeVoiceAdapter {
 	constructor(
 		private readonly provider: RealtimeVoiceProviderSpec,
+		private readonly model: RealtimeVoiceModelSpec,
 		private readonly socketFactory: LiveSocketFactory = createLiveSocket,
 		private readonly connectTimeoutMs = CONNECT_TIMEOUT_MS
 	) {}
@@ -43,13 +47,8 @@ export class OpenAILiveVoiceAdapter implements RealtimeVoiceAdapter {
 		signal?: AbortSignal
 	): Promise<RealtimeVoiceConnection> {
 		signal?.throwIfAborted();
-		if (request.modelId !== 'gpt-live-1') {
-			throw new Error(
-				`${this.provider.name} Live voice model is not supported: ${request.modelId}`
-			);
-		}
-		const connection = new OpenAILiveVoiceConnection(
-			this.socketFactory(this.provider),
+		const connection = new LiveVoiceConnection(
+			this.socketFactory(this.provider, this.model),
 			emit,
 			request.contextForTurn,
 			(error) => realtimeVoiceTransportError(error, this.provider, request.modelId)
