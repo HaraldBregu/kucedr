@@ -25,5 +25,9 @@
 				"apiKey"
 			]
 		}
-	}
+	},
+	"icon": "inception-light.svg",
+	"iconDark": "inception-dark.svg",
+	"icon_light_url": "/assets/inception-light.svg",
+	"icon_dark_url": "/assets/inception-dark.svg"
 }
