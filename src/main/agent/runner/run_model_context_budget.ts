@@ -192,9 +192,13 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 	let omittedPrior = false;
 	while (cursor > 0) {
 		let previousUserIndex = cursor - 1;
-		while (previousUserIndex > 0 && messages[previousUserIndex].role !== 'user') {
+		while (
+			previousUserIndex > 0 &&
+			(messages[previousUserIndex].role !== 'user' || isInternalMessage(messages[previousUserIndex]))
+		) {
 			previousUserIndex -= 1;
 		}
+		previousUserIndex = turnStart(messages, previousUserIndex);
 		const candidateMessages = [...messages.slice(previousUserIndex, cursor), ...selectedMessages];
 		const candidateTokens =
 			Math.ceil(
