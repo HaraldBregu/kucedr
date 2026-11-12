@@ -465,17 +465,17 @@ function toChatUserContent(
 			};
 		}
 		requirePdfDocument(block);
-		if (profile !== 'reka') {
+		if (!documentPart) {
 			throw new Error(`${block.name}: this chat adapter does not support document attachments.`);
 		}
 		return {
-			type: 'pdf_url',
-			pdf_url: { url: toDataUrl(block.mimeType, block.base64) },
+			type: documentPart,
+			[documentPart]: { url: toDataUrl(block.mimeType, block.base64) },
 		} as unknown as OpenAI.ChatCompletionContentPart;
 	});
 }
 
-export function llmToDeepSeekReasoningEffort(
+export function llmThinkingEffort(
 	effort: LlmStreamRequest['effort']
 ): 'high' | 'max' | undefined {
 	if (!effort || effort === 'none') return undefined;
