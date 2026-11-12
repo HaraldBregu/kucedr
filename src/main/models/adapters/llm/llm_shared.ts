@@ -417,7 +417,7 @@ export function llmBuildChatMessages(
 				role: 'assistant',
 				content: text || null,
 			};
-			if (options.contentProfile === 'mistral') {
+			if (options.model?.contentChunks === 'roundtrip') {
 				const chunks = entry.content
 					.filter((block) => block.type === 'provider_item' && block.provider === 'mistral')
 					.map((block) => (block as Extract<LlmContentBlock, { type: 'provider_item' }>).item);
