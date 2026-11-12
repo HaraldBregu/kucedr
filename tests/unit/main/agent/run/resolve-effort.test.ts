@@ -1,4 +1,4 @@
-import { resolveModelEffort } from '../../../src/shared/resolve_effort';
+import { resolveModelEffort } from '../../../../../src/shared/resolve_effort';
 
 it('preserves the previous nearest effort for existing levels', () => {
 	expect(resolveModelEffort('minimal', ['none', 'low'])).toBe('none');
