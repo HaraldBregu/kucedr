@@ -763,20 +763,21 @@ export class LlmModel implements LlmAdapter {
 		yield { type: 'message_end', stopReason, usage };
 	}
 
-	private createOpenAIClient(provider: LlmProviderSpec, missingKeyMessage: string): OpenAI {
+	private createChatClient(provider: LlmProviderSpec, modelId: string): OpenAI {
 		if (!provider.apiKey && provider.authentication !== 'none')
-			throw new LlmProviderAuthError(missingKeyMessage);
+			throw new LlmProviderAuthError(`${providerName(provider)} API key not configured.`);
 		const factory =
-			this.openAIClientFactory ?? ((c) => new OpenAI({ apiKey: c.apiKey, baseURL: c.baseURL }));
-		return factory({ apiKey: provider.apiKey || 'unused', baseURL: llmBaseUrl(provider) });
+			this.chatClientFactory ?? ((c) => new OpenAI({ apiKey: c.apiKey, baseURL: c.baseURL }));
+		return factory({ apiKey: provider.apiKey || 'unused', baseURL: url(provider, modelId) });
 	}
 
-	private createAnthropicClient(provider: LlmProviderSpec): Anthropic {
-		if (!provider.apiKey) throw new LlmProviderAuthError('Anthropic api key not configured');
+	private createMessagesClient(provider: LlmProviderSpec, modelId: string): Anthropic {
+		if (!provider.apiKey)
+			throw new LlmProviderAuthError(`${providerName(provider)} API key not configured.`);
 		const factory =
-			this.anthropicClientFactory ??
+			this.messagesClientFactory ??
 			((c) => new Anthropic({ apiKey: c.apiKey, baseURL: c.baseURL }));
-		return factory({ apiKey: provider.apiKey, baseURL: provider.baseURL });
+		return factory({ apiKey: provider.apiKey, baseURL: url(provider, modelId) });
 	}
 
 	private throwProviderError(err: unknown): never {
