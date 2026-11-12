@@ -231,6 +231,62 @@
 											"criteria"
 										],
 										"title": "ScoreQuestion"
+									},
+									{
+										"type": "object",
+										"description": "Extract exact text spans. Supply instructions or criteria; source is required when state is an object.",
+										"properties": {
+											"type": {
+												"type": "string",
+												"const": "extract"
+											},
+											"instructions": {
+												"type": "string",
+												"description": "Shared instructions, or the field to extract when criteria is omitted."
+											},
+											"criteria": {
+												"type": "object",
+												"minProperties": 1,
+												"maxProperties": 26,
+												"additionalProperties": {
+													"type": "string"
+												},
+												"description": "Named fields and their descriptions."
+											},
+											"source": {
+												"type": "string",
+												"description": "String field in object state from which spans are extracted."
+											},
+											"threshold": {
+												"type": "number",
+												"minimum": 0,
+												"maximum": 1,
+												"default": 0
+											},
+											"snap_to_words": {
+												"type": "boolean",
+												"default": true
+											},
+											"debug": {
+												"type": "boolean",
+												"default": false
+											}
+										},
+										"required": [
+											"type"
+										],
+										"anyOf": [
+											{
+												"required": [
+													"instructions"
+												]
+											},
+											{
+												"required": [
+													"criteria"
+												]
+											}
+										]
 									}
 								]
 							},
