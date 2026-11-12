@@ -25,5 +25,9 @@ export function embeddingEndpoint(
 			`Set the ${model.provider.name} provider base URL${rule.example ? ` to ${rule.example}` : ''} for embeddings.`
 		);
 	}
-	return { model, url: `${base.origin}${url.replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '')}`, apiKey };
+	return {
+		model,
+		url: `${base.origin}${url.replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '')}`,
+		apiKey,
+	};
 }
