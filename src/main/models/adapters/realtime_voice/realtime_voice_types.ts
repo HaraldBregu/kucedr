@@ -1,10 +1,13 @@
 import type { Tool } from '../../../agent/types';
+import type { CatalogModel } from '../../../../shared/model_types';
 
 export interface RealtimeVoiceProviderSpec {
 	id: string;
 	name: string;
 	apiKey: string;
 }
+
+export type RealtimeVoiceModelSpec = Pick<CatalogModel, 'id' | 'name' | 'url' | 'metadata'>;
 
 export interface RealtimeVoiceHistoryMessage {
 	readonly role: 'user' | 'assistant';
