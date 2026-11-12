@@ -452,7 +452,7 @@ export function llmBuildChatMessages(
 
 function toChatUserContent(
 	content: string | LlmUserContentBlock[],
-	profile: LlmChatContentProfile
+	documentPart: string | undefined
 ): string | OpenAI.ChatCompletionContentPart[] {
 	if (typeof content === 'string') return content;
 	return content.map((block): OpenAI.ChatCompletionContentPart => {
