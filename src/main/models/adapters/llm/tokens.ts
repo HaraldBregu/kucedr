@@ -7,7 +7,10 @@ export function tokens(usage: LlmUsage, source: unknown, cache: ModelCache | und
 			?.map((path) =>
 				path
 					.split('.')
-					.reduce<unknown>((value, key) => (value as Record<string, unknown> | null | undefined)?.[key], source)
+					.reduce<unknown>(
+						(value, key) => (value as Record<string, unknown> | null | undefined)?.[key],
+						source
+					)
 			)
 			.find((value): value is number => typeof value === 'number');
 	const cachedTokens = read(cache?.readTokens);
