@@ -839,17 +839,20 @@ function PageContent(): ReactElement {
 										{attachmentButton}
 										{voiceButton}
 									</div>
-									{modelContext?.modelId ? (
-										<Usage
-											className="h-6"
-											providerId={modelContext.providerId}
-											modelId={modelContext.modelId}
-											contextWindow={modelContext.contextWindow}
-											messages={agent.chatState.messages}
-											draft={agent.input}
-											hasAttachments={attachments.length > 0}
-										/>
-									) : null}
+									<div className="flex min-w-0 items-center gap-1">
+										{modelSelect}
+										{modelContext?.modelId ? (
+											<Usage
+												className="h-6"
+												providerId={modelContext.providerId}
+												modelId={modelContext.modelId}
+												contextWindow={modelContext.contextWindow}
+												messages={agent.chatState.messages}
+												draft={agent.input}
+												hasAttachments={attachments.length > 0}
+											/>
+										) : null}
+									</div>
 								</div>
 							)
 						}
