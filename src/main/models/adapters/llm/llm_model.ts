@@ -152,6 +152,7 @@ export class LlmModel implements LlmAdapter {
 			model: request.model,
 			effort: request.effort,
 			options: request.options,
+			...(request.sessionId ? { sessionId: request.sessionId } : {}),
 			system,
 			messages: messages.flatMap(llmToTranscriptEntry),
 			tools: (request.tools ?? []).map((tool) => ({
