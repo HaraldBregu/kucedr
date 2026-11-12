@@ -60,12 +60,6 @@
 			},
 			"realtime": {
 				"type": "boolean"
-			},
-			"reasoning_summary": {
-				"type": "boolean"
-			},
-			"reasoning_summary_wait": {
-				"type": "boolean"
 			}
 		},
 		"promptAttachments": [],
