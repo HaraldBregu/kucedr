@@ -54,7 +54,7 @@ export class AppServerHarness implements CodingHarness {
 		const abort = (): void => {
 			if (threadId && turnId)
 				void rpc.request('turn/interrupt', { threadId, turnId }).catch(() => undefined);
-			fail(new Error('Codex run cancelled.'));
+			fail(new Error(`${this.name} run cancelled.`));
 			this.close(rpc);
 		};
 		rpc.onClose = fail;
