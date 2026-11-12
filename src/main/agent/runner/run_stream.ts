@@ -474,7 +474,8 @@ async function* loop(
 					options.instructions,
 					contextMode,
 					turnTools.some((tool) => tool.id === 'load_skill'),
-					eligibleTurnTools
+					eligibleTurnTools,
+					false
 				);
 				promptKey = turnKey;
 			}
