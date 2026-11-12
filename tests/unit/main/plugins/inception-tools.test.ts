@@ -21,7 +21,10 @@ it('validates and sends decision, FIM and edit requests using the plugin contrac
 	const tools = modelTools();
 	const requests = [
 		['mdl__inception__mercury-decide_decision', '/decisions', 'mercury-decide', {
-			state: { message: 'Refund me' }, questions: { billing: { type: 'noul', instructions: 'Is this billing?' } },
+			state: { message: 'Refund me' }, questions: {
+				billing: { type: 'noul', instructions: 'Is this billing?' },
+				request: { type: 'extract', source: 'message', criteria: { request: 'The request' } },
+			},
 		}],
 		['mdl__inception__mercury-edit-2_fim', '/fim/completions', 'mercury-edit-2', {
 			prompt: 'return ', suffix: '\n', max_tokens: 256,
