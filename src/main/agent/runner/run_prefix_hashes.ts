@@ -4,7 +4,15 @@ import type { Message, Tool } from '../types';
 
 function hash(value: unknown): string {
 	return createHash('sha256')
-		.update(JSON.stringify(value) ?? '')
+		.update(
+			JSON.stringify(value, (_key, current: unknown) =>
+				current && typeof current === 'object' && !Array.isArray(current)
+					? Object.fromEntries(
+							Object.entries(current).sort(([left], [right]) => left.localeCompare(right))
+						)
+					: current
+			) ?? ''
+		)
 		.digest('hex')
 		.slice(0, 10);
 }
