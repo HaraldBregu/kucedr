@@ -97,6 +97,7 @@ import { HomeSidebar } from './Sidebar';
 import { ExtensionPage, type OpenExtension } from './components/ExtensionPage';
 import { Model } from './Model';
 import { Usage } from './Usage';
+import { Microphone } from './Microphone';
 
 const StableHomeSidebar = memo(HomeSidebar);
 const StableModel = memo(Model);
