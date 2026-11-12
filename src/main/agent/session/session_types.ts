@@ -56,6 +56,8 @@ export interface SessionTurn {
 	usage?: {
 		inputTokens?: number;
 		outputTokens?: number;
+		cachedTokens?: number;
+		cacheWriteTokens?: number;
 	};
 }
 
