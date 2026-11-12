@@ -37,6 +37,11 @@ export interface Provider {
 	readonly authentication?: AuthenticationType;
 	readonly iconDarkUrl?: string;
 	readonly iconLightUrl?: string;
+	/** Icon artwork fills the avatar with no inner padding. */
+	readonly iconFullBleed?: boolean;
+	/** Display rank in provider lists; lower first. */
+	readonly order?: number;
+	readonly website?: string;
 	readonly apiConfiguration?: ProviderApiConfiguration;
 }
 
