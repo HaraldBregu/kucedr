@@ -6,6 +6,7 @@
 	"url": "https://api.openai.com/v1",
 	"sampleRate": 24000,
 	"metadata": {
+		"protocol": "realtime",
 		"documentationUrl": "https://developers.openai.com/api/docs/models/gpt-realtime-2.1-mini",
 		"documentationStatus": "verified",
 		"contextWindow": 128000,
