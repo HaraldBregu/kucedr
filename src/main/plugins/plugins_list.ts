@@ -14,7 +14,7 @@ export function listPlugins(): PluginInfo[] {
 	return scanPlugins().map(({ id, directory, builtIn, manifest, error }) => ({
 		id,
 		name: manifest?.title ?? id,
-		website: manifest?.website ?? pluginWebsites[id],
+		website: manifest?.website,
 		...(manifest && {
 			version: manifest.version,
 			description: manifest.description,
