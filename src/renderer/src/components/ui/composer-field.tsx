@@ -6,12 +6,14 @@ export function PromptInputField({
 	header,
 	controls,
 	expanded,
+	singleLine = false,
 	className,
 }: {
 	readonly children: ReactNode;
 	readonly header?: ReactNode;
 	readonly controls?: ReactNode;
 	readonly expanded: boolean;
+	readonly singleLine?: boolean;
 	readonly className?: string;
 }): React.JSX.Element {
 	return (
