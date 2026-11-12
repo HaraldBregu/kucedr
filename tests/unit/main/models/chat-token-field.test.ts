@@ -19,7 +19,7 @@ it.each([true, false])('uses the model token field with streaming=%s', async (st
 			messages: [{ role: 'user', content: 'hello' }],
 			maxTokens: 123,
 			streaming,
-		})) { /* consume stream */ }
+		})) { void _event; }
 	}
 	expect(create.mock.calls[0][0].max_completion_tokens).toBe(123);
 	expect(create.mock.calls[0][0].max_tokens).toBeUndefined();
