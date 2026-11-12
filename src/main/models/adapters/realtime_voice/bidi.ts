@@ -127,11 +127,11 @@ export function createBidiVoiceAdapter(
 				});
 				socket.on('message', (data) => {
 					if (closed) return;
-					let event: GoogleLiveMessage;
+					let event: BidiMessage;
 					try {
-						event = JSON.parse(data.toString()) as GoogleLiveMessage;
+						event = JSON.parse(data.toString()) as BidiMessage;
 					} catch {
-						emit({ type: 'error', message: 'Google voice returned an invalid message.' });
+						emit({ type: 'error', message: `${provider.name} voice returned an invalid message.` });
 						return;
 					}
 					if (event.setupComplete) {
