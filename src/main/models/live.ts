@@ -29,7 +29,6 @@ export async function liveModelLimits(
 							context_length?: unknown;
 							context_window?: unknown;
 							max_output_tokens?: unknown;
-							top_provider?: { max_completion_tokens?: unknown };
 						}>;
 					}>
 			)
