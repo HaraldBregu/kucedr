@@ -7,7 +7,8 @@ export function buildImageAdapter(
 	modelName: string,
 	spec: ImageProviderSpec
 ): ImageAdapter {
-	const create = protocol ? IMAGE_PROTOCOLS[protocol] : undefined;
+	const create =
+		protocol && Object.hasOwn(IMAGE_PROTOCOLS, protocol) ? IMAGE_PROTOCOLS[protocol] : undefined;
 	if (!create) {
 		throw new ImageProviderUnsupportedError(
 			`${modelName} (${spec.name}) declares no supported protocol.`
