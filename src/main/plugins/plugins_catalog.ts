@@ -36,8 +36,5 @@ export async function listCatalog(): Promise<CatalogPlugin[]> {
 	if (!response.ok) throw new Error(`Unable to load the plugin catalog (HTTP ${response.status}).`);
 	const parsed = catalogSchema.safeParse(await response.json());
 	if (!parsed.success) throw new Error('The plugin catalog is not valid.');
-	return parsed.data.plugins.map((plugin) => ({
-		...plugin,
-		website: plugin.website ?? pluginWebsites[plugin.id],
-	}));
+	return parsed.data.plugins;
 }
