@@ -205,8 +205,8 @@ export class LlmModel implements LlmAdapter {
 		if (this.providerModelFactory) return this.providerModelFactory(provider);
 		return new LlmModel({
 			provider,
-			openAIClientFactory: this.openAIClientFactory,
-			anthropicClientFactory: this.anthropicClientFactory,
+			chatClientFactory: this.chatClientFactory,
+			messagesClientFactory: this.messagesClientFactory,
 			reasoningEffortEnabled: this.reasoningEffortEnabled,
 			reasoningContentEnabled: this.reasoningContentEnabled,
 			thinkingModeEnabled: this.thinkingModeEnabled,
