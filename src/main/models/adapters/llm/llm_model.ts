@@ -613,47 +613,35 @@ export class LlmModel implements LlmAdapter {
 		yield { type: 'message_end', stopReason, usage };
 	}
 
-	private async *streamOpenAIChat(
+	private async *streamChat(
 		provider: LlmProviderSpec,
 		req: LlmStreamRequest,
 		model: ModelMetadata | undefined
 	): AsyncIterable<LlmProviderEvent> {
-		const client = this.createOpenAIClient(provider, 'API key not configured');
+		const client = this.createChatClient(provider, req.model);
 		const reasoningContentEnabled =
 			this.reasoningContentEnabled || model?.reasoningContent === 'roundtrip';
 		if (req.streaming === false) {
 			try {
-				yield* completeChat(
-					client,
-					{ ...req, options: requestOptions(provider.id.toLowerCase(), req) },
-					{
-						reasoningContentEnabled,
-						reasoningEffortEnabled: this.reasoningEffortEnabled,
-						thinkingModeEnabled: this.thinkingModeEnabled,
-						contentProfile:
-							provider.id.toLowerCase() === 'reka'
-								? 'reka'
-								: provider.id.toLowerCase() === 'mistral'
-									? 'mistral'
-									: 'image-only',
-						cache: model?.cache,
-					}
-				);
+				yield* completeChat(client, req, {
+					reasoningContentEnabled,
+					reasoningEffortEnabled: this.reasoningEffortEnabled,
+					thinkingModeEnabled: this.thinkingModeEnabled,
+					model,
+				});
 			} catch (error) {
 				this.throwProviderError(error);
 			}
 			return;
 		}
-		const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map(
-			(t) => ({
-				type: 'function' as const,
-				function: {
-					name: t.name,
-					description: t.description,
-					parameters: t.schema as Record<string, unknown>,
-				},
-			})
-		);
+		const tools: OpenAI.ChatCompletionTool[] = req.tools.map((t) => ({
+			type: 'function' as const,
+			function: {
+				name: t.name,
+				description: t.description,
+				parameters: t.schema as Record<string, unknown>,
+			},
+		}));
 
 		yield { type: 'message_start' };
 
