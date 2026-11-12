@@ -10,7 +10,7 @@ type Pending = {
 	timer: NodeJS.Timeout;
 };
 
-export class CodexRpc {
+export class AppServerRpc {
 	private readonly process: ChildProcessWithoutNullStreams;
 	private readonly pending = new Map<number, Pending>();
 	private sequence = 0;
