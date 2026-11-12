@@ -56,7 +56,7 @@ export function resolvePromptReasoningEffort(prompt: string): {
 	return { effort: 'none', lightContext: true };
 }
 
-const EFFORT_ORDER: readonly ModelReasoningEffort[] = ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'];
+const EFFORT_ORDER: readonly ModelReasoningEffort[] = ['none', 'instant', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'];
 
 function ratchetRuntime(
 	saved: ReturnType<typeof resolvePromptReasoningEffort> | undefined,

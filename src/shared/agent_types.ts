@@ -1,4 +1,4 @@
-export type ModelReasoningEffort = 'none' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
+export type ModelReasoningEffort = 'none' | 'instant' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
 
 export type AgentRunState =
 	| 'idle'

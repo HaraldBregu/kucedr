@@ -20,7 +20,7 @@ const modeSchema = z
 		tools: z.union([z.literal('read-only'), z.array(text)]).optional(),
 		permissions: z.enum(['default', 'deny-asks']).optional(),
 		shell: z.enum(['default', 'read-only', 'none']).optional(),
-		effort: z.enum(['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']).optional(),
+		effort: z.enum(['none', 'instant', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']).optional(),
 		model: text.optional(),
 		output: z
 			.object({ envelope: z.string().regex(/^[a-z][a-z0-9_]*$/, 'envelope must be a tag name') })
