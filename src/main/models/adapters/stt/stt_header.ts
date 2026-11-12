@@ -11,18 +11,15 @@ export function createHeaderSttAdapter(spec: SttProviderSpec): SttAdapter {
 			form.set('file', await createAudioFile(request.audio));
 			form.set('response_format', 'json');
 			form.set('stream', 'false');
-			const response = await fetch(
-				`${spec.baseURL ?? 'https://api.minimax.io/v1'}/speech_to_text`,
-				{
-					method: 'POST',
-					body: form,
-					signal: request.signal,
-					headers: {
-						Authorization: `Bearer ${spec.apiKey}`,
-						...(request.language ? { language: request.language } : {}),
-					},
-				}
-			);
+			const response = await fetch(`${spec.baseURL}/speech_to_text`, {
+				method: 'POST',
+				body: form,
+				signal: request.signal,
+				headers: {
+					Authorization: `Bearer ${spec.apiKey}`,
+					...(request.language ? { language: request.language } : {}),
+				},
+			});
 			if (response.status === 401 || response.status === 403)
 				throw new SttProviderAuthError(`${spec.name}: authentication failed.`);
 			if (!response.ok)
