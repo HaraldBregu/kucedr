@@ -530,7 +530,7 @@ async function* loop(
 				signal,
 				modelOptions,
 				undefined,
-				protectedSkillPrompt,
+				extension?.protectedPrompt ?? '',
 				[],
 				options.streaming ?? true,
 				options.providerLimiter,
