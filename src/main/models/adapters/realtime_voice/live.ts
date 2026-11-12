@@ -337,8 +337,13 @@ class LiveVoiceConnection implements RealtimeVoiceConnection {
 	}
 }
 
-function createLiveSocket(provider: RealtimeVoiceProviderSpec): LiveSocket {
-	return new WebSocket(LIVE_URL, { headers: { Authorization: `Bearer ${provider.apiKey}` } });
+function createLiveSocket(
+	provider: RealtimeVoiceProviderSpec,
+	model: RealtimeVoiceModelSpec
+): LiveSocket {
+	return new WebSocket(realtimeVoiceSocketUrl(model, undefined, provider.name).toString(), {
+		headers: { Authorization: `Bearer ${provider.apiKey}` },
+	});
 }
 
 function parseLiveEvent(data: unknown): Record<string, unknown> | undefined {
