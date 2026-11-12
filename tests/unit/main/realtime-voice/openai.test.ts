@@ -1,5 +1,5 @@
+import { RealtimeSessionVoiceAdapter } from '../../../../src/main/models/adapters/realtime_voice/realtime';
 import {
-	OpenAIRealtimeVoiceAdapter,
 	type RealtimeVoiceClientEvent,
 	type RealtimeVoiceServerEvent,
 	type RealtimeVoiceSocket,
@@ -62,8 +62,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		const socket = new FakeSocket();
 		const contextForTurn = jest.fn(async () => 'Remembered context');
 		const events: Array<{ type: string; message?: string }> = [];
-		const adapter = new OpenAIRealtimeVoiceAdapter(
+		const adapter = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => socket,
 			1000
 		);
@@ -121,8 +122,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		'configures %s and forwards streamed output',
 		async (modelId) => {
 			const socket = new FakeSocket();
-			const adapter = new OpenAIRealtimeVoiceAdapter(
+			const adapter = new RealtimeSessionVoiceAdapter(
 				{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 				() => socket,
 				1_000
 			);
@@ -234,8 +236,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 	it('avoids duplicate cancellation on speech and ignores cancellation races', async () => {
 		const socket = new FakeSocket();
 		const events: Array<{ type: string; message?: string }> = [];
-		const adapter = new OpenAIRealtimeVoiceAdapter(
+		const adapter = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => socket,
 			1000
 		);
@@ -269,8 +272,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 	it('reports SDK protocol errors once and gives actionable authentication failures', async () => {
 		const socket = new FakeSocket();
 		const events: Array<{ type: string; message?: string }> = [];
-		const adapter = new OpenAIRealtimeVoiceAdapter(
+		const adapter = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => socket,
 			1000
 		);
@@ -283,8 +287,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		expect(events.filter((event) => event.type === 'error')).toHaveLength(0);
 
 		const next = new FakeSocket();
-		const pending = new OpenAIRealtimeVoiceAdapter(
+		const pending = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => next,
 			1000
 		).connect(
@@ -309,8 +314,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 	it('fails startup after the bounded connection timeout', async () => {
 		jest.useFakeTimers();
 		const socket = new FakeSocket();
-		const adapter = new OpenAIRealtimeVoiceAdapter(
+		const adapter = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => socket,
 			15_000
 		);
@@ -331,8 +337,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 
 	it('rejects and closes immediately when setup returns a protocol error', async () => {
 		const socket = new FakeSocket();
-		const adapter = new OpenAIRealtimeVoiceAdapter(
+		const adapter = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => socket,
 			15_000
 		);
@@ -356,8 +363,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 	it('surfaces an abnormal provider close after setup', async () => {
 		const socket = new FakeSocket();
 		const events: Array<{ type: string; message?: string }> = [];
-		const adapter = new OpenAIRealtimeVoiceAdapter(
+		const adapter = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => socket,
 			1_000
 		);
@@ -386,8 +394,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 	it('surfaces a failed response after speech stops', async () => {
 		const socket = new FakeSocket();
 		const events: Array<{ type: string; message?: string }> = [];
-		const adapter = new OpenAIRealtimeVoiceAdapter(
+		const adapter = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => socket,
 			1_000
 		);
@@ -423,8 +432,9 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 
 	it('closes and rejects setup immediately when the owner aborts', async () => {
 		const socket = new FakeSocket();
-		const adapter = new OpenAIRealtimeVoiceAdapter(
+		const adapter = new RealtimeSessionVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			{ id: 'gpt-realtime-2.1', name: 'GPT Realtime', url: 'https://api.openai.com/v1', metadata: { protocol: 'realtime', documentationUrl: '', inputs: {} } },
 			() => socket,
 			15_000
 		);

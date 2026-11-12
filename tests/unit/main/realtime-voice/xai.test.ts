@@ -1,5 +1,5 @@
+import { FlatRealtimeVoiceAdapter } from '../../../../src/main/models/adapters/realtime_voice/flat';
 import {
-	XAIRealtimeVoiceAdapter,
 	type RealtimeVoiceClientEvent,
 	type RealtimeVoiceServerEvent,
 	type RealtimeVoiceSocket,
@@ -49,12 +49,13 @@ describe('XAIRealtimeVoiceAdapter', () => {
 	it('uses the xAI-compatible session shape and normalizes output events', async () => {
 		const socket = new FakeSocket();
 		const socketFactory = jest.fn(() => socket);
-		const adapter = new XAIRealtimeVoiceAdapter(
+		const adapter = new FlatRealtimeVoiceAdapter(
 			{
 				id: 'xai',
 				name: 'xAI',
 				apiKey: 'xai-key',
 			},
+			{ id: 'grok-voice-latest', name: 'Grok Voice', url: 'https://api.x.ai/v1', metadata: { protocol: 'realtime-flat', documentationUrl: '', inputs: {} } },
 			socketFactory,
 			1_000
 		);
@@ -147,7 +148,7 @@ describe('XAIRealtimeVoiceAdapter', () => {
 
 	it('waits for every parallel tool result before continuing once', async () => {
 		const socket = new FakeSocket();
-		const adapter = new XAIRealtimeVoiceAdapter(
+		const adapter = new FlatRealtimeVoiceAdapter(
 			{ id: 'xai', name: 'xAI', apiKey: 'key' },
 			() => socket,
 			1_000
@@ -186,7 +187,7 @@ describe('XAIRealtimeVoiceAdapter', () => {
 
 	it('rejects models outside the stable xAI allow-list before opening a socket', async () => {
 		const socketFactory = jest.fn(() => new FakeSocket());
-		const adapter = new XAIRealtimeVoiceAdapter(
+		const adapter = new FlatRealtimeVoiceAdapter(
 			{ id: 'xai', name: 'xAI', apiKey: 'key' },
 			socketFactory
 		);
