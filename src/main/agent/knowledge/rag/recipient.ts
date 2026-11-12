@@ -24,10 +24,14 @@ export function ragRecipient(
 		throw new Error('Select a supported embedding provider in Knowledge settings.');
 	const { model, url, apiKey } = embeddingEndpoint(providerId, modelId);
 	if (model.location === 'local') {
-		return createHash('sha256').update(JSON.stringify([providerId, modelId, url])).digest('hex');
+		return createHash('sha256')
+			.update(JSON.stringify([providerId, modelId, url]))
+			.digest('hex');
 	}
 	if (!apiKey && model.authentication !== 'none')
-		throw new Error(`Configure your ${model.provider.name} API key in Settings → Providers → Models.`);
+		throw new Error(
+			`Configure your ${model.provider.name} API key in Settings → Providers → Models.`
+		);
 	return createHash('sha256')
 		.update(JSON.stringify([providerId, modelId, url, apiKey]))
 		.digest('hex');
