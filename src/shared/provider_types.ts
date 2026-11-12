@@ -236,6 +236,8 @@ export interface StoredProvider {
 
 export interface ResolvedProvider {
 	id: string;
+	/** Display name from the provider manifest title. */
+	name?: string;
 	apiKey: string;
 	baseURL: string;
 	authentication?: AuthenticationType;
