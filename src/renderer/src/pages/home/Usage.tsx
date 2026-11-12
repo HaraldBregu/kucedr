@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils';
 import type { HomeChatMessage } from './context/state';
 import { contextTokens } from './tokens';
+import { cachedPercent } from './cached';
 
 export function Usage({
 	providerId,
