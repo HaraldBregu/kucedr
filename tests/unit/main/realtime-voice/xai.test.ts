@@ -56,7 +56,7 @@ describe('XAIRealtimeVoiceAdapter', () => {
 				name: 'xAI',
 				apiKey: 'xai-key',
 			},
-			{ id: 'grok-voice-latest', name: 'Grok Voice', url: 'https://api.x.ai/v1', metadata: { protocol: 'realtime-flat', documentationUrl: '', inputs: {} } },
+			{ id: 'grok-voice-latest', name: 'Grok Voice', url: 'https://api.x.ai/v1', metadata: { protocol: 'realtime-flat', documentationUrl: '', inputs: { voice: { type: 'string', default: 'eve' } } } },
 			socketFactory,
 			1_000
 		);
