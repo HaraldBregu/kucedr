@@ -210,14 +210,6 @@ export function WorkspaceMarkdownEditor({
 				event.stopPropagation();
 			}}
 		>
-			{script?.fence ? <WorkspaceScriptForm script={script} value={(script.inputSchema?.examples?.[0] ?? {}) as Record<string, unknown>} submitLabel="Insert" onClose={() => setScript(null)} onSubmit={(input) => {
-				setScript(null);
-				editor.chain().focus().insertContent({
-					type: 'codeBlock',
-					attrs: { language: script.fence },
-					content: [{ type: 'text', text: JSON.stringify({ script: pluginScriptRef(script.name, script.version, script.plugin), input }, null, 2) }],
-				}).run();
-			}} /> : null}
 			{urlOpen ? <WorkspaceUrlDialog onClose={() => setUrlOpen(false)} onInsert={(src, alt) => {
 				setUrlOpen(false);
 				editor.chain().focus().setImage({ src, alt }).run();
