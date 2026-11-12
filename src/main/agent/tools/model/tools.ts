@@ -29,7 +29,7 @@ export function modelTools(): Tool[] {
 					const provider = getProvider(model.provider.id);
 					const apiKey = provider?.apiKey.trim();
 					if (!apiKey) throw new Error(`${model.provider.name} API key not configured.`);
-					const baseURL = provider.baseUrl && provider.baseUrl !== model.provider.baseUrl
+					const baseURL = provider?.baseUrl && provider.baseUrl !== model.provider.baseUrl
 						? provider.baseUrl : model.url;
 					const client = new OpenAI({ apiKey, baseURL });
 					return client.post(contract.endpoint, {
