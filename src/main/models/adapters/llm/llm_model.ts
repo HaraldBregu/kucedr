@@ -324,6 +324,7 @@ export class LlmModel implements LlmAdapter {
 				for (const providerEvent of this.adaptOpenAIResponseEvent(
 					event,
 					usage,
+					cache,
 					stateFor,
 					emitToolStart,
 					emitToolEnd,
