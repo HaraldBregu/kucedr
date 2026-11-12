@@ -26,6 +26,7 @@ import type { StoredProviderKind } from '@shared/provider_types';
 import type { SearchEngineId, SearchSettings } from '@shared/search_types';
 import type { McpData } from '@shared/mcp_types';
 import { databaseCatalog } from './database';
+import { acceptsBaseUrl } from './url';
 import { mcps } from '@/lib/providers';
 import {
 	actionableProviderCatalog,
