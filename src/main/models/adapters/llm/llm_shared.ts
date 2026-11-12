@@ -176,13 +176,13 @@ function toolResultText(entry: Extract<LlmTranscriptEntry, { role: 'tool' }>): s
 	return entry.content.map((c) => (c.type === 'text' ? c.text : '[binary content]')).join('\n');
 }
 
-function isOpenAIReasoningBlock(
+function isResponsesReasoningBlock(
 	block: LlmContentBlock
 ): block is ReasoningContentBlock & { provider: 'openai' } {
 	return block.type === 'reasoning' && block.provider === 'openai';
 }
 
-function isDeepSeekReasoningBlock(block: LlmContentBlock): block is ReasoningContentBlock {
+function isReasoningContentBlock(block: LlmContentBlock): block is ReasoningContentBlock {
 	return block.type === 'reasoning' && block.provider === 'deepseek';
 }
 
