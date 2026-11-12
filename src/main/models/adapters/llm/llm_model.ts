@@ -7,6 +7,7 @@ import { content } from './content';
 import { findModel, loadProviders } from '../../../models';
 import { normalizeProviderId } from '../../../../shared/provider_types';
 import { metadata } from './metadata';
+import { providerName } from './name';
 import { options as requestOptions } from './options';
 import { tokens } from './tokens';
 import { url } from './url';
