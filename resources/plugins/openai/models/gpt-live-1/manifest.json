@@ -6,6 +6,8 @@
 	"url": "https://api.openai.com/v1",
 	"sampleRate": 24000,
 	"metadata": {
+		"protocol": "live",
+		"socketUrl": "wss://api.openai.com/v1/live/sessions",
 		"documentationUrl": "https://developers.openai.com/api/reference/resources/live/primary-websocket",
 		"documentationStatus": "verified",
 		"inputs": {
