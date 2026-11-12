@@ -5,10 +5,10 @@
 	"authentication": "api-key",
 	"url": "https://api.deepseek.com",
 	"metadata": {
-			"protocol": "chat-completions",
-			"effort": {
-				"path": "reasoning_effort"
-			},
+		"protocol": "chat-completions",
+		"effort": {
+			"path": "reasoning_effort"
+		},
 		"clampEffort": true,
 		"dsml": true,
 		"reasoningContent": "roundtrip",

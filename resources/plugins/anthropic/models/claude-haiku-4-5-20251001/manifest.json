@@ -5,7 +5,7 @@
 	"authentication": "api-key",
 	"url": "https://api.anthropic.com",
 	"metadata": {
-			"protocol": "messages",
+		"protocol": "messages",
 		"clampEffort": true,
 		"cache": {
 			"breakpoints": [

@@ -5,10 +5,10 @@
 	"authentication": "api-key",
 	"url": "https://api.openai.com/v1",
 	"metadata": {
-			"protocol": "responses",
-			"effort": {
-				"path": "reasoning.effort"
-			},
+		"protocol": "responses",
+		"effort": {
+			"path": "reasoning.effort"
+		},
 		"clampEffort": true,
 		"promptAttachments": [
 			{
