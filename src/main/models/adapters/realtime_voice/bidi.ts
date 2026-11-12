@@ -98,10 +98,10 @@ export function createBidiVoiceAdapter(
 							generationConfig: {
 								responseModalities: ['AUDIO'],
 								speechConfig: {
-									voiceConfig: { prebuiltVoiceConfig: { voiceName: request.voice || 'Kore' } },
+									voiceConfig: { prebuiltVoiceConfig: { voiceName: request.voice } },
 								},
-								...(request.modelId.endsWith('extended-thinking')
-									? { thinkingConfig: { thinkingLevel: 'low' } }
+								...(typeof request.options?.thinking_level === 'string'
+									? { thinkingConfig: { thinkingLevel: request.options.thinking_level } }
 									: {}),
 							},
 							systemInstruction: { parts: [{ text: request.instructions }] },
