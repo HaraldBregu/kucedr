@@ -350,8 +350,9 @@ async function* loop(
 					(tool) =>
 						requiredIds.has(tool.id) ||
 						(tool.policy?.kind === 'mcp' &&
-							tool.policy.serverId.toLocaleLowerCase() === mcpServerHint)
+							preloadedMcpServers.has(tool.policy.serverId.toLocaleLowerCase()))
 				),
+				restored: discoveredToolIds(session.messages),
 				discoveryEnabled: searchEnabled,
 				mcpTools: mcpEntries,
 				filterEligible: filterEligibleTools,
