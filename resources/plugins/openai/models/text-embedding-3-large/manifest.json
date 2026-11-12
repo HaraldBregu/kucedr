@@ -8,6 +8,8 @@
 	"metadata": {
 		"documentationUrl": "https://platform.openai.com/docs/api-reference",
 		"documentationStatus": "verified",
+		"protocol": "embeddings",
+		"endpoint": "/embeddings",
 		"inputs": {
 			"dimensions": {
 				"type": "integer",
