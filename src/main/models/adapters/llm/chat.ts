@@ -33,6 +33,7 @@ export async function* chat(
 		messages: llmBuildChatMessages(req.system, req.messages, {
 			includeReasoningContent: options.reasoningContentEnabled,
 			contentProfile: options.contentProfile,
+			cacheSystem: options.cache?.breakpoints?.includes('system'),
 		}),
 		tools: tools.length > 0 ? tools : undefined,
 		tool_choice: tools.length > 0 ? 'auto' : undefined,
