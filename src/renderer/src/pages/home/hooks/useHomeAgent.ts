@@ -54,8 +54,10 @@ export function resolvePromptReasoningEffort(prompt: string): {
 	return { effort: 'none', lightContext: true };
 }
 
-function runtimeOptionsForPrompt(prompt: string) {
-	return resolvePromptReasoningEffort(prompt);
+function runtimeOptionsForPrompt(prompt: string, sessionId: string) {
+	const runtime = readRuntime(sessionId) ?? resolvePromptReasoningEffort(prompt);
+	saveRuntime(sessionId, runtime);
+	return runtime;
 }
 
 export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) => void }) {
