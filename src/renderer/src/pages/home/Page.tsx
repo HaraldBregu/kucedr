@@ -776,7 +776,7 @@ function PageContent(): ReactElement {
 			disabled={voiceBusy || agent.isLoading}
 			disabledReason={voiceButtonDisabledReason}
 			mode={voiceButtonMode}
-			className={showEmptyConversation ? undefined : 'size-7 dark:hover:bg-accent [&_svg]:size-4'}
+			className={showEmptyConversation ? undefined : 'size-7 rounded-md dark:hover:bg-accent [&_svg]:size-4'}
 		/>
 	);
 
