@@ -10,6 +10,7 @@
 	"author": "Harald Bregu",
 	"website": "https://www.deepseek.com",
 	"icon": "deepseek.svg",
+	"order": 3,
 	"apiKeyUrl": "https://platform.deepseek.com/api_keys",
 	"settings": {
 		"inputSchema": {
