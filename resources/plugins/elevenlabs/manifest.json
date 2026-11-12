@@ -13,6 +13,7 @@
 	"website": "https://elevenlabs.io",
 	"icon": "elevenlabs-light.svg",
 	"iconDark": "elevenlabs-dark.svg",
+	"order": 4,
 	"apiKeyUrl": "https://elevenlabs.io/app/settings/api-keys",
 	"settings": {
 		"inputSchema": {
