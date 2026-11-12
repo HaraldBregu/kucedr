@@ -156,15 +156,9 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	// Services
 	{
 		path: '/settings/cloud',
-		labelKey: 'settings.searchEngine.braveName',
-		descriptionKey: 'settings.searchEngine.braveDescription',
-		keywords: 'brave web search api key',
-	},
-	{
-		path: '/settings/cloud',
-		labelKey: 'settings.searchEngine.tavilyName',
-		descriptionKey: 'settings.searchEngine.tavilyDescription',
-		keywords: 'tavily web search api key',
+		labelKey: 'settings.searchEngine.engines',
+		descriptionKey: 'settings.searchEngine.description',
+		keywords: 'web search api key',
 	},
 	// Apps
 	{
