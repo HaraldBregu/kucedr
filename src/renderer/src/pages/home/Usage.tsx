@@ -21,6 +21,7 @@ export function Usage({
 	draft: string;
 	hasAttachments: boolean;
 	className?: string;
+	ringOnly?: boolean;
 }): ReactElement {
 	const usage = contextTokens(messages, providerId, modelId, draft);
 	const limit = contextWindow ?? usage.contextWindow;
