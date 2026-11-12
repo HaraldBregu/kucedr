@@ -608,11 +608,12 @@ export class LlmModel implements LlmAdapter {
 
 	private async *streamOpenAIChat(
 		provider: LlmProviderSpec,
-		req: LlmStreamRequest
+		req: LlmStreamRequest,
+		model: ModelMetadata | undefined
 	): AsyncIterable<LlmProviderEvent> {
 		const client = this.createOpenAIClient(provider, 'API key not configured');
 		const reasoningContentEnabled =
-			this.reasoningContentEnabled || provider.id.toLowerCase() === 'deepseek';
+			this.reasoningContentEnabled || model?.reasoningContent === 'roundtrip';
 		if (req.streaming === false) {
 			try {
 				yield* completeChat(
@@ -628,6 +629,7 @@ export class LlmModel implements LlmAdapter {
 								: provider.id.toLowerCase() === 'mistral'
 									? 'mistral'
 									: 'image-only',
+						cache: model?.cache,
 					}
 				);
 			} catch (error) {
