@@ -7,14 +7,7 @@ import {
 } from '../../shared/coding_types';
 import { isCoderLayout, type CoderLayout } from '../../shared/coder_layout';
 import { userDataLocation } from '../shared/user_data_location';
-
-export const DEFAULT_CODING_SETTINGS: CodingSettings = {
-	runtime: 'codex',
-	providerId: 'openai-codex',
-	modelId: '',
-	thinkingLevel: 'medium',
-	toolMode: 'read-only',
-};
+import { codingDefaults } from './defaults';
 
 type StoredSettings = Partial<CodingSettings> & {
 	profiles?: Partial<Record<CoderHarness, CodingSettings>>;
@@ -23,17 +16,19 @@ type StoredSettings = Partial<CodingSettings> & {
 
 export class CodingStore {
 	private readonly store: Store<StoredSettings>;
-	constructor(directory = path.join(userDataLocation(), 'coder')) {
+	constructor(
+		directory = path.join(userDataLocation(), 'coder'),
+		private readonly defaults: (runtime?: CoderHarness) => CodingSettings = codingDefaults
+	) {
 		this.store = new Store<StoredSettings>({
 			name: 'settings',
 			cwd: directory,
 			accessPropertiesByDotNotation: false,
-			defaults: DEFAULT_CODING_SETTINGS,
 		});
 	}
 	get(runtime?: CoderHarness): CodingSettings {
 		const stored = this.store.store;
-		const selected = runtime ?? (isCodingSettings(stored) ? stored.runtime : 'codex');
+		const selected = runtime ?? (isCodingSettings(stored) ? stored.runtime : this.defaults().runtime);
 		const candidate =
 			stored.profiles?.[selected] ?? (stored.runtime === selected ? stored : undefined);
 		return isCodingSettings(candidate)
