@@ -134,7 +134,8 @@ export class Coder {
 	}
 	getProjectInstructions(id: string, runtime?: CoderHarness) {
 		this.validateHarness(runtime);
-		return this.instructions.get(this.requireProject(id), runtime ?? this.getSettings().runtime);
+		const selected = runtime ?? this.getSettings().runtime;
+		return this.instructions.get(this.requireProject(id), selected, this.instructionFiles(selected));
 	}
 	saveProjectInstructions(
 		id: string,
@@ -142,10 +143,12 @@ export class Coder {
 		runtime?: CoderHarness
 	) {
 		this.validateHarness(runtime);
+		const selected = runtime ?? this.getSettings().runtime;
 		return this.instructions.save(
 			this.requireProject(id),
 			update,
-			runtime ?? this.getSettings().runtime
+			selected,
+			this.instructionFiles(selected)
 		);
 	}
 	async listSessions(projectId: string) {
