@@ -823,7 +823,10 @@ function PageContent(): ReactElement {
 						belowContent={
 							showEmptyConversation ? undefined : (
 								<div className="flex items-center justify-between pt-1">
-									{attachmentButton ?? <span />}
+									<div className="flex items-center gap-1.5">
+										{attachmentButton}
+										{voiceButton}
+									</div>
 									{modelContext?.modelId ? (
 										<Usage
 											className="h-6"
