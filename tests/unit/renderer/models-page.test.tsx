@@ -60,6 +60,35 @@ it('groups plugin models by type, omits empty types, and refreshes when plugins 
 	expect(screen.queryByText('Image model')).not.toBeInTheDocument();
 });
 
+it('shows specialized model operations in the catalog and detail', async () => {
+	const provider = { id: 'inception', name: 'Inception', plugin: { id: 'inception', name: 'Inception' } };
+	Object.assign(window, {
+		app: {
+			models: jest.fn().mockResolvedValue([{
+				id: 'mercury-edit-2', name: 'Mercury Edit 2', type: 'code-completion', location: 'remote', provider,
+				metadata: { documentationUrl: 'https://example.com', inputs: {}, operations: {
+					fim: { endpoint: '/fim/completions', description: 'Complete code', inputSchema: {} },
+				} },
+			}]),
+			onModelsChanged: () => jest.fn(),
+		},
+		provider: { getModelProviders: jest.fn().mockResolvedValue([]) },
+	});
+	render(
+		<MemoryRouter initialEntries={['/settings/models']}>
+			<Routes>
+				<Route path="/settings/models" element={<ModelsPage />} />
+				<Route path="/settings/models/:type/:providerId/:modelId" element={<ModelDetail />} />
+			</Routes>
+		</MemoryRouter>
+	);
+	expect(await screen.findByRole('heading', { name: 'settings.models.types.code-completion' })).toBeInTheDocument();
+	fireEvent.click(screen.getByRole('link', { name: /Mercury Edit 2/ }));
+	expect(await screen.findByText('fim')).toBeInTheDocument();
+	expect(screen.getByText('Complete code')).toBeInTheDocument();
+	expect(screen.getByText('/fim/completions')).toBeInTheDocument();
+});
+
 it('opens a model with a slash in its ID and displays its catalog details', async () => {
 	const provider = { id: 'router', name: 'Router', plugin: { id: 'router', name: 'Router' } };
 	Object.assign(window, {
