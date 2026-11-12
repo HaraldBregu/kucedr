@@ -17,10 +17,12 @@ import {
 import { rememberSkill } from '../context';
 import {
 	buildLoadedSkillPrompt,
+	buildRunContext,
 	buildSystemPrompt,
 	buildWorkspaceContext,
 	resolveContextMode,
 } from '../system';
+import { attachRunContext } from './run_attach_context';
 import { loadMcpTools } from '../tools/mcp/loader';
 import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
 import { testMcpServer } from '../../mcp';
