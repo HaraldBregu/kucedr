@@ -167,16 +167,6 @@ export function Model({
 				buttonClassName="h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground"
 				labels={{ label: 'Change model' }}
 			/>
-			{modelId && messages.some((message) => message.id !== welcomeMessage.id) ? (
-				<Usage
-					providerId={providerId}
-					modelId={modelId}
-					contextWindow={contextWindow}
-					messages={messages}
-					draft={draft}
-					hasAttachments={hasAttachments}
-				/>
-			) : null}
 			{error ? (
 				<span role="alert" className="text-[11px] text-destructive">
 					Model unavailable
