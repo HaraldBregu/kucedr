@@ -21,7 +21,9 @@ interface PropertiesProps {
 /** A form for a script's input: one field per property, rows for lists, and JSON only for values with no known shape. */
 export function ScriptProperties({ schema, value, onChange, id = 'script-property', inline, root = value }: PropertiesProps): React.JSX.Element {
 	const [invalid, setInvalid] = useState(false);
-	if (schema.type === 'object' && !schema.properties && value && typeof value === 'object' && Object.keys(value).length) schema = inferScriptSchema(value);
+	const [name, setName] = useState('');
+	const free = schema.type === 'object' && !schema.properties;
+	if (free) schema = { ...schema, properties: inferScriptSchema(value ?? {}).properties ?? {} };
 
 	if (schema.enum) {
 		return (
