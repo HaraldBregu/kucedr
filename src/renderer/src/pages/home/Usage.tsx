@@ -12,6 +12,7 @@ export function Usage({
 	draft,
 	hasAttachments,
 	className,
+	ringOnly = false,
 }: {
 	providerId: string;
 	modelId: string;
