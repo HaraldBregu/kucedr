@@ -74,9 +74,9 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			trusted.assert(event);
 			return this.listCustomModels(value);
 		});
-		registerQueryWithEvent(ProviderStoreChannels.listModels, async (event, providerId) => {
+		registerQueryWithEvent(ProviderStoreChannels.listModels, async (event, providerId, refresh) => {
 			trusted.assert(event);
-			return this.listModels(providerId);
+			return this.listModels(providerId, refresh);
 		});
 		registerQueryWithEvent(ProviderStoreChannels.listModelProviders, (event) => {
 			trusted.assert(event);
