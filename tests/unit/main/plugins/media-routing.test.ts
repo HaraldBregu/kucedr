@@ -4,6 +4,7 @@ import { loadModels } from '../../../../src/main/models';
 import { createImage } from '../../../../src/main/models/image/image_create';
 import { transcribe } from '../../../../src/main/models/adapters/stt/stt_transcribe';
 
+jest.mock('@mistralai/mistralai', () => ({ Mistral: jest.fn() }));
 jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
 	pluginProviders: () => ['openai', 'elevenlabs', 'xai'].map((id) => {
 		const directory = path.resolve('resources/plugins', id);
