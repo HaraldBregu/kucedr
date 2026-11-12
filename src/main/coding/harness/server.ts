@@ -275,7 +275,7 @@ export class AppServerHarness implements CodingHarness {
 		rpc.onNotification = (method, params) => {
 			if (method === 'account/login/completed') {
 				if (params.success) complete();
-				else fail(new Error(String(params.error ?? 'Codex login failed.')));
+				else fail(new Error(String(params.error ?? `${this.name} login failed.`)));
 			}
 		};
 		const abort = (): void => {
