@@ -100,7 +100,7 @@ export class AppServerHarness implements CodingHarness {
 					return { permissions: response.approved ? params.permissions : {}, scope: 'turn' };
 				return { decision: response.approved ? 'accept' : 'decline' };
 			}
-			throw new Error(`Unsupported Codex interaction: ${method}`);
+			throw new Error(`Unsupported ${this.name} interaction: ${method}`);
 		};
 		rpc.onNotification = (method, params) => {
 			if (params.threadId !== threadId) return;
