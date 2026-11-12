@@ -71,7 +71,7 @@ export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): Rea
 	}, [draft, script, editor, getPos, ref?.createdAt]);
 
 	const code = (
-		<pre className={cn(input !== undefined && !editing && 'hidden')}>
+		<pre className={cn(input !== undefined && (!editing || formOpen) && 'hidden')}>
 			<NodeViewContent<'code'>
 				as="code"
 				className={node.attrs.language ? `language-${node.attrs.language}` : undefined}
