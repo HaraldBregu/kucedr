@@ -80,6 +80,11 @@ export function Usage({
 			</TooltipTrigger>
 			<TooltipContent className="flex-col items-start gap-1">
 				<span>{label}</span>
+				{cached.last !== undefined ? (
+					<span>
+						Cached {cached.last}% of input last turn, {cached.session}% this chat
+					</span>
+				) : null}
 				{!usage.measured ? (
 					<span>
 						Estimate of conversation and draft; instructions and tools are included when a request
