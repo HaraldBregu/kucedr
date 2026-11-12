@@ -150,7 +150,7 @@ export function createBidiVoiceAdapter(
 						resolve();
 					}
 					if (event.error) {
-						const error = new Error(event.error.message || 'Google voice request failed.');
+						const error = new Error(event.error.message || `${provider.name} voice request failed.`);
 						if (!ready) {
 							clearTimeout(timer);
 							reject(error);
