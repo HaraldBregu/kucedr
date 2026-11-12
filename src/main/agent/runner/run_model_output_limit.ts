@@ -30,5 +30,6 @@ export function modelOutputLimit(
 			: DEFAULT_MODEL_OUTPUT_TOKENS;
 	const selected = configured ?? (typeof catalogDefault === 'number' ? catalogDefault : fallback);
 	const bounded = typeof maximum === 'number' ? Math.min(selected, maximum) : selected;
-	return Math.max(1, Math.floor(typeof maximum === 'number' ? bounded : Math.min(bounded, 65_536)));
+	const cap = preferred === 'max_completion_tokens' && typeof maximum === 'number' ? maximum : 65_536;
+	return Math.max(1, Math.floor(Math.min(bounded, cap)));
 }

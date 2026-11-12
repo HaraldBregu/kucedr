@@ -52,3 +52,8 @@ it('uses the configured completion token budget and bounds it by the documented 
 it('retains the output cap for models without a documented maximum', () => {
 	expect(modelOutputLimit('provider', 'model', { max_completion_tokens: 100_000 })).toBe(65_536);
 });
+
+it('retains the output cap for models with a maximum but no completion-token field', () => {
+	findModel.mockReturnValue({ metadata: { inputs: { max_tokens: { type: 'integer', maximum: 384_000 } } } });
+	expect(modelOutputLimit('provider', 'model', { max_tokens: 100_000 })).toBe(65_536);
+});
