@@ -1,13 +1,7 @@
-export {
-	buildRealtimeVoiceAdapter,
-	realtimeVoiceDefaultVoice,
-	realtimeVoiceModelRefs,
-	supportsRealtimeVoiceModel,
-	supportsRealtimeVoiceTools,
-} from './realtime_voice_factory';
-export { OpenAIRealtimeVoiceAdapter } from './realtime_voice_openai';
-export { OpenAILiveVoiceAdapter } from './realtime_voice_live';
-export { XAIRealtimeVoiceAdapter } from './realtime_voice_xai';
+export { buildRealtimeVoiceAdapter, realtimeVoiceProtocol } from './realtime_voice_factory';
+export { RealtimeSessionVoiceAdapter } from './realtime';
+export { LiveVoiceAdapter } from './live';
+export { FlatRealtimeVoiceAdapter } from './flat';
 export type {
 	RealtimeVoiceAdapter,
 	RealtimeVoiceAdapterEvent,
@@ -16,6 +10,7 @@ export type {
 	RealtimeVoiceConnection,
 	RealtimeVoiceHistoryMessage,
 	RealtimeVoiceClientEvent,
+	RealtimeVoiceModelSpec,
 	RealtimeVoiceProviderSpec,
 	RealtimeVoiceServerEvent,
 	RealtimeVoiceSocket,
