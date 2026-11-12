@@ -1,20 +1,29 @@
-import { createCohereEmbeddingAdapter } from './embedding_cohere';
-import { createGoogleEmbeddingAdapter } from './embedding_google';
-import { createJinaEmbeddingAdapter } from './embedding_jina';
-import { createNomicEmbeddingAdapter } from './embedding_nomic';
-import { createOpenAiEmbeddingAdapter } from './embedding_openai';
-import { createVoyageEmbeddingAdapter } from './embedding_voyage';
+import type { CatalogModel } from '../../../../shared/model_types';
+import { createBatchEmbedContentsAdapter } from './batch_embed_contents';
+import { createEmbedTextAdapter } from './embed_text';
+import { createEmbedTypesAdapter } from './embed_types';
+import { createEmbeddingsAdapter } from './embeddings';
+import { createEmbeddingsInputTypeAdapter } from './embeddings_input_type';
+import { createEmbeddingsTaskAdapter } from './embeddings_task';
 import type { EmbeddingAdapter, EmbeddingProviderSpec } from './embedding_types';
 
-export function buildEmbeddingAdapter(provider: EmbeddingProviderSpec): EmbeddingAdapter {
-	// ponytail: self-hosted BGE-M3 servers speak the OpenAI embeddings shape.
-	if (['openai', 'bge', 'mistral', 'qwen'].includes(provider.id)) {
-		return createOpenAiEmbeddingAdapter(provider);
-	}
-	if (provider.id === 'cohere') return createCohereEmbeddingAdapter(provider);
-	if (provider.id === 'google') return createGoogleEmbeddingAdapter(provider);
-	if (provider.id === 'voyage') return createVoyageEmbeddingAdapter(provider);
-	if (provider.id === 'nomic') return createNomicEmbeddingAdapter(provider);
-	if (provider.id === 'jina') return createJinaEmbeddingAdapter(provider);
-	throw new Error(`Embedding provider is not supported: ${provider.id}`);
+export interface EmbeddingProtocol {
+	create(spec: EmbeddingProviderSpec): EmbeddingAdapter;
+	inputField: string;
+}
+
+const PROTOCOLS: Record<string, EmbeddingProtocol> = {
+	embeddings: { create: createEmbeddingsAdapter, inputField: 'input' },
+	'embeddings-task': { create: createEmbeddingsTaskAdapter, inputField: 'input' },
+	'embeddings-input-type': { create: createEmbeddingsInputTypeAdapter, inputField: 'input' },
+	'embed-types': { create: createEmbedTypesAdapter, inputField: 'texts' },
+	'embed-text': { create: createEmbedTextAdapter, inputField: 'texts' },
+	'batch-embed-contents': { create: createBatchEmbedContentsAdapter, inputField: 'requests' },
+};
+
+export function embeddingProtocol(model: CatalogModel): EmbeddingProtocol {
+	const protocol = model.metadata?.protocol;
+	const entry = protocol && Object.hasOwn(PROTOCOLS, protocol) ? PROTOCOLS[protocol] : undefined;
+	if (!entry) throw new Error(`${model.name} (${model.provider.name}) declares no supported protocol.`);
+	return entry;
 }
