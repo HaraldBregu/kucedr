@@ -250,7 +250,7 @@ export function createBidiVoiceAdapter(
 			return {
 				async appendAudio(audio) {
 					if (socket.bufferedAmount + audio.length > REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH)
-						throw new Error('Google voice transport queue is full.');
+						throw new Error(`${provider.name} voice transport queue is full.`);
 					send({ realtimeInput: { audio: { data: audio, mimeType: 'audio/pcm;rate=24000' } } });
 				},
 				async interrupt() {
