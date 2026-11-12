@@ -568,6 +568,8 @@ async function* loop(
 					context: turn.usage?.context,
 					inputTokens: turn.usage?.inputTokens ?? 0,
 					outputTokens: turn.usage?.outputTokens ?? 0,
+					cachedTokens: turn.usage?.cachedTokens,
+					cacheWriteTokens: turn.usage?.cacheWriteTokens,
 				});
 				addUserMessage(session, [{ type: 'text', internal: true, text: stop.message }]);
 				continued = true;
@@ -587,6 +589,8 @@ async function* loop(
 					context: turn.usage?.context,
 					inputTokens: turn.usage?.inputTokens ?? 0,
 					outputTokens: turn.usage?.outputTokens ?? 0,
+					cachedTokens: turn.usage?.cachedTokens,
+					cacheWriteTokens: turn.usage?.cacheWriteTokens,
 				});
 				if (finalization?.stopReason) session.stopReason = finalization.stopReason;
 				const result = toResult(
