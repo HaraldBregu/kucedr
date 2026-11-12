@@ -68,6 +68,7 @@ export type PromptInputProps = {
 	trailingAction?: React.ReactNode;
 	footerContent?: React.ReactNode;
 	belowContent?: React.ReactNode;
+	singleLine?: boolean;
 	detachedControls?: boolean;
 	disabled?: boolean;
 	textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
