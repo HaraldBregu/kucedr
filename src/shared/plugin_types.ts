@@ -49,6 +49,8 @@ export interface PluginScriptSchema {
 	readonly maximum?: number;
 	readonly minItems?: number;
 	readonly maxItems?: number;
+	/** For a list of free-form rows: the fields every row has, each named by a path into the input (`xKey`, `series.key`). */
+	readonly keys?: readonly { readonly from: string; readonly type: string }[];
 	readonly examples?: readonly unknown[];
 }
 
