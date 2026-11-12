@@ -125,7 +125,7 @@ export class AppServerRpc {
 			if (message.id !== undefined) {
 				const request = this.onRequest
 					? this.onRequest(message.method, message.params ?? {})
-					: Promise.reject(new Error('Unsupported Codex request.'));
+					: Promise.reject(new Error(`Unsupported ${this.name} request.`));
 				void request.then(
 					(result) => this.write({ id: message.id, result }),
 					(error: unknown) =>
