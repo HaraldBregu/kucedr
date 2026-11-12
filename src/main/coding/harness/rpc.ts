@@ -118,7 +118,7 @@ export class AppServerRpc {
 		try {
 			message = JSON.parse(line);
 		} catch {
-			this.fail(new Error('Codex sent invalid protocol data.'));
+			this.fail(new Error(`${this.name} sent invalid protocol data.`));
 			return;
 		}
 		if (message.method) {
