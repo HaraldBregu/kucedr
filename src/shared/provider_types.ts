@@ -52,7 +52,17 @@ export type PublicProvider = Omit<Provider, 'apiKey'> & {
 	readonly discoveryInputs?: ModelMetadata['discoveryInputs'];
 	readonly discoveryLabel?: string;
 	readonly discoveryMetadata?: ModelMetadata;
+	readonly baseUrlSetting?: ProviderBaseUrlSetting;
 };
+
+/** A user-editable API base URL, from the plugin's settings.inputSchema.properties.baseUrl. */
+export interface ProviderBaseUrlSetting {
+	readonly title?: string;
+	readonly description?: string;
+	readonly pattern?: string;
+	readonly examples?: readonly string[];
+	readonly errorMessage?: string;
+}
 
 /** A plugin-wide value the user sets once, e.g. an OAuth client shared by all its services. */
 export interface ProviderManifestSetting {
