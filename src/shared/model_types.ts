@@ -11,7 +11,8 @@ export type ModelCapability =
 	| 'text-to-image'
 	| 'text-to-video'
 	| 'text-to-audio'
-	| 'embedding';
+	| 'embedding'
+	| 'coding-agent';
 
 export interface ModelInputChoice {
 	readonly const: string | number;
