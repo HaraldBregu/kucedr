@@ -239,6 +239,8 @@ function toPublicProvider(
 		...(discoveryMetadata ? { discoveryMetadata } : {}),
 		...(iconDarkUrl ? { iconDarkUrl } : {}),
 		...(iconLightUrl ? { iconLightUrl } : {}),
+		...(entry.iconFullBleed ? { iconFullBleed: true } : {}),
+		...(entry.order !== undefined ? { order: entry.order } : {}),
 		...(plugin ? { plugin } : {}),
 		...(entry.settings ? { settings: entry.settings } : {}),
 	};
