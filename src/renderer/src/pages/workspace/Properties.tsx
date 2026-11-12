@@ -22,8 +22,8 @@ interface PropertiesProps {
 export function ScriptProperties({ schema, value, onChange, id = 'script-property', inline, root = value }: PropertiesProps): React.JSX.Element {
 	const [invalid, setInvalid] = useState(false);
 	const [name, setName] = useState('');
-	const free = schema.type === 'object' && !schema.properties;
-	if (free) schema = { ...schema, properties: inferScriptSchema(value ?? {}).properties ?? {} };
+	const free = declared.type === 'object' && !declared.properties;
+	const schema = free ? { ...declared, properties: inferScriptSchema(value ?? {}).properties ?? {} } : declared;
 
 	if (schema.enum) {
 		return (
