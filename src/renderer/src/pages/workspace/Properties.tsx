@@ -15,6 +15,7 @@ interface PropertiesProps {
 	readonly onChange: (value: unknown) => void;
 	readonly id?: string;
 	readonly inline?: boolean;
+	readonly root?: unknown;
 }
 
 /** A form for a script's input: one field per property, rows for lists, and JSON only for values with no known shape. */
