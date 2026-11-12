@@ -5,6 +5,7 @@
 	"authentication": "api-key",
 	"url": "https://api.openai.com/v1",
 	"metadata": {
+		"clampEffort": true,
 		"promptAttachments": [
 			{
 				"kind": "image",
