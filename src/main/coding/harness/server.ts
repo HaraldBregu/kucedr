@@ -287,7 +287,7 @@ export class AppServerHarness implements CodingHarness {
 		try {
 			signal.throwIfAborted();
 			await rpc.initialize();
-			const apiKey = this.getApiKey();
+			const apiKey = this.options.getApiKey();
 			if (apiKey) {
 				await rpc.request('account/login/start', { type: 'apiKey', apiKey });
 				return { configured: true, type: 'api_key', source: this.directory };
