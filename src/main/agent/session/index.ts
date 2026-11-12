@@ -4,6 +4,7 @@ export { addAssistantMessage } from './session_add_assistant_message';
 export { addToolResults } from './session_add_tool_results';
 export { addUserMessage } from './session_add_user_message';
 export { addRunContext } from './session_add_run_context';
+export { addInternalMessage } from './session_add_internal_message';
 export { insertUserMessage } from './session_insert_user_message';
 export { updateUserMessageBySessionId } from './session_update_user_message_by_session_id';
 export { appendRun } from './session_append_run';
