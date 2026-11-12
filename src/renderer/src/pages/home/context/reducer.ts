@@ -273,6 +273,7 @@ function applyResponseEvent(
 			...message,
 			inputTokens: event.usage?.inputTokens ?? message.inputTokens,
 			outputTokens: event.usage?.outputTokens ?? message.outputTokens,
+			cachedTokens: event.usage?.cachedTokens ?? message.cachedTokens,
 		}));
 	}
 
