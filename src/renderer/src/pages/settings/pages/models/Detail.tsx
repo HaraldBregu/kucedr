@@ -67,6 +67,7 @@ export default function ModelDetail(): React.JSX.Element {
 	const metadata = model.metadata;
 	const rows: [string, string | number | boolean | undefined][] = [
 		[t('settings.models.details.id'), model.id],
+		[t('settings.models.details.description'), metadata?.description],
 		[t('settings.models.details.type'), t(`settings.models.types.${model.type}`)],
 		[t('settings.models.details.provider'), model.provider.name],
 		[t('settings.models.details.plugin'), model.provider.plugin?.name],

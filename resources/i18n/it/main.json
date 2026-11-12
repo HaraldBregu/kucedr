@@ -354,6 +354,7 @@
 				"maxInputTokens": "Token di input massimi",
 				"defaultOutputTokens": "Token di output predefiniti",
 				"documentationStatus": "Stato della documentazione",
+				"description": "Descrizione",
 				"documentation": "Documentazione",
 				"contextDocumentation": "Documentazione della finestra di contesto",
 				"attachments": "Allegati",

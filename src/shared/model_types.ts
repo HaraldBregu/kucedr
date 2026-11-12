@@ -74,6 +74,7 @@ export interface PromptAttachmentRule {
 }
 
 export interface ModelMetadata {
+	readonly description?: string;
 	/** Official provider page that documents this service's request contract. */
 	readonly documentationUrl: string;
 	/** Whether the catalog model has an externally documented request contract. */

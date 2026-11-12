@@ -104,6 +104,7 @@ it('opens a model with a slash in its ID and displays its catalog details', asyn
 						provider,
 						metadata: {
 							documentationUrl: 'https://example.com',
+							description: 'A text model optimized for voice agents.',
 							contextWindow: 1000,
 							inputs: { temperature: { type: 'number' } },
 						},
@@ -124,6 +125,7 @@ it('opens a model with a slash in its ID and displays its catalog details', asyn
 	fireEvent.click(await screen.findByRole('link', { name: /Model/ }));
 	expect(await screen.findByRole('heading', { name: 'Model' })).toBeInTheDocument();
 	expect(screen.getByText('vendor/model')).toBeInTheDocument();
+	expect(screen.getByText('A text model optimized for voice agents.')).toBeInTheDocument();
 	expect(screen.getByText('1000')).toBeInTheDocument();
 	expect(screen.getByText(/temperature/)).toBeInTheDocument();
 });
