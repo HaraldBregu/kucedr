@@ -25,6 +25,7 @@ export type ProviderCatalogItem = {
 	iconDarkUrl?: string;
 	iconLightUrl?: string;
 	order?: number;
+	baseUrlSetting?: ProviderBaseUrlSetting;
 };
 
 export type ProviderModelGroup = {
