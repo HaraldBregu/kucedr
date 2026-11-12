@@ -120,13 +120,17 @@ export async function* responses(
 	yield {
 		type: 'message_end',
 		stopReason,
-		usage: {
-			inputTokens: response.usage?.input_tokens ?? 0,
-			outputTokens: response.usage?.output_tokens ?? 0,
-			cachedTokens: response.usage?.input_tokens_details?.cached_tokens,
-			cacheWriteTokens: (
-				response.usage?.input_tokens_details as { cache_write_tokens?: number } | undefined
-			)?.cache_write_tokens,
-		},
+		usage: tokens(
+			{
+				inputTokens: response.usage?.input_tokens ?? 0,
+				outputTokens: response.usage?.output_tokens ?? 0,
+				cachedTokens: response.usage?.input_tokens_details?.cached_tokens,
+				cacheWriteTokens: (
+					response.usage?.input_tokens_details as { cache_write_tokens?: number } | undefined
+				)?.cache_write_tokens,
+			},
+			response,
+			cache
+		),
 	};
 }
