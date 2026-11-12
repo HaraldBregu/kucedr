@@ -29,3 +29,26 @@ it('does not treat a catalog maximum as the default request size', () => {
 
 	expect(modelOutputLimit('provider', 'model', {})).toBe(DEFAULT_MODEL_OUTPUT_TOKENS);
 });
+
+it('uses the configured completion token budget and bounds it by the documented maximum', () => {
+	findModel.mockReturnValue({
+		metadata: {
+			outputTokensField: 'max_completion_tokens',
+			inputs: {
+				max_tokens: { type: 'integer', maximum: 131_072 },
+				max_completion_tokens: { type: 'integer', maximum: 131_072 },
+			},
+		},
+	});
+
+	expect(modelOutputLimit('inception', 'mercury-3', {
+		max_completion_tokens: 100_000,
+		max_tokens: 1_000,
+	})).toBe(100_000);
+	expect(modelOutputLimit('inception', 'mercury-3', { max_completion_tokens: 150_000 })).toBe(131_072);
+	expect(modelOutputLimit('inception', 'mercury-3', { max_tokens: 24_000 })).toBe(24_000);
+});
+
+it('retains the output cap for models without a documented maximum', () => {
+	expect(modelOutputLimit('provider', 'model', { max_completion_tokens: 100_000 })).toBe(65_536);
+});
