@@ -227,30 +227,34 @@ export class LlmModel implements LlmAdapter {
 		if (model?.clampEffort) {
 			req = { ...req, effort: resolveModelEffort(req.effort, modelEfforts(model)) };
 		}
-		if (id === 'anthropic') {
-			yield* this.streamAnthropic(provider, req, cache);
-			return;
-		}
-		if (id === 'openai') {
-			yield* this.streamOpenAIResponses(provider, req, cache);
-			return;
-		}
-		if (model?.dsml) {
-			yield* dsml(this.streamOpenAIChat(provider, req, model));
-			return;
-		}
-		yield* this.streamOpenAIChat(provider, req, model);
+		req = { ...req, options: requestOptions(model?.effort, req) };
+		const protocol =
+			model?.protocol ??
+			(loadProviders().some((entry) => entry.id === normalizeProviderId(id))
+				? undefined
+				: 'chat-completions');
+		const streams: Readonly<Record<string, () => AsyncIterable<LlmProviderEvent>>> = {
+			messages: () => this.streamMessages(provider, req, cache),
+			responses: () => this.streamResponses(provider, req, cache),
+			'chat-completions': () => this.streamChat(provider, req, model),
+		};
+		const stream = protocol && Object.hasOwn(streams, protocol) ? streams[protocol] : undefined;
+		if (!stream)
+			throw new Error(
+				`${findModel(id, 'llm', req.model)?.name ?? req.model} (${providerName(provider)}) declares no supported protocol.`
+			);
+		yield* model?.dsml ? dsml(stream()) : stream();
 	}
 
-	private async *streamOpenAIResponses(
+	private async *streamResponses(
 		provider: LlmProviderSpec,
 		req: LlmStreamRequest,
 		cache: ModelCache | undefined
 	): AsyncIterable<LlmProviderEvent> {
-		const client = this.createOpenAIClient(provider, 'OpenAI api key not configured');
+		const client = this.createChatClient(provider, req.model);
 		if (req.streaming === false) {
 			try {
-				yield* completeResponses(client, req, cache);
+				yield* completeResponses(client, req, providerName(provider), cache);
 			} catch (error) {
 				this.throwProviderError(error);
 			}
