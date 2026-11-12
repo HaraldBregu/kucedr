@@ -63,7 +63,6 @@ export function WorkspaceMarkdownEditor({
 	const [libraryOpen, setLibraryOpen] = useState(false);
 	const [urlOpen, setUrlOpen] = useState(false);
 	const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
-	const [script, setScript] = useState<PluginScriptInfo | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const onChangeRef = useRef(onChange);
