@@ -10,7 +10,8 @@ export function embeddingEndpoint(
 	if (!model) throw new Error(`Embedding model is not available: ${modelId}`);
 	const stored = getProvider(providerId);
 	const apiKey = stored?.apiKey.trim() ?? '';
-	const url = `${(model.url ?? '').replace(/\/$/, '')}${model.metadata?.endpoint ?? ''}`;
+	const endpoint = model.metadata?.endpoint;
+	const url = endpoint ? `${(model.url ?? '').replace(/\/$/, '')}${endpoint}` : (model.url ?? '');
 	const rule = model.metadata?.baseUrlRule;
 	if (!rule) return { model, url, apiKey };
 	let base: URL | undefined;
