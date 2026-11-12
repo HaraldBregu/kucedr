@@ -45,8 +45,8 @@ export const provider: ProviderApi = {
 	},
 	listCustomModels: (input: { baseUrl: string; apiKey: string }) =>
 		typedInvokeUnwrap(ProviderStoreChannels.listCustomModels, input),
-	listModels: (providerId: string) =>
-		typedInvokeUnwrap(ProviderStoreChannels.listModels, providerId),
+	listModels: (providerId: string, refresh?: boolean) =>
+		typedInvokeUnwrap(ProviderStoreChannels.listModels, providerId, refresh),
 	listEnabledPlugins: () => typedInvokeUnwrap(ProviderStoreChannels.listEnabledPlugins),
 	setPluginEnabled: (kind: PluginProviderKind, id: string, enabled: boolean) =>
 		typedInvokeUnwrap(ProviderStoreChannels.setPluginEnabled, kind, id, enabled),
