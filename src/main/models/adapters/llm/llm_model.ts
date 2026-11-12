@@ -668,7 +668,7 @@ export class LlmModel implements LlmAdapter {
 				params.thinking = { type: req.effort === 'none' ? 'disabled' : 'enabled' };
 			}
 			if (this.reasoningEffortEnabled) {
-				const reasoningEffort = llmToDeepSeekReasoningEffort(req.effort);
+				const reasoningEffort = llmThinkingEffort(req.effort);
 				if (reasoningEffort) params.reasoning_effort = reasoningEffort;
 			}
 			const stream = await client.chat.completions.create(
