@@ -11,6 +11,14 @@
 	"location": "remote",
 	"discoveryOnly": true,
 	"metadata": {
+		"families": [
+			{
+				"match": "deepseek",
+				"metadata": {
+					"dsml": true
+				}
+			}
+		],
 		"promptAttachments": [],
 		"inputs": {},
 		"discoveryInputs": {
