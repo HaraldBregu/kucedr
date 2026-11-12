@@ -71,7 +71,7 @@ export function ScriptProperties({ schema, value, onChange, id = 'script-propert
 				{items.map((item, index) => (
 					<div key={index} className="flex items-end gap-1 rounded-md border p-2">
 						<div className="min-w-0 flex-1">
-							<ScriptProperties inline id={`${id}-${index}`} schema={itemSchema} value={item} onChange={(next) => onChange(items.map((current, position) => position === index ? next : current))} />
+							<ScriptProperties inline root={root} id={`${id}-${index}`} schema={itemSchema} value={item} onChange={(next) => onChange(items.map((current, position) => position === index ? next : current))} />
 						</div>
 						<Button type="button" variant="ghost" size="icon-sm" aria-label="Remove" disabled={items.length <= (schema.minItems ?? 0)} onClick={() => onChange(items.filter((_, position) => position !== index))}>
 							<Trash2 />
@@ -91,8 +91,10 @@ export function ScriptProperties({ schema, value, onChange, id = 'script-propert
 				{Object.entries(schema.properties).map(([key, property]) => (
 					<div key={key} className="flex min-w-24 flex-1 flex-col gap-1.5">
 						<Label htmlFor={`${id}-${key}`}>{property.title ?? key}{schema.required?.includes(key) ? ' *' : ''}</Label>
-						<ScriptProperties inline id={`${id}-${key}`} schema={property} value={object[key]} onChange={(next) => {
+						<ScriptProperties inline root={root} id={`${id}-${key}`} schema={property} value={object[key]} onChange={(next) => {
 							const { [key]: _, ...rest } = object;
+							const example = property.enum ? schema.examples?.find((item) => (item as Record<string, unknown> | null)?.[key] === next) : undefined;
+							if (example) return onChange(example);
 							onChange(next === undefined || next === '' ? rest : { ...object, [key]: next });
 						}} />
 						{property.description ? <p className="text-xs text-muted-foreground">{property.description}</p> : null}
