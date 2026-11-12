@@ -75,7 +75,7 @@ export class RealtimeVoiceManager {
 		if (previous) await this.close(previous, true);
 
 		const configuration = await this.dependencies.resolveConfiguration();
-		const { provider, context, ...adapterConfiguration } = configuration;
+		const { provider, model, context, ...adapterConfiguration } = configuration;
 		this.requireCurrentGeneration(windowId, generation);
 		const displaced = this.byWindow.get(windowId);
 		if (displaced) await this.close(displaced, true);
