@@ -22,6 +22,7 @@ import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session
 import type { AgentSessionSummary } from '@/lib/compat';
 import { revealSelection } from '@/lib/selection';
 import { playSound } from '@/lib/sounds/play';
+import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
