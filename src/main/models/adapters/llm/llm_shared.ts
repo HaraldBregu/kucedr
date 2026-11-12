@@ -426,7 +426,7 @@ export function llmBuildChatMessages(
 			}
 			if (options.includeReasoningContent) {
 				const reasoningContent = entry.content
-					.filter(isDeepSeekReasoningBlock)
+					.filter(isReasoningContentBlock)
 					.map((b) => (typeof b.item === 'string' ? b.item : ''))
 					.join('');
 				if (reasoningContent) {
