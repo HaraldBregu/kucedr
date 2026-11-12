@@ -1,11 +1,11 @@
-import { generateJwtTask } from '../jwt/task';
+import { generateKlingMedia } from '../kling/generation';
 import { ImageProviderAuthError, ImageProviderRequestError } from './tti_errors';
 import type { ImageAdapter, ImageProviderSpec } from './tti_types';
 
 export function createJwtImageAdapter(spec: ImageProviderSpec, imageList: boolean): ImageAdapter {
 	return {
 		async generate(request) {
-			return generateJwtTask(
+			return generateKlingMedia(
 				spec,
 				request.endpoint ?? '/v1/images/generations',
 				{
