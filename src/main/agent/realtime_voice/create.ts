@@ -9,9 +9,7 @@ import type { EventBus } from '../../event_bus';
 import { defaultProviderId, loadModels } from '../../models';
 import {
 	buildRealtimeVoiceAdapter,
-	realtimeVoiceDefaultVoice,
-	supportsRealtimeVoiceModel,
-	supportsRealtimeVoiceTools,
+	realtimeVoiceProtocol,
 } from '../../models/adapters/realtime_voice';
 import { getModelId, getOptions, getProviderId } from '../../models/selection';
 import { getProvider } from '../../settings_store';
