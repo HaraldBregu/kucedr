@@ -237,6 +237,7 @@ export function actionableProviderCatalog(): readonly ProviderCatalogItem[] {
 		iconDarkUrl: provider.iconDarkUrl,
 		iconLightUrl: provider.iconLightUrl,
 		order: provider.order,
+		baseUrlSetting: provider.baseUrlSetting,
 	}));
 }
 
