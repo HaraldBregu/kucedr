@@ -69,7 +69,7 @@ export interface CatalogEntryModel extends ProviderModel {
 	readonly location: ModelLocation;
 	readonly authentication?: AuthenticationType;
 	/** Base URL of the API serving this model. */
-	readonly url: string;
+	readonly url?: string;
 	/** Preferred provider for this model's capability when nothing is configured. */
 	readonly default?: boolean;
 	/** Realtime audio input sample rate. */
