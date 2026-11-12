@@ -1,5 +1,4 @@
 import {
-	Cloud,
 	Download,
 	HardDrive,
 	Layers,
