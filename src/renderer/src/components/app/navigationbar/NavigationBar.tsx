@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ChevronDown, Menu, Moon, Plus, Search, Sun } from 'lucide-react';
+import { AudioLines, ChevronDown, Menu, Moon, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
