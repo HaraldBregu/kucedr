@@ -1,5 +1,4 @@
 import {
-	AudioLines,
 	Download,
 	HardDrive,
 	Layers,
@@ -31,16 +30,12 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
-import { useChatSession } from '@/contexts/chat-session';
 import { playSound } from '@/lib/sounds/play';
-import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 
 export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
-	const { sessionId } = useChatSession();
 	const navigate = useNavigate();
-	const [voiceError, setVoiceError] = useState<string | null>(null);
 	const [updateVersion, setUpdateVersion] = useState<string | null>(null);
 	const [updating, setUpdating] = useState(false);
 	useEffect(() => {
@@ -90,7 +85,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							<SidebarMenuButton
 								size="lg"
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-								className="h-10 pr-20 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								className="h-10 pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
 								<accountItem.icon className="size-4 shrink-0" strokeWidth={1.8} />
 								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
@@ -104,7 +99,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							type="button"
 							variant="ghost"
 							size="icon"
-							className="absolute right-11 top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary"
+							className="absolute right-2 top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary"
 							aria-label={t('settings.title')}
 							onClick={() => {
 								playSound('navigate');
@@ -123,24 +118,16 @@ export function AppSidebarFooter(): React.JSX.Element {
 							variant="ghost"
 							size="icon"
 							className="absolute right-2 top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary"
-							aria-label={t('settings.tabs.voice')}
+							aria-label={t('settings.tabs.storage')}
 							onClick={() => {
-								setVoiceError(null);
-								void ensureAppMicrophoneAccess()
-									.then(() => window.win.openVoiceConversation(sessionId))
-									.catch((error: unknown) => {
-										setVoiceError(
-											error instanceof Error && error.message.trim()
-												? error.message
-												: 'Voice could not be opened.'
-										);
-									});
+								playSound('navigate');
+								navigate('/settings/cloud');
 							}}
 						>
-							<AudioLines className="size-4" strokeWidth={1.8} />
+							<HardDrive className="size-4" strokeWidth={1.8} />
 						</Button>
 						} />
-						<TooltipContent>{voiceError ?? t('settings.tabs.voice')}</TooltipContent>
+						<TooltipContent>{t('settings.tabs.storage')}</TooltipContent>
 						</Tooltip>
 						<DropdownMenuContent
 							className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
