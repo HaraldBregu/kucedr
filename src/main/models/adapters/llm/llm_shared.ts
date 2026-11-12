@@ -397,7 +397,7 @@ export function llmBuildChatMessages(
 			}
 			msgs.push({
 				role: 'user',
-				content: toChatUserContent(entry.content, options.contentProfile ?? 'image-only'),
+				content: toChatUserContent(entry.content, options.model?.documentPart),
 			});
 			continue;
 		}
