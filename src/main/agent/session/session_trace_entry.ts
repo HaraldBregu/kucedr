@@ -137,12 +137,16 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 				? { firstTokenLatencyMs: event.firstTokenLatencyMs }
 				: {}),
 			...(typeof event.retryCount === 'number' ? { retryCount: event.retryCount } : {}),
+			...(event.prefix && typeof event.prefix === 'object' ? { prefix: event.prefix } : {}),
 			...(usage
 				? {
 						usage: {
 							...(typeof usage.inputTokens === 'number' ? { inputTokens: usage.inputTokens } : {}),
 							...(typeof usage.cachedTokens === 'number'
 								? { cachedTokens: usage.cachedTokens }
+								: {}),
+							...(typeof usage.cacheWriteTokens === 'number'
+								? { cacheWriteTokens: usage.cacheWriteTokens }
 								: {}),
 							...(typeof usage.outputTokens === 'number'
 								? { outputTokens: usage.outputTokens }
