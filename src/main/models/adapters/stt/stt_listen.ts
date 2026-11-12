@@ -68,7 +68,7 @@ export function createListenSttAdapter(opts: ListenSttAdapterOptions): SttAdapte
 				throw new SttProviderRequestError(await response.text());
 			}
 
-			const data = (await response.json()) as DeepgramTranscriptionResponse;
+			const data = (await response.json()) as ListenTranscriptionResponse;
 			const text = data.results?.channels?.[0]?.alternatives?.[0]?.transcript ?? '';
 			const usage = toUsage(data.metadata);
 
