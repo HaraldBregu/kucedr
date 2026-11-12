@@ -8,6 +8,7 @@ import type {
 	RealtimeVoiceAdapterRequest,
 	RealtimeVoiceConnection,
 	RealtimeVoiceHistoryMessage,
+	RealtimeVoiceModelSpec,
 	RealtimeVoiceProviderSpec,
 	RealtimeVoiceServerEvent,
 	RealtimeVoiceSocket,
@@ -16,16 +17,17 @@ import type {
 
 const CONNECT_TIMEOUT_MS = 15_000;
 
-export interface OpenAICompatibleRealtimeVoiceProfile {
+export interface CompatibleRealtimeVoiceProfile {
 	readonly provider: RealtimeVoiceProviderSpec;
-	readonly modelIds: readonly string[];
+	readonly model: RealtimeVoiceModelSpec;
+	readonly serverInterrupts: boolean;
 	readonly socketFactory: RealtimeVoiceSocketFactory;
 	session(request: RealtimeVoiceAdapterRequest): Record<string, unknown>;
 }
 
-export class OpenAICompatibleRealtimeVoiceAdapter implements RealtimeVoiceAdapter {
+export class CompatibleRealtimeVoiceAdapter implements RealtimeVoiceAdapter {
 	constructor(
-		private readonly profile: OpenAICompatibleRealtimeVoiceProfile,
+		private readonly profile: CompatibleRealtimeVoiceProfile,
 		private readonly connectTimeoutMs = CONNECT_TIMEOUT_MS
 	) {}
 
@@ -35,16 +37,11 @@ export class OpenAICompatibleRealtimeVoiceAdapter implements RealtimeVoiceAdapte
 		signal?: AbortSignal
 	): Promise<RealtimeVoiceConnection> {
 		signal?.throwIfAborted();
-		if (!this.profile.modelIds.includes(request.modelId)) {
-			throw new Error(
-				`${this.profile.provider.name} realtime voice model is not supported: ${request.modelId}`
-			);
-		}
-		const socket = this.profile.socketFactory(this.profile.provider, request.modelId);
-		const connection = new OpenAICompatibleRealtimeVoiceConnection(
+		const socket = this.profile.socketFactory(this.profile.provider, this.profile.model);
+		const connection = new CompatibleRealtimeVoiceConnection(
 			socket,
 			emit,
-			this.profile.provider.id === 'openai',
+			this.profile.serverInterrupts,
 			(error) => realtimeVoiceTransportError(error, this.profile.provider, request.modelId)
 		);
 		await connection.open(
