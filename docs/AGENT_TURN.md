@@ -139,6 +139,14 @@ Not worth doing: session persistence, settings and memory reads, startup, MCP st
 
 3 (batching: one prompt line and concurrent read-only tools) → 2 (preloading and a single clock reading per run) → 1 (moving the per-run context next to the newest message).
 
+### Landed (2026-11-12)
+
+- **Batching.** The `## Tools` section asks for independent tool calls in one response. Running read-only tools at the same time was not done: tool time is under 1 s on average, so the saving comes from having fewer turns, not from concurrency.
+- **Preloading.** `use_web_browser`, `process`, `create_image`, `create_video` and `create_sound` are now in the required set in `run_stream.ts`.
+- **Run context.** `buildRunContext` (`system/system_build_run_context.ts`) builds the filesystem listing, the clock and memory once per run. `attachRunContext` (`runner/run_attach_context.ts`) adds it as the first text block of the run's user message in the request only, so it is never saved to the history. `buildSystemPrompt` now takes a `runContext` flag. `run_stream` passes `false`, so the system prompt and the earlier history stay identical from run to run. Realtime voice keeps the default and is unchanged. `buildWorkspaceContext` no longer takes memory.
+
+Checked: `typecheck:node` and eslint pass. A bundled check confirmed that two prompt builds are byte-identical, that the clock and filesystem listing are absent from the run prompt and still present for voice, and that the context is attached to the right message without changing the saved message. Not run: the unit suite. `run-stream-prompt`, `system-prompt` and `system-filesystem` probably still expect the old layout. Not confirmed: a live model call. Restart the dev app before measuring.
+
 ### Re-measuring
 
 Measure turns per run, the turn-1 cache hit rate and the median run time from `run.jsonl` (`model_call_end` has `durationMs`, `firstTokenLatencyMs` and `usage.cachedTokens`; `run_finished` has `numTurns`), then compare them with the tables above.
