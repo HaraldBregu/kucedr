@@ -31,6 +31,35 @@ export interface ModelInputSchema {
 	readonly properties?: Readonly<Record<string, ModelInputSchema>>;
 	readonly items?: ModelInputSchema;
 	readonly required?: boolean;
+	readonly maxItems?: number;
+	/** Object input: setting one property clears its siblings. */
+	readonly exclusive?: boolean;
+	/** Surfaces where this input is not offered. */
+	readonly hidden?: readonly ('settings' | 'tool')[];
+	/** Generic UI role this input drives. */
+	readonly role?: 'aspect-ratio' | 'voice';
+}
+
+export interface ModelEffort {
+	/** Dotted request path the resolved effort is written to. */
+	readonly path: string;
+	readonly map?: Readonly<Record<string, string>>;
+	/** Deep-merged into the request when an effort is applied. */
+	readonly set?: Readonly<Record<string, unknown>>;
+	/** Deep-merged whenever the request carries reasoning fields. */
+	readonly setWhenPresent?: Readonly<Record<string, unknown>>;
+	/** Dotted request paths deleted before the effort is written. */
+	readonly unset?: readonly string[];
+	/** Send an effort only when the model declares it; never a prompt-derived one. */
+	readonly strict?: boolean;
+}
+
+export interface ModelHarness {
+	readonly package: string;
+	readonly binary: string;
+	readonly homeEnv?: string;
+	readonly clearEnv?: readonly string[];
+	readonly instructionFiles: readonly string[];
 }
 
 export interface PromptAttachmentRule {
