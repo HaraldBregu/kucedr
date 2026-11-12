@@ -42,9 +42,7 @@ export async function liveModelLimits(
 											model.id,
 											{
 												contextWindow: positive(model.context_length ?? model.context_window),
-												maxOutputTokens: positive(
-													model.max_output_tokens ?? model.top_provider?.max_completion_tokens
-												),
+												maxOutputTokens: positive(model.max_output_tokens),
 											},
 										] as const,
 									]
