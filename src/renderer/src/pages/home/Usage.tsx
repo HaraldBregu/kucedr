@@ -24,6 +24,7 @@ export function Usage({
 	ringOnly?: boolean;
 }): ReactElement {
 	const usage = contextTokens(messages, providerId, modelId, draft);
+	const cached = cachedPercent(messages);
 	const limit = contextWindow ?? usage.contextWindow;
 	const percent = limit ? Math.min(100, Math.round((usage.tokens / limit) * 100)) : undefined;
 	const estimated = usage.estimated || hasAttachments;
