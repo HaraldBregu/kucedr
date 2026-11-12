@@ -238,12 +238,13 @@ export class LlmModel implements LlmAdapter {
 
 	private async *streamOpenAIResponses(
 		provider: LlmProviderSpec,
-		req: LlmStreamRequest
+		req: LlmStreamRequest,
+		cache: ModelCache | undefined
 	): AsyncIterable<LlmProviderEvent> {
 		const client = this.createOpenAIClient(provider, 'OpenAI api key not configured');
 		if (req.streaming === false) {
 			try {
-				yield* completeResponses(client, req);
+				yield* completeResponses(client, req, cache);
 			} catch (error) {
 				this.throwProviderError(error);
 			}
