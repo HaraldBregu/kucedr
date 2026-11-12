@@ -67,7 +67,8 @@
 			"reasoning_summary_wait": {
 				"type": "boolean"
 			}
-		}
+		},
+		"promptAttachments": []
 	},
 	"location": "remote"
 }
