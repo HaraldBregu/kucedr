@@ -179,8 +179,14 @@ async function* loop(
 		!input.toolsDeny?.includes(id) &&
 		getToolConfiguration(toolProfile, { kind: 'builtin', id }).permission !== 'deny' &&
 		isAgentToolAllowedForProfile(toolProfile, { kind: 'builtin', id });
-	const skillToolsRequested = requestsSkillTools(input.message, input.explicitSkill);
-	const taskToolIds = requestedTaskTools(input.message);
+	const chatTexts = [input.message, ...userTexts(session.messages)];
+	const skillToolsRequested = chatTexts.some((text, index) =>
+		requestsSkillTools(text, index === 0 ? input.explicitSkill : undefined)
+	);
+	const taskToolIds = [...new Set(chatTexts.flatMap(requestedTaskTools))];
+	const mcpServerHints = (servers: Array<{ serverId: string; serverName: string }>): Set<string> =>
+		new Set(chatTexts.flatMap((text) => resolveMcpServerHint(text, servers) ?? []));
+	let preloadedMcpServers = new Set<string>();
 	const skillLoadingEnabled = skillToolsRequested && toolIdEnabled('load_skill');
 	const skillListingEnabled = skillToolsRequested && toolIdEnabled('list_skills');
 	const searchEnabled = toolIdEnabled('tool_search');
