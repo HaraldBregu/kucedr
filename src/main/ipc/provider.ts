@@ -194,7 +194,6 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 					supported_parameters?: unknown;
 					default_parameters?: unknown;
 					reasoning?: unknown;
-					model_disclosure?: { model_parameters?: { features?: { reasoning?: unknown } } };
 					architecture?: { output_modalities?: unknown };
 					pricing?: { parameters?: Record<string, unknown> };
 				};
