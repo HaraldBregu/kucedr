@@ -59,6 +59,7 @@ export class CodingInstructions {
 			projectId: project.id,
 			activeFilePath,
 			activeFileName: path.basename(activeFilePath),
+			defaultFileName,
 			content,
 			exists,
 			editable,
