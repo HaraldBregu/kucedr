@@ -864,12 +864,7 @@ function PageContent(): ReactElement {
 						)}
 						trailingAction={
 							<PromptInputActions className="justify-end gap-1.5">
-								<VoiceButton
-									onVoiceModeRequest={() => void startDictation()}
-									disabled={voiceBusy || agent.isLoading}
-									disabledReason={voiceButtonDisabledReason}
-									mode={voiceButtonMode}
-								/>
+								{showEmptyConversation ? voiceButton : null}
 								<PromptSubmit isLoading={agent.isLoading} onAction={() => void submitPrompt()} />
 							</PromptInputActions>
 						}
