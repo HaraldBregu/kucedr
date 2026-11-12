@@ -6,6 +6,7 @@
 	"url": "https://api.x.ai/v1",
 	"sampleRate": 24000,
 	"metadata": {
+		"protocol": "realtime-flat",
 		"documentationUrl": "https://docs.x.ai/developers/model-capabilities/audio/voice",
 		"documentationStatus": "verified",
 		"inputs": {
