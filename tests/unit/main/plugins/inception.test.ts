@@ -48,6 +48,11 @@ it('loads specialized models as distinct capabilities with their operations', ()
 			edit: { endpoint: '/edit/completions', inputSchema: { required: ['messages'] } },
 		} },
 	});
+	const schema = decision?.metadata?.operations?.decision.inputSchema as {
+		properties: { questions: { additionalProperties: { oneOf: Array<{ properties: { type: { const: string } } }> } } };
+	};
+	expect(schema.properties.questions.additionalProperties.oneOf.map((question) => question.properties.type.const))
+		.toEqual(['noul', 'choice', 'score', 'extract']);
 });
 
 it.each([
