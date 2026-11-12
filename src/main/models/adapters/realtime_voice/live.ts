@@ -117,7 +117,7 @@ class LiveVoiceConnection implements RealtimeVoiceConnection {
 							input: liveVoiceHistory(request.history),
 							audio: {
 								format: { type: 'audio/pcm', rate: 24_000 },
-								output: { voice: request.voice.trim() || 'marin' },
+								output: { voice: request.voice.trim() },
 							},
 							delegation: { type: 'client' },
 						},
