@@ -124,7 +124,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 								navigate('/settings/cloud');
 							}}
 						>
-							<HardDrive className="size-4" strokeWidth={1.8} />
+							<Folder className="size-4" strokeWidth={1.8} />
 						</Button>
 						} />
 						<TooltipContent>{t('settings.tabs.storage')}</TooltipContent>
