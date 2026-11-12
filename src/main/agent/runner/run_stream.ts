@@ -445,6 +445,16 @@ async function* loop(
 		let nudges = 3;
 		let promptKey: string | undefined;
 		let builtPrompt = '';
+		const runMessageIndex = session.messages.findLastIndex((message) => message.role === 'user');
+		const memoryContext =
+			session.category === 'main' && options.memory?.getConfig().includeInPrompt
+				? await options.memory.read().catch(() => '')
+				: '';
+		const runContext = await buildRunContext(
+			config,
+			memoryContext,
+			options.instructions === undefined
+		);
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
