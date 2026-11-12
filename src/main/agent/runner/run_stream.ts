@@ -304,15 +304,15 @@ async function* loop(
 				);
 			tools.push(...extensionTools);
 		}
-		if (options.tools)
-			mcpServerHint = resolveMcpServerHint(
-				input.message,
-				tools.flatMap((tool) =>
-					tool.policy?.kind === 'mcp'
-						? [{ serverId: tool.policy.serverId, serverName: tool.policy.serverId }]
-						: []
-				)
+		if (options.tools) {
+			const mcpServers = tools.flatMap((tool) =>
+				tool.policy?.kind === 'mcp'
+					? [{ serverId: tool.policy.serverId, serverName: tool.policy.serverId }]
+					: []
 			);
+			mcpServerHint = resolveMcpServerHint(input.message, mcpServers);
+			preloadedMcpServers = mcpServerHints(mcpServers);
+		}
 		tools = filterEligibleTools(tools);
 		if (!bootstrap && (!options.tools || options.progressiveDiscovery === true)) {
 			const requiredIds = new Set([
