@@ -174,8 +174,23 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		].sort((left, right) => left.localeCompare(right));
 	}
 
-	private async listModels(providerId: unknown): Promise<ProviderModel[]> {
+	private async listModels(providerId: unknown, refresh: unknown): Promise<ProviderModel[]> {
 		const id = this.id(providerId);
+		const file = path.join(userDataLocation(), 'cache', 'models', `${id}.json`);
+		if (refresh !== true) {
+			const cached: unknown = await fs
+				.readFile(file, 'utf8')
+				.then((text) => JSON.parse(text))
+				.catch(() => undefined);
+			if (Array.isArray(cached)) return cached as ProviderModel[];
+		}
+		const models = await this.fetchModels(id);
+		await fs.mkdir(path.dirname(file), { recursive: true });
+		await atomicWrite(file, JSON.stringify(models));
+		return models;
+	}
+
+	private async fetchModels(id: string): Promise<ProviderModel[]> {
 		const provider = loadProviders().find((entry) => entry.id === id);
 		if (!provider?.modelsUrl) throw new Error('This provider has no live model list.');
 		const { modelsUrl, modelUrl } = provider;
