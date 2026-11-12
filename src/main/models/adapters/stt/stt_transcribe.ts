@@ -96,13 +96,15 @@ export async function transcribe(
 		normalized.modelId ?? getConfiguredModelId(providerId, 'batch', 'transcribe'),
 		'batch'
 	);
-	const provider = resolveProvider(providerId);
-	const adapter = buildSttAdapter(provider);
+	const model = findSpeechToTextModel(providerId, modelId)!;
+	const provider = { ...resolveProvider(providerId), protocol: model.metadata?.protocol };
+	const adapter = buildSttAdapter(provider, model.name);
 
 	return adapter.transcribe({
 		...normalized,
 		providerId,
 		modelId,
+		metadata: model.metadata,
 	});
 }
 
@@ -119,8 +121,9 @@ export async function startRealtime(
 		normalized.modelId ?? getConfiguredModelId(providerId, 'stream', 'realtime'),
 		'stream'
 	);
-	const provider = resolveProvider(providerId);
-	const adapter = buildSttAdapter(provider);
+	const model = findSpeechToTextModel(providerId, modelId)!;
+	const provider = { ...resolveProvider(providerId), protocol: model.metadata?.protocol };
+	const adapter = buildSttAdapter(provider, model.name);
 	if (!adapter.startRealtime) {
 		throw new SttProviderUnsupportedError(
 			`Speech-to-text provider does not support realtime transcription: ${providerId}`
@@ -146,6 +149,7 @@ export async function startRealtime(
 			providerId,
 			providerName: provider.name,
 			modelId,
+			metadata: model.metadata,
 			sampleRate: session.sampleRate,
 		},
 		emit

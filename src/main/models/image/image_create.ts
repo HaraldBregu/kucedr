@@ -4,7 +4,7 @@ import {
 	type ImageRequest,
 	type ImageResult,
 } from '../../../shared/image_types';
-import { loadProviders, providerModels, supportsCapability } from '../../models';
+import { findModel, loadProviders, providerModels, supportsCapability } from '../../models';
 import { getProvider } from '../../settings_store';
 import {
 	generateImage,
@@ -28,10 +28,13 @@ export async function createImage(
 	);
 	const modelId = resolveModelId(providerId, request.modelId ?? getModelId('image'));
 	const apiKey = resolveApiKey(providerId);
+	const model = findModel(providerId, 'text-to-image', modelId);
+	if (!model) throw new ImageProviderUnsupportedError(`Unknown text-to-image model: ${providerId}/${modelId}`);
+	const stored = getProvider(providerId);
+	const baseUrl = stored?.baseUrl && stored.baseUrl !== model.provider.baseUrl ? stored.baseUrl : model.url;
 	return generateImage({
-		providerId,
+		model: { ...model, url: baseUrl },
 		apiKey,
-		modelId,
 		prompt,
 		source: normalizeImageSource(request.source),
 		options: resolveOptions('image', providerId, modelId, request.options),
