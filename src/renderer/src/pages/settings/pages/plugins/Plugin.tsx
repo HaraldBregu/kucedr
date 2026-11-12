@@ -10,6 +10,7 @@ import {
 	MoreHorizontal,
 	Package,
 	Plug,
+	RefreshCw,
 	Tag,
 	Trash2,
 	User,
@@ -58,6 +59,7 @@ interface Contents {
 	readonly servers: readonly McpServerInfo[];
 	readonly skills: readonly SkillInfo[];
 	readonly scripts: readonly PluginScriptInfo[];
+	readonly remoteProviderIds: readonly string[];
 }
 
 interface Row {
@@ -125,6 +127,9 @@ export default function PluginPage(): React.JSX.Element {
 			servers: registry.servers.filter((server) => server.plugin?.id === pluginId),
 			skills: skills.filter((skill) => skill.plugin?.id === pluginId),
 			scripts: scripts.filter((script) => script.plugin.id === pluginId),
+			remoteProviderIds: modelProviders
+				.filter((provider) => provider.plugin?.id === pluginId && provider.modelsUrl)
+				.map((provider) => provider.id),
 		});
 		const ownedModels = owned(models);
 		const ownedProviders = new Map(
@@ -256,10 +261,29 @@ export default function PluginPage(): React.JSX.Element {
 		},
 	].filter((row) => row.value);
 
-	const sections: { key: string; title: string; rows: Row[] }[] = [
+	const sections: { key: string; title: string; rows: Row[]; action?: React.ReactNode }[] = [
 		{
 			key: 'models',
 			title: t('settings.integrations.plugin.models'),
+			action:
+				contents.remoteProviderIds.length > 0 ? (
+					<Button
+						type="button"
+						size="sm"
+						variant="outline"
+						disabled={busy}
+						onClick={() =>
+							void run(async () => {
+								await Promise.all(
+									contents.remoteProviderIds.map((id) => window.provider.listModels(id, true))
+								);
+							})
+						}
+					>
+						<RefreshCw />
+						{t('settings.integrations.plugin.refreshModels')}
+					</Button>
+				) : undefined,
 			rows: contents.models.map((model) => ({
 				key: `${model.type}/${model.id}`,
 				title: model.name,
