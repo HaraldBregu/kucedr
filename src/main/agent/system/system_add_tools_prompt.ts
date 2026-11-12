@@ -19,6 +19,8 @@ export function addToolsPrompt(
 	prompt += '\n\n## Tools';
 	prompt +=
 		'\nOnly tools marked _(Loaded.)_ can be called. To use any other tool, first call `tool_search` with its id as the query; it becomes callable on the next turn. Calling a tool that is not loaded fails.';
+	prompt +=
+		'\nWhen several tool calls do not depend on each other\'s results, request them together in one response instead of one per turn.';
 	const categories = new Map<ToolCategory, Tool[]>();
 	for (const tool of tools)
 		categories.set(tool.category, [...(categories.get(tool.category) ?? []), tool]);
