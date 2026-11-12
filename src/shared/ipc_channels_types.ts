@@ -900,7 +900,7 @@ export interface ProviderInvokeChannelMap {
 		result: string[];
 	};
 	[ProviderChannels.listModels]: {
-		args: [providerId: string];
+		args: [providerId: string, refresh?: boolean];
 		result: ProviderModel[];
 	};
 	[ProviderChannels.listModelProviders]: {
