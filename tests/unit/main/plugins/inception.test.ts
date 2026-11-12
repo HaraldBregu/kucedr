@@ -47,7 +47,7 @@ it.each([
 				: { choices: [{ message: { content: 'answer' }, finish_reason: 'stop' }], usage: {} }
 		);
 		const factory = jest.fn(() => ({ chat: { completions: { create } } }) as never);
-		const model = new LlmModel({ openAIClientFactory: factory });
+		const model = new LlmModel({ chatClientFactory: factory });
 		const events = [];
 		for await (const event of model.stream({
 			provider: { id: 'inception', apiKey: 'key' },
