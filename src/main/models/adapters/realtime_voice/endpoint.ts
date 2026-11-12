@@ -10,13 +10,8 @@ export function realtimeVoiceSocketUrl(
 	return new URL(
 		template.replace(/\{(\w+)\}/g, (_match, key: string) => {
 			const input = model.metadata?.inputs[key];
-			const option = options?.[key];
-			const value =
-				typeof option === 'string'
-					? option.trim()
-					: option === undefined
-						? String(input?.default ?? '')
-						: '';
+			const option = options?.[key] ?? input?.default;
+			const value = typeof option === 'string' ? option.trim() : '';
 			if (!/^[a-z0-9][a-z0-9-]*$/i.test(value) || (input?.enum && !input.enum.includes(value)))
 				throw new Error(
 					`${providerName} realtime voice requires a valid ${input?.title ?? key} in model settings.`
