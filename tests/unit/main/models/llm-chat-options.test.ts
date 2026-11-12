@@ -22,7 +22,7 @@ it.each([true, false])('preserves chat tool choice with streaming=%s', async (st
 		messages: [{ role: 'user', content: 'hello' }], tools: [tool], maxTokens: 100,
 		options: { tool_choice: choice, stream_options: { include_usage: false, custom: true } },
 		streaming,
-	})) { /* consume */ }
+	})) {}
 	expect(create.mock.calls[0][0]).toEqual(expect.objectContaining({
 		tool_choice: choice,
 		stream_options: streaming ? { include_usage: false, custom: true } : undefined,
