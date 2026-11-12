@@ -1,80 +1,46 @@
-import { createQwenRealtimeVoiceAdapter, QWEN_REALTIME_VOICE_MODELS } from './qwen';
-import { normalizeProviderId } from '../../../../shared/provider_types';
-import { createGoogleRealtimeVoiceAdapter, GOOGLE_LIVE_MODELS } from './google';
-import {
-	OPENAI_REALTIME_VOICE_MODELS,
-	OPENAI_VOICE_MODELS,
-	OpenAIRealtimeVoiceAdapter,
-} from './realtime_voice_openai';
-import type { RealtimeVoiceAdapter, RealtimeVoiceProviderSpec } from './realtime_voice_types';
-import { XAI_REALTIME_VOICE_MODELS, XAIRealtimeVoiceAdapter } from './realtime_voice_xai';
+import { createBetaRealtimeVoiceAdapter } from './beta';
+import { createBidiVoiceAdapter } from './bidi';
+import { FlatRealtimeVoiceAdapter } from './flat';
+import { LiveVoiceAdapter } from './live';
+import { RealtimeSessionVoiceAdapter } from './realtime';
+import type {
+	RealtimeVoiceAdapter,
+	RealtimeVoiceModelSpec,
+	RealtimeVoiceProviderSpec,
+} from './realtime_voice_types';
 
-interface RealtimeVoiceAdapterRegistration {
-	readonly defaultVoice: string;
-	readonly modelIds: readonly string[];
-	readonly toolModelIds: readonly string[];
-	create(provider: RealtimeVoiceProviderSpec): RealtimeVoiceAdapter;
+export interface RealtimeVoiceProtocol {
+	readonly tools: boolean;
+	create(provider: RealtimeVoiceProviderSpec, model: RealtimeVoiceModelSpec): RealtimeVoiceAdapter;
 }
 
-const REALTIME_VOICE_ADAPTERS: Readonly<Record<string, RealtimeVoiceAdapterRegistration>> = {
-	openai: {
-		defaultVoice: 'marin',
-		modelIds: OPENAI_VOICE_MODELS,
-		toolModelIds: OPENAI_REALTIME_VOICE_MODELS,
-		create: (provider) => new OpenAIRealtimeVoiceAdapter(provider),
+const PROTOCOLS: Readonly<Record<string, RealtimeVoiceProtocol>> = {
+	realtime: {
+		tools: true,
+		create: (provider, model) => new RealtimeSessionVoiceAdapter(provider, model),
 	},
-	xai: {
-		defaultVoice: 'eve',
-		modelIds: XAI_REALTIME_VOICE_MODELS,
-		toolModelIds: XAI_REALTIME_VOICE_MODELS,
-		create: (provider) => new XAIRealtimeVoiceAdapter(provider),
+	'realtime-flat': {
+		tools: true,
+		create: (provider, model) => new FlatRealtimeVoiceAdapter(provider, model),
 	},
-	google: {
-		defaultVoice: 'Kore',
-		modelIds: GOOGLE_LIVE_MODELS,
-		toolModelIds: GOOGLE_LIVE_MODELS,
-		create: createGoogleRealtimeVoiceAdapter,
-	},
-	qwen: {
-		defaultVoice: 'Tina',
-		modelIds: QWEN_REALTIME_VOICE_MODELS,
-		toolModelIds: QWEN_REALTIME_VOICE_MODELS,
-		create: createQwenRealtimeVoiceAdapter,
-	},
+	'realtime-beta': { tools: true, create: createBetaRealtimeVoiceAdapter },
+	live: { tools: false, create: (provider, model) => new LiveVoiceAdapter(provider, model) },
+	bidi: { tools: true, create: createBidiVoiceAdapter },
 };
 
-const REALTIME_VOICE_MODEL_REFS = Object.freeze(
-	Object.entries(REALTIME_VOICE_ADAPTERS).flatMap(([providerId, registration]) =>
-		registration.modelIds.map((modelId) => Object.freeze({ providerId, modelId }))
-	)
-);
+export function realtimeVoiceProtocol(
+	model: RealtimeVoiceModelSpec,
+	providerName: string
+): RealtimeVoiceProtocol {
+	const protocol = model.metadata?.protocol;
+	if (!protocol || !Object.hasOwn(PROTOCOLS, protocol))
+		throw new Error(`${model.name} (${providerName}) declares no supported protocol.`);
+	return PROTOCOLS[protocol];
+}
 
 export function buildRealtimeVoiceAdapter(
-	provider: RealtimeVoiceProviderSpec
+	provider: RealtimeVoiceProviderSpec,
+	model: RealtimeVoiceModelSpec
 ): RealtimeVoiceAdapter {
-	const id = normalizeProviderId(provider.id);
-	const registration = REALTIME_VOICE_ADAPTERS[id];
-	if (!registration) throw new Error(`Realtime voice provider is not supported: ${id}`);
-	return registration.create({ ...provider, id });
-}
-
-export function realtimeVoiceModelRefs(): readonly {
-	providerId: string;
-	modelId: string;
-}[] {
-	return REALTIME_VOICE_MODEL_REFS;
-}
-
-export function supportsRealtimeVoiceModel(providerId: string, modelId: string): boolean {
-	const registration = REALTIME_VOICE_ADAPTERS[normalizeProviderId(providerId)];
-	return registration?.modelIds.includes(modelId.trim()) ?? false;
-}
-
-export function supportsRealtimeVoiceTools(providerId: string, modelId: string): boolean {
-	const registration = REALTIME_VOICE_ADAPTERS[normalizeProviderId(providerId)];
-	return registration?.toolModelIds.includes(modelId.trim()) ?? false;
-}
-
-export function realtimeVoiceDefaultVoice(providerId: string): string | undefined {
-	return REALTIME_VOICE_ADAPTERS[normalizeProviderId(providerId)]?.defaultVoice;
+	return realtimeVoiceProtocol(model, provider.name).create(provider, model);
 }
