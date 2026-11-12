@@ -87,17 +87,40 @@ export interface ModelMetadata {
 	/** API request fields supported by this exact service or model. */
 	readonly inputs: Readonly<Record<string, ModelInputSchema>>;
 	readonly discoveryInputs?: Readonly<Record<string, ModelInputSchema>>;
+	/** Wire protocol id that selects the adapter for this model. */
+	readonly protocol?: string;
+	/** WebSocket endpoint for socket protocols; `{key}` is filled from request options. */
+	readonly socketUrl?: string;
+	/** Request values merged under the user's options. */
+	readonly requestDefaults?: Readonly<Record<string, unknown>>;
+	/** Stored provider base URLs this model accepts. */
+	readonly baseUrlRule?: { readonly pattern: string; readonly example?: string };
+	readonly effort?: ModelEffort;
 	readonly cache?: ModelCache;
 	readonly clampEffort?: boolean;
 	readonly dsml?: boolean;
 	readonly reasoningContent?: 'roundtrip';
+	/** Chat: content-part type used for PDF attachments. */
+	readonly documentPart?: string;
+	/** Chat: replay assistant content chunks verbatim. */
+	readonly contentChunks?: 'roundtrip';
+	/** Chat: fold a text-only user message that follows a tool message into it. */
+	readonly mergeUserAfterTool?: boolean;
+	/** Submit path relative to url; `{model}` is the wire model id. */
+	readonly endpoint?: string;
+	/** Model id sent on the wire when it differs from the manifest id. */
+	readonly apiModelId?: string;
+	/** Wire name of the prompt field. */
+	readonly promptField?: string;
+	/** Instruction prefixes; `{text}` is replaced by the input text. */
+	readonly inputTemplates?: { readonly query?: string; readonly document?: string };
+	readonly harness?: ModelHarness;
 	readonly families?: readonly ModelFamily[];
 }
 
 export interface ModelCache {
 	readonly readTokens?: readonly string[];
 	readonly writeTokens?: readonly string[];
-	readonly requestDefaults?: Readonly<Record<string, unknown>>;
 	readonly sessionKey?: string;
 	readonly breakpoints?: readonly 'system'[];
 }
