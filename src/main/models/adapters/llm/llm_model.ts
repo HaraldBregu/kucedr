@@ -353,9 +353,10 @@ export class LlmModel implements LlmAdapter {
 		yield { type: 'message_end', stopReason, usage };
 	}
 
-	private *adaptOpenAIResponseEvent(
+	private *adaptResponseEvent(
 		event: ResponseStreamEvent,
 		usage: LlmUsage,
+		name: string,
 		cache: ModelCache | undefined,
 		stateFor: (
 			outputIndex: number,
