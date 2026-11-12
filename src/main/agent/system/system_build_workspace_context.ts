@@ -5,8 +5,7 @@ import { profileStatus } from './system_profile_status';
 
 export async function buildWorkspaceContext(
 	config: Config,
-	scope: 'full' | 'core' = 'full',
-	memory = ''
+	scope: 'full' | 'core' = 'full'
 ): Promise<string> {
 	const resolvedWorkspacePath = path.resolve(config.location);
 	const { profiles, missing } = await profileStatus(resolvedWorkspacePath);
