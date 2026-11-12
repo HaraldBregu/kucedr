@@ -85,8 +85,8 @@ export class LlmModel implements LlmAdapter {
 	constructor(options: LlmModelOptions = {}) {
 		this.provider = options.provider;
 		this.providerModelFactory = options.providerModelFactory;
-		this.openAIClientFactory = options.openAIClientFactory;
-		this.anthropicClientFactory = options.anthropicClientFactory;
+		this.chatClientFactory = options.chatClientFactory;
+		this.messagesClientFactory = options.messagesClientFactory;
 		this.reasoningEffortEnabled = options.reasoningEffortEnabled ?? false;
 		this.reasoningContentEnabled = options.reasoningContentEnabled ?? false;
 		this.thinkingModeEnabled = options.thinkingModeEnabled ?? false;
