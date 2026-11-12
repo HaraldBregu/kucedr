@@ -20,6 +20,7 @@ import { runScript } from '../tools/plugin/run';
 import { loadScript } from '../tools/plugin/load';
 import { pluginScripts } from '../../plugins';
 import { updateHealthTool } from '../tools/health/update';
+import { modelTools } from '../tools/model/tools';
 import { createImageTool } from '../tools/media/create_image';
 import { createSoundTool } from '../tools/media/create_sound';
 import { createVideoTool } from '../tools/media/create_video';
@@ -58,6 +59,7 @@ export function builtinTools(
 		...getSearchWebTools(),
 		fetchWebPageTool,
 		useWebBrowserTool,
+		...modelTools(),
 		createImageTool(),
 		createVideoTool(),
 		createSoundTool(),
