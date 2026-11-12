@@ -17,6 +17,8 @@ export interface SessionUsage {
 	context?: import('../../../shared/agent_types').AgentContextUsage;
 	inputTokens: number;
 	outputTokens: number;
+	cachedTokens?: number;
+	cacheWriteTokens?: number;
 }
 
 export interface SessionResult {
