@@ -147,7 +147,7 @@ export class RealtimeVoiceManager {
 				)
 				.catch(() => '');
 			controller.signal.throwIfAborted();
-			const connection = await this.dependencies.createAdapter(provider).connect(
+			const connection = await this.dependencies.createAdapter(provider, model).connect(
 				{
 					...adapterConfiguration,
 					contextForTurn: this.dependencies.memoryContext,
