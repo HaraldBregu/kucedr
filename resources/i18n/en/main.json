@@ -464,6 +464,7 @@
 				"remove": "Uninstall",
 				"disabledNotice": "This plugin is disabled, so its contents aren't loaded. Enable it to see them.",
 				"models": "Models",
+				"refreshModels": "Refresh models",
 				"remoteMcp": "Remote MCP servers",
 				"vectorDatabases": "Vector databases",
 				"services": "Services",
