@@ -183,6 +183,32 @@ export const NavigationBar = React.memo(function NavigationBar({
 				} />
 				<TooltipContent side="bottom">{searchLabel}</TooltipContent>
 			</Tooltip>
+			<Tooltip>
+				<TooltipTrigger render={
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon"
+						className="size-8 rounded-full dark:hover:bg-accent"
+						aria-label={t('settings.tabs.voice')}
+						onClick={() => {
+							setVoiceError(null);
+							void ensureAppMicrophoneAccess()
+								.then(() => window.win.openVoiceConversation(sessionId))
+								.catch((error: unknown) => {
+									setVoiceError(
+										error instanceof Error && error.message.trim()
+											? error.message
+											: 'Voice could not be opened.'
+									);
+								});
+						}}
+					>
+						<AudioLines className="size-4" strokeWidth={1.8} />
+					</Button>
+				} />
+				<TooltipContent side="bottom">{voiceError ?? t('settings.tabs.voice')}</TooltipContent>
+			</Tooltip>
 		</>
 	) : null;
 	return (
