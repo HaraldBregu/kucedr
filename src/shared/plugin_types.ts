@@ -40,6 +40,8 @@ export interface PluginScriptSchema {
 	readonly type?: string;
 	readonly title?: string;
 	readonly description?: string;
+	/** `directory` adds a folder picker to a text setting. */
+	readonly format?: string;
 	readonly enum?: readonly string[];
 	readonly default?: unknown;
 	readonly required?: readonly string[];
