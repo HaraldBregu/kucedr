@@ -94,11 +94,13 @@ export class Coder {
 		return this.dependencies.projects.list();
 	}
 	addProject(input?: CodingProjectCreate) {
-		if (input?.settings) this.validateSettings(input.settings);
+		if (input?.settings && !this.isKnown(input.settings))
+			throw new Error('Invalid Coder workspace configuration.');
 		return this.dependencies.projects.create(input);
 	}
 	updateProject(id: string, input: CodingProjectCreate) {
-		if (input?.settings) this.validateSettings(input.settings);
+		if (input?.settings && !this.isKnown(input.settings))
+			throw new Error('Invalid Coder workspace configuration.');
 		return this.dependencies.projects.update(id, input);
 	}
 	removeProject(id: string) {
