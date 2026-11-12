@@ -68,9 +68,8 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 						  metadataVoice.trim() &&
 						  supportedVoices.includes(metadataVoice.trim())
 						? metadataVoice.trim()
-						: (realtimeVoiceDefaultVoice(providerId) ?? '');
-			const supportsTools = supportsRealtimeVoiceTools(providerId, model.id);
-			const tools = supportsTools
+						: (supportedVoices[0] ?? '');
+			const tools = protocol.tools
 				? filterProfileTools(
 						builtinTools(agent.config, agent.sandbox, { ask: false, restricted: true }),
 						'voice'
