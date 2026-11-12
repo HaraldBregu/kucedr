@@ -3,6 +3,13 @@ import { AlertTriangle, SlidersHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import type { PluginScriptInfo } from '@shared/plugin_types';
 import { getErrorMessage } from '../../../../start/setupConstants';
