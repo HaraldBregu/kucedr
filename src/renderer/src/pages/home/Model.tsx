@@ -11,8 +11,10 @@ import type { ProviderModel } from '@shared/model_types';
 export function Model({
 	onContext,
 	workspace = false,
+	compact = false,
 }: {
 	workspace?: boolean;
+	compact?: boolean;
 	onContext?: (context: { providerId: string; modelId: string; contextWindow?: number }) => void;
 }): ReactElement {
 	const [groups, setGroups] = useState<{ id: string; discoveryLabel?: string; models: ProviderModel[] }[]>([]);
