@@ -1332,6 +1332,27 @@ describe('run stream system prompt', () => {
 		expect(execute).toHaveBeenCalledTimes(1);
 	});
 
+	it('exposes permitted model tools when tool search is disabled', async () => {
+		const modelTool = (id: string): Tool => jsonTool({
+			id, category: 'integration', name: id, description: 'Model operation',
+			schema: { type: 'object' }, execute: jest.fn(),
+		});
+		const allowed = modelTool('mdl__provider__model_fim');
+		const denied = modelTool('mdl__provider__model_edit');
+		for await (const _event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			{
+				runId: 'model-tools-no-search', task: 'chat', message: 'Complete code',
+				model: 'test-model', type: 'default', agentId: 'main', contextMode: 'minimal',
+				toolsDeny: ['tool_search', denied.id],
+			},
+			new AbortController().signal,
+			{ tools: [allowed, denied], progressiveDiscovery: true }
+		)) void _event;
+		expect((runModelTurnMock.mock.calls[0][5] as Tool[]).map((tool) => tool.id)).toEqual([allowed.id]);
+	});
+
 	it('uses cached MCP tools and exposes a match after tool_search', async () => {
 		const execute = jest.fn();
 		const mcpTool = jsonTool({

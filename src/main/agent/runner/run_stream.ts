@@ -355,6 +355,7 @@ async function* loop(
 				required: filterEligibleTools(tools).filter(
 					(tool) =>
 						requiredIds.has(tool.id) ||
+						(!searchEnabled && tool.id.startsWith('mdl__')) ||
 						(tool.policy?.kind === 'mcp' &&
 							preloadedMcpServers.has(tool.policy.serverId.toLocaleLowerCase()))
 				),
