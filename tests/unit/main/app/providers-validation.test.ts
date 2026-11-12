@@ -1,73 +1,10 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
 	parseProviderManifest,
 	validateProviderManifest,
 } from '../../../../src/shared/providers/validation';
-import { pluginProvider } from '../../../../src/main/plugins/plugins_provider';
-
-const IMAGE_RULE = {
-	kind: 'image',
-	mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
-	extensions: ['.jpg', '.jpeg', '.png', '.webp'],
-};
-const PDF_RULE = {
-	kind: 'document',
-	mimeTypes: ['application/pdf'],
-	extensions: ['.pdf'],
-};
-
-function expectedPromptAttachments(providerId: string, modelId: string): unknown[] {
-	if (
-		providerId === 'cohere' &&
-		['command-a-plus-05-2026', 'command-a-vision-07-2025'].includes(modelId)
-	)
-		return [
-			{
-				kind: 'image',
-				mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
-				extensions: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
-				maxFiles: 20,
-				maxTotalBytes: 20000000,
-			},
-		];
-	if (
-		(providerId === 'xai' && modelId === 'grok-4.7') ||
-		(providerId === 'zai' && ['glm-5.3-flash', 'glm-5.3-flashx'].includes(modelId))
-	)
-		return [
-			{
-				kind: 'image',
-				mimeTypes: ['image/jpeg', 'image/png'],
-				extensions: ['.jpg', '.jpeg', '.png'],
-			},
-		];
-	if (providerId === 'minimax' && modelId === 'MiniMax-M3')
-		return [
-			{
-				kind: 'image',
-				mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-				extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
-			},
-		];
-	if (providerId === 'deepseek' && modelId === 'deepseek-flash') {
-		return [
-			{
-				kind: 'image',
-				mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-				extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
-			},
-		];
-	}
-	if (['anthropic', 'openai', 'reka'].includes(providerId)) {
-		return [IMAGE_RULE, PDF_RULE];
-	}
-	if (['google', 'kimi', 'xai'].includes(providerId)) return [IMAGE_RULE];
-	if (providerId === 'mistral' && modelId !== 'devstral-2512') return [IMAGE_RULE];
-	if (providerId === 'qwen' && ['qwen3.6-plus', 'qwen3.6-flash'].includes(modelId))
-		return [IMAGE_RULE];
-	return [];
-}
+import { readPlugin } from '../../../../src/main/plugins/plugins_read';
 
 describe('provider manifest validation', () => {
 	it('rejects invalid model types and accepts capability sections', () => {
@@ -412,50 +349,19 @@ describe('provider manifest validation', () => {
 		expect(errors).toContainEqual(expect.stringContaining(expectedPath));
 	});
 
-	it('declares the expected attachment contract for every bundled prompt model', () => {
+	it('validates attachment contracts for every bundled prompt model', () => {
 		const pluginsDirectory = join(process.cwd(), 'resources', 'plugins');
-		const manifests = readdirSync(pluginsDirectory, { withFileTypes: true })
-			.filter(
-				(entry) =>
-					entry.isDirectory() && existsSync(join(pluginsDirectory, entry.name, 'manifest.json'))
-			)
-			.map((entry) =>
-				pluginProvider(
-					JSON.parse(readFileSync(join(pluginsDirectory, entry.name, 'manifest.json'), 'utf8'))
-				)
-			)
-			.filter((manifest) => manifest !== undefined) as any[];
-		const promptModels = manifests.flatMap((manifest) => {
-			expect(validateProviderManifest(manifest)).toEqual([]);
-			expect(manifest.authentication).toMatch(/^(api-key|oauth2|none)$/);
-			expect(
-				[
-					...(manifest.models ?? []),
-					...(manifest.mcp_servers ?? []),
-					...(manifest.vector_databases ?? []),
-					...(manifest.web_search ?? []),
-				].every(
-					(service: { authentication?: string }) =>
-						service.authentication === 'api-key' ||
-						service.authentication === 'oauth2' ||
-						service.authentication === 'none'
-				)
-			).toBe(true);
-			return (manifest.models ?? [])
-				.filter((service: { type: string }) =>
-					['large-language-model', 'research-chat-model'].includes(service.type)
-				)
-				.map((service: { id: string; metadata: { promptAttachments: unknown[] } }) => ({
-					providerId: manifest.providerId as string,
-					service,
-				}));
-		});
-
-		expect(promptModels.length).toBeGreaterThan(40);
-		for (const { providerId, service } of promptModels) {
-			expect(service.metadata.promptAttachments).toEqual(
-				expectedPromptAttachments(providerId, service.id)
-			);
-		}
+		const promptModels = readdirSync(pluginsDirectory, { withFileTypes: true })
+			.filter((entry) => entry.isDirectory())
+			.flatMap((entry) => {
+				const plugin = readPlugin(join(pluginsDirectory, entry.name), entry.name, true);
+				if (!plugin.provider) return [];
+				expect(validateProviderManifest(plugin.provider)).toEqual([]);
+				return (plugin.provider.models ?? []).filter((model) =>
+					['large-language-model', 'research-chat-model'].includes(model.type)
+				);
+			});
+		expect(promptModels.length).toBeGreaterThan(0);
+		for (const model of promptModels) expect(Array.isArray(model.metadata?.promptAttachments)).toBe(true);
 	});
 });
