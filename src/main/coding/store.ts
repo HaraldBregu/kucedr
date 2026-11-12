@@ -40,7 +40,7 @@ export class CodingStore {
 					toolMode: candidate.toolMode,
 					...(candidate.workingDirectory ? { workingDirectory: candidate.workingDirectory } : {}),
 				}
-			: { ...DEFAULT_CODING_SETTINGS, runtime: selected };
+			: { ...this.defaults(selected), runtime: selected };
 	}
 	set(settings: CodingSettings): CodingSettings {
 		if (!isCodingSettings(settings)) throw new Error('Invalid Coder settings.');
