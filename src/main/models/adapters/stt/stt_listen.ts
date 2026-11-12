@@ -11,12 +11,13 @@ import type {
 } from './stt_types';
 import type { SttTranscriptionResult, SttUsage } from '../../../../shared/stt_transcription';
 
-const DEEPGRAM_LISTEN_PATH = 'listen';
-const DEEPGRAM_FLUX_LISTEN_PATH = '../v2/listen';
-const DEEPGRAM_AUTH_SCHEME = 'Token';
-const DEEPGRAM_LINEAR16_ENCODING = 'linear16';
+const LISTEN_PATH = 'listen';
+const LISTEN_V2_PATH = '../v2/listen';
+const LISTEN_V2_PROTOCOL = 'listen-v2';
+const LISTEN_AUTH_SCHEME = 'Token';
+const LINEAR16_ENCODING = 'linear16';
 
-type DeepgramTranscriptionResponse = {
+type ListenTranscriptionResponse = {
 	metadata?: {
 		duration?: number;
 	};
