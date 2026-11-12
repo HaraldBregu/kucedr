@@ -22,8 +22,6 @@ type ReasoningContentBlock = Extract<LlmContentBlock, { type: 'reasoning' }>;
 
 const SUPPORTED_IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
-export type LlmChatContentProfile = 'image-only' | 'reka' | 'mistral';
-
 export function llmToTranscriptEntry(message: Message): LlmTranscriptEntry[] {
 	if (message.role === 'summary') {
 		return [
