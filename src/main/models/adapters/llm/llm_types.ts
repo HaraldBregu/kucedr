@@ -31,7 +31,12 @@ export interface LlmResponse {
 }
 
 export type LlmEvent =
-	| { type: 'model_call_start'; model: string; effort?: ModelReasoningEffort }
+	| {
+			type: 'model_call_start';
+			model: string;
+			effort?: ModelReasoningEffort;
+			prefix?: LlmPrefixHashes;
+	  }
 	| { type: 'model_call_delta'; delta: string }
 	| {
 			type: 'model_provider_item';
