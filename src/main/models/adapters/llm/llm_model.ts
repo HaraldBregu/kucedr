@@ -509,28 +509,26 @@ export class LlmModel implements LlmAdapter {
 		}
 	}
 
-	private async *streamAnthropic(
+	private async *streamMessages(
 		provider: LlmProviderSpec,
 		req: LlmStreamRequest,
 		cache: ModelCache | undefined
 	): AsyncIterable<LlmProviderEvent> {
-		const client = this.createAnthropicClient(provider);
+		const client = this.createMessagesClient(provider, req.model);
 		if (req.streaming === false) {
 			try {
-				yield* completeAnthropic(client, req, cache);
+				yield* completeMessages(client, req, cache);
 			} catch (error) {
 				this.throwProviderError(error);
 			}
 			return;
 		}
-		const tools: Anthropic.Messages.Tool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map(
-			(t) => ({
-				name: t.name,
-				description: t.description,
-				input_schema: t.schema as Anthropic.Messages.Tool.InputSchema,
-				...(t.inputExamples?.length ? { input_examples: [...t.inputExamples] } : {}),
-			})
-		);
+		const tools: Anthropic.Messages.Tool[] = req.tools.map((t) => ({
+			name: t.name,
+			description: t.description,
+			input_schema: t.schema as Anthropic.Messages.Tool.InputSchema,
+			...(t.inputExamples?.length ? { input_examples: [...t.inputExamples] } : {}),
+		}));
 
 		yield { type: 'message_start' };
 
@@ -546,12 +544,12 @@ export class LlmModel implements LlmAdapter {
 			const stream = client.messages.stream(
 				{
 					cache_control: { type: 'ephemeral' },
-					...requestOptions(provider.id.toLowerCase(), req),
+					...req.options,
 					model: req.model,
 					system: breakpoint(req.system, cache?.breakpoints?.includes('system')),
 					max_tokens: req.maxTokens,
 					tools: tools.length > 0 ? tools : undefined,
-					messages: llmBuildAnthropicMessages(req.messages),
+					messages: llmBuildMessages(req.messages),
 				},
 				{ signal: req.signal }
 			);
