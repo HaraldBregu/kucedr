@@ -5,6 +5,7 @@
 	"type": "large-language-model",
 	"url": "https://api.x.ai/v1",
 	"metadata": {
+		"clampEffort": true,
 		"promptAttachments": [
 			{
 				"kind": "image",
