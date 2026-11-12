@@ -39,15 +39,15 @@ it('declares a supported protocol on every bundled chat and discovery model', ()
 	expect(missing).toEqual([]);
 });
 
-it('routes bundled GPT-5.4 Mini to Responses and Mercury 3 to Chat Completions', async () => {
-	const responses = jest.fn().mockResolvedValue({
-		id: 'resp', status: 'completed',
-		output: [{ type: 'message', content: [{ type: 'output_text', text: 'openai answer' }] }],
-		usage: { input_tokens: 1, output_tokens: 1 },
-	});
-	const completions = jest.fn().mockResolvedValue({
-		choices: [{ message: { content: 'mercury answer' }, finish_reason: 'stop' }], usage: {},
-	});
+it.each([true, false])('routes bundled GPT-5.4 Mini and Mercury 3 with streaming=%s', async (streaming) => {
+	const responses = jest.fn().mockImplementation(async () => streaming
+		? (async function* () { yield { type: 'response.output_text.delta', delta: 'openai answer' }; })()
+		: { id: 'resp', status: 'completed',
+			output: [{ type: 'message', content: [{ type: 'output_text', text: 'openai answer' }] }],
+			usage: { input_tokens: 1, output_tokens: 1 } });
+	const completions = jest.fn().mockImplementation(async () => streaming
+		? (async function* () { yield { choices: [{ delta: { content: 'mercury answer' }, finish_reason: 'stop' }] }; })()
+		: { choices: [{ message: { content: 'mercury answer' }, finish_reason: 'stop' }], usage: {} });
 	const model = new LlmModel({
 		chatClientFactory: () => ({ responses: { create: responses }, chat: { completions: { create: completions } } }) as never,
 	});
@@ -58,12 +58,12 @@ it('routes bundled GPT-5.4 Mini to Responses and Mercury 3 to Chat Completions',
 		const events = [];
 		for await (const event of model.stream({
 			provider: { id: provider, apiKey: 'test' }, model: modelId,
-			messages: [{ role: 'user', content: 'Hello' }], maxTokens: 100, streaming: false,
+			messages: [{ role: 'user', content: 'Hello' }], maxTokens: 100, streaming,
 		})) events.push(event);
 		expect(events).toContainEqual({ type: 'model_call_delta', delta: answer });
 	}
 	expect(responses).toHaveBeenCalledTimes(1);
-	expect(responses.mock.calls[0][0]).toEqual(expect.objectContaining({ model: 'gpt-5.4-mini', stream: false }));
+	expect(responses.mock.calls[0][0]).toEqual(expect.objectContaining({ model: 'gpt-5.4-mini', stream: streaming }));
 	expect(completions).toHaveBeenCalledTimes(1);
-	expect(completions.mock.calls[0][0]).toEqual(expect.objectContaining({ model: 'mercury-3', stream: false }));
+	expect(completions.mock.calls[0][0]).toEqual(expect.objectContaining({ model: 'mercury-3', stream: streaming }));
 });
