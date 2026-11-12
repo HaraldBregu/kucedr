@@ -82,7 +82,7 @@ export class AppServerRpc {
 	}
 
 	close(): void {
-		this.fail(new Error('Codex connection closed.'));
+		this.fail(new Error(`${this.name} connection closed.`));
 		if (this.process.exitCode !== null) return;
 		this.process.kill();
 		const timer = setTimeout(() => {
