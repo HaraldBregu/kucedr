@@ -672,9 +672,18 @@ async function* loop(
 				toolProfile,
 				...(input.approvalWindowId === undefined ? {} : { windowId: input.approvalWindowId }),
 			};
+			const skillAllowed = new Set(
+				skillToolScopes
+					.reduce((allowed, scope) => selectSkillTools(allowed, scope), turnTools)
+					.map((tool) => tool.id)
+			);
+			const skillBlocked = pendingToolCalls.filter(
+				(call) => turnTools.some((tool) => tool.id === call.name) && !skillAllowed.has(call.name)
+			);
+			yield* skipToolCalls(skillBlocked, 'The loaded skill does not allow this tool.');
 			for await (const event of runToolCalls(
 				turnTools,
-				pendingToolCalls,
+				pendingToolCalls.filter((call) => !skillBlocked.includes(call)),
 				signal,
 				session.runContext.fileAccess,
 				security,
