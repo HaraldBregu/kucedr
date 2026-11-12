@@ -327,9 +327,10 @@ export class LlmModel implements LlmAdapter {
 		try {
 			const stream = await client.responses.create(params, { signal: req.signal });
 			for await (const event of stream) {
-				for (const providerEvent of this.adaptOpenAIResponseEvent(
+				for (const providerEvent of this.adaptResponseEvent(
 					event,
 					usage,
+					providerName(provider),
 					cache,
 					stateFor,
 					emitToolStart,
