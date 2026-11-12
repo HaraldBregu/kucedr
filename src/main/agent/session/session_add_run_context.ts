@@ -28,7 +28,11 @@ export function addRunContext(state: SessionState, context: string): void {
 	let index = state.messages.findLastIndex(
 		(message) => message.role === 'user' && !internal(message)
 	);
-	if (index > 0 && runContextText(state.messages[index - 1]) !== undefined) return;
+	if (index > 0 && runContextText(state.messages[index - 1]) !== undefined) {
+		if (state.lease && state.pendingMessages) return;
+		state.messages.splice(index - 1, 1);
+		index -= 1;
+	}
 	if (index === -1) index = state.messages.length;
 	const earlier = state.messages
 		.slice(0, index)
