@@ -2,7 +2,7 @@
 	"schemaVersion": 5,
 	"id": "openrouter",
 	"title": "OpenRouter",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Hundreds of models from every major provider through one API.",
 	"categories": [
 		"LLM"

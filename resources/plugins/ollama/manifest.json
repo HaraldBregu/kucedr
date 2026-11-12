@@ -2,7 +2,7 @@
 	"schemaVersion": 5,
 	"id": "ollama",
 	"title": "Ollama",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Run open models locally on your machine.",
 	"categories": [
 		"LLM"

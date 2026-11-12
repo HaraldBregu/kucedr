@@ -2,7 +2,7 @@
 	"schemaVersion": 5,
 	"id": "inception",
 	"title": "Inception",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Mercury diffusion language models for text generation.",
 	"categories": [
 		"LLM"
