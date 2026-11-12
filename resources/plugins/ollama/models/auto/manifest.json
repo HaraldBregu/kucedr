@@ -9,6 +9,7 @@
 	"modelsUrl": "http://localhost:11434/v1/models",
 	"modelUrl": "http://localhost:11434/v1/models/{id}",
 	"metadata": {
+			"protocol": "chat-completions",
 		"families": [
 			{
 				"match": "deepseek",

@@ -7,6 +7,7 @@
 	"apiKeyUrl": "https://platform.iteracompute.com",
 	"baseUrl": "https://api.iteracompute.com/v1",
 	"metadata": {
+			"protocol": "chat-completions",
 		"promptAttachments": [],
 		"documentationUrl": "https://iteracompute.com/docs.html",
 		"documentationStatus": "unverified",

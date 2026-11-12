@@ -5,6 +5,14 @@
 	"authentication": "api-key",
 	"url": "https://api.anthropic.com",
 	"metadata": {
+			"protocol": "messages",
+			"effort": {
+				"path": "output_config.effort",
+				"map": {
+					"none": "low",
+					"minimal": "low"
+				}
+			},
 		"clampEffort": true,
 		"cache": {
 			"breakpoints": [

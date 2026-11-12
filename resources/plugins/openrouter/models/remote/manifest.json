@@ -11,6 +11,20 @@
 	"location": "remote",
 	"discoveryOnly": true,
 	"metadata": {
+			"protocol": "chat-completions",
+			"effort": {
+				"path": "reasoning.effort",
+				"unset": [
+					"reasoning.max_tokens",
+					"reasoning.enabled",
+					"reasoning_effort"
+				],
+				"setWhenPresent": {
+					"provider": {
+						"require_parameters": true
+					}
+				}
+			},
 		"families": [
 			{
 				"match": "deepseek",

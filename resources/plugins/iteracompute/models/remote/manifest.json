@@ -10,6 +10,7 @@
 	"location": "remote",
 	"discoveryOnly": true,
 	"metadata": {
+			"protocol": "chat-completions",
 		"families": [
 			{
 				"match": "deepseek",
