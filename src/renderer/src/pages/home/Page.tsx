@@ -323,7 +323,7 @@ function VoiceButton({
 				type="button"
 				variant="ghost"
 				size="icon"
-				className={cn('size-9 rounded-full text-foreground hover:bg-muted [&_svg]:size-5', className)}
+				className={cn('size-9 rounded-full text-foreground hover:bg-muted dark:hover:bg-accent [&_svg]:size-5', className)}
 				aria-label="Dictate"
 				aria-description={reason}
 				disabled={isDisabled}
