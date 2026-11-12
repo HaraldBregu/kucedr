@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
-import { getProvider } from '../../../settings_store';
+import { findModel } from '../../../models';
 import { selectedVectorDatabaseConnection } from '../../../database/vector_connection';
-import { EMBEDDING_PROVIDERS } from '../../../models/embedding/embedding_providers';
+import { embeddingEndpoint } from '../../../models/embedding/endpoint';
 import type { RagConfiguration } from '../../../../shared/rag_types';
 
 export function ragRecipient(
@@ -20,19 +20,15 @@ export function ragRecipient(
 			.update(JSON.stringify(connection.adapter.consentRecipient(connection.apiKey, indexName)))
 			.digest('hex');
 	}
-	const provider = EMBEDDING_PROVIDERS[providerId];
-	const key = getProvider(providerId)?.apiKey.trim();
-	if (!provider) throw new Error('Select a supported embedding provider in Knowledge settings.');
-	if (provider.local) {
-		return createHash('sha256')
-			.update(
-				JSON.stringify([providerId, modelId, process.env.BGE_BASE_URL?.trim() || provider.url])
-			)
-			.digest('hex');
+	if (!findModel(providerId, 'embedding', modelId))
+		throw new Error('Select a supported embedding provider in Knowledge settings.');
+	const { model, url, apiKey } = embeddingEndpoint(providerId, modelId);
+	if (model.location === 'local') {
+		return createHash('sha256').update(JSON.stringify([providerId, modelId, url])).digest('hex');
 	}
-	if (!key)
-		throw new Error(`Configure your ${provider.name} API key in Settings → Providers → Models.`);
+	if (!apiKey && model.authentication !== 'none')
+		throw new Error(`Configure your ${model.provider.name} API key in Settings → Providers → Models.`);
 	return createHash('sha256')
-		.update(JSON.stringify([providerId, modelId, provider.url, key]))
+		.update(JSON.stringify([providerId, modelId, url, apiKey]))
 		.digest('hex');
 }
