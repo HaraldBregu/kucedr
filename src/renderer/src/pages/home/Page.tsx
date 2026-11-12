@@ -96,6 +96,7 @@ import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
 import { ExtensionPage, type OpenExtension } from './components/ExtensionPage';
 import { Model } from './Model';
+import { Usage } from './Usage';
 
 const StableHomeSidebar = memo(HomeSidebar);
 const StableModel = memo(Model);
