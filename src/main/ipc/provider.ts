@@ -7,7 +7,7 @@ import type {
 	StoredProvider,
 } from '../../shared/provider_types';
 import type { ProviderModel } from '../../shared/model_types';
-import { ProviderStoreChannels } from '../../shared/ipc_channels_definitions';
+import { AppChannels, ProviderStoreChannels } from '../../shared/ipc_channels_definitions';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import { loadProviders, loadVectorDatabases } from '../models';
