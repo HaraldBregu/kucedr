@@ -212,23 +212,28 @@ export class LlmModel implements LlmAdapter {
 		if (!provider) throw new Error('LlmModel requires a provider for LLM streaming.');
 
 		const id = provider.id.toLowerCase();
-		if (id === 'openai' || id === 'anthropic' || id === 'xai' || id === 'deepseek') {
-			const model = providerModels(id, 'llm').find((item) => item.id === req.model);
-			req = { ...req, effort: resolveModelEffort(req.effort, modelEfforts(model?.metadata)) };
+		const model = metadata(id, req.model);
+		const cache = model?.cache;
+		const options: Record<string, unknown> = { ...cache?.requestDefaults, ...req.options };
+		if (cache?.sessionKey && req.sessionId && options[cache.sessionKey] === undefined)
+			options[cache.sessionKey] = req.sessionId;
+		req = { ...req, options };
+		if (model?.clampEffort) {
+			req = { ...req, effort: resolveModelEffort(req.effort, modelEfforts(model)) };
 		}
 		if (id === 'anthropic') {
-			yield* this.streamAnthropic(provider, req);
+			yield* this.streamAnthropic(provider, req, cache);
 			return;
 		}
 		if (id === 'openai') {
-			yield* this.streamOpenAIResponses(provider, req);
+			yield* this.streamOpenAIResponses(provider, req, cache);
 			return;
 		}
-		if (id === 'deepseek' || /deepseek/i.test(req.model)) {
-			yield* dsml(this.streamOpenAIChat(provider, req));
+		if (model?.dsml) {
+			yield* dsml(this.streamOpenAIChat(provider, req, model));
 			return;
 		}
-		yield* this.streamOpenAIChat(provider, req);
+		yield* this.streamOpenAIChat(provider, req, model);
 	}
 
 	private async *streamOpenAIResponses(
