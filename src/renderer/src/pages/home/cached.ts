@@ -8,8 +8,11 @@ export function cachedPercent(messages: readonly HomeChatMessage[]): {
 	let cached = 0;
 	let input = 0;
 	for (const message of messages) {
-		if (message.role !== 'agent' || message.cachedTokens === undefined || !message.inputTokens)
+		if (message.role !== 'agent' || !message.inputTokens) continue;
+		if (message.cachedTokens === undefined) {
+			last = undefined;
 			continue;
+		}
 		last = Math.min(100, Math.round((message.cachedTokens / message.inputTokens) * 100));
 		cached += message.cachedTokens;
 		input += message.inputTokens;
