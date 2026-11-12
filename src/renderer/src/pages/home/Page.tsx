@@ -800,7 +800,7 @@ function PageContent(): ReactElement {
 			}}
 			className={cn(
 				'z-20 flex justify-center',
-				showEmptyConversation ? 'w-full shrink-0 px-2' : 'absolute inset-x-0 bottom-0 pb-5 pt-3'
+				showEmptyConversation ? 'w-full shrink-0 px-2' : 'absolute inset-x-0 bottom-0 pb-2 pt-3'
 			)}
 		>
 			{showEmptyConversation ? null : (
