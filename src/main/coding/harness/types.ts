@@ -7,6 +7,20 @@ import type {
 	CoderInteraction,
 	CoderInteractionResponse,
 } from '../../../shared/coding_types';
+import type { ModelHarness } from '../../../shared/model_types';
+import type { AuthenticationType } from '../../../shared/provider_types';
+
+export interface HarnessOptions {
+	readonly directory: string;
+	readonly name: string;
+	readonly provider: {
+		readonly id: string;
+		readonly name: string;
+		readonly authentication?: AuthenticationType;
+	};
+	readonly harness: ModelHarness;
+	readonly getApiKey: () => string | undefined;
+}
 
 type StripContext<T> = T extends unknown ? Omit<T, 'runId' | 'projectId' | 'sessionId'> : never;
 export type HarnessEvent = StripContext<CodingResponseEvent>;
