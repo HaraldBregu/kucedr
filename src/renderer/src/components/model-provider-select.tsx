@@ -171,7 +171,9 @@ export function ModelProviderSelect({
 							) : null;
 						})()}
 					<span className="min-w-0 truncate capitalize">{buttonLabel}</span>
-					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+					{!nameOnly && (
+						<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+					)}
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent
