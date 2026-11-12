@@ -490,33 +490,36 @@ async function* loop(
 				promptKey = turnKey;
 			}
 			let systemPrompt = builtPrompt;
-			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
-			const protectedSkillPrompt = [
-				loadedSkillPrompt,
-				extension?.protectedPrompt,
-				finalization?.instruction,
-				synthesisOnly
-					? 'Provide a non-empty final answer using the available results. Do not call tools or claim unexecuted actions succeeded.'
-					: '',
-			]
-				.filter(Boolean)
-				.join('\n\n');
+			const loadedSkills = session.runContext.loadedSkills;
+			if (loadedSkills.length > notedSkills) {
+				addInternalMessage(session, buildLoadedSkillPrompt(loadedSkills.slice(notedSkills)));
+				notedSkills = loadedSkills.length;
+			}
+			const extensionContext = extended ? (extension?.context() ?? '') : '';
+			if (extensionContext && extensionContext !== notedExtensionContext) {
+				addInternalMessage(session, extensionContext);
+				notedExtensionContext = extensionContext;
+			}
+			if (finalization && finalization !== notedFinalization) {
+				addInternalMessage(session, finalization.instruction);
+				notedFinalization = finalization;
+			}
+			if (synthesisOnly && !notedSynthesis) {
+				addInternalMessage(
+					session,
+					'Provide a non-empty final answer using the available results. Do not call tools or claim unexecuted actions succeeded.'
+				);
+				notedSynthesis = true;
+			}
 			const workspaceContext = await buildWorkspaceContext(
 				config,
 				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core'
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			if (extension?.prompt) systemPrompt += `\n\n${extension.prompt}`;
-			const extensionContext = extended ? extension?.context() : '';
-			if (extensionContext) systemPrompt += `\n\n${extensionContext}`;
-			if (runMessageIndex === -1) systemPrompt += `\n\n${runContext}`;
-			const messages = attachRunContext(
-				promptCapabilities
-					? projectPromptAttachments(session.messages, promptCapabilities)
-					: session.messages,
-				runMessageIndex,
-				runContext
-			);
+			const messages = promptCapabilities
+				? projectPromptAttachments(session.messages, promptCapabilities)
+				: session.messages;
 			const turn = yield* runModelTurn(
 				input,
 				provider,
