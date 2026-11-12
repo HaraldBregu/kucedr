@@ -450,6 +450,7 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 			contextUsage: message.usage?.context,
 			inputTokens: message.usage?.inputTokens,
 			outputTokens: message.usage?.outputTokens,
+			cachedTokens: message.usage?.cachedTokens,
 		});
 	});
 	return out.map((message) => {
