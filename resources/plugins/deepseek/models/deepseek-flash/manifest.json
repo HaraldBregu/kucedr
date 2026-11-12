@@ -5,6 +5,9 @@
 	"authentication": "api-key",
 	"url": "https://api.deepseek.com",
 	"metadata": {
+		"clampEffort": true,
+		"dsml": true,
+		"reasoningContent": "roundtrip",
 		"promptAttachments": [
 			{
 				"kind": "image",
