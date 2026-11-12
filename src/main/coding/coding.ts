@@ -83,9 +83,11 @@ export class Coder {
 	saveLayout(layout: CoderLayout): CoderLayout {
 		return this.dependencies.store.setLayout(layout);
 	}
-	setApiKey(key: string, runtime?: CoderHarness): void {
+	setApiKey(provider: string, key: string, runtime?: CoderHarness): void {
 		if (typeof key !== 'string') throw new Error('Invalid Coder API key.');
-		this.credentials.set(this.entry(this.getSettings(runtime).runtime).credentialKey, key);
+		const entry = this.entry(this.getSettings(runtime).runtime);
+		if (provider !== entry.info.provider.id) throw new Error('Invalid Coder provider.');
+		this.credentials.set(entry.credentialKey, key);
 	}
 	listModels(runtime?: CoderHarness) {
 		return this.requireHarness(this.getSettings(runtime).runtime).listModels();
@@ -311,7 +313,7 @@ export class Coder {
 			const output =
 				request.mode === 'shell'
 					? await executeCommand(request.input, context)
-					: await this.harnesses[session.runtime].run(request.input, context);
+					: await this.requireHarness(session.runtime).run(request.input, context);
 			run.controller.signal.throwIfAborted();
 			publish({ type: 'status', status: 'completed' });
 			this.dependencies.projects.touch(session.projectId);
@@ -380,11 +382,12 @@ export class Coder {
 		this.auth.set(ownerId, controller);
 		const timer = setTimeout(() => controller.abort(), 10 * 60 * 1000);
 		try {
-			const harness = this.harnesses[selected];
+			const harness = this.requireHarness(selected);
 			if (!harness.connect) throw new Error('Save an API key to connect this harness.');
 			const status = await harness.connect(controller.signal, emit);
-			if (selected === 'codex' && status.configured && this.credentials.get('openai', 'codex'))
-				this.credentials.set('openai', '', 'codex');
+			const entry = this.entry(selected);
+			if (entry.model.authentication === 'oauth2' && status.configured && this.credentials.get(entry.credentialKey))
+				this.credentials.set(entry.credentialKey, '');
 			return status;
 		} finally {
 			clearTimeout(timer);
@@ -399,14 +402,15 @@ export class Coder {
 	}
 	async disconnectCodex(runtime?: CoderHarness): Promise<void> {
 		const selected = this.getSettings(runtime).runtime;
-		await this.harnesses[selected].disconnect?.();
-		if (selected === 'codex' && this.credentials.get('openai', 'codex'))
-			this.credentials.set('openai', '', 'codex');
+		await this.requireHarness(selected).disconnect?.();
+		const entry = this.entry(selected);
+		if (entry.model.authentication === 'oauth2' && this.credentials.get(entry.credentialKey))
+			this.credentials.set(entry.credentialKey, '');
 	}
 	destroy(): void {
 		for (const run of this.runs.values()) run.controller.abort();
 		for (const controller of this.auth.values()) controller.abort();
-		for (const harness of Object.values(this.harnesses)) harness.destroy?.();
+		for (const harness of this.harnesses.values()) harness.destroy?.();
 		this.runs.clear();
 		this.auth.clear();
 	}
@@ -429,13 +433,42 @@ export class Coder {
 		return project;
 	}
 	private validateHarness(runtime?: CoderHarness): void {
-		if (runtime !== undefined && !CODER_HARNESSES.includes(runtime))
-			throw new Error('Invalid Coder harness.');
+		if (runtime !== undefined) this.entry(runtime);
 	}
 	private validateSettings(settings: CodingSettings): void {
-		if (!isCodingSettings(settings)) throw new Error('Invalid Coder settings.');
-		if (settings.runtime === 'codex' && settings.providerId !== 'openai-codex')
-			throw new Error('Codex requires the Codex provider.');
+		if (!this.isKnown(settings)) throw new Error('Invalid Coder settings.');
+	}
+	private isKnown(settings: CodingSettings): boolean {
+		return isCodingSettings(settings) && codingHarnesses().some(
+			(entry) => entry.info.id === settings.runtime && entry.info.provider.id === settings.providerId
+		);
+	}
+	private entry(runtime: CoderHarness): CodingHarnessEntry {
+		const entry = codingHarnesses().find((item) => item.info.id === runtime);
+		if (!entry) throw new Error('Invalid Coder harness.');
+		return entry;
+	}
+	private instructionFiles(runtime: CoderHarness): readonly string[] {
+		const files = this.entry(runtime).model.metadata?.harness?.instructionFiles;
+		if (!files?.length) throw new Error('Coder harness has no instruction files.');
+		return files;
+	}
+	private requireHarness(runtime: CoderHarness): CodingHarness {
+		const cached = this.harnesses.get(runtime);
+		if (cached) return cached;
+		const entry = this.entry(runtime);
+		const metadata = entry.model.metadata;
+		const factory = metadata?.protocol && HARNESS_PROTOCOLS[metadata.protocol];
+		if (!factory || !metadata?.harness) throw new Error('Coder harness has no supported protocol.');
+		const harness = factory({
+			directory: path.join(userDataLocation(), 'coder', runtime),
+			name: entry.info.name,
+			provider: { ...entry.info.provider, authentication: entry.model.authentication },
+			harness: metadata.harness,
+			getApiKey: () => this.credentials.get(entry.credentialKey),
+		});
+		this.harnesses.set(runtime, harness);
+		return harness;
 	}
 }
 
