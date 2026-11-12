@@ -191,8 +191,6 @@ export const ONBOARDING_STEP_TITLES: Record<OnboardingStep, string> = {
 	plugins: 'Plugins',
 };
 
-export const MASKED_API_KEY_LABEL = 'sk-************' as const;
-
 export const STEP_COPY: Record<SetupStep, { title: string; description: string }> = {
 	modelProvider: {
 		title: 'Model providers',
