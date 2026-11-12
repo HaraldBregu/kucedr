@@ -15,14 +15,12 @@ export function modelOutputLimit(
 	const metadata = findModel(providerId, 'llm', modelId)?.metadata;
 	const inputs = metadata?.inputs;
 	const contract = inputs?.max_output_tokens ?? inputs?.max_tokens;
-	const maximum = contract?.maximum ?? (metadata ? undefined : liveMaximum);
+	const live = metadata ? undefined : liveMaximum;
+	const maximum = contract?.maximum ?? live;
 	const catalogDefault = metadata?.defaultOutputTokens ?? contract?.default;
 	const fallback =
 		typeof maximum === 'number'
-			? Math.min(
-					maximum,
-					maximum === liveMaximum ? LIVE_MODEL_OUTPUT_TOKENS : DEFAULT_MODEL_OUTPUT_TOKENS
-				)
+			? Math.min(maximum, live ? LIVE_MODEL_OUTPUT_TOKENS : DEFAULT_MODEL_OUTPUT_TOKENS)
 			: DEFAULT_MODEL_OUTPUT_TOKENS;
 	const selected = configured ?? (typeof catalogDefault === 'number' ? catalogDefault : fallback);
 	const bounded = typeof maximum === 'number' ? Math.min(selected, maximum) : selected;
