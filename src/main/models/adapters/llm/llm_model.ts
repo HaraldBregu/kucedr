@@ -666,6 +666,7 @@ export class LlmModel implements LlmAdapter {
 							: provider.id.toLowerCase() === 'mistral'
 								? 'mistral'
 								: 'image-only',
+					cacheSystem: model?.cache?.breakpoints?.includes('system'),
 				}),
 				tools: tools.length > 0 ? tools : undefined,
 				tool_choice: tools.length > 0 ? 'auto' : undefined,
