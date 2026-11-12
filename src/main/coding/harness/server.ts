@@ -166,8 +166,9 @@ export class AppServerHarness implements CodingHarness {
 				}
 			} else if (method === 'turn/completed') {
 				const turn = params.turn as { status: string; error?: { message: string } };
-				if (turn.status === 'failed') fail(new Error(turn.error?.message ?? 'Codex run failed.'));
-				else if (turn.status === 'interrupted') fail(new Error('Codex run cancelled.'));
+				if (turn.status === 'failed')
+					fail(new Error(turn.error?.message ?? `${this.name} run failed.`));
+				else if (turn.status === 'interrupted') fail(new Error(`${this.name} run cancelled.`));
 				else finish();
 			}
 		};
