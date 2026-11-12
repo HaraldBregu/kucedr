@@ -36,6 +36,7 @@ jest.mock('../../../../../src/main/agent/session/session_session_dir', () => ({
 jest.mock('../../../../../src/main/settings_store', () => ({
 	getModelId: jest.fn(() => 'test-model'),
 	getResolvedProvider: jest.fn(() => ({ id: 'test-provider', apiKey: 'key' })),
+	getProvider: jest.fn(),
 }));
 
 jest.mock('../../../../../src/main/agent/runner/run_model_turn', () => ({
