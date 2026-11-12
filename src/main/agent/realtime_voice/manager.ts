@@ -16,6 +16,7 @@ import type {
 	RealtimeVoiceAdapterRequest,
 	RealtimeVoiceConnection,
 	RealtimeVoiceHistoryMessage,
+	RealtimeVoiceModelSpec,
 	RealtimeVoiceProviderSpec,
 } from '../../models/adapters/realtime_voice';
 import type { RealtimeVoiceConversation, RealtimeVoiceConversationFactory } from './conversation';
