@@ -2,15 +2,13 @@ import { realpathSync, mkdtempSync, mkdirSync, readFileSync, readdirSync } from 
 import path from 'node:path';
 import os from 'node:os';
 
-jest.mock('../../../../src/main/coding/pi', () => ({
-	Pi: jest.fn().mockImplementation(() => ({
-		listSessions: async () => [],
-		destroy: jest.fn(),
-		cancelCodexLogin: jest.fn(),
-	})),
+jest.mock('../../../../src/main/coding/harnesses', () => ({
+	codingHarnesses: () => [{
+		info: { id: 'codex', name: 'Codex', provider: { id: 'openai-codex', name: 'OpenAI Codex' } },
+		model: { authentication: 'oauth2', metadata: { harness: { instructionFiles: ['AGENTS.md'] } } },
+		credentialKey: 'codex:openai',
+	}],
 }));
-jest.mock('../../../../src/main/coding/harness/codex', () => ({ CodexHarness: jest.fn() }));
-jest.mock('../../../../src/main/coding/harness/cline', () => ({ ClineHarness: jest.fn() }));
 
 import { Coding } from '../../../../src/main/coding/coding';
 import { CoderSessions } from '../../../../src/main/coding/sessions';
