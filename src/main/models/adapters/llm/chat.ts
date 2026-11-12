@@ -1,9 +1,9 @@
 import OpenAI from 'openai';
 import { content } from './content';
 import type { ModelReasoningEffort } from '../../../../shared/agent_types';
-import type { ModelCache } from '../../../../shared/model_types';
+import type { ModelMetadata } from '../../../../shared/model_types';
 import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
-import { llmBuildChatMessages, llmToDeepSeekReasoningEffort } from './llm_shared';
+import { llmBuildChatMessages, llmThinkingEffort } from './llm_shared';
 import { tokens } from './tokens';
 
 export async function* chat(
@@ -13,27 +13,24 @@ export async function* chat(
 		reasoningContentEnabled: boolean;
 		reasoningEffortEnabled: boolean;
 		thinkingModeEnabled: boolean;
-		contentProfile: 'image-only' | 'reka' | 'mistral';
-		cache?: ModelCache;
+		model?: ModelMetadata;
 	}
 ): AsyncIterable<LlmProviderEvent> {
-	const tools: OpenAI.ChatCompletionTool[] = (req.model === 'reka-flash-3' ? [] : req.tools).map(
-		(tool) => ({
-			type: 'function',
-			function: {
-				name: tool.name,
-				description: tool.description,
-				parameters: tool.schema as Record<string, unknown>,
-			},
-		})
-	);
+	const tools: OpenAI.ChatCompletionTool[] = req.tools.map((tool) => ({
+		type: 'function',
+		function: {
+			name: tool.name,
+			description: tool.description,
+			parameters: tool.schema as Record<string, unknown>,
+		},
+	}));
 	const params: Record<string, unknown> = {
 		...req.options,
 		model: req.model,
 		messages: llmBuildChatMessages(req.system, req.messages, {
 			includeReasoningContent: options.reasoningContentEnabled,
-			contentProfile: options.contentProfile,
-			cacheSystem: options.cache?.breakpoints?.includes('system'),
+			model: options.model,
+			cacheSystem: options.model?.cache?.breakpoints?.includes('system'),
 		}),
 		tools: tools.length > 0 ? tools : undefined,
 		tool_choice: tools.length > 0 ? 'auto' : undefined,
@@ -45,7 +42,7 @@ export async function* chat(
 		params.thinking = { type: req.effort === 'none' ? 'disabled' : 'enabled' };
 	}
 	if (options.reasoningEffortEnabled) {
-		const effort = llmToDeepSeekReasoningEffort(req.effort as ModelReasoningEffort | undefined);
+		const effort = llmThinkingEffort(req.effort as ModelReasoningEffort | undefined);
 		if (effort) params.reasoning_effort = effort;
 	}
 	const response = await client.chat.completions.create(
