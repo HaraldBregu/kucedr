@@ -852,7 +852,8 @@ function PageContent(): ReactElement {
 										{modelSelect}
 										{modelContext?.modelId ? (
 											<Usage
-												className="h-7 hover:bg-transparent"
+												className="h-7 rounded-md hover:bg-transparent"
+												ringOnly
 												providerId={modelContext.providerId}
 												modelId={modelContext.modelId}
 												contextWindow={modelContext.contextWindow}
