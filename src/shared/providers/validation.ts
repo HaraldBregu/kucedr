@@ -235,6 +235,26 @@ export function validateProviderManifest(value: unknown): string[] {
 					errors.push(`${itemPath}.metadata must be an object for prompt models.`);
 				} else if (typeof metadata === 'object' && metadata !== null && !Array.isArray(metadata)) {
 					const attachments = (metadata as Record<string, unknown>).promptAttachments;
+					const operations = (metadata as Record<string, unknown>).operations;
+					if (operations !== undefined) {
+						const operationsPath = `${itemPath}.metadata.operations`;
+						if (typeof operations !== 'object' || operations === null || Array.isArray(operations)) {
+							errors.push(`${operationsPath} must be an object.`);
+						} else {
+							for (const [name, value] of Object.entries(operations)) {
+								const operationPath = `${operationsPath}.${name}`;
+								if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+									errors.push(`${operationPath} must be an object.`);
+									continue;
+								}
+								const operation = value as Record<string, unknown>;
+								if (!isNonEmptyString(operation.endpoint)) errors.push(`${operationPath}.endpoint must be a non-empty string.`);
+								if (!isNonEmptyString(operation.description)) errors.push(`${operationPath}.description must be a non-empty string.`);
+								if (typeof operation.inputSchema !== 'object' || operation.inputSchema === null || Array.isArray(operation.inputSchema))
+									errors.push(`${operationPath}.inputSchema must be an object.`);
+							}
+						}
+					}
 					if (isPromptModel && attachments === undefined)
 						errors.push(
 							`${itemPath}.metadata.promptAttachments must be declared for prompt models.`
