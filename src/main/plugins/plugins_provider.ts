@@ -44,6 +44,10 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 				.map((key) => [key, modelUrls[key]])
 		),
 		...fields,
+		...(website && { website }),
+		...(iconFullBleed && { iconFullBleed }),
+		...(order !== undefined && { order }),
+		...(baseUrlSetting && { baseUrlSetting }),
 	};
 	const errors = validateProviderManifest(provider);
 	if (errors.length > 0) throw new Error(errors.join(' '));
