@@ -352,6 +352,7 @@ function PromptInput({
 	actions,
 	trailingAction,
 	footerContent,
+	belowContent,
 	detachedControls = false,
 	disabled = false,
 	textareaRef: externalTextareaRef,
