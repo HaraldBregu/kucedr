@@ -27,20 +27,16 @@ interface BidiMessage {
 	};
 }
 
-export function createGoogleRealtimeVoiceAdapter(
+export function createBidiVoiceAdapter(
 	provider: RealtimeVoiceProviderSpec,
+	model: RealtimeVoiceModelSpec,
 	socketFactory: (url: string) => WebSocket = (url) => new WebSocket(url)
 ): RealtimeVoiceAdapter {
 	return {
 		async connect(request, emit, signal) {
 			signal?.throwIfAborted();
-			if (!provider.apiKey) throw new Error('Google API key not configured.');
-			if (!GOOGLE_LIVE_MODELS.some((id) => id === request.modelId)) {
-				throw new Error(`Google realtime voice model is not supported: ${request.modelId}`);
-			}
-			const url = new URL(
-				'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent'
-			);
+			if (!provider.apiKey) throw new Error(`${provider.name} API key not configured.`);
+			const url = realtimeVoiceSocketUrl(model, request.options, provider.name);
 			url.searchParams.set('key', provider.apiKey);
 			const socket = socketFactory(url.toString());
 			let closed = false;
