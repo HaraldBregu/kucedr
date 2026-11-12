@@ -1,0 +1,193 @@
+{
+	"id": "mercury-edit-2",
+	"name": "Mercury Edit 2",
+	"type": "code-completion-model",
+	"authentication": "api-key",
+	"url": "https://api.inceptionlabs.ai/v1",
+	"metadata": {
+		"documentationUrl": "https://docs.inceptionlabs.ai/get-started/models",
+		"documentationStatus": "verified",
+		"inputs": {},
+		"operations": {
+			"fim": {
+				"endpoint": "/fim/completions",
+				"description": "Generate code between a prefix and an optional suffix.",
+				"inputSchema": {
+					"properties": {
+						"prompt": {
+							"type": "string",
+							"title": "Prompt",
+							"description": "The prompt to complete."
+						},
+						"suffix": {
+							"type": "string",
+							"title": "Suffix",
+							"description": "The suffix to complete."
+						},
+						"max_tokens": {
+							"type": "integer",
+							"title": "Max Tokens",
+							"description": "Maximum number of tokens to generate.",
+							"default": 512,
+							"minimum": 1,
+							"maximum": 8192
+						},
+						"top_p": {
+							"type": "number",
+							"title": "Top P",
+							"description": "Float that controls the cumulative probability of the top tokens to consider.",
+							"default": 1.0,
+							"minimum": 0.0,
+							"maximum": 1.0
+						},
+						"top_k": {
+							"type": "integer",
+							"title": "Top K",
+							"description": "Limits sampling to the `k` most likely tokens. Must be `-1` (disables the cutoff and considers all tokens) or an integer from 1 to 1000; other values such as 0 are rejected.",
+							"default": -1,
+							"minimum": -1,
+							"maximum": 1000,
+							"anyOf": [
+								{
+									"const": -1
+								},
+								{
+									"type": "integer",
+									"minimum": 1,
+									"maximum": 1000
+								}
+							]
+						},
+						"frequency_penalty": {
+							"type": "number",
+							"title": "Frequency Penalty",
+							"description": "Number between -2 and 2. Positive values penalize tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.",
+							"default": 0.0,
+							"minimum": -2.0,
+							"maximum": 2.0
+						},
+						"presence_penalty": {
+							"type": "number",
+							"title": "Presence Penalty",
+							"description": "Number between -2 and 2. Positive values penalize tokens based on whether they have appeared in the text so far, increasing the model's likelihood to talk about new topics.",
+							"default": 1.5,
+							"minimum": -2.0,
+							"maximum": 2.0
+						},
+						"repetition_penalty": {
+							"type": "number",
+							"title": "Repetition Penalty",
+							"description": "Penalizes tokens that have already appeared in the generated text. Must be greater than 0. Values greater than 1.0 discourage repetition; 1.0 applies no penalty.",
+							"default": 1.0,
+							"exclusiveMinimum": 0
+						},
+						"stop": {
+							"items": {
+								"type": "string"
+							},
+							"type": "array",
+							"title": "Stop",
+							"description": "A list of sequences where the API will stop generating further tokens. The returned text will not contain the stop sequences. Defaults to common code-block boundaries.",
+							"default": [
+								"\n\n",
+								"\n \n"
+							]
+						}
+					},
+					"type": "object",
+					"required": [
+						"prompt"
+					],
+					"title": "FIMCompletionRequest"
+				}
+			},
+			"edit": {
+				"endpoint": "/edit/completions",
+				"description": "Predict a code edit from a single user message with tagged file context, editable region, and cursor.",
+				"inputSchema": {
+					"properties": {
+						"messages": {
+							"items": {
+								"properties": {
+									"role": {
+										"type": "string",
+										"const": "user",
+										"title": "Role",
+										"description": "Edit requests only accept user messages.",
+										"default": "user"
+									},
+									"content": {
+										"anyOf": [
+											{
+												"type": "string"
+											},
+											{
+												"items": {
+													"additionalProperties": true,
+													"type": "object"
+												},
+												"type": "array"
+											}
+										],
+										"title": "Content",
+										"description": "The content of the edit request. Must contain the required edit prompt tags."
+									}
+								},
+								"type": "object",
+								"required": [
+									"content",
+									"role"
+								],
+								"title": "EditMessageParam",
+								"description": "Edit request message. Edit endpoints only accept a single user message."
+							},
+							"type": "array",
+							"title": "Messages",
+							"minItems": 1,
+							"maxItems": 1
+						},
+						"max_tokens": {
+							"type": "integer",
+							"title": "Max Tokens",
+							"description": "Maximum number of tokens to generate.",
+							"default": 1024,
+							"minimum": 1,
+							"maximum": 8192
+						},
+						"temperature": {
+							"type": "number",
+							"title": "Temperature",
+							"description": "What sampling temperature to use, between 0 and 2. Higher values make the output more random; lower values make it more focused and deterministic.",
+							"default": 0.2,
+							"minimum": 0.0,
+							"maximum": 2.0
+						},
+						"top_p": {
+							"type": "number",
+							"title": "Top P",
+							"description": "Float that controls the cumulative probability of the top tokens to consider.",
+							"default": 1.0,
+							"minimum": 0.0,
+							"maximum": 1.0
+						},
+						"presence_penalty": {
+							"type": "number",
+							"title": "Presence Penalty",
+							"description": "Number between -2 and 2. Positive values penalize tokens based on whether they have appeared in the text so far, increasing the model's likelihood to talk about new topics.",
+							"default": 1.0,
+							"minimum": -2.0,
+							"maximum": 2.0
+						}
+					},
+					"type": "object",
+					"required": [
+						"messages"
+					],
+					"title": "EditCompletionRequest"
+				}
+			}
+		},
+		"contextWindow": 32000
+	},
+	"location": "remote"
+}

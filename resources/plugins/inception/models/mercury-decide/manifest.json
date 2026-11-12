@@ -1,0 +1,253 @@
+{
+	"id": "mercury-decide",
+	"name": "Mercury Decide",
+	"type": "decision-model",
+	"authentication": "api-key",
+	"url": "https://api.inceptionlabs.ai/v1",
+	"metadata": {
+		"documentationUrl": "https://docs.inceptionlabs.ai/api-reference/decisions/create-a-decision",
+		"documentationStatus": "verified",
+		"inputs": {},
+		"operations": {
+			"decision": {
+				"endpoint": "/decisions",
+				"description": "Classify, score, or extract answers from shared context using named questions.",
+				"inputSchema": {
+					"properties": {
+						"state": {
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"additionalProperties": {},
+									"type": "object"
+								},
+								{
+									"items": {},
+									"type": "array"
+								}
+							],
+							"title": "State"
+						},
+						"questions": {
+							"additionalProperties": {
+								"oneOf": [
+									{
+										"properties": {
+											"type": {
+												"type": "string",
+												"const": "noul",
+												"title": "Type"
+											},
+											"instructions": {
+												"anyOf": [
+													{
+														"type": "string"
+													},
+													{
+														"additionalProperties": {},
+														"type": "object"
+													},
+													{
+														"items": {},
+														"type": "array"
+													},
+													{
+														"type": "null"
+													}
+												],
+												"title": "Instructions"
+											},
+											"criteria": {
+												"anyOf": [
+													{
+														"properties": {
+															"true": {
+																"anyOf": [
+																	{
+																		"type": "string"
+																	},
+																	{
+																		"additionalProperties": {},
+																		"type": "object"
+																	},
+																	{
+																		"items": {},
+																		"type": "array"
+																	},
+																	{
+																		"type": "null"
+																	}
+																],
+																"title": "True"
+															},
+															"false": {
+																"anyOf": [
+																	{
+																		"type": "string"
+																	},
+																	{
+																		"additionalProperties": {},
+																		"type": "object"
+																	},
+																	{
+																		"items": {},
+																		"type": "array"
+																	},
+																	{
+																		"type": "null"
+																	}
+																],
+																"title": "False"
+															}
+														},
+														"type": "object",
+														"title": "NoulCriteria",
+														"required": []
+													},
+													{
+														"type": "null"
+													}
+												]
+											}
+										},
+										"type": "object",
+										"required": [
+											"type"
+										],
+										"title": "NoulQuestion"
+									},
+									{
+										"properties": {
+											"type": {
+												"type": "string",
+												"const": "choice",
+												"title": "Type"
+											},
+											"instructions": {
+												"anyOf": [
+													{
+														"type": "string"
+													},
+													{
+														"additionalProperties": {},
+														"type": "object"
+													},
+													{
+														"items": {},
+														"type": "array"
+													},
+													{
+														"type": "null"
+													}
+												],
+												"title": "Instructions"
+											},
+											"criteria": {
+												"additionalProperties": {
+													"anyOf": [
+														{
+															"type": "string"
+														},
+														{
+															"additionalProperties": {},
+															"type": "object"
+														},
+														{
+															"items": {},
+															"type": "array"
+														},
+														{
+															"type": "null"
+														}
+													]
+												},
+												"type": "object",
+												"maxProperties": 255,
+												"minProperties": 1,
+												"title": "Criteria",
+												"description": "Required mapping of 1 to 255 option labels to descriptions. Descriptions may be null, but criteria must not be omitted, null, or empty. Options are never inferred from instructions."
+											}
+										},
+										"type": "object",
+										"required": [
+											"type",
+											"criteria"
+										],
+										"title": "ChoiceQuestion"
+									},
+									{
+										"properties": {
+											"type": {
+												"type": "string",
+												"const": "score",
+												"title": "Type"
+											},
+											"instructions": {
+												"anyOf": [
+													{
+														"type": "string"
+													},
+													{
+														"additionalProperties": {},
+														"type": "object"
+													},
+													{
+														"items": {},
+														"type": "array"
+													},
+													{
+														"type": "null"
+													}
+												],
+												"title": "Instructions"
+											},
+											"criteria": {
+												"items": {
+													"anyOf": [
+														{
+															"type": "string"
+														},
+														{
+															"additionalProperties": {},
+															"type": "object"
+														},
+														{
+															"items": {},
+															"type": "array"
+														}
+													]
+												},
+												"type": "array",
+												"maxItems": 10,
+												"minItems": 1,
+												"title": "Criteria"
+											}
+										},
+										"type": "object",
+										"required": [
+											"type",
+											"criteria"
+										],
+										"title": "ScoreQuestion"
+									}
+								]
+							},
+							"type": "object",
+							"minProperties": 1,
+							"title": "Questions"
+						}
+					},
+					"type": "object",
+					"required": [
+						"state",
+						"questions"
+					],
+					"title": "DecisionRequest"
+				}
+			}
+		}
+	},
+	"location": "remote"
+}
