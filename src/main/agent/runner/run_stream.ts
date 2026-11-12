@@ -453,24 +453,26 @@ async function* loop(
 		let nudges = 3;
 		let promptKey: string | undefined;
 		let builtPrompt = '';
-		const runMessageIndex = session.messages.findLastIndex((message) => message.role === 'user');
+		let notedFinalization: typeof finalization;
+		let notedSynthesis = false;
+		let notedSkills = 0;
+		let notedExtensionContext = '';
+		let synthesisRetries = 1;
 		const memoryContext =
 			session.category === 'main' && options.memory?.getConfig().includeInPrompt
 				? await options.memory.read().catch(() => '')
 				: '';
-		const runContext = await buildRunContext(
-			config,
-			memoryContext,
-			options.instructions === undefined
+		addRunContext(
+			session,
+			await buildRunContext(config, memoryContext, options.instructions === undefined)
 		);
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
-			const turnTools = synthesisOnly ? [] : (search?.active() ?? tools);
-			const eligibleTurnTools =
-				synthesisOnly || !turnTools.some((tool) => tool.id === TOOL_SEARCH_ID)
-					? turnTools
-					: (search?.eligible() ?? tools);
+			const turnTools = search?.active() ?? tools;
+			const eligibleTurnTools = !turnTools.some((tool) => tool.id === TOOL_SEARCH_ID)
+				? turnTools
+				: (search?.eligible() ?? tools);
 			const turnKey = [turnTools, eligibleTurnTools]
 				.map((list) => list.map((tool) => tool.id).join())
 				.join('|');
