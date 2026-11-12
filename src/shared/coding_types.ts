@@ -32,8 +32,14 @@ export interface CodingModel {
 	readonly contextWindow: number;
 }
 
+export interface CodingHarnessInfo {
+	readonly id: string;
+	readonly name: string;
+	readonly provider: { readonly id: string; readonly name: string };
+}
+
 export interface CodingProvider {
-	readonly id: CodingProviderId;
+	readonly id: string;
 	readonly name: string;
 	readonly authentication: 'oauth' | 'api-key';
 	readonly configured: boolean;
