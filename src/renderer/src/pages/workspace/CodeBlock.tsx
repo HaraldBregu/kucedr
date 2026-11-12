@@ -15,7 +15,15 @@ import { WorkspaceScriptForm } from './ScriptForm';
 
 export function WorkspaceCodeBlock({ node, editor, getPos }: NodeViewProps): React.JSX.Element {
 	const { byFence } = usePluginScripts();
-	const [formOpen, setFormOpen] = useState(false);
+	// ponytail: a block stamped under 2s ago was just inserted, so its form opens; pass a flag through the insert command if this ever misfires
+	const [formOpen, setFormOpen] = useState(() => {
+		try {
+			return editor.isEditable && Date.now() - Date.parse(JSON.parse(node.textContent).script.createdAt) < 2000;
+		} catch {
+			return false;
+		}
+	});
+	const [draft, setDraft] = useState<Record<string, unknown>>();
 	const script = node.attrs.language ? byFence.get(node.attrs.language) : undefined;
 	const text = node.textContent;
 	const { input, ref } = useMemo((): { input?: unknown; ref?: PluginScriptRef } => {
