@@ -132,14 +132,14 @@ function createListenRealtimeConnection(
 	};
 
 	const handleMessage = (message: string): void => {
-		let data: DeepgramRealtimeResponse;
+		let data: ListenRealtimeResponse;
 		try {
-			data = JSON.parse(message) as DeepgramRealtimeResponse;
+			data = JSON.parse(message) as ListenRealtimeResponse;
 		} catch {
 			return;
 		}
 		if (data.type === 'Error') {
-			emitError(data.description ?? 'Deepgram realtime transcription error.');
+			emitError(data.description ?? `${request.providerName} realtime transcription error.`);
 			return;
 		}
 		if (data.type === 'CloseStream') {
