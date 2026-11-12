@@ -159,6 +159,7 @@ export function Model({
 				inline
 				buttonDropdown
 				compactPopover
+				nameOnly={compact}
 				effortLevels={effortLevels}
 				effort={selectedEffort}
 				onEffortChange={(nextEffort) => {
