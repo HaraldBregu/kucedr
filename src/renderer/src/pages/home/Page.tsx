@@ -852,7 +852,7 @@ function PageContent(): ReactElement {
 										{modelSelect}
 										{modelContext?.modelId ? (
 											<Usage
-												className="h-7"
+												className="h-7 dark:hover:bg-accent"
 												providerId={modelContext.providerId}
 												modelId={modelContext.modelId}
 												contextWindow={modelContext.contextWindow}
