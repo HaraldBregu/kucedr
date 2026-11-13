@@ -14,16 +14,16 @@ const SPEAK_QUERY_OPTIONS = [
 	'speed',
 ] as const;
 
-export function createDeepgramSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
+export function createSpeakSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
 	return {
 		async synthesize(request: SpeechAdapterRequest): Promise<SpeechSynthesisResult> {
-			const endpoint = new URL(DEEPGRAM_TTS_PATH, `${provider.baseURL}/`);
+			const endpoint = new URL(SPEAK_PATH, `${provider.baseURL}/`);
 			const optionVoice = request.options?.voice;
-			endpoint.searchParams.set(
-				'model',
-				request.voice ?? (typeof optionVoice === 'string' ? optionVoice : DEEPGRAM_DEFAULT_VOICE)
-			);
-			for (const key of DEEPGRAM_QUERY_OPTIONS) {
+			const voice =
+				request.voice ??
+				(typeof optionVoice === 'string' ? optionVoice : inputDefault(request.metadata, ['voice']));
+			if (voice !== undefined) endpoint.searchParams.set('model', String(voice));
+			for (const key of SPEAK_QUERY_OPTIONS) {
 				const value = request.options?.[key];
 				if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 					endpoint.searchParams.set(key, String(value));
