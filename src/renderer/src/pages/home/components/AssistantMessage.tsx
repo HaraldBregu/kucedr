@@ -298,6 +298,7 @@ export function AssistantMessage({
 					tools={activityTools}
 					isActive={isRunning}
 					startedAtMs={message.startedAtMs}
+					completedAtMs={message.completedAtMs}
 				/>
 			)}
 			{cardTools.map((tool) => {
