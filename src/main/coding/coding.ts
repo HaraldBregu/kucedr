@@ -83,11 +83,9 @@ export class Coder {
 	saveLayout(layout: CoderLayout): CoderLayout {
 		return this.dependencies.store.setLayout(layout);
 	}
-	setApiKey(provider: string, key: string, runtime?: CoderHarness): void {
+	setApiKey(key: string, runtime?: CoderHarness): void {
 		if (typeof key !== 'string') throw new Error('Invalid Coder API key.');
-		const entry = this.entry(this.getSettings(runtime).runtime);
-		if (provider !== entry.model.provider.id) throw new Error('Invalid Coder provider.');
-		this.credentials.set(entry.credentialKey, key);
+		this.credentials.set(this.entry(this.getSettings(runtime).runtime).credentialKey, key);
 	}
 	listModels(runtime?: CoderHarness) {
 		return this.requireHarness(this.getSettings(runtime).runtime).listModels();
