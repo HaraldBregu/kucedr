@@ -50,7 +50,7 @@ export function rankTools<T>(query: string, documents: RankedDocument<T>[]): T[]
 				if (frequency === 0) return total;
 				const documentsWithTerm = containing.get(term) ?? 0;
 				const inverseFrequency = Math.log(
-					1 + (documents.length - containing + 0.5) / (containing + 0.5)
+					1 + (documents.length - documentsWithTerm + 0.5) / (documentsWithTerm + 0.5)
 				);
 				const normalized =
 					(frequency * 2.2) /
