@@ -156,9 +156,12 @@ const TasksPage: React.FC = () => {
 	};
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
-		saveModelOptions(providerId === 'openrouter'
-			? updateOpenRouterOptions(modelOptions, path, value)
-			: updateModelOptions(modelOptions, path, value));
+		saveModelOptions(exclusive(
+			modelOptions,
+			path,
+			value,
+			model?.metadata?.inputs[path[0]] ?? providers().find((item) => item.id === providerId)?.discoveryInputs?.[path[0]]
+		));
 	};
 
 	const handleTaskEnabledChange = async (taskId: string, enabled: boolean): Promise<void> => {
