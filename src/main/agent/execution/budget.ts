@@ -16,7 +16,6 @@ export class ExecutionBudget {
 			tokens?: number;
 			calls?: number;
 			paid?: number;
-			web?: number;
 			output?: number;
 		} = {}
 	) {}
