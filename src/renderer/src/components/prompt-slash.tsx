@@ -128,7 +128,8 @@ function PromptSlash({
 								ref={index === selected ? (element) => element?.scrollIntoView({ block: 'nearest' }) : undefined}
 								className={cn(
 									'flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm outline-none [&_svg]:size-4 [&_svg]:shrink-0',
-									index === selected && 'bg-accent text-accent-foreground'
+									index === selected && 'bg-accent text-accent-foreground',
+									item.disabled && 'opacity-50'
 								)}
 								onMouseDown={(event) => event.preventDefault()}
 								onMouseEnter={() => setSelected(index)}
