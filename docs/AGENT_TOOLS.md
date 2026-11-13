@@ -69,7 +69,7 @@ Replace `subagent` + `subagents` with a single `subagent` tool:
 - It takes the limiter from `runtime` only. Drop the 4th argument and the duplicate fallback.
 - One instruction string. The read-only sentence is added only for parallel children.
 
-Then delete `subagentsTool`, `PARALLEL_TOOL_IDS` and the second instructions string, and drop `'subagents'` from `capability.ts`, `shared/agent_tools.ts`, `run_skill_tools.ts` and `requiredIds`. Saved settings that mention `subagents` are ignored: `getToolConfiguration` falls back to defaults for unknown ids. Old transcripts still render, because `tool-label.ts`/`tool.tsx` read the output shape. Check that a single-task result renders in the UI as an array of one.
+Then delete `subagentsTool`, `PARALLEL_TOOL_IDS` and the second instructions string, and drop `'subagents'` from `capability.ts`, `shared/agent_tools.ts`, `run_skill_tools.ts` and `requiredIds`. Saved per-tool settings for `subagents` become orphaned. Check that `getAgentProfileTool` (`agent_store.ts:217`) and the Settings → Tools page ignore an unknown id. Old transcripts still render, and so do new single-task arrays: `tool-label.ts:35` and `tool.tsx:137` already handle both the array and the single-object output shapes.
 
 → verify: in chat, one task returns a summary. "Research A, B, C in parallel" runs 3 children concurrently: the limiter allows 3, and wall time is about the max of the three, not the sum. A parallel child has no `write`/`bash` in `run_started.tools`. In plan (read-only) mode the tool is still offered and children are read-only.
 
