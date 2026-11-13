@@ -68,7 +68,7 @@ Do the phases in order. Each phase is shippable on its own.
 5. **One scan, top-level, cached.** Replace `scan.ts` with the `list()` top-level walk. Cache the snapshot keyed on the `mtimeMs` of each root, and invalidate it on import/delete or a plugin change. `readSkill` returns the validation result, so the registry stops validating twice.
    - → verify: with 5 skills, a second run does no `readdirSync` of the roots, which you can confirm with a log/trace.
 
-### Phase 3 — Single source of truth (S6, S8, S9)
+### Phase 3 — Single source of truth (S6, S8, S9, S11, S12)
 
 6. **One registry for both the UI and the agent.**
    - `list()` becomes `createSkillRegistrySnapshot().skills`.
