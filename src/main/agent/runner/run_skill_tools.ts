@@ -6,6 +6,7 @@ export function selectSkillTools(tools: Tool[], allowedTools: string[] | undefin
 	return tools.filter(
 		(tool) =>
 			tool.id === 'load_skill' ||
-			(tool.id !== 'subagent' && tool.id !== 'subagents' && allowed.has(tool.id))
+			tool.id === 'tool_search' ||
+			(tool.id !== 'subagent' && allowed.has(tool.id))
 	);
 }
