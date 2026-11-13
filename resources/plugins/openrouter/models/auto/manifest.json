@@ -19,7 +19,8 @@
 				"provider": {
 					"require_parameters": true
 				}
-			}
+			},
+			"strict": true
 		},
 		"promptAttachments": [],
 		"documentationUrl": "https://openrouter.ai/openrouter/auto",
