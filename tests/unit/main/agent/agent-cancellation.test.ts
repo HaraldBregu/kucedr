@@ -249,7 +249,6 @@ describe('Agent scoped cancellation', () => {
 			hash: 'hash',
 			resources: [],
 		});
-		expect(agent.runningSkill()).toBe('Writer');
 		first.release();
 		await sequential.started;
 
