@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import matter from 'gray-matter';
-import type { SkillInfo, SkillManifest } from '../../../shared/skills_types';
+import type { SkillInfo, SkillManifest, SkillSource } from '../../../shared/skills_types';
 import { SKILL_FILE, SKILL_MAX_BYTES } from './skills_limits';
 import { validateSkill } from './skills_validate';
 
