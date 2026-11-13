@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+import { inputDefault } from './defaults';
 import { speechResult } from './tts_audio';
 import type { SpeechProviderSpec, SpeechAdapterRequest } from './tts_types';
 import type { SpeechSynthesisResult } from '../../../../shared/speech_types';
