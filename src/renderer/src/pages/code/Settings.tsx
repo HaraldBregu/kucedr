@@ -49,12 +49,11 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 			.listHarnesses()
 			.then((items) =>
 				Promise.all([
-					items,
 					window.coder.getSettings(),
 					...items.map((harness) => window.coder.getSettings(harness.id)),
-				])
+				]).then(([selected, ...values]) => ({ items, selected, values }))
 			)
-			.then(([items, selected, ...values]) => {
+			.then(({ items, selected, values }) => {
 				if (cancelled) return;
 				setHarnesses(items);
 				setRuntime(project?.settings?.runtime ?? selected.runtime);
