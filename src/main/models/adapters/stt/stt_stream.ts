@@ -47,10 +47,10 @@ export function createMistralSttAdapter(opts: MistralSttAdapterOptions): SttAdap
 	const factory =
 		opts.clientFactory ??
 		((c) =>
-			new Mistral({
+			new SdkClient({
 				apiKey: c.apiKey,
 				...(c.baseURL ? { serverURL: c.baseURL } : {}),
-			}) as MistralTranscriptionClient);
+			}) as StreamTranscriptionClient);
 	const client = factory({ apiKey: opts.apiKey, baseURL: opts.baseURL });
 
 	return {
