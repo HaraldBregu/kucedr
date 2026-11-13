@@ -354,11 +354,28 @@ async function* loop(
 				filterEligible: filterEligibleTools,
 			});
 		}
-		if (input.explicitSkill && !skillLoadingEnabled)
-			throw new Error('Skill loading is unavailable for this run.');
+		if (skillLoadingEnabled) {
+			for (const id of pinnedSkills) {
+				const skill = await inspectSkill(skillSnapshot, id).catch(() => undefined);
+				if (skill) applyActivatedSkill(skill);
+			}
+		}
 		if (input.explicitSkill) {
-			const skill = await activateSkill(skillSnapshot, input.explicitSkill);
-			applyActivatedSkill(skill);
+			let reason = 'Skill loading is unavailable for this run.';
+			const skill = skillLoadingEnabled
+				? await inspectSkill(skillSnapshot, input.explicitSkill).catch((error: unknown) => {
+						reason = error instanceof Error ? error.message : String(error);
+						return undefined;
+					})
+				: undefined;
+			if (skill) applyActivatedSkill(skill);
+			else {
+				const available = skillSnapshot.skills.map((entry) => entry.name).join(', ');
+				addInternalMessage(
+					session,
+					`The user asked for the "${input.explicitSkill}" skill, but it could not be loaded: ${reason}${available ? ` Available skills: ${available}.` : ''} Tell the user, then answer the request without the skill.`
+				);
+			}
 		}
 
 		yield {
