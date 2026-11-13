@@ -1,6 +1,10 @@
 # Agent Skills — Loading Analysis & Refactoring Plan
 
-> **Status:** proposal, 2026-11-13. Related: [AGENT_TOOLS.md](AGENT_TOOLS.md), [TOOL_SELECTION.md](TOOL_SELECTION.md), [PROMPT_CACHE.md](PROMPT_CACHE.md). Line numbers are from `dev` at `04b9abeea7`.
+> **Status:** Phases 1–3 implemented on 2026-11-14. Phase 4 is open and needs a product decision. Two deviations from the plan:
+> - The step 5 snapshot cache was skipped. With the workspace root removed, the scan is one `readdir` per root, so a cache isn't needed yet. Add one if it ever shows up in a trace.
+> - Pinned skills are stamped as `skillIds` on assistant messages, the same way `modeIds` is, because sessions have no metadata file. On each run the latest stamp is read back.
+>
+> Original proposal: 2026-11-13. Related: [AGENT_TOOLS.md](AGENT_TOOLS.md), [TOOL_SELECTION.md](TOOL_SELECTION.md), [PROMPT_CACHE.md](PROMPT_CACHE.md). Line numbers are from `dev` at `04b9abeea7`.
 
 ## How a skill reaches the agent today
 
