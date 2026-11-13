@@ -133,6 +133,12 @@ export async function* runToolCall(
 	) {
 		output = `Error: tool '${toolCall.name}' is unavailable for this agent`;
 		isError = true;
+	} else if (
+		['ask', 'select_screen_source', 'request_mcp_authorization'].includes(toolCall.name) &&
+		exhausted()
+	) {
+		output = budgetError;
+		isError = true;
 	} else if (toolCall.name === 'ask' || toolCall.name === 'select_screen_source') {
 		const screenSelection = toolCall.name === 'select_screen_source';
 		if (
