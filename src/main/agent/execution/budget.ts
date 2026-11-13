@@ -2,10 +2,8 @@ import type { SessionUsage, Tool } from '../types';
 
 export class ExecutionBudget {
 	readonly usage = { inputTokens: 0, outputTokens: 0 };
-	readonly outcomes = new Map<string, import('../types').ToolCall>();
 	calls = 0;
 	paidCalls = 0;
-	webCalls = 0;
 	outputBytes = 0;
 	unreportedModelCalls = 0;
 	estimatedTokens = 0;
