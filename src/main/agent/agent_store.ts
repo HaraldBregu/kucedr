@@ -49,7 +49,6 @@ const workspacePattern = `${AGENT_DIRECTORY.replaceAll(path.sep, '/')}/**`;
 const legacyLibraryPattern = `${path.resolve(libraryLocation()).replaceAll(path.sep, '/')}/**`;
 const RUNTIME_TOOL_KEYS = {
 	subagent: 'subagent',
-	subagents: 'subagents',
 	read: 'read_file',
 	write: 'write_file',
 	edit: 'edit_file',
