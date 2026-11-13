@@ -446,18 +446,21 @@ export async function* runToolCall(
 							toolSignal.throwIfAborted();
 							return approvedExecRoots.run(approvedRoots, run);
 						})
+						.then((value) => {
+							if (history && historyTargets.length > 0) {
+								recordFileOperation(
+									history,
+									security.runId,
+									toolCall.id,
+									toolCall.name,
+									before,
+									captureFiles(historyTargets)
+								);
+							}
+							return value;
+						})
 						.finally(release);
 					output = await Promise.race([execution, aborted]);
-					if (history && historyTargets.length > 0) {
-						recordFileOperation(
-							history,
-							security.runId,
-							toolCall.id,
-							toolCall.name,
-							before,
-							captureFiles(historyTargets)
-						);
-					}
 					output = limitToolOutput(output, tool.maxOutputBytes);
 					authorizationRequired = mcpAuthorizationRequired(tool, output);
 					if (authorizationRequired) {
