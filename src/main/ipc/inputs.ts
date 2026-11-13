@@ -27,7 +27,7 @@ export function inputs(model: {
 				: {}),
 		};
 	}
-	if (!parameters.includes('reasoning') && !parameters.includes('reasoning_effort')) return inputs;
+	if (!parameters.includes('reasoning') && !parameters.includes('reasoning_effort')) return parsed;
 	const reasoning =
 		model.reasoning && typeof model.reasoning === 'object' && !Array.isArray(model.reasoning)
 			? (model.reasoning as Record<string, unknown>)
@@ -61,5 +61,5 @@ export function inputs(model: {
 	if (reasoning.mandatory === false && typeof reasoning.default_enabled === 'boolean' && reasoningTemplate?.properties?.enabled)
 		properties.enabled = { ...reasoningTemplate.properties.enabled, default: reasoning.default_enabled };
 	if (Object.keys(properties).length) inputs.reasoning = { ...reasoningTemplate, properties };
-	return inputs;
+	return parsed;
 }
