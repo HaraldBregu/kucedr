@@ -43,7 +43,7 @@ export function createVoiceSpeechAdapter(provider: SpeechProviderSpec): SpeechAd
 			const response = await fetch(endpoint, {
 				method: 'POST',
 				headers: {
-					[ELEVENLABS_API_KEY_HEADER]: provider.apiKey,
+					[VOICE_API_KEY_HEADER]: provider.apiKey,
 					Accept: 'audio/mpeg',
 					'Content-Type': 'application/json',
 				},
