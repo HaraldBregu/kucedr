@@ -524,9 +524,14 @@ async function* loop(
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			if (extension?.prompt) systemPrompt += `\n\n${extension.prompt}`;
+			const history = session.messages.filter(
+				(message) =>
+					!Array.isArray(message.content) ||
+					!message.content.some((block) => block.internal && block.kind === 'skill')
+			);
 			const messages = promptCapabilities
-				? projectPromptAttachments(session.messages, promptCapabilities)
-				: session.messages;
+				? projectPromptAttachments(history, promptCapabilities)
+				: history;
 			const turn = yield* runModelTurn(
 				input,
 				provider,
