@@ -376,6 +376,7 @@ function addToolResultToMessages(
 
 export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatMessage[] {
 	const out: HomeChatMessage[] = [];
+	let userCreatedAtMs: number | undefined;
 	history.forEach((message, index) => {
 	if (message.role === 'tool') {
 			const next = addToolResultToMessages(
