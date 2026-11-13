@@ -257,14 +257,15 @@ function getConfiguredModelId(
 	return modelId && supportsSpeechToTextApiType(providerId, modelId, apiType) ? modelId : undefined;
 }
 
-function getProviderSpecFromProviderStore(providerId: string): SttProviderSpec {
+function getProviderSpecFromProviderStore(providerId: string, model: CatalogModel): SttProviderSpec {
 	const stored = getProvider(providerId);
 	const defaults = defaultProvider(providerId);
 	return {
 		id: providerId,
 		name: stored?.name || defaults?.name || providerId,
 		apiKey: stored?.apiKey.trim() ?? '',
-		baseURL: stored?.baseUrl || speechToTextBaseUrl(providerId),
+		baseURL: modelEndpoint(stored?.baseUrl, model),
+		protocol: model.metadata?.protocol,
 	};
 }
 
