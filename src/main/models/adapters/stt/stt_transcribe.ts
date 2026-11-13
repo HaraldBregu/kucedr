@@ -78,7 +78,7 @@ export function saveSelection(
 	const apiType = mode === 'realtime' ? 'stream' : 'batch';
 	if (!supportsSpeechToTextApiType(normalizedProviderId, normalizedModelId, apiType)) {
 		throw new SttProviderUnsupportedError(
-			`Speech-to-text model does not support ${apiType} transcription: ${normalizedProviderId}/${normalizedModelId}`
+			`Speech-to-text model does not support ${apiType} transcription: ${modelLabel(normalizedProviderId, normalizedModelId)}`
 		);
 	}
 	setTranscribeSelection(mode, normalizedProviderId, normalizedModelId);
