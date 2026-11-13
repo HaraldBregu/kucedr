@@ -8,9 +8,6 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SettingsPageHeader, SettingsPageShell, SettingsPanel, SettingsRow, SettingsSection } from '../settings/components';
 
-const harnessLabels = { codex: 'Codex' };
-const providerLabels = { 'openai-codex': 'OpenAI Codex' };
-
 export function NewWorkspace({ onCreated, onCancel }: { readonly onCreated: (project: CodingProject) => void; readonly onCancel: () => void }): React.JSX.Element {
 	const { t } = useTranslation();
 	const [name, setName] = useState('');
