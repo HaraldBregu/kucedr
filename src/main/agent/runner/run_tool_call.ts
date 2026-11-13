@@ -394,15 +394,6 @@ export async function* runToolCall(
 					tool: hookedTool,
 					input: canonicalInput,
 				});
-				const timeoutController = new AbortController();
-				const timeoutTimer = setTimeout(
-					() => timeoutController.abort(new DOMException('Tool call timed out.', 'TimeoutError')),
-					tool.timeoutMs
-				);
-				timeoutTimer.unref?.();
-				const toolSignal = signal
-					? AbortSignal.any([signal, timeoutController.signal])
-					: timeoutController.signal;
 				const resourceTargets = directoryPermissionTargets(
 					tool.id,
 					canonicalInput,
@@ -410,11 +401,21 @@ export async function* runToolCall(
 					history
 				);
 				const release = resources
-					? await resources.acquire(resourceTargets, toolSignal)
+					? await resources.acquire(resourceTargets, signal)
 					: () => undefined;
+				const timeoutController = new AbortController();
+				let timeoutTimer: ReturnType<typeof setTimeout> | undefined;
 				let abort: (() => void) | undefined;
 				let execution: Promise<unknown> | undefined;
+				const toolSignal = signal
+					? AbortSignal.any([signal, timeoutController.signal])
+					: timeoutController.signal;
 				try {
+					timeoutTimer = setTimeout(
+						() => timeoutController.abort(new DOMException('Tool call timed out.', 'TimeoutError')),
+						tool.timeoutMs
+					);
+					timeoutTimer.unref?.();
 					toolSignal.throwIfAborted();
 					const current = resolvePermission();
 					if (
