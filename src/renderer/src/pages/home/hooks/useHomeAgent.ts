@@ -218,8 +218,14 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				]);
 				if (requestIdRef.current !== requestId) return false;
 				const savedEffort = readEffort(selectedProvider?.id ?? '', selectedModel ?? '');
-				const selectedEffort = selectedProvider?.id === 'openrouter' && savedEffort
-					? modelEfforts(providerModels('openrouter', 'llm').find((model) => model.id === selectedModel)?.metadata).includes(savedEffort) ? savedEffort : undefined
+				const llmModel = providerModels(selectedProvider?.id ?? '', 'llm').find((model) => model.id === selectedModel);
+				const strict = resolveModelMetadata(
+					llmModel,
+					providers().find((provider) => provider.id === selectedProvider?.id),
+					selectedModel ?? ''
+				)?.effort?.strict;
+				const selectedEffort = strict && savedEffort
+					? modelEfforts(llmModel?.metadata).includes(savedEffort) ? savedEffort : undefined
 					: savedEffort;
 				const chatRuntime = ratchetRuntime(readRuntime(sessionId), resolvePromptReasoningEffort(trimmed));
 				const runtimeOptions = {
