@@ -4,7 +4,7 @@ import { requiresExplicitRequest } from './explicit';
 
 function summary(description: string | undefined): string {
 	const text = (description ?? '').replace(/\s+/g, ' ').trim();
-	return text.match(/^.+?[.!?](?=\s|$)/)?.[0] ?? text;
+	return text.match(/^.+?(?<!\b(?:e\.g|i\.e|etc|vs))[.!?](?=\s|$)/)?.[0] ?? text;
 }
 
 export function addToolsPrompt(
