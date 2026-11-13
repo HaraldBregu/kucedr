@@ -2,14 +2,25 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const root = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-skill-registry-'));
-const userRoot = path.join(root, 'user');
-const pluginRoot = path.join(root, 'plugin', 'skills');
-
-jest.mock('../../../../../src/main/agent/skills/skills_root', () => ({ skillsRoot: userRoot }));
+jest.mock('../../../../../src/main/agent/skills/skills_root', () => ({
+	skillsRoot: require('node:path').join(
+		require('node:os').tmpdir(),
+		`kucedr-skill-registry-${process.pid}`,
+		'user'
+	),
+}));
 jest.mock('../../../../../src/main/plugins/plugins_dirs', () => ({
 	pluginDirs: () => [
-		{ directory: pluginRoot, plugin: { id: 'docs', name: 'Docs', version: '1.0.0' }, builtIn: false },
+		{
+			directory: require('node:path').join(
+				require('node:os').tmpdir(),
+				`kucedr-skill-registry-${process.pid}`,
+				'plugin',
+				'skills'
+			),
+			plugin: { id: 'docs', name: 'Docs', version: '1.0.0' },
+			builtIn: false,
+		},
 	],
 }));
 
