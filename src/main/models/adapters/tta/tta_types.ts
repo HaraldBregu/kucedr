@@ -1,13 +1,14 @@
 export interface MusicProviderSpec {
-	id: string;
 	name: string;
 	apiKey: string;
-	baseURL?: string;
+	baseURL: string;
+	protocol?: string;
 }
 
 export interface MusicAdapterGenerationRequest {
 	modelId: string;
 	prompt: string;
+	endpoint?: string;
 	options?: Record<string, unknown>;
 	signal?: AbortSignal;
 }
