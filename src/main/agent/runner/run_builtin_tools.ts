@@ -6,7 +6,7 @@ import { editTool } from '../tools/core/edit';
 import { execTool } from '../tools/core/bash';
 import { processTool } from '../tools/core/process';
 import { readTool } from '../tools/core/read';
-import { requestUserInputTool } from '../tools/core/ask';
+import { requestUserInputTool } from '../tools/system/ask';
 import { writeTool } from '../tools/core/write';
 import { getKnowledgeTools } from '../tools/knowledge';
 import { getIdentityTool } from '../tools/identity/get';
