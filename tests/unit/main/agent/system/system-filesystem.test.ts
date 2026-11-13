@@ -118,7 +118,7 @@ describe('agent filesystem prompt', () => {
 	});
 
 	it('keeps loaded skills in a protected prompt segment for custom subagents', async () => {
-		const prompt = await buildSystemPrompt({ location: root }, [], [], 'Subagent rules');
+		const prompt = await buildSystemPrompt({ location: root }, [], 'Subagent rules');
 		const protectedPrompt = buildLoadedSkillPrompt([
 			{
 				id: 'writer',
