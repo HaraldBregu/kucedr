@@ -24,19 +24,14 @@ export class ExecutionBudget {
 		if (this.synthesisOnly) return true;
 		let total = this.calls;
 		let paid = this.paidCalls;
-		let web = this.webCalls;
 		for (const { tool, input } of calls) {
 			const capability =
 				typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
 			total += 1;
 			if (capability?.effects.includes('paid')) paid += 1;
-			if (['search_web', 'fetch_web_page', 'use_web_browser'].includes(tool?.id ?? '')) web += 1;
 		}
 		return (
-			this.exhausted ||
-			total > (this.limits.calls ?? 100) ||
-			paid > (this.limits.paid ?? 3) ||
-			web > (this.limits.web ?? Number.POSITIVE_INFINITY)
+			this.exhausted || total > (this.limits.calls ?? 100) || paid > (this.limits.paid ?? 3)
 		);
 	}
 
