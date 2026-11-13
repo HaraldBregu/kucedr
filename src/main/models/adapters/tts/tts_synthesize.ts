@@ -90,14 +90,10 @@ function resolveProvider(providerId: string, modelId: string): SpeechProviderSpe
 		apiKey: stored?.apiKey.trim() ?? '',
 		baseURL: stored?.baseUrl || defaults?.baseUrl || '',
 	};
-	if (
-		providerId === 'qwen' &&
-		(!spec.baseURL ||
-			/^https:\/\/(?:dashscope(?:-intl)?\.aliyuncs\.com|[a-z0-9][a-z0-9-]*\.(?:ap-southeast-1|cn-beijing|cn-hongkong)\.maas\.aliyuncs\.com)(?:\/|$)/i.test(
-				spec.baseURL
-			))
-	) {
-		spec.baseURL = findModel(providerId, 'text-to-speech', modelId)?.url || spec.baseURL;
+	const model = findModel(providerId, 'text-to-speech', modelId);
+	const rule = model?.metadata?.baseUrlRule;
+	if (rule && (!spec.baseURL || new RegExp(rule.pattern, 'i').test(spec.baseURL))) {
+		spec.baseURL = model.url || spec.baseURL;
 	}
 	if (!spec.apiKey) {
 		throw new SpeechProviderAuthError(`${spec.name} API key not configured.`);
