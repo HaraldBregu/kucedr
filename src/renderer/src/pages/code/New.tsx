@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CODER_HARNESSES, CODING_THINKING_LEVELS, type CoderHarness, type CodingProject, type CodingSettings } from '@shared/coding_types';
+import { CODING_THINKING_LEVELS, type CoderHarness, type CodingHarnessInfo, type CodingProject, type CodingSettings } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
