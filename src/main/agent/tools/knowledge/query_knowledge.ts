@@ -39,16 +39,12 @@ export const queryKnowledgeTool = tool({
 						? ['The local knowledge index returned no matching evidence.']
 						: [];
 		const abstain = results.length === 0;
-		return JSON.stringify(
-			{
-				query,
-				route: abstain ? 'abstain' : 'rag',
-				results,
-				limitations,
-				abstain,
-			},
-			null,
-			2
-		);
+		return JSON.stringify({
+			query,
+			route: abstain ? 'abstain' : 'rag',
+			results,
+			limitations,
+			abstain,
+		});
 	},
 });
