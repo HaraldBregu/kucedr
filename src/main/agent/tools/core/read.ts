@@ -2,6 +2,8 @@ import { readFileBounded } from '../../files/read';
 import { authorizeFilePath } from '../../files/authorize';
 import { z } from 'zod';
 import { tool } from '../tool';
+import { PATH_DESCRIPTION } from './fields';
+import { MAX_READ_BYTES } from './limit';
 
 export const readTool = tool({
 	id: 'read',
