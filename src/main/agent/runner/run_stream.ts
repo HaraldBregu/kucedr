@@ -720,9 +720,8 @@ async function* loop(
 					yield { type: 'run_finished', result: toResult(session, 'success') };
 					return;
 				}
-				continue;
-			}
-			if (pendingToolCalls.some(mcpAuthorizationStopped)) {
+				recovered = true;
+			} else if (pendingToolCalls.some(mcpAuthorizationStopped)) {
 				yield* skipToolCalls(
 					pendingToolCalls.filter((call) => !call.result),
 					'Authorization was not completed; remaining tools were not run.'
