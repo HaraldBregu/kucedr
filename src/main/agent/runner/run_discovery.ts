@@ -34,8 +34,8 @@ export interface ToolSearch {
 
 export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 	const allowed = (tools: Tool[]) => options.filterEligible?.(tools) ?? tools;
-	let eligible = new Map(allowed(options.eligible).map((candidate) => [candidate.id, candidate]));
-	const required = allowed(options.required).filter((candidate) => eligible.has(candidate.id));
+	let eligible = new Map(options.eligible.map((candidate) => [candidate.id, candidate]));
+	const required = options.required.filter((candidate) => eligible.has(candidate.id));
 	const active = new Map(required.map((candidate) => [candidate.id, candidate]));
 	let mcpMetadata = new Map((options.mcpTools ?? []).map((entry) => [entry.tool.id, entry]));
 	let selectedCount = 0;
