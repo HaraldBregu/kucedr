@@ -15,7 +15,7 @@ import {
 	type SttTranscriptionResult,
 } from '../../../../shared/stt_transcription';
 import { normalizeProviderId } from '../../../../shared/provider_types';
-import type { ProviderModel } from '../../../../shared/model_types';
+import type { CatalogModel, ProviderModel } from '../../../../shared/model_types';
 import { buildSttAdapter } from './stt_factory';
 import { SttProviderAuthError, SttProviderUnsupportedError } from './stt_errors';
 import type { SttActiveRealtimeSession, SttProviderSpec } from './stt_types';
@@ -292,6 +292,3 @@ function findSpeechToTextModel(providerId: string, modelId: string): ProviderMod
 	);
 }
 
-function realtimeSampleRate(providerId: string): number {
-	return speechToTextSampleRate(providerId) ?? STT_DEFAULT_REALTIME_SAMPLE_RATE;
-}
