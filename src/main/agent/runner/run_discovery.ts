@@ -52,40 +52,29 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 			query: z.string().trim().min(1).max(240).describe('The capability needed for the next step.'),
 			limit: z.number().int().min(1).max(TOOL_SEARCH_CALL_LIMIT).default(TOOL_SEARCH_DEFAULT_LIMIT),
 		}),
-			execute: ({ query, limit }, signal) => {
+		execute: ({ query, limit }, signal) => {
 			const startedAt = Date.now();
 			signal?.throwIfAborted();
-			const canonicalCounts = new Map<string, number>();
-			for (const candidate of eligible.values()) {
-				const id = canonicalToolId(candidate);
-				canonicalCounts.set(id, (canonicalCounts.get(id) ?? 0) + 1);
-			}
 			const remaining = Math.max(0, TOOL_SEARCH_RUN_LIMIT - selectedCount);
 			const candidates = [...eligible.values()].filter((candidate) => !active.has(candidate.id));
 			const exact = candidates.find((candidate) => candidate.id === query);
-			const ranked = rankTools(
-				query,
-				candidates.map((candidate) => {
-					const mcp = mcpMetadata.get(candidate.id);
-					return {
-						value: candidate,
-						text: `${toolSearchText(candidate)} ${mcp?.serverId ?? ''} ${mcp?.serverName ?? ''} ${mcp?.tool.policy?.kind === 'mcp' ? mcp.tool.policy.toolName : ''}`,
-					};
-				})
-			);
-			const selected = (
-				exact ? [exact, ...ranked.filter((candidate) => candidate !== exact)] : ranked
-			).slice(0, Math.min(limit, remaining));
+			const ranked = exact
+				? [exact]
+				: rankTools(
+						query,
+						candidates.map((candidate) => {
+							const mcp = mcpMetadata.get(candidate.id);
+							return {
+								value: candidate,
+								text: `${toolSearchText(candidate)} ${mcp?.serverId ?? ''} ${mcp?.serverName ?? ''} ${mcp?.tool.policy?.kind === 'mcp' ? mcp.tool.policy.toolName : ''}`,
+							};
+						})
+					);
+			const selected = ranked.slice(0, Math.min(limit, remaining));
 			for (const candidate of selected) active.set(candidate.id, candidate);
 			selectedCount += selected.length;
 			return {
 				selectedToolIds: selected.map((candidate) => candidate.id),
-				selectedCanonicalIds: selected.map((candidate) => {
-					const id = canonicalToolId(candidate);
-					return (canonicalCounts.get(id) ?? 0) > 1
-						? `${id}~${encodeURIComponent(candidate.id)}`
-						: id;
-				}),
 				selectedServiceIds: [
 					...new Set(selected.flatMap((candidate) => mcpMetadata.get(candidate.id)?.serverId ?? [])),
 				],
