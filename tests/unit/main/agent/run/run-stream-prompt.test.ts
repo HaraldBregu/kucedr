@@ -56,7 +56,7 @@ jest.mock('../../../../../src/main/agent/tools/mcp/loader', () => ({
 
 jest.mock('../../../../../src/main/agent/skills', () => ({
 	createSkillRegistrySnapshot: (...args: unknown[]) => createSkillRegistrySnapshotMock(...args),
-	activateSkill: (...args: unknown[]) => activateSkillMock(...args),
+	inspectSkill: (...args: unknown[]) => inspectSkillMock(...args),
 }));
 
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
