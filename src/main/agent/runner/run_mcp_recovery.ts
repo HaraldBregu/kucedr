@@ -76,10 +76,7 @@ export async function* runMcpRecovery({
 		resources,
 		history
 	);
-	if (retryCall.result) {
-		failedCall.result = retryCall.result;
-		security.budget?.outcomes.set(failedCall.id, structuredClone(failedCall));
-	}
+	if (retryCall.result) failedCall.result = retryCall.result;
 	addToolResults(session, pendingCalls);
 	return 'retried';
 }
