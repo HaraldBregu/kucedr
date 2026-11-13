@@ -78,7 +78,9 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 	}, [project, t]);
 
 	const settings = profiles[runtime];
-	const providers = ['openai-codex'];
+	const providers = harnesses
+		.filter((harness) => harness.id === runtime)
+		.map((harness) => harness.provider);
 	const fields = settings
 		? [
 				{
