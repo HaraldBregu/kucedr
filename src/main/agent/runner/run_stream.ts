@@ -501,7 +501,12 @@ async function* loop(
 			let systemPrompt = builtPrompt;
 			const skillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const skillContext: Message[] = skillPrompt
-				? [{ role: 'user', content: [{ type: 'text', internal: true, kind: 'skill', text: skillPrompt }] }]
+				? [
+						{
+							role: 'user',
+							content: [{ type: 'text', internal: true, kind: 'skill', text: skillPrompt }],
+						},
+					]
 				: [];
 			const extensionContext = extended ? (extension?.context() ?? '') : '';
 			if (extensionContext && extensionContext !== notedExtensionContext) {
