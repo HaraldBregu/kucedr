@@ -22,7 +22,7 @@ export function createContentSpeechAdapter(provider: SpeechProviderSpec): Speech
 			const optionVoiceName = request.options?.voiceName;
 			const languageCode = request.options?.languageCode;
 			const multiSpeakerVoiceConfig = request.options?.multiSpeakerVoiceConfig;
-			const currentTts = request.modelId.startsWith('gemini-3.8-');
+			const currentTts = provider.protocol === CONTENT_VOICE_PROTOCOL;
 			const speechMetadata = request.options?.speechMetadata;
 			const multiSpeaker =
 				multiSpeakerVoiceConfig &&
