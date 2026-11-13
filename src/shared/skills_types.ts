@@ -1,11 +1,10 @@
 import type { PluginSource } from './plugin_types';
 
-export type SkillSource = 'local-filesystem';
+export type SkillSource = 'user' | 'plugin';
 
 export type SkillTrust = 'user-controlled';
 
 export interface SkillManifest {
-	id?: string;
 	name: string;
 	description: string;
 	license?: string;
@@ -18,7 +17,6 @@ export interface SkillInfo {
 	id: string;
 	name: string;
 	description: string;
-	location: string;
 	folderPath: string;
 	skillPath?: string;
 	manifest: SkillManifest;
@@ -45,42 +43,15 @@ export interface SkillLoadResult {
 	source: SkillSource;
 	trust: SkillTrust;
 	hash: string;
-	allowedTools?: string[];
 	resources: string[];
 	warnings: SkillDiagnostic[];
 }
 
-export interface SkillFrontmatter {
-	name: string;
-	description: string;
-	license?: string;
-	compatibility?: string;
-	metadata?: Record<string, string>;
-	allowedTools?: string[];
-}
-
 export interface SkillRegistrySnapshot {
 	skills: readonly SkillInfo[];
+	/** Folders under a skill root that failed validation, with their diagnostics. */
+	invalid: readonly SkillInfo[];
 	diagnostics: readonly SkillDiagnostic[];
-}
-
-export interface SkillSearchOptions {
-	names?: string[];
-	limit?: number;
-}
-
-export interface SkillSearchResult {
-	id: string;
-	name: string;
-	description: string;
-	score: number;
-	reason: string;
-}
-
-export interface SkillSupportFile {
-	relativePath: string;
-	kind: 'script' | 'reference' | 'asset' | 'file';
-	size: number;
 }
 
 export interface SkillValidationIssue {
@@ -91,17 +62,6 @@ export interface SkillValidationIssue {
 export interface SkillValidationResult {
 	valid: boolean;
 	issues: SkillValidationIssue[];
-	skill?: {
-		info: SkillInfo;
-		frontmatter: SkillFrontmatter;
-		instructions?: string;
-	};
-}
-
-export interface SkillDetails extends SkillInfo {
-	frontmatter: SkillFrontmatter;
-	instructions: string;
-	supportFiles: SkillSupportFile[];
 }
 
 export interface SkillDeleteResult {
@@ -119,7 +79,6 @@ export interface SkillDiagnostic {
 export interface SkillStructureInfo {
 	format: 'agent-skill';
 	standard: 'agentskills.io';
-	kind: 'direct' | 'container-child';
 	resourceDirectories: string[];
 }
 
@@ -132,37 +91,4 @@ export interface SkillImportSkipped {
 export interface SkillImportResult {
 	imported: SkillInfo[];
 	skipped: SkillImportSkipped[];
-}
-
-export interface AnthropicSkillEntry {
-	type: 'anthropic' | 'custom';
-	skill_id: string;
-	version?: string;
-}
-
-export interface AnthropicSkillContainer {
-	skills: AnthropicSkillEntry[];
-}
-
-export interface OpenAIHostedSkillEntry {
-	type: 'skill_reference';
-	skill_id: string;
-	version?: number | 'latest';
-}
-
-export interface OpenAILocalSkillEntry {
-	name: string;
-	description: string;
-	path: string;
-}
-
-export type SkillAdapterTarget =
-	| { provider: 'anthropic'; remoteId: string; version?: string }
-	| { provider: 'openai-hosted'; remoteId: string; version?: number | 'latest' }
-	| { provider: 'openai-local' };
-
-export interface ResolvedSkillAttachment {
-	anthropic?: AnthropicSkillContainer;
-	openaiHosted?: OpenAIHostedSkillEntry[];
-	openaiLocal?: OpenAILocalSkillEntry[];
 }
