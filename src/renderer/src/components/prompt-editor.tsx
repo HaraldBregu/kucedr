@@ -52,6 +52,14 @@ function PromptEditorArea({
 			className="max-h-[34vh] min-h-6 overflow-y-auto text-base leading-6 text-foreground"
 		/>
 	);
+
+	return modes && onModeIdsChange ? (
+		<PromptSlash modes={modes} modeIds={modeIds ?? []} onModeIdsChange={onModeIdsChange}>
+			{editor}
+		</PromptSlash>
+	) : (
+		editor
+	);
 }
 
 function PromptEditor({
