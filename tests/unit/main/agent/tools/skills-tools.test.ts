@@ -21,6 +21,7 @@ function skill(name: string, overrides: Partial<SkillInfo> = {}): SkillInfo {
 it('returns the names and descriptions of available skills', async () => {
 	const snapshot: SkillRegistrySnapshot = {
 		skills: [skill('writer'), skill('researcher')],
+		invalid: [],
 		diagnostics: [],
 	};
 	const listSkills = listSkillsTool(snapshot);
