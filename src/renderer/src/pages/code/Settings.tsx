@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlertCircle, Bot, Brain, Cpu, FolderOpen, Loader2, Plug, Shield } from 'lucide-react';
 import {
-	CODER_HARNESSES,
 	CODING_THINKING_LEVELS,
 	type CoderHarness,
+	type CodingHarnessInfo,
 	type CodingSettings,
 	type CodingProject,
 } from '@shared/coding_types';
