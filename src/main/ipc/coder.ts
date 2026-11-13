@@ -295,13 +295,13 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 				)
 				.finally(() => event.sender.removeListener('destroyed', cancel));
 		});
-		registerCommandWithEvent(CodingChannels.cancelCodexLogin, (event) => {
+		registerCommandWithEvent(CodingChannels.cancelLogin, (event) => {
 			assertCodingCaller(event);
-			return coding.cancelCodexLogin(event.sender.id);
+			return coding.cancelLogin(event.sender.id);
 		});
-		registerCommandWithEvent(CodingChannels.disconnectCodex, (event, runtime) => {
+		registerCommandWithEvent(CodingChannels.disconnect, (event, runtime) => {
 			assertCodingCaller(event);
-			return coding.disconnectCodex(runtime);
+			return coding.disconnect(runtime);
 		});
 	}
 }
