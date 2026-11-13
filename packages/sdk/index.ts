@@ -121,6 +121,7 @@ export {
 	type CodingAuthEvent,
 	type CodingAuthStatus,
 	type CodingCatalog,
+	type CodingHarnessInfo,
 	type CodingModel,
 	type CodingProvider,
 	type CodingProviderId,
