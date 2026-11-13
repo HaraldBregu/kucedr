@@ -39,7 +39,7 @@ function PromptSlash({
 }): ReactElement {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const { value, setValue, triggerFileUpload } = usePromptInput();
+	const { value, setValue, triggerFileUpload, filesAccept } = usePromptInput();
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState(false);
 	const text = value.trimStart();
