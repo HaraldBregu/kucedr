@@ -1,7 +1,11 @@
 import type { Tool } from '../types';
 import { toolCategoryRegistry, type ToolCategory } from '../tools/category';
 import { requiresExplicitRequest } from './explicit';
-import { toolOptions } from './system_tool_options';
+
+function summary(description: string | undefined): string {
+	const text = (description ?? '').replace(/\s+/g, ' ').trim();
+	return text.match(/^.+?[.!?](?=\s|$)/)?.[0] ?? text;
+}
 
 export function addToolsPrompt(
 	prompt: string,
@@ -27,9 +31,9 @@ export function addToolsPrompt(
 		if (!categoryTools) continue;
 		prompt += `\n\n### ${metadata.label}\n${metadata.description}`;
 		for (const tool of categoryTools) {
-			const description = (tool.description ?? '').replace(/\n/g, ' ');
+			const description = summary(tool.description);
 			const restriction = requiresExplicitRequest(tool) ? ' _(Explicit user request only.)_' : '';
-			prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${toolOptions(tool.schema)}${restriction}`;
+			prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${restriction}`;
 		}
 	}
 
