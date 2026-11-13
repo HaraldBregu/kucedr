@@ -67,7 +67,7 @@ export function createMemory(configuration: () => Config): MemoryService {
 			const provider = getProvider(config.providerId, 'models');
 			if (!provider) throw new Error('Memory provider is not configured.');
 			const response = await model.generate({
-				provider: { id: config.providerId, apiKey: provider.apiKey, baseURL: provider.baseUrl },
+				provider: { id: config.providerId, name: provider.name, apiKey: provider.apiKey, baseURL: provider.baseUrl },
 				model: config.modelId,
 				options: config.modelOptions,
 				maxTokens:
