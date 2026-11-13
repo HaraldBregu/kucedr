@@ -14,6 +14,7 @@ import type {
 	RealtimeVoiceProviderSpec,
 } from './realtime_voice_types';
 import { realtimeVoiceSocketUrl } from './endpoint';
+import { realtimeVoiceName } from './voice';
 
 const CONNECT_TIMEOUT_MS = 15_000;
 const TURN_PAUSE_MS = 1_200;
@@ -53,7 +54,11 @@ export class LiveVoiceAdapter implements RealtimeVoiceAdapter {
 			request.contextForTurn,
 			(error) => realtimeVoiceTransportError(error, this.provider, request.modelId)
 		);
-		await connection.open(request, this.connectTimeoutMs, signal);
+		await connection.open(
+			{ ...request, voice: realtimeVoiceName(request.voice, this.model) },
+			this.connectTimeoutMs,
+			signal
+		);
 		return connection;
 	}
 }
