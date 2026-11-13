@@ -15,7 +15,7 @@ describe('readSkill', () => {
 			const skill = readSkill(folder, 'safe-skill');
 			expect(skill).toEqual(
 				expect.objectContaining({
-					source: 'local-filesystem',
+					source: 'user',
 					trust: 'user-controlled',
 					hash: createHash('sha256').update(source).digest('hex'),
 				})
