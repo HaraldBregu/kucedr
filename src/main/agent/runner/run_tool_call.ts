@@ -509,7 +509,6 @@ export async function* runToolCall(
 	}
 
 	security.budget?.observeOutput(Buffer.byteLength(formatToolOutput(output), 'utf8'));
-	security.budget?.outcomes.set(toolCall.id, structuredClone(toolCall));
 	yield {
 		type: 'tool_call_end',
 		toolCallId: toolCall.id,
