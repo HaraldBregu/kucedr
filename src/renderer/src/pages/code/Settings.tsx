@@ -29,9 +29,6 @@ import {
 	SettingsSection,
 } from '../settings/components';
 
-const harnessLabels = { codex: 'Codex' };
-const providerLabels = { 'openai-codex': 'OpenAI Codex' };
-
 export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: () => void; readonly project?: CodingProject; readonly onSaved?: () => void }): React.JSX.Element {
 	const { t } = useTranslation();
 	const [name, setName] = useState(project?.name ?? '');
