@@ -181,14 +181,11 @@ async function* loop(
 		getToolConfiguration(toolProfile, { kind: 'builtin', id }).permission !== 'deny' &&
 		isAgentToolAllowedForProfile(toolProfile, { kind: 'builtin', id });
 	const chatTexts = [input.message, ...userTexts(session.messages)];
+	const pinnedSkills = options.tools ? [] : pinnedSkillIds(session.messages);
 	const skillToolsRequested =
 		chatTexts.some((text, index) =>
 			requestsSkillTools(text, index === 0 ? input.explicitSkill : undefined)
-		) ||
-		session.messages.some(
-			(message) =>
-				Array.isArray(message.content) && message.content.some((block) => block.kind === 'skill')
-		);
+		) || pinnedSkills.length > 0;
 	const taskToolIds = [...new Set(chatTexts.flatMap(requestedTaskTools))];
 	const mcpServerHints = (servers: Array<{ serverId: string; serverName: string }>): Set<string> =>
 		new Set(chatTexts.flatMap((text) => resolveMcpServerHint(text, servers) ?? []));
