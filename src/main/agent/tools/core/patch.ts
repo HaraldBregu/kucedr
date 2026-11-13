@@ -33,7 +33,7 @@ export const applyPatchTool = tool({
 				await removeAuthorizedFile(target, signal);
 				deleted.push(target);
 			} else {
-				const contents = (await readFileBounded(target, 2 * 1024 * 1024, signal)).toString('utf8');
+				const contents = (await readFileBounded(target, MAX_READ_BYTES, signal)).toString('utf8');
 				const applied = applyUpdateChunks(target, contents, hunk.chunks);
 				if (hunk.movePath) {
 					const moveTarget = authorizeFilePath(hunk.movePath);
