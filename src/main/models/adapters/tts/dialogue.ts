@@ -36,7 +36,7 @@ export async function synthesizeDialogue(
 		});
 		socket.once('error', reject);
 		socket.once('close', () => {
-			if (!completed) reject(new Error('ElevenLabs dialogue ended before final audio.'));
+			if (!completed) reject(new Error(`${provider.name} dialogue ended before final audio.`));
 		});
 		socket.on('message', (message) => {
 			let data: { audio?: string; is_final?: boolean; error?: unknown };
