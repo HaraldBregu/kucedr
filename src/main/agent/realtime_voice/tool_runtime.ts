@@ -14,9 +14,7 @@ import type { RealtimeVoiceConversation } from './conversation';
 
 const MAX_TOOL_CALLS = 100;
 const MAX_TOOL_OUTPUT_BYTES = 2_000_000;
-const MAX_PAID_TOOL_CALLS = 3;
 const MAX_WEB_TOOL_CALLS = 8;
-const PAID_TOOLS = new Set(['create_image', 'create_video', 'create_sound']);
 const WEB_TOOLS = new Set(['search_web', 'fetch_web_page', 'use_web_browser']);
 
 type ToolAdapterEvent = Extract<
