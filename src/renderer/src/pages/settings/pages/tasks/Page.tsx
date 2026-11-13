@@ -13,8 +13,7 @@ import {
 import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { ModelOptions } from '@/components/model-options';
-import { updateModelOptions } from '@/lib/options';
-import { updateOpenRouterOptions } from '@/lib/openrouter-options';
+import { exclusive } from '@/lib/exclusive';
 import { modelsFor, providerIdsFor, providerModels, providers } from '@/lib/providers';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import {
