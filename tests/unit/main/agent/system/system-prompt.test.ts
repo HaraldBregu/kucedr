@@ -155,7 +155,7 @@ describe('buildSystemPrompt', () => {
 
 	it('puts the clock last so everything before it stays the same across builds', async () => {
 		const build = () =>
-			buildSystemPrompt({ location: '/workspace' }, [tool('read', 'Read a file')], [], undefined, 'minimal');
+			buildSystemPrompt({ location: '/workspace' }, [tool('read', 'Read a file')], undefined, 'minimal');
 		const first = await build();
 		const clock = first.lastIndexOf('\n## ');
 		expect(first.slice(clock)).toContain('## Current UTC date and time');
