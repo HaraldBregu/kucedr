@@ -145,7 +145,6 @@ describe('buildSystemPrompt', () => {
 		const prompt = await buildSystemPrompt(
 			{ location: '/workspace' },
 			[tool('read', 'Read a file'), tool('write', 'Write a file')],
-			[],
 			undefined,
 			'minimal'
 		);
