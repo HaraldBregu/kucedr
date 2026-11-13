@@ -41,16 +41,20 @@ The UI path is separate. Settings → Skills uses `list()` (`skills_list.ts`), a
 
 Do the phases in order. Each phase is shippable on its own.
 
-### Phase 1 — Correctness (S1, S2, S7)
+### Phase 1 — Correctness (S1, S2, S7, S10)
 
-1. **`allowed-tools` → pre-approval, not a restriction.**
-   - Delete `selectSkillTools`, `skillToolScopes` and the `skillBlocked` gate.
-   - Map spec names to our ids in one table next to `skills_read.ts`, e.g. `Read→read`, `Bash(...)→bash`, `Write→write`, `Edit→edit`. Drop names that don't map.
-   - Pass the mapped ids into the existing approval path, so these tools skip the `ask` prompt for this run only.
-   - If pre-approval is not wanted, ignore the field and keep the parsed value only for display. That is the smallest fix.
-   - → verify: a skill with `allowed-tools: Bash(git:*) Read` can still call `write`, and `git status` runs without a prompt.
-2. **Rebuild `loadedSkills` from history.** At run start, read the `kind: 'skill'` messages back into `runContext.loadedSkills`. Store the `id`, `name` and `hash` on the block. Start `notedSkills` at that count so nothing is injected twice. In `applyActivatedSkill`, skip a skill that is already loaded with the same hash.
-   - → verify: `/skill pdf` in run 1, then a plain message in run 2. Run 2's `run_started.skillActivations` lists `pdf`, and the history holds exactly one `pdf` skill message.
+1. **`allowed-tools` → display-only for now.**
+   - Delete `selectSkillTools` (`run_skill_tools.ts`), `skillToolScopes` and the `skillBlocked` gate (`run_stream.ts:236,247,685-693`).
+   - Keep the parsed value on `SkillInfo.manifest` so the details page can show it.
+   - Spec-style pre-approval should come later, and only after Phase 2. The hook point is the permission resolution in `run_tool_call.ts:300`: an `ask` becomes `allow` for mapped ids. But pre-approval lets a skill author bypass the `bash` prompt, so it must be limited to the user and plugin roots, and it needs a name map such as `Bash(...)→bash` and `Read→read`.
+   - → verify: a skill with `allowed-tools: Bash(git:*) Read` can call `write`, and the approval prompts are unchanged.
+2. **Pin loaded skills to the session instead of to one turn.** This replaces the plan's earlier idea of rebuilding skills from history, because history can be trimmed or compacted (S10).
+   - Persist `loadedSkills: {id, hash}[]` in the session metadata, next to `modeIds`.
+   - At run start, re-read each skill with `inspectSkill`, then send the instructions in `requiredContextMessages`, which `fitModelContext` never drops. Stop writing the `kind: 'skill'` history message.
+   - The sticky gate (`run_stream.ts:188`) then checks `loadedSkills.length > 0`.
+   - `applyActivatedSkill` skips a skill that is already loaded. If the hash changed, it replaces the stored copy.
+   - Sessions that already hold `kind: 'skill'` messages: read them once into the metadata on load, and leave the old message in place. No migration is needed.
+   - → verify: `/skill pdf` in run 1, then 10 plain turns and a manual compaction. The next run's request still contains the `pdf` instructions exactly once, and `run_started.skillActivations` lists `pdf`.
 3. **Soft-fail unknown or unavailable explicit skills.** Don't throw. Add an internal note like "Skill "X" not found; available: …", and let the model answer.
    - → verify: `/skill pfd hello` streams a reply that names the valid skills.
 
