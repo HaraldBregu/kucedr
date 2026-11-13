@@ -1,4 +1,3 @@
-import type { LoadedSkill } from '../context';
 import type { Config, Tool } from '../types';
 import { addClockPrompt } from './clock';
 import { addBasePrompt } from './system_add_base_prompt';
