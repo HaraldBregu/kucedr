@@ -17,11 +17,13 @@ export function ToolActivityGroup({
 	tools,
 	isActive = false,
 	startedAtMs,
+	completedAtMs,
 	className,
 }: {
 	readonly tools: readonly AgentToolPart[];
 	readonly isActive?: boolean;
 	readonly startedAtMs?: number;
+	readonly completedAtMs?: number;
 	readonly className?: string;
 }): ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
