@@ -239,7 +239,6 @@ async function* loop(
 	};
 	let search: ToolSearch | undefined;
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
-		skillToolScopes.push(skill.allowedTools);
 		rememberSkill(session.runContext, {
 			id: skill.id,
 			name: skill.name,
