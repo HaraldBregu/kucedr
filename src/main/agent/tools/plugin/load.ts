@@ -15,13 +15,7 @@ export const loadScript = tool({
 		name: z.string().describe('The script name from the Scripts section.'),
 	}),
 	execute: async ({ name }) => {
-		const scripts = pluginScripts();
-		const found = scripts.find((candidate) => candidate.name === name);
-		if (!found) {
-			throw new Error(
-				`Unknown plugin script "${name}". Available: ${scripts.map((candidate) => candidate.name).join(', ') || 'none'}.`
-			);
-		}
+		const found = findScript(name);
 		const { instructions } = found.metadata;
 		if (!instructions) throw new Error(`Plugin script "${name}" has no instructions.`);
 		return readFileSync(path.join(found.directory, ...instructions.split('/')), 'utf8');
