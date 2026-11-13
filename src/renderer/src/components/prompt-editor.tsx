@@ -33,7 +33,7 @@ function PromptEditorArea({
 }): ReactElement {
 	const { value, setValue, onSubmit, disabled, textareaRef } = usePromptInput();
 
-	return (
+	const editor = (
 		<TextEditor
 			value={value}
 			onValueChange={setValue}
