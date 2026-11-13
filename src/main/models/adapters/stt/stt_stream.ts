@@ -133,8 +133,8 @@ type StreamRealtimeConnection = AsyncIterable<StreamRealtimeEvent> & {
 	close(code?: number, reason?: string): Promise<void>;
 };
 
-function createMistralRealtimeConnection(
-	connection: MistralRealtimeConnection,
+function createStreamRealtimeConnection(
+	connection: StreamRealtimeConnection,
 	request: SttAdapterRealtimeStartRequest,
 	emit: SttRealtimeEventHandler
 ): SttRealtimeConnection {
