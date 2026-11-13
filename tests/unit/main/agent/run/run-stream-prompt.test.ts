@@ -155,14 +155,15 @@ describe('run stream system prompt', () => {
 				))
 					events.push(event);
 
-				expect(activateSkillMock).toHaveBeenCalledWith(
+				expect(inspectSkillMock).toHaveBeenCalledWith(
 					expect.objectContaining({ skills: [registrySkill] }),
 					'writer'
 				);
-				const protectedPrompt = runModelTurnMock.mock.calls[0][9] as string;
-				expect(protectedPrompt).toContain('EXACT WRITER INSTRUCTIONS');
-				expect(protectedPrompt).toContain('"canonicalRoot":"/canonical/skills/writer"');
-				expect(protectedPrompt).toContain('references/style.md');
+				const skillContext = requiredContext(runModelTurnMock.mock.calls[0]);
+				expect(skillContext).toContain('EXACT WRITER INSTRUCTIONS');
+				expect(skillContext).toContain('canonicalRoot');
+				expect(skillContext).toContain('references/style.md');
+				expect(session.messages.at(-1)?.skillIds).toEqual(['writer']);
 				expect(events[0]).toMatchObject({
 					type: 'run_started',
 					tools: expect.arrayContaining(['load_skill']),
