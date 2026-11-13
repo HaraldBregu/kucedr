@@ -519,4 +519,5 @@ export async function* runToolCall(
 		durationMs: toolCall.durationMs,
 		...(permissionOutcome ? { permissionOutcome } : {}),
 	};
+	if (abortError) throw abortError.reason;
 }
