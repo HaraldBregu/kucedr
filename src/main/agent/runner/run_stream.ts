@@ -195,8 +195,8 @@ async function* loop(
 	const searchEnabled = toolIdEnabled('tool_search');
 	const skillSnapshot =
 		skillLoadingEnabled || skillListingEnabled
-			? createSkillRegistrySnapshot({ projectRoot: config.location })
-			: { skills: [], diagnostics: [] };
+			? createSkillRegistrySnapshot()
+			: { skills: [], invalid: [], diagnostics: [] };
 
 	if (!provider || !modelId) throw new Error('Agent requires a configured provider and model.');
 	const promptCapabilities =
