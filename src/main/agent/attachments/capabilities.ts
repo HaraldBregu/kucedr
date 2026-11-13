@@ -12,7 +12,11 @@ export function resolvePromptInputCapabilities(
 	if (!providerId?.trim() || !modelId?.trim()) return null;
 	const model = findModel(providerId, 'llm', modelId);
 	if (!model) return null;
-	const adapterKinds = ADAPTER_FORMATS[providerId.trim().toLowerCase()] ?? ['image'];
+	const resolved = metadata(providerId.trim(), modelId);
+	const adapterKinds: PromptAttachmentRule['kind'][] =
+		PROTOCOLS[resolved?.protocol ?? '']?.documents || resolved?.documentPart
+			? ['image', 'document']
+			: ['image'];
 	const declared =
 		model.metadata?.documentationStatus === 'verified'
 			? model.metadata.promptAttachments
