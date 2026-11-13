@@ -27,7 +27,6 @@ const PERSIST = new Set([
 	'create_task',
 	'update_task',
 	'delete_task',
-	'run_task_now',
 	'update_health',
 	'update_identity',
 	'update_soul',
