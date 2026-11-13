@@ -31,7 +31,7 @@ import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
 import { testMcpServer } from '../../mcp';
 import { listSkillsTool } from '../tools/skills/list_skills';
 import { loadSkillTool } from '../tools/skills/load_skill';
-import { subagentTool, subagentsTool } from '../tools/core/subagents';
+import { subagentTool } from '../tools/core/subagents';
 import type {
 	Config,
 	McpDiscoveryDiagnostics,
