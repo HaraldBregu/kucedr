@@ -32,8 +32,12 @@ export function createContentSpeechAdapter(provider: SpeechProviderSpec): Speech
 					: undefined;
 			const voiceName =
 				request.voice ??
-				(typeof optionVoiceName === 'string' ? optionVoiceName : GOOGLE_DEFAULT_VOICE);
-			const response = await fetch(`${baseURL}/models/${request.modelId}:generateContent`, {
+				(typeof optionVoiceName === 'string'
+					? optionVoiceName
+					: inputDefault(request.metadata, ['voiceName']));
+			const response = await fetch(
+				`${provider.baseURL}/models/${request.modelId}:generateContent`,
+				{
 				method: 'POST',
 				headers: {
 					'x-goog-api-key': provider.apiKey,
