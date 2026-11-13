@@ -2,10 +2,9 @@ import { z } from 'zod';
 import type { Tool } from '../types';
 import { tool } from '../tools/tool';
 import { rankTools, toolSearchText } from './rank';
-import { canonicalToolId } from './canonical';
 
 export const TOOL_SEARCH_ID = 'tool_search';
-export const TOOL_SEARCH_DEFAULT_LIMIT = 5;
+export const TOOL_SEARCH_DEFAULT_LIMIT = 3;
 export const TOOL_SEARCH_CALL_LIMIT = 8;
 export const TOOL_SEARCH_RUN_LIMIT = 16;
 
