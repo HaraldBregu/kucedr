@@ -160,7 +160,7 @@ describe('buildSystemPrompt', () => {
 		const clock = first.lastIndexOf('\n## ');
 		expect(first.slice(clock)).toContain('## Current UTC date and time');
 		expect((await build()).slice(0, clock)).toBe(first.slice(0, clock));
-		expect(await buildSystemPrompt({ location: '/workspace' }, [], [], 'Custom instructions.')).not.toContain(
+		expect(await buildSystemPrompt({ location: '/workspace' }, [], 'Custom instructions.')).not.toContain(
 			'## Current UTC date and time'
 		);
 	});
