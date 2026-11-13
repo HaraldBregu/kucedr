@@ -102,9 +102,10 @@ export const CodingChannels = {
 	send: 'coding:send',
 	response: 'coding:response',
 	cancel: 'coding:cancel',
-	connectCodex: 'coding:codex:connect',
-	cancelCodexLogin: 'coding:codex:connect:cancel',
-	disconnectCodex: 'coding:codex:disconnect',
+	connect: 'coding:auth:connect',
+	cancelLogin: 'coding:auth:connect:cancel',
+	disconnect: 'coding:auth:disconnect',
+	listHarnesses: 'coding:harnesses:list',
 	authEvent: 'coding:auth:event',
 } as const;
 
