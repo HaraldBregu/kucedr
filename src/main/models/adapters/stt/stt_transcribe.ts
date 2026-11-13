@@ -30,6 +30,7 @@ import {
 	supportsSpeechToTextApiType,
 } from '../../../models';
 import { getProvider } from '../../../settings_store';
+import { modelEndpoint } from '../tts/endpoint';
 import type { PublicProvider as CatalogProvider } from '../../../../shared/provider_types';
 import {
 	getModelId as getTranscribeModelId,
