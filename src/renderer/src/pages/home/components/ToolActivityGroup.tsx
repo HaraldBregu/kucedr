@@ -34,7 +34,11 @@ export function ToolActivityGroup({
 			? toolActivityLabel(running[running.length - 1])
 			: isActive
 				? 'Churning…'
-				: thoughtLabel(tools.reduce((total, tool) => total + (tool.durationMs ?? 0), 0));
+				: thoughtLabel(
+						startedAtMs !== undefined && completedAtMs !== undefined
+							? completedAtMs - startedAtMs
+							: tools.reduce((total, tool) => total + (tool.durationMs ?? 0), 0)
+					);
 
 	return (
 		<Collapsible
