@@ -116,10 +116,9 @@ describe('run stream system prompt', () => {
 		name: 'writer',
 		canonicalRoot: '/canonical/skills/writer',
 		instructions: 'EXACT WRITER INSTRUCTIONS',
-		source: 'local-filesystem',
+		source: 'user',
 		trust: 'user-controlled',
 		hash: 'writer-hash',
-		allowedTools: ['read'],
 		resources: ['references/style.md'],
 		warnings: [],
 	} as const;
