@@ -19,7 +19,7 @@ export const editTool = tool({
 	}),
 	execute: async ({ path: filePath, oldText, newText }, signal) => {
 		const resolved = authorizeFilePath(filePath);
-		const content = (await readFileBounded(resolved, 2 * 1024 * 1024, signal)).toString('utf8');
+		const content = (await readFileBounded(resolved, MAX_READ_BYTES, signal)).toString('utf8');
 		const firstIndex = content.indexOf(oldText);
 		if (firstIndex === -1) {
 			throw new Error('edit oldText was not found.');
