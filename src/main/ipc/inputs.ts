@@ -60,6 +60,6 @@ export function inputs(model: {
 		properties.max_tokens = reasoningTemplate.properties.max_tokens;
 	if (reasoning.mandatory === false && typeof reasoning.default_enabled === 'boolean' && reasoningTemplate?.properties?.enabled)
 		properties.enabled = { ...reasoningTemplate.properties.enabled, default: reasoning.default_enabled };
-	if (Object.keys(properties).length) inputs.reasoning = { ...reasoningTemplate, properties };
+	if (Object.keys(properties).length) parsed.reasoning ={ ...reasoningTemplate, properties };
 	return parsed;
 }
