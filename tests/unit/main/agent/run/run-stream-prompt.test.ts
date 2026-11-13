@@ -212,7 +212,7 @@ describe('run stream system prompt', () => {
 		))
 			void event;
 
-		expect(createSkillRegistrySnapshotMock).toHaveBeenCalledWith({ projectRoot: '/workspace' });
+		expect(createSkillRegistrySnapshotMock).toHaveBeenCalledWith();
 		expect(
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(expect.arrayContaining(['load_skill']));
