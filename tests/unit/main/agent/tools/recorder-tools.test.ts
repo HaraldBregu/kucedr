@@ -25,15 +25,15 @@ jest.mock('../../../../../src/main/shared/library_location', () => ({
 	libraryLocation: () => '/library',
 }));
 
-import { cameraRecorderTool } from '../../../../../src/main/agent/tools/system/camera_recorder';
-import { cameraRecorderStatusTool } from '../../../../../src/main/agent/tools/system/camera_recorder_status';
-import { cameraRecorderStopTool } from '../../../../../src/main/agent/tools/system/camera_recorder_stop';
-import { microphoneRecorderTool } from '../../../../../src/main/agent/tools/system/microphone_recorder';
-import { microphoneRecorderStatusTool } from '../../../../../src/main/agent/tools/system/microphone_recorder_status';
-import { microphoneRecorderStopTool } from '../../../../../src/main/agent/tools/system/microphone_recorder_stop';
-import { screenRecorderTool } from '../../../../../src/main/agent/tools/system/screen_recorder';
-import { screenRecorderStatusTool } from '../../../../../src/main/agent/tools/system/screen_recorder_status';
-import { screenRecorderStopTool } from '../../../../../src/main/agent/tools/system/screen_recorder_stop';
+import { recorderTools } from '../../../../../src/main/agent/tools/system/recorder';
+
+const cameraRecorderTool = () => recorderTools('camera').start;
+const { status: cameraRecorderStatusTool, stop: cameraRecorderStopTool } = recorderTools('camera');
+const microphoneRecorderTool = () => recorderTools('microphone').start;
+const { status: microphoneRecorderStatusTool, stop: microphoneRecorderStopTool } =
+	recorderTools('microphone');
+const screenRecorderTool = () => recorderTools('screen').start;
+const { status: screenRecorderStatusTool, stop: screenRecorderStopTool } = recorderTools('screen');
 
 const id = '123e4567-e89b-12d3-a456-426614174000';
 
