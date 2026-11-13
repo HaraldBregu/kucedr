@@ -173,12 +173,12 @@ export interface CodingInvokeChannelMap {
 		result: import('./coding_types').CodingRunResult;
 	};
 	[CodingChannels.cancel]: { args: [runId: string]; result: boolean };
-	[CodingChannels.connectCodex]: {
+	[CodingChannels.connect]: {
 		args: [runtime?: import('./coding_types').CoderHarness];
 		result: import('./coding_types').CodingAuthStatus;
 	};
-	[CodingChannels.cancelCodexLogin]: { args: []; result: boolean };
-	[CodingChannels.disconnectCodex]: {
+	[CodingChannels.cancelLogin]: { args: []; result: boolean };
+	[CodingChannels.disconnect]: {
 		args: [runtime?: import('./coding_types').CoderHarness];
 		result: void;
 	};
