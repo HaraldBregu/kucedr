@@ -115,6 +115,7 @@ import type {
 	CodingAuthEvent,
 	CodingAuthStatus,
 	CodingCatalog,
+	CodingHarnessInfo,
 	CodingProject,
 	CodingProjectCreate,
 	CodingProjectFile,
@@ -324,12 +325,12 @@ export interface CodingApi {
 		onEvent?: (event: CodingResponseEvent) => void
 	) => Promise<CodingRunResult>;
 	cancel: (runId: string) => Promise<boolean>;
-	connectCodex: (
+	connect: (
 		onEvent?: (event: CodingAuthEvent) => void,
 		runtime?: CoderHarness
 	) => Promise<CodingAuthStatus>;
-	cancelCodexLogin: () => Promise<boolean>;
-	disconnectCodex: (runtime?: CoderHarness) => Promise<void>;
+	cancelLogin: () => Promise<boolean>;
+	disconnect: (runtime?: CoderHarness) => Promise<void>;
 }
 
 export interface TaskApi {
