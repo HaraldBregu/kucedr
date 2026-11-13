@@ -361,6 +361,7 @@ export function getResolvedProvider(providerId: string | undefined): ResolvedPro
 	if (!provider && catalogProvider?.authentication !== 'none') return undefined;
 	return {
 		id: providerId,
+		name: catalogProvider?.name ?? provider?.name,
 		apiKey: provider?.apiKey ?? '',
 		baseURL: provider?.baseUrl ?? catalogProvider?.baseUrl ?? '',
 		...(catalogProvider?.authentication ? { authentication: catalogProvider.authentication } : {}),
