@@ -208,11 +208,8 @@ function createStreamRealtimeConnection(
 	};
 }
 
-function realtimeBaseUrl(baseURL: string | undefined): string {
-	return (baseURL ?? speechToTextBaseUrl('mistral')).replace(
-		/\/v1\/?$/,
-		''
-	);
+function realtimeBaseUrl(baseURL: string): string {
+	return baseURL.replace(/\/v1\/?$/, '');
 }
 
 function errorMessage(error: unknown, fallback: string): string {
