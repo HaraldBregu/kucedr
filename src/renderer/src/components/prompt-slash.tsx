@@ -71,7 +71,14 @@ function PromptSlash({
 							run: () => navigate(item.path),
 						})
 					),
-					{ group: 'Files', label: 'Upload files', icon: MonitorUp, run: triggerFileUpload },
+					{
+						group: 'Files',
+						label: 'Upload files',
+						hint: filesAccept === '' ? "This model doesn't accept files." : undefined,
+						icon: MonitorUp,
+						disabled: filesAccept === '',
+						run: triggerFileUpload,
+					},
 				].filter((item) => `${item.group} ${item.label}`.toLowerCase().includes(query));
 	const open = items.length > 0 && !dismissed;
 
