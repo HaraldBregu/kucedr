@@ -12,6 +12,7 @@ export function addAssistantMessage(
 ): void {
 	if (state.lease && !state.lease.active) return;
 	if (!hasAssistantPayload(content, toolCalls)) return;
+	const skillIds = state.runContext.loadedSkills.map((skill) => skill.id);
 	const contentBlocks: MessageContentBlock[] = [...providerItems];
 	if (content || contentBlocks.length === 0) {
 		contentBlocks.push({ type: 'text', text: content });
