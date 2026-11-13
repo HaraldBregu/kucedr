@@ -35,6 +35,7 @@ import { subagentTool } from '../tools/core/subagents';
 import type {
 	Config,
 	McpDiscoveryDiagnostics,
+	Message,
 	RuntimeEvent,
 	RuntimeInput,
 	Tool,
