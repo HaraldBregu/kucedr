@@ -177,8 +177,12 @@ describe('run stream system prompt', () => {
 	);
 
 	it('loads an explicitly requested skill in minimal mode without transporting its body through tool output', async () => {
-		createSkillRegistrySnapshotMock.mockReturnValue({ skills: [registrySkill], diagnostics: [] });
-		activateSkillMock.mockResolvedValue(activatedSkill);
+		createSkillRegistrySnapshotMock.mockReturnValue({
+			skills: [registrySkill],
+			invalid: [],
+			diagnostics: [],
+		});
+		inspectSkillMock.mockResolvedValue(activatedSkill);
 		runModelTurnMock
 			.mockImplementationOnce(async function* () {
 				yield* [];
