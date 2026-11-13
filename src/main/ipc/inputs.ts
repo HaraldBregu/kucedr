@@ -12,13 +12,13 @@ export function inputs(model: {
 		!Array.isArray(model.default_parameters)
 			? (model.default_parameters as Record<string, unknown>)
 			: {};
-	const inputs: Record<string, ModelInputSchema> = {};
+	const parsed: Record<string, ModelInputSchema> = {};
 	for (const name of parameters) {
 		if (typeof name !== 'string' || !Object.hasOwn(templates, name)) continue;
 		const schema = templates[name];
 		if (name === 'reasoning') continue;
 		const value = defaults[name];
-		inputs[name] = {
+		parsed[name] = {
 			...schema,
 			...((typeof value === schema.type ||
 				(schema.type === 'integer' && typeof value === 'number' && Number.isInteger(value))) &&
