@@ -50,7 +50,7 @@ export function readSkill(
 		folderPath: folder,
 		skillPath: canonicalSkillPath,
 		manifest,
-		source,
+		source: origin,
 		trust: 'user-controlled',
 		hash,
 		structure: {
