@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { z } from 'zod';
-import { pluginScripts } from '../../../plugins';
 import { tool } from '../tool';
+import { findScript } from './script';
 
 export const loadScript = tool({
 	id: 'load_script',
