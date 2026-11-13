@@ -98,7 +98,7 @@ export function createBidiVoiceAdapter(
 							generationConfig: {
 								responseModalities: ['AUDIO'],
 								speechConfig: {
-									voiceConfig: { prebuiltVoiceConfig: { voiceName: request.voice } },
+									voiceConfig: { prebuiltVoiceConfig: { voiceName: realtimeVoiceName(request.voice, model) } },
 								},
 								...(typeof request.options?.thinking_level === 'string'
 									? { thinkingConfig: { thinkingLevel: request.options.thinking_level } }
