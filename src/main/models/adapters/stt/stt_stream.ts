@@ -121,13 +121,13 @@ export function createStreamSttAdapter(opts: StreamSttAdapterOptions): SttAdapte
 	};
 }
 
-type MistralRealtimeEvent = {
+type StreamRealtimeEvent = {
 	type: string;
 	text?: string;
 	error?: { message?: unknown };
 };
 
-type MistralRealtimeConnection = AsyncIterable<MistralRealtimeEvent> & {
+type StreamRealtimeConnection = AsyncIterable<StreamRealtimeEvent> & {
 	sendAudio(audioBytes: Uint8Array | ArrayBuffer): Promise<void>;
 	endAudio(): Promise<void>;
 	close(code?: number, reason?: string): Promise<void>;
