@@ -172,6 +172,42 @@ Small, local changes:
 
 → verify: typecheck passes. The prompt Tools section and `run_started.tools` match step 5's output, and recorder start/status/stop works for all three devices.
 
+## Implementation status (2026-11-14)
+
+**Done**
+- **Step 1**
+  - C1: Voice drops `mdl__*` tools (`shared/agent_tools.ts`).
+  - C2/C3: the subagent reads the parent's eligible tools through a getter, so it sees the post-refresh MCP tools and never `ask`/`load_skill`/`undo`/`redo`/`subagent`.
+  - C5: the budget is charged after the gate, profile and permission checks. Unloaded and unknown tools are still charged.
+  - C6: the timeout starts after the lock.
+  - C7: the `recovered` flag replaces `continue`.
+  - C10: the tasks allowlist gains `use_web_browser` and loses `select_screen_source`.
+  - C4: done, then lost. The `tool_search` exemption was in `run_skill_tools.ts`, which a parallel skills refactor deleted, and has to be carried into its replacement.
+- **Step 2**
+  - C8 (narrowed): `read` locks the file, not its directory, but only for the resource mutex. Permission targets are unchanged.
+  - C11: on abort, the call still emits `tool_call_end` and the POST hook, then rethrows. File history is recorded when the execution settles, including after a timeout.
+  - C12: truncation is now UTF-8 safe and the marker fits inside the limit.
+- **Step 3:** one `subagent` tool (1–3 tasks, category `delegation`, not preloaded). Parallel children get tools with `readOnly: true`. The renderer handles single-task output.
+- **Step 4:** `filterEligibleTools` now runs once before discovery. `capability.ts` reclassifies K1–K4.
+- **Step 5**
+  - Exact-id search loads only that tool, and the default limit is 3.
+  - Ranking ignores the raw schema JSON and computes document frequency once.
+  - Every prompt tool line is now a one-sentence summary; the full description travels with the attached schema in every adapter. Re-applying that to the last saved prompt gives 23.3 KB → 11.6 KB.
+  - `system_tool_options.ts` is deleted, and the task-tool example requests are cut.
+- **Step 6**
+  - The recorder factory (`tools/system/recorder.ts`, `capture.ts`) replaces 9 files, 395 → 193 lines.
+  - Shared `MAX_READ_BYTES`/`PATH_DESCRIPTION`, the `findScript` helper, and compact JSON results.
+  - `ask.ts` moved to `tools/system/`.
+  - Deleted: `canonical.ts`, `budget.outcomes`, the web budget, voice `PAID_TOOLS`, and the `serverName` hint clause.
+
+**Deviations from the plan**
+- **No `preload` flag.** It would spread one list across about 20 files for no behavior gain, so `requiredIds` stays.
+- **MCP `readOnlyHint` doesn't set `Tool.readOnly`.** The hint comes from the server, and setting it would also open those tools in read-only modes.
+- **C8: no subtree locks.** A long `bash` would block every file operation in other chats. `bash` and a write inside its root still don't serialize.
+- **Kept:** the `buildSystemPrompt` `loadedSkills` parameter (test churn), the `pending.get` guard, and the C9 backfill retry. That last one is in `main/mcp/`, outside this pass.
+
+**Not run (per CLAUDE.md):** tests. These test files will need updating for the new APIs: `tools/subagent.test.ts`, `run/run-discovery.test.ts` (`selectedCanonicalIds`, limit 5), `system/system-prompt.test.ts` (Options suffix, full descriptions), and any budget tests that reference `web`/`outcomes`.
+
 ## 4. Not doing (and when to)
 
 - **Parallel tool calls inside a turn.** These would remove the main reason for a parallel delegation path, but they touch locks, approvals and ordering. Do it after step 2 makes locking correct.
