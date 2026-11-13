@@ -258,6 +258,10 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 				: {}),
 		};
 	}
-	if (event.type === 'run_error') return { type: event.type };
+	if (event.type === 'run_error')
+		return {
+			type: event.type,
+			...(typeof event.message === 'string' ? { message: event.message.slice(0, 500) } : {}),
+		};
 	return { type: event.type };
 }
