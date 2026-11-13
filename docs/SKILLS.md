@@ -78,6 +78,10 @@ Do the phases in order. Each phase is shippable on its own.
    - → verify: the Settings → Skills list equals `list_skills` output for the same state, and delete/download work for plugin and user skills.
 7. **Hash check:** compare against the file read at activation and drop the snapshot hash. Or re-snapshot and retry once before failing.
 8. **Remove the unused `loadedSkills` parameter** from `buildSystemPrompt`/`addSkillPrompt`. Injection already happens through `buildLoadedSkillPrompt`, so `addSkillPrompt` only needs the "Skills" usage note.
+9. **Delete the unused shared code (S11).** Remove `skills_definitions.ts` and its export from `shared/index.ts`. Remove the unused types and fields listed in S11.
+   - → verify: `npm run typecheck` passes with no other edits.
+10. **Surface diagnostics (S12).** Attach the registry's per-skill diagnostics to `SkillInfo.diagnostics`, including invalid folders as entries, so Settings shows why a skill is missing. Change the budget error text to "mode instructions".
+   - → verify: a skill folder with a bad `name` shows in Settings with its error.
 
 ### Phase 4 — Discovery (S5), needs product decision
 
