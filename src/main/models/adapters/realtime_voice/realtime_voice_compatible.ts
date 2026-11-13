@@ -47,9 +47,7 @@ export class CompatibleRealtimeVoiceAdapter implements RealtimeVoiceAdapter {
 		await connection.open(
 			this.profile.session({
 				...request,
-				voice: request.voice.trim() ||
-					(typeof this.profile.model.metadata?.inputs?.voice?.default === 'string'
-						? this.profile.model.metadata.inputs.voice.default : ''),
+				voice: realtimeVoiceName(request.voice, this.profile.model),
 			}),
 			request.history,
 			this.connectTimeoutMs,
