@@ -200,12 +200,12 @@ export const coding: CodingApi = {
 		if (!normalizedRunId) throw new Error('Invalid coding run id.');
 		return typedInvokeUnwrap(CodingChannels.cancel, normalizedRunId);
 	},
-	connectCodex: (onEvent, runtime) => {
+	connect: (onEvent, runtime) => {
 		const unsubscribe = typedOn(CodingChannels.authEvent, (event) => onEvent?.(event));
-		return typedInvokeUnwrap(CodingChannels.connectCodex, runtime).finally(unsubscribe);
+		return typedInvokeUnwrap(CodingChannels.connect, runtime).finally(unsubscribe);
 	},
-	cancelCodexLogin: () => typedInvokeUnwrap(CodingChannels.cancelCodexLogin),
-	disconnectCodex: (runtime) => typedInvokeUnwrap(CodingChannels.disconnectCodex, runtime),
+	cancelLogin: () => typedInvokeUnwrap(CodingChannels.cancelLogin),
+	disconnect: (runtime) => typedInvokeUnwrap(CodingChannels.disconnect, runtime),
 };
 
 export const coder = coding;
