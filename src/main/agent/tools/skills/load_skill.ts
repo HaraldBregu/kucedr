@@ -21,7 +21,7 @@ export function loadSkillTool(
 			name: z.enum(names as [string, ...string[]]).describe('The exact skill name to activate.'),
 		}),
 		execute: async ({ name }) => {
-			const skill = await activateSkill(snapshot, name);
+			const skill = await inspectSkill(snapshot, name);
 			onActivate(skill);
 			return {
 				activated: true,
