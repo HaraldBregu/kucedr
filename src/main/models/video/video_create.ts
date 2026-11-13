@@ -16,8 +16,6 @@ import {
 } from '../adapters/ttv';
 import { getModelId, getProviderId, resolveOptions } from '../selection';
 
-const DEFAULT_VIDEO_PROVIDER_ID = 'google';
-
 export async function createVideo(
 	request: VideoRequest,
 	signal?: AbortSignal
