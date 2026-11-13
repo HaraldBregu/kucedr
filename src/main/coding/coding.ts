@@ -392,7 +392,7 @@ export class Coder {
 			this.auth.delete(ownerId);
 		}
 	}
-	cancelCodexLogin(ownerId: number): boolean {
+	cancelLogin(ownerId: number): boolean {
 		const controller = this.auth.get(ownerId);
 		if (!controller) return false;
 		controller.abort();
