@@ -36,8 +36,6 @@ export async function inspectSkill(
 	if (Buffer.byteLength(source, 'utf8') > SKILL_MAX_BYTES)
 		throw new Error(`Skill "${skill.name}" exceeds the ${SKILL_MAX_BYTES}-byte limit.`);
 	const hash = createHash('sha256').update(source).digest('hex');
-	if (hash !== skill.hash)
-		throw new Error(`Skill "${skill.name}" changed while it was loading. Retry the request.`);
 	const instructions = stripFrontmatter(source);
 	const lineCount = instructions.split(/\r?\n/).length;
 	const estimatedTokens = Math.ceil(Buffer.byteLength(instructions, 'utf8') / 3);
