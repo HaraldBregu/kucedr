@@ -206,6 +206,21 @@ Small, local changes:
 - **C8: no subtree locks.** A long `bash` would block every file operation in other chats. `bash` and a write inside its root still don't serialize.
 - **Kept:** the `buildSystemPrompt` `loadedSkills` parameter (test churn), the `pending.get` guard, and the C9 backfill retry. That last one is in `main/mcp/`, outside this pass.
 
+**Second-pass fixes**
+- `subagent` is preloaded when `tool_search` is disabled; otherwise it can't be reached.
+- The `bash` `yieldMs` is capped at 540 s, below the 10-minute tool timeout.
+- `summary()` skips abbreviations: e.g., i.e., etc., vs.
+- A single-task subagent rejected with an error string now renders as failed instead of spinning.
+- C4 is moot: the skills refactor removed skill tool gating, and `allowed-tools` is now parsed but unused.
+
+**Still open**
+- C9: the stdio MCP backfill isn't retried.
+- C13: MCP name suffixes depend on load order.
+- `getMcpServers()` rescans the plugin directories once per unconfigured MCP tool permission check.
+- `bash` and a write inside its root don't serialize.
+- The lock wait isn't capped by the tool timeout.
+- Plus the AGENT_TURN MCP items.
+
 **Not run (per CLAUDE.md):** tests. These test files will need updating for the new APIs: `tools/subagent.test.ts`, `run/run-discovery.test.ts` (`selectedCanonicalIds`, limit 5), `system/system-prompt.test.ts` (Options suffix, full descriptions), and any budget tests that reference `web`/`outcomes`.
 
 ## 4. Not doing (and when to)
