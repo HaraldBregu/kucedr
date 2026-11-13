@@ -7,7 +7,6 @@ export * from './provider_types';
 export * from './realtime_voice';
 export * from './search_types';
 export * from './skills_types';
-export * from './skills_definitions';
 export * from './stt_types';
 export * from './stt_transcription';
 export * from './data_types';
