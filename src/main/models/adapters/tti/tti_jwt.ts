@@ -5,7 +5,7 @@ import type { ImageAdapter, ImageProviderSpec } from './tti_types';
 export function createJwtImageAdapter(spec: ImageProviderSpec, imageList: boolean): ImageAdapter {
 	return {
 		async generate(request) {
-			return generateKlingMedia(
+			return generateTaskMedia(
 				spec,
 				request.endpoint ?? '/v1/images/generations',
 				{
