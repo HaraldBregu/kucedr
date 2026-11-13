@@ -2,12 +2,8 @@ import { AGENT_TEXT_ATTACHMENT_EXTENSIONS } from '../../../shared/agent_files';
 import type { AgentPromptInputCapabilities } from '../../../shared/agent_types';
 import type { PromptAttachmentRule } from '../../../shared/model_types';
 import { findModel } from '../../models';
-
-const ADAPTER_FORMATS: Readonly<Record<string, readonly PromptAttachmentRule['kind'][]>> = {
-	openai: ['image', 'document'],
-	anthropic: ['image', 'document'],
-	reka: ['image', 'document'],
-};
+import { metadata } from '../../models/adapters/llm/metadata';
+import { PROTOCOLS } from '../../models/adapters/llm/protocols';
 
 export function resolvePromptInputCapabilities(
 	providerId: string | undefined,
