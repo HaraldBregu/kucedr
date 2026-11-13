@@ -4,6 +4,6 @@ import type { SessionState } from './session_types';
 
 export function addUserMessage(state: SessionState, content: MessageContent): void {
 	if (state.lease && !state.lease.active) return;
-	state.messages.push({ role: 'user', content, createdAtMs: Date.now() });
+	state.messages.push({ role: 'user', content });
 	persist(state);
 }
