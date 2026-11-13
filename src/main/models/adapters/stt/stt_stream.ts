@@ -112,8 +112,8 @@ export function createStreamSttAdapter(opts: StreamSttAdapterOptions): SttAdapte
 					sampleRate: request.sampleRate,
 				},
 			});
-			return createMistralRealtimeConnection(
-				connection as unknown as MistralRealtimeConnection,
+			return createStreamRealtimeConnection(
+				connection as unknown as StreamRealtimeConnection,
 				request,
 				emit
 			);
