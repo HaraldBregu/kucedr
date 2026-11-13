@@ -27,6 +27,7 @@ type PromptInputContextType = {
 	isExpanded: boolean;
 	adaptiveLayout: boolean;
 	triggerFileUpload: () => void;
+	filesAccept?: string;
 };
 
 const PromptInputContext = createContext<PromptInputContextType>({
