@@ -66,12 +66,12 @@ import {
 
 export interface CodingInvokeChannelMap {
 	[CodingChannels.setApiKey]: {
-		args: [
-			provider: 'openai',
-			key: string,
-			runtime?: import('./coding_types').CoderHarness,
-		];
+		args: [key: string, runtime?: import('./coding_types').CoderHarness];
 		result: void;
+	};
+	[CodingChannels.listHarnesses]: {
+		args: [];
+		result: import('./coding_types').CodingHarnessInfo[];
 	};
 	[CodingChannels.pickDirectory]: { args: []; result: string | undefined };
 	[CodingChannels.respond]: {
