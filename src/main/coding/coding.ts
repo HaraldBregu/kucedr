@@ -457,7 +457,10 @@ export class Coder {
 		const entry = this.entry(runtime);
 		const metadata = entry.model.metadata;
 		const factory = metadata?.protocol && HARNESS_PROTOCOLS[metadata.protocol];
-		if (!factory || !metadata?.harness) throw new Error('Coder harness has no supported protocol.');
+		if (!factory || !metadata?.harness)
+			throw new Error(
+				`${entry.model.name} (${entry.model.provider.name}) declares no supported protocol.`
+			);
 		const harness = factory({
 			directory: path.join(userDataLocation(), 'coder', runtime),
 			name: entry.info.name,
