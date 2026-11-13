@@ -40,6 +40,9 @@ export function builtinTools(
 	sandbox: ExecSandbox,
 	limits: { ask?: boolean; readOnlyShell?: boolean; restricted?: boolean } = {}
 ): Tool[] {
+	const microphone = recorderTools('microphone');
+	const camera = recorderTools('camera');
+	const screen = recorderTools('screen');
 	return [
 		readTool,
 		...(limits.ask === false ? [] : [requestUserInputTool]),
