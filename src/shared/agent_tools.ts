@@ -57,6 +57,7 @@ const TASKS_BUILTIN_TOOL_IDS = new Set([
 	'process',
 	'search_web',
 	'fetch_web_page',
+	'use_web_browser',
 	'microphone_recorder',
 	'microphone_recorder_status',
 	'microphone_recorder_stop',
