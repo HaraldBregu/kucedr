@@ -155,75 +155,27 @@ Rules:
 
 When you finish, your final response is reported back to the main agent. Include what you accomplished or found and any details the main agent needs. Keep it concise but informative.`;
 
-const subagentsInstructions = `You are one of several parallel subagents spawned by the main agent to complete one independent research or inspection task.
+const parallelInstructions = `${subagentInstructions}
 
-Rules:
-- Stay focused on the assigned task and return only the findings the main agent needs.
-- Treat the available tools as read-only. Do not attempt file changes, commands, schedules, persistence, or external actions.
-- You are NOT the main agent: do not converse with the user or spawn more agents.`;
+You run in parallel with sibling subagents, so your tools are read-only. Do not attempt file changes, commands, schedules, persistence, or external actions.`;
 
 const fallbackPool = new KeyedLimiter(3);
-const PARALLEL_TOOL_IDS = new Set(['read', 'search_web', 'fetch_web_page', 'query_knowledge']);
+const PARENT_ONLY_TOOL_IDS = new Set(['subagent', 'ask', 'load_skill', 'undo', 'redo']);
 
-export function subagentTool(config: Config, tools: Tool[], runtime: ChildRuntime): Tool {
+export function subagentTool(config: Config, tools: () => Tool[], runtime: ChildRuntime): Tool {
 	return tool({
 		id: 'subagent',
-		category: 'core',
+		category: 'delegation',
 		name: 'Subagent',
 		description:
-			'Spawn a subagent to complete a task in its own isolated context and return a summary. It has the same tools as you, except spawning subagents, but it does not receive the parent conversation or prior tool results. Use it only for independent work that takes many steps or produces large intermediate output. Never use it to resolve a follow-up reference or recover information already present in the parent conversation. Give it a clear objective, all required context, and the expected output.',
-		readOnly: true,
-		inputSchema: z.object({
-			task: z.string().describe('The task for the subagent to complete'),
-		}),
-		execute: async ({ task }, signal) => {
-			const childTools = tools.filter(
-				(candidate) =>
-					candidate.id !== 'subagent' &&
-					candidate.id !== 'subagents' &&
-					candidate.id !== 'ask' &&
-					candidate.id !== 'load_skill'
-			);
-			const parentSignal = signal ?? new AbortController().signal;
-			const lease = await (runtime.subagentLimiter ?? fallbackPool).acquire(
-				'subagents',
-				parentSignal
-			);
-			try {
-				return await runChild(
-					config,
-					childTools,
-					task,
-					subagentInstructions,
-					parentSignal,
-					runtime
-				);
-			} finally {
-				lease.release();
-			}
-		},
-	});
-}
-
-export function subagentsTool(
-	config: Config,
-	tools: Tool[],
-	runtime: ChildRuntime,
-	pool: KeyedLimiter = fallbackPool
-): Tool {
-	return tool({
-		id: 'subagents',
-		category: 'core',
-		name: 'Subagents',
-		description:
-			'Spawn two or three independent read-only subagents concurrently. They do not receive the parent conversation or prior tool results, so include all required context in each task and never use them for follow-up references. Each task must have a stable id. Results preserve input order, and one failed child does not cancel its siblings.',
+			'Spawn one to three subagents, each completing a task in its own isolated context and returning a summary. A single subagent has your tools except spawning subagents; two or three run concurrently with read-only tools. They do not receive the parent conversation or prior tool results, so give each a clear objective, all required context, and the expected output. Use them only for independent work that takes many steps or produces large intermediate output, never to resolve a follow-up reference. Tools that need user approval are unavailable to subagents. Results preserve input order, and one failed child does not cancel its siblings.',
 		readOnly: true,
 		inputSchema: z.object({
 			tasks: z
 				.array(
 					z.object({
-						id: z.string().trim().min(1),
-						task: z.string().trim().min(1),
+						id: z.string().trim().min(1).describe('Stable, unique task id'),
+						task: z.string().trim().min(1).describe('The task for the subagent to complete'),
 					})
 				)
 				.superRefine((tasks, context) => {
@@ -234,12 +186,17 @@ export function subagentsTool(
 						ids.add(task.id);
 					}
 				})
-				.min(2)
+				.min(1)
 				.max(3),
 		}),
 		execute: async ({ tasks }, signal) => {
 			const parentSignal = signal ?? new AbortController().signal;
-			const childTools = tools.filter((candidate) => PARALLEL_TOOL_IDS.has(candidate.id));
+			const parallel = tasks.length > 1;
+			const childTools = tools().filter(
+				(candidate) =>
+					!PARENT_ONLY_TOOL_IDS.has(candidate.id) && (!parallel || candidate.readOnly === true)
+			);
+			const pool = runtime.subagentLimiter ?? fallbackPool;
 			const settled = await Promise.allSettled(
 				tasks.map(async ({ task }) => {
 					const lease = await pool.acquire('subagents', parentSignal);
@@ -248,7 +205,7 @@ export function subagentsTool(
 							config,
 							childTools,
 							task,
-							subagentsInstructions,
+							parallel ? parallelInstructions : subagentInstructions,
 							parentSignal,
 							runtime
 						);
@@ -257,7 +214,7 @@ export function subagentsTool(
 					}
 				})
 			);
-			return settled.map((result, index) =>
+			const results = settled.map((result, index) =>
 				result.status === 'fulfilled'
 					? { id: tasks[index].id, ...result.value }
 					: {
@@ -267,6 +224,7 @@ export function subagentsTool(
 							error: result.reason instanceof Error ? result.reason.message : String(result.reason),
 						}
 			);
+			return parallel ? results : results[0];
 		},
 	});
 }
