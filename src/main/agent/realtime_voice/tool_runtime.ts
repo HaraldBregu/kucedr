@@ -56,7 +56,6 @@ export class RealtimeVoiceToolRuntime {
 	private tail = Promise.resolve();
 	private calls = 0;
 	private outputBytes = 0;
-	private paidCalls = 0;
 	private webCalls = 0;
 
 	constructor(private readonly dependencies: RealtimeVoiceToolRuntimeDependencies) {}
