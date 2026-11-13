@@ -243,35 +243,83 @@ describe('run stream system prompt', () => {
 		expect(receipt).not.toContain('EXACT WRITER INSTRUCTIONS');
 	});
 
-	it('surfaces explicit activation errors before model inference', async () => {
-		createSkillRegistrySnapshotMock.mockReturnValue({ skills: [], diagnostics: [] });
-		activateSkillMock.mockRejectedValue(
+	it('tells the model about an unknown explicit skill instead of failing the run', async () => {
+		createSkillRegistrySnapshotMock.mockReturnValue({
+			skills: [registrySkill],
+			invalid: [],
+			diagnostics: [],
+		});
+		inspectSkillMock.mockRejectedValue(
 			new Error('Skill "missing" was not found in this run\'s registry.')
 		);
+		const session = createSessionState();
 		const events = [];
-		await expect(async () => {
-			for await (const event of stream(
-				{ location: '/workspace' },
-				createSessionState(),
-				{
-					runId: 'missing',
-					task: 'chat',
-					message: 'request',
-					model: 'test-model',
-					type: 'default',
-					agentId: 'main',
-					contextMode: 'minimal',
-					explicitSkill: 'missing',
-				},
-				new AbortController().signal,
-				{ tools: [] }
-			))
-				events.push(event);
-		}).rejects.toThrow('not found');
-		expect(events).toContainEqual(
-			expect.objectContaining({ type: 'run_error', message: expect.stringContaining('not found') })
+		for await (const event of stream(
+			{ location: '/workspace' },
+			session,
+			{
+				runId: 'missing',
+				task: 'chat',
+				message: 'request',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+				explicitSkill: 'missing',
+			},
+			new AbortController().signal,
+			{ sandbox }
+		))
+			events.push(event);
+		expect(events).not.toContainEqual(expect.objectContaining({ type: 'run_error' }));
+		expect(runModelTurnMock).toHaveBeenCalled();
+		expect(JSON.stringify(session.messages)).toContain(
+			'The user asked for the \\"missing\\" skill, but it could not be loaded'
 		);
-		expect(runModelTurnMock).not.toHaveBeenCalled();
+		expect(JSON.stringify(session.messages)).toContain('Available skills: writer.');
+	});
+
+	it('restores a skill pinned by an earlier run and ignores its legacy history copy', async () => {
+		createSkillRegistrySnapshotMock.mockReturnValue({
+			skills: [registrySkill],
+			invalid: [],
+			diagnostics: [],
+		});
+		inspectSkillMock.mockResolvedValue(activatedSkill);
+		const session = createSessionState();
+		session.messages = [
+			{ role: 'user', content: 'Draft this' },
+			{
+				role: 'user',
+				content: [{ type: 'text', internal: true, kind: 'skill', text: 'OLD COPY' }],
+			},
+			{ role: 'assistant', content: 'draft', skillIds: ['writer'] },
+			{ role: 'user', content: 'Make it shorter' },
+		];
+		const events = [];
+		for await (const event of stream(
+			{ location: '/workspace' },
+			session,
+			{
+				runId: 'pinned',
+				task: 'chat',
+				message: 'Make it shorter',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ sandbox }
+		))
+			events.push(event);
+		expect(inspectSkillMock).toHaveBeenCalledWith(expect.anything(), 'writer');
+		expect(events[0]).toMatchObject({
+			type: 'run_started',
+			skillActivations: [expect.objectContaining({ id: 'writer' })],
+		});
+		expect(requiredContext(runModelTurnMock.mock.calls[0])).toContain('EXACT WRITER INSTRUCTIONS');
+		expect(JSON.stringify(runModelTurnMock.mock.calls[0][4])).not.toContain('OLD COPY');
 	});
 
 	it('lists skills when explicitly requested even when the registry is empty', async () => {
