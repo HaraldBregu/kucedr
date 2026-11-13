@@ -1,4 +1,4 @@
-import { generateKlingMedia } from '../kling/generation';
+import { generateTaskMedia } from '../task/generation';
 import { ImageProviderAuthError, ImageProviderRequestError } from './tti_errors';
 import type { ImageAdapter, ImageProviderSpec } from './tti_types';
 
