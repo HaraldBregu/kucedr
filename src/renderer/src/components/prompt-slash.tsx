@@ -83,6 +83,7 @@ function PromptSlash({
 	const open = items.length > 0 && !dismissed;
 
 	const execute = (item: SlashItem): void => {
+		if (item.disabled) return;
 		item.run();
 		setValue('');
 	};
