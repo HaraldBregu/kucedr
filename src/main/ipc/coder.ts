@@ -278,15 +278,15 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 			if (typeof runId !== 'string' || !runId.trim()) throw new Error('Invalid coding run id.');
 			return coding.cancel(runId.trim(), event.sender.id);
 		});
-		registerCommandWithEvent(CodingChannels.connectCodex, (event, runtime) => {
+		registerCommandWithEvent(CodingChannels.connect, (event, runtime) => {
 			assertCodingCaller(event);
 			const callerId = event.sender.id;
 			const cancel = (): void => {
-				coding.cancelCodexLogin(callerId);
+				coding.cancelLogin(callerId);
 			};
 			event.sender.once('destroyed', cancel);
 			return coding
-				.connectCodex(
+				.connect(
 					callerId,
 					(authEvent) => {
 						if (!event.sender.isDestroyed()) event.sender.send(CodingChannels.authEvent, authEvent);
