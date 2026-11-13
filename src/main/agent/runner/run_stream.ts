@@ -498,15 +498,10 @@ async function* loop(
 				promptKey = turnKey;
 			}
 			let systemPrompt = builtPrompt;
-			const loadedSkills = session.runContext.loadedSkills;
-			if (loadedSkills.length > notedSkills) {
-				addInternalMessage(
-					session,
-					buildLoadedSkillPrompt(loadedSkills.slice(notedSkills)),
-					'skill'
-				);
-				notedSkills = loadedSkills.length;
-			}
+			const skillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
+			const skillContext: Message[] = skillPrompt
+				? [{ role: 'user', content: [{ type: 'text', internal: true, kind: 'skill', text: skillPrompt }] }]
+				: [];
 			const extensionContext = extended ? (extension?.context() ?? '') : '';
 			if (extensionContext && extensionContext !== notedExtensionContext) {
 				addInternalMessage(session, extensionContext);
