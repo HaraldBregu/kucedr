@@ -105,10 +105,7 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 					),
 					label: t('codeSettings.provider', 'Provider'),
 					value: settings.providerId,
-					options: providers.map((value) => ({
-						value,
-						label: providerLabels[value as keyof typeof providerLabels],
-					})),
+					options: providers.map((provider) => ({ value: provider.id, label: provider.name })),
 				},
 				{
 					key: 'modelId',
