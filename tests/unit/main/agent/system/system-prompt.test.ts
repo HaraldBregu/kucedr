@@ -167,47 +167,38 @@ describe('buildSystemPrompt', () => {
 });
 
 describe('addSkillPrompt', () => {
-	it('appends loaded instructions without exposing the skill catalog', () => {
-		const loaded = {
-			id: 'writer',
-			name: 'Writer',
-			canonicalRoot: '/skills/writer',
-			instructions: 'Follow this workflow.',
-			trust: 'user-controlled' as const,
-			hash: 'abc',
-			resources: ['references/guide.md'],
-		};
-		const prompt = addSkillPrompt('base', [loaded]);
+	it('adds only the explicit-use rules when skill tools are available', () => {
+		const prompt = addSkillPrompt('base', true);
 
-		expect(prompt).not.toContain('Draft documents');
-		expect(prompt).not.toContain('Available skill routing metadata');
-		expect(prompt).toContain('"canonicalRoot":"/skills/writer"');
-		expect(prompt).toContain('Follow this workflow.');
+		expect(prompt).not.toContain('<skill_content');
 		expect(prompt).toContain(
 			'Call those tools only when the user explicitly asks to list, load, or use skills.'
 		);
 		expect(prompt).toContain(
 			'A request merely matching a skill description is not authorization to call a skill tool.'
 		);
+		expect(addSkillPrompt('base', false)).toBe('base');
 	});
-	it('retains loaded instructions when the installed skill catalog is empty', () => {
-		const prompt = addSkillPrompt(
-			'base',
-			[
-				{
-					id: 'writer',
-					name: 'Writer',
-					canonicalRoot: '/skills/writer',
-					instructions: 'Follow this workflow.',
-					trust: 'user-controlled',
-					hash: 'abc',
-					resources: [],
-				},
-			],
-			false
-		);
+});
+
+describe('buildLoadedSkillPrompt', () => {
+	it('renders loaded instructions, root, and resources', () => {
+		const prompt = buildLoadedSkillPrompt([
+			{
+				id: 'writer',
+				name: 'Writer',
+				canonicalRoot: '/skills/writer',
+				instructions: 'Follow this workflow.',
+				trust: 'user-controlled',
+				hash: 'abc',
+				resources: ['references/guide.md'],
+			},
+		]);
 
 		expect(prompt).toContain('<skill_content');
+		expect(prompt).toContain('"canonicalRoot":"/skills/writer"');
+		expect(prompt).toContain('- references/guide.md');
 		expect(prompt).toContain('Follow this workflow.');
+		expect(buildLoadedSkillPrompt([])).toBe('');
 	});
 });
