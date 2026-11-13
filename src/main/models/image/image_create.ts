@@ -4,7 +4,7 @@ import {
 	type ImageRequest,
 	type ImageResult,
 } from '../../../shared/image_types';
-import { findModel, loadProviders, providerModels, supportsCapability } from '../../models';
+import { defaultProviderId, findModel, loadProviders, providerModels, supportsCapability } from '../../models';
 import { getProvider } from '../../settings_store';
 import {
 	generateImage,
@@ -14,8 +14,6 @@ import {
 } from '../adapters/tti';
 import { getModelId, getProviderId, resolveOptions } from '../selection';
 
-const DEFAULT_IMAGE_PROVIDER_ID = 'google';
-
 export async function createImage(
 	request: ImageRequest,
 	signal?: AbortSignal
@@ -24,7 +22,7 @@ export async function createImage(
 	if (!prompt) throw new ImageProviderRequestError('Prompt is required.');
 
 	const providerId = resolveProviderId(
-		request.providerId ?? getProviderId('image') ?? DEFAULT_IMAGE_PROVIDER_ID
+		request.providerId ?? getProviderId('image') ?? defaultProviderId('text-to-image') ?? ''
 	);
 	const modelId = resolveModelId(providerId, request.modelId ?? getModelId('image'));
 	const apiKey = resolveApiKey(providerId);

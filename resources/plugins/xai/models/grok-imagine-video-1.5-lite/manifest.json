@@ -5,6 +5,7 @@
 	"type": "text-to-video-model",
 	"url": "https://api.x.ai/v1",
 	"metadata": {
+		"protocol": "videos",
 		"documentationUrl": "https://docs.x.ai/developers/model-capabilities/video/generation",
 		"documentationStatus": "verified",
 		"inputs": {

@@ -5,6 +5,7 @@
 	"authentication": "api-key",
 	"url": "https://api.elevenlabs.io/v1",
 	"metadata": {
+		"protocol": "text-to-dialogue-stream",
 		"documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-dialogue/ttd-websocket",
 		"documentationStatus": "verified",
 		"inputs": {

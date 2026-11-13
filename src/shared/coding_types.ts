@@ -1,7 +1,4 @@
-export const CODER_HARNESSES = ['codex'] as const;
 export type CoderHarness = string;
-
-export const CODING_PROVIDER_IDS = ['openai-codex'] as const;
 export type CodingProviderId = string;
 
 export const CODING_THINKING_LEVELS = [

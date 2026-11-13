@@ -5,6 +5,7 @@
 	"authentication": "api-key",
 	"url": "https://api.elevenlabs.io/v1",
 	"metadata": {
+		"protocol": "text-to-dialogue",
 		"documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-dialogue/convert",
 		"documentationStatus": "verified",
 		"inputs": {

@@ -1,4 +1,4 @@
-import { requestGoogleInteraction } from '../google/interaction';
+import { requestInteraction } from '../interactions/interaction';
 import { SttProviderAuthError, SttProviderRequestError } from './stt_errors';
 import type { SttAdapter, SttProviderSpec } from './stt_types';
 
@@ -6,7 +6,7 @@ export function createInteractionsSttAdapter(spec: SttProviderSpec): SttAdapter 
 	if (!spec.apiKey) throw new SttProviderAuthError(`${spec.name} API key not configured.`);
 	return {
 		async transcribe(request) {
-			const content = await requestGoogleInteraction(
+			const content = await requestInteraction(
 				spec,
 				{
 					model: request.modelId,

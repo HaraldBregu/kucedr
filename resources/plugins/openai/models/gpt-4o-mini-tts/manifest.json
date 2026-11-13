@@ -5,6 +5,7 @@
 	"authentication": "api-key",
 	"url": "https://api.openai.com/v1",
 	"metadata": {
+		"protocol": "audio-speech",
 		"documentationUrl": "https://platform.openai.com/docs/api-reference",
 		"documentationStatus": "verified",
 		"inputs": {

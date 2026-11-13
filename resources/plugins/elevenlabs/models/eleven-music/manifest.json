@@ -5,6 +5,8 @@
 	"authentication": "api-key",
 	"url": "https://api.elevenlabs.io/v1",
 	"metadata": {
+		"protocol": "music",
+		"apiModelId": "music_v1",
 		"documentationUrl": "https://elevenlabs.io/docs/api-reference/music/compose",
 		"documentationStatus": "verified",
 		"inputs": {

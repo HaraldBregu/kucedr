@@ -5,6 +5,8 @@
 	"authentication": "api-key",
 	"url": "https://api.elevenlabs.io/v1",
 	"metadata": {
+		"protocol": "sound-generation",
+		"apiModelId": "eleven_text_to_sound_v2",
 		"documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-sound-effects/convert",
 		"documentationStatus": "verified",
 		"inputs": {

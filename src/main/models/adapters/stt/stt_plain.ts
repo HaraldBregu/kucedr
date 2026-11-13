@@ -1,4 +1,3 @@
-import { speechToTextBaseUrl } from '../../../models';
 import WebSocket from 'ws';
 import { createAudioFile } from './stt_audio';
 import { SttProviderAuthError, SttProviderRequestError } from './stt_errors';
@@ -12,29 +11,29 @@ import type {
 } from './stt_types';
 import type { SttTranscriptionResult, SttUsage } from '../../../../shared/stt_transcription';
 
-const XAI_STT_PATH = 'stt';
-const XAI_STT_AUTH_SCHEME = 'Bearer';
-const XAI_REALTIME_AUDIO_DONE = 'audio.done';
+const PLAIN_STT_PATH = 'stt';
+const PLAIN_STT_AUTH_SCHEME = 'Bearer';
+const PLAIN_REALTIME_AUDIO_DONE = 'audio.done';
 
-type XaiTranscriptionResponse = {
+type PlainTranscriptionResponse = {
 	text?: string;
 	language?: string;
 	duration?: number;
 	segments?: Array<{ text?: string }>;
 };
 
-type XaiRealtimeResponse = {
+type PlainRealtimeResponse = {
 	type?: string;
 	text?: string;
 	delta?: string;
 	error?: { message?: unknown };
 };
 
-export interface XaiSttAdapterOptions extends SttProviderSpec {
+export interface PlainSttAdapterOptions extends SttProviderSpec {
 	fetchFactory?: typeof fetch;
 }
 
-export function createXaiSttAdapter(opts: XaiSttAdapterOptions): SttAdapter {
+export function createPlainSttAdapter(opts: PlainSttAdapterOptions): SttAdapter {
 	if (!opts.apiKey) throw new SttProviderAuthError(`${opts.name} API key not configured.`);
 	const provider = opts;
 	const fetcher = opts.fetchFactory ?? fetch;
@@ -47,10 +46,10 @@ export function createXaiSttAdapter(opts: XaiSttAdapterOptions): SttAdapter {
 			if (request.prompt) form.append('prompt', request.prompt);
 			form.append('file', file);
 
-			const response = await fetcher(xaiSttUrl(provider.baseURL), {
+			const response = await fetcher(plainSttUrl(provider.baseURL), {
 				method: 'POST',
 				headers: {
-					Authorization: `${XAI_STT_AUTH_SCHEME} ${provider.apiKey}`,
+					Authorization: `${PLAIN_STT_AUTH_SCHEME} ${provider.apiKey}`,
 				},
 				body: form,
 				signal: request.signal,
@@ -62,7 +61,7 @@ export function createXaiSttAdapter(opts: XaiSttAdapterOptions): SttAdapter {
 				throw new SttProviderRequestError(await response.text());
 			}
 
-			const data = (await response.json()) as XaiTranscriptionResponse;
+			const data = (await response.json()) as PlainTranscriptionResponse;
 			const text = data.text ?? data.segments?.map((segment) => segment.text ?? '').join('') ?? '';
 			const usage = toUsage(data);
 
@@ -85,18 +84,18 @@ export function createXaiSttAdapter(opts: XaiSttAdapterOptions): SttAdapter {
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
-			const socket = new WebSocket(xaiRealtimeUrl(provider.baseURL), {
+			const socket = new WebSocket(plainRealtimeUrl(provider.baseURL), {
 				headers: {
-					Authorization: `${XAI_STT_AUTH_SCHEME} ${provider.apiKey}`,
+					Authorization: `${PLAIN_STT_AUTH_SCHEME} ${provider.apiKey}`,
 				},
 			});
 			await waitForOpen(socket);
-			return createXaiRealtimeConnection(socket, request, emit);
+			return createPlainRealtimeConnection(socket, request, emit);
 		},
 	};
 }
 
-function createXaiRealtimeConnection(
+function createPlainRealtimeConnection(
 	socket: WebSocket,
 	request: SttAdapterRealtimeStartRequest,
 	emit: SttRealtimeEventHandler
@@ -115,9 +114,9 @@ function createXaiRealtimeConnection(
 	};
 
 	const handleMessage = (message: string): void => {
-		let data: XaiRealtimeResponse;
+		let data: PlainRealtimeResponse;
 		try {
-			data = JSON.parse(message) as XaiRealtimeResponse;
+			data = JSON.parse(message) as PlainRealtimeResponse;
 		} catch {
 			return;
 		}
@@ -146,7 +145,7 @@ function createXaiRealtimeConnection(
 			return;
 		}
 		if (data.type === 'error') {
-			emitError(errorMessage(data.error, 'xAI realtime transcription error.'));
+			emitError(errorMessage(data.error, `${request.providerName} realtime transcription error.`));
 		}
 	};
 
@@ -162,7 +161,7 @@ function createXaiRealtimeConnection(
 		},
 
 		async finish(): Promise<void> {
-			socket.send(JSON.stringify({ type: XAI_REALTIME_AUDIO_DONE }));
+			socket.send(JSON.stringify({ type: PLAIN_REALTIME_AUDIO_DONE }));
 		},
 
 		async cancel(): Promise<void> {
@@ -172,15 +171,12 @@ function createXaiRealtimeConnection(
 	};
 }
 
-function xaiSttUrl(baseURL: string | undefined): URL {
-	return new URL(
-		XAI_STT_PATH,
-		`${baseURL ?? speechToTextBaseUrl('xai')}/`
-	);
+function plainSttUrl(baseURL: string): URL {
+	return new URL(PLAIN_STT_PATH, `${baseURL}/`);
 }
 
-function xaiRealtimeUrl(baseURL: string | undefined): string {
-	const url = xaiSttUrl(baseURL);
+function plainRealtimeUrl(baseURL: string): string {
+	const url = plainSttUrl(baseURL);
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	return url.toString();
 }
@@ -204,6 +200,6 @@ function errorMessage(error: unknown, fallback: string): string {
 	return fallback;
 }
 
-function toUsage(data: XaiTranscriptionResponse): SttUsage | undefined {
+function toUsage(data: PlainTranscriptionResponse): SttUsage | undefined {
 	return typeof data.duration === 'number' ? { durationSeconds: data.duration } : undefined;
 }

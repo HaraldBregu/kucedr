@@ -23,7 +23,15 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen, onDeleted, cre
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 	const [name, setName] = useState('');
-	useEffect(() => { setName(creation === 'instructions' ? 'AGENTS.md' : ''); }, [creation]);
+	useEffect(() => {
+		setName('');
+		if (creation !== 'instructions') return;
+		let active = true;
+		void window.coder.getProjectInstructions(projectId).then((instructions) => {
+			if (active) setName(instructions.defaultFileName);
+		}).catch(() => undefined);
+		return () => { active = false; };
+	}, [creation, projectId]);
 	const [busy, setBusy] = useState(false);
 	const submitting = useRef(false);
 	const [revision, setRevision] = useState(0);

@@ -2,7 +2,7 @@ import { ensureSpeechResponseOk, responseAudioToBase64, speechResult } from './t
 import { SpeechProviderAuthError, SpeechProviderRequestError } from './tts_errors';
 import type { SpeechAdapter, SpeechProviderSpec } from './tts_types';
 
-export function createQwenSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
+export function createSynthesizerSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
 	if (!provider.apiKey)
 		throw new SpeechProviderAuthError(`${provider.name} API key not configured.`);
 	return {

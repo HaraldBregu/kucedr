@@ -4,6 +4,7 @@ import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../../../../shared/realt
 import { realtimeVoiceCloseError } from './close';
 import { turnContext } from './context';
 import { realtimeVoiceSocketUrl } from './endpoint';
+import { realtimeVoiceName } from './voice';
 import type {
 	RealtimeVoiceAdapter,
 	RealtimeVoiceModelSpec,

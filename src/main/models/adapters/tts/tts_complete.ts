@@ -12,7 +12,7 @@ const MISTRAL_AUDIO_TYPES: Readonly<Record<string, string>> = {
 	opus: 'audio/opus',
 };
 
-export function createMistralSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
+export function createCompleteSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
 	const client = new Mistral({
 		apiKey: provider.apiKey,
 		serverURL: provider.baseURL.replace(/\/v1\/?$/, ''),
@@ -28,7 +28,7 @@ export function createMistralSpeechAdapter(provider: SpeechProviderSpec): Speech
 				(refAudio ? undefined : (await client.audio.voices.list({ limit: 1 })).items[0]?.id);
 			if (!voiceId && !refAudio) {
 				throw new SpeechProviderRequestError(
-					`${provider.name}: no voice available. Create a voice on Mistral before synthesizing speech.`
+					`${provider.name}: no voice available. Create a voice with the provider before synthesizing speech.`
 				);
 			}
 			const responseFormat =

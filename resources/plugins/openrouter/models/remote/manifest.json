@@ -23,7 +23,8 @@
 				"provider": {
 					"require_parameters": true
 				}
-			}
+			},
+			"strict": true
 		},
 		"families": [
 			{
@@ -100,6 +101,7 @@
 			},
 			"reasoning": {
 				"type": "object",
+				"exclusive": true,
 				"properties": {
 					"effort": {
 						"type": "string",

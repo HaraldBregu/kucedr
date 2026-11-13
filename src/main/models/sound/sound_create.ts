@@ -1,6 +1,12 @@
 import { normalizeProviderId } from '../../../shared/provider_types';
 import type { SoundRequest, SoundResult } from '../../../shared/sound_types';
-import { loadProviders, providerModels, supportsCapability } from '../../models';
+import {
+	defaultProviderId,
+	findModel,
+	loadProviders,
+	providerModels,
+	supportsCapability,
+} from '../../models';
 import { getProvider } from '../../settings_store';
 import {
 	generateMusic,
@@ -10,8 +16,6 @@ import {
 } from '../adapters/tta';
 import { getModelId, getProviderId, resolveOptions } from '../selection';
 
-const DEFAULT_SOUND_PROVIDER_ID = 'elevenlabs';
-
 export async function createSound(
 	request: SoundRequest,
 	signal?: AbortSignal
@@ -20,14 +24,19 @@ export async function createSound(
 	if (!prompt) throw new MusicProviderRequestError('Prompt is required.');
 
 	const providerId = resolveProviderId(
-		request.providerId ?? getProviderId('sound') ?? DEFAULT_SOUND_PROVIDER_ID
+		request.providerId ?? getProviderId('sound') ?? defaultProviderId('text-to-audio') ?? ''
 	);
 	const modelId = resolveModelId(providerId, request.modelId ?? getModelId('sound'));
 	const apiKey = resolveApiKey(providerId);
+	const model = findModel(providerId, 'text-to-audio', modelId);
+	if (!model)
+		throw new MusicProviderUnsupportedError(`Unknown text-to-audio model: ${providerId}/${modelId}`);
+	const stored = getProvider(providerId);
+	const baseUrl =
+		stored?.baseUrl && stored.baseUrl !== model.provider.baseUrl ? stored.baseUrl : model.url;
 	return generateMusic({
-		providerId,
+		model: { ...model, url: baseUrl },
 		apiKey,
-		modelId,
 		prompt,
 		options: resolveOptions('sound', providerId, modelId, request.options),
 		signal,

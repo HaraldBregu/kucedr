@@ -57,3 +57,33 @@ Every field is optional unless stated, and all live in `src/shared/model_types.t
 ## External plugins
 
 Providers that ship from `kucedr-plugins` must add these fields. Until they do, their models raise the "no supported protocol" error. The per-plugin list is at the end of this file, filled in from the implementation results.
+
+## Protocol ids (as implemented)
+
+`metadata.protocol` is required on every model and picks the adapter from the registry for its capability. Each protocol names a wire shape, never a vendor.
+
+| Capability | Registry | Ids |
+|---|---|---|
+| LLM | `adapters/llm/llm_model.ts` | `messages`, `responses`, `chat-completions` (the manifest-less custom endpoint defaults to `chat-completions`) |
+| Speech-to-text | `stt/stt_factory.ts` | `transcriptions`, `transcriptions-intent`, `transcriptions-form`, `transcription-stream`, `transcription-session`, `listen`, `listen-v2`, `speech-to-text`, `speech-to-text-header`, `stt`, `stt-websocket`, `interactions`, `paas-transcriptions`, `multimodal-generation`, `duplex-asr` |
+| Text-to-speech | `tts/tts_factory.ts` | `audio-speech`, `text-to-speech`, `text-to-dialogue`, `text-to-dialogue-stream`, `tts`, `tts-bytes`, `tts-bytes-2026-08-14`, `speak`, `generate-content`, `generate-content-voice`, `t2a`, `jobs`, `speech-complete`, `speech-synthesizer` |
+| Text-to-audio | `tta/tta_factory.ts` | `music`, `sound-generation`, `interactions`, `task`, `jobs`, `music-generation`, `text-to-audio-form` |
+| Text-to-video | `ttv/ttv_protocols.ts` | `videos`, `videos-async`, `polling-url`, `long-running`, `interactions`, `task`, `jwt-task`, `generations`, `video-generation`, `video-generation-content`, `jobs`, `sync`, `video-synthesis`, `versioned-tasks` |
+| Text-to-image | `tti/tti_protocols.ts` | `images`, `images-sdk`, `images-url`, `generate-content`, `polling-url`, `polling-url-references`, `api-key`, `image-request`, `jwt-task`, `jwt-task-image-list`, `image-generation`, `generations`, `multimodal-generation`, `form-image` |
+| Embedding | `embedding/embedding_factory.ts` | `embeddings`, `embeddings-task`, `embeddings-input-type`, `embed-types`, `embed-text`, `batch-embed-contents` |
+| Realtime voice | `realtime_voice/realtime_voice_factory.ts` | see `PROTOCOLS` in the factory (`realtime`, `realtime-flat`, `realtime-beta`, and the socket protocols) |
+| Coding agent | `src/main/coding/harness/protocols.ts` | `app-server` |
+
+Related per-model fields used by these protocols: `metadata.endpoint`, `metadata.apiModelId`, `metadata.requestDefaults`, `metadata.baseUrlRule`, `metadata.inputTemplates`, `metadata.inputs.<key>.role`, `.hidden`, `.maxItems`, `.default`; and `default: true` on one model per capability to mark its provider as the default.
+
+## What external plugins must add
+
+Providers shipped from `kucedr-plugins` (google, qwen, zai, mistral, cohere, reka, kimi, minimax, jina, deepgram, cartesia, kling, pika, black-forest-labs, ideogram, and the bundled-repo copies of openai, anthropic, xai, deepseek, openrouter, ollama, iteracompute, elevenlabs) must add `metadata.protocol` to each model, using the table above. Until they do, using one of their models fails with "`<model>` (`<provider>`) declares no supported protocol." Specific needs:
+
+- **LLM:** Mistral models also need `contentChunks: "roundtrip"` and `mergeUserAfterTool: true`; Reka needs `documentPart: "pdf_url"`; Cohere's reasoning model and the Z.ai GLM-5.3 models need a `metadata.effort` block (path `reasoning_effort` plus map and, for Z.ai, `set: { thinking: { type: "enabled" } }`).
+- **Embedding:** Qwen models need `metadata.baseUrlRule` and the workspace pattern; Google's second model needs `metadata.inputTemplates`.
+- **Media and speech:** `default: true` on one image model of the provider that should be the default (the old fixed default was Google), `role: "voice"` on TTS voice inputs, `role: "aspect-ratio"` where the editor ratio picker applies, and `hidden: ["settings"]` on prompt inputs of transcription models.
+- **Provider manifest:** Reka needs `iconFullBleed: true`. Brave and Tavily already have it. Optional `order`, `website` and `settings.inputSchema.properties.baseUrl` (Qwen needs the base-URL field for its workspace URL).
+- **kucedr-plugins validator:** require `metadata.protocol` on model manifests and allow the optional fields above.
+
+Not done in this migration: the `kucedr-plugins` repository itself (it holds your uncommitted work), and the unit tests that encode the old behaviour (provider avatar, providers settings, realtime voice, LLM contracts, search key tests).

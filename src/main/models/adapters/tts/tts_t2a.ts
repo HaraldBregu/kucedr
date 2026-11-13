@@ -15,12 +15,12 @@ const MINIMAX_AUDIO_TYPES: Readonly<Record<string, string>> = {
 	opus: 'audio/opus',
 };
 
-type MiniMaxTtsResponse = {
+type T2aResponse = {
 	data?: { audio?: string };
 	base_resp?: { status_code?: number; status_msg?: string };
 };
 
-export function createMiniMaxSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
+export function createT2aSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
 	return {
 		async synthesize(request: SpeechAdapterRequest): Promise<SpeechSynthesisResult> {
 			const {
@@ -70,7 +70,7 @@ export function createMiniMaxSpeechAdapter(provider: SpeechProviderSpec): Speech
 			});
 			await ensureSpeechResponseOk(response, provider.name);
 
-			const data = (await response.json()) as MiniMaxTtsResponse;
+			const data = (await response.json()) as T2aResponse;
 			if (data.base_resp?.status_code === 1004) {
 				throw new SpeechProviderAuthError(`${provider.name}: ${data.base_resp.status_msg}`);
 			}

@@ -5,6 +5,7 @@
 	"type": "text-to-speech-model",
 	"url": "https://api.x.ai/v1",
 	"metadata": {
+		"protocol": "tts",
 		"documentationUrl": "https://docs.x.ai/developers/model-capabilities/audio/text-to-speech",
 		"documentationStatus": "verified",
 		"inputs": {

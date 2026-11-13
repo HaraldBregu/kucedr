@@ -1,3 +1,4 @@
+import { inputDefault } from './defaults';
 import { ensureSpeechResponseOk, speechResult } from './tts_audio';
 import { SpeechProviderRequestError } from './tts_errors';
 import type { SpeechAdapter, SpeechAdapterRequest, SpeechProviderSpec } from './tts_types';
@@ -73,7 +74,7 @@ export function createContentSpeechAdapter(provider: SpeechProviderSpec): Speech
 			});
 			await ensureSpeechResponseOk(response, provider.name);
 
-			const data = (await response.json()) as GoogleGenerateContentResponse;
+			const data = (await response.json()) as GenerateContentResponse;
 			const inlineData = data.candidates?.[0]?.content?.parts?.find(
 				(part) => part.inlineData?.data
 			)?.inlineData;
@@ -85,7 +86,7 @@ export function createContentSpeechAdapter(provider: SpeechProviderSpec): Speech
 			if (!/pcm|l16/i.test(mimeType)) {
 				return speechResult(inlineData.data, mimeType || 'audio/wav', provider, request);
 			}
-			const sampleRate = Number(/rate=(\d+)/.exec(mimeType)?.[1]) || GOOGLE_DEFAULT_SAMPLE_RATE;
+			const sampleRate = Number(/rate=(\d+)/.exec(mimeType)?.[1]) || CONTENT_DEFAULT_SAMPLE_RATE;
 			const wav = pcmToWav(Buffer.from(inlineData.data, 'base64'), sampleRate);
 			return speechResult(wav.toString('base64'), 'audio/wav', provider, request);
 		},
