@@ -24,6 +24,7 @@ export function addAssistantMessage(
 		...(toolCalls.length > 0 ? { toolCalls } : {}),
 		...(usage ? { usage } : {}),
 		...(state.modeIds ? { modeIds: state.modeIds } : {}),
+		...(skillIds.length > 0 ? { skillIds } : {}),
 	});
 	persist(state);
 }
