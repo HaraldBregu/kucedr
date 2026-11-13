@@ -241,10 +241,6 @@ export class RealtimeVoiceToolRuntime {
 			return 'Error: realtime voice tool-output budget exhausted.';
 		this.calls += 1;
 		if (this.calls > MAX_TOOL_CALLS) return 'Error: realtime voice tool-call budget exhausted.';
-		if (PAID_TOOLS.has(name)) {
-			this.paidCalls += 1;
-			if (this.paidCalls > MAX_PAID_TOOL_CALLS) return 'Error: paid tool-call budget exhausted.';
-		}
 		if (WEB_TOOLS.has(name)) {
 			this.webCalls += 1;
 			if (this.webCalls > MAX_WEB_TOOL_CALLS) return 'Error: web tool-call budget exhausted.';
