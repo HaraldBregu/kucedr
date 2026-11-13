@@ -24,7 +24,7 @@ export async function synthesizeDialogue(
 		request.voice ??
 		(typeof request.options?.voice_id === 'string'
 			? request.options.voice_id
-			: 'WQP7cQUF5aAS6Axh5yaa');
+			: inputDefault(request.metadata, ['voice_id']));
 	const socket = new WebSocket(endpoint, { headers: { 'xi-api-key': provider.apiKey } });
 	const chunks: Buffer[] = [];
 	const audio = await new Promise<Buffer>((resolve, reject) => {
