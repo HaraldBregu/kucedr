@@ -65,7 +65,6 @@ const TASKS_BUILTIN_TOOL_IDS = new Set([
 	'camera_recorder_status',
 	'camera_recorder_stop',
 	'screen_recorder',
-	'select_screen_source',
 	'screen_recorder_status',
 	'screen_recorder_stop',
 	'query_knowledge',
