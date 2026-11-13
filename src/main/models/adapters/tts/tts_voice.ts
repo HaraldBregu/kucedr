@@ -24,10 +24,12 @@ export function createVoiceSpeechAdapter(provider: SpeechProviderSpec): SpeechAd
 			} = request.options ?? {};
 			const voiceId =
 				request.voice ??
-				(typeof optionVoiceId === 'string' ? optionVoiceId : ELEVENLABS_DEFAULT_VOICE_ID);
-			const dialogue = request.modelId === 'eleven_v4';
+				(typeof optionVoiceId === 'string'
+					? optionVoiceId
+					: inputDefault(request.metadata, ['voice_id']));
+			const dialogue = provider.protocol === VOICE_DIALOGUE_PROTOCOL;
 			const endpoint = new URL(
-				dialogue ? 'text-to-dialogue' : `${ELEVENLABS_TTS_PATH}/${voiceId}`,
+				dialogue ? VOICE_DIALOGUE_PATH : `${VOICE_TTS_PATH}/${voiceId}`,
 				`${provider.baseURL}/`
 			);
 			if (typeof outputFormat === 'string')
