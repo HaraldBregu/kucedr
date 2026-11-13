@@ -374,6 +374,9 @@ export async function* runToolCall(
 		if (permission === 'deny') {
 			output = `Error: permission denied for '${toolCall.name}'`;
 			isError = true;
+		} else if (exhausted()) {
+			output = budgetError;
+			isError = true;
 		} else {
 			try {
 				if (signal?.aborted) throw signal.reason;
