@@ -40,7 +40,11 @@ export function init(
 	}
 	const additions = sanitizeMessages(input.messages ?? []);
 	if (input.message || (input.files?.length ?? 0) > 0) {
-		additions.push({ role: 'user', content: toUserContent(input.message, input.files ?? []) });
+		additions.push({
+			role: 'user',
+			content: toUserContent(input.message, input.files ?? []),
+			createdAtMs: Date.now(),
+		});
 	}
 	if (state.lease && input.deferPersist) {
 		state.pendingMessages = additions;
