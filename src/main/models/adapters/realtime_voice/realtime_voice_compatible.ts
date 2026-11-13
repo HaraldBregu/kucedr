@@ -1,6 +1,7 @@
 import { realtimeVoiceCloseError } from './close';
 import { realtimeVoiceResponseError } from './response';
 import { realtimeVoiceTransportError } from './transport';
+import { realtimeVoiceName } from './voice';
 import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../../../../shared/realtime_voice';
 import type {
 	RealtimeVoiceAdapter,
