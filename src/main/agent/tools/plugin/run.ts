@@ -16,13 +16,7 @@ export const runScript = tool({
 			.describe('Input object documented in the instructions returned by load_script.'),
 	}),
 	execute: async ({ name, input }) => {
-		const scripts = pluginScripts();
-		const found = scripts.find((candidate) => candidate.name === name);
-		if (!found) {
-			throw new Error(
-				`Unknown plugin script "${name}". Available: ${scripts.map((candidate) => candidate.name).join(', ') || 'none'}.`
-			);
-		}
+		const found = findScript(name);
 		await renderPluginScript(name, input, 'light');
 		return {
 			ok: true,
