@@ -11,7 +11,7 @@ import type {
 } from './stt_types';
 import type { SttTranscriptionResult, SttUsage } from '../../../../shared/stt_transcription';
 
-type MistralTranscriptionClient = {
+type StreamTranscriptionClient = {
 	audio: {
 		transcriptions: {
 			complete: (
