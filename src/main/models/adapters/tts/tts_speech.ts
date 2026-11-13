@@ -12,7 +12,7 @@ const SPEECH_AUDIO_TYPES: Readonly<Record<string, string>> = {
 	pcm: 'audio/pcm',
 };
 
-export function createOpenAISpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
+export function createAudioSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
 	return {
 		async synthesize(request: SpeechAdapterRequest): Promise<SpeechSynthesisResult> {
 			const options = request.options ?? {};
