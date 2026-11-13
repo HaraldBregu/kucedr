@@ -48,9 +48,8 @@ export function builtinCapability(
 	if (READ.has(id)) return { effects: ['read'] };
 	if (WRITE.has(id)) return { effects: ['write'] };
 	if (PERSIST.has(id)) return { effects: ['write', 'persistence'] };
-	if (id === 'microphone_recorder' || id === 'screen_recorder') {
-		return { effects: ['sensor', 'write'] };
-	}
+	if (EXTERNAL.has(id)) return { effects: ['read', 'external'] };
+	if (id === 'subagent' || id === 'run_task_now') return { effects: ['execute'] };
 	if (RECORD.has(id)) return { effects: ['sensor', 'write'], approval: id === 'camera_recorder' };
 	if (CONTROL.has(id)) return { effects: ['sensor'] };
 	if (PAID.has(id)) return { effects: ['paid', 'write'] };
