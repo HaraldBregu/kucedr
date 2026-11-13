@@ -10,7 +10,7 @@ import { createTranscriptionsSttAdapter } from './stt_transcriptions';
 import { createGenerationSttAdapter } from './stt_generation';
 import { createDuplexSttAdapter } from './stt_duplex';
 import { createSessionSttAdapter } from './stt_session';
-import { createXaiSttAdapter as createPlainSttAdapter } from './stt_plain';
+import { createPlainSttAdapter } from './stt_plain';
 import { SttProviderUnsupportedError } from './stt_errors';
 import type { SttAdapter, SttProviderSpec } from './stt_types';
 
