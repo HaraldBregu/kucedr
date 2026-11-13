@@ -232,7 +232,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					...chatRuntime,
 					...(selectedEffort
 						? { effort: selectedEffort }
-						: selectedProvider?.id === 'openrouter'
+						: strict
 							? { effort: undefined }
 							: {}),
 					runId,
