@@ -29,8 +29,8 @@ export function NewWorkspace({ onCreated, onCancel }: { readonly onCreated: (pro
 		setLoading(true);
 		setLoadError('');
 		void window.coder.listHarnesses()
-			.then((items) => Promise.all([items, window.coder.getSettings(), ...items.map((harness) => window.coder.getSettings(harness.id))]))
-			.then(([items, selected, ...values]) => {
+			.then((items) => Promise.all([window.coder.getSettings(), ...items.map((harness) => window.coder.getSettings(harness.id))]).then(([selected, ...values]) => ({ items, selected, values })))
+			.then(({ items, selected, values }) => {
 				if (cancelled) return;
 				setHarnesses(items);
 				setRuntime(selected.runtime);
