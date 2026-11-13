@@ -1,3 +1,5 @@
+const SUFFIX = '\n[tool output truncated]';
+
 export function limitToolOutput(output: unknown, maxBytes: number): unknown {
 	let text: string;
 	if (typeof output === 'string') text = output;
@@ -9,5 +11,7 @@ export function limitToolOutput(output: unknown, maxBytes: number): unknown {
 		}
 	}
 	if (Buffer.byteLength(text, 'utf8') <= maxBytes) return output;
-	return `${Buffer.from(text).subarray(0, maxBytes).toString('utf8')}\n[tool output truncated]`;
+	const prefixBytes = Math.max(0, maxBytes - Buffer.byteLength(SUFFIX, 'utf8'));
+	const prefix = Buffer.from(text).subarray(0, prefixBytes).toString('utf8').replace(/�$/, '');
+	return `${prefix}${SUFFIX}`;
 }
