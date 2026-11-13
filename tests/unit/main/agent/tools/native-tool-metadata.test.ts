@@ -22,9 +22,9 @@ it.each([
 	createImageTool(),
 	createVideoTool(),
 	createSoundTool(),
-	microphoneRecorderTool(),
-	cameraRecorderTool(),
-	screenRecorderTool(),
+	recorderTools('microphone').start,
+	recorderTools('camera').start,
+	recorderTools('screen').start,
 	useWebBrowserTool,
 ])('%s uses policy permission without forced approval', (tool) => {
 	expect(tool.alwaysAsk).toBeUndefined();
