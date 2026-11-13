@@ -1,21 +1,31 @@
-import { normalizeProviderId } from '../../../../shared/provider_types';
-import { createElevenLabsMusicAdapter } from './tta_elevenlabs';
-import { createGoogleMusicAdapter } from './tta_google';
-import { createKlingMusicAdapter } from './tta_kling';
-import { createMiniMaxMusicAdapter } from './tta_minimax';
-import { createPikaMusicAdapter } from './tta_pika';
-import { createStabilityMusicAdapter } from './tta_stability';
+import { createFormMusicAdapter } from './tta_form';
+import { createHexMusicAdapter } from './tta_hex';
+import { createInteractionsMusicAdapter } from './tta_interactions';
+import { createJobsMusicAdapter } from './tta_jobs';
+import { createKeyedMusicAdapter } from './tta_keyed';
+import { createTaskMusicAdapter } from './tta_task';
 import { MusicProviderUnsupportedError } from './tta_errors';
 import type { MusicAdapter, MusicProviderSpec } from './tta_types';
 
-export function buildMusicAdapter(provider: MusicProviderSpec): MusicAdapter {
-	const id = normalizeProviderId(provider.id);
-	const spec = { ...provider, id };
-	if (id === 'google') return createGoogleMusicAdapter(spec);
-	if (id === 'kling') return createKlingMusicAdapter(spec);
-	if (id === 'minimax') return createMiniMaxMusicAdapter(spec);
-	if (id === 'pika') return createPikaMusicAdapter(spec);
-	if (id === 'elevenlabs') return createElevenLabsMusicAdapter(spec);
-	if (id === 'stability-ai') return createStabilityMusicAdapter(spec);
-	throw new MusicProviderUnsupportedError(`Text-to-audio provider is not supported: ${id}`);
+const MUSIC_PROTOCOLS: Readonly<Record<string, (spec: MusicProviderSpec) => MusicAdapter>> = {
+	music: createKeyedMusicAdapter,
+	'sound-generation': createKeyedMusicAdapter,
+	interactions: createInteractionsMusicAdapter,
+	task: createTaskMusicAdapter,
+	jobs: createJobsMusicAdapter,
+	'music-generation': createHexMusicAdapter,
+	'text-to-audio-form': createFormMusicAdapter,
+};
+
+export function buildMusicAdapter(spec: MusicProviderSpec, modelName: string): MusicAdapter {
+	const create =
+		spec.protocol && Object.hasOwn(MUSIC_PROTOCOLS, spec.protocol)
+			? MUSIC_PROTOCOLS[spec.protocol]
+			: undefined;
+	if (!create) {
+		throw new MusicProviderUnsupportedError(
+			`${modelName} (${spec.name}) declares no supported protocol.`
+		);
+	}
+	return create(spec);
 }
