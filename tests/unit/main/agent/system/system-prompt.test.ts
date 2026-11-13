@@ -3,6 +3,7 @@ import { addClockPrompt } from '../../../../../src/main/agent/system/clock';
 import { addBasePrompt } from '../../../../../src/main/agent/system/system_add_base_prompt';
 import { addSkillPrompt } from '../../../../../src/main/agent/system/system_add_skill_prompt';
 import { addToolsPrompt } from '../../../../../src/main/agent/system/system_add_tools_prompt';
+import { buildLoadedSkillPrompt } from '../../../../../src/main/agent/system/system_build_loaded_skill_prompt';
 import { buildSystemPrompt } from '../../../../../src/main/agent/system/system_build_prompt';
 import type { Tool } from '../../../../../src/main/agent/types';
 
