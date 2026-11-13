@@ -698,6 +698,7 @@ async function* loop(
 				yield event;
 			}
 			const failedMcpCall = pendingToolCalls.find((call) => call.result?.authorizationRequired);
+			let recovered = false;
 			if (
 				failedMcpCall &&
 				input.approvalWindowId !== undefined &&
