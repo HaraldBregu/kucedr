@@ -286,7 +286,8 @@ async function* loop(
 			];
 			mcpServerHint = resolveMcpServerHint(input.message, mcpServers);
 			preloadedMcpServers = mcpServerHints(mcpServers);
-			const childTools = filterEligibleTools(tools).filter((tool) => tool.id !== 'ask');
+			const childTools = (): Tool[] =>
+				(search?.eligible() ?? tools).filter((tool) => !extensionTools.includes(tool));
 			const childRuntime = {
 				type: input.type,
 				...(extension ? { extension: extension.child() } : {}),
@@ -302,11 +303,7 @@ async function* loop(
 				...(input.scope ? { scope: input.scope } : {}),
 				toolProfile,
 			};
-			if (!bootstrap)
-				tools.push(
-					subagentTool(config, childTools, childRuntime),
-					subagentsTool(config, childTools, childRuntime, options.subagentLimiter)
-				);
+			if (!bootstrap) tools.push(subagentTool(config, childTools, childRuntime));
 			tools.push(...extensionTools);
 		}
 		if (options.tools) {
@@ -340,8 +337,6 @@ async function* loop(
 				'update_identity',
 				'update_soul',
 				'update_user',
-				'subagent',
-				'subagents',
 				'load_script',
 				'run_script',
 				...(ask ? ['ask'] : []),
