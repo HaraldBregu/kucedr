@@ -18,7 +18,7 @@ import type { WindowContextManager } from '../window_context';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
-import { openrouterInputs } from './openrouter';
+import { inputs } from './inputs';
 import { atomicWrite } from '../shared/atomic_write';
 import { userDataLocation } from '../shared/user_data_location';
 
