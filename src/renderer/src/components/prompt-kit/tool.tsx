@@ -171,6 +171,7 @@ function DelegationTasks({ input, output }: { readonly input: unknown; readonly 
 	if (!isRecord(input) || !Array.isArray(input.tasks)) return null;
 	const result = delegationResult(output);
 	const outcomes: unknown[] = Array.isArray(result) ? result : [result];
+	const rejected = output !== undefined && !Array.isArray(result) && !isRecord(result);
 	const byId = new Map(
 		outcomes.flatMap((outcome) =>
 			isRecord(outcome) && typeof outcome.id === 'string' ? [[outcome.id, outcome]] : []
