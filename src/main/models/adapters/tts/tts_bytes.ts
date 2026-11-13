@@ -1,3 +1,4 @@
+import { inputDefault } from './defaults';
 import { ensureSpeechResponseOk, responseAudioToBase64, speechResult } from './tts_audio';
 import type { SpeechAdapter, SpeechAdapterRequest, SpeechProviderSpec } from './tts_types';
 import type { SpeechSynthesisResult } from '../../../../shared/speech_types';
