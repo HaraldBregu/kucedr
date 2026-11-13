@@ -34,6 +34,12 @@ export function rankTools<T>(query: string, documents: RankedDocument<T>[]): T[]
 	const averageLength =
 		tokenized.reduce((sum, document) => sum + document.tokens.length, 0) /
 		Math.max(1, tokenized.length);
+	const containing = new Map(
+		queryTerms.map((term) => [
+			term,
+			tokenized.filter((entry) => entry.tokens.includes(term)).length,
+		])
+	);
 	return tokenized
 		.map((document, index) => {
 			const frequencies = new Map<string, number>();
@@ -42,9 +48,7 @@ export function rankTools<T>(query: string, documents: RankedDocument<T>[]): T[]
 			const score = queryTerms.reduce((total, term) => {
 				const frequency = frequencies.get(term) ?? 0;
 				if (frequency === 0) return total;
-				const containing = tokenized.filter((entry) =>
-					(entry.tokens as string[]).includes(term)
-				).length;
+				const documentsWithTerm = containing.get(term) ?? 0;
 				const inverseFrequency = Math.log(
 					1 + (documents.length - containing + 0.5) / (containing + 0.5)
 				);
