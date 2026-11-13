@@ -182,7 +182,9 @@ export async function cancelRealtime(sessionId: string): Promise<void> {
 }
 
 function resolveProviderId(providerId: string | undefined): string {
-	const normalized = normalizeProviderId(providerId ?? 'openai');
+	const fallback = providerId ?? defaultProviderId('speech-to-text');
+	if (!fallback) throw new SttProviderUnsupportedError('No speech-to-text provider is installed.');
+	const normalized = normalizeProviderId(fallback);
 	if (supportsCapability(normalized, 'speech-to-text')) {
 		return normalized;
 	}
