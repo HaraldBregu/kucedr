@@ -398,7 +398,7 @@ export class Coder {
 		controller.abort();
 		return true;
 	}
-	async disconnectCodex(runtime?: CoderHarness): Promise<void> {
+	async disconnect(runtime?: CoderHarness): Promise<void> {
 		const selected = this.getSettings(runtime).runtime;
 		await this.requireHarness(selected).disconnect?.();
 		const entry = this.entry(selected);
