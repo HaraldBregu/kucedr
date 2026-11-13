@@ -27,6 +27,10 @@ jest.mock('../../../../../src/main/plugins/plugins_dirs', () => ({
 import { createSkillRegistrySnapshot } from '../../../../../src/main/agent/skills/skills_registry';
 import { list } from '../../../../../src/main/agent/skills/skills_list';
 
+const root = path.join(os.tmpdir(), `kucedr-skill-registry-${process.pid}`);
+const userRoot = path.join(root, 'user');
+const pluginRoot = path.join(root, 'plugin', 'skills');
+
 function writeSkill(base: string, name: string, description = name): string {
 	const folder = path.join(base, name);
 	fs.mkdirSync(folder, { recursive: true });
