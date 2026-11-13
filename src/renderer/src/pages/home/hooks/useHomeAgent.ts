@@ -14,8 +14,9 @@ import { leadingModes } from './leading';
 import { readEffort } from '../effort/read';
 import { readRuntime } from '../runtime/read';
 import { saveRuntime } from '../runtime/save';
-import { providerModels } from '@/lib/providers';
+import { providerModels, providers } from '@/lib/providers';
 import { modelEfforts } from '@shared/effort';
+import { resolveModelMetadata } from '@shared/metadata';
 
 type WindowWithOptionalAgent = Window & {
 	agent?: Window['agent'];
