@@ -18,12 +18,16 @@ export function createBytesSpeechAdapter(provider: SpeechProviderSpec): SpeechAd
 				transcript: _transcript,
 				...options
 			} = request.options ?? {};
-			const voiceId =
+			const selectedVoice =
 				request.voice ??
 				(typeof optionVoice === 'string' ? optionVoice : undefined) ??
 				(optionVoice && typeof optionVoice === 'object' && !Array.isArray(optionVoice)
 					? (optionVoice as Record<string, unknown>).id
 					: undefined);
+			const voiceId =
+				typeof selectedVoice === 'string'
+					? selectedVoice
+					: inputDefault(request.metadata, ['voice']);
 			const selectedOutputFormat =
 				optionOutputFormat &&
 				typeof optionOutputFormat === 'object' &&
