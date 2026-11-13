@@ -199,7 +199,7 @@ function resolveModelId(
 	if (modelId) {
 		if (!supportsSpeechToTextApiType(providerId, modelId, apiType)) {
 			throw new SttProviderUnsupportedError(
-				`Speech-to-text model does not support ${apiType} transcription: ${providerId}/${modelId}`
+				`Speech-to-text model does not support ${apiType} transcription: ${modelLabel(providerId, modelId)}`
 			);
 		}
 		return modelId;
