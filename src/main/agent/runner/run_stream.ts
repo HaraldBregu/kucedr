@@ -345,8 +345,8 @@ async function* loop(
 				...(skillLoadingEnabled ? ['load_skill'] : []),
 			]);
 			search = createToolSearch({
-				eligible: filterEligibleTools(tools),
-				required: filterEligibleTools(tools).filter(
+				eligible: tools,
+				required: tools.filter(
 					(tool) =>
 						requiredIds.has(tool.id) ||
 						(!searchEnabled && tool.id.startsWith('mdl__')) ||
