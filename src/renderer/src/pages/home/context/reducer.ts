@@ -448,6 +448,7 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 			state: 'completed',
 			tools,
 			modeIds: message.modeIds,
+			startedAtMs: userCreatedAtMs,
 			completedAtMs: message.createdAtMs,
 			contextUsage: message.usage?.context,
 			inputTokens: message.usage?.inputTokens,
