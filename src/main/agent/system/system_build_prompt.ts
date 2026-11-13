@@ -23,7 +23,7 @@ export async function buildSystemPrompt(
 		if (contextMode === 'workspace') prompt = await addWorkspacePrompt(config, prompt);
 	}
 	if (runContext) prompt = await addFilesystemPrompt(config, prompt);
-	prompt = addSkillPrompt(prompt, [], hasAvailableSkills);
+	prompt = addSkillPrompt(prompt, hasAvailableSkills);
 	if (eligibleTools.some((tool) => tool.id === 'run_script')) {
 		prompt = addScriptsPrompt(prompt, pluginScripts());
 	}
