@@ -91,8 +91,10 @@ describe('run stream system prompt', () => {
 			},
 			close: closeMcpMock,
 		});
-		createSkillRegistrySnapshotMock.mockReset().mockReturnValue({ skills: [], diagnostics: [] });
-		activateSkillMock.mockReset();
+		createSkillRegistrySnapshotMock
+			.mockReset()
+			.mockReturnValue({ skills: [], invalid: [], diagnostics: [] });
+		inspectSkillMock.mockReset();
 	});
 
 	const registrySkill = {
