@@ -210,14 +210,19 @@ function resolveModelId(
 	);
 	if (!model) {
 		throw new SttProviderUnsupportedError(
-			`Speech-to-text provider has no ${apiType} transcription model: ${providerId}`
+			`Speech-to-text provider has no ${apiType} transcription model: ${defaultProvider(providerId)?.name ?? providerId}`
 		);
 	}
 	return model.id;
 }
 
-function resolveProvider(providerId: string): SttProviderSpec {
-	const provider = getProviderSpecFromProviderStore(providerId);
+function modelLabel(providerId: string, modelId: string): string {
+	const model = findModel(providerId, 'speech-to-text', modelId);
+	return model ? `${model.name} (${model.provider.name})` : `${providerId}/${modelId}`;
+}
+
+function resolveProvider(providerId: string, model: CatalogModel): SttProviderSpec {
+	const provider = getProviderSpecFromProviderStore(providerId, model);
 	if (!provider.apiKey) {
 		throw new SttProviderAuthError(`${provider.name} API key not configured.`);
 	}
