@@ -25,8 +25,8 @@ export function createAudioSpeechAdapter(provider: SpeechProviderSpec): SpeechAd
 				(typeof options.voice === 'string' ||
 				(options.voice && typeof options.voice === 'object' && !Array.isArray(options.voice))
 					? options.voice
-					: OPENAI_DEFAULT_VOICE);
-			const response = await fetch(new URL(OPENAI_TTS_PATH, `${provider.baseURL}/`), {
+					: inputDefault(request.metadata, ['voice']));
+			const response = await fetch(new URL(SPEECH_PATH,`${provider.baseURL}/`), {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${provider.apiKey}`,
