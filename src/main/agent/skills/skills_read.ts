@@ -9,7 +9,11 @@ import { validateSkill } from './skills_validate';
 export { SKILL_FILE } from './skills_limits';
 const RESOURCE_DIRECTORIES = ['scripts', 'references', 'assets'] as const;
 
-export function readSkill(folder: string, id: string): SkillInfo | undefined {
+export function readSkill(
+	folder: string,
+	id: string,
+	source: SkillSource = 'user'
+): SkillInfo | undefined {
 	if (!validateSkill(folder).valid) return undefined;
 	let canonicalSkillPath: string;
 	let source: string;
