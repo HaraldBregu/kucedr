@@ -7,7 +7,7 @@ export const deleteTaskTool = tool({
 	category: 'task',
 	name: 'Delete task',
 	description:
-		'Permanently delete one persisted background task by id so it can no longer run on its schedule or be started manually. Use only for an explicit deletion request such as "Delete my old weekly report task" or "Remove that scheduled automation." If the user gives a name instead of an id, call list_tasks first and identify the matching task before deleting it.',
+		'Permanently delete one persisted background task by id so it can no longer run on its schedule or be started manually. Use only for an explicit deletion request. If the user gives a name instead of an id, call list_tasks first and identify the matching task before deleting it.',
 	inputSchema: taskIdSchema,
 	execute: ({ taskId }) => {
 		deleteTask(taskId);
