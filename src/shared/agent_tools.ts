@@ -79,7 +79,6 @@ const TASKS_BUILTIN_TOOL_IDS = new Set([
 	'list_tasks',
 	'run_task_now',
 	'subagent',
-	'subagents',
 ]);
 
 const MODEL_BACKED_TOOL_IDS = new Set([
