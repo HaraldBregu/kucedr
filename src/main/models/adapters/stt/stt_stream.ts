@@ -37,11 +37,11 @@ type StreamTranscriptionClient = {
 	};
 };
 
-export interface MistralSttAdapterOptions extends SttProviderSpec {
-	clientFactory?: (opts: { apiKey: string; baseURL?: string }) => MistralTranscriptionClient;
+export interface StreamSttAdapterOptions extends SttProviderSpec {
+	clientFactory?: (opts: { apiKey: string; baseURL?: string }) => StreamTranscriptionClient;
 }
 
-export function createMistralSttAdapter(opts: MistralSttAdapterOptions): SttAdapter {
+export function createStreamSttAdapter(opts: StreamSttAdapterOptions): SttAdapter {
 	if (!opts.apiKey) throw new SttProviderAuthError(`${opts.name} API key not configured.`);
 	const provider = opts;
 	const factory =
