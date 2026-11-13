@@ -178,11 +178,13 @@ function createStreamRealtimeConnection(
 					return;
 				}
 				if (event.type === 'error') {
-					emitError(errorMessage(event.error, 'Mistral realtime transcription error.'));
+					emitError(
+						errorMessage(event.error, `${request.providerName} realtime transcription error.`)
+					);
 				}
 			}
 		} catch (error) {
-			emitError(errorMessage(error, 'Mistral realtime transcription failed.'));
+			emitError(errorMessage(error, `${request.providerName} realtime transcription failed.`));
 		} finally {
 			emitClosed();
 		}
