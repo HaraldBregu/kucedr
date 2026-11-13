@@ -465,7 +465,6 @@ async function* loop(
 		let builtPrompt = '';
 		let notedFinalization: typeof finalization;
 		let notedSynthesis = false;
-		let notedSkills = 0;
 		let notedExtensionContext = '';
 		let synthesisRetries = 1;
 		const memoryContext =
