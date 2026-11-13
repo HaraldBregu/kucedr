@@ -400,6 +400,7 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 		}
 
 		if (message.role === 'user') {
+			userCreatedAtMs = message.createdAtMs;
 			const content = typeof message.content === 'string' ? message.content : '';
 			const attachments = (message.contentBlocks ?? []).filter(
 				(block): block is UserAttachment => block.type === 'attachment'
