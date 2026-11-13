@@ -5,6 +5,7 @@ import {
 	usePromptInput,
 	type PromptInputProps,
 } from '@/components/ui/prompt-input';
+import { PromptSlash } from './prompt-slash';
 import { TextEditor } from './text-editor';
 
 export type PromptEditorProps = Omit<PromptInputProps, 'children'> & {
