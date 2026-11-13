@@ -17,8 +17,9 @@ import { modelsFor, providers } from '@/lib/providers';
 import { liveProviderModels, providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
-import { updateModelOptions } from '@/lib/options';
-import { updateOpenRouterOptions } from '@/lib/openrouter-options';
+import { exclusive } from '@/lib/exclusive';
+import { modelEfforts } from '@shared/effort';
+import { resolveModelMetadata } from '@shared/metadata';
 import { saveEffort } from '@pages/home/effort/save';
 import type { ModelReasoningEffort } from '@shared/agent_types';
 import type { Model } from '@/lib/compat';
@@ -181,15 +182,20 @@ const AssistantPage: React.FC = () => {
 	}, [hasLoadedLocalModels, state.loading]);
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
-		if (state.providerId === 'openrouter' && path[0] === 'reasoning' && ['effort', 'max_tokens', 'enabled'].includes(path[1])) {
-			const levels = model?.metadata?.inputs.reasoning?.properties?.effort?.enum ?? [];
-			const effort = path[1] === 'effort' && typeof value === 'string' && levels.includes(value)
-				? value as ModelReasoningEffort : undefined;
-			saveEffort(state.providerId, state.modelId, effort);
+		const provider = getCatalogProviderById(state.providerId);
+		const effort = resolveModelMetadata(model, provider, state.modelId)?.effort;
+		if (effort?.strict && path[0] === effort.path.split('.')[0]) {
+			saveEffort(
+				state.providerId,
+				state.modelId,
+				path.join('.') === effort.path && typeof value === 'string' && modelEfforts(model?.metadata).includes(value as ModelReasoningEffort)
+					? value as ModelReasoningEffort
+					: undefined
+			);
 		}
-		saveModelOptions(state.providerId === 'openrouter'
-			? updateOpenRouterOptions(modelOptions, path, value)
-			: updateModelOptions(modelOptions, path, value));
+		saveModelOptions(
+			exclusive(modelOptions, path, value, model?.metadata?.inputs[path[0]] ?? provider?.discoveryInputs?.[path[0]])
+		);
 	};
 
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {
