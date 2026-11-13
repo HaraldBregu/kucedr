@@ -60,8 +60,7 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		titleKey: 'coordination',
 		icon: Network,
 		tools: [
-			['Subagent', 'subagent', 'Starts one subagent for a focused task.'],
-			['Subagents', 'subagents', 'Starts multiple subagents for independent tasks.'],
+			['Subagent', 'subagent', 'Starts up to three subagents for focused tasks.'],
 		],
 	},
 	{
