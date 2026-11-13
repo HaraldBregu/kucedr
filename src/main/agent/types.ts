@@ -102,6 +102,7 @@ export interface Message {
 	usage?: SessionUsage;
 	createdAtMs?: number;
 	modeIds?: readonly string[];
+	skillIds?: readonly string[];
 }
 
 import type {
