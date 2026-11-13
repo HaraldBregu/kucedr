@@ -74,7 +74,7 @@ export function toolPartLabel(tool: AgentToolPart): string {
 		if (isToolRunning(tool)) {
 			const tasks =
 				isRecord(tool.input) && Array.isArray(tool.input.tasks) ? tool.input.tasks.length : 0;
-			return tasks > 0 ? `Delegating ${tasks} tasks…` : 'Delegating task to a subagent…';
+			return tasks > 1 ? `Delegating ${tasks} tasks…` : 'Delegating task to a subagent…';
 		}
 		const outcome = delegationOutcome(tool);
 		if (outcome.count > 1) {
