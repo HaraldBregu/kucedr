@@ -13,12 +13,7 @@ export const readTool = tool({
 		'Read the UTF-8 contents of a single text file. Use this before editing when you need the current file contents. Pass offset and limit to read only part of a large file instead of using bash.',
 	readOnly: true,
 	inputSchema: z.object({
-		path: z
-			.string()
-			.min(1)
-			.describe(
-				'Path relative to the agent filesystem root, or an absolute path. ~ is the OS user home.'
-			),
+		path: z.string().min(1).describe(PATH_DESCRIPTION),
 		offset: z.number().int().min(1).optional().describe('First line to read, 1-based.'),
 		limit: z.number().int().min(1).optional().describe('Maximum number of lines to read.'),
 	}),
