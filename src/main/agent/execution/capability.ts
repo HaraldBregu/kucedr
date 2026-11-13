@@ -7,9 +7,6 @@ export interface ToolCapability {
 
 const READ = new Set([
 	'read',
-	'search_web',
-	'fetch_web_page',
-	'query_knowledge',
 	'get_health',
 	'get_identity',
 	'get_soul',
