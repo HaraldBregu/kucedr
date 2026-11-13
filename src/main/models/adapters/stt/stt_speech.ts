@@ -1,4 +1,3 @@
-import { speechToTextBaseUrl } from '../../../models';
 import { createAudioFile } from './stt_audio';
 import WebSocket from 'ws';
 import { SttProviderAuthError, SttProviderRequestError } from './stt_errors';
@@ -12,30 +11,30 @@ import type {
 } from './stt_types';
 import type { SttTranscriptionResult } from '../../../../shared/stt_transcription';
 
-const ELEVENLABS_STT_PATH = 'speech-to-text';
-const ELEVENLABS_REALTIME_STT_PATH = 'speech-to-text/realtime';
-const ELEVENLABS_API_KEY_HEADER = 'xi-api-key';
-const ELEVENLABS_AUDIO_FORMAT_PREFIX = 'pcm';
-const ELEVENLABS_INPUT_AUDIO_CHUNK_MESSAGE = 'input_audio_chunk';
+const SPEECH_STT_PATH = 'speech-to-text';
+const SPEECH_REALTIME_STT_PATH = 'speech-to-text/realtime';
+const SPEECH_API_KEY_HEADER = 'xi-api-key';
+const SPEECH_AUDIO_FORMAT_PREFIX = 'pcm';
+const SPEECH_INPUT_AUDIO_CHUNK_MESSAGE = 'input_audio_chunk';
 
-type ElevenLabsTranscriptionResponse = {
+type SpeechTranscriptionResponse = {
 	text?: string;
 	language_code?: string;
 	languageCode?: string;
 };
 
-type ElevenLabsRealtimeResponse = {
+type SpeechRealtimeResponse = {
 	message_type?: string;
 	text?: string;
 	transcript?: string;
 	error?: string;
 };
 
-export interface ElevenLabsSttAdapterOptions extends SttProviderSpec {
+export interface SpeechSttAdapterOptions extends SttProviderSpec {
 	fetchFactory?: typeof fetch;
 }
 
-export function createElevenLabsSttAdapter(opts: ElevenLabsSttAdapterOptions): SttAdapter {
+export function createSpeechSttAdapter(opts: SpeechSttAdapterOptions): SttAdapter {
 	if (!opts.apiKey) throw new SttProviderAuthError(`${opts.name} API key not configured.`);
 	const provider = opts;
 	const fetcher = opts.fetchFactory ?? fetch;
@@ -49,14 +48,11 @@ export function createElevenLabsSttAdapter(opts: ElevenLabsSttAdapterOptions): S
 			if (request.language) form.append('language_code', request.language);
 			if (request.prompt) form.append('prompt', request.prompt);
 
-			const endpoint = new URL(
-				ELEVENLABS_STT_PATH,
-				`${provider.baseURL ?? speechToTextBaseUrl('elevenlabs')}/`
-			);
+			const endpoint = new URL(SPEECH_STT_PATH, `${provider.baseURL}/`);
 			const response = await fetcher(endpoint, {
 				method: 'POST',
 				headers: {
-					[ELEVENLABS_API_KEY_HEADER]: provider.apiKey,
+					[SPEECH_API_KEY_HEADER]: provider.apiKey,
 				},
 				body: form,
 				signal: request.signal,
@@ -68,7 +64,7 @@ export function createElevenLabsSttAdapter(opts: ElevenLabsSttAdapterOptions): S
 				throw new SttProviderRequestError(await response.text());
 			}
 
-			const data = (await response.json()) as ElevenLabsTranscriptionResponse;
+			const data = (await response.json()) as SpeechTranscriptionResponse;
 
 			return {
 				text: data.text ?? '',
@@ -88,18 +84,18 @@ export function createElevenLabsSttAdapter(opts: ElevenLabsSttAdapterOptions): S
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
-			const socket = new WebSocket(elevenLabsRealtimeUrl(provider.baseURL, request), {
+			const socket = new WebSocket(speechRealtimeUrl(provider.baseURL, request), {
 				headers: {
-					[ELEVENLABS_API_KEY_HEADER]: provider.apiKey,
+					[SPEECH_API_KEY_HEADER]: provider.apiKey,
 				},
 			});
 			await waitForOpen(socket);
-			return createElevenLabsRealtimeConnection(socket, request, emit);
+			return createSpeechRealtimeConnection(socket, request, emit);
 		},
 	};
 }
 
-function createElevenLabsRealtimeConnection(
+function createSpeechRealtimeConnection(
 	socket: WebSocket,
 	request: SttAdapterRealtimeStartRequest,
 	emit: SttRealtimeEventHandler
@@ -118,9 +114,9 @@ function createElevenLabsRealtimeConnection(
 	};
 
 	const handleMessage = (message: string): void => {
-		let data: ElevenLabsRealtimeResponse;
+		let data: SpeechRealtimeResponse;
 		try {
-			data = JSON.parse(message) as ElevenLabsRealtimeResponse;
+			data = JSON.parse(message) as SpeechRealtimeResponse;
 		} catch {
 			return;
 		}
@@ -155,7 +151,7 @@ function createElevenLabsRealtimeConnection(
 			return;
 		}
 		if (data.message_type === 'error') {
-			emitError(data.error ?? 'ElevenLabs realtime transcription error.');
+			emitError(data.error ?? `${request.providerName} realtime transcription error.`);
 		}
 	};
 
@@ -167,7 +163,7 @@ function createElevenLabsRealtimeConnection(
 		async appendAudio(audio: string): Promise<void> {
 			socket.send(
 				JSON.stringify({
-					message_type: ELEVENLABS_INPUT_AUDIO_CHUNK_MESSAGE,
+					message_type: SPEECH_INPUT_AUDIO_CHUNK_MESSAGE,
 					audio_base_64: audio,
 					commit: false,
 				})
@@ -177,7 +173,7 @@ function createElevenLabsRealtimeConnection(
 		async finish(): Promise<void> {
 			socket.send(
 				JSON.stringify({
-					message_type: ELEVENLABS_INPUT_AUDIO_CHUNK_MESSAGE,
+					message_type: SPEECH_INPUT_AUDIO_CHUNK_MESSAGE,
 					audio_base_64: '',
 					commit: true,
 				})
@@ -191,17 +187,11 @@ function createElevenLabsRealtimeConnection(
 	};
 }
 
-function elevenLabsRealtimeUrl(
-	baseURL: string | undefined,
-	request: SttAdapterRealtimeStartRequest
-): string {
-	const url = new URL(
-		ELEVENLABS_REALTIME_STT_PATH,
-		`${baseURL ?? speechToTextBaseUrl('elevenlabs')}/`
-	);
+function speechRealtimeUrl(baseURL: string, request: SttAdapterRealtimeStartRequest): string {
+	const url = new URL(SPEECH_REALTIME_STT_PATH, `${baseURL}/`);
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	url.searchParams.set('model_id', request.modelId);
-	url.searchParams.set('audio_format', `${ELEVENLABS_AUDIO_FORMAT_PREFIX}_${request.sampleRate}`);
+	url.searchParams.set('audio_format', `${SPEECH_AUDIO_FORMAT_PREFIX}_${request.sampleRate}`);
 	if (request.language) url.searchParams.set('language_code', request.language);
 	return url.toString();
 }
