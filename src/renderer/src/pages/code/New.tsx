@@ -42,10 +42,10 @@ export function NewWorkspace({ onCreated, onCancel }: { readonly onCreated: (pro
 	}, [attempt, t]);
 
 	const settings = profiles[runtime];
-	const providers = ['openai-codex'];
+	const providers = harnesses.filter((harness) => harness.id === runtime).map((harness) => harness.provider);
 	const fields = settings ? [
-		{ key: 'runtime', label: t('codeWorkspace.harness', 'Harness'), value: runtime, options: CODER_HARNESSES.map((value) => ({ value, label: harnessLabels[value] })) },
-		{ key: 'providerId', label: t('codeSettings.provider', 'Provider'), value: settings.providerId, options: providers.map((value) => ({ value, label: providerLabels[value as keyof typeof providerLabels] })) },
+		{ key: 'runtime', label: t('codeWorkspace.harness', 'Harness'), value: runtime, options: harnesses.map((harness) => ({ value: harness.id, label: harness.name })) },
+		{ key: 'providerId', label: t('codeSettings.provider', 'Provider'), value: settings.providerId, options: providers.map((provider) => ({ value: provider.id, label: provider.name })) },
 		{ key: 'thinkingLevel', label: t('codeSettings.thinking', 'Thinking level'), value: settings.thinkingLevel, options: CODING_THINKING_LEVELS.map((value) => ({ value, label: t(`codeSettings.thinkingLevels.${value}`, value) })) },
 		{ key: 'toolMode', label: t('codeSettings.tools', 'Tool access'), value: settings.toolMode, options: [{ value: 'read-only', label: t('codeSettings.readOnly', 'Read only') }, { value: 'coding', label: t('codeSettings.coding', 'Read and edit files') }] },
 	] : [];
