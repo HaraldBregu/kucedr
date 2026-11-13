@@ -101,14 +101,13 @@ describe('run stream system prompt', () => {
 		id: 'writer',
 		name: 'writer',
 		description: 'Draft polished documents',
-		location: '/canonical/skills/writer',
 		folderPath: '/canonical/skills/writer',
 		manifest: {
 			name: 'writer',
 			description: 'Draft polished documents',
 			allowedTools: ['read'],
 		},
-		source: 'local-filesystem',
+		source: 'user',
 		trust: 'user-controlled',
 		hash: 'writer-hash',
 	} as const;
