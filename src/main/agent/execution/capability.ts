@@ -32,6 +32,7 @@ const PERSIST = new Set([
 	'update_soul',
 	'update_user',
 ]);
+const EXTERNAL = new Set(['search_web', 'fetch_web_page', 'query_knowledge']);
 const RECORD = new Set(['camera_recorder', 'microphone_recorder', 'screen_recorder']);
 const CONTROL = new Set([
 	'camera_recorder_stop',
