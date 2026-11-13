@@ -114,7 +114,6 @@ export {
 	type AppNavigationBarOptions,
 } from '../../src/shared/window_types';
 export {
-	CODING_PROVIDER_IDS,
 	CODING_THINKING_LEVELS,
 	CODING_TOOL_MODES,
 	isCodingRunRequest,
