@@ -551,7 +551,7 @@ async function* loop(
 					if (input.deferPersist) persist(session);
 				},
 				budget,
-				[]
+				skillContext
 			);
 
 			if (synthesisOnly && (turn.toolCalls.length > 0 || !turn.content.trim())) {
