@@ -1,4 +1,4 @@
-import type { ModelInputSchema } from '../../../shared/model_types';
+import type { ModelInputSchema } from '@shared/model_types';
 import { updateModelOptions } from './options';
 
 export function exclusive(
