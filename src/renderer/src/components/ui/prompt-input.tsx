@@ -434,6 +434,7 @@ function PromptInput({
 					isExpanded: isPromptExpanded,
 					adaptiveLayout: hasAdaptiveLayout,
 					triggerFileUpload,
+					filesAccept,
 				}}
 			>
 				{hasAdaptiveLayout ? (
