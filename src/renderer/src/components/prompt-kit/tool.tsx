@@ -185,8 +185,11 @@ function DelegationTasks({ input, output }: { readonly input: unknown; readonly 
 				const id = typeof record.id === 'string' ? record.id : `Subagent ${index + 1}`;
 				const taskText = typeof record.task === 'string' ? record.task : '';
 				const outcome = byId.get(id);
-				const status =
-					isRecord(outcome) && typeof outcome.status === 'string' ? outcome.status : 'working';
+				const status = rejected
+					? 'failed'
+					: isRecord(outcome) && typeof outcome.status === 'string'
+						? outcome.status
+						: 'working';
 				const failed = status === 'failed' || status === 'cancelled' || status === 'exhausted';
 				return (
 					<div key={id} className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
