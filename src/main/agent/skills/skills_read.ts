@@ -12,7 +12,7 @@ const RESOURCE_DIRECTORIES = ['scripts', 'references', 'assets'] as const;
 export function readSkill(
 	folder: string,
 	id: string,
-	source: SkillSource = 'user'
+	origin: SkillSource = 'user'
 ): SkillInfo | undefined {
 	if (!validateSkill(folder).valid) return undefined;
 	let canonicalSkillPath: string;
