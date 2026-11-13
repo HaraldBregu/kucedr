@@ -383,9 +383,7 @@ async function* loop(
 			...(mcpDiscovery ? { mcpDiscovery } : {}),
 		};
 		const requestedUncatalogedMcp = uncatalogedMcp.find(
-			(server) =>
-				server.serverId.toLocaleLowerCase() === mcpServerHint ||
-				server.serverName.toLocaleLowerCase() === mcpServerHint
+			(server) => server.serverId.toLocaleLowerCase() === mcpServerHint
 		);
 		if (
 			requestedUncatalogedMcp &&
