@@ -43,10 +43,8 @@ export function directoryPermissionTargets(
 			? [realPath(session.workdir), ...(session.roots ?? []).map(realPath)]
 			: [];
 	}
-	if (typeof args.path === 'string' || toolName === 'patch') {
-		const targets = toolPermissionTargets(toolName, args, baseDir);
-		return toolName === 'read' ? targets.map((target) => path.dirname(target)) : targets;
-	}
+	if (typeof args.path === 'string' || toolName === 'patch')
+		return toolPermissionTargets(toolName, args, baseDir);
 	const fileName = AGENT_FILES[toolName];
 	if (fileName) return [realPath(path.join(baseDir, fileName))];
 	if (isMediaOutputTool(toolName, args)) {
