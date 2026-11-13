@@ -48,23 +48,17 @@ export function createBytesSpeechAdapter(provider: SpeechProviderSpec): SpeechAd
 							encoding: selectedOutputFormat.encoding ?? 'pcm_s16le',
 							sample_rate: selectedOutputFormat.sample_rate ?? 44_100,
 						};
-			const response = await fetch(new URL(CARTESIA_TTS_PATH, `${provider.baseURL}/`), {
+			const response = await fetch(new URL(BYTES_PATH, `${provider.baseURL}/`), {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${provider.apiKey}`,
-					'Cartesia-Version': request.modelId.startsWith('sonic-3.6')
-						? '2026-08-14'
-						: CARTESIA_VERSION,
+					'Cartesia-Version': flat ? BYTES_FLAT_VERSION : BYTES_VERSION,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
 					model_id: request.modelId,
 					transcript: request.text,
-					voice: request.modelId.startsWith('sonic-3.6')
-						? typeof voiceId === 'string'
-							? voiceId
-							: CARTESIA_DEFAULT_VOICE_ID
-						: { mode: 'id', id: typeof voiceId === 'string' ? voiceId : CARTESIA_DEFAULT_VOICE_ID },
+					voice: flat ? voiceId : { mode: 'id', id: voiceId },
 					...options,
 					output_format: outputFormat,
 				}),
