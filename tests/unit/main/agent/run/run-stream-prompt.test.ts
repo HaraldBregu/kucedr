@@ -127,8 +127,12 @@ describe('run stream system prompt', () => {
 		'injects an explicitly selected skill before the first %s model turn',
 		async (contextMode) => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-explicit-skill-'));
-			createSkillRegistrySnapshotMock.mockReturnValue({ skills: [registrySkill], diagnostics: [] });
-			activateSkillMock.mockResolvedValue(activatedSkill);
+			createSkillRegistrySnapshotMock.mockReturnValue({
+				skills: [registrySkill],
+				invalid: [],
+				diagnostics: [],
+			});
+			inspectSkillMock.mockResolvedValue(activatedSkill);
 			const session = createSessionState();
 			session.messages = [{ role: 'user', content: 'Draft this' }];
 			const events = [];
