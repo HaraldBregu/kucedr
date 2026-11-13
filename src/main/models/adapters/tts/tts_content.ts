@@ -16,9 +16,7 @@ type GenerateContentResponse = {
 	}>;
 };
 
-export function createGoogleSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
-	const baseURL = provider.baseURL.replace(/\/openai\/?$/, '');
-
+export function createContentSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
 	return {
 		async synthesize(request: SpeechAdapterRequest): Promise<SpeechSynthesisResult> {
 			const optionVoiceName = request.options?.voiceName;
