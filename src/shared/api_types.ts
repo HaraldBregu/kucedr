@@ -262,11 +262,8 @@ export interface AgentApi {
 export type CoderApi = CodingApi;
 
 export interface CodingApi {
-	setApiKey: (
-		provider: 'openai',
-		key: string,
-		runtime?: CoderHarness
-	) => Promise<void>;
+	setApiKey: (key: string, runtime?: CoderHarness) => Promise<void>;
+	listHarnesses: () => Promise<CodingHarnessInfo[]>;
 	pickDirectory: () => Promise<string | undefined>;
 	start: (
 		request: CodingRunRequest,
