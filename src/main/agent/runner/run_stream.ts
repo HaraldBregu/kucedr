@@ -489,7 +489,6 @@ async function* loop(
 				builtPrompt = await buildSystemPrompt(
 					config,
 					turnTools,
-					session.runContext.loadedSkills,
 					options.instructions,
 					contextMode,
 					turnTools.some((tool) => tool.id === 'load_skill'),
