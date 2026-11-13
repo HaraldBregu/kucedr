@@ -1,13 +1,13 @@
 export interface VideoProviderSpec {
-	id: string;
 	name: string;
 	apiKey: string;
-	baseURL?: string;
+	baseURL: string;
 }
 
 export interface VideoAdapterGenerationRequest {
 	modelId: string;
 	prompt: string;
+	endpoint?: string;
 	options?: Record<string, unknown>;
 	signal?: AbortSignal;
 }
