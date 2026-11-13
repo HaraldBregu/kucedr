@@ -37,9 +37,13 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 			}
 			trusted.assert(event);
 		};
-		registerCommandWithEvent(CodingChannels.setApiKey, (event, provider, key, runtime) => {
+		registerCommandWithEvent(CodingChannels.setApiKey, (event, key, runtime) => {
 			assertCodingCaller(event);
-			return coding.setApiKey(provider, key, runtime);
+			return coding.setApiKey(key, runtime);
+		});
+		registerQueryWithEvent(CodingChannels.listHarnesses, (event) => {
+			assertCodingCaller(event);
+			return coding.listHarnesses();
 		});
 		registerQueryWithEvent(CodingChannels.pickDirectory, async (event) => {
 			assertCodingCaller(event);
