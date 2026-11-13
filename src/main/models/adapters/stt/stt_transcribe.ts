@@ -136,7 +136,7 @@ export async function startRealtime(
 		providerId,
 		providerName: provider.name,
 		modelId,
-		sampleRate: normalized.sampleRate ?? findModel(providerId, 'speech-to-text', modelId)?.sampleRate ?? realtimeSampleRate(providerId),
+		sampleRate: normalized.sampleRate ?? model.sampleRate ?? STT_DEFAULT_REALTIME_SAMPLE_RATE,
 		format: 'pcm16',
 	};
 	const emit = (event: SttRealtimeEvent): void => {
