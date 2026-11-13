@@ -367,9 +367,9 @@ export class Coder {
 	}
 	cancelWindow(ownerId: number): void {
 		for (const [id, run] of this.runs) if (run.ownerId === ownerId) this.cancel(id, ownerId);
-		this.cancelCodexLogin(ownerId);
+		this.cancelLogin(ownerId);
 	}
-	async connectCodex(
+	async connect(
 		ownerId: number,
 		emit: (event: CodingAuthEvent) => void,
 		runtime?: CoderHarness
