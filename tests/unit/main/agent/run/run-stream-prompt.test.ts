@@ -347,7 +347,11 @@ describe('run stream system prompt', () => {
 	});
 
 	it('does not expose skill tools for an unrelated Gmail request', async () => {
-		createSkillRegistrySnapshotMock.mockReturnValue({ skills: [registrySkill], diagnostics: [] });
+		createSkillRegistrySnapshotMock.mockReturnValue({
+			skills: [registrySkill],
+			invalid: [],
+			diagnostics: [],
+		});
 		const events = [];
 		for await (const event of stream(
 			{ location: '/workspace' },
