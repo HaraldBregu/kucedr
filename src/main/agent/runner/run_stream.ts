@@ -765,7 +765,7 @@ async function* loop(
 						.map((tool) => ({ id: tool.id, name: tool.name })),
 				};
 			}
-			addToolResults(session, turn.toolCalls);
+			if (!recovered) addToolResults(session, turn.toolCalls);
 			if (budget.exhausted) {
 				if (input.agentId === 'subagent') {
 					session.stopReason = 'budget_exhausted';
