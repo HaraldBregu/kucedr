@@ -22,6 +22,7 @@ type SlashItem = {
 	readonly label: string;
 	readonly hint?: string;
 	readonly icon: LucideIcon;
+	readonly disabled?: boolean;
 	readonly run: () => void;
 };
 
