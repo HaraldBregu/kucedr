@@ -230,7 +230,6 @@ async function* loop(
 	}
 	const extended = !options.tools && !bootstrap;
 	const extensionTools = extended ? (extension?.tools ?? []) : [];
-	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
 		return filterRuntimeTools(
 			filterTools(candidates, input.toolsAllow, input.toolsDeny).filter(
