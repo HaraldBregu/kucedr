@@ -55,7 +55,6 @@ export async function inspectSkill(
 		source: skill.source,
 		trust: skill.trust,
 		hash,
-		allowedTools: skill.manifest.allowedTools,
 		resources: listSkillResources(canonicalRoot),
 		warnings,
 	};
