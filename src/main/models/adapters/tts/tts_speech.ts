@@ -48,7 +48,7 @@ export function createAudioSpeechAdapter(provider: SpeechProviderSpec): SpeechAd
 			return speechResult(
 				await responseAudioToBase64(response),
 				response.headers.get('content-type')?.split(';')[0] ||
-					OPENAI_AUDIO_TYPES[responseFormat] ||
+					SPEECH_AUDIO_TYPES[responseFormat] ||
 					'application/octet-stream',
 				provider,
 				request
