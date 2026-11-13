@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { tool } from '../tool';
 import { writeAuthorizedFile } from '../../files/write';
 import { authorizeFilePath } from '../../files/authorize';
+import { PATH_DESCRIPTION } from './fields';
 
 export const writeTool = tool({
 	id: 'write',
