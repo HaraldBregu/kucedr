@@ -581,14 +581,6 @@ export class Agent {
 		return [...this.runs.values()].some((record) => record.request.agentId === agentId);
 	}
 
-	runningSkill(): string | undefined {
-		for (const record of this.runs.values()) {
-			if (record.lifecycle.status !== 'running') continue;
-			const skill = record.lifecycle.session.runContext.loadedSkills.at(-1);
-			if (skill) return skill.name;
-		}
-		return undefined;
-	}
 
 	private cancelSession(sessionId: string): Promise<AgentRunOutcome>[] {
 		const matching = [...this.runs.values()].filter(
