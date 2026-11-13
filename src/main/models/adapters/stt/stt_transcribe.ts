@@ -21,12 +21,11 @@ import { SttProviderAuthError, SttProviderUnsupportedError } from './stt_errors'
 import type { SttActiveRealtimeSession, SttProviderSpec } from './stt_types';
 import {
 	loadProviders,
+	defaultProviderId,
 	findModel,
 	providerIdsFor,
 	providerModels,
 	speechToTextApiTypes,
-	speechToTextBaseUrl,
-	speechToTextSampleRate,
 	supportsCapability,
 	supportsSpeechToTextApiType,
 } from '../../../models';
