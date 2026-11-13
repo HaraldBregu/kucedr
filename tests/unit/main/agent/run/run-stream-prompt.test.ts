@@ -26,9 +26,12 @@ const mockLoadMcpTools = jest.fn(async () => ({
 }));
 const createSkillRegistrySnapshotMock = jest.fn((_options?: unknown) => ({
 	skills: [],
+	invalid: [],
 	diagnostics: [],
 }));
-const activateSkillMock = jest.fn();
+const inspectSkillMock = jest.fn();
+const requiredContext = (call: unknown[]): string =>
+	JSON.stringify((call[15] as unknown[] | undefined) ?? []);
 
 jest.mock('../../../../../src/main/agent/session/session_session_dir', () => ({
 	sessionDir: () => '/nonexistent-session',
