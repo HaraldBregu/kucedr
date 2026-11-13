@@ -662,7 +662,14 @@ function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 		return messages;
 	}
 
-	return [{ role: 'user', content, contentBlocks: toHistoryContentBlocks(message) }];
+	return [
+		{
+			role: 'user',
+			content,
+			...(message.createdAtMs !== undefined ? { createdAtMs: message.createdAtMs } : {}),
+			contentBlocks: toHistoryContentBlocks(message),
+		},
+	];
 }
 
 function toHistoryContentBlocks(message: Message): AgentHistoryContentBlock[] {
