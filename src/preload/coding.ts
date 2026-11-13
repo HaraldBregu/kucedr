@@ -12,8 +12,8 @@ import { isCoderLayout } from '../shared/coder_layout';
 import { typedInvokeUnwrap, typedOn } from '../shared/ipc_types';
 
 export const coding: CodingApi = {
-	setApiKey: (provider, key, runtime) =>
-		typedInvokeUnwrap(CodingChannels.setApiKey, provider, key, runtime),
+	setApiKey: (key, runtime) => typedInvokeUnwrap(CodingChannels.setApiKey, key, runtime),
+	listHarnesses: () => typedInvokeUnwrap(CodingChannels.listHarnesses),
 	pickDirectory: () => typedInvokeUnwrap(CodingChannels.pickDirectory),
 	respond: (runId, requestId, response) =>
 		typedInvokeUnwrap(CodingChannels.respond, runId, requestId, response),
