@@ -12,7 +12,8 @@ export function NewWorkspace({ onCreated, onCancel }: { readonly onCreated: (pro
 	const { t } = useTranslation();
 	const [name, setName] = useState('');
 	const [shared, setShared] = useState(true);
-	const [runtime, setRuntime] = useState<CoderHarness>('codex');
+	const [runtime, setRuntime] = useState<CoderHarness>('');
+	const [harnesses, setHarnesses] = useState<CodingHarnessInfo[]>([]);
 	const [profiles, setProfiles] = useState<Partial<Record<CoderHarness, CodingSettings>>>({});
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
