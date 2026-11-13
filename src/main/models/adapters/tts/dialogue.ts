@@ -46,7 +46,7 @@ export async function synthesizeDialogue(
 				return;
 			}
 			if (data.error) {
-				reject(new Error(`ElevenLabs dialogue failed: ${JSON.stringify(data.error)}`));
+				reject(new Error(`${provider.name} dialogue failed:${JSON.stringify(data.error)}`));
 				socket.close();
 				return;
 			}
