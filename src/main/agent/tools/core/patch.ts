@@ -7,10 +7,11 @@ import { authorizeFilePath } from '../../files/authorize';
 
 import { parsePatch } from './patch/parse';
 import { applyUpdateChunks } from './patch/update';
+import { MAX_READ_BYTES } from './limit';
 
 export const applyPatchTool = tool({
 	id: 'patch',
-		category: 'core',
+	category: 'core',
 	name: 'Apply patch',
 	description:
 		'Apply a multi-file patch using the *** Begin Patch/*** End Patch format. Supports Add File, Delete File, and Update File (with optional Move to) hunks.',
