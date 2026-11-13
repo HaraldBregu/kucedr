@@ -34,7 +34,8 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 	const [name, setName] = useState(project?.name ?? '');
 	const [directory, setDirectory] = useState(project?.settings?.workingDirectory ?? project?.directory ?? '');
 	const [picking, setPicking] = useState(false);
-	const [runtime, setRuntime] = useState<CoderHarness>('codex');
+	const [runtime, setRuntime] = useState<CoderHarness>('');
+	const [harnesses, setHarnesses] = useState<CodingHarnessInfo[]>([]);
 	const [profiles, setProfiles] = useState<Partial<Record<CoderHarness, CodingSettings>>>({});
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
