@@ -10,10 +10,11 @@ export async function synthesizeDialogue(
 	const endpoint = new URL('text-to-dialogue/stream-input', `${provider.baseURL}/`);
 	endpoint.protocol = endpoint.protocol === 'http:' ? 'ws:' : 'wss:';
 	endpoint.searchParams.set('model_id', request.modelId);
-	const output =
+	const output = String(
 		typeof request.options?.output_format === 'string'
 			? request.options.output_format
-			: 'mp3_44100_128';
+			: (inputDefault(request.metadata, ['output_format']) ?? '')
+	);
 	endpoint.searchParams.set('output_format', output);
 	for (const name of ['language_code', 'seed', 'apply_text_normalization', 'enable_logging']) {
 		const value = request.options?.[name];
