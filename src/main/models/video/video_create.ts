@@ -24,14 +24,21 @@ export async function createVideo(
 	if (!prompt) throw new VideoProviderRequestError('Prompt is required.');
 
 	const providerId = resolveProviderId(
-		request.providerId ?? getProviderId('video') ?? DEFAULT_VIDEO_PROVIDER_ID
+		request.providerId ?? getProviderId('video') ?? defaultProviderId('text-to-video') ?? ''
 	);
 	const modelId = resolveModelId(providerId, request.modelId ?? getModelId('video'));
 	const apiKey = resolveApiKey(providerId);
+	const model = findModel(providerId, 'text-to-video', modelId);
+	if (!model)
+		throw new VideoProviderUnsupportedError(
+			`Unknown text-to-video model: ${providerId}/${modelId}`
+		);
+	const stored = getProvider(providerId);
+	const baseUrl =
+		stored?.baseUrl && stored.baseUrl !== model.provider.baseUrl ? stored.baseUrl : model.url;
 	return generateVideo({
-		providerId,
+		model: { ...model, url: baseUrl },
 		apiKey,
-		modelId,
 		prompt,
 		options: resolveOptions('video', providerId, modelId, request.options),
 		signal,
