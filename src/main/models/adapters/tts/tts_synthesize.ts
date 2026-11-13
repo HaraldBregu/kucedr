@@ -27,10 +27,15 @@ export async function synthesize(
 	);
 	const modelId = resolveModelId(providerId, normalized.modelId ?? configuredModelId(providerId));
 	const provider = resolveProvider(providerId, modelId);
-	return buildSpeechAdapter(provider).synthesize({
+	const model = findModel(providerId, 'text-to-speech', modelId);
+	return buildSpeechAdapter(
+		{ ...provider, protocol: model?.metadata?.protocol },
+		model?.name ?? modelId
+	).synthesize({
 		...normalized,
 		providerId,
 		modelId,
+		metadata: model?.metadata,
 		options:
 			selection === 'tool'
 				? normalized.options
