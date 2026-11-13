@@ -1,0 +1,65 @@
+import { inputDefault } from './defaults';
+import { synthesizeDialogue } from './dialogue';
+import { ensureSpeechResponseOk, responseAudioToBase64, speechResult } from './tts_audio';
+import type { SpeechAdapter, SpeechAdapterRequest, SpeechProviderSpec } from './tts_types';
+import type { SpeechSynthesisResult } from '../../../../shared/speech_types';
+
+const VOICE_TTS_PATH = 'text-to-speech';
+const VOICE_DIALOGUE_PATH = 'text-to-dialogue';
+const VOICE_DIALOGUE_PROTOCOL = 'text-to-dialogue';
+const VOICE_DIALOGUE_STREAM_PROTOCOL = 'text-to-dialogue-stream';
+const VOICE_API_KEY_HEADER = 'xi-api-key';
+
+export function createVoiceSpeechAdapter(provider: SpeechProviderSpec): SpeechAdapter {
+	return {
+		async synthesize(request: SpeechAdapterRequest): Promise<SpeechSynthesisResult> {
+			if (provider.protocol === VOICE_DIALOGUE_STREAM_PROTOCOL)
+				return synthesizeDialogue(provider, request);
+			const {
+				voice_id: optionVoiceId,
+				output_format: outputFormat,
+				enable_logging: enableLogging,
+				optimize_streaming_latency: optimizeStreamingLatency,
+				...bodyOptions
+			} = request.options ?? {};
+			const voiceId =
+				request.voice ??
+				(typeof optionVoiceId === 'string' ? optionVoiceId : ELEVENLABS_DEFAULT_VOICE_ID);
+			const dialogue = request.modelId === 'eleven_v4';
+			const endpoint = new URL(
+				dialogue ? 'text-to-dialogue' : `${ELEVENLABS_TTS_PATH}/${voiceId}`,
+				`${provider.baseURL}/`
+			);
+			if (typeof outputFormat === 'string')
+				endpoint.searchParams.set('output_format', outputFormat);
+			if (typeof enableLogging === 'boolean') {
+				endpoint.searchParams.set('enable_logging', String(enableLogging));
+			}
+			if (typeof optimizeStreamingLatency === 'number') {
+				endpoint.searchParams.set('optimize_streaming_latency', String(optimizeStreamingLatency));
+			}
+			const response = await fetch(endpoint, {
+				method: 'POST',
+				headers: {
+					[ELEVENLABS_API_KEY_HEADER]: provider.apiKey,
+					Accept: 'audio/mpeg',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					...(dialogue
+						? { inputs: [{ text: request.text, voice_id: voiceId }] }
+						: { text: request.text }),
+					model_id: request.modelId,
+					...bodyOptions,
+				}),
+			});
+			await ensureSpeechResponseOk(response, provider.name);
+			return speechResult(
+				await responseAudioToBase64(response),
+				response.headers.get('content-type')?.split(';')[0] || 'audio/mpeg',
+				provider,
+				request
+			);
+		},
+	};
+}
