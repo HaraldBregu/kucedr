@@ -91,10 +91,13 @@ export const fetchWebPageTool = tool({
 		const truncated = text.length > limit;
 		if (truncated) text = text.slice(0, limit);
 
-		return JSON.stringify(
-			{ url, finalUrl: current.toString(), status: res.status, contentType, truncated, text },
-			null,
-			2
-		);
+		return JSON.stringify({
+			url,
+			finalUrl: current.toString(),
+			status: res.status,
+			contentType,
+			truncated,
+			text,
+		});
 	},
 });
