@@ -11,10 +11,9 @@ import { addWorkspacePrompt } from './system_add_workspace_prompt';
 export async function buildSystemPrompt(
 	config: Config,
 	tools: Tool[] = [],
-	loadedSkills: LoadedSkill[] = [],
 	basePrompt?: string,
 	contextMode: 'minimal' | 'workspace' = 'workspace',
-	hasAvailableSkills = loadedSkills.length > 0,
+	hasAvailableSkills = false,
 	eligibleTools: Tool[] = tools,
 	runContext = true
 ): Promise<string> {
