@@ -45,12 +45,18 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 	useEffect(() => {
 		mounted.current = true;
 		let cancelled = false;
-		void Promise.all([
-			window.coder.getSettings(),
-			...CODER_HARNESSES.map((harness) => window.coder.getSettings(harness)),
-		])
-			.then(([selected, ...values]) => {
+		void window.coder
+			.listHarnesses()
+			.then((items) =>
+				Promise.all([
+					items,
+					window.coder.getSettings(),
+					...items.map((harness) => window.coder.getSettings(harness.id)),
+				])
+			)
+			.then(([items, selected, ...values]) => {
 				if (cancelled) return;
+				setHarnesses(items);
 				setRuntime(project?.settings?.runtime ?? selected.runtime);
 				setProfiles({ ...Object.fromEntries(values.map((value) => [value.runtime, value])), ...(project?.settings ? { [project.settings.runtime]: project.settings } : {}) });
 			})
