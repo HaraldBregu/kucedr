@@ -476,14 +476,12 @@ export async function* runToolCall(
 				}
 			} catch (error) {
 				if (signal?.aborted) {
-					toolCall.result = {
-						content: 'Cancelled; an in-flight effect may still be settling.',
-						isError: true,
-					};
-					throw error;
+					abortError = { reason: error };
+					output = 'Cancelled; an in-flight effect may still be settling.';
+				} else {
+					const message = error instanceof Error ? error.message : String(error);
+					output = `Error: tool '${toolCall.name}' failed: ${message}`;
 				}
-				const message = error instanceof Error ? error.message : String(error);
-				output = `Error: tool '${toolCall.name}' failed: ${message}`;
 				isError = true;
 			}
 		}
