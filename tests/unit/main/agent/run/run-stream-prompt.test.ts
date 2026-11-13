@@ -229,7 +229,10 @@ describe('run stream system prompt', () => {
 		expect(loadSkillDescription).not.toContain('Available skill routing metadata');
 		expect(runModelTurnMock.mock.calls[0][3]).not.toContain('Available skill routing metadata');
 		expect(runModelTurnMock.mock.calls[0][3]).not.toContain('Draft polished documents');
-		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
+		expect(requiredContext(runModelTurnMock.mock.calls[0])).not.toContain(
+			'EXACT WRITER INSTRUCTIONS'
+		);
+		expect(requiredContext(runModelTurnMock.mock.calls[1])).toContain('EXACT WRITER INSTRUCTIONS');
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain('read');
