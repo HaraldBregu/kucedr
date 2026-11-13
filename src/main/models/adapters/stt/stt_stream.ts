@@ -1,5 +1,4 @@
-import { speechToTextBaseUrl } from '../../../models';
-import { Mistral } from '@mistralai/mistralai';
+import { Mistral as SdkClient } from '@mistralai/mistralai';
 import { createAudioFile } from './stt_audio';
 import { SttProviderAuthError } from './stt_errors';
 import type {
