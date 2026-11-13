@@ -93,7 +93,7 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 					),
 					label: project ? t('codeWorkspace.harness', 'Harness') : t('codeSettings.harness', 'Default harness'),
 					value: runtime,
-					options: CODER_HARNESSES.map((value) => ({ value, label: harnessLabels[value] })),
+					options: harnesses.map((harness) => ({ value: harness.id, label: harness.name })),
 				},
 				{
 					key: 'providerId',
