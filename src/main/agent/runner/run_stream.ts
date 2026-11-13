@@ -241,7 +241,6 @@ async function* loop(
 			)
 		);
 	};
-	tools = filterEligibleTools(tools);
 	let search: ToolSearch | undefined;
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
 		skillToolScopes.push(skill.allowedTools);
