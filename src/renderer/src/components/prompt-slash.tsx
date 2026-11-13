@@ -124,6 +124,7 @@ function PromptSlash({
 								type="button"
 								role="option"
 								aria-selected={index === selected}
+								aria-disabled={item.disabled}
 								ref={index === selected ? (element) => element?.scrollIntoView({ block: 'nearest' }) : undefined}
 								className={cn(
 									'flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm outline-none [&_svg]:size-4 [&_svg]:shrink-0',
