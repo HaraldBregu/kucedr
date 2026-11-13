@@ -47,17 +47,15 @@ export function readSkill(
 		id,
 		name,
 		description,
-		location: folder,
 		folderPath: folder,
 		skillPath: canonicalSkillPath,
 		manifest,
-		source: 'local-filesystem',
+		source,
 		trust: 'user-controlled',
 		hash,
 		structure: {
 			format: 'agent-skill',
 			standard: 'agentskills.io',
-			kind: 'direct',
 			resourceDirectories: RESOURCE_DIRECTORIES.filter((dir) =>
 				fs.existsSync(path.join(folder, dir))
 			),
