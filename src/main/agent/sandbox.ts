@@ -90,7 +90,7 @@ export class ExecSandbox {
 			command: wrapped.argv[0],
 			args: wrapped.argv.slice(1),
 			env: {
-				...wrapped.env,
+				...Object.fromEntries(Object.entries(wrapped.env).filter(([key, value]) => process.env[key] !== value)),
 				TMPDIR: this.temporaryDirectory,
 				TMP: this.temporaryDirectory,
 				TEMP: this.temporaryDirectory,
