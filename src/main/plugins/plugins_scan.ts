@@ -27,16 +27,13 @@ export function scanPlugins(): readonly ScannedPlugin[] {
 		for (const entry of readdirSync(root, { withFileTypes: true })) {
 			if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
 			if (!builtIn && entry.name === CORE_PLUGIN_ID) continue;
+			if (!builtIn && found.get(entry.name)?.builtIn) {
+				console.warn(`[plugins] Skipping "${entry.name}" in ${root}: the id is reserved by a built-in plugin.`);
+				continue;
+			}
 			const directory = path.join(root, entry.name);
 			try {
 				const manifest = readPlugin(directory, entry.name, builtIn);
-				const bundled = found.get(entry.name);
-				if (
-					!builtIn &&
-					bundled?.manifest &&
-					compareVersions(bundled.manifest.version, manifest.version) > 0
-				)
-					continue;
 				found.set(entry.name, {
 					id: entry.name,
 					directory,
