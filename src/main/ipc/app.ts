@@ -820,7 +820,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.requestMicrophonePermission,
-			wrapSimpleHandler(async () => {
+			wrapTrustedHandler(async () => {
 				if (process.platform === 'darwin') {
 					await systemPreferences.askForMediaAccess('microphone');
 				}
