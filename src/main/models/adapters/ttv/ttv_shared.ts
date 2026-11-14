@@ -3,7 +3,7 @@ import { VideoProviderAuthError, VideoProviderRequestError } from './ttv_errors'
 import type { VideoGenerationResult } from './ttv_types';
 
 const MAX_ERROR_DETAIL = 1000;
-const MAX_VIDEO_BYTES = 512 * 1024 * 1024;
+const MAX_VIDEO_BYTES = 256 * 1024 * 1024;
 
 export async function requestJson<T>(
 	providerName: string,
