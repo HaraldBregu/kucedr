@@ -798,7 +798,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setVoiceAgentAppearance,
-			wrapSimpleHandler((appearance: VoiceAgentAppearance) => {
+			wrapTrustedHandler((appearance: VoiceAgentAppearance) => {
 				setStoredVoiceAgentAppearance(appearance);
 				eventBus.broadcast(AppChannels.voiceAgentAppearanceChanged, appearance);
 			}, AppChannels.setVoiceAgentAppearance)
