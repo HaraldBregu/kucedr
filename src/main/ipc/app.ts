@@ -855,7 +855,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.openVideo,
-			wrapSimpleHandler(async (videoPath: string) => {
+			wrapTrustedHandler(async (videoPath: string) => {
 				await openPathOrThrow(validatedVideoPath(videoPath));
 			}, AppChannels.openVideo)
 		);
