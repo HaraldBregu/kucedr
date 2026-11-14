@@ -739,6 +739,7 @@ function runtimeEventToAgentEvents(
 				type: 'run_started',
 				sessionId: event.sessionId,
 				modeIds: event.modeIds,
+				skillIds: (event.skillActivations ?? []).map((skill) => skill.id),
 				agentId,
 				runId,
 			},
