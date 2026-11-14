@@ -51,6 +51,7 @@ export interface AgentMessage {
 	readonly content: string;
 	readonly runId?: string;
 	readonly modeIds?: readonly string[];
+	readonly skillIds?: readonly string[];
 	readonly state: AgentRunState;
 	readonly tools: readonly AgentToolPart[];
 	readonly pendingPermission?: PendingToolPermission;
