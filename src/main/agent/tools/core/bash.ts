@@ -232,40 +232,37 @@ async function runExec(
 		env,
 		shell,
 		detached: process.platform !== 'win32',
+		stdio: [readOnly ? 'ignore' : 'pipe', 'pipe', 'pipe'],
 	});
 
 	superviseProcess(child, abortSignal);
 	if (executionMode === 'sandbox') sandbox.track(child);
-	const maxOutputLength = 200000;
+	registry.track(scope, child);
+	child.stdin?.on('error', () => undefined);
+	child.stdout.setEncoding('utf8');
+	child.stderr.setEncoding('utf8');
+	const maxOutputLength = 90000;
 	let stdout = '';
 	let stderr = '';
 	let stdoutTruncated = false;
 	let stderrTruncated = false;
 	let timedOut = false;
 
-	child.stdout.on('data', (chunk: Buffer | string) => {
-		if (stdout.length >= maxOutputLength) {
-			stdoutTruncated = true;
-			return;
-		}
-		const next = stdout + chunk.toString();
-		stdout = next.slice(0, maxOutputLength);
+	child.stdout.on('data', (chunk: string) => {
+		const next = stdout + chunk;
+		stdout = next.slice(-maxOutputLength);
 		stdoutTruncated = stdoutTruncated || next.length > maxOutputLength;
 	});
-	child.stderr.on('data', (chunk: Buffer | string) => {
-		if (stderr.length >= maxOutputLength) {
-			stderrTruncated = true;
-			return;
-		}
-		const next = stderr + chunk.toString();
-		stderr = next.slice(0, maxOutputLength);
+	child.stderr.on('data', (chunk: string) => {
+		const next = stderr + chunk;
+		stderr = next.slice(-maxOutputLength);
 		stderrTruncated = stderrTruncated || next.length > maxOutputLength;
 	});
 
 	return await new Promise<ExecResult>((resolve, reject) => {
 		let settled = false;
 		let aborted = false;
-		let ownedSessionId: string | undefined;
+		let ownedSession: ProcessSession | undefined;
 		let timeoutTimer: NodeJS.Timeout | undefined;
 		const yieldTimer = readOnly ? undefined : setTimeout(() => {
 			if (settled || aborted) return;
