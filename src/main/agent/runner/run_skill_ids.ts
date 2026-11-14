@@ -1,7 +1,7 @@
 import type { Message } from '../types';
 
 export function pinnedSkillIds(messages: readonly Message[]): string[] {
-	const stamped = [...messages].reverse().find((message) => message.skillIds?.length);
+	const stamped = [...messages].reverse().find((message) => message.skillIds !== undefined);
 	if (stamped?.skillIds) return [...stamped.skillIds];
 	const ids = new Set<string>();
 	for (const message of messages) {
