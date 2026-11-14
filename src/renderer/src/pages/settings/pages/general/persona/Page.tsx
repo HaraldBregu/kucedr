@@ -38,7 +38,7 @@ const PersonaPage: React.FC = () => {
 						aria-label={t('settings.voiceAgent.appearance')}
 						className="justify-start gap-1 rounded-lg bg-muted p-1"
 						onValueChange={(value) => {
-							if (APPEARANCES.includes(value as VoiceAgentAppearance)) {
+							if (VOICE_AGENT_APPEARANCES.includes(value as VoiceAgentAppearance)) {
 								setVoiceAgentAppearance(value as VoiceAgentAppearance);
 							}
 						}}
