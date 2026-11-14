@@ -893,7 +893,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.requestCameraPermission,
-			wrapSimpleHandler(async () => {
+			wrapTrustedHandler(async () => {
 				if (process.platform === 'darwin') {
 					await systemPreferences.askForMediaAccess('camera');
 				}
