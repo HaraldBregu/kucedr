@@ -19,6 +19,7 @@ export function resolveCommandPermission(
 			.map((root) => realPath(resolveUserPath(root, targets[0] ?? baseDir)))
 		: []);
 	const decisions = targets.map((target) => {
+		if (isProtectedTarget(target, 'write')) return 'deny';
 		if ((['read', 'write', 'exec'] as const).some((kind) =>
 			permissionFor(permissions[kind], target, kind) === 'deny')) return 'deny';
 		if (elevated) return fallback;
