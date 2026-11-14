@@ -11,11 +11,12 @@ import React, {
 import i18n from '../i18n';
 import { configureSounds } from '@/lib/sounds/configure';
 import { playSound } from '@/lib/sounds/play';
-import type {
-	AppLanguage,
-	AppTheme,
-	ChatTextSize,
-	VoiceAgentAppearance,
+import {
+	VOICE_AGENT_APPEARANCES,
+	type AppLanguage,
+	type AppTheme,
+	type ChatTextSize,
+	type VoiceAgentAppearance,
 } from '../../../shared/app_types';
 
 const LANGUAGE_STORAGE_KEY = 'app-language';
