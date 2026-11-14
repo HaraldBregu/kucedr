@@ -132,6 +132,7 @@ export interface ModelCache {
 	readonly readTokens?: readonly string[];
 	readonly writeTokens?: readonly string[];
 	readonly sessionKey?: string;
+	readonly sessionHeader?: string;
 	readonly breakpoints?: readonly 'system'[];
 }
 
