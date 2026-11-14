@@ -776,7 +776,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setupSandbox,
-			wrapSimpleHandler(() => sandbox.setup(), AppChannels.setupSandbox)
+			wrapTrustedHandler(() => sandbox.setup(), AppChannels.setupSandbox)
 		);
 
 		ipcMain.handle(
