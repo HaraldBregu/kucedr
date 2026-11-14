@@ -79,7 +79,10 @@ function readPersistedTheme(): AppTheme {
 
 function readPersistedVoiceAgentAppearance(): VoiceAgentAppearance {
 	try {
-		if (localStorage.getItem(VOICE_AGENT_APPEARANCE_STORAGE_KEY) === 'orb-07') return 'orb-07';
+		const stored = localStorage.getItem(VOICE_AGENT_APPEARANCE_STORAGE_KEY);
+		if (VOICE_AGENT_APPEARANCES.includes(stored as VoiceAgentAppearance)) {
+			return stored as VoiceAgentAppearance;
+		}
 	} catch {
 		/* empty */
 	}
