@@ -1945,7 +1945,6 @@
 			"noDescription": "Nessuna descrizione fornita.",
 			"none": "Nessuno",
 			"detailId": "ID",
-			"detailTrust": "Attendibilità",
 			"detailHash": "Hash del contenuto",
 			"detailFormat": "Formato",
 			"detailVersion": "Versione",
