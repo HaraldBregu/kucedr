@@ -89,6 +89,8 @@ import { registerAppStoreIpc } from './app_store';
 import { externalUrl } from '../external';
 import { unfurlUrl } from '../unfurl';
 import type { ExecSandbox } from '../agent/sandbox';
+import type { WindowContextManager } from '../window_context';
+import { TrustedRenderer } from './core/trusted';
 
 export interface AppIpcDeps {
 	logger: LoggerService;
