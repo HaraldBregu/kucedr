@@ -19,7 +19,6 @@ export interface SkillInfo {
 	skillPath?: string;
 	manifest: SkillManifest;
 	source: SkillSource;
-	trust: SkillTrust;
 	/** Set when an installed plugin contributes this skill. */
 	plugin?: PluginSource;
 	hash: string;
