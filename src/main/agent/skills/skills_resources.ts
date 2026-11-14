@@ -3,7 +3,10 @@ import path from 'node:path';
 import { SKILL_FILE, SKILL_RESOURCE_LIST_LIMIT } from './skills_limits';
 import { resolveSkillResource } from './skills_resolve_resource';
 
-export function listSkillResources(canonicalRoot: string): { resources: string[]; skipped: string[] } {
+export function listSkillResources(canonicalRoot: string): {
+	resources: string[];
+	skipped: string[];
+} {
 	const resources: string[] = [];
 	const skipped: string[] = [];
 	const pending = [''];
