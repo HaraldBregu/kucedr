@@ -429,6 +429,7 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 						: last.content + content,
 				tools: [...last.tools, ...tools],
 				modeIds: message.modeIds ?? last.modeIds,
+				skillIds: message.skillIds ?? last.skillIds,
 				completedAtMs: message.createdAtMs ?? last.completedAtMs,
 				contextUsage: message.usage?.context,
 				inputTokens: (last.inputTokens ?? 0) + (message.usage?.inputTokens ?? 0),
