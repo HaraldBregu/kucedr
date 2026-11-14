@@ -708,7 +708,7 @@ export class AppIpc implements IpcModule {
 			}, AppChannels.setWorkspaceWideContent)
 		);
 
-		ipcMain.handle(AppChannels.exportDocument, wrapSimpleHandler((name: string, format: 'md' | 'html' | 'pdf', content: string) => exportDocument(name, format, content), AppChannels.exportDocument));
+		ipcMain.handle(AppChannels.exportDocument, wrapTrustedHandler((name: string, format: 'md' | 'html' | 'pdf', content: string) => exportDocument(name, format, content), AppChannels.exportDocument));
 
 		ipcMain.handle(
 			AppChannels.getWorkspaceWideContent,
