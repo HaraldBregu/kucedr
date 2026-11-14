@@ -14,7 +14,8 @@ export function readSkill(
 	id: string,
 	origin: SkillSource = 'user'
 ): SkillInfo | undefined {
-	if (!validateSkill(folder).valid) return undefined;
+	const validation = validateSkill(folder);
+	if (!validation.valid) return undefined;
 	let canonicalSkillPath: string;
 	let source: string;
 	let fm: Record<string, unknown>;
