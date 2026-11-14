@@ -518,6 +518,12 @@ function PageContent(): ReactElement {
 		() => agent.chatState.messages.filter((message) => message.id !== welcomeMessage.id),
 		[agent.chatState.messages]
 	);
+	const activeSkillIds = useMemo(() => {
+		for (const message of [...agent.chatState.messages].reverse()) {
+			if (message.role === 'agent' && message.skillIds !== undefined) return message.skillIds;
+		}
+		return [];
+	}, [agent.chatState.messages]);
 	const showEmptyConversation =
 		visibleMessages.length === 0 && !agent.isLoading && !agent.historyLoading;
 	useLayoutEffect(() => {
