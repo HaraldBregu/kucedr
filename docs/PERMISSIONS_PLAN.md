@@ -109,6 +109,48 @@ The steps are ordered by risk reduced per line of code. Steps 1–2 are small an
 4. **SA#14:** reset an MCP tool's permission when its definition hash changes.
 5. **N3:** the approval card shows "+N more" wherever input is truncated; if it can't render the full input, it shows a warning.
 
+### Implementation status (2026-11-15)
+
+Steps 1 and 2 are done. Both typechecks are clean, apart from the `hideIcons` error in `Group.tsx`, which isn't ours. No tests were run. Harness checks bundled the real modules, and real macOS sandbox runs refused `ls ~/.ssh` and writes to app settings, while workspace writes worked.
+
+- **Step 1**
+  - **N1:**
+    - An `ask` result whose approval targets contain `* ? [ ] { }` becomes a non-persistable `deny` (`resolve_tool_permission.ts:39`).
+    - `recursivePermissionRule` throws on a glob.
+  - **PA#1:** the location logic moved to `permissions/location.ts`. Deny and protected checks run first, and a tool set to Ask only turns `allow` into `ask`. This covers `bash` too.
+  - **Protected list** (`permissions/protected.ts`, `protected_target.ts`):
+    - **Read and write denied:** credentials (`~/.ssh`, `.aws`, `.gnupg`, `.config/gh`, `.netrc`, docker, kube), browser profiles, Keychains, Cookies, and the app's secret stores (`providers/`, `mcp/`, `credentials/`, `coder/credentials.json`, `settings/account.json`, legacy vault files).
+    - **Write denied:** the user-data folder except the workspace, library and task store; LaunchAgents; shell rc files.
+    - Applied in the resolver and in the sandbox's `denyRead`/`denyWrite`. The sandbox denies each existing child of the user-data folder, because its `denyWrite` beats `allowWrite`.
+  - **Approval by default:**
+    - All three recorders.
+    - `update_identity`/`update_soul`/`update_user` once the profile exists, so first-run onboarding writes don't ask.
+    - `mdl__` tools default to Ask and are configurable under Settings → Tools (chat).
+  - **N2:** the darwin firmlink prefix is stripped in `realPath`.
+- **Step 2**
+  - **SA#1:**
+    - Privileged `coder`/`workspace` IPC requires an app from the bundled plugins root (`apps/app_bundled.ts`). No bundled app uses these ids today, so no app view gets them.
+    - The coder shell uses `commandEnvironment()`.
+  - **SA#2/#3:**
+    - Bundled plugin ids are reserved, both at scan and at install.
+    - User plugins are off until enabled (an `enabled` list in the plugins store). Plugin MCP servers were already off until saved.
+    - Catalog "updates" for built-in plugins were removed.
+  - **SA#12:** every `AppIpc` handler with side effects goes through `TrustedRenderer`.
+  - **SA#14:** stored MCP tool permissions carry a definition hash and fall back to the default when the definition changes.
+  - **N3:** the approval card shows `… +N more` and depth markers.
+
+**Behaviour changes users will notice**
+- On other installs, user-installed plugins turn off after the upgrade until they're re-enabled.
+- MCP permissions saved before this change revert to their default once.
+- The agent can no longer write into `~/.kucedr/skills`, `plugins` or `settings`.
+- The coder shell no longer sees variables exported only in the shell that launched the app.
+
+**Remaining gaps**
+- Hand-written `~/.kucedr/mcp/servers/<id>/mcp.json` still auto-starts, which needs an install record in `mcp_store_state.ts`. A write there is now denied for the agent.
+- The protected list isn't shown in Settings.
+- The sandbox's write deny for user data covers only the children that exist when each command runs.
+- Onboarding detection for the profile tools is approximate. A clean version needs a small change in `run_stream.ts`.
+
 ### Step 3: One resolver, literal rules (structural, medium refactor)
 
 This merges PA's "simpler shape" with the root causes above.
