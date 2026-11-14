@@ -542,7 +542,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.openProvidersFolder,
-			wrapSimpleHandler(async () => {
+			wrapTrustedHandler(async () => {
 				await openPathOrThrow(providersDir());
 			}, AppChannels.openProvidersFolder)
 		);
