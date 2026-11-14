@@ -362,6 +362,29 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 								/>
 							}
 						/>
+						{Object.entries(toolProfile?.tools ?? {})
+							.filter(
+								([id]) =>
+									id.startsWith('mdl__') &&
+									isAgentToolAllowedForProfile(profile, { kind: 'builtin', id })
+							)
+							.map(([id, settings]) => (
+								<SettingsRow
+									key={id}
+									title={id}
+									media={<Sparkles className="size-5 shrink-0 text-muted-foreground" />}
+									actions={
+										<ToolPermissionControl
+											name={id}
+											value={settings.permission}
+											disabled={fileToolsSaving}
+											onChange={(permission) =>
+												handleFileToolsPermissionChange(id, { permission })
+											}
+										/>
+									}
+								/>
+							))}
 					</SettingsPanel>
 				</SettingsSection>
 			)}
