@@ -2,8 +2,6 @@ import type { PluginSource } from './plugin_types';
 
 export type SkillSource = 'user' | 'plugin';
 
-export type SkillTrust = 'user-controlled';
-
 export interface SkillManifest {
 	name: string;
 	description: string;
