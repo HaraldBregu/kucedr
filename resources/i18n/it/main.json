@@ -534,7 +534,10 @@
 			"appearanceDescription": "Scegli l'elemento visivo usato durante le conversazioni vocali.",
 			"appearances": {
 				"persona": "Halo",
-				"orb-07": "Nebula"
+				"radial": "Radiale",
+				"cloud": "Nuvola",
+				"circle": "Cerchio",
+				"bars": "Barre"
 			},
 			"preview": "Anteprima",
 			"previewDescription": "Scegli uno stato per visualizzarne il movimento e la risposta.",
