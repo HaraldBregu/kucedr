@@ -96,7 +96,7 @@ describe('validateSkill', () => {
 			'name-folder-mismatch'
 		);
 		readMock.mockReturnValue(
-			`---\nname: x\ndescription: ok\ncompatibility: ${'x'.repeat(501)}\nmetadata:\n  version: 1\n---\nbody`
+			`---\nname: x\ndescription: ok\ncompatibility: ${'x'.repeat(501)}\nmetadata:\n  version:\n    major: 1\n---\nbody`
 		);
 		const codes = validateSkill('/skills/x').issues.map((issue) => issue.code);
 		expect(codes).toEqual(expect.arrayContaining(['invalid-compatibility', 'invalid-metadata']));
