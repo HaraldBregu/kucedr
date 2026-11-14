@@ -157,7 +157,7 @@ async function runExec(
 	const spawnCommand = wrapped?.command ?? hostCommand;
 	const spawnArgs = wrapped?.args ?? hostArgs;
 	const shell = wrapped ? false : !pty;
-	Object.assign(env, wrapped?.env);
+	Object.assign(env, wrapped?.env, envInput);
 	let sandboxCleaned = false;
 	const cleanupSandbox = (): void => {
 		if (executionMode !== 'sandbox' || sandboxCleaned) return;
