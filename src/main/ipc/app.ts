@@ -504,7 +504,7 @@ export class AppIpc implements IpcModule {
 		// Open application data folder in system file explorer
 		ipcMain.handle(
 			AppChannels.openAppDataFolder,
-			wrapSimpleHandler(async () => {
+			wrapTrustedHandler(async () => {
 				await openPathOrThrow(app.getPath('userData'));
 			}, AppChannels.openAppDataFolder)
 		);
