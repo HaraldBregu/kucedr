@@ -27,7 +27,7 @@ export function createPollingVideoAdapter(spec: VideoProviderSpec): VideoAdapter
 			);
 			if (!task.polling_url)
 				throw new VideoProviderRequestError(`${spec.name}: generation was not accepted.`);
-			const url = await poll(spec.name, 180, 5000, async () => {
+			const url = await poll(spec.name, 180, 5000, request.signal, async () => {
 				const status = await requestJson<PollingTask>(spec.name, task.polling_url!, {
 					headers,
 					signal: request.signal,
