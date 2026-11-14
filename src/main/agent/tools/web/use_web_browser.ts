@@ -119,17 +119,27 @@ function getPage(targetId?: string): { id: string; page: Page } {
 		if (!page) throw new Error(`Unknown tab "${targetId}". Use action "tabs" to list open tabs.`);
 		return { id: targetId, page };
 	}
-	const last = [...pages.entries()].at(-1);
-	if (!last) throw new Error('No open tabs. Use action "open" with a url first.');
+	const entries = [...pages.entries()];
+	const owner = executionScope.getStore()?.ownerId;
+	const last =
+		entries.filter(([, page]) => pageOwners.get(page) === owner).at(-1) ??
+		(entries.length === 1 ? entries[0] : undefined);
+	if (!last)
+		throw new Error(
+			entries.length
+				? 'Several tabs are open and none was opened by this chat. Pass a targetId from action "tabs".'
+				: 'No open tabs. Use action "open" with a url first.'
+		);
 	return { id: last[0], page: last[1] };
 }
 
-// ponytail: scheme check only, no private-host blocking — driving localhost apps
-// is a core use case, and the agent already has exec/file tools (no new access)
-function assertHttpUrl(url: string): string {
+// ponytail: interactive sessions check the scheme only — driving localhost apps
+// is a core use case; background sessions also block private hosts
+async function assertHttpUrl(url: string): Promise<string> {
 	const parsed = new URL(url);
 	if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:')
 		throw new Error('Invalid URL: must be http or https');
+	if (browserSession().headless) await publicUrl(parsed.toString());
 	return parsed.toString();
 }
 
