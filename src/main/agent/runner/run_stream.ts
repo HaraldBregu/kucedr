@@ -164,7 +164,7 @@ async function* loop(
 	const toolProfile = input.toolProfile ?? 'chat';
 	const extension = input.extension;
 	const restricted = extension?.restricted === true;
-	const ask = input.approvalWindowId !== undefined && extension?.ask !== false;
+	const ask = input.type !== 'background' && extension?.ask !== false;
 	let mcpServerHint: string | undefined;
 	const bootstrap =
 		!options.tools &&
