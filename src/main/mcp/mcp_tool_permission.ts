@@ -2,6 +2,7 @@ import type { AgentToolPermission } from '../../shared/agent_tools';
 import { getMcpServers } from './mcp_store';
 import { getMcpToolCatalog } from './mcp_catalog_get';
 import { mcpCatalogStore } from './mcp_catalog_store';
+import { mcpToolHash } from './mcp_catalog_tool_hash';
 
 export function getMcpToolPermission(id: string, toolName: string): AgentToolPermission | undefined {
 	const tool = getMcpToolCatalog(id)?.find((entry) => entry.name === toolName);
