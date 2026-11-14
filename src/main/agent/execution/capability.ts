@@ -53,7 +53,7 @@ export function builtinCapability(
 		};
 	if (EXTERNAL.has(id)) return { effects: ['read', 'external'] };
 	if (id === 'subagent' || id === 'run_task_now') return { effects: ['execute'] };
-	if (RECORD.has(id)) return { effects: ['sensor', 'write'], approval: id === 'camera_recorder' };
+	if (RECORD.has(id)) return { effects: ['sensor', 'write'], approval: true };
 	if (CONTROL.has(id)) return { effects: ['sensor'] };
 	if (PAID.has(id)) return { effects: ['paid', 'write'] };
 	if (id === 'bash') return { effects: ['execute'] };
