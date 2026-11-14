@@ -681,7 +681,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setZoomFactor,
-			wrapSimpleHandler((factor: ZoomFactor) => {
+			wrapTrustedHandler((factor: ZoomFactor) => {
 				setStoredZoomFactor(factor);
 				eventBus.broadcast(AppChannels.zoomFactorChanged, factor);
 			}, AppChannels.setZoomFactor)
