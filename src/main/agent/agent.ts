@@ -639,6 +639,7 @@ function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 				contentBlocks: toHistoryContentBlocks(message),
 				...(message.usage ? { usage: message.usage } : {}),
 				...(message.modeIds ? { modeIds: message.modeIds } : {}),
+				...(message.skillIds ? { skillIds: message.skillIds } : {}),
 			},
 		];
 		for (const toolCall of message.toolCalls ?? []) {
