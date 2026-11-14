@@ -7,8 +7,10 @@ import { getSearchSettings } from './search_get_settings';
 export function saveSearchEngine(engineId: SearchEngineId, input: SearchEngineInput): SearchSettings {
 	const service = loadWebSearches().find((entry) => entry.provider.id === engineId);
 	if (!service) throw new Error('Unknown search service.');
-	const apiKey = typeof input?.apiKey === 'string' ? input.apiKey.trim() : '';
+	const settings = pluginSettings(service.provider.id);
+	const input_key = typeof input?.apiKey === 'string' ? input.apiKey.trim() : '';
+	const apiKey = input_key === MASKED_KEY ? settings.apiKey?.trim() : input_key;
 	if (!apiKey) throw new Error('A search engine API key is required.');
-	savePluginSettings(service.provider.id, { ...pluginSettings(service.provider.id), apiKey });
+	savePluginSettings(service.provider.id, { ...settings, apiKey });
 	return getSearchSettings();
 }
