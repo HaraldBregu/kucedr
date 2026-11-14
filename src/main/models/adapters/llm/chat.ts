@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { content } from './content';
+import { headers } from './headers';
 import type { ModelReasoningEffort } from '../../../../shared/agent_types';
 import type { ModelMetadata } from '../../../../shared/model_types';
 import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
