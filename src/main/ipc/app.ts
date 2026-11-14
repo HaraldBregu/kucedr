@@ -516,7 +516,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.installUpdate,
-			wrapSimpleHandler(async () => {
+			wrapTrustedHandler(async () => {
 				// ponytail: unsigned mac builds can't self-install; sign + notarize to drop this branch
 				if (process.platform === 'darwin') {
 					await shell.openExternal('https://github.com/HaraldBregu/kucedr/releases/latest');
