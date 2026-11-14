@@ -5,7 +5,7 @@ export function buildLoadedSkillPrompt(loadedSkills: LoadedSkill[]): string {
 	let prompt =
 		'# Skills\n\nFollow the loaded instructions below. Resolve bundled scripts, references, and assets against the returned skill directory, and load only the resource files required by those instructions.';
 	for (const skill of loadedSkills) {
-		prompt += `\n\n<skill_content ${JSON.stringify({ id: skill.id, name: skill.name, canonicalRoot: skill.canonicalRoot, hash: skill.hash, trust: skill.trust })}>`;
+		prompt += `\n\n<skill_content ${JSON.stringify({ id: skill.id, name: skill.name, canonicalRoot: skill.canonicalRoot, hash: skill.hash })}>`;
 		if (skill.resources.length > 0) {
 			prompt += `\n<skill_resources>\n${skill.resources.map((resource) => `- ${resource}`).join('\n')}\n</skill_resources>`;
 		}
