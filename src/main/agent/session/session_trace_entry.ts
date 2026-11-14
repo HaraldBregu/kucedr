@@ -37,7 +37,6 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 							...(typeof skill.id === 'string' ? { id: skill.id } : {}),
 							...(typeof skill.name === 'string' ? { name: skill.name } : {}),
 							...(typeof skill.hash === 'string' ? { hash: skill.hash } : {}),
-							...(typeof skill.trust === 'string' ? { trust: skill.trust } : {}),
 						};
 					})
 				: [],
