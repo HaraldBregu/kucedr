@@ -38,7 +38,7 @@ export function createVersionedVideoAdapter(spec: VideoProviderSpec): VideoAdapt
 				throw new VideoProviderRequestError(`${spec.name}: generation was not accepted.`);
 			}
 
-			const videoUrl = await poll(spec.name, 120, 5000, async () => {
+			const videoUrl = await poll(spec.name, 120, 5000, request.signal, async () => {
 				const status = await requestJson<VersionedTask>(spec.name, `${baseURL}/tasks/${task.id}`, {
 					headers,
 					signal: request.signal,
