@@ -95,6 +95,7 @@ export interface AppIpcDeps {
 	appRegistry: AppRegistry;
 	appStorage: AppStorage;
 	sandbox: ExecSandbox;
+	windows: WindowContextManager;
 }
 
 const SYSTEM_PREFERENCE_PANES: Record<SystemPreferencePaneId, string> = {
