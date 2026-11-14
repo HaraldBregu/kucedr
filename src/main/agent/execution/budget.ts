@@ -28,7 +28,8 @@ export class ExecutionBudget {
 			const capability =
 				typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
 			total += 1;
-			if (capability?.effects.includes('paid')) paid += 1;
+			if (capability?.effects.includes('paid'))
+				paid += typeof input.count === 'number' ? input.count : 1;
 		}
 		return (
 			this.exhausted || total > (this.limits.calls ?? 100) || paid > (this.limits.paid ?? 3)
