@@ -322,6 +322,42 @@ describe('run stream system prompt', () => {
 		expect(JSON.stringify(runModelTurnMock.mock.calls[0][4])).not.toContain('OLD COPY');
 	});
 
+	it('unloads a pinned skill and records the emptied list', async () => {
+		createSkillRegistrySnapshotMock.mockReturnValue({
+			skills: [registrySkill],
+			invalid: [],
+			diagnostics: [],
+		});
+		inspectSkillMock.mockResolvedValue(activatedSkill);
+		const session = createSessionState();
+		session.messages = [
+			{ role: 'user', content: 'Draft this' },
+			{ role: 'assistant', content: 'draft', skillIds: ['writer'] },
+			{ role: 'user', content: 'Stop using the "writer" skill.' },
+		];
+		for await (const event of stream(
+			{ location: '/workspace' },
+			session,
+			{
+				runId: 'unload',
+				task: 'chat',
+				message: 'Stop using the "writer" skill.',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+				unloadSkill: 'writer',
+			},
+			new AbortController().signal,
+			{ sandbox }
+		))
+			void event;
+		expect(requiredContext(runModelTurnMock.mock.calls[0])).not.toContain(
+			'EXACT WRITER INSTRUCTIONS'
+		);
+		expect(session.messages.at(-1)?.skillIds).toEqual([]);
+	});
+
 	it('lists skills when explicitly requested even when the registry is empty', async () => {
 		const events = [];
 		for await (const event of stream(
