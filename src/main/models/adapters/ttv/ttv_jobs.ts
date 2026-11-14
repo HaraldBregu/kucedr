@@ -33,7 +33,7 @@ export function createJobsVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 			);
 			if (!submitted.id)
 				throw new VideoProviderRequestError(`${spec.name}: generation was not accepted.`);
-			const url = await poll(spec.name, 120, 5000, async () => {
+			const url = await poll(spec.name, 120, 5000, request.signal, async () => {
 				const job = await requestJson<Job>(
 					spec.name,
 					`${baseURL}/v1/media/jobs/${encodeURIComponent(submitted.id!)}`,
