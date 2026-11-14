@@ -175,6 +175,7 @@ async function runExec(
 		});
 		superviseProcess(child, abortSignal);
 		if (executionMode === 'sandbox') sandbox.track(child);
+		registry.track(scope, child);
 		let timeoutTimer: NodeJS.Timeout | undefined;
 		if (timeoutMs !== undefined) {
 			timeoutTimer = setTimeout(() => terminateProcessTree(child), timeoutMs);
