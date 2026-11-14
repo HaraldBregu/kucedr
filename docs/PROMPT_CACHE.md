@@ -233,3 +233,36 @@ Only after steps 1–3, and only if traces show chats reaching the limit.
 - An independent review with skeptic verification found 7 real issues. All are fixed above.
 
 **Not confirmed:** live provider calls, and the unit suite. Tests that encode the old layout will need updating: Loaded markers, run context in the system prompt, synthesis with no tools. Restart the dev app before measuring.
+
+## Measured after landing (2026-11-14)
+
+Traces from 2026-11-12 13:00 to 2026-11-14: 37 runs, 60 model calls, 11 sessions. The sample is small. Each miss is compared with the previous call of the same session through the `prefix` hashes.
+
+| Model | Calls | Hit, turn 1 | Hit, turn 2+ | TTFT median |
+|---|---|---|---|---|
+| inception/mercury-3 | 38 | 47.5% | 91.5% | 1.1 s |
+| inception/mercury-2.5 | 7 | 55.7% | 47.7% | 1.7 s |
+| openai/gpt-5.6-luna | 6 | 0% (model switch) | 92.9% | 2.0 s |
+| inception/mercury-2 | 5 | 22.9% | 0% | 1.3 s |
+
+- Turn 1 now hits across runs (it was 0% before the plan). Every call reports cache data.
+- On calls over 8K tokens, TTFT is 1.0 s on a hit and 1.5 s on a miss. Runs are short (median 1 turn, p90 3), so TTFT is 72% of model time and the cache is the main lever left.
+
+Where the 261K uncached tokens came from:
+
+| Cause | Calls | Uncached tokens | Fixable |
+|---|---|---|---|
+| Inception missed with an identical prefix | 5 | 106K (41%) | No: provider side. Happens on the first requests of a session, then hits. Inception documents no TTL, key or routing hint. |
+| User switched model | 3 | 81K (31%) | No |
+| Tool set changed between runs | 2 | 46K (17%) | Yes, see below |
+| Gap of 23 minutes | 1 | 28K (11%) | No: TTL |
+
+**Tool set changed.** In session `deeea4d3` the local tool count went 24 → 29 → 27. The first step is the five task tools becoming sticky, as designed. The second removed two tools and changed the system prompt, in a run whose message reads like a voice transcript. `ask` is included only when the run has `approvalWindowId` (`run_stream.ts:167`, set in `agent.ts:306-308` only with a window and `streamEvent`), so the tool list depends on which surface started the run. Fix: always send `ask` and refuse it at call time when no window can answer, the same way skill `allowed-tools` is enforced. The second removed tool is not identified from the trace.
+
+Provider docs, checked 2026-11-14:
+
+- **OpenAI GPT-5.6+:** automatic. `prompt_cache_key` is optional on these models and only splits cache accounting. Minimum 1,024 tokens. The default TTL is 30 minutes; `prompt_cache_options: { "ttl": "12h" }` keeps it longer. No change needed. The 12h TTL would only help chats with gaps over 30 minutes.
+- **Inception:** automatic prefix caching. The field is `usage.prompt_tokens_details.cached_tokens`, and there is no write field. No documented TTL, key or header. The manifests list `usage.cached_input_tokens`, but traces get values, so the standard fallback is what reads them.
+- **OpenRouter:** `session_id` (body, or the `x-session-id` header) turns on sticky routing from the first request. Without it, routing sticks only after a hit is seen, and falls back to `prompt_cache_key`. Neither is sent for OpenRouter today. Fix: `"cache": { "sessionKey": "session_id" }` on the OpenRouter manifests. The older traces showed `openrouter/auto` missing every turn 1.
+
+Order: the `ask` fix, then OpenRouter `session_id`, then re-measure once there are a few hundred calls.
