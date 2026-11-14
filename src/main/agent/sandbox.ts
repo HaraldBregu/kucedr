@@ -126,6 +126,7 @@ export class ExecSandbox {
 			if (settings) {
 				this.readOnlySettings.delete(commandId);
 				void fs.unlink(settings).catch(() => undefined);
+				return;
 			}
 		}
 		SandboxManager.cleanupAfterCommand();
