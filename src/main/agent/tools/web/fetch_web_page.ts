@@ -101,7 +101,7 @@ export const fetchWebPageTool = tool({
 		}
 
 		const limit = maxChars ?? MAX_CHARS_DEFAULT;
-		const truncated = text.length > limit;
+		const truncated = bodyTruncated || text.length > limit;
 		if (truncated) text = text.slice(0, limit);
 
 		return JSON.stringify({
