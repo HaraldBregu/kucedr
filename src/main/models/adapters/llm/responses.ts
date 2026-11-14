@@ -2,7 +2,9 @@ import OpenAI from 'openai';
 import type {
 	FunctionTool,
 	ResponseCreateParamsNonStreaming,
+	ResponseInput,
 } from 'openai/resources/responses/responses';
+import { instructions } from './instructions';
 import type { ModelCache } from '../../../../shared/model_types';
 import type { LlmProviderEvent, LlmStreamRequest } from './llm_types';
 import { llmBuildResponseInput, llmHasFunctionCall, llmIsRecord } from './llm_shared';
