@@ -49,7 +49,6 @@ export function createSkillRegistrySnapshot(): SkillRegistrySnapshot {
 					folderPath: folder,
 					manifest: { name: entry.name, description: '' },
 					source,
-					trust: 'user-controlled',
 					hash: '',
 					diagnostics: issues,
 					...(plugin ? { plugin } : {}),
