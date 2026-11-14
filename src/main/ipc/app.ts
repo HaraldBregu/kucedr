@@ -473,8 +473,17 @@ function showVideoContextMenu(event: IpcMainInvokeEvent, requestedPath: string):
 export class AppIpc implements IpcModule {
 	readonly name = 'app';
 
-	register({ logger, appRegistry, appStorage, sandbox }: AppIpcDeps, eventBus: EventBus): void {
+	register({ logger, appRegistry, appStorage, sandbox, windows }: AppIpcDeps, eventBus: EventBus): void {
 		registerAppStoreIpc({ appRegistry, appStorage });
+		const trusted = new TrustedRenderer(windows, appRegistry);
+		const wrapTrustedHandler = <TArgs extends unknown[], TResult>(
+			handler: (...args: TArgs) => Promise<TResult> | TResult,
+			handlerName: string
+		) =>
+			wrapIpcHandler((event, ...args: TArgs) => {
+				trusted.assert(event);
+				return handler(...args);
+			}, handlerName);
 		let currentThemeData: AppThemeData = getThemeData();
 		const emitThemeChangeEvent = (): void => {
 			const nextThemeData: AppThemeData = getThemeData();
