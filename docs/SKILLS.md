@@ -118,6 +118,11 @@ Checked and fine:
 
 ### Phase 5 — Follow-ups from the second review
 
+> **Status:** R1–R6, R8 and R9 implemented on 2026-11-14. R7 waits on Phase 4. Corrections and changes against the plan below:
+> - **R1 is Low, not High.** In the `chat` profile, `read` is already allowed anywhere (`resolve_tool_permission.ts`, `kind === 'read' && fallback !== 'deny'`). Only `tasks` runs were blocked. The fix is a global, read-only allowance for the skill roots (`permissions/skill_target.ts`), not a per-run grant. Script execution still prompts.
+> - **R2:** the chips update when the next run starts (`run_started.skillIds`) and when history loads. A skill that the model loads mid-run shows up on the next message, not right away.
+> - **R9:** `trust` is removed, along with its row on the details page and its i18n keys. `structure` stays, because the details page still shows its format.
+
 1. **R1, read grant for loaded skills.** For the current run, add each loaded skill's `canonicalRoot` to the read allow-list, read-only. Pass the roots through the `security` context into `resolveToolPermission`. Script execution keeps prompting, because running a skill's code needs the user's approval.
    - → verify: after `/skill pdf`, `read` of `references/forms.md` runs without a prompt. A `tasks` run can read it too. `bash scripts/x.py` still asks.
 2. **R4, then R2: unload and visibility.**
