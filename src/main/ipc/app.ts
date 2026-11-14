@@ -666,7 +666,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setChatTextSize,
-			wrapSimpleHandler((size: ChatTextSize) => {
+			wrapTrustedHandler((size: ChatTextSize) => {
 				setStoredChatTextSize(size);
 				const menuItem = Menu.getApplicationMenu()?.getMenuItemById(`chat-text-size-${size}`);
 				if (menuItem) menuItem.checked = true;
