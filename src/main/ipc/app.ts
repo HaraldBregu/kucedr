@@ -609,7 +609,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setTrayClickAction,
-			wrapSimpleHandler((action: TrayClickAction) => {
+			wrapTrustedHandler((action: TrayClickAction) => {
 				if (!TRAY_CLICK_ACTIONS.includes(action)) {
 					throw new Error('Invalid tray click action.');
 				}
