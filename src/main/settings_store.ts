@@ -255,11 +255,15 @@ export function setMicrophoneInputId(inputId: string): void {
 }
 
 export function getVoiceAgentAppearance(): VoiceAgentAppearance {
-	return store.get('voiceAgentAppearance') === 'orb-07' ? 'orb-07' : 'persona';
+	const appearance = store.get('voiceAgentAppearance');
+	return VOICE_AGENT_APPEARANCES.includes(appearance) ? appearance : 'persona';
 }
 
 export function setVoiceAgentAppearance(appearance: VoiceAgentAppearance): void {
-	store.set('voiceAgentAppearance', appearance === 'orb-07' ? 'orb-07' : 'persona');
+	store.set(
+		'voiceAgentAppearance',
+		VOICE_AGENT_APPEARANCES.includes(appearance) ? appearance : 'persona'
+	);
 }
 
 export function recordAppLaunch(): AppLaunchState {
