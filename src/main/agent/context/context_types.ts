@@ -24,6 +24,8 @@ import type { FileHistory } from '../history/types';
 
 export interface RunContext {
 	loadedSkills: LoadedSkill[];
+	/** True once this session has pinned skills, so an emptied list is still recorded. */
+	skillsTracked: boolean;
 	fileAccess: FileAccessContext;
 	fileHistory: FileHistory;
 }
