@@ -122,9 +122,7 @@ export function AgentMediaModelConfiguration({
 				});
 				const modelGroups: ProviderModelGroup[] = availableProviders.map((provider) => ({
 					provider: provider as PublicProvider,
-					models: providerModels(provider.id, capability).filter(
-						(model) => capability !== 'speech-to-text' || model.apiTypes?.includes('batch')
-					),
+					models: providerModels(provider.id, capability),
 				})).filter((group) => group.models.length > 0);
 				const preferredGroup = modelGroups.find((group) => group.provider.id === storedProviderId);
 				const preferredModel = preferredGroup?.models.find((model) => model.id === storedModelId);
