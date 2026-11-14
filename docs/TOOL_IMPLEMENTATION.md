@@ -109,4 +109,58 @@ Ordered by risk. Each step stands alone.
 5. **Shell lifecycle and output.** Kill tracked sessions on quit and delete, prune finished sessions, tail-limited `poll`/stream caps, ignore stdin for foreground commands, and stream decoding.
 6. **The rest of §2 and §3** as cleanup.
 
+## 5. Implementation status (2026-11-14)
+
+**Done.** Both typechecks are clean, apart from the `hideIcons` error in `Group.tsx`, which isn't ours. No tests were run.
+
+- **Security**
+  - X1: sandboxed commands now get the allow-list, the proxy variables that differ from `process.env`, and the TMP variables. The model's `env` is applied last.
+  - X2: media `url` inputs require a known media extension, are capped at 20 MB, read through `readFileBounded`, and pass a read-permission check.
+  - X6: background browser navigation and requests go through `publicUrl`.
+  - X7: the health run denies `update_health` and the task tools, and `update_health` requires approval.
+  - X9: `act evaluate` is classed `execute` and needs approval in chat. Background runs, which use a temporary profile with no logins, don't ask.
+- **Data loss**
+  - X3: `edit` replaces by slicing, so `$` sequences survive.
+  - X4: `patch` applies every hunk in memory and authorizes all paths before writing anything.
+  - X5: writes keep the file mode; new files get `0666 & ~umask`; `link` falls back to an `O_EXCL` create plus rename.
+  - Writes over 2 MB store a "too large" history marker, so the write succeeds and only its undo fails.
+  - `read` streams lines for `offset`/`limit`.
+  - Read, edit and patch reject non-UTF-8 files.
+  - Line endings: CRLF is handled in `edit`/`patch`, a trailing blank line is kept, and no final newline is added.
+  - Undo checks every file before writing and restores through a temp file plus rename.
+- **Money**
+  - X8: `maxRetries: 0` on paid SDK clients.
+  - Paid calls are charged per `count`, and `create_image` returns partial results. Its `count` maximum is now 3, to match the paid limit.
+- **Browser**
+  - Snapshot refs are cleared before each snapshot.
+  - `pdf` in chat gives a clear error.
+  - A failed `open` closes its tab.
+  - The default tab is the chat's own newest tab.
+  - `fetch_web_page` truncates over 1 MB, rejects non-text types, decodes by `charset`, and decodes entities in a single pass.
+  - Search has a 20 s timeout and a 2 MB cap, and saved search keys reach the renderer masked.
+  - IPv6 literals work, and the blocklist adds 198.18/15, NAT64 and 6to4.
+- **Shell**
+  - Sessions are killed on quit and on chat delete, and finished sessions are pruned to 20 per chat.
+  - `poll` returns the tail of each stream (40k characters), and each stream keeps its last 90k characters.
+  - Output is decoded with `setEncoding('utf8')`, and read-only commands get an EOF on stdin.
+  - `timedOut` is set after a yield; writes to an exited session throw; `pty` is ignored on Windows.
+  - Linux read-only cleanup is fixed, and dead `bash`/`readonly` code is removed.
+- **Tasks and recorder**
+  - Deleting or disabling a task stops its current run, and the misleading `enabled` input is removed.
+  - A recorder `wait` can be aborted and is capped at 9 minutes.
+  - A recorder start fails at once if the file already exists.
+  - Video downloads stream with a 256 MB cap, polling can be aborted, and error bodies are capped.
+
+**Skipped, with reasons**
+- **`mdl__` client caching:** keys are read live from settings, so a cached client would need invalidation.
+- **Pruning `recordingOwners`:** it has to be pruned together with the recorder's own map.
+- **Video straight to file:** that would touch every adapter.
+- **Version checks for profile `update_*` tools:** this needs store and IPC changes.
+- **`files/remove.ts` re-validation:** it isn't redundant; it catches swapped parent symlinks.
+- **Sharing the read loop:** one copy is async, the other sync.
+- **The gateway check in `readonly.ts`:** a test still references it.
+- **Writes on vfat:** `chmod` there may fail with EPERM. Not handled.
+
+**Not run:** tests. Beyond the ones in [AGENT_TOOLS.md](AGENT_TOOLS.md), expect updates in the bash/process, patch, fetch and budget tests.
+
 **Not doing:** marking untrusted web text needs a prompt-format decision first, so it's tracked here rather than designed now.
