@@ -324,7 +324,7 @@ async function runExec(
 		const abort = (): void => {
 			aborted = true;
 			terminateProcessTree(child);
-			if (ownedSessionId) registry.remove(ownedSessionId);
+			if (ownedSession) registry.remove(ownedSession.id);
 		};
 		abortSignal?.addEventListener('abort', abort, { once: true });
 		if (abortSignal?.aborted) abort();
