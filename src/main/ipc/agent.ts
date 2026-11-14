@@ -1030,7 +1030,22 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			AgentChannels.getToolProfile,
 			wrapAgentHandler(
 				mainAccess,
-				(profileId: unknown) => getToolProfile(toToolProfileId(profileId)),
+				(profileId: unknown) => {
+					const id = toToolProfileId(profileId);
+					const profile = getToolProfile(id);
+					return {
+						...profile,
+						tools: {
+							...Object.fromEntries(
+								modelTools().map((tool) => [
+									tool.id,
+									getToolConfiguration(id, { kind: 'builtin', id: tool.id }),
+								])
+							),
+							...profile.tools,
+						},
+					};
+				},
 				AgentChannels.getToolProfile
 			)
 		);
