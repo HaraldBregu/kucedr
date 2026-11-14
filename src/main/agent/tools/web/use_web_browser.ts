@@ -157,6 +157,7 @@ const SNAPSHOT_SCRIPT = `(() => {
 		const style = getComputedStyle(el);
 		return style.visibility !== 'hidden' && style.display !== 'none';
 	};
+	for (const el of document.querySelectorAll('[data-agent-ref]')) el.removeAttribute('data-agent-ref');
 	const elements = [];
 	let i = 0;
 	for (const el of document.querySelectorAll(selector)) {
