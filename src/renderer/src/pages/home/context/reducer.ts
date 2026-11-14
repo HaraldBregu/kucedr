@@ -136,6 +136,7 @@ function applyResponseEvent(
 		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
 			...message,
 			modeIds: event.modeIds,
+			...(event.skillIds ? { skillIds: event.skillIds } : {}),
 		}));
 	}
 	if (event.type === 'capability_resolution_start') {
