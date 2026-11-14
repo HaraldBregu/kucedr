@@ -3,6 +3,7 @@ import { loadWebSearches } from '../models';
 import { pluginSettings } from '../plugins/plugins_settings';
 import { savePluginSettings } from '../plugins/plugins_save_settings';
 import { getSearchSettings } from './search_get_settings';
+import { MASKED_KEY } from './search_get_providers';
 
 export function saveSearchEngine(engineId: SearchEngineId, input: SearchEngineInput): SearchSettings {
 	const service = loadWebSearches().find((entry) => entry.provider.id === engineId);
