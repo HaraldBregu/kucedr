@@ -507,5 +507,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		setInput,
 		setModeIds,
 		switchToTyping,
+		unloadSkill,
 	};
 }
