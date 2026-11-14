@@ -6,6 +6,9 @@
 	"url": "https://api.x.ai/v1",
 	"metadata": {
 		"protocol": "chat-completions",
+		"cache": {
+			"sessionHeader": "x-grok-conv-id"
+		},
 		"unsupportedOptions": ["stop", "presence_penalty", "frequency_penalty"],
 		"effort": {
 			"path": "reasoning_effort"
