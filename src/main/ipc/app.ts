@@ -863,6 +863,7 @@ export class AppIpc implements IpcModule {
 		ipcMain.handle(
 			AppChannels.showImageContextMenu,
 			wrapIpcHandler((event, imagePath: string) => {
+				trusted.assert(event);
 				showImageContextMenu(event, imagePath);
 			}, AppChannels.showImageContextMenu)
 		);
