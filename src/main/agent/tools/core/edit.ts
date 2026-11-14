@@ -3,6 +3,8 @@ import { tool } from '../tool';
 import { writeAuthorizedFile } from '../../files/write';
 import { readFileBounded } from '../../files/read';
 import { authorizeFilePath } from '../../files/authorize';
+import { decodeUtf8 } from '../../files/text';
+import { lineEnding } from '../../files/eol';
 import { PATH_DESCRIPTION } from './fields';
 import { MAX_READ_BYTES } from './limit';
 
