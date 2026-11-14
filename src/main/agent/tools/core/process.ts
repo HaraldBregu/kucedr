@@ -235,8 +235,8 @@ async function runProcess(
 			await pollUntil(session, timeoutMs, signal);
 			return {
 				...sessionSummary(session),
-				stdout: session.stdout,
-				stderr: session.stderr,
+				stdout: session.stdout.slice(-MAX_POLL_OUTPUT),
+				stderr: session.stderr.slice(-MAX_POLL_OUTPUT),
 			};
 		}
 
