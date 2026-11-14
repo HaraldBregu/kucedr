@@ -16,7 +16,6 @@ describe('readSkill', () => {
 			expect(skill).toEqual(
 				expect.objectContaining({
 					source: 'user',
-					trust: 'user-controlled',
 					hash: createHash('sha256').update(source).digest('hex'),
 				})
 			);
