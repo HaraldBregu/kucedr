@@ -30,7 +30,7 @@ export function createVideosAdapter(spec: VideoProviderSpec): VideoAdapter {
 				throw new VideoProviderRequestError(`${spec.name}: generation was not accepted.`);
 			}
 
-			const videoUrl = await poll(spec.name, 120, 5000, async () => {
+			const videoUrl = await poll(spec.name, 120, 5000, request.signal, async () => {
 				const status = await requestJson<VideosResponse>(
 					spec.name,
 					`${baseURL}/videos/${submitted.request_id}`,
