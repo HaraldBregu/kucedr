@@ -86,6 +86,7 @@ export function recorderTools(kind: Kind): { start: Tool; status: Tool; stop: To
 			const owner = recordingOwner(recorder);
 			const targetDir = mediaDirectory(directory);
 			const url = path.join(targetDir, path.basename(filename ?? `${kind}-${Date.now()}.webm`));
+			if (fs.existsSync(url)) throw new Error(`Recording file already exists: ${url}`);
 			const recording = recorder.start({
 				url,
 				...(source === undefined ? {} : { sourceId: source }),
