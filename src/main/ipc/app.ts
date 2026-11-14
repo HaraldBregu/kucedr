@@ -921,7 +921,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.requestScreenCapturePermission,
-			wrapSimpleHandler(async () => {
+			wrapTrustedHandler(async () => {
 				if (process.platform === 'darwin' && !app.isPackaged) {
 					let status = systemPreferences.getMediaAccessStatus('screen');
 					if (status !== 'granted') {
