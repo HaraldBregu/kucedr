@@ -3,6 +3,10 @@ import type { SearchRequest, SearchResponse } from '../../shared/search_types';
 import { loadWebSearches } from '../models';
 import { pluginSettings } from '../plugins/plugins_settings';
 import { getSearchSettings } from './search_get_settings';
+import { responseText } from '../body';
+
+const TIMEOUT_MS = 20_000;
+const MAX_RESPONSE_BYTES = 2_000_000;
 
 const searchContract = z.object({
 	method: z.enum(['GET', 'POST']),
