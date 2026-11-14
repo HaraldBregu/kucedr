@@ -4,5 +4,10 @@ import { appDirectory } from './app_directory';
 
 export function isBundledApp(id: string): boolean {
 	const relative = path.relative(path.resolve(bundledPluginsRoot()), path.resolve(appDirectory(id)));
-	return !!relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+	return (
+		!!relative &&
+		relative !== '..' &&
+		!relative.startsWith(`..${path.sep}`) &&
+		!path.isAbsolute(relative)
+	);
 }
