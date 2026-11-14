@@ -59,7 +59,7 @@ export type ZoomFactor = (typeof ZOOM_FACTORS)[number];
 
 export type AppTheme = 'light' | 'dark' | 'system';
 
-export const VOICE_AGENT_APPEARANCES = ['persona', 'radial', 'cloud', 'circle', 'bars'] as const;
+export const VOICE_AGENT_APPEARANCES = ['persona', 'radial', 'cloud', 'bars'] as const;
 
 export type VoiceAgentAppearance = (typeof VOICE_AGENT_APPEARANCES)[number];
 
