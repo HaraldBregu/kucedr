@@ -73,6 +73,7 @@ import { sessionFolderName } from './session/session_session_folder_name';
 import { sessionPath } from './session/session_session_path';
 import { formatReplyMessage } from '../../shared/reply';
 import type { AgentToolProfileId } from '../../shared/agent_tools';
+import { registry } from './tools/core/process';
 
 const RUN_PRIORITIES: Record<SessionCategory, AgentRunPriority> = {
 	main: 'high',
