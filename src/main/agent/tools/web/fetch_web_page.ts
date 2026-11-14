@@ -16,12 +16,11 @@ function htmlToText(html: string): string {
 		.replace(/<!--[\s\S]*?-->/g, '')
 		.replace(/<(br|\/p|\/div|\/h[1-6]|\/li|\/tr)[^>]*>/gi, '\n')
 		.replace(/<[^>]+>/g, '')
-		.replace(/&nbsp;/g, ' ')
-		.replace(/&amp;/g, '&')
-		.replace(/&lt;/g, '<')
-		.replace(/&gt;/g, '>')
-		.replace(/&quot;/g, '"')
-		.replace(/&#39;/g, "'")
+		.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, name: string) => {
+			if (name[0] !== '#') return ENTITIES.get(name) ?? entity;
+			const code = name[1] === 'x' || name[1] === 'X' ? parseInt(name.slice(2), 16) : Number(name.slice(1));
+			return code <= 0x10ffff ? String.fromCodePoint(code) : entity;
+		})
 		.replace(/[ \t]+/g, ' ')
 		.replace(/\n\s*\n+/g, '\n\n')
 		.trim();
