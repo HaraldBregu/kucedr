@@ -78,16 +78,9 @@ const execInputSchema = z.object({
 			'Run outside the filesystem sandbox after approval. This does not grant administrator or root privileges.'
 		),
 	host: z
-		.enum(['auto', 'sandbox', 'gateway', 'node'])
+		.enum(['auto', 'sandbox'])
 		.optional()
-		.describe('Exec host/target (auto|sandbox|gateway|node).'),
-	security: z
-		.string()
-		.optional()
-		.describe(
-			'Ignored for normal calls; exec security is set by tools.exec.security and host approvals.'
-		),
-	node: z.string().optional().describe('Node id/name for host=node.'),
+		.describe('Exec host/target (auto|sandbox).'),
 });
 
 async function runExec(
