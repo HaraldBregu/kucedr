@@ -396,6 +396,8 @@ export const useWebBrowserTool = tool({
 				return JSON.stringify({ targetId: id, path: file });
 			}
 			case 'pdf': {
+				if (!session.headless)
+					throw new Error('pdf only works in background runs, where Chrome is headless. Use screenshot with fullPage instead.');
 				const { id, page } = getPage(params.targetId);
 				const data = await runBrowserPageOperation(page, signal, () => page.pdf());
 				const file = await saveMedia(
