@@ -683,7 +683,7 @@ export class LlmModel implements LlmAdapter {
 			}
 			const stream = await client.chat.completions.create(
 				params as unknown as OpenAI.Chat.ChatCompletionCreateParamsStreaming,
-				{ signal: req.signal }
+				{ signal: req.signal, headers: headers(model?.cache, req.sessionId) }
 			);
 
 			for await (const chunk of stream) {
