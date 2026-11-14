@@ -145,13 +145,11 @@ export function validateSkill(folder: string): SkillValidationResult {
 			message: '"allowed-tools" must be a non-empty space-separated string.',
 		});
 	}
-	for (const key of Object.keys(data)) {
-		if (!STANDARD_FIELDS.has(key)) {
-			issues.push({
-				code: 'unknown-field',
-				message: `Unsupported SKILL.md frontmatter field: "${key}".`,
-			});
-		}
-	}
-	return { valid: issues.length === 0, issues };
+	const warnings = Object.keys(data)
+		.filter((key) => !STANDARD_FIELDS.has(key))
+		.map((key) => ({
+			code: 'unknown-field',
+			message: `Unsupported SKILL.md frontmatter field "${key}" is ignored.`,
+		}));
+	return { valid: issues.length === 0, issues, warnings };
 }
