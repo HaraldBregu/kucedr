@@ -46,7 +46,7 @@ export function createOperationsVideoAdapter(spec: VideoProviderSpec): VideoAdap
 				throw new VideoProviderRequestError(`${spec.name}: generation was not accepted.`);
 			}
 
-			const videoUri = await poll(spec.name, 120, 5000, async () => {
+			const videoUri = await poll(spec.name, 120, 5000, request.signal, async () => {
 				const status = await requestJson<Operation>(spec.name, `${baseURL}/${operation.name}`, {
 					headers,
 					signal: request.signal,
