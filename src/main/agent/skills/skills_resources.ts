@@ -3,8 +3,9 @@ import path from 'node:path';
 import { SKILL_FILE, SKILL_RESOURCE_LIST_LIMIT } from './skills_limits';
 import { resolveSkillResource } from './skills_resolve_resource';
 
-export function listSkillResources(canonicalRoot: string): string[] {
+export function listSkillResources(canonicalRoot: string): { resources: string[]; skipped: string[] } {
 	const resources: string[] = [];
+	const skipped: string[] = [];
 	const pending = [''];
 	while (pending.length > 0 && resources.length < SKILL_RESOURCE_LIST_LIMIT) {
 		const relativeDirectory = pending.pop() as string;
@@ -20,13 +21,19 @@ export function listSkillResources(canonicalRoot: string): string[] {
 				continue;
 			}
 			if (!entry.isFile() && !entry.isSymbolicLink()) continue;
-			resolveSkillResource(canonicalRoot, relativePath);
-			resources.push(relativePath.split(path.sep).join('/'));
+			const published = relativePath.split(path.sep).join('/');
+			try {
+				resolveSkillResource(canonicalRoot, relativePath);
+			} catch {
+				skipped.push(published);
+				continue;
+			}
+			resources.push(published);
 			if (resources.length >= SKILL_RESOURCE_LIST_LIMIT) {
 				resources[resources.length - 1] = '[additional resources omitted]';
 				break;
 			}
 		}
 	}
-	return resources.sort();
+	return { resources: resources.sort(), skipped };
 }
