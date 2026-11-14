@@ -46,7 +46,7 @@ export function applyUpdateChunks(filePath: string, contents: string, chunks: Up
 	for (const [startIndex, oldLen, newLines] of [...replacements].reverse()) {
 		result.splice(startIndex, oldLen, ...newLines);
 	}
-	if (result.length === 0 || result[result.length - 1] !== '') result.push('');
-	return result.join('\n');
+	if (finalNewline) result.push('');
+	return result.join(eol);
 }
 
