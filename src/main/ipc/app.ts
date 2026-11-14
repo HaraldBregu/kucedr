@@ -786,7 +786,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setMicrophoneInputId,
-			wrapSimpleHandler((inputId: string) => {
+			wrapTrustedHandler((inputId: string) => {
 				setStoredMicrophoneInputId(inputId);
 			}, AppChannels.setMicrophoneInputId)
 		);
