@@ -70,18 +70,27 @@ describe('validateSkill', () => {
 		expect(validateSkill('/skills/x').issues[0].code).toBe('skill-too-large');
 	});
 
-	it('accepts standard allowed-tools and rejects camelCase capabilities', () => {
+	it('accepts standard allowed-tools and only warns about unknown fields', () => {
 		readMock.mockReturnValue(
 			withFrontmatter({ name: 'x', description: 'does things', 'allowed-tools': 'read write' })
 		);
 		expect(validateSkill('/skills/x')).toEqual({ valid: true, issues: [] });
 		readMock.mockReturnValue(
-			withFrontmatter({ name: 'x', description: 'does things', allowedTools: 'write' })
+			withFrontmatter({ name: 'x', description: 'does things', when_to_use: 'always' })
 		);
-		expect(validateSkill('/skills/x').issues.map((issue) => issue.code)).toContain('unknown-field');
+		const result = validateSkill('/skills/x');
+		expect(result.valid).toBe(true);
+		expect(result.warnings?.map((warning) => warning.code)).toEqual(['unknown-field']);
 	});
 
-	it('validates parent directory, compatibility, and string-only metadata', () => {
+	it('accepts scalar metadata values', () => {
+		readMock.mockReturnValue(
+			'---\nname: x\ndescription: ok\nmetadata:\n  version: 1.0\n  beta: true\n---\nbody'
+		);
+		expect(validateSkill('/skills/x').valid).toBe(true);
+	});
+
+	it('validates parent directory, compatibility, and metadata shape', () => {
 		readMock.mockReturnValue(withFrontmatter({ name: 'other', description: 'ok' }));
 		expect(validateSkill('/skills/x').issues.map((issue) => issue.code)).toContain(
 			'name-folder-mismatch'
