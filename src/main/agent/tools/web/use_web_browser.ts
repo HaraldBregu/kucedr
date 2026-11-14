@@ -327,13 +327,20 @@ export const useWebBrowserTool = tool({
 				return JSON.stringify({ tabs: await tabList(signal) });
 			case 'open': {
 				if (!params.url) throw new Error('open requires a url.');
-				const url = assertHttpUrl(params.url);
+				const url = await assertHttpUrl(params.url);
 				const ctx = await ensureStarted(signal);
 				const page = await ctx.newPage();
+				const owner = executionScope.getStore()?.ownerId;
+				if (owner) pageOwners.set(page, owner);
 				const targetId = [...session.pages.entries()].find(([, p]) => p === page)?.[0] ?? trackPage(page);
-				await runBrowserPageOperation(page, signal, () =>
-					page.goto(url, { waitUntil: 'domcontentloaded' })
-				);
+				try {
+					await runBrowserPageOperation(page, signal, () =>
+						page.goto(url, { waitUntil: 'domcontentloaded' })
+					);
+				} catch (error) {
+					await page.close().catch(() => undefined);
+					throw error;
+				}
 				return JSON.stringify({ targetId, url: page.url(), title: await page.title() });
 			}
 			case 'focus': {
@@ -352,7 +359,7 @@ export const useWebBrowserTool = tool({
 					if (params.back) await page.goBack({ waitUntil: 'domcontentloaded' });
 					else if (params.forward) await page.goForward({ waitUntil: 'domcontentloaded' });
 					else if (params.url)
-						await page.goto(assertHttpUrl(params.url), { waitUntil: 'domcontentloaded' });
+						await page.goto(await assertHttpUrl(params.url), { waitUntil: 'domcontentloaded' });
 					else throw new Error('navigate requires url, back, or forward.');
 				});
 				return JSON.stringify({ targetId: id, url: page.url(), title: await page.title() });
