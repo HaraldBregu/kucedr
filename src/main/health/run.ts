@@ -36,6 +36,7 @@ export async function runHealthCheck(agent: Agent, logger: HealthLogger): Promis
 		type: 'background',
 		streaming: false,
 		contextMode: 'minimal',
+		toolsDeny: ['update_health', 'create_task', 'update_task', 'delete_task', 'run_task_now'],
 		...(settings.isolatedSession ? { sessionId: HEALTH_SESSION_ID } : {}),
 		...(settings.providerId ? { providerId: settings.providerId } : {}),
 		...(settings.modelId ? { modelId: settings.modelId } : {}),
