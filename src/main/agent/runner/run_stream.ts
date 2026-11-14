@@ -365,21 +365,29 @@ async function* loop(
 			});
 		}
 		if (skillLoadingEnabled) {
+			session.runContext.skillsTracked = pinnedSkills.length > 0;
+			const unload = input.unloadSkill?.toLowerCase();
 			for (const id of pinnedSkills) {
-				const skill = await inspectSkill(skillSnapshot, id).catch(() => undefined);
-				if (skill) applyActivatedSkill(skill);
+				if (id.toLowerCase() === unload) continue;
+				try {
+					applyActivatedSkill(await inspectSkill(skillSnapshot, id));
+				} catch {
+					continue;
+				}
 			}
 		}
 		if (input.explicitSkill) {
 			let reason = 'Skill loading is unavailable for this run.';
-			const skill = skillLoadingEnabled
-				? await inspectSkill(skillSnapshot, input.explicitSkill).catch((error: unknown) => {
-						reason = error instanceof Error ? error.message : String(error);
-						return undefined;
-					})
-				: undefined;
-			if (skill) applyActivatedSkill(skill);
-			else {
+			let loaded = false;
+			if (skillLoadingEnabled) {
+				try {
+					applyActivatedSkill(await inspectSkill(skillSnapshot, input.explicitSkill));
+					loaded = true;
+				} catch (error) {
+					reason = error instanceof Error ? error.message : String(error);
+				}
+			}
+			if (!loaded) {
 				const available = skillSnapshot.skills.map((entry) => entry.name).join(', ');
 				addInternalMessage(
 					session,
