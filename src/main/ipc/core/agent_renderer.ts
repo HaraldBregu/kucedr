@@ -1,5 +1,6 @@
 import type { IpcMainInvokeEvent } from 'electron';
 import type { AppRegistry } from '../../apps/app_registry';
+import { isBundledApp } from '../../apps/app_bundled';
 import type { WindowContextManager } from '../../window_context';
 import { TrustedRenderer } from './trusted';
 
