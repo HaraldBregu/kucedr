@@ -275,10 +275,11 @@ export class LlmModel implements LlmAdapter {
 		const params: ResponseCreateParamsStreaming = {
 			...responseOptions,
 			model: req.model,
-			instructions: req.system || undefined,
-			input:
-				(req.inputItems as ResponseCreateParamsStreaming['input']) ??
-				llmBuildResponseInput(req.messages),
+			...instructions(
+				req.system,
+				(req.inputItems as ResponseInput | undefined) ?? llmBuildResponseInput(req.messages),
+				cache?.breakpoints?.includes('system') && !req.previousResponseId
+			),
 			previous_response_id: req.previousResponseId,
 			tools: tools.length > 0 ? tools : undefined,
 			max_output_tokens: req.maxTokens,
