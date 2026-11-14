@@ -191,6 +191,7 @@ export interface AgentHistoryMessage {
 	output?: unknown;
 	usage?: AgentTokenUsage;
 	modeIds?: readonly string[];
+	skillIds?: readonly string[];
 }
 
 export type AgentSessionCategory = 'main' | 'health' | 'task' | 'subagent' | 'voice';
