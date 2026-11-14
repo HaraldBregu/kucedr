@@ -407,7 +407,6 @@ async function* loop(
 				id: skill.id,
 				name: skill.name,
 				hash: skill.hash,
-				trust: skill.trust,
 			})),
 			...(mcpDiscovery ? { mcpDiscovery } : {}),
 		};
