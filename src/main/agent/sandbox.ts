@@ -23,6 +23,7 @@ import { agentLocation } from '../shared/agent_location';
 import { sandboxSystemReads } from './sandbox/reads';
 import { realPath } from '../shared/real_path';
 import { isPathWithin } from './permissions/permissions_path';
+import { protectedRoots } from './permissions/protected';
 
 const WINDOWS_SANDBOX_GUIDANCE =
 	'Open Settings > Permissions and complete Windows sandbox setup; administrator or IT approval may be required. Chat and non-command tools remain available.';
