@@ -5,6 +5,7 @@ import { VoiceAgentVisual } from '@/components/voice-agent-visual';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useApp, type VoiceAgentAppearance } from '@/contexts';
+import { VOICE_AGENT_APPEARANCES } from '../../../../../../../shared/app_types';
 import {
 	SettingsPageHeader,
 	SettingsPageShell,
