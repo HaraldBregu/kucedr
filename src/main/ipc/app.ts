@@ -579,7 +579,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.openExternalUrl,
-			wrapSimpleHandler(async (url: string) => {
+			wrapTrustedHandler(async (url: string) => {
 				const target = externalUrl(url);
 				if (!target) throw new Error('Invalid external URL.');
 				await shell.openExternal(target);
