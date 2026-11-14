@@ -22,6 +22,8 @@ type StartInput = {
 
 const recorders = { camera, microphone, screen };
 
+const MAX_WAIT_MS = 9 * 60_000;
+
 const labels = { camera: 'Camera', microphone: 'Microphone', screen: 'Screen' };
 
 const captures = {
