@@ -1,5 +1,6 @@
 import { executionScope, type ExecutionScope } from '../../execution/scope';
 import { terminateProcessTree } from '../../execution/terminate';
+import { processTreeAlive } from '../../execution/alive';
 import type { ChildProcess } from 'node:child_process';
 import { z } from 'zod';
 import { tool } from '../tool';
@@ -7,6 +8,8 @@ import type { Tool } from '../../types';
 import type { ExecutionMode } from '../../../../shared/sandbox';
 
 const MAX_BUFFER = 500_000;
+const MAX_POLL_OUTPUT = 40_000;
+const MAX_FINISHED_SESSIONS = 20;
 
 export interface ProcessSession {
 	readonly scope: ExecutionScope;
