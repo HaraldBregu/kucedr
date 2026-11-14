@@ -217,7 +217,7 @@ export type RuntimeEvent =
 			tools: string[];
 			mcpDiscovery?: McpDiscoveryDiagnostics;
 			skillDiagnostics?: readonly SkillDiagnostic[];
-			skillActivations?: { id: string; name: string; hash: string; trust: SkillTrust }[];
+			skillActivations?: { id: string; name: string; hash: string }[];
 	  }
 	| {
 			type: 'user_input_request';
