@@ -27,12 +27,12 @@ export async function readLines(
 		let total = 0;
 		for await (const line of handle.readLines({ encoding: 'latin1', autoClose: false })) {
 			signal?.throwIfAborted();
-			if (count !== undefined && lines.length >= count) break;
 			if (index++ < start) continue;
 			const bytes = Buffer.from(line, 'latin1');
 			total += bytes.length + 1;
 			if (total > maxBytes) throw new Error(`Selected lines exceed the ${maxBytes}-byte limit: ${filePath}`);
 			lines.push(decodeUtf8(bytes, filePath));
+			if (lines.length === count) break;
 		}
 		return lines.join('\n');
 	} finally {
