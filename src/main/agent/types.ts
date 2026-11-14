@@ -151,6 +151,7 @@ type RuntimeInputBase = Pick<
 	toolsDeny?: string[];
 	approvalWindowId?: number;
 	explicitSkill?: string;
+	unloadSkill?: string;
 	scope?: import('./execution/scope').ExecutionScope;
 };
 
