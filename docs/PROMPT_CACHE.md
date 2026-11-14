@@ -302,3 +302,34 @@ Checked:
 - A bundled `LlmModel`, run with a fake OpenAI client, sent a developer message with a breakpoint and no `instructions` for gpt-5.6-luna on both the streaming and non-streaming paths. For gpt-5.5 it sent the request unchanged, with `instructions` and `prompt_cache_key`.
 
 Not confirmed: a live OpenAI call, and the unit suite. Re-measure turn 1 of new chats on gpt-5.6+ from `run.jsonl`; `cachedTokens` should be close to the system-plus-tools size after the first chat.
+
+### Every provider (2026-11-14)
+
+| Provider | How it caches (docs) | What the agent now sends |
+|---|---|---|
+| Anthropic | Explicit `cache_control` | Top-level `cache_control`, plus a breakpoint on the system block (unchanged) |
+| OpenAI gpt-5.4/5.5 | Implicit, 2,048-token steps; `prompt_cache_key` routes | `prompt_cache_key` = session id (unchanged) |
+| OpenAI gpt-5.6+/6 | Implicit at the latest user or tool message; explicit breakpoints | Developer message with a breakpoint (above) |
+| xAI Grok | Per server; the `x-grok-conv-id` header routes a conversation to one server | **New:** `x-grok-conv-id` = session id, via `cache.sessionHeader` |
+| OpenRouter, any model | `session_id` turns on sticky routing from the first request | **New:** `session_id` = session id; reads `prompt_tokens_details.cache_write_tokens` |
+| OpenRouter, `anthropic/*` | Claude needs `cache_control` | **New:** family metadata adds top-level `cache_control` and the system breakpoint |
+| Inception | Automatic, `prompt_tokens_details.cached_tokens`, no key | `readTokens` corrected to the documented field (the old path never existed; the generic fallback hid it) |
+| DeepSeek | Automatic, best-effort disk units, `prompt_cache_hit_tokens` | Nothing to send (already read) |
+| iteraCompute | No public docs found | Nothing; still needs one real response to find its field |
+| Ollama | Local KV reuse inside the loaded model | Nothing |
+
+**Code changes**
+- `ModelCache.sessionHeader` is new.
+- `models/adapters/llm/headers.ts` builds the header, and both Chat Completions calls (streaming and non-streaming) pass it.
+- Everything else is manifest data. OpenRouter family metadata replaces `cache` whole, so the `anthropic/` family repeats `sessionKey` and `writeTokens`.
+
+**Checked**
+- `typecheck:node` passes, eslint is clean, and all edited manifests parse.
+- A bundled `LlmModel` with a fake client, on the streaming and non-streaming paths, confirmed each provider's request:
+  - grok-4.7 sends the header and no body key.
+  - openrouter/auto and a discovered `deepseek/*` model send `session_id` with a plain system message.
+  - A discovered `anthropic/claude-*` model sends `session_id`, top-level `cache_control` and a system block with `cache_control`.
+  - Inception sends nothing extra.
+- The OpenAI check above still passes.
+
+Not confirmed: live calls. Gemini on OpenRouter is left on implicit caching. OpenRouter uses only the last explicit breakpoint for Gemini, so a system breakpoint would stop the history from being cached.
