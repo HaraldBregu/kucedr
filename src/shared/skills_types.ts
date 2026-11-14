@@ -62,6 +62,7 @@ export interface SkillValidationIssue {
 export interface SkillValidationResult {
 	valid: boolean;
 	issues: SkillValidationIssue[];
+	warnings?: SkillValidationIssue[];
 }
 
 export interface SkillDeleteResult {
