@@ -1,3 +1,4 @@
+import { builtinCapability } from '../../../execution/capability';
 import type { Tool } from '../../../types';
 import { useWebBrowserTool } from '../use_web_browser';
 import { browserSessions, type BrowserSession } from './session';
