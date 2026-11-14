@@ -359,6 +359,16 @@ export class ExecSandbox {
 		};
 	}
 
+	private async protectedWrites(roots: readonly string[], writable: readonly string[]): Promise<string[]> {
+		const nested = await Promise.all(roots.map(async (root) => {
+			if (writable.some((directory) => isPathWithin(directory, root))) return [];
+			if (!writable.some((directory) => isPathWithin(root, directory))) return [root];
+			const entries = await fs.readdir(root).catch(() => []);
+			return this.protectedWrites(entries.map((entry) => path.join(root, entry)), writable);
+		}));
+		return nested.flat();
+	}
+
 	private vendoredWindowsPath(): string {
 		return this.unpackedPath(VENDORED_SRT_WIN_EXE);
 	}
