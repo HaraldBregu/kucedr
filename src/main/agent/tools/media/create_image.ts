@@ -34,16 +34,26 @@ export function createImageTool(): Tool {
 			const images: Array<{ path: string; mimeType: string }> = [];
 			const inlined = (await inlineFiles(options)) as Record<string, unknown>;
 			for (let index = 0; index < count; index++) {
-				const { base64, mimeType } = await createImage({ prompt, options: inlined }, signal);
-				const ext = mimeType.split('/')[1]?.split('+')[0] || 'png';
-				const path = await saveMedia(
-					count === 1 ? 'image' : `image-${index + 1}`,
-					ext,
-					base64,
-					directory,
-					signal
-				);
-				images.push({ path, mimeType });
+				try {
+					const { base64, mimeType } = await createImage({ prompt, options: inlined }, signal);
+					const ext = mimeType.split('/')[1]?.split('+')[0] || 'png';
+					const path = await saveMedia(
+						count === 1 ? 'image' : `image-${index + 1}`,
+						ext,
+						base64,
+						directory,
+						signal
+					);
+					images.push({ path, mimeType });
+				} catch (error) {
+					if (images.length === 0) throw error;
+					return {
+						path: images[0].path,
+						mimeType: images[0].mimeType,
+						images,
+						error: `Generated ${images.length} of ${count} images: ${error instanceof Error ? error.message : String(error)}`,
+					};
+				}
 			}
 			return { path: images[0].path, mimeType: images[0].mimeType, images };
 		},
