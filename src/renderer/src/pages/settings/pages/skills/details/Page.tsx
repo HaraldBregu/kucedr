@@ -177,7 +177,6 @@ const SkillDetailsPage: React.FC = () => {
 			<SettingsSection title={t('settings.skills.details')}>
 				<SettingsPanel>
 					<SkillDetail label={t('settings.skills.detailId')} value={skill.id} mono />
-					<SkillDetail label={t('settings.skills.detailTrust')} value={skill.trust} />
 					<SkillDetail label={t('settings.skills.detailHash')} value={skill.hash} mono />
 					<SkillDetail
 						label={t('settings.skills.detailFormat')}
