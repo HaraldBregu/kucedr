@@ -216,7 +216,7 @@ export function BarWaveAnimation({
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className={cn("block", className)}
+      className={cn("block invert dark:invert-0", className)}
       style={{ width: "100%", height }}
     />
   )
