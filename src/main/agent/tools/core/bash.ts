@@ -118,7 +118,7 @@ async function runExec(
 	const cwd = roots[0] ?? resolveUserPath(workdir ?? '.', agentLocation());
 	if (readOnly) {
 		const relative = path.relative(agentLocation(), cwd);
-		if (relative.startsWith('..') || path.isAbsolute(relative))
+		if (relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative))
 			throw new Error('Read-only commands must run inside the workspace.');
 	}
 	const readOnlyTimeoutSeconds = Math.min(timeoutInput ?? 60, 120);
