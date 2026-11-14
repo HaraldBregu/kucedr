@@ -9,7 +9,7 @@ export function executeCommand(command: string, context: HarnessContext): Promis
 		const child = spawn(
 			windows ? process.env.ComSpec || 'cmd.exe' : process.env.SHELL || '/bin/sh',
 			windows ? ['/d', '/s', '/c', command] : ['-lc', command],
-			{ cwd: context.cwd, env: process.env, detached: !windows, stdio: ['ignore', 'pipe', 'pipe'] }
+			{ cwd: context.cwd, env: commandEnvironment(), detached: !windows, stdio: ['ignore', 'pipe', 'pipe'] }
 		);
 		let output = '';
 		let truncated = false;
