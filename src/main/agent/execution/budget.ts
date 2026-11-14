@@ -39,18 +39,23 @@ export class ExecutionBudget {
 	admit(tool: Tool | undefined, input: Record<string, unknown>): string | undefined {
 		const capability =
 			typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
-		const paid = capability?.effects.includes('paid') === true;
+		const paid =
+			capability?.effects.includes('paid') === true
+				? typeof input.count === 'number'
+					? input.count
+					: 1
+				: 0;
 		if (
 			this.synthesisOnly ||
 			this.exhausted ||
 			this.calls >= (this.limits.calls ?? 100) ||
-			(paid && this.paidCalls >= (this.limits.paid ?? 3))
+			(paid > 0 && this.paidCalls + paid > (this.limits.paid ?? 3))
 		) {
 			this.exhausted = true;
 			return 'Execution budget exhausted; this action was not executed.';
 		}
 		this.calls += 1;
-		if (paid) this.paidCalls += 1;
+		this.paidCalls += paid;
 		return undefined;
 	}
 
