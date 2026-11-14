@@ -49,7 +49,7 @@ export async function* chat(
 	}
 	const response = await client.chat.completions.create(
 		params as unknown as OpenAI.Chat.ChatCompletionCreateParamsNonStreaming,
-		{ signal: req.signal }
+		{ signal: req.signal, headers: headers(options.model?.cache, req.sessionId) }
 	);
 	const choice = response.choices[0];
 
