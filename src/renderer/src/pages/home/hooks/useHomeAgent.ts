@@ -320,6 +320,13 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		[dispatchChat, modeIds, modes, sessionId, setSessionId]
 	);
 
+	const unloadSkill = useCallback(
+		(skillId: string): void => {
+			void sendPrompt(`/skill off ${skillId}`, [], { preserveInput: true });
+		},
+		[sendPrompt]
+	);
+
 	const runModeAction = useCallback(
 		(prompt: string): void => {
 			setModeIds([]);
