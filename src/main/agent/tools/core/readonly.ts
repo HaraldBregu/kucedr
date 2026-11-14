@@ -16,11 +16,11 @@ export function readOnlyShellError(
 		return 'Read-only commands cannot access additional roots.';
 	}
 	const workdir = typeof input.workdir === 'string' ? input.workdir : '.';
-	if (/^(?:\\\\|\/\/|\\\\[?.]\\)/.test(workdir) || workdir.startsWith('~')) {
+	if (/^(?:\\\\|\/\/)/.test(workdir) || workdir.startsWith('~')) {
 		return 'Read-only commands must run inside the workspace.';
 	}
 	const relative = path.relative(workspace, path.resolve(workspace, workdir));
-	if (relative.startsWith('..') || path.isAbsolute(relative)) {
+	if (relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
 		return 'Read-only commands must run inside the workspace.';
 	}
 	return undefined;
