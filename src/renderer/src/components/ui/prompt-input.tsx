@@ -250,7 +250,7 @@ function PromptInputVoicePanel({
 						aria-live="polite"
 						className={cn(
 							'truncate text-xs font-medium text-muted-foreground',
-							isDictation ? 'w-20 shrink-0' : 'min-w-0 flex-1'
+							isDictation ? 'w-24 shrink-0' : 'min-w-0 flex-1'
 						)}
 					>
 						{status}
