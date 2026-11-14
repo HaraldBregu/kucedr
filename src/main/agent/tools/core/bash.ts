@@ -232,13 +232,13 @@ async function runExec(
 		env,
 		shell,
 		detached: process.platform !== 'win32',
-		stdio: [readOnly ? 'ignore' : 'pipe', 'pipe', 'pipe'] as const,
 	});
 
 	superviseProcess(child, abortSignal);
 	if (executionMode === 'sandbox') sandbox.track(child);
 	registry.track(scope, child);
-	child.stdin?.on('error', () => undefined);
+	child.stdin.on('error', () => undefined);
+	if (readOnly) child.stdin.end();
 	child.stdout.setEncoding('utf8');
 	child.stderr.setEncoding('utf8');
 	const maxOutputLength = 90000;
