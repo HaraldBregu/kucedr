@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import type { HarnessContext } from './harness/types';
+import { commandEnvironment } from '../agent/execution/environment';
 
 export function executeCommand(command: string, context: HarnessContext): Promise<string> {
 	context.signal.throwIfAborted();
