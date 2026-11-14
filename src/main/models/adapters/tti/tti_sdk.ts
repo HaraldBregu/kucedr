@@ -5,7 +5,7 @@ import type { ImageAdapter, ImageProviderSpec } from './tti_types';
 
 export function createSdkImageAdapter(spec: ImageProviderSpec): ImageAdapter {
 	if (!spec.apiKey) throw new ImageProviderAuthError(`${spec.name} API key not configured.`);
-	const client = new OpenAI({ apiKey: spec.apiKey, baseURL: spec.baseURL });
+	const client = new OpenAI({ apiKey: spec.apiKey, baseURL: spec.baseURL, maxRetries: 0 });
 
 	return {
 		async generate(request) {
