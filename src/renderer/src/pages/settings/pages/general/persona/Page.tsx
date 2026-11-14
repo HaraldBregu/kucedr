@@ -14,7 +14,6 @@ import {
 } from '../../../components';
 
 const PERSONA_STATES: readonly PersonaState[] = ['idle', 'thinking', 'speaking'];
-const APPEARANCES: readonly VoiceAgentAppearance[] = ['persona', 'orb-07'];
 
 const PersonaPage: React.FC = () => {
 	const { t } = useTranslation();
