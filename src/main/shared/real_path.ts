@@ -12,5 +12,17 @@ export function realPath(targetPath: string): string {
 		existingPath = parent;
 	}
 
-	return path.resolve(fs.realpathSync.native(existingPath), ...missingSegments);
+	const resolved = fs.realpathSync.native(existingPath);
+	const firmlink = '/System/Volumes/Data';
+	if (process.platform === 'darwin' && resolved.startsWith(`${firmlink}/`)) {
+		try {
+			const original = fs.statSync(resolved);
+			const stripped = fs.statSync(resolved.slice(firmlink.length));
+			if (original.dev === stripped.dev && original.ino === stripped.ino)
+				return path.resolve(resolved.slice(firmlink.length), ...missingSegments);
+		} catch {
+			return path.resolve(resolved, ...missingSegments);
+		}
+	}
+	return path.resolve(resolved, ...missingSegments);
 }
