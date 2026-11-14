@@ -40,7 +40,12 @@ export type McpStoreSchema = {
 
 export type McpToolCatalogSchema = Record<
 	string,
-	{ identity: string; tools: Tool[]; permissions?: Record<string, AgentToolPermission> }
+	{
+		identity: string;
+		tools: Tool[];
+		permissions?: Record<string, AgentToolPermission>;
+		permissionHashes?: Record<string, string>;
+	}
 >;
 
 export type McpOAuthStorage = {
