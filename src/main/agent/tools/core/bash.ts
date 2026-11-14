@@ -108,9 +108,6 @@ async function runExec(
 		if (policyError) throw new Error(policyError);
 	}
 
-	if (hostInput === 'gateway' || hostInput === 'node') {
-		throw new Error(`exec host '${hostInput}' is not available in this runtime.`);
-	}
 	if (elevatedInput === true && hostInput === 'sandbox') {
 		throw new Error("exec host 'sandbox' cannot be combined with elevated mode.");
 	}
