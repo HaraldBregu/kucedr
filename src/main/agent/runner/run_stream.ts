@@ -239,7 +239,15 @@ async function* loop(
 		);
 	};
 	let search: ToolSearch | undefined;
+	const skillTokenLimit = skillLoadingEnabled
+		? Math.floor(((await resolveContextWindow(provider, modelId)) ?? Infinity) / 4)
+		: Infinity;
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
+		const tokens = Math.ceil(Buffer.byteLength(skill.instructions, 'utf8') / 3);
+		if (tokens > skillTokenLimit)
+			throw new Error(
+				`Skill "${skill.name}" is about ${tokens} tokens, more than a quarter of this model's context window, so it was not loaded.`
+			);
 		rememberSkill(session.runContext, {
 			id: skill.id,
 			name: skill.name,
