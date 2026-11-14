@@ -3,7 +3,6 @@ export interface LoadedSkill {
 	name: string;
 	canonicalRoot: string;
 	instructions: string;
-	trust: 'user-controlled';
 	hash: string;
 	resources: string[];
 	warnings?: { code: string; message: string }[];
