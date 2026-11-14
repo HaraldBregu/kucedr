@@ -79,8 +79,17 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			}
 			session.context = launched;
 			launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
+			if (session.headless)
+				await launched.route('**/*', async (route) => {
+					const allowed = await publicUrl(route.request().url()).then(() => true, () => false);
+					await (allowed ? route.continue() : route.abort('blockedbyclient')).catch(() => undefined);
+				});
 			launched.on('page', (page) => {
 				if (![...session.pages.values()].includes(page)) trackPage(page, session);
+				void page.opener().then((opener) => {
+					const owner = opener && pageOwners.get(opener);
+					if (owner) pageOwners.set(page, owner);
+				}, () => undefined);
 			});
 			launched.on('close', () => {
 				session.context = null;
