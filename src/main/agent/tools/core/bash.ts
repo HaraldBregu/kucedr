@@ -269,7 +269,6 @@ async function runExec(
 			settled = true;
 
 			const sessionId = randomUUID();
-			ownedSessionId = sessionId;
 			const session = registry.register({
 				id: sessionId,
 				scope,
