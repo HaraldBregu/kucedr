@@ -275,7 +275,7 @@ export const useWebBrowserTool = tool({
 		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts.',
 	inputSchema: z.object({
 		action: z.enum(ACTIONS).describe('Browser command to run.'),
-		targetId: z.string().optional().describe('Tab id from "tabs" output. Defaults to the most recent tab.'),
+		targetId: z.string().optional().describe('Tab id from "tabs" output. Defaults to the most recent tab opened in this chat.'),
 		url: z.string().optional().describe('URL for open/navigate.'),
 		back: z.boolean().optional().describe('navigate: go back in history instead of to a url.'),
 		forward: z.boolean().optional().describe('navigate: go forward in history.'),
