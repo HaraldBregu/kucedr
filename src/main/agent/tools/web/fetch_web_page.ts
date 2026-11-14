@@ -82,7 +82,12 @@ export const fetchWebPageTool = tool({
 		if (!res.ok) throw new Error(`fetch_web_page failed (${res.status}): ${res.statusText}`);
 
 		const contentType = res.headers.get('content-type') ?? '';
-		const body = await responseText(res, MAX_RESPONSE_BYTES);
+		if (contentType && !TEXT_TYPE.test(contentType)) {
+			await res.body?.cancel();
+			throw new Error(`fetch_web_page cannot read ${contentType} content; it only returns text, HTML and JSON.`);
+		}
+		const { bytes, truncated: bodyTruncated } = await responseBytes(res, MAX_RESPONSE_BYTES);
+		const body = decodeText(bytes, contentType);
 
 		let text = body;
 		if (contentType.includes('text/html')) {
