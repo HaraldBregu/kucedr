@@ -38,7 +38,7 @@ export function createSynthesisVideoAdapter(spec: VideoProviderSpec): VideoAdapt
 				throw new VideoProviderRequestError(`${spec.name}: generation was not accepted.`);
 			}
 
-			const videoUrl = await poll(spec.name, 120, 5000, async () => {
+			const videoUrl = await poll(spec.name, 120, 5000, request.signal, async () => {
 				const task = await requestJson<SynthesisTask>(spec.name, `${baseURL}/tasks/${taskId}`, {
 					headers,
 					signal: request.signal,
