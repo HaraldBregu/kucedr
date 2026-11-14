@@ -544,6 +544,7 @@ export class Agent {
 	deleteSession(sessionId: string): Promise<void> {
 		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
 		const completions = this.cancelSession(resolvedSessionId);
+		registry.terminate(resolvedSessionId);
 		return this.scheduler.run(
 			resolvedSessionId,
 			async () => {
