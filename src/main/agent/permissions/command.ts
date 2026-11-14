@@ -2,6 +2,7 @@ import { realPath } from '../../shared/real_path';
 import { resolveUserPath } from '../../shared/user_path';
 import { isBroadTarget } from './broad';
 import { permissionFor } from './permission_for';
+import { isProtectedTarget } from './protected_target';
 import { resolveExecRoots } from './resolve_exec_roots';
 import type { PermissionMode, PermissionsSchema } from './permissions_types';
 import type { ToolPermissionResolution } from './permission_resolution';
