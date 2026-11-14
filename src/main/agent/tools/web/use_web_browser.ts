@@ -374,18 +374,14 @@ export const useWebBrowserTool = tool({
 					elements: unknown[];
 				};
 				const maxText = params.maxChars ?? SNAPSHOT_MAX_TEXT;
-				return JSON.stringify(
-					{
-						targetId: id,
-						url: page.url(),
-						title: snapshot.title,
-						text: snapshot.text.slice(0, maxText),
-						textTruncated: snapshot.text.length > maxText,
-						elements: snapshot.elements,
-					},
-					null,
-					2,
-				);
+				return JSON.stringify({
+					targetId: id,
+					url: page.url(),
+					title: snapshot.title,
+					text: snapshot.text.slice(0, maxText),
+					textTruncated: snapshot.text.length > maxText,
+					elements: snapshot.elements,
+				});
 			}
 			case 'screenshot': {
 				const { id, page } = getPage(params.targetId);
