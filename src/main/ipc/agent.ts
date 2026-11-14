@@ -61,6 +61,7 @@ import {
 	getModelOptions,
 	getCompactModel,
 	getProviderId,
+	getToolConfiguration,
 	getToolModel,
 	getToolProfile,
 	setModelId,
