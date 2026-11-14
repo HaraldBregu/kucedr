@@ -31,10 +31,37 @@ export interface ProcessSession {
 
 class SessionRegistry {
 	private readonly sessions = new Map<string, ProcessSession>();
+	private readonly children = new Map<ChildProcess, ExecutionScope>();
 
 	register(session: ProcessSession): ProcessSession {
+		const finished = [...this.sessions.values()].filter((existing) => existing.exited &&
+			existing.scope.sessionId === session.scope.sessionId);
+		for (const stale of finished.slice(0, -MAX_FINISHED_SESSIONS)) this.sessions.delete(stale.id);
 		this.sessions.set(session.id, session);
 		return session;
+	}
+
+	track(scope: ExecutionScope, child: ChildProcess): void {
+		for (const previous of this.children.keys()) {
+			if (!processTreeAlive(previous)) this.children.delete(previous);
+		}
+		this.children.set(child, scope);
+		child.once('close', () => {
+			if (!processTreeAlive(child)) this.children.delete(child);
+		});
+	}
+
+	terminate(sessionId?: string): void {
+		for (const [child, scope] of this.children) {
+			if (sessionId !== undefined && scope.sessionId !== sessionId) continue;
+			terminateProcessTree(child);
+			this.children.delete(child);
+		}
+		for (const session of this.sessions.values()) {
+			if (sessionId !== undefined && session.scope.sessionId !== sessionId) continue;
+			if (!session.exited) terminateProcessTree(session.child);
+			this.sessions.delete(session.id);
+		}
 	}
 
 	get(id: string): ProcessSession | undefined {
