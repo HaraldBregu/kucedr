@@ -106,7 +106,7 @@ export function recorderTools(kind: Kind): { start: Tool; status: Tool; stop: To
 		id: `${kind}_recorder_status`,
 		category: 'system',
 		name: `${labels[kind]} recorder status`,
-		description: `Check the status of a background ${kind} recording started with ${kind}_recorder. With wait=true it blocks until the recording finishes and returns the final result. The recorded file exists only once status is "completed".`,
+		description: `Check the status of a background ${kind} recording started with ${kind}_recorder. With wait=true it blocks until the recording finishes (up to 9 minutes) and returns the final result. The recorded file exists only once status is "completed".`,
 		inputSchema: z.object({
 			id: z.string().min(1).describe(`Recording id returned by ${kind}_recorder.`),
 			wait: z
