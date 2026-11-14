@@ -61,6 +61,7 @@ export function registerIpcHandlers(
 				appRegistry,
 				appStorage,
 				sandbox: agentService.sandbox,
+				windows: windowContextManager,
 			},
 			eventBus
 		)
