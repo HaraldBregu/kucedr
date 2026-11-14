@@ -332,6 +332,7 @@ async function runExec(
 		if (timeoutMs !== undefined) {
 			timeoutTimer = setTimeout(() => {
 				timedOut = true;
+				if (ownedSession) ownedSession.timedOut = true;
 				terminateProcessTree(child);
 			}, timeoutMs);
 		}
