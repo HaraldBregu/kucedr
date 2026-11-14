@@ -2,8 +2,10 @@ import { seekSequence } from './sequence';
 import type { UpdateChunk } from './types';
 
 export function applyUpdateChunks(filePath: string, contents: string, chunks: UpdateChunk[]): string {
-	const lines = contents.split('\n');
-	if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+	const eol = lineEnding(contents);
+	const lines = contents.split(eol);
+	const finalNewline = lines[lines.length - 1] === '';
+	if (finalNewline) lines.pop();
 
 	const replacements: Array<[number, number, string[]]> = [];
 	let lineIndex = 0;
