@@ -10,6 +10,9 @@
 			"path": "reasoning.effort"
 		},
 		"clampEffort": true,
+		"cache": {
+			"breakpoints": ["system"]
+		},
 		"promptAttachments": [
 			{
 				"kind": "image",
