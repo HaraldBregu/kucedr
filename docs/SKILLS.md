@@ -94,6 +94,50 @@ The gate is explicit-only on purpose (`system_add_skill_prompt.ts:13`). Two opti
 - **A (recommended):** keep it explicit-only, but replace the regex with `/skill` plus a skill chip in the composer. Tool exposure is then deterministic and cache-stable. `list_skills` becomes UI-only.
 - **B:** follow the spec's progressive disclosure. Always list `name: description` in the system prompt, always expose `load_skill`, and drop the regex. This costs about 30 tokens per skill per request. The model can then pick a skill on its own.
 
+## Second review (2026-11-14, after Phases 1–3)
+
+I re-read the code after the refactor. These findings are new. Several are side effects of pinning skills to the session.
+
+| # | Sev | Finding | Where |
+|---|---|---|---|
+| R1 | **High** | **The agent cannot read a skill's own files without asking.** Skill roots sit under `~/.kucedr` (the user root and plugin folders). The default allow-list only covers the workspace (`with_default_permissions.ts`). So every `read` of a skill's `references/…` file and every `bash` call to its `scripts/…` asks for approval. "Always allow" can't be saved either, because the path counts as a broad target (`broad.ts:12`, `resolve_tool_permission.ts:119`). In the `tasks` profile the fallback is `deny` (`run_tool_call.ts:88`), so scheduled tasks can't use a skill's resources at all. | listed |
+| R2 | Med | **A pinned skill can't be seen or unloaded.** After Phase 1, a loaded skill stays loaded for the whole session. The renderer ignores `run_started.skillActivations` and `Message.skillIds`, and no command removes a skill. The user can't tell which skills are active, and the only way out is a new chat. | `run_stream.ts:390`, renderer |
+| R3 | Med | **An oversized pinned skill breaks the session.** Skill text is a required message, so it is never trimmed. `SKILL.md` may be up to 256 KB (about 85k tokens, `skills_limits.ts:2`), and the 5k-token guideline is only a warning. A large skill, or a later switch to a small-context model, makes `fitModelContext` throw on every run of that session. The error message mentions "mode instructions" or "workspace context", not the skill. | `run_model_context_budget.ts:140-146` |
+| R4 | Low | **An empty skill list can't be recorded.** `skillIds` is stamped only when it's non-empty (`session_add_assistant_message.ts`). If a pinned skill is deleted from disk, the older stamp is found again and retried, silently, on every run. This also blocks unloading (R2). | `session_add_assistant_message.ts`, `run_skill_ids.ts` |
+| R5 | Low | **Frontmatter validation is too strict.** Any unknown key rejects the whole skill (`skills_validate.ts`, `unknown-field`). That includes common keys from other skill ecosystems such as `when_to_use`, `argument-hint`, `model` or `version`. A non-string metadata value (`metadata: { version: 1.0 }`, which YAML reads as a number) also rejects it. The 5 installed skills pass, but imported third-party skills often won't. | `skills_validate.ts` |
+| R6 | Low | **One odd entry blocks loading.** `listSkillResources` throws on a symlink to a directory inside the skill (`statSync().isFile()` is false). It also throws on any link that escapes the root, so the whole skill fails to load. `validateSkillPackage` only screens imports, not plugin or hand-copied skills. | `skills_resources.ts`, `skills_resolve_resource.ts:27` |
+| R7 | Low | **`/skill` has no UI.** The composer gives no hint or autocomplete. After a reload, the history shows only the stripped text, or the placeholder "Use the explicitly selected skill.", because `agent.ts:275` saves the parsed message. | `skills_parse_command.ts`, `agent.ts:260-275` |
+| R8 | Low | **Delete and download can pick the wrong folder.** If a broken user folder and a valid plugin skill share an id, Settings shows the plugin skill, but delete and download act on the broken user folder (`skills_resolve_folder.ts` checks the user root first). | `skills_resolve_folder.ts` |
+| R9 | Low | **Leftovers:**<br>• `SkillTrust` has one value (`'user-controlled'`) but still travels through the prompt JSON, `run_started`, the trace and the details page.<br>• `structure.format/standard` are constants.<br>• `loadSkill` repeats `inspectSkill`'s lookup.<br>• Each load validates and reads `SKILL.md` twice (`readSkill` in the registry, then `inspectSkill`). | listed |
+
+Checked and fine:
+- path containment and import staging
+- the legacy `kind: 'skill'` migration
+- pinned skills surviving trimming and compaction
+- run_stream's handling of the peer session's tool-pipeline changes
+
+### Phase 5 — Follow-ups from the second review
+
+1. **R1, read grant for loaded skills.** For the current run, add each loaded skill's `canonicalRoot` to the read allow-list, read-only. Pass the roots through the `security` context into `resolveToolPermission`. Script execution keeps prompting, because running a skill's code needs the user's approval.
+   - → verify: after `/skill pdf`, `read` of `references/forms.md` runs without a prompt. A `tasks` run can read it too. `bash scripts/x.py` still asks.
+2. **R4, then R2: unload and visibility.**
+   - Stamp `skillIds` on every assistant message whenever the session has pinned skills, including `[]`. `pinnedSkillIds` treats `[]` as the answer.
+   - Show the active skills as chips from `run_started.skillActivations`, using the existing Badge component.
+   - Clicking a chip's × sends a `/skill off <name>` command, which `parseSkillCommand` handles by dropping the id.
+   - → verify: load, unload, then the next run has no skill context, and the history stamp is `[]`.
+3. **R3, size guard.**
+   - At activation, refuse a skill whose estimated tokens exceed a quarter of the model's context window. Tell the model why, using the same soft-fail note as an unknown skill.
+   - Change the budget error text to "skill instructions" when `requiredContextMessages` is non-empty.
+   - → verify: a 200 KB `SKILL.md` gives a reply that explains the refusal, not a run error.
+4. **R5, lenient frontmatter.** Turn `unknown-field` into a warning. Coerce scalar metadata values to strings.
+   - → verify: a skill with `when_to_use:` and `metadata: {version: 1.0}` imports and loads, and the warning shows in Settings.
+5. **R6.** In `listSkillResources`, skip directory links and escaping links and add a warning, instead of throwing.
+6. **R8 and R9.**
+   - Resolve delete/download through the registry entry the UI shows (`list()` → `folderPath`).
+   - Drop `SkillTrust` and `structure`.
+   - Have `inspectSkill` return `undefined` for a missing skill, so `loadSkill` becomes one line.
+7. **R7** belongs with the Phase 4 decision, as part of the composer skill chip.
+
 ## Not changing
 
 - `skills_import.ts` staging and validation, `skills_validate_package.ts` and `skills_resolve_resource.ts`: the path-escape and size checks are sound.
