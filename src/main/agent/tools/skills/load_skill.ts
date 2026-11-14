@@ -29,7 +29,6 @@ export function loadSkillTool(
 				name: skill.name,
 				canonicalRoot: skill.canonicalRoot,
 				hash: skill.hash,
-				trust: skill.trust,
 				resources: skill.resources,
 				warnings: skill.warnings,
 			};
