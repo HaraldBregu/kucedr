@@ -83,7 +83,6 @@ export default defineConfig({
 			__APP_LICENSE__: JSON.stringify(pkg.license),
 		},
 		plugins: [
-			typegpuPlugin(),
 			react({ exclude: [/\/node_modules\//, /\/kucedr-vite-cache\/deps\//] }),
 			tsconfigPaths({ ignoreConfigErrors: true }),
 			{
