@@ -830,7 +830,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.openSystemPreference,
-			wrapSimpleHandler(async (pane: SystemPreferencePaneId) => {
+			wrapTrustedHandler(async (pane: SystemPreferencePaneId) => {
 				const url = SYSTEM_PREFERENCE_PANES[pane];
 				if (!url) {
 					throw new Error(`Unknown system preference pane: ${pane}`);
