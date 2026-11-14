@@ -703,7 +703,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setWorkspaceWideContent,
-			wrapSimpleHandler((enabled: boolean) => {
+			wrapTrustedHandler((enabled: boolean) => {
 				setStoredWorkspaceWideContent(enabled);
 			}, AppChannels.setWorkspaceWideContent)
 		);
