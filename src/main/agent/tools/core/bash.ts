@@ -285,14 +285,15 @@ async function runExec(
 				exited: false,
 				child,
 			});
+			ownedSession = session;
 
 			child.stdout.removeAllListeners('data');
 			child.stderr.removeAllListeners('data');
-			child.stdout.on('data', (chunk: Buffer | string) =>
-				registry.append(session, 'stdout', chunk.toString())
+			child.stdout.on('data', (chunk: string) =>
+				registry.append(session, 'stdout', chunk)
 			);
-			child.stderr.on('data', (chunk: Buffer | string) =>
-				registry.append(session, 'stderr', chunk.toString())
+			child.stderr.on('data', (chunk: string) =>
+				registry.append(session, 'stderr', chunk)
 			);
 			child.once('close', (exitCode, signal) => {
 				if (executionMode === 'sandbox') {
