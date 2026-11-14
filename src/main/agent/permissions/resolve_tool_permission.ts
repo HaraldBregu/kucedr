@@ -105,7 +105,8 @@ export function resolveToolPermissionDetails(
 		return { mode: 'deny', kind, targets, approvalTargets, persistable: false };
 	if (
 		(kind === 'read' && fallback !== 'deny') ||
-		(targets.length > 0 && decisions.every((decision) => decision === 'allow'))
+		(targets.length > 0 && decisions.every((decision) => decision === 'allow')) ||
+		(kind === 'read' && targets.length > 0 && targets.every(isSkillTarget))
 	)
 		return { mode: 'allow', kind, targets, approvalTargets, persistable: false };
 	if (reuseContext && contextAllowsTool(context, toolName, args, AGENT_DIRECTORY))
