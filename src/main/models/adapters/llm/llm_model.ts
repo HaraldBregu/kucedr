@@ -16,8 +16,10 @@ import type {
 	FunctionTool,
 	ResponseCreateParamsStreaming,
 	ResponseFunctionToolCall,
+	ResponseInput,
 	ResponseStreamEvent,
 } from 'openai/resources/responses/responses';
+import { instructions } from './instructions';
 import type { LlmEvent, LlmRequest, LlmResponse } from './llm_types';
 import type {
 	LlmAdapter,
