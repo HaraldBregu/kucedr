@@ -39,7 +39,11 @@ export function readSkill(
 		...(typeof fm.license === 'string' ? { license: fm.license } : {}),
 		...(typeof fm.compatibility === 'string' ? { compatibility: fm.compatibility } : {}),
 		...(fm.metadata && typeof fm.metadata === 'object'
-			? { metadata: fm.metadata as Record<string, string> }
+			? {
+					metadata: Object.fromEntries(
+						Object.entries(fm.metadata).map(([key, value]) => [key, String(value)])
+					),
+				}
 			: {}),
 		...(allowedTools ? { allowedTools } : {}),
 	};
