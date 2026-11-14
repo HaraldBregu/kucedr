@@ -63,7 +63,7 @@ export async function inspectSkill(
 		source: skill.source,
 		trust: skill.trust,
 		hash,
-		resources: listSkillResources(canonicalRoot),
+		resources,
 		warnings,
 	};
 }
