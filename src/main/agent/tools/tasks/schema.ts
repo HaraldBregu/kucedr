@@ -14,10 +14,6 @@ export const createTaskRequestSchema = z.object({
 		.string()
 		.optional()
 		.describe('Optional five-field cron expression controlling recurring execution.'),
-	enabled: z
-		.boolean()
-		.optional()
-		.describe('Requested enabled state; create_task still saves new tasks disabled for safety.'),
 	prompt: z.string().describe('Complete instruction the background agent should execute.'),
 });
 
