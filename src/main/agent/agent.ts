@@ -307,6 +307,7 @@ export class Agent {
 				...(parsedSkillCommand.explicitSkill
 					? { explicitSkill: parsedSkillCommand.explicitSkill }
 					: {}),
+				...(parsedSkillCommand.unloadSkill ? { unloadSkill: parsedSkillCommand.unloadSkill } : {}),
 			};
 			const input: RuntimeInput =
 				options.type === 'background'
