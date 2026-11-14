@@ -1,5 +1,7 @@
+import { existsSync } from 'node:fs';
 import { z } from 'zod';
 import { tool } from '../tool';
+import { decodeUtf8 } from '../../files/text';
 import { writeAuthorizedFile } from '../../files/write';
 import { removeAuthorizedFile } from '../../files/remove';
 import { readFileBounded } from '../../files/read';
