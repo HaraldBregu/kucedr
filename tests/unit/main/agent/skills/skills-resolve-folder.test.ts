@@ -1,17 +1,18 @@
-import path from 'node:path';
+const list = jest.fn();
+
+jest.mock('../../../../../src/main/agent/skills/skills_list', () => ({ list }));
+
 import { resolveSkillFolder } from '../../../../../src/main/agent/skills/skills_resolve_folder';
-import { skillsRoot } from '../../../../../src/main/agent/skills/skills_root';
 
 describe('resolveSkillFolder', () => {
-	it('resolves a valid id under the skills root', () => {
-		expect(resolveSkillFolder('my-skill')).toBe(path.resolve(skillsRoot, 'my-skill'));
+	it('returns the folder of the entry Settings lists for that id', () => {
+		list.mockReturnValue([{ id: 'writer', folderPath: '/plugins/docs/skills/writer' }]);
+		expect(resolveSkillFolder('writer')).toBe('/plugins/docs/skills/writer');
 	});
-	it('rejects ids with path separators or illegal characters', () => {
-		expect(() => resolveSkillFolder('a/b')).toThrow(/Invalid skill id/);
-		expect(() => resolveSkillFolder('a b')).toThrow(/Invalid skill id/);
-	});
-	it('rejects dot and dotdot', () => {
-		expect(() => resolveSkillFolder('.')).toThrow(/Invalid skill id/);
-		expect(() => resolveSkillFolder('..')).toThrow(/Invalid skill id/);
+	it('rejects ids that are not listed, including path tricks', () => {
+		list.mockReturnValue([{ id: 'writer', folderPath: '/skills/writer' }]);
+		expect(() => resolveSkillFolder('missing')).toThrow(/not found/);
+		expect(() => resolveSkillFolder('../writer')).toThrow(/not found/);
+		expect(() => resolveSkillFolder('..')).toThrow(/not found/);
 	});
 });
