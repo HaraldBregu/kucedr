@@ -20,9 +20,9 @@ export function createImageTool(): Tool {
 				.number()
 				.int()
 				.min(1)
-				.max(8)
+				.max(3)
 				.default(1)
-				.describe('Number of images to generate, from 1 to 8. Defaults to 1.'),
+				.describe('Number of images to generate, from 1 to 3. Defaults to 1.'),
 			directory: z
 				.string()
 				.optional()
