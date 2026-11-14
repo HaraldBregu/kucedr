@@ -290,8 +290,9 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 				(next) =>
 					setToolProfile((current) => ({ ...next, tools: { ...current?.tools, ...next.tools } })),
 				(error) => {
-				setFileToolsError(firstErrorMessage(error, t('settings.modelServices.saveError')));
-			})
+					setFileToolsError(firstErrorMessage(error, t('settings.modelServices.saveError')));
+				}
+			)
 			.finally(() => setFileToolsSaving(false));
 	};
 
