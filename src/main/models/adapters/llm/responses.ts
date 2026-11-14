@@ -26,10 +26,11 @@ export async function* responses(
 		{
 			...responseOptions,
 			model: req.model,
-			instructions: req.system || undefined,
-			input:
-				(req.inputItems as ResponseCreateParamsNonStreaming['input']) ??
-				llmBuildResponseInput(req.messages),
+			...instructions(
+				req.system,
+				(req.inputItems as ResponseInput | undefined) ?? llmBuildResponseInput(req.messages),
+				cache?.breakpoints?.includes('system') && !req.previousResponseId
+			),
 			previous_response_id: req.previousResponseId,
 			tools: tools.length > 0 ? tools : undefined,
 			max_output_tokens: req.maxTokens,
