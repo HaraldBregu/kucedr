@@ -232,7 +232,7 @@ async function runExec(
 		env,
 		shell,
 		detached: process.platform !== 'win32',
-		stdio: [readOnly ? 'ignore' : 'pipe', 'pipe', 'pipe'],
+		stdio: [readOnly ? 'ignore' : 'pipe', 'pipe', 'pipe'] as const,
 	});
 
 	superviseProcess(child, abortSignal);
