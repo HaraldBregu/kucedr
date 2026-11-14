@@ -593,7 +593,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setTrayEnabled,
-			wrapSimpleHandler((enabled: boolean) => {
+			wrapTrustedHandler((enabled: boolean) => {
 				setStoredTrayEnabled(enabled);
 				eventBus.emit('tray:set-enabled', { enabled });
 				eventBus.broadcast(AppChannels.trayEnabledChanged, enabled);
