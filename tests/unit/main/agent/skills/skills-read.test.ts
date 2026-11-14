@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { readSkill } from '../../../../../src/main/agent/skills/skills_read';
 
 describe('readSkill', () => {
-	it('records the validated local source, trust, and exact content hash', () => {
+	it('records the validated source and exact content hash', () => {
 		const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-skill-'));
 		const folder = path.join(parent, 'safe-skill');
 		const source = '---\nname: safe-skill\ndescription: Safe\nallowed-tools: read write\n---\nBody';
