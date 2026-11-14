@@ -129,24 +129,18 @@ async function runExec(
 			? undefined
 			: timeoutInput * 1000;
 	const startedAt = Date.now();
-	const pty = ptyInput === true;
+	const pty = ptyInput === true && process.platform !== 'win32';
 	const executionMode: ExecutionMode = elevatedInput === true ? 'host' : 'sandbox';
 	const hostCommand = pty ? 'script' : command;
-	const hostArgs = pty
-		? process.platform === 'darwin' ||
-			process.platform === 'freebsd' ||
-			process.platform === 'openbsd' ||
-			process.platform === 'netbsd'
-			? ['-q', '/dev/null', process.env.SHELL ?? '/bin/sh', '-lc', command]
-			: ['-q', '-e', '-c', command, '/dev/null']
-		: [];
-	const ptyCommand =
+	const ptyArgs =
 		process.platform === 'darwin' ||
 		process.platform === 'freebsd' ||
 		process.platform === 'openbsd' ||
 		process.platform === 'netbsd'
-			? `script -q /dev/null ${shellQuote(process.env.SHELL ?? '/bin/sh')} -lc ${shellQuote(command)}`
-			: `script -q -e -c ${shellQuote(command)} /dev/null`;
+			? ['-q', '/dev/null', process.env.SHELL ?? '/bin/sh', '-lc', command]
+			: ['-q', '-e', '-c', command, '/dev/null'];
+	const hostArgs = pty ? ptyArgs : [];
+	const ptyCommand = ['script', ...ptyArgs].map(shellQuote).join(' ');
 	const commandId = randomUUID();
 	const approvedRoots = approvedExecRoots.getStore() ?? [];
 	const wrapped =
