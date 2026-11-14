@@ -11,5 +11,5 @@ export const pluginsStore = new Store<{
 	name: 'settings',
 	cwd: pluginsRoot(),
 	accessPropertiesByDotNotation: false,
-	defaults: { disabled: [], settings: {}, secrets: {}, scriptSettings: {} },
+	defaults: { disabled: [], enabled: [], settings: {}, secrets: {}, scriptSettings: {} },
 });
