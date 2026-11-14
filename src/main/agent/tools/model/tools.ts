@@ -37,7 +37,7 @@ export function modelTools(): Tool[] {
 					if (!apiKey) throw new Error(`${model.provider.name} API key not configured.`);
 					const baseURL = provider?.baseUrl && provider.baseUrl !== model.provider.baseUrl
 						? provider.baseUrl : model.url;
-					const client = new OpenAI({ apiKey, baseURL });
+					const client = new OpenAI({ apiKey, baseURL, maxRetries: 0 });
 					return client.post(contract.endpoint, {
 						body: { ...input, model: model.id },
 						signal,
