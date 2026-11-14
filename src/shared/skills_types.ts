@@ -38,7 +38,6 @@ export interface SkillLoadResult {
 	canonicalRoot: string;
 	instructions: string;
 	source: SkillSource;
-	trust: SkillTrust;
 	hash: string;
 	resources: string[];
 	warnings: SkillDiagnostic[];
