@@ -228,6 +228,8 @@ async function runProcess(
 	if (!sessionId) throw new Error('process: sessionId is required.');
 	const session = registry.owned(sessionId);
 	if (!session) throw new Error(`process: session '${sessionId}' not found.`);
+	if (session.exited && ['write', 'send-keys', 'submit', 'paste'].includes(action))
+		throw new Error(`process ${action}: session '${sessionId}' has exited.`);
 
 	switch (action) {
 		case 'poll': {
