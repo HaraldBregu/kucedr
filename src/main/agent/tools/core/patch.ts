@@ -23,28 +23,39 @@ export const applyPatchTool = tool({
 		const added: string[] = [];
 		const modified: string[] = [];
 		const deleted: string[] = [];
+		const files = new Map<string, string | null>();
+		const exists = (target: string): boolean => (files.has(target) ? files.get(target) !== null : existsSync(target));
 
 		for (const hunk of hunks) {
 			const target = authorizeFilePath(hunk.path);
 			if (hunk.kind === 'add') {
-				await writeAuthorizedFile(target, hunk.contents, signal);
+				files.set(target, hunk.contents);
 				added.push(target);
 			} else if (hunk.kind === 'delete') {
-				await removeAuthorizedFile(target, signal);
+				if (!exists(target)) throw new Error(`File to delete does not exist: ${target}`);
+				files.set(target, null);
 				deleted.push(target);
 			} else {
-				const contents = (await readFileBounded(target, MAX_READ_BYTES, signal)).toString('utf8');
+				if (!exists(target)) throw new Error(`File to update does not exist: ${target}`);
+				const contents =
+					files.get(target) ?? decodeUtf8(await readFileBounded(target, MAX_READ_BYTES, signal), target);
 				const applied = applyUpdateChunks(target, contents, hunk.chunks);
 				if (hunk.movePath) {
 					const moveTarget = authorizeFilePath(hunk.movePath);
-					await writeAuthorizedFile(moveTarget, applied, signal);
-					if (moveTarget !== target) await removeAuthorizedFile(target, signal);
+					if (moveTarget !== target) files.set(target, null);
+					files.set(moveTarget, applied);
 					modified.push(moveTarget);
 				} else {
-					await writeAuthorizedFile(target, applied, signal);
+					files.set(target, applied);
 					modified.push(target);
 				}
 			}
+		}
+
+		signal?.throwIfAborted();
+		for (const [target, contents] of files) {
+			if (contents !== null) await writeAuthorizedFile(target, contents, signal);
+			else if (existsSync(target)) await removeAuthorizedFile(target, signal);
 		}
 
 		return {
