@@ -4,7 +4,14 @@ import { pluginsStore } from './plugins_store';
 export function setPluginEnabled(id: string, enabled: boolean): void {
 	if (id === CORE_PLUGIN_ID) throw new Error('The core plugin cannot be disabled.');
 	const disabled = new Set(pluginsStore.get('disabled'));
-	if (enabled) disabled.delete(id);
-	else disabled.add(id);
+	const allowed = new Set(pluginsStore.get('enabled'));
+	if (enabled) {
+		disabled.delete(id);
+		allowed.add(id);
+	} else {
+		disabled.add(id);
+		allowed.delete(id);
+	}
 	pluginsStore.set('disabled', [...disabled]);
+	pluginsStore.set('enabled', [...allowed]);
 }
