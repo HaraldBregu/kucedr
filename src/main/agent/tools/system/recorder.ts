@@ -117,7 +117,15 @@ export function recorderTools(kind: Kind): { start: Tool; status: Tool; stop: To
 		execute: async ({ id, wait }, signal) => {
 			signal?.throwIfAborted();
 			recordingOwner(recorder, id);
-			const recording = wait ? await recorder.waitFor(id) : recorder.get(id);
+			const settled = new AbortController();
+			const recording = wait
+				? await Promise.race([
+						recorder.waitFor(id),
+						delay(MAX_WAIT_MS, undefined, {
+							signal: signal ? AbortSignal.any([signal, settled.signal]) : settled.signal,
+						}).then(() => recorder.get(id)),
+					]).finally(() => settled.abort())
+				: recorder.get(id);
 			if (!recording) throw new Error(`Unknown ${kind} recording: ${id}`);
 			return {
 				id: recording.id,
