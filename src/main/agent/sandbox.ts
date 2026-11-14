@@ -256,14 +256,16 @@ export class ExecSandbox {
 			...resolveRules(permissions.exec.allow),
 			this.temporaryDirectory,
 		];
+		const guarded = protectedRoots();
 		const denyWrite = [
 			...explicitWriteDenies,
 			...getDefaultWritePaths().filter((value) =>
 				!value.startsWith('/dev/') &&
 				permissionFor({ allow: [...allowWrite, ...approvedRoots.map(recursivePermissionRule)], deny: [] }, value, 'write') !== 'allow'
 			),
+			...(await this.protectedWrites(guarded.write, [...guarded.writable, realPath(this.temporaryDirectory)])),
 		];
-		const denyRead = explicitReadDenies;
+		const denyRead = [...explicitReadDenies, ...guarded.read];
 		const allowRead: string[] = [];
 		const windowsPath = this.vendoredWindowsPath();
 		const seccompPath = this.vendoredSeccompPath();
