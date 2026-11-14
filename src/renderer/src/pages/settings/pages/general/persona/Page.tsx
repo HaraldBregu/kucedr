@@ -43,7 +43,7 @@ const PersonaPage: React.FC = () => {
 							}
 						}}
 					>
-						{APPEARANCES.map((appearance) => (
+						{VOICE_AGENT_APPEARANCES.map((appearance) => (
 							<ToggleGroupItem
 								key={appearance}
 								value={appearance}
