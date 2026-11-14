@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { agentLocation } from '../../../shared/agent_location';
 import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
-import { registry } from './process';
+import { registry, type ProcessSession } from './process';
 import type { ExecSandbox } from '../../sandbox';
 import type { ExecutionMode } from '../../../../shared/sandbox';
 import { approvedExecRoots } from '../../permissions/approved_exec_roots';
