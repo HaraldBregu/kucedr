@@ -127,11 +127,13 @@ export function validateSkill(folder: string): SkillValidationResult {
 		(typeof data.metadata !== 'object' ||
 			data.metadata === null ||
 			Array.isArray(data.metadata) ||
-			Object.values(data.metadata).some((value) => typeof value !== 'string'))
+			Object.values(data.metadata).some(
+				(value) => !['string', 'number', 'boolean'].includes(typeof value)
+			))
 	) {
 		issues.push({
 			code: 'invalid-metadata',
-			message: '"metadata" must map string keys to string values.',
+			message: '"metadata" must map string keys to string, number, or boolean values.',
 		});
 	}
 	if (
