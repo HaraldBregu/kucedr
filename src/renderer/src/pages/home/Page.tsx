@@ -326,7 +326,10 @@ function VoiceButton({
 
 	return (
 		<Tooltip>
-			<TooltipTrigger render={isDisabled ? <span className="inline-flex">{button}</span> : button} />
+			<TooltipTrigger
+				key={isDisabled ? 'disabled' : 'enabled'}
+				render={isDisabled ? <span className="inline-flex">{button}</span> : button}
+			/>
 			<TooltipContent side="top" className="flex-col items-start gap-1">
 				<span>Dictate</span>
 				{reason ? <span className="opacity-70">{reason}</span> : null}
