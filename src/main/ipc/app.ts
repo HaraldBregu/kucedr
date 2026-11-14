@@ -887,6 +887,7 @@ export class AppIpc implements IpcModule {
 		ipcMain.handle(
 			AppChannels.uploadProvider,
 			wrapIpcHandler((event) => {
+				trusted.assert(event);
 				return uploadProvider(event, () => {
 					refreshProviderCatalog();
 					eventBus.broadcast(AppChannels.modelsChanged);
