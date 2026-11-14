@@ -71,6 +71,7 @@ import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { ReplyPreview } from './components/Reply';
+import { ActiveSkills } from './components/Skills';
 import { LibraryPicker } from './components/LibraryPicker';
 import { Messages } from './Messages';
 import { ChatOutline } from './Outline';
