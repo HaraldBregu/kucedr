@@ -12,6 +12,7 @@ import { isCoderLayout } from '../../shared/coder_layout';
 import type { Coding } from '../coding';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
+import { isBundledApp } from '../apps/app_bundled';
 import type { WindowContextManager } from '../window_context';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
