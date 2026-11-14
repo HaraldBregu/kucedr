@@ -9,8 +9,8 @@ export function saveSearchEngine(engineId: SearchEngineId, input: SearchEngineIn
 	const service = loadWebSearches().find((entry) => entry.provider.id === engineId);
 	if (!service) throw new Error('Unknown search service.');
 	const settings = pluginSettings(service.provider.id);
-	const input_key = typeof input?.apiKey === 'string' ? input.apiKey.trim() : '';
-	const apiKey = input_key === MASKED_KEY ? settings.apiKey?.trim() : input_key;
+	const entered = typeof input?.apiKey === 'string' ? input.apiKey.trim() : '';
+	const apiKey = entered === MASKED_KEY ? settings.apiKey?.trim() : entered;
 	if (!apiKey) throw new Error('A search engine API key is required.');
 	savePluginSettings(service.provider.id, { ...settings, apiKey });
 	return getSearchSettings();
