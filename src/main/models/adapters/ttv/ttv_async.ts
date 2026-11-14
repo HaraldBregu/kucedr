@@ -28,7 +28,7 @@ export function createAsyncVideoAdapter(provider: VideoProviderSpec): VideoAdapt
 			);
 			if (!task.id)
 				throw new VideoProviderRequestError(`${provider.name}: generation was not accepted.`);
-			const url = await poll(provider.name, 120, 5000, async () => {
+			const url = await poll(provider.name, 120, 5000, request.signal, async () => {
 				const result = await requestJson<{
 					task_status?: string;
 					video_result?: { url?: string }[];
