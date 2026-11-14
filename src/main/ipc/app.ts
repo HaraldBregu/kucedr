@@ -693,7 +693,7 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(AppChannels.getWorkspaceImageModel, wrapSimpleHandler(() => getWorkspaceImageModel(), AppChannels.getWorkspaceImageModel));
-		ipcMain.handle(AppChannels.setWorkspaceImageModel, wrapSimpleHandler((model: { providerId: string; modelId: string }) => setWorkspaceImageModel(model), AppChannels.setWorkspaceImageModel));
+		ipcMain.handle(AppChannels.setWorkspaceImageModel, wrapTrustedHandler((model: { providerId: string; modelId: string }) => setWorkspaceImageModel(model), AppChannels.setWorkspaceImageModel));
 		ipcMain.handle(AppChannels.getWorkspaceVoiceModel, wrapSimpleHandler(() => getWorkspaceVoiceModel(), AppChannels.getWorkspaceVoiceModel));
 		ipcMain.handle(AppChannels.setWorkspaceVoiceModel, wrapSimpleHandler((model: { providerId: string; modelId: string }) => setWorkspaceVoiceModel(model), AppChannels.setWorkspaceVoiceModel));
 		ipcMain.handle(AppChannels.getWorkspaceModelOptions, wrapSimpleHandler(() => getWorkspaceModelOptions(), AppChannels.getWorkspaceModelOptions));
