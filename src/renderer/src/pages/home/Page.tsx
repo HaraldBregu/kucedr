@@ -828,6 +828,7 @@ function PageContent(): ReactElement {
 					actionLabel={voiceErrorAction?.label}
 					onAction={voiceErrorAction?.action}
 				/>
+				<ActiveSkills skillIds={activeSkillIds} disabled={agent.isLoading} onRemove={agent.unloadSkill} />
 				{attachments.length > 0 ? (
 					<div className="mb-2">
 						<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
