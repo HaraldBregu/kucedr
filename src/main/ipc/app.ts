@@ -879,6 +879,7 @@ export class AppIpc implements IpcModule {
 		ipcMain.handle(
 			AppChannels.showAudioContextMenu,
 			wrapIpcHandler((event, audioPath: string) => {
+				trusted.assert(event);
 				showAudioContextMenu(event, audioPath);
 			}, AppChannels.showAudioContextMenu)
 		);
