@@ -9,6 +9,7 @@ export function updateHealthTool(config: Config) {
 		category: 'bootstrap',
 		name: 'Update health',
 		description: 'Replace the current HEALTH.md information.',
+		capability: { effects: ['write', 'persistence'], approval: true },
 		inputSchema: z.object({
 			content: z.string().describe('The complete Markdown content to store in HEALTH.md.'),
 		}),
