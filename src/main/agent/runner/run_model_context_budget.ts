@@ -137,10 +137,13 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 			}) / CONTEXT_BYTES_PER_TOKEN
 		) + 32;
 	if (mandatoryTokens > maxInputTokens) {
+		const parts = [
+			...(protectedSystemPrompt ? ['The mode instructions'] : []),
+			...(requiredContextMessages.length > 0 ? ['the loaded skill instructions'] : []),
+			'the workspace context, current user turn, and available tool schemas',
+		].join(', ');
 		throw new Error(
-			protectedSystemPrompt
-				? 'The mode instructions, workspace context, current user turn, and available tool schemas exceed the model context budget.'
-				: 'The workspace context, current user turn, and available tool schemas exceed the model context budget.'
+			`${parts.charAt(0).toUpperCase()}${parts.slice(1)} exceed the model context budget.`
 		);
 	}
 
