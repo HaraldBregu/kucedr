@@ -296,7 +296,12 @@ export interface AgentCapabilityResolutionSummary {
 }
 
 export type AgentRunStreamEvent =
-	| { type: 'run_started'; sessionId: string; modeIds: readonly string[] }
+	| {
+			type: 'run_started';
+			sessionId: string;
+			modeIds: readonly string[];
+			skillIds?: readonly string[];
+	  }
 	| { type: 'run_state'; state: AgentRunState; label?: string }
 	| {
 			type: 'model_selected';
