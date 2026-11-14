@@ -1,4 +1,6 @@
 import { readFileBounded } from '../../files/read';
+import { readLines } from '../../files/lines';
+import { decodeUtf8 } from '../../files/text';
 import { authorizeFilePath } from '../../files/authorize';
 import { z } from 'zod';
 import { tool } from '../tool';
@@ -19,12 +21,8 @@ export const readTool = tool({
 	}),
 	execute: async ({ path: filePath, offset, limit }, signal) => {
 		const resolved = authorizeFilePath(filePath);
-		const text = (await readFileBounded(resolved, 2 * 1024 * 1024, signal)).toString('utf8');
-		if (offset === undefined && limit === undefined) return text;
-		const start = (offset ?? 1) - 1;
-		return text
-			.split('\n')
-			.slice(start, limit === undefined ? undefined : start + limit)
-			.join('\n');
+		if (offset === undefined && limit === undefined)
+			return decodeUtf8(await readFileBounded(resolved, MAX_READ_BYTES, signal), resolved);
+		return readLines(resolved, (offset ?? 1) - 1, limit, MAX_READ_BYTES, signal);
 	},
 });
