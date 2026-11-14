@@ -19,6 +19,7 @@ import type {
 	ResponseInput,
 	ResponseStreamEvent,
 } from 'openai/resources/responses/responses';
+import { headers } from './headers';
 import { instructions } from './instructions';
 import type { LlmEvent, LlmRequest, LlmResponse } from './llm_types';
 import type {
