@@ -19,5 +19,6 @@ export function updateSchedule(
 	if (typeof request.prompt === 'string') patch.prompt = request.prompt.trim();
 	if (request.toolsAllow) patch.toolsAllow = request.toolsAllow;
 	unscheduleJob(scheduleId);
+	if (request.enabled === false) stopRun(scheduleId);
 	return activate(update(scheduleId, patch));
 }
