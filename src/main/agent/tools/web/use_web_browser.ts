@@ -40,6 +40,7 @@ const ACT_KINDS = [
 const SNAPSHOT_MAX_TEXT = 4_000;
 const CONSOLE_BUFFER_MAX = 100;
 const DEFAULT_TIMEOUT_MS = 15_000;
+const pageOwners = new WeakMap<Page, string>();
 
 function trackPage(page: Page, session: BrowserSession = browserSession()): string {
 	const id = `t${session.nextTabId++}`;
