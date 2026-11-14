@@ -3,6 +3,8 @@ import { getSearchProviders } from './search_store';
 import { loadWebSearches } from '../models';
 import { pluginSettings } from '../plugins/plugins_settings';
 
+export const MASKED_KEY = '************';
+
 export function getStoredSearchProviders(): StoredProvider[] {
 	const stored = getSearchProviders() as unknown;
 	if (!Array.isArray(stored)) return [];
