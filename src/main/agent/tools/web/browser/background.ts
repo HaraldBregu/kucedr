@@ -15,6 +15,10 @@ export function createBackgroundBrowser(): { tool: Tool; close(): Promise<void> 
 		tool: {
 			...useWebBrowserTool,
 			description: 'Open and interact with web pages in an independent headless Chrome browser. This background run has its own temporary profile, without interactive browser logins. Browser actions run without approval. The browser closes when this run ends.',
+			capability: (input) => {
+				const capability = builtinCapability(useWebBrowserTool.id, input);
+				return capability && { effects: capability.effects };
+			},
 			run: (input, signal) => browserSessions.run(session, () => useWebBrowserTool.run(input, signal)),
 		},
 		async close() {
