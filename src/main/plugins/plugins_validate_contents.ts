@@ -12,6 +12,8 @@ import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
 export function validatePluginContents(directory: string, manifest: ReadPlugin): void {
 	if (manifest.id === CORE_PLUGIN_ID)
 		throw new Error(`"${CORE_PLUGIN_ID}" is reserved for Kucedr.`);
+	if (scanPlugins().some((plugin) => plugin.builtIn && plugin.id === manifest.id))
+		throw new Error(`"${manifest.id}" is reserved by a built-in plugin.`);
 	for (const id of manifest.contributes.apps) {
 		const folder = path.join(directory, 'apps', id);
 		const app = readAppManifestFromDirectory(folder);
