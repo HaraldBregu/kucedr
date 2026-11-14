@@ -32,7 +32,7 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		const assertCodingCaller = (event: Electron.IpcMainInvokeEvent): void => {
 			if (appRegistry.has(event.sender)) {
-				if (appRegistry.resolve(event.sender) === CODING_APP_ID) return;
+				if (appRegistry.resolve(event.sender) === CODING_APP_ID && isBundledApp(CODING_APP_ID)) return;
 				throw new Error('Coding is only available to the Coding app.');
 			}
 			trusted.assert(event);
