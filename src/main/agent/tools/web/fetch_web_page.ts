@@ -7,6 +7,15 @@ const MAX_CHARS_DEFAULT = 20_000;
 const TIMEOUT_MS = 30_000;
 const MAX_REDIRECTS = 3;
 const MAX_RESPONSE_BYTES = 1_000_000;
+const TEXT_TYPE = /^text\/|json|xml|javascript/i;
+const ENTITIES = new Map([
+	['nbsp', ' '],
+	['amp', '&'],
+	['lt', '<'],
+	['gt', '>'],
+	['quot', '"'],
+	['apos', "'"],
+]);
 
 // ponytail: regex-based HTML-to-text; add a readability lib if extraction quality matters
 function htmlToText(html: string): string {
