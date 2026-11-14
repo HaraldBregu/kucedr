@@ -19,16 +19,21 @@ export const editTool = tool({
 	}),
 	execute: async ({ path: filePath, oldText, newText }, signal) => {
 		const resolved = authorizeFilePath(filePath);
-		const content = (await readFileBounded(resolved, MAX_READ_BYTES, signal)).toString('utf8');
-		const firstIndex = content.indexOf(oldText);
+		const original = decodeUtf8(await readFileBounded(resolved, MAX_READ_BYTES, signal), resolved);
+		const eol = lineEnding(original);
+		const [content, search, replacement] = [original, oldText, newText].map((text) =>
+			eol === '\r\n' ? text.replaceAll('\r\n', '\n') : text
+		);
+		const firstIndex = content.indexOf(search);
 		if (firstIndex === -1) {
 			throw new Error('edit oldText was not found.');
 		}
-		if (content.indexOf(oldText, firstIndex + oldText.length) !== -1) {
+		if (content.indexOf(search, firstIndex + search.length) !== -1) {
 			throw new Error('edit oldText matched multiple locations.');
 		}
 
-		await writeAuthorizedFile(resolved, content.replace(oldText, newText), signal);
+		const edited = content.slice(0, firstIndex) + replacement + content.slice(firstIndex + search.length);
+		await writeAuthorizedFile(resolved, eol === '\r\n' ? edited.replaceAll('\n', '\r\n') : edited, signal);
 		return { path: resolved };
 	},
 });
