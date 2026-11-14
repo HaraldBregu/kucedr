@@ -291,3 +291,14 @@ Checked against the current OpenAI prompt-caching guide (GPT-5.6+ breakpoints, l
 - **`allowed_tools`:** this is the general form of the `ask` fix above. Send a stable tool list and restrict what can be called.
 
 Not worth it now: `"12h"` TTL (2.5× write, no observed gaps that need it) and explicit-only mode (implicit is right for an agent loop).
+
+### Landed (2026-11-14)
+
+- **System breakpoint on the Responses path.** When the manifest has `breakpoints: ["system"]` and the request has no `previous_response_id`, the system prompt goes out as the first `developer` message, carrying `prompt_cache_breakpoint: { "mode": "explicit" }`, instead of `instructions`. The helper is `models/adapters/llm/instructions.ts`, used by the streaming path and the non-streaming path. The flag is on gpt-5.6-* and gpt-6* only, because earlier models do not support explicit breakpoints.
+- **`ask` follows the run type, not the surface.** It is in the tool list for every interactive run and hidden only for background runs (tasks, health, subagents) or modes with `ask: false` (`run_stream.ts:167`). A run with no window that calls it gets the existing call-time error (`run_tool_call.ts:142-151`).
+
+Checked:
+- `typecheck:node` and eslint pass, and the eight manifests parse.
+- A bundled `LlmModel`, run with a fake OpenAI client, sent a developer message with a breakpoint and no `instructions` for gpt-5.6-luna on both the streaming and non-streaming paths. For gpt-5.5 it sent the request unchanged, with `instructions` and `prompt_cache_key`.
+
+Not confirmed: a live OpenAI call, and the unit suite. Re-measure turn 1 of new chats on gpt-5.6+ from `run.jsonl`; `cachedTokens` should be close to the system-plus-tools size after the first chat.
