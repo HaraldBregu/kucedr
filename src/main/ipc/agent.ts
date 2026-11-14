@@ -71,6 +71,7 @@ import {
 	setToolProfileTool,
 	setToolModel,
 } from '../agent/agent_store';
+import { modelTools } from '../agent/tools/model/tools';
 import {
 	getRagConfiguration,
 	runRagIndexing,
