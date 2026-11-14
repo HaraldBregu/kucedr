@@ -173,6 +173,7 @@ export class Agent {
 		stopHealth();
 		setTaskRunner(undefined);
 		destroyTask();
+		registry.terminate();
 		void this.sandbox.reset();
 	}
 
