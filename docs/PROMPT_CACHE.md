@@ -266,3 +266,28 @@ Provider docs, checked 2026-11-14:
 - **OpenRouter:** `session_id` (body, or the `x-session-id` header) turns on sticky routing from the first request. Without it, routing sticks only after a hit is seen, and falls back to `prompt_cache_key`. Neither is sent for OpenRouter today. Fix: `"cache": { "sessionKey": "session_id" }` on the OpenRouter manifests. The older traces showed `openrouter/auto` missing every turn 1.
 
 Order: the `ask` fix, then OpenRouter `session_id`, then re-measure once there are a few hundred calls.
+
+### Against the OpenAI guide (2026-11-14)
+
+Checked against the current OpenAI prompt-caching guide (GPT-5.6+ breakpoints, lookup boundaries, TTL, keys).
+
+**Already right:**
+- History is append-only.
+- The run context and the internal notes are separate user messages. User messages are eligible breakpoints, so run N+1 finds run N's last write within the 20 earlier message endings it looks up.
+- `prompt_cache_key` is sent on gpt-5.4 and gpt-5.5 only. It is optional on 5.6+.
+- `cache_write_tokens` is read.
+- The 30-minute default TTL fits the observed gaps.
+
+**New chats never reuse the system prompt and tools.** On GPT-5.6+ the implicit breakpoint is written only at the end of the latest eligible message, which is the user's first message. Every new chat in the traces starts with the same tools hash (`c101a402be`) and one of two system hashes, 13.6–16K tokens. Yet the first call caches about 0. The gpt-5.6-luna first call wrote 13,695 of 13,698 tokens at 1.25×, ending at the user's message, so no other chat can match it. The guide lists this as "a shared prefix is not always a cached prefix".
+- **Fix:** when the manifest has `breakpoints: ["system"]`, send the system prompt in the Responses path (`llm_model.ts:278`, `responses.ts:29`) as the first `developer` message. Its `input_text` block carries `prompt_cache_breakpoint: { "mode": "explicit" }`. Top-level `instructions` cannot hold a breakpoint. Keep implicit mode, so the history keeps its implicit breakpoint.
+- **Manifests:** add `breakpoints: ["system"]` to gpt-5.6-* and gpt-6*.
+- **Cost:** one 1.25× write of about 14K tokens per 30 minutes. Every new chat's first call then reads it at 0.1×.
+- Anthropic already gets this from its `system` breakpoint.
+
+**Smaller items:**
+- **Prewarm:** `prompt_cache_options: { "prewarm": true }` with only the system prompt and tools, sent when a chat opens. It makes the first message warm too. Do it only after the breakpoint fix, because it needs the breakpoint to have something to reuse.
+- **Effort on GPT-6+:** the per-chat effort ratchet rewrites `reasoning.effort`, which changes hidden instructions and misses fully. Instead, append a `configuration_update` input item and keep the top-level effort. Effort changes are frequent in older traces (deepseek routes mix none/low/medium/high), but none are recorded on OpenAI yet.
+- **Synthesis retry turn:** it sends no tools, which is a full miss. `tool_choice: "none"` with the same tools keeps the prefix.
+- **`allowed_tools`:** this is the general form of the `ask` fix above. Send a stable tool list and restrict what can be called.
+
+Not worth it now: `"12h"` TTL (2.5× write, no observed gaps that need it) and explicit-only mode (implicit is right for an agent loop).
