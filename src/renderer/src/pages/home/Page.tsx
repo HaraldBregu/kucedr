@@ -693,26 +693,12 @@ function PageContent(): ReactElement {
 			setTranscriptionErrorMessage('Choose a speech-to-text provider and model in Settings.');
 			return;
 		}
-		if (voiceButtonMode === 'record') {
-			const started = await recorder.start();
-			if (!started) {
-				updateMode('chat');
-				return;
-			}
-			setActiveDictationMode('record');
-			setVoiceMode('dictation');
-			updateMode('voice');
-			return;
-		}
-
-		const started = await dictation.start();
-		if (!started) {
-			updateMode('chat');
-			return;
-		}
-		setActiveDictationMode('dictate');
+		setActiveDictationMode(voiceButtonMode);
 		setVoiceMode('dictation');
 		updateMode('voice');
+		const started =
+			voiceButtonMode === 'record' ? await recorder.start() : await dictation.start();
+		if (!started) updateMode('chat');
 	};
 
 	const cancelDictation = async (): Promise<void> => {
