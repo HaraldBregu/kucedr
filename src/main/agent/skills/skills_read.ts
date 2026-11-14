@@ -56,8 +56,15 @@ export function readSkill(
 		skillPath: canonicalSkillPath,
 		manifest,
 		source: origin,
-		trust: 'user-controlled',
 		hash,
+		...(validation.warnings?.length
+			? {
+					diagnostics: validation.warnings.map((warning) => ({
+						level: 'warning' as const,
+						...warning,
+					})),
+				}
+			: {}),
 		structure: {
 			format: 'agent-skill',
 			standard: 'agentskills.io',
