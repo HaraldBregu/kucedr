@@ -10,7 +10,12 @@ export function saveMcpToolCatalog(id: string, tools: Tool[]): void {
 	const catalogs = mcpCatalogStore.get('catalogs');
 	mcpCatalogStore.set('catalogs', {
 		...catalogs,
-		[id]: { identity: mcpCatalogIdentity(data), tools, permissions: catalogs[id]?.permissions },
+		[id]: {
+			identity: mcpCatalogIdentity(data),
+			tools,
+			permissions: catalogs[id]?.permissions,
+			permissionHashes: catalogs[id]?.permissionHashes,
+		},
 	});
 	restrictSettingsFile(mcpCatalogStore.path);
 }
