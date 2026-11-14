@@ -719,7 +719,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.setWorkspaceTextSize,
-			wrapSimpleHandler((size: WorkspaceTextSize) => {
+			wrapTrustedHandler((size: WorkspaceTextSize) => {
 				setStoredWorkspaceTextSize(size);
 			}, AppChannels.setWorkspaceTextSize)
 		);
