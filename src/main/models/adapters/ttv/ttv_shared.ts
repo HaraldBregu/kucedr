@@ -1,5 +1,9 @@
+import { setTimeout as delay } from 'node:timers/promises';
 import { VideoProviderAuthError, VideoProviderRequestError } from './ttv_errors';
 import type { VideoGenerationResult } from './ttv_types';
+
+const MAX_ERROR_DETAIL = 1000;
+const MAX_VIDEO_BYTES = 512 * 1024 * 1024;
 
 export async function requestJson<T>(
 	providerName: string,
@@ -13,7 +17,7 @@ export async function requestJson<T>(
 	if (!response.ok) {
 		const detail = await response.text().catch(() => '');
 		throw new VideoProviderRequestError(
-			`${providerName} request failed (${response.status}): ${detail}`
+			`${providerName} request failed (${response.status}): ${detail.slice(0, MAX_ERROR_DETAIL)}`
 		);
 	}
 	return (await response.json()) as T;
@@ -28,7 +32,19 @@ export async function fetchVideoAsBase64(
 	if (!response.ok) {
 		throw new VideoProviderRequestError(`Failed to download generated video (${response.status}).`);
 	}
-	const base64 = Buffer.from(await response.arrayBuffer()).toString('base64');
+	if (Number(response.headers.get('content-length')) > MAX_VIDEO_BYTES) {
+		throw new VideoProviderRequestError('Generated video exceeds the download size limit.');
+	}
+	const chunks: Uint8Array[] = [];
+	let size = 0;
+	for await (const chunk of response.body ?? []) {
+		size += chunk.byteLength;
+		if (size > MAX_VIDEO_BYTES) {
+			throw new VideoProviderRequestError('Generated video exceeds the download size limit.');
+		}
+		chunks.push(chunk);
+	}
+	const base64 = Buffer.concat(chunks).toString('base64');
 	const mimeType = response.headers.get('content-type');
 	return {
 		base64,
@@ -40,12 +56,13 @@ export async function poll<T>(
 	providerName: string,
 	attempts: number,
 	intervalMs: number,
+	signal: AbortSignal | undefined,
 	check: () => Promise<T | undefined>
 ): Promise<T> {
 	for (let i = 0; i < attempts; i++) {
 		const result = await check();
 		if (result !== undefined) return result;
-		await new Promise((resolve) => setTimeout(resolve, intervalMs));
+		await delay(intervalMs, undefined, { signal });
 	}
 	throw new VideoProviderRequestError(`${providerName}: video generation timed out.`);
 }
