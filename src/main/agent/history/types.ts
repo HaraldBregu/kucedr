@@ -4,6 +4,7 @@ export interface FileSnapshot {
 	content?: string;
 	mode?: number;
 	hash?: string;
+	tooLarge?: boolean;
 }
 
 export interface FileOperation {
