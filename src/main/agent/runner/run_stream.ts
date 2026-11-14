@@ -72,6 +72,7 @@ import { updateSoulTool } from '../tools/soul/update';
 import { updateUserTool } from '../tools/user/update';
 import { requestsSkillTools } from './run_skill_request';
 import { resolveMcpServerHint } from './run_mcp_hint';
+import { resolveContextWindow } from '../../models/context';
 import { requestedTaskTools } from './run_task_request';
 
 export interface StreamOptions {
