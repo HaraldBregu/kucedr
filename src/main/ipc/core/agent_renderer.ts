@@ -25,7 +25,7 @@ export class AgentRenderer {
 		if (!event.senderFrame || event.senderFrame !== event.sender.mainFrame) {
 			throw new Error('Workspace IPC is restricted to the main frame.');
 		}
-		if (this.apps.resolve(event.sender) !== 'workspace') {
+		if (this.apps.resolve(event.sender) !== 'workspace' || !isBundledApp('workspace')) {
 			throw new Error('Workspace IPC is unavailable to this app.');
 		}
 	}
