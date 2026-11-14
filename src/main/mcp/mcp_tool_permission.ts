@@ -6,8 +6,9 @@ import { mcpCatalogStore } from './mcp_catalog_store';
 export function getMcpToolPermission(id: string, toolName: string): AgentToolPermission | undefined {
 	const tool = getMcpToolCatalog(id)?.find((entry) => entry.name === toolName);
 	if (!tool) return undefined;
-	const stored = mcpCatalogStore.get('catalogs')[id]?.permissions?.[toolName];
-	if (stored) return stored;
+	const catalog = mcpCatalogStore.get('catalogs')[id];
+	const stored = catalog?.permissions?.[toolName];
+	if (stored && catalog?.permissionHashes?.[toolName] === mcpToolHash(tool)) return stored;
 	const approval = getMcpServers()[id]?.require_approval;
 	return approval === 'never' || (approval !== 'always' && tool.annotations?.readOnlyHint === true)
 		? 'allow'
