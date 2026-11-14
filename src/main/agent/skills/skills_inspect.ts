@@ -61,7 +61,6 @@ export async function inspectSkill(
 		canonicalRoot,
 		instructions,
 		source: skill.source,
-		trust: skill.trust,
 		hash,
 		resources,
 		warnings,
