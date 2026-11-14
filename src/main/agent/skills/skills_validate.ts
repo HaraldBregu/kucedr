@@ -151,5 +151,5 @@ export function validateSkill(folder: string): SkillValidationResult {
 			code: 'unknown-field',
 			message: `Unsupported SKILL.md frontmatter field "${key}" is ignored.`,
 		}));
-	return { valid: issues.length === 0, issues, warnings };
+	return { valid: issues.length === 0, issues, ...(warnings.length > 0 ? { warnings } : {}) };
 }
