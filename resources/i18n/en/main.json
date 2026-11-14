@@ -534,7 +534,10 @@
 			"appearanceDescription": "Choose the visual used during voice conversations.",
 			"appearances": {
 				"persona": "Halo",
-				"orb-07": "Nebula"
+				"radial": "Radial",
+				"cloud": "Cloud",
+				"circle": "Circle",
+				"bars": "Bars"
 			},
 			"preview": "Preview",
 			"previewDescription": "Choose a state to preview its motion and response.",
