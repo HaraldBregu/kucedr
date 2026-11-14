@@ -871,6 +871,7 @@ export class AppIpc implements IpcModule {
 		ipcMain.handle(
 			AppChannels.showVideoContextMenu,
 			wrapIpcHandler((event, videoPath: string) => {
+				trusted.assert(event);
 				showVideoContextMenu(event, videoPath);
 			}, AppChannels.showVideoContextMenu)
 		);
