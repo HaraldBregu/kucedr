@@ -47,6 +47,14 @@ export async function inspectSkill(
 			message: `Skill instructions are about ${estimatedTokens} tokens across ${lineCount} lines; under 5,000 tokens and 500 lines is recommended.`,
 		});
 	}
+	const { resources, skipped } = listSkillResources(canonicalRoot);
+	if (skipped.length > 0) {
+		warnings.push({
+			level: 'warning',
+			code: 'skipped-resources',
+			message: `Skipped links that are not files inside the skill: ${skipped.join(', ')}.`,
+		});
+	}
 	return {
 		id: skill.id,
 		name: skill.name,
