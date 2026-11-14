@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { responseText } from '../../../body';
+import { responseBytes } from '../../../bytes';
 import { publicRequest } from '../../../request';
 import { tool } from '../tool';
+import { decodeText } from './decode';
 
 const MAX_CHARS_DEFAULT = 20_000;
 const TIMEOUT_MS = 30_000;
