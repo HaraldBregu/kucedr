@@ -71,7 +71,7 @@ export function VoiceWindow({
 							appearance={voiceAgentAppearance}
 							state={state}
 							level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
-							size={208}
+							size={voiceAgentAppearance === 'persona' ? 208 : 300}
 						/>
 					)}
 				</div>
