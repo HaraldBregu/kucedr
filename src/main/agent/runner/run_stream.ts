@@ -254,7 +254,6 @@ async function* loop(
 			name: skill.name,
 			canonicalRoot: skill.canonicalRoot,
 			instructions: skill.instructions,
-			trust: skill.trust,
 			hash: skill.hash,
 			resources: skill.resources,
 			warnings: skill.warnings,
