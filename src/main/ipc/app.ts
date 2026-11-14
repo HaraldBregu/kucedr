@@ -697,7 +697,7 @@ export class AppIpc implements IpcModule {
 		ipcMain.handle(AppChannels.getWorkspaceVoiceModel, wrapSimpleHandler(() => getWorkspaceVoiceModel(), AppChannels.getWorkspaceVoiceModel));
 		ipcMain.handle(AppChannels.setWorkspaceVoiceModel, wrapTrustedHandler((model: { providerId: string; modelId: string }) => setWorkspaceVoiceModel(model), AppChannels.setWorkspaceVoiceModel));
 		ipcMain.handle(AppChannels.getWorkspaceModelOptions, wrapSimpleHandler(() => getWorkspaceModelOptions(), AppChannels.getWorkspaceModelOptions));
-		ipcMain.handle(AppChannels.setWorkspaceModelOption, wrapSimpleHandler((option: { key: string; name: string; value: string }) => setWorkspaceModelOption(option), AppChannels.setWorkspaceModelOption));
+		ipcMain.handle(AppChannels.setWorkspaceModelOption, wrapTrustedHandler((option: { key: string; name: string; value: string }) => setWorkspaceModelOption(option), AppChannels.setWorkspaceModelOption));
 		ipcMain.handle(AppChannels.getWorkspaceModel, wrapSimpleHandler(() => getWorkspaceModel(), AppChannels.getWorkspaceModel));
 		ipcMain.handle(AppChannels.setWorkspaceModel, wrapSimpleHandler((model: { providerId: string; modelId: string }) => setWorkspaceModel(model), AppChannels.setWorkspaceModel));
 
