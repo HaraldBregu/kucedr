@@ -588,7 +588,7 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(
 			AppChannels.unfurlUrl,
-			wrapSimpleHandler((url: string) => unfurlUrl(url), AppChannels.unfurlUrl)
+			wrapTrustedHandler((url: string) => unfurlUrl(url), AppChannels.unfurlUrl)
 		);
 
 		ipcMain.handle(
