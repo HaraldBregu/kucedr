@@ -53,7 +53,7 @@ export function createVideoGenerationAdapter(
 				);
 			}
 
-			const fileId = await poll(spec.name, 120, 5000, async () => {
+			const fileId = await poll(spec.name, 120, 5000, request.signal, async () => {
 				const task = await requestJson<TaskResponse>(
 					spec.name,
 					contentParts
