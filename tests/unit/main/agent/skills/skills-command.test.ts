@@ -12,4 +12,14 @@ describe('parseSkillCommand', () => {
 		});
 		expect(parseSkillCommand('ordinary prompt')).toEqual({ message: 'ordinary prompt' });
 	});
+	it('parses /skill off as an unload request', () => {
+		expect(parseSkillCommand('/skill off writer')).toEqual({
+			message: 'Stop using the "writer" skill.',
+			unloadSkill: 'writer',
+		});
+		expect(parseSkillCommand('/skill off writer now summarize')).toEqual({
+			message: 'now summarize',
+			unloadSkill: 'writer',
+		});
+	});
 });
