@@ -71,17 +71,23 @@ export function listModels(providerId: string): ProviderModel[] {
 export function saveSelection(
 	providerId: string,
 	modelId: string,
-	mode: SttSelectionMode = 'transcribe'
+	mode?: SttSelectionMode
 ): boolean {
 	const normalizedProviderId = resolveProviderId(providerId);
 	const normalizedModelId = modelId.trim();
-	const apiType = mode === 'realtime' ? 'stream' : 'batch';
-	if (!supportsSpeechToTextApiType(normalizedProviderId, normalizedModelId, apiType)) {
+	const apiTypes: SpeechToTextApiType[] = mode
+		? [mode === 'realtime' ? 'stream' : 'batch']
+		: ['batch', 'stream'];
+	if (
+		!apiTypes.some((apiType) =>
+			supportsSpeechToTextApiType(normalizedProviderId, normalizedModelId, apiType)
+		)
+	) {
 		throw new SttProviderUnsupportedError(
-			`Speech-to-text model does not support ${apiType} transcription: ${modelLabel(normalizedProviderId, normalizedModelId)}`
+			`Speech-to-text model does not support ${apiTypes.join(' or ')} transcription: ${modelLabel(normalizedProviderId, normalizedModelId)}`
 		);
 	}
-	setTranscribeSelection(mode, normalizedProviderId, normalizedModelId);
+	setTranscribeSelection(mode ?? 'transcribe', normalizedProviderId, normalizedModelId);
 	return true;
 }
 
