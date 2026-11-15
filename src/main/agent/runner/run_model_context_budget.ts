@@ -208,7 +208,10 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 			previousUserIndex -= 1;
 		}
 		previousUserIndex = turnStart(messages, previousUserIndex);
-		const candidateMessages = [...messages.slice(previousUserIndex, cursor), ...selectedMessages];
+		const candidateMessages = expandRunContext(
+			messages.slice(0, previousUserIndex),
+			messages.slice(previousUserIndex)
+		);
 		const candidateTokens =
 			Math.ceil(
 				contextBytes({
