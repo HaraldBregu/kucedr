@@ -1,4 +1,3 @@
-export { contextAllowsTool } from './context_allows_tool';
 export { createRunContext } from './context_create';
 export { fileToolState } from './context_file_tool_state';
 export { hasCreatedFile } from './context_has_created_file';
