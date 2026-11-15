@@ -251,7 +251,7 @@ it('offers a reusable folder grant for undo outside the workspace', async () => 
 	const target = path.join(outsideRoot, 'undo-outside.txt');
 	const history: FileHistory = { operations: [] };
 	const permissions = getPermissions();
-	setPermissions({ ...permissions, write: { ...permissions.write, allow: [...permissions.write.allow, realPath(target)] } });
+	setPermissions({ ...permissions, write: { ...permissions.write, allow: [...permissions.write.allow, { root: realPath(target), recursive: false }] } });
 	await execute(writeTool, { path: target, content: 'created' }, history);
 	resetPermissions();
 	expect((await execute(undoFileTool(history), {}, history)).at(-1)).toMatchObject({ type: 'tool_permission_request', persistable: true, targets: [realPath(path.dirname(target))] });
