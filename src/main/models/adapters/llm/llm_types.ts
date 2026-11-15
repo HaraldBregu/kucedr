@@ -40,7 +40,7 @@ export type LlmEvent =
 	| { type: 'model_call_delta'; delta: string }
 	| {
 			type: 'model_provider_item';
-			provider: 'openai' | 'deepseek' | 'anthropic' | 'mistral';
+			provider: 'openai' | 'deepseek' | 'anthropic';
 			item: unknown;
 	  }
 	| { type: 'model_tool_call_start'; id: string; name: string }
