@@ -17,7 +17,6 @@ const STT_PROTOCOLS: Readonly<Record<string, (spec: SttProviderSpec) => SttAdapt
 	transcriptions: createTranscriptionsSttAdapter,
 	'transcriptions-intent': createTranscriptionsSttAdapter,
 	'transcriptions-form': createFormSttAdapter,
-	'transcription-stream': createStreamSttAdapter,
 	'transcription-session': createSessionSttAdapter,
 	listen: createListenSttAdapter,
 	'listen-v2': createListenSttAdapter,
