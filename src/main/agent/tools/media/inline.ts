@@ -4,7 +4,7 @@ import { realPath } from '../../../shared/real_path';
 import { resolveUserPath } from '../../../shared/user_path';
 import { executionScope } from '../../execution/scope';
 import { readFileBounded } from '../../files/read';
-import { getPermissions, resolveToolPermissionDetails } from '../../permissions';
+import { getPermissions, resolvePermission } from '../../permissions';
 
 const MAX_INLINE_BYTES = 20 * 1024 * 1024;
 
