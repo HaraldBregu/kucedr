@@ -50,7 +50,7 @@ describe('chat agent tool controls', () => {
 
 	beforeEach(() => {
 		runModelTurnMock.mockReset().mockImplementation(successfulTurn);
-		resetPermissions('chat');
+		resetPermissions();
 		for (const toolId of configurableToolIds) {
 			setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
 		}
