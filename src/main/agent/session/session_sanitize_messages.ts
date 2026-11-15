@@ -6,7 +6,9 @@ export const EXPIRED_SKILL_CONTEXT =
 
 export function sanitizeMessages(messages: Message[]): Message[] {
 	const sanitized: Message[] = [];
-	for (const message of messages) {
+	for (let message of messages) {
+		if (message.role === 'assistant' && Array.isArray(message.content))
+			message = { ...message, content: mergeProviderItems(message.content) };
 		if (
 			message.role === 'assistant' &&
 			!hasAssistantPayload(message.content, message.toolCalls)
