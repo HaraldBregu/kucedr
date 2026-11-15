@@ -104,5 +104,6 @@ export function configureLocalMcpServer(
 	const configured = readLocalMcpServer(serverPath);
 	if (configured.data.type !== 'stdio') throw new Error('Expected a local MCP server.');
 	setLocalMcpEnvironment(server.id, localMcpIdentity(configured.data), input.env);
+	setMcpServerInstalled(server.id, configured.data.enabled !== false);
 	return readLocalMcpServer(serverPath);
 }
