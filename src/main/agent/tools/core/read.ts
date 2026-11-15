@@ -3,6 +3,8 @@ import { readLines } from '../../files/lines';
 import { decodeUtf8 } from '../../files/text';
 import { authorizeFilePath } from '../../files/authorize';
 import { z } from 'zod';
+import { agentLocation } from '../../../shared/agent_location';
+import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { PATH_DESCRIPTION } from './fields';
 import { MAX_READ_BYTES } from './limit';
