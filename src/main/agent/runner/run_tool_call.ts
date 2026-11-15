@@ -66,21 +66,17 @@ export async function* runToolCall(
 	};
 	const declaredAccess = (): ToolAccess =>
 		executionScope.run(scope, () => tool?.access?.(canonicalInput) ?? {});
-	const accessTargets = [
-		...(toolAccess.read ?? []),
-		...(toolAccess.write ?? []),
-		...(toolAccess.exec ?? []),
-	];
+	let accessTargets: string[] = [];
 	if (tool) {
 		try {
 			canonicalInput = tool.parseInput(toolCall.args);
 			toolCall.args = canonicalInput;
 			toolAccess = declaredAccess();
-			accessTargets.push(
-				...[...(toolAccess.read ?? []), ...(toolAccess.write ?? []), ...(toolAccess.exec ?? [])].map(
-					realPath
-				)
-			);
+			accessTargets = [
+				...(toolAccess.read ?? []),
+				...(toolAccess.write ?? []),
+				...(toolAccess.exec ?? []),
+			].map(realPath);
 			access = captureAccess(accessTargets);
 		} catch (error) {
 			parseError = error;
