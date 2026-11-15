@@ -57,10 +57,6 @@ export async function* chat(
 	yield { type: 'message_start' };
 	const text = content(choice?.message.content);
 	if (text) yield { type: 'text_delta', text };
-	if (options.model?.contentChunks === 'roundtrip' && Array.isArray(choice?.message.content)) {
-		for (const item of choice.message.content)
-			yield { type: 'reasoning_item', provider: 'mistral', item };
-	}
 	const reasoningContent = (choice?.message as { reasoning_content?: unknown } | undefined)
 		?.reasoning_content;
 	if (
