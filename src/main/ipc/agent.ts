@@ -39,11 +39,14 @@ import { requireUuidSessionId, sessionPath, sessionsRoot } from '../agent/sessio
 import { workspacePath } from '../agent/system';
 import {
 	getPermissions,
+	permissionsView,
 	resetPermissions,
 	respondToolPermission,
 	setPermissions,
+	type PermissionRule,
 	type PermissionRules,
 	type PermissionsSchema,
+	type PermissionsView,
 } from '../agent/permissions';
 import {
 	getHealth,
