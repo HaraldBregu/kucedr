@@ -401,11 +401,14 @@ async function collect(events: AsyncGenerator<RuntimeEvent, void>): Promise<Runt
 }
 
 function fakeTool(id: string, run: jest.Mock): Tool {
-	return jsonTool({
-		id,
-		name: id,
-		description: id,
-		schema: { type: 'object' },
-		execute: run,
-	});
+	return {
+		...jsonTool({
+			id,
+			name: id,
+			description: id,
+			schema: { type: 'object' },
+			execute: run,
+		}),
+		access: accessFor[id],
+	};
 }
