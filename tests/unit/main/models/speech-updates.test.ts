@@ -9,7 +9,6 @@ import { transcribe } from '../../../../src/main/models/adapters/stt/stt_transcr
 import { createEmbedding } from '../../../../src/main/models/embedding/embedding_create';
 
 jest.mock('ws', () => ({ __esModule: true, default: jest.fn() }));
-jest.mock('@mistralai/mistralai', () => ({ Mistral: jest.fn() }));
 jest.mock('../../../../src/main/settings_store', () => ({
 	getProvider: (id: string) => ({
 		id,
