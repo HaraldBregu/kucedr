@@ -412,8 +412,8 @@ export async function* runToolCall(
 							)
 						);
 					const approvedRoots =
-						permissionOutcome === 'approve' && toolCall.name === 'bash'
-							? resolution.approvalTargets
+						permissionOutcome === 'approve'
+							? resolution.grants.filter((grant) => grant.kind === 'exec').map((grant) => grant.root)
 							: [];
 					execution = Promise.resolve()
 						.then(() => {
