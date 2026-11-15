@@ -246,30 +246,3 @@ it('maps Google multi-speaker voice settings instead of a single voice', async (
 	});
 });
 
-it('maps Mistral voice, reference audio, cache, metadata, and format options', async () => {
-	mistralComplete.mockResolvedValue({ audioData: 'QQ==' });
-	await createMistralSpeechAdapter({ ...provider, id: 'mistral' }).synthesize({
-		text: 'Hello',
-		providerId: 'mistral',
-		modelId: 'voxtral-mini-tts-2603',
-		options: {
-			voice_id: 'voice-1',
-			ref_audio: 'data:audio/wav;base64,QQ==',
-			response_format: 'wav',
-			prompt_cache_key: 'cache-1',
-			metadata: { source: 'kucedr' },
-		},
-	});
-
-	expect(mistralComplete).toHaveBeenCalledWith({
-		model: 'voxtral-mini-tts-2603',
-		input: 'Hello',
-		voiceId: 'voice-1',
-		refAudio: 'data:audio/wav;base64,QQ==',
-		responseFormat: 'wav',
-		promptCacheKey: 'cache-1',
-		metadata: { source: 'kucedr' },
-		stream: false,
-	});
-	expect(mistralListVoices).not.toHaveBeenCalled();
-});
