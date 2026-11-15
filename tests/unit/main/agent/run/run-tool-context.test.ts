@@ -340,8 +340,8 @@ describe('per-run file access', () => {
 		const readPath = path.join(root, 'read.txt');
 		const writePath = path.join(root, 'write.txt');
 		getPermissions.mockReturnValue({
-			read: { allow: [realPath(readPath)], deny: [] },
-			write: { allow: [realPath(writePath)], deny: [] },
+			read: { allow: [rule(realPath(readPath), false)], deny: [] },
+			write: { allow: [rule(realPath(writePath), false)], deny: [] },
 			exec: { allow: [], deny: [] },
 		});
 		const fileAccess = createRunContext().fileAccess;
