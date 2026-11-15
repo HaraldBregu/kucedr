@@ -1214,7 +1214,12 @@
 			}
 		},
 		"permissions": {
-			"locationsNotice": "L'accesso all'area di lavoro è consentito per impostazione predefinita. Le posizioni bloccate hanno la precedenza, anche al suo interno. I comandi in sandbox rispettano anche i blocchi di lettura e scrittura.",
+			"locationsNotice": "Queste posizioni valgono per tutti gli agenti: chat, voce, attività e salute. L'accesso all'area di lavoro è consentito per impostazione predefinita. Le posizioni bloccate hanno la precedenza, anche al suo interno. I comandi in sandbox rispettano anche i blocchi di lettura e scrittura. Le attività e le altre esecuzioni senza finestra possono usare solo posizioni attendibili.",
+			"droppedNotice": "{{count}} regole salvate non sono state convertite in cartelle esatte: {{rules}}. Salva o ripristina questa pagina per chiudere l'avviso.",
+			"exactPath": "Solo questo percorso",
+			"protectedTitle": "Posizioni protette",
+			"protectedDescription": "Integrate e sempre bloccate per tutti gli agenti e per i comandi in sandbox. I dati dell'app, tranne l'area di lavoro e la libreria, non possono essere scritti.",
+			"builtIn": "Integrata",
 			"locationsTitle": "Posizioni",
 			"locationsDescription": "Scegli quali strumenti possono usare ogni cartella e le relative sottocartelle.",
 			"workspaceDescription": "Area di lavoro · include sottocartelle · rispetta i blocchi espliciti",
