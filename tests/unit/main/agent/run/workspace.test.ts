@@ -17,6 +17,8 @@ import { applyPatchTool } from '../../../../../src/main/agent/tools/core/patch';
 import { undoFileTool } from '../../../../../src/main/agent/tools/core/undo';
 import { redoFileTool } from '../../../../../src/main/agent/tools/core/redo';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
+import { execTool } from '../../../../../src/main/agent/tools/core/bash';
+import type { ExecSandbox } from '../../../../../src/main/agent/sandbox';
 import { processTool, registry, type ProcessSession } from '../../../../../src/main/agent/tools/core/process';
 import { resetPermissions, setPermissions, getPermissions } from '../../../../../src/main/agent/agent_store';
 import { respondToolPermission } from '../../../../../src/main/agent/permissions';
