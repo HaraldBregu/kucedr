@@ -379,22 +379,6 @@ export function llmBuildChatMessages(
 
 	for (const entry of transcript) {
 		if (entry.role === 'user') {
-			const previous = msgs.at(-1);
-			const text =
-				typeof entry.content === 'string'
-					? entry.content
-					: entry.content.every((block) => block.type === 'text')
-						? entry.content.map((block) => block.text).join('\n')
-						: undefined;
-			if (
-				options.model?.mergeUserAfterTool &&
-				previous?.role === 'tool' &&
-				typeof previous.content === 'string' &&
-				text !== undefined
-			) {
-				previous.content = `${previous.content}\n\n${text}`;
-				continue;
-			}
 			msgs.push({
 				role: 'user',
 				content: toChatUserContent(entry.content, options.model?.documentPart),
