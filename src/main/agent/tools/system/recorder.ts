@@ -79,6 +79,7 @@ export function recorderTools(kind: Kind): { start: Tool; status: Tool; stop: To
 				? SCREEN_DESCRIPTION
 				: `Start recording ${captures[kind]}. Requires an open app window. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Specify a duration to stop automatically, or omit it and use ${kind}_recorder_stop. Use ${kind}_recorder_status to check progress or wait for completion before using the file.`,
 		inputSchema,
+		access: ({ directory }) => mediaAccess(directory),
 		execute: async ({ target, sourceId, duration, directory, filename }, signal) => {
 			signal?.throwIfAborted();
 			const source = kind === 'screen' ? await captureSource(target, sourceId) : undefined;
