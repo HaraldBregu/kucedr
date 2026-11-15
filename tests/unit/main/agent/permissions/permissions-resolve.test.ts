@@ -1,212 +1,114 @@
-const getPermissions = jest.fn();
-
-jest.mock('../../../../../src/main/agent/agent_store', () => ({
-	AGENT_DIRECTORY: '/appdata/agent',
-	getPermissions,
-}));
-
 import { createRunContext } from '../../../../../src/main/agent/context';
-import { resolveToolPermission } from '../../../../../src/main/agent/permissions/resolve_tool_permission';
-import type { PermissionsSchema } from '../../../../../src/main/agent/permissions/permissions_types';
+import { resolvePermission } from '../../../../../src/main/agent/permissions/resolve_permission';
+import { mediaAccess } from '../../../../../src/main/agent/permissions/media_access';
+import type {
+	PermissionRequest,
+} from '../../../../../src/main/agent/permissions/permission_resolution';
+import type {
+	PermissionsSchema,
+	ToolAccess,
+} from '../../../../../src/main/agent/permissions/permissions_types';
 import { libraryLocation } from '../../../../../src/main/shared/library_location';
 import { realPath } from '../../../../../src/main/shared/real_path';
 import { builtinCapability } from '../../../../../src/main/agent/execution/capability';
 
+const rule = (root: string, recursive = true) => ({ root, recursive });
 const defaults: PermissionsSchema = {
-	read: { allow: ['/outside/**'], deny: [] },
+	read: { allow: [rule('/outside')], deny: [] },
 	write: { allow: [], deny: [] },
-	exec: { allow: ['/appdata/agent/**'], deny: [] },
+	exec: { allow: [rule('/appdata/agent')], deny: [] },
 };
+const resolve = (
+	access: ToolAccess,
+	permissions: PermissionsSchema = defaults,
+	options: Partial<PermissionRequest> = {}
+) => resolvePermission({ access, permissions, interactive: true, ...options }).mode;
 
-beforeEach(() => {
-	getPermissions.mockReset().mockReturnValue(defaults);
-});
-
-describe('resolveToolPermission', () => {
-	it('uses an injected policy without consulting the global policy', () => {
-		const injected: PermissionsSchema = {
-			...defaults,
-			read: { allow: [], deny: ['/outside/**'] },
-		};
-
+describe('resolvePermission', () => {
+	it('uses the given location rules', () => {
 		expect(
-			resolveToolPermission('read', { path: '/outside/a.txt' }, undefined, true, 'ask', injected)
+			resolve({ read: ['/outside/a.txt'] }, { ...defaults, read: { allow: [], deny: [rule('/outside')] } })
 		).toBe('deny');
-		expect(getPermissions).not.toHaveBeenCalled();
 	});
 
-	it('uses configured rules and the caller fallback for unknown tools', () => {
-		expect(resolveToolPermission('read', { path: '/outside/a.txt' })).toBe('allow');
-		expect(resolveToolPermission('read', { path: '/untrusted/a.txt' })).toBe('allow');
-		expect(resolveToolPermission('edit', { path: '/outside/a.txt' })).toBe('ask');
-		expect(resolveToolPermission('mcp__safe__lookup', {}, undefined, true, 'allow')).toBe('allow');
-		expect(resolveToolPermission('mcp__records__delete')).toBe('allow');
+	it('allows interactive reads anywhere and asks for untrusted writes', () => {
+		expect(resolve({ read: ['/outside/a.txt'] })).toBe('allow');
+		expect(resolve({ read: ['/untrusted/a.txt'] })).toBe('allow');
+		expect(resolve({ write: ['/outside/a.txt'] })).toBe('ask');
+		expect(resolve({})).toBe('allow');
 	});
 
-	it('honors a per-tool deny and keeps directory rules for a per-tool allow', () => {
-		const configured: PermissionsSchema = {
-			...defaults,
-			tools: {
-				read: { permission: 'deny' },
-				edit: { permission: 'allow' },
-			},
-		};
+	it('denies untrusted access when the run is unattended', () => {
+		expect(resolve({ read: ['/untrusted/a.txt'] }, defaults, { interactive: false })).toBe('deny');
+		expect(resolve({ read: ['/outside/a.txt'] }, defaults, { interactive: false })).toBe('allow');
+	});
 
-		expect(
-			resolveToolPermission('read', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)
-		).toBe('deny');
-		expect(
-			resolveToolPermission('edit', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)
-		).toBe('ask');
+	it('honors a per-tool deny and keeps location rules for a per-tool allow', () => {
+		expect(resolve({ read: ['/outside/a.txt'] }, defaults, { setting: 'deny' })).toBe('deny');
+		expect(resolve({ write: ['/outside/a.txt'] }, defaults, { setting: 'allow' })).toBe('ask');
 	});
 
 	it('keeps deny precedence over allow and contextual reuse', () => {
-		getPermissions.mockReturnValue({
+		const permissions = {
 			...defaults,
-			read: { allow: ['/repo/**'], deny: ['/repo/private/**'] },
-		});
-		const fileAccess = createRunContext().fileAccess;
-		fileAccess.readDirectories.add('/repo/private');
+			read: { allow: [rule('/repo')], deny: [rule('/repo/private')] },
+		};
+		const context = createRunContext().fileAccess;
+		context.readDirectories.add('/repo/private');
 
-		expect(resolveToolPermission('read', { path: '/repo/public/a.txt' })).toBe('allow');
-		expect(resolveToolPermission('read', { path: '/repo/private/a.txt' }, fileAccess)).toBe('deny');
+		expect(resolve({ read: ['/repo/public/a.txt'] }, permissions, { interactive: false })).toBe(
+			'allow'
+		);
+		expect(resolve({ read: ['/repo/private/a.txt'] }, permissions, { context })).toBe('deny');
 	});
 
-	it('allows shell reads anywhere and asks for outside write access', () => {
-		getPermissions.mockReturnValue({
+	it('checks command roots against every blocked kind and asks for untrusted roots', () => {
+		const permissions = {
 			...defaults,
-			exec: { allow: ['/appdata/agent/**'], deny: ['/appdata/agent/private/**'] },
-		});
-
-		expect(resolveToolPermission('bash', { command: 'echo ok > result.txt' })).toBe('allow');
-		expect(resolveToolPermission('bash', { command: 'echo $(pwd)' })).toBe('allow');
-		expect(resolveToolPermission('bash', { command: 'pwd', workdir: '/outside' })).toBe('allow');
-		expect(resolveToolPermission('bash', { command: 'pwd', workdir: 'private' })).toBe('deny');
-		expect(resolveToolPermission('bash', { command: 'pwd', elevated: true })).toBe('ask');
-		expect(
-			resolveToolPermission('bash', {
-				command: 'touch file',
-				workdir: '/outside',
-				additionalRoots: ['.'],
-			})
-		).toBe('ask');
-	});
-
-	it('asks when any declared external root is not trusted', () => {
-		expect(
-			resolveToolPermission('bash', {
-				command: 'cp file /shared',
-				additionalRoots: ['/shared'],
-			})
-		).toBe('ask');
-		getPermissions.mockReturnValue({
-			...defaults,
-			exec: { allow: ['/appdata/agent/**', '/shared/**'], deny: [] },
-		});
-		expect(
-			resolveToolPermission('bash', {
-				command: 'cp file /shared',
-				additionalRoots: ['/shared'],
-			})
-		).toBe('allow');
-	});
-
-	it.each([
-		['complete_bootstrap', {}],
-		['create_task', {}],
-		['update_task', {}],
-		['delete_task', {}],
-		['run_task_now', {}],
-		['microphone_recorder', {}],
-		['camera_recorder', {}],
-		['screen_recorder', {}],
-	] as const)('applies the write policy to %s', (toolName, args) => {
-		const denyWrites: PermissionsSchema = {
-			...defaults,
-			write: { allow: [], deny: ['*'] },
+			write: { allow: [], deny: [rule('/appdata/agent/private')] },
+			exec: { allow: [rule('/appdata/agent'), rule('/shared')], deny: [] },
 		};
 
-		expect(resolveToolPermission(toolName, args, undefined, true, 'ask', denyWrites)).toBe('deny');
+		expect(resolve({ read: ['/outside'], exec: ['/shared'] }, permissions)).toBe('allow');
+		expect(resolve({ read: ['/appdata/agent'], exec: ['/appdata/agent/private'] }, permissions)).toBe(
+			'deny'
+		);
+		expect(resolve({ read: ['/appdata/agent'], exec: ['/elsewhere'] }, permissions)).toBe('ask');
+		expect(resolve({ exec: ['/appdata/agent'], host: true }, permissions)).toBe('ask');
 	});
 
-	it('allows list_tasks when task writes are denied', () => {
-		const denyWrites: PermissionsSchema = {
-			...defaults,
-			write: { allow: [], deny: ['*'] },
-		};
+	it('keeps an explicit deny rule for managed targets', () => {
+		const denyWrites = { ...defaults, write: { allow: [], deny: [rule('/')] } };
 
-		expect(resolveToolPermission('list_tasks', {}, undefined, true, 'ask', denyWrites)).toBe(
+		expect(resolve({ write: ['/appdata/tasks.json'], managed: true }, denyWrites)).toBe('deny');
+		expect(resolve({ write: ['/appdata/tasks.json'], managed: true }, defaults, { interactive: false })).toBe(
 			'allow'
 		);
 	});
 
-	it.each(['create_task', 'update_task', 'delete_task'])(
-		'allows direct %s requests',
-		(toolName) => {
-			expect(resolveToolPermission(toolName, {}, undefined, true, 'ask', defaults)).toBe('allow');
-		}
-	);
-
-	it('keeps an explicit deny rule for task mutations', () => {
-		const denyWrites: PermissionsSchema = {
-			...defaults,
-			write: { allow: [], deny: ['*'] },
-		};
-
-		expect(resolveToolPermission('delete_task', {}, undefined, true, 'ask', denyWrites)).toBe(
-			'deny'
+	it('allows media output in the library and asks for an untrusted directory', () => {
+		expect(resolve(mediaAccess(undefined), defaults, { interactive: false })).toBe('allow');
+		expect(resolve(mediaAccess('/outside-media'))).toBe('ask');
+		expect(
+			resolve(mediaAccess(undefined), {
+				...defaults,
+				write: { allow: [], deny: [rule(realPath(libraryLocation()))] },
+			})
+		).toBe('deny');
+		expect(builtinCapability('use_web_browser', { action: 'screenshot' })?.effects).toContain(
+			'write'
 		);
 	});
 
-	it('allows recorder output in trusted roots and asks outside them', () => {
-		const trustedWrites: PermissionsSchema = {
-			...defaults,
-			write: { allow: [`${realPath(libraryLocation())}/**`], deny: [] },
-		};
-
+	it('asks for sensitive tools without persisting them', () => {
 		expect(
-			resolveToolPermission('screen_recorder', {}, undefined, true, 'ask', trustedWrites)
-		).toBe('allow');
-		expect(
-			resolveToolPermission('microphone_recorder', {}, undefined, true, 'ask', trustedWrites)
-		).toBe('allow');
-		expect(
-			resolveToolPermission(
-				'screen_recorder',
-				{ directory: '/outside' },
-				undefined,
-				true,
-				'ask',
-				trustedWrites
-			)
-		).toBe('ask');
+			resolvePermission({ permissions: defaults, approval: true, interactive: true })
+		).toMatchObject({ mode: 'ask', reason: 'sensitive_operation', persistable: false });
 	});
 
-	it.each(['screenshot', 'pdf'])('applies directory permissions to browser %s output', (action) => {
-		const libraryRule = `${realPath(libraryLocation())}/**`;
-		const trustedWrites: PermissionsSchema = {
-			...defaults,
-			write: { allow: [libraryRule], deny: [] },
-		};
+	it('denies approval targets that are not literal', () => {
 		expect(
-			resolveToolPermission('use_web_browser', { action }, undefined, true, 'ask', trustedWrites)
-		).toBe('allow');
-		expect(
-			resolveToolPermission(
-				'use_web_browser',
-				{ action, directory: '/outside' },
-				undefined,
-				true,
-				'ask',
-				trustedWrites
-			)
-		).toBe('ask');
-		expect(
-			resolveToolPermission('use_web_browser', { action }, undefined, true, 'ask', {
-				...trustedWrites,
-				write: { allow: [libraryRule], deny: [libraryRule] },
-			})
-		).toBe('deny');
-		expect(builtinCapability('use_web_browser', { action })?.effects).toContain('write');
+			resolvePermission({ access: { exec: ['/Users/me/*'] }, permissions: defaults, interactive: true })
+		).toMatchObject({ mode: 'deny', persistable: false });
 	});
 });
