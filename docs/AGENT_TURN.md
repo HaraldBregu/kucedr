@@ -327,6 +327,32 @@ Only Anthropic (direct, and Claude through OpenRouter) and OpenAI 5.6+ can reuse
 ### Order of work
 3 (no code) → 2 → 4. Finding 1 is a product decision.
 
+### Landed (2026-11-15)
+
+**Finding 2, a smaller fixed prefix**
+- **`## Tools`:** each line is now `` `id` — summary ``. The `(Name)` and the per-category description lines are gone, and `toolCategoryRegistry` keeps labels only. That is −1.7 KB (~420 tokens) on every call.
+  - The section still lists every eligible tool in a fixed order, so it does not change when `tool_search` loads a tool. Listing only the tools that are not attached would have changed the system prompt mid-run, so it was not done.
+- **Run context:** every `##` section except the clock is now deduped against the last full copy. Before, only the file listing was. Memory and its sub-sections are covered whatever their names.
+  - In the saved chats, memory was identical in 28 of 28 consecutive runs, so each follow-up run carries about 7.5 KB (~1.9K tokens) less.
+- **Trimming:** `fitModelContext` expands an "Unchanged" marker back to the full text, via `session/session_expand_run_context.ts`, when trimming drops the message that holds the full copy. Memory therefore cannot be lost near the limit.
+  - Expansion runs inside every size check, so the estimate includes it. Requests that are not trimmed are untouched.
+
+**Finding 4, merged reasoning items.** Adjacent string `provider_item`s of the same provider are merged (`session/session_merge_provider_items.ts`):
+- at the end of each model turn;
+- when a session loads (`sanitizeMessages`), which also shrinks old DeepSeek chats.
+
+The wire is unchanged, because the reasoning text is joined with `''` either way. Mistral's object items are not merged.
+
+**Checked:**
+- `typecheck:node` passes and eslint is clean.
+- A bundled check passed on:
+  - merge cases: DeepSeek strings, Mistral objects, mixed providers, load-time sanitize;
+  - three runs of `addRunContext`: run 2 dedupes the file listing and all memory sections but keeps the clock; run 3 sends only the changed Facts;
+  - `fitModelContext` with and without trimming: the first kept context is expanded, and the later one keeps its marker;
+  - the new Tools format.
+
+**Not run:** the unit suite. Tests that assert the `(Name)` format, the category descriptions or memory-in-full will need updating.
+
 ### Re-measuring
 Re-run the per-call analysis over `run.jsonl` with a newer start date. It pairs each call with the previous call of its session and compares the `prefix` hashes to name the cause of a miss. Compare:
 - the turn-1 hit rate per provider;
