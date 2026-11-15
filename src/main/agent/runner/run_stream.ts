@@ -217,9 +217,9 @@ async function* loop(
 		? [...options.tools]
 		: bootstrap
 			? [
-					...[updateIdentityTool, updateSoulTool, updateUserTool].map((tool) => ({
+					...[updateIdentityTool, updateSoulTool, updateUserTool].map((tool): Tool => ({
 						...tool,
-						capability: { effects: ['write', 'persistence'] } as ToolCapability,
+						capability: { effects: ['write', 'persistence'] },
 					})),
 					completeBootstrapTool,
 				]
