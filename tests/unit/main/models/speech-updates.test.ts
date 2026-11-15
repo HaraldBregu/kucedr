@@ -18,7 +18,6 @@ jest.mock('../../../../src/main/settings_store', () => ({
 			cartesia: 'https://api.cartesia.ai',
 			cohere: 'https://api.cohere.ai/compatibility/v1',
 			elevenlabs: 'https://api.elevenlabs.io/v1',
-			mistral: 'https://api.mistral.ai/v1',
 			jina: 'https://api.jina.ai/v1',
 			qwen: 'https://workspace-1.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
 		}[id],
