@@ -36,7 +36,10 @@ import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
 import type { RagConfiguration } from './rag_types';
 import type { RagStatus } from './rag_status';
-import type { PermissionsSchema } from '../main/agent/permissions/permissions_types';
+import type {
+	PermissionsSchema,
+	PermissionsView,
+} from '../main/agent/permissions/permissions_types';
 import type {
 	AgentHistoryMessage,
 	AgentCompactSessionResult,
