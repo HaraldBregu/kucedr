@@ -43,7 +43,7 @@ export function resolvePermission({
 		entries.some(
 			({ kind, target }) =>
 				(!access.managed && isProtectedTarget(target, kind === 'read' ? 'read' : 'write')) ||
-				(kind === 'exec' ? KINDS : [kind]).some((ruleKind) =>
+				(kind === 'exec' ? KINDS : access.exec ? [kind, 'exec' as const] : [kind]).some((ruleKind) =>
 					permissions[ruleKind].deny.some((rule) => ruleMatches(rule, target))
 				)
 		)
