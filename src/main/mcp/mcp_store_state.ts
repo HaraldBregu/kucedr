@@ -26,7 +26,7 @@ const store = new Store<McpStoreSchema>({
 	name: 'settings',
 	cwd: mcpDirectory,
 	accessPropertiesByDotNotation: false,
-	defaults: { servers: [], localEnvironments: {} },
+	defaults: { servers: [], localEnvironments: {}, installed: [] },
 });
 
 let volatileSecrets = new Map<string, McpSecrets>();
