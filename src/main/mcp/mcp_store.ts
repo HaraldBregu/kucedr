@@ -14,8 +14,10 @@ export function getMcpServers(): McpSettings {
 	for (const record of getMcpServersState()) {
 		servers[record.id] = splitRecord(record).data;
 	}
+	const installed = getInstalledMcpServers();
 	for (const server of listLocalMcpServers(mcpServerRoots()).servers) {
-		if (!servers[server.id]) servers[server.id] = pluginServerDisabled(server).data;
+		if (!servers[server.id])
+			servers[server.id] = installedLocalServer(pluginServerDisabled(server), installed).data;
 	}
 	return servers;
 }
