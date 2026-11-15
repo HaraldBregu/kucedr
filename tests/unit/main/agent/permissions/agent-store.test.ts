@@ -164,46 +164,42 @@ describe('agent store permissions', () => {
 			const settings = getToolConfiguration('chat', { kind: 'builtin', id: toolId });
 			expect(settings).toEqual({ permission: 'allow' });
 			expect(
-				resolveToolPermissionDetails(
-					toolId,
-					{ content: '# Profile' },
-					undefined,
-					true,
-					'ask',
-					getPermissions('chat'),
-					undefined,
-					settings
-				).mode
+				resolvePermission({
+					permissions: getPermissions(),
+					setting: settings.permission,
+					interactive: true,
+				}).mode
 			).toBe('allow');
 		}
 	);
 
 	it('preserves explicit blocked rules inside the workspace', () => {
+		const blocked = rule(`${AGENT_DIRECTORY}/private`);
 		const saved = setPermissions({
-			read: { allow: [], deny: [`${AGENT_DIRECTORY}/private/**`] },
-			write: { allow: [], deny: [`${AGENT_DIRECTORY}/private/**`] },
-			exec: { allow: [], deny: [`${AGENT_DIRECTORY}/private/**`] },
+			read: { allow: [], deny: [blocked] },
+			write: { allow: [], deny: [blocked] },
+			exec: { allow: [], deny: [blocked] },
 		});
-		expect(saved.read.deny).toEqual([`${AGENT_DIRECTORY}/private/**`]);
-		expect(saved.write.deny).toEqual([`${AGENT_DIRECTORY}/private/**`]);
-		expect(saved.exec.deny).toEqual([`${AGENT_DIRECTORY}/private/**`]);
+		expect(saved.read.deny).toEqual([blocked]);
+		expect(saved.write.deny).toEqual([blocked]);
+		expect(saved.exec.deny).toEqual([blocked]);
 	});
 
 	it('preserves an execute ancestor grant and its explicit blocked child', () => {
 		const saved = setPermissions({
 			read: { allow: [], deny: [] },
 			write: { allow: [], deny: [] },
-			exec: { allow: ['/shared/**'], deny: ['/shared/private/**'] },
+			exec: { allow: [rule('/shared')], deny: [rule('/shared/private')] },
 		});
 		expect(saved.exec).toEqual({
-			allow: [workspaceRule, '/shared/**'],
-			deny: ['/shared/private/**'],
+			allow: [workspaceRule, rule('/shared')],
+			deny: [rule('/shared/private')],
 		});
 	});
 
 	it('adds a rule without changing other buckets', () => {
-		addPermissionRule('exec', 'allow', '/repo/**');
-		expect(getPermissions().exec.allow).toEqual([workspaceRule, '/repo/**']);
+		addPermissionRule('exec', 'allow', rule('/repo'));
+		expect(getPermissions().exec.allow).toEqual([workspaceRule, rule('/repo')]);
 		expect(getPermissions().read.allow).toEqual([workspaceRule]);
 	});
 
