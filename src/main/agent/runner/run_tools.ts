@@ -1,5 +1,7 @@
 import type { Tool } from '../types';
 import { getToolConfiguration } from '../agent_store';
+import { resolvePermission } from '../permissions';
+import { EMPTY_PERMISSIONS } from '../permissions/permissions_types';
 import type { AgentToolProfileId } from '../../../shared/agent_tools';
 
 export function filterTools(
@@ -14,14 +16,16 @@ export function filterTools(
 
 export function filterProfileTools(tools: Tool[], profileId: AgentToolProfileId): Tool[] {
 	return tools.filter((tool) => {
-		const settings = getToolConfiguration(
-			profileId,
-			tool.policy ?? { kind: 'builtin', id: tool.id }
-		);
-		if (settings.permission === 'deny') return false;
-		if (profileId !== 'tasks') return true;
 		const capability =
 			typeof tool.capability === 'function' ? tool.capability({}) : tool.capability;
-		return settings.permission !== 'ask' && capability?.approval !== true;
+		return (
+			resolvePermission({
+				permissions: EMPTY_PERMISSIONS,
+				setting: getToolConfiguration(profileId, tool.policy ?? { kind: 'builtin', id: tool.id })
+					.permission,
+				approval: capability?.approval === true,
+				interactive: profileId !== 'tasks',
+			}).mode !== 'deny'
+		);
 	});
 }
