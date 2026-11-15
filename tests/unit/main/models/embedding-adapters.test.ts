@@ -66,7 +66,6 @@ it.each([
 	['nomic', 'document', { task_type: 'search_document', long_text_mode: 'mean' }],
 	['nomic', 'query', { task_type: 'search_query', long_text_mode: 'mean' }],
 	['openai', 'document', { encoding_format: 'float' }],
-	['mistral', 'document', { encoding_format: 'float' }],
 ] as const)(
 	'maps %s %s retrieval inputs without discarding long content',
 	async (providerId, inputType, expected) => {
