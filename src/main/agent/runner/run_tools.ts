@@ -14,7 +14,11 @@ export function filterTools(
 	return tools.filter((tool) => (!allowed || allowed.has(tool.id)) && !denied.has(tool.id));
 }
 
-export function filterProfileTools(tools: Tool[], profileId: AgentToolProfileId): Tool[] {
+export function filterProfileTools(
+	tools: Tool[],
+	profileId: AgentToolProfileId,
+	interactive = profileId !== 'tasks'
+): Tool[] {
 	return tools.filter((tool) => {
 		const capability =
 			typeof tool.capability === 'function' ? tool.capability({}) : tool.capability;
