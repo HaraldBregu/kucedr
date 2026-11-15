@@ -275,3 +275,60 @@ Goal: speed and efficiency of the agent code itself. Analysis only; no code chan
    - IPC batching (6) only after a renderer measurement.
 
 Model round trips are still about 86% of run time (round 1), so items 2, 3 and 5 make the app lighter but will not make tasks finish much sooner. Item 4 and the cache work in `PROMPT_CACHE.md` are what reduce time to first token.
+
+## Round 4 (2026-11-15)
+
+Goal: measure the agent again after the prompt-cache work of 2026-11-14 (`PROMPT_CACHE.md`, "Every provider"). Analysis only; no code changed.
+
+### Measurements
+From `run.jsonl`: 60 calls since 2026-11-12 13:00, and 6 since the cache changes. The sample is small.
+
+**The cache hits on every configured route.** Turn 1 of the second run in a chat:
+
+| Route | Cached / input | Hit |
+|---|---|---|
+| Claude Opus 4.8 via OpenRouter | 18,849 / 22,019 | 86% |
+| Grok 4.5 | 13,056 / 15,374 | 85% |
+| Gemini 2.5 Pro via OpenRouter (implicit) | 11,920 / 15,167 | 79% |
+
+Turns 2 and later reach 92% on Inception mercury-3 and 93% on gpt-5.6-luna. The tools and system hashes are the same on all three routes (`d3bb8be534` / `1d9b6efd21`).
+
+**Runs are short:** median 1 turn, p90 1–3. Time to first token is about 70% of model time, and local work is about 20 ms (rounds 1–3).
+
+**What is left is inference:**
+
+| Model | TTFT | Note |
+|---|---|---|
+| Gemini 2.5 Pro | 14.3 s, on a cache hit | Thinking, 1,335 output tokens |
+| Claude Opus 4.8 | 1.0 s | 244 tokens in 5.2 s |
+| Grok 4.5 | 2.2–3.5 s | |
+| Mercury | ~1.1 s | |
+
+**A new chat's first call carries about 12.5K tokens of fixed prefix:**
+- the system prompt, 21 KB or ~5.3K tokens (41 KB in round 3). `## Tools` is 12.6 KB of it.
+- the run context, 8.9 KB or ~2.2K tokens: the filesystem listing, the clock, and the memory sections Preferences, Plans, Projects, Facts and Summaries;
+- 22 tool schemas, ~5K tokens.
+
+Only Anthropic (direct, and Claude through OpenRouter) and OpenAI 5.6+ can reuse it across chats, through the system breakpoint. Grok, Gemini, Inception and DeepSeek recompute it for every new chat: the first call cached 384 tokens on Grok and 9 on Inception.
+
+**Voice sessions** create an empty session folder each time voice opens (8 between 22:16 and 22:23 on 2026-11-14). This is clutter, not a speed cost.
+
+### Findings, largest win first
+1. **The model and its reasoning decide the wait.** Gemini 2.5 Pro thinks before every reply, about 14 s. Fast routes answer in about 1 s. This is configuration, not code. Show the measured TTFT per route in the model picker, from `firstTokenLatencyMs` in `run.jsonl`, and default conversational turns to low effort.
+2. **Cold start of a new chat.** On routes without cross-chat reuse, every new chat processes ~12.5K tokens. Shrink the fixed prefix:
+   - list only the tools that are not attached in `## Tools` (`system_add_tools_prompt.ts`), because attached tools already carry their description in the schema;
+   - review the size of the run context's memory sections and file listing.
+
+   Expected: 20–30% fewer cold tokens, about 0.2–0.5 s per new chat on fast models.
+3. **Confirm cross-chat hits live.** Open two new chats on gpt-5.6 and on Claude. The second chat's first call should read about the size of the system prompt plus tools.
+4. **DeepSeek saves one `provider_item` per streamed token** (round 3, finding 1, still open). This inflates the token estimate up to 9×. On 128K-fallback routes the inflated estimate trims history early, and the rewritten history then misses the cache. Fix: merge adjacent same-provider items in `runner/run_model_turn.ts:155`.
+5. **Not worth doing for speed:** round 3 findings 2, 4, 5, 8 and 9 (persist, hashing, event retention, hooks, settings reads), and parallel tools (`PARALLEL_TOOLS.md`). Each costs milliseconds.
+
+### Order of work
+3 (no code) → 2 → 4. Finding 1 is a product decision.
+
+### Re-measuring
+Re-run the per-call analysis over `run.jsonl` with a newer start date. It pairs each call with the previous call of its session and compares the `prefix` hashes to name the cause of a miss. Compare:
+- the turn-1 hit rate per provider;
+- the input tokens of a new chat's first call (target ≤ 9K after finding 2);
+- the TTFT medians.
