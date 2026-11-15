@@ -332,4 +332,4 @@ Not confirmed: a live OpenAI call, and the unit suite. Re-measure turn 1 of new 
   - Inception sends nothing extra.
 - The OpenAI check above still passes.
 
-Not confirmed: live calls. Gemini on OpenRouter is left on implicit caching. OpenRouter uses only the last explicit breakpoint for Gemini, so a system breakpoint would stop the history from being cached.
+**Live on OpenRouter (2026-11-15, run by the user):** the first call reported `cachedTokens: 0, cacheWriteTokens: 18849`. The next reported `cachedTokens: 18849, cacheWriteTokens: 3168`: the whole earlier prefix was read and only the new turn was written. Grok and gpt-5.6+ are not yet confirmed live. Gemini on OpenRouter is left on implicit caching. OpenRouter uses only the last explicit breakpoint for Gemini, so a system breakpoint would stop the history from being cached.
