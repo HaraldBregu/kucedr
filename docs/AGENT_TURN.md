@@ -341,7 +341,16 @@ Only Anthropic (direct, and Claude through OpenRouter) and OpenAI 5.6+ can reuse
 - at the end of each model turn;
 - when a session loads (`sanitizeMessages`), which also shrinks old DeepSeek chats.
 
-The wire is unchanged, because the reasoning text is joined with `''` either way. Mistral's object items are not merged.
+The wire is unchanged, because the reasoning text is joined with `''` either way. Items that are not strings are not merged.
+
+**Mistral removed (2026-11-15):**
+- the `@mistralai/mistralai` package, with its only exclusive dependency `@opentelemetry/semantic-conventions`;
+- the `speech-complete` TTS and `transcription-stream` STT adapters;
+- the `contentChunks` round-trip and the `mergeUserAfterTool` fold;
+- the `'mistral'` provider tag in the LLM types;
+- the Mistral cases in the unit tests.
+
+No shipped manifest used any of these.
 
 **Checked:**
 - `typecheck:node` passes and eslint is clean.
