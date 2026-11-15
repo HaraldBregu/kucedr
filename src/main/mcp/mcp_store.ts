@@ -1,5 +1,6 @@
 import type { McpSettings } from '../../shared/mcp_types';
-import { getMcpServersState, setMcpServersState } from './mcp_store_state';
+import { getInstalledMcpServers, getMcpServersState, setMcpServersState } from './mcp_store_state';
+import { installedLocalServer } from './mcp_local_installed';
 import { splitRecord } from './mcp_split_record';
 import type { McpOAuthState, McpRecord } from './mcp_types';
 import { listLocalMcpServers } from './mcp_local_list';
