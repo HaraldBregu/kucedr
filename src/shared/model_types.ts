@@ -112,10 +112,6 @@ export interface ModelMetadata {
 	readonly reasoningContent?: 'roundtrip';
 	/** Chat: content-part type used for PDF attachments. */
 	readonly documentPart?: string;
-	/** Chat: replay assistant content chunks verbatim. */
-	readonly contentChunks?: 'roundtrip';
-	/** Chat: fold a text-only user message that follows a tool message into it. */
-	readonly mergeUserAfterTool?: boolean;
 	/** Submit path relative to url; `{model}` is the wire model id. */
 	readonly endpoint?: string;
 	/** Model id sent on the wire when it differs from the manifest id. */
