@@ -19,6 +19,7 @@ export const readTool = tool({
 		offset: z.number().int().min(1).optional().describe('First line to read, 1-based.'),
 		limit: z.number().int().min(1).optional().describe('Maximum number of lines to read.'),
 	}),
+	access: ({ path: filePath }) => ({ read: [resolveUserPath(filePath, agentLocation())] }),
 	execute: async ({ path: filePath, offset, limit }, signal) => {
 		const resolved = authorizeFilePath(filePath);
 		if (offset === undefined && limit === undefined)
