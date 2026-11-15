@@ -217,61 +217,50 @@ export function getToolConfiguration(
 	return getAgentProfileTool(profileId, tool);
 }
 
-export function getPermissions(profileId: AgentToolProfileId = 'chat'): PermissionsSchema {
-	const permissions = withDefaultPermissions(
+export function getPermissions(): PermissionsSchema {
+	return withDefaultPermissions(
 		withoutDefaultPermissions(
-			normalizePermissionsSchema(getAgentProfilePermissions(profileId), EMPTY_PERMISSIONS),
-			workspacePattern,
-			legacyLibraryPattern
+			normalizePermissionsSchema(getAgentProfilePermissions('chat')).permissions,
+			workspaceRule,
+			legacyLibraryRule
 		),
-		workspacePattern
+		workspaceRule
 	);
-	return {
-		...permissions,
-		tools: getToolProfile(profileId).tools,
-	};
 }
-export function setPermissions(
-	permissions: PermissionsSchema,
-	profileId: AgentToolProfileId = 'chat'
-): PermissionsSchema {
-	const { tools, ...directoryPermissions } = permissions;
-	setAgentProfilePermissions(
-		profileId,
-		withoutDefaultPermissions(
-			normalizePermissionsSchema(directoryPermissions, EMPTY_PERMISSIONS),
-			workspacePattern
-		)
-	);
-	if (tools) {
-		for (const [toolId, settings] of Object.entries(tools)) {
-			if (!isAgentToolConfigurable({ kind: 'builtin', id: toolId })) continue;
-			setAgentProfileTool(profileId, { kind: 'builtin', id: toolId }, settings);
-		}
-	}
-	return getPermissions(profileId);
+export function setPermissions(permissions: PermissionsSchema): PermissionsSchema {
+	const { droppedRules: _droppedRules, ...document } = getAgentProfileDocument('chat');
+	setAgentProfileDocument('chat', {
+		...document,
+		permissions: withoutDefaultPermissions(
+			normalizePermissionsSchema(permissions).permissions,
+			workspaceRule
+		),
+	});
+	return getPermissions();
 }
 export function addPermissionRule(
 	kind: PermissionKind,
 	bucket: PermissionBucket,
-	rule: string,
-	profileId: AgentToolProfileId = 'chat'
+	rule: PermissionRule
 ): void {
-	const permissions = getPermissions(profileId);
-	if (permissions[kind][bucket].includes(rule)) return;
-	setPermissions(
-		{
-			...permissions,
-			[kind]: { ...permissions[kind], [bucket]: [...permissions[kind][bucket], rule] },
-		},
-		profileId
+	const permissions = getPermissions();
+	if (
+		permissions[kind][bucket].some(
+			(entry) => entry.root === rule.root && entry.recursive === rule.recursive
+		)
+	)
+		return;
+	setAgentProfilePermissions(
+		'chat',
+		withoutDefaultPermissions(
+			{
+				...permissions,
+				[kind]: { ...permissions[kind], [bucket]: [...permissions[kind][bucket], { ...rule }] },
+			},
+			workspaceRule
+		)
 	);
 }
-export function resetPermissions(profileId: AgentToolProfileId = 'chat'): PermissionsSchema {
-	setAgentProfilePermissions(profileId, structuredClone(EMPTY_PERMISSIONS));
-	setAgentProfileDocument(profileId, {
-		...getAgentProfileDocument(profileId),
-		tools: {},
-	});
-	return getPermissions(profileId);
+export function resetPermissions(): PermissionsSchema {
+	return setPermissions(EMPTY_PERMISSIONS);
 }
