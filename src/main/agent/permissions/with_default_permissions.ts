@@ -1,22 +1,12 @@
-import type { PermissionsSchema } from './permissions_types';
+import type { PermissionKind, PermissionRule, PermissionRules, PermissionsSchema } from './permissions_types';
 
 export function withDefaultPermissions(
 	permissions: PermissionsSchema,
-	workspacePattern: string
+	workspace: PermissionRule
 ): PermissionsSchema {
-	return {
-		read: {
-			allow: [...new Set([workspacePattern, ...permissions.read.allow])],
-			deny: [...permissions.read.deny],
-		},
-		write: {
-			allow: [...new Set([workspacePattern, ...permissions.write.allow])],
-			deny: [...permissions.write.deny],
-		},
-		exec: {
-			allow: [...new Set([workspacePattern, ...permissions.exec.allow])],
-			deny: [...permissions.exec.deny],
-		},
-		...(permissions.tools ? { tools: { ...permissions.tools } } : {}),
-	};
+	const rules = (kind: PermissionKind): PermissionRules => ({
+		allow: [{ ...workspace }, ...permissions[kind].allow],
+		deny: [...permissions[kind].deny],
+	});
+	return { read: rules('read'), write: rules('write'), exec: rules('exec') };
 }
