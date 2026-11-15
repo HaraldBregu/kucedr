@@ -13,7 +13,7 @@ export function createImageTool(): Tool {
 		id: 'create_image',
 		category: 'media',
 		name: 'Create image',
-		description: `Generate one to eight images from a text prompt using the configured text-to-image provider${model ? ` (${model})` : ''}. Saves the images in ~/.kucedr/library by default and returns their absolute paths. The images are shown to the user automatically; if you reference one in markdown, use its returned path. Only set model options when the user asks for them; omitted options use the configured settings.`,
+		description: `Generate one to three images from a text prompt using the configured text-to-image provider${model ? ` (${model})` : ''}. Saves the images in ~/.kucedr/library by default and returns their absolute paths. The images are shown to the user automatically; if you reference one in markdown, use its returned path. Only set model options when the user asks for them; omitted options use the configured settings.`,
 		inputSchema: z.object({
 			prompt: z.string().min(1).describe('Text prompt describing the image to generate.'),
 			...shape,
