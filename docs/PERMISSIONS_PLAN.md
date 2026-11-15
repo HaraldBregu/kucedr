@@ -151,6 +151,37 @@ Steps 1 and 2 are done. Both typechecks are clean, apart from the `hideIcons` er
 - The sandbox's write deny for user data covers only the children that exist when each command runs.
 - Onboarding detection for the profile tools is approximate. A clean version needs a small change in `run_stream.ts`.
 
+### Step 3 and remaining gaps: implementation status (2026-11-15)
+
+Done. Typechecks are clean (except `Group.tsx` `hideIcons`), and eslint reports 0 errors. The harness (`scratchpad/h3/run.sh`, real modules via esbuild plus the real macOS sandbox) passes phase 1 (migration and checks) 70/70 and phase 2 (reload and sandbox) 66/66. The jest suite was not run.
+
+- **Literal rules:** each rule is `{ root, recursive }` per kind, allow and deny; glob matching is gone. Paths are compared with `samePathOrWithin`: realpath, case folding, and dev/ino of the nearest existing ancestor.
+- **Migration** (`permissions/migrate_permissions.ts`; runs at load, idempotent):
+  - Conversions:
+    - `X/**` → recursive
+    - a plain path → exact
+    - `*` → the filesystem root
+    - other glob allows → dropped
+    - other glob denies → their nearest literal ancestor
+  - Merging into the shared list:
+    - The chat profile's rules become the shared list.
+    - Deny rules from other profiles are merged in.
+    - Allow rules found only in other profiles are dropped.
+  - Originals are kept once under `legacyRules`. Dropped or widened rules are shown once on the Permissions page until it's saved or reset.
+- **Tool `access(input)`** declares `read/write/exec/managed/folders/host`. It replaces `isWritePermissionTool`, `TASK_TOOLS`, `isMediaOutputTool`, `AGENT_FILES` and the target switches.
+- **One resolver** (`permissions/resolve_permission.ts`): protected → blocked → tool Off → Ask/approval/host → trusted or managed → ask if interactive, deny if not. It's used by `run_tool_call`, `filterProfileTools`, `inlineFiles` and the sandbox.
+  - Read targets of command tools are also checked against command blocks, so an exec-only block on a working folder still denies.
+  - `filterProfileTools` receives interactivity from `run_stream` (`approvalWindowId`).
+- **One shared location list** for every agent and the sandbox on every platform. There's one Permissions page (the voice and tasks routes redirect to it), and it shows the protected list read-only. Reset clears locations only.
+- **Hand-written MCP servers** are listed but off until enabled. An `installed` record lives in the protected MCP store.
+- **Profile tools** always ask. The bootstrap run passes copies of those tools without approval.
+
+**Behaviour changes:**
+- Trust and blocks apply to every agent.
+- Health runs and subagents can't read outside trusted locations.
+- Allow rules that existed only for voice or tasks are removed and listed.
+- A file created earlier in the same run can be written again without asking.
+
 ### Step 3: One resolver, literal rules (structural, medium refactor)
 
 This merges PA's "simpler shape" with the root causes above.
