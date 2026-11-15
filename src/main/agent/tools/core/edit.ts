@@ -19,6 +19,7 @@ export const editTool = tool({
 		oldText: z.string().min(1).describe('Exact text to replace.'),
 		newText: z.string().describe('Replacement text.'),
 	}),
+	access: ({ path: filePath }) => ({ write: [resolveUserPath(filePath, agentLocation())] }),
 	execute: async ({ path: filePath, oldText, newText }, signal) => {
 		const resolved = authorizeFilePath(filePath);
 		const original = decodeUtf8(await readFileBounded(resolved, MAX_READ_BYTES, signal), resolved);
