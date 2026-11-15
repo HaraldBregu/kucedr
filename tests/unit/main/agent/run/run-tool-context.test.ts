@@ -376,7 +376,7 @@ describe('per-run file access', () => {
 		fileAccess.readDirectories.add(root);
 		getPermissions.mockReturnValue({
 			...emptyPermissions,
-			read: { allow: [], deny: [target] },
+			read: { allow: [], deny: [rule(target, false)] },
 		});
 		const read = jest.fn().mockResolvedValue('content');
 
