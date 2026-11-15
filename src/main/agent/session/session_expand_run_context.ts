@@ -15,11 +15,9 @@ export function expandRunContext(dropped: readonly Message[], kept: readonly Mes
 			.split(SECTION_BREAK)
 			.map((section) => {
 				const header = section.split('\n', 1)[0];
-				if (section !== unchanged(header)) {
-					lost.delete(header);
-					return section;
-				}
-				return lost.get(header) ?? section;
+				const full = section === unchanged(header) ? lost.get(header) : undefined;
+				lost.delete(header);
+				return full ?? section;
 			})
 			.join('\n\n');
 		return {
