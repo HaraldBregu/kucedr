@@ -237,12 +237,13 @@ const PermissionsPage: React.FC = () => {
 						/>
 						{customRows.map((row) => (
 							<SettingsRow
-								key={`${row.bucket}:${row.rule}`}
+								key={`${row.bucket}:${ruleKey(row.rule)}`}
 								icon={row.bucket === 'allow' ? FolderCheck : FolderX}
 								title={<span className="break-all font-mono text-xs">{row.path}</span>}
-								description={row.kinds
-									.map((kind) => t(`settings.permissions.kinds.${kind}.title`))
-									.join(' · ')}
+								description={[
+									...row.kinds.map((kind) => t(`settings.permissions.kinds.${kind}.title`)),
+									...(row.rule.recursive ? [] : [t('settings.permissions.exactPath')]),
+								].join(' · ')}
 								actions={
 									<>
 										<Badge variant={row.bucket === 'allow' ? 'secondary' : 'destructive'}>
