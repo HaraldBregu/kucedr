@@ -374,12 +374,8 @@ export async function* runToolCall(
 					tool: hookedTool,
 					input: canonicalInput,
 				});
-				const resourceTargets =
-					tool.id === 'read'
-						? toolPermissionTargets(tool.id, canonicalInput, agentLocation())
-						: directoryPermissionTargets(tool.id, canonicalInput, agentLocation(), history);
 				const release = resources
-					? await resources.acquire(resourceTargets, signal)
+					? await resources.acquire(accessTargets, signal)
 					: () => undefined;
 				const timeoutController = new AbortController();
 				let timeoutTimer: ReturnType<typeof setTimeout> | undefined;
