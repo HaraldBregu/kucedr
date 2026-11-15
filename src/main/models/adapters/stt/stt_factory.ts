@@ -4,7 +4,6 @@ import { createFormSttAdapter } from './stt_form';
 import { createListenSttAdapter } from './stt_listen';
 import { createSpeechSttAdapter } from './stt_speech';
 import { createInteractionsSttAdapter } from './stt_interactions';
-import { createStreamSttAdapter } from './stt_stream';
 import { createHeaderSttAdapter } from './stt_header';
 import { createTranscriptionsSttAdapter } from './stt_transcriptions';
 import { createGenerationSttAdapter } from './stt_generation';
