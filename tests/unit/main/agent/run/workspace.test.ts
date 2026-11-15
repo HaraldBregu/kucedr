@@ -151,7 +151,7 @@ it.each([{ command: 'pwd', additionalRoots: ['..'] }, { command: 'pwd', elevated
 
 it('keeps explicit workspace deny rules effective', async () => {
 	const permissions = getPermissions();
-	setPermissions({ ...permissions, write: { ...permissions.write, deny: [path.join(workspace, 'blocked.txt')] } });
+	setPermissions({ ...permissions, write: { ...permissions.write, deny: [{ root: path.join(workspace, 'blocked.txt'), recursive: false }] } });
 	expect((await execute(writeTool, { path: 'blocked.txt', content: 'blocked' })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'deny' });
 	expect(fs.existsSync(path.join(workspace, 'blocked.txt'))).toBe(false);
 });
