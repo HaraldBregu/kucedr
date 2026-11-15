@@ -87,12 +87,6 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.modelServices.voiceHistoryTitle') },
 		];
 	}
-	if (location.pathname === '/settings/voice/permissions') {
-		return [
-			{ label: t('settings.tabs.voice'), path: '/settings/voice' },
-			{ label: t('settings.tabs.permissions') },
-		];
-	}
 	if (location.pathname === '/settings/voice/tools') {
 		return [
 			{ label: t('settings.tabs.voice'), path: '/settings/voice' },
