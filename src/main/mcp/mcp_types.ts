@@ -36,6 +36,7 @@ export type McpStoredRecord = {
 export type McpStoreSchema = {
 	readonly servers: McpStoredRecord[];
 	readonly localEnvironments: Record<string, string>;
+	readonly installed: string[];
 };
 
 export type McpToolCatalogSchema = Record<
