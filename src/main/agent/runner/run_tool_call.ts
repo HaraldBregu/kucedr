@@ -402,7 +402,7 @@ export async function* runToolCall(
 						toolSignal.addEventListener('abort', abort, { once: true });
 					});
 					const historyTargets = ['write', 'edit', 'patch'].includes(toolCall.name)
-						? toolPermissionTargets(toolCall.name, canonicalInput, agentLocation())
+						? (toolAccess.write ?? []).map(realPath)
 						: [];
 					const before = historyTargets.length > 0 ? captureFiles(historyTargets) : [];
 					const run = (): Promise<unknown> =>
