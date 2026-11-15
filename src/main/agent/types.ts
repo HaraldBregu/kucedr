@@ -52,6 +52,7 @@ export interface Tool {
 		| ((
 				input: Record<string, unknown>
 		  ) => import('./execution/capability').ToolCapability | undefined);
+	readonly access?: (input: Record<string, unknown>) => import('./permissions').ToolAccess;
 	readonly policy?: AgentToolReference;
 	parseInput(input: unknown): Record<string, unknown>;
 	run(input: Record<string, unknown>, signal?: AbortSignal): Promise<unknown> | unknown;
