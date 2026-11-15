@@ -19,7 +19,7 @@ export function runContextText(message: Message | undefined): string | undefined
 	return typeof block?.text === 'string' ? block.text : undefined;
 }
 
-function unchanged(header: string): string {
+export function unchanged(header: string): string {
 	return `${header}\nUnchanged since the previous run context.`;
 }
 
