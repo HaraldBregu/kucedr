@@ -19,7 +19,10 @@ import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
 import type { RagConfiguration } from '../shared/rag_types';
 import type { RagStatus } from '../shared/rag_status';
-import type { PermissionsSchema } from '../main/agent/permissions/permissions_types';
+import type {
+	PermissionsSchema,
+	PermissionsView,
+} from '../main/agent/permissions/permissions_types';
 import { optionalStringList, optionalTrimmedString } from './normalize';
 
 const MODEL_REASONING_EFFORTS: readonly ModelReasoningEffort[] = [
