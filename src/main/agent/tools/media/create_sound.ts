@@ -23,6 +23,7 @@ export function createSoundTool(): Tool {
 					'Optional directory to save the audio in, relative to the agent workspace. Absolute paths are supported and ~ expands to the user home. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location.'
 				),
 		}),
+		access: ({ directory }) => mediaAccess(directory),
 		execute: async ({ prompt, directory, ...options }, signal) => {
 			const { base64, mimeType } = await createSound(
 				{ prompt, options: (await inlineFiles(options)) as Record<string, unknown> },
