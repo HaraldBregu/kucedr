@@ -4,9 +4,9 @@ import { agentLocation } from '../../shared/agent_location';
 import {
 	addPermissionRule,
 	getPermissions,
-	recursivePermissionRule,
-	resolveToolPermissionDetails,
+	resolvePermission,
 	waitForToolPermission,
+	type ToolAccess,
 } from '../permissions';
 import { approvedExecRoots } from '../permissions/approved_exec_roots';
 import { inputFingerprint } from '../permissions/input_fingerprint';
@@ -14,11 +14,10 @@ import { redactApprovalInput } from '../permissions/redact_approval_input';
 import { formatToolOutput } from './run_common';
 import { limitToolOutput } from './run_limit_output';
 import type { KeyedMutex } from '../mutex';
-import { directoryPermissionTargets } from '../permissions/directory_permission_targets';
 import type { AgentUserInputQuestion } from '../../../shared/agent_types';
 import { waitForUserInput } from '../user_input/user_input_pending';
 import type { RunExtension } from '../extension';
-import { toolPermissionTargets } from '../permissions/tool_permission_targets';
+import { realPath } from '../../shared/real_path';
 import { captureFiles } from '../history/capture';
 import { recordFileOperation } from '../history/record';
 import type { FileHistory } from '../history/types';
