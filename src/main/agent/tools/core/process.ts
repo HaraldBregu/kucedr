@@ -327,5 +327,12 @@ export const processTool: Tool = tool({
 		'Use poll/log when you need status, logs, quiet-success confirmation, or completion confirmation. ' +
 		'Use write/send-keys/submit/paste/kill for input or intervention.',
 	inputSchema: processInputSchema,
+	access: ({ action, sessionId }) => {
+		const session = sessionId === undefined ? undefined : registry.owned(sessionId);
+		if (session?.executionMode === 'sandbox')
+			return { exec: [session.workdir, ...session.roots], managed: true };
+		if (!session || ['list', 'poll', 'log', 'kill', 'clear', 'remove'].includes(action)) return {};
+		return { exec: [session.workdir], host: true };
+	},
 	execute: runProcess,
 });
