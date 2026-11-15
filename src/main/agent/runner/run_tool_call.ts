@@ -274,40 +274,27 @@ export async function* runToolCall(
 			}
 		}
 	} else {
-		const resolvePermission = (): ReturnType<typeof resolveToolPermissionDetails> =>
-			executionScope.run(scope, () =>
-				resolveToolPermissionDetails(
-					toolCall.name,
-					canonicalInput,
-					context,
-					true,
-					permissionFallback,
-					profilePermissions(),
-					history,
-					profileToolConfiguration()
-				)
-			);
-		let resolution = resolvePermission();
 		const capability =
 			typeof tool.capability === 'function' ? tool.capability(canonicalInput) : tool.capability;
-		if (!capability) resolution = { ...resolution, mode: 'deny', persistable: false };
 		const hardApproval = capability?.approval === true;
-		if (hardApproval && resolution.mode !== 'deny') {
-			resolution = {
-				...resolution,
-				mode: 'ask',
-				approvalTargets:
-					resolution.approvalTargets.length > 0 ? resolution.approvalTargets : resolution.targets,
-				reason: 'sensitive_operation',
-				persistable: false,
-			};
-		}
+		const checkPermission = (): ReturnType<typeof resolvePermission> =>
+			resolvePermission({
+				access: declaredAccess(),
+				permissions: getPermissions(),
+				setting: getToolConfiguration(
+					security.toolProfile ?? 'chat',
+					tool.policy ?? { kind: 'builtin', id: tool.id }
+				).permission,
+				approval: hardApproval,
+				interactive: security.windowId !== undefined,
+				context,
+			});
+		let resolution = checkPermission();
+		if (!capability) resolution = { ...resolution, mode: 'deny', persistable: false };
 		const mcpPolicy = tool.policy?.kind === 'mcp' && !hardApproval ? tool.policy : undefined;
 		const persistable = resolution.persistable || Boolean(mcpPolicy);
 		let permission = resolution.mode;
 		if (extension?.denyAsks && permission === 'ask') permission = 'deny';
-
-		if (permission === 'ask' && security.windowId === undefined) permission = 'deny';
 
 		if (permission === 'ask') {
 			const approvalId = crypto.randomUUID();
@@ -315,7 +302,7 @@ export async function* runToolCall(
 			const expiresAtMs = Date.now() + 120_000;
 			const allowOnce = !(
 				process.platform === 'win32' &&
-				toolCall.name === 'bash' &&
+				resolution.grants.some((grant) => grant.kind === 'exec') &&
 				resolution.reason === 'outside_trusted_location'
 			);
 			yield {
