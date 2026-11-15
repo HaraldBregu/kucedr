@@ -396,6 +396,15 @@ export function execTool(
 			'Runtime cache access may require approval for its containing cache directory. For an intentional host operation, retry with elevated: true to request approval. Set background or yieldMs for long-running commands, timeout to stop slow commands, and pty for TTY-only CLIs.',
 		readOnly,
 		inputSchema: execInputSchema,
+		access: (input) => {
+			const [workdir, ...roots] = resolveExecRoots(input, agentLocation());
+			if (!workdir) return {};
+			if (input.elevated === true) return { exec: [workdir, ...roots], host: true };
+			return {
+				read: [workdir],
+				exec: (input.additionalRoots ?? []).map((root) => resolveUserPath(root, workdir)),
+			};
+		},
 		execute: async (input, signal) => {
 			// The model already knows the command, workdir and roots it sent; echoing them doubles tokens per call.
 			const { command, workdir, roots, pty, executionMode, ...result } = await runExec(sandbox, input, signal, readOnly);
