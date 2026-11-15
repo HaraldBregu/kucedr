@@ -20,6 +20,13 @@ export const applyPatchTool = tool({
 	inputSchema: z.object({
 		input: z.string().min(1).describe('Patch content using the *** Begin Patch/End Patch format.'),
 	}),
+	access: ({ input }) => ({
+		write: parsePatch(input).flatMap((hunk) =>
+			[hunk.path, ...(hunk.kind === 'update' && hunk.movePath ? [hunk.movePath] : [])].map(
+				(target) => resolveUserPath(target, agentLocation())
+			)
+		),
+	}),
 	execute: async ({ input }, signal) => {
 		const hunks = parsePatch(input);
 		const added: string[] = [];
