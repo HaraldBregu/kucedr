@@ -15,8 +15,6 @@ export interface PermissionRules {
 	deny: PermissionRule[];
 }
 
-export type ToolConfiguration = AgentToolConfiguration;
-
 export interface PermissionsSchema {
 	read: PermissionRules;
 	write: PermissionRules;
