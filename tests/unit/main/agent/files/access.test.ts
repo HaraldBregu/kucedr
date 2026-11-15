@@ -48,7 +48,7 @@ it('includes every executable patch header in permission targets', () => {
 	const first = path.join(directory, 'first');
 	const second = path.join(directory, 'second');
 	const input = `*** Begin Patch\n*** Add File: ${first}\n+one\n\u00a0*** Add File: ${second}\n+two\n*** End Patch`;
-	expect(toolPermissionTargets('patch', { input }, directory)).toEqual([first, second]);
+	expect(applyPatchTool.access?.({ input }).write).toEqual([first, second]);
 });
 
 it('rejects a changed file identity before an edit can execute', () => {
