@@ -9,6 +9,7 @@ import { mediaDirectory } from '../../../shared/media_directory';
 import type { Tool } from '../../types';
 import { tool } from '../tool';
 import { captureSource } from './capture';
+import { mediaAccess } from '../../permissions/media_access';
 
 type Kind = 'camera' | 'microphone' | 'screen';
 
