@@ -1,4 +1,5 @@
 import { seekSequence } from './sequence';
+import { lineEnding } from '../../../files/eol';
 import type { UpdateChunk } from './types';
 
 export function applyUpdateChunks(filePath: string, contents: string, chunks: UpdateChunk[]): string {

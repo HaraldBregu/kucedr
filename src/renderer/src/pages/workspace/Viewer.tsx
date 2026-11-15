@@ -166,10 +166,8 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 				ref={editorRef}
 				key={file.path}
 				value={content}
-				onChange={(value) => { if (kind === 'markdown') handleMarkdownChange(value); }}
-				onSave={kind === 'markdown' ? save : undefined}
-				readOnly={kind !== 'markdown'}
-				canSave={kind === 'markdown'}
+				onChange={handleMarkdownChange}
+				onSave={save}
 				code={kind !== 'markdown'}
 				foldable={/\.(json|jsonc|json5|toml|xml|ya?ml)$/i.test(file.path)}
 				isDark={isDark}
