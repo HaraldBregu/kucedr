@@ -210,6 +210,14 @@ const PermissionsPage: React.FC = () => {
 					{error}
 				</SettingsNotice>
 			)}
+			{permissions && permissions.dropped.length > 0 && (
+				<SettingsNotice icon={AlertTriangle}>
+					{t('settings.permissions.droppedNotice', {
+						count: permissions.dropped.length,
+						rules: permissions.dropped.join(', '),
+					})}
+				</SettingsNotice>
+			)}
 			<SettingsNotice>{t('settings.permissions.locationsNotice')}</SettingsNotice>
 			<Sandbox />
 
