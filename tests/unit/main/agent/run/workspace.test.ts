@@ -227,7 +227,7 @@ it('reuses a saved outside location for create, edit, move, delete, undo and red
 	const directory = path.join(userDataLocation(), 'trusted-outside');
 	fs.mkdirSync(directory, { recursive: true });
 	const permissions = getPermissions();
-	setPermissions({ ...permissions, write: { ...permissions.write, allow: [...permissions.write.allow, `${realPath(directory)}/**`] } });
+	setPermissions({ ...permissions, write: { ...permissions.write, allow: [...permissions.write.allow, { root: realPath(directory), recursive: true }] } });
 	const original = path.join(directory, 'original.txt');
 	const moved = path.join(directory, 'moved.txt');
 	const history: FileHistory = { operations: [] };
