@@ -14,5 +14,6 @@ export const createTaskTool = tool({
 			'The persistent task definition, including what the background agent should do and, when requested, its cron schedule.'
 		),
 	}),
+	access: taskAccess,
 	execute: ({ request }) => createTask({ ...request, enabled: false }),
 });
