@@ -67,10 +67,7 @@ const PermissionsPage: React.FC = () => {
 	};
 
 	useEffect(() => {
-		Promise.all([
-			profile === 'chat' ? window.agent.policyGet() : window.agent.policyGet(profile),
-			window.agent.getWorkspaceLocation(),
-		])
+		Promise.all([window.agent.policyGet(), window.agent.getWorkspaceLocation()])
 			.then(([rules, location]) => {
 				setPermissions(rules);
 				setWorkspace(location);
@@ -78,23 +75,36 @@ const PermissionsPage: React.FC = () => {
 			.catch((cause: unknown) => {
 				setError(cause instanceof Error ? cause.message : String(cause));
 			});
-	}, [profile]);
+	}, []);
 
 	const rows = permissions
 		? (['allow', 'deny'] as const).flatMap((bucket) => {
-				const paths = [...new Set(KINDS.flatMap((kind) => permissions[kind][bucket]))];
-				return paths.map((rule) => ({
+				const rules = [
+					...new Map(
+						KINDS.flatMap((kind) => permissions[kind][bucket]).map((rule) => [ruleKey(rule), rule])
+					).values(),
+				];
+				return rules.map((rule) => ({
 					bucket,
 					rule,
-					path: locationPath(rule),
-					kinds: KINDS.filter((kind) => permissions[kind][bucket].includes(rule)),
+					path: rule.root,
+					kinds: KINDS.filter((kind) =>
+						permissions[kind][bucket].some((candidate) => ruleKey(candidate) === ruleKey(rule))
+					),
 				}));
 			})
+		: [];
+	const protectedRows = permissions
+		? [
+				...permissions.protected.read.map((path) => ({ path, kinds: KINDS.slice(0, 2) })),
+				...permissions.protected.write.map((path) => ({ path, kinds: KINDS.slice(1, 2) })),
+			]
 		: [];
 	const workspaceKey = workspace.replaceAll('\\', '/').replace(/\/$/, '');
 	const workspaceRow = rows.find(
 		(row) =>
 			row.bucket === 'allow' &&
+			row.rule.recursive &&
 			row.path.replaceAll('\\', '/').replace(/\/$/, '') === workspaceKey &&
 			row.kinds.length === KINDS.length
 	);
