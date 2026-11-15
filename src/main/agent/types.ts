@@ -68,6 +68,7 @@ export type ToolConfig<T extends z.ZodType> = {
 	maxOutputBytes?: number;
 	readOnly?: boolean;
 	capability?: import('./execution/capability').ToolCapability;
+	access?: (input: z.infer<T>) => import('./permissions').ToolAccess;
 	policy?: AgentToolReference;
 	inputSchema: T;
 	execute: (input: z.infer<T>, signal?: AbortSignal) => Promise<unknown> | unknown;
