@@ -98,7 +98,7 @@ describe('ExecSandbox permissions', () => {
 		await sandbox.wrap('pwd', '/workspace', 'approved-cache', undefined, ['/tmp/claude']);
 		const approved = wrapWithSandboxArgv.mock.calls.at(-1)?.[2];
 		expect(approved.filesystem.denyWrite).not.toContain('/tmp/claude');
-		expect(approved.filesystem.allowWrite).toContain('/tmp/claude/**');
+		expect(approved.filesystem.allowWrite).toContain('/tmp/claude');
 		await sandbox.wrap('pwd', '/workspace', 'unapproved-cache');
 		expect(wrapWithSandboxArgv.mock.calls.at(-1)?.[2].filesystem.denyWrite).toContain('/tmp/claude');
 	});
