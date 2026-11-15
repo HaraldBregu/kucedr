@@ -41,7 +41,7 @@ export function addRunContext(state: SessionState, context: string): void {
 		.split(SECTION_BREAK)
 		.map((section) => {
 			const header = section.split('\n', 1)[0];
-			if (!DEDUPED_SECTIONS.includes(header)) return section;
+			if (!header.startsWith('## ') || header === CLOCK_SECTION) return section;
 			for (const previousContext of earlier.toReversed()) {
 				const previous = previousContext
 					.split(SECTION_BREAK)
