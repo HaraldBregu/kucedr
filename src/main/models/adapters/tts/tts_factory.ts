@@ -1,5 +1,4 @@
 import { createBytesSpeechAdapter } from './tts_bytes';
-import { createCompleteSpeechAdapter } from './tts_complete';
 import { createContentSpeechAdapter } from './tts_content';
 import { createJobsSpeechAdapter } from './tts_jobs';
 import { createPlainSpeechAdapter } from './tts_plain';
