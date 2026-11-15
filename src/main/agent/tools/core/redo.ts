@@ -14,6 +14,7 @@ export function redoFileTool(history: FileHistory) {
 		description:
 			'Redo the most recently undone file operation in this session. Refuses if a file changed afterward.',
 		inputSchema: z.object({}),
+		access: () => ({ write: fileHistoryTargets(history, 'redo') }),
 		execute: () => {
 			for (const target of fileHistoryTargets(history, 'redo')) validateFilePath(authorizeFilePath(target), true);
 			const operation = redoFileOperation(history);
