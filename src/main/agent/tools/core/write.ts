@@ -14,6 +14,7 @@ export const writeTool = tool({
 		path: z.string().min(1).describe(PATH_DESCRIPTION),
 		content: z.string().describe('UTF-8 text content to write.'),
 	}),
+	access: ({ path: filePath }) => ({ write: [resolveUserPath(filePath, agentLocation())] }),
 	execute: async ({ path: filePath, content }, signal) => {
 		const resolved = authorizeFilePath(filePath);
 		await writeAuthorizedFile(resolved, content, signal);
