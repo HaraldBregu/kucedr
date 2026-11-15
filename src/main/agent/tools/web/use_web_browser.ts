@@ -309,6 +309,8 @@ export const useWebBrowserTool = tool({
 			.describe('act wait: page load state to wait for.'),
 		timeoutMs: z.number().int().min(1).optional().describe('act: per-action timeout override.'),
 	}),
+	access: ({ action, directory }) =>
+		action === 'screenshot' || action === 'pdf' ? mediaAccess(directory) : {},
 	execute: async (params, signal) => {
 		signal?.throwIfAborted();
 		const session = browserSession();
