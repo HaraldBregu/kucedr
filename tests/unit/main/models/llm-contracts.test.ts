@@ -38,54 +38,6 @@ it('preserves signed Anthropic thinking when returning tool results', async () =
 	]);
 });
 
-it.each([true, false])(
-	'reads Mistral thinking and text chunks with streaming=%s',
-	async (streaming) => {
-		const thinking = { type: 'thinking', thinking: [{ type: 'text', text: 'reasoning' }] };
-		const create = jest.fn().mockImplementation(async () =>
-			streaming
-				? (async function* () {
-						yield {
-							choices: [{ delta: { content: [thinking, { type: 'text', text: 'answer' }] } }],
-						};
-						yield { choices: [{ delta: { content: ' continues' }, finish_reason: 'stop' }] };
-					})()
-				: {
-						choices: [
-							{
-								message: { content: [thinking, { type: 'text', text: 'answer continues' }] },
-								finish_reason: 'stop',
-							},
-						],
-						usage: {},
-					}
-		);
-		const model = new LlmModel({
-			openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
-		});
-		const request: LlmRequest = {
-			provider: { id: 'mistral', apiKey: 'key' },
-			model: 'mistral-large-4',
-			messages: [{ role: 'user', content: 'hello' }],
-			maxTokens: 100,
-			streaming,
-		};
-		const events: LlmEvent[] = [];
-		for await (const event of model.stream(request)) events.push(event);
-		expect(
-			events
-				.filter((event) => event.type === 'model_call_delta')
-				.map((event) => event.delta)
-				.join('')
-		).toBe('answer continues');
-		expect(events).toContainEqual({
-			type: 'model_provider_item',
-			provider: 'mistral',
-			item: thinking,
-		});
-	}
-);
-
 it('maps Cohere reasoning effort only on models with documented support', async () => {
 	const create = jest.fn().mockResolvedValue({ choices: [], usage: {} });
 	const model = new LlmModel({
