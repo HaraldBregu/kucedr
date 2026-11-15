@@ -11,13 +11,18 @@ jest.mock('../../../../../src/main/agent/agent_store', () => ({
 	AGENT_DIRECTORY: '/appdata/agent',
 	addPermissionRule,
 	getPermissions,
+	getToolConfiguration: () => ({ permission: 'allow' }),
 }));
 
 import { createRunContext } from '../../../../../src/main/agent/context';
 import { respondToolPermission } from '../../../../../src/main/agent/permissions';
+import { mediaAccess } from '../../../../../src/main/agent/permissions/media_access';
 import { runToolCall } from '../../../../../src/main/agent/runner/run_tool_call';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { execTool } from '../../../../../src/main/agent/tools/core/bash';
+import { readTool } from '../../../../../src/main/agent/tools/core/read';
+import { writeTool } from '../../../../../src/main/agent/tools/core/write';
+import { editTool } from '../../../../../src/main/agent/tools/core/edit';
 import type { ExecSandbox } from '../../../../../src/main/agent/sandbox';
 import type { RuntimeEvent, Tool } from '../../../../../src/main/agent/types';
 
@@ -26,7 +31,19 @@ const emptyPermissions = {
 	write: { allow: [], deny: [] },
 	exec: { allow: [], deny: [] },
 };
-const libraryPattern = `${path.resolve(libraryLocation()).replaceAll(path.sep, '/')}/**`;
+const rule = (root: string, recursive = true) => ({ root, recursive });
+const libraryRule = rule(path.resolve(libraryLocation()));
+const media = (input: Record<string, unknown>) =>
+	mediaAccess(typeof input.directory === 'string' ? input.directory : undefined);
+const accessFor: Record<string, Tool['access']> = {
+	create_image: media,
+	create_sound: media,
+	create_video: media,
+	bash: execTool({} as ExecSandbox).access,
+	read: readTool.access,
+	write: writeTool.access,
+	edit: editTool.access,
+};
 
 beforeEach(() => {
 	getPermissions.mockReset().mockReturnValue(emptyPermissions);
