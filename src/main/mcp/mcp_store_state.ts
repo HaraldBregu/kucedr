@@ -136,6 +136,16 @@ export function setLocalMcpEnvironment(
 	restrictSettingsFile(mcpStorePath);
 }
 
+export function getInstalledMcpServers(): ReadonlySet<string> {
+	return new Set([...store.get('installed'), ...Object.keys(store.get('localEnvironments'))]);
+}
+
+export function setMcpServerInstalled(id: string, installed: boolean): void {
+	const ids = store.get('installed').filter((entry) => entry !== id);
+	store.set('installed', installed ? [...ids, id] : ids);
+	restrictSettingsFile(mcpStorePath);
+}
+
 export function migrateMcpStoreFromProviders(): void {
 	migrateLegacyMcpServers();
 }
