@@ -1,6 +1,7 @@
 import { getTask, runTaskNow } from '../../../tasks';
 import { tool } from '../tool';
 import { taskIdSchema } from './schema';
+import { taskAccess } from './access';
 
 export const runTaskNowTool = tool({
 	id: 'run_task_now',
