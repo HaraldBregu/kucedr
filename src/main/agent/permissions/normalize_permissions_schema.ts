@@ -32,7 +32,7 @@ export function normalizePermissionsSchema(value: unknown): {
 			if (!text) return [];
 			const rule = literalRule(text, bucket);
 			if (!rule) dropped.push(text);
-			else if (rule.recursive && path.join(rule.root, '**') !== path.resolve(text) && rule.root !== path.resolve(text))
+			else if (text !== '*' && /[*?[\]{}]/.test(text.replace(/[\\/]\*\*$/, '')))
 				dropped.push(`${text} → ${rule.root}`);
 			return rule ? [rule] : [];
 		});
