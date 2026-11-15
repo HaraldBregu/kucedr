@@ -1,6 +1,7 @@
 import { deleteTask } from '../../../tasks';
 import { tool } from '../tool';
 import { taskIdSchema } from './schema';
+import { taskAccess } from './access';
 
 export const deleteTaskTool = tool({
 	id: 'delete_task',
