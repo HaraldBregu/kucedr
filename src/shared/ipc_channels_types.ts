@@ -358,19 +358,16 @@ export interface AgentInvokeChannelMap {
 		result: import('./agent_tools').AgentToolProfile;
 	};
 	[AgentChannels.policyGet]: {
-		args: [profileId?: import('./agent_tools').AgentToolProfileId];
-		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
+		args: [];
+		result: import('../main/agent/permissions/permissions_types').PermissionsView;
 	};
 	[AgentChannels.policySet]: {
-		args: [
-			permissions: import('../main/agent/permissions/permissions_types').PermissionsSchema,
-			profileId?: import('./agent_tools').AgentToolProfileId,
-		];
-		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
+		args: [permissions: import('../main/agent/permissions/permissions_types').PermissionsSchema];
+		result: import('../main/agent/permissions/permissions_types').PermissionsView;
 	};
 	[AgentChannels.policyReset]: {
-		args: [profileId?: import('./agent_tools').AgentToolProfileId];
-		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
+		args: [];
+		result: import('../main/agent/permissions/permissions_types').PermissionsView;
 	};
 	[AgentChannels.policyPickDirectory]: { args: []; result: string | undefined };
 	[AgentChannels.policyNormalizeDirectory]: { args: [value: string]; result: string };
