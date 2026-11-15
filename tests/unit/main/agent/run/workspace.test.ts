@@ -28,6 +28,7 @@ import type { RuntimeEvent, Tool } from '../../../../../src/main/agent/types';
 const workspace = agentLocation();
 const outsideRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-outside-'));
 const scope = { ownerId: 'workspace-test', source: 'interactive', sessionId: 'workspace-test', runId: 'workspace-test' } as const;
+const bashAccess = execTool({} as ExecSandbox).access;
 
 async function execute(tool: Tool, args: Record<string, unknown>, history?: FileHistory, source?: 'task' | 'health' | 'child'): Promise<RuntimeEvent[]> {
 	const events: RuntimeEvent[] = [];
