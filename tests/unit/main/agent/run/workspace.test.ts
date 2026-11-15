@@ -218,7 +218,7 @@ it.each(['approve', 'approve_always', 'reject'] as const)('records %s for an out
 	expect(JSON.parse(stringifyRunEntry(outcome)!)).toMatchObject({ event: { toolCallId: decision, permissionOutcome: decision } });
 	await events.next();
 	expect(fs.readFileSync(target, 'utf8')).toBe(decision === 'reject' ? 'original' : 'changed');
-	expect(getPermissions().write.allow.includes(`${realPath(path.dirname(target))}/**`)).toBe(decision === 'approve_always');
+	expect(getPermissions().write.allow.some((rule) => rule.root === realPath(path.dirname(target)) && rule.recursive)).toBe(decision === 'approve_always');
 	const next = await execute(writeTool, { path: target, content: 'again' });
 	expect(next.at(-1)?.type).toBe(decision === 'approve_always' ? 'tool_call_end' : 'tool_permission_request');
 });
