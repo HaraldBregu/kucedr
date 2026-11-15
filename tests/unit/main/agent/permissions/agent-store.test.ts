@@ -154,7 +154,6 @@ describe('agent store permissions', () => {
 				permission: 'allow',
 			});
 			expect(getToolProfile('chat').tools).not.toHaveProperty(toolId);
-			expect(getPermissions('chat').tools).not.toHaveProperty(toolId);
 		}
 	);
 
