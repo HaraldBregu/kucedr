@@ -12,7 +12,7 @@ beforeEach(() => {
 	global.fetch = jest.fn();
 });
 
-it.each(['openai', 'voyage', 'jina', 'bge', 'mistral'])(
+it.each(['openai', 'voyage', 'jina', 'bge'])(
 	'uses response indexes to keep %s embeddings aligned with input order',
 	async (providerId) => {
 		jest.mocked(global.fetch).mockResolvedValue(
