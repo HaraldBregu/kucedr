@@ -30,6 +30,7 @@ export function createImageTool(): Tool {
 					'Optional directory to save the image in, relative to the agent workspace. Absolute paths are supported and ~ expands to the user home. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location.'
 				),
 		}),
+		access: ({ directory }) => mediaAccess(directory),
 		execute: async ({ prompt, count, directory, ...options }, signal) => {
 			const images: Array<{ path: string; mimeType: string }> = [];
 			const inlined = (await inlineFiles(options)) as Record<string, unknown>;
