@@ -71,14 +71,14 @@ it.each([undefined, 'task', 'health', 'child'] as const)('creates, reads, overwr
 
 it.each(['task', 'health', 'child'] as const)('allows workspace commands without a window for %s', async (source) => {
 	const run = jest.fn().mockResolvedValue('done');
-	const tool = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	const tool = { ...jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run }), access: bashAccess };
 	expect((await execute(tool, { command: 'node tools/example.js' }, undefined, source)).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
 	expect(run).toHaveBeenCalled();
 });
 
 it.each(['task', 'health', 'child'] as const)('blocks unapproved outside access without a window for %s', async (source) => {
 	const run = jest.fn();
-	const bash = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	const bash = { ...jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run }), access: bashAccess };
 	const operations: [Tool, Record<string, unknown>][] = [
 		[writeTool, { path: '../background-outside.txt', content: 'outside' }],
 		[bash, { command: 'pwd', additionalRoots: ['..'] }],
@@ -93,7 +93,7 @@ it.each(['task', 'health', 'child'] as const)('blocks unapproved outside access 
 
 it('allows workspace bash without approval', async () => {
 	const run = jest.fn().mockResolvedValue('done');
-	const tool = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	const tool = { ...jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run }), access: bashAccess };
 	expect((await execute(tool, { command: 'node tools/example.js' })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
 	expect(run).toHaveBeenCalled();
 });
@@ -141,7 +141,7 @@ it('asks before a patch moves a workspace file outside', async () => {
 
 it.each([{ command: 'pwd', additionalRoots: ['..'] }, { command: 'pwd', elevated: true }])('asks before command access beyond the workspace: %j', async (args) => {
 	const run = jest.fn();
-	const tool = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	const tool = { ...jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run }), access: bashAccess };
 	expect((await execute(tool, args)).at(-1)).toMatchObject({ type: 'tool_permission_request' });
 	expect(run).not.toHaveBeenCalled();
 });
@@ -193,7 +193,7 @@ it('reads outside files and runs sandboxed commands from outside without approva
 	fs.writeFileSync(target, 'outside content');
 	expect((await execute(readTool, { path: target })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow', output: 'outside content' });
 	const run = jest.fn().mockResolvedValue('done');
-	const bash = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	const bash = { ...jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run }), access: bashAccess };
 	expect((await execute(bash, { command: 'cat outside-read.txt', workdir: '..' })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
 	expect(run).toHaveBeenCalledTimes(1);
 });
@@ -258,7 +258,7 @@ it('offers a reusable folder grant for undo outside the workspace', async () => 
 
 it('persists an outside command grant and reuses it without an approval window', async () => {
 	const run = jest.fn().mockResolvedValue('done');
-	const bash = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	const bash = { ...jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run }), access: bashAccess };
 	const directory = path.join(outsideRoot, 'command-output');
 	fs.mkdirSync(directory);
 	const args = { command: 'touch output.txt', workdir: directory, additionalRoots: ['.'] };
