@@ -216,36 +216,24 @@ function toAgentMediaModelSettings(value: unknown): AgentMediaModelSettings {
 
 function toPermissionRules(value: unknown): PermissionRules {
 	if (!isRecord(value)) throw new Error('Invalid permission rules.');
-	const list = (input: unknown): string[] => {
+	const list = (input: unknown): PermissionRule[] => {
 		if (!Array.isArray(input)) throw new Error('Invalid permission rules.');
-		return [...new Set(input.map(optionalTrimmedString).filter((item): item is string => !!item))];
+		return input.map((item) => {
+			const root = isRecord(item) ? optionalTrimmedString(item.root) : undefined;
+			if (!isRecord(item) || !root || typeof item.recursive !== 'boolean')
+				throw new Error('Invalid permission rules.');
+			return { root, recursive: item.recursive };
+		});
 	};
 	return { allow: list(value.allow), deny: list(value.deny) };
 }
 
 function toPermissions(value: unknown): PermissionsSchema {
 	if (!isRecord(value)) throw new Error('Invalid permissions.');
-	const tools: Record<string, import('../agent/permissions').ToolConfiguration> | undefined =
-		value.tools === undefined
-			? undefined
-			: isRecord(value.tools)
-				? (Object.fromEntries(
-						Object.entries(value.tools).filter(
-							([, settings]) =>
-								isRecord(settings) &&
-								(settings.permission === 'ask' ||
-									settings.permission === 'allow' ||
-									settings.permission === 'deny')
-						)
-					) as Record<string, import('../agent/permissions').ToolConfiguration>)
-				: (() => {
-						throw new Error('Invalid tool permissions.');
-					})();
 	return {
 		read: toPermissionRules(value.read),
 		write: toPermissionRules(value.write),
 		exec: toPermissionRules(value.exec),
-		...(tools ? { tools } : {}),
 	};
 }
 
