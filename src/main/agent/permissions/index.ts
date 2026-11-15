@@ -19,5 +19,4 @@ export {
 	type PermissionsSchema,
 	type PermissionsView,
 	type ToolAccess,
-	type ToolConfiguration,
 } from './permissions_types';
