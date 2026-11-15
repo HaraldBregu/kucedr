@@ -173,7 +173,7 @@ async function* loop(
 		path.resolve(config.location) === path.resolve(agentLocation()) &&
 		(await profileStatus(config.location)).missing.length > 0;
 	const filterRuntimeTools = (candidates: Tool[]): Tool[] =>
-		filterProfileTools(candidates, toolProfile).filter((tool) =>
+		filterProfileTools(candidates, toolProfile, input.approvalWindowId !== undefined).filter((tool) =>
 			isAgentToolAllowedForProfile(toolProfile, tool.policy ?? { kind: 'builtin', id: tool.id })
 		);
 	const toolIdEnabled = (id: string): boolean =>
