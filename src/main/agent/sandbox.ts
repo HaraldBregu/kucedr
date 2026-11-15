@@ -235,33 +235,29 @@ export class ExecSandbox {
 		}
 	}
 
-	private permissions(): ReturnType<typeof getPermissions> {
-		return getPermissions(
-			process.platform === 'win32' ? 'chat' : (executionScope.getStore()?.profile ?? 'chat')
-		);
-	}
-
 	private async configuration(approvedRoots: readonly string[] = []): Promise<{
 		config: SandboxRuntimeConfig;
 		fingerprint: string;
 	}> {
-		const permissions = this.permissions();
-		const resolveRules = (rules: string[]): string[] =>
-			rules.map((rule) => rule === '*' ? path.parse(os.homedir()).root : resolveUserPath(rule, os.homedir()));
-		const explicitReadDenies = resolveRules([...permissions.exec.deny, ...permissions.read.deny]);
-		const explicitWriteDenies = resolveRules([...permissions.exec.deny, ...permissions.write.deny]);
-		if ([...explicitReadDenies, ...explicitWriteDenies].some((rule) => /[*?[\]{}]/.test(rule.replace(/[\\/]\*\*$/, ''))))
-			throw new Error('Command sandbox rules must use exact paths or a trailing /**. Refine the blocked pattern before executing commands.');
+		const permissions = getPermissions();
+		const roots = (rules: PermissionRule[]): string[] => rules.map((rule) => rule.root);
+		const explicitReadDenies = roots([...permissions.exec.deny, ...permissions.read.deny]);
+		const explicitWriteDenies = roots([...permissions.exec.deny, ...permissions.write.deny]);
 		const allowWrite = [
-			...resolveRules(permissions.exec.allow),
+			...roots(permissions.exec.allow),
 			this.temporaryDirectory,
+		];
+		const writable: PermissionRule[] = [
+			...permissions.exec.allow,
+			{ root: this.temporaryDirectory, recursive: false },
+			...approvedRoots.map((root) => ({ root, recursive: true })),
 		];
 		const guarded = protectedRoots();
 		const denyWrite = [
 			...explicitWriteDenies,
 			...getDefaultWritePaths().filter((value) =>
 				!value.startsWith('/dev/') &&
-				permissionFor({ allow: [...allowWrite, ...approvedRoots.map(recursivePermissionRule)], deny: [] }, value, 'write') !== 'allow'
+				!writable.some((rule) => ruleMatches(rule, value))
 			),
 			...(await this.protectedWrites(guarded.write, [...guarded.writable, realPath(this.temporaryDirectory)])),
 		];
