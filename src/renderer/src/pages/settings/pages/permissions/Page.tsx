@@ -120,7 +120,7 @@ const PermissionsPage: React.FC = () => {
 			setError(cause instanceof Error ? cause.message : String(cause));
 			return;
 		}
-		const rule = `${normalized}${/[\\/]$/.test(normalized) ? '' : '/'}**`;
+		const rule: PermissionRule = { root: normalized, recursive: true };
 		const opposite: PermissionBucket = newBucket === 'allow' ? 'deny' : 'allow';
 		setPermissions(
 			KINDS.reduce(
@@ -130,9 +130,14 @@ const PermissionsPage: React.FC = () => {
 								...next,
 								[kind]: {
 									...next[kind],
-									[newBucket]: [...new Set([...next[kind][newBucket], rule])],
+									[newBucket]: [
+										...next[kind][newBucket].filter(
+											(candidate) => ruleKey(candidate) !== ruleKey(rule)
+										),
+										rule,
+									],
 									[opposite]: next[kind][opposite].filter(
-										(candidate) => locationPath(candidate) !== normalized
+										(candidate) => candidate.root !== normalized
 									),
 								},
 							}
@@ -143,7 +148,7 @@ const PermissionsPage: React.FC = () => {
 		setNewPath('');
 	};
 
-	const removeLocation = (rule: string, bucket: PermissionBucket): void => {
+	const removeLocation = (rule: PermissionRule, bucket: PermissionBucket): void => {
 		if (!permissions) return;
 		setPermissions(
 			KINDS.reduce(
@@ -151,7 +156,9 @@ const PermissionsPage: React.FC = () => {
 					...next,
 					[kind]: {
 						...next[kind],
-						[bucket]: next[kind][bucket].filter((candidate) => candidate !== rule),
+						[bucket]: next[kind][bucket].filter(
+							(candidate) => ruleKey(candidate) !== ruleKey(rule)
+						),
 					},
 				}),
 				permissions
