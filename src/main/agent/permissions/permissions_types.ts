@@ -5,9 +5,14 @@ export type PermissionMode = AgentToolPermission;
 export type PermissionBucket = 'allow' | 'deny';
 export type PermissionKind = 'read' | 'write' | 'exec';
 
+export interface PermissionRule {
+	root: string;
+	recursive: boolean;
+}
+
 export interface PermissionRules {
-	allow: string[];
-	deny: string[];
+	allow: PermissionRule[];
+	deny: PermissionRule[];
 }
 
 export type ToolConfiguration = AgentToolConfiguration;
@@ -16,7 +21,20 @@ export interface PermissionsSchema {
 	read: PermissionRules;
 	write: PermissionRules;
 	exec: PermissionRules;
-	tools?: Record<string, ToolConfiguration>;
+}
+
+export interface PermissionsView extends PermissionsSchema {
+	protected: { read: string[]; write: string[] };
+	dropped: string[];
+}
+
+export interface ToolAccess {
+	readonly read?: readonly string[];
+	readonly write?: readonly string[];
+	readonly exec?: readonly string[];
+	readonly managed?: boolean;
+	readonly folders?: boolean;
+	readonly host?: boolean;
 }
 
 export const EMPTY_PERMISSIONS: PermissionsSchema = {
