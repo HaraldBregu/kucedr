@@ -83,15 +83,17 @@ describe('AgentIpc run ownership', () => {
 		expect(cancel).toHaveBeenCalledWith('run-1', 7);
 	});
 
-	it('routes policy reads, writes, and resets to Voice while preserving the Chat default', async () => {
+	it('routes policy reads, writes, and resets to the shared location list', async () => {
 		const policy = {
-			read: { allow: ['/voice/**'], deny: [] },
+			read: { allow: [{ root: '/shared', recursive: true }], deny: [] },
 			write: { allow: [], deny: [] },
 			exec: { allow: [], deny: [] },
 		};
+		const view = { ...policy, protected: { read: [], write: [] }, dropped: [] };
 		const get = jest.spyOn(permissionsApi, 'getPermissions').mockReturnValue(policy);
 		const set = jest.spyOn(permissionsApi, 'setPermissions').mockReturnValue(policy);
 		const reset = jest.spyOn(permissionsApi, 'resetPermissions').mockReturnValue(policy);
+		const present = jest.spyOn(permissionsApi, 'permissionsView').mockReturnValue(view);
 		const invalidate = jest.fn().mockResolvedValue(undefined);
 		const sender = { mainFrame: {} };
 		const event = { sender, senderFrame: sender.mainFrame };
