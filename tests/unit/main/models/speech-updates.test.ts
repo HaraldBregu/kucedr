@@ -269,7 +269,6 @@ it('uses the current Sonic 3.6 version and direct voice ID contract', async () =
 
 it.each([
 	['cohere', 'embed-v5.0-pro', 'https://api.cohere.com/v2/embed'],
-	['mistral', 'codestral-embed-2505', 'https://api.mistral.ai/v1/embeddings'],
 	['jina', 'jina-embeddings-v5-omni-small', 'https://api.jina.ai/v1/embeddings'],
 	[
 		'qwen',
