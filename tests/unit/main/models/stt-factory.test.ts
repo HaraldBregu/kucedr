@@ -5,7 +5,6 @@ const deepgram = mk('deepgram');
 jest.mock('../../../../src/main/models/adapters/stt/stt_openai', () => ({ createOpenAISttAdapter: openai }));
 jest.mock('../../../../src/main/models/adapters/stt/stt_deepgram', () => ({ createDeepgramSttAdapter: deepgram }));
 jest.mock('../../../../src/main/models/adapters/stt/stt_elevenlabs', () => ({ createElevenLabsSttAdapter: mk('e') }));
-jest.mock('../../../../src/main/models/adapters/stt/stt_mistral', () => ({ createMistralSttAdapter: mk('m') }));
 jest.mock('../../../../src/main/models/adapters/stt/stt_qwen', () => ({ createQwenSttAdapter: mk('q') }));
 jest.mock('../../../../src/main/models/adapters/stt/stt_xai', () => ({ createXaiSttAdapter: mk('x') }));
 
