@@ -213,7 +213,7 @@ export async function* runModelTurn(
 				model,
 				stopReason,
 				usage,
-				providerItems,
+				providerItems: mergeProviderItems(providerItems),
 				toolCalls: [...pending].map(([id, toolCall]) => ({
 					id,
 					name: toolCall.name,
