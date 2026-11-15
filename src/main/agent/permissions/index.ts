@@ -4,9 +4,8 @@ export {
 	resetPermissions,
 	setPermissions,
 } from '../agent_store';
-export { toolApprovalTargets } from './tool_approval_targets';
-export { resolveToolPermission, resolveToolPermissionDetails } from './resolve_tool_permission';
-export { recursivePermissionRule } from './recursive_permission_rule';
+export { resolvePermission } from './resolve_permission';
+export { permissionsView } from './permissions_view';
 export {
 	rejectPendingToolPermissions,
 	respondToolPermission,
@@ -15,7 +14,10 @@ export {
 export {
 	type PermissionKind,
 	type PermissionMode,
+	type PermissionRule,
 	type PermissionRules,
 	type PermissionsSchema,
+	type PermissionsView,
+	type ToolAccess,
 	type ToolConfiguration,
 } from './permissions_types';
