@@ -6,6 +6,7 @@ import { pluginServerDisabled } from './mcp_plugin_disabled';
 
 export function listMcpRegistry(): McpRegistry {
 	const local = listLocalMcpServers(mcpServerRoots());
+	const installed = getInstalledMcpServers();
 	const configured = new Map<string, McpServerInfo>();
 	for (const [id, data] of Object.entries(listConfiguredMcpServers())) {
 		configured.set(id, { id, source: 'configured', data });
