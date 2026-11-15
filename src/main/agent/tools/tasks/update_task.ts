@@ -13,6 +13,7 @@ export const updateTaskTool = tool({
 			'Only the task fields the user asked to change: name, description, cronExpression, enabled (false only), or prompt.'
 		),
 	}),
+	access: taskAccess,
 	execute: ({ taskId, request }) =>
 		updateTask(
 			taskId,
