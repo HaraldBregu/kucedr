@@ -12,6 +12,7 @@ export const completeBootstrapTool = tool({
 	name: 'Complete bootstrap',
 	description: 'Complete the one-time bootstrap after the assistant identity, soul, and user profile have been updated.',
 	inputSchema: z.object({}),
+	access: () => ({ write: [path.join(agentLocation(), BOOTSTRAP_FILE)] }),
 	execute: async () => {
 		const workspacePath = path.resolve(agentLocation());
 		const { missing } = await profileStatus(workspacePath);
