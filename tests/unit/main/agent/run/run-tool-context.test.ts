@@ -286,7 +286,7 @@ describe('per-run file access', () => {
 		const other = path.join(root, 'two', 'example.txt');
 		getPermissions.mockReturnValue({
 			...emptyPermissions,
-			write: { allow: [realPath(target)], deny: [] },
+			write: { allow: [rule(realPath(target), false)], deny: [] },
 		});
 		const write = jest.fn().mockResolvedValue({ path: target });
 		const edit = jest.fn().mockResolvedValue({ path: target });
