@@ -6,7 +6,7 @@ import { listLocalMcpServers } from './mcp_local_list';
 import { importLocalMcpServers } from './mcp_local_import';
 import { readLocalMcpServer } from './mcp_local_read';
 import { mcpLocalDiscoveryRoots, mcpLocalRoot } from './mcp_local_root';
-import { setLocalMcpEnvironment } from './mcp_store_state';
+import { setLocalMcpEnvironment, setMcpServerInstalled } from './mcp_store_state';
 import { localMcpIdentity } from './mcp_local_identity';
 
 export function configureLocalMcpServer(
