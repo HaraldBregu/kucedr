@@ -1,17 +1,17 @@
-import type { PermissionKind, PermissionRules, PermissionsSchema } from './permissions_types';
+import type { PermissionKind, PermissionRule, PermissionRules, PermissionsSchema } from './permissions_types';
 
 export function withoutDefaultPermissions(
 	permissions: PermissionsSchema,
-	workspacePattern: string,
-	legacyPattern?: string
+	workspace: PermissionRule,
+	legacy?: PermissionRule
 ): PermissionsSchema {
+	const same = (rule: PermissionRule, other?: PermissionRule): boolean =>
+		other !== undefined && rule.root === other.root && rule.recursive === other.recursive;
 	const rules = (kind: PermissionKind): PermissionRules => {
 		const { allow, deny } = permissions[kind];
-		const merged = allow.includes(workspacePattern);
+		const merged = allow.some((rule) => same(rule, workspace));
 		return {
-			allow: allow.filter(
-				(rule) => rule !== workspacePattern && !(merged && rule === legacyPattern)
-			),
+			allow: allow.filter((rule) => !same(rule, workspace) && !(merged && same(rule, legacy))),
 			deny: [...deny],
 		};
 	};
