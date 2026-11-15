@@ -25,15 +25,11 @@ export async function inlineFiles(value: unknown, key?: string): Promise<unknown
 		const filePath = realPath(resolveUserPath(value, agentLocation()));
 		const mimeType = MIME_TYPES[path.extname(filePath).toLowerCase()];
 		if (!mimeType) throw new Error(`Unsupported media file type: ${value}`);
-		const profile = executionScope.getStore()?.profile ?? 'chat';
-		const permission = resolveToolPermissionDetails(
-			'read',
-			{ path: filePath },
-			undefined,
-			false,
-			profile === 'tasks' ? 'deny' : 'ask',
-			getPermissions(profile)
-		);
+		const permission = resolvePermission({
+			access: { read: [filePath] },
+			permissions: getPermissions(),
+			interactive: executionScope.getStore()?.source === 'interactive',
+		});
 		if (permission.mode !== 'allow') throw new Error(`Reading ${value} is not permitted.`);
 		return `data:${mimeType};base64,${(await readFileBounded(filePath, MAX_INLINE_BYTES)).toString('base64')}`;
 	}
