@@ -225,13 +225,13 @@ describe('agent store permissions', () => {
 		});
 
 		expect(getChatbotModel('textToSpeech')).toMatchObject({ providerId: 'openai' });
-		expect(getPermissions().tools).not.toHaveProperty('text_to_speech');
-		expect(getPermissions().tools).not.toHaveProperty('speech_to_text');
+		expect(getToolProfile('chat').tools).not.toHaveProperty('text_to_speech');
+		expect(getToolProfile('chat').tools).not.toHaveProperty('speech_to_text');
 	});
 
 	it('does not expose removed memory tools through permission settings', () => {
-		expect(getPermissions().tools).not.toHaveProperty('save_memory');
-		expect(getPermissions().tools).not.toHaveProperty('list_memories');
-		expect(getPermissions().tools).not.toHaveProperty('forget_memory');
+		expect(getToolProfile('chat').tools).not.toHaveProperty('save_memory');
+		expect(getToolProfile('chat').tools).not.toHaveProperty('list_memories');
+		expect(getToolProfile('chat').tools).not.toHaveProperty('forget_memory');
 	});
 });
