@@ -1,6 +1,7 @@
 import { updateTask } from '../../../tasks';
 import { tool } from '../tool';
 import { taskIdSchema, updateTaskRequestSchema } from './schema';
+import { taskAccess } from './access';
 
 export const updateTaskTool = tool({
 	id: 'update_task',
