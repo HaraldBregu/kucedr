@@ -137,9 +137,7 @@ function toAssistantContent(content: Message['content']): LlmContentBlock[] {
 				return { type: 'text', text: block.text };
 			if (
 				block.type === 'provider_item' &&
-				(block.provider === 'openai' ||
-					block.provider === 'anthropic' ||
-					block.provider === 'mistral')
+				(block.provider === 'openai' || block.provider === 'anthropic')
 			) {
 				return { type: 'provider_item', provider: block.provider, item: block.item };
 			}
