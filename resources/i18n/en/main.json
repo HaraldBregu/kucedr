@@ -1214,7 +1214,12 @@
 			}
 		},
 		"permissions": {
-			"locationsNotice": "Workspace access is allowed by default. Blocked locations override grants, including inside the workspace. Sandboxed commands also respect blocked read and write locations.",
+			"locationsNotice": "These locations apply to every agent: chat, voice, tasks and health. Workspace access is allowed by default. Blocked locations override grants, including inside the workspace. Sandboxed commands also respect blocked read and write locations. Tasks and other runs without a window can only use trusted locations.",
+			"droppedNotice": "{{count}} saved rules could not be converted to exact folders: {{rules}}. Save or reset this page to dismiss this notice.",
+			"exactPath": "This path only",
+			"protectedTitle": "Protected locations",
+			"protectedDescription": "Built in and always blocked for every agent and for sandboxed commands. App data, except the workspace and library, can't be written.",
+			"builtIn": "Built in",
 			"locationsTitle": "Locations",
 			"locationsDescription": "Choose which tools may use each folder and its subfolders.",
 			"workspaceDescription": "Workspace · includes subfolders · explicit blocks still apply",
