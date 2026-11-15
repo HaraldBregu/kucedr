@@ -6,7 +6,6 @@ import { buildMusicAdapter } from '../../../../src/main/models/adapters/tta/tta_
 import { buildVideoAdapter } from '../../../../src/main/models/adapters/ttv/ttv_factory';
 import { buildRealtimeVoiceAdapter } from '../../../../src/main/models/adapters/realtime_voice/realtime_voice_factory';
 
-jest.mock('@mistralai/mistralai', () => ({ Mistral: jest.fn() }));
 jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
 	pluginProviders: () => ['openai', 'elevenlabs', 'xai'].map((id) => {
 		const directory = path.resolve('resources/plugins', id);
