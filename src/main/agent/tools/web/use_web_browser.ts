@@ -5,6 +5,7 @@ import { userDataLocation } from '../../../shared/user_data_location';
 import { saveMedia } from '../../../shared/media';
 import { publicUrl } from '../../../public';
 import { executionScope } from '../../execution/scope';
+import { mediaAccess } from '../../permissions/media_access';
 import { tool } from '../tool';
 import { runBrowserPageOperation } from './browser_abort';
 import { browserSession, type BrowserSession } from './browser/session';
