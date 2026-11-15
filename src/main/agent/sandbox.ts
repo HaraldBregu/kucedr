@@ -305,9 +305,7 @@ export class ExecSandbox {
 			this.temporaryDirectory,
 			...sandboxSystemReads(),
 			...(process.platform === 'linux' ? [this.vendoredSeccompPath()] : []),
-		].filter((value) =>
-			permissionFor({ allow: [], deny: deniedReads }, value, 'read') !== 'deny'
-		);
+		].filter((value) => !deniedReads.some((rule) => ruleMatches(rule, value)));
 		const persistentDefaults = getDefaultWritePaths().filter(
 			(value) => !value.startsWith('/dev/')
 		);
