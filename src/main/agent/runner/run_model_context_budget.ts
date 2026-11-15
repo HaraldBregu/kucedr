@@ -1,5 +1,6 @@
 import type { Message, Tool } from '../types';
 import { isInternalMessage } from './run_internal';
+import { expandRunContext } from '../session/session_expand_run_context';
 import { turnStart } from './run_turn_start';
 
 export const CONTEXT_BYTES_PER_TOKEN = 3;
