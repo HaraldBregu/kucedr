@@ -70,12 +70,11 @@ export class ExecSandbox {
 			);
 		}
 		const { config } = await this.configuration(approvedRoots);
-		const approvedPatterns = approvedRoots.map(recursivePermissionRule);
-		const customConfig = process.platform !== 'win32' || approvedPatterns.length > 0
+		const customConfig = process.platform !== 'win32' || approvedRoots.length > 0
 			? {
 					filesystem: {
 						...config.filesystem,
-						allowWrite: [...(config.filesystem.allowWrite ?? []), ...approvedPatterns],
+						allowWrite: [...(config.filesystem.allowWrite ?? []), ...approvedRoots],
 					},
 			}
 			: undefined;
