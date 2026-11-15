@@ -28,7 +28,7 @@ export function filterProfileTools(
 				setting: getToolConfiguration(profileId, tool.policy ?? { kind: 'builtin', id: tool.id })
 					.permission,
 				approval: capability?.approval === true,
-				interactive: profileId !== 'tasks',
+				interactive,
 			}).mode !== 'deny'
 		);
 	});
