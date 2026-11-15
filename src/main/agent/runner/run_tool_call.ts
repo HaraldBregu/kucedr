@@ -64,28 +64,30 @@ export async function* runToolCall(
 		}),
 		...(security.toolProfile ? { profile: security.toolProfile } : {}),
 	};
+	const declaredAccess = (): ToolAccess =>
+		executionScope.run(scope, () => tool?.access?.(canonicalInput) ?? {});
+	const accessTargets = [
+		...(toolAccess.read ?? []),
+		...(toolAccess.write ?? []),
+		...(toolAccess.exec ?? []),
+	];
 	if (tool) {
 		try {
 			canonicalInput = tool.parseInput(toolCall.args);
 			toolCall.args = canonicalInput;
-			access = captureAccess(
-				['read', 'write', 'edit', 'patch'].includes(toolCall.name)
-					? toolPermissionTargets(toolCall.name, canonicalInput, agentLocation())
-					: directoryPermissionTargets(toolCall.name, canonicalInput, agentLocation(), history)
+			toolAccess = declaredAccess();
+			accessTargets.push(
+				...[...(toolAccess.read ?? []), ...(toolAccess.write ?? []), ...(toolAccess.exec ?? [])].map(
+					realPath
+				)
 			);
+			access = captureAccess(accessTargets);
 		} catch (error) {
 			parseError = error;
 		}
 	}
 	const state = fileToolState(toolCall.name, canonicalInput, agentLocation());
 	const createsFile = state ? isFileCreation(state) : false;
-	const profileToolConfiguration = (): import('../permissions').ToolConfiguration | undefined =>
-		tool && security.toolProfile
-			? getToolConfiguration(security.toolProfile, tool.policy ?? { kind: 'builtin', id: tool.id })
-			: undefined;
-	const profilePermissions = (): import('../permissions').PermissionsSchema =>
-		getPermissions(security.toolProfile ?? 'chat');
-	const permissionFallback = security.toolProfile === 'tasks' ? 'deny' : 'ask';
 
 	yield {
 		type: 'tool_call_start',
