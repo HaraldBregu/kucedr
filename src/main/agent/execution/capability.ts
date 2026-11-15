@@ -49,11 +49,7 @@ export function builtinCapability(
 	if (READ.has(id)) return { effects: ['read'] };
 	if (WRITE.has(id)) return { effects: ['write'] };
 	if (PERSIST.has(id)) return { effects: ['write', 'persistence'] };
-	if (PROFILE.has(id))
-		return {
-			effects: ['write', 'persistence'],
-			approval: existsSync(path.join(userDataLocation(), id.slice('update_'.length), 'settings.json')),
-		};
+	if (PROFILE.has(id)) return { effects: ['write', 'persistence'], approval: true };
 	if (EXTERNAL.has(id)) return { effects: ['read', 'external'] };
 	if (id === 'subagent' || id === 'run_task_now') return { effects: ['execute'] };
 	if (RECORD.has(id)) return { effects: ['sensor', 'write'], approval: true };
