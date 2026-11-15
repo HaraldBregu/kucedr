@@ -177,13 +177,7 @@ const PermissionsPage: React.FC = () => {
 							type="button"
 							variant="outline"
 							size="sm"
-							onClick={() =>
-								apply(() =>
-									profile === 'chat'
-										? window.agent.policyReset()
-										: window.agent.policyReset(profile)
-								)
-							}
+							onClick={() => apply(() => window.agent.policyReset())}
 							disabled={saving}
 						>
 							<RotateCcw className="size-3" />
