@@ -1,4 +1,4 @@
-import type { AgentToolConfiguration, AgentToolPermission } from '../../../shared/agent_tools';
+import type { AgentToolPermission } from '../../../shared/agent_tools';
 
 export type PermissionMode = AgentToolPermission;
 
