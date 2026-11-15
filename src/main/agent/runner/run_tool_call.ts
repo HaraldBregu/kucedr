@@ -391,7 +391,7 @@ export async function* runToolCall(
 					);
 					timeoutTimer.unref?.();
 					toolSignal.throwIfAborted();
-					const current = resolvePermission();
+					const current = checkPermission();
 					if (
 						current.mode === 'deny' ||
 						(permissionOutcome === 'allow' && current.mode !== 'allow')
