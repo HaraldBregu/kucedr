@@ -274,7 +274,7 @@ it('persists an outside command grant and reuses it without an approval window',
 	expect(respondToolPermission({ approvalId: request.approvalId, runId: scope.runId, toolName: 'bash', inputFingerprint: request.inputFingerprint }, 'approve_always', 1)).toBe(true);
 	expect((await end).value).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'approve_always' });
 	await events.next();
-	expect(getPermissions().exec.allow).toContain(`${realPath(directory)}/**`);
+	expect(getPermissions().exec.allow).toContainEqual({ root: realPath(directory), recursive: true });
 	expect((await execute(bash, args, undefined, 'child')).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
 	expect(run).toHaveBeenCalledTimes(2);
 });
