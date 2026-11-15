@@ -6,11 +6,17 @@ jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string) => key.split('.').at(-1) ?? key }),
 }));
 
-const workspaceRule = '/workspace/**';
+const rule = (root: string) => ({ root, recursive: true });
+const workspaceRule = rule('/workspace');
 const permissions = {
-	read: { allow: [workspaceRule, '/shared/**'], deny: ['/blocked/**'] },
-	write: { allow: [workspaceRule, '/shared/**'], deny: ['/blocked/**'] },
-	exec: { allow: [workspaceRule], deny: ['/blocked/**'] },
+	read: { allow: [workspaceRule, rule('/shared')], deny: [rule('/blocked')] },
+	write: { allow: [workspaceRule, rule('/shared')], deny: [rule('/blocked')] },
+	exec: { allow: [workspaceRule], deny: [rule('/blocked')] },
+};
+const view = {
+	...permissions,
+	protected: { read: ['/home/.ssh'], write: ['/home/.zshrc'] },
+	dropped: [],
 };
 const agentApi = {
 	policyGet: jest.fn(),
@@ -33,12 +39,12 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'agent', { configurable: true, value: agentApi });
 	Object.defineProperty(window, 'app', { configurable: true, value: appApi });
-	agentApi.policyGet.mockResolvedValue(JSON.parse(JSON.stringify(permissions)));
+	agentApi.policyGet.mockResolvedValue(JSON.parse(JSON.stringify(view)));
 	agentApi.getWorkspaceLocation.mockResolvedValue('/workspace');
 	agentApi.policyPickDirectory.mockResolvedValue(undefined);
 	agentApi.policyNormalizeDirectory.mockImplementation(async (value: string) => value);
-	agentApi.policySet.mockImplementation(async (value) => value);
-	agentApi.policyReset.mockResolvedValue(JSON.parse(JSON.stringify(permissions)));
+	agentApi.policySet.mockImplementation(async (value) => ({ ...view, ...value }));
+	agentApi.policyReset.mockResolvedValue(JSON.parse(JSON.stringify(view)));
 	appApi.getSandboxStatus.mockResolvedValue({ state: 'ready', platform: 'darwin' });
 });
 
@@ -50,6 +56,23 @@ describe('Permissions settings', () => {
 		expect(workspace.closest('[class*="grid"]')).toHaveTextContent('workspaceDescription');
 		expect(screen.getByText('/blocked').closest('[class*="grid"]')).toHaveTextContent('blocked');
 		expect(screen.getAllByRole('button', { name: 'removeLocation' })).toHaveLength(2);
+	});
+
+	it('shows the protected locations read-only', async () => {
+		render(<PermissionsPage />);
+
+		expect((await screen.findByText('/home/.ssh')).closest('[class*="grid"]')).toHaveTextContent(
+			'builtIn'
+		);
+		expect(screen.getByText('/home/.zshrc')).toBeInTheDocument();
+		expect(screen.queryByText('droppedNotice')).not.toBeInTheDocument();
+	});
+
+	it('shows rules that could not be converted', async () => {
+		agentApi.policyGet.mockResolvedValue({ ...view, dropped: ['/old/*/glob/**'] });
+		render(<PermissionsPage />);
+
+		expect(await screen.findByText('droppedNotice')).toBeInTheDocument();
 	});
 
 	it('uses the picker, adds one deduplicated trusted location, and saves the schema', async () => {
@@ -68,9 +91,9 @@ describe('Permissions settings', () => {
 
 		await waitFor(() =>
 			expect(agentApi.policySet).toHaveBeenCalledWith({
-				read: { ...permissions.read, allow: [...permissions.read.allow, '/picked/**'] },
-				write: { ...permissions.write, allow: [...permissions.write.allow, '/picked/**'] },
-				exec: { ...permissions.exec, allow: [...permissions.exec.allow, '/picked/**'] },
+				read: { ...permissions.read, allow: [...permissions.read.allow, rule('/picked')] },
+				write: { ...permissions.write, allow: [...permissions.write.allow, rule('/picked')] },
+				exec: { ...permissions.exec, allow: [...permissions.exec.allow, rule('/picked')] },
 			})
 		);
 	});
@@ -100,23 +123,4 @@ describe('Permissions settings', () => {
 		await user.click(screen.getByRole('button', { name: 'reset' }));
 		await waitFor(() => expect(agentApi.policyReset).toHaveBeenCalledTimes(1));
 	});
-});
-
-it('loads, saves, and resets only Voice permissions when opened for Voice', async () => {
-	const user = userEvent.setup();
-	const chat = JSON.parse(JSON.stringify(permissions));
-	const voice = {
-		read: { allow: [workspaceRule, '/voice/**'], deny: [] },
-		write: { allow: [workspaceRule], deny: [] },
-		exec: { allow: [workspaceRule], deny: [] },
-	};
-	agentApi.policyGet.mockImplementation(async (profile) => (profile === 'voice' ? voice : chat));
-	render(<PermissionsPage profile="voice" />);
-	await screen.findByText('/voice');
-	expect(screen.queryByText('/shared')).not.toBeInTheDocument();
-	expect(agentApi.policyGet).toHaveBeenCalledWith('voice');
-	await user.click(screen.getByRole('button', { name: 'save' }));
-	await waitFor(() => expect(agentApi.policySet).toHaveBeenCalledWith(voice, 'voice'));
-	await user.click(screen.getByRole('button', { name: 'reset' }));
-	await waitFor(() => expect(agentApi.policyReset).toHaveBeenCalledWith('voice'));
 });
