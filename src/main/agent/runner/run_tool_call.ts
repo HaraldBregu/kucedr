@@ -342,14 +342,9 @@ export async function* runToolCall(
 					permission: 'allow',
 				});
 			}
-			if (effectiveDecision === 'approve_always' && resolution.persistable && resolution.kind) {
-				for (const target of resolution.approvalTargets) {
-					addPermissionRule(
-						resolution.kind,
-						'allow',
-						recursivePermissionRule(target),
-						security.toolProfile ?? 'chat'
-					);
+			if (effectiveDecision === 'approve_always' && resolution.persistable) {
+				for (const grant of resolution.grants) {
+					addPermissionRule(grant.kind, 'allow', { root: grant.root, recursive: true });
 				}
 			}
 			permission = effectiveDecision === 'reject' ? 'deny' : 'allow';
