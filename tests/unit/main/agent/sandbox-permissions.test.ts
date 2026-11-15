@@ -83,13 +83,13 @@ describe('ExecSandbox permissions', () => {
 
 		expect(configuration.config.filesystem.allowRead).toEqual([]);
 		expect(configuration.config.filesystem.allowWrite).toEqual(
-			expect.arrayContaining(['/workspace/**', '/shared/**'])
+			expect.arrayContaining(['/workspace', '/shared'])
 		);
 		expect(configuration.config.filesystem.denyRead).toEqual(
-			expect.arrayContaining(['/shared/private/**'])
+			expect.arrayContaining(['/shared/private'])
 		);
-		expect(configuration.config.filesystem.denyRead).toContain('/workspace/private/**');
-		expect(configuration.config.filesystem.denyWrite).toEqual(['/shared/private/**', '/workspace/private/**', '/tmp/claude', '/home/user/.npm/_logs']);
+		expect(configuration.config.filesystem.denyRead).toContain('/workspace/private');
+		expect(configuration.config.filesystem.denyWrite).toEqual(['/shared/private', '/workspace/private', '/tmp/claude', '/home/user/.npm/_logs']);
 		expect(configuration.config.filesystem.denyRead).not.toContain(path.parse(agentLocation()).root);
 	});
 
