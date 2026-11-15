@@ -26,9 +26,12 @@ jest.mock('@anthropic-ai/sandbox-runtime', () => ({
 }));
 jest.mock('../../../../src/main/agent/agent_store', () => ({
 	getPermissions: () => ({
-		read: { allow: ['/workspace/**'], deny: ['/workspace/private/**'] },
-		write: { allow: ['/workspace/**'], deny: ['/workspace/private/**'] },
-		exec: { allow: ['/workspace/**', '/shared/**'], deny: ['/shared/private/**'] },
+		read: { allow: [{ root: '/workspace', recursive: true }], deny: [{ root: '/workspace/private', recursive: true }] },
+		write: { allow: [{ root: '/workspace', recursive: true }], deny: [{ root: '/workspace/private', recursive: true }] },
+		exec: {
+			allow: [{ root: '/workspace', recursive: true }, { root: '/shared', recursive: true }],
+			deny: [{ root: '/shared/private', recursive: true }],
+		},
 	}),
 }));
 
