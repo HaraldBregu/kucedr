@@ -9,6 +9,7 @@ export const runTaskNowTool = tool({
 	description:
 		'Start one immediate run of an existing enabled background task by id, without changing its saved prompt, cron schedule, or enabled state. Disabled tasks cannot be run; the user enables them in Settings > Tasks. If the task id is not already known, call list_tasks first to resolve it.',
 	inputSchema: taskIdSchema,
+	access: taskAccess,
 	execute: ({ taskId }) => {
 		if (!getTask(taskId).enabled)
 			throw new Error('Task is disabled. Ask the user to enable it in Settings > Tasks first.');
