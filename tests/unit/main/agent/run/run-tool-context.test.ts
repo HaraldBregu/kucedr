@@ -116,7 +116,7 @@ describe('exec path approval', () => {
 	it('runs shell syntax inside the workspace without an approval event', async () => {
 		getPermissions.mockReturnValue({
 			...emptyPermissions,
-			exec: { allow: ['/appdata/agent/**'], deny: [] },
+			exec: { allow: [rule('/appdata/agent')], deny: [] },
 		});
 		const run = jest.fn().mockResolvedValue('done');
 		const events = await collect(
