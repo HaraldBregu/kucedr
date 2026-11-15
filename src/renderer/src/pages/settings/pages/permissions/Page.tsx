@@ -29,17 +29,17 @@ import {
 	SettingsRow,
 	SettingsSection,
 } from '../../components';
-import type { AgentToolProfileId } from '@shared/agent_tools';
 import Sandbox from './Sandbox';
-import { locationPath } from './location_path';
 
 type Permissions = Awaited<ReturnType<typeof window.agent.policyGet>>;
-type PermissionKind = Exclude<keyof Permissions, 'tools'>;
+type PermissionKind = 'read' | 'write' | 'exec';
 type PermissionBucket = 'allow' | 'deny';
+type PermissionRule = Permissions[PermissionKind][PermissionBucket][number];
 
 const KINDS: PermissionKind[] = ['read', 'write', 'exec'];
+const ruleKey = (rule: PermissionRule): string => `${rule.recursive}:${rule.root}`;
 
-const PermissionsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat' }) => {
+const PermissionsPage: React.FC = () => {
 	const { t } = useTranslation();
 	const [permissions, setPermissions] = useState<Permissions | null>(null);
 	const [workspace, setWorkspace] = useState('');
