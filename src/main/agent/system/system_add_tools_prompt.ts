@@ -29,11 +29,11 @@ export function addToolsPrompt(
 	for (const [category, metadata] of Object.entries(toolCategoryRegistry)) {
 		const categoryTools = categories.get(category as ToolCategory);
 		if (!categoryTools) continue;
-		prompt += `\n\n### ${metadata.label}\n${metadata.description}`;
+		prompt += `\n\n### ${metadata.label}`;
 		for (const tool of categoryTools) {
 			const description = summary(tool.description);
 			const restriction = requiresExplicitRequest(tool) ? ' _(Explicit user request only.)_' : '';
-			prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${restriction}`;
+			prompt += `\n- \`${tool.id}\`${description ? ` — ${description}` : ''}${restriction}`;
 		}
 	}
 
