@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { agentLocation } from '../../../shared/agent_location';
+import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { writeAuthorizedFile } from '../../files/write';
 import { authorizeFilePath } from '../../files/authorize';
