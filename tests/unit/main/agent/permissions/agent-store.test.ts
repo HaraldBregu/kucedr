@@ -80,92 +80,42 @@ describe('agent store permissions', () => {
 	});
 
 	it('trusts only the workspace by default', () => {
-		expect(resetPermissions()).toMatchObject({
+		expect(resetPermissions()).toEqual({
 			read: { allow: [workspaceRule], deny: [] },
 			write: { allow: [workspaceRule], deny: [] },
 			exec: { allow: [workspaceRule], deny: [] },
-			tools: {},
 		});
 	});
 
 	it('normalizes rules and keeps the default workspace grant', () => {
 		const saved = setPermissions({
-			read: { allow: [' /repo/** ', '/repo/**'], deny: [] },
-			write: { allow: [], deny: ['/blocked/**'] },
+			read: { allow: [rule(' /repo '), rule('/repo')], deny: [] },
+			write: { allow: [], deny: [rule('/blocked')] },
 			exec: { allow: [], deny: [] },
 		});
-		expect(saved.read.allow).toEqual([workspaceRule, '/repo/**']);
+		expect(saved.read.allow).toEqual([workspaceRule, rule('/repo')]);
 		expect(saved.write.allow).toEqual([workspaceRule]);
 		expect(saved.exec.allow).toEqual([workspaceRule]);
 	});
 
-	it('keeps per-tool permission choices with the chat profile', () => {
-		const saved = setPermissions({
-			read: { allow: [], deny: [] },
+	it('stores one location list for every agent in the chat profile', () => {
+		setPermissions({
+			read: { allow: [rule('/shared')], deny: [] },
 			write: { allow: [], deny: [] },
 			exec: { allow: [], deny: [] },
-			tools: {
-				read: { permission: 'ask' },
-				edit: { permission: 'allow' },
-				patch: { permission: 'deny' },
-			},
 		});
 
-		expect(saved.tools).toMatchObject({
-			read: { permission: 'ask' },
-			edit: { permission: 'allow' },
-			patch: { permission: 'deny' },
+		expect(getAgentProfileDocument('chat')).toMatchObject({
+			permissions: { read: { allow: [rule('/shared')], deny: [] } },
 		});
+		expect(getAgentProfileDocument('voice')).not.toHaveProperty('permissions');
 	});
 
-	it.each(['chat', 'voice', 'health', 'tasks'] as const)(
-		'stores %s permissions in its agent profile',
-		(profileId) => {
-			const rule = `/${profileId}/**`;
-			setPermissions(
-				{
-					read: { allow: [rule], deny: [] },
-					write: { allow: [], deny: [] },
-					exec: { allow: [], deny: [] },
-					tools: { read: { permission: 'ask' } },
-				},
-				profileId
-			);
-
-			expect(getAgentProfileDocument(profileId)).toMatchObject({
-				permissions: { read: { allow: [rule], deny: [] } },
-				tools: { read: { permission: 'ask' } },
-			});
-			expect(getPermissions('chat').read.allow).toEqual(
-				profileId === 'chat' ? [workspaceRule, rule] : [workspaceRule]
-			);
-		}
-	);
-
-	it('preserves Chat tools and directories when Voice permissions are saved or reset', () => {
-		setPermissions({
-			read: { allow: ['/chat/**'], deny: [] },
-			write: { allow: [], deny: [] },
-			exec: { allow: [], deny: [] },
-			tools: { read: { permission: 'deny' } },
-		});
-		const chat = getPermissions();
-		setPermissions(
-			{
-				read: { allow: ['/voice/**'], deny: [] },
-				write: { allow: [], deny: [] },
-				exec: { allow: [], deny: [] },
-				tools: { read: { permission: 'ask' } },
-			},
-			'voice'
-		);
-		expect(getPermissions('voice').read.allow).toEqual([workspaceRule, '/voice/**']);
+	it('resets locations without resetting tool settings', () => {
+		setToolProfileTool('voice', { kind: 'builtin', id: 'read' }, { permission: 'ask' });
+		resetPermissions();
 		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('ask');
-		expect(getPermissions()).toEqual(chat);
-		resetPermissions('voice');
-		expect(getPermissions('voice').read.allow).toEqual([workspaceRule]);
-		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('allow');
-		expect(getPermissions()).toEqual(chat);
+		setToolProfileTool('voice', { kind: 'builtin', id: 'read' }, { permission: 'allow' });
 	});
 
 	it('does not create a separate persistent permissions store', () => {
