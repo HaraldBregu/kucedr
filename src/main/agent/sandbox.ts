@@ -14,11 +14,9 @@ import {
 import type { ChildProcess } from 'node:child_process';
 import type { SandboxStatus } from '../../shared/sandbox';
 import { getPermissions } from './agent_store';
-import { executionScope } from './execution/scope';
 import { userDataLocation } from '../shared/user_data_location';
-import { resolveUserPath } from '../shared/user_path';
-import { permissionFor } from './permissions/permission_for';
-import { recursivePermissionRule } from './permissions/recursive_permission_rule';
+import { ruleMatches } from './permissions/rule_matches';
+import type { PermissionRule } from './permissions/permissions_types';
 import { agentLocation } from '../shared/agent_location';
 import { sandboxSystemReads } from './sandbox/reads';
 import { realPath } from '../shared/real_path';
