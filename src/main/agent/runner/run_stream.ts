@@ -216,7 +216,13 @@ async function* loop(
 	let tools: Tool[] = options.tools
 		? [...options.tools]
 		: bootstrap
-			? [updateIdentityTool, updateSoulTool, updateUserTool, completeBootstrapTool]
+			? [
+					...[updateIdentityTool, updateSoulTool, updateUserTool].map((tool) => ({
+						...tool,
+						capability: { effects: ['write', 'persistence'] } as ToolCapability,
+					})),
+					completeBootstrapTool,
+				]
 			: builtinTools(config, options.sandbox!, {
 					ask,
 					readOnlyShell: extension?.readOnlyShell === true,
