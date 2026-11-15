@@ -76,7 +76,7 @@ export type LlmProviderEvent =
 	| { type: 'response_created'; id: string }
 	| {
 			type: 'reasoning_item';
-			provider?: 'openai' | 'deepseek' | 'anthropic' | 'mistral';
+			provider?: 'openai' | 'deepseek' | 'anthropic';
 			item: unknown;
 	  }
 	| { type: 'text_delta'; text: string }
