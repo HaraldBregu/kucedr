@@ -318,7 +318,7 @@ export class ExecSandbox {
 				allowAllUnixSockets: false,
 			},
 			filesystem: {
-				denyRead: [path.parse(agentLocation()).root, ...deniedReads.map((rule) => rule === '*' ? path.parse(agentLocation()).root : resolveUserPath(rule, os.homedir())), ...protectedRoots().read],
+				denyRead: [path.parse(agentLocation()).root, ...deniedReads.map((rule) => rule.root), ...protectedRoots().read],
 				allowRead: readPaths,
 				allowWrite: [this.temporaryDirectory],
 				denyWrite: [agentLocation(), ...persistentDefaults],
