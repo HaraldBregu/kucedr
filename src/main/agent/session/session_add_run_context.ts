@@ -47,7 +47,6 @@ export function addRunContext(state: SessionState, context: string): void {
 					.split(SECTION_BREAK)
 					.find((candidate) => candidate.split('\n', 1)[0] === header);
 				if (previous === undefined || previous === unchanged(header)) continue;
-				// ponytail: the referenced section can be trimmed away near the context limit; the agent can re-list files with tools
 				return previous === section ? unchanged(header) : section;
 			}
 			return section;
