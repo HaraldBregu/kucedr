@@ -6,7 +6,6 @@ jest.mock('../../../../src/main/models/adapters/tts/tts_deepgram', () => ({ crea
 jest.mock('../../../../src/main/models/adapters/tts/tts_elevenlabs', () => ({ createElevenLabsSpeechAdapter: elevenlabs }));
 jest.mock('../../../../src/main/models/adapters/tts/tts_google', () => ({ createGoogleSpeechAdapter: mk('g') }));
 jest.mock('../../../../src/main/models/adapters/tts/tts_minimax', () => ({ createMiniMaxSpeechAdapter: mk('mm') }));
-jest.mock('../../../../src/main/models/adapters/tts/tts_mistral', () => ({ createMistralSpeechAdapter: mk('mi') }));
 jest.mock('../../../../src/main/models/adapters/tts/tts_openai', () => ({ createOpenAISpeechAdapter: mk('o') }));
 
 import { buildSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_factory';
