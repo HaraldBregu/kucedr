@@ -5,6 +5,7 @@ import { saveMedia } from '../../../shared/media';
 import { tool } from '../tool';
 import { modelOptions } from './options';
 import { inlineFiles } from './inline';
+import { mediaAccess } from '../../permissions/media_access';
 
 export function createVideoTool(): Tool {
 	const { model, shape } = modelOptions('video', 'text-to-video');
