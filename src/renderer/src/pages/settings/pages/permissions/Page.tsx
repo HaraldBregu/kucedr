@@ -343,6 +343,27 @@ const PermissionsPage: React.FC = () => {
 					</SettingsPanel>
 				</SettingsSection>
 			)}
+
+			{permissions && (
+				<SettingsSection
+					title={t('settings.permissions.protectedTitle')}
+					description={t('settings.permissions.protectedDescription')}
+				>
+					<SettingsPanel>
+						{protectedRows.map((row) => (
+							<SettingsRow
+								key={row.path}
+								icon={FolderX}
+								title={<span className="break-all font-mono text-xs">{row.path}</span>}
+								description={row.kinds
+									.map((kind) => t(`settings.permissions.kinds.${kind}.title`))
+									.join(' · ')}
+								actions={<Badge variant="outline">{t('settings.permissions.builtIn')}</Badge>}
+							/>
+						))}
+					</SettingsPanel>
+				</SettingsSection>
+			)}
 		</SettingsPageShell>
 	);
 };
