@@ -2,8 +2,8 @@ import { persist } from './session_persist';
 import type { SessionState } from './session_types';
 import type { Message } from '../types';
 
-const DEDUPED_SECTIONS = ['## Agent filesystem'];
-const SECTION_BREAK = /\n\n(?=## )/;
+const CLOCK_SECTION = '## Current UTC date and time';
+export const SECTION_BREAK = /\n\n(?=## )/;
 
 function internal(message: Message | undefined): boolean {
 	return (
