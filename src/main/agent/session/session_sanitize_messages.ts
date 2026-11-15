@@ -1,5 +1,6 @@
 import type { Message, ToolCall } from '../types';
 import { hasAssistantPayload } from './session_has_assistant_payload';
+import { mergeProviderItems } from './session_merge_provider_items';
 
 export const EXPIRED_SKILL_CONTEXT =
 	'Skill instructions omitted because they applied only to the run that loaded them.';
