@@ -1,15 +1,3 @@
-const mistralComplete = jest.fn();
-const mistralListVoices = jest.fn();
-
-jest.mock('@mistralai/mistralai', () => ({
-	Mistral: jest.fn(() => ({
-		audio: {
-			speech: { complete: mistralComplete },
-			voices: { list: mistralListVoices },
-		},
-	})),
-}));
-
 import { createCartesiaSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_cartesia';
 import { createDeepgramSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_deepgram';
 import { createElevenLabsSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_elevenlabs';
