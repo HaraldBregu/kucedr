@@ -223,8 +223,6 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 	}
 
 	if (omittedPrior) {
-		// ponytail: expanded sections are added after the fit check; MODEL_CONTEXT_SAFETY_TOKENS absorbs the few KB, fold into the loop if it ever overflows
-		selectedMessages = expandRunContext(messages.slice(0, cursor), selectedMessages);
 		const marker: Message = {
 			role: 'user',
 			content: '[Earlier conversation omitted to fit the model context budget.]',
