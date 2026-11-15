@@ -13,7 +13,7 @@ function internal(message: Message | undefined): boolean {
 	);
 }
 
-function runContextText(message: Message | undefined): string | undefined {
+export function runContextText(message: Message | undefined): string | undefined {
 	if (!internal(message) || !Array.isArray(message?.content)) return undefined;
 	const block = message.content.find((candidate) => candidate.runContext === true);
 	return typeof block?.text === 'string' ? block.text : undefined;
