@@ -45,8 +45,9 @@ export type SearchEngineSettings = {
 };
 
 export const AGENT_DIRECTORY = path.resolve(agentLocation());
-const workspacePattern = `${AGENT_DIRECTORY.replaceAll(path.sep, '/')}/**`;
-const legacyLibraryPattern = `${path.resolve(libraryLocation()).replaceAll(path.sep, '/')}/**`;
+const workspaceRule: PermissionRule = { root: AGENT_DIRECTORY, recursive: true };
+const legacyLibraryRule: PermissionRule = { root: path.resolve(libraryLocation()), recursive: true };
+migratePermissions(workspaceRule, legacyLibraryRule);
 const RUNTIME_TOOL_KEYS = {
 	subagent: 'subagent',
 	read: 'read_file',
