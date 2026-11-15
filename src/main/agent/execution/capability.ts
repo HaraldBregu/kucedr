@@ -1,7 +1,4 @@
-import { existsSync } from 'node:fs';
-import path from 'node:path';
 import type { AgentToolEffect } from '../../../shared/agent_types';
-import { userDataLocation } from '../../shared/user_data_location';
 
 export interface ToolCapability {
 	readonly effects: readonly AgentToolEffect[];
