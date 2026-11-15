@@ -507,11 +507,7 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'voice/permissions',
-						element: (
-							<SettingsRouteWrapper>
-								<PermissionsPage profile="voice" />
-							</SettingsRouteWrapper>
-						),
+						element: <Navigate to="/settings/agent/permissions" replace />,
 					},
 					{
 						path: 'health',
