@@ -1,5 +1,7 @@
 import { existsSync } from 'node:fs';
 import { z } from 'zod';
+import { agentLocation } from '../../../shared/agent_location';
+import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { decodeUtf8 } from '../../files/text';
 import { writeAuthorizedFile } from '../../files/write';
