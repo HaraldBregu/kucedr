@@ -3,6 +3,8 @@ import { listConfiguredMcpServers } from './mcp_configured_list';
 import { listLocalMcpServers } from './mcp_local_list';
 import { mcpServerRoots } from './mcp_server_roots';
 import { pluginServerDisabled } from './mcp_plugin_disabled';
+import { installedLocalServer } from './mcp_local_installed';
+import { getInstalledMcpServers } from './mcp_store_state';
 
 export function listMcpRegistry(): McpRegistry {
 	const local = listLocalMcpServers(mcpServerRoots());
