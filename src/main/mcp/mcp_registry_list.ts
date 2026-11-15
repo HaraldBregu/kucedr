@@ -19,7 +19,7 @@ export function listMcpRegistry(): McpRegistry {
 			});
 			continue;
 		}
-		configured.set(server.id, pluginServerDisabled(server));
+		configured.set(server.id, installedLocalServer(pluginServerDisabled(server), installed));
 	}
 	return {
 		servers: [...configured.values()].sort((a, b) => a.id.localeCompare(b.id)),
