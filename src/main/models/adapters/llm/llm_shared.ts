@@ -401,13 +401,6 @@ export function llmBuildChatMessages(
 				role: 'assistant',
 				content: text || null,
 			};
-			if (options.model?.contentChunks === 'roundtrip') {
-				const chunks = entry.content
-					.filter((block) => block.type === 'provider_item' && block.provider === 'mistral')
-					.map((block) => (block as Extract<LlmContentBlock, { type: 'provider_item' }>).item);
-				if (chunks.length)
-					msg.content = chunks as unknown as OpenAI.ChatCompletionAssistantMessageParam['content'];
-			}
 			if (options.includeReasoningContent) {
 				const reasoningContent = entry.content
 					.filter(isReasoningContentBlock)
