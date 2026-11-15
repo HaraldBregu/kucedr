@@ -18,6 +18,7 @@ export function tool<T extends z.ZodType>({
 	maxOutputBytes = 200_000,
 	readOnly,
 	capability,
+	access,
 	policy,
 	inputSchema,
 	execute,
