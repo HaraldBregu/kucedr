@@ -37,6 +37,7 @@ export function tool<T extends z.ZodType>({
 		readOnly,
 		policy,
 		capability: capability ?? ((input) => builtinCapability(id, input)),
+		...(access ? { access: (input: Record<string, unknown>) => access(input as z.infer<T>) } : {}),
 		schema: toJsonSchema(inputSchema),
 		parseInput(input: unknown) {
 			return inputSchema.parse(input) as Record<string, unknown>;
