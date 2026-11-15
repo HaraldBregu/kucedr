@@ -6,7 +6,7 @@ import { captureAccess } from '../../../../../src/main/agent/permissions/capture
 import { authorizeFilePath } from '../../../../../src/main/agent/files/authorize';
 import { writeAuthorizedFile } from '../../../../../src/main/agent/files/write';
 import { readTool } from '../../../../../src/main/agent/tools/core/read';
-import { toolPermissionTargets } from '../../../../../src/main/agent/permissions/tool_permission_targets';
+import { applyPatchTool } from '../../../../../src/main/agent/tools/core/patch';
 
 let directory: string;
 beforeEach(() => { directory = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'agent-file-access-'))); });
