@@ -39,14 +39,13 @@ import {
 } from '../../../../../src/main/agent/agent_store';
 import { getAgentProfileDocument } from '../../../../../src/main/agent/agent_profiles';
 import { setAgentProfileTool } from '../../../../../src/main/agent/agent_profiles';
-import { resolveToolPermissionDetails } from '../../../../../src/main/agent/permissions/resolve_tool_permission';
+import { resolvePermission } from '../../../../../src/main/agent/permissions/resolve_permission';
 
-const workspaceRule = `${AGENT_DIRECTORY.replaceAll('\\', '/')}/**`;
+const workspaceRule = { root: AGENT_DIRECTORY, recursive: true };
+const rule = (root: string, recursive = true) => ({ root, recursive });
 
 beforeEach(() => {
-	for (const profileId of ['chat', 'voice', 'health', 'tasks'] as const) {
-		resetPermissions(profileId);
-	}
+	resetPermissions();
 });
 
 describe('agent store permissions', () => {
