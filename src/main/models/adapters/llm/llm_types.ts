@@ -116,8 +116,8 @@ export type LlmProviderEvent =
 
 export type LlmContentBlock =
 	| { type: 'text'; text: string }
-	| { type: 'reasoning'; provider: 'openai' | 'deepseek' | 'anthropic' | 'mistral'; item: unknown }
-	| { type: 'provider_item'; provider: 'openai' | 'anthropic' | 'mistral'; item: unknown }
+	| { type: 'reasoning'; provider: 'openai' | 'deepseek' | 'anthropic'; item: unknown }
+	| { type: 'provider_item'; provider: 'openai' | 'anthropic'; item: unknown }
 	| {
 			type: 'tool_use';
 			toolUseId: string;
