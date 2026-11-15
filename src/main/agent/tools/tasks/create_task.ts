@@ -2,6 +2,7 @@ import { createTask } from '../../../tasks';
 import { tool } from '../tool';
 import { z } from 'zod';
 import { createTaskRequestSchema } from './schema';
+import { taskAccess } from './access';
 
 export const createTaskTool = tool({
 	id: 'create_task',
