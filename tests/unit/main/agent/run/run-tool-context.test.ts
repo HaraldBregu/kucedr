@@ -253,7 +253,7 @@ describe('per-run file access', () => {
 
 		await collect(runToolCall(tool, {
 			id: 'first', name: 'read', args: { path: path.join(root, 'first.txt') },
-		}, undefined, first, { runId: 'run-one' }));
+		}, undefined, first, { runId: 'run-one', windowId: 1 }));
 
 		const reused = await collect(
 			runToolCall(
@@ -261,7 +261,7 @@ describe('per-run file access', () => {
 				{ id: 'second', name: 'read', args: { path: path.join(root, 'second.txt') } },
 				new AbortController().signal,
 				first,
-				{ runId: 'run-one' }
+				{ runId: 'run-one', windowId: 1 }
 			)
 		);
 		expect(reused.some((event) => event.type === 'tool_permission_request')).toBe(false);
@@ -272,7 +272,7 @@ describe('per-run file access', () => {
 				{ id: 'third', name: 'read', args: { path: path.join(root, 'third.txt') } },
 				new AbortController().signal,
 				second,
-				{ runId: 'run-two' }
+				{ runId: 'run-two', windowId: 1 }
 			)
 		);
 		expect(isolated.at(-1)).toMatchObject({ type: 'tool_call_end', isError: undefined });
