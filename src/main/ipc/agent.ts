@@ -1117,7 +1117,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				(value: unknown): string => {
 					const target = optionalTrimmedString(value);
-					if (!target || !path.isAbsolute(target) || /[*?[\]]/.test(target)) {
+					if (!target || !path.isAbsolute(target) || /[*?[\]{}]/.test(target)) {
 						throw new Error('Choose an absolute folder path without wildcard characters.');
 					}
 					return realPath(target);
