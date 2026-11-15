@@ -23,7 +23,6 @@ const TTS_PROTOCOLS: Readonly<Record<string, (spec: SpeechProviderSpec) => Speec
 	'generate-content-voice': createContentSpeechAdapter,
 	t2a: createT2aSpeechAdapter,
 	jobs: createJobsSpeechAdapter,
-	'speech-complete': createCompleteSpeechAdapter,
 	'speech-synthesizer': createSynthesizerSpeechAdapter,
 };
 
