@@ -189,9 +189,11 @@ const PermissionsPage: React.FC = () => {
 							onClick={() =>
 								permissions &&
 								apply(() =>
-									profile === 'chat'
-										? window.agent.policySet(permissions)
-										: window.agent.policySet(permissions, profile)
+									window.agent.policySet({
+										read: permissions.read,
+										write: permissions.write,
+										exec: permissions.exec,
+									})
 								)
 							}
 							disabled={!permissions || saving}
