@@ -249,7 +249,8 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		path: '/settings/agent/permissions',
 		labelKey: 'settings.tabs.permissions',
 		descriptionKey: 'settings.overview.descriptions.permissions',
-		keywords: 'permissions permission directory recursive tool write edit exec allow deny ask',
+		keywords:
+			'permissions permission directory recursive tool write edit exec allow deny ask voice task scheduled health locations protected',
 	},
 	// Health
 	{
