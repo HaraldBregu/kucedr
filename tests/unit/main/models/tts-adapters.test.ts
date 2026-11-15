@@ -3,7 +3,6 @@ import { createDeepgramSpeechAdapter } from '../../../../src/main/models/adapter
 import { createElevenLabsSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_elevenlabs';
 import { createGoogleSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_google';
 import { createMiniMaxSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_minimax';
-import { createMistralSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_mistral';
 import { createOpenAISpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_openai';
 
 const provider = {
