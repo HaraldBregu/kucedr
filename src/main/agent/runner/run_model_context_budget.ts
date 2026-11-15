@@ -124,7 +124,10 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 		});
 	}
 
-	let selectedMessages = messages.slice(latestUserIndex);
+	let selectedMessages = expandRunContext(
+		messages.slice(0, latestUserIndex),
+		messages.slice(latestUserIndex)
+	);
 
 	const minimumSystem = (input.systemPrompt ?? '').slice(0, 1_536);
 	let systemPrompt = input.systemPrompt ?? '';
