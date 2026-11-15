@@ -14,11 +14,13 @@ import type {
 import { isAgentToolConfigurable } from '../../shared/agent_tools';
 import { agentLocation } from '../shared/agent_location';
 import { libraryLocation } from '../shared/library_location';
+import { migratePermissions } from './permissions/migrate_permissions';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
 import {
 	EMPTY_PERMISSIONS,
 	type PermissionBucket,
 	type PermissionKind,
+	type PermissionRule,
 	type PermissionsSchema,
 } from './permissions/permissions_types';
 import { withDefaultPermissions } from './permissions/with_default_permissions';
