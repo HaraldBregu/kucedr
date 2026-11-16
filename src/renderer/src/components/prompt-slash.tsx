@@ -101,6 +101,31 @@ function PromptSlash({
 						})
 					),
 					{
+						group: 'Theme',
+						label: t('settings.theme.default'),
+						hint: activeTheme ? undefined : 'Active',
+						icon: Palette,
+						run: () => chooseTheme(null),
+					},
+					...themes.map((item) => ({
+						group: 'Theme',
+						label: `${item.title} · ${item.plugin.name}`,
+						hint: item === activeTheme ? 'Active' : undefined,
+						icon: Palette,
+						run: () => chooseTheme({ pluginId: item.plugin.id, themeId: item.id }),
+					})),
+					...([
+						['system', Monitor],
+						['light', Sun],
+						['dark', Moon],
+					] as const).map(([mode, icon]) => ({
+						group: 'Theme',
+						label: t(`settings.theme.${mode}`),
+						hint: theme === mode ? 'Active' : undefined,
+						icon,
+						run: () => setTheme(mode),
+					})),
+					{
 						group: 'Files',
 						label: 'Upload files',
 						hint: filesAccept === '' ? "This model doesn't accept files." : undefined,
