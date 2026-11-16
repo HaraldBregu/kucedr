@@ -37,19 +37,30 @@ vec4 layer(vec2 frag, float scale, float t, float seed) {
 	vec2 cell = floor(frag / s);
 	vec2 local = fract(frag / s);
 	float column = cell.x + seed * 101.0;
-	if (hash(vec2(column, seed)) > 0.75) return vec4(0.0);
-	float rows = resolution.y / s;
-	float trail = 10.0 + hash(vec2(column, 3.0)) * 14.0;
-	float speed = (4.0 + hash(vec2(column, 7.0)) * 8.0) / scale;
-	float headRow = mod(t * speed + hash(vec2(column, 11.0)) * 100.0, rows + trail);
-	float d = headRow - cell.y;
-	if (d < 0.0 || d > trail) return vec4(0.0);
-	float fade = pow(1.0 - d / trail, 1.6);
 	float g = glyph(cell, local, t);
+	float residue = g * 0.07;
+	if (hash(vec2(column, seed)) > 0.9) return vec4(rain * residue, residue);
+	float rows = resolution.y / s;
+	float fade = 0.0;
+	float d = -1.0;
+	for (int drop = 0; drop < 2; drop++) {
+		float k = float(drop) * 17.0;
+		float trail = 14.0 + hash(vec2(column, 3.0 + k)) * 18.0;
+		float speed = (4.0 + hash(vec2(column, 7.0 + k)) * 8.0) / scale;
+		float span = rows * 0.5 + trail;
+		float distance = mod(t * speed + hash(vec2(column, 11.0 + k)) * 100.0, span + rows * 0.5) - cell.y;
+		if (distance >= 0.0 && distance <= trail) {
+			float f = pow(1.0 - distance / trail, 1.4);
+			if (f > fade) {
+				fade = f;
+				d = distance;
+			}
+		}
+	}
 	float centre = 1.0 - length(local - 0.5) * 1.6;
 	float glow = max(centre, 0.0) * 0.18 * fade;
-	vec3 tint = d < 1.0 ? head : rain;
-	float a = g * fade + glow;
+	vec3 tint = d >= 0.0 && d < 1.0 ? head : rain;
+	float a = max(g * fade + glow, residue);
 	return vec4(tint * a, a);
 }
 
