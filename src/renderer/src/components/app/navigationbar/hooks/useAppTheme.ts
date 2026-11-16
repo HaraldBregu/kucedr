@@ -4,6 +4,7 @@ import type { AppThemeData } from '@shared/app_types';
 export function useAppTheme(): void {
 	useEffect(() => {
 		let active = true;
+		let receivedUpdate = false;
 		let applied = new Set<string>();
 		const apply = (theme: AppThemeData): void => {
 			if (!active) return;
@@ -17,13 +18,18 @@ export function useAppTheme(): void {
 			}
 			document.documentElement.style.visibility = 'visible';
 		};
+		const unsubscribe = window.app.onThemeModeChanged((theme) => {
+			receivedUpdate = true;
+			apply(theme);
+		});
 		void window.app
 			.getThemeData()
-			.then(apply)
+			.then((theme) => {
+				if (!receivedUpdate) apply(theme);
+			})
 			.catch(() => {
 				document.documentElement.style.visibility = 'visible';
 			});
-		const unsubscribe = window.app.onThemeModeChanged(apply);
 		return () => {
 			active = false;
 			unsubscribe();
