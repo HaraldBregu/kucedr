@@ -44,7 +44,6 @@ function PromptSlash({
 	const { value, setValue, triggerFileUpload, filesAccept } = usePromptInput();
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState(false);
-	const { theme, setTheme } = useApp();
 	const [themes, setThemes] = useState<PluginTheme[]>([]);
 	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(null);
 	const text = value.trimStart();
