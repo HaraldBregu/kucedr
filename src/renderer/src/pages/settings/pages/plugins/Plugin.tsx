@@ -157,7 +157,11 @@ export default function PluginPage(): React.JSX.Element {
 	}, [pluginId]);
 
 	useEffect(() => {
-		load().catch((caught) => setError(caught instanceof Error ? caught.message : String(caught)));
+		const refresh = (): void => {
+			load().catch((caught) => setError(caught instanceof Error ? caught.message : String(caught)));
+		};
+		refresh();
+		return window.app.onThemesChanged(refresh);
 	}, [load]);
 
 	const run = async (action: () => Promise<void>, after?: () => void): Promise<void> => {
