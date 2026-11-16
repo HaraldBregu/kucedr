@@ -1,0 +1,6 @@
+{
+	"title": "Short",
+	"description": "Answer briefly, without long explanations.",
+	"command": "/short",
+	"persistent": true
+}
