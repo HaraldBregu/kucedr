@@ -20,9 +20,11 @@ import type { LoggerService } from './shared';
 import type { AppRegistry } from './apps/app_registry';
 import { isAppId } from './apps/app_id';
 import { appDirectory } from './apps/app_directory';
+import { modeBackgroundResponse } from './agent/modes/background';
 
 const LOCAL_RESOURCE_SCHEME = 'local-resource';
 export const APP_RESOURCE_SCHEME = 'kucedr-app';
+const MODE_BACKGROUND_SCHEME = 'kucedr-mode';
 export const APP_SESSION_PARTITION = 'persist:kucedr-apps';
 
 export function registerLocalResourceProtocolScheme(): void {
