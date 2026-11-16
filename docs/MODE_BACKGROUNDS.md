@@ -22,48 +22,45 @@ network access.
 
 ## Host
 
-1. **Discover** (`src/main/agent/modes/read.ts`): if `background/index.html` exists, the mode has a
-   background. Add `background: boolean` to `AgentModeInfo` in `src/shared/agent_types.ts`. The
-   renderer already gets it through `useModes()`.
-2. **Serve** (`src/main/protocol.ts`): add a `kucedr-mode://<plugin>/<mode>/<path>` scheme. It serves
-   only files inside that mode's `background/` folder, with the same outside-the-folder check as
-   `appResourceUrl`. Every response gets this header:
-   `Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'`.
-   Register the scheme as `standard` and `secure`.
-3. **Render** (home chat container in `src/renderer/src/pages/home/Page.tsx`): for each active mode
-   with a background, render this element as the first child of the chat container, which needs
-   `relative isolate`:
+Status: implemented. The bundled `plan` mode ships a WebGL2 matrix rain, and `goal` ships an
+ordered-dither noise field. Neither uses a library.
 
-   ```tsx
-   <iframe
-   	src={`kucedr-mode://${mode.plugin}/${mode.id}/index.html`}
-   	sandbox="allow-scripts"
-   	aria-hidden
-   	tabIndex={-1}
-   	className="pointer-events-none absolute inset-0 -z-10 size-full border-0 bg-transparent"
-   />
-   ```
-
-   With `sandbox` set and `allow-same-origin` left out, the frame gets an opaque origin. It has no
-   preload API, no storage or cookies, and no access to the parent page.
-4. **Lifecycle**: mount the frame when the mode turns on and unmount it when the mode turns off. If
-   several modes have backgrounds, they stack in `modeIds` order.
+1. **Discover** (`src/main/agent/modes/read.ts`): if `background/index.html` exists, the mode's
+   `background` field holds the folder path. `AgentModeInfo.background` is `true` for these modes,
+   and the renderer gets it through `useModes()`.
+2. **Serve** (`src/main/agent/modes/background.ts`, registered in `src/main/protocol.ts`):
+   `kucedr-mode://<mode-id>/<path>` serves only files inside that mode's `background/` folder. Mode
+   ids are unique, because the first plugin to claim an id wins. Paths go through `realpath`, so
+   `..` and symlinks that lead outside the folder get a 403. Every response gets
+   `Content-Security-Policy: default-src 'none'; script-src kucedr-mode: 'unsafe-inline'; …` with no
+   `connect-src`, and `Access-Control-Allow-Origin: *` so module scripts load into the opaque origin.
+3. **Render** (`src/renderer/src/pages/home/components/ModeBackground.tsx`, mounted as the first
+   child of the `relative isolate` home workspace): one `<iframe sandbox="allow-scripts">` per active
+   mode with a background, using `pointer-events-none absolute inset-0 -z-10` and
+   `[color-scheme:normal]`. The colour-scheme class matters: without it, Chromium paints an opaque
+   white backdrop behind a frame whose colour scheme differs from the dark page. With no
+   `allow-same-origin`, the frame has an opaque origin, no preload API, no storage, and no access to
+   the parent page. The renderer's CSP allows `kucedr-mode:` in `frame-src`.
+4. **Lifecycle**: the frame mounts when the mode turns on and unmounts when the mode turns off.
+   Several modes with backgrounds stack in `modeIds` order.
 
 ## Messages to the frame
 
-The renderer sends messages to the frame with `postMessage`. The frame never sends anything back:
-the host ignores any `message` event coming from it.
+The renderer sends messages to the frame with `postMessage`, once when the frame loads and again
+whenever a value changes. The frame can't send anything back: the host has no listener for it.
 
-| Message                                                     | When                                     |
-| ----------------------------------------------------------- | ---------------------------------------- |
-| `{ type: 'theme', tokens: Record<string,string>, dark }`    | When the frame loads and the theme changes |
-| `{ type: 'motion', reduced: boolean }`                      | When the frame loads and the setting changes |
-| `{ type: 'agent', status: 'idle' \| 'thinking' \| 'streaming' \| 'tool' \| 'done' \| 'error' }` | When the run status changes |
-| `{ type: 'visible', value: boolean }`                       | When the window is hidden or shown       |
+| Message                                                   | Changes when                               |
+| --------------------------------------------------------- | ------------------------------------------ |
+| `{ type: 'theme', colors: Record<string,string>, dark }`  | The theme, or the root `class`/`style`, changes |
+| `{ type: 'motion', reduced: boolean }`                    | The reduced-motion setting changes         |
+| `{ type: 'visible', value: boolean }`                     | The window is hidden or shown              |
+| `{ type: 'agent', status: AgentRunState }`                | The run status changes: `idle`, `thinking`, `reasoning`, `using_tools`, `awaiting_input`, `answering`, `completed`, `cancelled`, `error` |
 
-`tokens` holds resolved values of the CSS variables, such as `--primary` and `--background`. The
-iframe can't read the app's CSS, so the host sends them. A background should stop its animation
-loop when it receives `reduced: true` or `visible: false`.
+`colors` is keyed by token name without the `--` prefix (`primary`, `foreground`, …). Each value is
+the CSS variable as the page currently has it, which can be hex, `oklch(...)`, or `var(...)`. To get
+RGB for WebGL, paint the value into a 1×1 canvas with `fillStyle` and read the pixel back. `dark`
+comes from the page's `dark` class, so it matches what's on screen. A background should stop its
+animation loop when it gets `reduced: true` or `visible: false`.
 
 Example plugin `index.html`:
 
