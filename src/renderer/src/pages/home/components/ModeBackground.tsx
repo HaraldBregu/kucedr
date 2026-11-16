@@ -13,7 +13,8 @@ export function ModeBackground({
 	status: AgentRunState;
 }): ReactElement | null {
 	const frames = useRef(new Map<string, HTMLIFrameElement>());
-	const [theme, setTheme] = useState<AppThemeData>();
+	const [tokens, setTokens] = useState<readonly string[]>([]);
+	const [themeVersion, setThemeVersion] = useState(0);
 	const [reduced, setReduced] = useState(
 		() => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 	);
