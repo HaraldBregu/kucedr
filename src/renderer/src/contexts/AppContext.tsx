@@ -11,6 +11,7 @@ import React, {
 import i18n from '../i18n';
 import { configureSounds } from '@/lib/sounds/configure';
 import { playSound } from '@/lib/sounds/play';
+import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
 import {
 	VOICE_AGENT_APPEARANCES,
 	type AppLanguage,
@@ -110,6 +111,7 @@ function applyTheme(theme: AppTheme): void {
 const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export function AppProvider({ children, initialState }: AppProviderProps): React.JSX.Element {
+	useAppTheme();
 	const [soundFeedbackEnabled, setSoundFeedbackEnabledState] = useState(false);
 	const soundPreferenceVersion = useRef(0);
 	const [language, setLanguageState] = useState<AppLanguage>(
