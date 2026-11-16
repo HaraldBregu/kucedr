@@ -23,8 +23,13 @@ export function ModeBackground({
 
 	useEffect(() => {
 		let live = true;
-		void app.getThemeData().then((next) => live && setTheme(next));
-		const unsubscribe = app.onThemeModeChanged(setTheme);
+		const update = (theme: AppThemeData): void => {
+			if (live) setTokens(Object.keys(theme.colors));
+		};
+		void app.getThemeData().then(update);
+		const unsubscribe = app.onThemeModeChanged(update);
+		const observer = new MutationObserver(() => setThemeVersion((version) => version + 1));
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
 		const query = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const onMotion = (): void => setReduced(query.matches);
 		const onVisibility = (): void => setVisible(document.visibilityState === 'visible');
