@@ -57,5 +57,12 @@ export function readMode(directory: string, plugin: PluginSource, builtIn: boole
 	}
 	const prompt = readFileSync(file, 'utf8').trim();
 	if (!prompt) throw new Error(`modes/${id}: SYSTEM_PROMPT.md is empty.`);
-	return { ...mode, id, prompt, plugin };
+	const background = path.join(directory, 'background');
+	return {
+		...mode,
+		id,
+		prompt,
+		plugin,
+		...(existsSync(path.join(background, 'index.html')) ? { background } : {}),
+	};
 }
