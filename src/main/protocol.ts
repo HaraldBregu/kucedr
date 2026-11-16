@@ -139,6 +139,7 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 		return new Response(response.body, { status: response.status, headers });
 	});
 	appSession.protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
+	protocol.handle(MODE_BACKGROUND_SCHEME, modeBackgroundResponse);
 }
 
 export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
