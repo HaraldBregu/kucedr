@@ -9,6 +9,7 @@ export function modeInfo(mode: ModeDefinition): AgentModeInfo {
 		command: mode.command,
 		persistent: mode.persistent === true,
 		plugin: mode.plugin.name,
+		background: mode.background !== undefined,
 		...(mode.output ? { output: { ...mode.output } } : {}),
 		...(mode.action ? { action: { ...mode.action } } : {}),
 	};
