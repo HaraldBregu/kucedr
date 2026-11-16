@@ -89,7 +89,7 @@ export function ModeBackground({
 					tabIndex={-1}
 					title=""
 					onLoad={(event) => post(event.currentTarget)}
-					className="pointer-events-none absolute inset-0 -z-10 size-full border-0 bg-transparent"
+					className="pointer-events-none absolute inset-0 -z-10 size-full border-0 bg-transparent [color-scheme:normal]"
 				/>
 			))}
 		</>
