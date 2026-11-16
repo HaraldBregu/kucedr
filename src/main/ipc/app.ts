@@ -276,11 +276,16 @@ const darkThemeColors: AppThemeColors = {
 function getThemeData(): AppThemeData {
 	const isDark = nativeTheme.shouldUseDarkColors;
 	const selection = getStoredSelectedTheme();
-	const selected = listThemes().find((item) => item.enabled && item.plugin.id === selection?.pluginId && item.id === selection?.themeId);
+	const selected = listThemes().find(
+		(item) => item.enabled && item.plugin.id === selection?.pluginId && item.id === selection?.themeId
+	);
 	return {
 		themeMode: getStoredTheme(),
 		isDark,
-		colors: { ...(isDark ? darkThemeColors : lightThemeColors), ...(selected ? (isDark ? selected.dark : selected.light) : {}) },
+		colors: {
+			...(isDark ? darkThemeColors : lightThemeColors),
+			...(selected ? (isDark ? selected.dark : selected.light) : {}),
+		},
 	};
 }
 
@@ -509,12 +514,23 @@ export class AppIpc implements IpcModule {
 		nativeTheme.on('updated', emitThemeChangeEvent);
 		eventBus.on('plugins:changed', emitThemeChangeEvent);
 		ipcMain.handle(AppChannels.themes, wrapTrustedHandler(() => listThemes(), AppChannels.themes));
-		ipcMain.handle(AppChannels.getSelectedTheme, wrapTrustedHandler(() => getStoredSelectedTheme(), AppChannels.getSelectedTheme));
-		ipcMain.handle(AppChannels.setSelectedTheme, wrapTrustedHandler((selection: ThemeSelection | null) => {
-			if (selection !== null && !listThemes().some((item) => item.enabled && item.plugin.id === selection.pluginId && item.id === selection.themeId)) throw new Error('Theme is unavailable.');
-			setStoredSelectedTheme(selection);
-			emitThemeChangeEvent();
-		}, AppChannels.setSelectedTheme));
+		ipcMain.handle(
+			AppChannels.getSelectedTheme,
+			wrapTrustedHandler(() => getStoredSelectedTheme(), AppChannels.getSelectedTheme)
+		);
+		ipcMain.handle(
+			AppChannels.setSelectedTheme,
+			wrapTrustedHandler((selection: ThemeSelection | null) => {
+				if (
+					selection !== null &&
+					!listThemes().some(
+						(item) => item.enabled && item.plugin.id === selection.pluginId && item.id === selection.themeId
+					)
+				) throw new Error('Theme is unavailable.');
+				setStoredSelectedTheme(selection);
+				emitThemeChangeEvent();
+			}, AppChannels.setSelectedTheme)
+		);
 
 		// Open application data folder in system file explorer
 		ipcMain.handle(

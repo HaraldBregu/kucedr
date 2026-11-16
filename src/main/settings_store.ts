@@ -377,5 +377,9 @@ export function getResolvedProvider(providerId: string | undefined): ResolvedPro
 
 export { getStorageSettings, saveStorageSettings } from './backup/store';
 
-export function getSelectedTheme(): import('../shared/plugin_types').ThemeSelection | null { return store.get('selectedTheme') ?? null; }
-export function setSelectedTheme(value: import('../shared/plugin_types').ThemeSelection | null): void { store.set('selectedTheme', value); }
+export function getSelectedTheme(): import('../shared/plugin_types').ThemeSelection | null {
+	return store.get('selectedTheme') ?? null;
+}
+export function setSelectedTheme(value: import('../shared/plugin_types').ThemeSelection | null): void {
+	store.set('selectedTheme', value);
+}

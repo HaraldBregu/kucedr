@@ -38,7 +38,9 @@ export function validatePluginContents(directory: string, manifest: ReadPlugin):
 			false
 		);
 	}
-	for (const id of manifest.contributes.themes) readTheme(path.join(directory, 'themes', id), { id: manifest.id, name: manifest.title }, true);
+	for (const id of manifest.contributes.themes) {
+		readTheme(path.join(directory, 'themes', id), { id: manifest.id, name: manifest.title }, true);
+	}
 	for (const id of manifest.contributes.skills) {
 		const validation = validateSkill(path.join(directory, 'skills', id));
 		if (!validation.valid) {
