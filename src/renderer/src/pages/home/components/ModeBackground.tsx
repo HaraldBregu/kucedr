@@ -37,20 +37,23 @@ export function ModeBackground({
 		};
 	}, []);
 
-	const post = (frame: HTMLIFrameElement): void => {
-		const messages = [
+	const messages = useMemo(
+		() => [
 			...(theme ? [{ type: 'theme', colors: theme.colors, dark: theme.isDark }] : []),
 			{ type: 'motion', reduced },
 			{ type: 'visible', value: visible },
 			{ type: 'agent', status },
-		];
+		],
+		[theme, reduced, visible, status]
+	);
+	const post = (frame: HTMLIFrameElement): void => {
 		for (const message of messages) frame.contentWindow?.postMessage(message, '*');
 	};
-	const postRef = useRef(post);
-	postRef.current = post;
 	useEffect(() => {
-		for (const frame of frames.current.values()) postRef.current(frame);
-	}, [theme, reduced, visible, status]);
+		for (const frame of frames.current.values()) {
+			for (const message of messages) frame.contentWindow?.postMessage(message, '*');
+		}
+	}, [messages]);
 
 	if (active.length === 0) return null;
 	return (
