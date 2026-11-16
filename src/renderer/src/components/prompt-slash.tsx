@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { AgentModeInfo } from '@shared/agent_types';
 import type { PluginTheme } from '@shared/plugin_types';
-import { useApp } from '@/contexts';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 import { usePromptInput } from '@/components/ui/prompt-input';
 import { SETTINGS_NAVIGATION } from '@/pages/settings/navigation';
