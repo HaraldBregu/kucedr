@@ -51,7 +51,7 @@ export function ModeBackground({
 		);
 		const dark = document.documentElement.classList.contains('dark');
 		return [
-			{ type: 'theme', colors, dark, version: themeVersion },
+			{ type: 'theme', colors, dark },
 			{ type: 'motion', reduced },
 			{ type: 'visible', value: visible },
 			{ type: 'agent', status },
