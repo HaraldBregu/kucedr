@@ -44,6 +44,9 @@ function PromptSlash({
 	const { value, setValue, triggerFileUpload, filesAccept } = usePromptInput();
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState(false);
+	const { theme, setTheme } = useApp();
+	const [themes, setThemes] = useState<PluginTheme[]>([]);
+	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(null);
 	const text = value.trimStart();
 	const query = /^\/\S*$/.test(text) ? text.slice(1).toLowerCase() : null;
 
@@ -51,6 +54,30 @@ function PromptSlash({
 		setSelected(0);
 		if (query === null) setDismissed(false);
 	}, [query]);
+
+	useEffect(() => {
+		let active = true;
+		const load = (): void => {
+			void Promise.all([window.app.themes(), window.app.getSelectedTheme()]).then(([items, selection]) => {
+				if (!active) return;
+				setThemes(items.filter((item) => item.enabled));
+				setSelectedTheme(selection);
+			});
+		};
+		load();
+		const off = window.app.onThemesChanged(load);
+		return () => {
+			active = false;
+			off();
+		};
+	}, []);
+
+	const activeTheme = themes.find(
+		(item) => item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId
+	);
+	const chooseTheme = (next: { pluginId: string; themeId: string } | null): void => {
+		void window.app.setSelectedTheme(next).then(() => setSelectedTheme(next));
+	};
 
 	const items: SlashItem[] =
 		query === null
