@@ -944,11 +944,12 @@ function PageContent(): ReactElement {
 					ref={workspaceRef}
 					data-slot="home-workspace"
 					className={cn(
-						'@container/chat relative flex min-h-0 min-w-0 flex-1 flex-col bg-background text-foreground',
+						'@container/chat relative isolate flex min-h-0 min-w-0 flex-1 flex-col bg-background text-foreground',
 						openExtension && 'hidden',
 						showEmptyConversation && 'overflow-y-auto'
 					)}
 				>
+					<ModeBackground modes={agent.modes} modeIds={agent.modeIds} status={runStatus} />
 					<span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
