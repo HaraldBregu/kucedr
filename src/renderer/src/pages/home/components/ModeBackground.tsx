@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactElement } from 'react';
 import { app, type AppThemeData } from '@kucedr/sdk';
-import type { AgentModeInfo, AgentRunState } from '../../../../../shared/agent_types';
+import type { AgentModeInfo, AgentRunState } from '@shared/agent_types';
 
 /** Plugin mode backgrounds in sandboxed frames behind the chat. They only receive theme, motion, visibility and run status. */
 export function ModeBackground({
