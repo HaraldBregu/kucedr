@@ -1,79 +1,121 @@
 # Mode backgrounds
 
-A mode can ship an optional background effect that shows behind the chat while the mode is active,
-such as a tint for `/plan` or a slow animated gradient for `/goal`. The effect is plugin data. `src`
-has no code for any specific mode's background.
+A mode can ship an optional animated background that shows behind the chat while the mode is active.
+It can be anything from a CSS gradient to a WebGL shader that reacts to the agent's activity. The
+effect is plugin content that runs in a sandboxed iframe. `src` has no code for any specific mode's
+background.
 
 ## Mode folder
-
-`BACKGROUND.css` is an optional file in the mode folder:
 
 ```text
 plugins/<plugin-name>/modes/<mode-name>/
   manifest.json
   SYSTEM_PROMPT.md
-  BACKGROUND.css        optional: the chat background while this mode is active
+  background/            optional
+    index.html           entry point, with a transparent body
+    *.js, *.css, ...     scripts, styles, shaders, images, libraries (all local)
 ```
 
-The CSS styles one host element, `.mode-background`. It can use gradients, `@keyframes`, filters,
-blend modes, and anything else that works without JS:
-
-```css
-.mode-background {
-	background: radial-gradient(circle at 20% 0%, color-mix(in oklch, var(--primary) 18%, transparent), transparent 60%);
-	animation: drift 12s ease-in-out infinite alternate;
-}
-@keyframes drift {
-	to { background-position: 40% 20%; }
-}
-```
-
-Use theme tokens such as `var(--primary)` and `var(--background)` so the effect follows light, dark,
-and plugin themes.
+A simple effect can be an `index.html` with only a `<style>`. A complex one can use canvas, WebGL,
+or a library such as three.js, as long as the library is copied into the folder. The frame has no
+network access.
 
 ## Host
 
-1. **Read** (`src/main/agent/modes/read.ts`): if `BACKGROUND.css` exists, read it. Cap it at 16 KB.
-   Reject it if it contains `url(`, `@import`, `image-set(`, or `@font-face`. That keeps it offline:
-   no network requests and no reads from the filesystem. Validate it with the same error path as
-   `SYSTEM_PROMPT.md`.
-2. **Expose** (`info.ts`, `AgentModeInfo` in `src/shared/agent_types.ts`): add `background?: string`.
-   The renderer already gets it through `useModes()`.
+1. **Discover** (`src/main/agent/modes/read.ts`): if `background/index.html` exists, the mode has a
+   background. Add `background: boolean` to `AgentModeInfo` in `src/shared/agent_types.ts`. The
+   renderer already gets it through `useModes()`.
+2. **Serve** (`src/main/protocol.ts`): add a `kucedr-mode://<plugin>/<mode>/<path>` scheme. It serves
+   only files inside that mode's `background/` folder, with the same outside-the-folder check as
+   `appResourceUrl`. Every response gets this header:
+   `Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'`.
+   Register the scheme as `standard` and `secure`.
 3. **Render** (home chat container in `src/renderer/src/pages/home/Page.tsx`): for each active mode
-   id that has a `background`, render the following as the first child of the chat container:
+   with a background, render this element as the first child of the chat container, which needs
+   `relative isolate`:
 
    ```tsx
-   <div className="mode-background" data-mode={id} aria-hidden />
-   <style>{`@scope ([data-mode="${id}"]) { ${background} }`}</style>
+   <iframe
+   	src={`kucedr-mode://${mode.plugin}/${mode.id}/index.html`}
+   	sandbox="allow-scripts"
+   	aria-hidden
+   	tabIndex={-1}
+   	className="pointer-events-none absolute inset-0 -z-10 size-full border-0 bg-transparent"
+   />
    ```
 
-   The container needs `relative isolate`, and the layer needs `absolute inset-0 -z-10
-   pointer-events-none`. `@scope` keeps the plugin's CSS from leaking into the rest of the app.
-   Messages, input, and scrolling stay unchanged on top of the layer.
-4. **Motion**: wrap the layer in `motion-safe:`, or add a global
-   `@media (prefers-reduced-motion: reduce) { .mode-background { animation: none } }`.
-5. **Combining modes**: each active mode renders its own layer, in `modeIds` order. If several
-   modes have backgrounds, they stack.
+   With `sandbox` set and `allow-same-origin` left out, the frame gets an opaque origin. It has no
+   preload API, no storage or cookies, and no access to the parent page.
+4. **Lifecycle**: mount the frame when the mode turns on and unmount it when the mode turns off. If
+   several modes have backgrounds, they stack in `modeIds` order.
+
+## Messages to the frame
+
+The renderer sends messages to the frame with `postMessage`. The frame never sends anything back:
+the host ignores any `message` event coming from it.
+
+| Message                                                     | When                                     |
+| ----------------------------------------------------------- | ---------------------------------------- |
+| `{ type: 'theme', tokens: Record<string,string>, dark }`    | When the frame loads and the theme changes |
+| `{ type: 'motion', reduced: boolean }`                      | When the frame loads and the setting changes |
+| `{ type: 'agent', status: 'idle' \| 'thinking' \| 'streaming' \| 'tool' \| 'done' \| 'error' }` | When the run status changes |
+| `{ type: 'visible', value: boolean }`                       | When the window is hidden or shown       |
+
+`tokens` holds resolved values of the CSS variables, such as `--primary` and `--background`. The
+iframe can't read the app's CSS, so the host sends them. A background should stop its animation
+loop when it receives `reduced: true` or `visible: false`.
+
+Example plugin `index.html`:
+
+```html
+<!doctype html>
+<style>html,body{margin:0;height:100%;background:transparent}canvas{width:100%;height:100%}</style>
+<canvas></canvas>
+<script src="effect.js"></script>
+```
+
+```js
+let state = { status: 'idle', reduced: false, visible: true, color: '#888' };
+addEventListener('message', ({ data }) => {
+	if (data.type === 'agent') state.status = data.status;
+	if (data.type === 'motion') state.reduced = data.reduced;
+	if (data.type === 'visible') state.visible = data.value;
+	if (data.type === 'theme') state.color = data.tokens['--primary'];
+});
+// requestAnimationFrame loop that draws faster while status is 'streaming' or 'tool'
+```
 
 ## Security
 
-CSS runs in the renderer, so it is not "plugin code in main", and it cannot run script. The `url()`
-and `@import` ban stops a third-party background from loading remote resources or tracking pixels.
-`@scope` and the fixed `.mode-background` element stop it from restyling the UI. Because of these
-two rules, third-party plugins can use the field too, so it is not bundled-only.
+- Plugin JS never runs in the app's renderer. The frame is sandboxed, has an opaque origin, and has
+  no preload.
+- `connect-src 'none'` and `'self'` sources keep the frame from making network requests or sending
+  data out.
+- The frame only receives status values, never message content, so a background can't read the
+  chat.
+- `pointer-events-none` and `aria-hidden` keep the frame from capturing input or focus.
+
+Because of these rules, third-party plugins can ship backgrounds, so the feature isn't bundled-only.
+
+## Cost
+
+A running iframe and animation loop uses CPU and GPU while the mode is on. The host unmounts the
+frame when the mode turns off, and the `visible` and `motion` messages let a background pause
+itself. The host doesn't throttle frames beyond that.
 
 ## Not included
 
-- **JS or canvas animations** (particles, WebGL): these need a sandboxed iframe like `kucedr-app://`.
-  Add them only if CSS turns out to be too limited.
-- **Image backgrounds**: these need a plugin-asset URL scheme and an allow-list for `url()` that
-  points at it.
+- **Sending message content or tokens to the frame**: add this only with a manifest opt-in and a
+  user-facing permission.
+- **Frame-to-host messages**, such as an effect that changes the UI: none for now.
 
 ## Verification
 
-- Turn on `/plan` with a `BACKGROUND.css`. The effect appears behind the messages, and clicks and
-  text selection still work.
-- Turn the mode off, or send a message with a non-persistent mode. The effect goes away.
-- A file with `url(` fails plugin validation and shows the error in plugin details.
-- Light, dark, and plugin themes: the effect uses the theme tokens.
-- With reduced motion turned on in macOS settings, the animation stops.
+- `/plan` with a `background/` folder: the effect appears behind the messages, and scrolling, clicks,
+  and text selection still work.
+- Turn the mode off: the iframe is removed from the DOM.
+- A background that calls `fetch('https://…')`: the request is blocked by CSP.
+- A path with `../` in `kucedr-mode://`: the server returns 403.
+- Light, dark, and plugin themes: the frame receives the new `theme` tokens.
+- Reduced motion turned on in macOS, and the window minimised: the effect pauses.
+- A streaming run: the frame receives the `thinking` → `streaming` → `done` messages.
