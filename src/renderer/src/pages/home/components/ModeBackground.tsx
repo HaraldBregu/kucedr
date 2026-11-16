@@ -38,6 +38,7 @@ export function ModeBackground({
 		return () => {
 			live = false;
 			unsubscribe();
+			observer.disconnect();
 			query.removeEventListener('change', onMotion);
 			document.removeEventListener('visibilitychange', onVisibility);
 		};
