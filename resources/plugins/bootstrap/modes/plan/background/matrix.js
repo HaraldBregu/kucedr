@@ -160,9 +160,13 @@ function schedule() {
 
 addEventListener('message', ({ data }) => {
 	if (data?.type === 'agent') state.status = data.status;
-	if (data?.type === 'motion') (state.reduced = data.reduced), schedule();
-	if (data?.type === 'visible') (state.visible = data.value), schedule();
-	if (data?.type === 'theme') (state.dark = data.dark), setColors(), draw();
+	if (data?.type === 'motion') state.reduced = data.reduced;
+	if (data?.type === 'visible') state.visible = data.value;
+	if (data?.type === 'theme') {
+		state.dark = data.dark;
+		setColors();
+	}
+	schedule();
 });
 addEventListener('resize', resize);
 resize();
