@@ -84,8 +84,9 @@ gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 const uniform = (name) => gl.getUniformLocation(program, name);
 
 function setColors(colors = {}) {
-	gl.uniform3fv(uniform('ink'), rgb(colors.foreground ?? (state.dark ? '#fafafa' : '#141414')));
-	gl.uniform1f(uniform('opacity'), state.dark ? 0.16 : 0.12);
+	gl.uniform3fv(uniform('body'), rgb(colors['muted-foreground'] ?? '#888'));
+	gl.uniform3fv(uniform('crest'), rgb(colors.foreground ?? (state.dark ? '#fafafa' : '#141414')));
+	gl.uniform1f(uniform('opacity'), state.dark ? 0.3 : 0.24);
 }
 setColors();
 
