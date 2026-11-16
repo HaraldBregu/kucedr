@@ -1,5 +1,6 @@
-// Ordered dither for Goal mode: a flowing noise field quantised through an 8x8 Bayer matrix in a WebGL2 shader.
+// 1-bit wave field for Goal mode: noisy angled waves slide under a fixed 8x8 Bayer grid, crests in a second ink.
 const PIXEL = 3;
+const ANGLE = (-18 * Math.PI) / 180;
 const ACTIVITY = { idle: 0, thinking: 0.5, reasoning: 0.5, awaiting_input: 0, answering: 0.8, using_tools: 1 };
 
 const canvas = document.querySelector('canvas');
