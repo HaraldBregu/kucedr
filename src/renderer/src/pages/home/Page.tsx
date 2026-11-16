@@ -527,6 +527,8 @@ function PageContent(): ReactElement {
 		}
 		return [];
 	}, [agent.chatState.messages]);
+	const lastMessage = agent.chatState.messages.at(-1);
+	const runStatus = agent.isLoading && lastMessage?.role === 'agent' ? lastMessage.state : 'idle';
 	const showEmptyConversation =
 		visibleMessages.length === 0 && !agent.isLoading && !agent.historyLoading;
 	useLayoutEffect(() => {
