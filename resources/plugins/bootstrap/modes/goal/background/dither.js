@@ -16,7 +16,8 @@ uniform vec2 resolution;
 uniform float time;
 uniform float pixel;
 uniform float activity;
-uniform vec3 ink;
+uniform vec3 body;
+uniform vec3 crest;
 uniform float opacity;
 out vec4 color;
 
