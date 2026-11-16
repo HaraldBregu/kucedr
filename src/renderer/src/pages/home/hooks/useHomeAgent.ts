@@ -74,6 +74,10 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 	const { chatState, dispatchChat } = useHomeAgentContext();
 	const { sessionId, setSessionId } = useChatSession();
 	const modes = useModes();
+	const modesRef = useRef(modes);
+	useEffect(() => {
+		modesRef.current = modes;
+	}, [modes]);
 	const [modeIds, setModeIds] = useState<string[]>([]);
 	const adoptedSessionIdRef = useRef<string | undefined>(undefined);
 	const [input, setInput] = useState('');
