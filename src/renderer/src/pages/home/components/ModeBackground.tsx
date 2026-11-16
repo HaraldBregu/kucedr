@@ -37,18 +37,20 @@ export function ModeBackground({
 		};
 	}, []);
 
-	const messages = [
-		...(theme ? [{ type: 'theme', colors: theme.colors, dark: theme.isDark }] : []),
-		{ type: 'motion', reduced },
-		{ type: 'visible', value: visible },
-		{ type: 'agent', status },
-	];
-	const post = (frame: HTMLIFrameElement | null | undefined): void => {
-		for (const message of messages) frame?.contentWindow?.postMessage(message, '*');
+	const post = (frame: HTMLIFrameElement): void => {
+		const messages = [
+			...(theme ? [{ type: 'theme', colors: theme.colors, dark: theme.isDark }] : []),
+			{ type: 'motion', reduced },
+			{ type: 'visible', value: visible },
+			{ type: 'agent', status },
+		];
+		for (const message of messages) frame.contentWindow?.postMessage(message, '*');
 	};
+	const postRef = useRef(post);
+	postRef.current = post;
 	useEffect(() => {
-		for (const frame of frames.current.values()) post(frame);
-	});
+		for (const frame of frames.current.values()) postRef.current(frame);
+	}, [theme, reduced, visible, status]);
 
 	if (active.length === 0) return null;
 	return (
