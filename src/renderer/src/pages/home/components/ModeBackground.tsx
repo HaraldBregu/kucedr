@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactElement } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { app, type AppThemeData } from '@kucedr/sdk';
 import type { AgentModeInfo, AgentRunState } from '@shared/agent_types';
 
