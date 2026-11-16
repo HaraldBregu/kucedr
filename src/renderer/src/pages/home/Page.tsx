@@ -96,6 +96,7 @@ import { readDraftAttachments } from './attachments/read';
 import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
 import { ExtensionPage, type OpenExtension } from './components/ExtensionPage';
+import { ModeBackground } from './components/ModeBackground';
 import { Model } from './Model';
 import { Usage } from './Usage';
 import { Microphone } from './Microphone';
