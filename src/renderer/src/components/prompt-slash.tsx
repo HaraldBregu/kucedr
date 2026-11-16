@@ -114,17 +114,6 @@ function PromptSlash({
 						icon: Palette,
 						run: () => chooseTheme({ pluginId: item.plugin.id, themeId: item.id }),
 					})),
-					...([
-						['system', Monitor],
-						['light', Sun],
-						['dark', Moon],
-					] as const).map(([mode, icon]) => ({
-						group: 'Theme',
-						label: t(`settings.theme.${mode}`),
-						hint: theme === mode ? 'Active' : undefined,
-						icon,
-						run: () => setTheme(mode),
-					})),
 					{
 						group: 'Files',
 						label: 'Upload files',
