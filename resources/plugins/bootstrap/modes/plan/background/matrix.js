@@ -66,11 +66,13 @@ vec4 layer(vec2 frag, float scale, float t, float seed) {
 
 void main() {
 	vec2 frag = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y);
-	vec4 back = layer(frag, 0.6, time * 0.8, 2.0) * 0.45;
+	vec4 far = layer(frag, 0.45, time * 0.6, 3.0) * 0.3;
+	vec4 back = layer(frag, 0.65, time * 0.8, 2.0) * 0.55;
 	vec4 front = layer(frag, 1.0, time, 1.0);
-	vec4 c = front + back * (1.0 - front.a);
+	vec4 c = back + far * (1.0 - back.a);
+	c = front + c * (1.0 - front.a);
 	float x = abs(frag.x / resolution.x - 0.5) * 2.0;
-	float clearing = mix(0.35, 1.0, smoothstep(0.15, 0.85, x));
+	float clearing = mix(0.5, 1.0, smoothstep(0.15, 0.85, x));
 	color = c * clearing * opacity;
 }`;
 
