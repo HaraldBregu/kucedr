@@ -22,8 +22,8 @@ network access.
 
 ## Host
 
-Status: implemented. The bundled `plan` mode ships a WebGL2 matrix rain, and `goal` ships an
-ordered-dither noise field. Neither uses a library.
+Status: implemented. The bundled `plan` mode ships a WebGL2 matrix rain, and `goal` ships a
+flickering square grid on a 2D canvas. Neither uses a library.
 
 1. **Discover** (`src/main/agent/modes/read.ts`): if `background/index.html` exists, the mode's
    `background` field holds the folder path. `AgentModeInfo.background` is `true` for these modes,
