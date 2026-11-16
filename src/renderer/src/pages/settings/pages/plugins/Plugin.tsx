@@ -367,9 +367,7 @@ export default function PluginPage(): React.JSX.Element {
 				description: script.name,
 				badge: script.version,
 				path:
-					script.type !== 'UI'
-						? `/settings/scripts/${encodeURIComponent(script.name)}`
-						: undefined,
+					script.type !== 'UI' ? `/settings/scripts/${encodeURIComponent(script.name)}` : undefined,
 			})),
 		},
 	].filter((section) => section.rows.length > 0 || section.action);
@@ -587,7 +585,9 @@ export default function PluginPage(): React.JSX.Element {
 				{!plugin.enabled && !plugin.error && (
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
 				)}
-				{sections.filter((section) => plugin.enabled || section.key === 'themes').map((section) => (
+				{sections
+					.filter((section) => plugin.enabled || section.key === 'themes')
+					.map((section) => (
 						<SettingsSection
 							key={section.key}
 							title={
@@ -613,7 +613,7 @@ export default function PluginPage(): React.JSX.Element {
 								))}
 							</SettingsPanel>
 						</SettingsSection>
-				))}
+					))}
 			</div>
 			<Confirm
 				name={plugin.name}

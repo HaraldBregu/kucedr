@@ -69,20 +69,32 @@ const GeneralPage: React.FC = () => {
 		setChatTextSize,
 	} = useApp();
 	const [themes, setThemes] = useState<PluginTheme[]>([]);
-	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(null);
+	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(
+		null
+	);
 	const [trayEnabled, setTrayEnabled] = useState(true);
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
 	const [windowSize, setWindowSize] = useState<WindowSize>('1200x800');
 	const [zoomFactor, setZoomFactor] = useState<ZoomFactor>(1);
-	const activeTheme = themes.find((item) => item.enabled && item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId);
+	const activeTheme = themes.find(
+		(item) =>
+			item.enabled &&
+			item.plugin.id === selectedTheme?.pluginId &&
+			item.id === selectedTheme.themeId
+	);
 
 	useEffect(() => {
 		let active = true;
 		const loadThemes = (): void => {
-			void Promise.all([window.app.themes(), window.app.getSelectedTheme()]).then(([items, selection]) => {
-				if (active) { setThemes(items); setSelectedTheme(selection); }
-			});
+			void Promise.all([window.app.themes(), window.app.getSelectedTheme()]).then(
+				([items, selection]) => {
+					if (active) {
+						setThemes(items);
+						setSelectedTheme(selection);
+					}
+				}
+			);
 		};
 		loadThemes();
 		const offThemes = window.app.onThemesChanged(loadThemes);
@@ -381,7 +393,9 @@ const GeneralPage: React.FC = () => {
 									className="w-28 text-xs [&_svg]:size-3"
 									aria-label={t('settings.application.chatTextSize.title')}
 								>
-									<SelectValue>{t(`settings.application.chatTextSize.${chatTextSize}`)}</SelectValue>
+									<SelectValue>
+										{t(`settings.application.chatTextSize.${chatTextSize}`)}
+									</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
 									{Object.keys(CHAT_TEXT_SIZES).map((size) => (
@@ -397,17 +411,40 @@ const GeneralPage: React.FC = () => {
 						title={t('settings.theme.appearance')}
 						actionClassName="w-auto justify-end"
 						actions={
-							<Select value={activeTheme ? JSON.stringify(selectedTheme) : 'default'} onValueChange={(value) => {
-								if (!value) return;
-								const next = value === 'default' ? null : JSON.parse(value) as { pluginId: string; themeId: string };
-								void window.app.setSelectedTheme(next).then(() => setSelectedTheme(next));
-							}}>
-								<SelectTrigger size="sm" className="w-48 text-xs" aria-label={t('settings.theme.appearance')}>
-									<SelectValue>{activeTheme ? `${activeTheme.title} · ${activeTheme.plugin.name}` : t('settings.theme.default')}</SelectValue>
+							<Select
+								value={activeTheme ? JSON.stringify(selectedTheme) : 'default'}
+								onValueChange={(value) => {
+									if (!value) return;
+									const next =
+										value === 'default'
+											? null
+											: (JSON.parse(value) as { pluginId: string; themeId: string });
+									void window.app.setSelectedTheme(next).then(() => setSelectedTheme(next));
+								}}
+							>
+								<SelectTrigger
+									size="sm"
+									className="w-48 text-xs"
+									aria-label={t('settings.theme.appearance')}
+								>
+									<SelectValue>
+										{activeTheme
+											? `${activeTheme.title} · ${activeTheme.plugin.name}`
+											: t('settings.theme.default')}
+									</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="default">{t('settings.theme.default')}</SelectItem>
-									{themes.filter((item) => item.enabled).map((item) => <SelectItem key={JSON.stringify([item.plugin.id, item.id])} value={JSON.stringify({ pluginId: item.plugin.id, themeId: item.id })}>{item.title} · {item.plugin.name}</SelectItem>)}
+									{themes
+										.filter((item) => item.enabled)
+										.map((item) => (
+											<SelectItem
+												key={JSON.stringify([item.plugin.id, item.id])}
+												value={JSON.stringify({ pluginId: item.plugin.id, themeId: item.id })}
+											>
+												{item.title} · {item.plugin.name}
+											</SelectItem>
+										))}
 								</SelectContent>
 							</Select>
 						}
