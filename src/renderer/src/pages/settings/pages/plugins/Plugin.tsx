@@ -584,10 +584,10 @@ export default function PluginPage(): React.JSX.Element {
 						</SettingsPanel>
 					)}
 				</SettingsSection>
-				{!plugin.enabled && !plugin.error ? (
+				{!plugin.enabled && !plugin.error && (
 					<SettingsNotice>{t('settings.integrations.plugin.disabledNotice')}</SettingsNotice>
-				) : (
-					sections.map((section) => (
+				)}
+				{sections.filter((section) => plugin.enabled || section.key === 'themes').map((section) => (
 						<SettingsSection
 							key={section.key}
 							title={
@@ -613,8 +613,7 @@ export default function PluginPage(): React.JSX.Element {
 								))}
 							</SettingsPanel>
 						</SettingsSection>
-					))
-				)}
+				))}
 			</div>
 			<Confirm
 				name={plugin.name}
