@@ -118,7 +118,7 @@ const uniform = (name) => gl.getUniformLocation(program, name);
 function setColors() {
 	gl.uniform3fv(uniform('rain'), state.dark ? rgb('#2fe38a') : rgb('#0f8a4f'));
 	gl.uniform3fv(uniform('head'), state.dark ? rgb('#e6fff0') : rgb('#04361e'));
-	gl.uniform1f(uniform('opacity'), state.dark ? 0.45 : 0.3);
+	gl.uniform1f(uniform('opacity'), state.dark ? 0.45 : 0.5);
 }
 setColors();
 
