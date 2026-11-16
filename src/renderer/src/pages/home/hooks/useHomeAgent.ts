@@ -411,6 +411,14 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			.then((snapshot) => {
 				if (cancelled || localInteractionRef.current) return;
 				dispatchChat({ type: 'restore_history', history: snapshot.messages });
+				const lastModeIds = snapshot.messages.findLast(
+					(message) => message.role !== 'user' && message.modeIds !== undefined
+				)?.modeIds;
+				setModeIds(
+					(lastModeIds ?? []).filter(
+						(id) => modesRef.current.find((mode) => mode.id === id)?.persistent === true
+					)
+				);
 				const active = snapshot.activeRun;
 				if (!active) return;
 				activeRunIdRef.current = active.runId;
