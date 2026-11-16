@@ -13,8 +13,7 @@ export function ModeBackground({
 	status: AgentRunState;
 }): ReactElement | null {
 	const frames = useRef(new Map<string, HTMLIFrameElement>());
-	const [tokens, setTokens] = useState<readonly string[]>([]);
-	const [themeVersion, setThemeVersion] = useState(0);
+	const [theme, setTheme] = useState<{ colors: Record<string, string>; dark: boolean }>();
 	const [reduced, setReduced] = useState(
 		() => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 	);
@@ -23,12 +22,24 @@ export function ModeBackground({
 
 	useEffect(() => {
 		let live = true;
-		const update = (theme: AppThemeData): void => {
-			if (live) setTokens(Object.keys(theme.colors));
+		let tokens: string[] = [];
+		const read = (): void => {
+			const style = getComputedStyle(document.documentElement);
+			setTheme({
+				colors: Object.fromEntries(
+					tokens.map((token) => [token, style.getPropertyValue(`--${token}`).trim()])
+				),
+				dark: document.documentElement.classList.contains('dark'),
+			});
+		};
+		const update = (next: AppThemeData): void => {
+			if (!live) return;
+			tokens = Object.keys(next.colors);
+			read();
 		};
 		void app.getThemeData().then(update);
 		const unsubscribe = app.onThemeModeChanged(update);
-		const observer = new MutationObserver(() => setThemeVersion((version) => version + 1));
+		const observer = new MutationObserver(read);
 		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
 		const query = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const onMotion = (): void => setReduced(query.matches);
