@@ -55,19 +55,15 @@ export function ModeBackground({
 		};
 	}, []);
 
-	const messages = useMemo(() => {
-		const style = getComputedStyle(document.documentElement);
-		const colors = Object.fromEntries(
-			tokens.map((token) => [token, style.getPropertyValue(`--${token}`).trim()])
-		);
-		const dark = document.documentElement.classList.contains('dark');
-		return [
-			{ type: 'theme', colors, dark },
+	const messages = useMemo(
+		() => [
+			...(theme ? [{ type: 'theme', ...theme }] : []),
 			{ type: 'motion', reduced },
 			{ type: 'visible', value: visible },
 			{ type: 'agent', status },
-		];
-	}, [tokens, themeVersion, reduced, visible, status]);
+		],
+		[theme, reduced, visible, status]
+	);
 	const post = (frame: HTMLIFrameElement): void => {
 		for (const message of messages) frame.contentWindow?.postMessage(message, '*');
 	};
