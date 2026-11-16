@@ -1,3 +1,5 @@
+import { listThemes } from '../plugins/themes';
+import type { ThemeSelection } from '../../shared/plugin_types';
 import {
 	app,
 	BrowserWindow,
@@ -62,6 +64,8 @@ import {
 	setWorkspaceTextSize as setStoredWorkspaceTextSize,
 	getLanguage as getStoredLanguage,
 	setLanguage as setStoredLanguage,
+	getSelectedTheme as getStoredSelectedTheme,
+	setSelectedTheme as setStoredSelectedTheme,
 	getTheme as getStoredTheme,
 	setTheme as setStoredTheme,
 	getMicrophoneInputId as getStoredMicrophoneInputId,
@@ -271,10 +275,12 @@ const darkThemeColors: AppThemeColors = {
 
 function getThemeData(): AppThemeData {
 	const isDark = nativeTheme.shouldUseDarkColors;
+	const selection = getStoredSelectedTheme();
+	const selected = listThemes().find((item) => item.enabled && item.plugin.id === selection?.pluginId && item.id === selection?.themeId);
 	return {
 		themeMode: getStoredTheme(),
 		isDark,
-		colors: isDark ? darkThemeColors : lightThemeColors,
+		colors: { ...(isDark ? darkThemeColors : lightThemeColors), ...(selected ? (isDark ? selected.dark : selected.light) : {}) },
 	};
 }
 
@@ -492,7 +498,8 @@ export class AppIpc implements IpcModule {
 			const nextThemeData: AppThemeData = getThemeData();
 			if (
 				nextThemeData.themeMode === currentThemeData.themeMode &&
-				nextThemeData.isDark === currentThemeData.isDark
+				nextThemeData.isDark === currentThemeData.isDark &&
+				JSON.stringify(nextThemeData.colors) === JSON.stringify(currentThemeData.colors)
 			) {
 				return;
 			}
@@ -500,6 +507,14 @@ export class AppIpc implements IpcModule {
 			eventBus.broadcast(AppChannels.themeModeChanged, nextThemeData);
 		};
 		nativeTheme.on('updated', emitThemeChangeEvent);
+		eventBus.on('plugins:changed', emitThemeChangeEvent);
+		ipcMain.handle(AppChannels.themes, wrapTrustedHandler(() => listThemes(), AppChannels.themes));
+		ipcMain.handle(AppChannels.getSelectedTheme, wrapTrustedHandler(() => getStoredSelectedTheme(), AppChannels.getSelectedTheme));
+		ipcMain.handle(AppChannels.setSelectedTheme, wrapTrustedHandler((selection: ThemeSelection | null) => {
+			if (selection !== null && !listThemes().some((item) => item.enabled && item.plugin.id === selection.pluginId && item.id === selection.themeId)) throw new Error('Theme is unavailable.');
+			setStoredSelectedTheme(selection);
+			emitThemeChangeEvent();
+		}, AppChannels.setSelectedTheme));
 
 		// Open application data folder in system file explorer
 		ipcMain.handle(

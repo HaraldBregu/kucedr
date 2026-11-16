@@ -1,5 +1,5 @@
 import type { PluginManifest } from './plugin_manifest';
-export const PLUGIN_KINDS = ['apps', 'mcp', 'providers', 'skills', 'scripts', 'modes'] as const;
+export const PLUGIN_KINDS = ['apps', 'mcp', 'providers', 'skills', 'scripts', 'modes', 'themes'] as const;
 
 /** The built-in plugin that ships Kucedr's own apps, MCP servers, and skills; it can't be disabled or replaced. */
 export const CORE_PLUGIN_ID = 'bootstrap';
@@ -110,4 +110,18 @@ export interface CatalogPlugin {
 /** A catalog plugin that isn't installed, or whose catalog version is newer than the installed one. */
 export interface AvailablePlugin extends CatalogPlugin {
 	readonly update: boolean;
+}
+
+export interface PluginTheme {
+ readonly id: string;
+ readonly title: string;
+ readonly plugin: PluginSource;
+ readonly enabled: boolean;
+ readonly light: Readonly<Record<string, string>>;
+ readonly dark: Readonly<Record<string, string>>;
+}
+
+export interface ThemeSelection {
+ readonly pluginId: string;
+ readonly themeId: string;
 }

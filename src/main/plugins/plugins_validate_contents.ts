@@ -7,6 +7,7 @@ import { validateSkill } from '../agent/skills/skills_validate';
 import { readPluginScript } from './scripts/plugin_script_read';
 import { readMode } from '../agent/modes/read';
 import { CORE_PLUGIN_ID } from '../../shared/plugin_types';
+import { readTheme } from './themes';
 import { scanPlugins } from './plugins_scan';
 
 /** Install-time checks that each contribution is readable by the loader that will serve it. */
@@ -37,6 +38,7 @@ export function validatePluginContents(directory: string, manifest: ReadPlugin):
 			false
 		);
 	}
+	for (const id of manifest.contributes.themes) readTheme(path.join(directory, 'themes', id), { id: manifest.id, name: manifest.title }, true);
 	for (const id of manifest.contributes.skills) {
 		const validation = validateSkill(path.join(directory, 'skills', id));
 		if (!validation.valid) {

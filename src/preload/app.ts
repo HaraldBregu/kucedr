@@ -147,6 +147,10 @@ export const app: AppApi = {
 	getTheme: () => {
 		return typedInvokeUnwrap(AppChannels.getTheme);
 	},
+	themes: () => typedInvokeUnwrap(AppChannels.themes),
+	getSelectedTheme: () => typedInvokeUnwrap(AppChannels.getSelectedTheme),
+	setSelectedTheme: (selection) => typedInvokeUnwrap(AppChannels.setSelectedTheme, selection),
+	onThemesChanged: (callback) => typedOn(AppChannels.themesChanged, callback),
 	getThemeData: () => {
 		return typedInvokeUnwrap(AppChannels.getThemeData);
 	},

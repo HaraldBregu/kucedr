@@ -743,6 +743,9 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: import('./app_types').AppTheme;
 	};
+	[AppChannels.themes]: { args: []; result: import('./plugin_types').PluginTheme[] };
+	[AppChannels.getSelectedTheme]: { args: []; result: import('./plugin_types').ThemeSelection | null };
+	[AppChannels.setSelectedTheme]: { args: [selection: import('./plugin_types').ThemeSelection | null]; result: void };
 	[AppChannels.getThemeData]: {
 		args: [];
 		result: import('./app_types').AppThemeData;
@@ -1488,6 +1491,7 @@ export interface AppEventChannelMap {
 	[AppChannels.soundFeedbackEnabledChanged]: { data: boolean };
 	[AppChannels.chatTextSizeChanged]: { data: import('./app_types').ChatTextSize };
 	[AppChannels.zoomFactorChanged]: { data: import('./app_types').ZoomFactor };
+	[AppChannels.themesChanged]: { data: void };
 	[AppChannels.themeModeChanged]: { data: import('./app_types').AppThemeData };
 	[AppChannels.voiceAgentAppearanceChanged]: {
 		data: import('./app_types').VoiceAgentAppearance;

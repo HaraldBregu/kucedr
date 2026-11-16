@@ -22,6 +22,8 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 			plugins.refreshPlugins();
 			refreshProviderCatalog();
 			eventBus.broadcast(AppChannels.modelsChanged);
+			eventBus.broadcast(AppChannels.themesChanged);
+			eventBus.emit('plugins:changed', {});
 		};
 		plugins.watchPlugins(changed);
 

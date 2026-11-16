@@ -50,6 +50,7 @@ export type AppSettingsState = {
 	workspaceTextSize: WorkspaceTextSize;
 	language: AppLanguage;
 	theme: AppTheme;
+	selectedTheme: import('../shared/plugin_types').ThemeSelection | null;
 	windowSize: WindowSize;
 	microphoneInputId: string;
 	voiceAgentAppearance: VoiceAgentAppearance;
@@ -69,6 +70,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	workspaceTextSize: 'medium',
 	language: 'en',
 	theme: 'dark',
+	selectedTheme: null,
 	windowSize: '1200x800',
 	microphoneInputId: 'default',
 	voiceAgentAppearance: 'persona',
@@ -374,3 +376,6 @@ export function getResolvedProvider(providerId: string | undefined): ResolvedPro
 }
 
 export { getStorageSettings, saveStorageSettings } from './backup/store';
+
+export function getSelectedTheme(): import('../shared/plugin_types').ThemeSelection | null { return store.get('selectedTheme') ?? null; }
+export function setSelectedTheme(value: import('../shared/plugin_types').ThemeSelection | null): void { store.set('selectedTheme', value); }

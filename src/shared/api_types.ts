@@ -659,6 +659,10 @@ export interface AppApi extends AppStorageApi {
 	setTheme: (theme: AppTheme) => Promise<void>;
 	getTheme: () => Promise<AppTheme>;
 	getThemeData: () => Promise<AppThemeData>;
+	themes: () => Promise<import('./plugin_types').PluginTheme[]>;
+	getSelectedTheme: () => Promise<import('./plugin_types').ThemeSelection | null>;
+	setSelectedTheme: (selection: import('./plugin_types').ThemeSelection | null) => Promise<void>;
+	onThemesChanged: (callback: () => void) => () => void;
 	getSandboxStatus: () => Promise<SandboxStatus>;
 	setupSandbox: () => Promise<SandboxStatus>;
 	/**

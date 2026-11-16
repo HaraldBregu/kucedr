@@ -13,6 +13,7 @@ export interface AppEvents {
 	'window:created': { windowId: number; type: string };
 	'window:closed': { windowId: number };
 	'tray:set-enabled': { enabled: boolean };
+	'plugins:changed': Record<string, never>;
 	'language:changed': { language: import('../shared/app_types').AppLanguage };
 }
 
