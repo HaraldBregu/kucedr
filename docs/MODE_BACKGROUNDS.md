@@ -77,9 +77,9 @@ addEventListener('message', ({ data }) => {
 	if (data.type === 'agent') state.status = data.status;
 	if (data.type === 'motion') state.reduced = data.reduced;
 	if (data.type === 'visible') state.visible = data.value;
-	if (data.type === 'theme') state.color = data.tokens['--primary'];
+	if (data.type === 'theme') state.color = data.colors.primary;
 });
-// requestAnimationFrame loop that draws faster while status is 'streaming' or 'tool'
+// requestAnimationFrame loop that draws faster while status is 'answering' or 'using_tools'
 ```
 
 ## Security
