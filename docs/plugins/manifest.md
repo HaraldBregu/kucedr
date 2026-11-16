@@ -14,17 +14,18 @@
   skills/<skill-id>/     SKILL.md and resources
   scripts/<script-id>/   manifest.json, instructions.md, built entry
   modes/<mode-id>/       manifest.json, SYSTEM_PROMPT.md
+  themes/<theme-id>/     manifest.json with light and dark tokens
 ```
 
 The folder name must equal the manifest `id` (for installed and bundled plugins; see [loading.md](loading.md)).
 
 ## Contribution kinds
 
-`PLUGIN_KINDS` in `src/shared/plugin_types.ts`: `apps`, `mcp`, `providers`, `skills`, `scripts`, `modes`.
+`PLUGIN_KINDS` in `src/shared/plugin_types.ts`: `apps`, `mcp`, `providers`, `skills`, `scripts`, `modes`, `themes`.
 
 `pluginContents()` (`src/main/plugins/plugins_contents.ts`) computes the contribution ids of each kind:
 
-- For `apps`, `mcp`, `skills`, `scripts`, `modes`: every child **folder** of `<kind>/` is one contribution, sorted by name. Dotfiles and a top-level `README.md` are skipped. Any other file is an error (`<kind>/<name> must be a folder.`).
+- For `apps`, `mcp`, `skills`, `scripts`, `modes`, and `themes`: every child **folder** of `<kind>/` is one contribution, sorted by name. Dotfiles and a top-level `README.md` are skipped. Any other file is an error (`<kind>/<name> must be a folder.`). See [themes.md](themes.md) for theme manifests.
 - `mcp/` also counts the keys of `mcp/servers.json`. An id that is both a folder and a `servers.json` key is an error.
 - `providers` is not a folder. It is `[<plugin id>]` when the manifest (plus `models/`, `services/`, and remote `mcp/*/manifest.json`) defines a provider, else empty. See [providers.md](providers.md).
 

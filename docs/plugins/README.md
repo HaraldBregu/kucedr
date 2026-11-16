@@ -16,6 +16,7 @@ This folder describes how plugins work in the current code.
 | [skills.md](skills.md) | `skills/`: agent skills |
 | [scripts.md](scripts.md) | `scripts/`: `UI` render scripts and `STORAGE` sync scripts |
 | [modes.md](modes.md) | `modes/`: agent modes (`/plan`, `/goal`) |
+| [themes.md](themes.md) | `themes/`: selectable light and dark themes |
 | [ipc.md](ipc.md) | Main ↔ renderer API and the Settings UI |
 | [bundled.md](bundled.md) | The plugins that ship in `resources/plugins/` |
 
