@@ -49,6 +49,10 @@ export function registerLocalResourceProtocolScheme(): void {
 				stream: true,
 			},
 		},
+		{
+			scheme: MODE_BACKGROUND_SCHEME,
+			privileges: { standard: true, secure: true, corsEnabled: true, supportFetchAPI: true },
+		},
 	]);
 }
 
