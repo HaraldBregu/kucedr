@@ -33,6 +33,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [CLI](../packages/cli/README.md): desktop launch, plugin installation, and terminal interface.
 - [Terminal](TERMINAL.md): native terminal lifecycle and IPC.
 - [Multiple workspaces plan](WORKSPACES.md): proposed named workspaces, with folders named by ID.
+- [Embedded agent browser plan](AGENT_BROWSER_PLAN.md): proposed browser pane inside the main window.
 - [Pluggable agent modes](AGENT_MODES.md): agent modes as data-only plugin contributions.
 - [Contributing](../CONTRIBUTING.md): repository workflow and contribution rules.
 
