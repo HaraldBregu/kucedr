@@ -39,15 +39,21 @@ float bayer(vec2 p) {
 
 void main() {
 	vec2 cell = floor(gl_FragCoord.xy / pixel);
-	vec2 uv = cell * pixel / resolution.y;
-	vec2 flow = vec2(fbm(uv * 1.5 + time * 0.05), fbm(uv * 1.5 - time * 0.04 + 4.0));
-	float field = fbm(uv * 2.2 + flow * 1.8 + vec2(time * 0.03, -time * 0.02));
-	float sweep = 0.5 + 0.5 * sin(uv.x * 3.0 - time * 0.6);
-	float level = field * (0.75 + 0.25 * activity) + sweep * 0.25 * activity - 0.12;
-	float x = abs(gl_FragCoord.x / resolution.x - 0.5) * 2.0;
-	level *= mix(0.45, 1.0, smoothstep(0.15, 0.85, x));
-	float on = step(bayer(cell), level);
-	color = vec4(ink, 1.0) * on * opacity;
+	vec2 centre = (cell + 0.5) * pixel;
+	vec2 uv = centre / resolution.y;
+	vec2 p = mat2(${Math.cos(ANGLE)}, ${-Math.sin(ANGLE)}, ${Math.sin(ANGLE)}, ${Math.cos(ANGLE)}) * uv;
+	float n1 = noise(p * 1.6 + vec2(time * 0.05, 0.0));
+	float n2 = noise(p * 3.1 - vec2(0.0, time * 0.07) + 7.0);
+	float w1 = 0.5 + 0.5 * sin(p.y * 7.0 + n1 * 4.0 - time * 0.35);
+	float w2 = 0.5 + 0.5 * sin(p.y * 12.0 + p.x * 2.0 + n2 * 3.0 - time * 0.5);
+	float field = w1 * 0.6 + w2 * 0.4;
+	float level = clamp((field - 0.42 + activity * 0.1) * 1.9, 0.0, 1.0);
+	vec2 d = (centre / resolution - 0.5) * vec2(1.4, 1.0);
+	level *= mix(0.15, 1.0, smoothstep(0.12, 0.62, length(d)));
+	float threshold = bayer(cell);
+	float on = step(threshold, level);
+	float top = step(threshold, (level - 0.62) * 2.6);
+	color = vec4(mix(body, crest, top), 1.0) * on * opacity;
 }`;
 
 function compile(type, source) {
