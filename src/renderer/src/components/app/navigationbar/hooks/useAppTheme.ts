@@ -4,9 +4,14 @@ import type { AppThemeData } from '@shared/app_types';
 export function useAppTheme(): void {
 	useEffect(() => {
 		let active = true;
+		let applied = new Set<string>();
 		const apply = (theme: AppThemeData): void => {
 			if (!active) return;
 			document.documentElement.classList.toggle('dark', theme.isDark);
+			for (const name of applied) {
+				if (!(name in theme.colors)) document.documentElement.style.removeProperty(`--${name}`);
+			}
+			applied = new Set(Object.keys(theme.colors));
 			for (const [name, value] of Object.entries(theme.colors)) {
 				document.documentElement.style.setProperty(`--${name}`, value);
 			}

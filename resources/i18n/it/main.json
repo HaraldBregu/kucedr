@@ -468,6 +468,7 @@
 				"remove": "Disinstalla",
 				"disabledNotice": "Questo plugin è disattivato, quindi i suoi contenuti non sono caricati. Attivalo per vederli.",
 				"models": "Modelli",
+				"themes": "Temi",
 				"refreshModels": "Aggiorna modelli",
 				"remoteMcp": "Server MCP remoti",
 				"vectorDatabases": "Database vettoriali",
@@ -1338,6 +1339,8 @@
 			"itDescription": "Usa l'italiano come lingua di visualizzazione"
 		},
 		"theme": {
+			"appearance": "Tema grafico",
+			"default": "Predefinito",
 			"title": "Tema",
 			"light": "Chiaro",
 			"dark": "Scuro",

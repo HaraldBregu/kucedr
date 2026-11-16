@@ -17,6 +17,7 @@ import {
 	ZoomIn,
 } from 'lucide-react';
 import { WINDOW_SIZES, type WindowSize } from '../../../../../../shared/window_size';
+import type { PluginTheme } from '@shared/plugin_types';
 import { ZOOM_FACTORS, type ZoomFactor } from '../../../../../../shared/app_types';
 import { Button } from '@/components/ui/button';
 import {
@@ -67,6 +68,8 @@ const GeneralPage: React.FC = () => {
 		chatTextSize,
 		setChatTextSize,
 	} = useApp();
+	const [themes, setThemes] = useState<PluginTheme[]>([]);
+	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(null);
 	const [trayEnabled, setTrayEnabled] = useState(true);
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
@@ -74,6 +77,14 @@ const GeneralPage: React.FC = () => {
 	const [zoomFactor, setZoomFactor] = useState<ZoomFactor>(1);
 
 	useEffect(() => {
+		let active = true;
+		const loadThemes = (): void => {
+			void Promise.all([window.app.themes(), window.app.getSelectedTheme()]).then(([items, selection]) => {
+				if (active) { setThemes(items); setSelectedTheme(selection); }
+			});
+		};
+		loadThemes();
+		const offThemes = window.app.onThemesChanged(loadThemes);
 		void window.app.getTrayEnabled().then(setTrayEnabled);
 		void window.app.getTrayClickAction().then(setTrayClickAction);
 		void window.app.getKeepAwake().then(setKeepAwake);
@@ -83,6 +94,8 @@ const GeneralPage: React.FC = () => {
 		const offKeepAwake = window.app.onKeepAwakeChanged(setKeepAwake);
 		const offZoomFactor = window.app.onZoomFactorChanged(setZoomFactor);
 		return () => {
+			active = false;
+			offThemes();
 			offTrayEnabled();
 			offKeepAwake();
 			offZoomFactor();
@@ -375,6 +388,25 @@ const GeneralPage: React.FC = () => {
 											{t(`settings.application.chatTextSize.${size}`)}
 										</SelectItem>
 									))}
+								</SelectContent>
+							</Select>
+						}
+					/>
+					<SettingsRow
+						title={t('settings.theme.appearance')}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Select value={themes.some((item) => item.enabled && item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId) ? JSON.stringify(selectedTheme) : 'default'} onValueChange={(value) => {
+								if (!value) return;
+								const next = value === 'default' ? null : JSON.parse(value) as { pluginId: string; themeId: string };
+								void window.app.setSelectedTheme(next).then(() => setSelectedTheme(next));
+							}}>
+								<SelectTrigger size="sm" className="w-48 text-xs" aria-label={t('settings.theme.appearance')}>
+									<SelectValue>{themes.find((item) => item.enabled && item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId) ? `${themes.find((item) => item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId)?.title} · ${themes.find((item) => item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId)?.plugin.name}` : t('settings.theme.default')}</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="default">{t('settings.theme.default')}</SelectItem>
+									{themes.filter((item) => item.enabled).map((item) => <SelectItem key={JSON.stringify([item.plugin.id, item.id])} value={JSON.stringify({ pluginId: item.plugin.id, themeId: item.id })}>{item.title} · {item.plugin.name}</SelectItem>)}
 								</SelectContent>
 							</Select>
 						}

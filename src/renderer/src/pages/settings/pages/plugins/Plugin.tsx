@@ -18,7 +18,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { CatalogModel } from '@shared/model_types';
-import type { PluginInfo, PluginScriptInfo } from '@shared/plugin_types';
+import type { PluginInfo, PluginScriptInfo, PluginTheme } from '@shared/plugin_types';
 import type { CatalogService, CatalogStorage, CatalogWebSearch } from '@shared/provider_types';
 import type { App } from '@shared/installed_app_types';
 import type { McpServerInfo } from '@shared/mcp_types';
@@ -59,6 +59,7 @@ interface Contents {
 	readonly servers: readonly McpServerInfo[];
 	readonly skills: readonly SkillInfo[];
 	readonly scripts: readonly PluginScriptInfo[];
+	readonly themes: readonly PluginTheme[];
 	readonly remoteProviderIds: readonly string[];
 }
 
@@ -96,6 +97,7 @@ export default function PluginPage(): React.JSX.Element {
 			registry,
 			skills,
 			scripts,
+			themes,
 			values,
 		] = await Promise.all([
 			window.plugins.list(),
@@ -109,6 +111,7 @@ export default function PluginPage(): React.JSX.Element {
 			window.mcp.registry(),
 			window.skills.list(),
 			window.scripts.list(),
+			window.app.themes(),
 			window.plugins.getSettings(pluginId ?? ''),
 		]);
 		const owned = <T extends { readonly provider: { readonly plugin?: { readonly id: string } } }>(
@@ -126,6 +129,7 @@ export default function PluginPage(): React.JSX.Element {
 			apps: apps.filter((app) => app.plugin?.id === pluginId),
 			servers: registry.servers.filter((server) => server.plugin?.id === pluginId),
 			skills: skills.filter((skill) => skill.plugin?.id === pluginId),
+			themes: themes.filter((theme) => theme.plugin.id === pluginId),
 			scripts: scripts.filter((script) => script.plugin.id === pluginId),
 			remoteProviderIds: modelProviders
 				.filter((provider) => provider.plugin?.id === pluginId && provider.modelsUrl)
@@ -348,6 +352,11 @@ export default function PluginPage(): React.JSX.Element {
 				description: skill.description,
 				path: `/settings/skills/skilldetails/${encodeURIComponent(skill.id)}`,
 			})),
+		},
+		{
+			key: 'themes',
+			title: t('settings.integrations.plugin.themes'),
+			rows: contents.themes.map((theme) => ({ key: theme.id, title: theme.title })),
 		},
 		{
 			key: 'scripts',
