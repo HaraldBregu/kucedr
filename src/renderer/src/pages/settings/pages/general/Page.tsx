@@ -75,6 +75,7 @@ const GeneralPage: React.FC = () => {
 	const [keepAwake, setKeepAwake] = useState(false);
 	const [windowSize, setWindowSize] = useState<WindowSize>('1200x800');
 	const [zoomFactor, setZoomFactor] = useState<ZoomFactor>(1);
+	const activeTheme = themes.find((item) => item.enabled && item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId);
 
 	useEffect(() => {
 		let active = true;
@@ -396,13 +397,13 @@ const GeneralPage: React.FC = () => {
 						title={t('settings.theme.appearance')}
 						actionClassName="w-auto justify-end"
 						actions={
-							<Select value={themes.some((item) => item.enabled && item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId) ? JSON.stringify(selectedTheme) : 'default'} onValueChange={(value) => {
+							<Select value={activeTheme ? JSON.stringify(selectedTheme) : 'default'} onValueChange={(value) => {
 								if (!value) return;
 								const next = value === 'default' ? null : JSON.parse(value) as { pluginId: string; themeId: string };
 								void window.app.setSelectedTheme(next).then(() => setSelectedTheme(next));
 							}}>
 								<SelectTrigger size="sm" className="w-48 text-xs" aria-label={t('settings.theme.appearance')}>
-									<SelectValue>{themes.find((item) => item.enabled && item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId) ? `${themes.find((item) => item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId)?.title} · ${themes.find((item) => item.plugin.id === selectedTheme?.pluginId && item.id === selectedTheme.themeId)?.plugin.name}` : t('settings.theme.default')}</SelectValue>
+									<SelectValue>{activeTheme ? `${activeTheme.title} · ${activeTheme.plugin.name}` : t('settings.theme.default')}</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
 									<SelectItem value="default">{t('settings.theme.default')}</SelectItem>
