@@ -770,7 +770,8 @@ function PageContent(): ReactElement {
 
 	const modelSelect = (
 		<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-			<StableModel onContext={setModelContext} compact={!showEmptyConversation} />		</div>
+			<StableModel onContext={setModelContext} compact={!showEmptyConversation} />
+		</div>
 	);
 
 	const voiceButton = (
