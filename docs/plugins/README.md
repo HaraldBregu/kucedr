@@ -1,8 +1,10 @@
 # Plugins
 
-A plugin is a folder with a `manifest.json` and one or more **contribution folders**. It can add AI providers (models, search services, remote MCP servers), windowed apps, local MCP servers, agent skills, render scripts, and agent modes. The app has no separate extension API: each contribution kind is read by the subsystem that already handles that kind (the app list, the MCP registry, the skills registry, and so on), and that subsystem simply gets the enabled plugins' folders added to the roots it searches.
+A plugin is a folder with a `manifest.json` and one or more **contribution folders**. It can add AI providers (models, search services, remote MCP servers), windowed apps, local MCP servers, agent skills, render scripts, agent modes, and themes. The app has no separate extension API: each contribution kind is read by the subsystem that already handles that kind (the app list, the MCP registry, the skills registry, and so on), and that subsystem simply gets the enabled plugins' folders added to the roots it searches.
 
 This folder describes how plugins work in the current code.
+
+See the [plugin themes plan](../PLUGIN_THEMES_PLAN.md) for implementation and verification details.
 
 | Doc | Covers |
 |---|---|
