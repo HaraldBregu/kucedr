@@ -166,7 +166,8 @@ function RootRouteComponent(): React.JSX.Element {
 				>
 					<div
 						className={cn(
-							'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground'
+							'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground',
+							hasSidebar && navigator.platform.startsWith('Mac') && 'app-sidebar-window'
 						)}
 					>
 						{!hasSidebar && (

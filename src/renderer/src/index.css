@@ -472,6 +472,10 @@ input:focus-visible {
 	backdrop-filter: blur(28px) saturate(140%);
 }
 
+.app-translucent-window.app-sidebar-window {
+	background-color: transparent;
+}
+
 [data-slot='navigationbar'] :is(button, a) {
 	-webkit-app-region: no-drag;
 }

@@ -87,7 +87,8 @@ export function Split({
 						aria-label={sidebarLabel}
 						inert={!state.sidebarOpen}
 						className={cn(
-							'relative z-30 flex shrink-0 flex-col overflow-hidden bg-sidebar text-sidebar-foreground',
+							'relative z-30 flex shrink-0 flex-col overflow-hidden text-sidebar-foreground',
+							navigator.platform.startsWith('Mac') ? 'bg-sidebar/65' : 'bg-sidebar',
 							state.sidebarOpen && 'border-r border-sidebar-border/60'
 						)}
 						style={{ width: state.sidebarOpen ? 'var(--split-pane-sidebar-width)' : 0 }}
