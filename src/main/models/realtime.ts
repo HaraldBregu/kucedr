@@ -22,7 +22,7 @@ function canonicalOptions(
 	const next = { ...options };
 	const voice =
 		model.metadata?.documentationStatus === 'verified' ? model.metadata.inputs.voice : undefined;
-	const choices = voice?.enum?.filter(
+	const choices = (voice?.enum ?? voice?.oneOf?.map((choice) => choice.const))?.filter(
 		(choice): choice is string => typeof choice === 'string' && choice.trim().length > 0
 	);
 	if (!choices?.length) {
