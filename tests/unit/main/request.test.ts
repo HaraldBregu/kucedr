@@ -56,7 +56,7 @@ it('rejects invalid response statuses without throwing from the response callbac
 		queueMicrotask(() => callback(response));
 		return { once: jest.fn(), end: jest.fn() };
 	});
-	await expect(publicRequest('https://example.com')).rejects.toThrow(RangeError);
+	await expect(publicRequest('https://example.com')).rejects.toThrow('status');
 });
 
 it.each([204, 205, 304])('accepts a response without a body for status %s', async (statusCode) => {
