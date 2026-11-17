@@ -14,9 +14,6 @@
 		"documentationUrl": "https://developers.deepgram.com/docs/model",
 		"documentationStatus": "verified",
 		"inputs": {
-			"language_hint": {
-				"type": "string"
-			},
 			"eot_threshold": {
 				"type": "number"
 			},
