@@ -154,7 +154,11 @@ export function ModelProviderSelect({
 					size="sm"
 					disabled={disabled || providerGroups.length === 0}
 					aria-label={accessibleLabel}
-					className={cn('min-w-40 max-w-full justify-between text-xs', buttonClassName)}
+					className={cn(
+						'max-w-full justify-between text-xs',
+						compactPopover ? 'min-w-0' : 'min-w-40',
+						buttonClassName
+					)}
 				>
 					{compactPopover &&
 						!nameOnly &&
