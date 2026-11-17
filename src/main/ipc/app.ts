@@ -59,6 +59,8 @@ import {
 	getZoomFactor as getStoredZoomFactor,
 	setZoomFactor as setStoredZoomFactor,
 	getWorkspaceWideContent as getStoredWorkspaceWideContent,
+	getSidebarTranslucency,
+	setSidebarTranslucency,
 	setWorkspaceWideContent as setStoredWorkspaceWideContent,
 	getWorkspaceTextSize as getStoredWorkspaceTextSize,
 	setWorkspaceTextSize as setStoredWorkspaceTextSize,
@@ -285,6 +287,7 @@ function getThemeData(): AppThemeData {
 		colors: {
 			...(isDark ? darkThemeColors : lightThemeColors),
 			...(selected ? (isDark ? selected.dark : selected.light) : {}),
+			'sidebar-translucency-opacity': getSidebarTranslucency() ? '0.2' : '1',
 		},
 	};
 }
@@ -512,6 +515,11 @@ export class AppIpc implements IpcModule {
 			eventBus.broadcast(AppChannels.themeModeChanged, nextThemeData);
 		};
 		nativeTheme.on('updated', emitThemeChangeEvent);
+		ipcMain.handle(AppChannels.getSidebarTranslucency, wrapSimpleHandler(() => getSidebarTranslucency(), AppChannels.getSidebarTranslucency));
+		ipcMain.handle(AppChannels.setSidebarTranslucency, wrapTrustedHandler((enabled: boolean) => {
+			setSidebarTranslucency(enabled);
+			emitThemeChangeEvent();
+		}, AppChannels.setSidebarTranslucency));
 		eventBus.on('plugins:changed', emitThemeChangeEvent);
 		ipcMain.handle(AppChannels.themes, wrapTrustedHandler(() => listThemes(), AppChannels.themes));
 		ipcMain.handle(

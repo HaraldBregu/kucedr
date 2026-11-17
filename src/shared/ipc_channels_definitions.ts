@@ -267,6 +267,8 @@ export const AppChannels = {
 	getWorkspaceModel: 'app:get-workspace-model',
 	setWorkspaceModel: 'app:set-workspace-model',
 	setWorkspaceWideContent: 'app:set-workspace-wide-content',
+	getSidebarTranslucency: 'app:get-sidebar-translucency',
+	setSidebarTranslucency: 'app:set-sidebar-translucency',
 	getWorkspaceWideContent: 'app:get-workspace-wide-content',
 	exportDocument: 'app:export-document',
 	setWorkspaceTextSize: 'app:set-workspace-text-size',

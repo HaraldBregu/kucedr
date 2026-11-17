@@ -88,7 +88,7 @@ export function Split({
 						inert={!state.sidebarOpen}
 						className={cn(
 							'relative z-30 flex shrink-0 flex-col overflow-hidden text-sidebar-foreground',
-							navigator.platform.startsWith('Mac') ? 'bg-sidebar/20' : 'bg-sidebar',
+							navigator.platform.startsWith('Mac') ? 'bg-sidebar/(--sidebar-translucency-opacity)' : 'bg-sidebar',
 							state.sidebarOpen && 'border-r border-sidebar-border/60'
 						)}
 						style={{ width: state.sidebarOpen ? 'var(--split-pane-sidebar-width)' : 0 }}

@@ -715,6 +715,11 @@ export interface AppInvokeChannelMap {
 		args: [enabled: boolean];
 		result: void;
 	};
+	[AppChannels.getSidebarTranslucency]: { args: []; result: boolean };
+	[AppChannels.setSidebarTranslucency]: {
+		args: [enabled: boolean];
+		result: void;
+	};
 	[AppChannels.exportDocument]: {
 		args: [name: string, format: 'md' | 'html' | 'pdf', content: string];
 		result: boolean;

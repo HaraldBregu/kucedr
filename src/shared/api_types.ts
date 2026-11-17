@@ -651,6 +651,8 @@ export interface AppApi extends AppStorageApi {
 	setWorkspaceModel: (model: { providerId: string; modelId: string }) => Promise<void>;
 	setWorkspaceWideContent: (enabled: boolean) => Promise<void>;
 	getWorkspaceWideContent: () => Promise<boolean>;
+	getSidebarTranslucency: () => Promise<boolean>;
+	setSidebarTranslucency: (enabled: boolean) => Promise<void>;
 	exportDocument: (name: string, format: 'md' | 'html' | 'pdf', content: string) => Promise<boolean>;
 	setWorkspaceTextSize: (size: import('./app_types').WorkspaceTextSize) => Promise<void>;
 	getWorkspaceTextSize: () => Promise<import('./app_types').WorkspaceTextSize>;

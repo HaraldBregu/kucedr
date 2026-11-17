@@ -47,6 +47,7 @@ export type AppSettingsState = {
 	chatTextSize: ChatTextSize;
 	zoomFactor: ZoomFactor;
 	workspaceWideContent: boolean;
+	sidebarTranslucency: boolean;
 	workspaceTextSize: WorkspaceTextSize;
 	language: AppLanguage;
 	theme: AppTheme;
@@ -67,6 +68,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	chatTextSize: 'medium',
 	zoomFactor: 1,
 	workspaceWideContent: false,
+	sidebarTranslucency: true,
 	workspaceTextSize: 'medium',
 	language: 'en',
 	theme: 'dark',
@@ -205,6 +207,15 @@ export function setZoomFactor(factor: ZoomFactor): void {
 
 export function getWorkspaceWideContent(): boolean {
 	return store.get('workspaceWideContent');
+}
+
+export function getSidebarTranslucency(): boolean {
+	return store.get('sidebarTranslucency');
+}
+
+export function setSidebarTranslucency(enabled: boolean): void {
+	if (typeof enabled !== 'boolean') throw new Error('Invalid sidebar translucency setting.');
+	store.set('sidebarTranslucency', enabled);
 }
 
 export function setWorkspaceWideContent(enabled: boolean): void {
