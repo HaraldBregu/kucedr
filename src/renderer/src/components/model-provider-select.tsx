@@ -181,8 +181,7 @@ export function ModelProviderSelect({
 			</PopoverTrigger>
 			<PopoverContent
 				align="end"
-				collisionPadding={12}
-				style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+				collisionPadding={idPrefix === 'home' ? { top: 60, right: 12, bottom: 12, left: 12 } : 12}
 				onEscapeKeyDown={compactPopover ? (event) => event.preventDefault() : undefined}
 				className={cn(
 					'flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-72 max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1',
