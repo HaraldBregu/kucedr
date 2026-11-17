@@ -217,8 +217,9 @@ function listenRealtimeUrl(
 	url.searchParams.set('sample_rate', String(request.sampleRate));
 	if (v2) {
 		if (request.prompt) url.searchParams.set('keyterm', request.prompt);
-		if (request.metadata?.inputs.language_hint && request.language)
-			url.searchParams.set('language_hint', request.language);
+		const hint = request.language?.split('-')[0].toLowerCase();
+		const hints = request.metadata?.inputs.language_hint?.enum;
+		if (hint && hints?.includes(hint)) url.searchParams.set('language_hint', hint);
 	} else {
 		url.searchParams.set('channels', '1');
 		url.searchParams.set('interim_results', 'true');
