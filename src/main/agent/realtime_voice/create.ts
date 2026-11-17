@@ -56,7 +56,10 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 			const options = { ...model.metadata?.requestDefaults, ...getOptions('realtimeVoice') };
 			const configuredVoice = options.voice;
 			const metadataVoice = model.metadata?.inputs.voice?.default;
-			const supportedVoices = (model.metadata?.inputs.voice?.enum ?? []).filter(
+			const voiceInput = model.metadata?.inputs.voice;
+			const supportedVoices = (
+				voiceInput?.enum ?? voiceInput?.oneOf?.map((choice) => choice.const) ?? []
+			).filter(
 				(value): value is string => typeof value === 'string'
 			);
 			const voice =
