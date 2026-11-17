@@ -10,6 +10,15 @@ jest.mock('electron', () => ({
 import { app } from '../../../../src/preload/app';
 import { AppChannels } from '../../../../src/shared/ipc_channels_definitions';
 
+it('reads and updates sidebar translucency through typed app channels', async () => {
+	invoke.mockResolvedValueOnce({ success: true, data: true });
+	await expect(app.getSidebarTranslucency()).resolves.toBe(true);
+	expect(invoke).toHaveBeenCalledWith(AppChannels.getSidebarTranslucency);
+	invoke.mockResolvedValueOnce({ success: true, data: undefined });
+	await app.setSidebarTranslucency(false);
+	expect(invoke).toHaveBeenCalledWith(AppChannels.setSidebarTranslucency, false);
+});
+
 it('reads launch state through the typed app channel', async () => {
 	invoke.mockResolvedValue({
 		success: true,
