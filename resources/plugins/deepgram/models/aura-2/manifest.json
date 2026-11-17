@@ -1,0 +1,73 @@
+{
+	"id": "aura-2",
+	"name": "Aura 2",
+	"type": "text-to-speech-model",
+	"authentication": "api-key",
+	"url": "https://api.deepgram.com/v1",
+	"metadata": {
+		"protocol": "speak",
+		"documentationUrl": "https://developers.deepgram.com/reference/text-to-speech/speak-request",
+		"documentationStatus": "verified",
+		"inputs": {
+			"voice": {
+				"type": "string",
+				"title": "Voice model",
+				"default": "aura-2-thalia-en"
+			},
+			"speed": {
+				"type": "number",
+				"minimum": 0.7,
+				"maximum": 1.5,
+				"default": 1
+			},
+			"encoding": {
+				"type": "string",
+				"enum": [
+					"linear16",
+					"mulaw",
+					"alaw",
+					"mp3",
+					"opus",
+					"flac",
+					"aac"
+				]
+			},
+			"sample_rate": {
+				"type": "integer"
+			},
+			"container": {
+				"type": "string",
+				"enum": [
+					"none",
+					"wav",
+					"ogg"
+				]
+			},
+			"bit_rate": {
+				"type": "integer"
+			},
+			"callback": {
+				"type": "string"
+			},
+			"callback_method": {
+				"type": "string",
+				"default": "POST",
+				"enum": [
+					"POST",
+					"PUT"
+				]
+			},
+			"mip_opt_out": {
+				"type": "boolean",
+				"default": false
+			},
+			"tag": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"location": "remote"
+}
