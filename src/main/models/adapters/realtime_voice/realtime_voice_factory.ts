@@ -27,6 +27,7 @@ const PROTOCOLS: Readonly<Record<string, RealtimeVoiceProtocol>> = {
 	'realtime-beta': { tools: true, create: createBetaRealtimeVoiceAdapter },
 	live: { tools: false, create: (provider, model) => new LiveVoiceAdapter(provider, model) },
 	bidi: { tools: true, create: createBidiVoiceAdapter },
+	agent: { tools: true, create: createAgentVoiceAdapter },
 };
 
 export function realtimeVoiceProtocol(
