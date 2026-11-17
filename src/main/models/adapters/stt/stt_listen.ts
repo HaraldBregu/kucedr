@@ -234,6 +234,15 @@ async function waitForOpen(socket: WebSocket): Promise<void> {
 	await new Promise<void>((resolve, reject) => {
 		socket.once('open', resolve);
 		socket.once('error', reject);
+		socket.once('unexpected-response', (_request, response) => {
+			let body = '';
+			response.on('data', (chunk: Buffer) => (body += chunk.toString()));
+			response.on('end', () => {
+				socket.terminate();
+				const error = new SttProviderRequestError(body || `HTTP ${response.statusCode}`);
+				reject(response.statusCode === 401 || response.statusCode === 403 ? new SttProviderAuthError(error.message) : error);
+			});
+		});
 	});
 }
 
