@@ -123,10 +123,7 @@ export function ModelProviderSelect({
 	const accessibleLabel = labels?.label ?? t('settings.modelServices.model');
 	const buttonLabel = selectedModel
 		? compactPopover
-			? (idPrefix === 'home'
-					? modelName(selectedModel).replace(/^[^:]+:\s+/, '')
-					: modelName(selectedModel)
-				).replace(/\s+high$/i, '')
+			? modelName(selectedModel).replace(/^[^:]+:\s+/, '').replace(/\s+high$/i, '')
 			: modelName(selectedModel)
 		: (labels?.placeholder ?? t('settings.modelServices.modelPlaceholder'));
 	const normalizedModelSearch = modelSearch.trim().toLocaleLowerCase();
