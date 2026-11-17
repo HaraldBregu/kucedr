@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 5,
+	"id": "deepgram",
+	"title": "Deepgram",
+	"version": "1.1.0",
+	"description": "Fast speech-to-text transcription and text-to-speech.",
+	"categories": [
+		"TTS",
+		"STT",
+		"REALTIME"
+	],
+	"author": "Harald Bregu",
+	"website": "https://deepgram.com",
+	"icon": "deepgram.svg",
+	"apiKeyUrl": "https://console.deepgram.com",
+	"settings": {
+		"inputSchema": {
+			"type": "object",
+			"properties": {
+				"apiKey": { "type": "string", "title": "API key", "format": "password" }
+			},
+			"required": ["apiKey"]
+		}
+	}
+}
