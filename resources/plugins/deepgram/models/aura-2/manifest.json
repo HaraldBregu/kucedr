@@ -11,8 +11,370 @@
 		"inputs": {
 			"voice": {
 				"type": "string",
-				"title": "Voice model",
-				"default": "aura-2-thalia-en"
+				"title": "Voice",
+				"default": "aura-2-thalia-en",
+				"oneOf": [
+					{
+						"const": "aura-2-amalthea-en",
+						"title": "Amalthea - English (Filipino)"
+					},
+					{
+						"const": "aura-2-andromeda-en",
+						"title": "Andromeda - English (American)"
+					},
+					{
+						"const": "aura-2-apollo-en",
+						"title": "Apollo - English (American)"
+					},
+					{
+						"const": "aura-2-arcas-en",
+						"title": "Arcas - English (American)"
+					},
+					{
+						"const": "aura-2-aries-en",
+						"title": "Aries - English (American)"
+					},
+					{
+						"const": "aura-2-asteria-en",
+						"title": "Asteria - English (American)"
+					},
+					{
+						"const": "aura-2-athena-en",
+						"title": "Athena - English (American)"
+					},
+					{
+						"const": "aura-2-atlas-en",
+						"title": "Atlas - English (American)"
+					},
+					{
+						"const": "aura-2-aurora-en",
+						"title": "Aurora - English (American)"
+					},
+					{
+						"const": "aura-2-callista-en",
+						"title": "Callista - English (American)"
+					},
+					{
+						"const": "aura-2-cora-en",
+						"title": "Cora - English (American)"
+					},
+					{
+						"const": "aura-2-cordelia-en",
+						"title": "Cordelia - English (American)"
+					},
+					{
+						"const": "aura-2-delia-en",
+						"title": "Delia - English (American)"
+					},
+					{
+						"const": "aura-2-draco-en",
+						"title": "Draco - English (British)"
+					},
+					{
+						"const": "aura-2-electra-en",
+						"title": "Electra - English (American)"
+					},
+					{
+						"const": "aura-2-harmonia-en",
+						"title": "Harmonia - English (American)"
+					},
+					{
+						"const": "aura-2-helena-en",
+						"title": "Helena - English (American)"
+					},
+					{
+						"const": "aura-2-hera-en",
+						"title": "Hera - English (American)"
+					},
+					{
+						"const": "aura-2-hermes-en",
+						"title": "Hermes - English (American)"
+					},
+					{
+						"const": "aura-2-hyperion-en",
+						"title": "Hyperion - English (Australian)"
+					},
+					{
+						"const": "aura-2-iris-en",
+						"title": "Iris - English (American)"
+					},
+					{
+						"const": "aura-2-janus-en",
+						"title": "Janus - English (American)"
+					},
+					{
+						"const": "aura-2-juno-en",
+						"title": "Juno - English (American)"
+					},
+					{
+						"const": "aura-2-jupiter-en",
+						"title": "Jupiter - English (American)"
+					},
+					{
+						"const": "aura-2-luna-en",
+						"title": "Luna - English (American)"
+					},
+					{
+						"const": "aura-2-mars-en",
+						"title": "Mars - English (American)"
+					},
+					{
+						"const": "aura-2-minerva-en",
+						"title": "Minerva - English (American)"
+					},
+					{
+						"const": "aura-2-neptune-en",
+						"title": "Neptune - English (American)"
+					},
+					{
+						"const": "aura-2-odysseus-en",
+						"title": "Odysseus - English (American)"
+					},
+					{
+						"const": "aura-2-ophelia-en",
+						"title": "Ophelia - English (American)"
+					},
+					{
+						"const": "aura-2-orion-en",
+						"title": "Orion - English (American)"
+					},
+					{
+						"const": "aura-2-orpheus-en",
+						"title": "Orpheus - English (American)"
+					},
+					{
+						"const": "aura-2-pandora-en",
+						"title": "Pandora - English (British)"
+					},
+					{
+						"const": "aura-2-phoebe-en",
+						"title": "Phoebe - English (American)"
+					},
+					{
+						"const": "aura-2-pluto-en",
+						"title": "Pluto - English (American)"
+					},
+					{
+						"const": "aura-2-saturn-en",
+						"title": "Saturn - English (American)"
+					},
+					{
+						"const": "aura-2-selene-en",
+						"title": "Selene - English (American)"
+					},
+					{
+						"const": "aura-2-thalia-en",
+						"title": "Thalia - English (American)"
+					},
+					{
+						"const": "aura-2-theia-en",
+						"title": "Theia - English (Australian)"
+					},
+					{
+						"const": "aura-2-vesta-en",
+						"title": "Vesta - English (American)"
+					},
+					{
+						"const": "aura-2-zeus-en",
+						"title": "Zeus - English (American)"
+					},
+					{
+						"const": "aura-2-agustina-es",
+						"title": "Agustina - Spanish (Peninsular)"
+					},
+					{
+						"const": "aura-2-alvaro-es",
+						"title": "Alvaro - Spanish (Peninsular)"
+					},
+					{
+						"const": "aura-2-antonia-es",
+						"title": "Antonia - Spanish (Argentine)"
+					},
+					{
+						"const": "aura-2-aquila-es",
+						"title": "Aquila - Spanish (Latin American)"
+					},
+					{
+						"const": "aura-2-carina-es",
+						"title": "Carina - Spanish (Peninsular)"
+					},
+					{
+						"const": "aura-2-celeste-es",
+						"title": "Celeste - Spanish (Colombian)"
+					},
+					{
+						"const": "aura-2-diana-es",
+						"title": "Diana - Spanish (Peninsular)"
+					},
+					{
+						"const": "aura-2-estrella-es",
+						"title": "Estrella - Spanish (Mexican)"
+					},
+					{
+						"const": "aura-2-gloria-es",
+						"title": "Gloria - Spanish (Colombian)"
+					},
+					{
+						"const": "aura-2-javier-es",
+						"title": "Javier - Spanish (Mexican)"
+					},
+					{
+						"const": "aura-2-luciano-es",
+						"title": "Luciano - Spanish (Mexican)"
+					},
+					{
+						"const": "aura-2-nestor-es",
+						"title": "Nestor - Spanish (Peninsular)"
+					},
+					{
+						"const": "aura-2-olivia-es",
+						"title": "Olivia - Spanish (Mexican)"
+					},
+					{
+						"const": "aura-2-selena-es",
+						"title": "Selena - Spanish (Latin American)"
+					},
+					{
+						"const": "aura-2-silvia-es",
+						"title": "Silvia - Spanish (Peninsular)"
+					},
+					{
+						"const": "aura-2-sirio-es",
+						"title": "Sirio - Spanish (Mexican)"
+					},
+					{
+						"const": "aura-2-valerio-es",
+						"title": "Valerio - Spanish (Mexican)"
+					},
+					{
+						"const": "aura-2-beatrix-nl",
+						"title": "Beatrix - Dutch"
+					},
+					{
+						"const": "aura-2-cornelia-nl",
+						"title": "Cornelia - Dutch"
+					},
+					{
+						"const": "aura-2-daphne-nl",
+						"title": "Daphne - Dutch"
+					},
+					{
+						"const": "aura-2-hestia-nl",
+						"title": "Hestia - Dutch"
+					},
+					{
+						"const": "aura-2-lars-nl",
+						"title": "Lars - Dutch"
+					},
+					{
+						"const": "aura-2-leda-nl",
+						"title": "Leda - Dutch"
+					},
+					{
+						"const": "aura-2-rhea-nl",
+						"title": "Rhea - Dutch"
+					},
+					{
+						"const": "aura-2-roman-nl",
+						"title": "Roman - Dutch"
+					},
+					{
+						"const": "aura-2-sander-nl",
+						"title": "Sander - Dutch"
+					},
+					{
+						"const": "aura-2-agathe-fr",
+						"title": "Agathe - French"
+					},
+					{
+						"const": "aura-2-hector-fr",
+						"title": "Hector - French"
+					},
+					{
+						"const": "aura-2-aurelia-de",
+						"title": "Aurelia - German"
+					},
+					{
+						"const": "aura-2-elara-de",
+						"title": "Elara - German"
+					},
+					{
+						"const": "aura-2-fabian-de",
+						"title": "Fabian - German"
+					},
+					{
+						"const": "aura-2-julius-de",
+						"title": "Julius - German"
+					},
+					{
+						"const": "aura-2-kara-de",
+						"title": "Kara - German"
+					},
+					{
+						"const": "aura-2-lara-de",
+						"title": "Lara - German"
+					},
+					{
+						"const": "aura-2-viktoria-de",
+						"title": "Viktoria - German"
+					},
+					{
+						"const": "aura-2-cesare-it",
+						"title": "Cesare - Italian"
+					},
+					{
+						"const": "aura-2-cinzia-it",
+						"title": "Cinzia - Italian"
+					},
+					{
+						"const": "aura-2-demetra-it",
+						"title": "Demetra - Italian"
+					},
+					{
+						"const": "aura-2-dionisio-it",
+						"title": "Dionisio - Italian"
+					},
+					{
+						"const": "aura-2-elio-it",
+						"title": "Elio - Italian"
+					},
+					{
+						"const": "aura-2-flavio-it",
+						"title": "Flavio - Italian"
+					},
+					{
+						"const": "aura-2-livia-it",
+						"title": "Livia - Italian"
+					},
+					{
+						"const": "aura-2-maia-it",
+						"title": "Maia - Italian"
+					},
+					{
+						"const": "aura-2-melia-it",
+						"title": "Melia - Italian"
+					},
+					{
+						"const": "aura-2-ama-ja",
+						"title": "Ama - Japanese"
+					},
+					{
+						"const": "aura-2-ebisu-ja",
+						"title": "Ebisu - Japanese"
+					},
+					{
+						"const": "aura-2-fujin-ja",
+						"title": "Fujin - Japanese"
+					},
+					{
+						"const": "aura-2-izanami-ja",
+						"title": "Izanami - Japanese"
+					},
+					{
+						"const": "aura-2-uzume-ja",
+						"title": "Uzume - Japanese"
+					}
+				]
 			},
 			"speed": {
 				"type": "number",
