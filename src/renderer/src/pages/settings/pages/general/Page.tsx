@@ -472,7 +472,7 @@ const GeneralPage: React.FC = () => {
 							actionClassName="w-auto justify-end"
 							actions={
 								<Switch
-									checked={sidebarTranslucency ?? true}
+									checked={sidebarTranslucency ?? false}
 									disabled={sidebarTranslucency === null}
 									onCheckedChange={(enabled) => {
 										setSidebarTranslucency(enabled);

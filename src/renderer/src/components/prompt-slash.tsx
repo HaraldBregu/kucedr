@@ -1,5 +1,5 @@
 import { useEffect, useState, type KeyboardEvent, type ReactElement, type ReactNode } from 'react';
-import { MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
+import { Layers, MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { AgentModeInfo } from '@shared/agent_types';
@@ -8,6 +8,7 @@ import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { usePromptInput } from '@/components/ui/prompt-input';
 import { SETTINGS_NAVIGATION } from '@/pages/settings/navigation';
 import { cn } from '@/lib/utils';
+import { Switch } from '@/components/ui/switch';
 
 const SETTINGS_PATHS = [
 	'/settings/general',
@@ -24,6 +25,7 @@ type SlashItem = {
 	readonly hint?: string;
 	readonly icon: LucideIcon;
 	readonly disabled?: boolean;
+	readonly checked?: boolean;
 	readonly run: () => void;
 };
 
@@ -44,6 +46,7 @@ function PromptSlash({
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState(false);
 	const [themes, setThemes] = useState<PluginTheme[]>([]);
+	const [sidebarTranslucency, setSidebarTranslucency] = useState<boolean | null>(null);
 	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(null);
 	const text = value.trimStart();
 	const query = /^\/\S*$/.test(text) ? text.slice(1).toLowerCase() : null;
@@ -64,9 +67,16 @@ function PromptSlash({
 		};
 		load();
 		const off = window.app.onThemesChanged(load);
+		void window.app.getSidebarTranslucency().then((enabled) => {
+			if (active) setSidebarTranslucency(enabled);
+		});
+		const offTranslucency = window.app.onThemeModeChanged((data) => {
+			setSidebarTranslucency(data.colors['sidebar-translucency-opacity'] !== '1');
+		});
 		return () => {
 			active = false;
 			off();
+			offTranslucency();
 		};
 	}, []);
 
@@ -98,6 +108,18 @@ function PromptSlash({
 							run: () => navigate(item.path),
 						})
 					),
+					...(navigator.platform.startsWith('Mac') ? [{
+						group: 'Settings',
+						label: t('settings.application.sidebarTranslucency'),
+						icon: Layers,
+						checked: sidebarTranslucency ?? false,
+						disabled: sidebarTranslucency === null,
+						run: () => {
+							const next = !sidebarTranslucency;
+							setSidebarTranslucency(next);
+							void window.app.setSidebarTranslucency(next).catch(() => setSidebarTranslucency(!next));
+						},
+					}] : []),
 					{
 						group: 'Theme',
 						label: t('settings.theme.default'),
@@ -178,6 +200,9 @@ function PromptSlash({
 							>
 								<item.icon />
 								<span className="truncate">{item.label}</span>
+								{item.checked !== undefined && (
+									<Switch render={<span />} checked={item.checked} readOnly tabIndex={-1} aria-hidden="true" className="pointer-events-none ml-auto" />
+								)}
 								{item.hint ? (
 									<span className="ml-auto truncate text-xs text-muted-foreground">
 										{item.hint}

@@ -90,7 +90,7 @@
 	--radius: 0.5rem;
 	--app-window-radius: 16px;
 	--app-sidebar-width: 16rem;
-	--sidebar-translucency-opacity: 0.2;
+	--sidebar-translucency-opacity: 1;
 	--app-bg-opacity: 1;
 	--app-surface-opacity: 1;
 	--app-popover-opacity: 1;

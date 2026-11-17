@@ -1,7 +1,7 @@
 import { getSidebarTranslucency, setSidebarTranslucency } from '../../../../src/main/settings_store';
 
-it('enables sidebar translucency by default', () => {
-	expect(getSidebarTranslucency()).toBe(true);
+it('disables sidebar translucency by default', () => {
+	expect(getSidebarTranslucency()).toBe(false);
 });
 
 it('stores the sidebar translucency preference', () => {

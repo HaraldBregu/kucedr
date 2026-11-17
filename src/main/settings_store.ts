@@ -68,7 +68,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	chatTextSize: 'medium',
 	zoomFactor: 1,
 	workspaceWideContent: false,
-	sidebarTranslucency: true,
+	sidebarTranslucency: false,
 	workspaceTextSize: 'medium',
 	language: 'en',
 	theme: 'dark',
