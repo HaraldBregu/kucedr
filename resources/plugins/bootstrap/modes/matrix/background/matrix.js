@@ -157,7 +157,7 @@ let last = performance.now();
 function loop(now) {
 	const target = SPEED[state.status] ?? 0.5;
 	state.speed += (target - state.speed) * 0.04;
-	state.time += Math.min((now - last) / 1000, 0.1) * state.speed;
+	state.time += Math.min((now - last) / 1000, 0.1) * state.speed * 0.4;
 	last = now;
 	draw();
 	frame = requestAnimationFrame(loop);
