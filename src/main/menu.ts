@@ -160,8 +160,12 @@ export class Menu {
 						click: (): void => zoom(1),
 					},
 					{ label: m.zoomOut, accelerator: 'CmdOrCtrl+-', click: (): void => zoom(-1) },
-					{ type: 'separator' as const },
-					{ label: m.toggleFullscreen, role: 'togglefullscreen' as const },
+					...(isMac
+						? []
+						: [
+								{ type: 'separator' as const },
+								{ label: m.toggleFullscreen, role: 'togglefullscreen' as const },
+							]),
 				],
 			},
 			{

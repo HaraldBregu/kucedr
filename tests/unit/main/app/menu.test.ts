@@ -30,16 +30,15 @@ describe('application menu', () => {
 		jest.clearAllMocks();
 	});
 
-	it('provides the native full screen toggle in the View menu', () => {
+	it('avoids duplicating the native macOS full screen toggle', () => {
 		const buildFromTemplate = ElectronMenu.buildFromTemplate as jest.Mock;
 		buildFromTemplate.mockImplementation((template: MenuEntry[]) => template);
 		new Menu({ onLanguageChange: jest.fn(), onNewWindow: jest.fn() }).create();
 
 		const template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-		expect(template.find((entry) => entry.label === 'View')?.submenu).toContainEqual({
-			label: 'Toggle Full Screen',
-			role: 'togglefullscreen',
-		});
+		const fullscreen = template.find((entry) => entry.label === 'View')?.submenu
+			?.filter((entry) => entry.role === 'togglefullscreen');
+		expect(fullscreen).toHaveLength(process.platform === 'darwin' ? 0 : 1);
 	});
 
 	it.each([true, false])('toggles feedback sounds from a persisted %s value', (initiallyEnabled) => {
