@@ -1,6 +1,6 @@
 {
 	"title": "Matrix",
-	"description": "Work with focus, curiosity, and first-principles reasoning.",
+	"description": "Question assumptions, uncover how systems work, and turn insight into focused action.",
 	"command": "/matrix",
 	"persistent": true
 }
