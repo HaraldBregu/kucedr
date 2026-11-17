@@ -124,7 +124,7 @@ export function ModelProviderSelect({
 	const buttonLabel = selectedModel
 		? compactPopover
 			? (idPrefix === 'home'
-					? modelName(selectedModel).replace(/^deepseek:\s*(?=deepseek)/i, '')
+					? modelName(selectedModel).replace(/^[^:]+:\s+/, '')
 					: modelName(selectedModel)
 				).replace(/\s+high$/i, '')
 			: modelName(selectedModel)
