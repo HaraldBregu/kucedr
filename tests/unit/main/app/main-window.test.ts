@@ -50,7 +50,7 @@ it('shows the native menu bar when the main window gains focus', () => {
 	listeners.get('blur')?.();
 
 	expect(windowFactory.create).toHaveBeenCalledWith(
-		expect.objectContaining({ width: 1200, height: 800 }),
+		expect.objectContaining({ width: 1200, height: 800, fullscreenable: true }),
 		expect.objectContaining({ hash: 'start' })
 	);
 	expect(win.setMenuBarVisibility).toHaveBeenCalledWith(true);

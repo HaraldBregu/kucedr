@@ -35,7 +35,7 @@ export class Main {
 			minHeight: MINIMUM_WINDOW_HEIGHT,
 			resizable: true,
 			maximizable: true,
-			fullscreenable: false,
+			fullscreenable: true,
 			frame: false,
 			// titleBarStyle:'hidden' on Windows retains native min/max/close buttons.
 			// Only use it on macOS where it hides the title bar while keeping traffic lights.
