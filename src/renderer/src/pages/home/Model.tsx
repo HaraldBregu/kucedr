@@ -172,7 +172,8 @@ export function Model({
 				}}
 				showFieldLabel={false}
 				buttonClassName={cn(
-					'h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground dark:hover:bg-accent',
+					'h-9 min-w-0 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground dark:hover:bg-accent',
+					(compact || workspace) && 'max-w-48',
 					compact && 'h-7 rounded-md text-xs'
 				)}
 				labels={{ label: 'Change model' }}
