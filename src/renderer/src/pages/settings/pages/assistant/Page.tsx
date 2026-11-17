@@ -311,6 +311,7 @@ const AssistantPage: React.FC = () => {
 						<ModelProviderSelect
 							inline
 							buttonDropdown
+							compactPopover
 							idPrefix="compact"
 							providerGroups={toModelProviderGroups(state.modelGroups)}
 							providerId={compactModel.providerId}
