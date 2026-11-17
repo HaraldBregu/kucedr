@@ -182,6 +182,7 @@ export function ModelProviderSelect({
 			<PopoverContent
 				align="end"
 				collisionPadding={12}
+				style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 				onEscapeKeyDown={compactPopover ? (event) => event.preventDefault() : undefined}
 				className={cn(
 					'flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-72 max-w-[calc(100vw-2rem)] flex-col overflow-hidden p-1',
