@@ -159,6 +159,7 @@ export function ModelProviderConfiguration({
 						<ModelProviderSelect
 							inline
 							buttonDropdown={buttonDropdown}
+							compactPopover={buttonDropdown}
 							buttonClassName={buttonClassName}
 							idPrefix={idPrefix}
 							providerGroups={toModelProviderGroups(configState.modelGroups)}
