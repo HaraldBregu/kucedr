@@ -40,3 +40,25 @@ it('connects to the validated address while preserving the public TLS identity',
 	);
 	await expect(response.text()).resolves.toBe('ok');
 });
+
+it('rejects invalid response statuses without throwing from the response callback', async () => {
+	publicUrl.mockResolvedValue({ url: new URL('https://example.com'), address: '93.184.216.34', family: 4 });
+	httpsRequest.mockImplementation((_options, callback) => {
+		const response = Object.assign(Readable.from([]), { headers: {}, statusCode: 600, statusMessage: 'Invalid' });
+		queueMicrotask(() => callback(response));
+		return { once: jest.fn(), end: jest.fn() };
+	});
+	await expect(publicRequest('https://example.com')).rejects.toThrow(RangeError);
+});
+
+it.each([204, 205, 304])('accepts a response without a body for status %s', async (statusCode) => {
+	publicUrl.mockResolvedValue({ url: new URL('https://example.com'), address: '93.184.216.34', family: 4 });
+	httpsRequest.mockImplementation((_options, callback) => {
+		const response = Object.assign(Readable.from([]), { headers: {}, statusCode, statusMessage: '' });
+		queueMicrotask(() => callback(response));
+		return { once: jest.fn(), end: jest.fn() };
+	});
+	const { response } = await publicRequest('https://example.com');
+	expect(response.status).toBe(statusCode);
+	expect(response.body).toBeNull();
+});

@@ -22,19 +22,24 @@ export async function publicRequest(
 				...(target.url.protocol === 'https:' ? { servername: target.url.hostname } : {}),
 			},
 			(incoming) => {
+				try {
 				const headers = new Headers();
 				for (const [name, value] of Object.entries(incoming.headers)) {
 					if (Array.isArray(value)) value.forEach((item) => headers.append(name, item));
 					else if (value !== undefined) headers.set(name, value);
 				}
 				resolve({
-					response: new Response(Readable.toWeb(incoming) as unknown as BodyInit, {
+					response: new Response([204, 205, 304].includes(incoming.statusCode ?? 500) ? null : Readable.toWeb(incoming) as unknown as BodyInit, {
 						status: incoming.statusCode ?? 500,
 						statusText: incoming.statusMessage,
 						headers,
 					}),
 					url: target.url,
 				});
+				} catch (error) {
+					incoming.destroy();
+					reject(error);
+				}
 			}
 		);
 		outgoing.once('error', reject);
