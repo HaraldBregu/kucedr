@@ -120,6 +120,18 @@ function createListenRealtimeConnection(
 ): SttRealtimeConnection {
 	let closed = false;
 	let completedCount = 0;
+	let partial = '';
+
+	const emitDelta = (itemId: string, transcript: string): void => {
+		const delta = transcript.startsWith(partial) ? transcript.slice(partial.length) : transcript;
+		partial = transcript;
+		if (delta) emit({ type: 'delta', sessionId: request.sessionId, itemId, contentIndex: 0, delta });
+	};
+
+	const emitCompleted = (itemId: string, transcript: string): void => {
+		partial = '';
+		emit({ type: 'completed', sessionId: request.sessionId, itemId, contentIndex: 0, transcript });
+	};
 
 	const emitError = (message: string): void => {
 		if (!closed) emit({ type: 'error', sessionId: request.sessionId, message });
