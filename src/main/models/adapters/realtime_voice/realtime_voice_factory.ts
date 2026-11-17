@@ -1,3 +1,4 @@
+import { createAgentVoiceAdapter } from './agent';
 import { createBetaRealtimeVoiceAdapter } from './beta';
 import { createBidiVoiceAdapter } from './bidi';
 import { FlatRealtimeVoiceAdapter } from './flat';
