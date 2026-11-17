@@ -161,54 +161,28 @@ function createListenRealtimeConnection(
 		if (data.type === 'TurnInfo') {
 			const transcript = data.transcript;
 			if (!transcript) return;
-			if (data.event !== 'EndOfTurn') {
-				emit({
-					type: 'delta',
-					sessionId: request.sessionId,
-					itemId: `${request.sessionId}-${data.turn_index ?? 0}`,
-					contentIndex: 0,
-					delta: transcript,
-				});
-				return;
-			}
-			completedCount += 1;
-			emit({
-				type: 'completed',
-				sessionId: request.sessionId,
-				itemId: `${request.sessionId}-${completedCount}`,
-				contentIndex: 0,
-				transcript,
-			});
+			const itemId = `${request.sessionId}-${data.turn_index ?? 0}`;
+			if (data.event === 'EndOfTurn') emitCompleted(itemId, transcript);
+			else emitDelta(itemId, transcript);
 			return;
 		}
 		const transcript = data.channel?.alternatives?.[0]?.transcript;
 		if (!transcript) return;
 
+		const itemId = `${request.sessionId}-${completedCount}`;
 		if (data.speech_final) {
 			emit({
 				type: 'committed',
 				sessionId: request.sessionId,
-				itemId: request.sessionId,
+				itemId,
 			});
 		}
 		if (data.is_final) {
 			completedCount += 1;
-			emit({
-				type: 'completed',
-				sessionId: request.sessionId,
-				itemId: `${request.sessionId}-${completedCount}`,
-				contentIndex: 0,
-				transcript,
-			});
+			emitCompleted(itemId, transcript);
 			return;
 		}
-		emit({
-			type: 'delta',
-			sessionId: request.sessionId,
-			itemId: request.sessionId,
-			contentIndex: 0,
-			delta: transcript,
-		});
+		emitDelta(itemId, transcript);
 	};
 
 	socket.on('message', (data) => handleMessage(data.toString()));
