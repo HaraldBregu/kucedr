@@ -1,5 +1,5 @@
 import { useEffect, useState, type KeyboardEvent, type ReactElement, type ReactNode } from 'react';
-import { Layers, MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
+import { Check, Layers, MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { AgentModeInfo } from '@shared/agent_types';
@@ -8,7 +8,6 @@ import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { usePromptInput } from '@/components/ui/prompt-input';
 import { SETTINGS_NAVIGATION } from '@/pages/settings/navigation';
 import { cn } from '@/lib/utils';
-import { Switch } from '@/components/ui/switch';
 
 const SETTINGS_PATHS = [
 	'/settings/general',
@@ -200,8 +199,8 @@ function PromptSlash({
 							>
 								<item.icon />
 								<span className="truncate">{item.label}</span>
-								{item.checked !== undefined && (
-									<Switch render={<span />} checked={item.checked} readOnly tabIndex={-1} aria-hidden="true" className="pointer-events-none ml-auto" />
+								{item.checked && (
+									<Check aria-hidden="true" className="ml-auto" />
 								)}
 								{item.hint ? (
 									<span className="ml-auto truncate text-xs text-muted-foreground">
