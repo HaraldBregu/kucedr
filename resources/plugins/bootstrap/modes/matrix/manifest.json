@@ -1,0 +1,6 @@
+{
+	"title": "Matrix",
+	"description": "Use the Matrix background.",
+	"command": "/matrix",
+	"persistent": true
+}
