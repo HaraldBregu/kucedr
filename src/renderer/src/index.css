@@ -477,6 +477,10 @@ input:focus-visible {
 	background-color: transparent;
 }
 
+.app-sidebar-window [data-slot='split-pane-sidebar'][data-state] {
+	background-color: color-mix(in srgb, var(--sidebar) calc(var(--sidebar-translucency-opacity) * 100%), transparent);
+}
+
 [data-slot='navigationbar'] :is(button, a) {
 	-webkit-app-region: no-drag;
 }
