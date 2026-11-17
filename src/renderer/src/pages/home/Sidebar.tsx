@@ -298,7 +298,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					) : (
 						<CollapsibleTrigger
 							nativeButton={false}
-							render={<SidebarGroupLabel />}
+							render={<SidebarGroupLabel className="text-sidebar-foreground" />}
 							onDoubleClick={category ? () => setEditingCategoryId(category.id) : undefined}
 							onContextMenu={category ? (event: React.MouseEvent) => {
 								event.preventDefault();
