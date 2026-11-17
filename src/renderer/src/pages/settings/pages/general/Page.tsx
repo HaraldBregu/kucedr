@@ -14,6 +14,7 @@ import {
 	Type,
 	Volume2,
 	AppWindow,
+	Layers,
 	ZoomIn,
 } from 'lucide-react';
 import { WINDOW_SIZES, type WindowSize } from '../../../../../../shared/window_size';
@@ -77,6 +78,7 @@ const GeneralPage: React.FC = () => {
 	const [keepAwake, setKeepAwake] = useState(false);
 	const [windowSize, setWindowSize] = useState<WindowSize>('1200x800');
 	const [zoomFactor, setZoomFactor] = useState<ZoomFactor>(1);
+	const [sidebarTranslucency, setSidebarTranslucency] = useState<boolean | null>(null);
 	const activeTheme = themes.find(
 		(item) =>
 			item.enabled &&
@@ -98,6 +100,12 @@ const GeneralPage: React.FC = () => {
 		};
 		loadThemes();
 		const offThemes = window.app.onThemesChanged(loadThemes);
+		void window.app.getSidebarTranslucency().then((enabled) => {
+			if (active) setSidebarTranslucency(enabled);
+		});
+		const offTranslucency = window.app.onThemeModeChanged((data) => {
+			setSidebarTranslucency(data.colors['sidebar-translucency-opacity'] !== '1');
+		});
 		void window.app.getTrayEnabled().then(setTrayEnabled);
 		void window.app.getTrayClickAction().then(setTrayClickAction);
 		void window.app.getKeepAwake().then(setKeepAwake);
@@ -109,6 +117,7 @@ const GeneralPage: React.FC = () => {
 		return () => {
 			active = false;
 			offThemes();
+			offTranslucency();
 			offTrayEnabled();
 			offKeepAwake();
 			offZoomFactor();
@@ -455,6 +464,25 @@ const GeneralPage: React.FC = () => {
 						actionClassName="w-auto justify-end"
 						actions={<ThemePicker value={theme} onChange={setTheme} />}
 					/>
+					{navigator.platform.startsWith('Mac') && (
+						<SettingsRow
+							title={t('settings.application.sidebarTranslucency')}
+							description={t('settings.application.sidebarTranslucencyDescription')}
+							media={<Layers className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+							actionClassName="w-auto justify-end"
+							actions={
+								<Switch
+									checked={sidebarTranslucency ?? true}
+									disabled={sidebarTranslucency === null}
+									onCheckedChange={(enabled) => {
+										setSidebarTranslucency(enabled);
+										void window.app.setSidebarTranslucency(enabled).catch(() => setSidebarTranslucency(!enabled));
+									}}
+									aria-label={t('settings.application.sidebarTranslucency')}
+								/>
+							}
+						/>
+					)}
 				</SettingsPanel>
 			</SettingsSection>
 

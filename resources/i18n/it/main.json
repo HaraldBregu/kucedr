@@ -579,6 +579,8 @@
 			"saveChanges": "Salva Modifiche"
 		},
 		"application": {
+			"sidebarTranslucency": "Traslucenza della barra laterale",
+			"sidebarTranslucencyDescription": "Lascia intravedere lo sfondo attraverso la barra laterale.",
 			"soundFeedback": "Feedback sonoro",
 			"soundFeedbackDescription": "Riproduci suoni discreti per messaggi, attività dell’assistente e navigazione.",
 			"information": "Informazioni",
