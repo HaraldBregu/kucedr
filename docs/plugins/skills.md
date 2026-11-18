@@ -22,4 +22,4 @@ Each folder goes through `validateSkill()`; invalid skills become `error` diagno
 
 ## Bundled skills
 
-`bootstrap` ships `docx`, `pdf`, `pptx`, and `xlsx` (Office/PDF document skills with Python helpers and OOXML schemas).
+`bootstrap` ships 17 skills, each MIT-licensed and instructions-only (no bundled helper scripts). See [BOOTSTRAP_SKILLS.md](../BOOTSTRAP_SKILLS.md) for the list.
