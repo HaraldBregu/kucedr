@@ -53,7 +53,7 @@ for n, slide in enumerate(prs.slides, start=1):
     for sh in walk(slide.shapes):
         if sh.has_text_frame and sh.text_frame.text.strip():
             print(f"[{sh.name}] {sh.text_frame.text}")
-        if sh.has_table:
+        if getattr(sh, "has_table", False):
             for row in sh.table.rows:
                 print(" | ".join(c.text for c in row.cells))
     if slide.has_notes_slide:
