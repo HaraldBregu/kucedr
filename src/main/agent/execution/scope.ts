@@ -7,6 +7,7 @@ export interface ExecutionScope {
 	readonly sessionId: string;
 	readonly runId: string;
 	readonly profile?: AgentToolProfileId;
+	readonly interactive?: boolean;
 }
 
 export const executionScope = new AsyncLocalStorage<ExecutionScope>();
