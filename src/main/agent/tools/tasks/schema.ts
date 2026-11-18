@@ -8,7 +8,7 @@ export const taskIdSchema = z.object({
 });
 
 export const createTaskRequestSchema = z.object({
-	name: z.string().describe('Short human-readable task name used to identify it later.'),
+	name: z.string().trim().min(1).describe('Short human-readable task name used to identify it later.'),
 	description: z.string().optional().describe('Optional explanation of the task purpose.'),
 	cronExpression: z
 		.string()
