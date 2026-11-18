@@ -2961,6 +2961,7 @@
 		"hostAccess": "Accesso host",
 		"destructiveOperation": "Operazione distruttiva",
 		"outsideLocations": "Fuori dalle posizioni attendibili",
+		"sensitiveAccess": "Azione sensibile",
 		"location": "Posizione",
 		"hostReason": "Questa operazione viene eseguita fuori dalla sandbox del file system e può accedere ad altre posizioni.",
 		"destructiveReason": "Questa operazione può sovrascrivere, eliminare, annullare o ripristinare modifiche ai file e richiede un'autorizzazione una tantum.",
