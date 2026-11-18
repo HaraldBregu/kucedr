@@ -16,7 +16,7 @@ Produce a report in which every important claim is traceable to a source the use
 
 ## Step 1: Pin down the question
 
-Restate the question in one sentence. If any of these is unknown and would change the research, put them in a single `ask` call; otherwise state your assumption and continue:
+Restate the question in one sentence. If any of these is unknown and would change the research, put them in a single `ask` call (at most three questions, each with two or three options); otherwise state your assumption and continue:
 
 - Scope: region, time period, industry, or product category.
 - Purpose: what decision or document the report feeds.
