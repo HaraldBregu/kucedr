@@ -175,6 +175,10 @@ function resize() {
 
 function draw() {
 	gl.uniform1f(uniform('time'), state.time);
+	gl.uniform2f(uniform('pointer'), pointer.x, pointer.y);
+	gl.uniform1f(uniform('reveal'), pointer.reveal);
+	gl.uniform1f(uniform('now'), clock());
+	gl.uniform3fv(uniform('pulses'), pulses);
 	gl.clearColor(0, 0, 0, 0);
 	gl.clear(gl.COLOR_BUFFER_BIT);
 	gl.drawArrays(gl.TRIANGLES, 0, 3);
