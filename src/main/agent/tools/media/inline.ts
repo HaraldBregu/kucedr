@@ -28,7 +28,7 @@ export async function inlineFiles(value: unknown, key?: string): Promise<unknown
 		const permission = resolvePermission({
 			access: { read: [filePath] },
 			permissions: getPermissions(),
-			interactive: executionScope.getStore()?.source === 'interactive',
+			interactive: executionScope.getStore()?.interactive === true,
 		});
 		if (permission.mode !== 'allow') throw new Error(`Reading ${value} is not permitted.`);
 		return `data:${mimeType};base64,${(await readFileBounded(filePath, MAX_INLINE_BYTES)).toString('base64')}`;
