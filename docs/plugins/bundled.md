@@ -23,7 +23,7 @@ Model counts are the folders under `models/`.
 | Kind | Items |
 |---|---|
 | `apps` | `arcade` (extension; Space Invaders, Breakout, Asteroids, Lunar Lander, Galaga, Pac-Man, Snake), `tetris`, `triangle`, `taxes` |
-| `skills` | `docx`, `pdf`, `pptx`, `xlsx` |
+| `skills` | `docx`, `pdf`, `pptx`, `xlsx`, `media`, `data`, `skill-creator`, `plugin-creator`, `mcp-builder`, `deep-research`, `doc-coauthoring`, `code-review`, `webapp-testing`, `frontend-design`, `weekly-review`, `inbox-triage`, `calendar-planning` |
 | `scripts` | `chart`, `maps`, `draw`, `dither`, `organui` (UI); `backup-s3` (STORAGE) |
 | `modes` | `plan`, `goal` (see [modes.md](modes.md)) |
 
