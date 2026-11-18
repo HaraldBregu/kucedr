@@ -167,7 +167,7 @@ soffice --headless --convert-to pdf --outdir render out.pptx
 pdftoppm -png -r 50 render/out.pdf render/slide      # render/slide-1.png, slide-2.png, ...
 ```
 
-Open the images with `read`, or give the user the paths. Fix what you find and render again. If LibreOffice is not available and the user declines to install it, say plainly that the layout was not visually checked.
+`read` cannot open images, so give the user the paths and ask them to look. Fix what they report and render again. Say plainly that you did not check the layout yourself, and if LibreOffice is not available and the user declines to install it, that it was not rendered at all.
 
 ## Pitfalls
 
