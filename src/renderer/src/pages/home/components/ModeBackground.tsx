@@ -73,7 +73,60 @@ export function ModeBackground({
 		}
 	}, [messages]);
 
-	if (active.length === 0) return null;
+	const hasBackground = active.length > 0;
+	useEffect(() => {
+		if (!hasBackground) return;
+		let frame = 0;
+		let pointer: { x: number; y: number } | null = null;
+		let press = false;
+		const send = (): void => {
+			frame = 0;
+			for (const iframe of frames.current.values()) {
+				const rect = iframe.getBoundingClientRect();
+				iframe.contentWindow?.postMessage(
+					{
+						type: 'pointer',
+						x: pointer ? pointer.x - rect.left : null,
+						y: pointer ? pointer.y - rect.top : null,
+						press,
+					},
+					'*'
+				);
+			}
+			press = false;
+		};
+		const queue = (): void => {
+			frame ||= requestAnimationFrame(send);
+		};
+		const onMove = (event: PointerEvent): void => {
+			if (event.pointerType === 'touch') return;
+			pointer = { x: event.clientX, y: event.clientY };
+			queue();
+		};
+		const onDown = (event: PointerEvent): void => {
+			if (event.pointerType === 'touch') return;
+			pointer = { x: event.clientX, y: event.clientY };
+			press = true;
+			queue();
+		};
+		const onLeave = (): void => {
+			pointer = null;
+			queue();
+		};
+		window.addEventListener('pointermove', onMove, { capture: true, passive: true });
+		window.addEventListener('pointerdown', onDown, { capture: true, passive: true });
+		document.documentElement.addEventListener('pointerleave', onLeave);
+		window.addEventListener('blur', onLeave);
+		return () => {
+			cancelAnimationFrame(frame);
+			window.removeEventListener('pointermove', onMove, { capture: true });
+			window.removeEventListener('pointerdown', onDown, { capture: true });
+			document.documentElement.removeEventListener('pointerleave', onLeave);
+			window.removeEventListener('blur', onLeave);
+		};
+	}, [hasBackground]);
+
+	if (!hasBackground) return null;
 	return (
 		<>
 			{active.map((mode) => (
