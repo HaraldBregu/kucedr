@@ -160,7 +160,7 @@ for n, slide in enumerate(prs.slides, start=1):
             print(f"slide {n}: '{sh.name}' is off the slide")
 ```
 
-3. Render and look. This is the only way to catch overflowing text and overlapping shapes:
+3. Render the slides. This is the only way to catch overflowing text and overlapping shapes:
 
 ```bash
 soffice --headless --convert-to pdf --outdir render out.pptx
