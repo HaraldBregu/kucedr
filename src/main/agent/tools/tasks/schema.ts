@@ -35,6 +35,8 @@ export const updateTaskRequestSchema = z
 			.describe('False to pause scheduled execution. Only the user can enable a task.'),
 		prompt: z
 			.string()
+			.trim()
+			.min(1)
 			.optional()
 			.describe('Replacement instruction the background agent should execute.'),
 	})
