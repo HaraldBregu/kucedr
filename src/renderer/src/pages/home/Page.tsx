@@ -969,7 +969,7 @@ function PageContent(): ReactElement {
 								className="min-h-0 p-0 [scrollbar-gutter:auto]"
 								contextRef={chatScrollRef}
 							>
-								<ChatContainerContent className={cn('mx-auto min-h-full w-full max-w-4xl gap-5 px-12 pt-18')}>
+								<ChatContainerContent className="mx-auto min-h-full w-full max-w-4xl gap-5 px-12 pt-18">
 									<Messages
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
