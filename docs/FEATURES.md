@@ -247,7 +247,7 @@ The Skills settings area can:
 
 Validation requires frontmatter `name` and `description`. Names are lowercase alphanumeric/hyphen identifiers of 1–64 characters, and descriptions are limited to 1,024 characters. Importing an existing ID replaces its folder. Only enabled skills can be loaded by the agent.
 
-The Home slash menu searches installed skills. An explicit selection or matching request activates the validated `SKILL.md` body on the next turn. The loader returns the canonical skill directory and a bounded resource inventory; bundled scripts, references, and assets are read separately only when the loaded instructions require them. Skill `allowed-tools` restricts eligibility after activation.
+The Home slash menu searches installed skills. An explicit selection or matching request activates the validated `SKILL.md` body on the next turn. The loader returns the canonical skill directory and a bounded resource inventory; bundled scripts, references, and assets are read separately only when the loaded instructions require them. Skill `allowed-tools` is parsed and shown, but not enforced.
 
 ### MCP servers
 
