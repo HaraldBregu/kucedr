@@ -142,7 +142,7 @@ If the plugin is listed without an error but a contribution is missing, that con
 
 ## Updating and removing
 
-- To update: edit the workspace copy, raise `version`, and copy it over the installed folder.
+- To update: edit the workspace copy, raise `version`, and copy its contents over the installed folder with `cp -R <id>/. ~/.kucedr/plugins/<id>/`. This does not delete files you removed from the plugin; name those to the user and delete them one by one after they agree.
 - To remove: the user removes it in Settings → Plugins, or disables it there to keep the files.
 - When two plugins offer the same script name, mode id, mode command or app id, the one that loads first wins and the other is skipped silently. Choose specific ids.
 
