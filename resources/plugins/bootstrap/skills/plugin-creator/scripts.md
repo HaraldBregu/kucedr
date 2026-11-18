@@ -207,11 +207,12 @@ With Node available, run each script by hand from its folder.
 UI script:
 
 ```bash
-cd <id>/scripts/<name> && echo '{"input":{"text":"Passed"},"theme":"light"}' | node index.mjs | head -c 300; echo "exit ${PIPESTATUS[1]:-$?}"
+cd <id>/scripts/<name>
+echo '{"input":{"text":"Passed"},"theme":"light"}' | node index.mjs > ../../../out.html; echo "exit $?"
 echo '{"input":{},"theme":"light"}' | node index.mjs; echo "exit $?"
 ```
 
-The first must print the start of an HTML document; the second must print your error message and a non-zero exit.
+The first must exit 0 and leave an HTML document in `out.html` beside the plugin folder; `read` it, then delete it. The second must print your error message and a non-zero exit. Do not leave test output inside the plugin folder.
 
 Hook script: pipe a sample event with a `settings` object pointing at a scratch folder and confirm the side effect.
 
