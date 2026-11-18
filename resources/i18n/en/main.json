@@ -2966,6 +2966,7 @@
 		"hostReason": "This runs outside the filesystem sandbox and can access other locations.",
 		"destructiveReason": "This operation can overwrite, delete, undo, or redo file changes and requires one-time approval.",
 		"outsideReason": "This location is not trusted for the requested tool.",
+		"sensitiveReason": "Approve this specific action before the assistant accesses a service, records media, spends money, or saves lasting changes.",
 		"deny": "Deny",
 		"trustLocation": "Trust this location",
 		"allowOnce": "Allow once",
