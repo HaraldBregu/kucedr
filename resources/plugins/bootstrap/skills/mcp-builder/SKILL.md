@@ -171,7 +171,7 @@ node -e "JSON.parse(require('fs').readFileSync('mcp.json','utf8'))" && echo ok
 
 Use the `bash` tool for these. If a tool changes real data, test it against a throwaway target or ask the user first.
 
-## Step 8: Hand over
+## Step 7: Hand over
 
 You cannot switch the server on. Tell the user to:
 
