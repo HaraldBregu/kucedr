@@ -53,7 +53,7 @@ export function mcpTool(
 				const message = error instanceof Error ? error.message : String(error);
 				if (
 					error instanceof UnauthorizedError ||
-					/unauthori[sz]ed|\b401\b|authentication required|insufficient_scope|Connect this MCP server with OAuth in Settings\./i.test(message)
+					/unauthori[sz]ed|(?:^|\bHTTP\W{0,3}|\bstatus(?: code)?\W{0,3})401\b|authentication required|insufficient_scope|Connect this MCP server with OAuth in Settings\./i.test(message)
 				) {
 					const server = getMcpServers()[serverId];
 					if (
