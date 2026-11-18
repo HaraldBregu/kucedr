@@ -370,7 +370,7 @@ Re-run the per-call analysis over `run.jsonl` with a newer start date. It pairs 
 
 ## Round 5 (2026-11-18)
 
-Goal: measure the agent again after the round-4 landing. Analysis only; no code changed.
+Goal: measure the agent again after the round-4 landing, then fix what the data supports.
 
 ### Measurements
 From `run.jsonl` since 2026-11-15 20:00: 31 runs, 133 model calls, 11 sessions.
