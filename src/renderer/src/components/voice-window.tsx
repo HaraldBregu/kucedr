@@ -46,7 +46,7 @@ export function VoiceWindow({
 
 	return (
 		<main
-			className="app-translucent-window flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground"
+			className="app-translucent-window flex h-full min-h-0 flex-col overflow-hidden bg-background! text-foreground"
 			data-voice-window
 		>
 			<div
