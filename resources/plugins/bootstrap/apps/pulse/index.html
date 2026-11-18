@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pulse</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="board">
+    <header>
+      <span class="avatar" aria-hidden="true">M</span>
+      <div class="hello"><strong id="greeting">Good evening, Mira</strong><span id="date"></span></div>
+      <div class="tabs" role="tablist">
+        <button role="tab" data-range="today" aria-selected="false">Today</button>
+        <button role="tab" data-range="week" aria-selected="true">Week</button>
+        <button role="tab" data-range="month" aria-selected="false">Month</button>
+      </div>
+      <button class="round bell" aria-label="Notifications">
+        <svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg>
+      </button>
+    </header>
+
+    <section class="card energy">
+      <h2><span class="chip orange"><svg viewBox="0 0 24 24"><path class="fill" d="M13 2 5 14h6l-1 8 8-12h-6z"/></svg></span>Energy<svg class="corner" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></h2>
+      <div class="energy-body">
+        <div class="stat">
+          <span id="energy-label">Average this week</span>
+          <output id="energy-value">64<small>%</small></output>
+          <em id="energy-delta">−3% vs last week</em>
+        </div>
+        <div id="bars" class="bars"></div>
+      </div>
+    </section>
+
+    <section class="card sleep">
+      <h2><span class="chip violet"><svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg></span>Sleep<svg class="corner" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"/></svg></h2>
+      <output id="sleep-value" class="big">7h 42m</output>
+      <span id="sleep-score" class="muted">Score 86 · Restful</span>
+      <div id="dots" class="dots"></div>
+    </section>
+
+    <section class="card focus">
+      <h2><span class="chip green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></span>Focus<button class="round small" aria-label="More"><svg viewBox="0 0 24 24"><path class="fill" d="M6 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg></button></h2>
+      <div class="focus-body">
+        <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="54"/>
+          <circle id="arc" cx="60" cy="60" r="54" pathLength="100"/>
+          <circle id="knob" cx="60" cy="6" r="4.5"/>
+        </svg>
+        <div>
+          <output id="timer" class="big">44:56</output>
+          <span id="focus-state" class="pill">Deep work · on</span>
+        </div>
+      </div>
+      <button id="focus-toggle" class="action">Stop</button>
+    </section>
+
+    <section class="card sounds">
+      <h2><span class="chip violet"><svg viewBox="0 0 24 24"><path d="M5 10v4M9 6v12M13 9v6M17 4v16M21 10v4"/></svg></span>Sounds<span id="sound-state" class="status">Playing</span></h2>
+      <div id="wave" class="wave"></div>
+      <div class="track">
+        <button id="sound-toggle" class="play" aria-label="Pause"></button>
+        <div class="hello"><strong>Rain on glass</strong><span>Ambient · pairs with Focus</span></div>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
