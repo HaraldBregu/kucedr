@@ -23,7 +23,7 @@ export const createTaskRequestSchema = z.object({
 
 export const updateTaskRequestSchema = z
 	.object({
-		name: z.string().optional().describe('Replacement human-readable task name.'),
+		name: z.string().trim().min(1).optional().describe('Replacement human-readable task name.'),
 		description: z.string().optional().describe('Replacement task description.'),
 		cronExpression: z
 			.string()
