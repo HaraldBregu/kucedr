@@ -367,3 +367,63 @@ Re-run the per-call analysis over `run.jsonl` with a newer start date. It pairs 
 - the turn-1 hit rate per provider;
 - the input tokens of a new chat's first call (target ≤ 9K after finding 2);
 - the TTFT medians.
+
+## Round 5 (2026-11-18)
+
+Goal: measure the agent again after the round-4 landing. Analysis only; no code changed.
+
+### Measurements
+From `run.jsonl` since 2026-11-15 20:00: 31 runs, 133 model calls, 11 sessions.
+
+**Tools now take longer than the model:** 704 s of tool time against 607 s of model time, out of 1,316 s of run wall time. This is the first time since round 1.
+- `ask` took 285 s. That is the user thinking, not a cost.
+- `process` took 270 s and `bash` took 62 s. Almost all of it came from one run (finding 1).
+
+**Runs:** median 6.3 s, p90 79 s. Turns: median 2, p90 7, max 33. There were no retries, and every run ended in `run_finished`.
+
+| Model | Calls | TTFT median | Avg input | Cache hit | Turn-1 hit |
+|---|---|---|---|---|---|
+| deepseek-flash | 58 | 2.65 s | 27.9K | 92% | 41% |
+| openrouter/auto | 54 | 3.56 s | 26.2K | 70% | 43% |
+| mercury-2 | 16 | 1.09 s | 12.3K | 35% | 13% |
+| gemini-2.5-pro | 5 | 3.93 s | 12.7K | 56% | 0% |
+
+**Cache misses** (below 50% hit), compared with the previous call in the same session:
+- 13 had an identical prefix, so the provider dropped the cache: 7 on openrouter/auto and 6 on mercury.
+- 3 came from the tool list changing.
+- 2 came from the system prompt changing.
+- 1 came from a model switch.
+
+**A new chat's first call** has a median of 10.6K input tokens (range 7.2K–19.9K). The round-4 target of ≤ 9K is not met.
+
+**Parallel tool calls:** 74 tool turns had one call, and 35 had two to six.
+
+### Findings, largest win first
+1. **The bash and process wait limits force extra turns.** Run `ef1d88c7` spent 33 turns on a URL-check loop:
+   - The model ran `sleep 90` to `sleep 280`, with `timeout` set to 120–320 s.
+   - `bash` backgrounds the command after `yieldMs`, which defaults to 10 s (`tools/core/bash.ts:125`).
+   - The model then called `process poll` with `timeout` set to 60,000–300,000 ms. That value is silently capped at 30 s (`tools/core/process.ts:236`).
+   - Every cap costs another model round trip of about 27K input tokens.
+
+   Fix, in order of preference:
+   - When `timeout` is given and `yieldMs` is not, wait up to the timeout before backgrounding.
+   - Raise or remove the poll cap. The poll is already abortable through `signal`.
+   - At minimum, return the capped value in the result, so the model knows its wait was cut short.
+
+   Expected: that run drops to about 12 turns, which is about 20 fewer calls and about 0.5M fewer input tokens.
+2. **`openrouter/auto` defeats the cache.** The router can pick a different backend on each call, so an identical prefix still misses. It caused 7 of the 13 provider misses and produced the largest inputs, 55–61K tokens. This is configuration, not code: pin a concrete default model, or mark `auto` as uncached in the picker.
+3. **The tool list changes within a session** (3 misses). As in round 2, `ask` is only sent when `approvalWindowId` is present. Fix: always send the same schemas, and reject `ask` at call time when there is no window.
+4. **The cold prefix is still above target.** In the current `SYSTEM.md`, `## Workspace` (6.1 KB) is larger than `## Tools` (5.8 KB). Fix: cap the depth and entry count of the workspace listing.
+5. **Mercury drops the cache on the provider side** (6 of 16 calls). There is nothing to fix in code; see `PROMPT_CACHE.md`.
+6. **Web research takes one call per turn.** The two longest research runs, with 14 and 19 turns, mostly made a single `search_web` or `fetch_web_page` call per turn. Fix: add one line to `## Tools` asking the model to batch independent searches and fetches in one turn. Parallel execution already works.
+7. **Not worth doing for speed:** local overhead is still milliseconds (rounds 1–4).
+
+### Order of work
+1 → 3 → 4 → 6 are code changes. Finding 2 is a product decision, and finding 5 is on the provider side.
+
+### Re-measuring
+Re-run the per-call analysis with `since` set after any fix, and compare:
+- turns per run, p90;
+- `process` tool time;
+- the turn-1 hit rate per model;
+- the input tokens of a new chat's first call (target ≤ 9K).
