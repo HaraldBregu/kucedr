@@ -164,3 +164,41 @@ Ordered by risk. Each step stands alone.
 **Not run:** tests. Beyond the ones in [AGENT_TOOLS.md](AGENT_TOOLS.md), expect updates in the bash/process, patch, fetch and budget tests.
 
 **Not doing:** marking untrusted web text needs a prompt-format decision first, so it's tracked here rather than designed now.
+
+## 6. Fourth pass (2026-11-18)
+
+Scope: the per-tool `access` + `resolvePermission` wiring added after §5, the runner loop, and the tool families §1–§3 skipped (MCP, plugin scripts, tasks, discovery).
+
+Typecheck and eslint are clean. No tests were written or run. Each fix except the cancel one was checked with a scratch script outside the repo: it bundles the real modules with esbuild (electron stubbed, isolated data root) and runs the same checks on the code before and after.
+
+**Fixed**
+- **Glob characters in paths.** A read or write target containing `* ? [ ] { }` now asks once and is never persistable (`permissions/resolve_permission.ts`). Exec grants with such roots stay denied, because approved exec roots go to the sandbox `allowWrite`, which reads globs. This relaxes N1 in [PERMISSIONS_PLAN.md](PERMISSIONS_PLAN.md) for file tools only.
+- **Truncated arguments.** `__unparsed` is checked before `parseInput`, so an all-optional tool no longer runs with defaults (`runner/run_tool_call.ts`).
+- **MCP auth detection.** A bare `401` in an error no longer matches; it has to start the message or follow `HTTP`/`status` (`tools/mcp/tool.ts`). "Unauthorized" in a tool result still triggers the prompt, as `mcp-tool.test.ts` requires.
+- **Cancel.** Results of calls that finished before an abort are persisted (`runner/run_stream.ts`). Read only, not run.
+- **Media `url` reads in subagents.** The runner sets `ExecutionScope.interactive` from the window id, and `inlineFiles` uses it instead of `source`, which children inherit from the parent.
+- **File snapshot after the lock.** A call allowed without a prompt re-captures its targets after acquiring the lock. A prompted call keeps the snapshot taken before approval.
+- **`bash` set to Ask.** Its access sets `folders: true`, so the prompt shows the working directory instead of its parent.
+- **Prompt reason for Ask tools.** A tool set to Ask with no untrusted path now gives `sensitive_operation`. Before, every MCP and `mdl__` prompt said "Outside trusted locations". `sensitiveAccess` and `sensitiveReason` were added to the en and it strings.
+- **`tool_search` disabled.** All eligible tools are attached, for example in a task whose allowlist omits `tool_search`. This replaces the `mdl__`/`subagent` special case.
+- **MCP output.** Non-text blocks are serialized next to the text, with base64 omitted, and `structuredContent` is used when `content` gives no text (`tools/mcp/output.ts`).
+- **Task tools.** `name` and `prompt` are trimmed and must be non-empty.
+- **Docs.** `FEATURES.md` and `TOOL_SELECTION.md` no longer say skill `allowed-tools` is enforced.
+
+**Reviewed, not bugs**
+- **MCP `readOnlyHint` doesn't set `Tool.readOnly`:** deliberate, see the deviations in [AGENT_TOOLS.md](AGENT_TOOLS.md).
+- **Skill `allowed-tools` isn't enforced:** deliberate, see Phase 1 in [SKILLS.md](SKILLS.md).
+- **`bash` locks its working directory across runs:** it did before the access refactor too (C8).
+- **`run_script`:** no host-side input validation by design ([PLUGIN_SCRIPTS.md](PLUGIN_SCRIPTS.md)), and the 10 s spawn timeout bounds it. Its `READ` class is descriptive; only `paid` and `approval` are enforced.
+- **`RUNTIME_TOOL_KEYS` lacks `load_script`, `run_script` and `request_mcp_authorization`:** Settings never lists them. `AGENT_RUNTIME_TOOL_IDS` is an unused export.
+- **Exact-id `tool_search` for a loaded tool loads unrelated tools:** it doesn't. The ranker keeps `_` inside a term, so `create_image` is one token.
+- **A tool set to Ask never offers "always":** intended; change the setting instead.
+
+**Open**
+- **Screen capture targets.** `workspace` matches any window whose title contains "workspace", and both `workspace` and `application` fall back to the first window of any app. `recorder-tools.test.ts` pins the title match, so this needs a decision on what `workspace` means.
+- **Run-start MCP authorization** leaves the new server's tools unloaded, so the model spends one `tool_search` turn.
+- **`run_task_now`** returns the task even when it is already running or no runner is registered (`tasks/tasks_fire.ts`).
+- **Profile JSON that fails to parse** makes `getUser` throw on every run through `profileStatus`. The soul and identity getters were reported the same and not re-read.
+- **Non-object JSON arguments** (`__parsed`) are stripped by zod, so an all-optional tool runs with defaults.
+- **MCP images** still don't reach the model, because tool results are text-only.
+- **Reported, not re-checked:** the voice error path (`realtime_voice/tool_runtime.ts:217`), MCP collision-hash ids, an MCP auth reset closing a shared connection, recorder files written after the tool returns, `patch` not marking created files, PRE_TOOL_USE hooks running outside the tool timeout, and non-ENOENT `lstat` errors reported as invalid input.
