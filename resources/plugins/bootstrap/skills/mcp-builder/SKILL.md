@@ -148,11 +148,9 @@ Fields Kucedr accepts:
 
 On Windows, write the command path with forward slashes or doubled backslashes so the JSON stays valid.
 
-## Step 6: Secrets
+Secrets: do not write API keys into `mcp.json`; the file is plain text. Leave `env` out, and tell the user to open the server in Settings → MCP servers and add the environment variables there. Kucedr then stores them encrypted and passes them to the process. Have each tool fail with a clear message, for example `Set EXAMPLE_API_KEY in Settings → MCP servers → <name>`, when a variable is missing.
 
-Do not write API keys into `mcp.json`: the file is plain text. Leave `env` out, and tell the user to open the server in Settings → MCP servers and enter the variables there. Kucedr then stores them encrypted and passes them to the process. Have each tool fail with a clear message, for example `Set EXAMPLE_API_KEY in Settings → MCP servers → <name>`, when a variable is missing.
-
-## Step 7: Test from the shell
+## Step 6: Test from the shell
 
 Run the server by hand and feed it the handshake, a tool listing and one call per tool:
 
