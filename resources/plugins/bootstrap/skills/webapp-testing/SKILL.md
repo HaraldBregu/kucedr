@@ -110,4 +110,4 @@ Result: [n] passed, [n] failed, [n] blocked
 Server: [started and stopped by this test / already running, left as is]
 ```
 
-Do not report a step as passed unless you observed its expected result in a snapshot, a screenshot, or an `evaluate` value. Do not fix the bugs you find unless the user asks.
+Do not report a step as passed unless you observed its expected result in a snapshot or an `evaluate` value. Do not fix the bugs you find unless the user asks.
