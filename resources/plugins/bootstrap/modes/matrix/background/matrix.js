@@ -30,6 +30,11 @@ uniform float size;
 uniform vec3 rain;
 uniform vec3 head;
 uniform float opacity;
+uniform vec2 pointer;
+uniform float reveal;
+uniform float radius;
+uniform float now;
+uniform vec3 pulses[${PULSES}];
 out vec4 color;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
