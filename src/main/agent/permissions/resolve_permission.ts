@@ -74,7 +74,8 @@ export function resolvePermission({
 	const approvalTargets = [
 		...new Set(grants.length > 0 ? grants.map(({ root }) => root) : entries.map(({ folder }) => folder)),
 	];
-	if (!interactive || approvalTargets.some((target) => /[*?[\]{}]/.test(target))) return denied;
+	if (!interactive || grants.some(({ kind, root }) => kind === 'exec' && GLOB.test(root)))
+		return denied;
 	return {
 		mode: 'ask',
 		approvalTargets,
