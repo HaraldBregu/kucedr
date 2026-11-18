@@ -191,6 +191,9 @@ function loop(now) {
 	state.speed += (target - state.speed) * 0.04;
 	state.time += Math.min((now - last) / 1000, 0.1) * state.speed * 0.4;
 	last = now;
+	pointer.x += (pointer.tx - pointer.x) * 0.25;
+	pointer.y += (pointer.ty - pointer.y) * 0.25;
+	pointer.reveal += ((pointer.present ? 1 : 0) - pointer.reveal) * 0.08;
 	draw();
 	frame = requestAnimationFrame(loop);
 }
