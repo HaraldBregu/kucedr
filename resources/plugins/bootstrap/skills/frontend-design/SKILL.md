@@ -91,12 +91,12 @@ Do not hand over UI you have not looked at.
 3. `screenshot` returns only a file path, and `read` handles text files, so you cannot view the image. Take one with `fullPage: true` for the user, give them the path, and ask them to judge the look. Measure what you can with `act`, `kind: "evaluate"`: for example `getComputedStyle(document.querySelector('h1')).fontSize`, or `[...document.querySelectorAll('.card')].map(e => e.getBoundingClientRect().left)` to confirm elements share an edge.
 4. Exercise the states: `act` with `kind: "hover"`, `click`, and `type` on real controls using refs from the snapshot, then snapshot again to confirm the error, empty, and loading states show the right text. Screenshot each for the user.
 5. Keyboard pass: `act` with `kind: "press"` and `key: "Tab"` several times; after each, check focus with `kind: "evaluate"` and `fn: "document.activeElement?.outerHTML.slice(0, 120)"`. Confirm the focus style applies with `getComputedStyle(document.activeElement).outlineStyle`.
-5. Overflow check with `evaluate`: `document.documentElement.scrollWidth > document.documentElement.clientWidth` must be `false`.
-6. Read `action: "console"` and fix any errors.
-7. The browser tool cannot resize the window or emulate a device. State that narrow widths were verified from the CSS only, and ask the user to resize if that matters.
-8. Close the tab (`action: "close"`) and stop the server with `process` (`action: "kill"`) if you started it.
+6. Overflow check with `evaluate`: `document.documentElement.scrollWidth > document.documentElement.clientWidth` must be `false`.
+7. Read `action: "console"` and fix any errors.
+8. The browser tool cannot resize the window or emulate a device. State that narrow widths were verified from the CSS only, and ask the user to resize if that matters.
+9. Close the tab (`action: "close"`) and stop the server with `process` (`action: "kill"`) if you started it.
 
-Fix what you see and repeat until the screenshot matches the intent. If the browser is unavailable, say the result was not visually verified.
+Fix what the checks show and repeat until they pass. If the browser is unavailable, say the result was not checked in a browser.
 
 ## Step 9: Report
 
