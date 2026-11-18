@@ -3,25 +3,22 @@ import { MCP_MAX_OUTPUT_BYTES } from './limits';
 
 export function mcpOutputText(result: McpCallResult): string {
 	const content = result.content;
-	const text = Array.isArray(content)
-		? content
-				.filter(
-					(block): block is { text: string } =>
-						typeof block === 'object' &&
-						block !== null &&
-						(block as { type?: unknown }).type === 'text' &&
-						typeof (block as { text?: unknown }).text === 'string'
-				)
-				.map((block) => block.text)
-				.join('\n') ||
-			JSON.stringify(content, (key, value: unknown) =>
-				(key === 'data' || key === 'blob') && typeof value === 'string'
-					? `[${value.length} base64 characters omitted]`
-					: value
+	const text =
+		(Array.isArray(content) ? content : content === undefined ? [] : [content])
+			.map((block: unknown) =>
+				typeof block === 'object' &&
+				block !== null &&
+				(block as { type?: unknown }).type === 'text' &&
+				typeof (block as { text?: unknown }).text === 'string'
+					? (block as { text: string }).text
+					: JSON.stringify(block, (key, value: unknown) =>
+							(key === 'data' || key === 'blob') && typeof value === 'string'
+								? `[${value.length} base64 characters omitted]`
+								: value
+						)
 			)
-		: content === undefined
-			? ''
-			: JSON.stringify(content);
+			.join('\n') ||
+		(result.structuredContent === undefined ? '' : JSON.stringify(result.structuredContent));
 	const bytes = Buffer.from(text, 'utf8');
 	if (bytes.length <= MCP_MAX_OUTPUT_BYTES) return text;
 	const suffix = `\n[truncated: ${bytes.length - MCP_MAX_OUTPUT_BYTES} bytes omitted]`;
