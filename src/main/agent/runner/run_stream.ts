@@ -358,8 +358,8 @@ async function* loop(
 				eligible: tools,
 				required: tools.filter(
 					(tool) =>
+						!searchEnabled ||
 						requiredIds.has(tool.id) ||
-						(!searchEnabled && (tool.id.startsWith('mdl__') || tool.id === 'subagent')) ||
 						(tool.policy?.kind === 'mcp' &&
 							preloadedMcpServers.has(tool.policy.serverId.toLocaleLowerCase()))
 				),
