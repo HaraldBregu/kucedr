@@ -58,9 +58,11 @@ const execInputSchema = z.object({
 	yieldMs: z
 		.number()
 		.min(0)
-		.max(540_000)
+		.max(MAX_WAIT_MS)
 		.optional()
-		.describe('Milliseconds to wait before backgrounding (default 10000)'),
+		.describe(
+			`Milliseconds to wait before backgrounding (default 10000, or ${MAX_WAIT_MS} when timeout is set)`
+		),
 	background: z.boolean().optional().describe('Run in background immediately'),
 	timeout: z
 		.number()
