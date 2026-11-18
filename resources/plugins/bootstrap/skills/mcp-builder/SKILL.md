@@ -26,7 +26,7 @@ Ask the user (with `ask` when available) until you can list, for each tool:
 - what it returns;
 - whether it only reads, or changes something (files, a remote service).
 
-Prefer a few task-shaped tools ("search_invoices") over many thin wrappers. If the user needs secrets such as an API key, note the variable names now; step 6 covers where they go.
+Prefer a few task-shaped tools ("search_invoices") over many thin wrappers. If the user needs secrets such as an API key, note the variable names now; step 5 covers where they go.
 
 ## Step 2: Check the runtime
 
