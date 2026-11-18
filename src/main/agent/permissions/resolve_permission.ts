@@ -84,7 +84,9 @@ export function resolvePermission({
 			? 'sensitive_operation'
 			: access.host
 				? 'host_execution'
-				: 'outside_trusted_location',
+				: grants.length > 0
+					? 'outside_trusted_location'
+					: 'sensitive_operation',
 		persistable:
 			!sensitive && !approvalTargets.some((target) => isBroadTarget(target) || GLOB.test(target)),
 	};
