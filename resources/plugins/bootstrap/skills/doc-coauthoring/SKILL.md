@@ -12,7 +12,7 @@ The document lives in one Markdown file from the start. Create it with `write`, 
 
 ## Stage 1: Context
 
-Find out what you need to know before any structure exists. Ask with `ask`, in one batch of at most five questions, only for what you cannot infer:
+Find out what you need to know before any structure exists. Ask in one chat message, only for what you cannot infer. These are open questions, so write them as plain text; `ask` offers only two or three fixed options per question and suits a choice such as the document type, not free-form context.
 
 1. Reader: who will read this, what they already know, and what they do not.
 2. Outcome: what the reader should decide, do, or understand after reading.
