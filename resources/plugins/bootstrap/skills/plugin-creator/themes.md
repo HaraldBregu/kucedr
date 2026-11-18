@@ -75,10 +75,10 @@ Shadows: `shadow-2xs`, `shadow-xs`, `shadow-sm`, `shadow`, `shadow-md`, `shadow-
 2. No value contains `;`, `{` or `}`, and no token name starts with `--` or has uppercase letters:
 
 ```bash
-grep -n -E '"--|[;{}]"|"[^"]*[A-Z][^"]*" *:' <id>/themes/<theme-id>/manifest.json
+grep -n -E '"--|:[[:space:]]*"[^"]*[;{}]|"[^"]*[A-Z][^"]*"[[:space:]]*:' <id>/themes/<theme-id>/manifest.json
 ```
 
-This must print nothing. Font names with capitals belong in values, not in token names, so they do not match.
+This must print nothing when the file has one token per line. Capitals are fine in values such as font names; only token names are checked for them.
 
 3. Every token that appears in `light` also appears in `dark`, and the reverse.
 
