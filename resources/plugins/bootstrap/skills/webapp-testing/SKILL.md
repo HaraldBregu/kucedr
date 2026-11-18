@@ -29,7 +29,7 @@ Before starting anything, write the test as numbered steps, each with an action 
 3. Sign in with the test account -> redirected to /dashboard, user name visible
 ```
 
-Take the steps from the user's request. If they did not say what to test, read the routes or the README, propose a short flow, and proceed. If the flow needs credentials or test data you do not have, ask with `ask` first. Do not test against a production URL or with real payment or account data unless the user tells you to.
+Take the steps from the user's request. If they did not say what to test, read the routes or the README, propose a short flow, and proceed. If the flow needs credentials or test data you do not have, ask the user first. Do not test against a production URL or with real payment or account data unless the user tells you to.
 
 ## Step 2: Start the server
 
