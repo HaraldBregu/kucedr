@@ -43,9 +43,9 @@ A skill here is a folder with a `SKILL.md` (agentskills.io format) plus optional
 - `allowed-tools` is display-only.
 - The current four need Python and `pip`/`npm` installs on the user's machine. New skills should prefer instructions only, or tools the app already provides.
 
-## Licence issue in the existing four
+## Licence
 
-Each of `docx`, `pdf`, `pptx`, `xlsx` ships Anthropic's `LICENSE.txt`, which forbids copying, derivative works and distribution outside Anthropic's services. Bootstrap is published at `Kucedr/kucedr-plugins`, so these should be replaced with our own versions or with the Apache-2.0 skills from `anthropics/skills` (`skill-creator`, `mcp-builder`, `webapp-testing`, `frontend-design` and others are Apache-2.0 and can be adapted with attribution).
+The earlier `docx`, `pdf`, `pptx`, `xlsx` shipped Anthropic's `LICENSE.txt`, which forbids copying, derivative works and distribution outside Anthropic's services. They were deleted and rewritten from scratch on open-source libraries (`python-docx`, `python-pptx`, `openpyxl`, `pypdf`, `pdfplumber`, `reportlab`, pandoc, LibreOffice). Copies of the old versions in `~/.kucedr/skills` shadow the new ones until they are removed.
 
 ## Verification (per skill, when one is built)
 
