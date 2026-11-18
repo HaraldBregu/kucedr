@@ -4,10 +4,18 @@ const SIZE = 16;
 const ATLAS = 8;
 const CELL = 64;
 const SPEED = { idle: 0.5, thinking: 1, reasoning: 1, awaiting_input: 0.3, answering: 1.6, using_tools: 2.4 };
+const RADIUS = 140;
+const RIPPLE_SPEED = 700;
+const RIPPLE_LIFE = 1.4;
+const PULSES = 4;
 
 const canvas = document.querySelector('canvas');
 const gl = canvas.getContext('webgl2', { premultipliedAlpha: true, antialias: false });
-const state = { status: 'idle', reduced: false, visible: true, dark: true, speed: 0.5, time: 0 };
+const state = { status: 'idle', reduced: false, visible: true, dark: true, speed: 0.5, time: 0, ratio: 1 };
+const pointer = { x: 0, y: 0, tx: 0, ty: 0, present: false, reveal: 0 };
+const pulses = new Float32Array(PULSES * 3).fill(-100);
+let pulse = 0;
+const clock = () => performance.now() / 1000;
 
 const vertex = `#version 300 es
 in vec2 position;
