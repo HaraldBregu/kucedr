@@ -429,17 +429,7 @@ function PageContent(): ReactElement {
 	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
-	const [detailsOpen, setDetailsOpen] = useState(() => window.matchMedia('(min-width: 1280px)').matches);
-	useEffect(() => {
-		const query = window.matchMedia('(min-width: 1280px)');
-		const onChange = (): void => setDetailsOpen(query.matches);
-		query.addEventListener('change', onChange);
-		return () => query.removeEventListener('change', onChange);
-	}, []);
-	const compactDetails = useIsMobile('(max-width: 1200px)');
 	const [detailsPopoverOpen, setDetailsPopoverOpen] = useState(false);
-	const detailsDocked = detailsOpen && !compactDetails;
-	const infoOpen = compactDetails ? detailsPopoverOpen : detailsOpen;
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
 	const [capabilities, setCapabilities] = useState<AgentPromptInputCapabilities | null>();
 	const filesAccept =
