@@ -1,0 +1,23 @@
+{
+	"title": "Pulse",
+	"description": "A daily wellbeing board: energy, sleep, a focus timer and ambient sounds.",
+	"mode": "window",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "utility",
+		"entry": "index.html",
+		"image": "icon.svg",
+		"author": "Harald Bregu"
+	},
+	"window": {
+		"width": 820,
+		"height": 690,
+		"resizable": false,
+		"maximizable": false,
+		"frame": false,
+		"transparent": true,
+		"alwaysOnTop": false,
+		"type": "normal",
+		"titleBarStyle": "hidden"
+	}
+}
