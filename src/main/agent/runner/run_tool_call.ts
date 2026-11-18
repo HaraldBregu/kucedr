@@ -67,7 +67,7 @@ export async function* runToolCall(
 	const declaredAccess = (): ToolAccess =>
 		executionScope.run(scope, () => tool?.access?.(canonicalInput) ?? {});
 	let accessTargets: string[] = [];
-	if (tool) {
+	if (tool && !('__unparsed' in toolCall.args)) {
 		try {
 			canonicalInput = tool.parseInput(toolCall.args);
 			toolCall.args = canonicalInput;
