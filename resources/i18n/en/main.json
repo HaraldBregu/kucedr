@@ -2961,6 +2961,7 @@
 		"hostAccess": "Host access",
 		"destructiveOperation": "Destructive operation",
 		"outsideLocations": "Outside trusted locations",
+		"sensitiveAccess": "Sensitive action",
 		"location": "Location",
 		"hostReason": "This runs outside the filesystem sandbox and can access other locations.",
 		"destructiveReason": "This operation can overwrite, delete, undo, or redo file changes and requires one-time approval.",
