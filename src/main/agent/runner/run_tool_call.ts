@@ -63,6 +63,7 @@ export async function* runToolCall(
 			runId: security.runId,
 		}),
 		...(security.toolProfile ? { profile: security.toolProfile } : {}),
+		interactive: security.windowId !== undefined,
 	};
 	const declaredAccess = (): ToolAccess =>
 		executionScope.run(scope, () => tool?.access?.(canonicalInput) ?? {});
