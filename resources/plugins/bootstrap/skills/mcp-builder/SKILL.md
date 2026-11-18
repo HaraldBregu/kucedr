@@ -190,8 +190,7 @@ Also tell them the folder path, the tools you built, and any environment variabl
 |---|---|
 | Not listed | Folder is directly under `~/.kucedr/mcp/servers/` and contains `mcp.json`, not `manifest.json`. |
 | "mcp.json is not valid JSON" | Trailing commas, comments, single backslashes in Windows paths. |
-| "A non-empty command is required" | `command` missing or empty. |
 | "Server ID must use lowercase letters, numbers, and single hyphens" | Rename the folder. |
 | "Local server at ... is ignored" | A server with the same id was added through Settings. Pick another id or have the user remove that one. |
-| Test fails or times out | `command` is not an absolute path, the script prints non-JSON to stdout, or it exits on start. Rerun step 7. The test waits 15 seconds. |
+| Test fails or times out (15 seconds) | `command` is not an absolute path, the script prints non-JSON to stdout, or it exits on start. Rerun step 6. |
 | Tools listed but calls fail | Missing environment variable, or `run` did not return a string. |
