@@ -234,7 +234,7 @@ async function runProcess(
 
 	switch (action) {
 		case 'poll': {
-			const timeoutMs = Math.min(input.timeout ?? 5000, 30000);
+			const timeoutMs = Math.min(input.timeout ?? 5000, MAX_WAIT_MS);
 			await pollUntil(session, timeoutMs, signal);
 			return {
 				...sessionSummary(session),
