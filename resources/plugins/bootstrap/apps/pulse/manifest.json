@@ -18,6 +18,6 @@
 		"transparent": true,
 		"alwaysOnTop": false,
 		"type": "normal",
-		"titleBarStyle": "hidden"
+		"titleBarStyle": "default"
 	}
 }
