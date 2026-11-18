@@ -201,4 +201,13 @@ Typecheck and eslint are clean. No tests were written or run. Each fix except th
 - **Profile JSON that fails to parse** makes `getUser` throw on every run through `profileStatus`. The soul and identity getters were reported the same and not re-read.
 - **Non-object JSON arguments** (`__parsed`) are stripped by zod, so an all-optional tool runs with defaults.
 - **MCP images** still don't reach the model, because tool results are text-only.
-- **Reported, not re-checked:** the voice error path (`realtime_voice/tool_runtime.ts:217`), MCP collision-hash ids, an MCP auth reset closing a shared connection, recorder files written after the tool returns, `patch` not marking created files, PRE_TOOL_USE hooks running outside the tool timeout, and non-ENOENT `lstat` errors reported as invalid input.
+
+**Lower-priority reports, read afterwards: no change needed**
+- **Voice error path** (`realtime_voice/tool_runtime.ts:217`): `runToolCall` only throws on abort. Any other error is shown to the user through `onError`.
+- **MCP collision-hash ids:** the hash comes from the server id, tool name and attempt. Only two tools whose names sanitize to the same string can swap when the server reorders them.
+- **MCP auth reset closing a shared connection:** calls in a run are sequential, and parallel subagents get no MCP tools.
+- **Recorder files written after the tool returns:** by design; the directory is checked when the recording starts.
+- **`patch` doesn't mark created files:** a later edit of that file outside trusted folders asks once more.
+- **PRE_TOOL_USE hooks outside the tool timeout:** each hook script has its own 10 s limit.
+- **Non-ENOENT `lstat` errors reported as invalid input:** wording only.
+- **Media `url` values inside arrays:** the manifests use arrays of objects, and those are inlined.
