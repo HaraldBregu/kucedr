@@ -124,10 +124,10 @@ Both must print nothing, apart from an optional `README.md`.
 Installing changes the user's app, so ask before you do it. Then copy the finished folder:
 
 ```bash
-mkdir -p ~/.kucedr/plugins && cp -R <id> ~/.kucedr/plugins/<id>
+test -e ~/.kucedr/plugins/<id> && echo exists || { mkdir -p ~/.kucedr/plugins && cp -R <id> ~/.kucedr/plugins/; }
 ```
 
-If `~/.kucedr/plugins/<id>` already exists, tell the user it will be replaced and get their agreement first. Never touch `~/.kucedr/plugins/settings.json`, and never edit other plugins.
+If it prints `exists`, the plugin is already installed: tell the user it will be updated, get their agreement, and follow "Updating and removing". Never touch `~/.kucedr/plugins/settings.json`, and never edit other plugins.
 
 The app picks the folder up within moments; no restart is needed. Plugins are enabled by default.
 
