@@ -163,6 +163,8 @@ setColors();
 
 function resize() {
 	const ratio = Math.min(devicePixelRatio, 2);
+	state.ratio = ratio;
+	gl.uniform1f(uniform('radius'), RADIUS * ratio);
 	canvas.width = Math.round(innerWidth * ratio);
 	canvas.height = Math.round(innerHeight * ratio);
 	gl.viewport(0, 0, canvas.width, canvas.height);
