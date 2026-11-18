@@ -138,7 +138,7 @@ Fields Kucedr accepts:
 | `command` | Required non-empty string. |
 | `args` | Array of strings. |
 | `cwd` | String, resolved against the server folder. Defaults to the server folder, so `server.mjs` above resolves correctly. |
-| `env` | Object of string values. See step 6 before using it. |
+| `env` | Object of string values. Read the note on secrets below before using it. |
 | `name` | Display name in Settings. |
 | `id` | Overrides the folder name. Leave it out. |
 | `type` | Only `"stdio"`, the default. Leave it out. |
