@@ -10,6 +10,7 @@ import type { ExecutionMode } from '../../../../shared/sandbox';
 const MAX_BUFFER = 500_000;
 const MAX_POLL_OUTPUT = 40_000;
 const MAX_FINISHED_SESSIONS = 20;
+export const MAX_WAIT_MS = 540_000;
 
 export interface ProcessSession {
 	readonly scope: ExecutionScope;
