@@ -11,6 +11,7 @@ export type McpClient = Client;
 
 export type McpCallResult = {
 	content?: unknown;
+	structuredContent?: unknown;
 	isError?: boolean;
 };
 
