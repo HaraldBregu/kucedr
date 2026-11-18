@@ -106,5 +106,5 @@ Files: [paths created or changed]
 Tokens: [where they are defined]
 States covered: [list]
 Checked in browser: [what you verified, with screenshot paths]
-Not verified: [e.g. narrow viewports, dark mode, real data]
+Not verified: [visual appearance (screenshots are for you to judge), narrow viewports, dark mode, real data]
 ```
