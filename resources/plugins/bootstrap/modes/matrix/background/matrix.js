@@ -86,7 +86,20 @@ void main() {
 	c = front + c * (1.0 - front.a);
 	float x = abs(frag.x / resolution.x - 0.5) * 2.0;
 	float clearing = mix(0.5, 1.0, smoothstep(0.15, 0.85, x));
-	color = c * clearing * opacity;
+	c *= clearing;
+	vec2 cell = floor(frag / size);
+	float distance = length((cell + 0.5) * size - pointer);
+	float hover = reveal * pow(1.0 - smoothstep(0.0, radius, distance), 2.0);
+	float ring = 0.0;
+	for (int i = 0; i < ${PULSES}; i++) {
+		float age = now - pulses[i].z;
+		if (age < 0.0 || age > ${RIPPLE_LIFE}) continue;
+		float d = length((cell + 0.5) * size - pulses[i].xy) - age * ${RIPPLE_SPEED}.0 * size / ${SIZE}.0;
+		ring = max(ring, exp(-pow(d / (size * 1.5), 2.0)) * (1.0 - age / ${RIPPLE_LIFE}));
+	}
+	float lit = glyph(cell, fract(frag / size), time) * clamp(hover * 0.85 + ring, 0.0, 1.0);
+	c = vec4(mix(rain, head, clamp(hover * hover + ring, 0.0, 1.0)) * lit, lit) + c * (1.0 - lit);
+	color = c * opacity;
 }`;
 
 function compile(type, source) {
