@@ -119,7 +119,7 @@ Rules for tool code:
 - Validate inputs inside `run` and throw an `Error` with a message that tells the caller how to fix the call. It is returned as a tool error, not a crash.
 - Set `annotations: { readOnlyHint: true }` only on tools that change nothing. Kucedr runs those without asking; every other tool asks the user first.
 - Read secrets from `process.env`. Never hard-code them.
-- Resolve file paths from the tool input or from `import.meta.dirname`; do not rely on the process working directory of the user's shell.
+- Take file paths from the tool input as absolute paths. Kucedr starts the process with the server folder as its working directory, so only files shipped beside `server.mjs` may be opened by relative path.
 
 ## Step 5: Write mcp.json
 
