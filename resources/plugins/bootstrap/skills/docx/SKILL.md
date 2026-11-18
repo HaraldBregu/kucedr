@@ -1,197 +1,172 @@
 ---
 name: docx
-description: "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks"
-license: Proprietary. LICENSE.txt has complete terms
+description: Create, read and edit Word documents (.docx, legacy .doc). Use when the user asks to write a report, letter, memo or other document as a Word file, to extract or summarise the text of a .docx, to change text, tables, images, headers or styles in an existing document, to fill a Word template, or to convert between .docx and Markdown, HTML or PDF.
+license: MIT
 ---
 
-# DOCX creation, editing, and analysis
+# Word documents
 
-## Overview
+A `.docx` is a zip of XML parts. Work on it with `python-docx` (structure-aware create and edit), `pandoc` (text in and out) and LibreOffice (PDF and legacy formats). Run everything through `bash`.
 
-A user may ask you to create, edit, or analyze the contents of a .docx file. A .docx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
+## Choose the tool
 
-## Workflow Decision Tree
+| Task | Tool |
+| --- | --- |
+| Read the text, headings and tables | `pandoc file.docx -t gfm` |
+| Read tracked changes and comments | `pandoc --track-changes=all` |
+| Create a document with layout control (tables, images, styles) | `python-docx` |
+| Create a plain document from Markdown you already have | `pandoc in.md -o out.docx` |
+| Edit an existing document and keep its formatting | `python-docx`, run-level edits |
+| Fill a template the user supplied | `python-docx` on a copy of the template |
+| Convert `.doc` to `.docx`, or `.docx` to PDF | `soffice --headless --convert-to` |
 
-### Reading/Analyzing Content
-Use "Text extraction" or "Raw XML access" sections below
+## Prerequisites
 
-### Creating New Document
-Use "Creating a new Word document" workflow
-
-### Editing Existing Document
-- **Your own document + simple changes**
-  Use "Basic OOXML editing" workflow
-
-- **Someone else's document**
-  Use **"Redlining workflow"** (recommended default)
-
-- **Legal, academic, business, or government docs**
-  Use **"Redlining workflow"** (required)
-
-## Reading and analyzing content
-
-### Text extraction
-If you just need to read the text contents of a document, you should convert the document to markdown using pandoc. Pandoc provides excellent support for preserving document structure and can show tracked changes:
+Check before you start, and only for the tools the task needs:
 
 ```bash
-# Convert document to markdown with tracked changes
-pandoc --track-changes=all path-to-file.docx -o output.md
-# Options: --track-changes=accept/reject/all
+command -v python3 || command -v py        # Windows often has only `py`
+command -v pandoc
+command -v soffice || ls /Applications/LibreOffice.app/Contents/MacOS/soffice
+python3 -c "import docx; print('python-docx ok')"
 ```
 
-### Raw XML access
-You need raw XML access for: comments, complex formatting, document structure, embedded media, and metadata. For any of these features, you'll need to unpack a document and read its raw XML contents.
+On Windows `soffice.exe` is usually in `C:\Program Files\LibreOffice\program\`. On macOS call it by the full path above when it is not on `PATH`.
 
-#### Unpacking a file
-`python ooxml/scripts/unpack.py <office_file> <output_directory>`
+If something is missing, do not install silently. Tell the user what is missing and the command, then use `ask` to get their go-ahead:
 
-#### Key file structures
-* `word/document.xml` - Main document contents
-* `word/comments.xml` - Comments referenced in document.xml
-* `word/media/` - Embedded images and media files
-* Tracked changes use `<w:ins>` (insertions) and `<w:del>` (deletions) tags
+- python-docx, in a virtual environment: `python3 -m venv .venv && .venv/bin/pip install python-docx` (Windows: `py -3 -m venv .venv` then `.venv\Scripts\pip install python-docx`). Afterwards run scripts with `.venv/bin/python`.
+- pandoc: `brew install pandoc`, `winget install JohnMacFarlane.Pandoc`, or `sudo apt install pandoc`.
+- LibreOffice: `brew install --cask libreoffice`, `winget install TheDocumentFoundation.LibreOffice`, or `sudo apt install libreoffice`.
 
-## Creating a new Word document
+## Read
 
-When creating a new Word document from scratch, use **docx-js**, which allows you to create Word documents using JavaScript/TypeScript.
+```bash
+pandoc report.docx -t gfm -o report.md                       # text, headings, lists, tables
+pandoc report.docx -t gfm --track-changes=all -o review.md   # keeps insertions, deletions, comments
+pandoc report.docx -t gfm --extract-media=media -o report.md # also writes embedded images to media/
+```
 
-### Workflow
-1. **MANDATORY - READ ENTIRE FILE**: Read [`docx-js.md`](docx-js.md) (~500 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with document creation.
-2. Create a JavaScript/TypeScript file using Document, Paragraph, TextRun components (You can assume all dependencies are installed, but if not, refer to the dependencies section below)
-3. Export as .docx using Packer.toBuffer()
+Then open the Markdown with `read`. Without pandoc, use python-docx:
 
-## Editing an existing Word document
-
-When editing an existing Word document, use the **Document library** (a Python library for OOXML manipulation). The library automatically handles infrastructure setup and provides methods for document manipulation. For complex scenarios, you can access the underlying DOM directly through the library.
-
-### Workflow
-1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for the Document library API and XML patterns for directly editing document files.
-2. Unpack the document: `python ooxml/scripts/unpack.py <office_file> <output_directory>`
-3. Create and run a Python script using the Document library (see "Document Library" section in ooxml.md)
-4. Pack the final document: `python ooxml/scripts/pack.py <input_directory> <office_file>`
-
-The Document library provides both high-level methods for common operations and direct DOM access for complex scenarios.
-
-## Redlining workflow for document review
-
-This workflow allows you to plan comprehensive tracked changes using markdown before implementing them in OOXML. **CRITICAL**: For complete tracked changes, you must implement ALL changes systematically.
-
-**Batching Strategy**: Group related changes into batches of 3-10 changes. This makes debugging manageable while maintaining efficiency. Test each batch before moving to the next.
-
-**Principle: Minimal, Precise Edits**
-When implementing tracked changes, only mark text that actually changes. Repeating unchanged text makes edits harder to review and appears unprofessional. Break replacements into: [unchanged text] + [deletion] + [insertion] + [unchanged text]. Preserve the original run's RSID for unchanged text by extracting the `<w:r>` element from the original and reusing it.
-
-Example - Changing "30 days" to "60 days" in a sentence:
 ```python
-# BAD - Replaces entire sentence
-'<w:del><w:r><w:delText>The term is 30 days.</w:delText></w:r></w:del><w:ins><w:r><w:t>The term is 60 days.</w:t></w:r></w:ins>'
+from docx import Document
 
-# GOOD - Only marks what changed, preserves original <w:r> for unchanged text
-'<w:r w:rsidR="00AB12CD"><w:t>The term is </w:t></w:r><w:del><w:r><w:delText>30</w:delText></w:r></w:del><w:ins><w:r><w:t>60</w:t></w:r></w:ins><w:r w:rsidR="00AB12CD"><w:t> days.</w:t></w:r>'
+doc = Document("report.docx")
+for p in doc.paragraphs:
+    if p.text.strip():
+        print(f"[{p.style.name}] {p.text}")
+for t in doc.tables:
+    for row in t.rows:
+        print(" | ".join(c.text.strip() for c in row.cells))
 ```
 
-### Tracked changes workflow
+`doc.paragraphs` covers the body only. Text in tables is under `doc.tables`, and headers and footers are under `doc.sections[i].header.paragraphs` and `.footer.paragraphs`.
 
-1. **Get markdown representation**: Convert document to markdown with tracked changes preserved:
-   ```bash
-   pandoc --track-changes=all path-to-file.docx -o current.md
-   ```
+## Create
 
-2. **Identify and group changes**: Review the document and identify ALL changes needed, organizing them into logical batches:
+Write the script with `write`, then run it with `bash`.
 
-   **Location methods** (for finding changes in XML):
-   - Section/heading numbers (e.g., "Section 3.2", "Article IV")
-   - Paragraph identifiers if numbered
-   - Grep patterns with unique surrounding text
-   - Document structure (e.g., "first paragraph", "signature block")
-   - **DO NOT use markdown line numbers** - they don't map to XML structure
+```python
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Cm, Pt
 
-   **Batch organization** (group 3-10 related changes per batch):
-   - By section: "Batch 1: Section 2 amendments", "Batch 2: Section 5 updates"
-   - By type: "Batch 1: Date corrections", "Batch 2: Party name changes"
-   - By complexity: Start with simple text replacements, then tackle complex structural changes
-   - Sequential: "Batch 1: Pages 1-3", "Batch 2: Pages 4-6"
+doc = Document()
+doc.styles["Normal"].font.name = "Calibri"
+doc.styles["Normal"].font.size = Pt(11)
+for s in doc.sections:
+    s.left_margin = s.right_margin = Cm(2.5)
 
-3. **Read documentation and unpack**:
-   - **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Pay special attention to the "Document Library" and "Tracked Change Patterns" sections.
-   - **Unpack the document**: `python ooxml/scripts/unpack.py <file.docx> <dir>`
-   - **Note the suggested RSID**: The unpack script will suggest an RSID to use for your tracked changes. Copy this RSID for use in step 4b.
+doc.add_heading("Quarterly report", level=0)          # level 0 = Title, 1-9 = Heading n
+p = doc.add_paragraph("Revenue grew by ")
+p.add_run("12%").bold = True
+p.add_run(" year on year.")
+doc.add_paragraph("First point", style="List Bullet")
+doc.add_paragraph("Step one", style="List Number")
 
-4. **Implement changes in batches**: Group changes logically (by section, by type, or by proximity) and implement them together in a single script. This approach:
-   - Makes debugging easier (smaller batch = easier to isolate errors)
-   - Allows incremental progress
-   - Maintains efficiency (batch size of 3-10 changes works well)
+table = doc.add_table(rows=1, cols=3)
+table.style = "Table Grid"
+for cell, text in zip(table.rows[0].cells, ["Region", "Q1", "Q2"]):
+    cell.text = text
+for region, q1, q2 in [("North", 120, 135), ("South", 98, 101)]:
+    cells = table.add_row().cells
+    cells[0].text, cells[1].text, cells[2].text = region, str(q1), str(q2)
 
-   **Suggested batch groupings:**
-   - By document section (e.g., "Section 3 changes", "Definitions", "Termination clause")
-   - By change type (e.g., "Date changes", "Party name updates", "Legal term replacements")
-   - By proximity (e.g., "Changes on pages 1-3", "Changes in first half of document")
+doc.add_picture("chart.png", width=Cm(14))
+doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
+doc.add_page_break()
+doc.sections[0].footer.paragraphs[0].text = "Confidential"
+doc.save("quarterly-report.docx")
+```
 
-   For each batch of related changes:
+Use real heading and list styles rather than bold text and typed bullets or numbers, so the outline, navigation and a later table of contents work.
 
-   **a. Map text to XML**: Grep for text in `word/document.xml` to verify how text is split across `<w:r>` elements.
+## Edit an existing document
 
-   **b. Create and run script**: Use `get_node` to find nodes, implement changes, then `doc.save()`. See **"Document Library"** section in ooxml.md for patterns.
+Open, change, save under a new name. A paragraph's text is split into runs, and each run carries its own formatting, so edit at run level.
 
-   **Note**: Always grep `word/document.xml` immediately before writing a script to get current line numbers and verify text content. Line numbers change after each script run.
+```python
+from docx import Document
 
-5. **Pack the document**: After all batches are complete, convert the unpacked directory back to .docx:
-   ```bash
-   python ooxml/scripts/pack.py unpacked reviewed-document.docx
-   ```
+def paragraphs(doc):
+    yield from doc.paragraphs
+    for t in doc.tables:
+        for row in t.rows:
+            for cell in row.cells:
+                yield from cell.paragraphs
+    for s in doc.sections:
+        yield from s.header.paragraphs
+        yield from s.footer.paragraphs
 
-6. **Final verification**: Do a comprehensive check of the complete document:
-   - Convert final document to markdown:
-     ```bash
-     pandoc --track-changes=all reviewed-document.docx -o verification.md
-     ```
-   - Verify ALL changes were applied correctly:
-     ```bash
-     grep "original phrase" verification.md  # Should NOT find it
-     grep "replacement phrase" verification.md  # Should find it
-     ```
-   - Check that no unintended changes were introduced
+doc = Document("contract.docx")
+old, new = "{{client}}", "Acme Ltd"
+for p in paragraphs(doc):
+    if old not in p.text:
+        continue
+    for r in p.runs:
+        if old in r.text:
+            r.text = r.text.replace(old, new)
+    if old in p.text:                       # the match spans several runs
+        p.runs[0].text = p.text.replace(old, new)
+        for r in p.runs[1:]:
+            r.text = ""
+doc.save("contract-filled.docx")
+```
 
+Other edits:
 
-## Converting Documents to Images
+- Insert before a paragraph: `p.insert_paragraph_before("text", style="Normal")`.
+- Delete a paragraph: `p._element.getparent().remove(p._element)` (python-docx has no public method).
+- Restyle: `p.style = doc.styles["Heading 2"]`; `run.font.bold`, `.italic`, `.size`, `.color.rgb`.
+- Table cell: `table.cell(row, col).text = "..."`; add rows with `table.add_row()`.
 
-To visually analyze Word documents, convert them to images using a two-step process:
+## Convert
 
-1. **Convert DOCX to PDF**:
-   ```bash
-   soffice --headless --convert-to pdf document.docx
-   ```
-
-2. **Convert PDF pages to JPEG images**:
-   ```bash
-   pdftoppm -jpeg -r 150 document.pdf page
-   ```
-   This creates files like `page-1.jpg`, `page-2.jpg`, etc.
-
-Options:
-- `-r 150`: Sets resolution to 150 DPI (adjust for quality/size balance)
-- `-jpeg`: Output JPEG format (use `-png` for PNG if preferred)
-- `-f N`: First page to convert (e.g., `-f 2` starts from page 2)
-- `-l N`: Last page to convert (e.g., `-l 5` stops at page 5)
-- `page`: Prefix for output files
-
-Example for specific range:
 ```bash
-pdftoppm -jpeg -r 150 -f 2 -l 5 document.pdf page  # Converts only pages 2-5
+soffice --headless --convert-to docx --outdir out legacy.doc
+soffice --headless --convert-to pdf  --outdir out report.docx
+pandoc notes.md -o notes.docx
+pandoc notes.md --reference-doc=house-style.docx -o notes.docx   # borrow styles from a document
 ```
 
-## Code Style Guidelines
-**IMPORTANT**: When generating code for DOCX operations:
-- Write concise code
-- Avoid verbose variable names and redundant operations
-- Avoid unnecessary print statements
+`--outdir` keeps the result away from the source file. LibreOffice writes `out/<same name>.<new extension>`.
 
-## Dependencies
+## Verify
 
-Required dependencies (install if not available):
+Never report a document as done without checking it.
 
-- **pandoc**: `sudo apt-get install pandoc` (for text extraction)
-- **docx**: `npm install -g docx` (for creating new documents)
-- **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion)
-- **Poppler**: `sudo apt-get install poppler-utils` (for pdftoppm to convert PDF to images)
-- **defusedxml**: `pip install defusedxml` (for secure XML parsing)
+1. Reopen it: `python3 -c "from docx import Document; d = Document('out.docx'); print(len(d.paragraphs), len(d.tables))"`. A file that fails to open here will not open in Word.
+2. Read the text back with `pandoc out.docx -t gfm` and confirm that the content, the heading order and the table contents are what you intended, and that no placeholder such as `{{...}}` is left.
+3. When layout matters (page breaks, wide tables, images), convert to PDF with `soffice` and inspect the pages, or tell the user which pages to look at. LibreOffice rendering is close to Word but not identical, especially for fonts that are not installed.
+
+## Pitfalls
+
+- Tracked changes: python-docx does not read or write revisions. Text inside a tracked insertion is missing from `paragraph.text`, and your edits are saved as plain changes, not as revisions. If the document has tracked changes or the user wants their edits tracked, say so and `ask` how to proceed (for example accept all changes in Word first).
+- Assigning `paragraph.text = ...` replaces every run and drops character formatting inside that paragraph. Use it only when the paragraph is uniformly formatted.
+- Styles are looked up by their English built-in name (`"Heading 1"`, `"List Bullet"`, `"Table Grid"`) and must exist in the file. A user's template may not define them, which raises `KeyError`. List what is available with `[s.name for s in doc.styles]`.
+- Merged table cells appear more than once in `row.cells`. Deduplicate before counting or writing.
+- A table of contents, page numbers and other fields are computed by Word, not by python-docx. An existing table of contents is stale after your edit until the user updates fields in Word (select all, F9).
+- `add_picture` takes PNG, JPEG and similar raster formats. Convert SVG to PNG first.
+- python-docx opens `.docx` only. Convert `.doc`, `.rtf` and `.odt` with `soffice` first.
+- Do not overwrite the user's file. Save next to it under a new name (`report-edited.docx`) unless the user asked you to replace it.
