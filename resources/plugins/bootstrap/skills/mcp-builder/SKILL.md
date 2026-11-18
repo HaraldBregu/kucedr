@@ -178,7 +178,7 @@ Use the `bash` tool for these. If a tool changes real data, test it against a th
 You cannot switch the server on. Tell the user to:
 
 1. Open Settings → MCP servers. The server is listed among the local servers; a problem with `mcp.json` shows as a red notice there with the reason.
-2. Turn it on, open it, and run the connection test. It lists the tools the server reported.
+2. Turn it on, open it, and press **Test**. It lists the tools the server reported.
 3. Set per-tool permissions on that page if they want something other than the defaults.
 4. Ask for the tools in a chat. If they do not appear, start a new chat.
 
