@@ -711,17 +711,22 @@ async function* loop(
 				toolProfile,
 				...(input.approvalWindowId === undefined ? {} : { windowId: input.approvalWindowId }),
 			};
-			for await (const event of runToolCalls(
-				turnTools,
-				pendingToolCalls,
-				signal,
-				session.runContext.fileAccess,
-				security,
-				options.resources,
-				session.runContext.fileHistory,
-				eligibleTurnTools
-			)) {
-				yield event;
+			try {
+				for await (const event of runToolCalls(
+					turnTools,
+					pendingToolCalls,
+					signal,
+					session.runContext.fileAccess,
+					security,
+					options.resources,
+					session.runContext.fileHistory,
+					eligibleTurnTools
+				)) {
+					yield event;
+				}
+			} catch (error) {
+				addToolResults(session, turn.toolCalls);
+				throw error;
 			}
 			const failedMcpCall = pendingToolCalls.find((call) => call.result?.authorizationRequired);
 			let recovered = false;
