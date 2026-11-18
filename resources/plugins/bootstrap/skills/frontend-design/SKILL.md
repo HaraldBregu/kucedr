@@ -87,9 +87,10 @@ A component is not done until each state that applies has been designed:
 Do not hand over UI you have not looked at.
 
 1. Serve the page: start the project's dev server with `bash` and `background: true`, keep the `sessionId`, and wait for the ready line with `process` (`action: "poll"`). A project with a dev server needs it; do not open built files directly.
-2. Open the URL with `use_web_browser` (`action: "open"`), then take a `screenshot` with `fullPage: true` and `read` the returned image path to look at it. Compare it with the direction from Step 3: hierarchy, alignment, spacing rhythm, anything cramped or floating.
-3. Take a `snapshot` for element refs, then exercise the states: `act` with `kind: "hover"`, `click`, and `type` on real controls, and screenshot the error, empty, and loading states.
-4. Keyboard pass: `act` with `kind: "press"` and `key: "Tab"` several times; after each, check focus with `kind: "evaluate"` and `fn: "document.activeElement?.outerHTML.slice(0, 120)"`, and screenshot once to confirm the focus ring is visible.
+2. Open the URL with `use_web_browser` (`action: "open"`) and take a `snapshot`. Confirm the text, headings, and controls you built are present and in the intended order.
+3. `screenshot` returns only a file path, and `read` handles text files, so you cannot view the image. Take one with `fullPage: true` for the user, give them the path, and ask them to judge the look. Measure what you can with `act`, `kind: "evaluate"`: for example `getComputedStyle(document.querySelector('h1')).fontSize`, or `[...document.querySelectorAll('.card')].map(e => e.getBoundingClientRect().left)` to confirm elements share an edge.
+4. Exercise the states: `act` with `kind: "hover"`, `click`, and `type` on real controls using refs from the snapshot, then snapshot again to confirm the error, empty, and loading states show the right text. Screenshot each for the user.
+5. Keyboard pass: `act` with `kind: "press"` and `key: "Tab"` several times; after each, check focus with `kind: "evaluate"` and `fn: "document.activeElement?.outerHTML.slice(0, 120)"`. Confirm the focus style applies with `getComputedStyle(document.activeElement).outlineStyle`.
 5. Overflow check with `evaluate`: `document.documentElement.scrollWidth > document.documentElement.clientWidth` must be `false`.
 6. Read `action: "console"` and fix any errors.
 7. The browser tool cannot resize the window or emulate a device. State that narrow widths were verified from the CSS only, and ask the user to resize if that matters.
