@@ -199,7 +199,7 @@ const processInputSchema = z.object({
 	timeout: z
 		.number()
 		.optional()
-		.describe('poll: wait up to N ms for new output or exit (max 30000).'),
+		.describe(`poll: wait up to N ms for new output or exit (max ${MAX_WAIT_MS}).`),
 	offset: z
 		.number()
 		.optional()
