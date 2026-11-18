@@ -179,7 +179,7 @@ Find the coordinates with pdfplumber: `page.extract_words()` returns each label 
 ## Verify
 
 1. Reopen the result and check the page count: `python3 -c "from pypdf import PdfReader; print(len(PdfReader('out.pdf').pages))"`. `qpdf --check out.pdf` reports structural damage.
-2. For anything visual (a created PDF, an overlay, a filled form), render and look: `pdftoppm -png -r 80 out.pdf page` writes `page-1.png`, `page-2.png`, and so on. Open them with `read`, or give the user the paths. Check that text sits inside its boxes and that nothing is cut off at the margins.
+2. For anything visual (a created PDF, an overlay, a filled form), render it: `pdftoppm -png -r 80 out.pdf page` writes `page-1.png`, `page-2.png`, and so on. `read` cannot open images, so give the user the paths and ask them to check that text sits inside its boxes and that nothing is cut off at the margins. Say that you did not check the layout yourself.
 3. For a filled form, read the values back with `get_fields()` and compare them with what you were given.
 4. For extraction, compare a sample of the numbers against the rendered page before you rely on them.
 
