@@ -14,7 +14,11 @@ export const createTaskRequestSchema = z.object({
 		.string()
 		.optional()
 		.describe('Optional five-field cron expression controlling recurring execution.'),
-	prompt: z.string().describe('Complete instruction the background agent should execute.'),
+	prompt: z
+		.string()
+		.trim()
+		.min(1)
+		.describe('Complete instruction the background agent should execute.'),
 });
 
 export const updateTaskRequestSchema = z
