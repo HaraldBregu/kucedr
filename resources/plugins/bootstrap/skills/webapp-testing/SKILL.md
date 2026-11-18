@@ -16,7 +16,7 @@ Run the app, perform the flow the way a user would, and report what happened at 
 - `snapshot` lists visible interactive elements and the page text, cut at 4,000 characters unless you raise `maxChars`.
 - `console` returns the latest messages for a tab (50 by default, 100 kept). There is no network inspection action; use the `evaluate` checks below.
 - There is no action to resize the window or emulate a device.
-- `screenshot` saves a PNG and returns its `path`. `pdf` is unavailable in a visible browser.
+- `screenshot` saves a PNG and returns only its `path`. You cannot view the image; it is evidence for the user. Base every pass or fail on `snapshot`, `console`, and `evaluate`. `pdf` is unavailable in a visible browser.
 - Actions time out after 15 seconds unless you pass `timeoutMs`.
 
 ## Step 1: Plan the flow
