@@ -207,8 +207,31 @@ function schedule() {
 }
 
 addEventListener('message', ({ data }) => {
+	if (data?.type === 'pointer') {
+		if (state.reduced) return;
+		pointer.present = typeof data.x === 'number' && typeof data.y === 'number';
+		if (!pointer.present) return;
+		pointer.tx = data.x * state.ratio;
+		pointer.ty = data.y * state.ratio;
+		if (pointer.reveal < 0.01) {
+			pointer.x = pointer.tx;
+			pointer.y = pointer.ty;
+		}
+		if (data.press) {
+			pulses.set([pointer.tx, pointer.ty, clock()], pulse * 3);
+			pulse = (pulse + 1) % PULSES;
+		}
+		return;
+	}
 	if (data?.type === 'agent') state.status = data.status;
-	if (data?.type === 'motion') state.reduced = data.reduced;
+	if (data?.type === 'motion') {
+		state.reduced = data.reduced;
+		if (state.reduced) {
+			pointer.present = false;
+			pointer.reveal = 0;
+			pulses.fill(-100);
+		}
+	}
 	if (data?.type === 'visible') state.visible = data.value;
 	if (data?.type === 'theme') {
 		state.dark = data.dark;
