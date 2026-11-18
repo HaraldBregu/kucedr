@@ -2966,6 +2966,7 @@
 		"hostReason": "Questa operazione viene eseguita fuori dalla sandbox del file system e può accedere ad altre posizioni.",
 		"destructiveReason": "Questa operazione può sovrascrivere, eliminare, annullare o ripristinare modifiche ai file e richiede un'autorizzazione una tantum.",
 		"outsideReason": "Questa posizione non è attendibile per lo strumento richiesto.",
+		"sensitiveReason": "Approva questa azione specifica prima che l'assistente acceda a un servizio, registri contenuti multimediali, spenda denaro o salvi modifiche permanenti.",
 		"deny": "Nega",
 		"trustLocation": "Rendi attendibile questa posizione",
 		"allowOnce": "Consenti una volta",
