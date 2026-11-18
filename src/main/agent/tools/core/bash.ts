@@ -124,7 +124,7 @@ async function runExec(
 			throw new Error('Read-only commands must run inside the workspace.');
 	}
 	const readOnlyTimeoutSeconds = Math.min(timeoutInput ?? 60, 120);
-	const yieldMs = yieldMsInput ?? 10000;
+	const yieldMs = yieldMsInput ?? (timeoutInput === undefined ? 10000 : MAX_WAIT_MS);
 	const timeoutMs = readOnly
 		? readOnlyTimeoutSeconds * 1000
 		: timeoutInput === undefined
