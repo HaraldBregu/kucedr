@@ -1,6 +1,6 @@
 # Skills for the bootstrap plugin
 
-> **Status:** Catalogue only, written 2026-11-18. No skill from this list is built yet. Related: [SKILLS.md](SKILLS.md), [PLUGIN_SCRIPTS.md](PLUGIN_SCRIPTS.md), [AGENT_MODES.md](AGENT_MODES.md), [APPS.md](APPS.md).
+> **Status:** All 17 skills below were written on 2026-11-18, and `docx`, `pdf`, `pptx`, `xlsx` were rewritten from scratch under MIT. They pass frontmatter validation; none has been loaded in the app yet, and the `media`, `docx`, `pdf`, `pptx`, `xlsx` recipes have not been run. Related: [SKILLS.md](SKILLS.md), [PLUGIN_SCRIPTS.md](PLUGIN_SCRIPTS.md), [AGENT_MODES.md](AGENT_MODES.md), [APPS.md](APPS.md).
 
 ## Context
 
