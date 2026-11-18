@@ -945,13 +945,13 @@ function PageContent(): ReactElement {
 					</span>
 					{!showEmptyConversation && (
 						<div className="absolute right-2 top-12 z-40 sm:right-3">
-							<Popover open={compactDetails && detailsPopoverOpen} onOpenChange={setDetailsPopoverOpen}>
+							<Popover open={detailsPopoverOpen} onOpenChange={setDetailsPopoverOpen}>
 					<Tooltip>
-						<TooltipTrigger render={compactDetails ? <PopoverTrigger asChild>{infoButton}</PopoverTrigger> : infoButton} />
-						<TooltipContent side="bottom">{infoOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
+						<TooltipTrigger render={<PopoverTrigger asChild>{infoButton}</PopoverTrigger>} />
+						<TooltipContent side="bottom">{detailsPopoverOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
 					</Tooltip>
 					<PopoverContent align="end" sideOffset={-32} className="w-64 border-0 bg-transparent p-0 shadow-lg">
-						{chatDetails(true, true)}
+						{chatDetails}
 					</PopoverContent>
 				</Popover>
 						</div>
