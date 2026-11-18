@@ -20,7 +20,7 @@ If the project has a design system, it wins. Use its components, tokens, variant
 
 ## Step 2: Decide purpose and audience
 
-Answer these in one or two lines each. Infer what you can from the request; ask with `ask` only if a wrong guess would waste the work.
+Answer these in one or two lines each. Infer what you can from the request; ask only if a wrong guess would waste the work.
 
 - Who uses this, and on what device and in what setting?
 - What is the one thing they come here to do? That action gets the strongest visual weight.
