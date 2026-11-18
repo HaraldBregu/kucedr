@@ -392,6 +392,7 @@ export async function* runToolCall(
 					);
 					timeoutTimer.unref?.();
 					toolSignal.throwIfAborted();
+					if (permissionOutcome === 'allow') access = captureAccess(accessTargets);
 					const current = checkPermission();
 					if (
 						current.mode === 'deny' ||
