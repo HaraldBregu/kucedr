@@ -992,7 +992,6 @@ function PageContent(): ReactElement {
 										/>
 									</div>
 								</div>
-								{compactDetails ? null : chatDetails(detailsOpen, false)}
 							</ChatContainerRoot>
 							{composer}
 						</>
