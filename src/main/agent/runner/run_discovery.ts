@@ -59,16 +59,18 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 			const exact = candidates.find((candidate) => candidate.id === query);
 			const ranked = exact
 				? [exact]
-				: rankTools(
-						query,
-						candidates.map((candidate) => {
-							const mcp = mcpMetadata.get(candidate.id);
-							return {
-								value: candidate,
-								text: `${toolSearchText(candidate)} ${mcp?.serverId ?? ''} ${mcp?.serverName ?? ''} ${mcp?.tool.policy?.kind === 'mcp' ? mcp.tool.policy.toolName : ''}`,
-							};
-						})
-					);
+				: active.has(query)
+					? []
+					: rankTools(
+							query,
+							candidates.map((candidate) => {
+								const mcp = mcpMetadata.get(candidate.id);
+								return {
+									value: candidate,
+									text: `${toolSearchText(candidate)} ${mcp?.serverId ?? ''} ${mcp?.serverName ?? ''} ${mcp?.tool.policy?.kind === 'mcp' ? mcp.tool.policy.toolName : ''}`,
+								};
+							})
+						);
 			const selected = ranked.slice(0, Math.min(limit, remaining));
 			for (const candidate of selected) active.set(candidate.id, candidate);
 			selectedCount += selected.length;
