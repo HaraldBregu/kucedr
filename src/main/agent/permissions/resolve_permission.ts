@@ -13,6 +13,7 @@ import type {
 } from './permission_resolution';
 
 const KINDS: PermissionKind[] = ['read', 'write', 'exec'];
+const GLOB = /[*?[\]{}]/;
 
 export function resolvePermission({
 	access = {},
