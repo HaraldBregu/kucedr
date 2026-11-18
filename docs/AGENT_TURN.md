@@ -389,41 +389,60 @@ From `run.jsonl` since 2026-11-15 20:00: 31 runs, 133 model calls, 11 sessions.
 | gemini-2.5-pro | 5 | 3.93 s | 12.7K | 56% | 0% |
 
 **Cache misses** (below 50% hit), compared with the previous call in the same session:
-- 13 had an identical prefix, so the provider dropped the cache: 7 on openrouter/auto and 6 on mercury.
-- 3 came from the tool list changing.
-- 2 came from the system prompt changing.
+- 13 had an identical prefix and came 0–40 s after the previous call, so the provider did not serve its cache: 7 on openrouter/auto and 6 on mercury.
+- 5 came from a mode switch. Entering or leaving plan mode changes the tool list (22 ↔ 8 tools) and the system prompt. Leaving short or matrix changes the system prompt.
 - 1 came from a model switch.
 
-**A new chat's first call** has a median of 10.6K input tokens (range 7.2K–19.9K). The round-4 target of ≤ 9K is not met.
+**A new chat's first call** has a median of 10.6K input tokens over 10 new chats: 7.2K in plan mode, otherwise 10.1K–12.8K. The round-4 target of ≤ 9K is not met.
 
-**Parallel tool calls:** 74 tool turns had one call, and 35 had two to six.
+**Parallel tool calls:** 74 tool turns had one call, and 32 had two to six.
 
 ### Findings, largest win first
-1. **The bash and process wait limits force extra turns.** Run `ef1d88c7` spent 33 turns on a URL-check loop:
-   - The model ran `sleep 90` to `sleep 280`, with `timeout` set to 120–320 s.
-   - `bash` backgrounds the command after `yieldMs`, which defaults to 10 s (`tools/core/bash.ts:125`).
-   - The model then called `process poll` with `timeout` set to 60,000–300,000 ms. That value is silently capped at 30 s (`tools/core/process.ts:236`).
-   - Every cap costs another model round trip of about 27K input tokens.
+1. **The bash and process wait limits forced extra turns.** One run in `ef1d88c7` took 33 turns, most of them waiting on a URL-check loop:
+   - The model ran `sleep 45` to `sleep 280`, with `timeout` set to 120–320 s.
+   - `bash` backgrounded each command after `yieldMs`, which defaulted to 10 s whether or not a timeout was set.
+   - The model then called `process poll` with `timeout` set to 60,000–300,000 ms. That value was silently capped at 30 s.
+   - So a wait the model asked for in one call took three: `bash`, `poll`, and a `bash` to check. Each extra call re-sent about 27K input tokens.
 
-   Fix, in order of preference:
-   - When `timeout` is given and `yieldMs` is not, wait up to the timeout before backgrounding.
-   - Raise or remove the poll cap. The poll is already abortable through `signal`.
-   - At minimum, return the capped value in the result, so the model knows its wait was cut short.
+   Fixed, see Landed.
+2. **`openrouter/auto` misses the cache on identical prefixes.** 7 calls missed within 0–5 s of the previous call in the same run, among them the largest inputs, 55–61K tokens. The trace does not record which backend served a call, so the cause is inferred: the router sends consecutive calls to different backends. This is configuration, not code: pin a concrete default model, or mark `auto` as uncached in the picker.
+3. **A mode switch resets the cache** (5 misses, about 102K uncached tokens, 3% of all input). None of the misses came from `ask` and `approvalWindowId` (round 2). No change is proposed:
+   - plan mode's shorter tool list is part of how it limits the agent;
+   - the cost is one uncached call per switch.
+4. **The cold prefix is still above target**, and no cheap cut reaches it:
+   - The system prompt is 20.4 KB: `## Tools` 5.8 KB, the acceptance contract 3.3 KB, `# Scripts` 3.2 KB, the agent runtime context 2.1 KB, and five smaller sections.
+   - The run context is 8.9 KB. Memory `## Summaries` is 5.7 KB of it (15 entries, one of 1.6 KB). The file listing is 0.9 KB and already lists the root only.
 
-   Expected: that run drops to about 12 turns, which is about 20 fewer calls and about 0.5M fewer input tokens.
-2. **`openrouter/auto` defeats the cache.** The router can pick a different backend on each call, so an identical prefix still misses. It caused 7 of the 13 provider misses and produced the largest inputs, 55–61K tokens. This is configuration, not code: pin a concrete default model, or mark `auto` as uncached in the picker.
-3. **The tool list changes within a session** (3 misses). As in round 2, `ask` is only sent when `approvalWindowId` is present. Fix: always send the same schemas, and reject `ask` at call time when there is no window.
-4. **The cold prefix is still above target.** In the current `SYSTEM.md`, `## Workspace` (6.1 KB) is larger than `## Tools` (5.8 KB). Fix: cap the depth and entry count of the workspace listing.
+   The largest movable piece is the summaries, about 1.4K tokens. Capping their count or length changes what the agent remembers, so it is a product decision.
 5. **Mercury drops the cache on the provider side** (6 of 16 calls). There is nothing to fix in code; see `PROMPT_CACHE.md`.
-6. **Web research takes one call per turn.** The two longest research runs, with 14 and 19 turns, mostly made a single `search_web` or `fetch_web_page` call per turn. Fix: add one line to `## Tools` asking the model to batch independent searches and fetches in one turn. Parallel execution already works.
+6. **Web research already batches.** The line asking for independent calls in one response has been in `## Tools` since 2026-11-12, and it works. Of the turns that only searched or fetched, 13 of 15 on openrouter/auto and 14 of 17 on deepseek-flash made two or more calls. The long research runs (14 and 19 turns) are many rounds of batched calls, plus browser steps that must run in order. No change.
 7. **Not worth doing for speed:** local overhead is still milliseconds (rounds 1–4).
 
 ### Order of work
-1 → 3 → 4 → 6 are code changes. Finding 2 is a product decision, and finding 5 is on the provider side.
+Finding 1 is done. Findings 2 and 4 are product decisions, finding 5 is on the provider side, and findings 3 and 6 need no change.
+
+### Landed (2026-11-18)
+
+**Finding 1, longer waits** (`tools/core/bash.ts`, `tools/core/process.ts`):
+- `bash` with a `timeout` and no `yieldMs` now waits for the command instead of backgrounding it after 10 s. It backgrounds only after 540 s, the largest `yieldMs`. Without a `timeout` it still backgrounds after 10 s.
+- `process poll` now waits up to 540 s instead of 30 s.
+- Both use one limit, `MAX_WAIT_MS`, which stays under the 10-minute tool-call timeout.
+
+A command started with a `timeout` and without `background` now holds the turn until it ends or the timeout kills it. The user can still stop the run.
+
+**Checked:**
+- `typecheck:node` passes and eslint is clean on both files.
+- A bundled check with real processes passed:
+  - `sleep 12` with `timeout: 20` returned the finished result after 12 s. In the traces, such calls returned backgrounded at 10.0 s.
+  - `sleep 12` with no timeout still backgrounded at 10 s.
+  - `poll` with `timeout: 120000` on a `sleep 40` returned its output after 40 s. In the traces, such polls returned empty at 30.0 s.
+  - `sleep 30` with `timeout: 12` was killed at 12 s and reported `timedOut`.
+
+**Not run:** the unit suite. No existing test sets a bash `timeout` or polls for more than 30 s.
 
 ### Re-measuring
-Re-run the per-call analysis with `since` set after any fix, and compare:
+Re-run the per-call analysis with `since` set after 2026-11-18, and compare:
 - turns per run, p90;
-- `process` tool time;
+- `process` tool time, and whether `bash` calls with a timeout still return at 10.0 s;
 - the turn-1 hit rate per model;
 - the input tokens of a new chat's first call (target ≤ 9K).
