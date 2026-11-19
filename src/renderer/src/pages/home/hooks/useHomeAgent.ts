@@ -417,15 +417,16 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 	const handleSubmit = useCallback(
 		(files?: File[]): Promise<boolean> => {
 			if (isLoading) {
-				const text = input.trim();
 				const runId = activeRunIdRef.current;
 				const agent = getAgentApi();
-				if (!text || !runId || !agent) {
+				if (!input.trim() || !runId || !agent) {
 					stopResponse();
 					return Promise.resolve(false);
 				}
+				const text = formatReplyMessage(input.trim(), replyTo?.content);
 				const followUp = { id: crypto.randomUUID(), text };
 				setInput('');
+				setReplyTo(null);
 				updateFollowUps([...followUpsRef.current, followUp]);
 				return agent
 					.followUp(runId, followUp)
