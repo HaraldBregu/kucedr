@@ -15,6 +15,7 @@ import {
 	FileCodeIcon,
 	FileImageIcon,
 	FileTextIcon,
+	Globe,
 	Library,
 	Mic,
 	MonitorUp,
