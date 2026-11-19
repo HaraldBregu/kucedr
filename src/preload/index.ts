@@ -46,6 +46,7 @@ export { database } from './database';
 export { apps } from './apps';
 export { data } from './data';
 export { terminalAPI } from './terminal';
+export { browserPane } from './browser';
 export { auth } from './auth';
 export { cloud } from './cloud';
 
