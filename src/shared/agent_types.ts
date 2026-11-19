@@ -183,6 +183,7 @@ export type AgentHistoryContentBlock =
 export interface AgentHistoryMessage {
 	role: 'user' | 'agent' | 'assistant' | 'tool' | 'summary';
 	createdAtMs?: number;
+	followUp?: boolean;
 	content?: string | null;
 	blocks?: AgentHistoryContentBlock[];
 	contentBlocks?: AgentHistoryContentBlock[];
