@@ -47,6 +47,7 @@ export const Messages = memo(function Messages({
 							<UserMessage
 								content={message.content}
 								attachments={message.attachments}
+								followUp={message.followUp}
 								canEdit={!isLoading && !voiceMode}
 								onEdit={(content) => onEdit(message.id, userOffsetFromEnd, content)}
 							/>
