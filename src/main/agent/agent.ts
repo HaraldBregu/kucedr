@@ -39,6 +39,7 @@ import { parseSkillCommand } from './skills';
 import type { Config, Message, RuntimeEvent, RuntimeInput } from './types';
 import type {
 	AgentRunOptions,
+	AgentFollowUp,
 	AgentHistoryContentBlock,
 	AgentSessionSnapshot,
 	AgentHistoryMessage,
