@@ -2391,6 +2391,10 @@
 			"selecting": "Selezione degli strumenti…",
 			"selected": "Selezionati: {{tools}}"
 		},
+		"followUp": {
+			"queued": "Messaggi in coda",
+			"remove": "Rimuovi messaggio in coda"
+		},
 		"placeholderDescription": "Inizia una conversazione con l'AI per fare brainstorming, redigere o perfezionare idee."
 	},
 	"writing": {
