@@ -21,7 +21,7 @@ Nothing like this exists today (no queue, steer or inject code). The main proces
 
 ### Behaviour
 
-- Run active + composer has text → Enter / button **queues a follow-up** (button shows Send).
+- Run active + composer has text → Enter / button **queues a follow-up** (button shows Send, with a separate Stop button next to it).
 - Run active + composer empty → unchanged: button is Stop, Enter stops.
 - A queued follow-up shows as a chip above the composer with an X to remove it, until delivered.
 - On delivery it becomes a normal user bubble in the transcript and the agent's reply continues below it, in the same run.
