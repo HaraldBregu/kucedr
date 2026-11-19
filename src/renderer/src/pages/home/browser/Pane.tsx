@@ -26,6 +26,7 @@ export function BrowserPane({
 	return (
 		<section aria-label="Browser" className="flex h-full min-w-0 flex-col bg-background">
 			<BrowserToolbar
+				key={active.targetId}
 				tab={active}
 				acting={acting}
 				onCommand={(command, url) => run(active.targetId, command, url)}
