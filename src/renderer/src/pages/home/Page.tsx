@@ -73,7 +73,7 @@ import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { BrowserPane } from './browser/Pane';
-import { useBrowserTabs } from './browser/tabs';
+import { useBrowserTabs } from './browser/state';
 import { ReplyPreview } from './components/Reply';
 import { ActiveSkills } from './components/Skills';
 import { FollowUps } from './components/FollowUps';
