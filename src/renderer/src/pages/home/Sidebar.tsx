@@ -392,8 +392,13 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					if (action === 'open-location') {
 						void window.agent.openSessionFolder(session.id);
 					}
-					if (action === 'clear' || action === 'compact')
-						setPendingAction({ action, id: session.id, title });
+					if (action === 'clear' && window.confirm(t('settings.chatHistory.confirmClear', { title }))) {
+						setActionError('');
+						void window.agent.clearMessages(session.id)
+							.then(() => window.dispatchEvent(new CustomEvent('kucedr:session-history-cleared', { detail: session.id })))
+							.catch(() => setActionError(t('settings.chatHistory.errors.clear')));
+					}
+					if (action === 'compact') setPendingAction({ id: session.id, title });
 					if (action === 'pin') togglePin(targets);
 					if (action === 'archive') archiveSessions(targets);
 					if (action === 'delete') deleteSessions(targets);
