@@ -1,11 +1,13 @@
 'use client';
 
-import { memo, useId, useMemo } from 'react';
+import { memo, useId, useMemo, useState } from 'react';
 import type { Components, Options } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 import { marked } from 'marked';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
+import { Copy } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { CodeBlock, CodeBlockCode } from '@/components/ui/code-block';
 import { cn } from '@/lib/utils';
 
@@ -51,7 +53,18 @@ const initialComponents: Partial<Components> = {
 		const language = extractLanguage(className);
 
 		return (
-			<CodeBlock className={className}>
+			<CodeBlock className={cn('relative', className)}>
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon-xs"
+					className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
+					aria-label="Copy code"
+					title="Copy code"
+					onClick={() => void navigator.clipboard.writeText(String(children).replace(/\n$/, ''))}
+				>
+					<Copy className="size-3.5" />
+				</Button>
 				<CodeBlockCode code={String(children)} language={language} />
 			</CodeBlock>
 		);
