@@ -6,7 +6,7 @@ import { browserSessions, type BrowserSession } from './session';
 export function createBackgroundBrowser(): { tool: Tool; close(): Promise<void> } {
 	const session: BrowserSession = {
 		context: null,
-		headless: true,
+		background: true,
 		closed: false,
 		pages: new Map(),
 		consoleLogs: new Map(),
