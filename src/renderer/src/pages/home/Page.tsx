@@ -892,7 +892,7 @@ function PageContent(): ReactElement {
 						trailingAction={
 							<PromptInputActions className="justify-end gap-1.5">
 								{showEmptyConversation ? voiceButton : null}
-								<PromptSubmit isLoading={agent.isLoading} disabled={!agent.isLoading && !agent.input.trim()} onAction={() => void submitPrompt()} />
+								<PromptSubmit isLoading={agent.isLoading && !agent.input.trim()} disabled={!agent.isLoading && !agent.input.trim()} onAction={() => void submitPrompt()} />
 							</PromptInputActions>
 						}
 					/>
