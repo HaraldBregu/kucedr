@@ -169,6 +169,8 @@ export interface AgentApi {
 		onEvent?: (event: AgentResponseEvent) => void
 	) => Promise<string>;
 	cancel: (runId: string) => Promise<boolean>;
+	followUp: (runId: string, followUp: import('./agent_types').AgentFollowUp) => Promise<boolean>;
+	cancelFollowUp: (runId: string, id: string) => Promise<boolean>;
 	respondToolPermission: (
 		scope: AgentToolPermissionScope,
 		decision: AgentToolPermissionDecision
