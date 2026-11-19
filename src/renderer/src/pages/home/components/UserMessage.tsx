@@ -2,9 +2,11 @@ import { useState, type FormEvent, type ReactElement } from 'react';
 import {
 	ArrowUp,
 	Copy,
+	CornerDownRight,
 	Pencil,
 	X,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Message, MessageActions } from '@/components/prompt-kit/message';
