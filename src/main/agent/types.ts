@@ -103,6 +103,7 @@ export interface Message {
 	toolCalls?: ToolCall[];
 	usage?: SessionUsage;
 	createdAtMs?: number;
+	followUp?: boolean;
 	modeIds?: readonly string[];
 	skillIds?: readonly string[];
 }
