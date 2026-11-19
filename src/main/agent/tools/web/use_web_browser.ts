@@ -449,5 +449,5 @@ const browserTool = tool({
 
 export const useWebBrowserTool: Tool = {
 	...browserTool,
-	run: (input, signal) => observe(() => browserTool.run(input, signal)),
+	run: (input, signal) => observe(async () => browserTool.run(input, signal)),
 };
