@@ -53,6 +53,7 @@ declare global {
 		apps: AppsApi;
 		dataControls: DataApi;
 		terminalAPI: TerminalApi;
+		browserPane: BrowserPaneApi;
 		auth: AuthApi;
 		cloud: CloudApi;
 	}
