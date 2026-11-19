@@ -35,6 +35,7 @@ export function BrowserScreen({ targetId }: { readonly targetId: string }): Reac
 			observer.disconnect();
 			off();
 			window.browserPane.view(null);
+			if (image.current) image.current.hidden = true;
 		};
 	}, [targetId]);
 
