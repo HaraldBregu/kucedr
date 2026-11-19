@@ -443,7 +443,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				replyTo: replyTo?.content,
 			});
 		},
-		[input, isLoading, modeIds, modes, replyTo, sendPrompt, stopResponse]
+		[input, isLoading, modeIds, modes, replyTo, sendPrompt, stopResponse, updateFollowUps]
 	);
 
 	const resetChat = useCallback((): void => {
