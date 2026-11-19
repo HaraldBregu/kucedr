@@ -10,9 +10,11 @@ Nothing. The browser tool starts the user's installed Google Chrome with a direc
 (`src/main/agent/tools/web/use_web_browser.ts`); there is no proxy or Tor handling anywhere in
 `src/main`.
 
-Tor Browser itself cannot be driven by the agent: the tool controls Chrome through Playwright, and
-Playwright does not support Tor Browser. What works is sending the agent's own browser through the
-Tor network, which is what reaches `.onion` sites.
+Tor Browser itself cannot be embedded in Kucedr or driven by the agent. What works is sending the
+agent's own browser through the Tor network, which is what reaches `.onion` sites. The browser pane
+is planned as a separate web view per tab, each with its own network session
+([Embedded agent browser plan](../AGENT_BROWSER_PLAN.md)), so a Tor tab is a tab whose session is
+routed through Tor.
 
 ## Features
 
