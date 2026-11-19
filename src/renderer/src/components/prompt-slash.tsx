@@ -1,11 +1,13 @@
 import { useEffect, useState, type KeyboardEvent, type ReactElement, type ReactNode } from 'react';
-import { Check, Layers, MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
+import { AppWindow, Check, Layers, MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { AgentModeInfo } from '@shared/agent_types';
+import type { App } from '@shared/installed_app_types';
 import type { PluginTheme } from '@shared/plugin_types';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 import { usePromptInput } from '@/components/ui/prompt-input';
+import { useOpenApp } from '@/hooks/app';
 import { SETTINGS_NAVIGATION } from '@/pages/settings/navigation';
 import { cn } from '@/lib/utils';
 
@@ -41,9 +43,11 @@ function PromptSlash({
 }): ReactElement {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const openApp = useOpenApp();
 	const { value, setValue, triggerFileUpload, filesAccept } = usePromptInput();
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState(false);
+	const [apps, setApps] = useState<App[]>([]);
 	const [themes, setThemes] = useState<PluginTheme[]>([]);
 	const [sidebarTranslucency, setSidebarTranslucency] = useState<boolean | null>(null);
 	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(null);
@@ -54,6 +58,15 @@ function PromptSlash({
 		setSelected(0);
 		if (query === null) setDismissed(false);
 	}, [query]);
+
+	const active = query !== null;
+	useEffect(() => {
+		if (!active) return;
+		void window.apps
+			.list()
+			.then(setApps)
+			.catch(() => setApps([]));
+	}, [active]);
 
 	useEffect(() => {
 		let active = true;
@@ -99,6 +112,12 @@ function PromptSlash({
 							icon: SquareSlash,
 							run: () => onModeIdsChange([...modeIds, mode.id]),
 						})),
+					...apps.map((app) => ({
+						group: 'Apps',
+						label: app.title,
+						icon: AppWindow,
+						run: () => void openApp(app),
+					})),
 					...SETTINGS_NAVIGATION.filter((item) => SETTINGS_PATHS.includes(item.path)).map(
 						(item) => ({
 							group: 'Settings',
