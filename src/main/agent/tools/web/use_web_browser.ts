@@ -446,3 +446,8 @@ const browserTool = tool({
 		}
 	},
 });
+
+export const useWebBrowserTool: Tool = {
+	...browserTool,
+	run: (input, signal) => observe(() => browserTool.run(input, signal)),
+};
