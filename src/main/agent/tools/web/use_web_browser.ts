@@ -62,7 +62,15 @@ function trackPage(page: Page, session: BrowserSession = browserSession()): stri
 		session.pages.delete(id);
 		session.consoleLogs.delete(id);
 	});
+	if (!session.background) watch(page);
 	return id;
+}
+
+function claim(page: Page): void {
+	const scope = executionScope.getStore();
+	if (!scope) return;
+	pageOwners.set(page, scope.ownerId);
+	pageChats.set(page, scope.sessionId);
 }
 
 async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
