@@ -14,6 +14,6 @@ Part of the [Roadmap](README.md). Status: proposal.
 
 - **4.5 adds development dependencies and a test.** It is the cheapest safeguard, but it needs an
   explicit go.
-- **The browser pane (3.9).** If it is built as a mirrored view, the page inside it is a picture
-  and a screen reader cannot read it; see the
-  [Embedded agent browser plan](../AGENT_BROWSER_PLAN.md).
+- **The browser pane (3.9).** It is planned as a real web view, so a screen reader can read the
+  page inside it. Its toolbar and tabs need names and keyboard access like any other control; see
+  the [Embedded agent browser plan](../AGENT_BROWSER_PLAN.md).
