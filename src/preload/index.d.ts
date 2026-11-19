@@ -23,6 +23,7 @@ import type {
 	WindowApi,
 	DataApi,
 	TerminalApi,
+	BrowserPaneApi,
 	AuthApi,
 	CloudApi,
 } from '../shared/api_types';
