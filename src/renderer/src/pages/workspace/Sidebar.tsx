@@ -189,6 +189,10 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			] : entry ? [
 				{ type: 'separator' as const },
 				{ id: 'reveal', label: revealLabel },
+				...(entry.type === 'directory' ? [
+					{ id: 'export-downloads', label: t('workspaceSidebar.exportToDownloads', 'Export ZIP to Downloads') },
+					{ id: 'export-choose', label: t('workspaceSidebar.exportToFolder', 'Export ZIP to…') },
+				] : []),
 				...(entry.type === 'file' && workspaceFileType(entry.path).kind === 'markdown' ? [{ id: 'clean-assets', label: t('workspaceSidebar.cleanAssets', 'Move unused assets to Trash') }] : []),
 				{ id: 'rename', label: t('workspaceSidebar.rename', 'Rename') },
 				{ id: 'delete', label: t('workspaceSidebar.delete', 'Delete') },
