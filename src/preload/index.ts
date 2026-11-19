@@ -123,6 +123,8 @@ if (process.contextIsolated) {
 	// @ts-ignore (define in dts)
 	globalThis.terminalAPI = terminalAPI;
 	// @ts-ignore (define in dts)
+	globalThis.browserPane = browserPane;
+	// @ts-ignore (define in dts)
 	globalThis.auth = auth;
 	// @ts-ignore (define in dts)
 	globalThis.cloud = cloud;
