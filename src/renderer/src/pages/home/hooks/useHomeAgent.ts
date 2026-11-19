@@ -115,7 +115,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		setReplyTo(null);
 		if (adoptedSessionIdRef.current !== sessionId) setModeIds([]);
 		adoptedSessionIdRef.current = undefined;
-	}, [sessionId]);
+	}, [sessionId, updateFollowUps]);
 
 	const focusInput = useCallback((): void => {
 		inputRef.current?.focus();
