@@ -946,6 +946,11 @@ function PageContent(): ReactElement {
 				{openExtension && (
 					<ExtensionPage extension={openExtension} onClose={() => setOpenExtension(null)} />
 				)}
+				<Group
+					orientation="horizontal"
+					className={cn('min-h-0 flex-1', openExtension && '!hidden')}
+				>
+				<Panel id="home-chat" minSize={360} className="flex min-w-0 flex-col">
 				<div
 					ref={workspaceRef}
 					data-slot="home-workspace"
