@@ -76,29 +76,28 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 
 		trusted.query(BrowserChannels.state, () => tabs());
 		trusted.command(BrowserChannels.command, (request) => command(commandSchema.parse(request)));
-		trusted.commandWithEvent(BrowserChannels.view, async ({ sender }, request) => {
+		trusted.commandWithEvent(BrowserChannels.view, ({ sender }, request) => {
 			const next = viewSchema.parse(request);
-			const page = next ? interactive.pages.get(next.targetId) : undefined;
-			const current = viewers.get(sender);
-			if (current && (!page || current.targetId !== next?.targetId)) {
-				current.stop();
-				viewers.delete(sender);
-			}
-			if (!next || !page) return;
-			pane.width = next.width;
-			pane.height = next.height;
-			if (!viewers.has(sender)) {
-				const stop = cast(page, (frame) => {
-					if (sender.isDestroyed()) {
-						stop();
-						viewers.delete(sender);
-					} else sender.send(BrowserChannels.frame, { targetId: next.targetId, ...frame });
-				});
-				viewers.set(sender, { targetId: next.targetId, stop });
-			}
-			await page
-				.bringToFront()
-				.then(() => fit(page))
+			// Chrome drops a screencast when the window is resized while it starts, so every
+			// change stops the cast, sizes the tab, then starts a new one.
+			views = views
+				.then(async () => {
+					viewers.get(sender)?.();
+					viewers.delete(sender);
+					const page = next ? interactive.pages.get(next.targetId) : undefined;
+					if (!next || !page) return;
+					pane.width = next.width;
+					pane.height = next.height;
+					await page.bringToFront();
+					await fit(page);
+					const stop = cast(page, (frame) => {
+						if (sender.isDestroyed()) {
+							stop();
+							viewers.delete(sender);
+						} else sender.send(BrowserChannels.frame, { targetId: next.targetId, ...frame });
+					});
+					viewers.set(sender, stop);
+				})
 				.catch(() => undefined);
 		});
 		trusted.command(BrowserChannels.input, (request) => {
