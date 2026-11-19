@@ -56,7 +56,7 @@ const initialComponents: Partial<Components> = {
 
 		return (
 			<CodeBlock className={className}>
-				<div className="sticky top-0 z-10 flex h-0 justify-end pr-2">
+				<div className="sticky top-12 z-10 flex h-0 justify-end pr-2">
 				<Tooltip>
 					<TooltipTrigger
 						closeOnClick={false}
