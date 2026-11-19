@@ -1,8 +1,15 @@
 # Embedded agent browser plan
 
-Status: built as the mirrored view. "As built" below describes current behavior; the rest is the original plan.
+Status: the pane is built, but on the mirrored view, which is no longer the chosen direction. The move to one `WebContentsView` per tab (see "Automation approach") is not done. "As built" below describes what the code does today.
 
-## As built
+Prototype findings for the separate view (2026-11-19, Electron 44):
+
+- A view that was never added to a window cannot be clicked through `sendInputEvent` and cannot be captured. It has to be attached, at least once.
+- Through the view's in-process debugger, with focus emulation on, clicks, text, keys, screenshots (including beyond the viewport) and PDF all work whether the view is attached, hidden or detached, and the app window keeps keyboard focus.
+- A new window request reaches `setWindowOpenHandler`, so pop-ups can become tabs.
+- The default user agent contains `Electron/…`; strip it for the browser session.
+
+## As built (mirrored view, interim)
 
 Interactive runs start Chrome with no window and the same profile as before (`~/.kucedr/agent-browser`), so saved logins carry over. The pane sits on the right of the main window, beside the navigation bar, and shows the live picture of the tab the agent last used. Clicks, scrolling, typing and paste in the pane go to the page. Under 1000 px of window width the pane covers the chat below the navigation bar.
 
