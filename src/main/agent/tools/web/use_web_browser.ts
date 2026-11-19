@@ -155,6 +155,8 @@ function getPage(targetId?: string): { id: string; page: Page } {
 				? 'Several tabs are open and none was opened by this chat. Pass a targetId from action "tabs".'
 				: 'No open tabs. Use action "open" with a url first.'
 		);
+	if (!pageOwners.has(last[1])) claim(last[1]);
+	pageOrder.set(last[1], ++pane.order);
 	return { id: last[0], page: last[1] };
 }
 
