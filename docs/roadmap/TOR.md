@@ -43,8 +43,8 @@ Tor tabs share one mechanism with private and VPN tabs; see
 
 ## What the user must be told, in the app
 
-- This is not Tor Browser. Sites cannot see the user's network address, but Chrome is easier to
-  recognise than Tor Browser, so it should not be described as anonymous.
+- This is not Tor Browser. Sites cannot see the user's network address, but Kucedr's browser
+  is easier to recognise than Tor Browser, so it should not be described as anonymous.
 - Only the browser goes through Tor. The text the agent reads from a page is still sent to the model
   provider, and search, other tools and the model connection use the normal network.
 
