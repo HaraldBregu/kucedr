@@ -108,6 +108,11 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 				void page.opener().then((opener) => {
 					const owner = opener && pageOwners.get(opener);
 					if (owner) pageOwners.set(page, owner);
+					const chat = opener && pageChats.get(opener);
+					if (!chat) return;
+					pageChats.set(page, chat);
+					pageOrder.set(page, ++pane.order);
+					paneEvents.emit('change');
 				}, () => undefined);
 			});
 			launched.on('close', () => {
