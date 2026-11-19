@@ -44,7 +44,7 @@ export function BrowserPane({
 					{error}
 				</p>
 			) : null}
-			<BrowserScreen key={active.targetId} targetId={active.targetId} />
+			<BrowserScreen targetId={active.targetId} />
 		</section>
 	);
 }
