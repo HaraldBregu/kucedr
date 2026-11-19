@@ -10,7 +10,8 @@ export function BrowserScreen({ targetId }: { readonly targetId: string }): Reac
 
 	useEffect(() => {
 		const element = box.current;
-		if (!element) return;
+		const picture = image.current;
+		if (!element || !picture) return;
 		let timer: number | undefined;
 		const observer = new ResizeObserver(() => {
 			window.clearTimeout(timer);
