@@ -16,11 +16,13 @@ import { userMarkdownComponents } from './markdown';
 export function UserMessage({
 	content,
 	attachments = [],
+	followUp = false,
 	canEdit = true,
 	onEdit,
 }: {
 	readonly content: string;
 	readonly attachments?: readonly UserAttachment[];
+	readonly followUp?: boolean;
 	readonly canEdit?: boolean;
 	readonly onEdit?: (content: string) => Promise<boolean>;
 }): ReactElement | null {
