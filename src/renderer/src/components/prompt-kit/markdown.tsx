@@ -65,7 +65,7 @@ const initialComponents: Partial<Components> = {
 								type="button"
 								variant="ghost"
 								size="icon-xs"
-								className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
+								className="mt-2 bg-code text-muted-foreground hover:text-foreground"
 								aria-label="Copy code"
 								onClick={() =>
 									void navigator.clipboard
