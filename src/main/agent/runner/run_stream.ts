@@ -653,6 +653,12 @@ async function* loop(
 					cachedTokens: turn.usage?.cachedTokens,
 					cacheWriteTokens: turn.usage?.cacheWriteTokens,
 				});
+				if (
+					!synthesisOnly &&
+					!isExhausted(session) &&
+					(yield* deliverFollowUps(session, input))
+				)
+					continue;
 				if (finalization?.stopReason) session.stopReason = finalization.stopReason;
 				const result = toResult(
 					session,
