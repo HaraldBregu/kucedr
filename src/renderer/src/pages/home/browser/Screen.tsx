@@ -26,10 +26,10 @@ export function BrowserScreen({ targetId }: { readonly targetId: string }): Reac
 		});
 		observer.observe(element);
 		const off = window.browserPane.onFrame((frame) => {
-			if (frame.targetId !== targetId || !image.current) return;
+			if (frame.targetId !== targetId) return;
 			frameWidth.current = frame.width;
-			image.current.src = `data:image/jpeg;base64,${frame.data}`;
-			image.current.hidden = false;
+			picture.src = `data:image/jpeg;base64,${frame.data}`;
+			picture.hidden = false;
 		});
 		return () => {
 			window.clearTimeout(timer);
