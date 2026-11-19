@@ -820,6 +820,24 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				async (entryPath: unknown, action: unknown): Promise<string> => {
 					const normalizedEntryPath = optionalTrimmedString(entryPath);
 					if (!normalizedEntryPath) throw new Error('Invalid workspace file path.');
+					if (action === 'export-downloads' || action === 'export-choose') {
+						let exportDirectory = app.getPath('downloads');
+						if (action === 'export-choose') {
+							const window = BrowserWindow.getFocusedWindow();
+							const options = {
+								defaultPath: exportDirectory,
+								properties: ['openDirectory' as const, 'createDirectory' as const],
+							};
+							const result = await (window
+								? dialog.showOpenDialog(window, options)
+								: dialog.showOpenDialog(options));
+							if (result.canceled) return '';
+							exportDirectory = result.filePaths[0];
+						}
+						const destination = await archiveWorkspaceEntry(workspacePath(agent.config), normalizedEntryPath, 'compress', exportDirectory);
+						shell.showItemInFolder(destination);
+						return destination;
+					}
 					if (action !== 'compress' && action !== 'extract') {
 						throw new Error('Invalid workspace archive action.');
 					}
