@@ -101,7 +101,7 @@ export function UserMessage({
 							autoFocus
 							value={draft}
 							aria-label="Edit message text"
-							className="max-h-60 min-h-24 resize-y border-0 bg-transparent shadow-none focus-visible:border-transparent focus-visible:ring-0 dark:bg-transparent"
+							className="max-h-60 min-h-24 resize-y border-0 bg-transparent shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:outline-none! dark:bg-transparent"
 							disabled={isSaving}
 							onChange={(event) => setDraft(event.target.value)}
 						/>
