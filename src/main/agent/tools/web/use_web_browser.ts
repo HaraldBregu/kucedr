@@ -6,9 +6,14 @@ import { saveMedia } from '../../../shared/media';
 import { publicUrl } from '../../../public';
 import { executionScope } from '../../execution/scope';
 import { mediaAccess } from '../../permissions/media_access';
+import type { Tool } from '../../types';
 import { tool } from '../tool';
 import { runBrowserPageOperation } from './browser_abort';
+import { userAgent } from './browser/agent';
+import { observe } from './browser/observe';
+import { pageChats, pageOrder, pane, paneEvents } from './browser/pane';
 import { browserSession, type BrowserSession } from './browser/session';
+import { watch } from './browser/watch';
 
 const ACTIONS = [
 	'status',
