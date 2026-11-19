@@ -684,6 +684,7 @@ function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 			role: 'user',
 			content,
 			...(message.createdAtMs !== undefined ? { createdAtMs: message.createdAtMs } : {}),
+			...(message.followUp ? { followUp: true } : {}),
 			contentBlocks: toHistoryContentBlocks(message),
 		},
 	];
