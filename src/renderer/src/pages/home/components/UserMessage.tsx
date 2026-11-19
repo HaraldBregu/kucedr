@@ -30,6 +30,7 @@ export function UserMessage({
 	const [isSaving, setIsSaving] = useState(false);
 	const [draft, setDraft] = useState(content);
 	const [editError, setEditError] = useState<string | null>(null);
+	const { t } = useTranslation();
 	if (!content.trim() && attachments.length === 0) return null;
 
 	const copyMessage = (): void => {
