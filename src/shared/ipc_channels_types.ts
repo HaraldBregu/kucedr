@@ -1561,6 +1561,7 @@ export interface EventChannelMap
 		RealtimeVoiceEventChannelMap,
 		SttEventChannelMap,
 		TerminalEventChannelMap,
+		BrowserEventChannelMap,
 		AuthEventChannelMap,
 		CloudEventChannelMap {}
 
