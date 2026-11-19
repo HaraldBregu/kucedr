@@ -26,9 +26,10 @@ browser through a VPN connection, leaving the rest of the machine untouched.
 
 ## One mechanism with Tor
 
-Each tab has a route: direct, private, VPN or Tor. Private, VPN and [Tor](TOR.md) tabs all run in a
-separate browser instance with a disposable profile and a chosen connection. Building it once covers
-both areas.
+Each tab has a route: direct, private, VPN or Tor. The browser pane is planned as a
+separate web view per tab ([Embedded agent browser plan](../AGENT_BROWSER_PLAN.md)), and each view
+has its own network session. A private, VPN or [Tor](TOR.md) tab is a tab whose session is
+disposable and uses the chosen connection. Building it once covers both areas.
 
 ## Rules the design keeps
 
