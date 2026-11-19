@@ -1,4 +1,4 @@
-import type { AgentResponseEvent, AgentRunStopReason } from '../../../shared/agent_types';
+import type { AgentFollowUp, AgentResponseEvent, AgentRunStopReason } from '../../../shared/agent_types';
 import type { SessionCategory, SessionResult, SessionState } from '../session';
 
 export interface AgentRunOutcome {
