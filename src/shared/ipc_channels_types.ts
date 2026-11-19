@@ -60,6 +60,7 @@ import {
 	DataChannels,
 	WindowChannels,
 	TerminalChannels,
+	BrowserChannels,
 	AuthChannels,
 	CloudChannels,
 } from './ipc_channels_definitions';
