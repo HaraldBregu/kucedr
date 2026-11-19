@@ -467,6 +467,32 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.followUp,
+			wrapIpcHandler((event, value: unknown, followUp: unknown): boolean => {
+				const window = renderer.assert(event);
+				const runId = optionalTrimmedString(value);
+				const { id, text } = (followUp ?? {}) as { id?: unknown; text?: unknown };
+				const followUpId = optionalTrimmedString(id);
+				const followUpText = optionalTrimmedString(text);
+				if (!runId) throw new Error('Invalid assistant run id.');
+				if (!followUpId || !followUpText) throw new Error('Invalid follow-up.');
+				return agent.followUp(runId, { id: followUpId, text: followUpText }, window.id);
+			}, AgentChannels.followUp)
+		);
+
+		ipcMain.handle(
+			AgentChannels.cancelFollowUp,
+			wrapIpcHandler((event, value: unknown, id: unknown): boolean => {
+				const window = renderer.assert(event);
+				const runId = optionalTrimmedString(value);
+				const followUpId = optionalTrimmedString(id);
+				if (!runId) throw new Error('Invalid assistant run id.');
+				if (!followUpId) throw new Error('Invalid follow-up.');
+				return agent.cancelFollowUp(runId, followUpId, window.id);
+			}, AgentChannels.cancelFollowUp)
+		);
+
+		ipcMain.handle(
 			AgentChannels.respondToolPermission,
 			wrapIpcHandler((event, value: unknown, decision: unknown): boolean => {
 				const window = renderer.assert(event);
