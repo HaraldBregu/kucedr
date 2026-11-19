@@ -352,7 +352,25 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				}
 			}
 		},
-		[dispatchChat, modeIds, modes, sessionId, setSessionId]
+		[dispatchChat, modeIds, modes, restoreFollowUps, sessionId, setSessionId, updateFollowUps]
+	);
+	useEffect(() => {
+		sendPromptRef.current = sendPrompt;
+	}, [sendPrompt]);
+
+	const removeFollowUp = useCallback(
+		(id: string): void => {
+			const runId = activeRunIdRef.current;
+			if (!runId) return;
+			void getAgentApi()
+				?.cancelFollowUp(runId, id)
+				.then((removed) => {
+					if (removed)
+						updateFollowUps(followUpsRef.current.filter((followUp) => followUp.id !== id));
+				})
+				.catch(() => undefined);
+		},
+		[updateFollowUps]
 	);
 
 	const unloadSkill = useCallback(
