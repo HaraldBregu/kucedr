@@ -32,6 +32,7 @@ function extractLanguage(className?: string): string {
 
 const initialComponents: Partial<Components> = {
 	code: function CodeComponent({ className, children, ...props }) {
+		const [copied, setCopied] = useState(false);
 		const isInline =
 			!props.node?.position?.start.line ||
 			props.node?.position?.start.line === props.node?.position?.end.line;
