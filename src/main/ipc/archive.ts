@@ -22,7 +22,7 @@ export async function archiveWorkspaceEntry(
 
 	if (action === 'compress') {
 		const sourceName = path.basename(source);
-		const destinationDirectory = path.dirname(source);
+		const destinationDirectory = exportDirectory ?? path.dirname(source);
 		let destination = path.join(destinationDirectory, `${sourceName}.zip`);
 		for (let index = 2; ; index += 1) {
 			try {
