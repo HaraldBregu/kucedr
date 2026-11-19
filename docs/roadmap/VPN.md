@@ -20,7 +20,7 @@ browser through a VPN connection, leaving the rest of the machine untouched.
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
 | 12.1 | Private tabs | A tab with no saved history, cookies or logins, wiped when closed; the agent can open one when asked | Browser pane (3.9); same disposable profile as Tor tabs (11.1) | S |
-| 12.2 | Browse through a proxy | The user enters the proxy address their VPN provider gives them; chosen tabs, or every tab, go through it | Same mechanism as Tor tabs: a browser instance started with a different connection | S |
+| 12.2 | Browse through a proxy | The user enters the proxy address their VPN provider gives them; chosen tabs, or every tab, go through it | Same mechanism as Tor tabs: a tab whose network session uses a different connection | S |
 | 12.3 | Browse through a VPN profile | Import a WireGuard file from any VPN provider; the browser pane uses it, with no administrator rights and no effect on other apps | Needs a small bundled VPN program, shipped and updated like built-in Tor (11.4) | L |
 | 12.4 | Route indicator and per-workspace default | The toolbar shows how each tab connects: direct, private, VPN or Tor. A workspace can default to one, for example work always through the company proxy | Browser pane toolbar; [Multiple workspaces](WORKSPACES.md) | S |
 
