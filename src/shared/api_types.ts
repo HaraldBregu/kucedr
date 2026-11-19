@@ -209,7 +209,7 @@ export interface AgentApi {
 	cleanWorkspaceAssets: (documentPath: string) => Promise<number>;
 	createWorkspaceFile: (parentPath: string, name: string) => Promise<string>;
 	duplicateWorkspaceFile: (filePath: string) => Promise<string>;
-	archiveWorkspaceEntry: (entryPath: string, action: 'compress' | 'extract') => Promise<string>;
+	archiveWorkspaceEntry: (entryPath: string, action: 'compress' | 'extract' | 'export-downloads' | 'export-choose') => Promise<string>;
 	createWorkspaceDirectory: (parentPath: string, name: string) => Promise<string>;
 	moveWorkspaceEntry: (sourcePath: string, destinationDirectoryPath: string) => Promise<string>;
 	renameWorkspaceEntry: (sourcePath: string, name: string) => Promise<string>;
