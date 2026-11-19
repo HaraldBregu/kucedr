@@ -152,7 +152,8 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				?.cancel(runId)
 				.catch(() => undefined);
 		dispatchChat({ type: 'cancel_active', completedAtMs: Date.now() });
-	}, [dispatchChat]);
+		restoreFollowUps();
+	}, [dispatchChat, restoreFollowUps]);
 
 	const sendPrompt = useCallback(
 		async (
