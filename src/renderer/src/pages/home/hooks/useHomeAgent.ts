@@ -417,8 +417,25 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 	const handleSubmit = useCallback(
 		(files?: File[]): Promise<boolean> => {
 			if (isLoading) {
-				stopResponse();
-				return Promise.resolve(false);
+				const text = input.trim();
+				const runId = activeRunIdRef.current;
+				const agent = getAgentApi();
+				if (!text || !runId || !agent) {
+					stopResponse();
+					return Promise.resolve(false);
+				}
+				const followUp = { id: crypto.randomUUID(), text };
+				setInput('');
+				updateFollowUps([...followUpsRef.current, followUp]);
+				return agent
+					.followUp(runId, followUp)
+					.catch(() => false)
+					.then((accepted) => {
+						if (accepted || !followUpsRef.current.includes(followUp)) return accepted;
+						updateFollowUps(followUpsRef.current.filter((item) => item !== followUp));
+						setInput((current) => current || text);
+						return false;
+					});
 			}
 			const leading = leadingModes(input, modes);
 			return sendPrompt(leading.prompt, files, {
