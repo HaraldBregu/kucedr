@@ -79,13 +79,18 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 	if (session.closed) throw new Error('Browser run has ended.');
 	if (session.context) return session.context;
 	if (!session.starting) {
-		const userDataDir = session.headless ? '' : path.join(userDataLocation(), 'agent-browser');
-		session.starting = chromium.launchPersistentContext(userDataDir, {
-			channel: 'chrome',
-			headless: session.headless,
-			viewport: null,
-			timeout: DEFAULT_TIMEOUT_MS,
-		}).then(async (launched) => {
+		const userDataDir = session.background ? '' : path.join(userDataLocation(), 'agent-browser');
+		const launch = (agent?: string): Promise<BrowserContext> =>
+			chromium.launchPersistentContext(userDataDir, {
+				channel: 'chrome',
+				headless: true,
+				viewport: null,
+				timeout: DEFAULT_TIMEOUT_MS,
+				...(session.background
+					? {}
+					: { userAgent: agent, args: [`--force-device-scale-factor=${pane.scale}`] }),
+			});
+		session.starting = (session.background ? launch() : userAgent().then(launch)).then(async (launched) => {
 			if (session.closed || signal?.aborted) {
 				await launched.close();
 				signal?.throwIfAborted();
