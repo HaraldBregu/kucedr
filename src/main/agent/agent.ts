@@ -311,6 +311,7 @@ export class Agent {
 					? { explicitSkill: parsedSkillCommand.explicitSkill }
 					: {}),
 				...(parsedSkillCommand.unloadSkill ? { unloadSkill: parsedSkillCommand.unloadSkill } : {}),
+				...(request.category === 'main' ? { followUps: () => record.followUps.splice(0) } : {}),
 			};
 			const input: RuntimeInput =
 				options.type === 'background'
