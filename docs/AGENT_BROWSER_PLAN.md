@@ -51,7 +51,7 @@ Recommendation: prototype the mirrored view first. Build the pane (toolbar, tabs
 
 Sign-in fallback for the mirrored view: an "open in a window" action that reopens the same profile as a normal Chrome window for the user to log in, then returns to the pane.
 
-The pane later carries a per-tab route (direct, private, VPN, Tor); see sections 11 and 12 of the [Roadmap](ROADMAP.md).
+The pane later carries a per-tab route (direct, private, VPN, Tor); see [Tor and .onion sites](roadmap/TOR.md) and [Private and VPN browsing](roadmap/VPN.md) in the roadmap.
 
 ## Implementation steps
 
