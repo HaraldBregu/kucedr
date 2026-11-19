@@ -25,6 +25,7 @@ import {
 	resolveContextMode,
 } from '../system';
 import { userTexts } from './run_user_texts';
+import { deliverFollowUps } from './run_follow_ups';
 import { discoveredToolIds } from './run_discovered';
 import { loadMcpTools } from '../tools/mcp/loader';
 import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
