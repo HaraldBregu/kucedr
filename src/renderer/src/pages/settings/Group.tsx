@@ -58,14 +58,10 @@ export function Group({
 								className={cn(
 									SPLIT_ITEM_CLASS,
 									'h-8',
-									isActive && SPLIT_ITEM_ACTIVE_CLASS,
-									!isActive && 'group'
+									isActive && SPLIT_ITEM_ACTIVE_CLASS
 								)}
 							>
-								<Icon
-									className="size-4 shrink-0 transition-transform duration-300 ease-in-out group-hover:delay-75 group-hover:scale-110 motion-reduce:transition-none"
-									strokeWidth={1.8}
-								/>
+								<Icon className="size-4 shrink-0" strokeWidth={1.8} />
 								<span>{t(item.sidebarLabelKey ?? item.labelKey)}</span>
 								{item.badge && (
 									<Badge variant="outline" className="ml-auto">
