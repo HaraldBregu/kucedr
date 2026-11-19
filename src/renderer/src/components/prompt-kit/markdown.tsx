@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import { marked } from 'marked';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
-import { Copy } from 'lucide-react';
+import { Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CodeBlock, CodeBlockCode } from '@/components/ui/code-block';
 import { cn } from '@/lib/utils';
