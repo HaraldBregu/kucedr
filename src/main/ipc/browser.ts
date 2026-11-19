@@ -59,9 +59,10 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 
 	register({ windows, apps }: BrowserIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
-		const viewers = new Map<WebContents, { targetId: string; stop: () => void }>();
+		const viewers = new Map<WebContents, () => void>();
 		let revision = 0;
 		let inputs = Promise.resolve();
+		let views = Promise.resolve();
 
 		void app.whenReady().then(() => {
 			pane.scale = screen.getPrimaryDisplay().scaleFactor;
