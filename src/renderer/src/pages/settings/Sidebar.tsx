@@ -73,7 +73,7 @@ export function SettingsSidebar(): React.JSX.Element {
 			<div className="shrink-0 border-b border-sidebar-border/50 px-2 pb-2">
 				<Link
 					to="/home"
-					className={cn(SPLIT_ITEM_CLASS, 'group')}
+					className={cn(SPLIT_ITEM_CLASS, 'h-8 group')}
 					onClick={() => {
 						if (isMobile) dispatch({ type: 'SIDEBAR_OPEN_MOBILE_SET', open: false });
 					}}
