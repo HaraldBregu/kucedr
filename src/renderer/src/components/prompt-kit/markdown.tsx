@@ -82,6 +82,7 @@ const initialComponents: Partial<Components> = {
 					</TooltipTrigger>
 					<TooltipContent>{copied ? 'Copied' : 'Copy'}</TooltipContent>
 				</Tooltip>
+				</div>
 				<CodeBlockCode code={String(children)} language={language} />
 			</CodeBlock>
 		);
