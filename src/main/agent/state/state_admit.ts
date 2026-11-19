@@ -9,6 +9,7 @@ export function admitRun<TOptions>(
 		request: Object.freeze({ ...request }),
 		controller: new AbortController(),
 		responseEvents: [],
+		followUps: [],
 		lifecycle: { status: 'queued' },
 	};
 	registry.set(request.id, record);
