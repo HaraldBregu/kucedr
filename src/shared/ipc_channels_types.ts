@@ -1510,6 +1510,7 @@ export interface InvokeChannelMap
 		VideoInvokeChannelMap,
 		AppsInvokeChannelMap,
 		TerminalInvokeChannelMap,
+		BrowserInvokeChannelMap,
 		AuthInvokeChannelMap,
 		CloudInvokeChannelMap {}
 
