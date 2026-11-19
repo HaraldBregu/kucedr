@@ -55,7 +55,8 @@ const initialComponents: Partial<Components> = {
 		const language = extractLanguage(className);
 
 		return (
-			<CodeBlock className={cn('relative', className)}>
+			<CodeBlock className={className}>
+				<div className="sticky top-0 z-10 flex h-0 justify-end pr-2">
 				<Tooltip>
 					<TooltipTrigger
 						closeOnClick={false}
