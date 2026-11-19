@@ -201,6 +201,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		setActionError('');
 		void window.win.showContextMenu(items).then(async (kind): Promise<void> => {
 			if (kind === 'reveal' && entry) await window.agent.revealWorkspaceEntry(entry.path);
+			else if ((kind === 'export-downloads' || kind === 'export-choose') && entry) await window.agent.archiveWorkspaceEntry(entry.path, kind);
 			else if (kind === 'clean-assets' && entry) {
 				await window.agent.cleanWorkspaceAssets(entry.path);
 				const files = await window.agent.listWorkspaceFiles();
