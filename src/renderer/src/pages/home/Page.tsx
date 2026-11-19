@@ -934,6 +934,8 @@ function PageContent(): ReactElement {
 
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
+			<Group orientation="horizontal">
+			<Panel id="home-chat" minSize={480} className="min-w-0">
 			<Split
 				overlayNavigation={!openExtension}
 				sidebar={
