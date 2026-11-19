@@ -538,6 +538,15 @@ export const TerminalChannels = {
 	exit: 'terminal:exit',
 } as const;
 
+export const BrowserChannels = {
+	state: 'browser:state',
+	command: 'browser:command',
+	view: 'browser:view',
+	input: 'browser:input',
+	changed: 'browser:changed',
+	frame: 'browser:frame',
+} as const;
+
 export const MemoryChannels = {
 	getConfig: 'memory:getConfig',
 	configure: 'memory:configure',
