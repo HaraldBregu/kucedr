@@ -7,7 +7,7 @@ export function* deliverFollowUps(
 ): Generator<RuntimeEvent, boolean> {
 	const followUps = input.followUps?.() ?? [];
 	for (const followUp of followUps) {
-		addUserMessage(session, followUp.text);
+		addUserMessage(session, followUp.text, Date.now());
 		yield { type: 'follow_up', id: followUp.id, text: followUp.text };
 	}
 	return followUps.length > 0;
