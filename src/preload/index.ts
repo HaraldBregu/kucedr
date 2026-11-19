@@ -22,6 +22,7 @@ import { apps } from './apps';
 import { win } from './win';
 import { data } from './data';
 import { terminalAPI } from './terminal';
+import { browserPane } from './browser';
 import { auth } from './auth';
 import { cloud } from './cloud';
 
