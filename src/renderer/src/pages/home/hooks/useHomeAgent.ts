@@ -334,6 +334,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			} catch (error) {
 				if (activeRunIdRef.current === runId) activeRunIdRef.current = undefined;
 				requestActiveRef.current = false;
+				if (requestIdRef.current === requestId) restoreFollowUps();
 				if (currentSessionIdRef.current === sessionId) {
 					setIsLoading(false);
 					const message = error instanceof Error ? error.message : 'Agent request failed.';
