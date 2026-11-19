@@ -141,6 +141,7 @@ function getPage(targetId?: string): { id: string; page: Page } {
 	if (targetId) {
 		const page = pages.get(targetId);
 		if (!page) throw new Error(`Unknown tab "${targetId}". Use action "tabs" to list open tabs.`);
+		pageOrder.set(page, ++pane.order);
 		return { id: targetId, page };
 	}
 	const entries = [...pages.entries()];
