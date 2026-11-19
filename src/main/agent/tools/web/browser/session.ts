@@ -4,7 +4,7 @@ import type { BrowserContext, Page } from 'playwright-core';
 export interface BrowserSession {
 	context: BrowserContext | null;
 	starting?: Promise<BrowserContext>;
-	readonly headless: boolean;
+	readonly background: boolean;
 	closed: boolean;
 	readonly pages: Map<string, Page>;
 	readonly consoleLogs: Map<string, string[]>;
@@ -12,9 +12,9 @@ export interface BrowserSession {
 }
 
 export const browserSessions = new AsyncLocalStorage<BrowserSession>();
-const interactive: BrowserSession = {
+export const interactive: BrowserSession = {
 	context: null,
-	headless: false,
+	background: false,
 	closed: false,
 	pages: new Map(),
 	consoleLogs: new Map(),
