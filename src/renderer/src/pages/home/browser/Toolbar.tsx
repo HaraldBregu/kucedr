@@ -30,7 +30,7 @@ export function BrowserToolbar({
 
 	return (
 		<>
-			<div className="flex h-10 shrink-0 items-center gap-1 px-2">
+			<div className="flex h-12 shrink-0 items-center gap-1 px-2">
 				{actions.map(({ label, icon: Icon, run }) => (
 					<Tooltip key={label}>
 						<TooltipTrigger
