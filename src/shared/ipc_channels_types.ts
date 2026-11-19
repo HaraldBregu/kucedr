@@ -1405,6 +1405,27 @@ export interface TerminalEventChannelMap {
 	[TerminalChannels.exit]: { data: import('./terminal').TerminalExitEvent };
 }
 
+export interface BrowserInvokeChannelMap {
+	[BrowserChannels.state]: { args: []; result: import('./browser').BrowserPaneState };
+	[BrowserChannels.command]: {
+		args: [request: import('./browser').BrowserPaneCommand];
+		result: void;
+	};
+	[BrowserChannels.view]: {
+		args: [request: import('./browser').BrowserPaneView | null];
+		result: void;
+	};
+	[BrowserChannels.input]: {
+		args: [request: import('./browser').BrowserPaneInput];
+		result: void;
+	};
+}
+
+export interface BrowserEventChannelMap {
+	[BrowserChannels.changed]: { data: import('./browser').BrowserPaneState };
+	[BrowserChannels.frame]: { data: import('./browser').BrowserPaneFrame };
+}
+
 export interface AuthInvokeChannelMap {
 	[AuthChannels.getState]: { args: []; result: import('./auth_types').AuthState };
 	[AuthChannels.getProfile]: { args: []; result: import('./auth_types').AccountProfile };
