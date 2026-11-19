@@ -24,7 +24,7 @@ export function BrowserPane({
 	};
 
 	return (
-		<section aria-label="Browser" className="flex h-full min-w-0 flex-col bg-background pt-12">
+		<section aria-label="Browser" className="flex h-full min-w-0 flex-col bg-background">
 			<BrowserToolbar
 				tab={active}
 				acting={acting}
