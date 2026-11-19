@@ -3,6 +3,7 @@ import type { ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import type { ModelReasoningEffort } from '@/lib/compat';
 import type { AgentResponseEvent } from '@/lib/compat';
+import type { AgentFollowUp } from '@shared/agent_types';
 import { useModes } from '@/hooks/use-modes';
 import { playSound } from '@/lib/sounds/play';
 import { formatReplyMessage } from '@shared/reply';
