@@ -271,6 +271,10 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				let responseSoundPlayed = false;
 				const onEvent = (event: AgentResponseEvent): void => {
 					if (event.agentId !== HOME_AGENT_ID) return;
+					if (event.type === 'follow_up' && requestIdRef.current === requestId)
+						updateFollowUps(
+							followUpsRef.current.filter((followUp) => followUp.id !== event.id)
+						);
 					if (event.type === 'run_started') {
 						resolvedSessionId = event.sessionId;
 						const savedRuntime = readRuntime(event.sessionId);
