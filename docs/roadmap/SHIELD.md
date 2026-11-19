@@ -39,7 +39,7 @@ for the rest of the computer.
 | 13.3 | Secret guard | A stored key or token never leaves in a search query, page request or form the agent fills; the action is stopped and shown | Exact match against the keys the app already stores ([Privacy](PRIVACY.md), 1.2) | S |
 | 13.4 | Command and plugin limits | The agent's shell commands, plugin scripts and local connector servers reach only allowed sites | The sandbox's existing domain lists; the plugin `network:` permission is designed in [Plugin system](../PLUGIN_SYSTEM.md) but not built | M–L |
 | 13.5 | Local network protection | Web pages cannot reach devices on the home or office network; `localhost` stays available for development when allowed | `src/main/public.ts`; [Security audit](../SECURITY_AUDIT.md) #21 | S |
-| 13.6 | Browsing hygiene | HTTPS first, third-party cookies off, tracking parameters stripped from links, no network-address leak through WebRTC | Browser launch options | S |
+| 13.6 | Browsing hygiene | HTTPS first, third-party cookies off, tracking parameters stripped from links, no network-address leak through WebRTC | The browser pane's network session | S |
 | 13.7 | Remote content in documents | Remote images in workspace documents load only when the user allows; a tighter content policy for the app window | [Security audit](../SECURITY_AUDIT.md) #24 | S |
 | 13.8 | Network view | Per chat and overall: which sites were contacted, by which tool, and what was blocked | Tool inputs already recorded in each chat's `run.jsonl`; the Privacy centre ([Privacy](PRIVACY.md), 1.1) | M |
 | 13.9 | Local-only switch | One switch that stops all traffic except the chosen model provider, or everything when a local model is used | [Local models and offline use](LOCAL.md) | M |
