@@ -27,6 +27,7 @@ export interface AgentRunRecord<TOptions = unknown> {
 	readonly request: Readonly<AgentRunRequest<TOptions>>;
 	readonly controller: AbortController;
 	readonly responseEvents: AgentResponseEvent[];
+	readonly followUps: AgentFollowUp[];
 	lifecycle: AgentRunLifecycle;
 	completion?: Promise<AgentRunOutcome>;
 }
