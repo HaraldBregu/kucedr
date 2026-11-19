@@ -155,6 +155,7 @@ type RuntimeInputBase = Pick<
 	explicitSkill?: string;
 	unloadSkill?: string;
 	scope?: import('./execution/scope').ExecutionScope;
+	followUps?: () => import('../../shared/agent_types').AgentFollowUp[];
 };
 
 export type RuntimeInput = RuntimeInputBase &
