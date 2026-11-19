@@ -569,6 +569,24 @@ export class Agent {
 		return true;
 	}
 
+	followUp(runId: string, followUp: AgentFollowUp, windowId?: number): boolean {
+		const record = this.runs.get(runId);
+		if (!record || (windowId !== undefined && record.request.windowId !== windowId)) return false;
+		if (record.request.category !== 'main' || record.lifecycle.status === 'cancelling')
+			return false;
+		record.followUps.push(followUp);
+		return true;
+	}
+
+	cancelFollowUp(runId: string, id: string, windowId?: number): boolean {
+		const record = this.runs.get(runId);
+		if (!record || (windowId !== undefined && record.request.windowId !== windowId)) return false;
+		const index = record.followUps.findIndex((followUp) => followUp.id === id);
+		if (index < 0) return false;
+		record.followUps.splice(index, 1);
+		return true;
+	}
+
 	cancelAll(): void {
 		rejectPendingToolPermissions();
 		interruptPendingUserInput();
