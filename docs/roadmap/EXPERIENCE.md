@@ -13,8 +13,9 @@ Part of the [Roadmap](README.md). Status: proposal.
 | 3.7 | Undo and archive view | Undo after delete or archive; a place to see archived chats _(whether one exists is not verified)_ | Pin, archive and categories exist | S |
 | 3.8 | Attachment checks | A warning before sending a file the model cannot read or that is too large | Listed as missing in [FEATURES.md](../FEATURES.md) | S |
 | 3.9 | Browser pane | When the agent uses the browser tool, the page appears in a resizable pane on the right of the chat instead of a separate Chrome window | [Embedded agent browser plan](../AGENT_BROWSER_PLAN.md), which holds the behaviour and the comparison of approaches | L |
+| 3.10 | Chat export, import and sharing | Export a chat as Markdown, HTML or PDF; import chats from other assistants; later, share a chat by link | Export exists for workspace documents only (`src/main/export.ts`); a share link needs a server and is a later decision | S–M |
 
-Already planned in its own doc and left there: the terminal panel ([TERMINAL.md](../TERMINAL.md)).
+The terminal panel has its own area: [Terminal](TERMINAL.md).
 
 The browser pane later carries [Tor tabs](TOR.md) and [private and VPN tabs](VPN.md).
 
