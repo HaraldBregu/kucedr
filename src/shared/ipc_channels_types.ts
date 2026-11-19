@@ -198,6 +198,11 @@ export interface AgentInvokeChannelMap {
 		};
 	};
 	[AgentChannels.cancel]: { args: [runId: string]; result: boolean };
+	[AgentChannels.followUp]: {
+		args: [runId: string, followUp: import('./agent_types').AgentFollowUp];
+		result: boolean;
+	};
+	[AgentChannels.cancelFollowUp]: { args: [runId: string, id: string]; result: boolean };
 	[AgentChannels.respondToolPermission]: {
 		args: [
 			scope: import('./agent_types').AgentToolPermissionScope,
