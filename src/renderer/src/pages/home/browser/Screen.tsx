@@ -1,4 +1,4 @@
-import { useEffect, useRef, type MouseEvent, type ReactElement } from 'react';
+import { useEffect, useRef, type ReactElement } from 'react';
 
 const BUTTONS = ['left', 'middle', 'right'] as const;
 const MODIFIERS = ['Shift', 'Control', 'Alt', 'Meta'];
@@ -38,15 +38,28 @@ export function BrowserScreen({ targetId }: { readonly targetId: string }): Reac
 		};
 	}, [targetId]);
 
-	const mouse = (type: 'move' | 'down' | 'up', event: MouseEvent): void => {
+	const point = (event: {
+		readonly clientX: number;
+		readonly clientY: number;
+	}): { x: number; y: number } | null => {
 		const rect = image.current?.getBoundingClientRect();
-		if (!rect?.width || !frameWidth.current) return;
+		if (!rect?.width || !frameWidth.current) return null;
 		const scale = frameWidth.current / rect.width;
+		return {
+			x: Math.max(0, (event.clientX - rect.left) * scale),
+			y: Math.max(0, (event.clientY - rect.top) * scale),
+		};
+	};
+	const mouse = (
+		type: 'move' | 'down' | 'up',
+		event: { readonly clientX: number; readonly clientY: number; button: number; detail: number }
+	): void => {
+		const at = point(event);
+		if (!at) return;
 		window.browserPane.input({
 			targetId,
 			type,
-			x: Math.max(0, (event.clientX - rect.left) * scale),
-			y: Math.max(0, (event.clientY - rect.top) * scale),
+			...at,
 			button: BUTTONS[event.button] ?? 'left',
 			count: Math.min(event.detail, 3),
 		});
@@ -68,17 +81,15 @@ export function BrowserScreen({ targetId }: { readonly targetId: string }): Reac
 			onMouseUp={(event) => mouse('up', event)}
 			onContextMenu={(event) => event.preventDefault()}
 			onWheel={(event) => {
-				const rect = image.current?.getBoundingClientRect();
-				if (!rect?.width || !frameWidth.current) return;
-				const scale = frameWidth.current / rect.width;
-				window.browserPane.input({
-					targetId,
-					type: 'wheel',
-					x: Math.max(0, (event.clientX - rect.left) * scale),
-					y: Math.max(0, (event.clientY - rect.top) * scale),
-					deltaX: event.deltaX,
-					deltaY: event.deltaY,
-				});
+				const at = point(event);
+				if (at)
+					window.browserPane.input({
+						targetId,
+						type: 'wheel',
+						...at,
+						deltaX: event.deltaX,
+						deltaY: event.deltaY,
+					});
 			}}
 			onPaste={(event) => {
 				event.preventDefault();
@@ -88,7 +99,7 @@ export function BrowserScreen({ targetId }: { readonly targetId: string }): Reac
 			onKeyDown={(event) => {
 				if (event.key === 'F6') return event.currentTarget.blur();
 				if (MODIFIERS.includes(event.key) || event.nativeEvent.isComposing) return;
-				const shortcut = event.metaKey || event.ctrlKey;
+				const shortcut = event.metaKey || (event.ctrlKey && !event.altKey);
 				if (shortcut && !/^(Key[ACXZ]|Arrow|Backspace|Delete)/.test(event.code)) return;
 				event.preventDefault();
 				if (event.key.length === 1 && !shortcut)
