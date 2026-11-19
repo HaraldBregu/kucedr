@@ -139,7 +139,7 @@ function applyResponseEvent(
 			...settled,
 			messages: [
 				...settled.messages,
-				createUserMessage(`user-${event.id}`, event.text),
+				createUserMessage(`user-${event.id}`, event.text, [], true),
 				agentMessage,
 			],
 			activeAgentId: agentMessage.id,
