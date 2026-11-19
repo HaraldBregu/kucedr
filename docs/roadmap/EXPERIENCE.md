@@ -1,0 +1,101 @@
+# 3. User experience
+
+Part of the [Roadmap](README.md). Status: proposal.
+
+| # | Feature | What the user gets | Builds on | Size |
+| --- | --- | --- | --- | --- |
+| 3.1 | Completion notifications | A system notification and dock badge when a background run, task or approval needs attention | Sounds and a shimmering title only today; no notifications anywhere | S |
+| 3.2 | Search across chats | Find any message in any chat from one search box | `src/renderer/src/pages/home/Search.tsx` searches the open chat only | M |
+| 3.3 | Regenerate and retry | Re-run a reply, or retry a failed one, from the message | Edit and stop exist | S |
+| 3.4 | Complete the "/" menu | Skills and task commands appear in the menu that already opens on `/` | `PromptSlash` lists modes, apps, settings pages and themes; skills and task commands are typed from memory | S |
+| 3.5 | Shortcut guide | One screen listing every shortcut, fed by a single list | Shortcuts are defined in four places; three of them do nothing today | M |
+| 3.6 | Offline and failure states | A clear message and a retry when offline, when a chat fails to load, or when a rename fails | No online check anywhere | S |
+| 3.7 | Undo and archive view | Undo after delete or archive; a place to see archived chats _(whether one exists is not verified)_ | Pin, archive and categories exist | S |
+| 3.8 | Attachment checks | A warning before sending a file the model cannot read or that is too large | Listed as missing in [FEATURES.md](../FEATURES.md) | S |
+| 3.9 | Browser pane | When the agent uses the browser tool, the page appears in a resizable pane on the right of the chat instead of a separate Chrome window | [Embedded agent browser plan](../AGENT_BROWSER_PLAN.md), which holds the behaviour and the comparison of approaches | L |
+
+Already planned in its own doc and left there: the terminal panel ([TERMINAL.md](../TERMINAL.md)).
+
+The browser pane later carries [Tor tabs](TOR.md) and [private and VPN tabs](VPN.md).
+
+## User experience in detail
+
+Suggested order: 3.1, 3.3, 3.4, 3.2, 3.5, with the browser pane prototype (3.9) alongside because
+it is the largest.
+
+### 3.1 Completion notifications
+
+- _Behaviour._ A system notification when a run finishes or fails while the window is unfocused or
+  another chat is on screen; when a run is waiting for an approval or an answer; when a scheduled
+  task or health check finishes or needs attention. Clicking it opens that chat. A dock or taskbar
+  badge counts chats needing attention and clears when they are viewed.
+- _Setting._ One switch beside the existing sound switch in Settings → General
+  (`soundFeedbackEnabled` in `src/main/settings_store.ts`). The system's do-not-disturb is
+  respected automatically.
+- _Builds on._ Run events already defined in `src/shared/agent_types.ts` (`run_finished` with its
+  stop reason, `tool_permission_request`, `user_input_request`).
+- _Needed first._ The main process has no run lifecycle signal: events go only to the window that
+  started the run (`src/main/ipc/agent.ts`), background runs send nothing, and main does not know
+  which chat is on screen. One change fixes all three: main announces start, waiting and finish for
+  every run, and the window reports its visible chat. The same signal lets the sidebar stop polling
+  (2.6) and shows approvals waiting in other chats.
+- _Open decision._ Recommended: the notification shows the chat title only, never message text,
+  because notifications appear on the lock screen.
+- _Check._ A run ending with the window unfocused raises exactly one notification; clicking opens
+  the chat; none appears when that chat is on screen and focused.
+
+### 3.2 Search across chats
+
+- _Behaviour._ A search field above the chat list. Results are grouped by chat with a line of
+  surrounding text. Choosing one opens the chat, scrolls to the message and highlights the match.
+  Archived chats are included and labelled.
+- _Builds on._ The in-chat highlight in `src/renderer/src/pages/home/Search.tsx`; the message
+  loader in `src/main/agent/session`.
+- _Approach._ The first version reads the chats directly, off the main thread, with no index. At
+  the surveyed size (131 chats, 43 MB) that is enough. An index, using the built-in SQLite the
+  knowledge store already uses, comes when a search takes longer than about a third of a second.
+- _Complications._ Saved messages have no ids; the chat view numbers them by position after
+  filtering, so search has to return the same position. The strings in `Search.tsx` are hard-coded
+  English. If data is encrypted at rest (1.3), search runs after decryption, which a direct read
+  handles and an index would not without more work.
+- _Open decision._ Recommended: search what the user and the assistant wrote, not tool output.
+- _Check._ A word known to be in an old chat is found, and opening the result lands on that message.
+
+### 3.3 Regenerate and retry
+
+- _Behaviour._ A Regenerate action beside Copy, Read aloud and Reply on assistant messages
+  (`src/renderer/src/pages/home/components/AssistantMessage.tsx`), and a Retry button on a failed
+  reply. The new reply replaces the old one. Regenerating an older reply discards what came after
+  it, with the same warning editing gives.
+- _Builds on._ Editing a message already cuts history and re-runs (`Agent.editUserMessage` in
+  `src/main/agent/agent.ts`). Regenerate is that with the text unchanged.
+- _Complications._ That path handles plain-text messages only, so messages with attachments need it
+  extended. Whether a failed reply survives a restart is not verified.
+- _Open decisions._ Recommended: replace only, with no branches or version switcher. Files the
+  discarded reply changed are not rolled back; the message should say so.
+- _Check._ Regenerate on the last reply produces a new one and the history on disk holds a single
+  reply; Retry after a forced provider error succeeds.
+
+### 3.4 Complete the "/" menu
+
+- _Behaviour._ Skills (turn on, turn off) and the task commands appear in the existing menu with a
+  one-line description each.
+- _Builds on._ `PromptSlash` in `src/renderer/src/components/prompt-slash.tsx`, the skills list
+  exposed by `src/preload/skills.ts`, and the task commands in
+  `src/renderer/src/pages/home/hooks/commands.ts`.
+- _Check._ Typing `/` lists every command the composer accepts; choosing a skill enables it for the
+  chat.
+
+### 3.5 Shortcut guide
+
+- _Behaviour._ One screen, opened from the Help menu and the command menu, listing every shortcut
+  by area. The same list drives the menu and the key handlers, so the guide cannot go stale.
+- _Found on the way._ ⌘K, ⌘D and Ctrl+Alt+N are captured and do nothing: `src/main/shortcuts.ts`
+  forwards them to the window as `app:shortcut` and nothing listens. Decide what each does or
+  remove them. ⌘K usually opens a command menu; here that is on ⌘F.
+- _Builds on._ `SHORTCUT_ACCELERATORS` in `src/shared/app_types.ts`; `CommandShortcut` in
+  `src/renderer/src/components/ui/command.tsx` for key labels.
+- _Constraint._ Keys must work on non-US layouts, as zoom already does by registering both ⌘+ and
+  ⌘=.
+- _Kept out._ Rebinding keys.
+- _Check._ Every shortcut in the guide works, and no working shortcut is missing from it.
