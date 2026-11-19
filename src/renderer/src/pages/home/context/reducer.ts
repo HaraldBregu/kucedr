@@ -432,7 +432,9 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 				(block): block is UserAttachment => block.type === 'attachment'
 			);
 			if (content.length > 0 || attachments.length > 0)
-				out.push(createUserMessage(`user-history-${index}`, content, attachments));
+				out.push(
+					createUserMessage(`user-history-${index}`, content, attachments, message.followUp)
+				);
 			return;
 		}
 
