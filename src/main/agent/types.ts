@@ -204,6 +204,7 @@ export type RuntimeEvent =
 	| { type: 'context_usage'; context: import('../../shared/agent_types').AgentContextUsage }
 	| { type: 'provider_queue_metrics'; providerId: string; queueDelayMs: number; attempt: number }
 	| { type: 'run_error'; message: string }
+	| { type: 'follow_up'; id: string; text: string }
 	| { type: 'capability_resolution_start' }
 	| {
 			type: 'capability_resolution_result';
