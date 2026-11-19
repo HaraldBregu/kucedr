@@ -121,6 +121,25 @@ function applyResponseEvent(
 	const ensured = ensureAgentForRun(state, messageRunId);
 	if (ensured.message.runId && ensured.message.runId !== messageRunId) return state;
 
+	if (event.type === 'follow_up') {
+		const settled = updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
+			...message,
+			state: 'completed',
+			tools: settleRunningTools(message.tools),
+			completedAtMs: receivedAtMs,
+		}));
+		const agentMessage = createAgentMessage(`agent-${event.id}`, messageRunId, receivedAtMs);
+		return {
+			...settled,
+			messages: [
+				...settled.messages,
+				createUserMessage(`user-${event.id}`, event.text),
+				agentMessage,
+			],
+			activeAgentId: agentMessage.id,
+		};
+	}
+
 	if (event.type === 'run_state') {
 		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
 			...message,
