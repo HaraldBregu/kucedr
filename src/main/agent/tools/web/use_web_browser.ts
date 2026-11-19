@@ -360,8 +360,8 @@ const browserTool = tool({
 				const url = await assertHttpUrl(params.url);
 				const ctx = await ensureStarted(signal);
 				const page = await ctx.newPage();
-				const owner = executionScope.getStore()?.ownerId;
-				if (owner) pageOwners.set(page, owner);
+				claim(page);
+				pageOrder.set(page, ++pane.order);
 				const targetId = [...session.pages.entries()].find(([, p]) => p === page)?.[0] ?? trackPage(page);
 				try {
 					await runBrowserPageOperation(page, signal, () =>
