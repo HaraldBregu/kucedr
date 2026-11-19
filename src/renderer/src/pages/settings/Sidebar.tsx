@@ -73,15 +73,12 @@ export function SettingsSidebar(): React.JSX.Element {
 			<div className="shrink-0 border-b border-sidebar-border/50 px-2 pb-2">
 				<Link
 					to="/home"
-					className={cn(SPLIT_ITEM_CLASS, 'h-8 group')}
+					className={cn(SPLIT_ITEM_CLASS, 'h-8')}
 					onClick={() => {
 						if (isMobile) dispatch({ type: 'SIDEBAR_OPEN_MOBILE_SET', open: false });
 					}}
 				>
-					<ArrowLeft
-						className="size-4 shrink-0 transition-transform duration-300 ease-in-out group-hover:delay-75 group-hover:scale-110 motion-reduce:transition-none"
-						strokeWidth={1.8}
-					/>
+					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
 					<span>{t('settings.returnToChat', 'Return to Home')}</span>
 				</Link>
 			</div>
