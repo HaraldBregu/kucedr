@@ -820,6 +820,8 @@ async function* loop(
 					instruction:
 						'Recording started in the background. Confirm its current status without waiting for completion or stopping it.',
 				};
+			} else if (!isExhausted(session)) {
+				yield* deliverFollowUps(session, input);
 			}
 		}
 	} finally {
