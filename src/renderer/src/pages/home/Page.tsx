@@ -811,6 +811,7 @@ function PageContent(): ReactElement {
 					onAction={voiceErrorAction?.action}
 				/>
 				<ActiveSkills skillIds={activeSkillIds} disabled={agent.isLoading} onRemove={agent.unloadSkill} />
+				<FollowUps followUps={agent.followUps} onRemove={agent.removeFollowUp} />
 				{attachments.length > 0 ? (
 					<div className="mb-2">
 						<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
