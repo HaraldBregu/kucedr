@@ -129,7 +129,7 @@ function warmUpDevScreenCapture(): Promise<void> {
 }
 
 const lightThemeColors: AppThemeColors = {
-	radius: '0.5rem',
+	radius: '0.75rem',
 	'app-window-radius': '16px',
 	'app-bg-opacity': '1',
 	'app-surface-opacity': '1',
