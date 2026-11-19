@@ -62,9 +62,14 @@ const initialComponents: Partial<Components> = {
 					className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
 					aria-label="Copy code"
 					title="Copy code"
-					onClick={() => void navigator.clipboard.writeText(String(children).replace(/\n$/, ''))}
+					onClick={() =>
+						void navigator.clipboard.writeText(String(children).replace(/\n$/, '')).then(() => {
+							setCopied(true);
+							setTimeout(() => setCopied(false), 1500);
+						})
+					}
 				>
-					<Copy className="size-3.5" />
+					{copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
 				</Button>
 				<CodeBlockCode code={String(children)} language={language} />
 			</CodeBlock>
