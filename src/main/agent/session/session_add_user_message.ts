@@ -1,17 +1,13 @@
-import type { MessageContent } from '../types';
+import type { Message, MessageContent } from '../types';
 import { persist } from './session_persist';
 import type { SessionState } from './session_types';
 
 export function addUserMessage(
 	state: SessionState,
 	content: MessageContent,
-	createdAtMs?: number
+	extra: Pick<Message, 'createdAtMs' | 'followUp'> = {}
 ): void {
 	if (state.lease && !state.lease.active) return;
-	state.messages.push({
-		role: 'user',
-		content,
-		...(createdAtMs === undefined ? {} : { createdAtMs }),
-	});
+	state.messages.push({ role: 'user', content, ...extra });
 	persist(state);
 }
