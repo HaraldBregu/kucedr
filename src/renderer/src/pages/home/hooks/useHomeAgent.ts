@@ -322,6 +322,14 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					setIsLoading(false);
 					dispatchChat({ type: 'complete_active', response, completedAtMs: Date.now() });
 				}
+				if (requestIdRef.current === requestId && followUpsRef.current.length > 0) {
+					const queued = followUpsRef.current.map((followUp) => followUp.text).join('\n\n');
+					updateFollowUps([]);
+					window.setTimeout(
+						() => void sendPromptRef.current?.(queued, [], { preserveInput: true }),
+						0
+					);
+				}
 				return true;
 			} catch (error) {
 				if (activeRunIdRef.current === runId) activeRunIdRef.current = undefined;
