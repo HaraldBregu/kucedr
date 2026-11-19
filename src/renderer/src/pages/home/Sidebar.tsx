@@ -48,7 +48,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const [editingSessionId, setEditingSessionId] = useState<string>();
 	const [editingTitle, setEditingTitle] = useState('');
 	const [compactingSessionId, setCompactingSessionId] = useState<string>();
-	const [pendingAction, setPendingAction] = useState<{ action: 'clear' | 'compact'; id: string; title: string }>();
+	const [pendingAction, setPendingAction] = useState<{ id: string; title: string }>();
 	const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(new Set());
 	const [selectionAnchor, setSelectionAnchor] = useState<string>();
 	const [categories, setCategories] = useState<ChatCategory[]>(() => stored('chat-categories', []));
