@@ -1035,7 +1035,7 @@ function PageContent(): ReactElement {
 					)}
 				</div>
 				{browserOpen && browserCovers ? (
-					<div className="absolute inset-0 z-40 bg-background pt-12">
+					<div className="absolute inset-x-0 bottom-0 top-12 z-40 bg-background">
 						<BrowserPane
 							tabs={browser.tabs}
 							acting={browser.acting}
