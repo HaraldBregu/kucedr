@@ -20,13 +20,19 @@ function isAgentMessage(message: HomeChatMessage): message is AgentMessage {
 	return message.role === 'agent' && message.type === 'agent';
 }
 
-function createUserMessage(id: string, content: string, attachments: readonly UserAttachment[] = []): UserMessage {
+function createUserMessage(
+	id: string,
+	content: string,
+	attachments: readonly UserAttachment[] = [],
+	followUp = false
+): UserMessage {
 	return {
 		id,
 		role: 'user',
 		type: 'user',
 		content,
 		...(attachments.length > 0 ? { attachments } : {}),
+		...(followUp ? { followUp } : {}),
 	};
 }
 
