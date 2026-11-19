@@ -2,6 +2,8 @@ export const AgentChannels = {
 	send: 'agent:send',
 	response: 'agent:response',
 	cancel: 'agent:cancel',
+	followUp: 'agent:follow-up',
+	cancelFollowUp: 'agent:cancel-follow-up',
 	respondToolPermission: 'agent:respond-tool-permission',
 	respondUserInput: 'agent:respond-user-input',
 	getPromptInputCapabilities: 'agent:prompt-input-capabilities:get',
