@@ -346,6 +346,7 @@ const browserTool = tool({
 				return JSON.stringify({ running: session.context !== null, tabs: await tabList(signal) });
 			case 'start': {
 				await ensureStarted(signal);
+				for (const page of session.pages.values()) if (!pageOwners.has(page)) claim(page);
 				return JSON.stringify({ running: true, tabs: await tabList(signal) });
 			}
 			case 'stop': {
