@@ -57,6 +57,7 @@ export function Group({
 								aria-current={isActive ? 'page' : undefined}
 								className={cn(
 									SPLIT_ITEM_CLASS,
+									'h-8',
 									isActive && SPLIT_ITEM_ACTIVE_CLASS,
 									!isActive && 'group'
 								)}
