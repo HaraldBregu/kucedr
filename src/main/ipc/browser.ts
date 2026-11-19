@@ -78,8 +78,6 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		trusted.command(BrowserChannels.command, (request) => command(commandSchema.parse(request)));
 		trusted.commandWithEvent(BrowserChannels.view, ({ sender }, request) => {
 			const next = viewSchema.parse(request);
-			// Chrome drops a screencast when the window is resized while it starts, so every
-			// change stops the cast, sizes the tab, then starts a new one.
 			views = views
 				.then(async () => {
 					viewers.get(sender)?.();
