@@ -274,7 +274,7 @@ export interface AgentInvokeChannelMap {
 		result: string;
 	};
 	[AgentChannels.archiveWorkspaceEntry]: {
-		args: [entryPath: string, action: 'compress' | 'extract'];
+		args: [entryPath: string, action: 'compress' | 'extract' | 'export-downloads' | 'export-choose'];
 		result: string;
 	};
 	[AgentChannels.createWorkspaceDirectory]: {
