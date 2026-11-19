@@ -965,7 +965,26 @@ function PageContent(): ReactElement {
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
 					{!showEmptyConversation && (
-						<div className="absolute right-2 top-12 z-40 sm:right-3">
+						<div className="absolute right-2 top-12 z-40 flex items-center gap-1 sm:right-3">
+							{browserAlive && !browserOpen ? (
+								<Tooltip>
+									<TooltipTrigger
+										render={
+											<Button
+												type="button"
+												variant="ghost"
+												size="icon"
+												className="rounded-full"
+												aria-label="Show browser"
+												onClick={() => setBrowserHiddenChat(null)}
+											>
+												<Globe className="size-4" strokeWidth={1.8} />
+											</Button>
+										}
+									/>
+									<TooltipContent side="bottom">Show browser</TooltipContent>
+								</Tooltip>
+							) : null}
 							<Popover open={detailsPopoverOpen} onOpenChange={setDetailsPopoverOpen}>
 					<Tooltip>
 						<TooltipTrigger render={<PopoverTrigger asChild>{infoButton}</PopoverTrigger>} />
