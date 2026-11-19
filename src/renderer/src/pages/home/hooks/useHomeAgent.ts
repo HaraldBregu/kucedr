@@ -477,7 +477,22 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			.getSessionSnapshot(sessionId)
 			.then((snapshot) => {
 				if (cancelled || localInteractionRef.current) return;
-				dispatchChat({ type: 'restore_history', history: snapshot.messages });
+				const users = snapshot.messages.flatMap((message, index) =>
+					message.role === 'user' ? [index] : []
+				);
+				const runStart = snapshot.activeRun
+					? users.at(
+							-1 - snapshot.activeRun.events.filter((event) => event.type === 'follow_up').length
+						)
+					: undefined;
+				dispatchChat({
+					type: 'restore_history',
+					history:
+						runStart !== undefined &&
+						snapshot.messages[runStart].content === snapshot.activeRun?.message
+							? snapshot.messages.slice(0, runStart + 1)
+							: snapshot.messages,
+				});
 				const lastModeIds = snapshot.messages.findLast(
 					(message) => message.role !== 'user' && message.modeIds !== undefined
 				)?.modeIds;
