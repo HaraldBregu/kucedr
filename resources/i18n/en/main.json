@@ -2391,6 +2391,10 @@
 			"selecting": "Selecting tools…",
 			"selected": "Selected: {{tools}}"
 		},
+		"followUp": {
+			"queued": "Queued follow-ups",
+			"remove": "Remove follow-up"
+		},
 		"placeholderDescription": "Start a conversation with AI to brainstorm, draft, or refine ideas."
 	},
 	"writing": {
