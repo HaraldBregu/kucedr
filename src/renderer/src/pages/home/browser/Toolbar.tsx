@@ -18,7 +18,9 @@ export function BrowserToolbar({
 	readonly onClose: () => void;
 }): ReactElement {
 	const [address, setAddress] = useState(tab.url);
-	useEffect(() => setAddress(tab.url), [tab.url, tab.targetId]);
+	useEffect(() => {
+		if (!tab.url.startsWith('chrome-error:')) setAddress(tab.url);
+	}, [tab.url, tab.targetId]);
 	const actions = [
 		{ label: 'Back', icon: ArrowLeft, run: () => onCommand('back') },
 		{ label: 'Forward', icon: ArrowRight, run: () => onCommand('forward') },
