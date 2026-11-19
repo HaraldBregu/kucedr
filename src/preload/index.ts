@@ -75,6 +75,7 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('apps', apps);
 		contextBridge.exposeInMainWorld('dataControls', data);
 		contextBridge.exposeInMainWorld('terminalAPI', terminalAPI);
+		contextBridge.exposeInMainWorld('browserPane', browserPane);
 		contextBridge.exposeInMainWorld('auth', auth);
 		contextBridge.exposeInMainWorld('cloud', cloud);
 	} catch (error) {
