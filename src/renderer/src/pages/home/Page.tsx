@@ -1037,6 +1037,32 @@ function PageContent(): ReactElement {
 						</>
 					)}
 				</div>
+				</Panel>
+				{browserOpen && !browserCovers ? (
+					<>
+						<Separator
+							aria-label="Resize browser"
+							className="relative w-px shrink-0 bg-border outline-none after:absolute after:inset-y-0 after:-left-1 after:w-2 hover:bg-ring focus-visible:bg-ring"
+						/>
+						<Panel id="home-browser" defaultSize="50%" minSize={320} className="min-w-0">
+							<BrowserPane
+								tabs={browser.tabs}
+								acting={browser.acting}
+								onClose={() => setBrowserHiddenChat(chatSessionId)}
+							/>
+						</Panel>
+					</>
+				) : null}
+				</Group>
+				{browserOpen && browserCovers && !openExtension ? (
+					<div className="absolute inset-0 z-40">
+						<BrowserPane
+							tabs={browser.tabs}
+							acting={browser.acting}
+							onClose={() => setBrowserHiddenChat(chatSessionId)}
+						/>
+					</div>
+				) : null}
 			</Split>
 			<LibraryPicker
 				open={libraryPickerOpen}
