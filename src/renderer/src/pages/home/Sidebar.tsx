@@ -123,15 +123,9 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			: [session];
 	const confirmAction = (): void => {
 		if (!pendingAction) return;
-		const { action, id } = pendingAction;
+		const { id } = pendingAction;
 		setPendingAction(undefined);
 		setActionError('');
-		if (action === 'clear') {
-			void window.agent.clearMessages(id)
-				.then(() => window.dispatchEvent(new CustomEvent('kucedr:session-history-cleared', { detail: id })))
-				.catch(() => setActionError(t('settings.chatHistory.errors.clear')));
-			return;
-		}
 		setCompactingSessionId(id);
 		void window.agent.compactSession(id)
 			.then((result) => {
