@@ -769,6 +769,12 @@ function runtimeEventToAgentEvents(
 	if (event.type === 'run_error') {
 		return [{ type: 'run_state', state: 'error', label: event.message, agentId, runId }];
 	}
+	if (event.type === 'follow_up') {
+		return [
+			{ type: 'follow_up', id: event.id, text: event.text, agentId, runId },
+			{ type: 'run_state', state: 'thinking', agentId, runId },
+		];
+	}
 	if (event.type === 'model_call_start') {
 		return [{ type: 'model_selected', model: event.model, effort: event.effort, agentId, runId }];
 	}
