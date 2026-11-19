@@ -95,7 +95,10 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 				});
 				viewers.set(sender, { targetId: next.targetId, stop });
 			}
-			await fit(page).catch(() => undefined);
+			await page
+				.bringToFront()
+				.then(() => fit(page))
+				.catch(() => undefined);
 		});
 		trusted.command(BrowserChannels.input, (request) => {
 			const event = inputSchema.parse(request);
