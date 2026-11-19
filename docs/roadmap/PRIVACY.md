@@ -14,6 +14,10 @@ Part of the [Roadmap](README.md). Status: proposal.
 | 1.8 | Account and cloud data deletion | Delete the account and everything held on the server from inside the app | Sign-out only today; needs a server function | M |
 | 1.9 | Encrypted sync across devices | Chats and settings on a second device, readable only by the user | Sync code exists but is not wired in ([Cloud file synchronization design](../STORAGE_SYNC.md)); after 1.5 | L |
 
+Related areas: the [Network shield](SHIELD.md) supplies the "what leaves the machine" view for
+1.1 and guards stored keys on the way out; [Memory and knowledge](MEMORY.md) covers seeing and
+editing what the agent remembers.
+
 ## Open decisions
 
 - **1.3 changes how the data folder behaves.** Files stop being readable by other tools, including
