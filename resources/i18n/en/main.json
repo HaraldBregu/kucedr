@@ -2392,6 +2392,7 @@
 			"selected": "Selected: {{tools}}"
 		},
 		"followUp": {
+			"label": "Follow-up",
 			"queued": "Queued follow-ups",
 			"remove": "Remove follow-up"
 		},
