@@ -1,0 +1,49 @@
+import { useEffect, useState, type ReactElement } from 'react';
+import type { BrowserPaneCommand, BrowserPaneTab } from '../../../../../shared/browser';
+import { BrowserScreen } from './Screen';
+import { BrowserTabs } from './Tabs';
+import { BrowserToolbar } from './Toolbar';
+
+export function BrowserPane({
+	tabs,
+	acting,
+	onClose,
+}: {
+	readonly tabs: readonly BrowserPaneTab[];
+	readonly acting: boolean;
+	readonly onClose: () => void;
+}): ReactElement {
+	const active = tabs.reduce((latest, tab) => (tab.order > latest.order ? tab : latest));
+	const [error, setError] = useState<string | null>(null);
+	useEffect(() => setError(null), [active.targetId, active.url]);
+	const run = (targetId: string, command: BrowserPaneCommand['command'], url?: string): void => {
+		setError(null);
+		void window.browserPane
+			.command({ targetId, command, url })
+			.catch((cause: unknown) => setError(cause instanceof Error ? cause.message : String(cause)));
+	};
+
+	return (
+		<section aria-label="Browser" className="flex h-full min-w-0 flex-col bg-background pt-12">
+			<BrowserToolbar
+				tab={active}
+				acting={acting}
+				onCommand={(command, url) => run(active.targetId, command, url)}
+				onClose={onClose}
+			/>
+			{tabs.length > 1 ? (
+				<BrowserTabs
+					tabs={tabs}
+					active={active.targetId}
+					onSelect={(targetId) => run(targetId, 'focus')}
+				/>
+			) : null}
+			{error ? (
+				<p role="alert" className="shrink-0 truncate px-3 py-1 text-xs text-destructive">
+					{error}
+				</p>
+			) : null}
+			<BrowserScreen key={active.targetId} targetId={active.targetId} />
+		</section>
+	);
+}
