@@ -2392,6 +2392,7 @@
 			"selected": "Selezionati: {{tools}}"
 		},
 		"followUp": {
+			"label": "Messaggio successivo",
 			"queued": "Messaggi in coda",
 			"remove": "Rimuovi messaggio in coda"
 		},
