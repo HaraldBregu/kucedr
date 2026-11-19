@@ -1,0 +1,32 @@
+# 1. Privacy
+
+Part of the [Roadmap](README.md). Status: proposal.
+
+| # | Feature | What the user gets | Builds on | Size |
+| --- | --- | --- | --- | --- |
+| 1.1 | Privacy centre | One Settings page: what is stored and how much, what leaves the machine and to whom, delete all chats, export everything, retention periods for chats and logs | `src/main/data/data_controller.ts` already handles memory, knowledge and a `sessions` scope no page shows; an unused `privacy` translation key exists | M |
+| 1.2 | Sealed credentials | Every key (model, database, search) protected by the OS keychain, shown masked in Settings, revealed one at a time | S3 and connector tokens already do this (`src/main/shared/safe_storage.ts`, `src/main/mcp/mcp_record_seal.ts`); model keys in `src/main/providers/providers_store.ts` do not | S |
+| 1.3 | Encrypted data at rest | A switch that encrypts chats, memory, attachments and health notes on disk with a key held in the OS keychain; export still produces readable files | Node's built-in crypto; folder layout in `src/main/shared/user_data_location.ts` | L |
+| 1.4 | App lock | Touch ID, Windows Hello or a passphrase to open the app or after idle | Electron's native biometric prompt on macOS; pairs with 1.3 | S–M |
+| 1.5 | Encrypted backup | Backups encrypted with a passphrase before upload, so the bucket owner cannot read them | `resources/plugins/bootstrap/scripts/backup-s3` uploads unencrypted today | M |
+| 1.6 | Private chat | A chat that is never written to disk and never feeds memory | Session persistence in `src/main/agent/session`; a memory toggle already exists | M |
+| 1.7 | Storage management | Storage use per area with clean-up, automatic retention, owner-only folders | On the surveyed machine logs were 172 MB against 43 MB of chats; the chats, memory and logs folders are readable by other local accounts while `providers/` is owner-only | S |
+| 1.8 | Account and cloud data deletion | Delete the account and everything held on the server from inside the app | Sign-out only today; needs a server function | M |
+| 1.9 | Encrypted sync across devices | Chats and settings on a second device, readable only by the user | Sync code exists but is not wired in ([Cloud file synchronization design](../STORAGE_SYNC.md)); after 1.5 | L |
+
+## Open decisions
+
+- **1.3 changes how the data folder behaves.** Files stop being readable by other tools, including
+  the run-trace analysis used for agent speed and plain-file backup. Recommended as opt-in, off by
+  default.
+- **1.3 and 1.4 protect fully only on signed builds** ([Distribution and trust](DISTRIBUTION.md),
+  6.1). On unsigned builds another local process can ask the keychain for the same key
+  ([Security audit](../SECURITY_AUDIT.md) #18).
+- **1.5 before any device sync.** 1.9 should reuse the same passphrase scheme.
+
+## Documentation to correct alongside
+
+- [SECURITY.md](../../SECURITY.md) and [CLOUD.md](../CLOUD.md) describe version-history sync and
+  cloud chat records as live, but only tests call them.
+- [Settings](../ui/SETTINGS.md) says data Purge has no confirmation; `src/main/ipc/data.ts` shows a
+  native one.
