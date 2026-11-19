@@ -12,6 +12,7 @@ export interface UserMessage {
 	readonly type: 'user';
 	readonly content: string;
 	readonly attachments?: readonly UserAttachment[];
+	readonly followUp?: boolean;
 }
 
 export interface SummaryMessage {
