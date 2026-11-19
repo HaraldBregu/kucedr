@@ -120,6 +120,17 @@ export const agent: AgentApi = {
 		if (!normalizedRunId) throw new Error('Invalid assistant run id.');
 		return typedInvokeUnwrap(AgentChannels.cancel, normalizedRunId);
 	},
+	followUp: (runId, followUp) => {
+		const text = optionalTrimmedString(followUp?.text);
+		if (!optionalTrimmedString(runId)) throw new Error('Invalid assistant run id.');
+		if (!optionalTrimmedString(followUp?.id) || !text) throw new Error('Invalid follow-up.');
+		return typedInvokeUnwrap(AgentChannels.followUp, runId, { id: followUp.id, text });
+	},
+	cancelFollowUp: (runId, id) => {
+		if (!optionalTrimmedString(runId)) throw new Error('Invalid assistant run id.');
+		if (!optionalTrimmedString(id)) throw new Error('Invalid follow-up.');
+		return typedInvokeUnwrap(AgentChannels.cancelFollowUp, runId, id);
+	},
 	respondToolPermission: (
 		scope: AgentToolPermissionScope,
 		decision: AgentToolPermissionDecision
