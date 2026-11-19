@@ -198,6 +198,9 @@ export function registerIpcHandlers(
 			eventBus
 		)
 	);
+	safeRegister('browser', () =>
+		new BrowserIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
+	);
 
 	logger.info('Bootstrap', 'Registered IPC modules');
 }
