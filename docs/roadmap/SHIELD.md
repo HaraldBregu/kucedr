@@ -76,5 +76,7 @@ send data out. 13.10 and 13.3 work as a pair.
   bundling.
 - **First step.** 13.1, 13.3, 13.5 and 13.8 work without the browser pane; the pane (3.9) later
   shows the shield's state.
-- **How filtering is done** depends on the browser pane's approach
-  ([Embedded agent browser plan](../AGENT_BROWSER_PLAN.md)); the rule set is the same either way.
+- **Where filtering happens.** The browser pane is planned as a separate web view with its own
+  network session ([Embedded agent browser plan](../AGENT_BROWSER_PLAN.md)), which is the hook for
+  filtering, cookies, downloads and site permissions. Until the pane exists, the first pieces apply
+  to page fetches, search, shell commands and background browsing.
