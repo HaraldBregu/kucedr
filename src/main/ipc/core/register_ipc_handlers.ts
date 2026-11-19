@@ -21,6 +21,7 @@ import { DataIpc } from '../data';
 import { RealtimeVoiceIpc } from '../realtime_voice';
 import { CoderIpc } from '../coder';
 import { TerminalIpc } from '../terminal';
+import { BrowserIpc } from '../browser';
 import { AuthIpc } from '../auth';
 import { CloudIpc } from '../cloud';
 import type { EventBus } from '../../event_bus';
