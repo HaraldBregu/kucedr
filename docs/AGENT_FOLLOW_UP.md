@@ -1,6 +1,6 @@
 # Agent follow-up messages
 
-Status: plan, not implemented.
+Status: implemented. The queued chips live in `useHomeAgent` state (not the chat reducer), and switching session clears them.
 
 ## Context
 
