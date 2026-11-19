@@ -1,6 +1,29 @@
 # Embedded agent browser plan
 
-Status: proposed. This document describes future work, not current behavior.
+Status: built as the mirrored view. "As built" below describes current behavior; the rest is the original plan.
+
+## As built
+
+Interactive runs start Chrome with no window and the same profile as before (`~/.kucedr/agent-browser`), so saved logins carry over. The pane sits on the right of the main window, beside the navigation bar, and shows the live picture of the tab the agent last used. Clicks, scrolling, typing and paste in the pane go to the page. Under 1000 px of window width the pane covers the chat below the navigation bar.
+
+- Main process: `src/main/agent/tools/web/browser/` (`pane`, `watch`, `tabs`, `cast`, `fit`, `input`, `command`, `observe`, `agent`) and `src/main/ipc/browser.ts`.
+- Window: `src/renderer/src/pages/home/browser/` (`Pane`, `Toolbar`, `Tabs`, `Screen`, `state`), mounted in `src/renderer/src/pages/home/Page.tsx`.
+- Contract: `src/shared/browser.ts`, exposed to the window as `window.browserPane`.
+
+Things that are easy to break:
+
+- All tabs share one hidden Chrome window. Only the front tab follows a resize, so viewing a tab brings it to the front first, then sets the size with `Browser.setContentsSize`.
+- Chrome often sends no picture at all when the window is resized while a screencast is starting. Every view change therefore stops the cast, sizes the tab, then starts a new cast.
+- Windowless Chrome reports itself as `HeadlessChrome`, which sign-in pages refuse. The real user agent is read once per app run and passed at launch.
+- Chrome will not go narrower than 500 px. A narrower pane shows the page scaled down.
+
+Not built:
+
+- The "open in a window" sign-in fallback. Signing in works by typing in the pane; there is no password autofill.
+- Selecting or copying text from the page, composed input (IME), modifier-clicks, file pickers and a downloads list.
+- Enabled and disabled states for back and forward.
+- On Windows and Linux the window buttons stay in the navigation bar, to the left of the pane.
+- Two Kucedr windows showing different tabs at different sizes share the one Chrome window, so the last one to resize wins.
 
 ## Goal
 
