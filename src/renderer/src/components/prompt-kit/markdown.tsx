@@ -9,6 +9,7 @@ import remarkGfm from 'remark-gfm';
 import { Check, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CodeBlock, CodeBlockCode } from '@/components/ui/code-block';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 export type MarkdownProps = {
