@@ -79,6 +79,15 @@ export function UserMessage({
 	return (
 		<Message className="w-full justify-end">
 			<div className="flex min-w-0 max-w-[75%] flex-col items-end gap-1">
+				{followUp ? (
+					<span
+						data-slot="user-message-follow-up"
+						className="flex items-center gap-1 text-xs text-muted-foreground"
+					>
+						<CornerDownRight className="size-3" />
+						{t('chat.followUp.label')}
+					</span>
+				) : null}
 				{attachments.length > 0 ? <Attachments attachments={attachments} /> : null}
 				{isEditing ? (
 					<form
