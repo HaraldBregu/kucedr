@@ -296,7 +296,13 @@ export interface AgentCapabilityResolutionSummary {
 	route?: AgentRouteResolutionSummary;
 }
 
+export interface AgentFollowUp {
+	id: string;
+	text: string;
+}
+
 export type AgentRunStreamEvent =
+	| { type: 'follow_up'; id: string; text: string }
 	| {
 			type: 'run_started';
 			sessionId: string;
