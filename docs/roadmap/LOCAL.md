@@ -1,0 +1,35 @@
+# 15. Local models and offline use
+
+Part of the [Roadmap](README.md). Status: proposal.
+
+Using Kucedr with models that run on the user's own machine, with nothing sent to a cloud provider.
+
+## What exists today
+
+- A keyless Ollama plugin is bundled (`resources/plugins/ollama`).
+- Setup cannot finish without a cloud key: the model step only continues when a provider with a
+  saved API key exists (`src/renderer/src/pages/start/StartPage.tsx`). A user with only local
+  models cannot reach Home.
+- Downloading models from inside the app is designed in [Plugin system](../PLUGIN_SYSTEM.md) and
+  not built.
+- Knowledge search needs an embedding model; whether a local one is available is _not verified_.
+- There is no offline detection anywhere in the app.
+
+## Features
+
+| # | Feature | What the user gets | Builds on | Size |
+| --- | --- | --- | --- | --- |
+| 15.1 | Setup with a local model | Finish first-run setup by choosing a model already on the machine, with no key | The bundled Ollama plugin | S |
+| 15.2 | Model downloads | Browse, download and remove local models from Settings, with size and progress | The download design in [Plugin system](../PLUGIN_SYSTEM.md) | M |
+| 15.3 | Local knowledge | Knowledge indexing and search with a local embedding model | The local knowledge store | M |
+| 15.4 | Offline behaviour | The app says it is offline, keeps local models working, and marks which features need a connection | Offline messages ([User experience](EXPERIENCE.md), 3.6) | S |
+| 15.5 | Built-in runtime | Local models run without installing Ollama | Later phase 1 of [Plugin system](../PLUGIN_SYSTEM.md) | L |
+
+## Open decisions
+
+- **Order.** Recommended: 15.1 first. It is small, and a local model is also the most private way
+  to use the app.
+- **Quality expectations.** Local models are weaker at tool use than the large cloud models; setup
+  should say so, not hide it.
+- **Provider rule.** Local model behaviour stays in plugin manifests, like every other provider.
+- **Pairs with** the local-only switch ([Network shield](SHIELD.md), 13.9).
