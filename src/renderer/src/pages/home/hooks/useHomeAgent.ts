@@ -94,8 +94,24 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		undefined
 	);
 	const currentSessionIdRef = useRef(sessionId);
+	const [followUps, setFollowUps] = useState<AgentFollowUp[]>([]);
+	const followUpsRef = useRef<AgentFollowUp[]>([]);
+	const sendPromptRef = useRef<
+		(prompt: string, files?: File[], options?: { preserveInput?: boolean }) => Promise<boolean>
+	>(undefined);
+	const updateFollowUps = useCallback((next: AgentFollowUp[]): void => {
+		followUpsRef.current = next;
+		setFollowUps(next);
+	}, []);
+	const restoreFollowUps = useCallback((): void => {
+		const queued = followUpsRef.current.map((followUp) => followUp.text).join('\n\n');
+		if (!queued) return;
+		updateFollowUps([]);
+		setInput((current) => [queued, current].filter(Boolean).join('\n\n'));
+	}, [updateFollowUps]);
 	useEffect(() => {
 		currentSessionIdRef.current = sessionId;
+		updateFollowUps([]);
 		setReplyTo(null);
 		if (adoptedSessionIdRef.current !== sessionId) setModeIds([]);
 		adoptedSessionIdRef.current = undefined;
