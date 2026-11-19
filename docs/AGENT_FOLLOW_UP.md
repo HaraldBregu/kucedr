@@ -24,7 +24,9 @@ Nothing like this exists today (no queue, steer or inject code). The main proces
 - Run active + composer has text → Enter / button **queues a follow-up** (button shows Send, with a separate Stop button next to it).
 - Run active + composer empty → unchanged: button is Stop, Enter stops.
 - A queued follow-up shows as a chip above the composer with an X to remove it, until delivered.
-- On delivery it becomes a normal user bubble in the transcript and the agent's reply continues below it, in the same run.
+- On delivery it becomes a user bubble with a "Follow-up" label in the transcript and the agent's reply continues below it, in the same run. The label comes from `followUp: true` stored on the message (`Message.followUp`), so it survives a reload; editing the message clears it.
+- A reply quote active in the composer is included in the follow-up text.
+- Re-attaching to a running session (`useHomeAgent` snapshot effect) trims the restored history to the run's first user message, counted back by the number of `follow_up` events, so the replayed events do not duplicate what is already on disk.
 - Several queued follow-ups are delivered together, in order, as separate user messages.
 - Undelivered follow-ups when the run ends:
   - run finished normally (budget or turn limit hit, or a race) → sent automatically as a new run;
