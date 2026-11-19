@@ -1,0 +1,50 @@
+# 12. Private and VPN browsing
+
+Part of the [Roadmap](README.md). Status: proposal.
+
+The agent's browser can browse privately, leaving nothing behind, and through a VPN so sites do not
+see the user's network address.
+
+## What exists today
+
+Nothing. The browser keeps one permanent profile with the user's logins
+(`~/.kucedr/agent-browser`) and connects directly. If the user already runs a VPN for the whole
+computer, the agent's browser goes through it with no work from Kucedr.
+
+A VPN for the whole computer needs operating-system permission (on macOS a special entitlement from
+Apple and signed builds) and is a different product. What Kucedr can do itself is route its own
+browser through a VPN connection, leaving the rest of the machine untouched.
+
+## Features
+
+| # | Feature | What the user gets | Builds on | Size |
+| --- | --- | --- | --- | --- |
+| 12.1 | Private tabs | A tab with no saved history, cookies or logins, wiped when closed; the agent can open one when asked | Browser pane (3.9); same disposable profile as Tor tabs (11.1) | S |
+| 12.2 | Browse through a proxy | The user enters the proxy address their VPN provider gives them; chosen tabs, or every tab, go through it | Same mechanism as Tor tabs: a browser instance started with a different connection | S |
+| 12.3 | Browse through a VPN profile | Import a WireGuard file from any VPN provider; the browser pane uses it, with no administrator rights and no effect on other apps | Needs a small bundled VPN program, shipped and updated like built-in Tor (11.4) | L |
+| 12.4 | Route indicator and per-workspace default | The toolbar shows how each tab connects: direct, private, VPN or Tor. A workspace can default to one, for example work always through the company proxy | Browser pane toolbar; [Multiple workspaces](WORKSPACES.md) | S |
+
+## One mechanism with Tor
+
+Each tab has a route: direct, private, VPN or Tor. Private, VPN and [Tor](TOR.md) tabs all run in a
+separate browser instance with a disposable profile and a chosen connection. Building it once covers
+both areas.
+
+## Rules the design keeps
+
+- **No fallback.** If the VPN or proxy drops, the tab fails and never reloads over the direct
+  connection. Address lookups go through the same route.
+- **Separate profile.** Private and VPN tabs never share the profile that holds the user's logins.
+- **Only the browser is routed.** What the agent reads is still sent to the model provider, and
+  search, other tools and the model connection use the normal network. The app says so where the
+  route is chosen.
+
+## Open decisions
+
+- **Whose VPN.** Recommended: bring-your-own first (12.2, then 12.3), so the user connects the VPN
+  service they already pay for. Selling a Kucedr VPN through [Payments](PAYMENTS.md) means running
+  exit servers and handling abuse reports and legal requests, which is a business of its own; a
+  partnership with an existing provider is the lighter way to offer it later.
+- **First step.** 12.1 and 12.2 are small once the browser pane exists and deliver most of the
+  value; 12.3 only if proxy addresses prove too awkward for users.
+- **VPN credentials** are stored like other secrets ([Privacy](PRIVACY.md), 1.2).
