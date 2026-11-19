@@ -9,7 +9,8 @@ import { resolveWorkspaceFile } from './workspace';
 export async function archiveWorkspaceEntry(
 	root: string,
 	entryPath: string,
-	action: 'compress' | 'extract'
+	action: 'compress' | 'extract',
+	exportDirectory?: string
 ): Promise<string> {
 	const resolvedRoot = await fs.realpath(root);
 	const source = await resolveWorkspaceFile(root, entryPath);
