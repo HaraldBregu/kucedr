@@ -87,7 +87,7 @@
 
 :root {
 	color-scheme: light;
-	--radius: 0.5rem;
+	--radius: 0.75rem;
 	--app-window-radius: 16px;
 	--app-sidebar-width: 16rem;
 	--sidebar-translucency-opacity: 1;
