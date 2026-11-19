@@ -25,6 +25,7 @@ import {
 	X,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Group, Panel, Separator } from 'react-resizable-panels';
 import type { LibraryFile } from '../../../../shared/library_types';
 import type { AgentPromptInputCapabilities } from '../../../../shared/agent_types';
 import { attachmentLimitError } from '../../../../shared/attachment_limit';
