@@ -8,13 +8,13 @@ Show the interactive agent's browser on the right side of the main Kucedr window
 
 ## Current behavior
 
-The `use_web_browser` tool launches a persistent Chrome context through Playwright for interactive runs. Background runs use a separate headless browser with a temporary profile. The `search_web` tool queries the configured search engine separately and does not itself need a browser window. Kucedr already uses `WebContentsView` for app windows, but that view is not the agent browser.
+The `use_web_browser` tool launches a persistent Chrome context through Playwright for interactive runs. It uses the Google Chrome installed on the machine and fails without it. Background runs use a separate headless browser with a temporary profile. The `search_web` tool queries the configured search engine separately and does not itself need a browser window. Kucedr already uses `WebContentsView` for app windows, but that view is not the agent browser.
 
 Relevant starting points:
 
 - `src/main/agent/tools/web/use_web_browser.ts` and `src/main/agent/tools/web/browser/session.ts`: browser actions and interactive session.
 - `src/main/agent/tools/web/browser/background.ts`: background browser lifecycle.
-- `src/main/apps/app_render.ts`: existing Electron view layout example.
+- `src/main/window_factory.ts` (`createView`) and `src/main/apps/app_render.ts`: how a separate view is created, added to a window and sized today.
 
 ## Proposed behavior
 
@@ -39,37 +39,78 @@ The agent's browser tool owns the browser. The user does not open it from a menu
 
 ## Automation approach
 
-The browser tool controls Chrome through Playwright, and a view embedded in the Kucedr window is not something Playwright can attach to safely. Three ways to resolve it:
+Direction chosen on 2026-11-19: **each browser tab is its own `WebContentsView`**, placed over the pane's area of the main window and driven from the main process. The page is not drawn inside Kucedr's own page. This replaces the earlier recommendation of a mirrored view.
 
-| Approach | How it works | For | Against |
-| --- | --- | --- | --- |
-| **Mirrored view (recommended first)** | Chrome keeps running under Playwright with no window; the pane shows its live picture and forwards the user's clicks and typing | Tool behaviour, tabs, saved logins and background runs stay exactly as they are; smallest change; PDF export starts working in interactive runs | The pane is a picture of a page: no text selection, password autofill or screen-reader access inside it; some sites may treat windowless Chrome differently (to check in the prototype) |
-| Native view, driven in-process | A real Electron web view in the pane; the tool's actions are rewritten on Electron's own debugging interface | A true browser the user can use directly | Rewrites every action (click, type, snapshot, tabs) and loses Playwright's waiting logic; two browser back ends to maintain |
-| Native view, driven by Playwright | A real web view; Playwright attaches through a local debugging port | Keeps Playwright | Ruled out: the port exposes every Kucedr window, including the one that can read API keys, to any program on the machine |
+### Why a separate view
 
-Recommendation: prototype the mirrored view first. Build the pane (toolbar, tabs, resize, close and reopen) so that it does not care which approach feeds it, and move to the in-process native view only if direct use of the page (logins, captchas) proves too rough.
+- **The app already works this way for app windows.** `createView` in `src/main/window_factory.ts` builds a sandboxed view with its own session, and `src/main/apps/app_render.ts` adds it to the window and sizes it.
+- **It is a real page.** Text selection, typing, input methods and screen readers work inside it.
+- **No Google Chrome needed.** Today the tool cannot browse on a machine without Chrome.
+- **The tool's page reading carries over unchanged.** `snapshot` is a plain script run in the page that tags elements with `data-agent-ref`; nothing depends on Playwright's own page reading.
+- **Each view has its own network session.** That gives the roadmap direct hooks: request filtering for the [Network shield](roadmap/SHIELD.md), a proxy per session for [VPN](roadmap/VPN.md) and [Tor](roadmap/TOR.md) tabs, memory-only sessions for private tabs, download and permission handling, and separate sessions per workspace.
 
-Sign-in fallback for the mirrored view: an "open in a window" action that reopens the same profile as a normal Chrome window for the user to log in, then returns to the pane.
+### What each tool action becomes
+
+| Tool action | Today, through Playwright | With the view |
+| --- | --- | --- |
+| `open`, `navigate`, back, forward | Page navigation calls | The view loads the address; its own history moves back and forward |
+| `tabs`, `focus`, `close` | Pages in one browser context | One view per tab; only the active one is attached and visible |
+| `snapshot`, `act evaluate` | Script run in the page | The same script run in the view |
+| `act click`, `hover`, `drag` | Locator actions with built-in waiting | Find the element's position by script, then send real mouse events; Kucedr's own "wait until visible and still" step |
+| `act type`, `fill`, `press`, `select` | Locator actions | Focus by script, insert text, send key events; set a select by script |
+| `act wait` | Wait for a selector or load state | Poll by script; load events from the view; "network idle" needs its own definition |
+| `screenshot` | Page, full page or one element | Capture the view; full page and single element through the view's own in-process debugging interface |
+| `pdf` | Background runs only | Print to PDF, available in interactive runs too |
+| `console` | Page console events | The view's console events |
+
+### Costs and limits
+
+- **The view is drawn above Kucedr's own page.** A menu, dialog, command menu or tooltip that overlaps the pane would be hidden behind it. The toolbar sits outside the view, and when an app overlay opens over the pane the view is hidden, or swapped for a still image, until it closes.
+- **The pane's position comes from the renderer.** The divider is dragged in the page, so the renderer reports the pane's rectangle to the main process, which sizes the view. App views are sized from the window alone today.
+- **About a dozen actions are rewritten**, with Kucedr's own waiting logic. Clicks may be less reliable than Playwright's at first; a fixed set of test pages is needed.
+- **It is not Google Chrome.** Some sites refuse sign-in inside embedded browsers (Google's sign-in is known for this), protected video does not play, and there are no extensions or password manager. To check in the prototype. For Google and Microsoft data, connectors are the intended path, not signing in through the pane.
+- **Browser fixes arrive with app updates.** The pane's engine is the one Electron ships, so Electron has to be kept current.
+- **Saved logins do not carry over** from the current Chrome profile (`~/.kucedr/agent-browser`); users sign in again once.
+- **Two back ends for a while.** Background runs keep the headless Playwright browser in the first version.
+
+### Rules for the view
+
+- Sandboxed, isolated, no Node access, and none of Kucedr's preload APIs. App views share the main preload today; the browser view must not.
+- Its own session, separate from the app's and from app windows'. Kucedr's internal address schemes are not available in it.
+- A page that opens a new window gets a new tab in the pane, never a window.
+- Site permission requests are denied by default and downloads are held, as in the [Network shield](roadmap/SHIELD.md).
+- The view is never registered as a trusted window, so it cannot call Kucedr's internal channels.
+
+### Approaches not chosen
+
+| Approach | Why not |
+| --- | --- |
+| Mirrored view: Chrome runs under Playwright with no window and the pane shows its live picture | Smallest change to the tool, but the pane is a picture of a page (no selection, no screen-reader access), Chrome is still required, and the shield, VPN and Tor would each need separate work inside Chrome |
+| Playwright attached to the view through a local debugging port | The port exposes every Kucedr window, including the one that can read API keys, to any program on the machine |
 
 The pane later carries a per-tab route (direct, private, VPN, Tor); see [Tor and .onion sites](roadmap/TOR.md) and [Private and VPN browsing](roadmap/VPN.md) in the roadmap.
 
 ## Implementation steps
 
-1. **Validate the automation approach.** Prototype an Electron `WebContentsView` in the main window and determine how the existing Playwright-based actions can control it. Electron's web contents and Playwright's `Page` have different APIs; verify navigation, accessibility snapshots, screenshots, interaction, and tab handling before choosing an implementation. Do not assume a direct drop-in replacement.
-2. **Add the pane and view lifecycle.** Integrate a right-hand pane with the main window layout. Position and resize the native view to match the pane, including when the window changes size, the pane is hidden, or the application closes.
-3. **Adapt interactive browser operations.** Connect `use_web_browser` to the embedded browser while preserving its action contract, tool results, permissions, cancellation, and error handling. Map agent tabs to embedded pages and display the active tab. Keep background runs on their existing backend.
+1. **Prototype the separate view.** Add one `WebContentsView` to the main window. Run the snapshot script in it, click and type through input events, and take a screenshot. Check sign-in on a few major sites, and what happens when an app menu opens over the view. Confirm or revise the direction above before building further.
+2. **Add the pane and view lifecycle.** Integrate a right-hand pane with the main window layout. Position and resize the native view to match the pane, including when the window changes size, the pane is hidden, an overlay opens, or the application closes.
+3. **Move interactive browser operations to the view.** Connect `use_web_browser` to the embedded browser while preserving its action contract, tool results, permissions, cancellation, and error handling. Map agent tabs to views and display the active tab. Keep background runs on their existing backend.
 4. **Connect controls and session state.** Synchronize navigation, address, active tab, loading, and errors between the Electron main process and renderer. Define ownership and cleanup for tabs, window closure, cancellation, and concurrent runs.
-5. **Isolate remote content.** Keep external pages separate from Kucedr's privileged renderer and preload APIs. Handle navigation, pop-ups, downloads, and browser session persistence explicitly, preserving existing permission boundaries.
+5. **Isolate remote content.** Apply the rules for the view above. Handle navigation, pop-ups, downloads, and browser session persistence explicitly, preserving existing permission boundaries.
 
 ## Verification
 
 - Test the browser action contract, tab mapping, session lifecycle, permission checks, and cancellation.
 - In the running Electron app, ask the agent to search, open a result, click, type, take a screenshot, and switch tabs. Confirm the page appears on the right and no separate Chrome window opens.
+- Repeat on a machine without Google Chrome installed.
+- Open the command menu, a dialog and a dropdown while the pane is showing; confirm none is hidden behind the page.
 - Check resizing, narrow windows, keyboard focus, loading and error states, pane close and reopen, and window shutdown.
 - Confirm background runs still use their headless browser and direct web search still works.
 
 ## Open decisions
 
-- Choose the automation integration after the feasibility prototype; account for actions that Electron does not expose directly.
-- Decide how browser tabs and the reopen control appear within the existing interface.
-- Determine whether existing interactive Chrome profile data can be retained or whether the embedded browser needs a new session; document the user-visible effect before changing persistence.
+- **Background runs.** Recommended: keep the headless Playwright browser in the first version, then move background runs to hidden views so Playwright and the Chrome requirement can be removed.
+- **Overlays.** Hide the view or show a still image while an app overlay covers the pane.
+- **Tabs and reopen control.** How they appear within the existing interface.
+- **Existing Chrome profile.** Recommended: start a new session, say so in the release notes, and offer to delete the old folder.
+- **Sites that refuse embedded browsers.** What the pane tells the user when a sign-in is refused.
