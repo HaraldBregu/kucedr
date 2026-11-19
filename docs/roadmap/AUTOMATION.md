@@ -1,0 +1,33 @@
+# 16. Automation: scheduled tasks and health checks
+
+Part of the [Roadmap](README.md). Status: proposal.
+
+## What exists today
+
+- Scheduled tasks run on a timer while the app is open, and Settings has Tasks and Health pages.
+- Only the agent can create a task; there is no form to create or edit one
+  ([FEATURES.md](../FEATURES.md)).
+- A task record keeps no run history and no last result (`src/main/tasks/tasks_types.ts`).
+- A failed run is written to the console only (`src/main/tasks/tasks_fire.ts`).
+- Runs missed while the app was closed are not caught up.
+- There is no limit on how often a task may run ([Security audit](../SECURITY_AUDIT.md) #22).
+- A health check that needs attention is only logged (`src/main/health/run.ts`), and several of its
+  settings are not applied yet ([FEATURES.md](../FEATURES.md), marked partial).
+
+## Features
+
+| # | Feature | What the user gets | Builds on | Size |
+| --- | --- | --- | --- | --- |
+| 16.1 | Create and edit tasks | A form for name, instructions, schedule and allowed tools, with the schedule shown in plain words | The Tasks page | M |
+| 16.2 | Run history | Each task shows when it last ran, whether it worked, and a link to that run's chat | The chats a task already creates | S |
+| 16.3 | Failures surfaced | A failed or stuck task is shown on the task and raises a notification | Notifications ([User experience](EXPERIENCE.md), 3.1) | S |
+| 16.4 | Catch-up | A task missed while the app was closed runs once at next start, if the user chose that | The schedule record | S |
+| 16.5 | Limits | A minimum interval between runs and a cap on tasks running at once | Run budgets ([Performance](PERFORMANCE.md), 2.3) | S |
+| 16.6 | Health results | Health findings appear in the app with what needs attention, and every health setting takes effect | The Health page | M |
+| 16.7 | Run while closed | Tasks run when the window is closed, from the menu bar or system tray | Nothing today | L |
+
+## Open decisions
+
+- **Approvals in unattended runs.** A task cannot ask the user. Recommended: a task may only use
+  the tools chosen when it was created, and anything else fails with a clear message.
+- **16.7** changes what "quitting" the app means and should be an explicit setting.
