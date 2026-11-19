@@ -166,7 +166,7 @@ async function assertHttpUrl(url: string): Promise<string> {
 	const parsed = new URL(url);
 	if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:')
 		throw new Error('Invalid URL: must be http or https');
-	if (browserSession().headless) await publicUrl(parsed.toString());
+	if (browserSession().background) await publicUrl(parsed.toString());
 	return parsed.toString();
 }
 
