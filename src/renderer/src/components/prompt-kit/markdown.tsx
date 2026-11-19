@@ -55,22 +55,31 @@ const initialComponents: Partial<Components> = {
 
 		return (
 			<CodeBlock className={cn('relative', className)}>
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-xs"
-					className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
-					aria-label="Copy code"
-					title="Copy code"
-					onClick={() =>
-						void navigator.clipboard.writeText(String(children).replace(/\n$/, '')).then(() => {
-							setCopied(true);
-							setTimeout(() => setCopied(false), 1500);
-						})
-					}
-				>
-					{copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-				</Button>
+				<Tooltip>
+					<TooltipTrigger
+						closeOnClick={false}
+						render={
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-xs"
+								className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
+								aria-label="Copy code"
+								onClick={() =>
+									void navigator.clipboard
+										.writeText(String(children).replace(/\n$/, ''))
+										.then(() => {
+											setCopied(true);
+											setTimeout(() => setCopied(false), 1500);
+										})
+								}
+							/>
+						}
+					>
+						{copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+					</TooltipTrigger>
+					<TooltipContent>{copied ? 'Copied' : 'Copy'}</TooltipContent>
+				</Tooltip>
 				<CodeBlockCode code={String(children)} language={language} />
 			</CodeBlock>
 		);
