@@ -23,8 +23,9 @@ export async function command(request: BrowserPaneCommand): Promise<void> {
 		case 'navigate': {
 			const text = request.url?.trim() ?? '';
 			const local = /^(localhost|127\.0\.0\.1|\[::1\])([:/]|$)/i.test(text);
-			const url = new URL(/^https?:\/\//i.test(text) ? text : `${local ? 'http' : 'https'}://${text}`);
-			await page.goto(url.toString(), { waitUntil: 'commit' });
+			const url = /^https?:\/\//i.test(text) ? text : `${local ? 'http' : 'https'}://${text}`;
+			if (!URL.canParse(url)) throw new Error('Enter a web address, for example example.com.');
+			await page.goto(url, { waitUntil: 'commit' });
 			break;
 		}
 		case 'focus':
