@@ -631,15 +631,15 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			<Dialog open={!!pendingAction} onOpenChange={(open) => { if (!open) setPendingAction(undefined); }}>
 				<DialogContent showCloseButton={false}>
 					<DialogHeader>
-						<DialogTitle>{t(`settings.chatHistory.${pendingAction?.action}`)}</DialogTitle>
+						<DialogTitle>{t('settings.chatHistory.compact')}</DialogTitle>
 						<DialogDescription>
-							{pendingAction && t(`settings.chatHistory.confirm${pendingAction.action === 'clear' ? 'Clear' : 'Compact'}`, { title: pendingAction.title })}
+							{pendingAction && t('settings.chatHistory.confirmCompact', { title: pendingAction.title })}
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
 						<DialogClose render={<Button variant="outline">{t('common.cancel')}</Button>} />
-						<Button variant={pendingAction?.action === 'clear' ? 'destructive' : 'default'} onClick={confirmAction}>
-							{t(`settings.chatHistory.${pendingAction?.action}`)}
+						<Button onClick={confirmAction}>
+							{t('settings.chatHistory.compact')}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
