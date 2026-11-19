@@ -48,7 +48,7 @@ export async function archiveWorkspaceEntry(
 			}
 			void archive.finalize();
 		});
-		return relativePath(destination);
+		return exportDirectory ? destination : relativePath(destination);
 	}
 
 	if (!sourceStats.isFile() || path.extname(source).toLowerCase() !== '.zip') {
