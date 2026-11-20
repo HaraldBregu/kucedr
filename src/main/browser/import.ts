@@ -17,8 +17,8 @@ export function importFiles(files: readonly string[], want: BrowserImportKinds):
 			for (const item of data.bookmarks ?? []) if (web(item.url) && !bookmarks.has(item.url)) bookmarks.set(item.url, item);
 			for (const item of data.history ?? []) {
 				if (!web(item.url)) continue;
-				const known = history.get(item.url);
-				if (!known || item.last > known.last) history.set(item.url, item);
+				const earlier = history.get(item.url);
+				if (!earlier || item.last > earlier.last) history.set(item.url, item);
 			}
 			if (data.search && web(data.search) && data.search.includes('%s')) search ??= data.search;
 		} catch (error) {
