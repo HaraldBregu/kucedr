@@ -110,10 +110,10 @@ function bound(id: string, url: string, username: string): Buffer {
 	return Buffer.from(`${id}\n${url}\n${username}`);
 }
 
-function encrypt(key: Buffer, id: string, url: string, username: string, password: string): string {
+function encrypt(key: Buffer, id: string, url: string, username: string, password: string | Buffer): string {
 	const iv = randomBytes(12);
 	const cipher = createCipheriv('aes-256-gcm', key, iv).setAAD(bound(id, url, username));
-	const data = Buffer.concat([cipher.update(password, 'utf8'), cipher.final()]);
+	const data = Buffer.concat([cipher.update(typeof password === 'string' ? Buffer.from(password) : password), cipher.final()]);
 	return Buffer.concat([iv, cipher.getAuthTag(), data]).toString('base64');
 }
 
