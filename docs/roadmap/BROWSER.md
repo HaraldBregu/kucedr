@@ -15,7 +15,10 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 
 - **The pane.** Every tab is a web view in one permanent session, `persist:agent-browser`
   (`src/main/agent/tools/web/browser/create.ts`), with Chrome-style tabs, favicons, a scrolling tab
-  strip with an "All tabs" menu, and a toolbar and tab strip that drag the window.
+  strip with an "All tabs" menu, and a toolbar and tab strip that drag the window. One browser is
+  shared by every chat: switching chats keeps it open with all tabs, "Hide browser" hides it for
+  all chats, and it is hidden only while Settings is open. The "assistant is using this page"
+  outline shows only when the acting agent owns the tab on screen.
 - **23.1 Import screen** (Settings → Browser). Finds every browser profile on the machine by the
   files its engine writes, with no list of products; imports bookmarks, history and the search
   engine; a second button takes any file or folder. Running it again adds no duplicates.
