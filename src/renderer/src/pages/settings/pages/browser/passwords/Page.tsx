@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyRound, Pencil, Trash2 } from 'lucide-react';
+import { KeyRound, Pencil, Trash2, X } from 'lucide-react';
 import type { BrowserLogin } from '@shared/browser_import';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
