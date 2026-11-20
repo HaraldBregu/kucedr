@@ -4,7 +4,7 @@ import { acting, paneEvents, type BrowserTab } from './pane';
 
 export const CAPTURE_PREFIX = 'kucedr-capture:';
 
-function drop(tab: BrowserTab): void {
+export function drop(tab: BrowserTab): void {
 	tab.offer?.password.fill(0);
 	tab.offer = undefined;
 }
