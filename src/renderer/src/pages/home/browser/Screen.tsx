@@ -5,9 +5,11 @@ const SAMPLES = [0.1, 0.5, 0.9];
 export function BrowserScreen({
 	targetId,
 	error,
+	suppressed,
 }: {
 	readonly targetId: string;
 	readonly error?: string;
+	readonly suppressed?: boolean;
 }): ReactElement {
 	const box = useRef<HTMLDivElement>(null);
 
@@ -15,7 +17,11 @@ export function BrowserScreen({
 	// box is and whether an app overlay covers it; switch to observers if this ever shows in a profile
 	useEffect(() => {
 		const element = box.current;
-		if (!element || error) return;
+		if (!element || error || suppressed) {
+			// Hidden while a renderer overlay (the address dropdown) needs to show over the page.
+			window.browserPane.view(null);
+			return;
+		}
 		let frame = 0;
 		let last = '';
 		const sync = (): void => {
