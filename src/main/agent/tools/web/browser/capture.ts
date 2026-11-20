@@ -14,7 +14,8 @@ function drop(tab: BrowserTab): void {
 // since it never sees the key. Returns true when the line was a capture, so it is never logged.
 export function readCapture(tab: BrowserTab, message: string): boolean {
 	if (!message.startsWith(CAPTURE_PREFIX)) return false;
-	if (!tab.captureKey) return true;
+	// The agent's input counts as real input too, so nothing is captured while it drives the tab.
+	if (!tab.captureKey || (tab.chat && acting.has(tab.chat))) return true;
 	let fields: { o: string; u: string; p: string };
 	try {
 		const [iv, sealed] = message.slice(CAPTURE_PREFIX.length).split('.').map((part) => Buffer.from(part, 'base64'));
