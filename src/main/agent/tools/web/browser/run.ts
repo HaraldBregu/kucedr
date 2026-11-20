@@ -3,6 +3,7 @@ import { executionScope } from '../../../execution/scope';
 import { act, type BrowserAct } from './act';
 import { closeTab } from './close';
 import { createTab } from './create';
+import { cursor } from './cursor';
 import { locate } from './locate';
 import { pane, paneTabs, type BrowserTab } from './pane';
 import { settle } from './settle';
@@ -154,6 +155,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		}
 		case 'screenshot': {
 			const tab = current();
+			await cursor(tab, 'clear');
 			let shot: Capture;
 			if (params.ref) {
 				await locate(tab, params.ref, params.timeoutMs, signal);

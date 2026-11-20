@@ -14,7 +14,7 @@ Part of the [Roadmap](README.md). Status: proposal.
 | 3.8 | Attachment checks | A warning before sending a file the model cannot read or that is too large | Listed as missing in [FEATURES.md](../FEATURES.md) | S |
 | 3.9 | Browser pane | When the agent uses the browser tool, the page appears in a resizable pane on the right of the chat instead of a separate Chrome window | [Embedded agent browser plan](../AGENT_BROWSER_PLAN.md): each tab is its own web view placed over the pane, the way app windows already work | L |
 | 3.10 | Chat export, import and sharing | Export a chat as Markdown, HTML or PDF; import chats from other assistants; later, share a chat by link | Export exists for workspace documents only (`src/main/export.ts`); a share link needs a server and is a later decision | S–M |
-| 3.11 | Agent cursor in the browser pane | A pointer glides to where the agent is about to click, marks the click, and shows what it is typing into, so the user can follow what the agent does on the page | The pane's click and type actions (`src/main/agent/tools/web/browser/act.ts`); today the pointer jumps invisibly and only a dot in the toolbar shows activity | S–M |
+| 3.11 | Agent cursor in the browser pane | A pointer glides to where the agent is about to click, marks the click, and shows what it is typing into, so the user can follow what the agent does on the page | The pane's click and type actions (`src/main/agent/tools/web/browser/act.ts`); built, except the setting to turn it off; see "As built" in the [browser plan](../AGENT_BROWSER_PLAN.md) | S–M |
 
 The terminal panel has its own area: [Terminal](TERMINAL.md).
 

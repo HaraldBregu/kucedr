@@ -1,4 +1,5 @@
 import { setTimeout as sleep } from 'node:timers/promises';
+import { cursor } from './cursor';
 import { locate } from './locate';
 import type { BrowserTab } from './pane';
 import { press } from './press';
@@ -37,12 +38,26 @@ export async function act(tab: BrowserTab, params: BrowserAct, signal?: AbortSig
 	const find = (ref: string): Promise<{ x: number; y: number }> => locate(tab, ref, timeout, signal);
 	const mouse = (type: string, at: { x: number; y: number }, extra: object = {}): Promise<unknown> =>
 		contents.debugger.sendCommand('Input.dispatchMouseEvent', { type, ...at, button: 'none', ...extra });
+	const travel = async (to: { x: number; y: number }, extra: object = {}): Promise<void> => {
+		const from = tab.pointer ?? to;
+		const wait = await cursor(tab, 'move', to);
+		for (const part of [0.25, 0.5, 0.75])
+			await mouse(
+				'mouseMoved',
+				{ x: from.x + (to.x - from.x) * part, y: from.y + (to.y - from.y) * part },
+				extra
+			);
+		if (wait) await sleep(wait);
+		await mouse('mouseMoved', to, extra);
+		tab.pointer = to;
+	};
 	const requireRef = (): string => {
 		if (!params.ref) throw new Error(`act "${params.kind}" requires a ref from snapshot output.`);
 		return params.ref;
 	};
 	const fill = async (ref: string, text: string): Promise<void> => {
-		await find(ref);
+		await travel(await find(ref));
+		await cursor(tab, 'field', undefined, ref);
 		await js(`(() => {
 			const el = document.querySelector('[data-agent-ref="${ref}"]');
 			el.focus();
@@ -65,7 +80,8 @@ export async function act(tab: BrowserTab, params: BrowserAct, signal?: AbortSig
 		case 'click': {
 			const at = await find(requireRef());
 			const button = params.button ?? 'left';
-			await mouse('mouseMoved', at);
+			await travel(at);
+			await cursor(tab, 'click', at);
 			for (const clickCount of params.doubleClick ? [1, 2] : [1]) {
 				await mouse('mousePressed', at, { button, buttons: BUTTONS[button], clickCount });
 				await mouse('mouseReleased', at, { button, clickCount });
@@ -81,23 +97,23 @@ export async function act(tab: BrowserTab, params: BrowserAct, signal?: AbortSig
 			await press(tab, params.key);
 			return `pressed ${params.key}`;
 		case 'hover':
-			await mouse('mouseMoved', await find(requireRef()));
+			await travel(await find(requireRef()));
 			return 'hovered';
 		case 'drag': {
 			if (!params.startRef || !params.endRef) throw new Error('act "drag" requires startRef and endRef.');
 			const from = await find(params.startRef);
-			await mouse('mouseMoved', from);
+			await travel(from);
 			await mouse('mousePressed', from, { button: 'left', buttons: 1, clickCount: 1 });
 			const to = await find(params.endRef);
-			await mouse('mouseMoved', { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 }, { buttons: 1 });
-			await mouse('mouseMoved', to, { buttons: 1 });
+			await travel(to, { buttons: 1 });
 			await mouse('mouseReleased', to, { button: 'left', clickCount: 1 });
 			return 'dragged';
 		}
 		case 'select': {
 			if (!params.values?.length) throw new Error('act "select" requires values.');
 			const ref = requireRef();
-			await find(ref);
+			await travel(await find(ref));
+			await cursor(tab, 'field', undefined, ref);
 			const selected = await js<string[]>(`(() => {
 				const el = document.querySelector('[data-agent-ref="${ref}"]');
 				if (!(el instanceof HTMLSelectElement)) throw new Error('Element is not a select.');

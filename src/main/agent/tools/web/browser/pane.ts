@@ -10,6 +10,7 @@ export interface BrowserTab {
 	order: number;
 	error?: string;
 	icon?: string;
+	pointer?: { x: number; y: number };
 	host?: BrowserWindow;
 }
 

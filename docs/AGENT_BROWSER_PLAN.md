@@ -18,6 +18,7 @@ How it works, and what is easy to break:
 - Pop-ups open as tabs of the same chat. Site permission requests are denied, downloads are cancelled, and navigation to anything but http and https is blocked.
 - The user agent has the `Electron/…` and app tokens removed.
 - The tab strip is always shown, Chrome style: favicon, title and a close button per tab, and a new-tab button. This goes beyond "Behaviour in detail" below, which asked for a strip only with more than one tab. Favicons are fetched through the browser's own session.
+- The agent has a pointer of its own (`cursor.ts`, roadmap 3.11): it glides to each click, hover and drag target, a ripple marks a click, and the field being typed into is outlined. It is drawn in a closed shadow root from a separate script world, takes no clicks, fades after three seconds, is removed before a screenshot, and respects reduce-motion. A frame around the page replaces the toolbar dot while the agent acts. Not built: a setting to turn it off.
 - The page outline leaves out the value of password fields, so a password typed in the pane is not sent to the model.
 
 Not built:
@@ -29,7 +30,6 @@ Not built:
 - On Windows and Linux the window buttons stay in the navigation bar, to the left of the pane.
 - Removing the old Chrome profile folder (`~/.kucedr/agent-browser`); saved logins there are not carried over.
 - Importing bookmarks, history, passwords, sign-ins and settings from Chrome, Firefox and other browsers; planned in [Browser import](roadmap/BROWSER.md).
-- A visible pointer that shows where the agent clicks and types; planned as 3.11 in [User experience](roadmap/EXPERIENCE.md#311-agent-cursor-in-the-browser-pane).
 - Unit tests for the view backend. The existing browser tests cover background runs only.
 
 ## Goal

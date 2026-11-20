@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import type { BrowserPaneCommand, BrowserPaneTab } from '../../../../../shared/browser';
+import { cn } from '@/lib/utils';
 import { BrowserScreen } from './Screen';
 import { BrowserTabs } from './Tabs';
 import { BrowserToolbar } from './Toolbar';
@@ -35,7 +36,6 @@ export function BrowserPane({
 			<BrowserToolbar
 				key={active.targetId}
 				tab={active}
-				acting={acting}
 				onCommand={(command, url) => run(active.targetId, command, url)}
 				onClose={onClose}
 			/>
@@ -44,7 +44,19 @@ export function BrowserPane({
 					{error}
 				</p>
 			) : null}
-			<BrowserScreen targetId={active.targetId} error={active.error} />
+			<div
+				className={cn(
+					'flex min-h-0 flex-1 flex-col border-2 border-transparent transition-colors',
+					acting && 'border-primary'
+				)}
+			>
+				{acting ? (
+					<span role="status" className="sr-only">
+						The assistant is using this page
+					</span>
+				) : null}
+				<BrowserScreen targetId={active.targetId} error={active.error} />
+			</div>
 		</section>
 	);
 }

@@ -7,12 +7,10 @@ import { cn } from '@/lib/utils';
 
 export function BrowserToolbar({
 	tab,
-	acting,
 	onCommand,
 	onClose,
 }: {
 	readonly tab: BrowserPaneTab;
-	readonly acting: boolean;
 	readonly onCommand: (command: BrowserPaneCommand['command'], url?: string) => void;
 	readonly onClose: () => void;
 }): ReactElement {
@@ -64,14 +62,6 @@ export function BrowserToolbar({
 						onFocus={(event) => event.target.select()}
 					/>
 				</form>
-				{acting ? (
-					<span
-						role="status"
-						aria-label="The assistant is using this page"
-						title="The assistant is using this page"
-						className="mx-1 size-2 shrink-0 animate-pulse rounded-full bg-primary"
-					/>
-				) : null}
 				<Button
 					type="button"
 					variant="ghost"
