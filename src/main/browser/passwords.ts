@@ -226,7 +226,7 @@ export function saveLogin(url: string, username: string, password: Buffer): void
 		url: savedUrl,
 		username,
 		created: same?.created ?? Date.now(),
-		secret: encrypt(key, id, savedUrl, username, password.toString('utf8')),
+		secret: encrypt(key, id, savedUrl, username, password),
 	};
 	save({ ...store, logins: same ? store.logins.map((login) => (login.id === id ? entry : login)) : [...store.logins, entry] });
 }
