@@ -40,6 +40,13 @@ export interface BrowserLogin {
 	readonly savedFor?: string;
 }
 
+// An empty password keeps the one saved.
+export interface BrowserLoginChange {
+	readonly url: string;
+	readonly username: string;
+	readonly password: string;
+}
+
 export interface BrowserPasswordStatus {
 	readonly available: boolean;
 	readonly count: number;
