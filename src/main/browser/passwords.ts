@@ -191,7 +191,7 @@ export function updateLogin(id: string, change: { url: string; username: string;
 	const kept = change.password ? undefined : decrypt(key, entry);
 	const password = change.password || kept!.toString('utf8');
 	kept?.fill(0);
-	const url = parsed.origin === 'null' ? change.url : `${parsed.origin}/`;
+	const url = parsed.href;
 	const next = { ...entry, url, username: change.username, secret: encrypt(key, id, url, change.username, password) };
 	save({ ...store, logins: store.logins.map((login) => (login.id === id ? next : login)) });
 }
