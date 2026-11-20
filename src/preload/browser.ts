@@ -26,6 +26,7 @@ export const browserPane: BrowserPaneApi = {
 	importPicked: (request) => typedInvokeUnwrap(BrowserChannels.importPicked, request),
 	suggest: (text) => typedInvokeUnwrap(BrowserChannels.suggest, text),
 	bookmarks: () => typedInvokeUnwrap(BrowserChannels.bookmarks),
+	bookmarksAdd: (place) => typedInvokeUnwrap(BrowserChannels.bookmarksAdd, place),
 	bookmarksUpdate: (url, place) => typedInvokeUnwrap(BrowserChannels.bookmarksUpdate, url, place),
 	bookmarksDelete: (url) => typedInvokeUnwrap(BrowserChannels.bookmarksDelete, url),
 	library: () => typedInvokeUnwrap(BrowserChannels.library),
