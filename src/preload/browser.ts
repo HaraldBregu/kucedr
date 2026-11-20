@@ -20,6 +20,7 @@ export const browserPane: BrowserPaneApi = {
 		);
 	},
 	onChanged: (callback) => typedOn(BrowserChannels.changed, callback),
+	onManagePasswords: (callback) => typedOn(BrowserChannels.managePasswords, () => callback()),
 	sources: () => typedInvokeUnwrap(BrowserChannels.sources),
 	importData: (request) => typedInvokeUnwrap(BrowserChannels.importData, request),
 	importPicked: (request) => typedInvokeUnwrap(BrowserChannels.importPicked, request),
