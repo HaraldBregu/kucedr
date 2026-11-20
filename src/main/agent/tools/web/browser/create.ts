@@ -1,7 +1,7 @@
 import { app, session, WebContentsView } from 'electron';
 import { resetAutofill } from './autofill';
 import { watchMouseButtons } from './buttons';
-import { readCapture } from './capture';
+import { drop, readCapture } from './capture';
 import { pane, paneEvents, paneTabs, type BrowserTab } from './pane';
 
 const PARTITION = 'persist:agent-browser';
