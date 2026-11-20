@@ -110,39 +110,13 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 - **Search from the address field (23.6)**: words search with the imported default engine, or
   DuckDuckGo until one is imported. Read from the first engine family's settings file only; the
   home page is not read.
-- **Passwords from a file (23.3 + 23.4, file path)**. The user exports a password CSV from the
-  other browser and chooses it in Settings → Browser. Columns are matched by what their header
-  means (`src/main/browser/csv.ts`), so any browser's or password manager's export works, with no
-  product list. The logins are sealed with the system keystore (`safeStorage`, via
-  `src/main/browser/passwords.ts`) in `~/.kucedr/browser/passwords.seal`, deduped by site and
-  username, and can be deleted. The direct read of another browser's live password store is **not
-  built** and is not planned here: it needs the browser's key out of the OS keychain and is the
-  technique infostealers use, so the file export is the path. A key button in the pane toolbar
-  fills a saved login whose site matches the current page; with more than one match the user
-  picks. The password is read in the main process and inserted straight into the field through the
-  view's debugger — it never reaches the renderer or the model. **Not built:** offer-to-save after
-  a manual sign-in, viewing a saved password, and editing the list.
-- **Autofill on a field (23.9, logins).** Clicking into a username or password field on a site
-  with a saved login opens a list under the field with the saved usernames; Up/Down move, Enter
-  fills both the username and the password, Escape closes it. A saved login is offered on its own
-  host and on sibling subdomains of the same site (`matchLogins` in `passwords.ts`). The list is
-  drawn in a closed shadow root in a private script world the page cannot reach
-  (`autofill.ts`), the main process polls that world for the user's own focus (never while the
-  agent is acting), supplies the usernames and does the fill, so the page never sees the list and
-  a password never reaches the renderer or the model. A choice counts only from a real key or
-  click. **Not built:** addresses and contact details (23.11), form history (23.12), offer-to-save
-  after a manual sign-in (23.10), and drawing the list in a separate view rather than in the page.
-- **The `act evaluate` hole is closed for filled pages.** Once a password is filled on a tab, the
-  agent's `act evaluate` is refused on that tab until it navigates away (`act.ts`), so a script the
-  agent runs cannot read the filled value. The outline already omits password-field values.
-- **Favicons and a draggable toolbar.** Tabs show the site's favicon (https and data icons
-  directly, http icons fetched in the browsing session and passed on as data, `create.ts`). The
-  tab strip and toolbar are window-drag regions, so the pane's top can move the window and
-  double-click zooms it, as the chat side does.
-- **Checked on macOS only.** The search of Windows and Linux data folders, and the keystore seal,
-  are written but have been exercised on macOS only.
-- Sign-ins (23.5), the agent signing in on its own (23.7) and the old profile (23.8) are not built;
-  they wait on the open decisions below.
+- **Passwords from a file.** Columns are matched by what their header means
+  (`src/main/browser/csv.ts`), deduped by site and username. A password is read in the main process
+  and inserted straight into the field through the view's debugger; it never reaches the renderer
+  or the model. The main process polls the autofill script world for the user's own focus, never
+  while the agent is acting on the tab.
+- **Favicons.** https and data icons are used directly; http icons are fetched in the browsing
+  session and passed on as data (`create.ts`).
 
 ## Features
 
