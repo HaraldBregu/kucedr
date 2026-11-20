@@ -1,7 +1,9 @@
 export interface BrowserSource {
 	readonly id: string;
-	readonly browser: string;
+	readonly app: string;
 	readonly profile: string;
+	readonly kinds: readonly ('bookmarks' | 'history')[];
+	readonly used: number;
 }
 
 export interface BrowserPlace {
@@ -9,11 +11,18 @@ export interface BrowserPlace {
 	readonly title: string;
 }
 
-export interface BrowserImportRequest {
-	readonly sources: readonly string[];
+export interface BrowserImportKinds {
 	readonly bookmarks: boolean;
 	readonly history: boolean;
 	readonly settings: boolean;
+}
+
+export interface BrowserImportRequest extends BrowserImportKinds {
+	readonly sources: readonly string[];
+}
+
+export interface BrowserImportPick extends BrowserImportKinds {
+	readonly folder: boolean;
 }
 
 export interface BrowserImportSummary {
