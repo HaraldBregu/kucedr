@@ -73,7 +73,7 @@ manifest.
 | [Google](https://aistudio.google.com/apikey) | `google` | Chat, Speech to text, Text to speech, Realtime voice, Image, Video, Audio, Embeddings | Mixed: existing Lyria Realtime is catalog only |
 | [Ideogram](https://ideogram.ai/manage-api) | `ideogram` | Image | Available |
 | [Jina AI](https://jina.ai/api-dashboard) | `jina` | Embeddings | Available |
-| [Kimi](https://platform.moonshot.ai/console/api-keys) | `kimi` | Chat | Available |
+| [Kimi](https://platform.kimi.ai/console/api-keys) | `kimi` | Chat | Available |
 | [Kling AI](https://app.klingai.com/global/dev) | `kling` | Image, Video, Audio | Available |
 | [MiniMax](https://platform.minimax.io/user-center/basic-information/interface-key) | `minimax` | Chat, Speech to text, Text to speech, Image, Video, Audio | Available |
 | [Mistral AI](https://console.mistral.ai/api-keys) | `mistral` | Chat, Speech to text, Text to speech, Embeddings | Available |
