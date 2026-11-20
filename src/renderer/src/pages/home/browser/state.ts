@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { BrowserPaneState, BrowserPaneTab } from '../../../../../shared/browser';
 
-export function useBrowserTabs(chat: string): {
+// The browser is shared by every chat: all tabs, and the chats whose agent is acting right now.
+export function useBrowserTabs(): {
 	readonly tabs: readonly BrowserPaneTab[];
-	readonly acting: boolean;
+	readonly acting: readonly string[];
 } {
 	const [state, setState] = useState<BrowserPaneState>({ tabs: [], acting: [] });
 	useEffect(() => {
