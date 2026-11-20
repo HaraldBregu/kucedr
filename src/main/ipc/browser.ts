@@ -90,6 +90,19 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		});
 		trusted.query(BrowserChannels.suggest, (text) => suggest(z.string().max(2048).parse(text)));
 		trusted.query(BrowserChannels.bookmarks, () => library().bookmarks);
+		trusted.command(BrowserChannels.bookmarksUpdate, (url, place) => {
+			const target = urlSchema.parse(url);
+			const next = placeSchema.parse(place);
+			const current = library();
+			if (next.url !== target && current.bookmarks.some((item) => item.url === next.url))
+				throw new Error('That address is already bookmarked.');
+			library({ ...current, bookmarks: current.bookmarks.map((item) => (item.url === target ? next : item)) });
+		});
+		trusted.command(BrowserChannels.bookmarksDelete, (url) => {
+			const target = urlSchema.parse(url);
+			const current = library();
+			library({ ...current, bookmarks: current.bookmarks.filter((item) => item.url !== target) });
+		});
 		trusted.query(BrowserChannels.library, () => {
 			const { bookmarks, history, search } = library();
 			return { bookmarks: bookmarks.length, history: history.length, search };
