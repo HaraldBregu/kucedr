@@ -77,11 +77,17 @@ export function clearLogins(): void {
 	rmSync(file(), { force: true });
 }
 
+// A login is offered on its own host and on a sibling subdomain of the same registrable-ish
+// domain (so accounts.example.com offers on login.example.com), the way browsers do.
+function sameSite(a: string, b: string): boolean {
+	return a === b || a.endsWith(`.${b}`) || b.endsWith(`.${a}`);
+}
+
 export function matchLogins(url: string): LoginListing[] {
 	const site = host(url);
 	if (!site) return [];
 	return open()
-		.filter((login) => host(login.url) === site)
+		.filter((login) => sameSite(site, host(login.url)))
 		.map(({ id, url: at, username }) => ({ id, url: at, username }));
 }
 
