@@ -46,6 +46,7 @@ export interface BrowserPaneApi {
 	onChanged(callback: (state: BrowserPaneState) => void): () => void;
 	sources(): Promise<BrowserSource[]>;
 	importData(request: BrowserImportRequest): Promise<BrowserImportSummary>;
+	importPicked(request: BrowserImportPick): Promise<BrowserImportSummary | null>;
 	suggest(text: string): Promise<BrowserPlace[]>;
 	bookmarks(): Promise<BrowserPlace[]>;
 	library(): Promise<BrowserLibraryCounts>;
