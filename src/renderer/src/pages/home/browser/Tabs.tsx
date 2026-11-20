@@ -1,8 +1,11 @@
-import { useEffect, useRef, type ReactElement } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactElement } from 'react';
 import { ChevronDown, Globe, Loader2, Plus, X } from 'lucide-react';
 import type { BrowserPaneTab } from '../../../../../shared/browser';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+
+const DRAG = { WebkitAppRegion: 'drag' } as CSSProperties;
+const NO_DRAG = { WebkitAppRegion: 'no-drag' } as CSSProperties;
 
 export function BrowserTabs({
 	tabs,
