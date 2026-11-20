@@ -1,122 +1,58 @@
 import { useEffect, useRef, type ReactElement } from 'react';
 
-const BUTTONS = ['left', 'middle', 'right'] as const;
-const MODIFIERS = ['Shift', 'Control', 'Alt', 'Meta'];
+const SAMPLES = [0.1, 0.5, 0.9];
 
-export function BrowserScreen({ targetId }: { readonly targetId: string }): ReactElement {
+export function BrowserScreen({
+	targetId,
+	error,
+}: {
+	readonly targetId: string;
+	readonly error?: string;
+}): ReactElement {
 	const box = useRef<HTMLDivElement>(null);
-	const image = useRef<HTMLImageElement>(null);
-	const frameWidth = useRef(0);
 
+	// ponytail: the page is a native view above the app, so each frame checks where the
+	// box is and whether an app overlay covers it; switch to observers if this ever shows in a profile
 	useEffect(() => {
 		const element = box.current;
-		const picture = image.current;
-		if (!element || !picture) return;
-		let timer: number | undefined;
-		const observer = new ResizeObserver(() => {
-			window.clearTimeout(timer);
-			timer = window.setTimeout(() => {
-				if (element.clientWidth && element.clientHeight)
-					window.browserPane.view({
-						targetId,
-						width: element.clientWidth,
-						height: element.clientHeight,
-					});
-			}, 100);
-		});
-		observer.observe(element);
-		const off = window.browserPane.onFrame((frame) => {
-			if (frame.targetId !== targetId) return;
-			frameWidth.current = frame.width;
-			picture.src = `data:image/jpeg;base64,${frame.data}`;
-			picture.hidden = false;
-		});
+		if (!element || error) return;
+		let frame = 0;
+		let last = '';
+		const sync = (): void => {
+			frame = requestAnimationFrame(sync);
+			const rect = element.getBoundingClientRect();
+			const covered = SAMPLES.some((across) =>
+				SAMPLES.some((down) => {
+					const hit = document.elementFromPoint(
+						rect.left + rect.width * across,
+						rect.top + rect.height * down
+					);
+					return hit !== element;
+				})
+			);
+			const next =
+				covered || rect.width < 1 || rect.height < 1
+					? null
+					: { targetId, x: rect.left, y: rect.top, width: rect.width, height: rect.height };
+			const key = JSON.stringify(next);
+			if (key === last) return;
+			last = key;
+			window.browserPane.view(next);
+		};
+		sync();
 		return () => {
-			window.clearTimeout(timer);
-			observer.disconnect();
-			off();
+			cancelAnimationFrame(frame);
 			window.browserPane.view(null);
-			picture.hidden = true;
 		};
-	}, [targetId]);
-
-	const point = (event: {
-		readonly clientX: number;
-		readonly clientY: number;
-	}): { x: number; y: number } | null => {
-		const rect = image.current?.getBoundingClientRect();
-		if (!rect?.width || !frameWidth.current) return null;
-		const scale = frameWidth.current / rect.width;
-		return {
-			x: Math.max(0, (event.clientX - rect.left) * scale),
-			y: Math.max(0, (event.clientY - rect.top) * scale),
-		};
-	};
-	const mouse = (
-		type: 'move' | 'down' | 'up',
-		event: { readonly clientX: number; readonly clientY: number; button: number; detail: number }
-	): void => {
-		const at = point(event);
-		if (!at) return;
-		window.browserPane.input({
-			targetId,
-			type,
-			...at,
-			button: BUTTONS[event.button] ?? 'left',
-			count: Math.min(event.detail, 3),
-		});
-	};
+	}, [targetId, error]);
 
 	return (
-		<div
-			ref={box}
-			role="application"
-			aria-label="Web page. Press F6 to leave the page."
-			tabIndex={0}
-			className="relative min-h-0 flex-1 overflow-hidden bg-background outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
-			onPointerDown={(event) => {
-				event.currentTarget.focus();
-				event.currentTarget.setPointerCapture(event.pointerId);
-			}}
-			onMouseDown={(event) => mouse('down', event)}
-			onMouseMove={(event) => mouse('move', event)}
-			onMouseUp={(event) => mouse('up', event)}
-			onContextMenu={(event) => event.preventDefault()}
-			onWheel={(event) => {
-				const at = point(event);
-				if (at)
-					window.browserPane.input({
-						targetId,
-						type: 'wheel',
-						...at,
-						deltaX: event.deltaX,
-						deltaY: event.deltaY,
-					});
-			}}
-			onPaste={(event) => {
-				event.preventDefault();
-				const text = event.clipboardData.getData('text/plain');
-				if (text) window.browserPane.input({ targetId, type: 'paste', text });
-			}}
-			onKeyDown={(event) => {
-				if (event.key === 'F6') return event.currentTarget.blur();
-				if (MODIFIERS.includes(event.key) || event.nativeEvent.isComposing) return;
-				const shortcut = event.metaKey || (event.ctrlKey && !event.altKey);
-				if (shortcut && !/^(Key[ACXZ]|Arrow|Backspace|Delete)/.test(event.code)) return;
-				event.preventDefault();
-				if (event.key.length === 1 && !shortcut)
-					return window.browserPane.input({ targetId, type: 'type', text: event.key });
-				const key = [
-					event.metaKey && 'Meta',
-					event.ctrlKey && 'Control',
-					event.altKey && 'Alt',
-					event.shiftKey && 'Shift',
-					event.code,
-				];
-				window.browserPane.input({ targetId, type: 'press', key: key.filter(Boolean).join('+') });
-			}}
-		>
-			<img ref={image} hidden alt="" draggable={false} className="block w-full select-none" />
+		<div ref={box} aria-label="Web page" className="flex min-h-0 flex-1 items-center justify-center bg-background p-6">
+			{error ? (
+				<p role="alert" className="text-center text-sm text-muted-foreground">
+					This page could not be loaded. {error}
+				</p>
+			) : null}
 		</div>
 	);
 }
