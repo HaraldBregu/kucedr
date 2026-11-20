@@ -6,26 +6,86 @@ The browser pane can bring in what the user already has in Chrome, Firefox and o
 bookmarks, history, saved passwords, signed-in sessions and the few settings that apply. The user
 does not start again from an empty browser.
 
-## What exists today
+## Status
 
-- **The pane is built** ([Embedded agent browser plan](../AGENT_BROWSER_PLAN.md)). Every tab is a
-  web view in one permanent session, `persist:agent-browser`
-  (`src/main/agent/tools/web/browser/create.ts`).
-- **Nothing to import into.** The pane has no bookmarks, no history list, no saved passwords, no
-  autofill and no settings of its own. The address field accepts addresses only, not search words
-  (`src/main/agent/tools/web/browser/command.ts`).
-- **Sign-ins are done by hand** in the pane and kept as cookies in that session. Electron stores
-  them unencrypted on disk unless its cookie-encryption option is switched on, and the project does
-  not switch it on _(from Electron's documentation; not checked in the running app)_.
-- **Some sites refuse sign-in in an embedded browser**, Google among them. Bringing over an
-  existing session may get round that _(not verified)_.
-- **The earlier Chrome profile** (`~/.kucedr/agent-browser`) is still on disk and its logins were
-  not carried over.
-- **Password values are kept out of the page outline** (`src/main/agent/tools/web/browser/snapshot.ts`).
-  A script the agent runs in the page (`act evaluate`) can still read a field, which matters once
-  passwords are filled automatically (see the open decisions).
+Updated 2026-11-20. Everything under "Implemented" was checked on macOS in the built app, unless
+it says otherwise. Windows and Linux paths are written but not exercised.
 
-## Built so far
+### Implemented
+
+- **The pane.** Every tab is a web view in one permanent session, `persist:agent-browser`
+  (`src/main/agent/tools/web/browser/create.ts`), with Chrome-style tabs, favicons, a scrolling tab
+  strip with an "All tabs" menu, and a toolbar and tab strip that drag the window.
+- **23.1 Import screen** (Settings → Browser). Finds every browser profile on the machine by the
+  files its engine writes, with no list of products; imports bookmarks, history and the search
+  engine; a second button takes any file or folder. Running it again adds no duplicates.
+- **23.2 Bookmarks and history**, kept in `~/.kucedr/browser/library.json`, suggested under the
+  address field, with a bookmarks menu in the toolbar. A profile with only `Bookmarks.bak` is read
+  from the backup.
+- **23.3 + 23.4 Passwords from a CSV export**, columns matched by meaning, so any browser's or
+  password manager's export works.
+- **23.6 Search from the address field** with the imported engine, or DuckDuckGo.
+- **23.9 Autofill list on login fields.** Drawn in a closed shadow root in Kucedr's private script
+  world (`autofill.ts`); the page cannot read it, and only a real click or key counts. Each row
+  shows a key icon, the username, its site ("Saved for accounts.example.com" for a related host)
+  and dots for the password. The list narrows as the user types in the username field, follows the
+  pointer on hover, flips above the field when there is no room below, scrolls when long, closes on
+  Escape, Tab or a click elsewhere, and reopens on a click back into the field. Its last row,
+  "Manage passwords…", opens Settings → Browser → Passwords. A toolbar key button fills a login on
+  fields the list does not recognise.
+- **23.13 Secure password store** (`src/main/browser/passwords.ts`).
+  - `~/.kucedr/browser/passwords.json`: a random store key sealed by the system keystore, and one
+    AES-256-GCM ciphertext per password, bound to its entry's id, site and username.
+  - Listing and matching read only sites and usernames; one password is decrypted when filled and
+    wiped from memory after it is inserted (`fill.ts`).
+  - Secure pages only (`https`, `localhost` for development). Exact host, or a host of the same
+    registrable domain under the public suffix list (`tldts`), so `a.github.io` never matches
+    `b.github.io`. The main process rechecks the tab's real address before filling.
+  - A store that cannot be read is never overwritten; writes are atomic and keep the previous copy
+    as `passwords.json.bak`.
+  - `~/.kucedr/browser` and the pane's session folder are on the agent sandbox's protected list;
+    the S3 backup skips `~/.kucedr/browser`; packaged builds switch on Electron's
+    cookie-encryption fuse (not checkable in a development run).
+  - The agent's `act evaluate` is refused on a tab after a password was filled there.
+- **23.14 Password manager, first part** (Settings → Browser → Passwords). Search; edit site,
+  username or password (the password is never shown, a new one replaces it); delete one or all.
+  Every delete asks first with a native warning raised by the main process, Cancel by default, so
+  the window cannot skip it (`src/main/browser/confirm.ts`).
+- **23.15 Bookmarks, first part** (Settings → Browser → Bookmarks). Search, rename, change the
+  address (a duplicate is refused), delete.
+- **23.16 Mouse back and forward in the pane.** On macOS, the buttons over the page move the tab
+  (a listener in Kucedr's private script world, `buttons.ts`), and over the tab strip and toolbar
+  the pane sends them to the tab while the app's own listener ignores them. The window's
+  `app-command` buttons (Windows, Linux) and the macOS swipe go to the tab when the pointer is over
+  the pane column (`under.ts`, `attach_route_navigation.ts`). With no earlier page nothing moves;
+  elsewhere the app moves as before. The `app-command` and swipe routes are not exercised: they
+  need a real pointer over the pane.
+
+### Not implemented yet
+
+- **23.1:** the one-time import offer when the pane first opens.
+- **23.4 direct read** of another browser's live password store: not planned (it is the technique
+  password-stealing malware uses); the CSV export is the path.
+- **23.5 Sign-ins (cookies) import**, **23.7 the agent signing in with a saved login** and
+  **23.8 the old agent profile**: waiting on the open decisions below.
+- **23.10 Offer to save and update** after a manual sign-in, with "Never for this site".
+- **23.11 Addresses and contact details.**
+- **23.12 Form history.**
+- **23.13:** the optional primary password (scrypt, unlock prompt, Touch ID, locking on idle,
+  sleep and screen lock).
+- **23.14:** adding a login by hand; reveal and copy behind Touch ID (clipboard cleared after 30
+  seconds); export to CSV; "last used"; undo after delete; the store status line; the never-saved
+  list (needs 23.10).
+- **23.15:** folders (kept on import), the star in the address field for the page on screen, the
+  toolbar menu's 60-bookmark cut-off, adding bookmarks and folders, moving and multi-select, undo,
+  duplicate merge, export.
+- **⌘[ and ⌘] in the pane** (keyboard back and forward follow the mouse rule), see the open
+  decisions.
+- **Autofill drawn in a separate view** instead of in the page; see the open decisions.
+- **Offer to move the exported password CSV to the bin** after an import.
+- **Some sites refuse sign-in in an embedded browser**, Google among them _(not verified)_.
+
+### Earlier notes on what was built
 
 - **No list of browsers.** The code names no browser. A profile is recognised by the files its
   engine writes (`src/main/browser/formats.ts`), so any browser built on a known engine is found,
