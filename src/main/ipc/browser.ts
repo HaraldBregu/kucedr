@@ -95,6 +95,7 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		trusted.command(BrowserChannels.bookmarksUpdate, (url, place) => {
 			const target = urlSchema.parse(url);
 			const next = placeSchema.parse(place);
+			if (!/^https?:\/\/[^/\s]+/i.test(next.url)) throw new Error('Enter a web address that starts with https://.');
 			const current = library();
 			if (next.url !== target && current.bookmarks.some((item) => item.url === next.url))
 				throw new Error('That address is already bookmarked.');
