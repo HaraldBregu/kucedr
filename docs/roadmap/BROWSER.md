@@ -207,9 +207,6 @@ the running app.
 - **FIXED — no password on plain `http`.** Matching and filling run only on `https`, and on
   `http://localhost` for development (`secure()` in `passwords.ts`); the autofill list and the
   toolbar key button do not appear on a plain `http` site.
-- **PARTLY FIXED — subdomain matching.** A login still matches a parent or child host
-  (`example.com` ↔ `accounts.example.com`), but two sibling subdomains no longer match each other
-  without the public suffix list; strict registrable-domain matching waits for 23.13 (`sameSite`).
 - **FIXED — the fill rechecks the real address.** `fillLogin` compares the tab's current URL, not
   the page script's report, against the saved login and refuses a mismatch (`canFill` in
   `passwords.ts`, used in `fill.ts`).
