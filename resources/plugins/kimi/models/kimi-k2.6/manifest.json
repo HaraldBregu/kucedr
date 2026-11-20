@@ -1,0 +1,88 @@
+{
+	"id": "kimi-k2.6",
+	"name": "Kimi K2.6",
+	"type": "large-language-model",
+	"authentication": "api-key",
+	"url": "https://api.moonshot.ai/v1",
+	"metadata": {
+		"protocol": "chat-completions",
+		"reasoningContent": "roundtrip",
+		"promptAttachments": [
+			{
+				"kind": "image",
+				"mimeTypes": [
+					"image/jpeg",
+					"image/png",
+					"image/webp"
+				],
+				"extensions": [
+					".jpg",
+					".jpeg",
+					".png",
+					".webp"
+				]
+			}
+		],
+		"documentationUrl": "https://platform.kimi.ai/docs/api/chat",
+		"documentationStatus": "verified",
+		"inputs": {
+			"thinking": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"type": "string",
+						"enum": [
+							"enabled",
+							"disabled"
+						]
+					}
+				}
+			},
+			"temperature": {
+				"type": "number"
+			},
+			"top_p": {
+				"type": "number"
+			},
+			"max_tokens": {
+				"type": "integer"
+			},
+			"stop": {
+				"type": "array"
+			},
+			"n": {
+				"type": "integer"
+			},
+			"presence_penalty": {
+				"type": "number"
+			},
+			"frequency_penalty": {
+				"type": "number"
+			},
+			"response_format": {
+				"type": "object"
+			},
+			"tools": {
+				"type": "array"
+			},
+			"tool_choice": {
+				"type": "object"
+			},
+			"parallel_tool_calls": {
+				"type": "boolean"
+			},
+			"stream": {
+				"type": "boolean"
+			},
+			"stream_options": {
+				"type": "object"
+			},
+			"user": {
+				"type": "string"
+			}
+		},
+		"contextWindow": 262144,
+		"contextWindowDocumentationUrl": "https://huggingface.co/moonshotai/Kimi-K2.6/raw/main/config.json"
+	},
+	"location": "remote"
+}
