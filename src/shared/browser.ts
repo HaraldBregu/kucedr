@@ -3,6 +3,7 @@ import type {
 	BrowserImportRequest,
 	BrowserImportSummary,
 	BrowserLogin,
+	BrowserLoginChange,
 	BrowserPasswordStatus,
 	BrowserLibraryCounts,
 	BrowserPlace,
