@@ -26,7 +26,11 @@ export default function BrowserPasswordsPage(): React.JSX.Element {
 	const [logins, setLogins] = useState<BrowserLogin[] | null>(null);
 	const [query, setQuery] = useState('');
 	const [editing, setEditing] = useState<{ id: string; values: Record<string, string> } | null>(null);
-	const reload = (): void => void window.browserPane.passwordsList().then(setLogins);
+	const [never, setNever] = useState<string[]>([]);
+	const reload = (): void => {
+		void window.browserPane.passwordsList().then(setLogins);
+		void window.browserPane.passwordsNever().then(setNever);
+	};
 	useEffect(reload, []);
 	const needle = query.trim().toLowerCase();
 	const shown = (logins ?? []).filter(
