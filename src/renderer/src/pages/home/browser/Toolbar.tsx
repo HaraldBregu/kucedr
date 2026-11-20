@@ -79,7 +79,10 @@ export function BrowserToolbar({
 						logins.length === 1
 							? logins[0].id
 							: await window.win.showContextMenu(
-									logins.map((login) => ({ id: login.id, label: login.username || login.url }))
+									logins.map((login) => ({
+										id: login.id,
+										label: `${login.username || login.url}${login.savedFor ? ` · saved for ${login.savedFor}` : ''}`,
+									}))
 								);
 					if (choice) void window.browserPane.passwordsFill(tab.targetId, choice).catch(() => undefined);
 				}),
