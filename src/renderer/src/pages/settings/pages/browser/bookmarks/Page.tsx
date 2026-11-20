@@ -50,9 +50,8 @@ export default function BrowserBookmarksPage(): React.JSX.Element {
 				{shown.map((item) => (
 					<SettingsRow
 						key={item.url}
-						title={item.title || item.url}
-						description={item.url}
-						contentClassName="min-w-0 [&_*]:truncate"
+						title={<span className="block truncate">{item.title || item.url}</span>}
+						description={<span className="block truncate">{item.url}</span>}
 						actionClassName="w-auto justify-end gap-1"
 						actions={
 							<>
