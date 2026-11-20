@@ -39,6 +39,7 @@ export function BrowserPane({
 				tab={active}
 				onCommand={(command, url) => run(active.targetId, command, url)}
 				onClose={onClose}
+				onSuggestionsOpen={setSuggesting}
 			/>
 			{error ? (
 				<p role="alert" className="shrink-0 truncate px-3 py-1 text-xs text-destructive">
