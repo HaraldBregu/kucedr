@@ -61,6 +61,7 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		tab.icon = undefined;
 		tab.pointer = undefined;
 		tab.filled = false;
+		resetAutofill(tab);
 		changed();
 	});
 	contents.on('page-favicon-updated', (_event, icons) => {
