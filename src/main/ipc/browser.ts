@@ -62,7 +62,7 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 
 	register({ windows, apps }: BrowserIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
-		const shown = new Map<WebContents, BrowserTab>();
+		const shown = paneShown;
 
 		// In-field password suggestions: poll the visible tab's own focus while saved logins
 		// exist and the agent is not driving it, so the list follows the user, not the agent.
