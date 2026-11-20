@@ -1426,6 +1426,11 @@ export interface BrowserInvokeChannelMap {
 	};
 	[BrowserChannels.suggest]: { args: [text: string]; result: import('./browser_import').BrowserPlace[] };
 	[BrowserChannels.bookmarks]: { args: []; result: import('./browser_import').BrowserPlace[] };
+	[BrowserChannels.bookmarksUpdate]: {
+		args: [url: string, place: import('./browser_import').BrowserPlace];
+		result: void;
+	};
+	[BrowserChannels.bookmarksDelete]: { args: [url: string]; result: void };
 	[BrowserChannels.library]: { args: []; result: import('./browser_import').BrowserLibraryCounts };
 	[BrowserChannels.clearLibrary]: { args: []; result: void };
 	[BrowserChannels.passwordsStatus]: { args: []; result: import('./browser_import').BrowserPasswordStatus };
