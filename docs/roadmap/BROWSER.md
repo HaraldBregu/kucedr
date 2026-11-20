@@ -442,3 +442,7 @@ crypto. Extensions, open tabs and payment cards are not imported.
   for now.
 - **Bookmarks bar.** A row of bookmarks under the toolbar. Recommended: not now, because the pane is
   meant to stay minimal; the menu and the star cover the common cases.
+- **Keyboard back and forward.** ⌘[ and ⌘] (and Alt+Left and Alt+Right on Windows and Linux)
+  move the app's screens today. Recommended: they go to the tab when the page has keyboard focus,
+  following the same rule as the mouse, since these are the browser's own keys. They stay with the
+  app when focus is in the chat.
