@@ -31,6 +31,8 @@ export const browserPane: BrowserPaneApi = {
 	passwordsImport: () => typedInvokeUnwrap(BrowserChannels.passwordsImport),
 	passwordsList: () => typedInvokeUnwrap(BrowserChannels.passwordsList),
 	passwordsClear: () => typedInvokeUnwrap(BrowserChannels.passwordsClear),
+	passwordsUpdate: (id, change) => typedInvokeUnwrap(BrowserChannels.passwordsUpdate, id, change),
+	passwordsDelete: (id) => typedInvokeUnwrap(BrowserChannels.passwordsDelete, id),
 	passwordsMatch: (targetId) => typedInvokeUnwrap(BrowserChannels.passwordsMatch, targetId),
 	passwordsFill: (targetId, id) => typedInvokeUnwrap(BrowserChannels.passwordsFill, targetId, id),
 };
