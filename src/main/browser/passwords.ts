@@ -28,6 +28,8 @@ interface Store {
 	readonly version: 2;
 	readonly key: string;
 	readonly logins: Entry[];
+	// Hosts where the user chose "Never for this site".
+	readonly never?: string[];
 }
 
 let cached: { store: Store | undefined; broken: boolean } | undefined;
