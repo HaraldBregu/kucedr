@@ -47,6 +47,8 @@ export interface BrowserPaneApi {
 	command(request: BrowserPaneCommand): Promise<void>;
 	view(request: BrowserPaneView | null): void;
 	onChanged(callback: (state: BrowserPaneState) => void): () => void;
+	// The autofill list's "Manage passwords" row was chosen in a tab this window shows.
+	onManagePasswords(callback: () => void): () => void;
 	sources(): Promise<BrowserSource[]>;
 	importData(request: BrowserImportRequest): Promise<BrowserImportSummary>;
 	importPicked(request: BrowserImportPick): Promise<BrowserImportSummary | null>;
