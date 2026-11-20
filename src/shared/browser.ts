@@ -21,6 +21,8 @@ export interface BrowserPaneTab {
 	readonly forward: boolean;
 	readonly error?: string;
 	readonly icon?: string;
+	// A manual sign-in waiting for "Save password?"; never carries the password.
+	readonly offer?: { readonly username: string; readonly site: string; readonly update: boolean };
 }
 
 export interface BrowserPaneState {
