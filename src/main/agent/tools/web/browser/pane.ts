@@ -1,9 +1,18 @@
 import { EventEmitter } from 'node:events';
-import type { Page } from 'playwright-core';
+import type { BrowserWindow, WebContentsView } from 'electron';
 
-export const pane = { width: 1280, height: 800, scale: 1, order: 0 };
+export interface BrowserTab {
+	readonly id: string;
+	readonly view: WebContentsView;
+	readonly logs: string[];
+	chat?: string;
+	owner?: string;
+	order: number;
+	error?: string;
+	host?: BrowserWindow;
+}
+
+export const pane = { width: 1280, height: 800, order: 0, next: 1 };
+export const paneTabs = new Map<string, BrowserTab>();
 export const paneEvents = new EventEmitter();
-export const pageChats = new WeakMap<Page, string>();
-export const pageOrder = new WeakMap<Page, number>();
-export const pageLoading = new WeakSet<Page>();
 export const acting = new Map<string, number>();
