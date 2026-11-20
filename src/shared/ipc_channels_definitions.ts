@@ -548,6 +548,8 @@ export const BrowserChannels = {
 	importPicked: 'browser:import:pick',
 	suggest: 'browser:suggest',
 	bookmarks: 'browser:bookmarks',
+	bookmarksUpdate: 'browser:bookmarks:update',
+	bookmarksDelete: 'browser:bookmarks:delete',
 	library: 'browser:library',
 	clearLibrary: 'browser:library:clear',
 	passwordsStatus: 'browser:passwords:status',
