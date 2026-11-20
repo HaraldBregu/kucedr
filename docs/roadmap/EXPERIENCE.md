@@ -17,7 +17,8 @@ Part of the [Roadmap](README.md). Status: proposal.
 
 The terminal panel has its own area: [Terminal](TERMINAL.md).
 
-The browser pane later carries [Tor tabs](TOR.md) and [private and VPN tabs](VPN.md).
+The browser pane later carries [Tor tabs](TOR.md) and [private and VPN tabs](VPN.md), and can
+[import from other browsers](BROWSER.md).
 
 ## User experience in detail
 
