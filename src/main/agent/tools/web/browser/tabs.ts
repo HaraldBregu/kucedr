@@ -17,6 +17,9 @@ export function tabs(): BrowserPaneState {
 			forward: contents.navigationHistory.canGoForward(),
 			...(tab.error ? { error: tab.error } : {}),
 			...(tab.icon ? { icon: tab.icon } : {}),
+			...(tab.offer
+				? { offer: { username: tab.offer.username, site: new URL(tab.offer.url).host, update: tab.offer.update } }
+				: {}),
 		});
 	}
 	return { tabs: list, acting: [...acting.keys()] };
