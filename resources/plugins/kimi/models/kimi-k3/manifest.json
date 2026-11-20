@@ -11,19 +11,28 @@
 		},
 		"clampEffort": true,
 		"reasoningContent": "roundtrip",
+		"outputTokensField": "max_completion_tokens",
 		"promptAttachments": [
 			{
 				"kind": "image",
 				"mimeTypes": [
 					"image/jpeg",
 					"image/png",
-					"image/webp"
+					"image/gif",
+					"image/webp",
+					"image/bmp",
+					"image/heic",
+					"image/heif"
 				],
 				"extensions": [
 					".jpg",
 					".jpeg",
 					".png",
-					".webp"
+					".gif",
+					".webp",
+					".bmp",
+					".heic",
+					".heif"
 				]
 			}
 		],
@@ -32,32 +41,21 @@
 		"inputs": {
 			"reasoning_effort": {
 				"type": "string",
+				"default": "max",
 				"enum": [
 					"low",
 					"high",
 					"max"
 				]
 			},
-			"temperature": {
-				"type": "number"
-			},
-			"top_p": {
-				"type": "number"
-			},
-			"max_tokens": {
-				"type": "integer"
+			"max_completion_tokens": {
+				"type": "integer",
+				"default": 131072,
+				"maximum": 1048576
 			},
 			"stop": {
-				"type": "array"
-			},
-			"n": {
-				"type": "integer"
-			},
-			"presence_penalty": {
-				"type": "number"
-			},
-			"frequency_penalty": {
-				"type": "number"
+				"type": "array",
+				"maxItems": 5
 			},
 			"response_format": {
 				"type": "object"
@@ -68,21 +66,29 @@
 			"tool_choice": {
 				"type": "object"
 			},
-			"parallel_tool_calls": {
-				"type": "boolean"
-			},
 			"stream": {
 				"type": "boolean"
 			},
 			"stream_options": {
 				"type": "object"
 			},
-			"user": {
+			"logprobs": {
+				"type": "boolean"
+			},
+			"top_logprobs": {
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 20
+			},
+			"prompt_cache_key": {
+				"type": "string"
+			},
+			"safety_identifier": {
 				"type": "string"
 			}
 		},
 		"contextWindow": 1048576,
-		"contextWindowDocumentationUrl": "https://huggingface.co/moonshotai/Kimi-K3/raw/main/config.json"
+		"contextWindowDocumentationUrl": "https://platform.kimi.ai/docs/api/models-overview"
 	},
 	"location": "remote"
 }
