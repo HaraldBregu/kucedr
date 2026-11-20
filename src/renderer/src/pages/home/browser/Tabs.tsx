@@ -1,25 +1,87 @@
 import type { ReactElement } from 'react';
+import { Globe, Loader2, Plus, X } from 'lucide-react';
 import type { BrowserPaneTab } from '../../../../../shared/browser';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export function BrowserTabs({
 	tabs,
 	active,
 	onSelect,
+	onClose,
+	onNew,
 }: {
 	readonly tabs: readonly BrowserPaneTab[];
 	readonly active: string;
 	readonly onSelect: (targetId: string) => void;
+	readonly onClose: (targetId: string) => void;
+	readonly onNew: () => void;
 }): ReactElement {
 	return (
-		<Tabs value={active} onValueChange={(value) => onSelect(String(value))} className="shrink-0">
-			<TabsList variant="line" aria-label="Browser tabs" className="w-full justify-start overflow-x-auto overflow-y-hidden px-2">
-				{tabs.map((tab) => (
-					<TabsTrigger key={tab.targetId} value={tab.targetId} className="max-w-44 flex-none text-xs">
-						<span className="truncate">{tab.title || tab.url}</span>
-					</TabsTrigger>
-				))}
-			</TabsList>
-		</Tabs>
+		<div className="flex h-10 shrink-0 items-end gap-0.5 bg-muted px-2 pt-1.5">
+			<div role="tablist" aria-label="Browser tabs" className="flex min-w-0 items-end">
+				{tabs.map((tab) => {
+					const selected = tab.targetId === active;
+					const label = tab.title || (tab.url === 'about:blank' ? 'New tab' : tab.url);
+					return (
+						<div
+							key={tab.targetId}
+							className={cn(
+								'group/tab relative flex h-8.5 w-52 min-w-10 shrink items-center rounded-t-lg text-xs',
+								selected
+									? 'bg-background text-foreground'
+									: 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
+							)}
+						>
+							<button
+								type="button"
+								role="tab"
+								aria-selected={selected}
+								title={label}
+								className="flex h-full min-w-0 flex-1 items-center gap-2 rounded-t-lg pl-3 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+								onClick={() => onSelect(tab.targetId)}
+								onAuxClick={(event) => {
+									if (event.button === 1) onClose(tab.targetId);
+								}}
+							>
+								{tab.loading ? (
+									<Loader2 className="size-3.5 shrink-0 animate-spin" />
+								) : tab.icon ? (
+									<img src={tab.icon} alt="" className="size-3.5 shrink-0 rounded-sm" />
+								) : (
+									<Globe className="size-3.5 shrink-0" />
+								)}
+								<span className="truncate">{label}</span>
+							</button>
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-xs"
+								aria-label={`Close ${label}`}
+								title="Close tab"
+								className={cn(
+									'mr-1.5 size-5 shrink-0 rounded-full',
+									!selected && 'opacity-0 focus-visible:opacity-100 group-hover/tab:opacity-100'
+								)}
+								onClick={() => onClose(tab.targetId)}
+							>
+								<X />
+							</Button>
+						</div>
+					);
+				})}
+			</div>
+			<Button
+				type="button"
+				variant="ghost"
+				size="icon-xs"
+				aria-label="New tab"
+				title="New tab"
+				className="mb-1.5 size-6 shrink-0 rounded-full"
+				onClick={onNew}
+			>
+				<Plus />
+			</Button>
+		</div>
 	);
 }
