@@ -84,7 +84,72 @@ does not start again from an empty browser.
 | 23.11 | Addresses and contact details | Name, email, phone and postal address saved as one or more entries in Settings, suggested on fields that ask for them, filling the whole form at once | Same suggestions list as 23.9; a sealed file of its own | M |
 | 23.12 | Form history | Values the user typed before into the same field on the same site are suggested while typing, and can be deleted one by one | Same suggestions list | S |
 
-## What each browser allows
+## Saved data and autofill (23.9–23.12)
+
+The pane keeps what the user types into forms (logins, addresses, contact details and earlier
+entries) and offers it back in a list under the field, as other browsers do. Today a saved login
+is filled only from the toolbar's key button.
+
+### What the user sees
+
+- **On focus.** Clicking into a recognised field opens a list under it: saved usernames on a login
+  field, saved entries on an address field, earlier values on any other field. Typing narrows the
+  list. Picking an entry fills every field of that kind in the same form, not only the one clicked.
+- **Keyboard.** Up and Down move through the list, Enter fills, Escape closes it. The caret stays
+  in the field the whole time.
+- **Never a secret on screen.** The list shows usernames and entry names, never a password.
+- **After a sign-in.** When a form with a password is sent, a bar under the toolbar offers to save
+  it, or to update the saved one if the password changed. "Never for this site" stops the offer
+  there.
+- **In Settings → Browser.** Saved logins, addresses and form history, each with delete and clear
+  all. Seeing a password needs the app lock or the system's own check
+  ([Privacy](PRIVACY.md), 1.4).
+
+### How a field is recognised
+
+From the field's standard `autocomplete` hint first (`username`, `current-password`,
+`new-password`, `email`, `tel`, `street-address`, `postal-code` and the others), then its type, then
+words in its name, label and placeholder. This follows the import's rule of reading meaning rather
+than keeping a list of sites (as `csv.ts` does for column headers).
+
+### How it is built
+
+- **Watching the page.** A small script runs in Kucedr's own script world on every page, as the
+  agent cursor does (`src/main/agent/tools/web/browser/cursor.ts`), so the page cannot see or
+  change it. It reports focus, typing and form sending to the main process through a channel that
+  exists only in that world: a binding added through the view's debugger and tied to that world by
+  name. The page cannot call it, so it cannot send fake reports _(to confirm in a prototype)_.
+- **Drawing the list.** The page's view is drawn above Kucedr's window, so the app's own menus
+  cannot appear over a field. Recommended: a small separate view of Kucedr's own, placed over the
+  page just under the field. Chrome draws its autofill list outside the page for the same reason:
+  the page cannot read, cover or imitate it. It hides with the page whenever an app dialog or menu
+  covers the pane.
+- **Filling.** The main process reads the value from the sealed store and inserts it through the
+  view's debugger, as `fill.ts` does for passwords today. Values never pass through the app's
+  window.
+- **Storage.** One sealed file per kind beside `~/.kucedr/browser/passwords.seal`, with the same
+  system keystore. Addresses and form history are personal data, so they are sealed too.
+
+### Rules
+
+- **Only the user's own focus opens the list.** Nothing is suggested while the agent is acting on
+  the tab, and nothing is filled when a page loads: every fill follows a choice by the user.
+- **Visible fields only.** A fill touches only fields the user can see in the same form. Hidden
+  fields are a known way for a page to collect an address the user did not mean to give.
+- **Secure pages only.** Suggestions and fills run on `https` pages and `localhost`, in the top
+  page only (frames are not supported by the pane anyway).
+- **Matching site.** A login is offered only on the site it was saved for; form history only on
+  the site where it was typed.
+- **Nothing kept without consent.** A password captured when a form is sent stays in the main
+  process memory until the user picks Save, and is dropped otherwise. Fields marked
+  `autocomplete="off"` are not added to form history.
+- **What the model sees.** Never a password. Addresses and other filled values appear in the page
+  outline like anything else in a form, so they reach the model provider once filled. Settings
+  says so.
+- **The agent cannot read the store.** It has no tool to list saved data. Filling a login or an
+  address on its behalf goes through approval (23.7).
+- **Not in private or Tor tabs**, and kept per workspace, as for imports above.
+
 
 From general knowledge of these browsers, not checked against current versions. The first step of
 a detailed plan is to confirm each cell on macOS, Windows and Linux.
