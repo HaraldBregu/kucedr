@@ -104,8 +104,10 @@ export async function act(tab: BrowserTab, params: BrowserAct, signal?: AbortSig
 				const wanted = ${JSON.stringify(params.values)};
 				const chosen = [];
 				for (const option of el.options) {
-					option.selected = wanted.includes(option.value) || wanted.includes(option.label);
-					if (option.selected) chosen.push(option.value);
+					const match = wanted.includes(option.value) || wanted.includes(option.label);
+					if (el.multiple) option.selected = match;
+					else if (match && !chosen.length) el.value = option.value;
+					if (match && (el.multiple || !chosen.length)) chosen.push(option.value);
 				}
 				el.dispatchEvent(new Event('input', { bubbles: true }));
 				el.dispatchEvent(new Event('change', { bubbles: true }));
