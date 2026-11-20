@@ -1,6 +1,6 @@
 import { matchLogins } from '../../../../browser/passwords';
-import { loginLabel } from '../../../../../shared/login_label';
 import { fillLogin } from '../../../../browser/fill';
+import { BrowserChannels } from '../../../../../shared/ipc_channels_definitions';
 import type { BrowserTab } from './pane';
 
 const WORLD = 4118;
