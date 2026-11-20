@@ -31,6 +31,23 @@ export function BrowserToolbar({
 	const [open, setOpen] = useState(false);
 	const [active, setActive] = useState(-1);
 	const [hasLogins, setHasLogins] = useState(false);
+	const [saved, setSaved] = useState(false);
+	const web = /^https?:/i.test(tab.url);
+	const refreshSaved = (): void =>
+		void window.browserPane.bookmarks().then((bookmarks) => setSaved(bookmarks.some((place) => place.url === tab.url)));
+	useEffect(refreshSaved, [tab.url]);
+	const toggleBookmark = async (): Promise<void> => {
+		if (!saved) await window.browserPane.bookmarksAdd({ url: tab.url, title: tab.title });
+		else {
+			const choice = await window.win.showContextMenu([
+				{ id: 'remove', label: 'Remove bookmark' },
+				{ id: 'edit', label: 'Edit bookmarks…' },
+			]);
+			if (choice === 'edit') window.location.hash = '#/settings/browser/bookmarks';
+			if (choice === 'remove') await window.browserPane.bookmarksDelete(tab.url);
+		}
+		refreshSaved();
+	};
 	const list = suggestions.slice(0, 8);
 	const showing = open && list.length > 0;
 	useEffect(() => onSuggestionsOpen(showing), [showing, onSuggestionsOpen]);
