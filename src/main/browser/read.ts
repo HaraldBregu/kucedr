@@ -64,7 +64,12 @@ export function readData(file: string, want: Readonly<Record<Kind, boolean>>): P
 				}
 			: {};
 	if (!text.startsWith('{')) return {};
-	const json = JSON.parse(text) as Node;
+	let json: Node;
+	try {
+		json = JSON.parse(text) as Node;
+	} catch {
+		return {};
+	}
 	const result: Partial<Library> = {};
 	const tree = json.roots ?? (Array.isArray(json.children) ? json : undefined);
 	if (want.bookmarks && tree) {
