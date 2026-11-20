@@ -54,6 +54,7 @@ export interface BrowserPaneApi {
 	importPicked(request: BrowserImportPick): Promise<BrowserImportSummary | null>;
 	suggest(text: string): Promise<BrowserPlace[]>;
 	bookmarks(): Promise<BrowserPlace[]>;
+	bookmarksAdd(place: BrowserPlace): Promise<void>;
 	bookmarksUpdate(url: string, place: BrowserPlace): Promise<void>;
 	bookmarksDelete(url: string): Promise<void>;
 	library(): Promise<BrowserLibraryCounts>;
