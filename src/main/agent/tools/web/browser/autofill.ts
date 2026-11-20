@@ -214,10 +214,7 @@ export async function pollAutofill(tab: BrowserTab): Promise<void> {
 	if (state.seq === lastSeq.get(tab)) return;
 	lastSeq.set(tab, state.seq);
 	const logins = state.origin ? matchLogins(state.origin) : [];
-	shownItems.set(
-		tab,
-		logins.map((login) => login.id)
-	);
+	shownItems.set(tab, logins.map((login) => login.id));
 	// Only names and sites go to the page's private world; ids and passwords stay in main.
 	const items = logins.map((login) => ({
 		label: login.username || hostOf(login.url),
