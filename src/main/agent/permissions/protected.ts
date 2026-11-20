@@ -1,3 +1,4 @@
+import { app } from 'electron';
 import os from 'node:os';
 import path from 'node:path';
 import { agentLocation } from '../../shared/agent_location';
