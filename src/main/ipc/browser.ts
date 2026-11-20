@@ -142,6 +142,12 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			if (confirmed) clearLogins();
 			return confirmed;
 		});
+		trusted.command(BrowserChannels.passwordsOffer, (id, answer) => {
+			const tab = paneTabs.get(targetId.parse(id));
+			if (tab) answerOffer(tab, z.enum(['save', 'never', 'dismiss']).parse(answer));
+		});
+		trusted.query(BrowserChannels.passwordsNever, () => neverSites());
+		trusted.command(BrowserChannels.passwordsNeverRemove, (site) => setNever(z.string().max(255).parse(site), false));
 		trusted.command(BrowserChannels.passwordsUpdate, (loginId, change) =>
 			updateLogin(z.string().max(64).parse(loginId), loginChangeSchema.parse(change))
 		);
