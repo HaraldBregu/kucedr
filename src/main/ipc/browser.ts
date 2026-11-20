@@ -54,6 +54,15 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		const trusted = new TrustedRenderer(windows, apps);
 		const shown = new Map<WebContents, BrowserTab>();
 
+		// In-field password suggestions: poll the visible tab's own focus while saved logins
+		// exist and the agent is not driving it, so the list follows the user, not the agent.
+		setInterval(() => {
+			if (countLogins() === 0) return;
+			for (const tab of new Set(shown.values()))
+				if (!tab.view.webContents.isDestroyed() && !(tab.chat && acting.has(tab.chat)))
+					void pollAutofill(tab);
+		}, 250).unref();
+
 		paneEvents.on('change', () => trusted.broadcast(BrowserChannels.changed, tabs()));
 		trusted.query(BrowserChannels.state, () => tabs());
 		trusted.command(BrowserChannels.command, (request) => command(commandSchema.parse(request)));
