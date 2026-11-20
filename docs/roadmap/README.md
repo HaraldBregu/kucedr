@@ -37,7 +37,7 @@ on an outside decision.
 | 20 | [Coding page](CODING.md) | Ship or remove the coding page, same permission rules, terminal inside coding |
 | 21 | [Security hardening](SECURITY.md) | The security audit items still open |
 | 22 | [Quality](QUALITY.md) | Green tests, coverage in CI, real-app checks, docs that match the app |
-| 23 | [Browser import](BROWSER.md) | Bookmarks, history, passwords, sign-ins and settings from Chrome, Firefox and other browsers; saved passwords, addresses and form history suggested under the field; secure password store and password manager; bookmarks managed in Settings |
+| 23 | [Browser import](BROWSER.md) | Bookmarks, history, passwords, sign-ins and settings from Chrome, Firefox and other browsers; saved passwords, addresses and form history suggested under the field; secure password store and password manager; bookmarks managed in Settings; mouse back and forward for the pane |
 
 Features are numbered by area, for example 3.9 is the browser pane.
 
