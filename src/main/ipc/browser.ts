@@ -27,12 +27,9 @@ const viewSchema = z
 	.object({ targetId, x: edge, y: edge, width: edge.min(1), height: edge.min(1) })
 	.nullable();
 
-const importSchema = z.object({
-	sources: z.array(z.string().max(200)).max(50),
-	bookmarks: z.boolean(),
-	history: z.boolean(),
-	settings: z.boolean(),
-});
+const kindsSchema = z.object({ bookmarks: z.boolean(), history: z.boolean(), settings: z.boolean() });
+const importSchema = kindsSchema.extend({ sources: z.array(z.string().max(64)).max(200) });
+const pickSchema = kindsSchema.extend({ folder: z.boolean() });
 
 export interface BrowserIpcDeps {
 	windows: WindowContextManager;
