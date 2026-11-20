@@ -27,16 +27,28 @@ does not start again from an empty browser.
 
 ## Built so far
 
-- **Import screen (23.1)** at Settings → Browser: Chrome-family and Firefox profiles found on the
-  machine, a tick box per kind of data, a summary, and a button that clears what was imported.
-  Running it again adds no duplicates. Not built: the one-time offer when the pane first opens.
-- **Bookmarks and history (23.2)**, read from a private copy of the other browser's files
-  (`src/main/browser/`), kept in `~/.kucedr/browser/library.json`, suggested under the address
-  field, with a bookmarks menu in the toolbar. History keeps the 5,000 most recent pages. Not
-  built: Safari, and import from an exported bookmarks file.
+- **No list of browsers.** The code names no browser. A profile is recognised by the files its
+  engine writes (`src/main/browser/formats.ts`), so any browser built on a known engine is found,
+  and its name on screen comes from its own folders (`label.ts`). Adding a format is one more
+  entry in that file.
+- **Import screen (23.1)** at Settings → Browser. It searches the folders where applications keep
+  their data (`roots.ts`, `discover.ts`) and lists every profile it finds, with what it holds,
+  when it was last used and where it is. Everything is ticked, so one button imports it all.
+  Profiles that were never used are left out. A second button takes any file or folder: a
+  browser's folder, one profile, or exported files. Running an import again adds no duplicates.
+  Not built: the one-time offer when the pane first opens.
+- **What a file is, is worked out from its content** (`read.ts`), not its name: a database in one
+  of three history and bookmark layouts, a bookmark tree or settings as JSON, or the bookmarks
+  page every browser can export. The third database layout is the one Safari uses; it is tested
+  against a made-up file only, and Safari's own folder is not searched because macOS guards it.
+- **Bookmarks and history (23.2)**, read from a private copy, kept in
+  `~/.kucedr/browser/library.json`, suggested under the address field, with a bookmarks menu in
+  the toolbar. History keeps the 5,000 most recent pages.
 - **Search from the address field (23.6)**: words search with the imported default engine, or
-  DuckDuckGo until one is imported. Chrome-family only; Firefox's engine and the home page are
-  not read.
+  DuckDuckGo until one is imported. Read from the first engine family's settings file only; the
+  home page is not read.
+- **Checked on macOS only.** The search of Windows and Linux data folders is written but has not
+  been run on those systems.
 - Passwords, sign-ins, agent sign-in and the old profile (23.3–23.5, 23.7, 23.8) are not built;
   they wait on the open decisions below.
 
