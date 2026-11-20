@@ -81,7 +81,10 @@ export function BrowserToolbar({
 					const choice = await window.win.showContextMenu(
 						bookmarks.length
 							? [
-									...recent.map((place) => ({ id: place.url, label: (place.title || place.url).slice(0, 70) })),
+									...recent.map((place, index) => ({
+										id: String(index),
+										label: (place.title.trim() || place.url).slice(0, 70),
+									})),
 									{ type: 'separator' as const },
 									{ id: 'all', label: `All bookmarks (${bookmarks.length})…` },
 								]
