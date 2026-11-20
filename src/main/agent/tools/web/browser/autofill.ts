@@ -194,17 +194,27 @@ export async function pollAutofill(tab: BrowserTab): Promise<void> {
 	if (tab.view.webContents.isDestroyed()) return;
 	const state = await probe(tab, null).catch(() => null);
 	if (!state) return;
+	if (state.pick === 'manage') {
+		tab.host?.webContents.send(BrowserChannels.managePasswords, null);
+		return;
+	}
 	if (state.pick !== null) {
 		const chosen = shownItems.get(tab)?.[state.pick];
-		if (chosen) await fillLogin(tab, chosen.id).catch(() => undefined);
+		if (chosen) await fillLogin(tab, chosen).catch(() => undefined);
 		return;
 	}
 	if (state.seq === lastSeq.get(tab)) return;
 	lastSeq.set(tab, state.seq);
-	const items = state.origin
-		? matchLogins(state.origin).map((login) => ({ id: login.id, label: loginLabel(login), key: '' }))
-		: [];
-	shownItems.set(tab, items);
+	const logins = state.origin ? matchLogins(state.origin) : [];
+	shownItems.set(
+		tab,
+		logins.map((login) => login.id)
+	);
+	// Only names and sites go to the page's private world; ids and passwords stay in main.
+	const items = logins.map((login) => ({
+		label: login.username || hostOf(login.url),
+		detail: login.savedFor ? `Saved for ${login.savedFor}` : hostOf(login.url),
+	}));
 	// push right away so the list appears without waiting for the next poll
 	await probe(tab, JSON.stringify({ seq: state.seq, items })).catch(() => undefined);
 }
