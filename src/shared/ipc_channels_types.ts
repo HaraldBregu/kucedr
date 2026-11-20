@@ -1431,7 +1431,12 @@ export interface BrowserInvokeChannelMap {
 	[BrowserChannels.passwordsStatus]: { args: []; result: import('./browser_import').BrowserPasswordStatus };
 	[BrowserChannels.passwordsImport]: { args: []; result: number | null };
 	[BrowserChannels.passwordsList]: { args: []; result: import('./browser_import').BrowserLogin[] };
-	[BrowserChannels.passwordsClear]: { args: []; result: void };
+	[BrowserChannels.passwordsClear]: { args: []; result: boolean };
+	[BrowserChannels.passwordsUpdate]: {
+		args: [id: string, change: import('./browser_import').BrowserLoginChange];
+		result: void;
+	};
+	[BrowserChannels.passwordsDelete]: { args: [id: string]; result: boolean };
 	[BrowserChannels.passwordsMatch]: { args: [targetId: string]; result: import('./browser_import').BrowserLogin[] };
 	[BrowserChannels.passwordsFill]: { args: [targetId: string, id: string]; result: void };
 }
