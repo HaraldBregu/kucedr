@@ -1310,7 +1310,31 @@
 			"passwordsImport": "Importa da un file CSV…",
 			"passwordsStored": "{{count}} password salvate",
 			"passwordsAdded": "Aggiunte {{count}}.",
-			"passwordsClear": "Elimina le password salvate"
+			"passwordsClear": "Elimina tutte le password",
+			"noMatches": "Nessun risultato per la ricerca.",
+			"passwordsPage": {
+				"title": "Password",
+				"description": "Gli accessi salvati per il browser. Modifica sito, nome utente o password, oppure eliminali.",
+				"search": "Cerca siti e nomi utente",
+				"empty": "Nessuna password salvata.",
+				"noUsername": "Nessun nome utente",
+				"edit": "Modifica password salvata",
+				"editDescription": "La password non viene mai mostrata. Scrivine una nuova per sostituirla.",
+				"site": "Sito",
+				"username": "Nome utente",
+				"password": "Nuova password",
+				"passwordKeep": "Lascia vuoto per mantenere la password attuale"
+			},
+			"bookmarksPage": {
+				"title": "Segnalibri",
+				"description": "I segnalibri che il browser suggerisce mentre scrivi. Rinominali, modificali o eliminali.",
+				"count": "{{count}} segnalibri",
+				"search": "Cerca nei segnalibri",
+				"empty": "Nessun segnalibro.",
+				"edit": "Modifica segnalibro",
+				"name": "Nome",
+				"address": "Indirizzo"
+			}
 		},
 		"editor": {
 			"font": "Carattere",
