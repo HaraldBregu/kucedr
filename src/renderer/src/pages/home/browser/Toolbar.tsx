@@ -92,7 +92,7 @@ export function BrowserToolbar({
 					);
 					if (choice === 'import') window.location.hash = '#/settings/browser';
 					else if (choice === 'all') window.location.hash = '#/settings/browser/bookmarks';
-					else if (choice !== null) onCommand('navigate', choice);
+					else if (choice !== null) onCommand('navigate', recent[Number(choice)].url);
 				}),
 		},
 		{
