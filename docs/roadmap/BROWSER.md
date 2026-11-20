@@ -201,6 +201,15 @@ the running app.
   fuse (`electron-builder.json`); this takes effect only in a packaged app.
 - **Not built yet (23.13) — the primary password.** It needs an unlock prompt and locking on idle,
   sleep and screen lock, and is set from the password manager, so it lands with 23.14.
+- **PARTLY BUILT (23.14) — Settings → Browser → Passwords.** A searchable list of site and
+  username; edit the site, username or password (a new password replaces the old one and is
+  never shown); delete one or all. Every delete asks first with a native warning from the main
+  process (Cancel is the default), so the renderer cannot skip it
+  (`src/main/browser/confirm.ts`). Not built yet: adding a login by hand, reveal and copy behind
+  Touch ID, export, the never-saved list.
+- **PARTLY BUILT (23.15) — Settings → Browser → Bookmarks.** A searchable flat list: rename,
+  change the address (a duplicate is refused) or delete. Folders and the star in the address
+  field are not built yet.
 - **FIXED — an import can no longer wipe the store.** A store that exists but cannot be decrypted is
   reported as broken, and an import over it is refused rather than silently overwriting it
   (`load()` in `passwords.ts`).
