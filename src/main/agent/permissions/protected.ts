@@ -54,6 +54,7 @@ export function protectedRoots(): { read: string[]; write: string[]; writable: s
 			['.kube'],
 		].map((segments) => path.join(home, ...segments)),
 		...browsers,
+		path.join(app.getPath('sessionData'), 'Partitions', 'agent-browser'),
 		...[
 			['providers'],
 			['mcp'],
