@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 5,
+	"id": "kimi",
+	"title": "Moonshot AI / Kimi",
+	"version": "1.1.0",
+	"description": "Kimi chat models from Moonshot AI with long context.",
+	"categories": [
+		"LLM"
+	],
+	"author": "Harald Bregu",
+	"website": "https://www.kimi.com",
+	"icon": "kimi.svg",
+	"iconFullBleed": true,
+	"apiKeyUrl": "https://platform.moonshot.ai/console/api-keys",
+	"settings": {
+		"inputSchema": {
+			"type": "object",
+			"properties": {
+				"apiKey": { "type": "string", "title": "API key", "format": "password" }
+			},
+			"required": ["apiKey"]
+		}
+	}
+}
