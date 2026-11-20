@@ -1,6 +1,8 @@
 import { matchLogins } from '../../../../browser/passwords';
 import { fillLogin } from '../../../../browser/fill';
+import { randomBytes } from 'node:crypto';
 import { BrowserChannels } from '../../../../../shared/ipc_channels_definitions';
+import { CAPTURE_PREFIX } from './capture';
 import type { BrowserTab } from './pane';
 
 const WORLD = 4118;
