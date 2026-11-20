@@ -1,36 +1,32 @@
 # Embedded agent browser plan
 
-Status: the pane is built, but on the mirrored view, which is no longer the chosen direction. The move to one `WebContentsView` per tab (see "Automation approach") is not done. "As built" below describes what the code does today.
+Status: built for interactive runs, with one `WebContentsView` per tab as chosen under "Automation approach". "As built" below describes current behavior; the rest is the plan it came from.
 
-Prototype findings for the separate view (2026-11-19, Electron 44):
+## As built
 
-- A view that was never added to a window cannot be clicked through `sendInputEvent` and cannot be captured. It has to be attached, at least once.
-- Through the view's in-process debugger, with focus emulation on, clicks, text, keys, screenshots (including beyond the viewport) and PDF all work whether the view is attached, hidden or detached, and the app window keeps keyboard focus.
-- A new window request reaches `setWindowOpenHandler`, so pop-ups can become tabs.
-- The default user agent contains `Electron/…`; strip it for the browser session.
+Each tab the agent opens is its own sandboxed web view with no Kucedr preload, in the session `persist:agent-browser`. The pane sits on the right of the main window, beside the navigation bar; the active tab's view is placed exactly over the pane's page area. Under 1000 px of window width the pane covers the chat below the navigation bar. Background runs still use headless Chrome through Playwright.
 
-## As built (mirrored view, interim)
-
-Interactive runs start Chrome with no window and the same profile as before (`~/.kucedr/agent-browser`), so saved logins carry over. The pane sits on the right of the main window, beside the navigation bar, and shows the live picture of the tab the agent last used. Clicks, scrolling, typing and paste in the pane go to the page. Under 1000 px of window width the pane covers the chat below the navigation bar.
-
-- Main process: `src/main/agent/tools/web/browser/` (`pane`, `watch`, `tabs`, `cast`, `fit`, `input`, `command`, `observe`, `agent`) and `src/main/ipc/browser.ts`.
+- Main process: `src/main/agent/tools/web/browser/` (`create`, `close`, `run`, `act`, `locate`, `press`, `settle`, `snapshot`, `tabs`, `command`, `observe`, `pane`) and `src/main/ipc/browser.ts`. `use_web_browser.ts` hands interactive calls to `run` and keeps the Playwright code for background runs.
 - Window: `src/renderer/src/pages/home/browser/` (`Pane`, `Toolbar`, `Tabs`, `Screen`, `state`), mounted in `src/renderer/src/pages/home/Page.tsx`.
 - Contract: `src/shared/browser.ts`, exposed to the window as `window.browserPane`.
 
-Things that are easy to break:
+How it works, and what is easy to break:
 
-- All tabs share one hidden Chrome window. Only the front tab follows a resize, so viewing a tab brings it to the front first, then sets the size with `Browser.setContentsSize`.
-- Chrome often sends no picture at all when the window is resized while a screencast is starting. Every view change therefore stops the cast, sizes the tab, then starts a new cast.
-- Windowless Chrome reports itself as `HeadlessChrome`, which sign-in pages refuse. The real user agent is read once per app run and passed at launch.
-- Chrome will not go narrower than 500 px. A narrower pane shows the page scaled down.
+- The agent drives a view through its in-process debugger with focus emulation on. That works whether the view is shown, hidden or not yet in a window, and the chat keeps keyboard focus. `sendInputEvent` and `capturePage` do not work on a view that was never added to a window.
+- `Screen` reports the pane's rectangle every frame and the main process sizes the view. The rectangle is multiplied by the app zoom in the preload.
+- The view is drawn above the app. `Screen` hides it whenever something else is on top of the pane (dialog, menu, command menu), and shows the app's own message when a page fails to load. The toolbar uses native `title` tips because app tooltips would sit behind the view.
+- Pop-ups open as tabs of the same chat. Site permission requests are denied, downloads are cancelled, and navigation to anything but http and https is blocked.
+- The user agent has the `Electron/…` and app tokens removed.
 
 Not built:
 
-- The "open in a window" sign-in fallback. Signing in works by typing in the pane; there is no password autofill.
-- Selecting or copying text from the page, composed input (IME), modifier-clicks, file pickers and a downloads list.
-- Enabled and disabled states for back and forward.
+- Background runs on views; they still need Google Chrome.
+- A still image in place of the hidden view while an overlay is open; the pane is blank until it closes.
+- Holding downloads to offer them; they are cancelled.
+- Elements inside frames: snapshot and clicks see the top document only, as before.
 - On Windows and Linux the window buttons stay in the navigation bar, to the left of the pane.
-- Two Kucedr windows showing different tabs at different sizes share the one Chrome window, so the last one to resize wins.
+- Removing the old Chrome profile folder (`~/.kucedr/agent-browser`); saved logins there are not carried over.
+- The unit tests that exercised the interactive Chrome path (`browser-launch`, `browser-background`, `run/browser` and others) have not been updated.
 
 ## Goal
 
