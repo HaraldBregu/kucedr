@@ -41,6 +41,11 @@ const viewSchema = z
 const kindsSchema = z.object({ bookmarks: z.boolean(), history: z.boolean(), settings: z.boolean() });
 const importSchema = kindsSchema.extend({ sources: z.array(z.string().max(64)).max(200) });
 const pickSchema = kindsSchema.extend({ folder: z.boolean() });
+const loginChangeSchema = z.object({
+	url: z.string().trim().min(1).max(4096),
+	username: z.string().max(1024),
+	password: z.string().max(4096),
+});
 
 export interface BrowserIpcDeps {
 	windows: WindowContextManager;
