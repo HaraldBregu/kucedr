@@ -13,6 +13,11 @@ export interface BrowserTab {
 	pointer?: { x: number; y: number };
 	filled?: boolean;
 	host?: BrowserWindow;
+	// Encrypts what the page's private script world reports about a sign-in; known only to main
+	// and that world.
+	captureKey?: Buffer;
+	// A sign-in waiting for the user's answer; the password stays in main memory only.
+	offer?: { url: string; username: string; password: Buffer; update: boolean };
 }
 
 export const pane = { width: 1280, height: 800, order: 0, next: 1 };
