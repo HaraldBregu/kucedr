@@ -105,6 +105,7 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		contents.on(name as 'did-stop-loading', changed);
 	watchMouseButtons(contents);
 	contents.once('destroyed', () => {
+		drop(tab);
 		paneTabs.delete(tab.id);
 		changed();
 	});
