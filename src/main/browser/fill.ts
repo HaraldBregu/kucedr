@@ -1,5 +1,5 @@
 import type { BrowserTab } from '../agent/tools/web/browser/pane';
-import { secretFor } from './passwords';
+import { canFill, secretFor } from './passwords';
 
 // Tags the password field and the username field before it, so each can be focused by
 // marker without a selector ever carrying the value.
