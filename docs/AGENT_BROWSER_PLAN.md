@@ -29,6 +29,7 @@ Not built:
 - On Windows and Linux the window buttons stay in the navigation bar, to the left of the pane.
 - Removing the old Chrome profile folder (`~/.kucedr/agent-browser`); saved logins there are not carried over.
 - Importing bookmarks, history, passwords, sign-ins and settings from Chrome, Firefox and other browsers; planned in [Browser import](roadmap/BROWSER.md).
+- A visible pointer that shows where the agent clicks and types; planned as 3.11 in [User experience](roadmap/EXPERIENCE.md#311-agent-cursor-in-the-browser-pane).
 - Unit tests for the view backend. The existing browser tests cover background runs only.
 
 ## Goal
