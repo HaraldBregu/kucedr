@@ -26,7 +26,17 @@ export function BrowserPane({
 	};
 
 	return (
-		<section aria-label="Browser" className="flex h-full min-w-0 flex-col bg-background">
+		<section
+			aria-label="Browser"
+			data-browser-pane
+			className="flex h-full min-w-0 flex-col bg-background"
+			// On macOS the mouse's back and forward buttons over the tab strip and toolbar move the tab;
+			// Windows and Linux route them in the main process.
+			onMouseUp={(event) => {
+				if (!IS_MAC || (event.button !== 3 && event.button !== 4)) return;
+				run(active.targetId, event.button === 3 ? 'back' : 'forward');
+			}}
+		>
 			<BrowserTabs
 				tabs={tabs}
 				active={active.targetId}
