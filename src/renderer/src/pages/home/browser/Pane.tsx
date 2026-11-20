@@ -14,10 +14,11 @@ export function BrowserPane({
 	onClose,
 }: {
 	readonly tabs: readonly BrowserPaneTab[];
-	readonly acting: boolean;
+	readonly acting: readonly string[];
 	readonly onClose: () => void;
 }): ReactElement {
 	const active = tabs.reduce((latest, tab) => (tab.order > latest.order ? tab : latest));
+	const busy = acting.includes(active.chat);
 	const [error, setError] = useState<string | null>(null);
 	const [suggesting, setSuggesting] = useState(false);
 	useEffect(() => setError(null), [active.targetId, active.url]);
