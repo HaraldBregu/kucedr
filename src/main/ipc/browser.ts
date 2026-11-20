@@ -9,14 +9,17 @@ import { tabs } from '../agent/tools/web/browser/tabs';
 import { profileFiles } from '../browser/files';
 import { importFiles } from '../browser/import';
 import { DEFAULT_SEARCH, library } from '../browser/library';
+import { confirmDeletion } from '../browser/confirm';
 import { fillLogin } from '../browser/fill';
 import {
 	clearLogins,
 	countLogins,
+	deleteLogin,
 	importLogins,
 	listLogins,
 	matchLogins,
 	passwordsAvailable,
+	updateLogin,
 } from '../browser/passwords';
 import { pickFiles } from '../browser/pick';
 import { browserSources, foundProfiles } from '../browser/sources';
