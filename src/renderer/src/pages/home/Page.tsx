@@ -435,14 +435,14 @@ function PageContent(): ReactElement {
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
 	const [detailsPopoverOpen, setDetailsPopoverOpen] = useState(false);
-	const browser = useBrowserTabs(chatSessionId);
-	const [browserHiddenChat, setBrowserHiddenChat] = useState<string | null>(null);
+	const browser = useBrowserTabs();
+	const [browserHidden, setBrowserHidden] = useState(false);
 	const browserAlive = browser.tabs.length > 0;
-	const browserOpen = browserAlive && browserHiddenChat !== chatSessionId;
+	const browserOpen = browserAlive && !browserHidden;
 	const browserCovers = useIsMobile('(max-width: 999px)');
 	useEffect(() => {
-		if (!browserAlive) setBrowserHiddenChat((current) => (current === chatSessionId ? null : current));
-	}, [browserAlive, chatSessionId]);
+		if (!browserAlive) setBrowserHidden(false);
+	}, [browserAlive]);
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
 	const [capabilities, setCapabilities] = useState<AgentPromptInputCapabilities | null>();
 	const filesAccept =
