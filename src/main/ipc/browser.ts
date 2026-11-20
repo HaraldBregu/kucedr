@@ -63,10 +63,9 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 	register({ windows, apps }: BrowserIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
 
-		// In-field password suggestions: poll the visible tab's own focus while saved logins
-		// exist and the agent is not driving it, so the list follows the user, not the agent.
+		// In-field password suggestions and offer-to-save: poll the visible tab's own focus while
+		// the agent is not driving it, so the list follows the user, not the agent.
 		setInterval(() => {
-			if (countLogins() === 0) return;
 			for (const tab of new Set(paneShown.values()))
 				if (!tab.view.webContents.isDestroyed() && !(tab.chat && acting.has(tab.chat)))
 					void pollAutofill(tab);
