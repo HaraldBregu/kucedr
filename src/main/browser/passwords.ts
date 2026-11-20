@@ -1,10 +1,10 @@
 import { safeStorage } from 'electron';
-import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import path from 'node:path';
-import { restrictSettingsFile } from '../shared/restrict_settings_file';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
 import { userDataLocation } from '../shared/user_data_location';
 import { readLogins } from './csv';
+import { writeFileAtomic } from './write';
 
 export interface Login {
 	readonly id: string;
