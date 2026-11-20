@@ -5,6 +5,14 @@ import type { BrowserTab } from './pane';
 
 const WORLD = 4118;
 
+function hostOf(url: string): string {
+	try {
+		return new URL(url).host;
+	} catch {
+		return url;
+	}
+}
+
 // Runs in a private script world the page cannot reach. It watches the user's own focus on
 // login fields and draws a suggestions list in a closed shadow root under the field. The page
 // cannot read the list, and a choice is accepted only from a trusted (real) key or click.
