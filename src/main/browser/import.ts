@@ -1,10 +1,9 @@
-import type { BrowserImportRequest, BrowserImportSummary } from '../../shared/browser_import';
-import { readChromium } from './chromium';
-import { readFirefox } from './firefox';
+import path from 'node:path';
+import type { BrowserImportKinds, BrowserImportSummary } from '../../shared/browser_import';
 import { HISTORY_LIMIT, library, type Visit } from './library';
-import { browserSources } from './sources';
+import { readData } from './read';
 
-export function importBrowserData(request: BrowserImportRequest): BrowserImportSummary {
+export function importFiles(files: readonly string[], want: BrowserImportKinds): BrowserImportSummary {
 	const current = library();
 	const bookmarks = new Map(current.bookmarks.map((item) => [item.url, item]));
 	const history = new Map<string, Visit>(current.history.map((item) => [item.url, item]));
@@ -12,12 +11,9 @@ export function importBrowserData(request: BrowserImportRequest): BrowserImportS
 	const errors: string[] = [];
 	let search: string | undefined;
 	const web = (url: string): boolean => /^https?:\/\//i.test(url);
-	for (const source of browserSources().filter((candidate) => request.sources.includes(candidate.id))) {
+	for (const file of files) {
 		try {
-			const data =
-				source.kind === 'chromium'
-					? readChromium(source.directory, request)
-					: readFirefox(source.directory, request);
+			const data = readData(file, want);
 			for (const item of data.bookmarks ?? []) if (web(item.url) && !bookmarks.has(item.url)) bookmarks.set(item.url, item);
 			for (const item of data.history ?? []) {
 				if (!web(item.url)) continue;
@@ -26,7 +22,8 @@ export function importBrowserData(request: BrowserImportRequest): BrowserImportS
 			}
 			if (data.search && web(data.search) && data.search.includes('%s')) search ??= data.search;
 		} catch (error) {
-			errors.push(`${source.browser} (${source.profile}): ${error instanceof Error ? error.message : String(error)}`);
+			const name = path.join(path.basename(path.dirname(file)), path.basename(file));
+			errors.push(`${name}: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 	library({
