@@ -1,7 +1,7 @@
-import { existsSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
-import { PROFILE_FILES, PROFILE_MARKERS, PROFILES_ROOT_FILE } from './formats';
+import { PROFILE_MARKERS, PROFILES_ROOT_FILE } from './formats';
+import { profileFiles } from './files';
 
 // Touching these macOS folders makes the system ask the user for access to contacts or
 // other private data, which has nothing to do with browsing.
