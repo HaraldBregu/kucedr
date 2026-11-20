@@ -82,7 +82,6 @@ it says otherwise. Windows and Linux paths are written but not exercised.
   password-stealing malware uses); the CSV export is the path.
 - **23.5 Sign-ins (cookies) import**, **23.7 the agent signing in with a saved login** and
   **23.8 the old agent profile**: waiting on the open decisions below.
-- **23.10 Offer to save and update** after a manual sign-in, with "Never for this site".
 - **23.11 Addresses and contact details.**
 - **23.12 Form history.**
 - **23.13:** the optional primary password (scrypt, unlock prompt, Touch ID, locking on idle,
