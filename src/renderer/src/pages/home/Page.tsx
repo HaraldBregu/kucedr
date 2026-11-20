@@ -1036,11 +1036,7 @@ function PageContent(): ReactElement {
 				</div>
 				{browserOpen && browserCovers ? (
 					<div className="absolute inset-x-0 bottom-0 top-12 z-40 bg-background">
-						<BrowserPane
-							tabs={browser.tabs}
-							acting={browser.acting}
-							onClose={() => setBrowserHiddenChat(chatSessionId)}
-						/>
+						<BrowserPane tabs={browser.tabs} acting={browser.acting} onClose={() => setBrowserHidden(true)} />
 					</div>
 				) : null}
 			</Split>
