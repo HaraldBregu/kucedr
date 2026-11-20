@@ -95,6 +95,7 @@ export function BrowserTabs({
 				size="icon-xs"
 				aria-label="New tab"
 				title="New tab"
+				style={NO_DRAG}
 				className="mb-1.5 size-6 shrink-0 rounded-full"
 				onClick={onNew}
 			>
@@ -107,6 +108,7 @@ export function BrowserTabs({
 					size="icon-xs"
 					aria-label="All tabs"
 					title="All tabs"
+					style={NO_DRAG}
 					className="mb-1.5 ml-auto size-6 shrink-0 rounded-full"
 					onClick={() =>
 						void window.win
