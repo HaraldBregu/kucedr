@@ -56,7 +56,9 @@ export interface BrowserPaneApi {
 	passwordsStatus(): Promise<BrowserPasswordStatus>;
 	passwordsImport(): Promise<number | null>;
 	passwordsList(): Promise<BrowserLogin[]>;
-	passwordsClear(): Promise<void>;
+	passwordsClear(): Promise<boolean>;
+	passwordsUpdate(id: string, change: BrowserLoginChange): Promise<void>;
+	passwordsDelete(id: string): Promise<boolean>;
 	passwordsMatch(targetId: string): Promise<BrowserLogin[]>;
 	passwordsFill(targetId: string, id: string): Promise<void>;
 }
