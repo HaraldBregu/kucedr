@@ -98,7 +98,7 @@ Names and IDs match the bundled manifests. Model metadata links to the official 
 | Cohere | Command A+ (`command-a-plus-05-2026`); Command A (`command-a-03-2025`); Command A Translate (`command-a-translate-08-2025`); Command A Reasoning (`command-a-reasoning-08-2025`); Command A Vision (`command-a-vision-07-2025`); North Small Translate (`north-small-translate-1-0`); North Mini Code (`north-mini-code-1-0`) |
 | DeepSeek | DeepSeek V4 Pro (`deepseek-v4-pro`); DeepSeek V4.1 Flash (`deepseek-flash`) |
 | Google DeepMind / Google | Gemini 3.8 Flash (`gemini-3.8-flash`); Gemini 3.7 Flash (`gemini-3.7-flash`); Gemini 3.6 Flash (`gemini-3.6-flash`); Gemini 3.5 Flash (`gemini-3.5-flash`); Gemini 3.5 Flash Lite (`gemini-3.5-flash-lite`); Gemini 3 Flash Preview (`gemini-3-flash-preview`); Gemini 3.1 Pro Preview (`gemini-3.1-pro-preview`); Gemini 3.1 Flash Lite (`gemini-3.1-flash-lite`) |
-| Moonshot AI / Kimi | Kimi K3 (`kimi-k3`); Kimi K2.7 Code (`kimi-k2.7-code`); Kimi K2.7 Code Highspeed (`kimi-k2.7-code-highspeed`); Kimi K2.6 (`kimi-k2.6`); Kimi K2.5 (`kimi-k2.5`) |
+| Kimi | Kimi K3 (`kimi-k3`); Kimi K2.7 Code (`kimi-k2.7-code`); Kimi K2.7 Code Highspeed (`kimi-k2.7-code-highspeed`); Kimi K2.6 (`kimi-k2.6`); Kimi K2.5 (`kimi-k2.5`) |
 | MiniMax | MiniMax M3 (`MiniMax-M3`); MiniMax M2.7 Highspeed (`MiniMax-M2.7-highspeed`); MiniMax M2.7 (`MiniMax-M2.7`); MiniMax M2.5 (`MiniMax-M2.5`) |
 | Mistral AI | Mistral Large 4 (`mistral-large-4`); Mistral Small 4 (`mistral-small-2603`); Ministral 3 14B (`ministral-14b-2512`); Ministral 3 8B (`ministral-8b-2512`); Ministral 3 3B (`ministral-3b-2512`); Mistral Large 2512 (`mistral-large-2512`); Mistral Medium 3.5 (`mistral-medium-3-5`); Devstral 2512 (`devstral-2512`) |
 | OpenAI | GPT-6 Astra (`gpt-6-astra`); GPT-6.1 Sol (`gpt-6.1-sol`); GPT-6 Sol (`gpt-6-sol`); GPT-6 Luna (`gpt-6-luna`); GPT-5.6 Sol (`gpt-5.6-sol`); GPT-5.6 Terra (`gpt-5.6-terra`); GPT-5.6 Luna (`gpt-5.6-luna`); GPT-5.5 (`gpt-5.5`); GPT-5.5 Pro (`gpt-5.5-pro`); GPT-5.4 (`gpt-5.4`); GPT-5.4 Pro (`gpt-5.4-pro`); GPT-5.4 Mini (`gpt-5.4-mini`); GPT-5.4 Nano (`gpt-5.4-nano`) |
@@ -236,7 +236,7 @@ All 31 manifests were checked against official documentation. This update adds 1
 | Google DeepMind / Google | [Documentation](https://ai.google.dev/gemini-api/docs/models) | 20 additions; documented request contracts implemented. |
 | Ideogram | [Documentation](https://developer.ideogram.ai/api-reference/images/generate/ideogram-4-5) | 3 additions; documented request contracts implemented. |
 | Jina AI | [Documentation](https://api.jina.ai/scalar) | 5 additions; documented request contracts implemented. |
-| Moonshot AI / Kimi | [Documentation](https://platform.kimi.ai/docs/models) | Current catalog already matches the documented API models. |
+| Kimi | [Documentation](https://platform.kimi.ai/docs/models) | Current catalog already matches the documented API models. |
 | Kuaishou / Kling AI | [Documentation](https://kling.ai/document-api/api/video/3-0-omni/text-to-video) | 5 additions; documented request contracts implemented. |
 | Microsoft | [Documentation](https://learn.microsoft.com/en-us/microsoft-agent-365/tooling-servers-overview) | Existing Work IQ/Learn MCP integrations; Azure model hosting is separate. |
 | MiniMax | [Documentation](https://platform.minimax.io/docs/guides/models-intro) | 7 additions; documented request contracts implemented. |
