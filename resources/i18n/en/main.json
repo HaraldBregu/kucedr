@@ -1283,10 +1283,10 @@
 		},
 		"browser": {
 			"title": "Browser",
-			"description": "Import bookmarks, history and search engine from other browsers",
-			"importTitle": "Import from another browser",
-			"importDescription": "Kucedr reads a copy and never changes the other browser. Nothing imported leaves this computer. Passwords and sign-ins are not imported.",
-			"none": "No Chrome-family or Firefox profiles were found on this computer.",
+			"description": "Bring bookmarks, history and the search engine from the browsers you already use",
+			"importTitle": "Import browsing data",
+			"importDescription": "Kucedr looks for browser profiles on this computer and brings in what it finds. It reads a copy, never changes the other browser, and nothing leaves this computer. Passwords and sign-ins are not imported.",
+			"none": "No browser profiles were found on this computer. You can still choose a file or folder below.",
 			"bookmarks": "Bookmarks",
 			"history": "History",
 			"settings": "Default search engine",
@@ -1296,7 +1296,14 @@
 			"searchSet": "Search engine set to {{host}}.",
 			"stored": "Stored in Kucedr",
 			"storedDescription": "{{bookmarks}} bookmarks, {{history}} history entries. Search with {{host}}.",
-			"clear": "Clear imported data"
+			"clear": "Clear imported data",
+			"looking": "Looking for browsers on this computer…",
+			"used": "last used {{date}}",
+			"fromFile": "From a file or folder",
+			"fromFileDescription": "Choose any browser's folder, a single profile, or an exported bookmarks or history file. Kucedr works out the format.",
+			"choose": "Choose…",
+			"chooseFiles": "Choose files…",
+			"chooseFolder": "Choose folder…"
 		},
 		"editor": {
 			"font": "Font",

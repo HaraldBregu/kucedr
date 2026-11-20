@@ -1283,10 +1283,10 @@
 		},
 		"browser": {
 			"title": "Browser",
-			"description": "Importa segnalibri, cronologia e motore di ricerca da altri browser",
-			"importTitle": "Importa da un altro browser",
-			"importDescription": "Kucedr legge una copia e non modifica mai l'altro browser. Nulla di ciò che viene importato lascia questo computer. Password e accessi non vengono importati.",
-			"none": "Nessun profilo Chrome o Firefox trovato su questo computer.",
+			"description": "Porta segnalibri, cronologia e motore di ricerca dai browser che usi già",
+			"importTitle": "Importa dati di navigazione",
+			"importDescription": "Kucedr cerca i profili dei browser su questo computer e importa ciò che trova. Legge una copia, non modifica mai l'altro browser e nulla lascia questo computer. Password e accessi non vengono importati.",
+			"none": "Nessun profilo di browser trovato su questo computer. Puoi comunque scegliere un file o una cartella qui sotto.",
 			"bookmarks": "Segnalibri",
 			"history": "Cronologia",
 			"settings": "Motore di ricerca predefinito",
@@ -1296,7 +1296,14 @@
 			"searchSet": "Motore di ricerca impostato su {{host}}.",
 			"stored": "Salvati in Kucedr",
 			"storedDescription": "{{bookmarks}} segnalibri, {{history}} voci di cronologia. Ricerca con {{host}}.",
-			"clear": "Cancella i dati importati"
+			"clear": "Cancella i dati importati",
+			"looking": "Ricerca dei browser su questo computer…",
+			"used": "ultimo uso {{date}}",
+			"fromFile": "Da un file o una cartella",
+			"fromFileDescription": "Scegli la cartella di qualsiasi browser, un singolo profilo o un file esportato di segnalibri o cronologia. Kucedr riconosce il formato.",
+			"choose": "Scegli…",
+			"chooseFiles": "Scegli file…",
+			"chooseFolder": "Scegli cartella…"
 		},
 		"editor": {
 			"font": "Carattere",
