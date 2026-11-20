@@ -5,6 +5,9 @@ export interface BrowserPaneTab {
 	readonly title: string;
 	readonly loading: boolean;
 	readonly order: number;
+	readonly back: boolean;
+	readonly forward: boolean;
+	readonly error?: string;
 }
 
 export interface BrowserPaneState {
@@ -20,32 +23,8 @@ export interface BrowserPaneCommand {
 
 export interface BrowserPaneView {
 	readonly targetId: string;
-	readonly width: number;
-	readonly height: number;
-}
-
-export type BrowserPaneInput = { readonly targetId: string } & (
-	| {
-			readonly type: 'move' | 'down' | 'up';
-			readonly x: number;
-			readonly y: number;
-			readonly button: 'left' | 'middle' | 'right';
-			readonly count: number;
-	  }
-	| {
-			readonly type: 'wheel';
-			readonly x: number;
-			readonly y: number;
-			readonly deltaX: number;
-			readonly deltaY: number;
-	  }
-	| { readonly type: 'type' | 'paste'; readonly text: string }
-	| { readonly type: 'press'; readonly key: string }
-);
-
-export interface BrowserPaneFrame {
-	readonly targetId: string;
-	readonly data: string;
+	readonly x: number;
+	readonly y: number;
 	readonly width: number;
 	readonly height: number;
 }
@@ -54,7 +33,5 @@ export interface BrowserPaneApi {
 	state(): Promise<BrowserPaneState>;
 	command(request: BrowserPaneCommand): Promise<void>;
 	view(request: BrowserPaneView | null): void;
-	input(request: BrowserPaneInput): void;
 	onChanged(callback: (state: BrowserPaneState) => void): () => void;
-	onFrame(callback: (frame: BrowserPaneFrame) => void): () => void;
 }
