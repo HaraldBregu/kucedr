@@ -1323,7 +1323,10 @@
 				"site": "Site",
 				"username": "Username",
 				"password": "New password",
-				"passwordKeep": "Leave empty to keep the current password"
+				"passwordKeep": "Leave empty to keep the current password",
+				"never": "Never saved",
+				"neverDescription": "Sites where you chose not to save passwords. Remove one to be asked again.",
+				"neverRemove": "Ask again on {{site}}"
 			},
 			"bookmarksPage": {
 				"title": "Bookmarks",
