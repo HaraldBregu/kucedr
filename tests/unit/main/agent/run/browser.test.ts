@@ -51,6 +51,7 @@ function browserContext() {
 	return Object.assign(events, {
 		pages: () => [],
 		setDefaultTimeout: jest.fn(),
+		route: jest.fn(async () => undefined),
 		close: jest.fn(async () => {
 			events.emit('close');
 		}),

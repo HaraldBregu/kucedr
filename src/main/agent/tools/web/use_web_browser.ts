@@ -1,7 +1,5 @@
-import path from 'node:path';
 import { chromium, type BrowserContext, type Page } from 'playwright-core';
 import { z } from 'zod';
-import { userDataLocation } from '../../../shared/user_data_location';
 import { saveMedia } from '../../../shared/media';
 import { publicUrl } from '../../../public';
 import { executionScope } from '../../execution/scope';
@@ -69,10 +67,9 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 	if (session.closed) throw new Error('Browser run has ended.');
 	if (session.context) return session.context;
 	if (!session.starting) {
-		const userDataDir = session.headless ? '' : path.join(userDataLocation(), 'agent-browser');
-		session.starting = chromium.launchPersistentContext(userDataDir, {
+		session.starting = chromium.launchPersistentContext('', {
 			channel: 'chrome',
-			headless: session.headless,
+			headless: true,
 			viewport: null,
 			timeout: DEFAULT_TIMEOUT_MS,
 		}).then(async (launched) => {
@@ -83,11 +80,10 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			}
 			session.context = launched;
 			launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
-			if (session.headless)
-				await launched.route('**/*', async (route) => {
-					const allowed = await publicUrl(route.request().url()).then(() => true, () => false);
-					await (allowed ? route.continue() : route.abort('blockedbyclient')).catch(() => undefined);
-				});
+			await launched.route('**/*', async (route) => {
+				const allowed = await publicUrl(route.request().url()).then(() => true, () => false);
+				await (allowed ? route.continue() : route.abort('blockedbyclient')).catch(() => undefined);
+			});
 			launched.on('page', (page) => {
 				if (![...session.pages.values()].includes(page)) trackPage(page, session);
 				void page.opener().then((opener) => {
@@ -137,13 +133,11 @@ function getPage(targetId?: string): { id: string; page: Page } {
 	return { id: last[0], page: last[1] };
 }
 
-// ponytail: interactive sessions check the scheme only — driving localhost apps
-// is a core use case; background sessions also block private hosts
 async function assertHttpUrl(url: string): Promise<string> {
 	const parsed = new URL(url);
 	if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:')
 		throw new Error('Invalid URL: must be http or https');
-	if (browserSession().headless) await publicUrl(parsed.toString());
+	await publicUrl(parsed.toString());
 	return parsed.toString();
 }
 
@@ -374,8 +368,6 @@ export const useWebBrowserTool = tool({
 				return JSON.stringify({ targetId: id, path: file });
 			}
 			case 'pdf': {
-				if (!session.headless)
-					throw new Error('pdf only works in background runs, where Chrome is headless. Use screenshot with fullPage instead.');
 				const { id, page } = getPage(params.targetId);
 				const data = await runBrowserPageOperation(page, signal, () => page.pdf());
 				const file = await saveMedia(

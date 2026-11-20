@@ -40,6 +40,7 @@ it.each(['screenshot', 'pdf'] as const)(
 		const context = Object.assign(new EventEmitter(), {
 			pages: () => [page],
 			setDefaultTimeout: jest.fn(),
+			route: jest.fn(async () => undefined),
 			close: jest.fn(async () => undefined),
 		});
 		launchPersistentContext.mockResolvedValue(context);

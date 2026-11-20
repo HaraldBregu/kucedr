@@ -21,7 +21,6 @@ export function Group({
 	titleKey,
 	activePath,
 	className,
-	hideIcons,
 }: GroupProps): React.JSX.Element {
 	const { t } = useTranslation();
 
