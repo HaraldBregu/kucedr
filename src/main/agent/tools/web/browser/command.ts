@@ -1,35 +1,33 @@
 import type { BrowserPaneCommand } from '../../../../../shared/browser';
-import { pageOrder, pane, paneEvents } from './pane';
-import { interactive } from './session';
+import { pane, paneEvents, paneTabs } from './pane';
 
-export async function command(request: BrowserPaneCommand): Promise<void> {
-	const page = interactive.pages.get(request.targetId);
-	if (!page) throw new Error('This tab is closed.');
+export function command(request: BrowserPaneCommand): void {
+	const tab = paneTabs.get(request.targetId);
+	if (!tab) throw new Error('This tab is closed.');
+	const contents = tab.view.webContents;
 	switch (request.command) {
 		case 'back':
-			await page.goBack({ waitUntil: 'commit' });
+			contents.navigationHistory.goBack();
 			break;
 		case 'forward':
-			await page.goForward({ waitUntil: 'commit' });
+			contents.navigationHistory.goForward();
 			break;
 		case 'reload':
-			await page.reload({ waitUntil: 'commit' });
+			contents.reload();
 			break;
-		case 'stop': {
-			const cdp = await page.context().newCDPSession(page);
-			await cdp.send('Page.stopLoading').finally(() => cdp.detach());
+		case 'stop':
+			contents.stop();
 			break;
-		}
 		case 'navigate': {
 			const text = request.url?.trim() ?? '';
 			const local = /^(localhost|127\.0\.0\.1|\[::1\])([:/]|$)/i.test(text);
 			const url = /^https?:\/\//i.test(text) ? text : `${local ? 'http' : 'https'}://${text}`;
 			if (!URL.canParse(url)) throw new Error('Enter a web address, for example example.com.');
-			await page.goto(url, { waitUntil: 'commit' });
+			void contents.loadURL(url).catch(() => undefined);
 			break;
 		}
 		case 'focus':
-			pageOrder.set(page, ++pane.order);
+			tab.order = ++pane.order;
 			break;
 	}
 	paneEvents.emit('change');
