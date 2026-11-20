@@ -58,7 +58,7 @@ export function EditDialog({
 							await onSave(draft);
 							onClose();
 						} catch (reason) {
-							setError(reason instanceof Error ? reason.message.replace(/^Error invoking remote method '[^']+': (Error: )?/, '') : String(reason));
+							setError(reason instanceof Error ? reason.message : String(reason));
 						} finally {
 							setSaving(false);
 						}
