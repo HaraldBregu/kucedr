@@ -1,7 +1,7 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { restrictSettingsFile } from '../shared/restrict_settings_file';
 import { userDataLocation } from '../shared/user_data_location';
+import { writeFileAtomic } from './write';
 
 export const DEFAULT_SEARCH = 'https://duckduckgo.com/?q=%s';
 export const HISTORY_LIMIT = 5_000;
