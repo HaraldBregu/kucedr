@@ -5,6 +5,8 @@ import { BrowserScreen } from './Screen';
 import { BrowserTabs } from './Tabs';
 import { BrowserToolbar } from './Toolbar';
 
+const IS_MAC = navigator.platform.startsWith('Mac');
+
 export function BrowserPane({
 	tabs,
 	acting,
