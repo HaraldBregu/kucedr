@@ -20,9 +20,9 @@ const SCRIPT = `((mode, x, y, ref) => {
 		const root = host.attachShadow({ mode: 'closed' });
 		root.innerHTML = '<style>' +
 			'.pointer,.field,.ripple{position:fixed;left:0;top:0;pointer-events:none;opacity:0;transition:opacity .3s}' +
-			'.pointer{width:22px;height:22px;transition:opacity .3s,transform .25s ease-out}' +
+			'.pointer{width:36px;height:36px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));transition:opacity .3s,transform .25s ease-out}' +
 			'.field{border:2px solid #2563eb;border-radius:4px;box-sizing:border-box}' +
-			'.ripple{width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:2px solid #2563eb}' +
+			'.ripple{width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2px solid #2563eb}' +
 			'.ripple.on{animation:ripple .4s ease-out}' +
 			'@keyframes ripple{from{opacity:.9;scale:.3}to{opacity:0;scale:1.4}}' +
 			'</style>' +
@@ -63,7 +63,7 @@ const SCRIPT = `((mode, x, y, ref) => {
 	}
 	const glide = state.placed && !reduce;
 	state.pointer.style.transitionDuration = glide ? '' : '0s';
-	state.pointer.style.transform = 'translate(' + (x - 3) + 'px,' + (y - 2) + 'px)';
+	state.pointer.style.transform = 'translate(' + (x - 5) + 'px,' + (y - 3) + 'px)';
 	state.pointer.style.opacity = 1;
 	state.field.style.opacity = 0;
 	state.placed = true;
