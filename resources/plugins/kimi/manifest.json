@@ -11,7 +11,7 @@
 	"website": "https://www.kimi.com",
 	"icon": "kimi.svg",
 	"iconFullBleed": true,
-	"apiKeyUrl": "https://platform.moonshot.ai/console/api-keys",
+	"apiKeyUrl": "https://platform.kimi.ai/console/api-keys",
 	"settings": {
 		"inputSchema": {
 			"type": "object",
