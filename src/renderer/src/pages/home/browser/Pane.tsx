@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import type { BrowserPaneCommand, BrowserPaneTab } from '../../../../../shared/browser';
 import { cn } from '@/lib/utils';
+import { BrowserOffer } from './Offer';
 import { BrowserScreen } from './Screen';
 import { BrowserTabs } from './Tabs';
 import { BrowserToolbar } from './Toolbar';
