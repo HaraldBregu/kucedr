@@ -66,9 +66,7 @@ function load(): { logins: Login[]; broken: boolean } {
 }
 
 function seal(logins: Login[]): void {
-	const sealed = file();
-	restrictSettingsFile(sealed);
-	writeFileSync(sealed, safeStorage.encryptString(JSON.stringify(logins)), { mode: 0o600 });
+	writeFileAtomic(file(), safeStorage.encryptString(JSON.stringify(logins)));
 }
 
 export function passwordsAvailable(): boolean {
