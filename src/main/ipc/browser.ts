@@ -46,10 +46,20 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		paneEvents.on('change', () => trusted.broadcast(BrowserChannels.changed, tabs()));
 		trusted.query(BrowserChannels.state, () => tabs());
 		trusted.command(BrowserChannels.command, (request) => command(commandSchema.parse(request)));
-		trusted.query(BrowserChannels.sources, () =>
-			browserSources().map(({ id, browser, profile }) => ({ id, browser, profile }))
-		);
-		trusted.command(BrowserChannels.importData, (request) => importBrowserData(importSchema.parse(request)));
+		trusted.query(BrowserChannels.sources, () => browserSources());
+		trusted.command(BrowserChannels.importData, (request) => {
+			const chosen = importSchema.parse(request);
+			const files = chosen.sources.flatMap((id) => {
+				const directory = foundProfiles.get(id);
+				return directory ? profileFiles(directory, chosen) : [];
+			});
+			return importFiles(files, chosen);
+		});
+		trusted.commandWithEvent(BrowserChannels.importPicked, async ({ sender }, request) => {
+			const chosen = pickSchema.parse(request);
+			const files = await pickFiles(BrowserWindow.fromWebContents(sender), chosen);
+			return files && importFiles(files, chosen);
+		});
 		trusted.query(BrowserChannels.suggest, (text) => suggest(z.string().max(2048).parse(text)));
 		trusted.query(BrowserChannels.bookmarks, () => library().bookmarks);
 		trusted.query(BrowserChannels.library, () => {
