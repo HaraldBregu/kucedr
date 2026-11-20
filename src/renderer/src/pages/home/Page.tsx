@@ -973,7 +973,7 @@ function PageContent(): ReactElement {
 												size="icon"
 												className="rounded-full"
 												aria-label="Show browser"
-												onClick={() => setBrowserHiddenChat(null)}
+												onClick={() => setBrowserHidden(false)}
 											>
 												<Globe className="size-4" strokeWidth={1.8} />
 											</Button>
