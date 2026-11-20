@@ -195,6 +195,17 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 			</SettingsPanel>
 			{counts ? (
 				<SettingsPanel>
+					{counts.bookmarks > 0 ? (
+						<Link to="/settings/browser/bookmarks" className="block hover:bg-muted/40">
+							<SettingsRow
+								title={t('settings.browser.bookmarksPage.title')}
+								description={t('settings.browser.bookmarksPage.count', { count: counts.bookmarks })}
+								className="grid-cols-[minmax(0,1fr)_auto]"
+								actionClassName="w-auto justify-end"
+								actions={<ChevronRight className="size-4 text-muted-foreground" />}
+							/>
+						</Link>
+					) : null}
 					<SettingsRow
 						title={t('settings.browser.stored')}
 						description={t('settings.browser.storedDescription', {
