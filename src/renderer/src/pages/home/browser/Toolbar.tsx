@@ -3,7 +3,6 @@ import { ArrowLeft, ArrowRight, PanelRightClose, RotateCw, X } from 'lucide-reac
 import type { BrowserPaneCommand, BrowserPaneTab } from '../../../../../shared/browser';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 export function BrowserToolbar({
@@ -19,31 +18,32 @@ export function BrowserToolbar({
 }): ReactElement {
 	const [address, setAddress] = useState(tab.url);
 	useEffect(() => {
-		if (!tab.url.startsWith('chrome-error:')) setAddress(tab.url);
-	}, [tab.url, tab.targetId]);
+		if (!tab.error) setAddress(tab.url);
+	}, [tab.url, tab.error]);
 	const actions = [
-		{ label: 'Back', icon: ArrowLeft, run: () => onCommand('back') },
-		{ label: 'Forward', icon: ArrowRight, run: () => onCommand('forward') },
+		{ label: 'Back', icon: ArrowLeft, disabled: !tab.back, run: () => onCommand('back') },
+		{ label: 'Forward', icon: ArrowRight, disabled: !tab.forward, run: () => onCommand('forward') },
 		tab.loading
-			? { label: 'Stop loading', icon: X, run: () => onCommand('stop') }
-			: { label: 'Reload', icon: RotateCw, run: () => onCommand('reload') },
+			? { label: 'Stop loading', icon: X, disabled: false, run: () => onCommand('stop') }
+			: { label: 'Reload', icon: RotateCw, disabled: false, run: () => onCommand('reload') },
 	];
-	const close = { label: 'Hide browser', icon: PanelRightClose, run: onClose };
 
 	return (
 		<>
 			<div className="flex h-12 shrink-0 items-center gap-1 px-2">
-				{actions.map(({ label, icon: Icon, run }) => (
-					<Tooltip key={label}>
-						<TooltipTrigger
-							render={
-								<Button type="button" variant="ghost" size="icon-sm" aria-label={label} onClick={run}>
-									<Icon />
-								</Button>
-							}
-						/>
-						<TooltipContent side="bottom">{label}</TooltipContent>
-					</Tooltip>
+				{actions.map(({ label, icon: Icon, disabled, run }) => (
+					<Button
+						key={label}
+						type="button"
+						variant="ghost"
+						size="icon-sm"
+						aria-label={label}
+						title={label}
+						disabled={disabled}
+						onClick={run}
+					>
+						<Icon />
+					</Button>
 				))}
 				<form
 					className="min-w-0 flex-1"
@@ -69,22 +69,16 @@ export function BrowserToolbar({
 						className="mx-1 size-2 shrink-0 animate-pulse rounded-full bg-primary"
 					/>
 				) : null}
-				<Tooltip>
-					<TooltipTrigger
-						render={
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon-sm"
-								aria-label={close.label}
-								onClick={close.run}
-							>
-								<close.icon />
-							</Button>
-						}
-					/>
-					<TooltipContent side="bottom">{close.label}</TooltipContent>
-				</Tooltip>
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon-sm"
+					aria-label="Hide browser"
+					title="Hide browser"
+					onClick={onClose}
+				>
+					<PanelRightClose />
+				</Button>
 			</div>
 			<div className={cn('h-0.5 shrink-0 bg-border', tab.loading && 'animate-pulse bg-primary')} />
 		</>
