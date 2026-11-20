@@ -1,6 +1,6 @@
 import { createDecipheriv } from 'node:crypto';
 import { offerFor, saveLogin, setNever } from '../../../../browser/passwords';
-import { paneEvents, type BrowserTab } from './pane';
+import { acting, paneEvents, type BrowserTab } from './pane';
 
 export const CAPTURE_PREFIX = 'kucedr-capture:';
 
