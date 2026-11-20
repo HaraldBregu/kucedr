@@ -160,9 +160,9 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			const next = viewSchema.parse(request);
 			const tab = next ? paneTabs.get(next.targetId) : undefined;
 			const window = BrowserWindow.fromWebContents(sender);
-			const current = shown.get(sender);
+			const current = paneShown.get(sender);
 			if (current && current !== tab && paneTabs.has(current.id)) current.view.setVisible(false);
-			shown.delete(sender);
+			paneShown.delete(sender);
 			if (!next || !tab || !window) return;
 			pane.width = next.width;
 			pane.height = next.height;
