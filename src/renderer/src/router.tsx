@@ -303,11 +303,32 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'browser',
-						element: (
-							<SettingsRouteWrapper>
-								<BrowserSettingsPage />
-							</SettingsRouteWrapper>
-						),
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<BrowserSettingsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'passwords',
+								element: (
+									<SettingsRouteWrapper>
+										<BrowserPasswordsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'bookmarks',
+								element: (
+									<SettingsRouteWrapper>
+										<BrowserBookmarksPage />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
 					},
 					{
 						path: 'storage',
