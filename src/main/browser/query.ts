@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 
 // The other browser keeps its database locked while it runs, and Kucedr must never write
 // to it, so every read works on a private copy that is deleted afterwards.
-export function query<Row>(file: string, sql: string): Row[] {
+export function withCopy<Result>(file: string, use: (database: DatabaseSync) => Result): Result {
 	const directory = mkdtempSync(path.join(os.tmpdir(), 'kucedr-import-'));
 	try {
 		const copy = path.join(directory, 'copy.sqlite');
@@ -13,7 +13,7 @@ export function query<Row>(file: string, sql: string): Row[] {
 		if (existsSync(`${file}-wal`)) copyFileSync(`${file}-wal`, `${copy}-wal`);
 		const database = new DatabaseSync(copy);
 		try {
-			return database.prepare(sql).all() as Row[];
+			return use(database);
 		} finally {
 			database.close();
 		}
