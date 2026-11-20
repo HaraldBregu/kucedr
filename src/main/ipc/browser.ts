@@ -91,6 +91,13 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		});
 		trusted.query(BrowserChannels.suggest, (text) => suggest(z.string().max(2048).parse(text)));
 		trusted.query(BrowserChannels.bookmarks, () => library().bookmarks);
+		trusted.command(BrowserChannels.bookmarksAdd, (place) => {
+			const next = placeSchema.parse(place);
+			if (!/^https?:\/\/[^/\s]+/i.test(next.url)) throw new Error('Only web pages can be bookmarked.');
+			const current = library();
+			if (current.bookmarks.some((item) => item.url === next.url)) return;
+			library({ ...current, bookmarks: [...current.bookmarks, next] });
+		});
 		trusted.command(BrowserChannels.bookmarksUpdate, (url, place) => {
 			const target = urlSchema.parse(url);
 			const next = placeSchema.parse(place);
