@@ -227,6 +227,7 @@ interface State {
 	seq: number;
 	origin: string | null;
 	pick: number | 'manage' | null;
+	keyed: boolean;
 }
 
 const lastSeq = new WeakMap<BrowserTab, number>();
