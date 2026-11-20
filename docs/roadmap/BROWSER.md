@@ -79,6 +79,10 @@ does not start again from an empty browser.
 | 23.6 | Import settings | Default search engine, so words typed in the address field search; home page | Most browser settings have no counterpart in a minimal pane | S |
 | 23.7 | Agent signs in with a saved login | "Sign in to this site" works when a login is saved: Kucedr fills it after the user approves, and the model never receives the password | 23.3; the outline fix above | M |
 | 23.8 | Carry over the old agent profile | Logins from the earlier Chrome profile come across, then the old folder is offered for deletion | It is a Chrome-format profile, so the same reader applies; whether its logins can be decrypted is _not verified_ | S |
+| 23.9 | Suggestions on the field | Clicking into a username or password field on a site with saved logins opens a list under the field; picking a name fills both fields. Arrow keys, Enter and Escape work as in other browsers | The sealed store and the fill code (`passwords.ts`, `fill.ts`); the toolbar key button stays for fields that are not recognised | M |
+| 23.10 | Offer to save and update | After the user signs in by hand, the toolbar asks "Save password for this site?" with Save and Never for this site; a changed password offers an update | 23.3; a script that sees the form being sent | S–M |
+| 23.11 | Addresses and contact details | Name, email, phone and postal address saved as one or more entries in Settings, suggested on fields that ask for them, filling the whole form at once | Same suggestions list as 23.9; a sealed file of its own | M |
+| 23.12 | Form history | Values the user typed before into the same field on the same site are suggested while typing, and can be deleted one by one | Same suggestions list | S |
 
 ## What each browser allows
 
