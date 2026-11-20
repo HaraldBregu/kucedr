@@ -54,20 +54,24 @@ export function BrowserToolbar({
 	const trailing = [
 		{
 			label: 'Bookmarks',
-			icon: Star,
+			icon: BookMarked,
 			show: true,
 			run: () =>
 				void window.browserPane.bookmarks().then(async (bookmarks) => {
+					// Native menus take at most 50 items: the newest bookmarks, then the full list in Settings.
+					const recent = bookmarks.slice(-MENU_BOOKMARKS).reverse();
 					const choice = await window.win.showContextMenu(
 						bookmarks.length
-							? bookmarks.slice(0, 60).map((place, index) => ({
-									id: String(index),
-									label: (place.title || place.url).slice(0, 70),
-								}))
+							? [
+									...recent.map((place) => ({ id: place.url, label: (place.title || place.url).slice(0, 70) })),
+									{ type: 'separator' as const },
+									{ id: 'all', label: `All bookmarks (${bookmarks.length})…` },
+								]
 							: [{ id: 'import', label: 'Import bookmarks from another browser…' }]
 					);
 					if (choice === 'import') window.location.hash = '#/settings/browser';
-					else if (choice !== null) onCommand('navigate', bookmarks[Number(choice)].url);
+					else if (choice === 'all') window.location.hash = '#/settings/browser/bookmarks';
+					else if (choice !== null) onCommand('navigate', choice);
 				}),
 		},
 		{
