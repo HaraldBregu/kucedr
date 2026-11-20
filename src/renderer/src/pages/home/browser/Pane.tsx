@@ -60,6 +60,16 @@ export function BrowserPane({
 				onClose={onClose}
 				onSuggestionsOpen={setSuggesting}
 			/>
+			{active.offer ? (
+				<BrowserOffer
+					offer={active.offer}
+					onAnswer={(answer) =>
+						void window.browserPane
+							.passwordsOffer(active.targetId, answer)
+							.catch((cause: unknown) => setError(cause instanceof Error ? cause.message : String(cause)))
+					}
+				/>
+			) : null}
 			{error ? (
 				<p role="alert" className="shrink-0 truncate px-3 py-1 text-xs text-destructive">
 					{error}
