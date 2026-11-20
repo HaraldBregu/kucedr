@@ -172,7 +172,7 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			}
 			tab.view.setBounds({ x: next.x, y: next.y, width: next.width, height: next.height });
 			tab.view.setVisible(true);
-			shown.set(sender, tab);
+			paneShown.set(sender, tab);
 		});
 	}
 }
