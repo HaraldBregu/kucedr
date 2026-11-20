@@ -1420,6 +1420,10 @@ export interface BrowserInvokeChannelMap {
 		args: [request: import('./browser_import').BrowserImportRequest];
 		result: import('./browser_import').BrowserImportSummary;
 	};
+	[BrowserChannels.importPicked]: {
+		args: [request: import('./browser_import').BrowserImportPick];
+		result: import('./browser_import').BrowserImportSummary | null;
+	};
 	[BrowserChannels.suggest]: { args: [text: string]; result: import('./browser_import').BrowserPlace[] };
 	[BrowserChannels.bookmarks]: { args: []; result: import('./browser_import').BrowserPlace[] };
 	[BrowserChannels.library]: { args: []; result: import('./browser_import').BrowserLibraryCounts };
