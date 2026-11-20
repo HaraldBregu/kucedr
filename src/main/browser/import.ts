@@ -26,14 +26,11 @@ export function importFiles(files: readonly string[], want: BrowserImportKinds):
 			errors.push(`${name}: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
-	library({
-		bookmarks: [...bookmarks.values()],
-		history: [...history.values()].sort((a, b) => b.last - a.last).slice(0, HISTORY_LIMIT),
-		search: search ?? current.search,
-	});
+	const kept = [...history.values()].sort((a, b) => b.last - a.last).slice(0, HISTORY_LIMIT);
+	library({ bookmarks: [...bookmarks.values()], history: kept, search: search ?? current.search });
 	return {
-		bookmarks: bookmarks.size - before.bookmarks,
-		history: Math.max(0, Math.min(history.size, HISTORY_LIMIT) - before.history),
+		bookmarks: bookmarks.size - known.bookmarks,
+		history: kept.filter((item) => !known.history.has(item.url)).length,
 		...(search ? { search } : {}),
 		errors,
 	};
