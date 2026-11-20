@@ -1310,7 +1310,31 @@
 			"passwordsImport": "Import from a CSV file…",
 			"passwordsStored": "{{count}} saved passwords",
 			"passwordsAdded": "Added {{count}}.",
-			"passwordsClear": "Delete saved passwords"
+			"passwordsClear": "Delete all passwords",
+			"noMatches": "Nothing matches your search.",
+			"passwordsPage": {
+				"title": "Passwords",
+				"description": "Saved sign-ins for the browser. Edit a site, username or password, or delete one.",
+				"search": "Search sites and usernames",
+				"empty": "No saved passwords.",
+				"noUsername": "No username",
+				"edit": "Edit saved password",
+				"editDescription": "The password is never shown. Type a new one to replace it.",
+				"site": "Site",
+				"username": "Username",
+				"password": "New password",
+				"passwordKeep": "Leave empty to keep the current password"
+			},
+			"bookmarksPage": {
+				"title": "Bookmarks",
+				"description": "Bookmarks the browser suggests as you type. Rename, change or delete them.",
+				"count": "{{count}} bookmarks",
+				"search": "Search bookmarks",
+				"empty": "No bookmarks.",
+				"edit": "Edit bookmark",
+				"name": "Name",
+				"address": "Address"
+			}
 		},
 		"editor": {
 			"font": "Font",
