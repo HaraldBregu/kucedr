@@ -8,18 +8,20 @@ import { PROFILE_FILES, PROFILE_MARKERS, PROFILES_ROOT_FILE } from './formats';
 const PRIVATE = /^(com\.apple\.|AddressBook$|CallHistory|MobileSync$)/;
 const FOLDER_BUDGET = 6_000;
 
-// Looks for browser profile folders below a root, going at most `depth` folders down.
-// A profile is recognised by the files in it, so any browser built on a known engine is found.
 export async function discover(root: string, depth: number): Promise<string[]> {
 	const found: string[] = [];
 	const holdsData = (directory: string): boolean =>
-		Object.keys(PROFILE_FILES).some((name) => name !== 'Preferences' && existsSync(path.join(directory, name)));
+		Object.entries(PROFILE_FILES).some(
+			([name, kinds]) => kinds.some((kind) => kind !== 'settings') && existsSync(path.join(directory, name))
+		);
 	let level = [root];
 	let budget = FOLDER_BUDGET;
 	for (let down = 0; down <= depth && level.length && budget > 0; down += 1) {
+		const batch = level.slice(0, budget);
 		const next: string[] = [];
+		budget -= batch.length;
 		await Promise.all(
-			level.splice(0, budget).map(async (directory) => {
+			batch.map(async (directory) => {
 				const entries = await readdir(directory, { withFileTypes: true }).catch(() => []);
 				const files = new Set(entries.filter((entry) => entry.isFile()).map((entry) => entry.name));
 				const folders = entries
@@ -30,7 +32,6 @@ export async function discover(root: string, depth: number): Promise<string[]> {
 				else next.push(...folders);
 			})
 		);
-		budget -= level.length || 1;
 		level = next;
 	}
 	return found.sort();
