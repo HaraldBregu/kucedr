@@ -1048,11 +1048,7 @@ function PageContent(): ReactElement {
 						className="relative w-px shrink-0 bg-border outline-none after:absolute after:inset-y-0 after:-left-1 after:w-2 hover:bg-ring focus-visible:bg-ring"
 					/>
 					<Panel id="home-browser" defaultSize="45%" minSize={320} className="min-w-0">
-						<BrowserPane
-							tabs={browser.tabs}
-							acting={browser.acting}
-							onClose={() => setBrowserHiddenChat(chatSessionId)}
-						/>
+						<BrowserPane tabs={browser.tabs} acting={browser.acting} onClose={() => setBrowserHidden(true)} />
 					</Panel>
 				</>
 			) : null}
