@@ -992,6 +992,7 @@ function PageContent(): ReactElement {
 						{chatDetails}
 					</PopoverContent>
 				</Popover>
+							)}
 						</div>
 					)}
 					{showEmptyConversation ? (
