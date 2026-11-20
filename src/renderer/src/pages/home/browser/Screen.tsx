@@ -50,7 +50,7 @@ export function BrowserScreen({
 			cancelAnimationFrame(frame);
 			window.browserPane.view(null);
 		};
-	}, [targetId, error]);
+	}, [targetId, error, suppressed]);
 
 	return (
 		<div ref={box} aria-label="Web page" className="flex min-h-0 flex-1 items-center justify-center bg-background p-6">
