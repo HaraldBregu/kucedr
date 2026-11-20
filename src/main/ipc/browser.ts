@@ -104,7 +104,29 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			return importLogins(readFileSync(result.filePaths[0], 'utf8'));
 		});
 		trusted.query(BrowserChannels.passwordsList, () => listLogins());
-		trusted.command(BrowserChannels.passwordsClear, () => clearLogins());
+		trusted.commandWithEvent(BrowserChannels.passwordsClear, async ({ sender }) => {
+			const confirmed = await confirmDeletion(
+				sender,
+				`Delete all ${countLogins()} saved passwords?`,
+				'Every saved password is removed from this computer. This cannot be undone.'
+			);
+			if (confirmed) clearLogins();
+			return confirmed;
+		});
+		trusted.command(BrowserChannels.passwordsUpdate, (loginId, change) =>
+			updateLogin(z.string().max(64).parse(loginId), loginChangeSchema.parse(change))
+		);
+		trusted.commandWithEvent(BrowserChannels.passwordsDelete, async ({ sender }, loginId) => {
+			const login = listLogins().find((item) => item.id === z.string().max(64).parse(loginId));
+			if (!login) throw new Error('That saved password is no longer available.');
+			const confirmed = await confirmDeletion(
+				sender,
+				`Delete the saved password for ${login.username || 'this login'}?`,
+				`${login.url}\n\nThe password is removed from this computer. This cannot be undone.`
+			);
+			if (confirmed) deleteLogin(login.id);
+			return confirmed;
+		});
 		trusted.command(BrowserChannels.passwordsMatch, (id) => matchLogins(paneTabs.get(targetId.parse(id))?.view.webContents.getURL() ?? ''));
 		trusted.command(BrowserChannels.passwordsFill, async (id, loginId) => {
 			const tab = paneTabs.get(targetId.parse(id));
