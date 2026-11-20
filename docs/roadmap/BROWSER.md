@@ -210,3 +210,15 @@ crypto. Extensions, open tabs and payment cards are not imported.
   sync with another browser is not planned.
 - **Workspaces first.** Decide how much a workspace separates (10) before passwords and sign-ins
   are stored, so they do not have to be split afterwards.
+- **Where the suggestions list is drawn.** Recommended: a separate small view, as above. The
+  simpler alternative is to draw it inside the page in a closed shadow root, as the agent cursor
+  is drawn; it needs no new view, but a page can cover it or show a fake one in its place.
+- **Order within autofill.** Recommended: 23.9 then 23.10, since they complete the password list
+  already built; addresses (23.11) next; form history (23.12) last.
+- **Form history on or off.** Recommended: logins and addresses on by default; form history off
+  by default with a switch, because it keeps everything typed into any field, search boxes
+  included.
+- **Payment cards.** Recommended: not planned. Card numbers bring compliance and fraud weight, and
+  the system's own wallet or the user's password manager already holds them.
+- **Password generator on sign-up forms.** Not planned, in line with keeping the password list
+  small.
