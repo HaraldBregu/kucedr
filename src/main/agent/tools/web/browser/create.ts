@@ -100,6 +100,7 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		'page-title-updated',
 	] as const)
 		contents.on(name as 'did-stop-loading', changed);
+	watchMouseButtons(contents);
 	contents.once('destroyed', () => {
 		paneTabs.delete(tab.id);
 		changed();
