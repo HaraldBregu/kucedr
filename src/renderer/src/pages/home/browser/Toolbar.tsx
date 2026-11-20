@@ -142,7 +142,7 @@ export function BrowserToolbar({
 							autoFocus={blank}
 							value={address}
 							spellCheck={false}
-							className="h-7 rounded-full bg-muted px-3 text-xs md:text-xs"
+							className={cn('h-7 rounded-full bg-muted px-3 text-xs md:text-xs', web && 'pr-8')}
 							onChange={(event) => {
 								setAddress(event.target.value);
 								setActive(-1);
