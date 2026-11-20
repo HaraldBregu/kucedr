@@ -6,6 +6,7 @@ export function useMouseNavigation(): void {
 		if (!navigator.platform.startsWith('Mac')) return;
 
 		const handleMouseUp = (event: MouseEvent): void => {
+			if (event.target instanceof Element && event.target.closest('[data-browser-pane]')) return;
 			if (event.button === 3) void router.navigate(-1);
 			if (event.button === 4) void router.navigate(1);
 		};
