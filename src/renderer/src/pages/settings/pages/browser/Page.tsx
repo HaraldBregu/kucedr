@@ -178,30 +178,19 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 					}
 				/>
 				{passwords && passwords.count > 0 ? (
-					<SettingsRow
-						title={t('settings.browser.passwordsStored', { count: passwords.count })}
-						description={
-							passwordAdded !== null ? t('settings.browser.passwordsAdded', { count: passwordAdded }) : ''
-						}
-						actionClassName="w-auto justify-end"
-						actions={
-							<Button
-								type="button"
-								variant="outline"
-								onClick={() =>
-									void window.browserPane
-										.passwordsClear()
-										.then(() => window.browserPane.passwordsStatus())
-										.then((next) => {
-											setPasswords(next);
-											setPasswordAdded(null);
-										})
-								}
-							>
-								{t('settings.browser.passwordsClear')}
-							</Button>
-						}
-					/>
+					<Link to="/settings/browser/passwords" className="block hover:bg-muted/40">
+						<SettingsRow
+							title={t('settings.browser.passwordsStored', { count: passwords.count })}
+							description={
+								passwordAdded !== null
+									? t('settings.browser.passwordsAdded', { count: passwordAdded })
+									: t('settings.browser.passwordsPage.description')
+							}
+							className="grid-cols-[minmax(0,1fr)_auto]"
+							actionClassName="w-auto justify-end"
+							actions={<ChevronRight className="size-4 text-muted-foreground" />}
+						/>
+					</Link>
 				) : null}
 			</SettingsPanel>
 			{counts ? (
