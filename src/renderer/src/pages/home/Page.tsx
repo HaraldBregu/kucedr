@@ -982,6 +982,7 @@ function PageContent(): ReactElement {
 									<TooltipContent side="bottom">Show browser</TooltipContent>
 								</Tooltip>
 							) : null}
+							{showEmptyConversation ? null : (
 							<Popover open={detailsPopoverOpen} onOpenChange={setDetailsPopoverOpen}>
 					<Tooltip>
 						<TooltipTrigger render={<PopoverTrigger asChild>{infoButton}</PopoverTrigger>} />
