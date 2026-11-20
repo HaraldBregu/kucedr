@@ -244,6 +244,10 @@ export async function pollAutofill(tab: BrowserTab): Promise<void> {
 	if (tab.view.webContents.isDestroyed()) return;
 	const state = await probe(tab, null).catch(() => null);
 	if (!state) return;
+	if (!state.keyed) {
+		tab.captureKey ??= randomBytes(32);
+		await probe(tab, JSON.stringify({ k: tab.captureKey.toString('base64') })).catch(() => undefined);
+	}
 	if (state.pick === 'manage') {
 		tab.host?.webContents.send(BrowserChannels.managePasswords, null);
 		return;
