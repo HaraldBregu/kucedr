@@ -177,11 +177,11 @@ const SCRIPT = `((payloadJson) => {
 interface State {
 	seq: number;
 	origin: string | null;
-	pick: number | null;
+	pick: number | 'manage' | null;
 }
 
 const lastSeq = new WeakMap<BrowserTab, number>();
-const shownItems = new WeakMap<BrowserTab, { id: string; label: string }[]>();
+const shownItems = new WeakMap<BrowserTab, string[]>();
 
 async function probe(tab: BrowserTab, push: string | null): Promise<State> {
 	const json = (await tab.view.webContents.executeJavaScriptInIsolatedWorld(WORLD, [
