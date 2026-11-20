@@ -961,7 +961,7 @@ function PageContent(): ReactElement {
 					<span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
-					{!showEmptyConversation && (
+					{(!showEmptyConversation || (browserAlive && !browserOpen)) && (
 						<div className="absolute right-2 top-12 z-40 flex items-center gap-1 sm:right-3">
 							{browserAlive && !browserOpen ? (
 								<Tooltip>
