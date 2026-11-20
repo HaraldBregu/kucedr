@@ -63,8 +63,15 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		changed();
 	});
 	contents.on('page-favicon-updated', (_event, icons) => {
-		const icon = icons.find((candidate) => /^https?:/i.test(candidate));
+		const icon = icons.find((candidate) => /^https?:|^data:/i.test(candidate));
 		if (!icon) return;
+		// The renderer's CSP serves https and data icons directly; http (localhost) icons it
+		// blocks, so those are fetched in the browsing session and passed on as data.
+		if (/^https:|^data:/i.test(icon)) {
+			tab.icon = icon;
+			changed();
+			return;
+		}
 		const page = contents.getURL();
 		void contents.session
 			.fetch(icon)
