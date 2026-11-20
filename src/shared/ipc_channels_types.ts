@@ -1415,15 +1415,10 @@ export interface BrowserInvokeChannelMap {
 		args: [request: import('./browser').BrowserPaneView | null];
 		result: void;
 	};
-	[BrowserChannels.input]: {
-		args: [request: import('./browser').BrowserPaneInput];
-		result: void;
-	};
 }
 
 export interface BrowserEventChannelMap {
 	[BrowserChannels.changed]: { data: import('./browser').BrowserPaneState };
-	[BrowserChannels.frame]: { data: import('./browser').BrowserPaneFrame };
 }
 
 export interface AuthInvokeChannelMap {

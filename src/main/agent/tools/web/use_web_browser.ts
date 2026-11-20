@@ -8,7 +8,10 @@ import { executionScope } from '../../execution/scope';
 import { mediaAccess } from '../../permissions/media_access';
 import { tool } from '../tool';
 import { runBrowserPageOperation } from './browser_abort';
-import { browserSession, type BrowserSession } from './browser/session';
+import { observe } from './browser/observe';
+import { run } from './browser/run';
+import { browserSession, browserSessions, type BrowserSession } from './browser/session';
+import { SNAPSHOT_SCRIPT } from './browser/snapshot';
 
 const ACTIONS = [
 	'status',
@@ -149,35 +152,6 @@ function refSelector(ref: string): string {
 	return `[data-agent-ref="${ref}"]`;
 }
 
-// Runs in the page: tags interactive elements with data-agent-ref and returns a compact outline.
-const SNAPSHOT_SCRIPT = `(() => {
-	const selector = 'a[href], button, input, select, textarea, [role="button"], [role="link"], [role="checkbox"], [role="radio"], [role="tab"], [role="menuitem"], [role="combobox"], [contenteditable="true"]';
-	const visible = (el) => {
-		const rect = el.getBoundingClientRect();
-		if (rect.width === 0 || rect.height === 0) return false;
-		const style = getComputedStyle(el);
-		return style.visibility !== 'hidden' && style.display !== 'none';
-	};
-	for (const el of document.querySelectorAll('[data-agent-ref]')) el.removeAttribute('data-agent-ref');
-	const elements = [];
-	let i = 0;
-	for (const el of document.querySelectorAll(selector)) {
-		if (!visible(el)) continue;
-		i += 1;
-		const ref = 'e' + i;
-		el.setAttribute('data-agent-ref', ref);
-		elements.push({
-			ref,
-			tag: el.tagName.toLowerCase(),
-			role: el.getAttribute('role') || undefined,
-			type: el.getAttribute('type') || undefined,
-			text: (el.innerText || el.value || '').trim().slice(0, 120) || undefined,
-			name: el.getAttribute('aria-label') || el.getAttribute('placeholder') || el.getAttribute('name') || undefined,
-			href: el.getAttribute('href') || undefined,
-		});
-	}
-	return { title: document.title, text: (document.body?.innerText || '').trim(), elements };
-})()`;
 
 async function tabList(signal?: AbortSignal): Promise<{ targetId: string; url: string; title: string }[]> {
 	const list: { targetId: string; url: string; title: string }[] = [];
@@ -273,7 +247,7 @@ export const useWebBrowserTool = tool({
 	category: 'web',
 	name: 'Use web browser',
 	description:
-		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts.',
+		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts. The user sees the page in a pane beside the chat and can click and type in it, for example to sign in.',
 	inputSchema: z.object({
 		action: z.enum(ACTIONS).describe('Browser command to run.'),
 		targetId: z.string().optional().describe('Tab id from "tabs" output. Defaults to the most recent tab opened in this chat.'),
@@ -313,6 +287,7 @@ export const useWebBrowserTool = tool({
 		action === 'screenshot' || action === 'pdf' ? mediaAccess(directory) : {},
 	execute: async (params, signal) => {
 		signal?.throwIfAborted();
+		if (!browserSessions.getStore()) return observe(() => run(params, signal));
 		const session = browserSession();
 		if (session.closed) throw new Error('Browser run has ended.');
 		switch (params.action) {
