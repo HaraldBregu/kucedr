@@ -178,26 +178,32 @@ encrypted, unlocked, matched and kept away from the agent.
 
 ### What the code does today
 
-Read from the checkout on 2026-11-20; not tested in the running app.
+Updated 2026-11-20 after the first security pass; the five fixes below are built and verified in
+the running app.
 
 - **One sealed file.** The whole list is encrypted as one block with the system keystore
   (`safeStorage`) in `~/.kucedr/browser/passwords.seal`, owner-only (`src/main/browser/passwords.ts`).
 - **Every password is decrypted for every lookup.** Listing, matching and filling all decrypt the
-  full list, and matching runs each time a login field gets focus.
-- **An import can wipe the store.** If the file exists but cannot be decrypted, it is read as
-  empty, and the next import seals the new logins over it, so every earlier password is lost.
-- **Plain `http` pages get passwords.** Matching uses the host only and ignores the scheme, and the
-  autofill script does not check for `https` (`src/main/agent/tools/web/browser/autofill.ts`). A
-  login saved on `https://example.com` is offered and filled on `http://example.com`.
-- **Subdomains match in both directions.** A login for `example.com` is offered on any subdomain,
-  including ones where a site hosts other people's content (`sameSite` in `passwords.ts`).
-- **The fill trusts the page script's report of the site.** The main process does not recheck the
-  tab's address at fill time.
-- **The agent can read the folder.** The sandbox's protected list
-  (`src/main/agent/permissions/protected.ts`) blocks the agent from other browsers' profiles and
-  from Kucedr's key files, but not from `~/.kucedr/browser`. The sealed file is useless without
-  the keystore, but `library.json` holds bookmarks and browsing history in plain text.
-- **Overwrites in place.** A crash during a write can leave the file corrupt.
+  full list, and matching runs each time a login field gets focus. Still true; the two-layer store
+  (23.13) is what separates names from secrets.
+- **FIXED — an import can no longer wipe the store.** A store that exists but cannot be decrypted is
+  reported as broken, and an import over it is refused rather than silently overwriting it
+  (`load()` in `passwords.ts`).
+- **FIXED — no password on plain `http`.** Matching and filling run only on `https`, and on
+  `http://localhost` for development (`secure()` in `passwords.ts`); the autofill list and the
+  toolbar key button do not appear on a plain `http` site.
+- **PARTLY FIXED — subdomain matching.** A login still matches a parent or child host
+  (`example.com` ↔ `accounts.example.com`), but two sibling subdomains no longer match each other
+  without the public suffix list; strict registrable-domain matching waits for 23.13 (`sameSite`).
+- **FIXED — the fill rechecks the real address.** `fillLogin` compares the tab's current URL, not
+  the page script's report, against the saved login and refuses a mismatch (`canFill` in
+  `passwords.ts`, used in `fill.ts`).
+- **FIXED — the agent cannot read the folder.** `~/.kucedr/browser` is on the sandbox's read and
+  write protected list (`src/main/agent/permissions/protected.ts`), so the agent cannot read
+  `library.json` (plain-text history and bookmarks) or the sealed file.
+- **FIXED — writes are atomic.** The sealed store and `library.json` are written to a temporary
+  file and renamed over the target (`src/main/browser/write.ts`), so a crash mid-write cannot
+  corrupt them.
 - **How strong the system keystore is depends on the system** _(general knowledge, to confirm)_.
   On macOS the key sits in the Keychain, and other apps must ask before reading it, fully so only
   on signed builds ([Distribution and trust](DISTRIBUTION.md), 6.1). On Windows any program
