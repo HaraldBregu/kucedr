@@ -369,3 +369,16 @@ crypto. Extensions, open tabs and payment cards are not imported.
   the system's own wallet or the user's password manager already holds them.
 - **Password generator on sign-up forms.** Not planned, in line with keeping the password list
   small.
+- **Order for passwords.** Recommended: first the four small fixes from
+  [What the code does today](#what-the-code-does-today): never overwrite a store that cannot be
+  read, no fill on `http`, recheck the address before filling, and protect `~/.kucedr/browser`
+  from the agent. They close real gaps in what is already built. The two-layer store (23.13) and
+  the password manager (23.14) come next, then offer-to-save (23.10).
+- **Primary password.** Recommended: optional, with the warning that a forgotten primary password
+  cannot be recovered and the saved passwords are lost. Making it required would protect Windows
+  and Linux users fully, but adds a step most people skip in other browsers.
+- **Windows Hello for reveal and copy.** Electron offers Touch ID on macOS only; Windows Hello
+  needs a native module, which is a new dependency. Recommended: the primary password on Windows
+  for now.
+- **Bookmarks bar.** A row of bookmarks under the toolbar. Recommended: not now, because the pane is
+  meant to stay minimal; the menu and the star cover the common cases.
