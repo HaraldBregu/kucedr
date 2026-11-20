@@ -2,6 +2,8 @@ import type {
 	BrowserImportPick,
 	BrowserImportRequest,
 	BrowserImportSummary,
+	BrowserLogin,
+	BrowserPasswordStatus,
 	BrowserLibraryCounts,
 	BrowserPlace,
 	BrowserSource,
@@ -51,4 +53,10 @@ export interface BrowserPaneApi {
 	bookmarks(): Promise<BrowserPlace[]>;
 	library(): Promise<BrowserLibraryCounts>;
 	clearLibrary(): Promise<void>;
+	passwordsStatus(): Promise<BrowserPasswordStatus>;
+	passwordsImport(): Promise<number | null>;
+	passwordsList(): Promise<BrowserLogin[]>;
+	passwordsClear(): Promise<void>;
+	passwordsMatch(targetId: string): Promise<BrowserLogin[]>;
+	passwordsFill(targetId: string, id: string): Promise<void>;
 }

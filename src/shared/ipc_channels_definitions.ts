@@ -550,6 +550,12 @@ export const BrowserChannels = {
 	bookmarks: 'browser:bookmarks',
 	library: 'browser:library',
 	clearLibrary: 'browser:library:clear',
+	passwordsStatus: 'browser:passwords:status',
+	passwordsImport: 'browser:passwords:import',
+	passwordsList: 'browser:passwords:list',
+	passwordsClear: 'browser:passwords:clear',
+	passwordsMatch: 'browser:passwords:match',
+	passwordsFill: 'browser:passwords:fill',
 } as const;
 
 export const MemoryChannels = {

@@ -27,4 +27,10 @@ export const browserPane: BrowserPaneApi = {
 	bookmarks: () => typedInvokeUnwrap(BrowserChannels.bookmarks),
 	library: () => typedInvokeUnwrap(BrowserChannels.library),
 	clearLibrary: () => typedInvokeUnwrap(BrowserChannels.clearLibrary),
+	passwordsStatus: () => typedInvokeUnwrap(BrowserChannels.passwordsStatus),
+	passwordsImport: () => typedInvokeUnwrap(BrowserChannels.passwordsImport),
+	passwordsList: () => typedInvokeUnwrap(BrowserChannels.passwordsList),
+	passwordsClear: () => typedInvokeUnwrap(BrowserChannels.passwordsClear),
+	passwordsMatch: (targetId) => typedInvokeUnwrap(BrowserChannels.passwordsMatch, targetId),
+	passwordsFill: (targetId, id) => typedInvokeUnwrap(BrowserChannels.passwordsFill, targetId, id),
 };

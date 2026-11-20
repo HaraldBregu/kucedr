@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { ArrowLeft, ArrowRight, PanelRightClose, RotateCw, Star, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, KeyRound, PanelRightClose, RotateCw, Star, X } from 'lucide-react';
 import type { BrowserPaneCommand, BrowserPaneTab } from '../../../../../shared/browser';
 import type { BrowserPlace } from '../../../../../shared/browser_import';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,10 @@ export function BrowserToolbar({
 		if (!tab.error) setAddress(blank ? '' : tab.url);
 	}, [tab.url, tab.error, blank]);
 	const [suggestions, setSuggestions] = useState<BrowserPlace[]>([]);
+	const [hasLogins, setHasLogins] = useState(false);
+	useEffect(() => {
+		void window.browserPane.passwordsMatch(tab.targetId).then((logins) => setHasLogins(logins.length > 0));
+	}, [tab.targetId, tab.url]);
 	const actions = [
 		{ label: 'Back', icon: ArrowLeft, disabled: !tab.back, run: () => onCommand('back') },
 		{ label: 'Forward', icon: ArrowRight, disabled: !tab.forward, run: () => onCommand('forward') },
@@ -100,6 +104,28 @@ export function BrowserToolbar({
 				>
 					<Star />
 				</Button>
+				{hasLogins ? (
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon-sm"
+						aria-label="Fill a saved password"
+						title="Fill a saved password"
+						onClick={() =>
+							void window.browserPane.passwordsMatch(tab.targetId).then(async (logins) => {
+								const choice =
+									logins.length === 1
+										? logins[0].id
+										: await window.win.showContextMenu(
+												logins.map((login) => ({ id: login.id, label: login.username || login.url }))
+											);
+								if (choice) void window.browserPane.passwordsFill(tab.targetId, choice).catch(() => undefined);
+							})
+						}
+					>
+						<KeyRound />
+					</Button>
+				) : null}
 				<Button
 					type="button"
 					variant="ghost"

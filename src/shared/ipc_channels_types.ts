@@ -1428,6 +1428,12 @@ export interface BrowserInvokeChannelMap {
 	[BrowserChannels.bookmarks]: { args: []; result: import('./browser_import').BrowserPlace[] };
 	[BrowserChannels.library]: { args: []; result: import('./browser_import').BrowserLibraryCounts };
 	[BrowserChannels.clearLibrary]: { args: []; result: void };
+	[BrowserChannels.passwordsStatus]: { args: []; result: import('./browser_import').BrowserPasswordStatus };
+	[BrowserChannels.passwordsImport]: { args: []; result: number | null };
+	[BrowserChannels.passwordsList]: { args: []; result: import('./browser_import').BrowserLogin[] };
+	[BrowserChannels.passwordsClear]: { args: []; result: void };
+	[BrowserChannels.passwordsMatch]: { args: [targetId: string]; result: import('./browser_import').BrowserLogin[] };
+	[BrowserChannels.passwordsFill]: { args: [targetId: string, id: string]; result: void };
 }
 
 export interface BrowserEventChannelMap {

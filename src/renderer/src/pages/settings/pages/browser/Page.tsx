@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type {
 	BrowserImportSummary,
 	BrowserLibraryCounts,
+	BrowserPasswordStatus,
 	BrowserSource,
 } from '@shared/browser_import';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,8 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 	const [counts, setCounts] = useState<BrowserLibraryCounts | null>(null);
 	const [summary, setSummary] = useState<BrowserImportSummary | null>(null);
 	const [busy, setBusy] = useState(false);
+	const [passwords, setPasswords] = useState<BrowserPasswordStatus | null>(null);
+	const [passwordAdded, setPasswordAdded] = useState<number | null>(null);
 	const host = (template: string): string => {
 		try {
 			return new URL(template).hostname.replace(/^www\./, '');
@@ -36,6 +39,7 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 	useEffect(() => {
 		void window.browserPane.sources().then(setSources);
 		void window.browserPane.library().then(setCounts);
+		void window.browserPane.passwordsStatus().then(setPasswords);
 	}, []);
 	const chosen = (sources ?? []).filter((source) => !skipped.includes(source.id)).map((source) => source.id);
 	const noKinds = !Object.values(kinds).some(Boolean);
@@ -148,6 +152,58 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 						.join(' ')}
 				</SettingsNotice>
 			) : null}
+			<SettingsPanel>
+				<SettingsRow
+					title={t('settings.browser.passwords')}
+					description={
+						passwords && !passwords.available
+							? t('settings.browser.passwordsUnavailable')
+							: t('settings.browser.passwordsDescription')
+					}
+					actionClassName="w-auto justify-end"
+					actions={
+						<Button
+							type="button"
+							variant="outline"
+							disabled={busy || !passwords?.available}
+							onClick={() =>
+								void window.browserPane.passwordsImport().then((added) => {
+									if (added !== null) setPasswordAdded(added);
+									void window.browserPane.passwordsStatus().then(setPasswords);
+								})
+							}
+						>
+							{t('settings.browser.passwordsImport')}
+						</Button>
+					}
+				/>
+				{passwords && passwords.count > 0 ? (
+					<SettingsRow
+						title={t('settings.browser.passwordsStored', { count: passwords.count })}
+						description={
+							passwordAdded !== null ? t('settings.browser.passwordsAdded', { count: passwordAdded }) : ''
+						}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() =>
+									void window.browserPane
+										.passwordsClear()
+										.then(() => window.browserPane.passwordsStatus())
+										.then((next) => {
+											setPasswords(next);
+											setPasswordAdded(null);
+										})
+								}
+							>
+								{t('settings.browser.passwordsClear')}
+							</Button>
+						}
+					/>
+				) : null}
+			</SettingsPanel>
 			{counts ? (
 				<SettingsPanel>
 					<SettingsRow

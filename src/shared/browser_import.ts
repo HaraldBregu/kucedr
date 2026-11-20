@@ -33,6 +33,17 @@ export interface BrowserImportSummary {
 	readonly errors: readonly string[];
 }
 
+export interface BrowserLogin {
+	readonly id: string;
+	readonly url: string;
+	readonly username: string;
+}
+
+export interface BrowserPasswordStatus {
+	readonly available: boolean;
+	readonly count: number;
+}
+
 export interface BrowserLibraryCounts {
 	readonly bookmarks: number;
 	readonly history: number;

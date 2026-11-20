@@ -11,6 +11,7 @@ export interface BrowserTab {
 	error?: string;
 	icon?: string;
 	pointer?: { x: number; y: number };
+	filled?: boolean;
 	host?: BrowserWindow;
 }
 

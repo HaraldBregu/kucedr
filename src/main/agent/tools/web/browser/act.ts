@@ -164,6 +164,8 @@ export async function act(tab: BrowserTab, params: BrowserAct, signal?: AbortSig
 			return 'waited';
 		case 'evaluate': {
 			if (!params.fn) throw new Error('act "evaluate" requires fn (a JS expression or function).');
+			if (tab.filled)
+				throw new Error('Running scripts is blocked on this page because a saved password was filled here.');
 			const run = (expression: string): Promise<Evaluation> =>
 				contents.debugger.sendCommand('Runtime.evaluate', {
 					expression,

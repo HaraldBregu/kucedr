@@ -1303,7 +1303,14 @@
 			"fromFileDescription": "Scegli la cartella di qualsiasi browser, un singolo profilo o un file esportato di segnalibri o cronologia. Kucedr riconosce il formato.",
 			"choose": "Scegli…",
 			"chooseFiles": "Scegli file…",
-			"chooseFolder": "Scegli cartella…"
+			"chooseFolder": "Scegli cartella…",
+			"passwords": "Password",
+			"passwordsDescription": "Esporta le password dall'altro browser come file CSV, poi scegli qui quel file. Vengono sigillate con il portachiavi di sistema e l'assistente non le riceve mai.",
+			"passwordsUnavailable": "Il portachiavi di sistema non è disponibile, quindi le password non possono essere salvate in modo sicuro su questo computer.",
+			"passwordsImport": "Importa da un file CSV…",
+			"passwordsStored": "{{count}} password salvate",
+			"passwordsAdded": "Aggiunte {{count}}.",
+			"passwordsClear": "Elimina le password salvate"
 		},
 		"editor": {
 			"font": "Carattere",

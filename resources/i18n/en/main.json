@@ -1303,7 +1303,14 @@
 			"fromFileDescription": "Choose any browser's folder, a single profile, or an exported bookmarks or history file. Kucedr works out the format.",
 			"choose": "Choose…",
 			"chooseFiles": "Choose files…",
-			"chooseFolder": "Choose folder…"
+			"chooseFolder": "Choose folder…",
+			"passwords": "Passwords",
+			"passwordsDescription": "Export your passwords from the other browser as a CSV file, then choose it here. They are sealed with your system keystore and the assistant never receives them.",
+			"passwordsUnavailable": "Your system keystore is unavailable, so passwords cannot be stored safely on this computer.",
+			"passwordsImport": "Import from a CSV file…",
+			"passwordsStored": "{{count}} saved passwords",
+			"passwordsAdded": "Added {{count}}.",
+			"passwordsClear": "Delete saved passwords"
 		},
 		"editor": {
 			"font": "Font",
