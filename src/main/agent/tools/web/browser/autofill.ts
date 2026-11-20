@@ -141,11 +141,7 @@ export async function pollAutofill(tab: BrowserTab): Promise<void> {
 	if (state.seq === lastSeq.get(tab)) return;
 	lastSeq.set(tab, state.seq);
 	const items = state.origin
-		? matchLogins(state.origin).map((login) => ({
-				id: login.id,
-				label: `${login.username || login.url}${login.savedFor ? ` · saved for ${login.savedFor}` : ''}`,
-				key: '',
-			}))
+		? matchLogins(state.origin).map((login) => ({ id: login.id, label: loginLabel(login), key: '' }))
 		: [];
 	shownItems.set(tab, items);
 	// push right away so the list appears without waiting for the next poll
