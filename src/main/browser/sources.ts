@@ -37,6 +37,7 @@ export async function browserSources(): Promise<BrowserSource[]> {
 			sources.push({
 				id,
 				...label(root, directory),
+				folder: path.relative(root, directory),
 				kinds: (['bookmarks', 'history'] as const).filter((kind) =>
 					files.some((file) => PROFILE_FILES[path.basename(file)].includes(kind))
 				),
