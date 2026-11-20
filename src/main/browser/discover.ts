@@ -11,9 +11,7 @@ const FOLDER_BUDGET = 6_000;
 export async function discover(root: string, depth: number): Promise<string[]> {
 	const found: string[] = [];
 	const holdsData = (directory: string): boolean =>
-		Object.entries(PROFILE_FILES).some(
-			([name, kinds]) => kinds.some((kind) => kind !== 'settings') && existsSync(path.join(directory, name))
-		);
+		profileFiles(directory, { bookmarks: true, history: true, settings: false }).length > 0;
 	let level = [root];
 	let budget = FOLDER_BUDGET;
 	for (let down = 0; down <= depth && level.length && budget > 0; down += 1) {
