@@ -1,19 +1,21 @@
 import type { BrowserPaneState, BrowserPaneTab } from '../../../../../shared/browser';
-import { acting, pageChats, pageLoading, pageOrder } from './pane';
-import { interactive } from './session';
+import { acting, paneTabs } from './pane';
 
-export async function tabs(): Promise<BrowserPaneState> {
+export function tabs(): BrowserPaneState {
 	const list: BrowserPaneTab[] = [];
-	for (const [targetId, page] of interactive.pages) {
-		const chat = pageChats.get(page);
-		if (chat === undefined) continue;
+	for (const tab of paneTabs.values()) {
+		const contents = tab.view.webContents;
+		if (tab.chat === undefined || contents.isDestroyed()) continue;
 		list.push({
-			targetId,
-			chat,
-			url: page.url(),
-			title: await page.title().catch(() => ''),
-			loading: pageLoading.has(page),
-			order: pageOrder.get(page) ?? 0,
+			targetId: tab.id,
+			chat: tab.chat,
+			url: contents.getURL(),
+			title: contents.getTitle(),
+			loading: contents.isLoading(),
+			order: tab.order,
+			back: contents.navigationHistory.canGoBack(),
+			forward: contents.navigationHistory.canGoForward(),
+			...(tab.error ? { error: tab.error } : {}),
 		});
 	}
 	return { tabs: list, acting: [...acting.keys()] };
