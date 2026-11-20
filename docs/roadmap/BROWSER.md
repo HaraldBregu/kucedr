@@ -91,12 +91,10 @@ it says otherwise. Windows and Linux paths are written but not exercised.
   engine writes (`src/main/browser/formats.ts`), so any browser built on a known engine is found,
   and its name on screen comes from its own folders (`label.ts`). Adding a format is one more
   entry in that file.
-- **Import screen (23.1)** at Settings → Browser. It searches the folders where applications keep
-  their data (`roots.ts`, `discover.ts`) and lists every profile it finds, with what it holds,
-  when it was last used and where it is. Everything is ticked, so one button imports it all.
-  Profiles that were never used are left out. A second button takes any file or folder: a
-  browser's folder, one profile, or exported files. Running an import again adds no duplicates.
-  Not built: the one-time offer when the pane first opens.
+- **Import screen.** It searches the folders where applications keep their data (`roots.ts`,
+  `discover.ts`) and lists every profile it finds, with what it holds, when it was last used and
+  where it is. Everything is ticked, so one button imports it all. Profiles that were never used
+  are left out.
 - **What a file is, is worked out from its content** (`read.ts`), not its name: a database in one
   of three history and bookmark layouts, a bookmark tree or settings as JSON, or the bookmarks
   page every browser can export. The third database layout is the one Safari uses; it is tested
