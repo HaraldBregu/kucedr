@@ -87,11 +87,11 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 - **23.13:** the optional primary password (scrypt, unlock prompt, Touch ID, locking on idle,
   sleep and screen lock).
 - **23.14:** adding a login by hand; reveal and copy behind Touch ID (clipboard cleared after 30
-  seconds); export to CSV; "last used"; undo after delete; the store status line; the never-saved
-  list (needs 23.10).
-- **23.15:** folders (kept on import), the star in the address field for the page on screen, the
-  toolbar menu's 60-bookmark cut-off, adding bookmarks and folders, moving and multi-select, undo,
-  duplicate merge, export.
+  seconds); export to CSV; "last used"; undo after delete; the store status line.
+- **23.10:** sign-ins sent by a script-driven button that is not a submit button are not caught
+  (Enter in the field still is).
+- **23.15:** folders (kept on import), a toolbar menu with every bookmark (folders would let it
+  show more than 45), adding folders, moving and multi-select, undo, duplicate merge, export.
 - **⌘[ and ⌘] in the pane** (keyboard back and forward follow the mouse rule), see the open
   decisions.
 - **Autofill drawn in a separate view** instead of in the page; see the open decisions.
