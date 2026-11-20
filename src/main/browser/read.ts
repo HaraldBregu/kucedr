@@ -92,7 +92,7 @@ export function readData(file: string, want: Readonly<Record<Kind, boolean>>): P
 			.find((url): url is string => typeof url === 'string' && url.includes('{searchTerms}'));
 		if (template)
 			result.search = template
-				.replace('{google:baseURL}', 'https://www.google.com/')
+				.replace(/\{(\w+):baseURL\}/, 'https://www.$1.com/')
 				.replace('{searchTerms}', '%s')
 				.replace(/[?&][^=&{}]*=\{[^}]*\}/g, '')
 				.replace(/\{[^}]*\}/g, '')
