@@ -27,11 +27,12 @@ export function BrowserTabs({
 	const crowded = tabs.length > 5;
 
 	return (
-		<div className="flex h-10 shrink-0 items-end gap-0.5 bg-muted px-2 pt-1.5">
+		<div className="flex h-10 shrink-0 items-end gap-0.5 bg-muted px-2 pt-1.5" style={DRAG}>
 			<div
 				ref={list}
 				role="tablist"
 				aria-label="Browser tabs"
+				style={NO_DRAG}
 				className="flex min-w-0 items-end overflow-x-auto [scrollbar-width:none]"
 				onWheel={(event) => {
 					if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) event.currentTarget.scrollLeft += event.deltaY;
