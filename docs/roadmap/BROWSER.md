@@ -85,7 +85,7 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 - **Offer to move the exported password CSV to the bin** after an import.
 - **Some sites refuse sign-in in an embedded browser**, Google among them _(not verified)_.
 
-### Earlier notes on what was built
+### How the import works
 
 - **No list of browsers.** The code names no browser. A profile is recognised by the files its
   engine writes (`src/main/browser/formats.ts`), so any browser built on a known engine is found,
