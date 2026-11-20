@@ -20,6 +20,13 @@ export function BrowserPane({
 	const [error, setError] = useState<string | null>(null);
 	const [suggesting, setSuggesting] = useState(false);
 	useEffect(() => setError(null), [active.targetId, active.url]);
+	useEffect(
+		() =>
+			window.browserPane.onManagePasswords(() => {
+				window.location.hash = '#/settings/browser/passwords';
+			}),
+		[]
+	);
 	const run = (targetId: string, command: BrowserPaneCommand['command'], url?: string): void => {
 		setError(null);
 		void window.browserPane
