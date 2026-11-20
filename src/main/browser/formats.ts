@@ -7,6 +7,9 @@ export type Kind = 'bookmarks' | 'history' | 'settings';
 export const PROFILE_FILES: Readonly<Record<string, readonly Kind[]>> = {
 	History: ['history'],
 	Bookmarks: ['bookmarks'],
+	// Browsers keep a backup of the bookmark file and sometimes leave only it (the live file can
+	// be missing while the browser is closed); it is read when the live file is absent, see files.ts.
+	'Bookmarks.bak': ['bookmarks'],
 	Preferences: ['settings'],
 	'places.sqlite': ['bookmarks', 'history'],
 };
