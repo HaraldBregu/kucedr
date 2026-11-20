@@ -16,6 +16,7 @@ export function tabs(): BrowserPaneState {
 			back: contents.navigationHistory.canGoBack(),
 			forward: contents.navigationHistory.canGoForward(),
 			...(tab.error ? { error: tab.error } : {}),
+			...(tab.icon ? { icon: tab.icon } : {}),
 		});
 	}
 	return { tabs: list, acting: [...acting.keys()] };

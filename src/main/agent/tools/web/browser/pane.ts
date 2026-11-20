@@ -9,6 +9,7 @@ export interface BrowserTab {
 	owner?: string;
 	order: number;
 	error?: string;
+	icon?: string;
 	host?: BrowserWindow;
 }
 

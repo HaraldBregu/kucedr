@@ -25,6 +25,13 @@ export function BrowserPane({
 
 	return (
 		<section aria-label="Browser" className="flex h-full min-w-0 flex-col bg-background">
+			<BrowserTabs
+				tabs={tabs}
+				active={active.targetId}
+				onSelect={(targetId) => run(targetId, 'focus')}
+				onClose={(targetId) => run(targetId, 'close')}
+				onNew={() => run(active.targetId, 'new')}
+			/>
 			<BrowserToolbar
 				key={active.targetId}
 				tab={active}
@@ -32,13 +39,6 @@ export function BrowserPane({
 				onCommand={(command, url) => run(active.targetId, command, url)}
 				onClose={onClose}
 			/>
-			{tabs.length > 1 ? (
-				<BrowserTabs
-					tabs={tabs}
-					active={active.targetId}
-					onSelect={(targetId) => run(targetId, 'focus')}
-				/>
-			) : null}
 			{error ? (
 				<p role="alert" className="shrink-0 truncate px-3 py-1 text-xs text-destructive">
 					{error}

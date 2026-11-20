@@ -56,6 +56,11 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 	contents.on('did-start-navigation', (event) => {
 		if (!event.isMainFrame || event.isSameDocument) return;
 		tab.error = undefined;
+		tab.icon = undefined;
+		changed();
+	});
+	contents.on('page-favicon-updated', (_event, icons) => {
+		tab.icon = icons.find((icon) => /^https:/i.test(icon));
 		changed();
 	});
 	contents.on('did-fail-load', (_event, code, description, _url, isMainFrame) => {

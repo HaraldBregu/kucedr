@@ -1,4 +1,6 @@
 import type { BrowserPaneCommand } from '../../../../../shared/browser';
+import { closeTab } from './close';
+import { createTab } from './create';
 import { pane, paneEvents, paneTabs } from './pane';
 
 export function command(request: BrowserPaneCommand): void {
@@ -28,6 +30,12 @@ export function command(request: BrowserPaneCommand): void {
 		}
 		case 'focus':
 			tab.order = ++pane.order;
+			break;
+		case 'close':
+			closeTab(tab);
+			break;
+		case 'new':
+			createTab(tab.chat, tab.owner);
 			break;
 	}
 	paneEvents.emit('change');

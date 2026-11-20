@@ -8,6 +8,7 @@ export interface BrowserPaneTab {
 	readonly back: boolean;
 	readonly forward: boolean;
 	readonly error?: string;
+	readonly icon?: string;
 }
 
 export interface BrowserPaneState {
@@ -17,7 +18,7 @@ export interface BrowserPaneState {
 
 export interface BrowserPaneCommand {
 	readonly targetId: string;
-	readonly command: 'back' | 'forward' | 'reload' | 'stop' | 'navigate' | 'focus';
+	readonly command: 'back' | 'forward' | 'reload' | 'stop' | 'navigate' | 'focus' | 'close' | 'new';
 	readonly url?: string;
 }
 

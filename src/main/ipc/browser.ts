@@ -14,7 +14,7 @@ const targetId = z.string().regex(/^t\d+$/);
 const edge = z.number().int().min(0).max(16_384);
 const commandSchema = z.object({
 	targetId,
-	command: z.enum(['back', 'forward', 'reload', 'stop', 'navigate', 'focus']),
+	command: z.enum(['back', 'forward', 'reload', 'stop', 'navigate', 'focus', 'close', 'new']),
 	url: z.string().max(4096).optional(),
 });
 const viewSchema = z

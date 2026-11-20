@@ -16,10 +16,11 @@ export function BrowserToolbar({
 	readonly onCommand: (command: BrowserPaneCommand['command'], url?: string) => void;
 	readonly onClose: () => void;
 }): ReactElement {
-	const [address, setAddress] = useState(tab.url);
+	const blank = tab.url === 'about:blank' || tab.url === '';
+	const [address, setAddress] = useState(blank ? '' : tab.url);
 	useEffect(() => {
-		if (!tab.error) setAddress(tab.url);
-	}, [tab.url, tab.error]);
+		if (!tab.error) setAddress(blank ? '' : tab.url);
+	}, [tab.url, tab.error, blank]);
 	const actions = [
 		{ label: 'Back', icon: ArrowLeft, disabled: !tab.back, run: () => onCommand('back') },
 		{ label: 'Forward', icon: ArrowRight, disabled: !tab.forward, run: () => onCommand('forward') },
@@ -30,7 +31,7 @@ export function BrowserToolbar({
 
 	return (
 		<>
-			<div className="flex h-12 shrink-0 items-center gap-1 px-2">
+			<div className="flex h-10 shrink-0 items-center gap-1 px-2">
 				{actions.map(({ label, icon: Icon, disabled, run }) => (
 					<Button
 						key={label}
@@ -54,9 +55,11 @@ export function BrowserToolbar({
 				>
 					<Input
 						aria-label="Address"
+						placeholder="Enter a web address"
+						autoFocus={blank}
 						value={address}
 						spellCheck={false}
-						className="h-7 px-2 text-xs md:text-xs"
+						className="h-7 rounded-full bg-muted px-3 text-xs md:text-xs"
 						onChange={(event) => setAddress(event.target.value)}
 						onFocus={(event) => event.target.select()}
 					/>
