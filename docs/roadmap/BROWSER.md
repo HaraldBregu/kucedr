@@ -362,21 +362,20 @@ bookmark.
 
 ### What happens today
 
-Read from the checkout on 2026-11-20; not tried in the running app.
+Built 2026-11-20; see [Status](#status).
 
-- **The app takes the buttons.** The app moves between its own pages on the mouse's back and
-  forward buttons in two places, and neither knows about the pane:
-  - on macOS, a listener on the app's page (`src/renderer/src/hooks/mouse.ts`);
-  - on Windows and Linux, the window's `app-command` event; and on macOS, the trackpad swipe
-    (`src/main/attach_route_navigation.ts`).
-- **The result depends on the system** _(inferred from the code)_:
-  - On Windows and Linux, pressing back with the pointer over a web page sends the app to its
-    previous screen, while the page stays where it is.
-  - On macOS, the button over the page does nothing, because the page is its own view and the app's
-    listener never sees the click.
-  - On macOS, a swipe over the page always moves the app.
-  - Over the pane's toolbar and tab strip, which are part of the app's page, the app moves on
-    every system.
+- **Over the page (macOS).** A listener in Kucedr's private script world on each page catches
+  the back and forward buttons and moves the tab's history
+  (`src/main/agent/tools/web/browser/buttons.ts`). Checked in the built app.
+- **Over the tab strip and toolbar (macOS).** The pane sends the buttons to its tab, and the app's
+  listener (`src/renderer/src/hooks/mouse.ts`) ignores presses inside the pane. Checked in the
+  built app.
+- **Window-wide events.** The window's `app-command` buttons (Windows, Linux) and the macOS swipe
+  go to the tab shown in the pane when the pointer is over the pane column, otherwise to the app
+  (`under.ts`, `src/main/attach_route_navigation.ts`). Not exercised yet: it needs a real pointer
+  over the pane, and Windows and Linux.
+- **Rough edge.** The pane column is taken as the full-height strip above and including the page
+  view; if the pane's layout changes, the renderer should pass the pane's own rectangle instead.
 
 ### What the user gets
 
