@@ -137,17 +137,19 @@ export function passwordsAvailable(): boolean {
 	return isSafeStorageAvailable();
 }
 
-export function importLogins(text: string): number {
+// The current store, or a new empty one with a fresh key. Refuses a store that cannot be read.
+function writable(): Store {
 	if (!isSafeStorageAvailable()) throw new Error('The system keystore is unavailable, so passwords cannot be stored safely.');
 	const { store, broken } = load();
 	if (broken)
-		throw new Error('Your saved passwords could not be read, so nothing was imported — importing would have overwritten them.');
-	if (!store) storeKey = randomBytes(32);
-	const next: Store = store ?? {
-		version: 2,
-		key: safeStorage.encryptString(storeKey!.toString('base64')).toString('base64'),
-		logins: [],
-	};
+		throw new Error('Your saved passwords could not be read, so nothing was saved — saving would have overwritten them.');
+	if (store) return store;
+	storeKey = randomBytes(32);
+	return { version: 2, key: safeStorage.encryptString(storeKey.toString('base64')).toString('base64'), logins: [] };
+}
+
+export function importLogins(text: string): number {
+	const next = writable();
 	const key = unseal(next);
 	const logins = [...next.logins];
 	const seen = new Set(logins.map((login) => `${host(login.url)}\n${login.username}`));
