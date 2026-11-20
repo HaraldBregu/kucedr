@@ -1,4 +1,5 @@
 import type { BrowserPaneCommand } from '../../../../../shared/browser';
+import { library } from '../../../../browser/library';
 import { closeTab } from './close';
 import { createTab } from './create';
 import { pane, paneEvents, paneTabs } from './pane';
@@ -23,8 +24,13 @@ export function command(request: BrowserPaneCommand): void {
 		case 'navigate': {
 			const text = request.url?.trim() ?? '';
 			const local = /^(localhost|127\.0\.0\.1|\[::1\])([:/]|$)/i.test(text);
-			const url = /^https?:\/\//i.test(text) ? text : `${local ? 'http' : 'https'}://${text}`;
-			if (!URL.canParse(url)) throw new Error('Enter a web address, for example example.com.');
+			const address = /^https?:\/\//i.test(text) || local || /^[^\s.]+(\.[^\s.]+)+(\/\S*)?$/.test(text);
+			const url = !address
+				? library().search.replace('%s', encodeURIComponent(text))
+				: /^https?:\/\//i.test(text)
+					? text
+					: `${local ? 'http' : 'https'}://${text}`;
+			if (!text || !URL.canParse(url)) throw new Error('Enter a web address or search words.');
 			void contents.loadURL(url).catch(() => undefined);
 			break;
 		}

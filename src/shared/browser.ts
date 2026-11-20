@@ -1,3 +1,11 @@
+import type {
+	BrowserImportRequest,
+	BrowserImportSummary,
+	BrowserLibraryCounts,
+	BrowserPlace,
+	BrowserSource,
+} from './browser_import';
+
 export interface BrowserPaneTab {
 	readonly targetId: string;
 	readonly chat: string;
@@ -35,4 +43,10 @@ export interface BrowserPaneApi {
 	command(request: BrowserPaneCommand): Promise<void>;
 	view(request: BrowserPaneView | null): void;
 	onChanged(callback: (state: BrowserPaneState) => void): () => void;
+	sources(): Promise<BrowserSource[]>;
+	importData(request: BrowserImportRequest): Promise<BrowserImportSummary>;
+	suggest(text: string): Promise<BrowserPlace[]>;
+	bookmarks(): Promise<BrowserPlace[]>;
+	library(): Promise<BrowserLibraryCounts>;
+	clearLibrary(): Promise<void>;
 }

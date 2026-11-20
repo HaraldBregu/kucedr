@@ -24,6 +24,7 @@ import {
 	ToggleRight,
 	UserRound,
 	type LucideIcon,
+	Globe,
 } from 'lucide-react';
 import { AGENTS, type AgentId } from '@/lib/compat';
 
@@ -312,6 +313,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'library.title',
 		descriptionKey: 'settings.overview.descriptions.library',
 		icon: Library,
+	},
+	{
+		path: '/settings/browser',
+		labelKey: 'settings.browser.title',
+		descriptionKey: 'settings.browser.description',
+		icon: Globe,
 	},
 	{
 		path: '/workspace',

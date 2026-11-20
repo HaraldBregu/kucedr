@@ -25,6 +25,21 @@ does not start again from an empty browser.
   A script the agent runs in the page (`act evaluate`) can still read a field, which matters once
   passwords are filled automatically (see the open decisions).
 
+## Built so far
+
+- **Import screen (23.1)** at Settings → Browser: Chrome-family and Firefox profiles found on the
+  machine, a tick box per kind of data, a summary, and a button that clears what was imported.
+  Running it again adds no duplicates. Not built: the one-time offer when the pane first opens.
+- **Bookmarks and history (23.2)**, read from a private copy of the other browser's files
+  (`src/main/browser/`), kept in `~/.kucedr/browser/library.json`, suggested under the address
+  field, with a bookmarks menu in the toolbar. History keeps the 5,000 most recent pages. Not
+  built: Safari, and import from an exported bookmarks file.
+- **Search from the address field (23.6)**: words search with the imported default engine, or
+  DuckDuckGo until one is imported. Chrome-family only; Firefox's engine and the home page are
+  not read.
+- Passwords, sign-ins, agent sign-in and the old profile (23.3–23.5, 23.7, 23.8) are not built;
+  they wait on the open decisions below.
+
 ## Features
 
 | # | Feature | What the user gets | Builds on | Size |

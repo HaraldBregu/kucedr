@@ -29,7 +29,7 @@ Not built:
 - Elements inside frames: snapshot and clicks see the top document only, as before.
 - On Windows and Linux the window buttons stay in the navigation bar, to the left of the pane.
 - Removing the old Chrome profile folder (`~/.kucedr/agent-browser`); saved logins there are not carried over.
-- Importing bookmarks, history, passwords, sign-ins and settings from Chrome, Firefox and other browsers; planned in [Browser import](roadmap/BROWSER.md).
+- Importing passwords and sign-ins from other browsers. Bookmarks, history and the search engine are imported; see [Browser import](roadmap/BROWSER.md).
 - Unit tests for the view backend. The existing browser tests cover background runs only.
 
 ## Goal

@@ -1281,6 +1281,23 @@
 		"code": {
 			"description": "Browse your code projects and files"
 		},
+		"browser": {
+			"title": "Browser",
+			"description": "Import bookmarks, history and search engine from other browsers",
+			"importTitle": "Import from another browser",
+			"importDescription": "Kucedr reads a copy and never changes the other browser. Nothing imported leaves this computer. Passwords and sign-ins are not imported.",
+			"none": "No Chrome-family or Firefox profiles were found on this computer.",
+			"bookmarks": "Bookmarks",
+			"history": "History",
+			"settings": "Default search engine",
+			"import": "Import",
+			"importing": "Importing…",
+			"done": "Imported {{bookmarks}} bookmarks and {{history}} history entries.",
+			"searchSet": "Search engine set to {{host}}.",
+			"stored": "Stored in Kucedr",
+			"storedDescription": "{{bookmarks}} bookmarks, {{history}} history entries. Search with {{host}}.",
+			"clear": "Clear imported data"
+		},
 		"editor": {
 			"font": "Font",
 			"fontDescription": "Choose the font used in the editor",

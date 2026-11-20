@@ -1281,6 +1281,23 @@
 		"code": {
 			"description": "Sfoglia i progetti di codice e i loro file"
 		},
+		"browser": {
+			"title": "Browser",
+			"description": "Importa segnalibri, cronologia e motore di ricerca da altri browser",
+			"importTitle": "Importa da un altro browser",
+			"importDescription": "Kucedr legge una copia e non modifica mai l'altro browser. Nulla di ciò che viene importato lascia questo computer. Password e accessi non vengono importati.",
+			"none": "Nessun profilo Chrome o Firefox trovato su questo computer.",
+			"bookmarks": "Segnalibri",
+			"history": "Cronologia",
+			"settings": "Motore di ricerca predefinito",
+			"import": "Importa",
+			"importing": "Importazione…",
+			"done": "Importati {{bookmarks}} segnalibri e {{history}} voci di cronologia.",
+			"searchSet": "Motore di ricerca impostato su {{host}}.",
+			"stored": "Salvati in Kucedr",
+			"storedDescription": "{{bookmarks}} segnalibri, {{history}} voci di cronologia. Ricerca con {{host}}.",
+			"clear": "Cancella i dati importati"
+		},
 		"editor": {
 			"font": "Carattere",
 			"fontDescription": "Scegli il carattere utilizzato nell'editor",

@@ -543,6 +543,12 @@ export const BrowserChannels = {
 	command: 'browser:command',
 	view: 'browser:view',
 	changed: 'browser:changed',
+	sources: 'browser:sources',
+	importData: 'browser:import',
+	suggest: 'browser:suggest',
+	bookmarks: 'browser:bookmarks',
+	library: 'browser:library',
+	clearLibrary: 'browser:library:clear',
 } as const;
 
 export const MemoryChannels = {

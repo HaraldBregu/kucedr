@@ -1415,6 +1415,15 @@ export interface BrowserInvokeChannelMap {
 		args: [request: import('./browser').BrowserPaneView | null];
 		result: void;
 	};
+	[BrowserChannels.sources]: { args: []; result: import('./browser_import').BrowserSource[] };
+	[BrowserChannels.importData]: {
+		args: [request: import('./browser_import').BrowserImportRequest];
+		result: import('./browser_import').BrowserImportSummary;
+	};
+	[BrowserChannels.suggest]: { args: [text: string]; result: import('./browser_import').BrowserPlace[] };
+	[BrowserChannels.bookmarks]: { args: []; result: import('./browser_import').BrowserPlace[] };
+	[BrowserChannels.library]: { args: []; result: import('./browser_import').BrowserLibraryCounts };
+	[BrowserChannels.clearLibrary]: { args: []; result: void };
 }
 
 export interface BrowserEventChannelMap {

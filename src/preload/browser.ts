@@ -20,4 +20,10 @@ export const browserPane: BrowserPaneApi = {
 		);
 	},
 	onChanged: (callback) => typedOn(BrowserChannels.changed, callback),
+	sources: () => typedInvokeUnwrap(BrowserChannels.sources),
+	importData: (request) => typedInvokeUnwrap(BrowserChannels.importData, request),
+	suggest: (text) => typedInvokeUnwrap(BrowserChannels.suggest, text),
+	bookmarks: () => typedInvokeUnwrap(BrowserChannels.bookmarks),
+	library: () => typedInvokeUnwrap(BrowserChannels.library),
+	clearLibrary: () => typedInvokeUnwrap(BrowserChannels.clearLibrary),
 };

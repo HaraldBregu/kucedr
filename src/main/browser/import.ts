@@ -1,0 +1,43 @@
+import type { BrowserImportRequest, BrowserImportSummary } from '../../shared/browser_import';
+import { readChromium } from './chromium';
+import { readFirefox } from './firefox';
+import { HISTORY_LIMIT, library, type Visit } from './library';
+import { browserSources } from './sources';
+
+export function importBrowserData(request: BrowserImportRequest): BrowserImportSummary {
+	const current = library();
+	const bookmarks = new Map(current.bookmarks.map((item) => [item.url, item]));
+	const history = new Map<string, Visit>(current.history.map((item) => [item.url, item]));
+	const before = { bookmarks: bookmarks.size, history: history.size };
+	const errors: string[] = [];
+	let search: string | undefined;
+	const web = (url: string): boolean => /^https?:\/\//i.test(url);
+	for (const source of browserSources().filter((candidate) => request.sources.includes(candidate.id))) {
+		try {
+			const data =
+				source.kind === 'chromium'
+					? readChromium(source.directory, request)
+					: readFirefox(source.directory, request);
+			for (const item of data.bookmarks ?? []) if (web(item.url) && !bookmarks.has(item.url)) bookmarks.set(item.url, item);
+			for (const item of data.history ?? []) {
+				if (!web(item.url)) continue;
+				const known = history.get(item.url);
+				if (!known || item.last > known.last) history.set(item.url, item);
+			}
+			if (data.search && web(data.search) && data.search.includes('%s')) search ??= data.search;
+		} catch (error) {
+			errors.push(`${source.browser} (${source.profile}): ${error instanceof Error ? error.message : String(error)}`);
+		}
+	}
+	library({
+		bookmarks: [...bookmarks.values()],
+		history: [...history.values()].sort((a, b) => b.last - a.last).slice(0, HISTORY_LIMIT),
+		search: search ?? current.search,
+	});
+	return {
+		bookmarks: bookmarks.size - before.bookmarks,
+		history: Math.max(0, Math.min(history.size, HISTORY_LIMIT) - before.history),
+		...(search ? { search } : {}),
+		errors,
+	};
+}
