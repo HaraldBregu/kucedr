@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import type { BrowserWindow, WebContentsView } from 'electron';
+import type { BrowserWindow, WebContents, WebContentsView } from 'electron';
 
 export interface BrowserTab {
 	readonly id: string;
