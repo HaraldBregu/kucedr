@@ -80,7 +80,9 @@ export default function BrowserPasswordsPage(): React.JSX.Element {
 									size="icon-sm"
 									aria-label={t('common.edit')}
 									title={t('common.edit')}
-									onClick={() => setEditing(login)}
+									onClick={() =>
+										setEditing({ id: login.id, values: { url: login.url, username: login.username, password: '' } })
+									}
 								>
 									<Pencil />
 								</Button>
