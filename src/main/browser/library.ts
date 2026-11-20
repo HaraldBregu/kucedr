@@ -24,8 +24,7 @@ let cached: Library | undefined;
 export function library(next?: Library): Library {
 	const file = path.join(userDataLocation(), 'browser', 'library.json');
 	if (next) {
-		restrictSettingsFile(file);
-		writeFileSync(file, JSON.stringify(next), { mode: 0o600 });
+		writeFileAtomic(file, JSON.stringify(next));
 		cached = next;
 	}
 	if (!cached) {
