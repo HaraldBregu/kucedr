@@ -167,6 +167,133 @@ than keeping a list of sites (as `csv.ts` does for column headers).
   address on its behalf goes through approval (23.7).
 - **Not in private or Tor tabs**, and kept per workspace, as for imports above.
 
+## Password security (23.13, 23.14)
+
+Saved passwords are the most sensitive data Kucedr holds. This section sets how they are
+encrypted, unlocked, matched and kept away from the agent.
+
+### What the code does today
+
+Read from the checkout on 2026-11-20; not tested in the running app.
+
+- **One sealed file.** The whole list is encrypted as one block with the system keystore
+  (`safeStorage`) in `~/.kucedr/browser/passwords.seal`, owner-only (`src/main/browser/passwords.ts`).
+- **Every password is decrypted for every lookup.** Listing, matching and filling all decrypt the
+  full list, and matching runs each time a login field gets focus.
+- **An import can wipe the store.** If the file exists but cannot be decrypted, it is read as
+  empty, and the next import seals the new logins over it, so every earlier password is lost.
+- **Plain `http` pages get passwords.** Matching uses the host only and ignores the scheme, and the
+  autofill script does not check for `https` (`src/main/agent/tools/web/browser/autofill.ts`). A
+  login saved on `https://example.com` is offered and filled on `http://example.com`.
+- **Subdomains match in both directions.** A login for `example.com` is offered on any subdomain,
+  including ones where a site hosts other people's content (`sameSite` in `passwords.ts`).
+- **The fill trusts the page script's report of the site.** The main process does not recheck the
+  tab's address at fill time.
+- **The agent can read the folder.** The sandbox's protected list
+  (`src/main/agent/permissions/protected.ts`) blocks the agent from other browsers' profiles and
+  from Kucedr's key files, but not from `~/.kucedr/browser`. The sealed file is useless without
+  the keystore, but `library.json` holds bookmarks and browsing history in plain text.
+- **Overwrites in place.** A crash during a write can leave the file corrupt.
+- **How strong the system keystore is depends on the system** _(general knowledge, to confirm)_.
+  On macOS the key sits in the Keychain, and other apps must ask before reading it, fully so only
+  on signed builds ([Distribution and trust](DISTRIBUTION.md), 6.1). On Windows any program
+  running as the same user can decrypt it; Chrome added its own app-bound encryption for this
+  reason. On Linux any program in the session can usually ask the desktop keyring for it.
+
+### Features
+
+| # | Feature | What the user gets | Size |
+| --- | --- | --- | --- |
+| 23.13 | Secure password store | Passwords encrypted one by one, decrypted only when filled or shown, filled only on the right secure site, kept away from the agent, never lost to a failed read or a crash | M |
+| 23.14 | Password manager in Settings | Settings → Browser → Passwords: search, add, edit, delete, reveal and copy behind a check, a list of sites never to save, export behind a check | S–M |
+
+### 23.13 Secure password store
+
+- **Two layers of keys.** A random store key encrypts each password on its own with AES-256-GCM,
+  which also detects tampering. The system keystore seals only that store key. Node's built-in
+  crypto covers this, with no new dependency.
+- **Names apart from secrets.** Sites and usernames are kept in an index that is used for
+  listing and matching, so the list under a field never decrypts a password. A single password is
+  decrypted when it is filled or revealed, and nothing else.
+- **Optional primary password.** A password chosen by the user, stretched with scrypt (also built
+  into Node), wraps the store key. With it set the store starts locked and opens on first use;
+  on macOS later unlocks can use Touch ID. It locks again after idle time, when the screen locks
+  and when the computer sleeps. Recommended: offered to everyone, and suggested strongly on
+  Windows and Linux, where the system keystore alone does not stop another program run by the
+  same user.
+- **Never lose the store.** A store that cannot be decrypted is reported, never treated as empty
+  or overwritten. Writes go to a temporary file that then replaces the old one, and the previous
+  copy is kept.
+- **Strict matching.**
+  - Secure pages only: `https`, and `localhost` for development. Never on `http`.
+  - Exact host by default. Related subdomains are matched within the same registrable domain using
+    the public suffix list, so `a.github.io` never matches `b.github.io`. Such a match is labelled
+    "saved for accounts.example.com" in the list.
+  - The main process rechecks the tab's real address just before filling, and does not rely on
+    what the page script reported.
+- **Away from the agent.** `~/.kucedr/browser` and the pane's own session folder join the
+  sandbox's protected list for reading and writing. The agent has no tool that lists or reads
+  saved logins. The existing block on `act evaluate` after a fill stays, and the agent filling a
+  login goes through approval (23.7).
+- **Short life in memory.** A decrypted password is kept as a buffer and wiped after it is
+  inserted. It is never logged and never written to a chat's run record.
+- **Sign-ins encrypted too.** Electron's cookie-encryption option is switched on, so cookies the
+  pane keeps are encrypted on disk like Chrome's.
+- **Leaves the machine only encrypted.** Passwords are left out of cloud backup until backup is
+  encrypted end to end ([Privacy](PRIVACY.md), 1.5). They are then sent still encrypted with the
+  store key, which never leaves the machine.
+
+### 23.14 Password manager in Settings
+
+- **The list.** Site, username and when the login was last used, with search. Passwords show as
+  dots.
+- **Changes.** Add a login by hand, edit its username, password or site, and delete it with undo.
+- **Reveal and copy behind a check.** Showing or copying a password asks for Touch ID or the
+  system password on macOS, and for the primary password or app lock elsewhere
+  ([Privacy](PRIVACY.md), 1.4). A copied password is cleared from the clipboard after 30 seconds.
+- **Never saved.** The sites where "Never for this site" was chosen (23.10), with a remove button.
+- **Export.** The standard CSV that other browsers import, behind the same check and a warning
+  that the file is plain text.
+- **Status.** Whether the primary password is set, when the store locks, and which system
+  keystore protects it.
+- **Built with the app's own components** (list, dialog, input, switch), like the rest of
+  Settings.
+
+## Bookmarks in Settings (23.15)
+
+### What exists today
+
+Bookmarks are kept as a flat list of address and title in `~/.kucedr/browser/library.json`
+(`src/main/browser/library.ts`), so the folders of an imported browser are lost. The star button in
+the pane's toolbar opens a menu of the first 60 bookmarks. There is no way to bookmark the page on
+screen, or to rename, move or delete a bookmark. Settings → Browser shows how many were imported.
+
+### What the user gets
+
+- **Settings → Browser → Bookmarks.** Bookmarks shown as a tree of folders, with search. Add a
+  bookmark or folder, rename, change an address, delete with undo, and move by dragging or with
+  the keyboard ([Accessibility](ACCESSIBILITY.md), 4.2). Selecting several moves or deletes them
+  together. Opening one shows it in the browser pane.
+- **From the pane.** A star in the address field bookmarks the page on screen, filled in when the
+  page is already saved; clicking it again edits the name and folder or removes it. The toolbar's
+  bookmarks menu shows the folders and is no longer cut off at 60.
+- **Folders kept on import.** The import keeps the other browser's folder tree, and a second
+  import adds only what is new.
+- **Duplicates.** The same address saved twice is pointed out, with a merge button.
+- **Export.** The standard bookmarks file every browser can import, so the user is never locked
+  in.
+
+### How it is built
+
+- **Data.** Each bookmark gets an id, a parent folder and a position, instead of the flat list. A
+  saved flat list is read as one folder when the app first loads it, with no migration script.
+- **Storage.** Bookmarks stay on the machine with the rest of the browser data. They come under
+  the agent sandbox's protection with the password store (23.13), and under encrypted data at
+  rest once that exists ([Privacy](PRIVACY.md), 1.3).
+- **The agent.** No bookmark tool in the first version. Reading or adding bookmarks for the user
+  is a later decision.
+
+## What each browser allows
 
 From general knowledge of these browsers, not checked against current versions. The first step of
 a detailed plan is to confirm each cell on macOS, Windows and Linux.
