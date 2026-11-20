@@ -57,58 +57,86 @@ const SCRIPT = `((payloadJson) => {
 			const form = el.form || document;
 			return Boolean(form.querySelector('input[type=password]'));
 		};
+		// Below the field, or above it when there is no room; kept inside the window.
 		af.position = () => {
-			if (!af.el) return;
+			if (!af.el || !af.el.isConnected) return af.hide();
 			const r = af.el.getBoundingClientRect();
-			af.box.style.left = Math.min(r.left, innerWidth - 240) + 'px';
-			af.box.style.top = r.bottom + 4 + 'px';
-			af.box.style.minWidth = Math.max(220, r.width) + 'px';
+			af.box.style.width = Math.max(300, r.width) + 'px';
+			const w = af.box.offsetWidth;
+			const h = af.box.offsetHeight;
+			af.box.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
+			const below = r.bottom + 6;
+			af.box.style.top = (below + h > innerHeight - 8 && r.top - 6 - h > 8 ? r.top - 6 - h : below) + 'px';
 		};
+		// Rows are the matching logins, then "Manage passwords"; the last index is that footer.
 		af.render = () => {
-			af.box.innerHTML = af.items
-				.map(
-					(it, i) =>
-						'<div class="row' + (i === af.active ? ' on' : '') + '" data-i="' + i + '">' +
-						'<span style="overflow:hidden;text-overflow:ellipsis">' + it.label.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])) + '</span>' +
-						(it.key ? '<span class="k">' + it.key + '</span>' : '') +
-						'</div>'
-				)
-				.join('');
+			af.box.innerHTML =
+				'<div class="list">' +
+				af.items
+					.map(
+						(it, i) =>
+							'<div class="row' + (i === af.active ? ' on' : '') + '" role="option" data-i="' + i + '">' +
+							'<span class="icon">${KEY_ICON}</span>' +
+							'<span class="text"><span class="name">' + esc(it.label) + '</span><span class="site">' + esc(it.detail) + '</span></span>' +
+							'<span class="dots">••••••</span></div>'
+					)
+					.join('') +
+				'</div><div class="sep"></div>' +
+				'<div class="row foot' + (af.active === af.items.length ? ' on' : '') + '" role="option" data-i="' + af.items.length + '">Manage passwords…</div>';
+			af.box.querySelector('.row.on:not(.foot)')?.scrollIntoView({ block: 'nearest' });
 		};
-		af.apply = (items) => {
-			af.items = items;
-			af.active = items.length ? 0 : -1;
-			if (!items.length) return af.hide();
+		af.show = () => {
+			if (!af.items.length) return af.close();
 			if (!host.isConnected) document.documentElement.appendChild(host);
 			af.open = true;
-			af.position();
 			af.render();
+			af.position();
 		};
-		af.hide = () => {
+		// Typing in the username field narrows the list to names that contain the text.
+		af.filter = () => {
+			const text = af.el && af.el.type !== 'password' ? af.el.value.trim().toLowerCase() : '';
+			af.items = text ? af.all.filter((it) => it.label.toLowerCase().includes(text)) : af.all;
+			af.active = af.items.length ? 0 : -1;
+			af.show();
+		};
+		af.apply = (items) => {
+			af.all = items;
+			if (!items.length) return af.hide();
+			af.filter();
+		};
+		af.close = () => {
 			af.open = false;
-			af.req = null;
-			af.el = null;
 			host.remove();
 		};
+		af.hide = () => {
+			af.close();
+			af.req = null;
+			af.el = null;
+			af.all = [];
+			af.items = [];
+		};
 		af.move = (d) => {
-			if (!af.items.length) return;
-			af.active = (af.active + d + af.items.length) % af.items.length;
+			const count = af.items.length + 1;
+			af.active = (af.active + d + count) % count;
 			af.render();
 		};
 		af.choose = (i) => {
-			af.pick = i;
+			af.pick = i === af.items.length ? 'manage' : af.all.indexOf(af.items[i]);
 			af.hide();
 		};
 		document.addEventListener(
 			'focusin',
 			(e) => {
 				if (af.isLogin(e.target)) { af.el = e.target; af.seq += 1; af.req = { origin: location.origin }; }
-				else if (!host.contains(e.target)) af.hide();
+				else if (e.target !== host) af.hide();
 			},
 			true
 		);
+		document.addEventListener('input', (e) => { if (e.isTrusted && e.target === af.el && af.all.length) af.filter(); }, true);
+		document.addEventListener('mousedown', (e) => { if (af.open && e.target !== host && e.target !== af.el) af.hide(); }, true);
 		document.addEventListener('scroll', () => { if (af.open) af.position(); }, true);
 		window.addEventListener('resize', () => { if (af.open) af.position(); });
+		window.addEventListener('blur', () => af.hide());
 		document.addEventListener(
 			'keydown',
 			(e) => {
@@ -116,13 +144,19 @@ const SCRIPT = `((payloadJson) => {
 				if (e.key === 'ArrowDown') { e.preventDefault(); af.move(1); }
 				else if (e.key === 'ArrowUp') { e.preventDefault(); af.move(-1); }
 				else if (e.key === 'Enter' && af.active >= 0) { e.preventDefault(); af.choose(af.active); }
-				else if (e.key === 'Escape') { e.preventDefault(); af.hide(); }
+				else if (e.key === 'Escape') { e.preventDefault(); af.close(); }
+				else if (e.key === 'Tab') af.close();
 			},
 			true
 		);
-		af.box.addEventListener('mousedown', (e) => {
+		af.box.addEventListener('mousemove', (e) => {
 			const row = e.target.closest('[data-i]');
-			if (row && e.isTrusted) { e.preventDefault(); af.choose(Number(row.dataset.i)); }
+			if (row && Number(row.dataset.i) !== af.active) { af.active = Number(row.dataset.i); af.render(); }
+		});
+		af.box.addEventListener('mousedown', (e) => {
+			e.preventDefault();
+			const row = e.target.closest('[data-i]');
+			if (row && e.isTrusted) af.choose(Number(row.dataset.i));
 		});
 	}
 	const af = window.__kucedrAutofill;
