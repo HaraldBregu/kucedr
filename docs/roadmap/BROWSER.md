@@ -42,8 +42,11 @@ does not start again from an empty browser.
   page every browser can export. The third database layout is the one Safari uses; it is tested
   against a made-up file only, and Safari's own folder is not searched because macOS guards it.
 - **Bookmarks and history (23.2)**, read from a private copy, kept in
-  `~/.kucedr/browser/library.json`, suggested under the address field, with a bookmarks menu in
-  the toolbar. History keeps the 5,000 most recent pages.
+  `~/.kucedr/browser/library.json`, suggested under the address field in a dropdown sized to the
+  field, with a bookmarks menu in the toolbar. History keeps the 5,000 most recent pages. When a
+  profile has only the bookmark backup file (`Bookmarks.bak`) and not the live one — which happens
+  while the browser is closed — the backup is read (`files.ts`), so a main profile's bookmarks are
+  not missed.
 - **Search from the address field (23.6)**: words search with the imported default engine, or
   DuckDuckGo until one is imported. Read from the first engine family's settings file only; the
   home page is not read.
