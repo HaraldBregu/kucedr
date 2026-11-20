@@ -37,6 +37,7 @@ export interface BrowserLogin {
 	readonly id: string;
 	readonly url: string;
 	readonly username: string;
+	readonly savedFor?: string;
 }
 
 export interface BrowserPasswordStatus {
