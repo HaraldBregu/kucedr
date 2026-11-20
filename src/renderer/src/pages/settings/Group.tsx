@@ -38,7 +38,7 @@ export function Group({
 					if (item.comingSoon) {
 						return (
 							<SidebarMenuItem key={item.path}>
-								<button type="button" disabled className={cn(SPLIT_ITEM_CLASS, 'h-8 w-full opacity-50')}>
+								<button type="button" disabled className={cn(SPLIT_ITEM_CLASS, 'h-7 w-full opacity-50')}>
 									<Icon className="size-4 shrink-0" strokeWidth={1.8} />
 									<span>{t(item.sidebarLabelKey ?? item.labelKey)}</span>
 									<Badge variant="outline" className="ml-auto">{t('appLayout.comingSoon', 'Soon')}</Badge>
