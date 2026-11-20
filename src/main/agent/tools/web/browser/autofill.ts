@@ -1,4 +1,5 @@
 import { matchLogins } from '../../../../browser/passwords';
+import { loginLabel } from '../../../../../shared/login_label';
 import { fillLogin } from '../../../../browser/fill';
 import type { BrowserTab } from './pane';
 
