@@ -1448,6 +1448,7 @@ export interface BrowserInvokeChannelMap {
 
 export interface BrowserEventChannelMap {
 	[BrowserChannels.changed]: { data: import('./browser').BrowserPaneState };
+	[BrowserChannels.managePasswords]: { data: null };
 }
 
 export interface AuthInvokeChannelMap {
