@@ -133,7 +133,14 @@ const SCRIPT = `((payloadJson) => {
 			true
 		);
 		document.addEventListener('input', (e) => { if (e.isTrusted && e.target === af.el && af.all.length) af.filter(); }, true);
-		document.addEventListener('mousedown', (e) => { if (af.open && e.target !== host && e.target !== af.el) af.hide(); }, true);
+		document.addEventListener(
+			'mousedown',
+			(e) => {
+				if (e.isTrusted && e.target === af.el && !af.open && af.all.length) af.filter();
+				else if (af.open && e.target !== host && e.target !== af.el) af.hide();
+			},
+			true
+		);
 		document.addEventListener('scroll', () => { if (af.open) af.position(); }, true);
 		window.addEventListener('resize', () => { if (af.open) af.position(); });
 		window.addEventListener('blur', () => af.hide());
