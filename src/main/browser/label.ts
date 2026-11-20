@@ -22,7 +22,7 @@ export function label(root: string, directory: string): { app: string; profile: 
 	};
 	let profile = above ? folder.replace(/^[a-z0-9]{8}\./i, '') : '';
 	try {
-		const saved = JSON.parse(readFileSync(path.join(directory, 'Preferences'), 'utf8')) as {
+		const saved = JSON.parse(readFileSync(path.join(directory, SETTINGS_FILE), 'utf8')) as {
 			profile?: { name?: string };
 			account_info?: { email?: string }[];
 		};
