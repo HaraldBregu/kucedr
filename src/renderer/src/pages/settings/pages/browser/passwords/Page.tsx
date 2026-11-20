@@ -114,7 +114,7 @@ export default function BrowserPasswordsPage(): React.JSX.Element {
 						placeholder: t('settings.browser.passwordsPage.passwordKeep'),
 					},
 				]}
-				values={editing ? { url: editing.url, username: editing.username, password: '' } : null}
+				values={editing?.values ?? null}
 				onClose={() => setEditing(null)}
 				onSave={async (values) => {
 					if (!editing) return;
