@@ -58,6 +58,7 @@ export function protectedRoots(): { read: string[]; write: string[]; writable: s
 			['providers'],
 			['mcp'],
 			['credentials'],
+			['browser'],
 			['coder', 'credentials.json'],
 			['settings', 'account.json'],
 			['settings', 'providers.json'],
