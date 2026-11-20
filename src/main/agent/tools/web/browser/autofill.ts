@@ -9,21 +9,40 @@ const WORLD = 4118;
 // login fields and draws a suggestions list in a closed shadow root under the field. The page
 // cannot read the list, and a choice is accepted only from a trusted (real) key or click.
 // The main process polls `probe`, supplies the usernames to show, and does the filling.
+const KEY_ICON =
+	'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>';
+
 const SCRIPT = `((payloadJson) => {
 	if (!window.__kucedrAutofill) {
-		const af = (window.__kucedrAutofill = { seq: 0, req: null, pick: null, items: [], active: -1, open: false, el: null });
+		const af = (window.__kucedrAutofill = { seq: 0, req: null, pick: null, all: [], items: [], active: -1, open: false, el: null });
 		const host = document.createElement('div');
 		host.style.cssText = 'position:fixed;z-index:2147483647;left:0;top:0;pointer-events:none';
 		const root = host.attachShadow({ mode: 'closed' });
 		root.innerHTML =
 			'<style>' +
-			'.box{position:fixed;min-width:220px;max-width:420px;background:#1f2023;color:#e8e8ea;border:1px solid #3a3b40;border-radius:12px;padding:4px;box-shadow:0 10px 30px rgba(0,0,0,.4);font:13px -apple-system,system-ui,sans-serif;pointer-events:auto}' +
-			'@media (prefers-color-scheme: light){.box{background:#fff;color:#1b1b1f;border-color:#e2e2e6}}' +
-			'.row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:default;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-			'.row.on{background:#2563eb;color:#fff}' +
-			'.k{opacity:.6;font-size:11px}' +
-			'</style><div class="box"></div>';
+			':host{all:initial}' +
+			'.box{--bg:#fff;--fg:#18181b;--muted:#71717a;--line:#e4e4e7;--hover:rgba(24,24,27,.06);--chip:#f4f4f5;' +
+			'position:fixed;box-sizing:border-box;width:300px;max-width:min(420px,calc(100vw - 16px));background:var(--bg);color:var(--fg);' +
+			'border:1px solid var(--line);border-radius:12px;padding:4px;pointer-events:auto;' +
+			'box-shadow:0 12px 32px rgba(0,0,0,.14),0 2px 6px rgba(0,0,0,.06);' +
+			'font:13px/1.25 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;' +
+			'animation:in .12s ease-out;user-select:none}' +
+			'@media (prefers-color-scheme: dark){.box{--bg:#1c1c1f;--fg:#f4f4f5;--muted:#a1a1aa;--line:#2e2e33;--hover:rgba(255,255,255,.07);--chip:#27272a;box-shadow:0 12px 32px rgba(0,0,0,.5)}}' +
+			'@keyframes in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}' +
+			'.list{max-height:232px;overflow-y:auto;scrollbar-width:thin}' +
+			'.row{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:8px;cursor:default}' +
+			'.row.on{background:var(--hover)}' +
+			'.icon{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:7px;background:var(--chip);color:var(--muted)}' +
+			'.text{min-width:0;flex:1}' +
+			'.name,.site{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
+			'.name{font-weight:500}' +
+			'.site{margin-top:1px;font-size:11.5px;color:var(--muted)}' +
+			'.dots{flex:none;color:var(--muted);letter-spacing:1px;font-size:11px}' +
+			'.sep{height:1px;margin:4px 6px;background:var(--line)}' +
+			'.foot{color:var(--muted);padding:7px 8px}' +
+			'</style><div class="box" role="listbox" aria-label="Saved passwords"></div>';
 		af.box = root.querySelector('.box');
+		const esc = (text) => String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 		const nameHints = /user|login|email|e-mail|account|identifier|phone|tel/i;
 		af.isLogin = (el) => {
 			if (!(el instanceof HTMLInputElement)) return false;
