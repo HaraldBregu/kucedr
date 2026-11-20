@@ -61,9 +61,12 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 - **23.14 Password manager, first part** (Settings → Browser → Passwords). Search; edit site,
   username or password (the password is never shown, a new one replaces it); delete one or all.
   Every delete asks first with a native warning raised by the main process, Cancel by default, so
-  the window cannot skip it (`src/main/browser/confirm.ts`).
-- **23.15 Bookmarks, first part** (Settings → Browser → Bookmarks). Search, rename, change the
-  address (a duplicate is refused), delete.
+  the window cannot skip it (`src/main/browser/confirm.ts`). A "Never saved" list with a button to
+  be asked again on a site.
+- **23.15 Bookmarks, first part.** Settings → Browser → Bookmarks: search, rename, change the
+  address (a duplicate is refused), delete. A star in the address field bookmarks the page on
+  screen, filled when it is saved; clicking it then offers Remove or Edit. The toolbar menu shows
+  the 45 newest bookmarks (native menus take at most 50 items) and "All bookmarks…".
 - **23.16 Mouse back and forward in the pane.** On macOS, the buttons over the page move the tab
   (a listener in Kucedr's private script world, `buttons.ts`), and over the tab strip and toolbar
   the pane sends them to the tab while the app's own listener ignores them. The window's
