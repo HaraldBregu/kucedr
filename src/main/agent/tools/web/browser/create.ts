@@ -1,4 +1,5 @@
 import { app, session, WebContentsView } from 'electron';
+import { resetAutofill } from './autofill';
 import { pane, paneEvents, paneTabs, type BrowserTab } from './pane';
 
 const PARTITION = 'persist:agent-browser';
