@@ -7,7 +7,7 @@ export function importFiles(files: readonly string[], want: BrowserImportKinds):
 	const current = library();
 	const bookmarks = new Map(current.bookmarks.map((item) => [item.url, item]));
 	const history = new Map<string, Visit>(current.history.map((item) => [item.url, item]));
-	const before = { bookmarks: bookmarks.size, history: history.size };
+	const known = { bookmarks: bookmarks.size, history: new Set(history.keys()) };
 	const errors: string[] = [];
 	let search: string | undefined;
 	const web = (url: string): boolean => /^https?:\/\//i.test(url);
