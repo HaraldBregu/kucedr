@@ -103,6 +103,7 @@ does not start again from an empty browser.
 | 23.13 | Secure password store | Passwords encrypted one by one, an optional primary password, strict site matching, kept away from the agent; see [Password security](#password-security-2313-2314) | The sealed store in `passwords.ts` | M |
 | 23.14 | Password manager in Settings | Search, add, edit, delete; reveal, copy and export behind Touch ID, the system password or the primary password | 23.13; app lock ([Privacy](PRIVACY.md), 1.4) | S–M |
 | 23.15 | Bookmarks in Settings | Folders, search, add, rename, move, delete and export bookmarks; a star in the address field for the page on screen; see [Bookmarks in Settings](#bookmarks-in-settings-2315) | The imported bookmarks in `library.ts` | M |
+| 23.16 | Mouse back and forward in the pane | The mouse's back and forward buttons, and the trackpad swipe, move the browser tab's history when the pointer is over the pane, and never the app's; see [Back and forward](#back-and-forward-2316) | The app's own back and forward handling | S |
 
 ## Saved data and autofill (23.9–23.12)
 
