@@ -1,72 +1,134 @@
 import { safeStorage } from 'electron';
-import { existsSync, readFileSync, rmSync } from 'node:fs';
+import { copyFileSync, existsSync, readFileSync, rmSync } from 'node:fs';
+import { createCipheriv, createDecipheriv, randomBytes, randomUUID } from 'node:crypto';
 import path from 'node:path';
+import { getDomain } from 'tldts';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
 import { userDataLocation } from '../shared/user_data_location';
 import { readLogins } from './csv';
 import { writeFileAtomic } from './write';
 
-export interface Login {
+export interface LoginListing {
 	readonly id: string;
 	readonly url: string;
 	readonly username: string;
-	readonly password: string;
+	// Set when the login was saved for a related host of the same site, e.g. accounts.example.com.
+	readonly savedFor?: string;
 }
 
-export type LoginListing = Omit<Login, 'password'>;
+// The store keeps sites and usernames readable, so listing and matching never decrypt a
+// password. Each password is encrypted on its own (AES-256-GCM) with a random store key, and
+// only that key is sealed by the system keystore.
+interface Entry extends Omit<LoginListing, 'savedFor'> {
+	readonly created: number;
+	readonly secret: string;
+}
+
+interface Store {
+	readonly version: 2;
+	readonly key: string;
+	readonly logins: Entry[];
+}
+
+let cached: { store: Store | undefined; broken: boolean } | undefined;
+let storeKey: Buffer | undefined;
 
 function file(): string {
-	return path.join(userDataLocation(), 'browser', 'passwords.seal');
+	return path.join(userDataLocation(), 'browser', 'passwords.json');
+}
+
+function parse(url: string): URL | undefined {
+	try {
+		return new URL(url);
+	} catch {
+		return undefined;
+	}
 }
 
 function host(url: string): string {
-	try {
-		return new URL(url).host.toLowerCase();
-	} catch {
-		return '';
-	}
+	return parse(url)?.host.toLowerCase() ?? '';
 }
 
 // A password is only ever offered or filled on a secure page: https, or localhost over http
 // for local development. Never on a plain http site.
 function secure(url: string): boolean {
-	try {
-		const parsed = new URL(url);
-		if (parsed.protocol === 'https:') return true;
-		const name = parsed.hostname.toLowerCase();
-		return parsed.protocol === 'http:' && (name === 'localhost' || name.endsWith('.localhost') || name === '127.0.0.1' || name === '[::1]');
-	} catch {
-		return false;
-	}
+	const parsed = parse(url);
+	if (!parsed) return false;
+	if (parsed.protocol === 'https:') return true;
+	const name = parsed.hostname.toLowerCase();
+	return parsed.protocol === 'http:' && (name === 'localhost' || name.endsWith('.localhost') || name === '127.0.0.1' || name === '[::1]');
 }
 
-// ponytail: subdomains of a site match in both directions, which over-matches on shared hosts
-// like github.io; tighten with the public suffix list when 23.13 lands.
-function sameSite(a: string, b: string): boolean {
-	return a === b || a.endsWith(`.${b}`) || b.endsWith(`.${a}`);
+// 'exact' for the same host, 'related' for another host of the same registrable domain under
+// the public suffix list (so a.github.io never matches b.github.io), undefined otherwise.
+function relation(pageUrl: string, savedUrl: string): 'exact' | 'related' | undefined {
+	const page = parse(pageUrl);
+	const saved = parse(savedUrl);
+	if (!page || !saved || !saved.host) return undefined;
+	if (page.host.toLowerCase() === saved.host.toLowerCase()) return 'exact';
+	const site = getDomain(page.hostname, { allowPrivateDomains: true });
+	return site && site === getDomain(saved.hostname, { allowPrivateDomains: true }) ? 'related' : undefined;
 }
 
-// A saved login may be filled on a page only when the page is secure and its host matches the
+// A saved login may be filled on a page only when the page is secure and its site matches the
 // login's. Checked again at fill time against the tab's real address, not the page's own report.
 export function canFill(savedUrl: string, pageUrl: string): boolean {
-	return secure(pageUrl) && sameSite(host(pageUrl), host(savedUrl)) && host(savedUrl) !== '';
+	return secure(pageUrl) && relation(pageUrl, savedUrl) !== undefined;
 }
 
-// Distinguishes a missing store (safe to create) from one that exists but cannot be decrypted
+// Distinguishes a missing store (safe to create) from one that exists but cannot be read
 // (must never be overwritten, or every saved password is lost).
-function load(): { logins: Login[]; broken: boolean } {
+function load(): { store: Store | undefined; broken: boolean } {
+	if (cached) return cached;
 	const sealed = file();
-	if (!existsSync(sealed)) return { logins: [], broken: false };
-	if (!isSafeStorageAvailable()) return { logins: [], broken: true };
+	if (!existsSync(sealed)) return (cached = { store: undefined, broken: false });
 	try {
-		return { logins: JSON.parse(safeStorage.decryptString(readFileSync(sealed))) as Login[], broken: false };
+		const store = JSON.parse(readFileSync(sealed, 'utf8')) as Store;
+		cached = { store, broken: store.version !== 2 || !Array.isArray(store.logins) };
 	} catch {
-		return { logins: [], broken: true };
+		cached = { store: undefined, broken: true };
 	}
+	return cached;
 }
 
-function seal(logins: Login[]): void {
-	writeFileAtomic(file(), safeStorage.encryptString(JSON.stringify(logins)));
+function unseal(store: Store): Buffer {
+	if (storeKey) return storeKey;
+	if (!isSafeStorageAvailable()) throw new Error('The system keystore is unavailable, so saved passwords cannot be opened.');
+	try {
+		storeKey = Buffer.from(safeStorage.decryptString(Buffer.from(store.key, 'base64')), 'base64');
+	} catch {
+		throw new Error('Your saved passwords could not be opened with the system keystore.');
+	}
+	return storeKey;
+}
+
+// The site and username are bound to the ciphertext, so a password moved to another entry or
+// site in the file fails to decrypt instead of being filled there.
+function bound(id: string, url: string, username: string): Buffer {
+	return Buffer.from(`${id}\n${url}\n${username}`);
+}
+
+function encrypt(key: Buffer, id: string, url: string, username: string, password: string): string {
+	const iv = randomBytes(12);
+	const cipher = createCipheriv('aes-256-gcm', key, iv).setAAD(bound(id, url, username));
+	const data = Buffer.concat([cipher.update(password, 'utf8'), cipher.final()]);
+	return Buffer.concat([iv, cipher.getAuthTag(), data]).toString('base64');
+}
+
+function decrypt(key: Buffer, entry: Entry): Buffer {
+	const raw = Buffer.from(entry.secret, 'base64');
+	const decipher = createDecipheriv('aes-256-gcm', key, raw.subarray(0, 12))
+		.setAAD(bound(entry.id, entry.url, entry.username))
+		.setAuthTag(raw.subarray(12, 28));
+	return Buffer.concat([decipher.update(raw.subarray(28)), decipher.final()]);
+}
+
+// Keeps the previous copy beside the new one, written atomically.
+function save(store: Store): void {
+	const target = file();
+	if (existsSync(target)) copyFileSync(target, `${target}.bak`);
+	writeFileAtomic(target, JSON.stringify(store));
+	cached = { store, broken: false };
 }
 
 export function passwordsAvailable(): boolean {
@@ -75,46 +137,61 @@ export function passwordsAvailable(): boolean {
 
 export function importLogins(text: string): number {
 	if (!isSafeStorageAvailable()) throw new Error('The system keystore is unavailable, so passwords cannot be stored safely.');
-	const { logins, broken } = load();
+	const { store, broken } = load();
 	if (broken)
 		throw new Error('Your saved passwords could not be read, so nothing was imported — importing would have overwritten them.');
+	if (!store) storeKey = randomBytes(32);
+	const next: Store = store ?? {
+		version: 2,
+		key: safeStorage.encryptString(storeKey!.toString('base64')).toString('base64'),
+		logins: [],
+	};
+	const key = unseal(next);
+	const logins = [...next.logins];
 	const seen = new Set(logins.map((login) => `${host(login.url)}\n${login.username}`));
-	let added = 0;
 	for (const entry of readLogins(text)) {
-		const key = `${host(entry.url)}\n${entry.username}`;
-		if (seen.has(key)) continue;
-		seen.add(key);
-		logins.push({ id: `p${logins.length + added + 1}-${Date.now().toString(36)}`, ...entry });
-		added += 1;
+		const dedupe = `${host(entry.url)}\n${entry.username}`;
+		if (seen.has(dedupe)) continue;
+		seen.add(dedupe);
+		const id = randomUUID();
+		logins.push({ id, url: entry.url, username: entry.username, created: Date.now(), secret: encrypt(key, id, entry.url, entry.username, entry.password) });
 	}
-	if (added) seal(logins);
+	const added = logins.length - next.logins.length;
+	if (added) save({ ...next, logins });
 	return added;
 }
 
 export function listLogins(): LoginListing[] {
-	return load()
-		.logins.map(({ id, url, username }) => ({ id, url, username }))
+	return (load().store?.logins ?? [])
+		.map(({ id, url, username }) => ({ id, url, username }))
 		.sort((a, b) => a.url.localeCompare(b.url));
 }
 
 export function countLogins(): number {
-	return load().logins.length;
+	return load().store?.logins.length ?? 0;
 }
 
 export function clearLogins(): void {
 	rmSync(file(), { force: true });
+	rmSync(`${file()}.bak`, { force: true });
+	cached = undefined;
+	storeKey = undefined;
 }
 
 export function matchLogins(url: string): LoginListing[] {
 	if (!secure(url)) return [];
-	const site = host(url);
-	if (!site) return [];
-	return load()
-		.logins.filter((login) => sameSite(site, host(login.url)))
-		.map(({ id, url: at, username }) => ({ id, url: at, username }));
+	return (load().store?.logins ?? []).flatMap(({ id, url: at, username }) => {
+		const match = relation(url, at);
+		if (!match) return [];
+		return [{ id, url: at, username, ...(match === 'related' ? { savedFor: host(at) } : {}) }];
+	});
 }
 
-// Returned only to the fill code in main, never over IPC, never to the model.
-export function secretFor(id: string): Login | undefined {
-	return load().logins.find((login) => login.id === id);
+// Returned only to the fill code in main, never over IPC, never to the model. The password is a
+// buffer the caller wipes once it has been inserted.
+export function secretFor(id: string): { url: string; username: string; password: Buffer } | undefined {
+	const { store } = load();
+	const entry = store?.logins.find((login) => login.id === id);
+	if (!store || !entry) return undefined;
+	return { url: entry.url, username: entry.username, password: decrypt(unseal(store), entry) };
 }
