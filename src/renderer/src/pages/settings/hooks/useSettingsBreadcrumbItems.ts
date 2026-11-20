@@ -81,6 +81,18 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.voiceAgent.title') },
 		];
 	}
+	if (location.pathname === '/settings/browser/passwords') {
+		return [
+			{ label: t('settings.browser.title'), path: '/settings/browser' },
+			{ label: t('settings.browser.passwordsPage.title') },
+		];
+	}
+	if (location.pathname === '/settings/browser/bookmarks') {
+		return [
+			{ label: t('settings.browser.title'), path: '/settings/browser' },
+			{ label: t('settings.browser.bookmarksPage.title') },
+		];
+	}
 	if (location.pathname === '/settings/voice/history') {
 		return [
 			{ label: t('settings.tabs.voice'), path: '/settings/voice' },
