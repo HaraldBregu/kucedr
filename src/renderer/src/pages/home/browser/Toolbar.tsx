@@ -181,7 +181,7 @@ export function BrowserToolbar({
 							className="absolute top-1/2 right-1 -translate-y-1/2 rounded-full"
 							onClick={() => void toggleBookmark().catch(() => undefined)}
 						>
-							<Star className={cn(saved && 'fill-current text-amber-500')} />
+							<Star className={cn(saved && 'fill-current')} />
 						</Button>
 					) : null}
 					{showing ? (
