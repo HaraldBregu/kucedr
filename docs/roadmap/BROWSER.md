@@ -326,10 +326,12 @@ verified in the built app.
 
 ### What exists today
 
-Bookmarks are kept as a flat list of address and title in `~/.kucedr/browser/library.json`
-(`src/main/browser/library.ts`), so the folders of an imported browser are lost. The star button in
-the pane's toolbar opens a menu of the first 60 bookmarks. There is no way to bookmark the page on
-screen, or to rename, move or delete a bookmark. Settings → Browser shows how many were imported.
+Updated 2026-11-20. Bookmarks are kept as a flat list of address and title in
+`~/.kucedr/browser/library.json` (`src/main/browser/library.ts`), so the folders of an imported
+browser are lost. Settings → Browser → Bookmarks lists them with search, and renames, changes the
+address of or deletes one. The star button in the pane's toolbar opens a menu of the first 60
+bookmarks. There is no way yet to bookmark the page on screen, to add a folder, or to move a
+bookmark.
 
 ### What the user gets
 
