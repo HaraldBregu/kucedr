@@ -83,7 +83,7 @@ export function BrowserPane({
 					busy && 'border-primary'
 				)}
 			>
-				{acting ? (
+				{busy ? (
 					<span role="status" className="sr-only">
 						The assistant is using this page
 					</span>
