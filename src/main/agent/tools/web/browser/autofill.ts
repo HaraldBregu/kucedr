@@ -173,6 +173,43 @@ const SCRIPT = `((payloadJson) => {
 			const row = e.target.closest('[data-i]');
 			if (row && e.isTrusted) af.choose(Number(row.dataset.i));
 		});
+		// When the user sends a form with a password typed in, report the origin, the username field
+		// before it and the password to main, sealed with the key only main and this world know.
+		const visible = (el) => {
+			const r = el.getBoundingClientRect();
+			return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden';
+		};
+		const b64 = (bytes) => btoa(String.fromCharCode(...bytes));
+		af.capture = () => {
+			if (!af.key) return;
+			const inputs = [...document.querySelectorAll('input')].filter(visible);
+			const password = inputs.find((el) => el.type === 'password' && el.value);
+			if (!password) return;
+			const username = inputs
+				.slice(0, inputs.indexOf(password))
+				.reverse()
+				.find((el) => ['text', 'email', 'tel', ''].includes(el.type) && el.value);
+			const data = new TextEncoder().encode(JSON.stringify({ o: location.origin, u: username ? username.value : '', p: password.value }));
+			const iv = crypto.getRandomValues(new Uint8Array(12));
+			crypto.subtle
+				.encrypt({ name: 'AES-GCM', iv }, af.key, data)
+				.then((sealed) => console.debug('${CAPTURE_PREFIX}' + b64(iv) + '.' + b64(new Uint8Array(sealed))))
+				.catch(() => {});
+		};
+		document.addEventListener('submit', (e) => { if (e.isTrusted) af.capture(); }, true);
+		document.addEventListener(
+			'click',
+			(e) => {
+				const button = e.isTrusted && e.target.closest && e.target.closest('button,input[type=submit]');
+				if (button && button.type === 'submit') af.capture();
+			},
+			true
+		);
+		document.addEventListener(
+			'keydown',
+			(e) => { if (e.isTrusted && e.key === 'Enter' && e.target instanceof HTMLInputElement && !af.open) af.capture(); },
+			true
+		);
 	}
 	const af = window.__kucedrAutofill;
 	const payload = payloadJson ? JSON.parse(payloadJson) : null;
