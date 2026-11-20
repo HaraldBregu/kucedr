@@ -1426,6 +1426,7 @@ export interface BrowserInvokeChannelMap {
 	};
 	[BrowserChannels.suggest]: { args: [text: string]; result: import('./browser_import').BrowserPlace[] };
 	[BrowserChannels.bookmarks]: { args: []; result: import('./browser_import').BrowserPlace[] };
+	[BrowserChannels.bookmarksAdd]: { args: [place: import('./browser_import').BrowserPlace]; result: void };
 	[BrowserChannels.bookmarksUpdate]: {
 		args: [url: string, place: import('./browser_import').BrowserPlace];
 		result: void;
