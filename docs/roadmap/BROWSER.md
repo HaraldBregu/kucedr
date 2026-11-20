@@ -47,9 +47,24 @@ does not start again from an empty browser.
 - **Search from the address field (23.6)**: words search with the imported default engine, or
   DuckDuckGo until one is imported. Read from the first engine family's settings file only; the
   home page is not read.
-- **Checked on macOS only.** The search of Windows and Linux data folders is written but has not
-  been run on those systems.
-- Passwords, sign-ins, agent sign-in and the old profile (23.3–23.5, 23.7, 23.8) are not built;
+- **Passwords from a file (23.3 + 23.4, file path)**. The user exports a password CSV from the
+  other browser and chooses it in Settings → Browser. Columns are matched by what their header
+  means (`src/main/browser/csv.ts`), so any browser's or password manager's export works, with no
+  product list. The logins are sealed with the system keystore (`safeStorage`, via
+  `src/main/browser/passwords.ts`) in `~/.kucedr/browser/passwords.seal`, deduped by site and
+  username, and can be deleted. The direct read of another browser's live password store is **not
+  built** and is not planned here: it needs the browser's key out of the OS keychain and is the
+  technique infostealers use, so the file export is the path. A key button in the pane toolbar
+  fills a saved login whose site matches the current page; with more than one match the user
+  picks. The password is read in the main process and inserted straight into the field through the
+  view's debugger — it never reaches the renderer or the model. **Not built:** offer-to-save after
+  a manual sign-in, viewing a saved password, and editing the list.
+- **The `act evaluate` hole is closed for filled pages.** Once a password is filled on a tab, the
+  agent's `act evaluate` is refused on that tab until it navigates away (`act.ts`), so a script the
+  agent runs cannot read the filled value. The outline already omits password-field values.
+- **Checked on macOS only.** The search of Windows and Linux data folders, and the keystore seal,
+  are written but have been exercised on macOS only.
+- Sign-ins (23.5), the agent signing in on its own (23.7) and the old profile (23.8) are not built;
   they wait on the open decisions below.
 
 ## Features
