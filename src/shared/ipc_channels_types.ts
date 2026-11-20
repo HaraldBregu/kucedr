@@ -1443,6 +1443,9 @@ export interface BrowserInvokeChannelMap {
 		result: void;
 	};
 	[BrowserChannels.passwordsDelete]: { args: [id: string]; result: boolean };
+	[BrowserChannels.passwordsOffer]: { args: [targetId: string, answer: 'save' | 'never' | 'dismiss']; result: void };
+	[BrowserChannels.passwordsNever]: { args: []; result: string[] };
+	[BrowserChannels.passwordsNeverRemove]: { args: [site: string]; result: void };
 	[BrowserChannels.passwordsMatch]: { args: [targetId: string]; result: import('./browser_import').BrowserLogin[] };
 	[BrowserChannels.passwordsFill]: { args: [targetId: string, id: string]; result: void };
 }
