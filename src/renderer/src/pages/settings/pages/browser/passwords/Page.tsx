@@ -105,6 +105,34 @@ export default function BrowserPasswordsPage(): React.JSX.Element {
 					/>
 				))}
 			</SettingsPanel>
+			{never.length ? (
+				<SettingsSection
+					title={t('settings.browser.passwordsPage.never')}
+					description={t('settings.browser.passwordsPage.neverDescription')}
+				>
+					<SettingsPanel>
+						{never.map((site) => (
+							<SettingsRow
+								key={site}
+								title={site}
+								actionClassName="w-auto justify-end"
+								actions={
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon-sm"
+										aria-label={t('settings.browser.passwordsPage.neverRemove', { site })}
+										title={t('settings.browser.passwordsPage.neverRemove', { site })}
+										onClick={() => void window.browserPane.passwordsNeverRemove(site).then(reload)}
+									>
+										<X />
+									</Button>
+								}
+							/>
+						))}
+					</SettingsPanel>
+				</SettingsSection>
+			) : null}
 			<EditDialog
 				title={t('settings.browser.passwordsPage.edit')}
 				description={t('settings.browser.passwordsPage.editDescription')}
