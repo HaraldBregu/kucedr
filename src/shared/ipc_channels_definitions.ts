@@ -560,6 +560,9 @@ export const BrowserChannels = {
 	passwordsClear: 'browser:passwords:clear',
 	passwordsUpdate: 'browser:passwords:update',
 	passwordsDelete: 'browser:passwords:delete',
+	passwordsOffer: 'browser:passwords:offer',
+	passwordsNever: 'browser:passwords:never',
+	passwordsNeverRemove: 'browser:passwords:never-remove',
 	passwordsMatch: 'browser:passwords:match',
 	passwordsFill: 'browser:passwords:fill',
 } as const;
