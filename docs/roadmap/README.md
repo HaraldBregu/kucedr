@@ -74,6 +74,8 @@ The user-experience area was chosen to be planned in detail first; see
   sale (9).
 - A green test baseline (22.1) comes before new automatic checks (2.7, 4.5, 14.7).
 - The terminal panel (14.2) comes before the terminal inside the coding page (20.3).
+- Sealed credentials (1.2) and the workspace decision (10) come before imported passwords and
+  sign-ins are stored (23.3–23.5).
 
 ## Not planned
 
