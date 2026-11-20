@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { BrowserPaneState, BrowserPaneTab } from '../../../../../shared/browser';
 
 // The browser is shared by every chat: all tabs, and the chats whose agent is acting right now.
