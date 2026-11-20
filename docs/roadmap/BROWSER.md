@@ -1,6 +1,6 @@
 # 23. Browser import
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: in progress; see [Status](#status).
 
 The browser pane can bring in what the user already has in Chrome, Firefox and other browsers:
 bookmarks, history, saved passwords, signed-in sessions and the few settings that apply. The user
