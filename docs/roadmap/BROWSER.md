@@ -100,6 +100,9 @@ does not start again from an empty browser.
 | 23.10 | Offer to save and update | After the user signs in by hand, the toolbar asks "Save password for this site?" with Save and Never for this site; a changed password offers an update | 23.3; a script that sees the form being sent | S–M |
 | 23.11 | Addresses and contact details | Name, email, phone and postal address saved as one or more entries in Settings, suggested on fields that ask for them, filling the whole form at once | Same suggestions list as 23.9; a sealed file of its own | M |
 | 23.12 | Form history | Values the user typed before into the same field on the same site are suggested while typing, and can be deleted one by one | Same suggestions list | S |
+| 23.13 | Secure password store | Passwords encrypted one by one, an optional primary password, strict site matching, kept away from the agent; see [Password security](#password-security-2313-2314) | The sealed store in `passwords.ts` | M |
+| 23.14 | Password manager in Settings | Search, add, edit, delete; reveal, copy and export behind Touch ID, the system password or the primary password | 23.13; app lock ([Privacy](PRIVACY.md), 1.4) | S–M |
+| 23.15 | Bookmarks in Settings | Folders, search, add, rename, move, delete and export bookmarks; a star in the address field for the page on screen; see [Bookmarks in Settings](#bookmarks-in-settings-2315) | The imported bookmarks in `library.ts` | M |
 
 ## Saved data and autofill (23.9–23.12)
 
