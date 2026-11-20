@@ -50,6 +50,7 @@ function normalizeAgentSendRuntimeOptions(options?: AgentRunOptions): AgentRunOp
 		...(optionalTrimmedString(options.sessionId)
 			? { sessionId: optionalTrimmedString(options.sessionId) }
 			: {}),
+		...(options.reuseLastUserMessage === true ? { reuseLastUserMessage: true } : {}),
 		...(optionalTrimmedString(options.replyTo)
 			? { replyTo: optionalTrimmedString(options.replyTo) }
 			: {}),
