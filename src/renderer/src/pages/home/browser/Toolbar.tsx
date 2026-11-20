@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactElement } from 'react';
+import { useEffect, useState, type CSSProperties, type ReactElement } from 'react';
 import { ArrowLeft, ArrowRight, Globe, KeyRound, PanelRightClose, RotateCw, Star, X } from 'lucide-react';
 import type { BrowserPaneCommand, BrowserPaneTab } from '../../../../../shared/browser';
 import type { BrowserPlace } from '../../../../../shared/browser_import';
