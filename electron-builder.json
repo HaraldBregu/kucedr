@@ -31,6 +31,9 @@
 		"repo": "kucedr"
 	},
 	"asar": true,
+	"electronFuses": {
+		"enableCookieEncryption": true
+	},
 	"asarUnpack": [
 		"node_modules/@openai/codex*/**/*",
 		"node_modules/@anthropic-ai/sandbox-runtime/vendor/**/*",
