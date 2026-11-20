@@ -200,6 +200,48 @@ export function updateLogin(id: string, change: { url: string; username: string;
 	save({ ...store, logins: store.logins.map((login) => (login.id === id ? next : login)) });
 }
 
+// After a manual sign-in: 'save' for a new login, 'update' when the saved password for this
+// username on this host differs, undefined when there is nothing to offer.
+export function offerFor(url: string, username: string, password: Buffer): 'save' | 'update' | undefined {
+	if (!secure(url) || !password.length) return undefined;
+	const { store, broken } = load();
+	if (broken || store?.never?.includes(host(url))) return undefined;
+	const same = store?.logins.find((login) => host(login.url) === host(url) && login.username === username);
+	if (!store || !same) return 'save';
+	const saved = decrypt(unseal(store), same);
+	const changed = !saved.equals(password);
+	saved.fill(0);
+	return changed ? 'update' : undefined;
+}
+
+// Saves a login typed by hand, replacing the password of the same username on the same host.
+export function saveLogin(url: string, username: string, password: Buffer): void {
+	const store = writable();
+	const key = unseal(store);
+	const same = store.logins.find((login) => host(login.url) === host(url) && login.username === username);
+	const id = same?.id ?? randomUUID();
+	const savedUrl = same?.url ?? `${new URL(url).origin}/`;
+	const entry: Entry = {
+		id,
+		url: savedUrl,
+		username,
+		created: same?.created ?? Date.now(),
+		secret: encrypt(key, id, savedUrl, username, password.toString('utf8')),
+	};
+	save({ ...store, logins: same ? store.logins.map((login) => (login.id === id ? entry : login)) : [...store.logins, entry] });
+}
+
+export function neverSites(): string[] {
+	return [...(load().store?.never ?? [])].sort();
+}
+
+export function setNever(url: string, never: boolean): void {
+	const store = writable();
+	const site = url.includes('://') ? host(url) : url.toLowerCase();
+	const rest = (store.never ?? []).filter((item) => item !== site);
+	save({ ...store, never: never ? [...rest, site] : rest });
+}
+
 export function deleteLogin(id: string): void {
 	const { store, broken } = load();
 	if (broken || !store) throw new Error('Your saved passwords could not be read.');
