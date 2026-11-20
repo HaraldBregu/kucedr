@@ -80,7 +80,7 @@ export function BrowserPane({
 			<div
 				className={cn(
 					'flex min-h-0 flex-1 flex-col border-2 border-transparent transition-colors',
-					acting && 'border-primary'
+					busy && 'border-primary'
 				)}
 			>
 				{acting ? (
