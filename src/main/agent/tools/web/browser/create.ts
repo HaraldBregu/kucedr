@@ -53,6 +53,7 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		if (!/^https?:/i.test(url)) event.preventDefault();
 	});
 	contents.on('console-message', (event) => {
+		if (readCapture(tab, event.message)) return;
 		tab.logs.push(`[${event.level}] ${event.message}`);
 		if (tab.logs.length > CONSOLE_BUFFER_MAX) tab.logs.shift();
 	});
