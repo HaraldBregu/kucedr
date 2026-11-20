@@ -543,6 +543,7 @@ export const BrowserChannels = {
 	command: 'browser:command',
 	view: 'browser:view',
 	changed: 'browser:changed',
+	managePasswords: 'browser:manage-passwords',
 	sources: 'browser:sources',
 	importData: 'browser:import',
 	importPicked: 'browser:import:pick',
