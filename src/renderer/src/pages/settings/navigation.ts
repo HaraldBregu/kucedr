@@ -117,6 +117,18 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'zoom scale font text size bigger larger accessibility',
 	},
 	{
+		path: '/settings/browser/passwords',
+		labelKey: 'settings.browser.passwordsPage.title',
+		descriptionKey: 'settings.browser.passwordsPage.description',
+		keywords: 'browser passwords logins saved edit delete',
+	},
+	{
+		path: '/settings/browser/bookmarks',
+		labelKey: 'settings.browser.bookmarksPage.title',
+		descriptionKey: 'settings.browser.bookmarksPage.description',
+		keywords: 'browser bookmarks favorites saved edit delete',
+	},
+	{
 		path: '/settings/general/persona',
 		labelKey: 'settings.voiceAgent.title',
 		descriptionKey: 'settings.voiceAgent.description',
