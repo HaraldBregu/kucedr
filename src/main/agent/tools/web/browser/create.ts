@@ -3,6 +3,7 @@ import { pane, paneEvents, paneTabs, type BrowserTab } from './pane';
 
 const PARTITION = 'persist:agent-browser';
 const CONSOLE_BUFFER_MAX = 100;
+const FAVICON_MAX_BYTES = 200_000;
 let prepared = false;
 
 export function createTab(chat?: string, owner?: string): BrowserTab {
@@ -60,8 +61,20 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		changed();
 	});
 	contents.on('page-favicon-updated', (_event, icons) => {
-		tab.icon = icons.find((icon) => /^https:/i.test(icon));
-		changed();
+		const icon = icons.find((candidate) => /^https?:/i.test(candidate));
+		if (!icon) return;
+		const page = contents.getURL();
+		void contents.session
+			.fetch(icon)
+			.then(async (response) => {
+				const bytes = Buffer.from(await response.arrayBuffer());
+				if (!response.ok || bytes.length > FAVICON_MAX_BYTES || contents.isDestroyed()) return;
+				if (contents.getURL() !== page) return;
+				const type = response.headers.get('content-type')?.split(';')[0] || 'image/x-icon';
+				tab.icon = `data:${type};base64,${bytes.toString('base64')}`;
+				changed();
+			})
+			.catch(() => undefined);
 	});
 	contents.on('did-fail-load', (_event, code, description, _url, isMainFrame) => {
 		if (!isMainFrame || code === -3) return;
