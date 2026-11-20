@@ -181,11 +181,26 @@ encrypted, unlocked, matched and kept away from the agent.
 Updated 2026-11-20 after the first security pass; the five fixes below are built and verified in
 the running app.
 
-- **One sealed file.** The whole list is encrypted as one block with the system keystore
-  (`safeStorage`) in `~/.kucedr/browser/passwords.seal`, owner-only (`src/main/browser/passwords.ts`).
-- **Every password is decrypted for every lookup.** Listing, matching and filling all decrypt the
-  full list, and matching runs each time a login field gets focus. Still true; the two-layer store
-  (23.13) is what separates names from secrets.
+- **BUILT (23.13) — two layers of keys.** `~/.kucedr/browser/passwords.json`, owner-only, holds a
+  random store key sealed by the system keystore (`safeStorage`) and one AES-256-GCM ciphertext per
+  password. Each ciphertext is bound to its entry's id, site and username, so a password moved to
+  another entry or site in the file fails to decrypt (`src/main/browser/passwords.ts`). The earlier
+  single-block `passwords.seal` is not read; logins imported before this change are imported again.
+- **BUILT (23.13) — names apart from secrets.** Listing and matching read only sites and usernames;
+  one password is decrypted when it is filled, kept as a buffer and wiped after it is inserted
+  (`fill.ts`).
+- **BUILT (23.13) — strict matching.** Exact host, or another host of the same registrable domain
+  under the public suffix list (`tldts`, private domains included), so `a.github.io` never matches
+  `b.github.io`. Such a match is labelled "saved for accounts.example.com" in the field list and
+  the toolbar menu.
+- **BUILT (23.13) — previous copy kept.** Each write keeps the copy it replaces as
+  `passwords.json.bak`.
+- **BUILT (23.13) — pane session and backup.** The pane's session folder
+  (`Partitions/agent-browser`, its cookies and storage) joins the sandbox's protected list, and the
+  S3 backup script skips `~/.kucedr/browser`. Packaged builds switch on Electron's cookie-encryption
+  fuse (`electron-builder.json`); this takes effect only in a packaged app.
+- **Not built yet (23.13) — the primary password.** It needs an unlock prompt and locking on idle,
+  sleep and screen lock, and is set from the password manager, so it lands with 23.14.
 - **FIXED — an import can no longer wipe the store.** A store that exists but cannot be decrypted is
   reported as broken, and an import over it is refused rather than silently overwriting it
   (`load()` in `passwords.ts`).
