@@ -1,4 +1,5 @@
-import { BrowserWindow, type WebContents } from 'electron';
+import { BrowserWindow, dialog, type WebContents } from 'electron';
+import { readFileSync } from 'node:fs';
 import { z } from 'zod';
 import { BrowserChannels } from '../../shared/ipc_channels_definitions';
 import { command } from '../agent/tools/web/browser/command';
@@ -7,6 +8,15 @@ import { tabs } from '../agent/tools/web/browser/tabs';
 import { profileFiles } from '../browser/files';
 import { importFiles } from '../browser/import';
 import { DEFAULT_SEARCH, library } from '../browser/library';
+import { fillLogin } from '../browser/fill';
+import {
+	clearLogins,
+	countLogins,
+	importLogins,
+	listLogins,
+	matchLogins,
+	passwordsAvailable,
+} from '../browser/passwords';
 import { pickFiles } from '../browser/pick';
 import { browserSources, foundProfiles } from '../browser/sources';
 import { suggest } from '../browser/suggest';
@@ -68,6 +78,28 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		});
 		trusted.command(BrowserChannels.clearLibrary, () => {
 			library({ bookmarks: [], history: [], search: DEFAULT_SEARCH });
+		});
+		trusted.query(BrowserChannels.passwordsStatus, () => ({
+			available: passwordsAvailable(),
+			count: countLogins(),
+		}));
+		trusted.commandWithEvent(BrowserChannels.passwordsImport, async ({ sender }) => {
+			const window = BrowserWindow.fromWebContents(sender);
+			const options = {
+				properties: ['openFile' as const],
+				filters: [{ name: 'Passwords', extensions: ['csv'] }],
+			};
+			const result = await (window ? dialog.showOpenDialog(window, options) : dialog.showOpenDialog(options));
+			if (result.canceled || !result.filePaths[0]) return null;
+			return importLogins(readFileSync(result.filePaths[0], 'utf8'));
+		});
+		trusted.query(BrowserChannels.passwordsList, () => listLogins());
+		trusted.command(BrowserChannels.passwordsClear, () => clearLogins());
+		trusted.command(BrowserChannels.passwordsMatch, (id) => matchLogins(paneTabs.get(targetId.parse(id))?.view.webContents.getURL() ?? ''));
+		trusted.command(BrowserChannels.passwordsFill, async (id, loginId) => {
+			const tab = paneTabs.get(targetId.parse(id));
+			if (!tab) throw new Error('This tab is closed.');
+			await fillLogin(tab, z.string().max(64).parse(loginId));
 		});
 		trusted.commandWithEvent(BrowserChannels.view, ({ sender }, request) => {
 			const next = viewSchema.parse(request);
