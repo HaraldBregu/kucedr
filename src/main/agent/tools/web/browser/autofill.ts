@@ -213,10 +213,14 @@ const SCRIPT = `((payloadJson) => {
 	}
 	const af = window.__kucedrAutofill;
 	const payload = payloadJson ? JSON.parse(payloadJson) : null;
-	if (payload && payload.seq === af.seq) af.apply(payload.items);
+	if (payload && payload.k && !af.key && crypto.subtle) {
+		const raw = Uint8Array.from(atob(payload.k), (c) => c.charCodeAt(0));
+		crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt']).then((key) => { af.key = key; }, () => {});
+	}
+	if (payload && payload.items && payload.seq === af.seq) af.apply(payload.items);
 	const pick = af.pick;
 	af.pick = null;
-	return JSON.stringify({ seq: af.seq, origin: af.req && af.req.origin, pick });
+	return JSON.stringify({ seq: af.seq, origin: af.req && af.req.origin, pick, keyed: Boolean(af.key) });
 })`;
 
 interface State {
