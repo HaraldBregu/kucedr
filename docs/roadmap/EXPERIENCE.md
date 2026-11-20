@@ -102,3 +102,47 @@ it is the largest.
   ⌘=.
 - _Kept out._ Rebinding keys.
 - _Check._ Every shortcut in the guide works, and no working shortcut is missing from it.
+
+### 3.11 Agent cursor in the browser pane
+
+- _Behaviour._ While the agent acts on a page, a pointer of its own is drawn on the page. Before a
+  click it glides from where it was to the target in about a quarter of a second, then a ripple
+  marks the click. Before typing, the field is outlined. A drag shows the pointer travelling with
+  the button held. The pointer fades a few seconds after the agent's last action. The user's own
+  mouse is never moved or blocked, and the user can still click in the page.
+- _A frame while the agent is in control._ A thin coloured frame around the pane while the agent
+  is acting, drawn by Kucedr around the page, not inside it. It replaces the small dot in the
+  toolbar (`src/renderer/src/pages/home/browser/Toolbar.tsx`) as the main signal.
+- _Builds on._ `act.ts` already knows the target point before every click, hover and drag, and
+  sends the pointer there in one step. The cursor is a small script run in the page before the
+  action, the same way the page outline is (`snapshot.ts`).
+- _Where it is drawn._ Recommended: inside the page, as an element the page cannot click or read
+  into, added by the main process. The alternatives do not fit: Kucedr's own window is drawn
+  underneath the page, so it cannot draw over it; a second transparent view on top would take the
+  user's clicks _(not verified)_; the browser's built-in element highlighter can outline a target
+  but cannot show a moving pointer.
+- _Rules._
+  - **Never in what the model sees.** The pointer and ripple are removed before a screenshot and
+    left out of the page outline, so the model does not mistake them for page content.
+  - **Cheap to draw.** Movement and fade only; no animated glow. A pulsing glow frame in a similar
+    product was reported to keep the graphics processor busy for as long as it showed.
+  - **Reduced motion.** With the system's reduce-motion setting, the pointer appears at the
+    target without gliding and there is no ripple.
+  - **Only in the pane.** Background runs draw nothing.
+  - **For the user's eyes.** It is not meant to make the agent look human to sites that block
+    automation.
+- _Cost._ Each click waits for the glide, about a quarter of a second. Measured turns are
+  dominated by the model call, so this is small, but a setting to turn the effect off is cheap.
+- _Open decisions._
+  - Recommended: also send the page a few real pointer moves along the path, so menus that open on
+    hover behave as they do for a person. Without this the effect is a picture only.
+  - Whether the pointer shows a short label of the action ("Click", "Type"). Recommended: no; the
+    chat already lists each step.
+- _Reference._ How the Claude desktop app draws its pointer could not be confirmed from public
+  sources. What was found: the Claude in Chrome extension shows a pulsing frame around a page it
+  controls; ChatGPT's agent and Codex computer use show a second, agent-owned pointer; and test
+  tools draw a pointer dot and click ripple inside the page, which is the approach recommended
+  here.
+- _Check._ Ask the agent to click a link and fill a form: the pointer travels to each target and
+  the click is marked; a screenshot taken by the agent shows no pointer; the user can click in the
+  page while the pointer is visible; with reduce-motion on, nothing glides.
