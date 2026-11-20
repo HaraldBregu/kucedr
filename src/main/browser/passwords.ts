@@ -178,6 +178,30 @@ export function clearLogins(): void {
 	storeKey = undefined;
 }
 
+// Every change re-encrypts the password, since each ciphertext is bound to its site and username.
+// An empty password keeps the one saved.
+export function updateLogin(id: string, change: { url: string; username: string; password: string }): void {
+	const { store, broken } = load();
+	if (broken || !store) throw new Error('Your saved passwords could not be read.');
+	const parsed = parse(change.url);
+	if (!parsed || !/^https?:$/.test(parsed.protocol)) throw new Error('Enter a web address that starts with https://.');
+	const entry = store.logins.find((login) => login.id === id);
+	if (!entry) throw new Error('That saved password is no longer available.');
+	const key = unseal(store);
+	const kept = change.password ? undefined : decrypt(key, entry);
+	const password = change.password || kept!.toString('utf8');
+	kept?.fill(0);
+	const url = parsed.origin === 'null' ? change.url : `${parsed.origin}/`;
+	const next = { ...entry, url, username: change.username, secret: encrypt(key, id, url, change.username, password) };
+	save({ ...store, logins: store.logins.map((login) => (login.id === id ? next : login)) });
+}
+
+export function deleteLogin(id: string): void {
+	const { store, broken } = load();
+	if (broken || !store) throw new Error('Your saved passwords could not be read.');
+	save({ ...store, logins: store.logins.filter((login) => login.id !== id) });
+}
+
 export function matchLogins(url: string): LoginListing[] {
 	if (!secure(url)) return [];
 	return (load().store?.logins ?? []).flatMap(({ id, url: at, username }) => {
