@@ -3,7 +3,7 @@
 	"id": "kimi",
 	"title": "Kimi",
 	"version": "1.1.0",
-	"description": "Kimi chat models from Moonshot AI with long context.",
+	"description": "Kimi chat models with long context.",
 	"categories": [
 		"LLM"
 	],
