@@ -36,6 +36,14 @@ it says otherwise. Windows and Linux paths are written but not exercised.
   Escape, Tab or a click elsewhere, and reopens on a click back into the field. Its last row,
   "Manage passwords…", opens Settings → Browser → Passwords. A toolbar key button fills a login on
   fields the list does not recognise.
+- **23.10 Offer to save and update.** When the user sends a form with a password typed in (submit,
+  a submit button or Enter), the page's private script world reports the origin, username and
+  password to main as a console line encrypted with a per-tab key only main and that world hold
+  (`capture.ts`); a page cannot read or forge it, and it never reaches the console log the agent
+  reads. A bar under the toolbar offers Save, Never for this site and Not now, or Update when the
+  saved password for that username changed; nothing when it is unchanged or the site is on the
+  never list. The password stays in main memory until the answer and is wiped otherwise. Nothing
+  is captured while the agent drives the tab. Secure pages only.
 - **23.13 Secure password store** (`src/main/browser/passwords.ts`).
   - `~/.kucedr/browser/passwords.json`: a random store key sealed by the system keystore, and one
     AES-256-GCM ciphertext per password, bound to its entry's id, site and username.
