@@ -57,7 +57,7 @@ export function BrowserPane({
 						The assistant is using this page
 					</span>
 				) : null}
-				<BrowserScreen targetId={active.targetId} error={active.error} />
+				<BrowserScreen targetId={active.targetId} error={active.error} suppressed={suggesting} />
 			</div>
 		</section>
 	);
