@@ -21,11 +21,5 @@ export function useBrowserTabs(): {
 			.catch(() => undefined);
 		return off;
 	}, []);
-	return useMemo(
-		() => ({
-			tabs: state.tabs.filter((tab) => tab.chat === chat),
-			acting: state.acting.includes(chat),
-		}),
-		[state, chat]
-	);
+	return state;
 }
