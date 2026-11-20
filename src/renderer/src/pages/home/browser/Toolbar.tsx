@@ -170,6 +170,20 @@ export function BrowserToolbar({
 							}}
 						/>
 					</form>
+					{web ? (
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-xs"
+							aria-label={saved ? 'Edit bookmark' : 'Bookmark this page'}
+							aria-pressed={saved}
+							title={saved ? 'Edit bookmark' : 'Bookmark this page'}
+							className="absolute top-1/2 right-1 -translate-y-1/2 rounded-full"
+							onClick={() => void toggleBookmark().catch(() => undefined)}
+						>
+							<Star className={cn(saved && 'fill-current text-amber-500')} />
+						</Button>
+					) : null}
 					{showing ? (
 						<ul
 							role="listbox"
