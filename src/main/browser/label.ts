@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { PROFILE_FILES } from './formats';
 
 const CONTAINER = /^(user data|profiles?)$/i;
+const SETTINGS_FILE = Object.keys(PROFILE_FILES).find((name) => PROFILE_FILES[name].includes('settings')) ?? '';
 
 // Names a profile from where it lives: the application from the folders above it, the
 // profile from its own folder, or from the name the browser saved for it when there is one.
