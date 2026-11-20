@@ -210,8 +210,8 @@ encrypted, unlocked, matched and kept away from the agent.
 
 ### What the code does today
 
-Updated 2026-11-20 after the first security pass; the five fixes below are built and verified in
-the running app.
+Updated 2026-11-20. The detail behind the password lines of [Status](#status); each item was
+verified in the built app.
 
 - **BUILT (23.13) — two layers of keys.** `~/.kucedr/browser/passwords.json`, owner-only, holds a
   random store key sealed by the system keystore (`safeStorage`) and one AES-256-GCM ciphertext per
