@@ -16,6 +16,7 @@ export function BrowserPane({
 }): ReactElement {
 	const active = tabs.reduce((latest, tab) => (tab.order > latest.order ? tab : latest));
 	const [error, setError] = useState<string | null>(null);
+	const [suggesting, setSuggesting] = useState(false);
 	useEffect(() => setError(null), [active.targetId, active.url]);
 	const run = (targetId: string, command: BrowserPaneCommand['command'], url?: string): void => {
 		setError(null);
