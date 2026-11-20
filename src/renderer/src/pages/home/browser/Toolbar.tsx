@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 
 const DRAG = { WebkitAppRegion: 'drag' } as CSSProperties;
 const NO_DRAG = { WebkitAppRegion: 'no-drag' } as CSSProperties;
+const MENU_BOOKMARKS = 45;
 
 export function BrowserToolbar({
 	tab,
