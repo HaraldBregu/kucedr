@@ -36,13 +36,17 @@ async function type(tab: BrowserTab, which: 'username' | 'password', value: stri
 export async function fillLogin(tab: BrowserTab, id: string): Promise<boolean> {
 	const login = secretFor(id);
 	if (!login) throw new Error('That saved password is no longer available.');
-	// Re-check the tab's real address here, not the page's own report, before using the secret.
-	if (!canFill(login.url, tab.view.webContents.getURL()))
-		throw new Error('This saved password is for a different, secure site.');
-	const found = (await tab.view.webContents.executeJavaScript(LOCATE, true)) as boolean;
-	if (!found) throw new Error('No password field is visible on this page.');
-	if (login.username) await type(tab, 'username', login.username);
-	await type(tab, 'password', login.password);
+	try {
+		// Re-check the tab's real address here, not the page's own report, before using the secret.
+		if (!canFill(login.url, tab.view.webContents.getURL()))
+			throw new Error('This saved password is for a different, secure site.');
+		const found = (await tab.view.webContents.executeJavaScript(LOCATE, true)) as boolean;
+		if (!found) throw new Error('No password field is visible on this page.');
+		if (login.username) await type(tab, 'username', login.username);
+		await type(tab, 'password', login.password.toString('utf8'));
+	} finally {
+		login.password.fill(0);
+	}
 	await tab.view.webContents.executeJavaScript(
 		`for (const el of document.querySelectorAll('[data-kucedr-fill]')) el.removeAttribute('data-kucedr-fill')`,
 		true
