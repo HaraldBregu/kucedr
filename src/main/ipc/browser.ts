@@ -45,14 +45,7 @@ const kindsSchema = z.object({ bookmarks: z.boolean(), history: z.boolean(), set
 const importSchema = kindsSchema.extend({ sources: z.array(z.string().max(64)).max(200) });
 const pickSchema = kindsSchema.extend({ folder: z.boolean() });
 const urlSchema = z.string().max(4096);
-const placeSchema = z.object({
-	url: z
-		.string()
-		.trim()
-		.max(4096)
-		.refine((value) => /^https?:\/\/[^/\s]+/i.test(value), 'Enter a web address that starts with https://.'),
-	title: z.string().trim().max(1024),
-});
+const placeSchema = z.object({ url: z.string().trim().max(4096), title: z.string().trim().max(1024) });
 const loginChangeSchema = z.object({
 	url: z.string().trim().min(1).max(4096),
 	username: z.string().max(1024),
