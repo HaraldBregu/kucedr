@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { BrowserChannels } from '../../shared/ipc_channels_definitions';
 import { pollAutofill } from '../agent/tools/web/browser/autofill';
 import { command } from '../agent/tools/web/browser/command';
-import { acting, pane, paneEvents, paneTabs, type BrowserTab } from '../agent/tools/web/browser/pane';
+import { acting, pane, paneEvents, paneShown, paneTabs } from '../agent/tools/web/browser/pane';
 import { tabs } from '../agent/tools/web/browser/tabs';
 import { profileFiles } from '../browser/files';
 import { importFiles } from '../browser/import';
