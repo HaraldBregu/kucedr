@@ -2,6 +2,7 @@ export interface BrowserSource {
 	readonly id: string;
 	readonly app: string;
 	readonly profile: string;
+	readonly folder: string;
 	readonly kinds: readonly ('bookmarks' | 'history')[];
 	readonly used: number;
 }
