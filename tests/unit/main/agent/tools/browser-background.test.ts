@@ -56,7 +56,7 @@ it('isolates background browsers from one another and the interactive profile', 
 
 		expect(launchPersistentContext.mock.calls[0]).toEqual([
 			expect.stringContaining('agent-browser'),
-			expect.objectContaining({ channel: 'chrome', headless: true }),
+			expect.objectContaining({ channel: 'chrome', headless: false }),
 		]);
 		for (const call of launchPersistentContext.mock.calls.slice(1)) {
 			expect(call).toEqual([

@@ -6,14 +6,9 @@ import { saveMedia } from '../../../shared/media';
 import { publicUrl } from '../../../public';
 import { executionScope } from '../../execution/scope';
 import { mediaAccess } from '../../permissions/media_access';
-import type { Tool } from '../../types';
 import { tool } from '../tool';
 import { runBrowserPageOperation } from './browser_abort';
-import { userAgent } from './browser/agent';
-import { observe } from './browser/observe';
-import { pageChats, pageOrder, pane, paneEvents } from './browser/pane';
 import { browserSession, type BrowserSession } from './browser/session';
-import { watch } from './browser/watch';
 
 const ACTIONS = [
 	'status',
@@ -62,15 +57,7 @@ function trackPage(page: Page, session: BrowserSession = browserSession()): stri
 		session.pages.delete(id);
 		session.consoleLogs.delete(id);
 	});
-	if (!session.background) watch(page);
 	return id;
-}
-
-function claim(page: Page): void {
-	const scope = executionScope.getStore();
-	if (!scope) return;
-	pageOwners.set(page, scope.ownerId);
-	pageChats.set(page, scope.sessionId);
 }
 
 async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
@@ -79,18 +66,13 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 	if (session.closed) throw new Error('Browser run has ended.');
 	if (session.context) return session.context;
 	if (!session.starting) {
-		const userDataDir = session.background ? '' : path.join(userDataLocation(), 'agent-browser');
-		const launch = (agent?: string): Promise<BrowserContext> =>
-			chromium.launchPersistentContext(userDataDir, {
-				channel: 'chrome',
-				headless: true,
-				viewport: null,
-				timeout: DEFAULT_TIMEOUT_MS,
-				...(session.background
-					? {}
-					: { userAgent: agent, args: [`--force-device-scale-factor=${pane.scale}`] }),
-			});
-		session.starting = (session.background ? launch() : userAgent().then(launch)).then(async (launched) => {
+		const userDataDir = session.headless ? '' : path.join(userDataLocation(), 'agent-browser');
+		session.starting = chromium.launchPersistentContext(userDataDir, {
+			channel: 'chrome',
+			headless: session.headless,
+			viewport: null,
+			timeout: DEFAULT_TIMEOUT_MS,
+		}).then(async (launched) => {
 			if (session.closed || signal?.aborted) {
 				await launched.close();
 				signal?.throwIfAborted();
@@ -98,7 +80,7 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			}
 			session.context = launched;
 			launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
-			if (session.background)
+			if (session.headless)
 				await launched.route('**/*', async (route) => {
 					const allowed = await publicUrl(route.request().url()).then(() => true, () => false);
 					await (allowed ? route.continue() : route.abort('blockedbyclient')).catch(() => undefined);
@@ -108,11 +90,6 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 				void page.opener().then((opener) => {
 					const owner = opener && pageOwners.get(opener);
 					if (owner) pageOwners.set(page, owner);
-					const chat = opener && pageChats.get(opener);
-					if (!chat) return;
-					pageChats.set(page, chat);
-					pageOrder.set(page, ++pane.order);
-					paneEvents.emit('change');
 				}, () => undefined);
 			});
 			launched.on('close', () => {
@@ -141,7 +118,6 @@ function getPage(targetId?: string): { id: string; page: Page } {
 	if (targetId) {
 		const page = pages.get(targetId);
 		if (!page) throw new Error(`Unknown tab "${targetId}". Use action "tabs" to list open tabs.`);
-		pageOrder.set(page, ++pane.order);
 		return { id: targetId, page };
 	}
 	const entries = [...pages.entries()];
@@ -155,8 +131,6 @@ function getPage(targetId?: string): { id: string; page: Page } {
 				? 'Several tabs are open and none was opened by this chat. Pass a targetId from action "tabs".'
 				: 'No open tabs. Use action "open" with a url first.'
 		);
-	if (!pageOwners.has(last[1])) claim(last[1]);
-	pageOrder.set(last[1], ++pane.order);
 	return { id: last[0], page: last[1] };
 }
 
@@ -166,7 +140,7 @@ async function assertHttpUrl(url: string): Promise<string> {
 	const parsed = new URL(url);
 	if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:')
 		throw new Error('Invalid URL: must be http or https');
-	if (browserSession().background) await publicUrl(parsed.toString());
+	if (browserSession().headless) await publicUrl(parsed.toString());
 	return parsed.toString();
 }
 
@@ -294,12 +268,12 @@ async function runAct(params: {
 	});
 }
 
-const browserTool = tool({
+export const useWebBrowserTool = tool({
 	id: 'use_web_browser',
 	category: 'web',
 	name: 'Use web browser',
 	description:
-		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts. The user sees the page in a pane beside the chat and can click and type in it, for example to sign in.',
+		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts.',
 	inputSchema: z.object({
 		action: z.enum(ACTIONS).describe('Browser command to run.'),
 		targetId: z.string().optional().describe('Tab id from "tabs" output. Defaults to the most recent tab opened in this chat.'),
@@ -346,7 +320,6 @@ const browserTool = tool({
 				return JSON.stringify({ running: session.context !== null, tabs: await tabList(signal) });
 			case 'start': {
 				await ensureStarted(signal);
-				for (const page of session.pages.values()) if (!pageOwners.has(page)) claim(page);
 				return JSON.stringify({ running: true, tabs: await tabList(signal) });
 			}
 			case 'stop': {
@@ -360,8 +333,8 @@ const browserTool = tool({
 				const url = await assertHttpUrl(params.url);
 				const ctx = await ensureStarted(signal);
 				const page = await ctx.newPage();
-				claim(page);
-				pageOrder.set(page, ++pane.order);
+				const owner = executionScope.getStore()?.ownerId;
+				if (owner) pageOwners.set(page, owner);
 				const targetId = [...session.pages.entries()].find(([, p]) => p === page)?.[0] ?? trackPage(page);
 				try {
 					await runBrowserPageOperation(page, signal, () =>
@@ -426,6 +399,8 @@ const browserTool = tool({
 				return JSON.stringify({ targetId: id, path: file });
 			}
 			case 'pdf': {
+				if (!session.headless)
+					throw new Error('pdf only works in background runs, where Chrome is headless. Use screenshot with fullPage instead.');
 				const { id, page } = getPage(params.targetId);
 				const data = await runBrowserPageOperation(page, signal, () => page.pdf());
 				const file = await saveMedia(
@@ -446,8 +421,3 @@ const browserTool = tool({
 		}
 	},
 });
-
-export const useWebBrowserTool: Tool = {
-	...browserTool,
-	run: (input, signal) => observe(async () => browserTool.run(input, signal)),
-};
