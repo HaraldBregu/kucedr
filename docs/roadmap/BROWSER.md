@@ -297,6 +297,65 @@ screen, or to rename, move or delete a bookmark. Settings → Browser shows how 
 - **The agent.** No bookmark tool in the first version. Reading or adding bookmarks for the user
   is a later decision.
 
+## Back and forward (23.16)
+
+### What happens today
+
+Read from the checkout on 2026-11-20; not tried in the running app.
+
+- **The app takes the buttons.** The app moves between its own pages on the mouse's back and
+  forward buttons in two places, and neither knows about the pane:
+  - on macOS, a listener on the app's page (`src/renderer/src/hooks/mouse.ts`);
+  - on Windows and Linux, the window's `app-command` event; and on macOS, the trackpad swipe
+    (`src/main/attach_route_navigation.ts`).
+- **The result depends on the system** _(inferred from the code)_:
+  - On Windows and Linux, pressing back with the pointer over a web page sends the app to its
+    previous screen, while the page stays where it is.
+  - On macOS, the button over the page does nothing, because the page is its own view and the app's
+    listener never sees the click.
+  - On macOS, a swipe over the page always moves the app.
+  - Over the pane's toolbar and tab strip, which are part of the app's page, the app moves on
+    every system.
+
+### What the user gets
+
+- **Pointer over the pane means the browser.** With the pointer anywhere over the pane (the page,
+  the toolbar or the tab strip), the mouse's back and forward buttons and the trackpad swipe go
+  back and forward in the active tab, as in any browser. The app does not change screen.
+- **Nothing falls through.** When the tab has no earlier or later page, nothing happens. The app
+  does not move instead.
+- **Pointer elsewhere means the app**, as today.
+- **Pane hidden or covered.** When the pane is closed, or an app dialog or menu covers it and the
+  page is hidden, the buttons go to the app.
+- **While the agent works.** The user can still go back. The agent sees the new page on its next
+  look at the page, as with any other input from the user.
+
+### How it is built
+
+- **Where the pointer is decides, in the main process.** The main process already places the
+  pane's view, so it knows the pane's rectangle in the window. For window-wide events (the
+  `app-command` buttons and the swipe) it compares the pointer's position with that rectangle and
+  sends the event to the active tab or to the app.
+- **The page view's own clicks.** On macOS the button press goes to the page's view. The script
+  Kucedr already runs in its own script world on each page (as `autofill.ts` does) reports the back
+  and forward buttons to the main process. Which Electron event carries these buttons from a view
+  is to confirm in a prototype.
+- **The toolbar and tab strip.** The app's listener ignores presses inside the pane's area and
+  sends them to the tab instead, through the same back and forward commands the toolbar buttons
+  use (`src/main/agent/tools/web/browser/command.ts`).
+- **One place for the rule.** The three routes (app page, window events and page view) call one
+  function that picks the tab or the app, so they cannot disagree.
+
+### Check
+
+On macOS, Windows and Linux:
+
+- Open two pages in a tab and press the mouse's back button with the pointer over the page. The
+  tab goes back and the app stays on Home.
+- Repeat over the toolbar, then with a swipe on macOS.
+- Press back with the pointer over the chat. The app goes back as today.
+- On a tab with no history, press back over the page. Nothing moves.
+
 ## What each browser allows
 
 From general knowledge of these browsers, not checked against current versions. The first step of
