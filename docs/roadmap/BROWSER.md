@@ -21,10 +21,9 @@ does not start again from an empty browser.
   existing session may get round that _(not verified)_.
 - **The earlier Chrome profile** (`~/.kucedr/agent-browser`) is still on disk and its logins were
   not carried over.
-- **Passwords in a page reach the model.** The page outline returns the value of every field,
-  password fields included (`src/main/agent/tools/web/browser/snapshot.ts`), and the outline is
-  sent to the model provider. This matters today when the user types a password in the pane, and
-  it has to be fixed before any password is filled automatically.
+- **Password values are kept out of the page outline** (`src/main/agent/tools/web/browser/snapshot.ts`).
+  A script the agent runs in the page (`act evaluate`) can still read a field, which matters once
+  passwords are filled automatically (see the open decisions).
 
 ## Features
 

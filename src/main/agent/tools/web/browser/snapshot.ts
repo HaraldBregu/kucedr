@@ -20,7 +20,7 @@ export const SNAPSHOT_SCRIPT = `(() => {
 			tag: el.tagName.toLowerCase(),
 			role: el.getAttribute('role') || undefined,
 			type: el.getAttribute('type') || undefined,
-			text: (el.innerText || el.value || '').trim().slice(0, 120) || undefined,
+			text: (el.innerText || (el.type === 'password' ? '' : el.value) || '').trim().slice(0, 120) || undefined,
 			name: el.getAttribute('aria-label') || el.getAttribute('placeholder') || el.getAttribute('name') || undefined,
 			href: el.getAttribute('href') || undefined,
 		});

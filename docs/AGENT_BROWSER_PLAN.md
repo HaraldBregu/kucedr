@@ -17,6 +17,8 @@ How it works, and what is easy to break:
 - The view is drawn above the app. `Screen` hides it whenever something else is on top of the pane (dialog, menu, command menu), and shows the app's own message when a page fails to load. The toolbar uses native `title` tips because app tooltips would sit behind the view.
 - Pop-ups open as tabs of the same chat. Site permission requests are denied, downloads are cancelled, and navigation to anything but http and https is blocked.
 - The user agent has the `Electron/…` and app tokens removed.
+- The tab strip is always shown, Chrome style: favicon, title and a close button per tab, and a new-tab button. This goes beyond "Behaviour in detail" below, which asked for a strip only with more than one tab. Favicons are fetched through the browser's own session.
+- The page outline leaves out the value of password fields, so a password typed in the pane is not sent to the model.
 
 Not built:
 
@@ -27,7 +29,7 @@ Not built:
 - On Windows and Linux the window buttons stay in the navigation bar, to the left of the pane.
 - Removing the old Chrome profile folder (`~/.kucedr/agent-browser`); saved logins there are not carried over.
 - Importing bookmarks, history, passwords, sign-ins and settings from Chrome, Firefox and other browsers; planned in [Browser import](roadmap/BROWSER.md).
-- The unit tests that exercised the interactive Chrome path (`browser-launch`, `browser-background`, `run/browser` and others) have not been updated.
+- Unit tests for the view backend. The existing browser tests cover background runs only.
 
 ## Goal
 
