@@ -186,6 +186,7 @@ export interface AgentApi {
 	getContextWindow: () => Promise<{ providerId: string; modelId: string; contextWindow?: number }>;
 	listModes: () => Promise<import('./agent_types').AgentModeInfo[]>;
 	listSessions: (includeAll?: boolean) => Promise<AgentSessionSummary[]>;
+	searchSessions: (query: string) => Promise<AgentSessionSearchResult[]>;
 	openSessionsFolder: () => Promise<void>;
 	openSessionFolder: (sessionId: string) => Promise<void>;
 	renameSession: (sessionId: string, title: string) => Promise<void>;
