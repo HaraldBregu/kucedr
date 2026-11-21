@@ -228,6 +228,10 @@ export class Agent {
 			completeRun(this.runs, record);
 		};
 		void completion.then(cleanup, cleanup);
+		void completion.then(
+			({ stopReason, text }) => this.onRun?.({ ...run, phase: 'finished', stopReason, text }),
+			() => this.onRun?.({ ...run, phase: 'finished', stopReason: 'error', text: '' })
+		);
 		return completion.then((outcome) => outcome.text);
 	}
 
