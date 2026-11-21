@@ -108,6 +108,12 @@ export const app: AppApi = {
 	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void): (() => void) => {
 		return typedOn(AppChannels.soundFeedbackEnabledChanged, callback);
 	},
+	setNotificationsEnabled: (enabled: boolean): Promise<void> => {
+		return typedInvokeUnwrap(AppChannels.setNotificationsEnabled, enabled);
+	},
+	getNotificationsEnabled: (): Promise<boolean> => {
+		return typedInvokeUnwrap(AppChannels.getNotificationsEnabled);
+	},
 	setChatTextSize: (size) => typedInvokeUnwrap(AppChannels.setChatTextSize, size),
 	getChatTextSize: () => typedInvokeUnwrap(AppChannels.getChatTextSize),
 	onChatTextSizeChanged: (callback) => typedOn(AppChannels.chatTextSizeChanged, callback),
