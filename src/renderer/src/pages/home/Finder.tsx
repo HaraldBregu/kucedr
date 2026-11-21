@@ -75,6 +75,7 @@ export function ChatFinder({ query, onQueryChange, onOpen }: {
 						}
 					}}
 				/>
+				</div>
 			</div>
 			{needle && (
 				<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3">
