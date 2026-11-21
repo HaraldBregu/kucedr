@@ -165,6 +165,8 @@ export function AssistantMessage({
 	readonly showHeader?: boolean;
 	readonly className?: string;
 	readonly onReply?: (message: Pick<AgentMessage, 'id' | 'content'>) => void;
+	readonly canRegenerate?: boolean;
+	readonly onRegenerate?: () => void;
 	readonly modes?: readonly AgentModeInfo[];
 	readonly canAct?: boolean;
 	readonly onAction?: (prompt: string) => void;
