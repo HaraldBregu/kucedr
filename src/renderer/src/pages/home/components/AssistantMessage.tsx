@@ -462,6 +462,19 @@ export function AssistantMessage({
 					</span>
 				</div>
 			)}
+			{onRegenerate && message.state === 'error' && (
+				<Button
+					type="button"
+					variant="outline"
+					size="sm"
+					className="mt-1 self-start"
+					disabled={!canRegenerate}
+					onClick={onRegenerate}
+				>
+					<RefreshCw />
+					{t('chat.regenerate.retry')}
+				</Button>
+			)}
 		</Message>
 	);
 }
