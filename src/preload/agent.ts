@@ -157,6 +157,10 @@ export const agent: AgentApi = {
 	searchSessions: (query: string): Promise<AgentSessionSearchResult[]> => {
 		return typedInvokeUnwrap(AgentChannels.searchSessions, query);
 	},
+	viewSession: (sessionId: string | null): Promise<void> => {
+		return typedInvokeUnwrap(AgentChannels.viewSession, sessionId);
+	},
+	onOpenSession: (listener) => typedOn(AgentChannels.openSession, listener),
 	openSessionsFolder: (): Promise<void> => {
 		return typedInvokeUnwrap(AgentChannels.openSessionsFolder);
 	},
