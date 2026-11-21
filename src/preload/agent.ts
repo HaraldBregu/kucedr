@@ -206,14 +206,15 @@ export const agent: AgentApi = {
 	editUserMessage: (
 		sessionId: string,
 		userOffsetFromEnd: number,
-		content: string
+		content?: string
 	): Promise<boolean> => {
 		const normalizedSessionId = optionalTrimmedString(sessionId);
 		const normalizedContent = optionalTrimmedString(content);
 		if (!normalizedSessionId) throw new Error('Invalid assistant session id.');
 		if (!Number.isSafeInteger(userOffsetFromEnd) || userOffsetFromEnd < 0)
 			throw new Error('Invalid user message offset.');
-		if (!normalizedContent) throw new Error('Invalid user message content.');
+		if (content !== undefined && !normalizedContent)
+			throw new Error('Invalid user message content.');
 		return typedInvokeUnwrap(
 			AgentChannels.editUserMessage,
 			normalizedSessionId,
