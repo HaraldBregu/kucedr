@@ -59,7 +59,10 @@ usage bounded. Operation revisions prevent delayed snapshots from overwriting ne
 
 ## Credential storage
 
-Model, database, and search keys are stored as entered in `~/.kucedr/providers/settings.json`.
+Model, database, and search keys are encrypted with Electron `safeStorage` in
+`~/.kucedr/providers/settings.json`, and saving a new key requires secure device storage. Keys
+saved as entered by earlier versions are encrypted the first time they are read; without secure
+device storage they keep working and stay as entered.
 They are not automatically synchronized by the account service. Storage secret keys use Electron
 `safeStorage`, and saving them requires secure device storage. Account sessions also use
 `safeStorage`; without secure encryption, sessions remain in memory. The current implementation
