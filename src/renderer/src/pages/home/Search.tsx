@@ -48,7 +48,7 @@ export function ChatSearch({ scroll, active, refreshKey, initialQuery }: {
 		scroll.current?.stopScroll();
 		viewport.scrollTo({ top: viewport.scrollTop + range.getBoundingClientRect().top - viewport.getBoundingClientRect().top - viewport.clientHeight / 3, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
 		return () => { CSS.highlights.delete('chat-search-current'); };
-	}, [scroll, needle, index]);
+	}, [scroll, needle, index, first]);
 	return (
 		<div className="relative mx-3 mb-3">
 			<Search className="pointer-events-none absolute top-1/2 left-2.5 z-10 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
