@@ -122,6 +122,7 @@ export class Agent {
 	private readonly histories = new Map<string, import('./history/types').FileHistory>();
 	private isStarted = false;
 	readonly config: Config;
+	onRun?: (signal: RunSignal) => void;
 
 	constructor(
 		readonly sandbox: ExecSandbox,
