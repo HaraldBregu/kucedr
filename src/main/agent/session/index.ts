@@ -14,6 +14,7 @@ export { deleteSession } from './session_delete_session';
 export { init } from './session_init';
 export { isExhausted } from './session_is_exhausted';
 export { listSessions } from './session_list_sessions';
+export { searchSessions } from './session_search_sessions';
 export { renameSession } from './session_rename_session';
 export { categorizeSession } from './session_categorize_session';
 export { pinSession } from './session_pin_session';
