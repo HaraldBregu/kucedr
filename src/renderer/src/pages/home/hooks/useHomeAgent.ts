@@ -404,6 +404,30 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		[sendPrompt, sessionId]
 	);
 
+	const regenerate = useCallback(
+		async (agentMessageId: string): Promise<boolean> => {
+			const agent = getAgentApi();
+			const index = chatState.messages.findIndex((message) => message.id === agentMessageId);
+			const user = chatState.messages.slice(0, index).findLast((message) => message.role === 'user');
+			if (!agent || user?.role !== 'user') return false;
+			const users = chatState.messages.filter((message) => message.role === 'user');
+			const userOffsetFromEnd = users.length - 1 - users.indexOf(user);
+			const stored = historyToChatMessages(
+				(await agent.getSessionSnapshot(sessionId)).messages
+			).filter((message) => message.role === 'user').length;
+			// A reply that failed before its message was saved has nothing to cut, so the message is sent again.
+			const resend = stored === users.length - 1 && userOffsetFromEnd === 0;
+			if (!resend && stored !== users.length) return false;
+			if (!resend && !(await agent.editUserMessage(sessionId, userOffsetFromEnd))) return false;
+			return sendPrompt(
+				user.content,
+				resend ? (user.attachments ?? []).flatMap((attachment) => attachment.file ?? []) : [],
+				{ replaceMessageId: user.id, preserveInput: true, resend }
+			);
+		},
+		[chatState.messages, sendPrompt, sessionId]
+	);
+
 	// useEffect(() => {
 	// 	const agent = getAgentApi();
 	// 	if (!agent) return;
