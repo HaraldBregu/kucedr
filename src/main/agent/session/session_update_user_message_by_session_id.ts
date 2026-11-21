@@ -10,7 +10,7 @@ export function updateUserMessageBySessionId(
 	sessionId: string,
 	location: string,
 	userOffsetFromEnd: number,
-	content: string,
+	content: string | undefined,
 	coordinator?: SessionCoordinator
 ): boolean {
 	const root = sessionsRoot(location);
