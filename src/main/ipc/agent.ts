@@ -35,7 +35,12 @@ import type {
 import { normalizeAgentInputFiles } from '../../shared/agent_files';
 import { listModes } from '../agent/modes/list';
 import { modeInfo } from '../agent/modes/info';
-import { requireUuidSessionId, sessionPath, sessionsRoot } from '../agent/session';
+import {
+	requireUuidSessionId,
+	searchSessions,
+	sessionPath,
+	sessionsRoot,
+} from '../agent/session';
 import { workspacePath } from '../agent/system';
 import {
 	getPermissions,
