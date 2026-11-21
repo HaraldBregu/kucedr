@@ -59,7 +59,8 @@ Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces an
 
 ## Control and Privacy
 
-- Model, database, and search API keys are stored in plaintext in local provider settings.
+- Model, database, and search API keys are encrypted with secure device storage in local provider
+  settings. Saving a new key requires secure device storage.
 - Storage secret keys require secure device storage. MCP secrets, channel tokens, and account
   sessions use encrypted device storage when available, with memory-only fallback for those secrets.
 - Prompts, attachments, and tool data may be sent to the providers, MCP servers, websites you configure. Backup and version sync upload selected folder data to configured storage.
