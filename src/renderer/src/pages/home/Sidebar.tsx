@@ -22,7 +22,9 @@ import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session
 import type { AgentSessionSummary } from '@/lib/compat';
 import { cn } from '@/lib/utils';
 import { playSound } from '@/lib/sounds/play';
+import type { AgentSessionSearchResult } from '@shared/agent_types';
 import type { OpenExtension } from './components/ExtensionPage';
+import { ChatFinder } from './Finder';
 import { stored } from './stored';
 
 const SESSION_MIME = 'application/x-chat-session';
