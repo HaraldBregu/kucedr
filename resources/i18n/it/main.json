@@ -2459,6 +2459,11 @@
 			"queued": "Messaggi in coda",
 			"remove": "Rimuovi messaggio in coda"
 		},
+		"regenerate": {
+			"label": "Rigenera",
+			"retry": "Riprova",
+			"confirm": "Rigenerare questa risposta? I messaggi successivi verranno eliminati. I file modificati dalle risposte eliminate non vengono ripristinati."
+		},
 		"placeholderDescription": "Inizia una conversazione con l'AI per fare brainstorming, redigere o perfezionare idee."
 	},
 	"writing": {
