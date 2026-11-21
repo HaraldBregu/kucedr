@@ -40,6 +40,7 @@ import { listModes } from '../agent/modes/list';
 import { modeInfo } from '../agent/modes/info';
 import {
 	requireUuidSessionId,
+	resolveStoredSessionId,
 	searchSessions,
 	sessionPath,
 	sessionsRoot,
