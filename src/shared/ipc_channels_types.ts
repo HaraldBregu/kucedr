@@ -239,7 +239,7 @@ export interface AgentInvokeChannelMap {
 		result: import('./agent_types').AgentCompactSessionResult;
 	};
 	[AgentChannels.editUserMessage]: {
-		args: [sessionId: string, userOffsetFromEnd: number, content: string];
+		args: [sessionId: string, userOffsetFromEnd: number, content?: string];
 		result: boolean;
 	};
 	[AgentChannels.clearMessages]: { args: [sessionId: string]; result: void };
