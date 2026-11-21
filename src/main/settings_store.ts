@@ -44,6 +44,7 @@ export type AppSettingsState = {
 	trayClickAction: TrayClickAction;
 	keepAwake: boolean;
 	soundFeedbackEnabled: boolean;
+	notificationsEnabled: boolean;
 	chatTextSize: ChatTextSize;
 	zoomFactor: ZoomFactor;
 	workspaceWideContent: boolean;
