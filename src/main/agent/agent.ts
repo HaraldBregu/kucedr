@@ -407,8 +407,9 @@ export class Agent {
 	}
 
 	private emit(record: AgentRunRecord<InternalAgentSendOptions>, event: AgentResponseEvent): void {
-		record.responseEvents.push(event);
-		record.request.options.streamEvent?.(event);
+		const stamped = { ...event, seq: record.responseEvents.length };
+		record.responseEvents.push(stamped);
+		record.request.options.streamEvent?.(stamped);
 	}
 
 	getSessionSnapshot(sessionId: string): AgentSessionSnapshot {
@@ -506,7 +507,7 @@ export class Agent {
 		return resolvePromptInputCapabilities(getProviderId(), getModelId());
 	}
 
-	editUserMessage(sessionId: string, userOffsetFromEnd: number, content: string): Promise<boolean> {
+	editUserMessage(sessionId: string, userOffsetFromEnd: number, content?: string): Promise<boolean> {
 		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
 		return this.scheduler.run(
 			resolvedSessionId,
