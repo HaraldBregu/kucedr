@@ -28,6 +28,7 @@ export const Messages = memo(function Messages({
 		content: string
 	) => Promise<boolean>;
 	readonly onReply: (message: { id: string; content: string }) => void;
+	readonly onRegenerate: (messageId: string) => Promise<boolean>;
 	readonly modes: readonly AgentModeInfo[];
 	readonly onAction: (prompt: string) => void;
 }): ReactElement {
