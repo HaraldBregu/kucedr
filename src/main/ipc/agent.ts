@@ -637,7 +637,8 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					if (!Number.isSafeInteger(userOffsetFromEnd) || Number(userOffsetFromEnd) < 0)
 						throw new Error('Invalid user message offset.');
 					const normalizedContent = optionalTrimmedString(content);
-					if (!normalizedContent) throw new Error('Invalid user message content.');
+					if (content !== undefined && !normalizedContent)
+						throw new Error('Invalid user message content.');
 					return agent.editUserMessage(
 						requireUuidSessionId(sessionId),
 						Number(userOffsetFromEnd),
