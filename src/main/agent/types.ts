@@ -126,6 +126,20 @@ export type {
 	SessionUsage,
 };
 
+export type RunSignal = {
+	sessionId: string;
+	category: SessionCategory;
+	windowId?: number;
+} & (
+	| { phase: 'started' }
+	| { phase: 'waiting'; reason: 'approval' | 'question' }
+	| {
+			phase: 'finished';
+			stopReason: import('../../shared/agent_types').AgentRunStopReason;
+			text: string;
+	  }
+);
+
 export type RuntimeModelEvent = LlmEvent;
 
 export type RuntimeOutput = SessionResult;
