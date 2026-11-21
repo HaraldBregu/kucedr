@@ -231,6 +231,15 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		window.dispatchEvent(new Event('kucedr:focus-chat-input'));
 	};
 
+	const openResult = (result: AgentSessionSearchResult): void => {
+		clearSelection();
+		setSessionId(result.id);
+		setSessionTitle?.(result.title.trim() || t('settings.chatHistory.untitled'), result.id);
+		navigate('/home');
+		window.dispatchEvent(new Event('kucedr:show-chat'));
+		window.dispatchEvent(new CustomEvent('kucedr:search-chat', { detail: search.trim() }));
+	};
+
 	const pinnedSessions = activeSessions.filter((session) => session.pinned);
 	const categoryIds = new Set(categories.map((category) => category.id));
 	const recentSessions = activeSessions.filter((session) => !session.pinned && !categoryIds.has(assignments[session.id]));
