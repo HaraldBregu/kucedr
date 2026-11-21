@@ -2459,6 +2459,11 @@
 			"queued": "Queued follow-ups",
 			"remove": "Remove follow-up"
 		},
+		"regenerate": {
+			"label": "Regenerate",
+			"retry": "Retry",
+			"confirm": "Regenerate this reply? The messages after it will be discarded. Files changed by the discarded replies are not restored."
+		},
 		"placeholderDescription": "Start a conversation with AI to brainstorm, draft, or refine ideas."
 	},
 	"writing": {
