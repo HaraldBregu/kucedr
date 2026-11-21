@@ -13,7 +13,10 @@ import type { Agent } from '../agent/agent';
 import type { LoggerService } from '../shared';
 import type { PublicProvider } from '../../shared/provider_types';
 import { loadProviders } from '../models';
-import { getProvider } from '../settings_store';
+import { getLanguage, getNotificationsEnabled, getProvider } from '../settings_store';
+import { loadTranslations } from '../i18n';
+import { createNotifier } from '../notifications/notifier';
+import { listSchedules } from '../tasks';
 import type {
 	AgentContextMode,
 	AgentMediaModelSettings,
