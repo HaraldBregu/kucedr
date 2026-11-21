@@ -417,6 +417,14 @@ export class Agent {
 		const stamped = { ...event, seq: record.responseEvents.length };
 		record.responseEvents.push(stamped);
 		record.request.options.streamEvent?.(stamped);
+		if (event.type === 'tool_permission_request' || event.type === 'user_input_request')
+			this.onRun?.({
+				sessionId: record.request.sessionId,
+				category: record.request.category,
+				windowId: record.request.windowId,
+				phase: 'waiting',
+				reason: event.type === 'tool_permission_request' ? 'approval' : 'question',
+			});
 	}
 
 	getSessionSnapshot(sessionId: string): AgentSessionSnapshot {
