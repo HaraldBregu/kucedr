@@ -187,6 +187,8 @@ export interface AgentApi {
 	listModes: () => Promise<import('./agent_types').AgentModeInfo[]>;
 	listSessions: (includeAll?: boolean) => Promise<AgentSessionSummary[]>;
 	searchSessions: (query: string) => Promise<AgentSessionSearchResult[]>;
+	viewSession: (sessionId: string | null) => Promise<void>;
+	onOpenSession: (listener: (sessionId: string) => void) => () => void;
 	openSessionsFolder: () => Promise<void>;
 	openSessionFolder: (sessionId: string) => Promise<void>;
 	renameSession: (sessionId: string, title: string) => Promise<void>;
