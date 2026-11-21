@@ -636,6 +636,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		isLoading,
 		modeIds,
 		modes,
+		regenerate,
 		removeFollowUp,
 		replyTo,
 		replyToMessage,
