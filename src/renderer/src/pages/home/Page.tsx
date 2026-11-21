@@ -1028,6 +1028,7 @@ function PageContent(): ReactElement {
 										activeAgentId={agent.chatState.activeAgentId}
 										onEdit={agent.editUserMessage}
 										onReply={agent.replyToMessage}
+										onRegenerate={agent.regenerate}
 										modes={agent.modes}
 										onAction={agent.runModeAction}
 									/>
