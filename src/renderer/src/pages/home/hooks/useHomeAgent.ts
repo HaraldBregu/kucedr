@@ -7,7 +7,7 @@ import type { AgentFollowUp } from '@shared/agent_types';
 import { useModes } from '@/hooks/use-modes';
 import { playSound } from '@/lib/sounds/play';
 import { formatReplyMessage } from '@shared/reply';
-import { useHomeAgentContext, type AgentMessage } from '../context';
+import { historyToChatMessages, useHomeAgentContext, type AgentMessage } from '../context';
 import { expandTaskCommand } from './commands';
 import { filesToAgentInput } from './files';
 import { attachmentPath } from '../attachments/path';
@@ -88,6 +88,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 	const requestIdRef = useRef(0);
 	const requestActiveRef = useRef(false);
 	const activeRunIdRef = useRef<string | undefined>(undefined);
+	const sentRunIdsRef = useRef(new Set<string>());
 	const localInteractionRef = useRef(false);
 	const inputRef = useRef<HTMLTextAreaElement>(null);
 	const resolvedSessionRef = useRef<{ requestId: number; sessionId: string } | undefined>(
@@ -176,6 +177,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			requestIdRef.current = requestId;
 			requestActiveRef.current = true;
 			activeRunIdRef.current = runId;
+			sentRunIdsRef.current.add(runId);
 			localInteractionRef.current = true;
 			const submittedAtMs = Date.now();
 
@@ -467,7 +469,11 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 
 		resolvedSessionRef.current = undefined;
 		requestActiveRef.current = false;
+		activeRunIdRef.current = undefined;
 		localInteractionRef.current = false;
+		const pending: AgentResponseEvent[] = [];
+		let applyLive = (event: AgentResponseEvent): void => void pending.push(event);
+		const offResponse = agent.onResponse((event) => applyLive(event));
 		window.queueMicrotask(() => {
 			if (cancelled) return;
 			if (!requestActiveRef.current) setIsLoading(false);
@@ -517,6 +523,18 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				for (const event of active.events) {
 					dispatchChat({ type: 'apply_response_event', event, receivedAtMs: Date.now() });
 				}
+				if (sentRunIdsRef.current.has(active.runId)) return;
+				applyLive = (event) => {
+					if (event.runId !== active.runId || (event.seq ?? -1) < active.events.length) return;
+					dispatchChat({ type: 'apply_response_event', event, receivedAtMs: Date.now() });
+					if (event.type === 'follow_up')
+						updateFollowUps(followUpsRef.current.filter((followUp) => followUp.id !== event.id));
+					if (event.type !== 'run_finished' || event.agentId !== HOME_AGENT_ID) return;
+					if (activeRunIdRef.current === active.runId) activeRunIdRef.current = undefined;
+					setIsLoading(false);
+					dispatchChat({ type: 'complete_active', response: '', completedAtMs: Date.now() });
+				};
+				pending.forEach((event) => applyLive(event));
 			})
 			.catch(() => undefined)
 			.finally(() => {
@@ -525,9 +543,10 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 
 		return () => {
 			cancelled = true;
+			offResponse();
 			resolvedSessionRef.current = undefined;
 		};
-	}, [dispatchChat, sessionId]);
+	}, [dispatchChat, sessionId, updateFollowUps]);
 
 	useEffect(() => {
 		const refresh = (event: Event): void => {
@@ -546,11 +565,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 
 	useEffect(() => {
 		return () => {
-			const runId = activeRunIdRef.current;
-			if (runId)
-				void getAgentApi()
-					?.cancel(runId)
-					.catch(() => undefined);
 			requestIdRef.current += 1;
 			resolvedSessionRef.current = undefined;
 			requestActiveRef.current = false;
