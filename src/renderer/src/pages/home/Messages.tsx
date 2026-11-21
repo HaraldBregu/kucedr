@@ -85,6 +85,19 @@ export const Messages = memo(function Messages({
 						showHeader={showAssistantHeader}
 						className={groupedAssistantClassName}
 						onReply={onReply}
+						canRegenerate={!isLoading && !voiceMode}
+						onRegenerate={
+							messages.slice(0, index).some((earlier) => earlier.role === 'user')
+								? () => {
+										if (
+											messages.slice(index + 1).some((later) => later.role === 'user') &&
+											!window.confirm(t('chat.regenerate.confirm'))
+										)
+											return;
+										void onRegenerate(message.id);
+									}
+								: undefined
+						}
 						modes={modes}
 						canAct={index === messages.length - 1 && message.state === 'completed' && !isLoading}
 						onAction={onAction}
