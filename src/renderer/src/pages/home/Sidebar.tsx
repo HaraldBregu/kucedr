@@ -570,8 +570,9 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					)}
 				</SidebarMenu>
 			</header>
+			<ChatFinder query={search} onQueryChange={setSearch} onOpen={openResult} />
 			<section
-				className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3"
+				className={cn('no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3', search.trim() && 'hidden')}
 				aria-busy={loading}
 				onKeyDown={(event) => {
 					if (event.key === 'Escape') clearSelection();
