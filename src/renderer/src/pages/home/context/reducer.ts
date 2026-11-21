@@ -545,6 +545,7 @@ export function agentChatReducer(state: AgentChatState, action: AgentChatAction)
 				(message) => message.id === action.messageId && message.role === 'user'
 			);
 			if (index < 0) return state;
+			const existing = state.messages[index];
 			const agentMessage = createAgentMessage(
 				action.agentMessageId,
 				undefined,
@@ -553,7 +554,11 @@ export function agentChatReducer(state: AgentChatState, action: AgentChatAction)
 			return {
 				messages: [
 					...state.messages.slice(0, index),
-					createUserMessage(action.messageId, action.content),
+					createUserMessage(
+						action.messageId,
+						action.content,
+						existing.role === 'user' ? existing.attachments : undefined
+					),
 					agentMessage,
 				],
 				activeAgentId: agentMessage.id,
