@@ -637,6 +637,8 @@ export interface AppApi extends AppStorageApi {
 	setSoundFeedbackEnabled: (enabled: boolean) => Promise<void>;
 	getSoundFeedbackEnabled: () => Promise<boolean>;
 	onSoundFeedbackEnabledChanged: (callback: (enabled: boolean) => void) => () => void;
+	setNotificationsEnabled: (enabled: boolean) => Promise<void>;
+	getNotificationsEnabled: () => Promise<boolean>;
 	setChatTextSize: (size: import('./app_types').ChatTextSize) => Promise<void>;
 	getChatTextSize: () => Promise<import('./app_types').ChatTextSize>;
 	onChatTextSizeChanged: (
