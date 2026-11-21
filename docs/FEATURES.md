@@ -519,8 +519,8 @@ Kucedr stores configuration and working data below Electron's application-data d
 | Storage     | Local folder selections and cloud-backup schedule.                                                                                          |
 | Diagnostics | Local rotating logs and crash dumps. Crash dumps are not uploaded by the current configuration.                                             |
 
-Model, database, and search provider keys are stored as entered in the local provider settings
-file and are visible in Provider settings. MCP secrets use their local
+Model, database, and search provider keys are encrypted with secure device storage in the local
+provider settings file and are visible in Provider settings. MCP secrets use their local
 stores and should still be protected as sensitive app data.
 
 Prompts, attachments, tool inputs, and generated content may be sent to configured model providers,
