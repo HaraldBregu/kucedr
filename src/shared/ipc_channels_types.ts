@@ -693,6 +693,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: boolean;
 	};
+	[AppChannels.setNotificationsEnabled]: {
+		args: [enabled: boolean];
+		result: void;
+	};
+	[AppChannels.getNotificationsEnabled]: {
+		args: [];
+		result: boolean;
+	};
 	[AppChannels.setChatTextSize]: {
 		args: [size: import('./app_types').ChatTextSize];
 		result: void;
