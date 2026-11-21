@@ -265,7 +265,9 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					sessionId,
 					modeIds: runModeIds,
 					...(sendOptions.replyTo ? { replyTo: sendOptions.replyTo } : {}),
-					...(sendOptions.replaceMessageId ? { reuseLastUserMessage: true } : {}),
+					...(sendOptions.replaceMessageId && !sendOptions.resend
+						? { reuseLastUserMessage: true }
+						: {}),
 					...(inputFiles.length > 0 ? { files: inputFiles } : {}),
 				};
 				let response = '';
