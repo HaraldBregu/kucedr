@@ -165,10 +165,11 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				preserveInput?: boolean;
 				replyTo?: string;
 				replaceMessageId?: string;
+				resend?: boolean;
 			} = {}
 		): Promise<boolean> => {
 			const trimmed = expandTaskCommand(prompt.trim());
-			if (!trimmed && files.length === 0) return false;
+			if (!trimmed && files.length === 0 && !sendOptions.replaceMessageId) return false;
 			const runModeIds = [...(sendOptions.modeIds ?? modeIds)];
 			const displayContent = formatReplyMessage(trimmed, sendOptions.replyTo);
 
