@@ -378,6 +378,46 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		const renderer = new AgentRenderer(windows, apps);
 		const mainAccess = renderer.assert.bind(renderer);
 		const workspaceAccess = renderer.assertWorkspace.bind(renderer);
+		const notifier = createNotifier({
+			enabled: getNotificationsEnabled,
+			title: (signal) => {
+				const lines = (
+					loadTranslations(getLanguage(), 'main') as unknown as {
+						notifications: { run: Record<string, string> };
+					}
+				).notifications.run;
+				if (signal.category === 'health') return lines.healthTitle;
+				if (signal.category === 'task')
+					return (
+						listSchedules().find((schedule) => schedule.sessionIds.includes(signal.sessionId))
+							?.name ?? app.name
+					);
+				return (
+					agent.listSessions('main').find((session) => session.id === signal.sessionId)?.title ||
+					app.name
+				);
+			},
+			line: (key) =>
+				(
+					loadTranslations(getLanguage(), 'main') as unknown as {
+						notifications: { run: Record<string, string> };
+					}
+				).notifications.run[key],
+			open: (windowId, sessionId) =>
+				eventBus.sendTo(windowId, AgentChannels.openSession, sessionId),
+		});
+		agent.onRun = notifier.run;
+		ipcMain.handle(
+			AgentChannels.viewSession,
+			wrapIpcHandler((event, sessionId: unknown): void => {
+				notifier.view(
+					renderer.assert(event).id,
+					typeof sessionId === 'string'
+						? resolveStoredSessionId(sessionId, agent.config.location)
+						: null
+				);
+			}, AgentChannels.viewSession)
+		);
 		let watcherStarted = false;
 		const startWorkspaceWatcher = (root: string): void => {
 			if (watcherStarted) return;
