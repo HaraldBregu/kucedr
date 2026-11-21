@@ -211,6 +211,8 @@ export class Agent {
 			queuedAt: Date.now(),
 			...(options.windowId === undefined ? {} : { windowId: options.windowId }),
 		});
+		const run = { sessionId, category, windowId: options.windowId };
+		this.onRun?.({ ...run, phase: 'started' });
 		const scheduled = this.scheduler.run(sessionId, () => this.process(record), {
 			priority: RUN_PRIORITIES[category],
 			signal: record.controller.signal,
