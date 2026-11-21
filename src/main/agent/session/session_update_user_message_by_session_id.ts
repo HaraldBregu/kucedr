@@ -39,7 +39,7 @@ export function updateUserMessageBySessionId(
 			coordinator?.invalidate(filePath);
 			messages.splice(index, messages.length - index, {
 				...message,
-				content,
+				content: content ?? message.content,
 				followUp: undefined,
 			});
 			writeMessagesFile(filePath, backupPath, `${JSON.stringify(messages, null, '\t')}\n`);
