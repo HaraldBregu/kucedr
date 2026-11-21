@@ -998,7 +998,9 @@ function PageContent(): ReactElement {
 						<TooltipTrigger render={<PopoverTrigger asChild>{infoButton}</PopoverTrigger>} />
 						<TooltipContent side="bottom">{detailsPopoverOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
 					</Tooltip>
-					<PopoverContent align="end" sideOffset={-32} className="w-64 border-0 bg-transparent p-0 shadow-lg">
+					<PopoverContent align="end" sideOffset={-32} className="w-64 border-0 bg-transparent p-0 shadow-lg" onFocusOutside={(event) => {
+						if (chatSearch) event.preventDefault();
+					}}>
 						{chatDetails}
 					</PopoverContent>
 				</Popover>
