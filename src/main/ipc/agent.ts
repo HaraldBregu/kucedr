@@ -517,6 +517,16 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.searchSessions,
+			wrapAgentHandler(
+				mainAccess,
+				(query: unknown) =>
+					searchSessions(agent.config.location, typeof query === 'string' ? query : ''),
+				AgentChannels.searchSessions
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.openSessionsFolder,
 			wrapAgentHandler(
 				mainAccess,
