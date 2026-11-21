@@ -415,7 +415,6 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			const stored = historyToChatMessages(
 				(await agent.getSessionSnapshot(sessionId)).messages
 			).filter((message) => message.role === 'user').length;
-			// A reply that failed before its message was saved has nothing to cut, so the message is sent again.
 			const resend = stored === users.length - 1 && userOffsetFromEnd === 0;
 			if (!resend && stored !== users.length) return false;
 			if (!resend && !(await agent.editUserMessage(sessionId, userOffsetFromEnd))) return false;
