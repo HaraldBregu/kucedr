@@ -14,6 +14,7 @@ export const Messages = memo(function Messages({
 	activeAgentId,
 	onEdit,
 	onReply,
+	onRegenerate,
 	modes,
 	onAction,
 }: {
