@@ -45,8 +45,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
 
 1. **Replies that survive leaving Home (5.3) and working Terms and Privacy links (6.4).** Both are
    small and affect every user today.
-2. **Privacy: Privacy centre, sealed credentials, encrypted data** (1.1–1.4). Chats, memory and
-   model API keys sit unencrypted on disk today.
+2. **Privacy: Privacy centre, sealed credentials, encrypted data** (1.1–1.4). Chats and memory sit
+   unencrypted on disk today; model API keys are sealed, but Settings still shows them in full.
 3. **Agent efficiency: automatic compaction and run insights** (2.1–2.2). Measured rounds show
    turn count and prompt size are the remaining levers, and the user cannot see either.
 4. **Accessibility: screen-reader chat and full keyboard use** (4.1–4.2). A screen-reader user
