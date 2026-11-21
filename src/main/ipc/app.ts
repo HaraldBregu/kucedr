@@ -706,6 +706,20 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
+			AppChannels.setNotificationsEnabled,
+			wrapTrustedHandler((enabled: boolean) => {
+				setStoredNotificationsEnabled(enabled);
+			}, AppChannels.setNotificationsEnabled)
+		);
+
+		ipcMain.handle(
+			AppChannels.getNotificationsEnabled,
+			wrapSimpleHandler(() => {
+				return getStoredNotificationsEnabled();
+			}, AppChannels.getNotificationsEnabled)
+		);
+
+		ipcMain.handle(
 			AppChannels.setChatTextSize,
 			wrapTrustedHandler((size: ChatTextSize) => {
 				setStoredChatTextSize(size);
