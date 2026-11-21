@@ -438,6 +438,20 @@ export function AssistantMessage({
 						>
 							<Reply className="size-3.5" />
 						</Button>
+						{onRegenerate && message.state !== 'error' && (
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-xs"
+								className="text-muted-foreground hover:text-foreground"
+								aria-label={t('chat.regenerate.label')}
+								title={t('chat.regenerate.label')}
+								disabled={!canRegenerate}
+								onClick={onRegenerate}
+							>
+								<RefreshCw className="size-3.5" />
+							</Button>
+						)}
 					</MessageActions>
 				</>
 			)}
