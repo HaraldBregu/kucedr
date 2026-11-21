@@ -54,6 +54,8 @@ import {
 	setKeepAwake as setStoredKeepAwake,
 	getSoundFeedbackEnabled as getStoredSoundFeedbackEnabled,
 	setSoundFeedbackEnabled as setStoredSoundFeedbackEnabled,
+	getNotificationsEnabled as getStoredNotificationsEnabled,
+	setNotificationsEnabled as setStoredNotificationsEnabled,
 	getChatTextSize as getStoredChatTextSize,
 	setChatTextSize as setStoredChatTextSize,
 	getZoomFactor as getStoredZoomFactor,
