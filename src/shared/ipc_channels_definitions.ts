@@ -11,6 +11,8 @@ export const AgentChannels = {
 	listModes: 'agent:list-modes',
 	listSessions: 'agent:list-sessions',
 	searchSessions: 'agent:search-sessions',
+	viewSession: 'agent:view-session',
+	openSession: 'agent:open-session',
 	openSessionsFolder: 'agent:sessions:open-folder',
 	openSessionFolder: 'agent:session:open-folder',
 	renameSession: 'agent:rename-session',
