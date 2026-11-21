@@ -13,7 +13,10 @@ import type {
 } from '../../shared/provider_types';
 import type { PersistedStorageProvider } from '../storage/providers/types';
 import type { ProvidersStoreState } from './providers_types';
+import { openProvider } from './open';
+import { persistedProviders } from './persisted';
 import { restrictProviderPermissions } from './restrict';
+import { sealProvider } from './seal';
 
 const defaults: ProvidersStoreState = {
 	models: [],
