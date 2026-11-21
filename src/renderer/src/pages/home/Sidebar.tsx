@@ -58,6 +58,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const [collapsed, setCollapsed] = useState<string[]>(() => stored('chat-collapsed-groups', []));
 	const [editingCategoryId, setEditingCategoryId] = useState<string>();
 	const [dropTarget, setDropTarget] = useState<string>();
+	const [search, setSearch] = useState('');
 
 	useEffect(() => localStorage.setItem('chat-categories', JSON.stringify(categories)), [categories]);
 	useEffect(() => localStorage.setItem('chat-category-assignments', JSON.stringify(assignments)), [assignments]);
