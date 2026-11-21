@@ -76,8 +76,9 @@ Chromium state and crash dumps uses Electron's own platform-specific paths.
 | `library/`           | Default generated media, recordings, browser screenshots/PDFs, and imported files |
 | `rag/vectors.sqlite` | Local RAG vectors and source records                                       |
 
-Model, database, and search API keys are stored as entered in `providers/settings.json`.
-Storage secret keys use secure device storage. Account sessions are encrypted when secure
+Model, database, and search API keys are encrypted with secure device storage in
+`providers/settings.json`; keys saved as entered by earlier versions are encrypted the first time
+they are read. Storage secret keys use secure device storage. Account sessions are encrypted when secure
 storage is available, otherwise retained only in memory. Do not assume the entire profile is
 encrypted. See [Account and Cloud Architecture](CLOUD.md) for account binding and backup scope.
 
