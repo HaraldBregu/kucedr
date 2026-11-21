@@ -49,7 +49,7 @@ Credentials do not all use the same storage mechanism:
 
 | Data                                            | Current behavior                                                                                            |
 | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Model, database, and search API keys            | Stored in plaintext in local provider settings under `~/.kucedr/providers/settings.json`                    |
+| Model, database, and search API keys            | Encrypted with `safeStorage` in `~/.kucedr/providers/settings.json`; saving a new key requires secure storage. Keys saved as plaintext by earlier versions are encrypted the first time they are read with secure storage available |
 | Storage provider secret keys                    | Encrypted with Electron `safeStorage`; saving or opening them requires secure storage availability          |
 | MCP secrets and local-server environment values | Encrypted with `safeStorage` when available; otherwise retained in memory                                   |
 | Account sessions                                | Encrypted when secure storage is available; fall back to memory when it is unavailable or persistence fails |
