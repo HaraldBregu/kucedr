@@ -47,6 +47,7 @@ import type {
 	AgentRunOptions,
 	AgentResponseEvent,
 	AgentSessionSummary,
+	AgentSessionSearchResult,
 	AgentSessionSnapshot,
 	AgentToolPermissionDecision,
 	AgentToolPermissionScope,
@@ -169,6 +170,7 @@ export interface AgentApi {
 		options?: AgentRunOptions,
 		onEvent?: (event: AgentResponseEvent) => void
 	) => Promise<string>;
+	onResponse: (listener: (event: AgentResponseEvent) => void) => () => void;
 	cancel: (runId: string) => Promise<boolean>;
 	followUp: (runId: string, followUp: import('./agent_types').AgentFollowUp) => Promise<boolean>;
 	cancelFollowUp: (runId: string, id: string) => Promise<boolean>;
