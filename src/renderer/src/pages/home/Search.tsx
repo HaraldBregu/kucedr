@@ -34,6 +34,7 @@ export function ChatSearch({ scroll, active, refreshKey, initialQuery }: {
 		}
 		ranges.current = found;
 		setCount(found.length);
+		setFirst(found[0]?.startContainer);
 		CSS.highlights.set('chat-search', new Highlight(...found));
 		return () => { CSS.highlights.delete('chat-search'); };
 	}, [scroll, needle, refreshKey]);
