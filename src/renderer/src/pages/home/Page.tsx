@@ -435,6 +435,7 @@ function PageContent(): ReactElement {
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
 	const [detailsPopoverOpen, setDetailsPopoverOpen] = useState(false);
+	const [chatSearch, setChatSearch] = useState('');
 	const browser = useBrowserTabs();
 	const [browserHidden, setBrowserHidden] = useState(false);
 	const browserAlive = browser.tabs.length > 0;
