@@ -66,6 +66,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	trayClickAction: 'toggle-chat',
 	keepAwake: false,
 	soundFeedbackEnabled: false,
+	notificationsEnabled: true,
 	chatTextSize: 'medium',
 	zoomFactor: 1,
 	workspaceWideContent: false,
