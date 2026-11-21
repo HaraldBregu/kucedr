@@ -90,12 +90,26 @@ function setSection(kind: ProviderCredentialKind, value: StoredProvider[]): void
 }
 
 function section(kind: ProviderCredentialKind): StoredProvider[] {
-	const value = providersStore.get(kind);
-	return Array.isArray(value) ? value.filter(isStoredProvider) : [];
+	const saved = persistedProviders(providersStore.get(kind));
+	const providers = saved.map(openProvider);
+	if (saved.some((provider) => typeof provider.apiKey === 'string') && isSafeStorageAvailable()) {
+		try {
+			writeSection(kind, providers);
+		} catch {
+			// Sealing old keys is best effort; they stay readable as saved.
+		}
+	}
+	return providers;
 }
 
 function writeSection(kind: ProviderCredentialKind, value: StoredProvider[]): void {
-	providersStore.set(kind, value);
+	const saved = new Map(
+		persistedProviders(providersStore.get(kind)).map((provider) => [provider.id, provider])
+	);
+	providersStore.set(
+		kind,
+		value.map((provider) => sealProvider(provider, saved.get(provider.id)))
+	);
 	if (typeof providersStore.path === 'string') {
 		restrictProviderPermissions(path.dirname(providersStore.path), providersStore.path);
 	}
