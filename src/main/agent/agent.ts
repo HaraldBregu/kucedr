@@ -36,7 +36,7 @@ import { startHealth, stopHealth } from '../health';
 import { rejectPendingToolPermissions } from './permissions';
 import { interruptPendingUserInput } from './user_input/user_input_pending';
 import { parseSkillCommand } from './skills';
-import type { Config, Message, RuntimeEvent, RuntimeInput } from './types';
+import type { Config, Message, RunSignal, RuntimeEvent, RuntimeInput } from './types';
 import type {
 	AgentRunOptions,
 	AgentFollowUp,
