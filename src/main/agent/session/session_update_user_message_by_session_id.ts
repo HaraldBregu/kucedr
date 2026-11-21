@@ -25,7 +25,12 @@ export function updateUserMessageBySessionId(
 		let remaining = userOffsetFromEnd;
 		for (let index = messages.length - 1; index >= 0; index -= 1) {
 			const message = messages[index];
-			if (message.role !== 'user' || typeof message.content !== 'string') continue;
+			if (message.role !== 'user') continue;
+			if (
+				typeof message.content !== 'string' &&
+				(content !== undefined || message.content.every((block) => block.internal === true))
+			)
+				continue;
 			if (remaining > 0) {
 				remaining -= 1;
 				continue;
