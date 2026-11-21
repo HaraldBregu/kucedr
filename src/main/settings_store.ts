@@ -187,6 +187,15 @@ export function setSoundFeedbackEnabled(enabled: boolean): void {
 	store.set('soundFeedbackEnabled', enabled);
 }
 
+export function getNotificationsEnabled(): boolean {
+	return store.get('notificationsEnabled');
+}
+
+export function setNotificationsEnabled(enabled: boolean): void {
+	if (typeof enabled !== 'boolean') throw new Error('Invalid notifications setting.');
+	store.set('notificationsEnabled', enabled);
+}
+
 export function getChatTextSize(): ChatTextSize {
 	const size = store.get('chatTextSize');
 	return CHAT_TEXT_SIZES.includes(size) ? size : 'medium';
