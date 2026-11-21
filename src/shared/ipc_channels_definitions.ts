@@ -255,6 +255,8 @@ export const AppChannels = {
 	setSoundFeedbackEnabled: 'app:set-sound-feedback-enabled',
 	getSoundFeedbackEnabled: 'app:get-sound-feedback-enabled',
 	soundFeedbackEnabledChanged: 'app:sound-feedback-enabled-changed',
+	setNotificationsEnabled: 'app:set-notifications-enabled',
+	getNotificationsEnabled: 'app:get-notifications-enabled',
 	setChatTextSize: 'app:set-chat-text-size',
 	getChatTextSize: 'app:get-chat-text-size',
 	chatTextSizeChanged: 'app:chat-text-size-changed',
