@@ -210,6 +210,14 @@ export interface AgentSessionSummary {
 	runStatus?: 'queued' | 'running' | 'cancelling';
 }
 
+export interface AgentSessionSearchResult {
+	id: string;
+	title: string;
+	lastMessageAtMs: number;
+	archived: boolean;
+	snippets: string[];
+}
+
 export interface AgentSessionSnapshot {
 	messages: AgentHistoryMessage[];
 	activeRun?: {
@@ -406,4 +414,5 @@ export type AgentRunStreamEvent =
 export type AgentResponseEvent = AgentRunStreamEvent & {
 	agentId: string;
 	runId: string;
+	seq?: number;
 };
