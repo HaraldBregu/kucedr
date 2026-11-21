@@ -154,6 +154,8 @@ export function AssistantMessage({
 	isStreaming = false,
 	className,
 	onReply,
+	canRegenerate = false,
+	onRegenerate,
 	modes = NO_MODES,
 	canAct = false,
 	onAction,
