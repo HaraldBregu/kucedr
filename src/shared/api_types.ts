@@ -199,7 +199,7 @@ export interface AgentApi {
 	editUserMessage: (
 		sessionId: string,
 		userOffsetFromEnd: number,
-		content: string
+		content?: string
 	) => Promise<boolean>;
 	clearMessages: (sessionId: string) => Promise<void>;
 	deleteSession: (sessionId: string) => Promise<void>;
