@@ -478,13 +478,19 @@ function PageContent(): ReactElement {
 			close();
 			updateMode('chat');
 		};
+		const search = (event: Event): void => {
+			setChatSearch((event as CustomEvent<string>).detail);
+			setDetailsPopoverOpen(true);
+		};
 		window.addEventListener('kucedr:open-extension', open);
 		window.addEventListener('kucedr:focus-chat-input', close);
 		window.addEventListener('kucedr:show-chat', show);
+		window.addEventListener('kucedr:search-chat', search);
 		return () => {
 			window.removeEventListener('kucedr:open-extension', open);
 			window.removeEventListener('kucedr:focus-chat-input', close);
 			window.removeEventListener('kucedr:show-chat', show);
+			window.removeEventListener('kucedr:search-chat', search);
 		};
 	}, [updateMode]);
 	const [attachmentsSessionId, setAttachmentsSessionId] = useState<string | null>(null);
