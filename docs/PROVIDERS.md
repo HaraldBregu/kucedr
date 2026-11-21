@@ -211,8 +211,8 @@ The code-only `bge` embedding adapter targets a self-hosted OpenAI-compatible en
 | Vector database | Pinecone | Pinecone Vector Database (`pinecone`)   |
 
 Save and edit Pinecone API keys under **Settings → Providers → Database**. Credentials are stored
-as entered in the local `providers/settings.json` file, separately from model and search
-credentials. Create a key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
+encrypted with secure device storage in the local `providers/settings.json` file, separately from
+model and search credentials. Create a key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
 
 Choose **Local SQLite** in **Settings → Knowledge** to index without a remote database account. New configurations default to local storage; existing remote selections are preserved. Selecting Pinecone adds a remote mirror, using its saved API key, while retrieval continues to use SQLite. Existing Pinecone indexes must match the selected embedding dimensions and cosine metric; use a different index name when those differ. The environment's `PINECONE_API_KEY` is not used. Configure the embedding provider's key separately under **Settings → Providers → Models**, then approve embedding access and, for a remote mirror, storage consent. Changing the database selection or account requires new storage consent. Failed-upload cleanup stays pinned to the account used for that upload.
 
