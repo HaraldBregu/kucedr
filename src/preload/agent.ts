@@ -7,6 +7,7 @@ import type {
 	AgentPromptInputCapabilities,
 	AgentResponseEvent,
 	AgentRunOptions,
+	AgentSessionSearchResult,
 	AgentSessionSummary,
 	AgentToolPermissionDecision,
 	AgentToolPermissionScope,
@@ -116,6 +117,7 @@ export const agent: AgentApi = {
 	): Promise<string> => {
 		return sendAgent(AgentChannels.send, message, options, onEvent);
 	},
+	onResponse: (listener) => typedOn(AgentChannels.response, listener),
 	cancel: (runId: string): Promise<boolean> => {
 		const normalizedRunId = optionalTrimmedString(runId);
 		if (!normalizedRunId) throw new Error('Invalid assistant run id.');
