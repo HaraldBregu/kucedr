@@ -5,7 +5,7 @@ import type { HealthActiveHours, HealthLogger } from './types';
 
 const HEALTH_AGENT_ID = 'health';
 const HEALTH_SESSION_ID = 'health';
-const HEALTH_OK = 'HEALTH_OK';
+export const HEALTH_OK = 'HEALTH_OK';
 
 const HEALTH_PROMPT_HEADER = [
 	'[HEALTH CHECK] This is an automated background health check, not a user message.',
