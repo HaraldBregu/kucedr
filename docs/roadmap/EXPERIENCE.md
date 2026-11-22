@@ -1,10 +1,10 @@
 # 3. User experience
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: proposal; 3.1, 3.3 and 3.9 are built (see each row).
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
-| 3.1 | Completion notifications | A system notification and dock badge when a background run, task or approval needs attention | Sounds and a shimmering title only today; no notifications anywhere | S |
+| 3.1 | Completion notifications | A system notification and dock badge when a background run, task or approval needs attention | Built 2026-11-21–22 (`src/main/notifications`): finished, failed and waiting chats, finished or failed tasks, health checks that need attention; a badge count; clicking opens the chat; a switch in Settings → General. Not checked in the running app | S |
 | 3.2 | Search across chats | Find any message in any chat from one search box | `src/renderer/src/pages/home/Search.tsx` searches the open chat only | M |
 | 3.3 | Regenerate and retry | Re-run a reply, or retry a failed one, from the message | Edit and stop exist | S |
 | 3.4 | Complete the "/" menu | Skills and task commands appear in the menu that already opens on `/` | `PromptSlash` lists modes, apps, settings pages and themes; skills and task commands are typed from memory | S |
