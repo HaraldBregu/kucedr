@@ -225,6 +225,19 @@ const GeneralPage: React.FC = () => {
 						}
 					/>
 					<SettingsRow
+						title={t('settings.application.runNotifications')}
+						description={t('settings.application.runNotificationsDescription')}
+						media={<Bell className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Switch
+								checked={notificationsEnabled}
+								onCheckedChange={handleNotificationsToggle}
+								aria-label={t('settings.application.runNotifications')}
+							/>
+						}
+					/>
+					<SettingsRow
 						title={t('settings.application.menuBar')}
 						description={t('settings.application.menuBarDescription')}
 						media={
