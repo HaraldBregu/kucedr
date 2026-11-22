@@ -59,6 +59,8 @@ Examples the agent can do silently: overwrite `~/.zshrc`, create `~/Library/Laun
 
 ### 2. High — agent can rewrite its own config (self-escalation)
 
+**Fixed.** `permissions/protected.ts` `protectedRoots()` denies writes to the whole `userDataLocation()` except the workspace and library (`protected_target.ts`, checked in `resolve_permission.ts` before any allow rule), plus shell startup files and, on macOS, `~/Library/LaunchAgents`. The roots are built in code, not stored, so settings cannot remove them. The same roots go into the sandbox `denyWrite` (`sandbox.ts`). Verified in the app: `write` to `settings/chat.json` was denied with no approval card and the file was unchanged; sandboxed `echo x > <data>/mcp/x` failed with "Operation not permitted". The description below is the original finding.
+
 **Where**
 `userDataLocation()` (`~/.kucedr`) holds both the writable workspace and the app's trust configuration:
 - `settings/*.json` — permission rules and tool settings per profile
