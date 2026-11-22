@@ -147,6 +147,29 @@ function RootRouteComponent(): React.JSX.Element {
 		isSettings ||
 		location.pathname === '/code' ||
 		location.pathname.startsWith('/code/');
+	const navigate = useNavigate();
+	const selectSession = (sessionId: string): void => {
+		setChatSessionId(sessionId);
+		setChatSessionTitle(undefined);
+		setChatSessionTitleSessionId(undefined);
+		persistChatSessionId(sessionId);
+	};
+	const visibleSessionId = isHome ? chatSessionId : null;
+	useEffect(() => {
+		void window.agent.viewSession(visibleSessionId).catch(() => undefined);
+	}, [visibleSessionId]);
+	useEffect(
+		() =>
+			window.agent.onOpenSession((sessionId) => {
+				setChatSessionId(sessionId);
+				setChatSessionTitle(undefined);
+				setChatSessionTitleSessionId(undefined);
+				persistChatSessionId(sessionId);
+				navigate('/home');
+				window.dispatchEvent(new Event('kucedr:show-chat'));
+			}),
+		[navigate]
+	);
 
 	return (
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
