@@ -2695,7 +2695,18 @@
 		"noteFeature1": "Notifications include the app icon automatically",
 		"noteFeature2": "Clicking a notification brings the app to focus",
 		"noteFeature3": "All notification events (shown, clicked, closed) are tracked",
-		"noteFeature4": "Supports different urgency levels and silent mode"
+		"noteFeature4": "Supports different urgency levels and silent mode",
+		"run": {
+			"ready": "Reply ready",
+			"failed": "Reply failed",
+			"approval": "Needs your approval",
+			"question": "Has a question",
+			"taskFinished": "Task finished",
+			"taskFailed": "Task failed",
+			"healthTitle": "Health check",
+			"healthAttention": "Needs your attention",
+			"healthFailed": "Health check failed"
+		}
 	},
 	"creativityPresets": {
 		"precise": "Precise",
