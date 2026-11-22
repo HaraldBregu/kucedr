@@ -110,6 +110,7 @@ const GeneralPage: React.FC = () => {
 		void window.app.getTrayEnabled().then(setTrayEnabled);
 		void window.app.getTrayClickAction().then(setTrayClickAction);
 		void window.app.getKeepAwake().then(setKeepAwake);
+		void window.app.getNotificationsEnabled().then(setNotificationsEnabled);
 		void window.app.getZoomFactor().then(setZoomFactor);
 		void window.win.getSize().then(setWindowSize);
 		const offTrayEnabled = window.app.onTrayEnabledChanged(setTrayEnabled);
