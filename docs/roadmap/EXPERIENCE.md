@@ -69,6 +69,8 @@ switch. A click does nothing when every window is closed.
 
 ### 3.3 Regenerate and retry
 
+Built as planned below; the complications are still unverified.
+
 - _Behaviour._ A Regenerate action beside Copy, Read aloud and Reply on assistant messages
   (`src/renderer/src/pages/home/components/AssistantMessage.tsx`), and a Retry button on a failed
   reply. The new reply replaces the old one. Regenerating an older reply discards what came after
