@@ -140,6 +140,8 @@ Secrets sealed with `safeStorage` (`providers/`, `mcp/`) are safer, but plain-te
 
 ### 5. Medium — macOS case-insensitive deny bypass (verified)
 
+**Fixed.** `shared/real_path.ts` uses `fs.realpathSync.native`, and `permissions/same_path_or_within.ts` lowercases both sides on `darwin` and `win32`. Verified in the app: with a write deny on `<data>/workspace/private`, `write` to `<data>/workspace/PRIVATE/a.txt` was denied and no file was created. The description below is the original finding.
+
 **Where**
 - `src/main/shared/real_path.ts` — uses `fs.realpathSync`, which keeps the caller's casing.
 - `permissions/permission_for.ts` — `path.matchesGlob` and the recursive-root `startsWith` check are case-sensitive.
