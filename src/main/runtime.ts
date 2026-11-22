@@ -205,6 +205,7 @@ app.whenReady().then(() => {
 			.refresh('wake')
 			.catch((error) => logger.error('Memory', 'Wake refresh failed', error));
 	});
+	void findBrowserProfiles().catch((error) => logger.error('Permissions', 'Browser profile scan failed', error));
 	recordAppLaunch();
 	if (app.isPackaged) startUpdater(eventBus, logger);
 	startStorageSync(logger, services.storageOperations);
