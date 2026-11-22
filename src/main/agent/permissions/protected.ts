@@ -5,6 +5,7 @@ import { agentLocation } from '../../shared/agent_location';
 import { libraryLocation } from '../../shared/library_location';
 import { realPath } from '../../shared/real_path';
 import { userDataLocation } from '../../shared/user_data_location';
+import { browserProfiles } from './browsers';
 
 export function protectedRoots(): { read: string[]; write: string[]; writable: string[] } {
 	const home = os.homedir();
