@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useState, type ReactNode } from 'react';
 import {
 	Navigate,
 	Outlet,
