@@ -76,6 +76,7 @@ const GeneralPage: React.FC = () => {
 	const [trayEnabled, setTrayEnabled] = useState(true);
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
+	const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 	const [windowSize, setWindowSize] = useState<WindowSize>('1200x800');
 	const [zoomFactor, setZoomFactor] = useState<ZoomFactor>(1);
 	const [sidebarTranslucency, setSidebarTranslucency] = useState<boolean | null>(null);
