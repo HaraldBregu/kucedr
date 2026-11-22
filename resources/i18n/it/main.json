@@ -583,6 +583,8 @@
 			"sidebarTranslucencyDescription": "Lascia intravedere lo sfondo attraverso la barra laterale.",
 			"soundFeedback": "Feedback sonoro",
 			"soundFeedbackDescription": "Riproduci suoni discreti per messaggi, attività dell’assistente e navigazione.",
+			"runNotifications": "Notifiche",
+			"runNotificationsDescription": "Avvisa quando una risposta è pronta, una chat ha bisogno di te o un'attività o un controllo di salute termina.",
 			"information": "Informazioni",
 			"actions": "Comportamento dell'applicazione",
 			"data": "Dati",
