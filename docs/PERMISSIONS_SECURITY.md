@@ -171,6 +171,8 @@ Add the write deny above in Settings → Permissions, ask the agent to write `~/
 
 ### 6. Medium — env injection into approved host commands
 
+**Fixed.** `tools/core/bash.ts` `parseInput` rejects a non-empty `env` when `elevated: true`, before permission is resolved. Verified in the app: `bash { command: "git status", elevated: true, env: { PATH: "/tmp" } }` returned "Elevated commands cannot override the environment." with no approval card. Sandboxed commands keep `env`. The description below is the original finding.
+
 **Where**
 - `execution/environment.ts` — `BOOTSTRAP` blocklist rejects loader variables but allows `PATH`, `BASH_FUNC_<name>%%`, `GIT_CONFIG_COUNT/KEY_n/VALUE_n`, `GIT_SSH_COMMAND`, `GIT_EXEC_PATH`, `PYTHONPATH`, `PYTHONSTARTUP`, `PERL5OPT`, `RUBYOPT`, `PROMPT_COMMAND`, …
 - `tools/core/bash.ts` — `elevated: true` runs on the host with `shell: true`.
