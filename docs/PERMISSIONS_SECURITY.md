@@ -188,7 +188,7 @@ Reject `env` when `elevated: true` — same rule `tools/core/readonly.ts` `readO
 
 ### 7. Medium — sensitive tools without approval
 
-- **Microphone.** `microphone_recorder` defaults to `allow` (`agent_profiles.ts:39` only lists `camera_recorder` and `update_health`). After the one-time macOS TCC prompt, the agent can record audio silently. Fix: add `microphone_recorder: { permission: 'ask' }` to `DEFAULT_TOOL_SETTINGS`. (Screen recording already requires the user to pick a source via `select_screen_source`.)
+- **Microphone. Fixed.** `agent_profiles.ts` sets `microphone_recorder: { permission: 'ask' }`, and `execution/capability.ts` gives recorder tools `approval: true`. Verified in the app: after `tool_search` loaded it, `microphone_recorder` showed a "Sensitive action" approval card; Deny returned a permission error. Original finding: `microphone_recorder` defaults to `allow` (`agent_profiles.ts:39` only lists `camera_recorder` and `update_health`). After the one-time macOS TCC prompt, the agent can record audio silently. Fix: add `microphone_recorder: { permission: 'ask' }` to `DEFAULT_TOOL_SETTINGS`. (Screen recording already requires the user to pick a source via `select_screen_source`.)
 - **Self-modifying prompts.** `update_soul`, `update_identity`, `update_user` are required tools (`REQUIRED_SYSTEM_TOOL_IDS`), always allowed, and their content is loaded into future system prompts → durable prompt injection after one bad web page. Fix: surface a diff in the chat, or require approval when the change originates after an untrusted tool result in the same run.
 
 ---
