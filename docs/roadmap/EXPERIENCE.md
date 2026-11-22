@@ -23,8 +23,7 @@ The browser pane later carries [Tor tabs](TOR.md) and [private and VPN tabs](VPN
 
 ## User experience in detail
 
-Suggested order: 3.1, 3.3, 3.4, 3.2, 3.5, with the browser pane prototype (3.9) alongside because
-it is the largest.
+Suggested order for what is left: 3.4, 3.2, 3.5. 3.1, 3.3 and the browser pane (3.9) are built.
 
 ### 3.1 Completion notifications
 
