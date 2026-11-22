@@ -1,9 +1,10 @@
-import React, { Suspense, lazy, useState, type ReactNode } from 'react';
+import React, { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import {
 	Navigate,
 	Outlet,
 	createHashRouter,
 	useLocation,
+	useNavigate,
 	useParams,
 	type RouteObject,
 } from 'react-router-dom';
