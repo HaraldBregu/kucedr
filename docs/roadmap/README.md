@@ -45,8 +45,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
 
 ## Recommended order
 
-1. **Replies that survive leaving Home (5.3) and working Terms and Privacy links (6.4).** Both are
-   small and affect every user today.
+1. **Working Terms and Privacy links (6.4).** Small and affects every user today. Replies that
+   survive leaving Home (5.3) were built 2026-11-21.
 2. **Privacy: Privacy centre, sealed credentials, encrypted data** (1.1–1.4). Chats and memory sit
    unencrypted on disk today; model API keys are sealed, but Settings still shows them in full.
 3. **Agent efficiency: automatic compaction and run insights** (2.1–2.2). Measured rounds show
