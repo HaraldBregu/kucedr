@@ -2695,7 +2695,18 @@
 		"noteFeature1": "Le notifiche includono automaticamente l'icona dell'app",
 		"noteFeature2": "Facendo clic su una notifica si porta l'app in primo piano",
 		"noteFeature3": "Tutti gli eventi notifica (mostrata, cliccata, chiusa) vengono tracciati",
-		"noteFeature4": "Supporta diversi livelli di urgenza e modalità silenziosa"
+		"noteFeature4": "Supporta diversi livelli di urgenza e modalità silenziosa",
+		"run": {
+			"ready": "Risposta pronta",
+			"failed": "Risposta non riuscita",
+			"approval": "Richiede la tua approvazione",
+			"question": "Ha una domanda",
+			"taskFinished": "Attività completata",
+			"taskFailed": "Attività non riuscita",
+			"healthTitle": "Controllo di salute",
+			"healthAttention": "Richiede la tua attenzione",
+			"healthFailed": "Controllo di salute non riuscito"
+		}
 	},
 	"creativityPresets": {
 		"precise": "Preciso",
