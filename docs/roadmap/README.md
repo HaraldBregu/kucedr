@@ -53,7 +53,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
    turn count and prompt size are the remaining levers, and the user cannot see either.
 4. **Accessibility: screen-reader chat and full keyboard use** (4.1–4.2). A screen-reader user
    cannot follow a streamed reply today.
-5. **User experience: completion notifications and search across chats** (3.1–3.2).
+5. **User experience: search across chats** (3.2). Completion notifications (3.1) were built
+   2026-11-21–22.
 6. **Setup with a local model** (15.1), which is also the most private way to use the app.
 7. **The first network shield pieces** (13.1, 13.3, 13.5, 13.8), which do not need the browser
    pane.
