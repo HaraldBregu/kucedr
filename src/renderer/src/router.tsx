@@ -148,12 +148,12 @@ function RootRouteComponent(): React.JSX.Element {
 		location.pathname === '/code' ||
 		location.pathname.startsWith('/code/');
 	const navigate = useNavigate();
-	const selectSession = (sessionId: string): void => {
+	const selectSession = useCallback((sessionId: string): void => {
 		setChatSessionId(sessionId);
 		setChatSessionTitle(undefined);
 		setChatSessionTitleSessionId(undefined);
 		persistChatSessionId(sessionId);
-	};
+	}, []);
 	const visibleSessionId = isHome ? chatSessionId : null;
 	useEffect(() => {
 		void window.agent.viewSession(visibleSessionId).catch(() => undefined);
@@ -161,14 +161,11 @@ function RootRouteComponent(): React.JSX.Element {
 	useEffect(
 		() =>
 			window.agent.onOpenSession((sessionId) => {
-				setChatSessionId(sessionId);
-				setChatSessionTitle(undefined);
-				setChatSessionTitleSessionId(undefined);
-				persistChatSessionId(sessionId);
+				selectSession(sessionId);
 				navigate('/home');
 				window.dispatchEvent(new Event('kucedr:show-chat'));
 			}),
-		[navigate]
+		[navigate, selectSession]
 	);
 
 	return (
