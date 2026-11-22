@@ -5,7 +5,9 @@ Part of the [Roadmap](README.md). Status: proposal.
 The items from the [Security audit](../SECURITY_AUDIT.md) and the permission reviews that are still
 open. The audit's own status table is out of date: [PERMISSIONS_PLAN.md](../PERMISSIONS_PLAN.md)
 records several of its items as fixed since. The list below was read from those docs on 2026-11-19;
-only #17, #22 and #24 were checked in code.
+only #17, #22 and #24 were checked in code. Rows 21.10–21.12 are the open findings of the
+[Chat agent permissions review](../PERMISSIONS_SECURITY.md), checked in code and in the built app on
+2026-11-22.
 
 ## Open items
 
