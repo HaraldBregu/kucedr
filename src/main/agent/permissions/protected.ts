@@ -9,41 +9,17 @@ import { userDataLocation } from '../../shared/user_data_location';
 export function protectedRoots(): { read: string[]; write: string[]; writable: string[] } {
 	const home = os.homedir();
 	const data = userDataLocation();
-	const browsers =
+	const system =
 		process.platform === 'darwin'
 			? [
 					['Library', 'Keychains'],
 					['Library', 'Cookies'],
-					['Library', 'Safari'],
-					['Library', 'Application Support', 'Google', 'Chrome'],
-					['Library', 'Application Support', 'BraveSoftware'],
-					['Library', 'Application Support', 'Firefox'],
-					['Library', 'Application Support', 'Microsoft Edge'],
 				].map((segments) => path.join(home, ...segments))
 			: process.platform === 'win32'
-				? [
-						...(process.env.LOCALAPPDATA
-							? [
-									['Google', 'Chrome', 'User Data'],
-									['BraveSoftware'],
-									['Microsoft', 'Edge', 'User Data'],
-									['Microsoft', 'Credentials'],
-								].map((segments) => path.join(process.env.LOCALAPPDATA ?? '', ...segments))
-							: []),
-						...(process.env.APPDATA
-							? [
-									['Mozilla', 'Firefox'],
-									['Microsoft', 'Credentials'],
-								].map((segments) => path.join(process.env.APPDATA ?? '', ...segments))
-							: []),
-					]
-				: [
-						['.config', 'google-chrome'],
-						['.config', 'chromium'],
-						['.config', 'BraveSoftware'],
-						['.config', 'microsoft-edge'],
-						['.mozilla'],
-					].map((segments) => path.join(home, ...segments));
+				? [process.env.LOCALAPPDATA, process.env.APPDATA]
+						.filter((root): root is string => Boolean(root))
+						.map((root) => path.join(root, 'Microsoft', 'Credentials'))
+				: [];
 	const read = [
 		...[
 			['.ssh'],
