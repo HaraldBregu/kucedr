@@ -20,6 +20,9 @@ only #17, #22 and #24 were checked in code.
 | 21.7 | Broad content policy (audit #24) | The app window allows inline scripts and a script CDN (`src/renderer/index.html`) | [Network shield](SHIELD.md), 13.7 | S |
 | 21.8 | Build hardening (audit #18, #25) | Unsigned builds, permissive entitlements, unsigned updates | [Distribution and trust](DISTRIBUTION.md), 6.1 | L |
 | 21.9 | Audit kept current | The audit table matches the code, with each item marked fixed, open or decided | [Quality](QUALITY.md), 22.4 | S |
+| 21.10 | Sandboxed commands reach any host (permissions #4) | A command the agent runs can send data anywhere and open local ports: `allowedDomains: ['*']` and `allowLocalBinding: true` in `src/main/agent/sandbox.ts`. File reads of known secrets are already denied | Decide. Recommended: `allowLocalBinding: false` by default now, a network allow-list later | S |
+| 21.11 | Assistant edits its own prompt (permissions #7) | Identity, soul and user feed every future system prompt. After setup each change asks once, but the card shows only the new values, not what they replace; during first-run setup the changes run without asking | Decide. Recommended: show a diff of old and new values in the approval card and in chat | S |
+| 21.12 | Redaction hides length (permissions #8) | The approval card shows `[REDACTED]` for secret-looking keys, so the user cannot tell what is being set | Show `[redacted, N chars]`; never redact `bash` `env` | S |
 
 ## Open decisions
 
