@@ -7,6 +7,7 @@ export function createNotifier(deps: {
 	title: (signal: RunSignal) => string;
 	line: (key: string) => string;
 	open: (windowId: number, sessionId: string) => void;
+	resolve: (sessionId: string) => string;
 }): {
 	run: (signal: RunSignal) => void;
 	view: (windowId: number, sessionId: string | null) => void;
