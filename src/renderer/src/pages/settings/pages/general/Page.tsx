@@ -136,6 +136,13 @@ const GeneralPage: React.FC = () => {
 		void window.app.setKeepAwake(checked).catch(() => setKeepAwake(!checked));
 	}, []);
 
+	const handleNotificationsToggle = useCallback((checked: boolean) => {
+		setNotificationsEnabled(checked);
+		void window.app
+			.setNotificationsEnabled(checked)
+			.catch(() => setNotificationsEnabled(!checked));
+	}, []);
+
 	const handleTrayClickActionChange = (next: string | null): void => {
 		if (next === null) return;
 		const option = TRAY_CLICK_ACTION_OPTIONS.find((item) => item.value === next);
