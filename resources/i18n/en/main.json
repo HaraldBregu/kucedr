@@ -583,6 +583,8 @@
 			"sidebarTranslucencyDescription": "Let the background softly show through the sidebar.",
 			"soundFeedback": "Sound feedback",
 			"soundFeedbackDescription": "Play subtle sounds for messages, assistant activity and navigation.",
+			"runNotifications": "Notifications",
+			"runNotificationsDescription": "Notify when a reply is ready, a chat needs you, or a task or health check finishes.",
 			"information": "Information",
 			"actions": "Application Behavior",
 			"data": "Data",
