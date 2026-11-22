@@ -28,6 +28,9 @@ it is the largest.
 
 ### 3.1 Completion notifications
 
+Built as planned below, with its own switch in Settings → General rather than beside the sound
+switch. A click does nothing when every window is closed.
+
 - _Behaviour._ A system notification when a run finishes or fails while the window is unfocused or
   another chat is on screen; when a run is waiting for an approval or an answer; when a scheduled
   task or health check finishes or needs attention. Clicking it opens that chat. A dock or taskbar
