@@ -183,12 +183,7 @@ function RootRouteComponent(): React.JSX.Element {
 							setChatSessionTitle(title);
 							setChatSessionTitleSessionId(sessionId);
 						},
-						setSessionId: (sessionId) => {
-							setChatSessionId(sessionId);
-							setChatSessionTitle(undefined);
-							setChatSessionTitleSessionId(undefined);
-							persistChatSessionId(sessionId);
-						},
+						setSessionId: selectSession,
 					}}
 				>
 					<div
