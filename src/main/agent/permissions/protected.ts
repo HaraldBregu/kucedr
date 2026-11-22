@@ -30,7 +30,8 @@ export function protectedRoots(): { read: string[]; write: string[]; writable: s
 			['.docker', 'config.json'],
 			['.kube'],
 		].map((segments) => path.join(home, ...segments)),
-		...browsers,
+		...system,
+		...browserProfiles,
 		path.join(app.getPath('sessionData'), 'Partitions', 'agent-browser'),
 		...[
 			['providers'],
