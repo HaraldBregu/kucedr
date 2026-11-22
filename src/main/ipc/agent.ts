@@ -405,17 +405,13 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				).notifications.run[key],
 			open: (windowId, sessionId) =>
 				eventBus.sendTo(windowId, AgentChannels.openSession, sessionId),
+			resolve: (sessionId) => resolveStoredSessionId(sessionId, agent.config.location),
 		});
 		agent.onRun = notifier.run;
 		ipcMain.handle(
 			AgentChannels.viewSession,
 			wrapIpcHandler((event, sessionId: unknown): void => {
-				notifier.view(
-					renderer.assert(event).id,
-					typeof sessionId === 'string'
-						? resolveStoredSessionId(sessionId, agent.config.location)
-						: null
-				);
+				notifier.view(renderer.assert(event).id, typeof sessionId === 'string' ? sessionId : null);
 			}, AgentChannels.viewSession)
 		);
 		let watcherStarted = false;
