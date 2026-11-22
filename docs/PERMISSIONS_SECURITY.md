@@ -196,7 +196,7 @@ Reject `env` when `elevated: true` — same rule `tools/core/readonly.ts` `readO
 ### 8. Low
 
 - **MCP default allow.** Fixed: `getMcpToolPermission` defaults non-read-only tools to `ask` (the tasks profile treats that default as `allow`, because tasks never prompt). Original finding: MCP tools resolve to `allow` unless the server sets `require_approval: 'always'` (`tools/mcp/tool.ts:33`). Local imports set `always` (`mcp_local_import.ts:43`); other sources (registry, catalog, manual add) are unverified. Fix: default non-read-only MCP tools to `ask`.
-- **Redaction hides intent.** `redact_approval_input.ts` redacts by key name only. Show `[redacted, N chars]` and never redact `env` on `bash`, so the user can see that something is being set.
+- **Redaction hides intent. Open (roadmap 21.12).** Read in code on 2026-11-22: unchanged, values still become `[REDACTED]` with no length, including keys inside `bash` `env`. Host commands can no longer carry `env` (#6), so this now only hides values on sandboxed and MCP calls. `redact_approval_input.ts` redacts by key name only. Show `[redacted, N chars]` and never redact `env` on `bash`, so the user can see that something is being set.
 
 ## Suggested order of work
 
