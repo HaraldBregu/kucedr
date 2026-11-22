@@ -20,12 +20,13 @@ export function createNotifier(deps: {
 	};
 	app.on('browser-window-focus', (_event, window) => {
 		const sessionId = views.get(window.id);
-		if (sessionId) clear(sessionId);
+		if (sessionId) clear(deps.resolve(sessionId));
 	});
 	return {
 		view(windowId, sessionId) {
 			views.set(windowId, sessionId);
-			if (sessionId && BrowserWindow.fromId(windowId)?.isFocused()) clear(sessionId);
+			if (sessionId && BrowserWindow.fromId(windowId)?.isFocused())
+				clear(deps.resolve(sessionId));
 		},
 		run(signal) {
 			const line = notificationLine(signal);
@@ -33,7 +34,9 @@ export function createNotifier(deps: {
 			if (
 				[...views].some(
 					([windowId, sessionId]) =>
-						sessionId === signal.sessionId && BrowserWindow.fromId(windowId)?.isFocused()
+						sessionId &&
+						BrowserWindow.fromId(windowId)?.isFocused() &&
+						deps.resolve(sessionId) === signal.sessionId
 				)
 			)
 				return;
