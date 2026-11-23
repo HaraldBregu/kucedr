@@ -898,11 +898,11 @@ export interface ProviderInvokeChannelMap {
 			id: string,
 			kind: Exclude<import('./provider_types').ProviderCredentialKind, 'search_engines'>,
 		];
-		result: import('./provider_types').StoredProvider | undefined;
+		result: import('./provider_types').SavedProvider | undefined;
 	};
 	[ProviderChannels.set]: {
 		args: [input: import('./provider_types').ProviderCredentialSaveInput];
-		result: import('./provider_types').StoredProvider;
+		result: import('./provider_types').SavedProvider;
 	};
 	[ProviderChannels.remove]: {
 		args: [
