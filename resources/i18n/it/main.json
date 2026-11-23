@@ -2178,7 +2178,7 @@
 			"skippedMore_one": "e {{count}} altro file",
 			"skippedMore_other": "e altri {{count}} file",
 			"skipped": {
-				"unsupported": "{{count}} tipo non supportato",
+				"unsupported": "{{count}} di tipo non supportato",
 				"too-large": "{{count}} troppo grandi",
 				"credential": "{{count}} potrebbero contenere una password o una chiave",
 				"symlink": "{{count}} collegamenti",
