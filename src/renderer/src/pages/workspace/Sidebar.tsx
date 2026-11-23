@@ -314,19 +314,12 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 							<span className="truncate">{t('settings.returnToChat', 'Return to Home')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
-					<SidebarMenuItem className="rounded-md">
-						<div className="flex h-9 items-center gap-2 px-2.5 pr-20 text-sm">
-							<Folders className="size-4 shrink-0" />
-							<span className="truncate">{t('settings.workspace.title', 'Workspace')}</span>
-						</div>
-						<div className="absolute inset-y-0 right-1 flex items-center gap-0">
-				<Tooltip>
-					<TooltipTrigger render={<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.search', 'Search files')} aria-expanded={searchOpen} className="text-muted-foreground" onClick={() => {
-						if (searchOpen) setQuery('');
-						setSearchOpen(!searchOpen);
-					}}><Search /></Button>} />
-					<TooltipContent side="bottom">{t('workspaceSidebar.search', 'Search files')}</TooltipContent>
-				</Tooltip>
+				</SidebarMenu>
+				<div className="flex items-center gap-1 pt-2">
+					<div className="relative flex-1">
+						<Search aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
+						<Input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('workspaceSidebar.search', 'Search files')} aria-label={t('workspaceSidebar.search', 'Search files')} className="h-8 pl-8" />
+					</div>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.create', 'Create')} className="text-muted-foreground"><Plus /></Button>
