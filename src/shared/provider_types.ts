@@ -250,6 +250,15 @@ export interface StoredProvider {
 	baseUrl: string;
 }
 
+export interface SavedProvider {
+	id: string;
+	name: string;
+	baseUrl: string;
+	saved: boolean;
+}
+
+export type CustomModelsInput = { id: string } | { baseUrl: string; apiKey?: string };
+
 export interface ResolvedProvider {
 	id: string;
 	/** Display name from the provider manifest title. */
