@@ -334,7 +334,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		const editing = entry?.editing ?? false;
 		const savingThisProvider = savingProviderId === provider.id;
 		const canSaveProvider =
-			!!entry && !savingThisProvider && Boolean(entry.apiKey.trim() || entry.savedApiKey.trim());
+			!!entry && !savingThisProvider && Boolean(entry.apiKey.trim() || entry.apiKeySaved);
 		return (
 			<Item
 				key={provider.id}
