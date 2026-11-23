@@ -1348,7 +1348,8 @@
 				"empty": "Nessun segnalibro.",
 				"edit": "Modifica segnalibro",
 				"name": "Nome",
-				"address": "Indirizzo"
+				"address": "Indirizzo",
+				"export": "Esporta…"
 			}
 		},
 		"editor": {
