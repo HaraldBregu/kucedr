@@ -8,8 +8,11 @@ import { acting, pane, paneEvents, paneShown, paneTabs } from '../agent/tools/we
 import { tabs } from '../agent/tools/web/browser/tabs';
 import { profileFiles } from '../browser/files';
 import { importFiles } from '../browser/import';
-import { DEFAULT_SEARCH, library } from '../browser/library';
+import { library } from '../browser/library';
 import { confirmDeletion } from '../browser/confirm';
+import { bookmarksHtml } from '../browser/html';
+import { loadTranslations } from '../i18n';
+import { getLanguage } from '../settings_store';
 import { fillLogin } from '../browser/fill';
 import {
 	clearLogins,
