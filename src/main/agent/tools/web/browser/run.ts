@@ -47,8 +47,8 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 	const list = (): { targetId: string; url: string; title: string }[] =>
 		[...paneTabs.values()].map((tab) => ({
 			targetId: tab.id,
-			url: tab.view.webContents.getURL(),
-			title: tab.view.webContents.getTitle(),
+			url: tab.pending?.entries[tab.pending.index]?.url ?? tab.view.webContents.getURL(),
+			title: tab.pending?.entries[tab.pending.index]?.title ?? tab.view.webContents.getTitle(),
 		}));
 	const address = (value: string): string => {
 		const parsed = new URL(value);
