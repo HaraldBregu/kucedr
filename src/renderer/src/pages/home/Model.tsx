@@ -80,7 +80,7 @@ export function Model({
 				);
 				if (custom) {
 					const models = await window.provider
-						.listCustomModels({ baseUrl: custom.baseUrl, apiKey: custom.apiKey })
+						.listCustomModels({ id: custom.id })
 						.catch(() => []);
 					catalogGroups.push({
 						id: 'custom',
