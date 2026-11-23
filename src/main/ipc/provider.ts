@@ -14,6 +14,7 @@ import { loadProviders, loadVectorDatabases } from '../models';
 import { loadStorages } from '../models';
 import { getEnabledPluginProviders, setPluginProviderEnabled } from '../providers/providers_store';
 import { deleteProvider, getProvider, listProviders, setProvider } from '../settings_store';
+import { savedProvider } from '../providers/saved';
 import type { WindowContextManager } from '../window_context';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
