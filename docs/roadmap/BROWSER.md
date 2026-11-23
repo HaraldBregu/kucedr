@@ -8,7 +8,7 @@ does not start again from an empty browser.
 
 ## Status
 
-Updated 2026-11-20. Everything under "Implemented" was checked on macOS in the built app, unless
+Updated 2026-11-23. Everything under "Implemented" was checked on macOS in the built app, unless
 it says otherwise. Windows and Linux paths are written but not exercised.
 
 ### Implemented
