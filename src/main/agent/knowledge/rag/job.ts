@@ -2,7 +2,7 @@ import type { RagStatus } from '../../../../shared/rag_status';
 
 export const ragJob: Pick<
 	RagStatus,
-	'running' | 'trigger' | 'startedAt' | 'finishedAt' | 'outcome' | 'error' | 'result'
+	'running' | 'trigger' | 'startedAt' | 'finishedAt' | 'outcome' | 'error' | 'result' | 'progress'
 > & { controller?: AbortController; configuration?: string } = {
 	running: false,
 	trigger: null,
