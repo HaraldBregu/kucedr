@@ -114,7 +114,7 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 - **23.10:** sign-ins sent by a script-driven button that is not a submit button are not caught
   (Enter in the field still is).
 - **23.15:** folders (kept on import), a toolbar menu with every bookmark (folders would let it
-  show more than 45), adding folders, moving and multi-select, undo, duplicate merge, export.
+  show more than 45), adding folders, moving and multi-select, undo, duplicate merge.
 - **⌘[ and ⌘] in the pane** (keyboard back and forward follow the mouse rule), see the open
   decisions.
 - **Autofill drawn in a separate view** instead of in the page; see the open decisions.
