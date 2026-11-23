@@ -162,6 +162,46 @@ Changed: `agent/tools/web/browser/create.ts` (call `visit` from the navigation e
 `library.ts`, `import.ts`, `suggest.ts`, and a History page under
 `src/renderer/src/pages/settings/pages/browser/`.
 
+## 23.20 Drag tabs to reorder
+
+### What the user sees
+
+- Dragging a tab along the strip moves it; the other tabs make room where it will land, and
+  dropping puts it there. The dragged tab comes to the front, as clicking it would.
+- The strip scrolls when a tab is dragged to its edge, since it already scrolls when crowded.
+- Keyboard: with a tab focused, a modifier plus Left or Right moves it one place. The key is fixed
+  together with the shortcut list ([User experience](roadmap/EXPERIENCE.md), 3.5) and must work on
+  non-US layouts. This is the keyboard path [Accessibility](roadmap/ACCESSIBILITY.md) 4.2 asks for.
+- The "All tabs" menu lists tabs in the same order as the strip.
+
+### How it is built
+
+- **A place in the strip, kept in main.** The tab gets a `position` number, separate from `order`.
+  A new tab is placed at the end; a tab a page opens (`setWindowOpenHandler` in `create.ts`) is
+  placed at the end too, as today. `tabs()` returns tabs sorted by `position`.
+- **One new pane command.** `BrowserPaneCommand` (`src/shared/browser.ts`) gains `move` with the
+  target tab and the index to land at. `command.ts` renumbers positions and emits `change`, which
+  every window already listens to, so all windows show the new order. `ipc/browser.ts` checks the
+  index in its schema.
+- **Drag in the renderer, no library.** `Tabs.tsx` uses the same `draggable` and `dataTransfer`
+  pattern as the sidebar, with its own data type so a tab cannot be dropped on a chat list or the
+  composer. While dragging, the strip shows where the tab will land; on drop it sends `move`. The
+  strip already sits in a `no-drag` area inside the window's drag region, so dragging a tab does
+  not move the window.
+- **Saved with the tabs.** `tabs.json` (23.17) stores the tabs in strip order, so a restart keeps
+  the order without a new field.
+
+### Kept out
+
+Dragging a tab out of the strip into its own window, and dragging tabs between windows. The pane
+is one browser shared by every window and chat, so there is nowhere separate to drop it.
+
+### Files
+
+Changed: `agent/tools/web/browser/pane.ts` (the `position` field), `create.ts` (set it),
+`tabs.ts` (sort by it), `command.ts` and `src/shared/browser.ts` (`move`), `ipc/browser.ts`
+(schema), and `src/renderer/src/pages/home/browser/Tabs.tsx` (drag and keyboard).
+
 ## Rules the design keeps
 
 - Nothing new is sent off the machine; all three files stay in `~/.kucedr/browser`, which the agent
