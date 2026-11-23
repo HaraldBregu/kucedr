@@ -69,7 +69,9 @@ Settings uses both immediate and explicit persistence:
   service choices save when changed.
 - Permissions, Health, Storage sync, MCP and task capability forms provide explicit
   save or submit actions where multiple values belong together.
-- Provider secrets should use password inputs and display a masked connected state after saving.
+- Provider secrets should use password inputs that start empty, show `************` once a key is
+  saved, and offer replace and remove only. Saved keys never reach the renderer; saving with an
+  empty field keeps the stored key.
 - Pages should disable conflicting controls while loading, saving, testing, importing, running, or
   deleting.
 - Load and save failures should remain on the related page as destructive notices or inline model
