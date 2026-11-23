@@ -18,6 +18,7 @@ export interface BrowserTab {
 	captureKey?: Buffer;
 	// A sign-in waiting for the user's answer; the password stays in main memory only.
 	offer?: { url: string; username: string; password: Buffer; update: boolean };
+	pending?: { entries: { url: string; title: string }[]; index: number };
 }
 
 export const pane = { width: 1280, height: 800, order: 0, next: 1 };
