@@ -215,24 +215,26 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 							history: counts.history,
 							host: host(counts.search),
 						})}
-						actionClassName="w-auto justify-end"
+						actionClassName="w-auto justify-end gap-2"
 						actions={
-							<Button
-								type="button"
-								variant="outline"
-								disabled={counts.bookmarks + counts.history === 0}
-								onClick={() =>
-									void window.browserPane
-										.clearLibrary()
-										.then(() => window.browserPane.library())
-										.then((next) => {
-											setCounts(next);
-											setSummary(null);
-										})
-								}
-							>
-								{t('settings.browser.clear')}
-							</Button>
+							<>
+								<Button
+									type="button"
+									variant="outline"
+									disabled={counts.history === 0}
+									onClick={() => void clear(() => window.browserPane.historyClear())}
+								>
+									{t('settings.browser.clearHistory')}
+								</Button>
+								<Button
+									type="button"
+									variant="outline"
+									disabled={counts.bookmarks === 0}
+									onClick={() => void clear(() => window.browserPane.bookmarksClear())}
+								>
+									{t('settings.browser.deleteBookmarks')}
+								</Button>
+							</>
 						}
 					/>
 				</SettingsPanel>
