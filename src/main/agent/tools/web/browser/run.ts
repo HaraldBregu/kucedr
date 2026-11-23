@@ -150,10 +150,12 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 				if (history.canGoBack()) await settle(contents, () => history.goBack(), signal);
 			} else if (params.forward) {
 				if (history.canGoForward()) await settle(contents, () => history.goForward(), signal);
+			} else if (params.reload) {
+				await settle(contents, () => contents.reload(), signal);
 			} else if (params.url) {
 				const url = address(params.url);
 				await settle(contents, () => void contents.loadURL(url).catch(() => undefined), signal);
-			} else throw new Error('navigate requires url, back, or forward.');
+			} else throw new Error('navigate requires url, back, forward, or reload.');
 			return describe(tab);
 		}
 		case 'snapshot': {
