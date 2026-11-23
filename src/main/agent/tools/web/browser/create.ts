@@ -54,10 +54,11 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true })
 		.catch(() => undefined);
 	contents.setWindowOpenHandler(({ url }) => {
-		if (/^https?:/i.test(url))
-			void createTab(tab.chat, tab.owner)
-				.view.webContents.loadURL(url)
-				.catch(() => undefined);
+		if (/^https?:/i.test(url)) {
+			const popup = createTab(tab.chat, tab.owner);
+			popup.agent = tab.agent;
+			void popup.view.webContents.loadURL(url).catch(() => undefined);
+		}
 		return { action: 'deny' };
 	});
 	contents.on('will-navigate', (event, url) => {
