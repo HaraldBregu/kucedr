@@ -6,6 +6,10 @@ import { cn } from '@/lib/utils';
 
 const DRAG = { WebkitAppRegion: 'drag' } as CSSProperties;
 const NO_DRAG = { WebkitAppRegion: 'no-drag' } as CSSProperties;
+const TAB_MIME = 'application/x-browser-tab';
+const IS_MAC = navigator.platform.startsWith('Mac');
+const EDGE = 32;
+const SCROLL_STEP = 12;
 
 export function BrowserTabs({
 	tabs,
@@ -13,17 +17,26 @@ export function BrowserTabs({
 	onSelect,
 	onClose,
 	onNew,
+	onMove,
 }: {
 	readonly tabs: readonly BrowserPaneTab[];
 	readonly active: string;
 	readonly onSelect: (targetId: string) => void;
 	readonly onClose: (targetId: string) => void;
 	readonly onNew: () => void;
+	readonly onMove: (targetId: string, index: number) => void;
 }): ReactElement {
 	const list = useRef<HTMLDivElement>(null);
+	const moved = useRef<string | null>(null);
+	const [drop, setDrop] = useState<number | null>(null);
 	useEffect(() => {
 		list.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ inline: 'nearest', block: 'nearest' });
 	}, [active, tabs.length]);
+	useEffect(() => {
+		if (!moved.current) return;
+		list.current?.querySelector<HTMLElement>(`[data-tab="${moved.current}"] [role="tab"]`)?.focus();
+		moved.current = null;
+	}, [tabs]);
 	const crowded = tabs.length > 5;
 
 	return (
