@@ -263,6 +263,10 @@ Changed: `agent/tools/web/browser/pane.ts` (the `position` field), `create.ts` (
 
 ## Open decisions
 
+Decided 2026-11-23 as recommended below: history moves to `history.json`; tabs are always restored,
+no setting; only the user's visits are recorded; `pageState` is dropped; 5,000 entries, no time
+limit; restored tabs keep a view each (measured above).
+
 - **Moving history out of `library.json`.** Recommended: yes, so bookmarks are not rewritten on
   every visit. It changes saved data, which the project calls out as a decision. Without the move,
   23.19 still protects the bookmarks, but every visit rewrites them.
