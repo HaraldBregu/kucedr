@@ -595,7 +595,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									autoComplete="off"
 									className="h-8"
 									disabled={saving}
-									placeholder={customProvider.savedApiKey ? '************' : 'API key'}
+									placeholder={customProvider.saved ? '************' : 'API key'}
 									spellCheck={false}
 									type="password"
 									value={customProvider.apiKey}
