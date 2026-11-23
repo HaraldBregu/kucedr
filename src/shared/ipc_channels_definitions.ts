@@ -560,6 +560,8 @@ export const BrowserChannels = {
 	bookmarksClear: 'browser:bookmarks:clear',
 	bookmarksExport: 'browser:bookmarks:export',
 	library: 'browser:library',
+	history: 'browser:history',
+	historyDelete: 'browser:history:delete',
 	historyClear: 'browser:history:clear',
 	passwordsStatus: 'browser:passwords:status',
 	passwordsImport: 'browser:passwords:import',
