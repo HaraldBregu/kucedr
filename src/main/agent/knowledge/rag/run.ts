@@ -18,6 +18,7 @@ export async function runRagIndexing(trigger: RagIndexTrigger = 'manual'): Promi
 		outcome: 'running',
 		error: null,
 		result: null,
+		progress: null,
 		controller,
 		configuration: ragIndexingSignature(configuration),
 	});
