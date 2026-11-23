@@ -12,6 +12,11 @@ export interface BrowserPlace {
 	readonly title: string;
 }
 
+export interface BrowserVisit extends BrowserPlace {
+	readonly visits: number;
+	readonly last: number;
+}
+
 export interface BrowserImportKinds {
 	readonly bookmarks: boolean;
 	readonly history: boolean;
