@@ -37,6 +37,7 @@ const ACT_KINDS = [
 	'fill',
 	'wait',
 	'evaluate',
+	'scroll',
 ] as const;
 
 const SNAPSHOT_MAX_TEXT = 4_000;
