@@ -116,6 +116,16 @@ export function BrowserTabs({
 								onAuxClick={(event) => {
 									if (event.button === 1) onClose(tab.targetId);
 								}}
+								onKeyDown={(event) => {
+									const step = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0;
+									const modifier = IS_MAC ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
+									if (!step || !modifier || !event.shiftKey || event.altKey) return;
+									event.preventDefault();
+									const index = at + step;
+									if (index < 0 || index >= tabs.length) return;
+									moved.current = tab.targetId;
+									onMove(tab.targetId, index);
+								}}
 							>
 								{tab.loading ? (
 									<Loader2 className="size-3.5 shrink-0 animate-spin" />
