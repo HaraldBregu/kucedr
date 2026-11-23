@@ -105,6 +105,11 @@ export function BrowserTabs({
 								type="button"
 								role="tab"
 								aria-selected={selected}
+								aria-keyshortcuts={
+									IS_MAC
+										? 'Meta+Shift+ArrowLeft Meta+Shift+ArrowRight'
+										: 'Control+Shift+ArrowLeft Control+Shift+ArrowRight'
+								}
 								title={label}
 								className="flex h-full min-w-0 flex-1 items-center gap-2 rounded-t-lg pl-3 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
 								onClick={() => onSelect(tab.targetId)}
