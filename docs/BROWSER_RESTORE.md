@@ -34,6 +34,14 @@ Status: plan, 2026-11-23. Nothing here is built. Roadmap items 23.17–23.20 in
   at once, with no confirmation.
 - **The agent cannot read these files.** `agent/permissions/protected.ts` already denies reads and
   writes of `~/.kucedr/browser`.
+- **The strip shows tabs in the order they were created.** `tabs()` (`agent/tools/web/browser/tabs.ts`)
+  lists `paneTabs` in insertion order, and `BrowserTabs`
+  (`src/renderer/src/pages/home/browser/Tabs.tsx`) draws them in that order. A tab's `order` field
+  is something else: the most recently focused tab has the highest, and that tab is the one in
+  front. There is no field for a tab's place in the strip, and no way to move one.
+- **Drag and drop elsewhere uses the browser's own drag events.** The Home sidebar moves chats
+  between categories with `draggable` and `dataTransfer` (`src/renderer/src/pages/home/Sidebar.tsx`),
+  with no library.
 - **Electron can restore a tab's Back and Forward list.** Electron 44 has
   `navigationHistory.getAllEntries()`, `getActiveIndex()` and `restore({ entries, index })`.
 
