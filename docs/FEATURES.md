@@ -465,7 +465,7 @@ There are no bundled app source folders in this checkout. The built-in Workspace
   confirmation and replaces matching files while retaining unrelated local files.
 - Account authentication is separate from provider-backed folder backup. The current checkout
   does not implement encrypted provider-key synchronization. See [Cloud architecture](CLOUD.md) for their current boundaries.
-- Knowledge supports local SQLite and an optional configured remote mirror, with separate embedding and remote-storage consent. Queries use the local index and its embedding model. Scheduled refreshes run in the background while Kucedr is open, with cancellation and run status.
+- Knowledge supports local SQLite and an optional configured remote mirror, with separate embedding and remote-storage consent. Queries use the local index and its embedding model. Scheduled refreshes run in the background while Kucedr is open, with cancellation, run status and file-by-file progress. Indexing reads text, Markdown, HTML, PDF (in a worker thread), Word, Excel, PowerPoint and OpenDocument files, ignores hidden folders and `node_modules`, and skips instead of failing on unsupported, oversized, unreadable, empty or credential-like files and links; Settings → Knowledge lists the skipped files with the reason.
 
 ### Application preferences
 
