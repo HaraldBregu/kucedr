@@ -1442,7 +1442,9 @@ export interface BrowserInvokeChannelMap {
 	};
 	[BrowserChannels.bookmarksDelete]: { args: [url: string]; result: void };
 	[BrowserChannels.library]: { args: []; result: import('./browser_import').BrowserLibraryCounts };
-	[BrowserChannels.clearLibrary]: { args: []; result: void };
+	[BrowserChannels.bookmarksClear]: { args: []; result: boolean };
+	[BrowserChannels.bookmarksExport]: { args: []; result: boolean };
+	[BrowserChannels.historyClear]: { args: []; result: boolean };
 	[BrowserChannels.passwordsStatus]: { args: []; result: import('./browser_import').BrowserPasswordStatus };
 	[BrowserChannels.passwordsImport]: { args: []; result: number | null };
 	[BrowserChannels.passwordsList]: { args: []; result: import('./browser_import').BrowserLogin[] };
