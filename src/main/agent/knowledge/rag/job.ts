@@ -11,4 +11,5 @@ export const ragJob: Pick<
 	outcome: 'idle',
 	error: null,
 	result: null,
+	progress: null,
 };
