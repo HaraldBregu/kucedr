@@ -58,8 +58,8 @@ const StartPage: React.FC = () => {
 				);
 				const hasSavedKey = storedProviders.some((provider) =>
 					provider.id === 'custom'
-						? Boolean(provider.apiKey.trim() && provider.baseUrl.trim())
-						: modelProviderIds.has(provider.id) && Boolean(provider.apiKey.trim())
+						? provider.saved && Boolean(provider.baseUrl.trim())
+						: modelProviderIds.has(provider.id) && provider.saved
 				);
 				if (hasSavedKey) {
 					dispatch({ type: 'GO_TO_STEP', step: 'chat' });
