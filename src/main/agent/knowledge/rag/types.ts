@@ -39,10 +39,7 @@ export interface RagIndexDependencies {
 	signal?: AbortSignal;
 }
 
-export interface RagIndexResult {
-	files: number;
-	vectors: number;
-}
+export type { RagIndexResult } from '../../../../shared/rag_status';
 
 export interface RagManifest {
 	indexName: string;
