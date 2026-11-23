@@ -2170,7 +2170,7 @@
 			"index": "Avvia indicizzazione",
 			"indexing": "Indicizzazione...",
 			"indexError": "Impossibile generare l'indice.",
-			"indexResult": "Indicizzati {{files}} file come {{vectori}} vettori.",
+			"indexResult": "Indicizzati {{files}} file come {{vectors}} vettori.",
 			"progress": "Lettura e indicizzazione del file {{done}} di {{total}}…",
 			"skippedTitle_one": "{{count}} file saltato",
 			"skippedTitle_other": "{{count}} file saltati",
