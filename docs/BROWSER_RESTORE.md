@@ -248,6 +248,9 @@ Run in the built app with an isolated profile and a mock model.
   three tabs in the same order with the same tab in front; only that tab loads; Back and Forward
   work in the one that had history.
 - **Quit.** The same after a normal quit.
+- **Reorder.** Drag the third tab to the first place: the strip and the "All tabs" menu show the new
+  order, a second window shows it too, and the order survives a crash and relaunch. The keyboard
+  move does the same. Dragging a tab onto the chat list or the composer does nothing.
 - **Damaged library.** Replace `library.json` with invalid text in the test profile and launch: the
   bookmarks come back from `library.json.bak`, the damaged file is kept beside it, and adding a
   bookmark does not lose the others.
