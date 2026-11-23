@@ -1,4 +1,4 @@
-import { HISTORY_LIMIT } from './library';
+import { HISTORY_LIMIT } from './history';
 
 export type Kind = 'bookmarks' | 'history' | 'settings';
 
