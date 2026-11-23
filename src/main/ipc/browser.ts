@@ -30,6 +30,7 @@ import { answerOffer } from '../agent/tools/web/browser/capture';
 import { pickFiles } from '../browser/pick';
 import { browserSources, foundProfiles } from '../browser/sources';
 import { suggest } from '../browser/suggest';
+import { wake } from '../browser/wake';
 import type { AppRegistry } from '../apps/app_registry';
 import type { EventBus } from '../event_bus';
 import type { WindowContextManager } from '../window_context';
