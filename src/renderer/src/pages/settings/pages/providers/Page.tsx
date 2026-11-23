@@ -207,8 +207,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		kind: Exclude<StoredProviderKind, 'channels'>
 	): Promise<void> => {
 		const entry = providerEntries.find((item) => item.providerId === providerId);
-		const apiKey = entry?.apiKey.trim() || entry?.savedApiKey.trim() || '';
-		if (!entry || !apiKey) return;
+		const apiKey = entry?.apiKey.trim() ?? '';
+		if (!entry || (!apiKey && !entry.apiKeySaved)) return;
 
 		setSavingProviderId(providerId);
 		setError(null);
