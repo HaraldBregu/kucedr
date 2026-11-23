@@ -10,6 +10,7 @@ Status: plan, 2026-11-23. Nothing here is built. Roadmap items 23.17–23.20 in
   same pages, same order, the same tab in front, and Back still works.
 - Pages the user visits in the pane are kept as a history, searchable and deletable.
 - Bookmarks cannot be lost to a crash, a damaged file or one wrong click.
+- Tabs can be dragged to a new place in the tab strip, and that order is what a restart restores.
 
 ## What the code does today
 
