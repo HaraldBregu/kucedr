@@ -24,6 +24,7 @@ import { ragVectorStore } from './vector';
 import type { RagIndexDependencies, RagIndexResult, VectorRecord } from './types';
 
 const BATCH_SIZE = 64;
+const SKIPPED_LISTED = 200;
 
 export async function indexRag(
 	folders: readonly string[],
