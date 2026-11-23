@@ -103,12 +103,11 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		case 'status':
 			return JSON.stringify({ running: paneTabs.size > 0, tabs: list() });
 		case 'start':
-			if (![...paneTabs.values()].some((tab) => tab.owner === scope?.ownerId))
-				createTab(scope?.sessionId, scope?.ownerId);
+			if (![...paneTabs.values()].some(mine)) createTab(scope?.sessionId, scope?.ownerId);
 			return JSON.stringify({ running: true, tabs: list() });
 		case 'stop':
-			for (const tab of [...paneTabs.values()]) closeTab(tab);
-			return JSON.stringify({ running: false });
+			for (const tab of [...paneTabs.values()]) if (mine(tab) && tab.agent) closeTab(tab);
+			return JSON.stringify({ running: paneTabs.size > 0, tabs: list() });
 		case 'tabs':
 			return JSON.stringify({ tabs: list() });
 		case 'open': {
