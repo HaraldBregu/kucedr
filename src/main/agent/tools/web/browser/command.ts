@@ -42,6 +42,13 @@ export function command(request: BrowserPaneCommand): void {
 		case 'focus':
 			tab.order = ++pane.order;
 			break;
+		case 'move': {
+			const strip = [...paneTabs.values()].sort((a, b) => a.position - b.position).filter((item) => item !== tab);
+			strip.splice(Math.min(request.index ?? strip.length, strip.length), 0, tab);
+			strip.forEach((item, at) => (item.position = at));
+			tab.order = ++pane.order;
+			break;
+		}
 		case 'close':
 			closeTab(tab);
 			break;
