@@ -5,7 +5,12 @@ import { createTab } from './create';
 import { pane, paneEvents, paneTabs } from './pane';
 
 export function command(request: BrowserPaneCommand): void {
-	const tab = paneTabs.get(request.targetId);
+	const tab = request.targetId === undefined ? undefined : paneTabs.get(request.targetId);
+	if (request.command === 'new') {
+		createTab(tab?.chat ?? request.chat, tab?.owner);
+		paneEvents.emit('change');
+		return;
+	}
 	if (!tab) throw new Error('This tab is closed.');
 	const contents = tab.view.webContents;
 	switch (request.command) {
