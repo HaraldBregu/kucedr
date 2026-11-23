@@ -76,11 +76,16 @@ export interface RagSearchDependencies {
 	signal?: AbortSignal;
 }
 
+export interface RagSegment {
+	readonly label?: string;
+	readonly text: string;
+}
+
 export interface RagSource {
 	readonly source: string;
 	readonly sourceIndex: number;
 	readonly file: string;
-	readonly content: string;
+	readonly segments: readonly RagSegment[];
 }
 
 export interface VectorIndex {
