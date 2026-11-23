@@ -444,6 +444,15 @@ function PageContent(): ReactElement {
 	useEffect(() => {
 		if (!browserAlive) setBrowserHidden(false);
 	}, [browserAlive]);
+	useEffect(() => {
+		const show = (): void => {
+			setBrowserHidden(false);
+			if (!browserAlive)
+				void window.browserPane.command({ command: 'new', chat: chatSessionId }).catch(() => undefined);
+		};
+		window.addEventListener('kucedr:show-browser', show);
+		return () => window.removeEventListener('kucedr:show-browser', show);
+	}, [browserAlive, chatSessionId]);
 	const [modelContext, setModelContext] = useState<{ providerId: string; modelId: string; contextWindow?: number }>();
 	const [capabilities, setCapabilities] = useState<AgentPromptInputCapabilities | null>();
 	const filesAccept =
