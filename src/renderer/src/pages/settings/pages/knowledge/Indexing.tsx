@@ -67,9 +67,14 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 					title={t(`settings.knowledge.status.${outcome}`)}
 					description={
 						running
-							? t(`settings.knowledge.trigger.${status?.trigger ?? 'manual'}`)
+							? status?.progress?.total
+								? t('settings.knowledge.progress', status.progress)
+								: t(`settings.knowledge.trigger.${status?.trigger ?? 'manual'}`)
 							: status?.result
-								? t('settings.knowledge.indexResult', status.result)
+								? t('settings.knowledge.indexResult', {
+										files: status.result.files,
+										vectors: status.result.vectors,
+									})
 								: t('settings.knowledge.indexDescription')
 					}
 					icon={Clock3}
