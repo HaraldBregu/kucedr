@@ -128,7 +128,17 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			return JSON.stringify({ targetId: tab.id, url: tab.view.webContents.getURL() });
 		}
 		case 'close': {
-			const tab = await current();
+			const tab = params.targetId
+				? paneTabs.get(params.targetId)
+				: latest([...paneTabs.values()].filter((candidate) => mine(candidate) && candidate.agent));
+			if (!tab)
+				throw new Error(
+					params.targetId
+						? `Unknown tab "${params.targetId}". Use action "tabs" to list open tabs.`
+						: 'This chat has no tab the assistant opened. Only the user can close the other tabs.'
+				);
+			if (!mine(tab) || !tab.agent)
+				throw new Error('The assistant did not open this tab in this chat, so only the user can close it.');
 			closeTab(tab);
 			return JSON.stringify({ closed: tab.id, tabs: list() });
 		}
