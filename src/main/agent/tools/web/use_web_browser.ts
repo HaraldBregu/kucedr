@@ -230,6 +230,19 @@ async function runAct(params: {
 			else if (params.loadState) await page.waitForLoadState(params.loadState, { timeout });
 			else await page.waitForTimeout(params.timeMs ?? 1_000);
 			return 'waited';
+		case 'scroll': {
+			if (params.ref) {
+				await locator(params.ref).scrollIntoViewIfNeeded({ timeout });
+				return `scrolled to ${params.ref}`;
+			}
+			const direction = params.direction ?? 'down';
+			const vertical = direction === 'up' || direction === 'down';
+			const [width, height] = (await page.evaluate('[innerWidth, innerHeight]')) as [number, number];
+			const delta = (vertical ? height : width) * (params.amount ?? 1) * (direction === 'up' || direction === 'left' ? -1 : 1);
+			await page.mouse.move(width / 2, height / 2);
+			await page.mouse.wheel(vertical ? 0 : delta, vertical ? delta : 0);
+			return `scrolled ${direction}`;
+		}
 		case 'evaluate': {
 			if (!params.fn) throw new Error('act "evaluate" requires fn (a JS expression or function).');
 				const result = await page.evaluate(params.fn);
