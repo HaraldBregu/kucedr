@@ -69,7 +69,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			trusted.assert(event);
 			const input = this.credential(value);
 			const provider = this.catalogProvider(input.kind, input.id, input.apiKey, input.baseUrl);
-			return setProvider(provider, input.kind);
+			return savedProvider(setProvider(provider, input.kind));
 		});
 		registerCommandWithEvent(ProviderStoreChannels.remove, (event, id, kind) => {
 			trusted.assert(event);
