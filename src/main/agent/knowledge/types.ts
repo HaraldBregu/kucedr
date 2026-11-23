@@ -1,7 +1,5 @@
 export interface KnowledgeScanBudget {
 	entries: number;
-	files: number;
-	bytes: number;
 }
 
 export type KnowledgeRoute = 'rag' | 'abstain';
