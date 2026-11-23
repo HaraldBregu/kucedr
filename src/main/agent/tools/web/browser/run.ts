@@ -191,7 +191,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		}
 		case 'act': {
 			if (!params.kind) throw new Error('act requires a kind (click, type, press, ...).');
-			const result = await act(current(), { ...params, kind: params.kind }, signal);
+			const result = await act(await current(), { ...params, kind: params.kind }, signal);
 			return JSON.stringify({ result });
 		}
 	}
