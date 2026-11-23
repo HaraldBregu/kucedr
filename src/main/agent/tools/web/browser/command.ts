@@ -45,9 +45,6 @@ export function command(request: BrowserPaneCommand): void {
 		case 'close':
 			closeTab(tab);
 			break;
-		case 'new':
-			createTab(tab.chat, tab.owner);
-			break;
 	}
 	paneEvents.emit('change');
 }
