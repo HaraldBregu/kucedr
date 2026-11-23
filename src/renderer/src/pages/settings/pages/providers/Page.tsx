@@ -433,7 +433,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								disabled={savingThisProvider}
 								onClick={() =>
 									updateProviderEntry(provider.id, {
-										apiKey: entry.savedApiKey,
+										apiKey: '',
 										baseUrl: entry.savedBaseUrl,
 										editing: false,
 									})
