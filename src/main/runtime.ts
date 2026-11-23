@@ -48,6 +48,7 @@ import { loadLocalEnvironment } from './cloud/environment';
 import { VoiceWindow } from './voice_window';
 import { findBrowserProfiles } from './agent/permissions/browsers';
 import { paneEvents } from './agent/tools/web/browser/pane';
+import { history } from './browser/history';
 import { restoreTabs } from './browser/restore';
 import { saveTabs } from './browser/snapshot';
 
