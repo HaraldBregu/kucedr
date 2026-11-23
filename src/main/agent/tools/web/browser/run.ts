@@ -82,7 +82,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 						: 'No open tabs. Use action "open" with a url first.'
 			);
 		if (scope) {
-			tab.owner = scope.ownerId;
+			tab.owner = scope.runId;
 			tab.chat = scope.sessionId;
 		}
 		tab.order = ++pane.order;
