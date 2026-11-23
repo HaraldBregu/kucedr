@@ -175,6 +175,8 @@ async function runAct(params: {
 	selector?: string;
 	loadState?: 'load' | 'domcontentloaded' | 'networkidle';
 	timeoutMs?: number;
+	direction?: 'up' | 'down' | 'left' | 'right';
+	amount?: number;
 }, signal?: AbortSignal): Promise<string> {
 	const { page } = getPage(params.targetId);
 	return runBrowserPageOperation(page, signal, async () => {
