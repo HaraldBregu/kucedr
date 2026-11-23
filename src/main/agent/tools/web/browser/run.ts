@@ -114,16 +114,16 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			return describe(tab);
 		}
 		case 'focus': {
-			const tab = current();
+			const tab = await current();
 			return JSON.stringify({ targetId: tab.id, url: tab.view.webContents.getURL() });
 		}
 		case 'close': {
-			const tab = current();
+			const tab = await current();
 			closeTab(tab);
 			return JSON.stringify({ closed: tab.id, tabs: list() });
 		}
 		case 'navigate': {
-			const tab = current();
+			const tab = await current();
 			const contents = tab.view.webContents;
 			const history = contents.navigationHistory;
 			if (params.back) {
@@ -137,7 +137,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			return describe(tab);
 		}
 		case 'snapshot': {
-			const tab = current();
+			const tab = await current();
 			const snapshot = (await tab.view.webContents.executeJavaScript(SNAPSHOT_SCRIPT, true)) as {
 				title: string;
 				text: string;
@@ -154,7 +154,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			});
 		}
 		case 'screenshot': {
-			const tab = current();
+			const tab = await current();
 			await cursor(tab, 'clear');
 			let shot: Capture;
 			if (params.ref) {
@@ -180,13 +180,13 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			return JSON.stringify({ targetId: tab.id, path: file });
 		}
 		case 'pdf': {
-			const tab = current();
+			const tab = await current();
 			const data = await tab.view.webContents.printToPDF({});
 			const file = await saveMedia('browser', 'pdf', data.toString('base64'), params.directory, signal);
 			return JSON.stringify({ targetId: tab.id, path: file });
 		}
 		case 'console': {
-			const tab = current();
+			const tab = await current();
 			return JSON.stringify({ targetId: tab.id, messages: tab.logs.slice(-(params.limit ?? 50)) });
 		}
 		case 'act': {
