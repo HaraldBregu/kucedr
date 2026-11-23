@@ -25,5 +25,5 @@ export function getStoredSearchProviders(): StoredProvider[] {
 		if (index < 0) providers.push(provider);
 		else providers[index] = provider;
 	}
-	return providers.map((provider) => ({ ...provider, apiKey: provider.apiKey ? MASKED_KEY : '' }));
+	return providers.map(savedProvider);
 }
