@@ -7,6 +7,7 @@ export interface BrowserTab {
 	readonly logs: string[];
 	chat?: string;
 	owner?: string;
+	agent?: boolean;
 	order: number;
 	position: number;
 	error?: string;
