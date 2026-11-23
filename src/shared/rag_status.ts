@@ -1,5 +1,19 @@
 export type RagIndexTrigger = 'manual' | 'scheduled';
 
+export type RagSkipReason = 'unsupported' | 'too-large' | 'credential' | 'symlink' | 'unreadable' | 'empty' | 'limit';
+
+export interface RagSkipped {
+	path: string;
+	reason: RagSkipReason;
+}
+
+export interface RagIndexResult {
+	files: number;
+	vectors: number;
+	skipped: number;
+	skippedFiles: RagSkipped[];
+}
+
 export interface RagStatus {
 	running: boolean;
 	trigger: RagIndexTrigger | null;
