@@ -434,11 +434,11 @@ export interface ProviderApi {
 	get: (
 		id: string,
 		kind: Exclude<ProviderCredentialKind, 'search_engines'>
-	) => Promise<StoredProvider | undefined>;
-	set: (input: ProviderCredentialSaveInput) => Promise<StoredProvider>;
+	) => Promise<SavedProvider | undefined>;
+	set: (input: ProviderCredentialSaveInput) => Promise<SavedProvider>;
 	remove: (id: string, kind: Exclude<ProviderCredentialKind, 'search_engines'>) => Promise<void>;
-	list: (kind?: Exclude<ProviderCredentialKind, 'search_engines'>) => Promise<StoredProvider[]>;
-	listCustomModels: (input: { baseUrl: string; apiKey: string }) => Promise<string[]>;
+	list: (kind?: Exclude<ProviderCredentialKind, 'search_engines'>) => Promise<SavedProvider[]>;
+	listCustomModels: (input: CustomModelsInput) => Promise<string[]>;
 	listModels: (providerId: string, refresh?: boolean) => Promise<ProviderModel[]>;
 	listEnabledPlugins: () => Promise<EnabledPluginProviders>;
 	setPluginEnabled: (
