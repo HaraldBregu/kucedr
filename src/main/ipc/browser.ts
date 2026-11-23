@@ -66,6 +66,9 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 
 	register({ windows, apps }: BrowserIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
+		const text = (): Record<string, string> =>
+			(loadTranslations(getLanguage(), 'main') as unknown as { settings: { browser: Record<string, string> } })
+				.settings.browser;
 
 		// In-field password suggestions and offer-to-save: poll the visible tab's own focus while
 		// the agent is not driving it, so the list follows the user, not the agent.
