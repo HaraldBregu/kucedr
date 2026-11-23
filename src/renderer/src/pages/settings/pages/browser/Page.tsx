@@ -213,6 +213,17 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 							/>
 						</Link>
 					) : null}
+					{counts.history > 0 ? (
+						<Link to="/settings/browser/history" className="block hover:bg-muted/40">
+							<SettingsRow
+								title={t('settings.browser.historyPage.title')}
+								description={t('settings.browser.historyPage.count', { count: counts.history })}
+								className="grid-cols-[minmax(0,1fr)_auto]"
+								actionClassName="w-auto justify-end"
+								actions={<ChevronRight className="size-4 text-muted-foreground" />}
+							/>
+						</Link>
+					) : null}
 					<SettingsRow
 						title={t('settings.browser.stored')}
 						description={t('settings.browser.storedDescription', {
