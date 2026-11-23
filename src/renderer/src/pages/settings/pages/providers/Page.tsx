@@ -292,17 +292,17 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	};
 
 	const saveCustomProvider = async (): Promise<void> => {
-		const apiKey = customProvider.apiKey.trim() || customProvider.savedApiKey;
+		const apiKey = customProvider.apiKey.trim();
 		const baseUrl = customProvider.baseUrl.trim();
-		if (!apiKey || !baseUrl) return;
+		if ((!apiKey && !customProvider.saved) || !baseUrl) return;
 		setSavingProviderId('custom');
 		setError(null);
 		try {
 			await window.provider.set({ id: 'custom', kind: 'models', apiKey, baseUrl });
 			setCustomProvider({
-				apiKey,
+				apiKey: '',
 				baseUrl,
-				savedApiKey: apiKey,
+				saved: true,
 				savedBaseUrl: baseUrl,
 				editing: false,
 			});
