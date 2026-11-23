@@ -37,6 +37,7 @@ export function saveTabs(final = false): void {
 			const start = Math.max(0, Math.min(index, kept.length - ENTRY_LIMIT));
 			saved.push({
 				chat: tab.chat,
+				...(tab.agent ? { agent: true } : {}),
 				order: tab.order,
 				entries: kept.slice(start, start + ENTRY_LIMIT).map(({ url, title }) => ({ url, title })),
 				index: index - start,
