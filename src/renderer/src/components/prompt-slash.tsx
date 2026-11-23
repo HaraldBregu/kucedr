@@ -118,6 +118,12 @@ function PromptSlash({
 						icon: AppWindow,
 						run: () => void openApp(app),
 					})),
+					{
+						group: 'Apps',
+						label: 'Browser',
+						icon: Globe,
+						run: () => window.dispatchEvent(new Event('kucedr:show-browser')),
+					},
 					...SETTINGS_NAVIGATION.filter((item) => SETTINGS_PATHS.includes(item.path)).map(
 						(item) => ({
 							group: 'Settings',
