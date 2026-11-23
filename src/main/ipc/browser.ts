@@ -124,17 +124,24 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			library({ ...current, bookmarks: current.bookmarks.filter((item) => item.url !== target) });
 		});
 		trusted.query(BrowserChannels.library, () => {
-			const { bookmarks, history, search } = library();
-			return { bookmarks: bookmarks.length, history: history.length, search };
+			const { bookmarks, search } = library();
+			return { bookmarks: bookmarks.length, history: history().length, search };
+		});
+		trusted.query(BrowserChannels.history, () => history());
+		trusted.command(BrowserChannels.historyDelete, (url) => {
+			const target = urlSchema.parse(url);
+			history(
+				history().filter((item) => item.url !== target),
+				true
+			);
 		});
 		trusted.commandWithEvent(BrowserChannels.historyClear, async ({ sender }) => {
-			const current = library();
 			const confirmed = await confirmDeletion(
 				sender,
-				text().clearHistoryConfirm.replace('{{count}}', String(current.history.length)),
+				text().clearHistoryConfirm.replace('{{count}}', String(history().length)),
 				text().clearHistoryDetail
 			);
-			if (confirmed) library({ ...library(), history: [] });
+			if (confirmed) history([], true);
 			return confirmed;
 		});
 		trusted.commandWithEvent(BrowserChannels.bookmarksClear, async ({ sender }) => {
