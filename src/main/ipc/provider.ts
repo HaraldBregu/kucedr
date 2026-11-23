@@ -38,15 +38,16 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			trusted.assert(event);
 			const normalizedId = this.id(id);
 			const normalizedKind = this.kind(kind);
-			return getProvider(normalizedId, normalizedKind);
+			const provider = getProvider(normalizedId, normalizedKind);
+			return provider && savedProvider(provider);
 		});
 		registerQueryWithEvent(ProviderStoreChannels.list, (event, kind) => {
 			trusted.assert(event);
 			if (kind) {
 				const normalizedKind = this.kind(kind);
-				return listProviders(normalizedKind);
+				return listProviders(normalizedKind).map(savedProvider);
 			}
-			return listProviders();
+			return listProviders().map(savedProvider);
 		});
 		registerQueryWithEvent(ProviderStoreChannels.listEnabledPlugins, (event) => {
 			trusted.assert(event);
