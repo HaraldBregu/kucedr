@@ -105,7 +105,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		case 'status':
 			return JSON.stringify({ running: paneTabs.size > 0, tabs: list() });
 		case 'start':
-			if (![...paneTabs.values()].some(mine)) createTab(scope?.sessionId, scope?.ownerId);
+			if (![...paneTabs.values()].some(mine)) createTab(scope?.sessionId, scope?.runId);
 			return JSON.stringify({ running: true, tabs: list() });
 		case 'stop':
 			for (const tab of [...paneTabs.values()]) if (mine(tab) && tab.agent) closeTab(tab);
