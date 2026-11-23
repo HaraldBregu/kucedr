@@ -260,7 +260,10 @@ app.whenReady().then(() => {
 
 	restoreTabs();
 	paneEvents.on('change', () => saveTabs());
-	app.once('before-quit', () => saveTabs(true));
+	app.once('before-quit', () => {
+		saveTabs(true);
+		history(undefined, true);
+	});
 
 	// Create main window
 	if (!mainWindow.getWindow()) mainWindow.create();
