@@ -231,7 +231,7 @@ export async function indexRag(
 			embeddingRecipient,
 			folders: [...sources],
 		});
-		return { files: indexedFiles, vectors: records.length };
+		return result(records.length);
 	} catch (error) {
 		if (mirror && uploadStarted && !published) {
 			try {
