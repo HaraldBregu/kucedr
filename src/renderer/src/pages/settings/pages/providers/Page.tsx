@@ -180,7 +180,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					{
 						providerId,
 						apiKey: '',
-						savedApiKey: '',
 						apiKeySaved: false,
 						editing: false,
 						...patch,
