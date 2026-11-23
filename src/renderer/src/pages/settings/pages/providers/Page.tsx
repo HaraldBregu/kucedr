@@ -123,17 +123,15 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				setProviderEntries((currentEntries) =>
 					allCatalogItems(section).map((provider) => {
 						const current = currentEntries.find((entry) => entry.providerId === provider.id);
-						const savedApiKey = savedProviders.get(provider.id)?.apiKey ?? '';
 						const savedBaseUrl = savedProviders.get(provider.id)?.baseUrl ?? '';
 						const setting = provider.baseUrlSetting;
 						const customBaseUrl =
 							setting && acceptsBaseUrl(setting, savedBaseUrl) ? savedBaseUrl : '';
-						const saved = Boolean(savedApiKey.trim());
+						const saved = savedProviders.get(provider.id)?.saved ?? false;
 
 						return {
 							providerId: provider.id,
-							apiKey: current?.apiKey || savedApiKey,
-							savedApiKey,
+							apiKey: current?.apiKey ?? '',
 							...(setting
 								? {
 										baseUrl: current?.baseUrl ?? customBaseUrl,
