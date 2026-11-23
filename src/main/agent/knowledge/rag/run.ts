@@ -39,6 +39,7 @@ export async function runRagIndexing(trigger: RagIndexTrigger = 'manual'): Promi
 		throw error;
 	} finally {
 		ragJob.running = false;
+		ragJob.progress = null;
 		ragJob.finishedAt = new Date().toISOString();
 		ragJob.controller = undefined;
 		ragJob.configuration = undefined;
