@@ -34,7 +34,15 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		},
 	});
 	view.setBounds({ x: 0, y: 0, width: pane.width, height: pane.height });
-	const tab: BrowserTab = { id: `t${pane.next++}`, view, logs: [], chat, owner, order: ++pane.order };
+	const tab: BrowserTab = {
+		id: `t${pane.next++}`,
+		view,
+		logs: [],
+		chat,
+		owner,
+		order: ++pane.order,
+		position: ++pane.position,
+	};
 	const contents = view.webContents;
 	const changed = (): void => {
 		paneEvents.emit('change');
