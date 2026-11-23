@@ -257,13 +257,17 @@ export const useWebBrowserTool = tool({
 	category: 'web',
 	name: 'Use web browser',
 	description:
-		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts. The user sees the page in a pane beside the chat and can click and type in it, for example to sign in.',
+		'Use the browser shown in a pane beside the chat for interactive web tasks: sign-ins, clicking, filling forms, scrolling, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. The user sees every page and can click and type in it too. "This page" means the tab on screen; without a targetId, actions go to the tab this reply last used, else the tab on screen, else this chat\'s last tab. Typical flow: snapshot (get element refs) → act (click/type/scroll on refs) → snapshot again. Refs change after navigation, and after the user has used the page. Logins survive restarts. Close only tabs you opened; the user closes the rest.',
 	inputSchema: z.object({
 		action: z.enum(ACTIONS).describe('Browser command to run.'),
-		targetId: z.string().optional().describe('Tab id from "tabs" output. Defaults to the most recent tab opened in this chat.'),
+		targetId: z
+			.string()
+			.optional()
+			.describe('Tab id from "tabs" output, which marks the tab on screen ("shown") and this chat\'s tabs ("mine").'),
 		url: z.string().optional().describe('URL for open/navigate.'),
 		back: z.boolean().optional().describe('navigate: go back in history instead of to a url.'),
 		forward: z.boolean().optional().describe('navigate: go forward in history.'),
+		reload: z.boolean().optional().describe('navigate: reload the page.'),
 		fullPage: z.boolean().optional().describe('screenshot: capture the full scrollable page.'),
 		directory: z.string().optional().describe(
 			'screenshot/pdf: directory to save the file in. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location. Relative paths resolve from the agent workspace; absolute paths and ~ are supported.'
