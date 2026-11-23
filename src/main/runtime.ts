@@ -47,6 +47,9 @@ import { authLinks } from './cloud/links';
 import { loadLocalEnvironment } from './cloud/environment';
 import { VoiceWindow } from './voice_window';
 import { findBrowserProfiles } from './agent/permissions/browsers';
+import { paneEvents } from './agent/tools/web/browser/pane';
+import { restoreTabs } from './browser/restore';
+import { saveTabs } from './browser/snapshot';
 
 // // DIAG: bump V8 old-space heap to confirm whether crashes (Chromium OOM,
 // // exception 0xE0000008) come from the V8/JS heap or from native/C++
