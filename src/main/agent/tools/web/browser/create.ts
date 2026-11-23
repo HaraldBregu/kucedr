@@ -111,6 +111,16 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		'page-title-updated',
 	] as const)
 		contents.on(name as 'did-stop-loading', changed);
+	const user = (): boolean => !(tab.chat && acting.has(tab.chat));
+	contents.on('did-navigate', (_event, url) => {
+		if (user()) visit(url);
+	});
+	contents.on('did-navigate-in-page', (_event, url, isMainFrame) => {
+		if (isMainFrame && user()) visit(url);
+	});
+	contents.on('page-title-updated', (_event, title) => {
+		if (user()) visit(contents.getURL(), title);
+	});
 	watchMouseButtons(contents);
 	contents.once('destroyed', () => {
 		drop(tab);
