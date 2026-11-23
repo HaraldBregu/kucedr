@@ -1444,6 +1444,8 @@ export interface BrowserInvokeChannelMap {
 	[BrowserChannels.library]: { args: []; result: import('./browser_import').BrowserLibraryCounts };
 	[BrowserChannels.bookmarksClear]: { args: []; result: boolean };
 	[BrowserChannels.bookmarksExport]: { args: []; result: boolean };
+	[BrowserChannels.history]: { args: []; result: import('./browser_import').BrowserVisit[] };
+	[BrowserChannels.historyDelete]: { args: [url: string]; result: void };
 	[BrowserChannels.historyClear]: { args: []; result: boolean };
 	[BrowserChannels.passwordsStatus]: { args: []; result: import('./browser_import').BrowserPasswordStatus };
 	[BrowserChannels.passwordsImport]: { args: []; result: number | null };
