@@ -22,8 +22,6 @@ export interface Library {
 
 let cached: Library | undefined;
 
-// A file that cannot be read is never written over: it is set aside and the previous copy is
-// read instead, so the user can still recover it by hand.
 export function library(next?: Library): Library {
 	const file = path.join(userDataLocation(), 'browser', 'library.json');
 	if (next) {
