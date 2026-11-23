@@ -74,6 +74,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			tab.chat = scope.sessionId;
 		}
 		tab.order = ++pane.order;
+		await wake(tab);
 		return tab;
 	};
 	const describe = (tab: BrowserTab): string =>
