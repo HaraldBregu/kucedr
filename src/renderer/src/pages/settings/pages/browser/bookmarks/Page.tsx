@@ -30,6 +30,13 @@ export default function BrowserBookmarksPage(): React.JSX.Element {
 			<SettingsPageHeader
 				title={t('settings.browser.bookmarksPage.title')}
 				description={t('settings.browser.bookmarksPage.description')}
+				action={
+					bookmarks?.length ? (
+						<Button type="button" variant="outline" onClick={() => void window.browserPane.bookmarksExport()}>
+							{t('settings.browser.bookmarksPage.export')}
+						</Button>
+					) : null
+				}
 			/>
 			{bookmarks?.length ? (
 				<Input
