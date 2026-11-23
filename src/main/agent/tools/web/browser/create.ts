@@ -41,6 +41,7 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		logs: [],
 		chat,
 		owner,
+		agent: owner !== undefined,
 		order: ++pane.order,
 		position: ++pane.position,
 	};
