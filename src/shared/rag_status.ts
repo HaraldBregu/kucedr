@@ -11,6 +11,7 @@ export interface RagIndexResult {
 	files: number;
 	vectors: number;
 	skipped: number;
+	skippedReasons: Partial<Record<RagSkipReason, number>>;
 	skippedFiles: RagSkipped[];
 }
 
