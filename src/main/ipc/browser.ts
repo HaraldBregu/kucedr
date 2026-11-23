@@ -1,5 +1,5 @@
 import { BrowserWindow, dialog } from 'electron';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { z } from 'zod';
 import { BrowserChannels } from '../../shared/ipc_channels_definitions';
 import { pollAutofill } from '../agent/tools/web/browser/autofill';
