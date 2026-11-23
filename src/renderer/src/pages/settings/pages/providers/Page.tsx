@@ -222,8 +222,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				);
 			await window.provider.set({ id: providerId, apiKey, kind, ...(baseUrl ? { baseUrl } : {}) });
 			updateProviderEntry(providerId, {
-				apiKey,
-				savedApiKey: apiKey,
+				apiKey: '',
 				apiKeySaved: true,
 				editing: false,
 				...(setting ? { baseUrl, savedBaseUrl: baseUrl } : {}),
