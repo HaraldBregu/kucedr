@@ -69,7 +69,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		const all = [...paneTabs.values()];
 		const tab = params.targetId
 			? paneTabs.get(params.targetId)
-			: (latest(all.filter((candidate) => scope && candidate.owner === scope.ownerId)) ??
+			: (latest(all.filter((candidate) => scope && candidate.owner === scope.runId)) ??
 				shown().find(free) ??
 				latest(all.filter(mine)) ??
 				(all.length === 1 && free(all[0]) ? all[0] : undefined));
