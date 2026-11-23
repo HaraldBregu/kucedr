@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, FilePlus, FolderPlus, Folders, Plus, Search } from 'lucide-react';
+import { ArrowLeft, FilePlus, FolderPlus, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
