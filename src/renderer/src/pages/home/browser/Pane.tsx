@@ -54,6 +54,7 @@ export function BrowserPane({
 				onSelect={(targetId) => run(targetId, 'focus')}
 				onClose={(targetId) => run(targetId, 'close')}
 				onNew={() => run(active.targetId, 'new')}
+				onMove={(targetId, index) => run(targetId, 'move', undefined, index)}
 			/>
 			<BrowserToolbar
 				key={active.targetId}
