@@ -85,7 +85,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		allCatalogItems(section).map((provider) => ({
 			providerId: provider.id,
 			apiKey: '',
-			savedApiKey: '',
 			apiKeySaved: false,
 			editing: false,
 		}))
@@ -93,7 +92,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	const [customProvider, setCustomProvider] = useState({
 		apiKey: '',
 		baseUrl: '',
-		savedApiKey: '',
+		saved: false,
 		savedBaseUrl: '',
 		editing: false,
 	});
