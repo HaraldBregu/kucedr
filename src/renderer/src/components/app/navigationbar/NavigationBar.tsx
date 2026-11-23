@@ -165,8 +165,29 @@ export const NavigationBar = React.memo(function NavigationBar({
 					</DropdownMenuContent>
 				</DropdownMenu>
 	);
+	const workspaceLabel = t('settings.workspace.title', 'Workspace');
 	const navigationButtons = showWorkspace ? (
 		<>
+			{!isWorkspace && (
+				<Tooltip>
+					<TooltipTrigger render={
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className="size-8 rounded-full dark:hover:bg-accent"
+							onClick={() => {
+								playSound('navigate');
+								navigate('/workspace');
+							}}
+							aria-label={workspaceLabel}
+						>
+							<Folders className="size-4" strokeWidth={1.8} />
+						</Button>
+					} />
+					<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
+				</Tooltip>
+			)}
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
