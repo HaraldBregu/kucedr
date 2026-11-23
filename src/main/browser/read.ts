@@ -13,6 +13,8 @@ const ENTITIES: Readonly<Record<string, string>> = {
 	'&#39;': "'",
 };
 
+type Library = Stored & { history: Visit[] };
+
 interface Node {
 	readonly [key: string]: unknown;
 }
