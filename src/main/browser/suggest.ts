@@ -1,4 +1,5 @@
 import type { BrowserPlace } from '../../shared/browser_import';
+import { history as visits } from './history';
 import { library } from './library';
 
 const LIMIT = 8;
