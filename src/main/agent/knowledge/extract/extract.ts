@@ -23,9 +23,8 @@ export async function extractText(
 		if (extension === '.rtf' || bytes.includes(0) || !isUtf8(bytes)) return 'unsupported';
 		const text = bytes.toString('utf8');
 		return [{ text: HTML.has(extension) ? htmlText(text) : text }];
-	} catch (error) {
+	} catch {
 		signal?.throwIfAborted();
-		void error;
 		return 'unreadable';
 	}
 }
