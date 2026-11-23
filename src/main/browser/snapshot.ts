@@ -16,7 +16,7 @@ export function saveTabs(final = false): void {
 	const write = (): void => {
 		timer = undefined;
 		const saved: { chat: string; order: number; entries: { url: string; title: string }[]; index: number }[] = [];
-		for (const tab of paneTabs.values()) {
+		for (const tab of [...paneTabs.values()].sort((a, b) => a.position - b.position)) {
 			const contents = tab.view.webContents;
 			if (tab.chat === undefined || contents.isDestroyed()) continue;
 			const all = tab.pending ?? {
