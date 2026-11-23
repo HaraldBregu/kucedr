@@ -55,7 +55,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			throw new Error('Invalid URL: must be http or https');
 		return parsed.toString();
 	};
-	const current = (): BrowserTab => {
+	const current = async (): Promise<BrowserTab> => {
 		const all = [...paneTabs.values()];
 		const tab = params.targetId
 			? paneTabs.get(params.targetId)
