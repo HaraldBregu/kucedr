@@ -37,10 +37,7 @@ export function SetupChatStep({
 			.then(async (provider) => {
 				if (!provider) return [];
 				if (!cancelled) setLocalProviderName(provider.name);
-				return window.provider.listCustomModels({
-					baseUrl: provider.baseUrl,
-					apiKey: provider.apiKey,
-				});
+				return window.provider.listCustomModels({ id: provider.id });
 			})
 			.then((models) => {
 				if (!cancelled) setAvailableLocalModels(models);
