@@ -420,7 +420,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									}
 								}}
 								placeholder={
-									entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
+									entry.apiKeySaved ? '************' : t('settings.providers.apiKeyPlaceholder')
 								}
 								spellCheck={false}
 								type="password"
