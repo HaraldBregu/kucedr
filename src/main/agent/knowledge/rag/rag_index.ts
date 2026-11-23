@@ -73,6 +73,10 @@ export async function indexRag(
 		files: indexedFiles,
 		vectors,
 		skipped: skipped.length,
+		skippedReasons: skipped.reduce<RagIndexResult['skippedReasons']>(
+			(counts, item) => ({ ...counts, [item.reason]: (counts[item.reason] ?? 0) + 1 }),
+			{}
+		),
 		skippedFiles: skipped.slice(0, SKIPPED_LISTED),
 	});
 	const embedBatch = async (batch: Omit<VectorRecord, 'vector'>[]): Promise<void> => {
