@@ -64,6 +64,7 @@ export function BrowserPane({
 				key={active.targetId}
 				tab={active}
 				onCommand={(command, url) => run(active.targetId, command, url)}
+				onStopAgent={busy && active.chat === chat ? onStop : undefined}
 				onClose={onClose}
 				onSuggestionsOpen={setSuggesting}
 			/>
