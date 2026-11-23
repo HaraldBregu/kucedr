@@ -36,9 +36,10 @@ import { TrustedRenderer } from './core/trusted';
 const targetId = z.string().regex(/^t\d+$/);
 const edge = z.number().int().min(0).max(16_384);
 const commandSchema = z.object({
-	targetId,
+	targetId: targetId.optional(),
 	command: z.enum(['back', 'forward', 'reload', 'stop', 'navigate', 'focus', 'close', 'new']),
 	url: z.string().max(4096).optional(),
+	chat: z.string().min(1).max(256).optional(),
 });
 const viewSchema = z
 	.object({ targetId, x: edge, y: edge, width: edge.min(1), height: edge.min(1) })
