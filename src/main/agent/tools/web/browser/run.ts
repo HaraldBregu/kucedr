@@ -6,8 +6,9 @@ import { closeTab } from './close';
 import { createTab } from './create';
 import { cursor } from './cursor';
 import { locate } from './locate';
-import { pane, paneTabs, type BrowserTab } from './pane';
+import { acting, pane, paneTabs, type BrowserTab } from './pane';
 import { settle } from './settle';
+import { shown } from './shown';
 import { SNAPSHOT_SCRIPT } from './snapshot';
 
 const SNAPSHOT_MAX_TEXT = 4_000;
