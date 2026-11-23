@@ -121,7 +121,7 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 								{status.result.skippedFiles.map((file) => (
 									<li key={file.path} className="flex justify-between gap-4 py-0.5">
 										<span className="min-w-0 truncate">{file.path}</span>
-										<span className="shrink-0">{t(`settings.knowledge.skipped.${file.reason}`, { count: 1 })}</span>
+										<span className="shrink-0">{t(`settings.knowledge.reason.${file.reason}`)}</span>
 									</li>
 								))}
 								{status.result.skipped > status.result.skippedFiles.length && (
