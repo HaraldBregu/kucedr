@@ -72,6 +72,7 @@ export function BrowserToolbar({
 			: { label: 'Reload', icon: RotateCw, disabled: false, run: () => onCommand('reload') },
 	];
 	const trailing = [
+		{ label: 'Stop the assistant', icon: Square, show: Boolean(onStopAgent), run: () => onStopAgent?.() },
 		{
 			label: 'Bookmarks',
 			icon: BookMarked,
