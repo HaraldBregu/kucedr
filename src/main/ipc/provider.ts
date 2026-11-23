@@ -102,7 +102,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const stored = getProvider(id, kind);
 		const apiKey =
 			entered || (stored && (!baseUrl || stored.baseUrl === baseUrl) ? stored.apiKey : '');
-		if (!apiKey && stored) throw new Error('Enter the API key again to change the base URL.');
+		if (!apiKey && stored?.apiKey) throw new Error('Enter the API key again to change the base URL.');
 		if (!apiKey || apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
 		return baseUrl ? { kind, id, apiKey, baseUrl } : { kind, id, apiKey };
 	}
