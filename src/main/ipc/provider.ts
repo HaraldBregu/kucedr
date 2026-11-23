@@ -154,9 +154,15 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 
 	private async listCustomModels(value: unknown): Promise<string[]> {
 		const record = this.record(value);
-		const baseUrl = this.baseUrl(record.baseUrl);
+		const stored = record.id === undefined ? undefined : getProvider(this.id(record.id), 'models');
+		if (record.id !== undefined && !stored) throw new Error('Unknown provider.');
+		const baseUrl = this.baseUrl(stored ? stored.baseUrl : record.baseUrl);
 		const url = new URL('models', `${baseUrl}/`);
-		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
+		const apiKey = stored
+			? stored.apiKey
+			: typeof record.apiKey === 'string'
+				? record.apiKey.trim()
+				: '';
 		const signal = AbortSignal.timeout(10_000);
 		let response: Response;
 		try {
