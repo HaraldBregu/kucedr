@@ -268,14 +268,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				setCustomProvider({
 					apiKey: '',
 					baseUrl: '',
-					savedApiKey: '',
+					saved: false,
 					savedBaseUrl: '',
 					editing: false,
 				});
 			} else {
 				updateProviderEntry(providerId, {
 					apiKey: '',
-					savedApiKey: '',
 					apiKeySaved: false,
 					editing: false,
 					...(allCatalogItems(section).some(
