@@ -156,10 +156,7 @@ const AssistantPage: React.FC = () => {
 			const provider = (await window.provider.list('models')).find((item) => item.id === 'custom');
 			if (!provider) return;
 			setLocalProvider(provider);
-			const models = await window.provider.listCustomModels({
-				baseUrl: provider.baseUrl,
-				apiKey: provider.apiKey,
-			});
+			const models = await window.provider.listCustomModels({ id: provider.id });
 			setState((current) => ({
 				...current,
 				modelGroups: current.modelGroups.map((group) =>
