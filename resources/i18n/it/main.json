@@ -1350,6 +1350,13 @@
 				"name": "Nome",
 				"address": "Indirizzo",
 				"export": "Esporta…"
+			},
+			"historyPage": {
+				"title": "Cronologia",
+				"description": "Le pagine che hai aperto nel browser, dalla più recente. La navigazione dell'assistente non viene conservata.",
+				"count": "{{count}} pagine",
+				"search": "Cerca nella cronologia",
+				"empty": "Nessuna cronologia."
 			}
 		},
 		"editor": {
