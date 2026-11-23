@@ -8,6 +8,7 @@ import { acting, pane, paneEvents, paneShown, paneTabs } from '../agent/tools/we
 import { tabs } from '../agent/tools/web/browser/tabs';
 import { profileFiles } from '../browser/files';
 import { importFiles } from '../browser/import';
+import { history } from '../browser/history';
 import { library } from '../browser/library';
 import { confirmDeletion } from '../browser/confirm';
 import { bookmarksHtml } from '../browser/html';
