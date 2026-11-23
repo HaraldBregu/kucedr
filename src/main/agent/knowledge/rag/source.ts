@@ -1,52 +1,63 @@
 import { knowledgeRoot } from '../root';
-import { stat } from 'node:fs/promises';
+import { lstat, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { TextDecoder } from 'node:util';
-import { assertKnowledgeSourceSafe } from '../safety';
+import type { RagSkipped, RagSkipReason } from '../../../../shared/rag_status';
+import { isKnowledgeSourceSecret } from '../safety';
 import { listKnowledgeFiles } from '../list';
+import { extractText } from '../extract/extract';
 import { readFileBounded } from '../../files/read';
-import {
-	KNOWLEDGE_MAX_FILE_BYTES,
-	KNOWLEDGE_MAX_FILES,
-	KNOWLEDGE_MAX_TOTAL_BYTES,
-} from '../limits';
-import type { RagSource } from './types';
-
-const UTF8_DECODING = new TextDecoder('utf-8', { fatal: true });
+import { KNOWLEDGE_MAX_FILE_BYTES, KNOWLEDGE_MAX_FILE_TEXT, KNOWLEDGE_MAX_FILES } from '../limits';
+import type { RagSegment, RagSource } from './types';
 
 export async function* collectRagSources(
 	sources: readonly string[],
-	signal?: AbortSignal
+	skipped: RagSkipped[],
+	signal?: AbortSignal,
+	progress?: (done: number, total: number) => void
 ): AsyncGenerator<RagSource> {
-	const budget = { entries: 0, files: 0, bytes: 0 };
-	let totalBytes = 0;
-	let files = 0;
+	const budget = { entries: 0 };
+	const listed: { source: string; sourceIndex: number; file: string }[] = [];
 	for (const [sourceIndex, selected] of sources.entries()) {
 		signal?.throwIfAborted();
 		const source = knowledgeRoot(selected);
 		if (!(await stat(source)).isDirectory())
 			throw new Error('The selected source is not a folder: ' + source);
-		for (const file of await listKnowledgeFiles(source, signal, budget)) {
-			signal?.throwIfAborted();
-			assertKnowledgeSourceSafe({ relativePath: path.join(path.basename(source), file), content: '' });
-			if (++files > KNOWLEDGE_MAX_FILES) throw new Error('Knowledge source file limit exceeded.');
-			const bytes = await readFileBounded(
-				path.join(source, file),
-				KNOWLEDGE_MAX_FILE_BYTES,
-				signal
-			);
-			totalBytes += bytes.length;
-			if (totalBytes > KNOWLEDGE_MAX_TOTAL_BYTES)
-				throw new Error('Knowledge corpus byte limit exceeded.');
-			if (bytes.some((byte) => byte < 32 && byte !== 9 && byte !== 10 && byte !== 13)) continue;
-			let content: string;
-			try {
-				content = UTF8_DECODING.decode(bytes);
-			} catch {
+		for (const file of await listKnowledgeFiles(source, signal, budget, skipped))
+			listed.push({ source, sourceIndex, file });
+	}
+	for (const [done, { source, sourceIndex, file }] of listed.entries()) {
+		signal?.throwIfAborted();
+		progress?.(done, listed.length);
+		const shown = path.join(path.basename(source), file);
+		const skip = (reason: RagSkipReason): void => void skipped.push({ path: shown, reason });
+		if (done >= KNOWLEDGE_MAX_FILES) {
+			skip('limit');
+			continue;
+		}
+		if (isKnowledgeSourceSecret({ relativePath: shown, content: '' })) {
+			skip('credential');
+			continue;
+		}
+		const full = path.join(source, file);
+		let segments: RagSegment[] | RagSkipReason;
+		try {
+			if ((await lstat(full)).size > KNOWLEDGE_MAX_FILE_BYTES) {
+				skip('too-large');
 				continue;
 			}
-			assertKnowledgeSourceSafe({ relativePath: file, content });
-			yield { source, sourceIndex, file, content };
+			segments = await extractText(file, await readFileBounded(full, KNOWLEDGE_MAX_FILE_BYTES, signal), signal);
+		} catch {
+			signal?.throwIfAborted();
+			skip('unreadable');
+			continue;
 		}
+		if (typeof segments === 'string') skip(segments);
+		else if (segments.reduce((length, segment) => length + segment.text.length, 0) > KNOWLEDGE_MAX_FILE_TEXT)
+			skip('too-large');
+		else if (!segments.some((segment) => /\S/.test(segment.text))) skip('empty');
+		else if (segments.some((segment) => isKnowledgeSourceSecret({ relativePath: shown, content: segment.text })))
+			skip('credential');
+		else yield { source, sourceIndex, file, segments };
 	}
+	progress?.(listed.length, listed.length);
 }
