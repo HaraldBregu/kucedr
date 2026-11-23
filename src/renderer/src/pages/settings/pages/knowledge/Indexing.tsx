@@ -102,6 +102,42 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 						)
 					}
 				/>
+				{!running && status?.result?.skipped ? (
+					<Collapsible>
+						<SettingsRow
+							title={t('settings.knowledge.skippedTitle', { count: status.result.skipped })}
+							description={[...new Set(status.result.skippedFiles.map((file) => file.reason))]
+								.map((reason) =>
+									t(`settings.knowledge.skipped.${reason}`, {
+										count: status.result?.skippedFiles.filter((file) => file.reason === reason).length,
+									})
+								)
+								.join(' · ')}
+							actions={
+								<CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
+									{t('settings.knowledge.skippedShow')}
+								</CollapsibleTrigger>
+							}
+						/>
+						<CollapsibleContent>
+							<ul className="max-h-64 overflow-y-auto px-4 pb-3 text-xs text-muted-foreground">
+								{status.result.skippedFiles.map((file) => (
+									<li key={file.path} className="flex justify-between gap-4 py-0.5">
+										<span className="min-w-0 truncate">{file.path}</span>
+										<span className="shrink-0">{t(`settings.knowledge.skipped.${file.reason}`, { count: 1 })}</span>
+									</li>
+								))}
+								{status.result.skipped > status.result.skippedFiles.length && (
+									<li className="py-0.5">
+										{t('settings.knowledge.skippedMore', {
+											count: status.result.skipped - status.result.skippedFiles.length,
+										})}
+									</li>
+								)}
+							</ul>
+						</CollapsibleContent>
+					</Collapsible>
+				) : null}
 				{currentIndex && (
 					<SettingsRow
 						title={t('settings.knowledge.activeIndex')}
