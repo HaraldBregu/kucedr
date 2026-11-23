@@ -120,8 +120,8 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 - **Autofill drawn in a separate view** instead of in the page; see the open decisions.
 - **Offer to move the exported password CSV to the bin** after an import.
 - **Some sites refuse sign-in in an embedded browser**, Google among them _(not verified)_.
-- **23.17–23.20** tab restore, browsing history, bookmark safety and dragging tabs; planned in
-  [Browser restore plan](../BROWSER_RESTORE.md).
+- **23.17–23.20 follow-ups** in [Browser restore plan](../BROWSER_RESTORE.md#status): a "Reopen
+  tabs at start" switch, scroll position, and private and Tor tabs once they exist.
 
 ### How the import works
 
