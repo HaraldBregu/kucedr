@@ -7,9 +7,11 @@ import { validateVector } from './validate';
 import { ragRecipient } from './recipient';
 import { purgeRagManifest } from './rag_manifest_purge';
 import { isLocalRagDatabase } from '../../../../shared/rag_database';
+import type { RagSkipped } from '../../../../shared/rag_status';
 import {
 	KNOWLEDGE_MAX_RECORDS,
 	KNOWLEDGE_MAX_VECTOR_VALUES,
+	KNOWLEDGE_REQUEST_TIMEOUT_MS,
 	KNOWLEDGE_TIMEOUT_MS,
 } from '../limits';
 import { SelectedEmbeddingProvider } from './embedding';
