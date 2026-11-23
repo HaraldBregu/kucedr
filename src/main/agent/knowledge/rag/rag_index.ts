@@ -62,25 +62,88 @@ export async function indexRag(
 	let published = false;
 	let vectorValues = 0;
 	const records: VectorRecord[] = [];
+	const pending: Omit<VectorRecord, 'vector'>[] = [];
+	const skipped: RagSkipped[] = [];
 	let dimensions: number | undefined;
 	let indexedFiles = 0;
+	const result = (vectors: number): RagIndexResult => ({
+		files: indexedFiles,
+		vectors,
+		skipped: skipped.length,
+		skippedFiles: skipped.slice(0, SKIPPED_LISTED),
+	});
+	const embedBatch = async (batch: Omit<VectorRecord, 'vector'>[]): Promise<void> => {
+		signal.throwIfAborted();
+		assertRagConsent(configuration, providerId, modelId, selectedIndexName, true);
+		assertRagCurrent(configuration);
+		assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
+		const embedded = await embeddingProvider.embed(
+			{
+				texts: batch.map((record) => record.text),
+				inputType: 'document',
+				providerId,
+				modelId,
+			},
+			AbortSignal.any([signal, AbortSignal.timeout(KNOWLEDGE_REQUEST_TIMEOUT_MS)])
+		);
+		signal.throwIfAborted();
+		if (embedded.providerId !== providerId || embedded.modelId !== modelId) {
+			throw new Error('Embedding provider did not use the selected provider and model.');
+		}
+		vectorValues += embedded.embeddings.reduce((count, vector) => count + vector.length, 0);
+		if (
+			vectorValues > KNOWLEDGE_MAX_VECTOR_VALUES ||
+			embedded.dimensions < 1 ||
+			embedded.dimensions > 65_536 ||
+			embedded.embeddings.length !== batch.length ||
+			embedded.embeddings.some(
+				(vector) =>
+					vector.length !== embedded.dimensions ||
+					vector.some((value) => !Number.isFinite(value))
+			)
+		)
+			throw new Error('Invalid or excessive embedding vectors.');
+		dimensions ??= embedded.dimensions;
+		if (embedded.dimensions !== dimensions) {
+			throw new Error('Embedding dimensions changed while indexing.');
+		}
+		for (const vector of embedded.embeddings) validateVector(vector, dimensions);
+		for (const [offset, record] of batch.entries())
+			records.push({ ...record, vector: embedded.embeddings[offset] });
+	};
+	const fits = (count: number, width = dimensions): boolean => {
+		const planned = records.length + pending.length + count;
+		return planned <= KNOWLEDGE_MAX_RECORDS && (!width || planned * width <= KNOWLEDGE_MAX_VECTOR_VALUES);
+	};
 
 	try {
-		for await (const { source, file, content } of collectRagSources(sources, signal)) {
+		for await (const { source, file, segments } of collectRagSources(
+			sources,
+			skipped,
+			signal,
+			dependencies.progress
+		)) {
 			signal.throwIfAborted();
-			const chunks = chunkSpans(content);
+			const shown = path.join(path.basename(source), file);
+			const chunks = segments.flatMap((segment) =>
+				chunkSpans(segment.text).map((chunk) => ({
+					...chunk,
+					text: `${shown}${segment.label ? ` · ${segment.label}` : ''}\n\n${chunk.text}`,
+				}))
+			);
 			if (chunks.length === 0) continue;
-			indexedFiles += 1;
 			const sourceId = createHash('sha256')
 				.update(path.resolve(source))
 				.update('\0')
 				.update(file)
 				.digest('hex');
 			const sourceFingerprint = createHash('sha256')
-				.update('knowledge-chunks-v3\0')
+				.update('knowledge-chunks-v4\0')
 				.update(embeddingRecipient)
 				.update('\0')
-				.update(content)
+				.update(shown)
+				.update('\0')
+				.update(JSON.stringify(segments))
 				.digest('hex');
 			const reused = vectorStore.getReusableSource(
 				selectedIndexName,
@@ -93,74 +156,37 @@ export async function indexRag(
 				for (const record of reused) {
 					validateVector(record.vector, dimensions ?? reused[0].vector.length);
 				}
+				if (!fits(reused.length, dimensions ?? reused[0].vector.length)) {
+					skipped.push({ path: shown, reason: 'limit' });
+					continue;
+				}
 				vectorValues += reused.reduce((count, record) => count + record.vector.length, 0);
-				if (
-					records.length + reused.length > KNOWLEDGE_MAX_RECORDS ||
-					vectorValues > KNOWLEDGE_MAX_VECTOR_VALUES
-				)
-					throw new Error('Knowledge record or vector budget exceeded.');
 				dimensions ??= reused[0].vector.length;
 				records.push(...reused);
+				indexedFiles += 1;
 				continue;
 			}
-
-			for (let start = 0; start < chunks.length; start += BATCH_SIZE) {
-				signal.throwIfAborted();
-				const batch = chunks.slice(start, start + BATCH_SIZE);
-				if (records.length + batch.length > KNOWLEDGE_MAX_RECORDS)
-					throw new Error('Knowledge record limit exceeded.');
-				assertRagConsent(configuration, providerId, modelId, selectedIndexName, true);
-				assertRagCurrent(configuration);
-				assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
-				const embedded = await embeddingProvider.embed(
-					{
-						texts: batch.map((chunk) => chunk.text),
-						inputType: 'document',
-						providerId,
-						modelId,
-					},
-					signal
-				);
-				signal.throwIfAborted();
-				if (embedded.providerId !== providerId || embedded.modelId !== modelId) {
-					throw new Error('Embedding provider did not use the selected provider and model.');
-				}
-				vectorValues += embedded.embeddings.reduce((count, vector) => count + vector.length, 0);
-				if (
-					vectorValues > KNOWLEDGE_MAX_VECTOR_VALUES ||
-					embedded.dimensions < 1 ||
-					embedded.dimensions > 65_536 ||
-					embedded.embeddings.length !== batch.length ||
-					embedded.embeddings.some(
-						(vector) =>
-							vector.length !== embedded.dimensions ||
-							vector.some((value) => !Number.isFinite(value))
-					)
-				)
-					throw new Error('Invalid or excessive embedding vectors.');
-				dimensions ??= embedded.dimensions;
-				if (embedded.dimensions !== dimensions) {
-					throw new Error('Embedding dimensions changed while indexing.');
-				}
-				for (const vector of embedded.embeddings) validateVector(vector, dimensions);
-				for (const [offset, chunk] of batch.entries()) {
-					const chunkIndex = start + offset;
-					records.push({
-						id: `${sourceId}#${chunkIndex}`,
-						sourceId,
-						sourceFingerprint,
-						path: path.join(path.basename(source), file),
-						chunkIndex,
-						lineStart: chunk.lineStart,
-						lineEnd: chunk.lineEnd,
-						text: chunk.text,
-						checksum: createHash('sha256').update(chunk.text).digest('hex'),
-						indexedAt: new Date().toISOString(),
-						vector: embedded.embeddings[offset],
-					});
-				}
+			if (!fits(chunks.length)) {
+				skipped.push({ path: shown, reason: 'limit' });
+				continue;
 			}
+			indexedFiles += 1;
+			for (const [chunkIndex, chunk] of chunks.entries())
+				pending.push({
+					id: `${sourceId}#${chunkIndex}`,
+					sourceId,
+					sourceFingerprint,
+					path: shown,
+					chunkIndex,
+					lineStart: chunk.lineStart,
+					lineEnd: chunk.lineEnd,
+					text: chunk.text,
+					checksum: createHash('sha256').update(chunk.text).digest('hex'),
+					indexedAt: new Date().toISOString(),
+				});
+			while (pending.length >= BATCH_SIZE) await embedBatch(pending.splice(0, BATCH_SIZE));
 		}
+		if (pending.length > 0) await embedBatch(pending.splice(0));
 
 		if (!dimensions || records.length === 0) {
 			signal.throwIfAborted();
@@ -168,7 +194,7 @@ export async function indexRag(
 			assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
 			vectorStore.purge(selectedIndexName);
 			purgeRagManifest(selectedIndexName);
-			return { files: indexedFiles, vectors: 0 };
+			return result(0);
 		}
 		signal.throwIfAborted();
 
