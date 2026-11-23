@@ -501,7 +501,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		const connected = Boolean(customProvider.savedBaseUrl);
 		const saving = savingProviderId === 'custom';
 		const canSave = Boolean(
-			(customProvider.apiKey.trim() || customProvider.savedApiKey) && customProvider.baseUrl.trim()
+			(customProvider.apiKey.trim() || customProvider.saved) && customProvider.baseUrl.trim()
 		);
 		return (
 			<Item
