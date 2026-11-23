@@ -14,11 +14,13 @@ const MENU_BOOKMARKS = 45;
 export function BrowserToolbar({
 	tab,
 	onCommand,
+	onStopAgent,
 	onClose,
 	onSuggestionsOpen,
 }: {
 	readonly tab: BrowserPaneTab;
 	readonly onCommand: (command: BrowserPaneCommand['command'], url?: string) => void;
+	readonly onStopAgent?: () => void;
 	readonly onClose: () => void;
 	readonly onSuggestionsOpen: (open: boolean) => void;
 }): ReactElement {
