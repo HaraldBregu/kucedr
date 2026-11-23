@@ -3,7 +3,7 @@ import { acting, paneTabs } from './pane';
 
 export function tabs(): BrowserPaneState {
 	const list: BrowserPaneTab[] = [];
-	for (const tab of paneTabs.values()) {
+	for (const tab of [...paneTabs.values()].sort((a, b) => a.position - b.position)) {
 		const contents = tab.view.webContents;
 		if (tab.chat === undefined || contents.isDestroyed()) continue;
 		const pending = tab.pending?.entries[tab.pending.index];
