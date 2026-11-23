@@ -31,9 +31,10 @@ export interface BrowserPaneState {
 }
 
 export interface BrowserPaneCommand {
-	readonly targetId: string;
+	readonly targetId?: string;
 	readonly command: 'back' | 'forward' | 'reload' | 'stop' | 'navigate' | 'focus' | 'close' | 'new';
 	readonly url?: string;
+	readonly chat?: string;
 }
 
 export interface BrowserPaneView {
