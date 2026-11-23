@@ -25,6 +25,9 @@ export async function runRagIndexing(trigger: RagIndexTrigger = 'manual'): Promi
 	try {
 		const result = await indexRag(configuration.folders, configuration.indexName, {
 			signal: controller.signal,
+			progress: (done, total) => {
+				ragJob.progress = { done, total };
+			},
 		});
 		controller.signal.throwIfAborted();
 		ragJob.result = result;
