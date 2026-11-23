@@ -346,9 +346,10 @@ export const useWebBrowserTool = tool({
 				await runBrowserPageOperation(page, signal, async () => {
 					if (params.back) await page.goBack({ waitUntil: 'domcontentloaded' });
 					else if (params.forward) await page.goForward({ waitUntil: 'domcontentloaded' });
+					else if (params.reload) await page.reload({ waitUntil: 'domcontentloaded' });
 					else if (params.url)
 						await page.goto(await assertHttpUrl(params.url), { waitUntil: 'domcontentloaded' });
-					else throw new Error('navigate requires url, back, or forward.');
+					else throw new Error('navigate requires url, back, forward, or reload.');
 				});
 				return JSON.stringify({ targetId: id, url: page.url(), title: await page.title() });
 			}
