@@ -492,7 +492,7 @@ export interface AppsApi {
 
 export interface SearchApi {
 	getSettings: () => Promise<SearchSettings>;
-	listProviders: () => Promise<StoredProvider[]>;
+	listProviders: () => Promise<SavedProvider[]>;
 	saveEngine: (engineId: SearchEngineId, input: SearchEngineInput) => Promise<SearchSettings>;
 	removeEngine: (engineId: SearchEngineId) => Promise<SearchSettings>;
 	selectEngine: (engineId: SearchEngineId) => Promise<SearchSettings>;
