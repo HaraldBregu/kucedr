@@ -1,6 +1,7 @@
 import { closeSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 import { LAYOUTS, type Kind } from './formats';
-import type { Library, Visit } from './library';
+import type { Visit } from './history';
+import type { Library as Stored } from './library';
 import { withCopy } from './query';
 
 const TEXT_LIMIT_BYTES = 64 * 1024 * 1024;
