@@ -346,6 +346,14 @@ const routes: RouteObject[] = [
 									</SettingsRouteWrapper>
 								),
 							},
+							{
+								path: 'history',
+								element: (
+									<SettingsRouteWrapper>
+										<BrowserHistoryPage />
+									</SettingsRouteWrapper>
+								),
+							},
 						],
 					},
 					{
