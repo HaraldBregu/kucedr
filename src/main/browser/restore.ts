@@ -9,10 +9,17 @@ export function restoreTabs(): void {
 	const file = path.join(userDataLocation(), 'browser', 'tabs.json');
 	try {
 		const saved = JSON.parse(readFileSync(file, 'utf8')) as {
-			tabs: { chat: string; order: number; entries: { url: string; title: string }[]; index: number }[];
+			tabs: {
+				chat: string;
+				agent?: boolean;
+				order: number;
+				entries: { url: string; title: string }[];
+				index: number;
+			}[];
 		};
 		for (const item of saved.tabs) {
 			const tab = createTab(item.chat);
+			tab.agent = item.agent === true;
 			tab.pending = { entries: item.entries, index: item.index };
 			tab.order = item.order;
 			pane.order = Math.max(pane.order, item.order);
