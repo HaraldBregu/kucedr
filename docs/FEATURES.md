@@ -65,7 +65,7 @@ See [Start Page Flow](ui/START.md) for routing, authentication branches, navigat
 validation, persistence, and completion rules. The same provider keys and service selections can
 be changed later in Settings.
 
-Provider API keys are stored in Kucedr's local application data and are masked after saving. Requests and credentials are still sent to the configured provider as required for authentication and inference.
+Provider API keys are sealed with the OS keychain in Kucedr's local application data and stay in the main process; Settings shows only whether a key is saved. Requests and credentials are still sent to the configured provider as required for authentication and inference.
 
 ### Chat input
 
