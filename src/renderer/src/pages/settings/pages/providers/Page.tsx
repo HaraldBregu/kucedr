@@ -616,7 +616,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									onClick={() =>
 										setCustomProvider((current) => ({
 											...current,
-											apiKey: current.savedApiKey,
+											apiKey: '',
 											baseUrl: current.savedBaseUrl,
 											editing: false,
 										}))
