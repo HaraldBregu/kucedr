@@ -10,7 +10,7 @@ export function saveSearchEngine(engineId: SearchEngineId, input: SearchEngineIn
 	if (!service) throw new Error('Unknown search service.');
 	const settings = pluginSettings(service.provider.id);
 	const entered = typeof input?.apiKey === 'string' ? input.apiKey.trim() : '';
-	const apiKey = entered === MASKED_KEY ? settings.apiKey?.trim() : entered;
+	const apiKey = entered || settings.apiKey?.trim();
 	if (!apiKey) throw new Error('A search engine API key is required.');
 	savePluginSettings(service.provider.id, { ...settings, apiKey });
 	return getSearchSettings();
