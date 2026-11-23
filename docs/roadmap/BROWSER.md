@@ -74,6 +74,29 @@ it says otherwise. Windows and Linux paths are written but not exercised.
   the pane column (`under.ts`, `attach_route_navigation.ts`). With no earlier page nothing moves;
   elsewhere the app moves as before. The `app-command` and swipe routes are not exercised: they
   need a real pointer over the pane.
+- **23.19 Bookmarks that cannot be lost.** A `library.json` that does not parse is renamed to
+  `library.json.damaged-<time>` and the bookmarks come from `library.json.bak`, the copy taken
+  before each write (one write behind, so the last change before the damage is lost). Every
+  `writeFileAtomic` flushes before the rename. Settings → Browser has "Clear history" and "Delete
+  all bookmarks", each behind the native warning; Bookmarks → Export writes the standard bookmarks
+  HTML file, which imports back with the same bookmarks. The flush itself is not observable in a
+  test; it is checked by reading the code only.
+- **23.17 Tabs restored after a crash or quit** (`browser/snapshot.ts`, `restore.ts`, `wake.ts`).
+  `tabs.json` is written at most once a second when its content changes, and once on quit. At
+  start every saved tab gets a view but loads nothing until it is shown or the agent uses it.
+  Checked after a kill and after a quit: same tabs, order and front tab, only the front tab loads,
+  Forward and Back work in the one that had history. 30 unloaded tabs cost about 22 MB over one
+  and no extra renderer process.
+- **23.20 Drag tabs to reorder.** A `position` per tab, a `move` pane command, drag in the strip
+  (the tabs make room where it will land, the strip scrolls at its edges) and ⌘⇧← / ⌘⇧→ (Ctrl+Shift
+  on Windows and Linux) on the focused tab. The order shows in every window, in "All tabs", and
+  survives a crash. Drag was checked with drag events sent to the strip; a real pointer drag was
+  not exercised (Playwright's mouse does not start a native drag in Electron).
+- **23.18 Browsing history** (`browser/history.ts`, `visit.ts`). The user's visits are recorded,
+  not the pages loaded while the agent acts in that tab's chat; `history.json` is written at most
+  every two seconds and on quit, 5,000 entries. Old history moves out of `library.json` the first
+  time it is read. Settings → Browser → History lists visits by day with search, delete one and
+  Clear history. Showing a restored tab counts as a visit of its page.
 
 ### Not implemented yet
 
