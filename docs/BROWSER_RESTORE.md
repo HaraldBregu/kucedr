@@ -1,6 +1,6 @@
 # Browser pane: tabs that survive a restart, history, and safe bookmarks
 
-Status: plan, 2026-11-23. Nothing here is built. Roadmap items 23.17–23.19 in
+Status: plan, 2026-11-23. Nothing here is built. Roadmap items 23.17–23.20 in
 [Browser import](roadmap/BROWSER.md). Paths are relative to `src/main/` unless they start with
 `src/` or `docs/`.
 
