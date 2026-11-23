@@ -1,9 +1,84 @@
 # Browser pane: controlling the browser from the chat
 
-Status: plan, 2026-11-23. Nothing here is built. Roadmap item 3.12 in
+Status: built 2026-11-23; see [Status](#status). Roadmap item 3.12 in
 [User experience](roadmap/EXPERIENCE.md). Paths are relative to `src/main/` unless they start with
-`src/` or `docs/`. Statements about today's behaviour were read from code, not checked in the
-running app.
+`src/` or `docs/`. The sections below are the plan as written; where the code turned out
+different, [Status](#status) says so.
+
+## Status
+
+Built and checked on macOS in the built app (isolated profile, mock model issuing the browser
+calls, local test pages).
+
+### What the plan got wrong about the code
+
+- **Tabs already belonged to the chat, not the run.** A chat run's `ownerId` is
+  `interactive:<chat>` (`agent/agent.ts`); `run:<runId>` is only the fallback in
+  `agent/runner/run_tool_call.ts`. What really failed was the tab on screen being ignored.
+- **Tabs the user opens are never "no chat".** The + button and the first tab pass the chat on
+  screen (`command.ts`, `src/renderer/src/pages/home/Page.tsx`), so "this chat's tab" cannot tell
+  the user's tabs from the assistant's. A new `agent` flag on each tab does that.
+
+### As built
+
+- **Tab choice** (`agent/tools/web/browser/run.ts`), without a `targetId`:
+  1. the tab this reply already used (`owner` is now the run id);
+  2. the tab on screen, focused window first (`agent/tools/web/browser/shown.ts`), unless another
+     chat's agent is acting in it;
+  3. this chat's last used tab;
+  4. the only tab, under the same condition as 2;
+  5. otherwise an error listing the tabs.
+
+  Step 1 keeps a multi-step reply in its own tab when the user switches tabs midway. The tab the
+  agent acts on moves to its chat, so the last chat to act owns it.
+- **Opened by the assistant.** `agent` on `BrowserTab` (`pane.ts`) is set when the agent opens a
+  tab or a page it drives opens a popup. It is saved in `tabs.json` (`browser/snapshot.ts`,
+  `browser/restore.ts`), so it survives a restart. A tab the user opens with + no longer takes the
+  agent's run as its owner.
+- **`tabs` and `status`** give `shown` and `mine` for each tab.
+- **`close`** without a `targetId` closes this chat's last tab the assistant opened. Any tab the
+  assistant did not open in this chat fails with "only the user can close it". **`stop`** closes
+  only this chat's assistant tabs.
+- **`act` `scroll`** (`act.ts`): with a `ref`, scrolls it into view; otherwise `direction` and
+  `amount` in screens, sent as a mouse wheel at the agent pointer or the page centre, so inner
+  lists scroll too. **`navigate` `reload`.** Both also work in the background headless browser
+  (`use_web_browser.ts`).
+- **Stop in the pane** (`Toolbar.tsx`, `Pane.tsx`): a Stop button in the toolbar while the agent
+  of the chat on screen acts in the tab shown. It calls the chat's own Stop (`stopResponse`), so
+  the chat view updates as if Stop had been pressed there. The page is left as it was. Its label is
+  in English only, like the rest of the toolbar.
+- **Description** rewritten for the pane with no product names. `background.ts` keeps its own,
+  which still says "headless Chrome", and Chrome is what it launches.
+
+### Checked in the app
+
+- With the agent's tab and a hand-opened tab of another chat on screen, `tabs` marked the second
+  `shown: true, mine: false`. `snapshot` and a `click` in a follow-up message went to that tab, and
+  the click followed its link. The tab then belonged to this chat.
+- `scroll` down 2 moved the page two screens (1428 px at a 714 px viewport); `scroll` to a ref put
+  the link at the bottom of a long page into view; `reload` loaded the page again.
+- `close` closed the assistant's tab and refused the user's; `stop` closed only the tab the
+  assistant had opened and left the user's.
+- Stop in the pane appeared while the agent waited, and ended the run about half a second after
+  the click. The frame went away and the page stayed.
+- After a quit and relaunch, with the pane hidden, a follow-up message acted in this chat's
+  restored tab (its page was restored first) and could still close it; the other chat's tab stayed.
+
+### Not checked
+
+- A task run with the browser tool. The headless path only gained `scroll` and `reload` and
+  typechecks.
+- Two chats acting at once: the tab on screen being skipped while another chat's agent acts in it.
+- Two windows: the focused window's tab winning.
+- Stop for another chat's agent. The pane shows Stop only for the chat on screen, because a run
+  can be cancelled only from the window that started it; the user stops other chats from those
+  chats.
+- Windows and Linux.
+
+### Still open
+
+- **`evaluate` approval on a page where a password was filled.** Today `evaluate` is refused on
+  such a page (`tab.filled` in `act.ts`), which is stricter than an approval. Left as is.
 
 ## Goal
 
