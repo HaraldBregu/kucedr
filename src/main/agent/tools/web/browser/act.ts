@@ -8,8 +8,10 @@ const DEFAULT_TIMEOUT_MS = 15_000;
 const BUTTONS = { left: 1, right: 2, middle: 4 };
 
 export interface BrowserAct {
-	kind: 'click' | 'type' | 'press' | 'hover' | 'drag' | 'select' | 'fill' | 'wait' | 'evaluate';
+	kind: 'click' | 'type' | 'press' | 'hover' | 'drag' | 'select' | 'fill' | 'wait' | 'evaluate' | 'scroll';
 	ref?: string;
+	direction?: 'up' | 'down' | 'left' | 'right';
+	amount?: number;
 	text?: string;
 	key?: string;
 	values?: string[];
