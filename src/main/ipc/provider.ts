@@ -93,14 +93,18 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 
 	private credential(value: unknown): ProviderCredentialSaveInput {
 		const record = this.record(value);
-		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
-		if (!apiKey || apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
 		const kind = this.kind(record.kind);
 		const id = this.id(record.id);
-		if (id !== 'custom') return { kind, id, apiKey };
-		if (kind !== 'models') throw new Error('Custom providers support models only.');
-		const baseUrl = this.baseUrl(record.baseUrl);
-		return { kind, id, apiKey, baseUrl };
+		if (id === 'custom' && kind !== 'models')
+			throw new Error('Custom providers support models only.');
+		const baseUrl = id === 'custom' ? this.baseUrl(record.baseUrl) : undefined;
+		const entered = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
+		const stored = getProvider(id, kind);
+		const apiKey =
+			entered || (stored && (!baseUrl || stored.baseUrl === baseUrl) ? stored.apiKey : '');
+		if (!apiKey && stored) throw new Error('Enter the API key again to change the base URL.');
+		if (!apiKey || apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
+		return baseUrl ? { kind, id, apiKey, baseUrl } : { kind, id, apiKey };
 	}
 
 	private catalogProvider(
