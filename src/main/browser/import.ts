@@ -7,7 +7,7 @@ import { readData } from './read';
 export function importFiles(files: readonly string[], want: BrowserImportKinds): BrowserImportSummary {
 	const current = library();
 	const bookmarks = new Map(current.bookmarks.map((item) => [item.url, item]));
-	const history = new Map<string, Visit>(current.history.map((item) => [item.url, item]));
+	const history = new Map<string, Visit>(visits().map((item) => [item.url, item]));
 	const known = { bookmarks: bookmarks.size, history: new Set(history.keys()) };
 	const errors: string[] = [];
 	let search: string | undefined;
