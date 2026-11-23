@@ -3,7 +3,6 @@ import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 const task = getDocument({
 	data: workerData as Uint8Array,
-	isEvalSupported: false,
 	disableFontFace: true,
 	useSystemFonts: false,
 	verbosity: 0,
