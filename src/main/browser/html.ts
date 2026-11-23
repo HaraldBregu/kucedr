@@ -8,7 +8,6 @@ const ENTITIES: Readonly<Record<string, string>> = {
 	"'": '&#39;',
 };
 
-// The bookmarks page format every browser exports and imports, and read.ts reads back.
 export function bookmarksHtml(bookmarks: readonly BrowserPlace[]): string {
 	const escape = (text: string): string => text.replace(/[&<>"']/g, (character) => ENTITIES[character]);
 	return [
