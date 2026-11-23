@@ -44,6 +44,7 @@ export function getRagStatus(): RagStatus {
 			outcome: ragJob.outcome,
 			error: ragJob.error,
 			result: ragJob.result ? { ...ragJob.result } : null,
+			progress: ragJob.progress ? { ...ragJob.progress } : null,
 			nextRunAt: getRagNextRun(),
 			timezone: configuration.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
 			requiresIndexing,
