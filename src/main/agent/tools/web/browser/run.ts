@@ -67,17 +67,19 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		const all = [...paneTabs.values()];
 		const tab = params.targetId
 			? paneTabs.get(params.targetId)
-			: (all.filter((candidate) => candidate.owner === scope?.ownerId).at(-1) ??
-				(all.length === 1 ? all[0] : undefined));
+			: (latest(all.filter((candidate) => scope && candidate.owner === scope.ownerId)) ??
+				shown().find(free) ??
+				latest(all.filter(mine)) ??
+				(all.length === 1 && free(all[0]) ? all[0] : undefined));
 		if (!tab)
 			throw new Error(
 				params.targetId
 					? `Unknown tab "${params.targetId}". Use action "tabs" to list open tabs.`
 					: all.length
-						? 'Several tabs are open and none was opened by this chat. Pass a targetId from action "tabs".'
+						? `No tab is on screen or belongs to this chat. Pass a targetId from these tabs: ${JSON.stringify(list())}`
 						: 'No open tabs. Use action "open" with a url first.'
 			);
-		if (!tab.owner && scope) {
+		if (scope) {
 			tab.owner = scope.ownerId;
 			tab.chat = scope.sessionId;
 		}
