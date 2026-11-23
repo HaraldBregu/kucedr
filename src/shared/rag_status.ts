@@ -21,7 +21,8 @@ export interface RagStatus {
 	finishedAt: string | null;
 	outcome: 'idle' | 'running' | 'completed' | 'failed' | 'cancelled';
 	error: string | null;
-	result: { files: number; vectors: number } | null;
+	result: RagIndexResult | null;
+	progress?: { done: number; total: number } | null;
 	nextRunAt: string | null;
 	timezone: string;
 	requiresIndexing?: boolean;
