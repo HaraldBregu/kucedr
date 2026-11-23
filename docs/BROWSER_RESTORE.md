@@ -236,7 +236,9 @@ Changed: `agent/tools/web/browser/pane.ts` (the `position` field), `create.ts` (
 
 1. 23.19 (S): safe read, previous copy, flush, confirmed clearing, export.
 2. 23.17 (M): save and restore tabs.
-3. 23.18 (M): record history, move it to its own file, History page.
+3. 23.20 (S): drag to reorder. Can also go first; it does not depend on the others, and if it
+   lands after 23.17 the saved order already follows the strip.
+4. 23.18 (M): record history, move it to its own file, History page.
 
 ## Checks
 
