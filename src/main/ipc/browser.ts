@@ -119,8 +119,33 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			const { bookmarks, history, search } = library();
 			return { bookmarks: bookmarks.length, history: history.length, search };
 		});
-		trusted.command(BrowserChannels.clearLibrary, () => {
-			library({ bookmarks: [], history: [], search: DEFAULT_SEARCH });
+		trusted.commandWithEvent(BrowserChannels.historyClear, async ({ sender }) => {
+			const current = library();
+			const confirmed = await confirmDeletion(
+				sender,
+				text().clearHistoryConfirm.replace('{{count}}', String(current.history.length)),
+				text().clearHistoryDetail
+			);
+			if (confirmed) library({ ...library(), history: [] });
+			return confirmed;
+		});
+		trusted.commandWithEvent(BrowserChannels.bookmarksClear, async ({ sender }) => {
+			const current = library();
+			const confirmed = await confirmDeletion(
+				sender,
+				text().deleteBookmarksConfirm.replace('{{count}}', String(current.bookmarks.length)),
+				text().deleteBookmarksDetail
+			);
+			if (confirmed) library({ ...library(), bookmarks: [] });
+			return confirmed;
+		});
+		trusted.commandWithEvent(BrowserChannels.bookmarksExport, async ({ sender }) => {
+			const window = BrowserWindow.fromWebContents(sender);
+			const options = { defaultPath: 'bookmarks.html', filters: [{ name: 'HTML', extensions: ['html'] }] };
+			const result = await (window ? dialog.showSaveDialog(window, options) : dialog.showSaveDialog(options));
+			if (result.canceled || !result.filePath) return false;
+			writeFileSync(result.filePath, bookmarksHtml(library().bookmarks));
+			return true;
 		});
 		trusted.query(BrowserChannels.passwordsStatus, () => ({
 			available: passwordsAvailable(),
