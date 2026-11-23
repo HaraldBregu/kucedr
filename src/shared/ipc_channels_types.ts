@@ -946,7 +946,7 @@ export interface SearchInvokeChannelMap {
 	};
 	[SearchChannels.listProviders]: {
 		args: [];
-		result: import('./provider_types').StoredProvider[];
+		result: import('./provider_types').SavedProvider[];
 	};
 	[SearchChannels.saveEngine]: {
 		args: [
