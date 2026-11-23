@@ -93,6 +93,12 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.browser.bookmarksPage.title') },
 		];
 	}
+	if (location.pathname === '/settings/browser/history') {
+		return [
+			{ label: t('settings.browser.title'), path: '/settings/browser' },
+			{ label: t('settings.browser.historyPage.title') },
+		];
+	}
 	if (location.pathname === '/settings/voice/history') {
 		return [
 			{ label: t('settings.tabs.voice'), path: '/settings/voice' },
