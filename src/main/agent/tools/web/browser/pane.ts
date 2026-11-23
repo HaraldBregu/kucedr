@@ -22,7 +22,7 @@ export interface BrowserTab {
 	pending?: { entries: { url: string; title: string }[]; index: number };
 }
 
-export const pane = { width: 1280, height: 800, order: 0, next: 1 };
+export const pane = { width: 1280, height: 800, order: 0, position: 0, next: 1 };
 export const paneTabs = new Map<string, BrowserTab>();
 export const paneEvents = new EventEmitter();
 export const acting = new Map<string, number>();
