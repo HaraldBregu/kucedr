@@ -107,12 +107,8 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 					<Collapsible>
 						<SettingsRow
 							title={t('settings.knowledge.skippedTitle', { count: status.result.skipped })}
-							description={[...new Set(status.result.skippedFiles.map((file) => file.reason))]
-								.map((reason) =>
-									t(`settings.knowledge.skipped.${reason}`, {
-										count: status.result?.skippedFiles.filter((file) => file.reason === reason).length,
-									})
-								)
+							description={Object.entries(status.result.skippedReasons)
+								.map(([reason, count]) => t(`settings.knowledge.skipped.${reason}`, { count }))
 								.join(' · ')}
 							actions={
 								<CollapsibleTrigger render={<Button variant="outline" size="sm" />}>
