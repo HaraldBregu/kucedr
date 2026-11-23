@@ -28,7 +28,8 @@ export function importFiles(files: readonly string[], want: BrowserImportKinds):
 		}
 	}
 	const kept = [...history.values()].sort((a, b) => b.last - a.last).slice(0, HISTORY_LIMIT);
-	library({ bookmarks: [...bookmarks.values()], history: kept, search: search ?? current.search });
+	library({ bookmarks: [...bookmarks.values()], search: search ?? current.search });
+	visits(kept, true);
 	return {
 		bookmarks: bookmarks.size - known.bookmarks,
 		history: kept.filter((item) => !known.history.has(item.url)).length,
