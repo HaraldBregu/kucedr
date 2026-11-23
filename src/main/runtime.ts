@@ -258,6 +258,10 @@ app.whenReady().then(() => {
 		trayManager.updateLanguage(language);
 	});
 
+	restoreTabs();
+	paneEvents.on('change', () => saveTabs());
+	app.once('before-quit', () => saveTabs(true));
+
 	// Create main window
 	if (!mainWindow.getWindow()) mainWindow.create();
 
