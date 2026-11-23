@@ -129,6 +129,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'browser bookmarks favorites saved edit delete',
 	},
 	{
+		path: '/settings/browser/history',
+		labelKey: 'settings.browser.historyPage.title',
+		descriptionKey: 'settings.browser.historyPage.description',
+		keywords: 'browser history visited pages search delete clear',
+	},
+	{
 		path: '/settings/general/persona',
 		labelKey: 'settings.voiceAgent.title',
 		descriptionKey: 'settings.voiceAgent.description',
