@@ -139,16 +139,16 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									}
 								: {}),
 							apiKeySaved: saved,
-							editing: saved && !current?.savedApiKey ? false : (current?.editing ?? false),
+							editing: saved && !current?.apiKeySaved ? false : (current?.editing ?? false),
 						};
 					})
 				);
 				const custom = savedProviders.get('custom');
 				if (custom?.baseUrl) {
 					setCustomProvider({
-						apiKey: custom.apiKey,
+						apiKey: '',
 						baseUrl: custom.baseUrl,
-						savedApiKey: custom.apiKey,
+						saved: custom.saved,
 						savedBaseUrl: custom.baseUrl,
 						editing: false,
 					});
