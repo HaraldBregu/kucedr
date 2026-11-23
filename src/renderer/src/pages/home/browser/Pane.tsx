@@ -11,10 +11,14 @@ const IS_MAC = navigator.platform.startsWith('Mac');
 export function BrowserPane({
 	tabs,
 	acting,
+	chat,
+	onStop,
 	onClose,
 }: {
 	readonly tabs: readonly BrowserPaneTab[];
 	readonly acting: readonly string[];
+	readonly chat?: string;
+	readonly onStop: () => void;
 	readonly onClose: () => void;
 }): ReactElement {
 	const active = tabs.reduce((latest, tab) => (tab.order > latest.order ? tab : latest));
