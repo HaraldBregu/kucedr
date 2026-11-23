@@ -8,6 +8,7 @@ import type {
 	BrowserLibraryCounts,
 	BrowserPlace,
 	BrowserSource,
+	BrowserVisit,
 } from './browser_import';
 
 export interface BrowserPaneTab {
