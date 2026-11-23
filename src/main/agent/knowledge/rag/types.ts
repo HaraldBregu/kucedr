@@ -37,6 +37,7 @@ export interface RagIndexDependencies {
 	vectors?: VectorStore;
 	mirror?: RagMirror;
 	signal?: AbortSignal;
+	progress?: (done: number, total: number) => void;
 }
 
 export type { RagIndexResult } from '../../../../shared/rag_status';
