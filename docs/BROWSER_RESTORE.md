@@ -1,8 +1,56 @@
 # Browser pane: tabs that survive a restart, history, and safe bookmarks
 
-Status: plan, 2026-11-23. Nothing here is built. Roadmap items 23.17–23.20 in
+Status: built 2026-11-23; see [Status](#status). Roadmap items 23.17–23.20 in
 [Browser import](roadmap/BROWSER.md). Paths are relative to `src/main/` unless they start with
 `src/` or `docs/`.
+
+## Status
+
+All four items are built and checked on macOS in the built app (Playwright `_electron`, isolated
+profile, a mock model for the agent visit).
+
+### Checked in the app
+
+- **Crash** (process killed) and **Quit**: the same three tabs in the same order, the same tab in
+  front; at start only that tab's page is requested, another loads when its tab is shown; Forward
+  then Back work in the tab that had history. A change made 0.3 s before quit is saved.
+- **Reorder**: third tab to first and first to the end; the dragged tab comes to the front and the
+  others make room while dragging. Keyboard ⌘⇧← moves the focused tab and keeps focus on it;
+  Ctrl+Shift+← does nothing on macOS. The "All tabs" menu and a second window follow the strip;
+  the order survives a crash. Dropping a tab on the composer or the chat list changes nothing.
+- **Damaged library**: invalid text in `library.json` → bookmarks come back from `.bak`, the damaged
+  file is kept as `library.json.damaged-<time>`, a new bookmark keeps the others, also after a
+  relaunch.
+- **Clearing**: both buttons raise the native warning first; Cancel changes nothing; "Clear
+  history" leaves the bookmarks.
+- **Export**: the exported file imports back with the same four bookmarks, titles with `& < > "`
+  included.
+- **History**: three pages opened by hand appear in History and in the address field suggestions;
+  the page the agent opened does not; deleting one removes it from both; old history in
+  `library.json` moves to `history.json` and the next bookmarks write leaves it out. English and
+  Italian checked. 5,000 entries render in about 1 s, search filters in under 0.1 s.
+- **Cost of unloaded tabs**: 30 restored tabs use about 22 MB more than one, with no extra
+  renderer process, so pending tabs keep their view.
+
+### Not checked
+
+- A real pointer drag and the strip scrolling at its edges: Playwright's mouse does not start a
+  native drag in Electron, so the drag was driven with drag events sent to the strip.
+- The flush before rename (`fsync`) cannot be observed from a test; checked by reading the code.
+- Windows and Linux.
+
+### Differences from the plan
+
+- The start-up restore and the quit writes are in `runtime.ts`, not `index.ts`: `index.ts` only
+  takes the single-instance lock and imports `runtime.ts`.
+- `.bak` is one write behind, so after a damaged file the last change before the damage is lost.
+- Showing a restored tab counts as a visit of its page, since its load is a normal navigation.
+- `library.json` is written without `history`; the move happens when `library.json` is first read
+  (it writes `history.json` if that does not exist), so a bookmark change made before any history
+  read cannot drop the old history.
+- `history.json` and `tabs.json` that cannot be read are set aside like the library.
+- The keyboard move is ⌘⇧← / ⌘⇧→ on macOS and Ctrl+Shift+← / → on Windows and Linux. Arrows sit in
+  the same place on Italian and US layouts, and nothing in `shortcuts.ts` or the menu uses them.
 
 ## Goal
 
