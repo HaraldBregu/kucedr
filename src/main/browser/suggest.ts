@@ -7,7 +7,8 @@ const LIMIT = 8;
 export function suggest(text: string): BrowserPlace[] {
 	const needle = text.trim().toLowerCase();
 	if (needle.length < 2) return [];
-	const { bookmarks, history } = library();
+	const { bookmarks } = library();
+	const history = visits();
 	const matches = (item: BrowserPlace): boolean =>
 		item.url.toLowerCase().includes(needle) || item.title.toLowerCase().includes(needle);
 	const found = new Map<string, BrowserPlace>();
