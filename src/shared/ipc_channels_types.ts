@@ -913,10 +913,10 @@ export interface ProviderInvokeChannelMap {
 	};
 	[ProviderChannels.list]: {
 		args: [kind?: Exclude<import('./provider_types').ProviderCredentialKind, 'search_engines'>];
-		result: import('./provider_types').StoredProvider[];
+		result: import('./provider_types').SavedProvider[];
 	};
 	[ProviderChannels.listCustomModels]: {
-		args: [input: { baseUrl: string; apiKey: string }];
+		args: [input: import('./provider_types').CustomModelsInput];
 		result: string[];
 	};
 	[ProviderChannels.listModels]: {
