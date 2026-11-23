@@ -43,7 +43,7 @@ export const provider: ProviderApi = {
 			? typedInvokeUnwrap(ProviderStoreChannels.list, kind)
 			: typedInvokeUnwrap(ProviderStoreChannels.list);
 	},
-	listCustomModels: (input: { baseUrl: string; apiKey: string }) =>
+	listCustomModels: (input: CustomModelsInput) =>
 		typedInvokeUnwrap(ProviderStoreChannels.listCustomModels, input),
 	listModels: (providerId: string, refresh?: boolean) =>
 		typedInvokeUnwrap(ProviderStoreChannels.listModels, providerId, refresh),
