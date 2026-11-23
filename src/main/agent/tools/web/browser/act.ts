@@ -164,6 +164,28 @@ export async function act(tab: BrowserTab, params: BrowserAct, signal?: AbortSig
 				await until(() => js<boolean>(`document.readyState ${state}`), `the page to reach ${params.loadState}`);
 			} else await sleep(params.timeMs ?? 1_000, undefined, { signal });
 			return 'waited';
+		case 'scroll': {
+			if (params.ref) {
+				if (!/^e\d+$/.test(params.ref))
+					throw new Error(`Invalid ref "${params.ref}". Refs look like "e12" from snapshot output.`);
+				const found = await js<boolean>(`(() => {
+					const el = document.querySelector('[data-agent-ref="${params.ref}"]');
+					el?.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
+					return Boolean(el);
+				})()`);
+				if (!found) throw new Error(`Element ${params.ref} was not found; take a new snapshot.`);
+				return `scrolled to ${params.ref}`;
+			}
+			const direction = params.direction ?? 'down';
+			const vertical = direction === 'up' || direction === 'down';
+			const [width, height] = await js<[number, number]>('[innerWidth, innerHeight]');
+			const delta = (vertical ? height : width) * (params.amount ?? 1) * (direction === 'up' || direction === 'left' ? -1 : 1);
+			await mouse('mouseWheel', tab.pointer ?? { x: width / 2, y: height / 2 }, {
+				deltaX: vertical ? 0 : delta,
+				deltaY: vertical ? delta : 0,
+			});
+			return `scrolled ${direction}`;
+		}
 		case 'evaluate': {
 			if (!params.fn) throw new Error('act "evaluate" requires fn (a JS expression or function).');
 			if (tab.filled)
