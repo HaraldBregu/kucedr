@@ -56,6 +56,11 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 		}
 	};
 	const pick = (folder: boolean): void => void run(() => window.browserPane.importPicked({ folder, ...kinds }));
+	const clear = async (work: () => Promise<boolean>): Promise<void> => {
+		if (!(await work())) return;
+		setCounts(await window.browserPane.library());
+		setSummary(null);
+	};
 
 	return (
 		<SettingsPageShell>
