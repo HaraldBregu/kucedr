@@ -46,19 +46,56 @@ export function BrowserTabs({
 				role="tablist"
 				aria-label="Browser tabs"
 				style={NO_DRAG}
-				className="flex min-w-0 items-end overflow-x-auto [scrollbar-width:none]"
+				className={cn(
+					'flex min-w-0 items-end overflow-x-auto transition-[padding] [scrollbar-width:none]',
+					drop === tabs.length && 'pr-12'
+				)}
 				onWheel={(event) => {
 					if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) event.currentTarget.scrollLeft += event.deltaY;
 				}}
+				onDragOver={(event) => {
+					if (!event.dataTransfer.types.includes(TAB_MIME)) return;
+					event.preventDefault();
+					event.dataTransfer.dropEffect = 'move';
+					const box = event.currentTarget.getBoundingClientRect();
+					if (event.clientX < box.left + EDGE) event.currentTarget.scrollLeft -= SCROLL_STEP;
+					else if (event.clientX > box.right - EDGE) event.currentTarget.scrollLeft += SCROLL_STEP;
+					const items = [...event.currentTarget.querySelectorAll('[data-tab]')];
+					const at = items.findIndex((item) => {
+						const rect = item.getBoundingClientRect();
+						return event.clientX < rect.left + rect.width / 2;
+					});
+					setDrop(at < 0 ? items.length : at);
+				}}
+				onDragLeave={(event) => {
+					if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDrop(null);
+				}}
+				onDrop={(event) => {
+					const targetId = event.dataTransfer.getData(TAB_MIME);
+					const slot = drop;
+					setDrop(null);
+					if (!targetId || slot === null) return;
+					event.preventDefault();
+					const from = tabs.findIndex((tab) => tab.targetId === targetId);
+					onMove(targetId, from < slot ? slot - 1 : slot);
+				}}
 			>
-				{tabs.map((tab) => {
+				{tabs.map((tab, at) => {
 					const selected = tab.targetId === active;
 					const label = tab.title || (!tab.url || tab.url === 'about:blank' ? 'New tab' : tab.url);
 					return (
 						<div
 							key={tab.targetId}
+							data-tab={tab.targetId}
+							draggable
+							onDragStart={(event) => {
+								event.dataTransfer.setData(TAB_MIME, tab.targetId);
+								event.dataTransfer.effectAllowed = 'move';
+							}}
+							onDragEnd={() => setDrop(null)}
 							className={cn(
-								'group/tab relative flex h-8.5 w-52 min-w-28 shrink items-center rounded-t-lg text-xs',
+								'group/tab relative flex h-8.5 w-52 min-w-28 shrink items-center rounded-t-lg text-xs transition-[margin]',
+								drop === at && 'ml-12',
 								selected
 									? 'bg-background text-foreground'
 									: 'text-muted-foreground after:absolute after:right-0 after:top-2 after:h-4 after:w-px after:bg-border hover:bg-background/50 hover:text-foreground'
