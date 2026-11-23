@@ -7,7 +7,7 @@ import { pane, paneEvents, paneTabs } from './pane';
 export function command(request: BrowserPaneCommand): void {
 	const tab = request.targetId === undefined ? undefined : paneTabs.get(request.targetId);
 	if (request.command === 'new') {
-		createTab(tab?.chat ?? request.chat, tab?.owner);
+		createTab(tab?.chat ?? request.chat);
 		paneEvents.emit('change');
 		return;
 	}
