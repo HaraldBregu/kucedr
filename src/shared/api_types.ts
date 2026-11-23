@@ -7,7 +7,8 @@ import type {
 	ProviderCredentialKind,
 	ProviderCredentialSaveInput,
 	PublicProvider,
-	StoredProvider,
+	SavedProvider,
+	CustomModelsInput,
 } from './provider_types';
 import type { SearchEngineId, SearchEngineInput, SearchSettings } from './search_types';
 import type {
