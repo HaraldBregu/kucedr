@@ -154,6 +154,7 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 | 23.17 | Tabs restored after a crash or quit | The pane reopens with the same tabs, order and front tab; Back still works; only the tab on screen loads; see [Browser restore plan](../BROWSER_RESTORE.md) | Tabs live only in memory today (`paneTabs` in `pane.ts`); Electron's `navigationHistory.restore` | M |
 | 23.18 | Browsing history | Pages opened in the pane are recorded, suggested in the address field, and listed in Settings → Browser → History with search and delete | Only imported history exists today; it shares `library.json` with the bookmarks | M |
 | 23.19 | Bookmarks that cannot be lost | A damaged file is never overwritten, the previous copy is kept, writes are flushed, clearing is split and confirmed, and bookmarks export to a standard file | `library()` falls back to empty and the next write saves that over the damaged file; Clear deletes bookmarks and history in one click | S |
+| 23.20 | Drag tabs to reorder | Drag a tab along the strip, or move it with the keyboard; the order is shared by every window and kept after a restart | The strip shows tabs in creation order and has no place field; the sidebar's drag and drop pattern | S |
 
 ## Saved data and autofill (23.9–23.12)
 
