@@ -1,6 +1,7 @@
 import path from 'node:path';
 import type { BrowserImportKinds, BrowserImportSummary } from '../../shared/browser_import';
-import { HISTORY_LIMIT, library, type Visit } from './library';
+import { history as visits, HISTORY_LIMIT, type Visit } from './history';
+import { library } from './library';
 import { readData } from './read';
 
 export function importFiles(files: readonly string[], want: BrowserImportKinds): BrowserImportSummary {
