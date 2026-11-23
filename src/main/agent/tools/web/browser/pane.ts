@@ -8,6 +8,7 @@ export interface BrowserTab {
 	chat?: string;
 	owner?: string;
 	order: number;
+	position: number;
 	error?: string;
 	icon?: string;
 	pointer?: { x: number; y: number };
