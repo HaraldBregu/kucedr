@@ -1350,6 +1350,13 @@
 				"name": "Name",
 				"address": "Address",
 				"export": "Export…"
+			},
+			"historyPage": {
+				"title": "History",
+				"description": "Pages you opened in the browser, newest first. The assistant's own browsing is not kept.",
+				"count": "{{count}} pages",
+				"search": "Search history",
+				"empty": "No history."
 			}
 		},
 		"editor": {
