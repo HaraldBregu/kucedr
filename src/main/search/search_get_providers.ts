@@ -1,11 +1,10 @@
-import type { StoredProvider } from '../../shared/provider_types';
+import type { SavedProvider, StoredProvider } from '../../shared/provider_types';
 import { getSearchProviders } from './search_store';
 import { loadWebSearches } from '../models';
 import { pluginSettings } from '../plugins/plugins_settings';
+import { savedProvider } from '../providers/saved';
 
-export const MASKED_KEY = '************';
-
-export function getStoredSearchProviders(): StoredProvider[] {
+export function getStoredSearchProviders(): SavedProvider[] {
 	const stored = getSearchProviders() as unknown;
 	if (!Array.isArray(stored)) return [];
 	const providers = stored.filter(
