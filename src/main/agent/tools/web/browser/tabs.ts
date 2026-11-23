@@ -6,11 +6,12 @@ export function tabs(): BrowserPaneState {
 	for (const tab of paneTabs.values()) {
 		const contents = tab.view.webContents;
 		if (tab.chat === undefined || contents.isDestroyed()) continue;
+		const pending = tab.pending?.entries[tab.pending.index];
 		list.push({
 			targetId: tab.id,
 			chat: tab.chat,
-			url: contents.getURL(),
-			title: contents.getTitle(),
+			url: pending?.url ?? contents.getURL(),
+			title: pending?.title ?? contents.getTitle(),
 			loading: contents.isLoading(),
 			order: tab.order,
 			back: contents.navigationHistory.canGoBack(),
