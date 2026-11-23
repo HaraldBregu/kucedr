@@ -64,6 +64,8 @@ export interface BrowserPaneApi {
 	bookmarksClear(): Promise<boolean>;
 	bookmarksExport(): Promise<boolean>;
 	library(): Promise<BrowserLibraryCounts>;
+	history(): Promise<BrowserVisit[]>;
+	historyDelete(url: string): Promise<void>;
 	historyClear(): Promise<boolean>;
 	passwordsStatus(): Promise<BrowserPasswordStatus>;
 	passwordsImport(): Promise<number | null>;
