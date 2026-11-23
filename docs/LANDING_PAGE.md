@@ -200,7 +200,7 @@ Choose one or more folders of text and an embedding provider. With your consent,
 - Supports manual generation and scheduled full index rebuilds.
 - Rejects common credential files and high-confidence secret content before indexing.
 
-Use **Knowledge** in the interface. Technical copy may say **RAG-powered semantic retrieval**. Indexing requires the configured embedding service and Pinecone mirror; queries send text to the embedding service, then search local SQLite vectors. Do not describe this feature as fully on-device or compatible with PDFs or office documents.
+Use **Knowledge** in the interface. Technical copy may say **RAG-powered semantic retrieval**. Indexing requires the configured embedding service and Pinecone mirror; queries send text to the embedding service, then search local SQLite vectors. Do not describe this feature as fully on-device. It reads text, Markdown, HTML, PDF, Word, Excel, PowerPoint and OpenDocument files; do not claim scanned documents, images or older Office formats (.doc, .xls, .ppt).
 
 ### 6. Apps
 
