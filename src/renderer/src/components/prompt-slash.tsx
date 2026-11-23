@@ -1,5 +1,5 @@
 import { useEffect, useState, type KeyboardEvent, type ReactElement, type ReactNode } from 'react';
-import { AppWindow, Check, Layers, MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
+import { AppWindow, Check, Globe, Layers, MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { AgentModeInfo } from '@shared/agent_types';
