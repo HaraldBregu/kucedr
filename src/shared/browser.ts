@@ -60,8 +60,10 @@ export interface BrowserPaneApi {
 	bookmarksAdd(place: BrowserPlace): Promise<void>;
 	bookmarksUpdate(url: string, place: BrowserPlace): Promise<void>;
 	bookmarksDelete(url: string): Promise<void>;
+	bookmarksClear(): Promise<boolean>;
+	bookmarksExport(): Promise<boolean>;
 	library(): Promise<BrowserLibraryCounts>;
-	clearLibrary(): Promise<void>;
+	historyClear(): Promise<boolean>;
 	passwordsStatus(): Promise<BrowserPasswordStatus>;
 	passwordsImport(): Promise<number | null>;
 	passwordsList(): Promise<BrowserLogin[]>;
