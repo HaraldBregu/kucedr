@@ -1,7 +1,8 @@
 # Roadmap
 
 Status: proposal, written 2026-11-19. Built since: sealed credentials on disk (1.2), completion
-notifications (3.1), regenerate and retry (3.3), the browser pane (3.9) and most of browser import
+notifications (3.1), regenerate and retry (3.3), the browser pane (3.9), browser control from the
+chat (3.12) and most of browser import
 (23), and replies that survive leaving Home (5.3); each area file says what is left. Each feature
 gets its own detailed plan before any implementation starts.
 
