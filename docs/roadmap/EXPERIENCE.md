@@ -1,6 +1,6 @@
 # 3. User experience
 
-Part of the [Roadmap](README.md). Status: proposal; 3.1, 3.3 and 3.9 are built (see each row).
+Part of the [Roadmap](README.md). Status: proposal; 3.1, 3.3, 3.9 and 3.12 are built (see each row).
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
