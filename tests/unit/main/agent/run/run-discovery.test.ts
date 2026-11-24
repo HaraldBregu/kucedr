@@ -96,7 +96,7 @@ describe('tool search', () => {
 		expect(
 			((await search.tool.run({ query: 'invoices' })) as { selectedToolIds: string[] })
 				.selectedToolIds
-		).toHaveLength(5);
+		).toHaveLength(3);
 		expect(
 			((await search.tool.run({ query: 'invoices', limit: 8 })) as { selectedToolIds: string[] })
 				.selectedToolIds
