@@ -141,7 +141,7 @@ describe('subagentTool', () => {
 			schema: { type: 'object' },
 			execute: () => undefined,
 		});
-		const tool = subagentsTool({ location: '/agent' }, [safe, unsafe], { type: 'default' });
+		const tool = subagentTool({ location: '/agent' }, () => [safe, unsafe], { type: 'default' });
 
 		await tool.run({
 			tasks: [
