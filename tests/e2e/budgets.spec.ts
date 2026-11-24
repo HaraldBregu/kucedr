@@ -62,13 +62,7 @@ test('a token budget pauses before sending and lets the user stop or continue', 
 		for (const decision of ['Stop run', 'Continue for one model call']) {
 			await editor.fill(`Test budget decision ${decision}`);
 			await editor.press('Enter');
-			await expect(pause).toBeVisible().catch(async (error) => {
-				const trace = await page.evaluate(async () => {
-					const session = (await window.agent.listSessions())[0];
-					return session && await window.agent.getSessionSnapshot(session.id);
-				});
-				throw new Error(JSON.stringify({ calls, trace }, null, 2).slice(-6000), { cause: error });
-			});
+			await expect(pause).toBeVisible();
 			expect(calls).toBe(0);
 			await pause.getByRole('button', { name: decision }).click();
 			await expect(pause).toHaveCount(0);

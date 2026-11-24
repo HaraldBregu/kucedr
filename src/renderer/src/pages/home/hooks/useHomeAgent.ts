@@ -272,6 +272,9 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				};
 				let response = '';
 				let resolvedSessionId = sessionId;
+				const isCurrentSession = (): boolean =>
+					currentSessionIdRef.current === resolvedSessionId ||
+					(requestIdRef.current === requestId && currentSessionIdRef.current === sessionId);
 				let thinkingSoundPlayed = false;
 				let responseSoundPlayed = false;
 				const onEvent = (event: AgentResponseEvent): void => {
@@ -315,7 +318,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 						}
 					}
 					if (event.type === 'text_delta') response += event.delta;
-					if (currentSessionIdRef.current === resolvedSessionId) {
+					if (isCurrentSession()) {
 						dispatchChat({ type: 'apply_response_event', event, receivedAtMs: Date.now() });
 					}
 				};
@@ -323,7 +326,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				response = await agent.send(trimmed, runtimeOptions, onEvent);
 				if (activeRunIdRef.current === runId) activeRunIdRef.current = undefined;
 				requestActiveRef.current = false;
-				if (currentSessionIdRef.current === resolvedSessionId) {
+				if (isCurrentSession()) {
 					setIsLoading(false);
 					dispatchChat({ type: 'complete_active', response, completedAtMs: Date.now() });
 				}
