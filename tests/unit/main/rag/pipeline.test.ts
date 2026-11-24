@@ -101,7 +101,7 @@ it('indexes local files and serves evidence through Query knowledge across persi
 		const requests = embed.mock.calls.length;
 		expect(
 			JSON.parse((await queryKnowledgeTool.run({ query: 'refund policy' })) as string)
-		).toMatchObject({ route: 'abstain', results: [] });
+		).toMatchObject({ abstain: true, results: [] });
 		expect(embed).toHaveBeenCalledTimes(requests);
 	} finally {
 		if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
