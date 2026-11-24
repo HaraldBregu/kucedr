@@ -136,9 +136,9 @@ it('asks before following a workspace symlink to an outside file', async () => {
 	}
 });
 
-it('asks before a patch moves a workspace file outside', async () => {
+it('denies a patch that moves a workspace file into protected app data', async () => {
 	fs.writeFileSync(path.join(workspace, 'move.txt'), 'content');
-	expect((await execute(applyPatchTool, { input: '*** Begin Patch\n*** Update File: move.txt\n*** Move to: ../outside.txt\n@@\n-content\n+updated\n*** End Patch' })).at(-1)).toMatchObject({ type: 'tool_permission_request' });
+	expect((await execute(applyPatchTool, { input: '*** Begin Patch\n*** Update File: move.txt\n*** Move to: ../outside.txt\n@@\n-content\n+updated\n*** End Patch' })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'deny' });
 	expect(fs.readFileSync(path.join(workspace, 'move.txt'), 'utf8')).toBe('content');
 });
 
