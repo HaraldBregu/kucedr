@@ -98,7 +98,7 @@ it('searches SQLite with the exact embedding identity used to build the index', 
 			checksum: 'checksum',
 			indexedAt: '2026-08-08T00:00:00.000Z',
 			text: 'Local guide text',
-			score: 0.91,
+			score: 1 / 61,
 		},
 	]);
 	expect(embed).toHaveBeenCalledWith(
