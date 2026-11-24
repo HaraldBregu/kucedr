@@ -384,6 +384,7 @@ it('shows selection actions and downloads or deletes selected files', async () =
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await screen.findByText('notes.txt');
+	await user.click(screen.getByRole('button', { name: 'settings.library.edit' }));
 	await user.click(screen.getByRole('checkbox', { name: 'settings.library.selectFile' }));
 	const toolbar = screen.getByRole('toolbar', { name: 'settings.library.selectionActions' });
 	await user.click(within(toolbar).getByRole('button', { name: 'settings.library.download' }));
