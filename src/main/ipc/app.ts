@@ -307,6 +307,7 @@ function getThemeData(): AppThemeData {
 		isDark,
 		colors: {
 			...(isDark ? darkThemeColors : lightThemeColors),
+			...contrast,
 			...(selected ? (isDark ? selected.dark : selected.light) : {}),
 			'sidebar-translucency-opacity': getSidebarTranslucency() ? '0.2' : '1',
 		},
