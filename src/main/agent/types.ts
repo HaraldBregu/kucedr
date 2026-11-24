@@ -98,6 +98,7 @@ export interface MessageContentBlock {
 export type MessageContent = string | MessageContentBlock[];
 
 export interface Message {
+	compaction?: { summary: string };
 	runId?: string;
 	role: MessageRole;
 	content: MessageContent;
