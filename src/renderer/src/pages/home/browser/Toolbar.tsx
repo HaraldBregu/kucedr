@@ -92,8 +92,26 @@ export function BrowserToolbar({
 			? { label: 'Stop loading', icon: X, disabled: false, run: () => onCommand('stop') }
 			: { label: 'Reload', icon: RotateCw, disabled: false, run: () => onCommand('reload') },
 	];
+	const look = tab.route === 'direct' ? undefined : ROUTE_LOOKS[tab.route];
+	const blocked = tab.blocked ?? [];
 	const trailing = [
 		{ label: 'Stop the assistant', icon: Square, show: Boolean(onStopAgent), run: () => onStopAgent?.() },
+		{
+			label: `${blocked.length} blocked ${blocked.length === 1 ? 'request' : 'requests'} on this page`,
+			icon: ShieldAlert,
+			show: blocked.length > 0,
+			run: () =>
+				void window.win.showContextMenu(
+					blocked
+						.slice(-MENU_BLOCKED)
+						.reverse()
+						.map((item, index) => ({
+							id: String(index),
+							label: `${BLOCKED_REASONS[item.reason]}: ${item.url}`.slice(0, 90),
+							enabled: false,
+						}))
+				),
+		},
 		{
 			label: 'Bookmarks',
 			icon: BookMarked,
