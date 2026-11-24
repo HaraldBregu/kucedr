@@ -36,6 +36,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const events: Array<{ type: string }> = [];
 		const pending = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => socket,
 			1000
 		).connect(
@@ -68,6 +69,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const contextForTurn = jest.fn(async () => 'User prefers concise answers.');
 		const adapter = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => socket,
 			1000
 		);
@@ -115,6 +117,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const events: Array<{ type: string; itemId?: string; transcript?: string }> = [];
 		const pending = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => socket,
 			1000
 		).connect(
@@ -149,6 +152,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const events: Array<{ type: string }> = [];
 		const adapter = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => socket,
 			1_000
 		);
@@ -199,6 +203,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const events: Array<{ type: string; itemId?: string; transcript?: string }> = [];
 		const adapter = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => socket,
 			1_000
 		);
@@ -242,6 +247,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const events: Array<{ type: string }> = [];
 		const adapter = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => socket,
 			1000
 		);
@@ -265,6 +271,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const failing = new FakeLiveSocket();
 		const pending = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => failing,
 			1000
 		).connect(
@@ -280,6 +287,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const socket = new FakeLiveSocket();
 		const adapter = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => socket,
 			15_000
 		);
@@ -302,6 +310,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		const events: Array<{ type: string; message?: string }> = [];
 		const adapter = new OpenAILiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			liveModel,
 			() => socket,
 			1_000
 		);
