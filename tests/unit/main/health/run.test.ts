@@ -8,7 +8,7 @@ jest.mock('../../../../src/main/health/store', () => ({
 import type { Agent } from '../../../../src/main/agent/agent';
 import { runHealthCheck } from '../../../../src/main/health/run';
 
-it('runs health checklists with the default background tools and no approval window', async () => {
+it('runs health checklists without health or task tools and no approval window', async () => {
 	const send = jest.fn().mockResolvedValue('HEALTH_OK');
 	const agent = {
 		config: { location: '/workspace' },
@@ -23,6 +23,7 @@ it('runs health checklists with the default background tools and no approval win
 			type: 'background',
 			streaming: false,
 			contextMode: 'minimal',
+			toolsDeny: ['update_health', 'create_task', 'update_task', 'delete_task', 'run_task_now'],
 			sessionId: 'health',
 			modelOptions: {},
 		}
