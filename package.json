@@ -169,7 +169,7 @@
 		"shadcn": "^4.7.0",
 		"shell-env": "^4.0.3",
 		"shiki": "^4.0.2",
-		"socks-proxy-agent": "^10.1.0",
+		"socks-proxy-agent": "^8.0.5",
 		"tailwind-merge": "^3.4.0",
 		"tar": "^7.5.22",
 		"three": "^0.186.1",
