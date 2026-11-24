@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+const pluginDirs = jest.fn();
+jest.mock('../../../../src/main/plugins/plugins_dirs', () => ({ pluginDirs }));
 import { configureLocalMcpServer } from '../../../../src/main/mcp/mcp_local_configure';
 import { importLocalMcpServers } from '../../../../src/main/mcp/mcp_local_import';
 import { listLocalMcpServers } from '../../../../src/main/mcp/mcp_local_list';
