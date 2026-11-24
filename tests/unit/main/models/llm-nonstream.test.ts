@@ -210,7 +210,7 @@ describe('LlmModel non-streaming transport', () => {
 			usage: { prompt_tokens: 5, completion_tokens: 4 },
 		});
 		const model = new LlmModel({
-			openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
+			chatClientFactory: () => ({ chat: { completions: { create } } }) as never,
 		});
 		const events: LlmEvent[] = [];
 		for await (const event of model.stream(
@@ -257,7 +257,7 @@ describe('LlmModel non-streaming transport', () => {
 			usage: { prompt_tokens: 4, completion_tokens: 2 },
 		});
 		const factory = jest.fn(() => ({ chat: { completions: { create } } }) as never);
-		const model = new LlmModel({ openAIClientFactory: factory });
+		const model = new LlmModel({ chatClientFactory: factory });
 		const events: LlmEvent[] = [];
 		for await (const event of model.stream({
 			...request('custom'),
@@ -284,7 +284,7 @@ describe('LlmModel non-streaming transport', () => {
 	it('rejects generic chat PDF blocks before a batch network request', async () => {
 		const create = jest.fn();
 		const model = new LlmModel({
-			openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
+			chatClientFactory: () => ({ chat: { completions: { create } } }) as never,
 		});
 		const content = [
 			{
