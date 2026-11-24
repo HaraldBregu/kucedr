@@ -4,6 +4,9 @@ jest.mock('../../../../src/main/window_events', () => ({ attachWindowHandlers })
 jest.mock('../../../../src/main/translucency', () => ({
 	getPlatformTranslucencyOptions: () => ({}),
 }));
+jest.mock('../../../../src/main/agent/tools/web/browser/under', () => ({
+	paneTabUnderPointer: () => undefined,
+}));
 
 import { Main } from '../../../../src/main/create_window';
 import { setWindowSize } from '../../../../src/main/settings_store';
