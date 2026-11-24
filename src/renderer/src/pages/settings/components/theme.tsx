@@ -69,7 +69,7 @@ export const ThemePicker: React.FC<{ value: Theme; onChange: (theme: Theme) => v
 					</div>
 					<span
 						className={cn(
-							'text-[11px]',
+							'text-xs',
 							value === theme ? 'text-foreground' : 'text-muted-foreground'
 						)}
 					>
