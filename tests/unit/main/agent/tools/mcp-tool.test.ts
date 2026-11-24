@@ -34,7 +34,7 @@ describe('mcpTool', () => {
 
 	it.each([
 		[undefined, true, false],
-		[undefined, false, true],
+		[undefined, false, false],
 		['always', true, true],
 		['always', false, true],
 		['never', true, false],
