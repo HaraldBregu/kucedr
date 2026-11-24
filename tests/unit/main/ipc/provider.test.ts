@@ -91,8 +91,9 @@ describe('provider credential IPC boundary', () => {
 		);
 		const listResult = await handler(registerQueryWithEvent, ProviderChannels.list)({}, 'models');
 
-		expect(getResult).toEqual(provider);
-		expect(listResult).toEqual([provider]);
+		const saved = { id: 'openai', name: 'OpenAI', baseUrl: 'https://api.openai.com/v1', saved: true };
+		expect(getResult).toEqual(saved);
+		expect(listResult).toEqual([saved]);
 	});
 
 	it('saves and returns the submitted API key', async () => {
