@@ -15,7 +15,7 @@ it('sends the documented streaming chat request through the OpenAI SDK', async (
 	const chunks = [
 		{ id: 'chat-1', object: 'chat.completion.chunk', choices: [{ index: 0, delta: { content: 'Hello' }, finish_reason: null }] },
 		{ id: 'chat-1', object: 'chat.completion.chunk', choices: [{ index: 0, delta: { content: ' world' }, finish_reason: 'stop' }] },
-		{ id: 'chat-1', object: 'chat.completion.chunk', choices: [], usage: { prompt_tokens: 10, completion_tokens: 2, cached_input_tokens: 4 } },
+		{ id: 'chat-1', object: 'chat.completion.chunk', choices: [], usage: { prompt_tokens: 10, completion_tokens: 2, prompt_tokens_details: { cached_tokens: 4 } } },
 	];
 	const body = `${chunks.map((chunk) => `data: ${JSON.stringify(chunk)}\n\n`).join('')}data: [DONE]\n\n`;
 	const fetcher = jest.fn().mockResolvedValue(new Response(body, { status: 200, headers: { 'content-type': 'text/event-stream' } }));
