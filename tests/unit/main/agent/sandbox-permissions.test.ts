@@ -140,7 +140,7 @@ describe('ExecSandbox permissions', () => {
 			'plan-command',
 			undefined,
 			[],
-			'plan'
+			true
 		);
 		const config = JSON.parse(writeFile.mock.calls.at(-1)?.[1] as string);
 		expect(config.network).toMatchObject({
