@@ -138,7 +138,7 @@ it.each(['cancelled', 'error', 'timeout', 'max_tokens'] as const)(
 it('ignores late cues after Stop, even when a late event reports success', async () => {
 	const { result } = renderHook(() => useHomeAgent({ setMode: jest.fn() }));
 	act(() => result.current.setInput('Hello'));
-	act(() => {
+	await act(async () => {
 		void result.current.handleSubmit();
 	});
 	await act(async () => {
