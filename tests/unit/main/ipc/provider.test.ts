@@ -153,7 +153,12 @@ describe('provider credential IPC boundary', () => {
 		);
 
 		expect(setProvider).toHaveBeenCalledWith(provider, 'models');
-		expect(result).toEqual(provider);
+		expect(result).toEqual({
+			id: 'custom',
+			name: 'Custom model provider',
+			baseUrl: 'https://models.example/v1',
+			saved: true,
+		});
 	});
 
 	it('rejects custom providers without an HTTP base URL', () => {
