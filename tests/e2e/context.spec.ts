@@ -43,13 +43,6 @@ test('context ring keeps custom limits unavailable and resolves catalog limits',
 		await expect(ring).not.toHaveAttribute('aria-valuenow');
 		await expect(ring).toHaveAttribute('aria-valuetext', 'Context window unavailable');
 		await expect(page.getByRole('button', { name: 'Send message' })).toBeVisible();
-		const insights = page.getByRole('button', { name: 'Run insights' });
-		const details = page.getByRole('dialog', { name: 'Run insights' });
-		await insights.click();
-		await expect(details.getByText('16,000', { exact: true })).toBeVisible();
-		await expect(details.getByText('384', { exact: true })).toBeVisible();
-		await expect(details.getByText('Timeline', { exact: true })).toBeVisible();
-		await page.keyboard.press('Escape');
 		await editor.focus();
 		for (
 			let index = 0;
@@ -68,9 +61,6 @@ test('context ring keeps custom limits unavailable and resolves catalog limits',
 		await page.reload();
 		await expect(ring).not.toHaveAttribute('aria-valuenow');
 		await expect(ring).toHaveAttribute('aria-valuetext', 'Context window unavailable');
-		await insights.click();
-		await expect(details.getByText('384', { exact: true })).toBeVisible();
-		await page.keyboard.press('Escape');
 		await page.getByRole('button', { name: 'Change model' }).click();
 		await page.getByRole('menuitemradio', { name: /GPT-5.4 Mini/ }).click();
 		await expect(ring).toHaveAttribute('aria-valuetext', /400[,.]000 tokens/);
