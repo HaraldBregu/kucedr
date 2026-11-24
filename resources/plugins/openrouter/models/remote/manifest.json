@@ -12,6 +12,7 @@
 	"discoveryOnly": true,
 	"metadata": {
 		"protocol": "chat-completions",
+		"costUsdPath": "usage.cost",
 		"cache": {
 			"sessionKey": "session_id",
 			"writeTokens": ["usage.prompt_tokens_details.cache_write_tokens"]

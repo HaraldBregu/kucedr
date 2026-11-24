@@ -74,6 +74,7 @@ export interface PromptAttachmentRule {
 }
 
 export interface ModelMetadata {
+	readonly costUsdPath?: string;
 	readonly description?: string;
 	/** Official provider page that documents this service's request contract. */
 	readonly documentationUrl: string;

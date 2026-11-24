@@ -98,6 +98,7 @@ export interface MessageContentBlock {
 export type MessageContent = string | MessageContentBlock[];
 
 export interface Message {
+	runId?: string;
 	role: MessageRole;
 	content: MessageContent;
 	toolCalls?: ToolCall[];
@@ -229,6 +230,7 @@ export type RuntimeEvent =
 	  }
 	| {
 			type: 'run_started';
+			runId?: string;
 			sessionId: string;
 			modeIds: readonly string[];
 			model: string;

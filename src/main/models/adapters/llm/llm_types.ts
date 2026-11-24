@@ -65,6 +65,7 @@ export interface LlmProviderSpec {
 }
 
 export interface LlmUsage {
+	costUsd?: number;
 	inputTokens: number;
 	outputTokens: number;
 	cachedTokens?: number;

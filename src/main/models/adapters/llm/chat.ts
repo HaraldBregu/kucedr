@@ -97,7 +97,8 @@ export async function* chat(
 						?.prompt_cache_hit_tokens,
 			},
 			response,
-			options.model?.cache
+			options.model?.cache,
+			options.model?.costUsdPath
 		),
 	};
 }

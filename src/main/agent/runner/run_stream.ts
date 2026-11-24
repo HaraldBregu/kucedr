@@ -407,6 +407,7 @@ async function* loop(
 
 		yield {
 			type: 'run_started',
+			...(input.runId ? { runId: input.runId } : {}),
 			sessionId: session.id,
 			modeIds: session.modeIds ?? [],
 			model: modelId,
@@ -595,7 +596,7 @@ async function* loop(
 			if (synthesisOnly && (turn.toolCalls.length > 0 || !turn.content.trim())) {
 				recordTurn(session, turn);
 				if (turn.toolCalls.length > 0) {
-					addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems);
+					addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems, undefined, input.runId);
 					yield* skipToolCalls(
 						turn.toolCalls,
 						'Final answer required; this action was not executed.'
@@ -641,7 +642,7 @@ async function* loop(
 					outputTokens: turn.usage?.outputTokens ?? 0,
 					cachedTokens: turn.usage?.cachedTokens,
 					cacheWriteTokens: turn.usage?.cacheWriteTokens,
-				});
+				}, input.runId);
 				addUserMessage(session, [{ type: 'text', internal: true, text: stop.message }]);
 				continued = true;
 				nudges -= 1;
@@ -662,7 +663,7 @@ async function* loop(
 					outputTokens: turn.usage?.outputTokens ?? 0,
 					cachedTokens: turn.usage?.cachedTokens,
 					cacheWriteTokens: turn.usage?.cacheWriteTokens,
-				});
+				}, input.runId);
 				if (
 					!synthesisOnly &&
 					!isExhausted(session) &&
@@ -689,7 +690,7 @@ async function* loop(
 				outputTokens: turn.usage?.outputTokens ?? 0,
 				cachedTokens: turn.usage?.cachedTokens,
 				cacheWriteTokens: turn.usage?.cacheWriteTokens,
-			});
+			}, input.runId);
 			const pendingToolCalls = turn.toolCalls;
 			const budgetExceeded = budget.wouldExceed(
 				pendingToolCalls.map((call) => ({

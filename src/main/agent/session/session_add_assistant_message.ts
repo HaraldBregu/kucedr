@@ -8,7 +8,8 @@ export function addAssistantMessage(
 	content: string,
 	toolCalls: ToolCall[],
 	providerItems: MessageContentBlock[] = [],
-	usage?: SessionUsage
+	usage?: SessionUsage,
+	runId?: string
 ): void {
 	if (state.lease && !state.lease.active) return;
 	if (!hasAssistantPayload(content, toolCalls)) return;
@@ -19,6 +20,7 @@ export function addAssistantMessage(
 	}
 	state.messages.push({
 		role: 'assistant',
+		...(runId ? { runId } : {}),
 		content: contentBlocks,
 		createdAtMs: Date.now(),
 		...(toolCalls.length > 0 ? { toolCalls } : {}),

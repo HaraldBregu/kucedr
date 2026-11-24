@@ -152,6 +152,7 @@ export interface AgentContextUsage {
 }
 
 export interface AgentTokenUsage {
+	costUsd?: number;
 	context?: AgentContextUsage;
 	inputTokens?: number;
 	outputTokens?: number;
@@ -181,6 +182,7 @@ export type AgentHistoryContentBlock =
 	  };
 
 export interface AgentHistoryMessage {
+	runId?: string;
 	role: 'user' | 'agent' | 'assistant' | 'tool' | 'summary';
 	createdAtMs?: number;
 	followUp?: boolean;
