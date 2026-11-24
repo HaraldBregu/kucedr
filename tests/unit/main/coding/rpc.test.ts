@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 import { spawn } from 'node:child_process';
-import { CodexRpc } from '../../../../src/main/coding/harness/rpc';
+import { AppServerRpc } from '../../../../src/main/coding/harness/rpc';
 
 jest.mock('node:child_process', () => ({ spawn: jest.fn() }));
 
