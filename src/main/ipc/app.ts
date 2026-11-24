@@ -277,8 +277,27 @@ const darkThemeColors: AppThemeColors = {
 	sidebar: '#141414',
 };
 
+const lightContrastColors: AppThemeColors = {
+	'muted-foreground': 'oklch(0.4 0 0)',
+	border: 'oklch(0.45 0 0)',
+	input: 'oklch(0.45 0 0)',
+	ring: 'oklch(0.2 0 0)',
+	'sidebar-border': 'oklch(0.45 0 0)',
+	'sidebar-ring': 'oklch(0.2 0 0)',
+};
+
+const darkContrastColors: AppThemeColors = {
+	'muted-foreground': 'oklch(0.88 0 0)',
+	border: 'oklch(0.7 0 0)',
+	input: 'oklch(0.7 0 0)',
+	ring: 'oklch(0.95 0 0)',
+	'sidebar-border': 'oklch(0.7 0 0)',
+	'sidebar-ring': 'oklch(0.95 0 0)',
+};
+
 function getThemeData(): AppThemeData {
 	const isDark = nativeTheme.shouldUseDarkColors;
+	const contrast = nativeTheme.shouldUseHighContrastColors ? (isDark ? darkContrastColors : lightContrastColors) : {};
 	const selection = getStoredSelectedTheme();
 	const selected = listThemes().find(
 		(item) => item.enabled && item.plugin.id === selection?.pluginId && item.id === selection?.themeId
