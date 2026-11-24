@@ -117,7 +117,6 @@ export async function* runModelTurn(
 		toolCount: context.tools.length,
 	});
 	for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
-		const attemptStartedAt = Date.now();
 		let firstTokenAt: number | undefined;
 		let visibleOutput = false;
 		let content = '';
@@ -129,6 +128,7 @@ export async function* runModelTurn(
 		const outputTokens = chatBudget
 			? yield* chatBudget.beforeCall(context.estimatedTokens, maxTokens, signal)
 			: maxTokens;
+		const attemptStartedAt = Date.now();
 		let invoked = false;
 		const lease = providerLimiter
 			? await providerLimiter.acquire(provider.id.trim().toLowerCase(), signal)
@@ -257,9 +257,11 @@ export async function* runModelTurn(
 				toolCalls: turn.toolCalls.map(({ id, name }) => ({ id, name })),
 			});
 			if (chatBudget) {
-				chatBudget.record(usage?.context
-					? usage.context.inputTokens + usage.context.outputTokens
-					: context.estimatedTokens + outputTokens);
+				chatBudget.record(
+					usage?.context
+						? usage.context.inputTokens + usage.context.outputTokens
+						: context.estimatedTokens + outputTokens
+				);
 				invoked = false;
 				yield* chatBudget.warnings();
 			}
