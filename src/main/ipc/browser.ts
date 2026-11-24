@@ -220,12 +220,26 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			if (confirmed) deleteLogin(login.id);
 			return confirmed;
 		});
-		trusted.command(BrowserChannels.passwordsMatch, (id) => matchLogins(paneTabs.get(targetId.parse(id))?.view.webContents.getURL() ?? ''));
+		// Saved passwords belong to direct tabs; private, Tor and proxy tabs never see them.
+		trusted.command(BrowserChannels.passwordsMatch, (id) => {
+			const tab = paneTabs.get(targetId.parse(id));
+			return tab?.route === 'direct' ? matchLogins(tab.view.webContents.getURL()) : [];
+		});
 		trusted.command(BrowserChannels.passwordsFill, async (id, loginId) => {
 			const tab = paneTabs.get(targetId.parse(id));
 			if (!tab) throw new Error('This tab is closed.');
+			if (tab.route !== 'direct') throw new Error('Saved passwords are not used in this tab.');
 			await fillLogin(tab, z.string().max(64).parse(loginId));
 		});
+		trusted.command(BrowserChannels.downloadAnswer, (id, answer) => {
+			const tab = paneTabs.get(targetId.parse(id));
+			if (tab) answerDownload(tab, z.enum(['save', 'cancel', 'dismiss', 'show']).parse(answer));
+		});
+		trusted.query(BrowserChannels.connections, () => connections());
+		trusted.command(BrowserChannels.connectionsSet, (value) => {
+			connections(checkConnections(value));
+		});
+		trusted.query(BrowserChannels.torFind, async () => (await findTor()) ?? null);
 		trusted.commandWithEvent(BrowserChannels.view, ({ sender }, request) => {
 			const next = viewSchema.parse(request);
 			const tab = next ? paneTabs.get(next.targetId) : undefined;
