@@ -31,7 +31,7 @@ export function settle(contents: WebContents, start: () => void, signal?: AbortS
 			contents.stop();
 			done(signal?.reason ?? new Error('Aborted'));
 		};
-		const timer = setTimeout(() => done(new Error('Navigation timed out.')), NAVIGATION_TIMEOUT_MS);
+		const timer = setTimeout(() => done(new Error('Navigation timed out.')), timeout);
 		contents.on('dom-ready', ready);
 		contents.on('did-navigate-in-page', ready);
 		contents.on('did-fail-load', failed);
