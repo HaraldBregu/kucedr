@@ -93,7 +93,7 @@ describe('subagentTool', () => {
 					yield { type: 'assistant_message', content: `${input.message}:done`, toolCalls: [] };
 				})()
 		);
-		const tool = subagentsTool({ location: '/agent' }, [], { type: 'default' });
+		const tool = subagentTool({ location: '/agent' }, () => [], { type: 'default' });
 		const pending = tool.run({
 			tasks: [
 				{ id: 'first', task: 'slow' },
