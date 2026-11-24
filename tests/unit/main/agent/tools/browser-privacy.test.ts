@@ -21,7 +21,9 @@ jest.mock('electron', () => ({
 	session: { fromPartition: () => mockSession },
 }));
 jest.mock('../../../../../src/main/agent/tools/web/browser/guard', () => ({ guard: jest.fn() }));
-jest.mock('../../../../../src/main/agent/tools/web/browser/hold', () => ({ holdDownload: jest.fn() }));
+jest.mock('../../../../../src/main/agent/tools/web/browser/hold', () => ({
+	holdDownload: jest.fn(),
+}));
 jest.mock('../../../../../src/main/browser/connections', () => ({
 	connections: () => ({ proxy: 'http://proxy.example:8080' }),
 }));
@@ -38,27 +40,36 @@ beforeEach(() => {
 	mockPrivacy.proxy = 'socks5://127.0.0.1:1080';
 });
 
-it.each(['direct', 'private', 'proxy'] as const)('keeps %s requests blocked until the app proxy is configured', async (route) => {
-	let openProxy!: () => void;
-	mockSetProxy.mockReturnValueOnce(new Promise<void>((resolve) => { openProxy = resolve; }));
-	const ready = prepare(`app-${route}`, route);
-	const [, routed, open] = jest.mocked(guard).mock.calls[0];
-	expect(routed).toBe(true);
-	expect(open()).toBe(false);
-	await Promise.resolve();
-	expect(mockSetProxy).toHaveBeenCalledWith({
-		mode: 'fixed_servers',
-		proxyRules: mockPrivacy.proxy,
-		proxyBypassRules: '<-loopback>',
-	});
-	openProxy();
-	await ready;
-	expect(open()).toBe(true);
-});
+it.each(['direct', 'private', 'proxy'] as const)(
+	'keeps %s requests blocked until the app proxy is configured',
+	async (route) => {
+		let openProxy!: () => void;
+		mockSetProxy.mockReturnValueOnce(
+			new Promise<void>((resolve) => {
+				openProxy = resolve;
+			})
+		);
+		const ready = prepare(`app-${route}`, route);
+		const [, routed, open] = jest.mocked(guard).mock.calls[0];
+		expect(routed).toBe(true);
+		expect(open()).toBe(false);
+		await Promise.resolve();
+		expect(mockSetProxy).toHaveBeenCalledWith({
+			mode: 'fixed_servers',
+			proxyRules: mockPrivacy.proxy,
+			proxyBypassRules: '<-loopback>',
+		});
+		openProxy();
+		await ready;
+		expect(open()).toBe(true);
+	}
+);
 
 it('stays blocked without an app route and does not fall back to the saved browser proxy', async () => {
 	mockPrivacy.proxy = undefined;
-	await expect(prepare('app-blocked', 'proxy')).rejects.toThrow('Privacy Mode is blocking online access.');
+	await expect(prepare('app-blocked', 'proxy')).rejects.toThrow(
+		'Privacy Mode is blocking online access.'
+	);
 	expect(jest.mocked(guard).mock.calls[0][2]()).toBe(false);
 	expect(mockSetProxy).not.toHaveBeenCalled();
 });
@@ -76,20 +87,30 @@ it('keeps ordinary and proxy tab routing when Privacy Mode is off', async () => 
 	expect(jest.mocked(guard).mock.calls[0][1]).toBe(false);
 	expect(mockSetProxy).not.toHaveBeenCalled();
 	await prepare('legacy-proxy', 'proxy');
-	expect(mockSetProxy).toHaveBeenCalledWith(expect.objectContaining({ proxyRules: 'http://proxy.example:8080' }));
+	expect(mockSetProxy).toHaveBeenCalledWith(
+		expect.objectContaining({ proxyRules: 'http://proxy.example:8080' })
+	);
 });
 
 it('passes only image data to the renderer after fetching HTTPS in the tab session', async () => {
-	const fetch = jest.fn().mockResolvedValue(new Response(new Uint8Array([1, 2, 3]), {
-		headers: { 'content-type': 'image/png' },
-	}));
-	await expect(favicon({ fetch } as unknown as Session, 'https://example.com/icon.png')).resolves.toBe('data:image/png;base64,AQID');
-	expect(fetch).toHaveBeenCalledWith('https://example.com/icon.png', { signal: expect.any(AbortSignal) });
+	const fetch = jest.fn().mockResolvedValue(
+		new Response(new Uint8Array([1, 2, 3]), {
+			headers: { 'content-type': 'image/png' },
+		})
+	);
+	await expect(
+		favicon({ fetch } as unknown as Session, 'https://example.com/icon.png')
+	).resolves.toBe('data:image/png;base64,AQID');
+	expect(fetch).toHaveBeenCalledWith('https://example.com/icon.png', {
+		signal: expect.any(AbortSignal),
+	});
 });
 
 it('waits for the route before restoring a previously open tab', async () => {
 	let allow!: () => void;
-	const ready = new Promise<void>((resolve) => { allow = resolve; });
+	const ready = new Promise<void>((resolve) => {
+		allow = resolve;
+	});
 	const restore = jest.fn().mockResolvedValue(undefined);
 	const pending = { entries: [{ url: 'https://example.com', title: 'Example' }], index: 0 };
 	const tab = {
