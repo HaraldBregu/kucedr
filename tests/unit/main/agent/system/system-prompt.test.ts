@@ -88,10 +88,8 @@ describe('addToolsPrompt', () => {
 			tool('read', 'Read a file'),
 			tool('mcp__notion__notion-search', 'Search Notion'),
 		]);
-		expect(prompt).toContain('- `read` (read) — Read a file _(Loaded.)_');
-		expect(prompt).toContain(
-			'- `mcp__notion__notion-search` (mcp__notion__notion-search) — Search Notion _(Loaded.)_'
-		);
+		expect(prompt).toContain('- `read` — Read a file');
+		expect(prompt).toContain('- `mcp__notion__notion-search` — Search Notion');
 	});
 	it('adds the tools section when only MCP tools are loaded', () => {
 		const prompt = addToolsPrompt('base', [tool('mcp__notion__notion-search')]);
@@ -108,13 +106,9 @@ describe('addToolsPrompt', () => {
 
 		expect(prompt.match(/^## Tools$/gm)).toHaveLength(1);
 		expect(prompt).not.toContain('### Loaded tools');
-		expect(prompt).toContain('- `read` (read) — Read a file _(Loaded.)_');
-		expect(prompt).toContain(
-			'- `write` (write) — Write a file _(Not loaded — call `tool_search` first.)_'
-		);
-		expect(prompt).toContain(
-			'- `mcp__notion__notion-search` (mcp__notion__notion-search) — Search Notion _(Not loaded — call `tool_search` first.)_'
-		);
+		expect(prompt).toContain('- `read` — Read a file');
+		expect(prompt).toContain('- `write` — Write a file');
+		expect(prompt).toContain('- `mcp__notion__notion-search` — Search Notion');
 		expect(prompt.match(/`read`/g)).toHaveLength(1);
 	});
 });
