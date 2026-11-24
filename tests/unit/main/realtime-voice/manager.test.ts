@@ -157,7 +157,7 @@ describe('RealtimeVoiceManager', () => {
 		});
 
 		const session = await manager.start(7, { chatSessionId: 'chat' });
-		expect(createAdapter).toHaveBeenCalledWith(configuration.provider);
+		expect(createAdapter).toHaveBeenCalledWith(configuration.provider, configuration.model);
 		adapterEmit({ type: 'response_started', responseId: 'response-1' });
 		expect(events.at(-1)).toEqual({ type: 'state', sessionId: session.id, status: 'thinking' });
 		adapterEmit({ type: 'input_speech_stopped', itemId: 'user-1' });
