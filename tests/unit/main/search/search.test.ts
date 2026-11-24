@@ -86,7 +86,9 @@ describe('search service execution', () => {
 		await expect(searchWeb({ query: 'latest', count: 2 })).resolves.toEqual({
 			query: 'latest', results: [{ title: 'Found', url: 'https://result.example', description: 'Text' }],
 		});
-		expect(global.fetch).toHaveBeenCalledWith('https://other.example/search', expect.objectContaining({
+		const [url, init] = (global.fetch as jest.Mock).mock.calls[0] as [URL | string, RequestInit];
+		expect(String(url)).toBe('https://other.example/search');
+		expect(init).toEqual(expect.objectContaining({
 			method: 'POST', headers: expect.objectContaining({ Authorization: 'Bearer other-key' }),
 			body: JSON.stringify({ query: 'latest', max_results: 2 }),
 		}));
