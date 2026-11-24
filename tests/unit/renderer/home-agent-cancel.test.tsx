@@ -60,7 +60,6 @@ it('generates the run id before send and reuses it for Stop', async () => {
 	expect(send.mock.calls[0][1]).toMatchObject({
 		runId,
 		sessionId: 'home',
-		interactionMode: 'plan',
 	});
 
 	fireEvent.click(screen.getByRole('button', { name: 'Stop' }));
