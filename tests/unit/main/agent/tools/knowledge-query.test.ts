@@ -41,27 +41,27 @@ it('searches the configured local index', async () => {
 			lineEnd: 4,
 			checksum: 'checksum-1',
 			indexedAt: '2026-08-08T00:00:00.000Z',
-			text: 'Twenty days.',
+			text: 'handbook/leave.md · page 2\n\nTwenty days.',
 			score: 0.91,
 		},
 	]);
 
 	const output = JSON.parse(
-		(await queryKnowledgeTool.run({ query: ' leave ', count: 3 }, controller.signal)) as string
+		(await queryKnowledgeTool.run(
+			{ query: ' leave ', queries: ['vacation days'], count: 3 },
+			controller.signal
+		)) as string
 	);
 
-	expect(searchRag).toHaveBeenCalledWith('leave', 'company-knowledge', 3, {
+	expect(searchRag).toHaveBeenCalledWith(['leave', 'vacation days'], 'company-knowledge', 3, {
 		signal: controller.signal,
 	});
-	expect(output).toMatchObject({ route: 'rag', abstain: false });
+	expect(output).toMatchObject({ abstain: false, limitations: [] });
 	expect(output.results[0]).toEqual({
-		sourceId: 'source-1',
 		chunkId: 'source-1#0',
 		path: 'handbook/leave.md',
-		range: { lineStart: 4, lineEnd: 4 },
-		checksum: 'checksum-1',
-		indexedAt: '2026-08-08T00:00:00.000Z',
-		score: 0.91,
+		section: 'page 2',
+		lines: '4-4',
 		excerpt: 'Twenty days.',
 	});
 });
