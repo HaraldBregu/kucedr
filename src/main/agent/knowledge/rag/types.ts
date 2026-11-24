@@ -9,6 +9,7 @@ export interface EmbeddingInput {
 
 export interface EmbeddingProvider {
 	embed(input: EmbeddingInput, signal?: AbortSignal): Promise<EmbeddingResult>;
+	concurrency?(providerId: string, modelId: string): number | undefined;
 }
 
 export interface RagArtifactRecord {
