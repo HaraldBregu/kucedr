@@ -1,20 +1,25 @@
 # 11. Tor and .onion sites
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 11.1–11.3 built 2026-11-24
+([Browser routes and shield](../BROWSER_ROUTES.md)); 11.4 proposal.
 
 The agent's browser can open `.onion` addresses, shown in the browser pane like any other page.
 
 ## What exists today
 
-Nothing. The browser tool starts the user's installed Google Chrome with a direct connection
-(`src/main/agent/tools/web/use_web_browser.ts`); there is no proxy or Tor handling anywhere in
-`src/main`.
+- **Tor tabs (11.1, 11.3).** A pane tab can use the `tor` route: its own in-memory session sent
+  through `socks5://` to Tor, with no direct fallback and loopback not bypassed. Opened from the
+  pane's mask button or by the agent (`use_web_browser` `open` with `route: "tor"`, which always
+  asks the user). Checked against a fake SOCKS5 server: host names, `.onion` included, reach the
+  proxy as names, and a stopped proxy fails the tab.
+- **Tor connection (11.2).** Settings → Browser → Connections: an address, or automatic (Tor
+  Browser on 9150, then the Tor service on 9050), with a Check button.
+- Downloads are off, saved passwords are not offered, nothing is kept or restored, and pages get
+  60 s instead of 15 s.
+- Not checked against a real Tor yet. Background runs still have no Tor.
 
 Tor Browser itself cannot be embedded in Kucedr or driven by the agent. What works is sending the
-agent's own browser through the Tor network, which is what reaches `.onion` sites. The browser pane
-is planned as a separate web view per tab, each with its own network session
-([Embedded agent browser plan](../AGENT_BROWSER_PLAN.md)), so a Tor tab is a tab whose session is
-routed through Tor.
+agent's own browser through the Tor network, which is what reaches `.onion` sites.
 
 ## Features
 
