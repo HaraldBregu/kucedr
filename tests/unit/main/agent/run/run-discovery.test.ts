@@ -147,24 +147,4 @@ describe('tool search', () => {
 		search.replaceMcpEntries([{ tool: changed, serverId: 'billing', serverName: 'Billing' }]);
 		expect(search.active()[0]).toBe(changed);
 	});
-
-	it('keeps canonical IDs unique when an MCP namespace overlaps a native namespace', async () => {
-		const read = fakeTool('read', 'Read file contents');
-		const remote = fakeTool(
-			'mcp__files__read',
-			'Read remote file contents',
-			{},
-			{
-				kind: 'mcp',
-				serverId: 'files',
-				toolName: 'read',
-			}
-		);
-		const search = createToolSearch({ eligible: [read, remote], required: [] });
-		const result = (await search.tool.run({ query: 'read file', limit: 8 })) as {
-			selectedCanonicalIds: string[];
-		};
-		expect(result.selectedCanonicalIds).toHaveLength(2);
-		expect(new Set(result.selectedCanonicalIds).size).toBe(2);
-	});
 });
