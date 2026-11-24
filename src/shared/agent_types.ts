@@ -182,6 +182,7 @@ export type AgentHistoryContentBlock =
 	  };
 
 export interface AgentHistoryMessage {
+	compaction?: { summary: string };
 	runId?: string;
 	role: 'user' | 'agent' | 'assistant' | 'tool' | 'summary';
 	createdAtMs?: number;
@@ -328,6 +329,7 @@ export interface AgentFollowUp {
 }
 
 export type AgentRunStreamEvent =
+	| { type: 'history_compacted'; userIndex: number; summary: string }
 	| { type: 'follow_up'; id: string; text: string }
 	| {
 			type: 'run_started';

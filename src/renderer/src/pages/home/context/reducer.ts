@@ -127,6 +127,18 @@ function applyResponseEvent(
 	const ensured = ensureAgentForRun(state, messageRunId);
 	if (ensured.message.runId && ensured.message.runId !== messageRunId) return state;
 
+	if (event.type === 'history_compacted') {
+		let userIndex = 0;
+		return {
+			...ensured.state,
+			messages: ensured.state.messages.map((message) =>
+				message.role === 'user' && userIndex++ === event.userIndex
+					? { ...message, compaction: { summary: event.summary } }
+					: message
+			),
+		};
+	}
+
 	if (event.type === 'follow_up') {
 		const settled = updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
 			...message,
@@ -433,7 +445,10 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 			);
 			if (content.length > 0 || attachments.length > 0)
 				out.push(
-					createUserMessage(`user-history-${index}`, content, attachments, message.followUp)
+					{
+						...createUserMessage(`user-history-${index}`, content, attachments, message.followUp),
+						...(message.compaction ? { compaction: message.compaction } : {}),
+					}
 				);
 			return;
 		}

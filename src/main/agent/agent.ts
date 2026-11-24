@@ -700,6 +700,7 @@ function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 		{
 			role: 'user',
 			content,
+			...(message.compaction ? { compaction: message.compaction } : {}),
 			...(message.createdAtMs !== undefined ? { createdAtMs: message.createdAtMs } : {}),
 			...(message.followUp ? { followUp: true } : {}),
 			contentBlocks: toHistoryContentBlocks(message),
@@ -771,6 +772,7 @@ function runtimeEventToAgentEvents(
 	runId: string,
 	streamingToolArgs: Map<string, { name: string; argsText: string }>
 ): AgentResponseEvent[] {
+	if (event.type === 'history_compacted') return [{ ...event, agentId, runId }];
 	if (event.type === 'run_started') {
 		return [
 			{

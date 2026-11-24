@@ -7,6 +7,7 @@ export type UserAttachment = Extract<AgentHistoryContentBlock, { type: 'attachme
 };
 
 export interface UserMessage {
+	readonly compaction?: { readonly summary: string };
 	readonly id: string;
 	readonly role: 'user';
 	readonly type: 'user';

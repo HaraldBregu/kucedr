@@ -48,6 +48,12 @@ export const Messages = memo(function Messages({
 						.filter((nextMessage) => nextMessage.role === 'user').length;
 					return (
 						<div key={message.id} data-chat-turn={message.id}>
+							{message.compaction && (
+								<details className="mb-4 border-y border-border py-2 text-sm text-muted-foreground">
+									<summary className="cursor-pointer">{t('settings.chatHistory.automaticallySummarized')}</summary>
+									<p className="mt-2 whitespace-pre-wrap break-words">{message.compaction.summary}</p>
+								</details>
+							)}
 							<UserMessage
 								content={message.content}
 								attachments={message.attachments}
