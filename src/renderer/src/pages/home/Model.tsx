@@ -179,7 +179,7 @@ export function Model({
 				labels={{ label: 'Change model' }}
 			/>
 			{error ? (
-				<span role="alert" className="text-[11px] text-destructive">
+				<span role="alert" className="text-xs text-destructive">
 					Model unavailable
 				</span>
 			) : null}
