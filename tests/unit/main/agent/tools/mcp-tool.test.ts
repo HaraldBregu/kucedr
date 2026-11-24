@@ -47,9 +47,9 @@ describe('mcpTool', () => {
 		});
 	});
 
-	it('requires default approval when read-only metadata is absent', () => {
+	it('does not require approval by default when read-only metadata is absent', () => {
 		const configured = mcpTool(client, 'lookup', '', schema, 'safe');
-		expect(configured.capability).toEqual({ effects: ['external'], approval: true });
+		expect(configured.capability).toEqual({ effects: ['external'], approval: false });
 	});
 
 	it('validates inputs and forwards timeout plus cancellation to the SDK', async () => {
