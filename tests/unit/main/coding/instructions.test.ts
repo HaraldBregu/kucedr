@@ -13,9 +13,16 @@ import path from 'node:path';
 import type { CodingProject } from '../../../../src/shared/coding_types';
 import { CodingInstructions } from '../../../../src/main/coding/instructions';
 
-const timestamp = '2026-08-22T08:00:00.000Z';
+let mockRoot = '';
+jest.mock('../../../../src/main/shared/user_data_location', () => ({
+	userDataLocation: () => mockRoot,
+}));
 
-it('uses Pi filename precedence, reports inherited sources, and isolates workspace saves', async () => {
+const timestamp = '2026-08-22T08:00:00.000Z';
+const runtime = 'codex';
+const files = ['AGENTS.override.md', 'AGENTS.md'];
+
+it('uses harness filename precedence, reports inherited sources, and isolates workspace saves', async () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
 	const agentDirectory = path.join(root, 'coding-global');
 	const projectsDirectory = path.join(root, 'projects');
