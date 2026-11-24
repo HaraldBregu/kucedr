@@ -112,12 +112,30 @@ export interface VectorRecord {
 	vector: number[];
 }
 
-export interface VectorMatch extends VectorRecord {
+export type VectorChunk = Omit<VectorRecord, 'vector'>;
+
+export interface VectorHit {
+	id: string;
 	score: number;
+}
+
+export interface VectorReuse {
+	sourceId: string;
+	sourceFingerprint: string;
+}
+
+export interface VectorSource {
+	sourceId: string;
+	size: number;
+	modified: number;
+	stamp: string;
+	fingerprint: string;
 }
 
 export interface VectorPublication extends VectorIndex {
 	records: readonly VectorRecord[];
+	reused?: readonly VectorReuse[];
+	sources?: readonly VectorSource[];
 }
 
 export interface VectorStore {
@@ -129,8 +147,19 @@ export interface VectorStore {
 		providerId: string,
 		modelId: string
 	): VectorRecord[] | undefined;
+	reusable(
+		indexName: string,
+		sourceId: string,
+		sourceFingerprint: string,
+		providerId: string,
+		modelId: string
+	): number;
+	source(indexName: string, sourceId: string): VectorSource | undefined;
 	publish(publication: VectorPublication): void;
-	search(indexName: string, vector: readonly number[], topK: number): VectorMatch[];
+	search(indexName: string, vector: readonly number[], topK: number): VectorHit[];
+	keyword(indexName: string, query: string, topK: number): string[];
+	chunks(indexName: string, ids: readonly string[]): VectorChunk[];
+	around(indexName: string, id: string, span: number): VectorChunk[];
 	exportIndex(indexName: string, generation?: string): VectorPublication | undefined;
 	purge(indexName: string, generation?: string): { records: number; indexRemoved: boolean };
 	close(): void;
