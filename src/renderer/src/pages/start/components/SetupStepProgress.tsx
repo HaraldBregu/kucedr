@@ -29,7 +29,7 @@ export function SetupStepProgress({ currentStep }: SetupStepProgressProps): Reac
 				))}
 			</div>
 			<p
-				className="truncate text-[11px] text-muted-foreground"
+				className="truncate text-xs text-muted-foreground"
 				role="status"
 				aria-live="polite"
 			>
