@@ -230,9 +230,9 @@ describe('subagentTool', () => {
 		expect(peak).toBe(3);
 	});
 
-	it('requires two or three independent tasks', async () => {
-		const tool = subagentsTool({ location: '/agent' }, [], { type: 'default' });
-		await expect(tool.run({ tasks: [{ id: 'one', task: 'one' }] })).rejects.toThrow();
+	it('requires one to three independent tasks', async () => {
+		const tool = subagentTool({ location: '/agent' }, () => [], { type: 'default' });
+		await expect(tool.run({ tasks: [] })).rejects.toThrow();
 		await expect(
 			tool.run({
 				tasks: [
