@@ -53,7 +53,7 @@ it('uses harness filename precedence, reports inherited sources, and isolates wo
 		name: 'second',
 		directory: secondDirectory,
 	};
-	const instructions = new CodingInstructions(agentDirectory);
+	const instructions = new CodingInstructions();
 
 	const firstResult = await instructions.get(first);
 	const secondResult = await instructions.get(second);
@@ -103,7 +103,7 @@ it('creates AGENTS.md and preserves an explicitly saved empty file', async () =>
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const instructions = new CodingInstructions(agentDirectory);
+	const instructions = new CodingInstructions();
 	const initial = await instructions.get(project);
 
 	expect(initial).toMatchObject({
@@ -141,7 +141,7 @@ it('rejects stale revisions without overwriting external edits', async () => {
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const instructions = new CodingInstructions(agentDirectory);
+	const instructions = new CodingInstructions();
 	const initial = await instructions.get(project);
 	writeFileSync(filePath, 'external edit');
 
@@ -170,7 +170,7 @@ it('reports symbolic links as read-only and rejects saving them', async () => {
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const instructions = new CodingInstructions(agentDirectory);
+	const instructions = new CodingInstructions();
 	const initial = await instructions.get(project);
 
 	expect(initial).toMatchObject({ content: 'outside', exists: true, editable: false });
@@ -196,7 +196,7 @@ it('rejects existing and submitted content above 256 KiB', async () => {
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const instructions = new CodingInstructions(agentDirectory);
+	const instructions = new CodingInstructions();
 	const initial = await instructions.get(project);
 
 	await expect(
