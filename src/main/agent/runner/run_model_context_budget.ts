@@ -71,6 +71,7 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 	}
 
 	const messages = structuredClone(input.messages);
+	const summary = messages[0]?.role === 'summary' ? messages.shift() : undefined;
 	let latestUserIndex = -1;
 	for (let index = messages.length - 1; index >= 0; index -= 1) {
 		if (messages[index].role !== 'user' || isInternalMessage(messages[index])) continue;
@@ -183,7 +184,7 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 	}
 
 	const selectedTools = input.tools;
-	const optionalContextMessages = [...contextMessages];
+	const optionalContextMessages = summary ? [summary, ...contextMessages] : [...contextMessages];
 	while (optionalContextMessages.length > 0) {
 		const candidateTokens =
 			Math.ceil(
