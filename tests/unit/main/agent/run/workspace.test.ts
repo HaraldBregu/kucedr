@@ -142,7 +142,7 @@ it('denies a patch that moves a workspace file into protected app data', async (
 	expect(fs.readFileSync(path.join(workspace, 'move.txt'), 'utf8')).toBe('content');
 });
 
-it.each([{ command: 'pwd', additionalRoots: ['..'] }, { command: 'pwd', elevated: true }])('asks before command access beyond the workspace: %j', async (args) => {
+it.each([{ command: 'pwd', additionalRoots: [outsideRoot] }, { command: 'pwd', elevated: true }])('asks before command access beyond the workspace: %j', async (args) => {
 	const run = jest.fn();
 	const tool = { ...jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run }), access: bashAccess };
 	expect((await execute(tool, args)).at(-1)).toMatchObject({ type: 'tool_permission_request' });
