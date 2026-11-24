@@ -231,7 +231,7 @@ const SkillDetailsPage: React.FC = () => {
 							>
 								<ItemContent className="min-w-0 flex-col items-start gap-1">
 									<ItemTitle className="max-w-full truncate">{diagnostic.code}</ItemTitle>
-									<p className="text-[11px] leading-4 text-muted-foreground">
+									<p className="text-xs leading-4 text-muted-foreground">
 										{diagnostic.message}
 									</p>
 								</ItemContent>
@@ -266,7 +266,7 @@ function SkillDetail({
 				<span
 					className={
 						mono
-							? 'max-w-md break-all text-right font-mono text-[11px] text-foreground'
+							? 'max-w-md break-all text-right font-mono text-xs text-foreground'
 							: 'max-w-md break-words text-right text-xs text-foreground'
 					}
 				>
