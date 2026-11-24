@@ -80,9 +80,9 @@ export default function PluginPage(): React.JSX.Element {
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
 	const [confirming, setConfirming] = useState(false);
-	const [settings, setSettings] = useState<Record<string, string>>({});
+	const [settingDraft, setSettingDraft] = useState('');
 	const [editingSetting, setEditingSetting] = useState<string | null>(null);
-	const [savedSettings, setSavedSettings] = useState<Record<string, string>>({});
+	const [savedSettings, setSavedSettings] = useState<string[]>([]);
 
 	const load = useCallback(async (): Promise<void> => {
 		const [
@@ -118,7 +118,6 @@ export default function PluginPage(): React.JSX.Element {
 			entries: readonly T[]
 		): T[] => entries.filter((entry) => entry.provider.plugin?.id === pluginId);
 		setPlugin(plugins.find((item) => item.id === pluginId) ?? null);
-		setSettings(values);
 		setSavedSettings(values);
 		setContents({
 			models: owned(models),
@@ -178,36 +177,20 @@ export default function PluginPage(): React.JSX.Element {
 		}
 	};
 
-	const saveSetting = async (key: string): Promise<void> => {
-		if (!plugin) return;
-		const next = {
-			...savedSettings,
-			[key]: settings[key]?.trim() || savedSettings[key],
-		};
+	const saveSetting = async (key: string, value: string | null): Promise<void> => {
+		if (!plugin || busy) return;
 		setBusy(true);
 		setError('');
 		try {
-			await window.plugins.saveSettings(plugin.id, next);
-			setSavedSettings(next);
-			setSettings(next);
+			if (value !== '') {
+				await window.plugins.saveSettings(plugin.id, key, value);
+				setSavedSettings((current) => {
+					const next = current.filter((field) => field !== key);
+					return value === null ? next : [...next, key];
+				});
+			}
+			setSettingDraft('');
 			setEditingSetting(null);
-		} catch (caught) {
-			setError(caught instanceof Error ? caught.message : String(caught));
-		} finally {
-			setBusy(false);
-		}
-	};
-
-	const resetSetting = async (key: string): Promise<void> => {
-		if (!plugin) return;
-		const next = { ...savedSettings };
-		delete next[key];
-		setBusy(true);
-		setError('');
-		try {
-			await window.plugins.saveSettings(plugin.id, next);
-			setSavedSettings(next);
-			setSettings(next);
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {
@@ -471,7 +454,7 @@ export default function PluginPage(): React.JSX.Element {
 												</ItemTitle>
 												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 													{t(
-														savedSettings[key]?.trim()
+														savedSettings.includes(key)
 															? 'settings.providers.configured'
 															: 'settings.providers.notConfigured'
 													)}
@@ -485,27 +468,23 @@ export default function PluginPage(): React.JSX.Element {
 															aria-label={setting.title ?? key}
 															className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
 															type={setting.format === 'password' ? 'password' : 'text'}
+															disabled={busy}
 															autoComplete="off"
 															spellCheck={false}
 															placeholder={
-																savedSettings[key]
+																savedSettings.includes(key)
 																	? '************'
 																	: t('settings.providers.apiKeyPlaceholder')
 															}
-															value={settings[key] ?? ''}
-															onChange={(event) =>
-																setSettings((current) => ({
-																	...current,
-																	[key]: event.target.value,
-																}))
-															}
+															value={settingDraft}
+															onChange={(event) => setSettingDraft(event.target.value)}
 															onKeyDown={(event) => {
 																if (
 																	event.key === 'Enter' &&
-																	(settings[key]?.trim() || savedSettings[key]?.trim())
+																	(settingDraft.trim() || savedSettings.includes(key))
 																) {
 																	event.preventDefault();
-																	void saveSetting(key);
+																	void saveSetting(key, settingDraft.trim());
 																}
 															}}
 														/>
@@ -515,7 +494,7 @@ export default function PluginPage(): React.JSX.Element {
 															size="sm"
 															disabled={busy}
 															onClick={() => {
-																setSettings(savedSettings);
+																setSettingDraft('');
 																setEditingSetting(null);
 															}}
 														>
@@ -526,20 +505,21 @@ export default function PluginPage(): React.JSX.Element {
 															size="sm"
 															disabled={
 																busy ||
-																!(settings[key]?.trim() || savedSettings[key]?.trim())
+																!(settingDraft.trim() || savedSettings.includes(key))
 															}
-															onClick={() => void saveSetting(key)}
+															onClick={() => void saveSetting(key, settingDraft.trim())}
 														>
 															{t('common.save')}
 														</Button>
 													</>
-												) : !savedSettings[key] ? (
+												) : !savedSettings.includes(key) ? (
 													<Button
 														type="button"
 														variant="ghost"
 														size="sm"
+														disabled={busy}
 														onClick={() => {
-															setSettings((current) => ({ ...current, [key]: '' }));
+															setSettingDraft('');
 															setEditingSetting(key);
 														}}
 													>
@@ -560,13 +540,13 @@ export default function PluginPage(): React.JSX.Element {
 														<DropdownMenuContent align="end">
 															<DropdownMenuItem
 																onSelect={() => {
-																	setSettings((current) => ({ ...current, [key]: '' }));
+																	setSettingDraft('');
 																	setEditingSetting(key);
 																}}
 															>
 																Edit API key
 															</DropdownMenuItem>
-															<DropdownMenuItem onSelect={() => void resetSetting(key)}>
+															<DropdownMenuItem onSelect={() => void saveSetting(key, null)}>
 																Reset
 															</DropdownMenuItem>
 														</DropdownMenuContent>

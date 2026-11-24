@@ -50,9 +50,9 @@ Features are numbered by area, for example 3.9 is the browser pane.
 
 1. **Working Terms and Privacy links (6.4).** Small and affects every user today. Replies that
    survive leaving Home (5.3) were built 2026-11-21.
-2. **Privacy: Privacy centre, sealed credentials, encrypted data** (1.1–1.4). Chats and memory sit
-   unencrypted on disk today; model and search keys are sealed and no longer reach the window,
-   but the plugin detail page still receives decrypted plugin secrets.
+2. **Privacy: Privacy centre, encrypted data and app lock** (1.1, 1.3–1.4). Chats and memory sit
+   unencrypted on disk today. Saved plugin credentials are decrypted in the main process, and
+   the plugin detail page receives configured field names only (1.2).
 3. **Agent efficiency: automatic compaction and run insights** (2.1–2.2). Measured rounds show
    turn count and prompt size are the remaining levers, and the user cannot see either.
 4. **Accessibility: screen-reader chat and full keyboard use** (4.1–4.2). A screen-reader user

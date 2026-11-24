@@ -31,7 +31,7 @@ it('saves, edits, cancels and resets the API key using model controls', async ()
 					},
 				},
 			]),
-			getSettings: jest.fn().mockResolvedValue({}),
+			getSettings: jest.fn().mockResolvedValue([]),
 			saveSettings,
 		},
 	});
@@ -76,15 +76,27 @@ it('saves, edits, cancels and resets the API key using model controls', async ()
 	await user.type(screen.getByLabelText('API key'), 'example-key');
 	await user.click(screen.getByRole('button', { name: 'common.save' }));
 	await waitFor(() =>
-		expect(saveSettings).toHaveBeenCalledWith('openai', { apiKey: 'example-key' })
+		expect(saveSettings).toHaveBeenCalledWith('openai', 'apiKey', 'example-key')
 	);
 	await user.click(await screen.findByRole('button', { name: 'Options for API key' }));
 	await user.click(await screen.findByRole('menuitem', { name: 'Edit API key' }));
-	await user.type(screen.getByLabelText('API key'), 'replacement');
+	expect(screen.getByLabelText('API key')).toHaveValue('');
+	await user.type(screen.getByLabelText('API key'), 'discarded');
 	await user.click(screen.getByRole('button', { name: 'common.cancel' }));
 	expect(saveSettings).toHaveBeenCalledTimes(1);
 	await user.click(screen.getByRole('button', { name: 'Options for API key' }));
+	await user.click(await screen.findByRole('menuitem', { name: 'Edit API key' }));
+	const replacement = screen.getByLabelText('API key');
+	expect(replacement).toHaveValue('');
+	await user.click(screen.getByRole('button', { name: 'common.save' }));
+	expect(saveSettings).toHaveBeenCalledTimes(1);
+	await user.click(screen.getByRole('button', { name: 'Options for API key' }));
+	await user.click(await screen.findByRole('menuitem', { name: 'Edit API key' }));
+	await user.type(screen.getByLabelText('API key'), 'replacement');
+	await user.click(screen.getByRole('button', { name: 'common.save' }));
+	await waitFor(() => expect(saveSettings).toHaveBeenLastCalledWith('openai', 'apiKey', 'replacement'));
+	await user.click(await screen.findByRole('button', { name: 'Options for API key' }));
 	await user.click(await screen.findByRole('menuitem', { name: 'Reset' }));
-	await waitFor(() => expect(saveSettings).toHaveBeenLastCalledWith('openai', {}));
+	await waitFor(() => expect(saveSettings).toHaveBeenLastCalledWith('openai', 'apiKey', null));
 	expect(screen.queryByLabelText('API key')).not.toBeInTheDocument();
 });
