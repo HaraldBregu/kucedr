@@ -244,6 +244,7 @@ describe('Home prompt attachments', () => {
 			configurable: true,
 			value: {
 				readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])),
+				getPromptInputCapabilities: jest.fn(() => new Promise(() => undefined)),
 				listSessions: jest.fn(async () => [
 					{
 						id: 'session-1',
