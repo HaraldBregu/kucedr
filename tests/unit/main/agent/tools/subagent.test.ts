@@ -286,7 +286,8 @@ describe('subagentTool', () => {
 			scope,
 		});
 
-		await expect(tool.run({ task: 'inspect' })).resolves.toEqual({
+		await expect(tool.run({ tasks: [{ id: 'one', task: 'inspect' }] })).resolves.toEqual({
+			id: 'one',
 			status: 'completed',
 			text: 'done',
 			stopReason: 'end_turn',
