@@ -46,4 +46,8 @@ export const browserPane: BrowserPaneApi = {
 	passwordsNeverRemove: (site) => typedInvokeUnwrap(BrowserChannels.passwordsNeverRemove, site),
 	passwordsMatch: (targetId) => typedInvokeUnwrap(BrowserChannels.passwordsMatch, targetId),
 	passwordsFill: (targetId, id) => typedInvokeUnwrap(BrowserChannels.passwordsFill, targetId, id),
+	downloadAnswer: (targetId, answer) => typedInvokeUnwrap(BrowserChannels.downloadAnswer, targetId, answer),
+	connections: () => typedInvokeUnwrap(BrowserChannels.connections),
+	connectionsSet: (connections) => typedInvokeUnwrap(BrowserChannels.connectionsSet, connections),
+	torFind: () => typedInvokeUnwrap(BrowserChannels.torFind),
 };
