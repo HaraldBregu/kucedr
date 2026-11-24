@@ -44,7 +44,6 @@ export function prepare(partition: string, route: BrowserRoute): Promise<void> {
 				// Fixed servers never fall back to a direct connection; '<-loopback>' sends this
 				// machine's addresses through the proxy too instead of around it.
 				await browsing.setProxy({ mode: 'fixed_servers', proxyRules, proxyBypassRules: '<-loopback>' });
-				await browsing.closeAllConnections();
 				open = true;
 			})
 		: Promise.resolve();
