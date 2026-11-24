@@ -46,6 +46,7 @@ const configuration: ResolvedRealtimeVoiceConfiguration = {
 		apiKey: 'key',
 		baseURL: 'https://api.openai.com/v1',
 	},
+	model: { id: 'gpt-realtime-2.1', name: 'GPT Realtime 2.1', metadata: { protocol: 'realtime' } },
 	modelId: 'gpt-realtime-2.1',
 	voice: 'marin',
 	instructions: 'Help the user.',
