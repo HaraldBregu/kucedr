@@ -8,6 +8,10 @@ jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
 }));
 
+jest.mock('../../../src/renderer/src/components/app/navigationbar/NavigationBar', () => ({
+	NavigationBar: ({ contextContent }: { contextContent?: unknown }) => contextContent ?? null,
+}));
+
 it('treats an MCP detail route as a child of the MCP list breadcrumb', async () => {
 	const user = userEvent.setup();
 	Object.defineProperty(window, 'matchMedia', {
