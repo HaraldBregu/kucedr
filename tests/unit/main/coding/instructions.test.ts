@@ -33,7 +33,7 @@ it('uses harness filename precedence, reports inherited sources, and isolates wo
 	mkdirSync(firstDirectory, { recursive: true });
 	mkdirSync(secondDirectory);
 	writeFileSync(path.join(agentDirectory, 'AGENTS.md'), 'global');
-	writeFileSync(path.join(projectsDirectory, 'CLAUDE.md'), 'ancestor');
+	writeFileSync(path.join(projectsDirectory, 'AGENTS.md'), 'ancestor');
 	writeFileSync(path.join(firstDirectory, 'CLAUDE.md'), 'claude');
 	writeFileSync(path.join(firstDirectory, 'AGENTS.md'), 'agents');
 	writeFileSync(path.join(firstDirectory, 'AGENTS.override.md'), 'override');
