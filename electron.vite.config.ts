@@ -80,6 +80,7 @@ export default defineConfig({
 			__APP_AUTHOR__: JSON.stringify(pkg.author),
 			__APP_HOMEPAGE__: JSON.stringify(pkg.homepage),
 			__APP_LICENSE__: JSON.stringify(pkg.license),
+			__APP_LINKS__: JSON.stringify(pkg.links),
 		},
 		plugins: [
 			react({ exclude: [/\/node_modules\//, /\/kucedr-vite-cache\/deps\//] }),
