@@ -1,6 +1,25 @@
 # 4. Accessibility
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 4.1–4.4 built 2026-11-24; 4.5 open.
+
+## Built 2026-11-24
+
+- **4.1** The chat log no longer announces each streamed chunk (`aria-live="off"`). One status
+  line (`src/renderer/src/pages/home/Announcer.tsx`) reads "Kucedr is responding", the running
+  tool's label, then "Reply complete", "Reply stopped" or "Reply failed" with the error. Tool-step
+  announcements use the same running check as the tool card; not seen live, because the mock
+  tool finished too fast.
+- **4.2** A "Skip to content" button is the first tab stop on every split page and moves focus
+  to the page body. Chat rows and category headers open their menu with Shift+F10 or the Menu
+  key, and F2 renames a category. Moving chats between categories already works from the
+  focusable "More" button.
+- **4.3** No text under 12px is left in the renderer. The light focus ring is darker. A system
+  high-contrast setting (`nativeTheme.shouldUseHighContrastColors`, macOS and Windows) darkens
+  muted text, borders and rings, and forced-colours mode keeps a visible focus outline. The
+  bootstrap plugin adds a "High Contrast" theme in Settings › General.
+- **4.4** A scan of icon-only buttons found none without a name.
+- **4.5** is blocked: `npm run lint` crashes today (`eslint-plugin-react` against ESLint 10), and
+  `eslint-plugin-jsx-a11y` does not yet support ESLint 10.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
