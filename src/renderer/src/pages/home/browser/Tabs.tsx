@@ -181,12 +181,11 @@ export function BrowserTabs({
 				className="mb-1.5 size-6 shrink-0 rounded-full"
 				onClick={() =>
 					void window.win
-						.showContextMenu(
-							(['private', 'tor', 'proxy'] as const).map((route) => ({
-								id: route,
-								label: `New ${ROUTE_LOOKS[route].label.toLowerCase()} tab`,
-							}))
-						)
+						.showContextMenu([
+							{ id: 'private', label: 'New private tab' },
+							{ id: 'tor', label: 'New Tor tab' },
+							{ id: 'proxy', label: 'New proxy tab' },
+						])
 						.then((route) => {
 							if (route === 'private' || route === 'tor' || route === 'proxy') onNew(route);
 						})
