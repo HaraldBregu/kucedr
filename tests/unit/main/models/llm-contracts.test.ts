@@ -41,7 +41,7 @@ it('preserves signed Anthropic thinking when returning tool results', async () =
 it('preserves GIF image data in compatibility chat requests', async () => {
 	const create = jest.fn().mockResolvedValue({ choices: [], usage: {} });
 	const model = new LlmModel({
-		openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
+		chatClientFactory: () => ({ chat: { completions: { create } } }) as never,
 	});
 	const events: LlmEvent[] = [];
 	for await (const event of model.stream({
@@ -63,7 +63,7 @@ it.each([true, false])('sends the selected OpenRouter effort with streaming=%s',
 	const create = jest.fn().mockImplementation(async () => streaming
 		? (async function* () { yield { choices: [{ delta: { content: 'answer' }, finish_reason: 'stop' }] }; })()
 		: { choices: [{ message: { content: 'answer' }, finish_reason: 'stop' }], usage: {} });
-	const model = new LlmModel({ openAIClientFactory: () => ({ chat: { completions: { create } } }) as never });
+	const model = new LlmModel({ chatClientFactory: () => ({ chat: { completions: { create } } }) as never });
 	for await (const _event of model.stream({
 		provider: { id: 'openrouter', apiKey: 'key', baseURL: 'https://openrouter.ai/api/v1' },
 		model: 'example/model', effort: 'max', options: { reasoning: { max_tokens: 1024, exclude: true }, reasoning_effort: 'low', temperature: 0.5, provider: { order: ['Example'] } },
