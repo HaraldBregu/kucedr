@@ -1,3 +1,4 @@
+/// <reference types="electron-vite/node" />
 import type { Worker } from 'node:worker_threads';
 import createWorker from './worker?nodeWorker';
 import { ragVectorFile } from './vector_file';
