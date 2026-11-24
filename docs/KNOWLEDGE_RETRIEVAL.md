@@ -52,7 +52,7 @@ Should the agent reach the knowledge base through a tool, or should the knowledg
 - Files are extracted one after another, and each PDF starts its own worker.
 - Embedding batches are sent one at a time.
 
-### Measured (2026-11-24, Node 24, M-series Mac, 20,000 chunks × 1,536 dimensions)
+### Measured (2026-11-24, Node 24.16, Apple M5 Pro, 20,000 chunks × 1,536 dimensions)
 
 | Search step | Time |
 | --- | --- |
