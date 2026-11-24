@@ -166,9 +166,33 @@ export function BrowserTabs({
 				title="New tab"
 				style={NO_DRAG}
 				className="mb-1.5 size-6 shrink-0 rounded-full"
-				onClick={onNew}
+				onClick={() => onNew()}
 			>
 				<Plus />
+			</Button>
+			<Button
+				type="button"
+				variant="ghost"
+				size="icon-xs"
+				aria-label="New private, Tor or proxy tab"
+				aria-haspopup="menu"
+				title="New private, Tor or proxy tab"
+				style={NO_DRAG}
+				className="mb-1.5 size-6 shrink-0 rounded-full"
+				onClick={() =>
+					void window.win
+						.showContextMenu(
+							(['private', 'tor', 'proxy'] as const).map((route) => ({
+								id: route,
+								label: `New ${ROUTE_LOOKS[route].label.toLowerCase()} tab`,
+							}))
+						)
+						.then((route) => {
+							if (route === 'private' || route === 'tor' || route === 'proxy') onNew(route);
+						})
+				}
+			>
+				<VenetianMask />
 			</Button>
 			{crowded ? (
 				<Button
