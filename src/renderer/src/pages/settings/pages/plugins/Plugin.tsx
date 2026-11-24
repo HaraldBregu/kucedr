@@ -181,8 +181,8 @@ export default function PluginPage(): React.JSX.Element {
 	const saveSetting = async (key: string): Promise<void> => {
 		if (!plugin) return;
 		const next = {
-			...savedSettings.current,
-			[key]: settings[key]?.trim() || savedSettings.current[key],
+			...savedSettings,
+			[key]: settings[key]?.trim() || savedSettings[key],
 		};
 		setBusy(true);
 		setError('');
@@ -200,7 +200,7 @@ export default function PluginPage(): React.JSX.Element {
 
 	const resetSetting = async (key: string): Promise<void> => {
 		if (!plugin) return;
-		const next = { ...savedSettings.current };
+		const next = { ...savedSettings };
 		delete next[key];
 		setBusy(true);
 		setError('');
@@ -471,7 +471,7 @@ export default function PluginPage(): React.JSX.Element {
 												</ItemTitle>
 												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 													{t(
-														savedSettings.current[key]?.trim()
+														savedSettings[key]?.trim()
 															? 'settings.providers.configured'
 															: 'settings.providers.notConfigured'
 													)}
@@ -488,7 +488,7 @@ export default function PluginPage(): React.JSX.Element {
 															autoComplete="off"
 															spellCheck={false}
 															placeholder={
-																savedSettings.current[key]
+																savedSettings[key]
 																	? '************'
 																	: t('settings.providers.apiKeyPlaceholder')
 															}
@@ -502,7 +502,7 @@ export default function PluginPage(): React.JSX.Element {
 															onKeyDown={(event) => {
 																if (
 																	event.key === 'Enter' &&
-																	(settings[key]?.trim() || savedSettings.current[key]?.trim())
+																	(settings[key]?.trim() || savedSettings[key]?.trim())
 																) {
 																	event.preventDefault();
 																	void saveSetting(key);
@@ -515,7 +515,7 @@ export default function PluginPage(): React.JSX.Element {
 															size="sm"
 															disabled={busy}
 															onClick={() => {
-																setSettings(savedSettings.current);
+																setSettings(savedSettings);
 																setEditingSetting(null);
 															}}
 														>
@@ -526,14 +526,14 @@ export default function PluginPage(): React.JSX.Element {
 															size="sm"
 															disabled={
 																busy ||
-																!(settings[key]?.trim() || savedSettings.current[key]?.trim())
+																!(settings[key]?.trim() || savedSettings[key]?.trim())
 															}
 															onClick={() => void saveSetting(key)}
 														>
 															{t('common.save')}
 														</Button>
 													</>
-												) : !savedSettings.current[key] ? (
+												) : !savedSettings[key] ? (
 													<Button
 														type="button"
 														variant="ghost"
