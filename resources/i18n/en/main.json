@@ -1740,7 +1740,7 @@
 		},
 		"runBudget": {
 			"title": "Run budgets",
-			"description": "New chat runs pause before a model call would exceed either limit. Leave a field empty to disable its limit.",
+			"description": "Limits apply to the main model calls in each new chat run. Compaction and subagent calls are excluded. Leave a field empty to disable its limit.",
 			"turns": "Model turns per run",
 			"tokens": "Tokens per run",
 			"unlimited": "Unlimited",

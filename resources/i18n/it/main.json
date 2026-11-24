@@ -1740,7 +1740,7 @@
 		},
 		"runBudget": {
 			"title": "Limiti di esecuzione",
-			"description": "Le nuove esecuzioni in chat si fermano prima di una chiamata al modello che supererebbe uno dei limiti. Lascia vuoto un campo per disattivare il relativo limite.",
+			"description": "I limiti si applicano alle chiamate principali al modello in ogni nuova esecuzione in chat. La compattazione e i sottoagenti sono esclusi. Lascia vuoto un campo per disattivare il relativo limite.",
 			"turns": "Turni del modello per esecuzione",
 			"tokens": "Token per esecuzione",
 			"unlimited": "Illimitato",
