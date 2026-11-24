@@ -77,14 +77,19 @@ it('indexes local files and serves evidence through Query knowledge across persi
 		const evidence = JSON.parse(
 			(await queryKnowledgeTool.run({ query: 'refund policy', count: 3 })) as string
 		);
-		expect(evidence).toMatchObject({ route: 'rag', abstain: false });
+		expect(evidence).toMatchObject({ abstain: false, limitations: [] });
 		expect(evidence.results).toEqual([
-			expect.objectContaining({
+			{
+				chunkId: expect.any(String),
 				path: 'sources/refunds.md',
-				range: { lineStart: 1, lineEnd: 3 },
-				excerpt: 'sources/refunds.md\n\n# Refunds\n\nRequest a refund within thirty days.',
-			}),
+				lines: '1-3',
+				excerpt: '# Refunds\n\nRequest a refund within thirty days.',
+			},
 		]);
+		expect(
+			JSON.parse((await queryKnowledgeTool.run({ chunkId: evidence.results[0].chunkId })) as string)
+				.results
+		).toEqual(evidence.results);
 		await rm(path.join(sources, 'refunds.md'));
 		await indexRag([sources], 'fixture');
 		const removed = JSON.parse(
