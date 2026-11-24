@@ -3,25 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom';
 import McpPage from '../../../src/renderer/src/pages/settings/pages/mcp/Page';
 
-jest.mock('../../../src/renderer/src/lib/providers', () => ({
-	mcps: () => [
-		{
-			id: 'remote',
-			url: 'https://mcp.test',
-			description: 'Search repository documentation.',
-			iconDarkUrl: '/icon-dark.png',
-			iconLightUrl: '/icon-light.png',
-			provider: {
-				id: 'remote-provider',
-				name: 'Remote provider',
-				baseUrl: 'https://mcp.test',
-				iconDarkUrl: '/icon-dark.png',
-				iconLightUrl: '/icon-light.png',
-			},
-		},
-	],
-}));
-
 const mcpApi = {
 	list: jest.fn(),
 	get: jest.fn(),
