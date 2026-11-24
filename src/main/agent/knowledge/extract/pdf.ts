@@ -1,3 +1,4 @@
+/// <reference types="electron-vite/node" />
 import createWorker from './worker?nodeWorker';
 import { KNOWLEDGE_REQUEST_TIMEOUT_MS } from '../limits';
 import type { RagSegment } from '../rag/types';
