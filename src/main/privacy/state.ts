@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { PrivacyState } from '../../shared/privacy';
 import { connections } from '../browser/connections';
@@ -7,7 +7,6 @@ import { writeFileAtomic } from '../browser/write';
 import { userDataLocation } from '../shared/user_data_location';
 
 const file = path.join(userDataLocation(), 'settings', 'privacy.json');
-const supported = process.platform === 'darwin' && existsSync('/usr/bin/sandbox-exec');
 const events = new EventEmitter();
 
 let enabled = false;
@@ -31,13 +30,12 @@ export function getPrivacy(): PrivacyState {
 		enabled,
 		status,
 		restartRequired: enabled !== active || (active && connections().proxy !== route),
-		supported,
+		supported: true,
 	};
 }
 
 export function setPrivacy(enabledAfterRestart: boolean): PrivacyState {
 	if (typeof enabledAfterRestart !== 'boolean') throw new Error('Invalid privacy setting.');
-	if (enabledAfterRestart && !supported) throw new Error('Privacy Mode requires macOS.');
 	mkdirSync(path.dirname(file), { recursive: true, mode: 0o700 });
 	writeFileAtomic(file, JSON.stringify(enabledAfterRestart));
 	enabled = enabledAfterRestart;
