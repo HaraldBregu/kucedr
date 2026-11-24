@@ -81,6 +81,7 @@ describe('tool search', () => {
 			required: [],
 			filterEligible: (tools) => tools.filter((tool) => tool.id !== 'invoices'),
 		});
+		search.replaceEligible([invoices, weather]);
 		expect(await search.tool.run({ query: 'customer invoices' })).toMatchObject({
 			selectedToolIds: [],
 		});
