@@ -546,8 +546,8 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt).not.toContain('## Tools available in this runtime');
 			expect(systemPrompt.match(/^## Tools$/gm)).toHaveLength(1);
 			expect(systemPrompt).not.toContain('### Loaded tools');
-			expect(systemPrompt).toContain('- `alpha` (Alpha) — Alpha tool _(Loaded.)_');
-			expect(systemPrompt).toContain('- `mcp__demo__beta` (Beta) — Beta tool _(Loaded.)_');
+			expect(systemPrompt).toContain('- `alpha` — Alpha tool');
+			expect(systemPrompt).toContain('- `mcp__demo__beta` — Beta tool');
 			expect(
 				(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 			).toEqual(['alpha', 'mcp__demo__beta']);
