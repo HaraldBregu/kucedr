@@ -405,12 +405,20 @@ export class SqliteVectorStore implements VectorStore {
 		}
 	}
 
+	warm(indexName: string): void {
+		const index = this.getIndex(indexName);
+		if (index) this.load(index);
+	}
+
 	close(): void {
 		this.matrix = undefined;
 		this.database.close();
 	}
 
-	private loadMatrix(indexName: string, dimensions: number, key: string): Matrix {
+	private load({ indexName, generation, completedAt, dimensions }: VectorIndex): Matrix {
+		const key = `${indexName}\0${generation}\0${completedAt}`;
+		if (this.matrix?.key === key) return this.matrix;
+		this.matrix = undefined;
 		const { count } = this.activeCountStatement.get(indexName) as unknown as { count: number };
 		const ids: string[] = [];
 		const values = new Float32Array(count * dimensions);
