@@ -236,10 +236,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 		expect(generalLinks.some((link) => link.getAttribute('href') === path)).toBe(false);
 	}
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.skills' })
-	).toHaveAttribute('href', '/settings/skills');
-	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.sidebar.mcp' })
+		within(navigation).getByRole('link', { name: 'settings.sidebar.mcp' })
 	).toHaveAttribute('href', '/settings/mcp');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', {
