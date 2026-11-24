@@ -36,7 +36,7 @@ export const markdownComponents: Partial<Components> = {
 	h4: ({ children }) => <h4 className="mb-2 mt-1 text-sm font-semibold">{children}</h4>,
 	h5: ({ children }) => <h5 className="mb-2 mt-1 text-[13px] font-semibold">{children}</h5>,
 	h6: ({ children }) => (
-		<h6 className="mb-2 mt-1 text-[11px] font-semibold uppercase text-muted-foreground">{children}</h6>
+		<h6 className="mb-2 mt-1 text-xs font-semibold uppercase text-muted-foreground">{children}</h6>
 	),
 	hr: () => <hr className="my-4 border-border" />,
 	table: ({ children }) => (
