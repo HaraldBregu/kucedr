@@ -46,7 +46,19 @@ const commandSchema = z.object({
 	url: z.string().max(4096).optional(),
 	chat: z.string().min(1).max(256).optional(),
 	index: z.number().int().min(0).max(10_000).optional(),
+	route: z.enum(BROWSER_ROUTES).optional(),
 });
+const HOST_PORT = /^(\[[0-9a-f:.]+\]|[a-z0-9.-]+):\d{1,5}$/i;
+const PROXY = /^(socks5|socks4|http|https):\/\/(.+)$/i;
+
+function checkConnections(value: unknown): BrowserConnections {
+	const { tor, proxy } = z.object({ tor: z.string().trim().max(300), proxy: z.string().trim().max(300) }).parse(value);
+	if (tor && !HOST_PORT.test(tor)) throw new Error('Enter the Tor address as host:port, for example 127.0.0.1:9150.');
+	const scheme = PROXY.exec(proxy);
+	if (proxy && !(scheme && HOST_PORT.test(scheme[2])))
+		throw new Error('Enter the proxy as socks5://host:port or http://host:port.');
+	return { tor, proxy };
+}
 const viewSchema = z
 	.object({ targetId, x: edge, y: edge, width: edge.min(1), height: edge.min(1) })
 	.nullable();
