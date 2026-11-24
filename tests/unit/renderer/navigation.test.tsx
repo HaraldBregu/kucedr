@@ -280,11 +280,13 @@ it('keeps Apps in the main sidebar list and Plugins in the footer', () => {
 
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
 	const list = navigation.querySelector('.overflow-y-auto');
-	const plugins = within(list as HTMLElement).getByRole('link', { name: 'settings.tabs.plugins' });
-	const extensionsGroup = plugins.closest('[data-slot="split-pane-group"]');
+	const plugins = within(navigation).getByRole('link', { name: 'settings.tabs.plugins' });
+	const extensionsGroup = within(list as HTMLElement)
+		.getByRole('link', { name: 'settings.tabs.apps' })
+		.closest('[data-slot="split-pane-group"]');
 	expect(list).not.toBeNull();
 	expect(extensionsGroup).not.toBeNull();
-	expect(navigation.querySelector('[data-slot="sidebar-footer"]')).not.toBeInTheDocument();
+	expect(list).not.toContainElement(plugins);
 	expect(
 		within(list as HTMLElement).queryByText('settings.overview.groups.extensions')
 	).toBeInTheDocument();
