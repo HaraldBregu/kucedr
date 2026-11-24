@@ -6,7 +6,7 @@ jest.mock('../../../../../src/main/agent/runner/run_stream', () => ({
 
 import type { SessionState } from '../../../../../src/main/agent/session';
 import type { RunContext } from '../../../../../src/main/agent/context';
-import { subagentTool, subagentsTool } from '../../../../../src/main/agent/tools/core/subagents';
+import { subagentTool } from '../../../../../src/main/agent/tools/core/subagents';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { KeyedLimiter } from '../../../../../src/main/agent/limiter';
 
