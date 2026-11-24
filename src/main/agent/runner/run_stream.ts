@@ -339,6 +339,7 @@ async function* loop(
 				'bash',
 				'search_web',
 				'fetch_web_page',
+				'query_knowledge',
 				'use_web_browser',
 				'process',
 				'create_image',
