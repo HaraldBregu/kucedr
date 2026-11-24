@@ -36,7 +36,7 @@
 		"license": "https://github.com/HaraldBregu/kucedr/blob/main/LICENSE",
 		"security": "https://github.com/HaraldBregu/kucedr/blob/main/SECURITY.md"
 	},
-	"main":"./out/main/index.js",
+	"main": "./out/main/index.js",
 	"scripts": {
 		"postinstall": "install-electron --no",
 		"dev": "cross-env NODE_ENV=development electron-vite dev --inspect --sourcemap",
