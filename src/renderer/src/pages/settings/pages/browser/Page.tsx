@@ -26,7 +26,7 @@ const PICKS_FILES_AND_FOLDERS_TOGETHER = navigator.platform.startsWith('Mac');
 export default function BrowserSettingsPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	const { hash } = useLocation();
-	const connectionsRow = useRef<HTMLDivElement>(null);
+	const connectionsRow = useRef<HTMLSpanElement>(null);
 	const [sources, setSources] = useState<BrowserSource[] | null>(null);
 	const [skipped, setSkipped] = useState<string[]>([]);
 	const [kinds, setKinds] = useState({ bookmarks: true, history: true, settings: true });
@@ -288,7 +288,11 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 			{routes ? (
 				<SettingsPanel>
 					<SettingsRow
-						title={<span ref={connectionsRow}>{t('settings.browser.connections.title')}</span>}
+						title={
+							<span ref={connectionsRow} className="block scroll-mt-14">
+								{t('settings.browser.connections.title')}
+							</span>
+						}
 						description={t('settings.browser.connections.description')}
 					/>
 					<SettingsRow
