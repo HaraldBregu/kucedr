@@ -43,6 +43,8 @@ it('saves, edits, cancels and resets the API key using model controls', async ()
 			mcps: async () => [],
 			vectorDatabases: async () => [],
 			storages: async () => [],
+			themes: async () => [],
+			onThemesChanged: () => () => undefined,
 		},
 	});
 	Object.defineProperty(window, 'provider', {
