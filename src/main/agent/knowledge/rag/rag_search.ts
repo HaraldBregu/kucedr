@@ -149,17 +149,22 @@ export async function searchRag(
 			.sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
 			.slice(0, topK);
 		const scores = new Map(top);
-		return vectorStore.chunks(selectedIndexName, top.map(([id]) => id)).map((chunk) => ({
-			sourceId: chunk.sourceId,
-			chunkId: chunk.id,
-			path: chunk.path,
-			lineStart: chunk.lineStart,
-			lineEnd: chunk.lineEnd,
-			checksum: chunk.checksum,
-			indexedAt: chunk.indexedAt,
-			text: chunk.text,
-			score: scores.get(chunk.id) ?? 0,
-		}));
+		return vectorStore
+			.chunks(
+				selectedIndexName,
+				top.map(([id]) => id)
+			)
+			.map((chunk) => ({
+				sourceId: chunk.sourceId,
+				chunkId: chunk.id,
+				path: chunk.path,
+				lineStart: chunk.lineStart,
+				lineEnd: chunk.lineEnd,
+				checksum: chunk.checksum,
+				indexedAt: chunk.indexedAt,
+				text: chunk.text,
+				score: scores.get(chunk.id) ?? 0,
+			}));
 	} finally {
 		if (!dependencies.vectors) vectorStore.close();
 	}
