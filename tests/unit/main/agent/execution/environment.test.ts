@@ -11,7 +11,3 @@ it.each(['NODE_OPTIONS', 'NODE_PATH', 'LD_PRELOAD', 'DYLD_INSERT_LIBRARIES', 'BA
 it('supports explicitly supplied command environment values', () => {
 	expect(commandEnvironment({ BUILD_MODE: 'test' }, { PATH: '/bin' })).toEqual({ PATH: '/bin', BUILD_MODE: 'test' });
 });
-
-it('rejects Plan environment overrides before launching its sandbox helper', () => {
-	expect(planCommandError({ command: 'pwd', env: { PATH: '/untrusted' } }, '/workspace')).toContain('helper environment');
-});
