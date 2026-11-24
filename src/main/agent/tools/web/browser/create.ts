@@ -135,6 +135,9 @@ export function createTab(
 	contents.once('destroyed', () => {
 		drop(tab);
 		paneTabs.delete(tab.id);
+		if (tab.download?.state === 'asking') tab.download.item.cancel();
+		if (route !== 'direct' && ![...paneTabs.values()].some((other) => other.partition === partition))
+			void session.fromPartition(partition).clearData().catch(() => undefined);
 		changed();
 	});
 	paneTabs.set(tab.id, tab);
