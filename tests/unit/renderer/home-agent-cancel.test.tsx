@@ -42,7 +42,7 @@ it('generates the run id before send and reuses it for Stop', async () => {
 		return (
 			<>
 				<textarea value={agent.input} onChange={(event) => agent.setInput(event.target.value)} />
-				<button onClick={() => agent.handleSubmit(undefined, 'plan')}>
+				<button onClick={() => agent.handleSubmit()}>
 					{agent.isLoading ? 'Stop' : 'Send'}
 				</button>
 			</>
