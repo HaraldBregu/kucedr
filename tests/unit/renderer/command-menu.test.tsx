@@ -143,8 +143,18 @@ it('provides complete English and Italian command translations', () => {
 			label: expect.any(String),
 			placeholder: expect.any(String),
 			empty: expect.any(String),
+			emptyCategory: expect.any(String),
 			suggestions: expect.any(String),
 			settings: expect.any(String),
+			categories: {
+				all: expect.any(String),
+				files: expect.any(String),
+				routes: expect.any(String),
+				apps: expect.any(String),
+				plugins: expect.any(String),
+				models: expect.any(String),
+				other: expect.any(String),
+			},
 			routes: {
 				home: { title: expect.any(String), description: expect.any(String) },
 				settings: { title: expect.any(String), description: expect.any(String) },
