@@ -61,6 +61,7 @@ export function builtinCapability(
 		if (input.action === 'screenshot') return { effects: ['read', 'write'] };
 		if (input.action === 'pdf') return { effects: ['external', 'write'] };
 		if (input.action === 'act' && input.kind === 'evaluate') return { effects: ['execute'] };
+		if (input.action === 'open' && input.route === 'tor') return { effects: ['external'], approval: true };
 		const passive = ['status', 'tabs', 'snapshot', 'console'].includes(
 			String(input.action)
 		);
