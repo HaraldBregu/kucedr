@@ -1339,7 +1339,7 @@ describe('run stream system prompt', () => {
 	it('activates a searched native tool for the next turn', async () => {
 		const execute = jest.fn();
 		const bash = jsonTool({
-			id: 'query_knowledge',
+			id: 'run_command',
 			category: 'core',
 			name: 'Bash',
 			description: 'Run a command',
