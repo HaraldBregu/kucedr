@@ -1,8 +1,11 @@
 import type { Session } from 'electron';
+import { createBackgroundBrowser } from '../../../../../src/main/agent/tools/web/browser/background';
 import { favicon } from '../../../../../src/main/agent/tools/web/browser/favicon';
 import { guard } from '../../../../../src/main/agent/tools/web/browser/guard';
 import { prepare } from '../../../../../src/main/agent/tools/web/browser/prepare';
 import { wake } from '../../../../../src/main/browser/wake';
+import { openExternal } from '../../../../../src/main/handoff';
+import { publicUrl } from '../../../../../src/main/public';
 
 const mockSetProxy = jest.fn();
 const mockSession = {
@@ -15,11 +18,17 @@ const mockSession = {
 };
 const mockPrivacy = { enabled: false, proxy: undefined as string | undefined };
 const mockFindTor = jest.fn();
+const mockOpenExternal = jest.fn();
+const mockLookup = jest.fn();
+const mockLaunch = jest.fn();
 
 jest.mock('electron', () => ({
 	app: { getName: () => 'Kucedr' },
 	session: { fromPartition: () => mockSession },
+	shell: { openExternal: mockOpenExternal },
 }));
+jest.mock('node:dns/promises', () => ({ lookup: mockLookup }));
+jest.mock('playwright-core', () => ({ chromium: { launchPersistentContext: mockLaunch } }));
 jest.mock('../../../../../src/main/agent/tools/web/browser/guard', () => ({ guard: jest.fn() }));
 jest.mock('../../../../../src/main/agent/tools/web/browser/hold', () => ({
 	holdDownload: jest.fn(),
@@ -31,6 +40,9 @@ jest.mock('../../../../../src/main/browser/tor', () => ({ findTor: () => mockFin
 jest.mock('../../../../../src/main/privacy/state', () => ({
 	isPrivacyEnabled: () => mockPrivacy.enabled,
 	getPrivacyRoute: () => mockPrivacy.proxy,
+	requireUnrestrictedNetwork: () => {
+		if (mockPrivacy.enabled) throw new Error('Unavailable while Privacy Mode is on.');
+	},
 }));
 
 beforeEach(() => {
@@ -142,4 +154,13 @@ it('waits for the route before restoring a previously open tab', async () => {
 	await Promise.all([waking, duplicate]);
 	expect(restore).toHaveBeenCalledTimes(1);
 	expect(restore).toHaveBeenCalledWith(pending);
+});
+
+it('stops direct DNS, external handoffs and unmanaged Chrome before they start', async () => {
+	await expect(publicUrl('https://example.com')).rejects.toThrow('Privacy Mode');
+	await expect(openExternal('https://example.com')).rejects.toThrow('Privacy Mode');
+	await expect(createBackgroundBrowser().tool.run({ action: 'start' })).rejects.toThrow('Privacy Mode');
+	expect(mockLookup).not.toHaveBeenCalled();
+	expect(mockOpenExternal).not.toHaveBeenCalled();
+	expect(mockLaunch).not.toHaveBeenCalled();
 });
