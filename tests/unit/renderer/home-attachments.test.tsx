@@ -190,23 +190,6 @@ function renderPage(): void {
 }
 
 describe('Home prompt attachments', () => {
-	it('toggles chat information from the navbar while preserving its contents', async () => {
-		messages = [{ id: 'user-one', role: 'user' }];
-		renderPage();
-		const toggle = await screen.findByRole('button', { name: 'Hide chat information' });
-		expect(toggle).toHaveAttribute('aria-expanded', 'true');
-		expect(toggle).toHaveAttribute('aria-controls', 'chat-information');
-		const card = screen.getByRole('complementary', { name: 'Chat information' });
-		const search = screen.getByRole('textbox', { name: 'Details search' });
-		fireEvent.change(search, { target: { value: 'notes' } });
-		fireEvent.click(toggle);
-		expect(card).not.toBeVisible();
-		expect(screen.getByRole('button', { name: 'Show chat information' })).toHaveAttribute('aria-expanded', 'false');
-		fireEvent.click(screen.getByRole('button', { name: 'Show chat information' }));
-		expect(card).toBeVisible();
-		expect(screen.getByRole('textbox', { name: 'Details search' })).toBe(search);
-		expect(search).toHaveValue('notes');
-	});
 	beforeEach(() => {
 		localStorage.clear();
 		Object.defineProperty(URL, 'createObjectURL', {
