@@ -8,6 +8,10 @@ jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
 }));
 
+jest.mock('../../../src/renderer/src/components/app/navigationbar/NavigationBar', () => ({
+	NavigationBar: ({ contextContent }: { contextContent?: unknown }) => contextContent ?? null,
+}));
+
 jest.mock('../../../src/renderer/src/lib/providers', () => ({
 	mcps: () => [{ id: 'gmail', name: 'Gmail', provider: { id: 'google' } }],
 	vectorDatabases: () => [
