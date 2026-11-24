@@ -117,7 +117,7 @@ it('validates settings before forwarding them to main', () => {
 	expect(() =>
 		coding.saveSettings({
 			runtime: 'pi',
-			providerId: 'unsupported',
+			providerId: '',
 			modelId: 'model',
 			thinkingLevel: 'medium',
 			toolMode: 'read-only',
