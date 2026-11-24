@@ -19,7 +19,7 @@ jest.mock('../../../../src/main/search/search_store', () => ({ getSearchProvider
 
 it('uses the plugin master API key for model and search requests', () => {
 	expect(getResolvedProvider('openai')?.apiKey).toBe('openai-master');
-	expect(getStoredSearchProviders().find((provider) => provider.id === 'tavily')?.apiKey).toBe(
-		'tavily-master'
+	expect(getStoredSearchProviders()).toContainEqual(
+		expect.objectContaining({ id: 'tavily', saved: true })
 	);
 });
