@@ -195,7 +195,7 @@ export function SettingsRow({
 						{title}
 					</div>
 					{description && (
-						<p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">{description}</p>
+						<p className="mt-0.5 text-xs leading-4 text-muted-foreground">{description}</p>
 					)}
 				</div>
 			</div>
@@ -227,7 +227,7 @@ export function SettingsValue({
 	return (
 		<span
 			className={cn(
-				'inline-flex h-6 max-w-full items-center rounded-md border border-border/70 bg-muted/40 px-2 text-[11px] text-foreground',
+				'inline-flex h-6 max-w-full items-center rounded-md border border-border/70 bg-muted/40 px-2 text-xs text-foreground',
 				mono && 'font-mono',
 				className
 			)}
@@ -323,7 +323,7 @@ export function SettingsEmptyState({
 				)}
 				<EmptyTitle className="text-xs">{title}</EmptyTitle>
 				{description && (
-					<EmptyDescription className="text-[11px] leading-4">{description}</EmptyDescription>
+					<EmptyDescription className="text-xs leading-4">{description}</EmptyDescription>
 				)}
 			</EmptyHeader>
 			{children}
@@ -391,11 +391,11 @@ export function SettingsField({
 	return (
 		<div className={cn('grid gap-1.5', className)}>
 			<div className="grid gap-1">
-				<Label htmlFor={id} className="text-[11px] leading-4">
+				<Label htmlFor={id} className="text-xs leading-4">
 					{label}
 				</Label>
 				{description && (
-					<p id={`${id}-description`} className="text-[11px] leading-4 text-muted-foreground">
+					<p id={`${id}-description`} className="text-xs leading-4 text-muted-foreground">
 						{description}
 					</p>
 				)}
