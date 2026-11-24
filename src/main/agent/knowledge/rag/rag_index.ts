@@ -140,7 +140,9 @@ export async function indexRag(
 	};
 	const fits = (count: number, width = dimensions): boolean => {
 		const planned = records.length + reusedChunks + embedding + pending.length + count;
-		return planned <= KNOWLEDGE_MAX_RECORDS && (!width || planned * width <= KNOWLEDGE_MAX_VECTOR_VALUES);
+		return (
+			planned <= KNOWLEDGE_MAX_RECORDS && (!width || planned * width <= KNOWLEDGE_MAX_VECTOR_VALUES)
+		);
 	};
 	const identify = (source: string, file: string): string =>
 		createHash('sha256').update(path.resolve(source)).update('\0').update(file).digest('hex');
