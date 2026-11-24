@@ -42,11 +42,9 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			timezone: 'Europe/Rome',
 			projects: 'A personal history book Alice chose to share.',
 		});
-		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
+		const complete = await buildWorkspaceContext(config, 'full');
 		expect(complete).not.toContain('## Tools available in this runtime');
 		expect(complete).toContain('### BOOTSTRAP.md');
-		expect(complete).toContain('### MEMORY\nUse memory as durable background context');
-		expect(complete).not.toContain('### MEMORY.md');
 		expect(complete).not.toContain('HEALTH.md');
 		expect(complete).not.toContain('Health checklists');
 		expect(complete).toContain(
