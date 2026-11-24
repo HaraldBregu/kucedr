@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { BrowserConnections } from '../../shared/browser';
 import { userDataLocation } from '../shared/user_data_location';
