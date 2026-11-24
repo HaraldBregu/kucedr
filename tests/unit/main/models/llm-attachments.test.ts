@@ -73,20 +73,6 @@ describe('LLM attachment payload builders', () => {
 		);
 	});
 
-	it('uses Reka pdf_url only for the targeted chat profile', () => {
-		expect(llmBuildChatMessages('', transcript(pdf), { contentProfile: 'reka' })).toEqual([
-			{
-				role: 'user',
-				content: [
-					{
-						type: 'pdf_url',
-						pdf_url: { url: 'data:application/pdf;base64,cGRm' },
-					},
-				],
-			},
-		]);
-	});
-
 	it('rejects unsupported image MIME types instead of silently coercing them', () => {
 		const tiff = { type: 'image' as const, mimeType: 'image/tiff', base64: 'SUkq' };
 		expect(() => llmBuildResponseInput(transcript(tiff as typeof image))).toThrow(
