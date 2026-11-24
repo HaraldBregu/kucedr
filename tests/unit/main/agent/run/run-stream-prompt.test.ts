@@ -738,6 +738,7 @@ describe('run stream system prompt', () => {
 					type: 'default',
 					agentId: 'main',
 					contextMode: 'workspace',
+					approvalWindowId: 1,
 				},
 				new AbortController().signal,
 				{ sandbox }
