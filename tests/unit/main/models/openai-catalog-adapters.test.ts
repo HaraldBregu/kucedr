@@ -1,5 +1,5 @@
 import { buildImageAdapter } from '../../../../src/main/models/adapters/tti/tti_factory';
-import { createOpenAISttAdapter } from '../../../../src/main/models/adapters/stt/stt_openai';
+import { createTranscriptionsSttAdapter } from '../../../../src/main/models/adapters/stt/stt_transcriptions';
 import type OpenAI from 'openai';
 
 const sockets: { url: string; send: jest.Mock; emit: (event: string, data: string) => void }[] = [];
