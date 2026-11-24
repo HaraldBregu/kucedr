@@ -35,7 +35,7 @@ export function holdDownload(event: Event, item: DownloadItem, contents: WebCont
 		if (current?.item !== item) return;
 		if (state !== 'completed') {
 			tab.download = state === 'cancelled' ? undefined : { ...current, state: 'failed' };
-			rmSync(folder, { recursive: true, force: true });
+			discardDownload(current.path);
 			paneEvents.emit('change');
 		} else if (current.state === 'saving') finishDownload(tab);
 		else tab.download = { ...current, received: true };
