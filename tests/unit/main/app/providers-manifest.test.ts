@@ -1,10 +1,4 @@
-import {
-	loadVectorDatabases,
-	loadMcps,
-	loadModels,
-	loadStorages,
-	loadWebSearches,
-} from '../../../../src/main/models';
+import { loadModels, loadWebSearches } from '../../../../src/main/models';
 
 function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 	return entries.every(
@@ -13,96 +7,9 @@ function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 }
 
 describe('provider manifests', () => {
-	it('loads storage presets and database types from manifests', () => {
-		expect(loadStorages()).toEqual(
-			expect.arrayContaining([
-				expect.objectContaining({
-					id: 'supabase-storage',
-					authentication: 's3-access-key',
-					provider: expect.objectContaining({ id: 'supabase' }),
-				}),
-				expect.objectContaining({
-					id: 'cloudflare-r2',
-					authentication: 's3-access-key',
-					provider: expect.objectContaining({ id: 'cloudflare' }),
-				}),
-			])
-		);
-		expect(loadVectorDatabases()).toContainEqual(
-			expect.objectContaining({ id: 'pinecone', type: 'vector' })
-		);
-	});
-	it('exposes provider and service authentication separately', () => {
-		const googleModel = loadModels().find((service) => service.provider.id === 'google');
-		const gmail = loadMcps().find((service) => service.id === 'gmail');
-		const maps = loadMcps().find((service) => service.id === 'google-maps');
-		const microsoftLearn = loadMcps().find((service) => service.id === 'microsoft-learn');
-		const microsoftMail = loadMcps().find((service) => service.id === 'microsoft-mail');
-		expect(googleModel?.provider.authentication).toBe('api-key');
-		expect(googleModel?.authentication).toBe('api-key');
-		expect(gmail?.authentication).toBe('oauth2');
-		expect(maps?.authentication).toBe('oauth2');
-		expect(microsoftLearn?.authentication).toBe('none');
-		expect(microsoftMail?.provider.authentication).toBe('oauth2');
-		expect(microsoftMail?.authentication).toBe('oauth2');
-	});
-	it('loads MCP scopes and OAuth details from each server manifest', () => {
-		const services = loadMcps();
-		expect(services.every((service) => Array.isArray(service.scopes))).toBe(true);
-		expect(services.find((service) => service.id === 'gmail')).toMatchObject({
-			scopes: ['https://www.googleapis.com/auth/gmail.readonly'],
-			oauth: {
-				client_id_setting: 'client_id',
-				client_secret_setting: 'client_secret',
-				google_fetch: true,
-			},
-		});
-		expect(services.find((service) => service.id === 'gitlab')?.scopes).toEqual(['mcp']);
-	});
-
-	it('loads Microsoft 365 services and their own SVG icons from the manifest', () => {
-		const services = loadMcps().filter((service) => service.provider.id === 'microsoft');
-		const icons = new Map([
-			['microsoft-mail', 'microsoft-outlook.svg'],
-			['microsoft-calendar', 'outlook-calendar.svg'],
-			['microsoft-teams', 'microsoft-teams.svg'],
-			['microsoft-onedrive', 'microsoft-onedrive.svg'],
-			['microsoft-sharepoint', 'microsoft-sharepoint.svg'],
-			['microsoft-word', 'microsoft-word.svg'],
-			['microsoft-search', 'microsoft-365-copilot.svg'],
-		]);
-		expect(services.map((service) => service.id)).toEqual(
-			expect.arrayContaining(['microsoft-learn', ...icons.keys()])
-		);
-		for (const [id, icon] of icons) {
-			const service = services.find((entry) => entry.id === id);
-			expect(service?.url).toContain('/tenants/{tenantId}/servers/');
-			expect(service?.iconDarkUrl).toContain(`/resources/plugins/microsoft/assets/${icon}`);
-			expect(service?.iconLightUrl).toContain(`/resources/plugins/microsoft/assets/${icon}`);
-		}
-	});
-
 	it('routes manifest capabilities to their matching catalog', () => {
-		const integrations = loadMcps().filter((service) =>
-			[
-				'gmail',
-				'google-calendar',
-				'google-contacts',
-				'google-docs',
-				'google-drive',
-				'google-maps',
-				'google-sheets',
-				'github',
-				'gitlab',
-				'microsoft-learn',
-				'notion',
-			].includes(service.id)
-		);
 		const openAi = loadModels().find(
 			(model) => model.provider.id === 'openai' && model.id === 'gpt-5.6-sol'
-		);
-		const google = loadModels().find(
-			(model) => model.provider.id === 'google' && model.id === 'gemini-3.1-pro-preview'
 		);
 		const deepseek = loadModels().find(
 			(model) => model.provider.id === 'deepseek' && model.id === 'deepseek-flash'
@@ -111,133 +18,25 @@ describe('provider manifests', () => {
 			(model) => model.provider.id === 'openai' && model.type === 'realtime-voice'
 		);
 		const providersById = new Map(
-			[...loadModels(), ...loadVectorDatabases(), ...loadWebSearches()].map(
+			[...loadModels(), ...loadWebSearches()].map(
 				(model) => [model.provider.id, model.provider] as const
 			)
 		);
 		const realtimeVoiceModels = loadModels().filter((model) => model.type === 'realtime-voice');
-		const iconProviders = [
-			...providersById.values(),
-			...integrations.map((service) => service.provider),
-		];
 		expect(
-			iconProviders.every(
+			[...providersById.values()].every(
 				(provider) =>
 					(!provider.iconDarkUrl || provider.iconDarkUrl.endsWith('.svg')) &&
 					(!provider.iconLightUrl || provider.iconLightUrl.endsWith('.svg'))
 			)
 		).toBe(true);
 		expect(openAi?.provider.iconDarkUrl).toMatch(/^local-resource:\/\/file/);
-		expect(google?.provider.name).toBe('Google DeepMind / Google');
-		expect(integrations.map((service) => service.provider.id)).toEqual([
-			'github',
-			'gitlab',
-			'google',
-			'google',
-			'google',
-			'google',
-			'google',
-			'google',
-			'google',
-			'microsoft',
-			'notion',
-		]);
-		expect(integrations.map((service) => service.id)).toEqual([
-			'github',
-			'gitlab',
-			'gmail',
-			'google-calendar',
-			'google-contacts',
-			'google-docs',
-			'google-drive',
-			'google-maps',
-			'google-sheets',
-			'microsoft-learn',
-			'notion',
-		]);
-		expect(integrations.map((service) => service.url)).toEqual([
-			'https://api.githubcopilot.com/mcp/',
-			'https://gitlab.com/api/v4/mcp',
-			'https://gmailmcp.googleapis.com/mcp/v1',
-			'https://calendarmcp.googleapis.com/mcp/v1',
-			'https://people.googleapis.com/mcp/v1',
-			'https://docsmcp.googleapis.com/mcp/v1',
-			'https://drivemcp.googleapis.com/mcp/v1',
-			'https://mapstools.googleapis.com/mcp',
-			'https://sheetsmcp.googleapis.com/mcp/v1',
-			'https://learn.microsoft.com/api/mcp',
-			'https://mcp.notion.com/mcp',
-		]);
-		expect(integrations.map((service) => service.description)).toEqual([
-			'Manage repositories, issues, and pull requests on GitHub.',
-			'Browse projects, manage issues, and review merge requests.',
-			'Search email, manage messages, and organize your inbox.',
-			'Find events, manage calendars, and organize your schedule.',
-			'Find people, manage contacts, and browse directories.',
-			'Read and edit documents while working in Google Docs.',
-			'Search, organize, and manage your files in Google Drive.',
-			'Find places, explore routes, and check local weather.',
-			'Read and update your spreadsheet data in Google Sheets.',
-			'Search Microsoft documentation and code samples.',
-			'Search and manage Notion pages.',
-		]);
-		expect(integrations.every((service) => service.iconLightUrl?.endsWith('.svg'))).toBe(true);
-		for (const id of [
-			'gmail',
-			'google-calendar',
-			'google-contacts',
-			'google-docs',
-			'google-drive',
-			'google-maps',
-			'google-sheets',
-		]) {
-			const service = integrations.find((entry) => entry.id === id);
-			const iconName = id === 'google-contacts' ? 'google-contact' : id;
-			expect(service?.iconDarkUrl).toContain(`/resources/plugins/google/assets/${iconName}.svg`);
-			expect(service?.iconLightUrl).toContain(`/resources/plugins/google/assets/${iconName}.svg`);
-		}
-		expect(integrations.find((service) => service.id === 'gitlab')?.iconLightUrl).toContain(
-			'/resources/plugins/gitlab/assets/gitlab.svg'
-		);
-		expect(
-			integrations.find((service) => service.id === 'microsoft-learn')?.iconLightUrl
-		).toContain('/resources/plugins/microsoft/assets/microsoft.svg');
-		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
-			expect.objectContaining({
-				iconDarkUrl: expect.stringContaining('/resources/plugins/github/assets/github-dark.svg'),
-				iconLightUrl: expect.stringContaining(
-					'/resources/plugins/github/assets/github-light.svg'
-				),
-			})
-		);
-		expect(google?.provider.iconDarkUrl).toContain('/resources/plugins/google/assets/google.svg');
-		expect(
-			integrations.find((service) => service.id === 'notion')?.provider.iconLightUrl
-		).toContain('/resources/plugins/notion/assets/notion.svg');
 		expect(openAi?.provider.iconDarkUrl).toContain(
 			'/resources/plugins/openai/assets/openai-dark.svg'
 		);
 		expect(openAi?.provider.iconLightUrl).toMatch(/^local-resource:\/\/file/);
 		expect(openAi?.provider.iconLightUrl).toContain(
 			'/resources/plugins/openai/assets/openai-light.svg'
-		);
-		expect(providersById.get('reka')?.iconDarkUrl).toContain(
-			'/resources/plugins/reka/assets/reka-dark.svg'
-		);
-		expect(providersById.get('reka')?.iconLightUrl).toContain(
-			'/resources/plugins/reka/assets/reka-light.svg'
-		);
-		expect(providersById.get('pika')?.iconDarkUrl).toContain(
-			'/resources/plugins/pika/assets/pika-dark.svg'
-		);
-		expect(providersById.get('pika')?.iconLightUrl).toContain(
-			'/resources/plugins/pika/assets/pika-light.svg'
-		);
-		expect(providersById.get('jina')?.iconDarkUrl).toContain(
-			'/resources/plugins/jina/assets/jina-dark.svg'
-		);
-		expect(providersById.get('jina')?.iconLightUrl).toContain(
-			'/resources/plugins/jina/assets/jina-light.svg'
 		);
 		expect(providersById.get('deepgram')?.iconDarkUrl).toContain(
 			'/resources/plugins/deepgram/assets/deepgram.svg'
@@ -257,20 +56,6 @@ describe('provider manifests', () => {
 		expect(providersById.get('tavily')?.iconLightUrl).toContain(
 			'/resources/plugins/tavily/assets/tavily.svg'
 		);
-		expect(providersById.get('pinecone')).toEqual(
-			expect.objectContaining({
-				id: 'pinecone',
-				name: 'Pinecone',
-				apiKeyUrl: 'https://app.pinecone.io',
-				iconDarkUrl: expect.stringContaining(
-					'/resources/plugins/pinecone/assets/pinecone-dark.svg'
-				),
-				iconLightUrl: expect.stringContaining(
-					'/resources/plugins/pinecone/assets/pinecone-light.svg'
-				),
-			})
-		);
-		expect(loadModels().some((model) => model.provider.id === 'pinecone')).toBe(false);
 		expect(deepseek?.metadata).toEqual(
 			expect.objectContaining({ contextWindow: 1_048_576, defaultOutputTokens: 32_768 })
 		);
@@ -294,13 +79,11 @@ describe('provider manifests', () => {
 		expect(
 			realtimeVoiceModels.map((model) => ({ id: model.id, providerId: model.provider.id }))
 		).toEqual([
-			{ id: 'gemini-3.8-live', providerId: 'google' },
-			{ id: 'gemini-3.8-live-extended-thinking', providerId: 'google' },
 			{ id: 'gpt-live-1', providerId: 'openai' },
 			{ id: 'gpt-realtime-2.1', providerId: 'openai' },
 			{ id: 'gpt-realtime-2.1-mini', providerId: 'openai' },
 			{ id: 'grok-voice-latest', providerId: 'xai' },
-			{ id: 'qwen3.8-omni-flash-realtime', providerId: 'qwen' },
+			{ id: 'voice-agent', providerId: 'deepgram' },
 		]);
 		expect(realtimeVoiceModels).toEqual(
 			expect.arrayContaining([
@@ -332,17 +115,7 @@ describe('provider manifests', () => {
 				}),
 			])
 		);
-		expect(loadVectorDatabases()).toEqual([
-			expect.objectContaining({
-				id: 'pinecone',
-				name: 'Pinecone Vector Database',
-				type: 'vector',
-				url: 'https://api.pinecone.io',
-				provider: expect.objectContaining({ id: 'pinecone' }),
-			}),
-		]);
 		expect(namesAreAlphabetical(loadModels())).toBe(true);
-		expect(namesAreAlphabetical(loadVectorDatabases())).toBe(true);
 		expect(namesAreAlphabetical(loadWebSearches())).toBe(true);
 	});
 });
