@@ -120,7 +120,8 @@ export function createTab(
 		'page-title-updated',
 	] as const)
 		contents.on(name as 'did-stop-loading', changed);
-	const user = (): boolean => !(tab.chat && acting.has(tab.chat));
+	// History keeps the user's own browsing in direct tabs only.
+	const user = (): boolean => route === 'direct' && !(tab.chat && acting.has(tab.chat));
 	contents.on('did-navigate', (_event, url) => {
 		if (user()) visit(url);
 	});
