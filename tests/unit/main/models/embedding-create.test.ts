@@ -23,6 +23,13 @@ beforeEach(() => {
 	getProviderId.mockReturnValue('openai');
 	getModelId.mockReturnValue('text-embedding-3-small');
 	providerModels.mockReturnValue([{ id: 'text-embedding-3-small' }]);
+	findModel.mockImplementation((_providerId: string, _type: string, id: string) => ({
+		id,
+		location: 'remote',
+		url: 'https://api.example.test/v1',
+		provider: { name: 'Test' },
+		metadata: { endpoint: '/embeddings' },
+	}));
 	generateEmbeddings.mockResolvedValue([
 		[0.1, 0.2],
 		[0.2, 0.3],
