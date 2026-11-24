@@ -4,6 +4,8 @@ import { CodingChannels } from '../../../../src/shared/ipc_channels_definitions'
 import type { Coding } from '../../../../src/main/coding';
 import type { EventBus } from '../../../../src/main/event_bus';
 
+jest.mock('../../../../src/main/apps/app_bundled', () => ({ isBundledApp: () => true }));
+
 const windows = { has: jest.fn() };
 
 beforeEach(() => {
