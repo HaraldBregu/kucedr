@@ -25,7 +25,5 @@ Part of the [Roadmap](README.md). Status: proposal.
 
 ## Open decisions
 
-- **Lighter first message** ([Performance](PERFORMANCE.md), 2.4) changes how much memory is loaded
-  at the start of a chat; decide it together with 18.1.
 - **Deleting a chat** should also remove what was remembered from it ([Privacy](PRIVACY.md), 1.1).
 - **Local embedding** for knowledge is in [Local models and offline use](LOCAL.md), 15.3.
