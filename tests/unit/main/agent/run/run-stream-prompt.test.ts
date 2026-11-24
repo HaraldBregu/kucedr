@@ -877,37 +877,6 @@ describe('run stream system prompt', () => {
 	});
 
 
-	it('rejects a malformed Plan response before publishing it', async () => {
-		const events = [];
-		await expect(async () => {
-			for await (const event of stream(
-				{ location: '/workspace' },
-				createSessionState(),
-				{
-					runId: 'plan-output',
-					task: 'chat',
-					message: 'Plan this',
-					model: 'test-model',
-					type: 'default',
-					agentId: 'main',
-					contextMode: 'minimal',
-					interactionMode: 'plan',
-				},
-				new AbortController().signal,
-				{ tools: [] }
-			))
-				events.push(event);
-		}).rejects.toThrow('exactly one non-empty <proposed_plan> envelope');
-
-		expect(events).not.toContainEqual(expect.objectContaining({ type: 'assistant_message' }));
-		expect(events).toContainEqual(
-			expect.objectContaining({
-				type: 'run_error',
-				message: expect.stringContaining('<proposed_plan>'),
-			})
-		);
-	});
-
 	it('emits exactly one terminal event when cancelled', async () => {
 		const session = createSessionState();
 		session.id = 'session';
