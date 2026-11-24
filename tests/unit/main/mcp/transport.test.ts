@@ -90,7 +90,7 @@ it('creates local transports directly from the shared MCP configuration', () => 
 });
 
 it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'])(
-	'ignores persisted credentials and uses the environment for %s',
+	'ignores persisted credentials and uses the plugin settings for %s',
 	(host) => {
 		jest
 			.mocked(getMcpOauth)
