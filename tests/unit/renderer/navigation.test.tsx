@@ -267,7 +267,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(currentSection).toHaveAttribute('data-active');
 });
 
-it('keeps Plugins and Apps in the main sidebar list without a footer', () => {
+it('keeps Apps in the main sidebar list and Plugins in the footer', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/plugins']}>
 			<Routes>
