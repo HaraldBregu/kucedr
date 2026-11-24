@@ -27,7 +27,7 @@ describe('realtime voice adapter factory', () => {
 		});
 		expect(catalog.length).toBeGreaterThan(0);
 		for (const manifest of catalog) {
-			expect(() => realtimeVoiceProtocol(manifest, providerIdOf(manifest))).not.toThrow();
+			expect(() => realtimeVoiceProtocol(manifest, manifest.name)).not.toThrow();
 		}
 	});
 
