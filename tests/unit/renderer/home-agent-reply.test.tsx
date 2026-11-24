@@ -18,6 +18,8 @@ jest.mock('../../../src/renderer/src/contexts/chat-session', () => ({
 	useChatSession: () => ({ sessionId: mockSessionId, setSessionId: mockSetSessionId }),
 }));
 
+jest.mock('../../../src/renderer/src/hooks/use-modes', () => ({ useModes: () => [] }));
+
 beforeEach(() => {
 	mockSessionId = 'chat-one';
 	send.mockReset();
