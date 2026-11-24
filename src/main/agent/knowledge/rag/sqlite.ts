@@ -432,7 +432,8 @@ export class SqliteVectorStore implements VectorStore {
 			values.set(normalize(vector), ids.length * dimensions);
 			ids.push(row.id);
 		}
-		return { key, ids, dimensions, values: values.subarray(0, ids.length * dimensions) };
+		this.matrix = { key, ids, dimensions, values: values.subarray(0, ids.length * dimensions) };
+		return this.matrix;
 	}
 }
 
