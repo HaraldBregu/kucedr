@@ -42,17 +42,16 @@ beforeEach(async () => {
 	jest.resetAllMocks();
 	root = await realpath(await mkdtemp(path.join(os.tmpdir(), 'kucedr-rag-index-')));
 	await writeFile(path.join(root, 'guide.md'), '# Guide');
-	getProvider.mockImplementation((_id, kind) => ({
-		apiKey: kind === 'databases' ? 'synthetic-mirror-account' : 'synthetic-embedding-account',
-	}));
+	getProvider.mockReturnValue({ apiKey: 'synthetic-embedding-account' });
+	vectorScriptKey.mockReturnValue('synthetic-mirror-account');
 	configuration = authorizeRagDisclosure({
 		enabled: true,
 		indexName: 'knowledge-base',
-		databaseId: 'pinecone',
-		databaseProviderId: 'pinecone',
+		databaseId: 'vector-db',
+		databaseProviderId: 'script',
 		embeddingProviderId: 'openai',
-		embeddingModelId: 'test-model',
-		embeddingConsent: { providerId: 'openai', modelId: 'test-model', version: 1 },
+		embeddingModelId: 'text-embedding-3-small',
+		embeddingConsent: { providerId: 'openai', modelId: 'text-embedding-3-small', version: 1 },
 		mirrorConsent: { indexName: 'knowledge-base', version: 1 },
 		folders: [root],
 		scheduleEnabled: false,
