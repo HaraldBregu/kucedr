@@ -55,6 +55,8 @@ import type { KeyedLimiter } from '../limiter';
 import type { KeyedMutex } from '../mutex';
 import type { ExecSandbox } from '../sandbox';
 import { builtinTools } from './run_builtin_tools';
+import { knowledgeCard } from '../knowledge/rag/card';
+import { warmRag } from '../knowledge/rag/warm';
 import { undoFileTool } from '../tools/core/undo';
 import { redoFileTool } from '../tools/core/redo';
 import type { RunStop } from '../extension';
