@@ -11,6 +11,29 @@ import type {
 	BrowserVisit,
 } from './browser_import';
 
+// How a tab connects: the shared profile with logins, a disposable private profile, or a
+// disposable profile sent through Tor or the user's proxy.
+export const BROWSER_ROUTES = ['direct', 'private', 'tor', 'proxy'] as const;
+export type BrowserRoute = (typeof BROWSER_ROUTES)[number];
+
+export interface BrowserBlocked {
+	readonly url: string;
+	readonly reason: 'local' | 'secret' | 'route' | 'download';
+}
+
+export interface BrowserDownload {
+	readonly file: string;
+	readonly site: string;
+	readonly state: 'asking' | 'saving' | 'done' | 'failed';
+}
+
+export interface BrowserConnections {
+	// host:port of a Tor SOCKS port; empty finds Tor Browser or the Tor service.
+	readonly tor: string;
+	// scheme://host:port of the user's proxy; empty when none.
+	readonly proxy: string;
+}
+
 export interface BrowserPaneTab {
 	readonly targetId: string;
 	readonly chat: string;
@@ -20,10 +43,13 @@ export interface BrowserPaneTab {
 	readonly order: number;
 	readonly back: boolean;
 	readonly forward: boolean;
+	readonly route: BrowserRoute;
 	readonly error?: string;
 	readonly icon?: string;
 	// A manual sign-in waiting for "Save password?"; never carries the password.
 	readonly offer?: { readonly username: string; readonly site: string; readonly update: boolean };
+	readonly blocked?: readonly BrowserBlocked[];
+	readonly download?: BrowserDownload;
 }
 
 export interface BrowserPaneState {
