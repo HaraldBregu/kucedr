@@ -284,3 +284,31 @@ it('keeps input and output within a catalog context window', async () => {
 		find.mockRestore();
 	}
 });
+
+it.each([
+	{ historyBytes: 400, compacts: false },
+	{ historyBytes: 5400, compacts: true },
+])('uses the accepted model input budget for $historyBytes bytes of history', async ({ historyBytes, compacts }) => {
+	const find = jest.spyOn(catalog, 'findModel').mockReturnValue({
+		metadata: { contextWindow: 4096 },
+	} as never);
+	const stream = jest.fn(async function* () {
+		yield { type: 'model_call_end' as const, model: 'catalog-model' };
+	});
+	const history = [{ role: 'user' as const, content: 'x'.repeat(historyBytes) }];
+	const projected = [{ role: 'summary' as const, content: 'Condensed older messages.' }];
+	const compact = jest.fn(async () => ({ summary: 'Condensed older messages.', userIndex: 1, messages: projected }));
+	try {
+		const events = [];
+		for await (const event of runModelTurn(
+			{ task: 'chat', message: 'hello' }, { id: 'test', apiKey: '' } as ResolvedProvider,
+			'catalog-model', 'system', history, [], new AbortController().signal, {}, { stream },
+			'', [], true, undefined, undefined, undefined, [], compact
+		)) events.push(event);
+		expect(compact).toHaveBeenCalledTimes(compacts ? 1 : 0);
+		expect(stream).toHaveBeenCalledWith(expect.objectContaining({ messages: compacts ? projected : history }));
+		expect(events.some((event) => event.type === 'history_compacted')).toBe(compacts);
+	} finally {
+		find.mockRestore();
+	}
+});
