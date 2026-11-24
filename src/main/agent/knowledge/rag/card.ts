@@ -1,14 +1,16 @@
 import path from 'node:path';
 import { getRagConfiguration } from './rag_store';
 import { ragVectorStore } from './vector';
+import type { VectorStore } from './types';
 
 let cached: { key: string; card: string } | undefined;
 
 export function knowledgeCard(): string {
-	const configuration = getRagConfiguration();
-	if (!configuration.enabled) return '';
-	const store = ragVectorStore();
+	let store: VectorStore | undefined;
 	try {
+		const configuration = getRagConfiguration();
+		if (!configuration.enabled) return '';
+		store = ragVectorStore();
 		const index = store.getIndex(configuration.indexName);
 		if (!index) return '';
 		const key = [index.indexName, index.generation, index.completedAt, ...configuration.folders].join('\0');
@@ -35,6 +37,6 @@ export function knowledgeCard(): string {
 	} catch {
 		return '';
 	} finally {
-		store.close();
+		store?.close();
 	}
 }
