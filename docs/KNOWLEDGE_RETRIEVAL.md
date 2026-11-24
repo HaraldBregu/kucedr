@@ -189,3 +189,82 @@ Today's 846 ms comes on top of the embedding network call, and it blocks the mai
 - **Keyword-only search in Voice.**
   - Step 3's FTS search calls no model, so a Voice tool could use it without breaking the no-model-backed-tools rule.
   - This is a product decision for the user.
+
+## Landed (2026-11-24)
+
+### What was built
+
+**Step 1, awareness**
+- `knowledge/rag/card.ts` builds the card.
+  - It is cached per index generation, completion time and folder list.
+  - It returns nothing when Knowledge is off, has no index, or SQLite fails.
+- `buildRunContext` takes it as a fourth argument. `run_stream.ts` adds it only when `query_knowledge` is eligible for the run, and lists the tool in `requiredIds`.
+
+**Step 2, fast search**
+- `SqliteVectorStore.search` keeps the active generation as one normalized `Float32Array` per store instance and returns `{ id, score }` only.
+  - The cache key is the index name, generation and completion time.
+  - `warm()` loads it without a query.
+- `chunks(ids)` reads the text of the hits only, through `json_each`.
+- `rag/worker.ts` (`?nodeWorker`) holds one store. `rag/scan.ts` talks to it:
+  - The worker is unref'd.
+  - A request aborts with its signal.
+  - A crash rejects the waiting requests, and the next search starts a new worker.
+- `warmRag()` starts the load at run start.
+- `searchRag` caches up to 256 query embeddings, keyed by provider, model and text.
+- The tool result is `{ results: [{ chunkId, path, section?, lines, excerpt }], limitations, abstain }`. The path header is cut from the excerpt.
+
+**Step 3, keyword search**
+- `rag_chunks_fts` is an FTS5 external-content table over `rag_chunks.text`. `publish` and `purge` rebuild it.
+- `ftsQuery` (`rag/terms.ts`) turns a query into OR'ed quoted terms. Codes like `ACME-4217` stay one phrase.
+- Keyword search runs while the embedding request is in flight. The results are merged with vector hits by reciprocal rank fusion (k = 60), from 50 candidates per list.
+
+**Step 4, fast reindexing**
+- A new table, `rag_sources`, stores each source's size, modification time, stamp (chunk version and embedding recipient) and fingerprint.
+  - A file whose size and modification time match, with the same stamp and rows still in the index, is reused without reading it.
+  - A file whose time changed but whose text did not is still reused by its fingerprint.
+- `publish` no longer re-inserts reused rows. It moves them to the new generation with one `UPDATE` per source, inside the same transaction, so a failed run still leaves the old index active.
+  - No existing table changed shape, and no migration was needed.
+- The mirror path still uploads every record, so it reads the reused rows for the upload only.
+- The collector extracts 4 files at a time and keeps them in order.
+- Embedding sends up to `metadata.concurrency` requests at once (default 2), read from the model manifest.
+
+**Step 5, fewer turns**
+- `query_knowledge` takes `queries` (up to 3), still accepts `query`, and accepts `chunkId`, which returns the chunk with up to two neighbours on each side (`aroundRag`).
+
+### Not built
+
+- **Caching the configuration and manifest checks.** Opening the store takes 0.4 ms and the checks read one small file, so there was nothing to gain.
+- **Reusing one PDF worker per run.**
+  - Measured: a new worker plus the pdfjs import cost about 70 ms per PDF (88 ms against 20 ms to parse once warm).
+  - Unchanged PDFs are no longer opened at all, so this applies only to new or changed PDFs: about 18 s per 1,000 new PDFs with 4 extracted at a time.
+  - A pool would also have to handle timeouts, crashes and memory growth. Revisit if first indexing of large PDF libraries matters.
+- **Step 6.** It waits for traces.
+
+### Measured (Apple M5 Pro, Electron 44 / Node 24.21)
+
+| What | Before | After |
+| --- | --- | --- |
+| Vector search, 20,000 × 1,536 | 846 ms on the main process | 18 ms in the worker; the main thread never paused more than 0.5 ms |
+| Worker warm-up at that size | — | 187 ms, once per index generation |
+| Keyword search, 20,000 chunks | — | 10 ms (exact code ranked first); 26 ms for four common words |
+| Text for 5 hits | Every row read | 1.8 ms |
+| Reindex, 2,000 files, nothing changed | Every file re-read and re-extracted, every row rewritten | 184 ms, no file read, no embedding request |
+| Reindex, one file touched (same text) | Same as above | 1 file read, no embedding request |
+| Reindex, one file changed | Same as above | 1 file read, 1 embedding request |
+| Publish at the limit, 1 of 2,000 sources changed | Full rewrite | 383 ms, keyword index rebuild included |
+| Two phrasings in one call | 2 model turns, 2 requests | 1 turn, 1 embedding request |
+
+### Checked
+
+- **The built app**, with an isolated profile, a mock chat model and the embedding call stubbed inside the main process (no real key):
+  - Indexing 41 files made one embedding request. Reindexing them unchanged made none and took 9 ms.
+  - The first turn of a chat offered `query_knowledge`, and its run context held the card.
+  - A search through the worker ranked the file containing `ACME-4217` first.
+  - Reading around that hit returned the passage.
+- **The full main test suite** against the commit before this work: no new failures. The knowledge tests that were updated pass.
+- **Not checked:**
+  - a real embedding provider;
+  - the remote mirror path with reused sources;
+  - the packaged app (asar plus the new worker chunk);
+  - Windows and Linux.
+- **Existing indexes** fill the keyword table and source stamps on their next index run. Until then search uses vectors only, and that run still reads every file once.
