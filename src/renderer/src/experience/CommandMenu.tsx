@@ -191,7 +191,7 @@ function CommandMenuItem({
 		>
 			<Icon className="size-4" aria-hidden="true" />
 			<span className="min-w-0 flex-1 truncate">{item.label}</span>
-			<CommandShortcut className="hidden max-w-40 shrink-0 truncate font-mono text-[10px] sm:block">
+			<CommandShortcut className="hidden max-w-40 shrink-0 truncate font-mono text-xs sm:block">
 				{item.path}
 			</CommandShortcut>
 		</CommandItem>
