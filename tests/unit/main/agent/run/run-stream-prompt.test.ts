@@ -797,7 +797,7 @@ describe('run stream system prompt', () => {
 			))
 				void event;
 			expect(read).toHaveBeenCalledTimes(1);
-			expect(runModelTurnMock.mock.calls[0][3]).toContain('- Memory 499');
+			expect(JSON.stringify(runModelTurnMock.mock.calls[0][4])).toContain('- Memory 499');
 			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
 			await fs.rm(root, { recursive: true, force: true });
 		}
