@@ -40,6 +40,7 @@ const BrowserSettingsPage = lazy(() => import('./pages/settings/pages/browser/Pa
 const BrowserPasswordsPage = lazy(() => import('./pages/settings/pages/browser/passwords/Page'));
 const BrowserBookmarksPage = lazy(() => import('./pages/settings/pages/browser/bookmarks/Page'));
 const BrowserHistoryPage = lazy(() => import('./pages/settings/pages/browser/history/Page'));
+const PrivacyPage = lazy(() => import('./pages/settings/pages/privacy/Page'));
 const AccountPage = lazy(() => import('./pages/settings/pages/account/Page'));
 const CloudPage = lazy(() => import('./pages/settings/pages/cloud/Page'));
 const TasksPage = lazy(() => import('./pages/settings/pages/tasks/Page'));
@@ -317,6 +318,14 @@ const routes: RouteObject[] = [
 						element: (
 							<SettingsRouteWrapper>
 								<LibraryPage />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
+						path: 'privacy',
+						element: (
+							<SettingsRouteWrapper>
+								<PrivacyPage />
 							</SettingsRouteWrapper>
 						),
 					},

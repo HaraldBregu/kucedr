@@ -339,6 +339,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Globe,
 	},
 	{
+		path: '/settings/privacy',
+		labelKey: 'settings.privacy.title',
+		descriptionKey: 'settings.privacy.description',
+		icon: ShieldCheck,
+	},
+	{
 		path: '/workspace',
 		labelKey: 'settings.workspace.title',
 		descriptionKey: 'settings.workspace.description',

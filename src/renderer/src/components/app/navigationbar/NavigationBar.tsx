@@ -26,6 +26,7 @@ import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
+import { Privacy } from './Privacy';
 
 // Synchronous platform check — no hooks, no async, no state.
 // macOS uses native traffic-light buttons; every other OS needs custom controls.
@@ -282,6 +283,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 					className={`z-10 mr-3 ${actionGroupClassName}`}
 				>
 					{navigationButtons}
+					<Privacy />
 					<Tooltip>
 						<TooltipTrigger render={
 							<Button
