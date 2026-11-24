@@ -1,14 +1,26 @@
 import path from 'node:path';
 
+import type { CodingSettings } from '../../../../src/shared/coding_types';
+
 const root = '/tmp/kucedr-coding-store-test';
+const DEFAULT_CODING_SETTINGS: CodingSettings = {
+	runtime: 'pi',
+	providerId: 'pi',
+	modelId: '',
+	thinkingLevel: 'medium',
+	toolMode: 'read-only',
+};
 
 jest.mock('../../../../src/main/shared/user_data_location', () => ({
 	userDataLocation: () => root,
 }));
+jest.mock('../../../../src/main/coding/defaults', () => ({
+	codingDefaults: (runtime?: string) => ({ ...DEFAULT_CODING_SETTINGS, ...(runtime && { runtime }) }),
+}));
 
-import { CodingStore, DEFAULT_CODING_SETTINGS } from '../../../../src/main/coding/store';
+import { CodingStore } from '../../../../src/main/coding/store';
 
-it('defaults to Pi, Codex, and read-only tools', () => {
+it('defaults to the default harness and read-only tools', () => {
 	const store = new CodingStore();
 
 	expect(store.get()).toEqual(DEFAULT_CODING_SETTINGS);
