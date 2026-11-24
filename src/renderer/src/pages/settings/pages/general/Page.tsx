@@ -58,6 +58,13 @@ const TRAY_CLICK_ACTION_OPTIONS = [
 
 type TrayClickAction = (typeof TRAY_CLICK_ACTION_OPTIONS)[number]['value'];
 
+const LEGAL_LINKS = [
+	{ url: __APP_LINKS__.terms, titleKey: 'settings.application.termsOfService', icon: FileText },
+	{ url: __APP_LINKS__.privacy, titleKey: 'settings.application.privacyPolicy', icon: Lock },
+	{ url: __APP_LINKS__.license, titleKey: 'settings.application.license', icon: Scale },
+	{ url: __APP_LINKS__.security, titleKey: 'settings.application.securityPolicy', icon: ShieldCheck },
+];
+
 const GeneralPage: React.FC = () => {
 	const { t } = useTranslation();
 	const {
