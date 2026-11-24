@@ -74,18 +74,14 @@ describe('addToolsPrompt', () => {
 	it('returns the prompt unchanged when there are no tools', () => {
 		expect(addToolsPrompt('base', [])).toBe('base');
 	});
-	it('groups tools by category and includes each category description', () => {
+	it('groups tools by category', () => {
 		const prompt = addToolsPrompt('base', [tool('read', 'Read a file'), tool('write')]);
 		expect(prompt).toContain('## Tools');
-		expect(prompt).toContain(
-			'### System\nAsk the user for required input and work with local device capabilities such as the microphone, camera, and screen.'
-		);
-		expect(prompt).toContain('- `read` (read) — Read a file _(Loaded.)_');
-		expect(prompt).toContain('- `write` (write) _(Loaded.)_');
+		expect(prompt).toContain('### System\n- `read` — Read a file\n- `write`');
 	});
 	it('flattens newlines in descriptions', () => {
 		const prompt = addToolsPrompt('base', [tool('x', 'line1\nline2')]);
-		expect(prompt).toContain('- `x` (x) — line1 line2');
+		expect(prompt).toContain('- `x` — line1 line2');
 	});
 	it('includes loaded native and MCP tools', () => {
 		const prompt = addToolsPrompt('base', [
