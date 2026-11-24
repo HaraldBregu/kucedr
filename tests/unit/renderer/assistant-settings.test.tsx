@@ -305,6 +305,10 @@ beforeEach(() => {
 			})),
 		},
 	});
+	Object.defineProperty(window, 'services', {
+		configurable: true,
+		value: { list: jest.fn().mockResolvedValue([]) },
+	});
 	Object.defineProperty(window, 'tasks', {
 		configurable: true,
 		value: {
