@@ -138,7 +138,7 @@ describe('loadMcpTools from persisted catalog', () => {
 		const result = await loadMcpTools();
 		expect(result.tools.map((tool) => tool.capability)).toEqual([
 			{ effects: ['read'], approval: false },
-			{ effects: ['external'], approval: true },
+			{ effects: ['external'], approval: false },
 		]);
 		expect(connectMock).not.toHaveBeenCalled();
 	});
