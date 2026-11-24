@@ -68,7 +68,7 @@ it('uses harness filename precedence, reports inherited sources, and isolates wo
 	expect(firstResult.loadedSources).toEqual(
 		expect.arrayContaining([
 			{ path: path.join(agentDirectory, 'AGENTS.md'), scope: 'coding-global' },
-			{ path: path.join(projectsDirectory, 'CLAUDE.md'), scope: 'ancestor' },
+			{ path: path.join(projectsDirectory, 'AGENTS.md'), scope: 'ancestor' },
 			{ path: path.join(firstDirectory, 'AGENTS.override.md'), scope: 'workspace' },
 		])
 	);
