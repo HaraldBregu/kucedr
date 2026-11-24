@@ -17,9 +17,8 @@ describe('subagentTool', () => {
 		mockStream.mockReset();
 	});
 
-	it('categorizes single and parallel subagent tools as core', () => {
-		expect(subagentTool({ location: '/agent' }, [], { type: 'default' }).category).toBe('core');
-		expect(subagentsTool({ location: '/agent' }, [], { type: 'default' }).category).toBe('core');
+	it('categorizes the subagent tool as delegation', () => {
+		expect(subagentTool({ location: '/agent' }, () => [], { type: 'default' }).category).toBe('delegation');
 	});
 
 	it('ignores model-supplied system instructions', async () => {
