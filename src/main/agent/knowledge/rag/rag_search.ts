@@ -27,7 +27,9 @@ export async function searchRag(
 	if (!configuration.enabled) throw new Error('Enable Knowledge before searching.');
 	if (configuration.indexName !== selectedIndexName)
 		throw new Error('Select the Knowledge index before searching.');
-	const texts = [...new Set((typeof query === 'string' ? [query] : query).map((text) => text.trim()))];
+	const texts = [
+		...new Set((typeof query === 'string' ? [query] : query).map((text) => text.trim())),
+	];
 	if (
 		texts.length === 0 ||
 		texts.length > 3 ||
