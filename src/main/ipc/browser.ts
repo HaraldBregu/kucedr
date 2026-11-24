@@ -29,6 +29,9 @@ import {
 	updateLogin,
 } from '../browser/passwords';
 import { answerOffer } from '../agent/tools/web/browser/capture';
+import { answerDownload } from '../agent/tools/web/browser/release';
+import { connections } from '../browser/connections';
+import { findTor } from '../browser/tor';
 import { pickFiles } from '../browser/pick';
 import { browserSources, foundProfiles } from '../browser/sources';
 import { suggest } from '../browser/suggest';
