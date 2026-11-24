@@ -343,6 +343,7 @@ it('exposes OpenRouter model capabilities and exact reasoning levels from its mo
 			seed: { type: 'integer', default: 7 },
 			reasoning: {
 				type: 'object',
+				exclusive: true,
 				properties: {
 					effort: { type: 'string', enum: ['low', 'high'], default: 'high' },
 					max_tokens: { type: 'integer', minimum: 0 },
