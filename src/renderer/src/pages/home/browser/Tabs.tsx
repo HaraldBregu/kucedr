@@ -24,7 +24,7 @@ export function BrowserTabs({
 	readonly active: string;
 	readonly onSelect: (targetId: string) => void;
 	readonly onClose: (targetId: string) => void;
-	readonly onNew: () => void;
+	readonly onNew: (route?: BrowserRoute) => void;
 	readonly onMove: (targetId: string, index: number) => void;
 }): ReactElement {
 	const list = useRef<HTMLDivElement>(null);
