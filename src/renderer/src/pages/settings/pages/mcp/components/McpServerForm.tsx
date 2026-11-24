@@ -59,7 +59,7 @@ function McpFormItem({
 		<Item variant="outline" size="md" className={ITEM_CLASS}>
 			<ItemContent className="min-w-0 flex-col items-start gap-0.5">
 				<ItemTitle>{title}</ItemTitle>
-				<p className="text-[11px] leading-4 text-muted-foreground">{description}</p>
+				<p className="text-xs leading-4 text-muted-foreground">{description}</p>
 			</ItemContent>
 			{children && <ItemActions className={CONTROL_ACTIONS_CLASS}>{children}</ItemActions>}
 		</Item>
@@ -211,7 +211,7 @@ export function McpServerForm({
 					<ItemTitle>
 						<Label htmlFor="mcp-type">Type</Label>
 					</ItemTitle>
-					<p className="text-[11px] leading-4 text-muted-foreground">
+					<p className="text-xs leading-4 text-muted-foreground">
 						Choose a remote HTTP service or a local command.
 					</p>
 				</ItemContent>
@@ -236,7 +236,7 @@ export function McpServerForm({
 					<ItemTitle>
 						<Label htmlFor="mcp-id">ID</Label>
 					</ItemTitle>
-					<p className="text-[11px] leading-4 text-muted-foreground">
+					<p className="text-xs leading-4 text-muted-foreground">
 						Use a unique identifier for this server.
 					</p>
 				</ItemContent>
@@ -256,7 +256,7 @@ export function McpServerForm({
 					<ItemTitle>
 						<Label htmlFor="mcp-name">Name</Label>
 					</ItemTitle>
-					<p className="text-[11px] leading-4 text-muted-foreground">
+					<p className="text-xs leading-4 text-muted-foreground">
 						Shown in the MCP servers list.
 					</p>
 				</ItemContent>
@@ -275,7 +275,7 @@ export function McpServerForm({
 					<ItemTitle>
 						<Label htmlFor="mcp-approval">Tool approval</Label>
 					</ItemTitle>
-					<p className="text-[11px] leading-4 text-muted-foreground">
+					<p className="text-xs leading-4 text-muted-foreground">
 						Choose when Kucedr asks before using this server’s tools.
 					</p>
 				</ItemContent>
