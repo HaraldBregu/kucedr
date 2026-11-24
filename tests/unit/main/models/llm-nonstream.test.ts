@@ -184,7 +184,7 @@ describe('LlmModel non-streaming transport', () => {
 				expect.objectContaining({
 					type: 'model_call_end',
 					stopReason: 'tool_use',
-					usage: { inputTokens: 20, outputTokens: 3, cachedTokens: 10 },
+					usage: { inputTokens: 20, outputTokens: 3, cachedTokens: 10, cacheWriteTokens: 6 },
 				}),
 			])
 		);
