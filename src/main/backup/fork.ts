@@ -7,9 +7,11 @@ import { storageProviders } from '../storage/providers';
 import { transferRoots } from '../storage/roots';
 import { storagePrefix } from '../storage/storage_prefix';
 import { getStorageSettings } from './store';
+import { requireUnrestrictedNetwork } from '../privacy/state';
 
 /** Runs the selected STORAGE script in a utility process and returns its result. */
 export async function forkSync<T>(operation: StorageOperation): Promise<T> {
+	requireUnrestrictedNetwork();
 	const settings = getStorageSettings();
 	const script = pluginScripts('STORAGE').find((entry) => entry.name === settings.serviceId);
 	if (!script) throw new Error('Select a storage service for backup.');

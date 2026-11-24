@@ -95,6 +95,7 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { AppStorage } from '../apps/app_store';
 import { registerAppStoreIpc } from './app_store';
 import { externalUrl } from '../external';
+import { openExternal } from '../handoff';
 import { unfurlUrl } from '../unfurl';
 import type { ExecSandbox } from '../agent/sandbox';
 import type { WindowContextManager } from '../window_context';
@@ -643,7 +644,7 @@ export class AppIpc implements IpcModule {
 			wrapTrustedHandler(async (url: string) => {
 				const target = externalUrl(url);
 				if (!target) throw new Error('Invalid external URL.');
-				await shell.openExternal(target);
+				await openExternal(target);
 			}, AppChannels.openExternalUrl)
 		);
 

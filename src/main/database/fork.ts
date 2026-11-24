@@ -1,14 +1,16 @@
 import path from 'node:path';
 import { utilityProcess } from 'electron';
 import type { PluginScript } from '../plugins/scripts/plugin_script_list';
+import { requireUnrestrictedNetwork } from '../privacy/state';
 
 /** Runs a VECTOR script in a utility process with one message and returns its result. */
-export function forkVectorScript<T>(
+export async function forkVectorScript<T>(
 	script: PluginScript,
 	message: Record<string, unknown>,
 	signal?: AbortSignal
 ): Promise<T> {
 	signal?.throwIfAborted();
+	requireUnrestrictedNetwork();
 	const child = utilityProcess.fork(
 		path.join(script.directory, ...script.metadata.entry.split('/')),
 		[],

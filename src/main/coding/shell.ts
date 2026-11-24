@@ -1,9 +1,11 @@
 import { spawn } from 'node:child_process';
 import type { HarnessContext } from './harness/types';
 import { commandEnvironment } from '../agent/execution/environment';
+import { requireUnrestrictedNetwork } from '../privacy/state';
 
-export function executeCommand(command: string, context: HarnessContext): Promise<string> {
+export async function executeCommand(command: string, context: HarnessContext): Promise<string> {
 	context.signal.throwIfAborted();
+	requireUnrestrictedNetwork();
 	context.emit({ type: 'command-start', command });
 	return new Promise((resolve, reject) => {
 		const windows = process.platform === 'win32';

@@ -2,7 +2,6 @@ import {
 	app,
 	BrowserWindow,
 	BrowserWindowConstructorOptions,
-	shell,
 	WebContentsView,
 	type WebContents,
 } from 'electron';
@@ -15,6 +14,7 @@ import { resourceRoot } from './shared/resource_root';
 import { setupPdfContextMenu } from './pdf';
 import type { AppRegistry } from './apps/app_registry';
 import { externalUrl } from './external';
+import { openExternal } from './handoff';
 import { APP_RESOURCE_SCHEME, APP_SESSION_PARTITION, appResourceUrl } from './protocol';
 
 export interface WindowPreset {
@@ -70,7 +70,7 @@ export class WindowFactory {
 			if (fileRoot || appId) {
 				const target = externalUrl(url);
 				if (target) {
-					void shell.openExternal(target).catch((error) => {
+					void openExternal(target).catch((error) => {
 						this.logger?.warn('WindowFactory', 'Failed to open external URL', {
 							url: target,
 							error,
@@ -99,7 +99,7 @@ export class WindowFactory {
 			event.preventDefault();
 			const externalTarget = fileRoot || appId ? externalUrl(url) : null;
 			if (externalTarget) {
-				void shell.openExternal(externalTarget).catch((error) => {
+				void openExternal(externalTarget).catch((error) => {
 					this.logger?.warn('WindowFactory', 'Failed to open external URL', {
 						url: externalTarget,
 						error,

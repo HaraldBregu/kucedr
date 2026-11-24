@@ -5,6 +5,7 @@ import {
 } from '@modelcontextprotocol/sdk/client/stdio.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import type { McpData } from '../../shared/mcp_types';
+import { requireUnrestrictedNetwork } from '../privacy/state';
 import { findMcpService } from './manifest';
 import { mcpOAuthOptions } from './oauth_options';
 import { createOAuthProvider } from './mcp_oauth_create_provider';
@@ -15,6 +16,7 @@ import { parseMcpUrl } from './url';
 
 export function buildTransport(id: string, data: McpData): Transport {
 	if (data.type === 'stdio') {
+		requireUnrestrictedNetwork();
 		return new StdioClientTransport({
 			command: data.command,
 			args: data.args ? [...data.args] : undefined,

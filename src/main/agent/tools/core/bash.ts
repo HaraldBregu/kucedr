@@ -15,6 +15,7 @@ import { approvedExecRoots } from '../../permissions/approved_exec_roots';
 import { resolveExecRoots } from '../../permissions/resolve_exec_roots';
 import path from 'node:path';
 import { readOnlyShellError } from './readonly';
+import { requireUnrestrictedNetwork } from '../../../privacy/state';
 
 interface ExecResult {
 	command: string;
@@ -92,6 +93,7 @@ async function runExec(
 	readOnly = false
 ): Promise<ExecResult> {
 	abortSignal?.throwIfAborted();
+	requireUnrestrictedNetwork();
 	const scope = executionScope.getStore();
 	if (!scope) throw new Error('Command execution requires an owning session.');
 	const {

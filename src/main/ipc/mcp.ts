@@ -35,6 +35,8 @@ import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
 import { parseMcpUrl } from '../mcp/url';
 import { externalUrl } from '../external';
+import { openExternal } from '../handoff';
+import { requireUnrestrictedNetwork } from '../privacy/state';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -264,6 +266,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 			McpChannels.oauthStart,
 			async (event, id: string, force = false): Promise<McpOAuthStart> => {
 				trusted.assert(event);
+				requireUnrestrictedNetwork();
 				const server = getHttpMcpServer(id);
 				const state = randomBytes(32).toString('hex');
 				const serverUrl = parseMcpUrl(server.url).href;
@@ -298,7 +301,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 					const target = externalUrl(authorizationUrl);
 					if (!target)
 						throw new Error(`MCP server "${id}" returned an unsupported authorization URL.`);
-					await shell.openExternal(target);
+					await openExternal(target);
 					const code = await callback.code;
 					const finish = await auth(provider, { serverUrl, authorizationCode: code });
 					if (finish !== 'AUTHORIZED') throw new Error(`OAuth authorization failed for "${id}".`);

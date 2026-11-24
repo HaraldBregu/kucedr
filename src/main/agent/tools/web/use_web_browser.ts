@@ -4,6 +4,7 @@ import { BROWSER_ROUTES } from '../../../../shared/browser';
 import { leaks } from '../../../shield/leaks';
 import { saveMedia } from '../../../shared/media';
 import { publicUrl } from '../../../public';
+import { requireUnrestrictedNetwork } from '../../../privacy/state';
 import { executionScope } from '../../execution/scope';
 import { mediaAccess } from '../../permissions/media_access';
 import { tool } from '../tool';
@@ -66,6 +67,7 @@ function trackPage(page: Page, session: BrowserSession = browserSession()): stri
 
 async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 	signal?.throwIfAborted();
+	requireUnrestrictedNetwork();
 	const session = browserSession();
 	if (session.closed) throw new Error('Browser run has ended.');
 	if (session.context) return session.context;

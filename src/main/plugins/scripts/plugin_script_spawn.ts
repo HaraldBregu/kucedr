@@ -1,13 +1,15 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { commandEnvironment } from '../../agent/execution/environment';
+import { requireUnrestrictedNetwork } from '../../privacy/state';
 import type { PluginScript } from './plugin_script_list';
 
 const TIMEOUT_MS = 10_000;
 const MAX_OUTPUT = 2 * 1024 * 1024;
 
 /** Runs a plugin script with `payload` as JSON on stdin and returns what it prints. */
-export function spawnPluginScript(script: PluginScript, payload: unknown): Promise<string> {
+export async function spawnPluginScript(script: PluginScript, payload: unknown): Promise<string> {
+	requireUnrestrictedNetwork();
 	const { name } = script;
 	return new Promise<string>((resolve, reject) => {
 		const child = spawn(

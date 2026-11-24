@@ -1,9 +1,10 @@
-import { shell } from 'electron';
 import type { AccountProfile, AuthCredentials, SignUpInput } from '../../shared/auth_types';
 import { AuthChannels } from '../../shared/ipc_channels_definitions';
 import type { AuthService } from '../cloud/service';
 import type { AppRegistry } from '../apps/app_registry';
 import type { EventBus } from '../event_bus';
+import { openExternal } from '../handoff';
+import { requireUnrestrictedNetwork } from '../privacy/state';
 import type { WindowContextManager } from '../window_context';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
@@ -39,7 +40,8 @@ export class AuthIpc implements IpcModule<AuthIpcDeps> {
 		});
 		registerCommandWithEvent(AuthChannels.signInWithGoogle, async (event) => {
 			trusted.assert(event);
-			await shell.openExternal(await auth.signInWithGoogle());
+			requireUnrestrictedNetwork();
+			await openExternal(await auth.signInWithGoogle());
 		});
 		registerCommandWithEvent(AuthChannels.signUp, (event, value) => {
 			trusted.assert(event);

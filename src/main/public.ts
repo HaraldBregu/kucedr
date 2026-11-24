@@ -1,5 +1,6 @@
 import { lookup } from 'node:dns/promises';
 import { privateAddress } from './private';
+import { requireUnrestrictedNetwork } from './privacy/state';
 
 export interface PublicUrl {
 	url: URL;
@@ -8,6 +9,7 @@ export interface PublicUrl {
 }
 
 export async function publicUrl(value: string): Promise<PublicUrl> {
+	requireUnrestrictedNetwork();
 	const url = new URL(value);
 	if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('Unsupported URL.');
 	if (url.username || url.password) throw new Error('URL credentials are not allowed.');

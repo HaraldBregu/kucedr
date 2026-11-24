@@ -11,6 +11,7 @@ import type {
 	TerminalSessionInfo,
 } from '../../shared/terminal';
 import type { LoggerService } from '../shared';
+import { requireUnrestrictedNetwork } from '../privacy/state';
 import type { EnvironmentManager } from './environment';
 import type { TerminalSession } from './session';
 import type { ShellDetector } from './shell';
@@ -38,6 +39,7 @@ export class PtyManager {
 	}
 
 	async create(owner: WebContents, request: TerminalCreateRequest): Promise<TerminalSessionInfo> {
+		requireUnrestrictedNetwork();
 		if (this.sessions.has(request.id) || this.pendingIds.has(request.id)) {
 			throw new Error(`Terminal session already exists: ${request.id}`);
 		}

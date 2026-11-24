@@ -2,6 +2,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { app } from 'electron';
 import type { ModelHarness } from '../../../shared/model_types';
+import { requireUnrestrictedNetwork } from '../../privacy/state';
 
 type Params = Record<string, unknown>;
 type Pending = {
@@ -27,6 +28,7 @@ export class AppServerRpc {
 		harness: Pick<ModelHarness, 'homeEnv' | 'clearEnv'>,
 		private readonly name: string
 	) {
+		requireUnrestrictedNetwork();
 		const environment: NodeJS.ProcessEnv = {
 			...process.env,
 			...(harness.homeEnv ? { [harness.homeEnv]: directory } : {}),
