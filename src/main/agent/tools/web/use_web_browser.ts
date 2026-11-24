@@ -1,5 +1,7 @@
 import { chromium, type BrowserContext, type Page } from 'playwright-core';
 import { z } from 'zod';
+import { BROWSER_ROUTES } from '../../../../shared/browser';
+import { leaks } from '../../../shield/leaks';
 import { saveMedia } from '../../../shared/media';
 import { publicUrl } from '../../../public';
 import { executionScope } from '../../execution/scope';
