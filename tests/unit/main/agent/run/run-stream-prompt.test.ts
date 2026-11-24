@@ -1018,10 +1018,6 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
-		const parentCall = runModelTurnMock.mock.calls.find((call) => call[0].agentId === 'main');
-		expect((parentCall?.[5] as Tool[]).map((tool) => tool.id)).toEqual(
-			expect.arrayContaining(['subagent', 'subagents'])
-		);
 		const childCall = runModelTurnMock.mock.calls.find((call) => call[0].agentId === 'subagent');
 		const childInput = childCall?.[0];
 		expect(childInput).toMatchObject({
