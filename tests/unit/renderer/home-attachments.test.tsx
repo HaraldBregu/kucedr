@@ -260,7 +260,7 @@ describe('Home prompt attachments', () => {
 		triggerFileUpload.mockClear();
 		useSuggestion.mockClear();
 		replyTo = null;
-		messages = [{ id: 'agent-welcome', role: 'agent' }];
+		messages = [{ id: 'agent-welcome', role: 'agent', tools: [] }];
 	});
 
 	it('shows one row of empty-state prompt suggestions without settings', async () => {
