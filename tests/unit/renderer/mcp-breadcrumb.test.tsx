@@ -27,7 +27,7 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 			dispatchEvent: jest.fn(),
 		})),
 	});
-	const { container } = render(
+	render(
 		<MemoryRouter initialEntries={['/settings/mcp/demo-server']}>
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
