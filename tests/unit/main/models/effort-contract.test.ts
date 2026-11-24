@@ -17,7 +17,7 @@ it.each([true, false])('sends supported effort to Anthropic with streaming=%s', 
 	const create = jest.fn().mockResolvedValue({ content: [], stop_reason: 'end_turn', usage: { input_tokens: 0, output_tokens: 0 } });
 	const stream = jest.fn().mockReturnValue((async function* () { yield* []; })());
 	const model = new LlmModel({ anthropicClientFactory: () => ({ messages: { create, stream } }) as never });
-	for await (const _ of model.stream({ provider: { id: 'anthropic', apiKey: 'key' }, model: 'supported', messages: [{ role: 'user', content: 'hi' }], maxTokens: 100, effort: 'max', streaming })) {}
+	for await (const _event of model.stream({ provider: { id: 'anthropic', apiKey: 'key' }, model: 'supported', messages: [{ role: 'user', content: 'hi' }], maxTokens: 100, effort: 'max', streaming })) { void _event; }
 	expect((streaming ? stream : create).mock.calls[0][0].output_config.effort).toBe('max');
 });
 
