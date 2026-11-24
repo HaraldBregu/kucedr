@@ -43,8 +43,8 @@ test('automatic compaction preserves history and sends the summary to the model'
 		}));
 		await writeFile(path.join(model, 'manifest.json'), JSON.stringify({
 			id: 'fixture', name: 'Fixture', type: 'large-language-model',
-			authentication: 'api-key', url: baseUrl, baseUrl,
-			metadata: { protocol: 'chat-completions', contextWindow: 48_000, defaultOutputTokens: 1024 },
+			authentication: 'api-key', location: 'local', url: baseUrl, baseUrl,
+			metadata: { protocol: 'chat-completions', contextWindow: 48_000, defaultOutputTokens: 1024, promptAttachments: [] },
 		}));
 
 		const sessionId = randomUUID();
@@ -62,7 +62,7 @@ test('automatic compaction preserves history and sends the summary to the model'
 		await page.evaluate(async (id) => {
 			await window.plugins.setEnabled('compact-fixture', true);
 			await window.provider.set({ kind: 'models', id: 'compact-fixture', apiKey: 'fixture-key' });
-			await window.agent.setProvider({ id: 'compact-fixture', name: 'Compaction fixture' });
+			await window.agent.setProvider({ id: 'compact-fixture', name: 'Compaction fixture', baseUrl: '' });
 			await window.agent.setModelId('fixture');
 			await window.agent.setCompactModel({ providerId: 'compact-fixture', modelId: 'fixture', options: {} });
 			localStorage.setItem('chat-session-id', id);
