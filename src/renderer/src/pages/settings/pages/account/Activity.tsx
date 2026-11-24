@@ -85,11 +85,11 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 					showLegend
 				/>
 				{failed ? (
-					<p className="mt-3 text-[11px] text-muted-foreground">
+					<p className="mt-3 text-xs text-muted-foreground">
 						{t('settings.activity.error')}
 					</p>
 				) : visibleValues.length === 0 ? (
-					<p className="mt-3 text-[11px] text-muted-foreground">
+					<p className="mt-3 text-xs text-muted-foreground">
 						{t('settings.activity.empty')}
 					</p>
 				) : null}
@@ -97,7 +97,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 			{tooltip && (
 				<div
 					role="tooltip"
-					className="pointer-events-none fixed z-50 max-w-55 -translate-x-1/2 -translate-y-full rounded-md border border-border bg-popover px-2 py-1 text-[11px] text-popover-foreground shadow-md"
+					className="pointer-events-none fixed z-50 max-w-55 -translate-x-1/2 -translate-y-full rounded-md border border-border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md"
 					style={{
 						left: Math.max(112, Math.min(tooltip.x, window.innerWidth - 112)),
 						top: Math.max(48, tooltip.y - 10),
