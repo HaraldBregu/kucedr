@@ -45,7 +45,24 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 		void window.browserPane.sources().then(setSources);
 		void window.browserPane.library().then(setCounts);
 		void window.browserPane.passwordsStatus().then(setPasswords);
+		void window.browserPane.connections().then(setRoutes);
 	}, []);
+	const saveRoutes = async (): Promise<boolean> => {
+		if (!routes) return false;
+		try {
+			await window.browserPane.connectionsSet(routes);
+			setRoutesNotice({ error: false, text: t('settings.browser.connections.saved') });
+			return true;
+		} catch (cause) {
+			setRoutesNotice({ error: true, text: cause instanceof Error ? cause.message : String(cause) });
+			return false;
+		}
+	};
+	const checkTor = async (): Promise<void> => {
+		if (!(await saveRoutes())) return;
+		setRoutesNotice(null);
+		setTorFound(await window.browserPane.torFind());
+	};
 	const chosen = (sources ?? []).filter((source) => !skipped.includes(source.id)).map((source) => source.id);
 	const noKinds = !Object.values(kinds).some(Boolean);
 	const run = async (work: () => Promise<BrowserImportSummary | null>): Promise<void> => {
