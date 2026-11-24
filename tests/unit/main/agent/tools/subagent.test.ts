@@ -29,11 +29,11 @@ describe('subagentTool', () => {
 		);
 		const tool = subagentTool(
 			{ location: '/agent' },
-			[],
+			() => [],
 			{ type: 'default' }
 		);
 
-		await tool.run({ task: 'inspect context', systemPrompt: 'Act as a test reviewer.' });
+		await tool.run({ tasks: [{ id: 'one', task: 'inspect context' }], systemPrompt: 'Act as a test reviewer.' });
 
 		const session = mockStream.mock.calls[0][1] as SessionState;
 		expect(session.messages).toEqual([{ role: 'user', content: 'inspect context' }]);
