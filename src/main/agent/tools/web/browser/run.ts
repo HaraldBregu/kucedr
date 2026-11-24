@@ -51,7 +51,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 	const mine = (tab: BrowserTab): boolean => tab.chat === scope?.sessionId;
 	const free = (tab: BrowserTab): boolean => mine(tab) || !(tab.chat && acting.has(tab.chat));
 	const latest = (tabs: BrowserTab[]): BrowserTab | undefined => tabs.sort((a, b) => a.order - b.order).at(-1);
-	const list = (): { targetId: string; url: string; title: string; shown: boolean; mine: boolean }[] => {
+	const list = (): { targetId: string; url: string; title: string; shown: boolean; mine: boolean; route?: BrowserRoute }[] => {
 		const visible = shown();
 		return [...paneTabs.values()].map((tab) => ({
 			targetId: tab.id,
@@ -59,6 +59,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			title: tab.pending?.entries[tab.pending.index]?.title ?? tab.view.webContents.getTitle(),
 			shown: visible.includes(tab),
 			mine: mine(tab),
+			...(tab.route === 'direct' ? {} : { route: tab.route }),
 		}));
 	};
 	const address = (value: string): string => {
