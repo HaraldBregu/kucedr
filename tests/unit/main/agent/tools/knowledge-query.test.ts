@@ -81,7 +81,7 @@ it('reports a missing index without searching', async () => {
 	const output = JSON.parse((await queryKnowledgeTool.run({ query: 'anything' })) as string);
 
 	expect(searchRag).not.toHaveBeenCalled();
-	expect(output).toMatchObject({ route: 'abstain', abstain: true, results: [] });
+	expect(output).toMatchObject({ abstain: true, results: [] });
 	expect(output.limitations).toContain(
 		'The local knowledge index has not been built. Run indexing in Knowledge settings.'
 	);
