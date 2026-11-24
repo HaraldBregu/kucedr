@@ -269,16 +269,16 @@ it('rejects Coding access from other apps', async () => {
 });
 
 it('allows configuration and authentication from the host and Coding app only', async () => {
-	const connectCodex = jest.fn((_owner, emit) => {
+	const connect = jest.fn((_owner, emit) => {
 		emit({ type: 'progress', message: 'Waiting' });
 		return Promise.resolve({ configured: true, type: 'oauth' });
 	});
 	const coding = {
 		saveSettings: jest.fn((settings) => settings),
 		listModels: jest.fn().mockResolvedValue({ providers: [] }),
-		connectCodex,
-		cancelCodexLogin: jest.fn().mockReturnValue(true),
-		disconnectCodex: jest.fn().mockResolvedValue(undefined),
+		connect,
+		cancelLogin: jest.fn().mockReturnValue(true),
+		disconnect: jest.fn().mockResolvedValue(undefined),
 	} as unknown as Coding;
 	const appRegistry = { has: jest.fn().mockReturnValue(false) };
 	const mainFrame = {};
