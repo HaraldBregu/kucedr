@@ -53,8 +53,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
 2. **Privacy: Privacy centre, encrypted data and app lock** (1.1, 1.3–1.4). Chats and memory sit
    unencrypted on disk today. Saved plugin credentials are decrypted in the main process, and
    the plugin detail page receives configured field names only (1.2).
-3. **Agent efficiency: automatic compaction** (2.1). Run insights (2.2) now shows per-reply usage
-   and model and tool timings for evaluating compaction.
+3. **Agent efficiency.** Automatic compaction (2.1) and Run insights (2.2) are built. Run budgets
+   (2.3) and lighter first messages (2.4) remain open.
 4. **Accessibility: screen-reader chat and full keyboard use** (4.1–4.2). A screen-reader user
    cannot follow a streamed reply today.
 5. **User experience: search across chats** (3.2). Completion notifications (3.1) were built

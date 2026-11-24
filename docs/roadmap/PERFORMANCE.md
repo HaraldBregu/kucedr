@@ -1,6 +1,6 @@
 # 2. Performance and agent efficiency
 
-Part of the [Roadmap](README.md). Status: 2.2 built; remaining items proposed.
+Part of the [Roadmap](README.md). Status: 2.1 and 2.2 built. The remaining items are proposed.
 
 Agent-turn speed has five measured rounds in [AGENT_TURN.md](../AGENT_TURN.md). The model call
 dominates, so the features that matter reduce turns and prompt size, then make the app feel instant
@@ -8,7 +8,7 @@ around the model. The renderer and startup have not been measured yet; 2.7 comes
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
-| 2.1 | Automatic compaction | Long chats stay fast and cheap without pressing Compact; a visible marker shows where history was summarised | Manual compaction with its own model (`src/main/agent/compaction/compact.ts`); trimming when the context is full | M |
+| 2.1 | Automatic compaction | Main chats can summarize older turns as they approach the model’s context limit. An expandable marker shows the summary, and the original messages remain readable and searchable | Built. With a known context window, the app attempts compaction at 80% of the available input budget using the configured compaction model or the chat model. Existing context trimming handles an unavailable summary | M |
 | 2.2 | Run insights | Per reply: time to first token, turns, tokens, cache hits and cost, with a timeline of model and tool steps | Built: open Run insights from a reply’s actions. Reads the local session trace on demand. Shows reported cost when available for the whole run. Older replies use their timestamp when it identifies one run | M |
 | 2.3 | Run budgets | A limit on turns or tokens per run, with a warning and a pause before the limit | Turn and token counts already in the run events | S |
 | 2.4 | Lighter first message | Faster first reply in a new chat by loading memory summaries on demand instead of always | First call is 10.6K tokens against a 9K target; memory summaries are 5.7 KB of it ([AGENT_TURN.md](../AGENT_TURN.md), round 5) | S–M |

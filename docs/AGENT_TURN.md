@@ -86,10 +86,11 @@ Landed on 2026-11-11:
 
 Checked: `typecheck:node` and eslint pass. Every change except the run loop itself was run as a bundled module with stand-ins for Electron and the settings store: budget, hint, effort, trace, prompt prefix, hook spawning, MCP output, and the live window lookup (the OpenRouter and iteraCompute DeepSeek models both resolve to 1,048,576). Not confirmed: a live model call. The dev app has to be restarted to load the main-process changes; a run made at 09:57 on 2026-11-11 was still on the old build.
 
+Automatic compaction now summarizes older turns for model requests and preserves the original chat history. See [Performance and agent efficiency](roadmap/PERFORMANCE.md).
+
 Not done:
 
 - Cross-run caching of the history. The first turn of each run still misses, because three things in the system prompt can change between runs: the clock (always), the directory listing (when files were added) and the memory block (when the memory module updated it). All three would have to move behind the history, as context attached to the newest message.
-- Automatic compaction. `compactConversation` replaces older messages in the chat view for good, so it stays a manual action until that is decided.
 - Correctness item 7. The cumulative `argsText` on `tool_call_args_delta` is part of the event type the SDK package exports, so dropping it is an API change for apps.
 - The 8,192 output default for live-list models, the 3-bytes-per-token estimator, and the remaining tools, skills and MCP points above.
 - Tests for the timeout, undo history, hook check, deepseek effort and error classification.
