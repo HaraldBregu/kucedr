@@ -29,7 +29,7 @@ export function Insights({ sessionId, reply }: {
 
 	const title = t('chat.insights.title');
 	const locale = i18n?.language;
-	const metrics = data ? [
+	const metrics: [string, string | undefined][] = data ? [
 		['firstToken', data.firstTokenMs === undefined ? undefined : formatDuration(data.firstTokenMs)],
 		['turns', data.turns?.toLocaleString(locale)],
 		['input', data.inputTokens?.toLocaleString(locale)],
@@ -38,7 +38,7 @@ export function Insights({ sessionId, reply }: {
 		['cost', data.costUsd?.toLocaleString(locale, {
 			style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 8,
 		})],
-	] as const : [];
+	] : [];
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger render={<Button type="button" variant="ghost" size="icon-xs"
