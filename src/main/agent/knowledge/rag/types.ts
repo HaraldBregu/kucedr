@@ -86,7 +86,9 @@ export interface RagSource {
 	readonly source: string;
 	readonly sourceIndex: number;
 	readonly file: string;
-	readonly segments: readonly RagSegment[];
+	readonly size: number;
+	readonly modified: number;
+	readonly segments?: readonly RagSegment[];
 }
 
 export interface VectorIndex {
