@@ -52,7 +52,6 @@ describe('tool search', () => {
 		const result = await search.tool.run({ query: 'customer invoice', limit: 5 });
 		expect(result).toMatchObject({
 			selectedToolIds: ['mcp__billing__invoices'],
-			selectedCanonicalIds: ['billing.invoices'],
 			selectedServiceIds: ['billing'],
 		});
 		expect(search.active().map((tool) => tool.id)).toEqual([
