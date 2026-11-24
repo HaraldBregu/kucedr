@@ -84,22 +84,7 @@ beforeEach(() => {
 		dimensions: 2,
 		embeddings: [[0.1, 0.2]],
 	});
-	search.mockReturnValue([
-		{
-			id: 'record-one',
-			sourceId: 'source-one',
-			sourceFingerprint: 'fingerprint',
-			path: 'documents/guide.md',
-			chunkIndex: 0,
-			lineStart: 4,
-			lineEnd: 6,
-			text: 'Local guide text',
-			checksum: 'checksum',
-			indexedAt: '2026-08-08T00:00:00.000Z',
-			vector: [0.1, 0.2],
-			score: 0.91,
-		},
-	]);
+	search.mockReturnValue([{ id: 'record-one', score: 0.91 }]);
 });
 
 it('searches SQLite with the exact embedding identity used to build the index', async () => {
