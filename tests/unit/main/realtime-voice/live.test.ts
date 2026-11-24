@@ -35,7 +35,7 @@ class FakeLiveSocket {
 	}
 }
 
-describe('OpenAILiveVoiceAdapter', () => {
+describe('LiveVoiceAdapter', () => {
 	it('keeps long queued audio active when its transcript follows the audio chunk', async () => {
 		jest.useFakeTimers();
 		const socket = new FakeLiveSocket();
