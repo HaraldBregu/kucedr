@@ -55,8 +55,8 @@ it('uses harness filename precedence, reports inherited sources, and isolates wo
 	};
 	const instructions = new CodingInstructions();
 
-	const firstResult = await instructions.get(first);
-	const secondResult = await instructions.get(second);
+	const firstResult = await instructions.get(first, runtime, files);
+	const secondResult = await instructions.get(second, runtime, files);
 
 	expect(firstResult).toMatchObject({
 		projectId: first.id,
