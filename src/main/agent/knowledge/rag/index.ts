@@ -6,6 +6,7 @@ export { getRagStatus } from './status';
 export { ragLocation } from './rag_location';
 export { readRagManifest } from './rag_manifest';
 export { searchRag } from './rag_search';
+export { aroundRag } from './around';
 export { SqliteVectorStore } from './sqlite';
 export { purgeRagManifest } from './rag_manifest_purge';
 export { rescheduleRagIndexing, startRagSchedule, stopRagSchedule } from './rag_schedule';
@@ -15,7 +16,7 @@ export type {
 	RagMatch,
 	RagScheduleLogger,
 	VectorIndex,
-	VectorMatch,
+	VectorHit,
 	VectorRecord,
 	VectorStore,
 } from './types';
