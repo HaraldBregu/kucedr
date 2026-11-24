@@ -33,9 +33,6 @@ const inspectSkillMock = jest.fn();
 const requiredContext = (call: unknown[]): string =>
 	JSON.stringify((call[15] as unknown[] | undefined) ?? []);
 
-jest.mock('../../../../../src/main/agent/session/session_session_dir', () => ({
-	sessionDir: () => '/nonexistent-session',
-}));
 jest.mock('../../../../../src/main/settings_store', () => ({
 	getModelId: jest.fn(() => 'test-model'),
 	getResolvedProvider: jest.fn(() => ({ id: 'test-provider', apiKey: 'key' })),
