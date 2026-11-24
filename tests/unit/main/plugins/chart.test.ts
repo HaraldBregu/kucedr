@@ -41,8 +41,8 @@ function chartDom(html: string): JSDOM {
 				observe(target: HTMLElement) {
 					this.callback([{ target, contentRect: target.getBoundingClientRect() }]);
 				}
-				unobserve() {}
-				disconnect() {}
+				unobserve() { return undefined; }
+				disconnect() { return undefined; }
 			};
 		},
 	});
