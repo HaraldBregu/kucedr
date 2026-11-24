@@ -39,9 +39,8 @@ it('constructs and reuses the bundled Codex harness using its manifest and exist
 	});
 	expect(options.getApiKey()).toBe('saved-key');
 	expect(credentials.get).toHaveBeenCalledWith('codex:openai');
-	coder.setApiKey('openai', 'new-key', 'codex');
+	coder.setApiKey('new-key', 'codex');
 	expect(credentials.set).toHaveBeenCalledWith('codex:openai', 'new-key');
-	expect(() => coder.setApiKey('other', 'new-key', 'codex')).toThrow('Invalid Coder provider');
 	coder.destroy();
 	expect(destroy).toHaveBeenCalledTimes(1);
 });
