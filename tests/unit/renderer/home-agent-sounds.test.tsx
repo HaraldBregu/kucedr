@@ -39,6 +39,7 @@ beforeEach(() => {
 			send,
 			cancel: jest.fn().mockResolvedValue(true),
 			getSessionSnapshot: jest.fn().mockResolvedValue({ messages: [] }),
+			onResponse: jest.fn(() => () => undefined),
 		},
 	});
 	Object.defineProperty(window, 'app', {
