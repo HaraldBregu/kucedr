@@ -9,6 +9,9 @@ jest.mock('../../../../src/main/translucency', () => ({
 		visualEffectState: 'followWindow',
 	})),
 }));
+jest.mock('../../../../src/main/agent/tools/web/browser/under', () => ({
+	paneTabUnderPointer: () => undefined,
+}));
 
 type Handler = (...args: unknown[]) => void;
 
