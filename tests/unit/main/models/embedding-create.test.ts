@@ -3,6 +3,7 @@ const getProvider = jest.fn();
 const getProviderId = jest.fn();
 const getModelId = jest.fn();
 const providerModels = jest.fn();
+const findModel = jest.fn();
 
 jest.mock('../../../../src/main/models/adapters/embedding', () => ({ generateEmbeddings }));
 jest.mock('../../../../src/main/settings_store', () => ({ getProvider }));
@@ -10,6 +11,7 @@ jest.mock('../../../../src/main/models/selection', () => ({ getProviderId, getMo
 jest.mock('../../../../src/main/models', () => ({
 	defaultProviderId: () => 'openai',
 	providerModels,
+	findModel,
 }));
 
 import { createEmbedding } from '../../../../src/main/models/embedding/embedding_create';
