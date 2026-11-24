@@ -78,10 +78,9 @@ it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.goog
 );
 
 it('explains the Google credential requirement before attempting dynamic registration', () => {
-	delete process.env.GOOGLE_CLIENT_ID;
-	delete process.env.GOOGLE_CLIENT_SECRET;
+	pluginSettings.mockReturnValue({});
 	expect(() => mcpOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1')).toThrow(
-		'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET'
+		'Google plugin settings'
 	);
 });
 
@@ -101,20 +100,13 @@ it('leaves generic OAuth registration and authorization parameters unchanged', (
 });
 
 const originalRedirectUrl = process.env.CLIENT_REDIRECT_URL;
-const originalGoogleClientId = process.env.GOOGLE_CLIENT_ID;
-const originalGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
 beforeEach(() => {
 	process.env.CLIENT_REDIRECT_URL = 'http://127.0.0.1:3001/oauth/callback';
-	process.env.GOOGLE_CLIENT_ID = 'registered-client';
-	process.env.GOOGLE_CLIENT_SECRET = 'saved-secret';
+	pluginSettings.mockReturnValue({ client_id: 'registered-client', client_secret: 'saved-secret' });
 });
 
 afterEach(() => {
-	if (originalGoogleClientId === undefined) delete process.env.GOOGLE_CLIENT_ID;
-	else process.env.GOOGLE_CLIENT_ID = originalGoogleClientId;
-	if (originalGoogleClientSecret === undefined) delete process.env.GOOGLE_CLIENT_SECRET;
-	else process.env.GOOGLE_CLIENT_SECRET = originalGoogleClientSecret;
 	if (originalRedirectUrl === undefined) delete process.env.CLIENT_REDIRECT_URL;
 	else process.env.CLIENT_REDIRECT_URL = originalRedirectUrl;
 });
