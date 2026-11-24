@@ -1,4 +1,10 @@
-import { OpenAILiveVoiceAdapter } from '../../../../src/main/models/adapters/realtime_voice';
+import { LiveVoiceAdapter } from '../../../../src/main/models/adapters/realtime_voice';
+
+const liveModel = {
+	id: 'gpt-live-1',
+	name: 'GPT Live 1',
+	metadata: { protocol: 'live', socketUrl: 'wss://api.openai.com/v1/live/sessions' },
+} as never;
 
 class FakeLiveSocket {
 	readonly bufferedAmount = 0;
