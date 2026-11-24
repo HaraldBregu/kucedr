@@ -188,7 +188,7 @@ export default function PluginPage(): React.JSX.Element {
 		setError('');
 		try {
 			await window.plugins.saveSettings(plugin.id, next);
-			savedSettings.current = next;
+			setSavedSettings(next);
 			setSettings(next);
 			setEditingSetting(null);
 		} catch (caught) {
@@ -206,7 +206,7 @@ export default function PluginPage(): React.JSX.Element {
 		setError('');
 		try {
 			await window.plugins.saveSettings(plugin.id, next);
-			savedSettings.current = next;
+			setSavedSettings(next);
 			setSettings(next);
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
