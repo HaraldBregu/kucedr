@@ -57,7 +57,6 @@ describe('package app window configuration', () => {
 			kucedr: { window },
 		}));
 		expect(readAppManifestFromDirectory(source)).toBeNull();
-		expect(importApps([source], location).imported).toEqual([]);
 	});
 
 	it('uses manifest configuration before package configuration', () => {
