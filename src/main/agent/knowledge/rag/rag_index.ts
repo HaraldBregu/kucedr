@@ -245,11 +245,12 @@ export async function indexRag(
 					checksum: createHash('sha256').update(chunk.text).digest('hex'),
 					indexedAt: new Date().toISOString(),
 				});
-			while (pending.length >= BATCH_SIZE) await embedBatch(pending.splice(0, BATCH_SIZE));
+			while (pending.length >= BATCH_SIZE) await send(pending.splice(0, BATCH_SIZE));
 		}
-		if (pending.length > 0) await embedBatch(pending.splice(0));
+		if (pending.length > 0) await send(pending.splice(0));
+		await Promise.all(sending.splice(0));
 
-		if (!dimensions || records.length === 0) {
+		if (!dimensions || records.length + reusedChunks === 0) {
 			signal.throwIfAborted();
 			assertRagCurrent(configuration);
 			assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
