@@ -17,7 +17,7 @@ it('replays DeepSeek reasoning_content with the tool call after authorization', 
 		},
 	});
 	const model = new LlmModel({
-		openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
+		chatClientFactory: () => ({ chat: { completions: { create } } }) as never,
 	});
 	const request: LlmRequest = {
 		provider: { id: 'deepseek', apiKey: 'key' },
@@ -76,7 +76,7 @@ it('captures reasoning_content in a non-streaming DeepSeek tool response', async
 		}],
 	});
 	const model = new LlmModel({
-		openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
+		chatClientFactory: () => ({ chat: { completions: { create } } }) as never,
 	});
 	const events: LlmEvent[] = [];
 	for await (const event of model.stream({
