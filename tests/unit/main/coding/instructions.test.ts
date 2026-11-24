@@ -29,7 +29,7 @@ it('uses harness filename precedence, reports inherited sources, and isolates wo
 	const projectsDirectory = path.join(root, 'projects');
 	const firstDirectory = path.join(projectsDirectory, 'first');
 	const secondDirectory = path.join(projectsDirectory, 'second');
-	mkdirSync(agentDirectory);
+	mkdirSync(agentDirectory, { recursive: true });
 	mkdirSync(firstDirectory, { recursive: true });
 	mkdirSync(secondDirectory);
 	writeFileSync(path.join(agentDirectory, 'AGENTS.md'), 'global');
@@ -92,7 +92,7 @@ it('creates AGENTS.md and preserves an explicitly saved empty file', async () =>
 	mockRoot = root;
 	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectDirectory = path.join(root, 'project');
-	mkdirSync(agentDirectory);
+	mkdirSync(agentDirectory, { recursive: true });
 	mkdirSync(projectDirectory);
 	const project: CodingProject = {
 		id: 'project',
@@ -128,7 +128,7 @@ it('rejects stale revisions without overwriting external edits', async () => {
 	mockRoot = root;
 	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectDirectory = path.join(root, 'project');
-	mkdirSync(agentDirectory);
+	mkdirSync(agentDirectory, { recursive: true });
 	mkdirSync(projectDirectory);
 	const filePath = path.join(projectDirectory, 'AGENTS.md');
 	writeFileSync(filePath, 'initial');
@@ -156,7 +156,7 @@ it('reports symbolic links as read-only and rejects saving them', async () => {
 	mockRoot = root;
 	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectDirectory = path.join(root, 'project');
-	mkdirSync(agentDirectory);
+	mkdirSync(agentDirectory, { recursive: true });
 	mkdirSync(projectDirectory);
 	const target = path.join(root, 'outside.md');
 	writeFileSync(target, 'outside');
@@ -185,7 +185,7 @@ it('rejects existing and submitted content above 256 KiB', async () => {
 	mockRoot = root;
 	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectDirectory = path.join(root, 'project');
-	mkdirSync(agentDirectory);
+	mkdirSync(agentDirectory, { recursive: true });
 	mkdirSync(projectDirectory);
 	const project: CodingProject = {
 		id: 'project',
