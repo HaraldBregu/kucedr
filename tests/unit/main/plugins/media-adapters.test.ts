@@ -17,10 +17,11 @@ jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
 it('constructs the appropriate adapter for every bundled speech, audio, video and realtime model', () => {
 	const models = loadModels();
 	for (const model of models) {
+		const protocol = model.metadata?.protocol;
 		const provider = { id: model.provider.id, name: model.provider.name, apiKey: 'key', baseURL: model.url ?? '' };
-		if (model.type === 'text-to-speech') expect(buildSpeechAdapter(provider).synthesize).toEqual(expect.any(Function));
-		if (model.type === 'text-to-audio') expect(buildMusicAdapter(provider).generate).toEqual(expect.any(Function));
-		if (model.type === 'text-to-video') expect(buildVideoAdapter(provider).generate).toEqual(expect.any(Function));
+		if (model.type === 'text-to-speech') expect(buildSpeechAdapter({ ...provider, protocol }, model.name).synthesize).toEqual(expect.any(Function));
+		if (model.type === 'text-to-audio') expect(buildMusicAdapter({ ...provider, protocol }, model.name).generate).toEqual(expect.any(Function));
+		if (model.type === 'text-to-video') expect(buildVideoAdapter(protocol, model.name, provider).generate).toEqual(expect.any(Function));
 		if (model.type === 'realtime-voice') expect(buildRealtimeVoiceAdapter(provider, model).connect).toEqual(expect.any(Function));
 	}
 	expect(models.filter((model) => ['text-to-speech', 'text-to-audio', 'text-to-video', 'realtime-voice'].includes(model.type))).toHaveLength(23);
