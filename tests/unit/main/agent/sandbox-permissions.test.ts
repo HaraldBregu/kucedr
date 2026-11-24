@@ -72,7 +72,7 @@ describe('ExecSandbox permissions', () => {
 		expect(execTool(sandbox).parseInput({ command: 'pwd', workdir: '/workspace' })).toEqual({ command: 'pwd', workdir: '/workspace' });
 		const input = { command: 'pwd', workdir: '/tmp/claude/project', elevated: true };
 		expect(execTool(sandbox).parseInput(input)).toEqual(input);
-		expect(execTool(sandbox, 'plan').parseInput({ command: 'pwd', workdir: '/tmp/claude/project' })).toEqual({ command: 'pwd', workdir: '/tmp/claude/project' });
+		expect(execTool(sandbox, true).parseInput({ command: 'pwd', workdir: '/tmp/claude/project' })).toEqual({ command: 'pwd', workdir: '/tmp/claude/project' });
 	});
 
 	it('applies typed read and write denies to command execution', async () => {
