@@ -1291,6 +1291,36 @@
 		"code": {
 			"description": "Browse your code projects and files"
 		},
+		"privacy": {
+			"title": "Privacy",
+			"description": "Control how Kucedr connects to the internet.",
+			"mode": "Privacy Mode",
+			"modeDescription": "Send supported connections through your proxy and pause features that cannot use it.",
+			"statusTitle": "Connection status",
+			"status": {
+				"off": "Off",
+				"connecting": "Connecting",
+				"protected": "Protected",
+				"blocked": "Blocked"
+			},
+			"statusDescription": {
+				"off": "Kucedr uses its usual network connections.",
+				"connecting": "Kucedr is checking the proxy. Online features are paused.",
+				"protected": "Kucedr uses the configured proxy for supported connections.",
+				"blocked": "Online features are paused. Check the proxy in Browser Connections."
+			},
+			"toolbarStatus": "Privacy Mode · {{status}}",
+			"proxyDescription": "Set the proxy address in Browser Connections.",
+			"openConnections": "Browser Connections",
+			"restartRequired": "Restart required",
+			"restartDescription": "Restart Kucedr to apply the change.",
+			"restart": "Restart Kucedr",
+			"unsupported": "Privacy Mode is unavailable on this installation.",
+			"providerData": "Providers still receive the prompts, files and audio you send to them.",
+			"loadFailed": "Could not load Privacy Mode.",
+			"saveFailed": "Could not save Privacy Mode.",
+			"restartFailed": "Could not restart Kucedr."
+		},
 		"browser": {
 			"title": "Browser",
 			"description": "Bring bookmarks, history and the search engine from the browsers you already use",
@@ -1318,7 +1348,7 @@
 				"proxy": "Proxy",
 				"proxyDescription": "The proxy address your VPN provider gives you, as socks5://host:port or http://host:port. Proxies that need a username and password are not supported yet.",
 				"limits": "What these tabs do not cover",
-				"limitsDescription": "Only the browser is routed. What the assistant reads from a page still goes to your model provider, and search, other tools and the model use your normal connection. A Tor tab is not Tor Browser, so do not rely on it for anonymity.",
+				"limitsDescription": "A tab route applies to that tab. Privacy Mode controls the rest of Kucedr. What the assistant reads from a page can still go to your model provider.",
 				"save": "Save",
 				"saved": "Connections saved. New tabs use them."
 			},

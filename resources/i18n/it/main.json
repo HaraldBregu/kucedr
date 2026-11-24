@@ -1291,6 +1291,36 @@
 		"code": {
 			"description": "Sfoglia i progetti di codice e i loro file"
 		},
+		"privacy": {
+			"title": "Privacy",
+			"description": "Gestisci come Kucedr si connette a Internet.",
+			"mode": "Modalità privacy",
+			"modeDescription": "Instrada le connessioni supportate tramite il proxy e sospende le funzioni che non possono usarlo.",
+			"statusTitle": "Stato della connessione",
+			"status": {
+				"off": "Disattivata",
+				"connecting": "Connessione in corso",
+				"protected": "Protetta",
+				"blocked": "Bloccata"
+			},
+			"statusDescription": {
+				"off": "Kucedr usa le connessioni di rete abituali.",
+				"connecting": "Kucedr sta verificando il proxy. Le funzioni online sono sospese.",
+				"protected": "Kucedr usa il proxy configurato per le connessioni supportate.",
+				"blocked": "Le funzioni online sono sospese. Controlla il proxy nelle connessioni del browser."
+			},
+			"toolbarStatus": "Modalità privacy · {{status}}",
+			"proxyDescription": "Imposta l'indirizzo del proxy nelle connessioni del browser.",
+			"openConnections": "Connessioni del browser",
+			"restartRequired": "Riavvio necessario",
+			"restartDescription": "Riavvia Kucedr per applicare la modifica.",
+			"restart": "Riavvia Kucedr",
+			"unsupported": "La modalità privacy non è disponibile in questa installazione.",
+			"providerData": "I fornitori ricevono comunque i prompt, i file e l'audio che invii loro.",
+			"loadFailed": "Impossibile caricare la modalità privacy.",
+			"saveFailed": "Impossibile salvare la modalità privacy.",
+			"restartFailed": "Impossibile riavviare Kucedr."
+		},
 		"browser": {
 			"title": "Browser",
 			"description": "Porta segnalibri, cronologia e motore di ricerca dai browser che usi già",
@@ -1318,7 +1348,7 @@
 				"proxy": "Proxy",
 				"proxyDescription": "L'indirizzo proxy fornito dal tuo servizio VPN, come socks5://host:porta o http://host:porta. I proxy che richiedono nome utente e password non sono ancora supportati.",
 				"limits": "Cosa queste schede non coprono",
-				"limitsDescription": "Passa per la connessione scelta solo il browser. Ciò che l'assistente legge da una pagina arriva comunque al tuo fornitore del modello, e ricerca, altri strumenti e modello usano la connessione normale. Una scheda Tor non è Tor Browser: non affidarti a essa per l'anonimato.",
+				"limitsDescription": "La connessione scelta per una scheda si applica a quella scheda. La modalità privacy gestisce il resto di Kucedr. Il contenuto letto dall'assistente può comunque arrivare al fornitore del modello.",
 				"save": "Salva",
 				"saved": "Connessioni salvate. Le nuove schede le useranno."
 			},
