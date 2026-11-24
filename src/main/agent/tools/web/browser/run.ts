@@ -31,6 +31,7 @@ export interface BrowserRun extends Omit<BrowserAct, 'kind'> {
 	kind?: BrowserAct['kind'];
 	targetId?: string;
 	url?: string;
+	route?: BrowserRoute;
 	back?: boolean;
 	forward?: boolean;
 	reload?: boolean;
