@@ -1,3 +1,11 @@
+let settings: Record<string, string>;
+jest.mock('../../../../src/main/plugins/plugins_settings', () => ({
+	pluginSettings: () => settings,
+}));
+jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
+	pluginProviders: () => jest.requireActual('./providers').mcpProviders,
+}));
+
 import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
 import { loadMcps } from '../../../../src/main/models';
 import { resolveMcpEndpoint } from '../../../../src/main/mcp/endpoint';
