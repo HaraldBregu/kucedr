@@ -6,6 +6,8 @@ import { Agent, setGlobalDispatcher, Socks5ProxyAgent } from 'undici';
 
 const BLOCKED = 'The network is blocked by Privacy Mode.';
 
+export let privacyTransportInstalled = false;
+
 export function installPrivacyTransport(proxy: string | undefined): void {
 	if (proxy) {
 		// The native HTTP agent uses the explicit remote-DNS SOCKS5 scheme.
@@ -26,4 +28,5 @@ export function installPrivacyTransport(proxy: string | undefined): void {
 		setGlobalDispatcher(new Agent({ connect: (_options, callback) => callback(new Error(BLOCKED), null) }));
 	}
 	syncBuiltinESMExports();
+	privacyTransportInstalled = true;
 }
