@@ -1,3 +1,4 @@
+import { promptMemory } from '../../memory/prompt';
 import type { MemoryService } from '../../../shared/memory_types';
 import { getResolvedProvider } from '../../settings_store';
 import { getToolConfiguration } from '../agent_store';
@@ -498,7 +499,7 @@ async function* loop(
 		let synthesisRetries = 1;
 		const memoryContext =
 			session.category === 'main' && options.memory?.getConfig().includeInPrompt
-				? await options.memory.read().catch(() => '')
+				? promptMemory(await options.memory.read().catch(() => ''), input.message)
 				: '';
 		const knowledge = (search?.eligible() ?? tools).some((tool) => tool.id === 'query_knowledge');
 		if (knowledge) warmRag();
