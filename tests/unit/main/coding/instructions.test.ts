@@ -175,7 +175,7 @@ it('reports symbolic links as read-only and rejects saving them', async () => {
 
 	expect(initial).toMatchObject({ content: 'outside', exists: true, editable: false });
 	await expect(
-		instructions.save(project, { content: 'changed', expectedRevision: initial.revision })
+		instructions.save(project, { content: 'changed', expectedRevision: initial.revision }, runtime, files)
 	).rejects.toThrow('symbolic link');
 	expect(readFileSync(target, 'utf8')).toBe('outside');
 });
