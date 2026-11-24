@@ -283,6 +283,7 @@ it('drags selected files onto a folder in the list without uploading them again'
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await screen.findByText('Projects');
+	await user.click(screen.getByRole('button', { name: 'settings.library.edit' }));
 	await user.click(screen.getByRole('checkbox', { name: 'settings.library.select' }));
 	const transferData = new Map<string, string>();
 	const dataTransfer = {
