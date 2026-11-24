@@ -11,7 +11,9 @@ export interface BrowserTab {
 	// Settles when the tab's connection is in place; rejects when Tor or the proxy is unavailable.
 	readonly ready: Promise<void>;
 	readonly blocked: BrowserBlocked[];
-	download?: BrowserDownload & { readonly item: DownloadItem; readonly path: string };
+	// path is the holding file until the user agrees, then the file in Downloads; received is set
+	// when the bytes arrived before the answer.
+	download?: BrowserDownload & { readonly item: DownloadItem; readonly path: string; readonly received?: boolean };
 	chat?: string;
 	owner?: string;
 	agent?: boolean;
