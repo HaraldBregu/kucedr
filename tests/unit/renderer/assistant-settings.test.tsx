@@ -569,6 +569,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 	if (!selector) return;
 	await user.click(selector);
 	expect(screen.queryByRole('menuitemradio', { name: /Custom Realtime/ })).not.toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'xAI' }));
 	await user.click(await screen.findByRole('menuitemradio', { name: /Grok Voice/ }));
 
 	await waitFor(() => {
