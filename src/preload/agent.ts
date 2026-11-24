@@ -154,6 +154,7 @@ export const agent: AgentApi = {
 	listSessions: (includeAll = false): Promise<AgentSessionSummary[]> => {
 		return typedInvokeUnwrap(AgentChannels.listSessions, includeAll);
 	},
+	getRunInsights: (sessionId, run) => typedInvokeUnwrap(AgentChannels.getRunInsights, sessionId, run),
 	searchSessions: (query: string): Promise<AgentSessionSearchResult[]> => {
 		return typedInvokeUnwrap(AgentChannels.searchSessions, query);
 	},

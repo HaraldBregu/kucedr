@@ -1,5 +1,6 @@
 import { authorizeRagDisclosure } from '../agent/knowledge/rag/disclosure';
 import { app, BrowserWindow, dialog, ipcMain, shell, type IpcMainInvokeEvent } from 'electron';
+import { readRunInsights } from '../agent/session/insights';
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -553,6 +554,20 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				(includeAll: boolean = false) => agent.listSessions(includeAll ? 'all' : 'main'),
 				AgentChannels.listSessions
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.getRunInsights,
+			wrapAgentHandler(
+				mainAccess,
+				(sessionId: unknown, run: unknown) => {
+					const selector = typeof run === 'number' ? run : optionalTrimmedString(run);
+					if (!selector || (typeof selector === 'number' && (!Number.isSafeInteger(selector) || selector < 0)))
+						throw new Error('Invalid assistant run identifier.');
+					return readRunInsights(agent.config.location, requireUuidSessionId(sessionId), selector);
+				},
+				AgentChannels.getRunInsights
 			)
 		);
 

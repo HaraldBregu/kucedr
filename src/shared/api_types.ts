@@ -48,6 +48,7 @@ import type {
 	AgentRunOptions,
 	AgentResponseEvent,
 	AgentSessionSummary,
+	AgentRunInsights,
 	AgentSessionSearchResult,
 	AgentSessionSnapshot,
 	AgentToolPermissionDecision,
@@ -187,6 +188,7 @@ export interface AgentApi {
 	getContextWindow: () => Promise<{ providerId: string; modelId: string; contextWindow?: number }>;
 	listModes: () => Promise<import('./agent_types').AgentModeInfo[]>;
 	listSessions: (includeAll?: boolean) => Promise<AgentSessionSummary[]>;
+	getRunInsights: (sessionId: string, run: string | number) => Promise<AgentRunInsights | null>;
 	searchSessions: (query: string) => Promise<AgentSessionSearchResult[]>;
 	viewSession: (sessionId: string | null) => Promise<void>;
 	onOpenSession: (listener: (sessionId: string) => void) => () => void;

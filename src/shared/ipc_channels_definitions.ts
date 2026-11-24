@@ -10,6 +10,7 @@ export const AgentChannels = {
 	getContextWindow: 'agent:context-window:get',
 	listModes: 'agent:list-modes',
 	listSessions: 'agent:list-sessions',
+	getRunInsights: 'agent:get-run-insights',
 	searchSessions: 'agent:search-sessions',
 	viewSession: 'agent:view-session',
 	openSession: 'agent:open-session',

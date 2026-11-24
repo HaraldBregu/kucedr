@@ -210,6 +210,21 @@ export interface AgentSessionSummary {
 	runStatus?: 'queued' | 'running' | 'cancelling';
 }
 
+export interface AgentRunInsights {
+	firstTokenMs?: number;
+	turns?: number;
+	inputTokens?: number;
+	outputTokens?: number;
+	cachedTokens?: number;
+	costUsd?: number;
+	steps: {
+		kind: 'model' | 'tool';
+		name: string;
+		offsetMs?: number;
+		durationMs?: number;
+	}[];
+}
+
 export interface AgentSessionSearchResult {
 	id: string;
 	title: string;
