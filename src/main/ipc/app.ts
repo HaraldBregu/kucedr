@@ -176,7 +176,7 @@ const lightThemeColors: AppThemeColors = {
 	'destructive-foreground': 'oklch(1 0 0)',
 	border: 'oklch(0.922 0 0)',
 	input: 'oklch(0.922 0 0)',
-	ring: 'oklch(0.708 0 0)',
+	ring: 'oklch(0.556 0 0)',
 	sidebar: 'oklch(0.985 0 0)',
 	'sidebar-foreground': 'oklch(0.145 0 0)',
 	'sidebar-primary': 'oklch(0.205 0 0)',
