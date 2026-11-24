@@ -101,7 +101,6 @@ it('omits empty reply context', async () => {
 	await agent.send('Hello', { runId: 'plain-run', replyTo: ' \n ' });
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.send, 'Hello', {
 		runId: 'plain-run',
-		interactionMode: 'default',
 	});
 });
 
