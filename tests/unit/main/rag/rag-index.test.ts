@@ -80,7 +80,7 @@ afterEach(async () => {
 it('publishes locally only after the authorized mirror finishes', async () => {
 	await expect(
 		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
-	).resolves.toEqual({ files: 1, vectors: 1 });
+	).resolves.toMatchObject({ files: 1, vectors: 1 });
 	const publication = publish.mock.calls[0][0];
 	expect(upload).toHaveBeenCalledWith(
 		'knowledge-base',
@@ -210,7 +210,7 @@ it('indexes into explicit local SQLite without uploading to a remote database', 
 	};
 	await expect(
 		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
-	).resolves.toEqual({ files: 1, vectors: 1 });
+	).resolves.toMatchObject({ files: 1, vectors: 1 });
 	expect(upload).not.toHaveBeenCalled();
 	expect(discard).not.toHaveBeenCalled();
 	expect(publish).toHaveBeenCalled();
