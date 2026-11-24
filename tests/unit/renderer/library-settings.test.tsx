@@ -130,6 +130,8 @@ it('shows an indeterminate select-all checkbox for a partial table selection', a
 	list.mockResolvedValue([manyFiles[0], manyFiles[1]]);
 	const user = userEvent.setup();
 	render(<LibraryPage />);
+	await screen.findByText('file-000.png');
+	await user.click(screen.getByRole('button', { name: 'settings.library.edit' }));
 	const checkboxes = await screen.findAllByRole('checkbox');
 	await user.click(checkboxes[1]);
 	expect(checkboxes[0]).toHaveAttribute('data-state', 'indeterminate');
