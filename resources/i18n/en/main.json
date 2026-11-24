@@ -2522,6 +2522,13 @@
 			"retry": "Retry",
 			"confirm": "Regenerate this reply? The messages after it will be discarded. Files changed by the discarded replies are not restored."
 		},
+		"announce": {
+			"responding": "Kucedr is responding",
+			"awaiting": "Waiting for your answer",
+			"failed": "Reply failed. {{error}}",
+			"stopped": "Reply stopped",
+			"complete": "Reply complete"
+		},
 		"placeholderDescription": "Start a conversation with AI to brainstorm, draft, or refine ideas."
 	},
 	"writing": {
