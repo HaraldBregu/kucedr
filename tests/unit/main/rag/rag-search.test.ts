@@ -191,9 +191,12 @@ it.each([
 });
 
 it('applies the configured relevance threshold and drops nonfinite scores', async () => {
-	const match = search()[0];
 	configuration.mockReturnValue({ ...configuration(), minimumScore: 0.7 });
-	search.mockReturnValue([match, { ...match, score: 0.2 }, { ...match, score: NaN }]);
+	search.mockReturnValue([
+		{ id: 'record-one', score: 0.91 },
+		{ id: 'record-two', score: 0.2 },
+		{ id: 'record-three', score: NaN },
+	]);
 	await expect(
 		searchRag('query', 'knowledge-base', 5, { embeddings, vectors })
 	).resolves.toHaveLength(1);
