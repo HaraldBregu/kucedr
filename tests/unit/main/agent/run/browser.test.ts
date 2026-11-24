@@ -42,8 +42,6 @@ import { createSessionState } from '../../../../../src/main/agent/session';
 import { useWebBrowserTool } from '../../../../../src/main/agent/tools/web/use_web_browser';
 import { createBackgroundBrowser } from '../../../../../src/main/agent/tools/web/browser/background';
 import { userDataLocation } from '../../../../../src/main/shared/user_data_location';
-import type { ExecSandbox } from '../../../../../src/main/agent/sandbox';
-import type { Tool } from '../../../../../src/main/agent/types';
 import { setModelId } from '../../../../../src/main/agent/agent_store';
 
 function browserContext() {
