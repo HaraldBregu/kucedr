@@ -3,7 +3,11 @@ import { LiveVoiceAdapter } from '../../../../src/main/models/adapters/realtime_
 const liveModel = {
 	id: 'gpt-live-1',
 	name: 'GPT Live 1',
-	metadata: { protocol: 'live', socketUrl: 'wss://api.openai.com/v1/live/sessions' },
+	metadata: {
+		protocol: 'live',
+		socketUrl: 'wss://api.openai.com/v1/live/sessions',
+		inputs: { voice: { type: 'string', default: 'marin' } },
+	},
 } as never;
 
 class FakeLiveSocket {

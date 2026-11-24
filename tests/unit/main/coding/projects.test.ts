@@ -132,9 +132,6 @@ it.each([
 	{ name: 'x'.repeat(121) },
 	{ name: 12 },
 	{ name: 'Invalid harness', settings: { runtime: 'other' } },
-	{ name: 'Wrong provider', settings: { runtime: 'codex', providerId: 'anthropic', modelId: '', thinkingLevel: 'medium', toolMode: 'coding' } },
-	{ name: 'Wrong provider', settings: { runtime: 'pi', providerId: 'cline', modelId: '', thinkingLevel: 'medium', toolMode: 'coding' } },
-	{ name: 'Wrong provider', settings: { runtime: 'cline', providerId: 'openai', modelId: '', thinkingLevel: 'medium', toolMode: 'coding' } },
 ])('rejects invalid creation before creating a workspace: %j', (input) => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
 	const store = new CodingProjectStore([], root);

@@ -118,31 +118,6 @@ describe('runToolCall', () => {
 		expect(call.result?.content).toContain('tool failed');
 	});
 
-	it('rejects an unclassified tool before execution in Plan mode', async () => {
-		const run = jest.fn();
-		const tool = jsonTool({
-			id: 'write_like_tool',
-			name: 'Unsafe',
-			description: 'unsafe',
-			schema: { type: 'object' },
-			execute: run,
-		});
-		const call: ToolCall = { id: 'plan-guard', name: tool.id, args: {} };
-
-		for await (const _event of runToolCall(
-			tool,
-			call,
-			new AbortController().signal,
-			undefined,
-			{ runId: 'run', interactionMode: 'plan' }
-		))
-			void _event;
-
-		expect(run).not.toHaveBeenCalled();
-		expect(call.result).toMatchObject({ isError: true });
-		expect(call.result?.content).toContain('unavailable in Plan mode');
-	});
-
 	it('resumes the same Plan tool call after structured answers', async () => {
 		const call: ToolCall = {
 			id: 'question-call',

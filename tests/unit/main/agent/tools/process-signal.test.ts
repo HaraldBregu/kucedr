@@ -21,16 +21,16 @@ import {
 function childProcess() {
 	const child = new EventEmitter() as EventEmitter & {
 		pid: number;
-		stdout: EventEmitter;
-		stderr: EventEmitter;
-		stdin: { write: jest.Mock };
+		stdout: EventEmitter & { setEncoding: jest.Mock };
+		stderr: EventEmitter & { setEncoding: jest.Mock };
+		stdin: { write: jest.Mock; on: jest.Mock; end: jest.Mock };
 		kill: jest.Mock;
 		unref: jest.Mock;
 	};
 	child.pid = 42;
-	child.stdout = new EventEmitter();
-	child.stderr = new EventEmitter();
-	child.stdin = { write: jest.fn() };
+	child.stdout = Object.assign(new EventEmitter(), { setEncoding: jest.fn() });
+	child.stderr = Object.assign(new EventEmitter(), { setEncoding: jest.fn() });
+	child.stdin = { write: jest.fn(), on: jest.fn(), end: jest.fn() };
 	child.unref = jest.fn();
 	child.kill = jest.fn(() => {
 		queueMicrotask(() => child.emit('close', null, 'SIGTERM'));

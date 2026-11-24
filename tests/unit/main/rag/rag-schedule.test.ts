@@ -71,6 +71,7 @@ describe('RAG indexing schedule', () => {
 		await schedule.mock.calls[0][1]();
 		expect(indexRag).toHaveBeenCalledWith(['/documents'], 'knowledge-base', {
 			signal: expect.any(AbortSignal),
+			progress: expect.any(Function),
 		});
 		expect(logger.info).toHaveBeenCalledWith('RAG', 'Scheduled indexing completed.');
 	});
