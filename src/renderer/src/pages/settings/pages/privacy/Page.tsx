@@ -97,13 +97,13 @@ export default function PrivacyPage(): React.JSX.Element {
 				</SettingsPanel>
 			) : !failed ? (
 				<SettingsPanel>
-					<SettingsLoadingRows count={3} />
+					<SettingsLoadingRows />
 				</SettingsPanel>
 			) : null}
 			{state && !state.supported && <SettingsNotice>{t('settings.privacy.unsupported')}</SettingsNotice>}
 			{state && <p className="text-sm text-muted-foreground">{t('settings.privacy.providerData')}</p>}
 			{(error || failed) && (
-				<SettingsNotice variant="destructive" autoDismiss={false}>
+				<SettingsNotice variant="destructive">
 					{error ?? t('settings.privacy.loadFailed')}
 				</SettingsNotice>
 			)}
