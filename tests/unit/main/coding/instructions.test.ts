@@ -203,7 +203,7 @@ it('rejects existing and submitted content above 256 KiB', async () => {
 		instructions.save(project, {
 			content: 'a'.repeat(256 * 1024 + 1),
 			expectedRevision: initial.revision,
-		})
+		}, runtime, files)
 	).rejects.toThrow('256 KiB');
 	writeFileSync(path.join(projectDirectory, 'AGENTS.md'), 'a'.repeat(256 * 1024 + 1));
 	await expect(instructions.get(project, runtime, files)).rejects.toThrow('256 KiB');
