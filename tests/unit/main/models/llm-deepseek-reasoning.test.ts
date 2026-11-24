@@ -21,7 +21,7 @@ it('replays DeepSeek reasoning_content with the tool call after authorization', 
 	});
 	const request: LlmRequest = {
 		provider: { id: 'deepseek', apiKey: 'key' },
-		model: 'deepseek-reasoner',
+		model: 'deepseek-v4-pro',
 		messages: [{ role: 'user', content: 'look this up' }],
 		tools: [{
 			id: 'lookup', name: 'lookup', description: 'Look up data', schema: { type: 'object' },
@@ -81,7 +81,7 @@ it('captures reasoning_content in a non-streaming DeepSeek tool response', async
 	const events: LlmEvent[] = [];
 	for await (const event of model.stream({
 		provider: { id: 'deepseek', apiKey: 'key' },
-		model: 'deepseek-reasoner',
+		model: 'deepseek-v4-pro',
 		messages: [{ role: 'user', content: 'look this up' }],
 		maxTokens: 100,
 		streaming: false,
