@@ -85,13 +85,13 @@ export default function Search({ knowledge }: { knowledge: KnowledgeState }): JS
 						</Button>
 					</div>
 					{(!currentIndex || !indexModelMatches || status?.requiresIndexing) && (
-						<p className="text-[11px] leading-4 text-muted-foreground">
+						<p className="text-xs leading-4 text-muted-foreground">
 							{t('settings.knowledge.searchRequiresIndex')}
 						</p>
 					)}
 					<div aria-live="polite" aria-busy={searching}>
 						{matches?.length === 0 && (
-							<p className="text-[11px] leading-4 text-muted-foreground">
+							<p className="text-xs leading-4 text-muted-foreground">
 								{t('settings.knowledge.noResults')}
 							</p>
 						)}
@@ -105,7 +105,7 @@ export default function Search({ knowledge }: { knowledge: KnowledgeState }): JS
 										<p className="truncate text-xs font-medium" title={match.path}>
 											{match.path}
 										</p>
-										<p className="line-clamp-3 whitespace-pre-wrap break-words text-[11px] leading-4 text-muted-foreground">
+										<p className="line-clamp-3 whitespace-pre-wrap break-words text-xs leading-4 text-muted-foreground">
 											{match.text}
 										</p>
 									</li>
