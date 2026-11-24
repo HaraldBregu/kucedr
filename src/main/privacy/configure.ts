@@ -12,12 +12,15 @@ export async function configurePrivacy(): Promise<void> {
 		proxyRules: route ?? 'socks5://127.0.0.1:1',
 		proxyBypassRules: '<-loopback>',
 	};
+	const sessions = [session.defaultSession, session.fromPartition(APP_SESSION_PARTITION)];
+	let ready = false;
+	for (const target of sessions) {
+		target.webRequest.onBeforeRequest({ urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'] },
+			(_details, callback) => callback({ cancel: !ready }));
+	}
 	try {
-		await Promise.all([
-			app.setProxy(config),
-			session.defaultSession.setProxy(config),
-			session.fromPartition(APP_SESSION_PARTITION).setProxy(config),
-		]);
+		await Promise.all([app.setProxy(config), ...sessions.map((target) => target.setProxy(config))]);
+		ready = Boolean(route);
 	} catch {
 		setPrivacyStatus('blocked');
 		return;

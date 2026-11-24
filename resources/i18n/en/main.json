@@ -1315,7 +1315,6 @@
 			"restartRequired": "Restart required",
 			"restartDescription": "Restart Kucedr to apply the change.",
 			"restart": "Restart Kucedr",
-			"unsupported": "Privacy Mode is unavailable on this installation.",
 			"providerData": "Providers still receive the prompts, files and audio you send to them.",
 			"loadFailed": "Could not load Privacy Mode.",
 			"saveFailed": "Could not save Privacy Mode.",

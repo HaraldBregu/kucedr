@@ -62,7 +62,7 @@ export default function PrivacyPage(): React.JSX.Element {
 							<Switch
 								aria-label={t('settings.privacy.mode')}
 								checked={state.enabled}
-								disabled={busy || (!state.supported && !state.enabled)}
+								disabled={busy}
 								onCheckedChange={(enabled) => void update(enabled)}
 							/>
 						}
@@ -104,7 +104,6 @@ export default function PrivacyPage(): React.JSX.Element {
 					<SettingsLoadingRows />
 				</SettingsPanel>
 			) : null}
-			{state && !state.supported && <SettingsNotice>{t('settings.privacy.unsupported')}</SettingsNotice>}
 			{state && <p className="text-sm text-muted-foreground">{t('settings.privacy.providerData')}</p>}
 			{(error || failed) && (
 				<SettingsNotice variant="destructive">

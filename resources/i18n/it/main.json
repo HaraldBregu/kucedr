@@ -1315,7 +1315,6 @@
 			"restartRequired": "Riavvio necessario",
 			"restartDescription": "Riavvia Kucedr per applicare la modifica.",
 			"restart": "Riavvia Kucedr",
-			"unsupported": "La modalità privacy non è disponibile in questa installazione.",
 			"providerData": "I fornitori ricevono comunque i prompt, i file e l'audio che invii loro.",
 			"loadFailed": "Impossibile caricare la modalità privacy.",
 			"saveFailed": "Impossibile salvare la modalità privacy.",

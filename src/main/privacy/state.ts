@@ -30,7 +30,6 @@ export function getPrivacy(): PrivacyState {
 		enabled,
 		status,
 		restartRequired: enabled !== active || (active && connections().proxy !== route),
-		supported: true,
 	};
 }
 
