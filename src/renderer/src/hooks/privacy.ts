@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-
-type PrivacyState = Awaited<ReturnType<typeof window.app.getPrivacy>>;
+import type { PrivacyState } from '@shared/privacy';
 
 export function usePrivacy(): {
 	state: PrivacyState | null;

@@ -1305,9 +1305,9 @@
 			},
 			"statusDescription": {
 				"off": "Kucedr usa le connessioni di rete abituali.",
-				"connecting": "Kucedr sta verificando il proxy. Le funzioni online sono sospese.",
+				"connecting": "Kucedr sta verificando il proxy locale.",
 				"protected": "Kucedr usa il proxy configurato per le connessioni supportate.",
-				"blocked": "Le funzioni online sono sospese. Controlla il proxy nelle connessioni del browser."
+				"blocked": "Il proxy locale non è disponibile. Controlla l'indirizzo e verifica che il proxy sia in esecuzione."
 			},
 			"toolbarStatus": "Modalità privacy · {{status}}",
 			"proxyDescription": "Inserisci socks5://127.0.0.1:PORT nelle connessioni del browser. Il proxy SOCKS5 deve essere in esecuzione su questo Mac.",

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { useOnboarding } from '@/contexts/useOnboarding';
 import { usePrivacy } from '@/hooks/privacy';
 import {
 	SettingsLoadingRows,
@@ -17,6 +18,7 @@ import {
 
 export default function PrivacyPage(): React.JSX.Element {
 	const { t } = useTranslation();
+	const { phase } = useOnboarding();
 	const { state, failed, setState } = usePrivacy();
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -78,9 +80,11 @@ export default function PrivacyPage(): React.JSX.Element {
 						title={t('settings.browser.connections.proxy')}
 						description={t('settings.privacy.proxyDescription')}
 						actions={
-							<Link to="/settings/browser#connections" className={buttonVariants({ variant: 'outline' })}>
-								{t('settings.privacy.openConnections')}
-							</Link>
+							phase === 'ready' && (
+								<Link to="/settings/browser#connections" className={buttonVariants({ variant: 'outline' })}>
+									{t('settings.privacy.openConnections')}
+								</Link>
+							)
 						}
 					/>
 					{state.restartRequired && (

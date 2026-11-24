@@ -71,7 +71,11 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 	const checkTor = async (): Promise<void> => {
 		if (!(await saveRoutes())) return;
 		setRoutesNotice(null);
-		setTorFound(await window.browserPane.torFind());
+		try {
+			setTorFound(await window.browserPane.torFind());
+		} catch (cause) {
+			setRoutesNotice({ error: true, text: cause instanceof Error ? cause.message : String(cause) });
+		}
 	};
 	const chosen = (sources ?? []).filter((source) => !skipped.includes(source.id)).map((source) => source.id);
 	const noKinds = !Object.values(kinds).some(Boolean);
