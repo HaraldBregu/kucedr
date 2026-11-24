@@ -107,7 +107,7 @@ it('groups real routes using the command menu layout', () => {
 
 	expect(screen.getByText('Home')).toBeInTheDocument();
 	expect(screen.getByText('Routes')).toBeInTheDocument();
-	expect(screen.getAllByText('Settings')).toHaveLength(2);
+	expect(screen.getByText('Settings')).toBeInTheDocument();
 	expect(screen.getByText('/settings/account')).toBeInTheDocument();
 });
 
