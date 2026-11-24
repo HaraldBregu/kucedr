@@ -105,7 +105,7 @@ describe('tool search', () => {
 			selectedToolIds: string[];
 			limitReached: boolean;
 		};
-		expect(last.selectedToolIds).toHaveLength(3);
+		expect(last.selectedToolIds).toHaveLength(5);
 		expect(last.limitReached).toBe(true);
 		expect(
 			((await search.tool.run({ query: 'invoices' })) as { selectedToolIds: string[] })
