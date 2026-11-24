@@ -124,7 +124,12 @@ describe('provider credential IPC boundary', () => {
 			},
 			'models'
 		);
-		expect(result).toEqual(provider);
+		expect(result).toEqual({
+			id: 'openai',
+			name: 'OpenAI',
+			baseUrl: 'https://api.openai.com/v1',
+			saved: true,
+		});
 	});
 
 	it('saves a custom OpenAI-compatible model provider', () => {
