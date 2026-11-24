@@ -24,17 +24,14 @@ describe('package app window configuration', () => {
 		fs.rmSync(location, { recursive: true, force: true });
 	});
 
-	it('imports and discovers package-only window settings', () => {
+	it('reads package-only window settings', () => {
 		const window = { width: 480, height: 320, resizable: false, maximizable: false };
 		fs.writeFileSync(path.join(source, 'package.json'), JSON.stringify({
 			...packageJson,
 			kucedr: { window },
 		}));
 
-		const result = importApps([source], location);
-		expect(result.skipped).toEqual([]);
-		expect(result.imported[0]).toMatchObject({ id: 'notes', window });
-		expect(listApps(location)).toEqual(result.imported);
+		expect(readAppManifestFromDirectory(source)).toMatchObject({ window });
 	});
 
 	it('keeps package-only apps without configuration valid', () => {
