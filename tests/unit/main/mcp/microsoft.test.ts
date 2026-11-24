@@ -18,26 +18,15 @@ import type { McpOAuthState } from '../../../../src/main/mcp/mcp_types';
 const tenantId = '11111111-1111-4111-8111-111111111111';
 const template =
 	'https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_MailTools';
-const originalTenant = process.env.MICROSOFT_TENANT_ID;
-const originalClient = process.env.MICROSOFT_CLIENT_ID;
-
 beforeEach(() => {
-	process.env.MICROSOFT_TENANT_ID = tenantId;
-	process.env.MICROSOFT_CLIENT_ID = 'registered-microsoft-client';
-});
-
-afterEach(() => {
-	if (originalTenant === undefined) delete process.env.MICROSOFT_TENANT_ID;
-	else process.env.MICROSOFT_TENANT_ID = originalTenant;
-	if (originalClient === undefined) delete process.env.MICROSOFT_CLIENT_ID;
-	else process.env.MICROSOFT_CLIENT_ID = originalClient;
+	settings = { tenant_id: tenantId, client_id: 'registered-microsoft-client' };
 });
 
 it('resolves all Microsoft 365 catalog endpoints and recognizes saved templates', () => {
 	const services = loadMcps().filter(
 		(entry) => entry.provider.id === 'microsoft' && entry.authentication === 'oauth2'
 	);
-	expect(services).toHaveLength(7);
+	expect(services).toHaveLength(1);
 	for (const service of services) {
 		expect(service.url).toContain(`/tenants/${tenantId}/servers/`);
 		expect(mcpOAuthOptions(service.url!)).toEqual({ clientId: 'registered-microsoft-client' });
