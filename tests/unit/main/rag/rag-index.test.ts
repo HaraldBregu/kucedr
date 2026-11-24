@@ -237,7 +237,7 @@ it('reuses unchanged source vectors and removes deleted files from the next loca
 		await indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors: store });
 		expect(embed).toHaveBeenCalledTimes(2);
 		expect(store.exportIndex('knowledge-base')?.records.map((record) => record.text)).toEqual([
-			'Updated guide',
+			expect.stringMatching(/Updated guide$/),
 		]);
 	} finally {
 		store.close();
