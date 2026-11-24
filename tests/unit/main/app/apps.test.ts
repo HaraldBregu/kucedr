@@ -173,7 +173,7 @@ describe('app discovery and loading', () => {
 		expect(loadApp(windowFactory, app, appLocation)).toBe(win);
 		expect(create).toHaveBeenCalledWith(
 			expect.objectContaining({
-				frame: false,
+				frame: true,
 				title: 'Project',
 				resizable: true,
 			}),
