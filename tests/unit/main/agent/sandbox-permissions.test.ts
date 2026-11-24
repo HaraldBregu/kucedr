@@ -8,6 +8,7 @@ jest.mock('node:fs/promises', () => ({
 	mkdir: jest.fn().mockResolvedValue(undefined),
 	writeFile,
 	unlink: jest.fn().mockResolvedValue(undefined),
+	readdir: jest.fn().mockResolvedValue([]),
 }));
 jest.mock('@anthropic-ai/sandbox-runtime', () => ({
 	SandboxManager: {
