@@ -990,7 +990,9 @@ describe('run stream system prompt', () => {
 				? {
 						content: '',
 						model: 'pinned-model',
-						toolCalls: [{ id: 'delegate', name: 'subagent', args: { task: 'inspect' } }],
+						toolCalls: [
+							{ id: 'delegate', name: 'subagent', args: { tasks: [{ id: 'inspect', task: 'inspect' }] } },
+						],
 					}
 				: { content: 'parent result', model: 'pinned-model', toolCalls: [] };
 		});
