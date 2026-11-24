@@ -329,7 +329,7 @@ export function AuthStep(): React.JSX.Element {
 							</form>
 						)}
 						{state.persistence === 'memory' ? (
-							<p className="mt-3 text-center text-[10px] leading-4 text-muted-foreground">
+							<p className="mt-3 text-center text-xs leading-4 text-muted-foreground">
 								Your session will not persist after restart.
 							</p>
 						) : null}
