@@ -36,6 +36,7 @@ export async function command(request: BrowserPaneCommand): Promise<void> {
 					? text
 					: `${local ? 'http' : 'https'}://${text}`;
 			if (!text || !URL.canParse(url)) throw new Error('Enter a web address or search words.');
+			await tab.ready;
 			void contents.loadURL(url).catch(() => undefined);
 			break;
 		}
