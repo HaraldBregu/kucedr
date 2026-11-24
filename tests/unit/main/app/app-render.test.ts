@@ -97,7 +97,7 @@ describe('app renderer', () => {
 		);
 		expect(harness.create).toHaveBeenCalledWith(
 			expect.objectContaining({
-				frame: false,
+				frame: true,
 				resizable: true,
 				title: 'Project',
 				transparent: true,
