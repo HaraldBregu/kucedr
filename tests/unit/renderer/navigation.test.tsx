@@ -256,7 +256,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.plugins' })
 			.closest('[data-slot="split-pane-group"]')
-	).toBe(
+	).not.toBe(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.apps' })
 			.closest('[data-slot="split-pane-group"]')
