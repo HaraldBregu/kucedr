@@ -62,7 +62,7 @@ it('stores only Coder-created Markdown under separate project workspaces', async
 });
 
 
-it('stores managed workspace Markdown beside its files and exposes shared instructions to each harness', async () => {
+it('stores managed workspace Markdown beside its files and exposes shared instructions to the harness', async () => {
 	const directory = await mkdtemp(path.join(os.tmpdir(), 'kucedr-managed-markdown-'));
 	const previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
 	process.env.KUCEDR_E2E_DATA_ROOT = directory;
