@@ -207,7 +207,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 						<Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" title="Replace" aria-label="Replace" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, false)}><Replace className="size-3.5" /></Button>
 						<Button type="button" variant="ghost" size="icon-sm" className="size-5 shrink-0 rounded-sm" title="Replace all" aria-label="Replace all" disabled={!matchCount} onClick={() => finder.current?.replace(findQuery, replaceText, true)}><ReplaceAll className="size-3.5" /></Button>
 					</div> : null}
-					{findQuery ? <p aria-live="polite" className={`pl-6 pt-1 text-[11px] ${matchCount ? 'text-muted-foreground' : 'text-destructive'}`}>{matchCount ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'No results'}</p> : null}
+					{findQuery ? <p aria-live="polite" className={`pl-6 pt-1 text-xs ${matchCount ? 'text-muted-foreground' : 'text-destructive'}`}>{matchCount ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'No results'}</p> : null}
 					</div>
 				</div>
 			) : null}
@@ -271,7 +271,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 						{file.updatedAt || file.createdAt ? <time dateTime={file.updatedAt || file.createdAt} aria-label={`${file.updatedAt ? 'Updated' : 'Created'} ${new Date((file.updatedAt || file.createdAt)!).toLocaleString()}`} className="inline-flex items-center gap-1"><History className="size-3" aria-hidden="true" />{new Date((file.updatedAt || file.createdAt)!).toLocaleString()}</time> : null}
 					</div>
 					<Select value={textSize} onValueChange={(value) => { if (value) onTextSizeChange(value); }}>
-						<SelectTrigger size="sm" aria-label="Text size" className="h-6! text-[11px]">
+						<SelectTrigger size="sm" aria-label="Text size" className="h-6! text-xs">
 							<SelectValue>{TEXT_SIZES.find(({ size }) => size === textSize)?.label}</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
@@ -290,7 +290,7 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 											variant="outline"
 											size="xs"
 											aria-pressed={active}
-											className={`relative h-6 min-w-12 overflow-hidden rounded-none! px-1 text-[11px] first:rounded-l-lg! last:rounded-r-lg! not-first:-ml-px ${active ? 'border-primary! text-primary-foreground hover:text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+											className={`relative h-6 min-w-12 overflow-hidden rounded-none! px-1 text-xs first:rounded-l-lg! last:rounded-r-lg! not-first:-ml-px ${active ? 'border-primary! text-primary-foreground hover:text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
 											onClick={() => { closeFind(); setMarkdownMode(mode); }}
 										>
 											{active ? <motion.span layoutId="active-workspace-markdown-mode" className="absolute inset-0 bg-primary" transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 350, damping: 28 }} /> : null}
