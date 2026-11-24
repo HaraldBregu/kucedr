@@ -142,64 +142,95 @@ export async function indexRag(
 			records.push({ ...record, vector: embedded.embeddings[offset] });
 	};
 	const fits = (count: number, width = dimensions): boolean => {
-		const planned = records.length + pending.length + count;
+		const planned = records.length + reusedChunks + embedding + pending.length + count;
 		return planned <= KNOWLEDGE_MAX_RECORDS && (!width || planned * width <= KNOWLEDGE_MAX_VECTOR_VALUES);
+	};
+	const identify = (source: string, file: string): string =>
+		createHash('sha256').update(path.resolve(source)).update('\0').update(file).digest('hex');
+	const unchanged = (source: string, file: string, size: number, modified: number): boolean => {
+		const sourceId = identify(source, file);
+		const stored = vectorStore.source(selectedIndexName, sourceId);
+		if (stored?.size !== size || stored.modified !== modified || stored.stamp !== stamp) return false;
+		const count = vectorStore.reusable(
+			selectedIndexName,
+			sourceId,
+			stored.fingerprint,
+			providerId,
+			modelId
+		);
+		if (count > 0) known.set(sourceId, { fingerprint: stored.fingerprint, count });
+		return count > 0;
+	};
+	const send = async (batch: Omit<VectorRecord, 'vector'>[]): Promise<void> => {
+		embedding += batch.length;
+		const task = embedBatch(batch).finally(() => {
+			embedding -= batch.length;
+		});
+		task.catch(() => undefined);
+		sending.push(task);
+		if (sending.length >= concurrency) await sending.shift();
 	};
 
 	try {
-		for await (const { source, file, segments } of collectRagSources(
+		for await (const { source, file, size, modified, segments } of collectRagSources(
 			sources,
 			skipped,
 			signal,
-			dependencies.progress
+			dependencies.progress,
+			unchanged
 		)) {
 			signal.throwIfAborted();
 			const shown = path.join(path.basename(source), file);
-			const chunks = segments.flatMap((segment) =>
+			const sourceId = identify(source, file);
+			const chunks = (segments ?? []).flatMap((segment) =>
 				chunkSpans(segment.text).map((chunk) => ({
 					...chunk,
 					text: `${shown}${segment.label ? ` · ${segment.label}` : ''}\n\n${chunk.text}`,
 				}))
 			);
-			if (chunks.length === 0) continue;
-			const sourceId = createHash('sha256')
-				.update(path.resolve(source))
-				.update('\0')
-				.update(file)
-				.digest('hex');
-			const sourceFingerprint = createHash('sha256')
-				.update('knowledge-chunks-v4\0')
-				.update(embeddingRecipient)
-				.update('\0')
-				.update(shown)
-				.update('\0')
-				.update(JSON.stringify(segments))
-				.digest('hex');
-			const reused = vectorStore.getReusableSource(
-				selectedIndexName,
-				sourceId,
-				sourceFingerprint,
-				providerId,
-				modelId
-			);
-			if (reused) {
-				for (const record of reused) {
-					validateVector(record.vector, dimensions ?? reused[0].vector.length);
-				}
-				if (!fits(reused.length, dimensions ?? reused[0].vector.length)) {
+			if (segments && chunks.length === 0) continue;
+			const sourceFingerprint = segments
+				? createHash('sha256')
+						.update(`${VERSION}\0`)
+						.update(embeddingRecipient)
+						.update('\0')
+						.update(shown)
+						.update('\0')
+						.update(JSON.stringify(segments))
+						.digest('hex')
+				: (known.get(sourceId)?.fingerprint ?? '');
+			const count = segments
+				? vectorStore.reusable(selectedIndexName, sourceId, sourceFingerprint, providerId, modelId)
+				: (known.get(sourceId)?.count ?? 0);
+			if (count > 0 && active) {
+				if (!fits(count, dimensions ?? active.dimensions)) {
 					skipped.push({ path: shown, reason: 'limit' });
 					continue;
 				}
-				vectorValues += reused.reduce((count, record) => count + record.vector.length, 0);
-				dimensions ??= reused[0].vector.length;
-				records.push(...reused);
+				vectorValues += count * active.dimensions;
+				dimensions ??= active.dimensions;
+				reusedChunks += count;
+				reused.push({ sourceId, sourceFingerprint });
+				stamps.push({ sourceId, size, modified, stamp, fingerprint: sourceFingerprint });
+				if (mirror)
+					uploads.push(
+						...(vectorStore.getReusableSource(
+							selectedIndexName,
+							sourceId,
+							sourceFingerprint,
+							providerId,
+							modelId
+						) ?? [])
+					);
 				indexedFiles += 1;
 				continue;
 			}
+			if (!segments) continue;
 			if (!fits(chunks.length)) {
 				skipped.push({ path: shown, reason: 'limit' });
 				continue;
 			}
+			stamps.push({ sourceId, size, modified, stamp, fingerprint: sourceFingerprint });
 			indexedFiles += 1;
 			for (const [chunkIndex, chunk] of chunks.entries())
 				pending.push({
