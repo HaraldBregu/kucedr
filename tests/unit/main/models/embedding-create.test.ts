@@ -90,7 +90,10 @@ it('permits an explicitly selected local embedding model for Knowledge without a
 		})
 	).resolves.toMatchObject({ providerId: 'local', modelId: 'local-embedding' });
 	expect(generateEmbeddings).toHaveBeenCalledWith(
-		expect.objectContaining({ apiKey: '', model: expect.objectContaining({ id: 'local-embedding' }) })
+		expect.objectContaining({
+			apiKey: '',
+			model: expect.objectContaining({ id: 'local-embedding' }),
+		})
 	);
 });
 
