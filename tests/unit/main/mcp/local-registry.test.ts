@@ -13,6 +13,7 @@ let temp: string;
 
 beforeEach(() => {
 	temp = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-mcp-'));
+	pluginDirs.mockReturnValue([{ directory: path.join(temp, 'resources', 'mcp') }]);
 });
 
 afterEach(() => {
