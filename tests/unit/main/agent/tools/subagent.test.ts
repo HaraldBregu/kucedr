@@ -278,9 +278,8 @@ describe('subagentTool', () => {
 			sessionId: 'parent',
 			runId: 'parent',
 		};
-		const tool = subagentTool({ location: '/agent' }, [], {
+		const tool = subagentTool({ location: '/agent' }, () => [], {
 			type: 'background',
-			interactionMode: 'default',
 			providerId: 'pinned-provider',
 			model: 'pinned-model',
 			effort: 'high',
