@@ -54,7 +54,3 @@ describe('realtime voice adapter factory', () => {
 		);
 	});
 });
-
-function providerIdOf(manifest: { name?: string }): string {
-	return manifest.name ?? '';
-}
