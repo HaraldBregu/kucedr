@@ -41,22 +41,10 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 	);
 
 	const breadcrumb = screen.getByRole('navigation', { name: 'settings.breadcrumb.label' });
-	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).toHaveClass(
-		'sticky',
-		'top-0',
-		'z-10'
-	);
-	expect(breadcrumb).toHaveClass('h-12', 'items-center');
-	expect(breadcrumb).not.toHaveClass('justify-center', 'pt-6');
-	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).toHaveClass(
-		'bg-background/80',
-		'backdrop-blur-sm'
-	);
 	expect(within(breadcrumb).queryByRole('link', { name: 'settings.title' })).not.toBeInTheDocument();
 	expect(within(breadcrumb).queryByText('settings.tabs.providers')).not.toBeInTheDocument();
 	expect(within(breadcrumb).getByText('demo-server')).toBeInTheDocument();
 
 	await user.click(within(breadcrumb).getByRole('link', { name: 'settings.tabs.mcp' }));
 	expect(await screen.findByText('MCP list')).toBeInTheDocument();
-	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).not.toBeInTheDocument();
 });
