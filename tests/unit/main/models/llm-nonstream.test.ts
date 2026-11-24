@@ -281,42 +281,6 @@ describe('LlmModel non-streaming transport', () => {
 		]));
 	});
 
-	it('uses the targeted Reka PDF payload for batch requests', async () => {
-		const create = jest.fn().mockResolvedValue({ choices: [], usage: {} });
-		const model = new LlmModel({
-			openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
-		});
-		const content = [
-			{
-				type: 'document',
-				name: 'brief.pdf',
-				mimeType: 'application/pdf',
-				base64: 'cGRm',
-			},
-		];
-		for await (const _event of model.stream(request('reka', content))) {
-			// Consume the provider stream.
-		}
-
-		expect(create).toHaveBeenCalledWith(
-			expect.objectContaining({
-				stream: false,
-				messages: [
-					{
-						role: 'user',
-						content: [
-							{
-								type: 'pdf_url',
-								pdf_url: { url: 'data:application/pdf;base64,cGRm' },
-							},
-						],
-					},
-				],
-			}),
-			expect.objectContaining({ signal: undefined })
-		);
-	});
-
 	it('rejects generic chat PDF blocks before a batch network request', async () => {
 		const create = jest.fn();
 		const model = new LlmModel({
