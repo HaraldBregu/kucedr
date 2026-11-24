@@ -37,6 +37,14 @@ Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
 	value: jest.fn(),
 });
 
+beforeEach(() => {
+	Object.assign(window, {
+		plugins: { list: jest.fn().mockResolvedValue([]) },
+		apps: { list: jest.fn().mockResolvedValue([]) },
+		agent: { listWorkspaceFiles: jest.fn().mockResolvedValue([]) },
+	});
+});
+
 it.each(['/home', '/home/session/1', '/workspace', '/settings'])(
 	'opens command search on %s',
 	(path) => {
