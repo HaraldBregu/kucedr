@@ -227,13 +227,13 @@ it('reuses unchanged source vectors and removes deleted files from the next loca
 	try {
 		await writeFile(path.join(root, 'notes.md'), 'Some notes');
 		await indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors: store });
-		expect(embed).toHaveBeenCalledTimes(2);
+		expect(embed).toHaveBeenCalledTimes(1);
 		await indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors: store });
-		expect(embed).toHaveBeenCalledTimes(2);
+		expect(embed).toHaveBeenCalledTimes(1);
 		await writeFile(path.join(root, 'guide.md'), 'Updated guide');
 		await rm(path.join(root, 'notes.md'));
 		await indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors: store });
-		expect(embed).toHaveBeenCalledTimes(3);
+		expect(embed).toHaveBeenCalledTimes(2);
 		expect(store.exportIndex('knowledge-base')?.records.map((record) => record.text)).toEqual([
 			'Updated guide',
 		]);
