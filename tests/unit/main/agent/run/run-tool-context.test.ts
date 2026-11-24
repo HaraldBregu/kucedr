@@ -207,7 +207,8 @@ describe('exec path approval', () => {
 			path.resolve('/outside'),
 			expect.any(String),
 			expect.any(AbortSignal),
-			[path.resolve('/outside')]
+			[path.resolve('/outside')],
+			false
 		);
 	});
 
