@@ -104,6 +104,7 @@ import { ExtensionPage, type OpenExtension } from './components/ExtensionPage';
 import { ModeBackground } from './components/ModeBackground';
 import { Model } from './Model';
 import { Usage } from './Usage';
+import { Announcer } from './Announcer';
 import { Microphone } from './Microphone';
 
 const StableHomeSidebar = memo(HomeSidebar);
