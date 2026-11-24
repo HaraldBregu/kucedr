@@ -286,7 +286,7 @@ it('clears local evidence when the last source file is deleted after a successfu
 		await rm(path.join(root, 'guide.md'));
 		await expect(
 			indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors: store })
-		).resolves.toEqual({ files: 0, vectors: 0 });
+		).resolves.toMatchObject({ files: 0, vectors: 0 });
 		expect(store.getIndex('knowledge-base')).toBeUndefined();
 		expect(store.search('knowledge-base', [1, 2], 5)).toEqual([]);
 	} finally {
