@@ -296,7 +296,7 @@ beforeEach(() => {
 		configurable: true,
 		value: {
 			getSettings: jest.fn().mockResolvedValue({
-				engineId: 'brave',
+				engineId: 'brave/brave',
 				configured: { brave: true, tavily: false },
 			}),
 			selectEngine: jest.fn().mockImplementation(async (engineId: string) => ({
