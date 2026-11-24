@@ -89,6 +89,7 @@ export async function searchRag(
 						signal
 					)
 				: undefined;
+		embedding?.catch(() => undefined);
 		const keywords = texts.map((text) =>
 			vectorStore.keyword(selectedIndexName, text, CANDIDATES)
 		);
