@@ -81,13 +81,11 @@ it('stores managed workspace Markdown beside its files and exposes shared instru
 		expect(await readFile(path.join(root, 'AGENTS.md'), 'utf8')).toBe('# Workspace instructions');
 		await expect(createMarkdownFile(project, 'AGENTS.md')).rejects.toMatchObject({ code: 'EEXIST' });
 		expect(await readMarkdownFile(project, 'AGENTS.md')).toBe('# Workspace instructions');
-		const instructions = new CodingInstructions(path.join(directory, 'coder', 'pi'));
-		for (const harness of ['pi', 'codex', 'cline'] as const) {
-			expect(await instructions.get(project, harness)).toMatchObject({
-				activeFilePath: path.join(root, 'AGENTS.md'),
-				content: '# Workspace instructions', exists: true,
-			});
-		}
+		const instructions = new CodingInstructions();
+		expect(await instructions.get(project, 'codex', ['AGENTS.override.md', 'AGENTS.md'])).toMatchObject({
+			activeFilePath: path.join(root, 'AGENTS.md'),
+			content: '# Workspace instructions', exists: true,
+		});
 		await saveMarkdownFile(project, 'AGENTS.md', '# Updated instructions', '# Workspace instructions');
 		await expect(saveMarkdownFile(project, 'AGENTS.md', 'stale', '# Workspace instructions')).rejects.toThrow('changed outside');
 	} finally {
