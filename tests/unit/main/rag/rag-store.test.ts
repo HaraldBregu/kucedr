@@ -76,7 +76,7 @@ it('defaults, normalizes, and validates the configured RAG index name', () => {
 			scheduleEnabled: false,
 			cronExpression: '0 3 * * *',
 		})
-	).toThrow('RAG index name must be 1-45 lowercase letters, numbers, or hyphens');
+	).toThrow('Knowledge index name must be 1-45 lowercase letters, numbers, or hyphens');
 });
 
 it('validates explicit local storage, atomic database selection, timezone, cron, and similarity settings', () => {
