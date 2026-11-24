@@ -160,6 +160,7 @@ export interface VectorStore {
 	keyword(indexName: string, query: string, topK: number): string[];
 	chunks(indexName: string, ids: readonly string[]): VectorChunk[];
 	around(indexName: string, id: string, span: number): VectorChunk[];
+	summary(indexName: string): { chunks: number; paths: string[] };
 	exportIndex(indexName: string, generation?: string): VectorPublication | undefined;
 	purge(indexName: string, generation?: string): { records: number; indexRemoved: boolean };
 	close(): void;
