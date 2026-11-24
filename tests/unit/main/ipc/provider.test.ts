@@ -73,7 +73,7 @@ describe('provider credential IPC boundary', () => {
 		expect(deleteProvider).toHaveBeenCalledWith('pinecone', 'databases');
 	});
 
-	it('returns API keys from get and list', async () => {
+	it('returns saved status without API keys from get and list', async () => {
 		register();
 		const provider = {
 			id: 'openai',
