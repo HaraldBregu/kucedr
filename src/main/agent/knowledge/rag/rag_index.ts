@@ -287,6 +287,8 @@ export async function indexRag(
 			dimensions,
 			completedAt,
 			records,
+			reused,
+			sources: stamps,
 		});
 		published = true;
 		writeRagManifest({
