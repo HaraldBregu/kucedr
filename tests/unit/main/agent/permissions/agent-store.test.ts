@@ -22,6 +22,8 @@ jest.mock('electron-store', () =>
 import {
 	AGENT_DIRECTORY,
 	addPermissionRule,
+	getRunBudget,
+	setRunBudget,
 	getChatbotModel,
 	getToolModel,
 	getModelId,
@@ -234,4 +236,15 @@ describe('agent store permissions', () => {
 		expect(getToolProfile('chat').tools).not.toHaveProperty('list_memories');
 		expect(getToolProfile('chat').tools).not.toHaveProperty('forget_memory');
 	});
+});
+
+it('persists optional chat run limits and rejects invalid settings without replacing them', () => {
+	expect(getRunBudget()).toEqual({});
+	expect(setRunBudget({ turns: 4, tokens: 12000 })).toEqual({ turns: 4, tokens: 12000 });
+	setModelId('another-model');
+	expect(getRunBudget()).toEqual({ turns: 4, tokens: 12000 });
+	for (const invalid of [{ tokens: -1 }, { turns: 0 }, { turns: 2.5 }, null, { tokens: '4' }])
+		expect(() => setRunBudget(invalid)).toThrow();
+	expect(getRunBudget()).toEqual({ turns: 4, tokens: 12000 });
+	expect(setRunBudget({})).toEqual({});
 });
