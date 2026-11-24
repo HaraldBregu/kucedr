@@ -55,7 +55,7 @@ The sidebar list merges both: `listSessions` (agent) + `coding.listSessions` (al
 
 ### 3. Harness protocols
 
-A harness is added by a plugin manifest plus, only when its wire protocol is new, one protocol adapter in `src/main/coding/harness/`. No harness name appears in `src` ([no product code in src](../docs/PROVIDERS.md)).
+A harness is added by a plugin manifest plus, only when its wire protocol is new, one protocol adapter in `src/main/coding/harness/`. No harness name appears in `src`; harness behaviour stays in the manifest.
 
 | Protocol | Covers | Work |
 | --- | --- | --- |
