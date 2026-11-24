@@ -18,7 +18,10 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('@/contexts', () => ({
+	CHAT_TEXT_SIZES: { small: '12px', medium: '13px' },
 	useApp: () => ({
+		chatTextSize: 'medium',
+		setChatTextSize: jest.fn(),
 		language: 'en',
 		setLanguage: jest.fn(),
 		theme: 'system',
