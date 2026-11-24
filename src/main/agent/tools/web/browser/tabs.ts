@@ -16,7 +16,12 @@ export function tabs(): BrowserPaneState {
 			order: tab.order,
 			back: contents.navigationHistory.canGoBack(),
 			forward: contents.navigationHistory.canGoForward(),
+			route: tab.route,
 			...(tab.error ? { error: tab.error } : {}),
+			...(tab.blocked.length ? { blocked: [...tab.blocked] } : {}),
+			...(tab.download
+				? { download: { file: tab.download.file, site: tab.download.site, state: tab.download.state } }
+				: {}),
 			...(tab.icon ? { icon: tab.icon } : {}),
 			...(tab.offer
 				? { offer: { username: tab.offer.username, site: new URL(tab.offer.url).host, update: tab.offer.update } }
