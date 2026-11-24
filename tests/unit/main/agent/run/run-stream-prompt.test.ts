@@ -538,8 +538,9 @@ describe('run stream system prompt', () => {
 			onContextAccepted(systemPrompt);
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
+			const runContext = (messages[0].content as Array<{ text: string }>)[0].text;
 			expect(systemPrompt).toContain('- **Name:** Alice');
-			expect(systemPrompt).toContain('### MEMORY\nUse memory as durable background context');
+			expect(runContext).toContain('## Memory\nUse memory as durable background context');
 			expect(systemPrompt).not.toContain('### MEMORY.md');
 			expect(systemPrompt).not.toContain('# Memory\n');
 			expect(systemPrompt).not.toContain('## Tools available in this runtime');
