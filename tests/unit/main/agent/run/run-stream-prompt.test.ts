@@ -1163,7 +1163,7 @@ describe('run stream system prompt', () => {
 			))
 				events.push(event);
 		}).rejects.toThrow('non-empty final answer');
-		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
+		expect(runModelTurnMock).toHaveBeenCalledTimes(3);
 		expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { stopReason: 'error' } });
 	});
 
