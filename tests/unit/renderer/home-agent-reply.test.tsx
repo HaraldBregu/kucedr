@@ -20,6 +20,28 @@ jest.mock('../../../src/renderer/src/contexts/chat-session', () => ({
 
 jest.mock('../../../src/renderer/src/hooks/use-modes', () => ({ useModes: () => [] }));
 
+jest.mock('../../../src/renderer/src/lib/providers', () => ({
+	providers: () => [],
+	providerModels: (providerId: string) =>
+		providerId === 'openrouter'
+			? [
+					{
+						id: 'model-a',
+						name: 'Model A',
+						metadata: {
+							effort: { strict: true },
+							inputs: {
+								reasoning: {
+									type: 'object',
+									properties: { effort: { type: 'string', enum: ['low', 'high'] } },
+								},
+							},
+						},
+					},
+				]
+			: [],
+}));
+
 beforeEach(() => {
 	mockSessionId = 'chat-one';
 	send.mockReset();
