@@ -48,15 +48,15 @@ it('previews each Voice Agent state', async () => {
 	expect(preview).toHaveAttribute('data-state', 'speaking');
 });
 
-it('selects Nebula as the Voice Agent appearance', async () => {
+it('selects Radial as the Voice Agent appearance', async () => {
 	const user = userEvent.setup();
 	render(<PersonaPage />);
 
-	await user.click(screen.getByRole('button', { name: 'settings.voiceAgent.appearances.orb-07' }));
+	await user.click(screen.getByRole('button', { name: 'settings.voiceAgent.appearances.radial' }));
 
-	expect(mockSetVoiceAgentAppearance).toHaveBeenCalledWith('orb-07');
+	expect(mockSetVoiceAgentAppearance).toHaveBeenCalledWith('radial');
 	expect(screen.getByRole('img', { name: 'Voice Agent preview' })).toHaveAttribute(
 		'data-appearance',
-		'orb-07'
+		'radial'
 	);
 });
