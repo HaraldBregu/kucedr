@@ -306,6 +306,16 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							nativeButton={false}
 							render={<SidebarGroupLabel className="text-sidebar-foreground" />}
 							onDoubleClick={category ? () => setEditingCategoryId(category.id) : undefined}
+							onKeyDown={category ? (event: React.KeyboardEvent) => {
+								if (event.key === 'F2') {
+									event.preventDefault();
+									setEditingCategoryId(category.id);
+								}
+								if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) {
+									event.preventDefault();
+									event.currentTarget.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+								}
+							} : undefined}
 							onContextMenu={category ? (event: React.MouseEvent) => {
 								event.preventDefault();
 								void window.win
