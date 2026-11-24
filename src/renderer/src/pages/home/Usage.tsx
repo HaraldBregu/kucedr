@@ -36,7 +36,7 @@ export function Usage({
 		<Tooltip>
 			<TooltipTrigger
 				render={<button type="button" aria-label={label} />}
-				className={cn('flex h-9 shrink-0 items-center gap-1.5 rounded-full px-2 text-[11px] text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring', className)}
+				className={cn('flex h-9 shrink-0 items-center gap-1.5 rounded-full px-2 text-xs text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring', className)}
 			>
 				<svg
 					viewBox="0 0 24 24"
