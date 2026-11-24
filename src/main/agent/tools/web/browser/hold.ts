@@ -26,7 +26,7 @@ export function holdDownload(event: Event, item: DownloadItem, contents: WebCont
 	item.pause();
 	if (tab.download?.state === 'asking') {
 		tab.download.item.cancel();
-		rmSync(path.dirname(tab.download.path), { recursive: true, force: true });
+		discardDownload(tab.download.path);
 	}
 	const site = URL.canParse(item.getURL()) ? new URL(item.getURL()).host : '';
 	tab.download = { item, path: path.join(folder, file), file, site, state: 'asking' };
