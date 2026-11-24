@@ -12,7 +12,7 @@ it('preserves signed Anthropic thinking when returning tool results', async () =
 		stop_reason: 'tool_use',
 		usage: { input_tokens: 1, output_tokens: 1 },
 	});
-	const model = new LlmModel({ anthropicClientFactory: () => ({ messages: { create } }) as never });
+	const model = new LlmModel({ messagesClientFactory: () => ({ messages: { create } }) as never });
 	const events: LlmEvent[] = [];
 	for await (const event of model.stream({
 		provider: { id: 'anthropic', apiKey: 'key' },
