@@ -380,8 +380,8 @@ export interface PluginsApi {
 	installCatalog: (id: string) => Promise<PluginInfo>;
 	remove: (id: string) => Promise<void>;
 	setEnabled: (id: string, enabled: boolean) => Promise<void>;
-	getSettings: (id: string) => Promise<Record<string, string>>;
-	saveSettings: (id: string, values: Record<string, string>) => Promise<void>;
+	getSettings: (id: string) => Promise<string[]>;
+	saveSettings: (id: string, key: string, value: string | null) => Promise<void>;
 }
 
 export interface ScriptsApi {

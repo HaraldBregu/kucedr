@@ -3,24 +3,27 @@ import { scanPlugins } from './plugins_scan';
 import { safeStorage } from 'electron';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
 
-export function savePluginSettings(id: string, values: Record<string, string>): void {
+export function savePluginSettings(id: string, values: Record<string, string | null>): void {
 	const plugin = scanPlugins().find((entry) => entry.id === id)?.manifest;
 	if (!plugin) throw new Error('Unknown plugin.');
-	const schema = plugin.settings as
-		| { inputSchema?: { properties?: Record<string, { format?: string }> } }
-		| undefined;
-	const properties = schema?.inputSchema?.properties ?? {};
-	const plain: Record<string, string> = {};
-	const secrets: Record<string, string> = {};
+	const properties = plugin.settings?.inputSchema.properties ?? {};
+	const settings = pluginsStore.get('settings');
+	const storedSecrets = pluginsStore.get('secrets');
+	const plain = { ...settings[id] };
+	const secrets = { ...storedSecrets?.[id] };
 	for (const [key, input] of Object.entries(values)) {
-		if (!(key in properties)) throw new Error('Unknown plugin setting.');
-		const value = input.trim();
+		if (!Object.hasOwn(properties, key)) throw new Error('Unknown plugin setting.');
+		const secret = properties[key]?.format === 'password' || Object.hasOwn(secrets, key);
+		delete plain[key];
+		delete secrets[key];
+		const value = input?.trim();
 		if (!value) continue;
-		if (properties[key]?.format === 'password') {
+		if (secret) {
 			if (!isSafeStorageAvailable()) throw new Error('Secure storage is unavailable.');
-			secrets[key] = safeStorage.encryptString(value).toString('base64');
-		} else plain[key] = value;
+			Object.defineProperty(secrets, key, {
+				value: safeStorage.encryptString(value).toString('base64'), enumerable: true,
+			});
+		} else Object.defineProperty(plain, key, { value, enumerable: true });
 	}
-	pluginsStore.set('settings', { ...pluginsStore.get('settings'), [id]: plain });
-	pluginsStore.set('secrets', { ...pluginsStore.get('secrets'), [id]: secrets });
+	pluginsStore.set({ settings: { ...settings, [id]: plain }, secrets: { ...storedSecrets, [id]: secrets } });
 }

@@ -24,7 +24,7 @@ export const plugins: PluginsApi = {
 	getSettings: (id: string) => {
 		return typedInvokeUnwrap(PluginsChannels.getSettings, id);
 	},
-	saveSettings: (id: string, values: Record<string, string>) => {
-		return typedInvokeUnwrap(PluginsChannels.saveSettings, id, values);
+	saveSettings: (id: string, key: string, value: string | null) => {
+		return typedInvokeUnwrap(PluginsChannels.saveSettings, id, key, value);
 	},
 };

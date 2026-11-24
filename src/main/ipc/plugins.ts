@@ -3,6 +3,7 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { AppChannels, PluginsChannels } from '../../shared/ipc_channels_definitions';
 import * as plugins from '../plugins';
+import { configuredPluginSettings } from '../plugins/configured';
 import { refreshProviderCatalog } from '../models';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
@@ -59,19 +60,15 @@ export class PluginsIpc implements IpcModule<PluginsIpcDependencies> {
 		});
 		registerQueryWithEvent(PluginsChannels.getSettings, (event, id: string) => {
 			trusted.assert(event);
-			return plugins.pluginSettings(id);
+			return configuredPluginSettings(id);
 		});
 		registerCommandWithEvent(
 			PluginsChannels.saveSettings,
-			(event, id: string, values: Record<string, string>) => {
+			(event, id: string, key: string, value: string | null) => {
 				trusted.assert(event);
-				if (
-					typeof values !== 'object' ||
-					values === null ||
-					Object.values(values).some((value) => typeof value !== 'string')
-				)
-					throw new Error('Plugin settings must be a map of strings.');
-				plugins.savePluginSettings(id, values);
+				if (typeof key !== 'string' || (value !== null && typeof value !== 'string'))
+					throw new Error('Invalid plugin setting.');
+				plugins.savePluginSettings(id, { [key]: value });
 				changed();
 			}
 		);

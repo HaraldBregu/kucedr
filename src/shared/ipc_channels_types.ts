@@ -530,9 +530,9 @@ export interface PluginsInvokeChannelMap {
 	};
 	[PluginsChannels.remove]: { args: [id: string]; result: void };
 	[PluginsChannels.setEnabled]: { args: [id: string, enabled: boolean]; result: void };
-	[PluginsChannels.getSettings]: { args: [id: string]; result: Record<string, string> };
+	[PluginsChannels.getSettings]: { args: [id: string]; result: string[] };
 	[PluginsChannels.saveSettings]: {
-		args: [id: string, values: Record<string, string>];
+		args: [id: string, key: string, value: string | null];
 		result: void;
 	};
 }
