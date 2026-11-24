@@ -120,8 +120,8 @@ it.each(([undefined, 'task', 'health', 'child'] as const).flatMap((source) => ['
 	}
 });
 
-it.each(['../outside.txt', '../workspace-copy/outside.txt'])('asks before writing %s outside the workspace', async (target) => {
-	expect((await execute(writeTool, { path: target, content: 'outside' })).at(-1)).toMatchObject({ type: 'tool_permission_request', reason: 'outside_trusted_location' });
+it.each(['../outside.txt', '../workspace-copy/outside.txt'])('denies writing %s into protected app data outside the workspace', async (target) => {
+	expect((await execute(writeTool, { path: target, content: 'outside' })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'deny' });
 	expect(fs.existsSync(path.resolve(workspace, target))).toBe(false);
 });
 
