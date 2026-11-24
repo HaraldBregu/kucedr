@@ -19,6 +19,9 @@ Related areas: the [Network shield](SHIELD.md) supplies the "what leaves the mac
 1.1 and guards stored keys on the way out; [Memory and knowledge](MEMORY.md) covers seeing and
 editing what the agent remembers.
 
+Plugin credentials saved as plaintext by older builds are hidden from Settings. Replacing one
+seals it with the OS keychain, and resetting it clears it from the plugin store.
+
 ## App-wide Privacy Mode
 
 Configure a local, unauthenticated SOCKS5 endpoint as `socks5://127.0.0.1:PORT` in Browser
