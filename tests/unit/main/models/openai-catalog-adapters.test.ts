@@ -69,10 +69,12 @@ describe('current OpenAI model contracts', () => {
 	it('maps file language hints to languages without legacy temperature', async () => {
 		const create = jest.fn().mockResolvedValue({ text: 'Hello' });
 		const client = { audio: { transcriptions: { create } } } as unknown as OpenAI;
-		await createOpenAISttAdapter({
+		await createTranscriptionsSttAdapter({
 			id: 'openai',
 			name: 'OpenAI',
 			apiKey: 'key',
+			baseURL: 'https://api.openai.com/v1',
+			protocol: 'transcriptions-intent',
 			clientFactory: () => client,
 		}).transcribe({
 			providerId: 'openai',
