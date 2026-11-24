@@ -452,6 +452,32 @@ input[type='range']:hover::-moz-range-thumb {
 	}
 }
 
+@media (prefers-contrast: more) {
+	:root {
+		--muted-foreground: oklch(0.4 0 0);
+		--border: oklch(0.45 0 0);
+		--input: oklch(0.45 0 0);
+		--ring: oklch(0.2 0 0);
+		--sidebar-border: oklch(0.45 0 0);
+		--sidebar-ring: oklch(0.2 0 0);
+	}
+
+	.dark {
+		--muted-foreground: oklch(0.88 0 0);
+		--border: oklch(0.7 0 0);
+		--input: oklch(0.7 0 0);
+		--ring: oklch(0.95 0 0);
+		--sidebar-border: oklch(0.7 0 0);
+		--sidebar-ring: oklch(0.95 0 0);
+	}
+}
+
+@media (forced-colors: active) {
+	:focus-visible {
+		outline-color: Highlight !important;
+	}
+}
+
 /* Sharper focus ring for keyboard navigation */
 :focus-visible {
 	outline: 2px solid var(--ring);
