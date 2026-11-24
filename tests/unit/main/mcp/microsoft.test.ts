@@ -48,7 +48,7 @@ it('reports missing configuration before connecting and leaves Learn available',
 it.each(['common', '../other', '00000000-0000-0000-0000-000000000000'])(
 	'rejects invalid tenant IDs: %s',
 	(value) => {
-		process.env.MICROSOFT_TENANT_ID = value;
+		settings = { tenant_id: value };
 		expect(() => parseMcpUrl(template)).toThrow('nonzero Microsoft Entra');
 	}
 );
