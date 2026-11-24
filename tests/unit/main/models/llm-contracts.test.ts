@@ -1,6 +1,6 @@
 import { LlmModel } from '../../../../src/main/models/adapters/llm/llm_model';
 import {
-	llmBuildAnthropicMessages,
+	llmBuildMessages,
 	llmToTranscriptEntry,
 } from '../../../../src/main/models/adapters/llm/llm_shared';
 import type { LlmEvent } from '../../../../src/main/models/adapters/llm/llm_types';
@@ -32,7 +32,7 @@ it('preserves signed Anthropic thinking when returning tool results', async () =
 		content: [{ type: 'provider_item', provider: 'anthropic', item: thinking }],
 		toolCalls: [{ id: 'tool', name: 'lookup', args: {}, result: { content: 'done' } }],
 	});
-	expect(llmBuildAnthropicMessages(history)[0].content).toEqual([
+	expect(llmBuildMessages(history)[0].content).toEqual([
 		thinking,
 		{ type: 'tool_use', id: 'tool', name: 'lookup', input: {} },
 	]);
