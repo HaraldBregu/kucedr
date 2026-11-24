@@ -74,6 +74,12 @@ it('stays blocked without an app route and does not fall back to the saved brows
 	expect(mockSetProxy).not.toHaveBeenCalled();
 });
 
+it('keeps the guard closed when Electron rejects the proxy settings', async () => {
+	mockSetProxy.mockRejectedValueOnce(new Error('Proxy settings rejected'));
+	await expect(prepare('app-proxy-error', 'direct')).rejects.toThrow('Proxy settings rejected');
+	expect(jest.mocked(guard).mock.calls[0][2]()).toBe(false);
+});
+
 it('rejects the independent Tor route while Privacy Mode is on', async () => {
 	await expect(prepare('app-tor', 'tor')).rejects.toThrow('Tor tabs are unavailable');
 	expect(jest.mocked(guard).mock.calls[0][2]()).toBe(false);
@@ -104,6 +110,17 @@ it('passes only image data to the renderer after fetching HTTPS in the tab sessi
 	expect(fetch).toHaveBeenCalledWith('https://example.com/icon.png', {
 		signal: expect.any(AbortSignal),
 	});
+});
+
+it('cancels a favicon response once its byte limit is exceeded', async () => {
+	const cancel = jest.fn();
+	const body = new ReadableStream({
+		start: (controller) => controller.enqueue(new Uint8Array(200_001)),
+		cancel,
+	});
+	const fetch = jest.fn().mockResolvedValue(new Response(body, { headers: { 'content-type': 'image/png' } }));
+	await expect(favicon({ fetch } as unknown as Session, 'https://example.com/icon.png')).resolves.toBeUndefined();
+	expect(cancel).toHaveBeenCalledTimes(1);
 });
 
 it('waits for the route before restoring a previously open tab', async () => {
