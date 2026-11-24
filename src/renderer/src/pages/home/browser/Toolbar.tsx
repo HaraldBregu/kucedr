@@ -173,6 +173,13 @@ export function BrowserToolbar({
 						<Icon />
 					</Button>
 				))}
+				{look ? (
+					<Badge variant="secondary" title={look.hint} className="h-7 shrink-0 gap-1 px-2.5" style={NO_DRAG}>
+						<look.icon aria-hidden="true" />
+						{look.label}
+						<span className="sr-only">. {look.hint}</span>
+					</Badge>
+				) : null}
 				<div className="relative min-w-0 flex-1" style={NO_DRAG}>
 					<form
 						onSubmit={(event) => {
