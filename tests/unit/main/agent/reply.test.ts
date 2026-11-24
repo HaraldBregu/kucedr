@@ -23,8 +23,6 @@ jest.mock('../../../../src/main/agent/runner/run_stream', () => ({
 }));
 
 import { Agent } from '../../../../src/main/agent/agent';
-import { readGoal } from '../../../../src/main/agent/goal/read';
-import { sessionDir } from '../../../../src/main/agent/session';
 import type { ExecSandbox } from '../../../../src/main/agent/sandbox';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
