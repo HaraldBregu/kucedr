@@ -71,7 +71,10 @@ export async function* collectRagSources(
 	};
 	const loading: Promise<RagSource | RagSkipReason>[] = [];
 	for (let done = 0; done < listed.length; done += 1) {
-		while (loading.length < KNOWLEDGE_EXTRACT_CONCURRENCY && done + loading.length < listed.length) {
+		while (
+			loading.length < KNOWLEDGE_EXTRACT_CONCURRENCY &&
+			done + loading.length < listed.length
+		) {
 			const task = load(done + loading.length);
 			task.catch(() => undefined);
 			loading.push(task);
