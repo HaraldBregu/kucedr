@@ -75,7 +75,8 @@ describe('search service execution', () => {
 		const [url, init] = (global.fetch as jest.Mock).mock.calls[0] as [URL | string, RequestInit];
 		expect(String(url)).toBe('https://search.example/api?q=latest&limit=3');
 		expect(init.headers).toEqual(expect.objectContaining({ 'X-Api-Key': 'custom-key' }));
-		expect(init.signal).toBe(controller.signal);
+		controller.abort();
+		expect(init.signal?.aborted).toBe(true);
 	});
 
 	it('executes a different service using its own POST metadata', async () => {
