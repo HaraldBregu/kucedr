@@ -322,12 +322,7 @@ export class SqliteVectorStore implements VectorStore {
 		validateVector(vector, index.dimensions);
 		if (!Number.isFinite(topK)) throw new Error('Knowledge result count must be finite.');
 		const count = Math.max(1, Math.min(Math.trunc(topK), 100));
-		const key = `${indexName}\0${index.generation}\0${index.completedAt}`;
-		if (this.matrix?.key !== key) {
-			this.matrix = undefined;
-			this.matrix = this.loadMatrix(indexName, index.dimensions, key);
-		}
-		const { ids, dimensions, values } = this.matrix;
+		const { ids, dimensions, values } = this.load(index);
 		const query = normalize(Float32Array.from(vector));
 		const hits: VectorHit[] = [];
 		for (let row = 0; row < ids.length; row += 1) {
