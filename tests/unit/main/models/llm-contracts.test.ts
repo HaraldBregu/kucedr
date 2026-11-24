@@ -45,8 +45,8 @@ it('preserves GIF image data in compatibility chat requests', async () => {
 	});
 	const events: LlmEvent[] = [];
 	for await (const event of model.stream({
-		provider: { id: 'cohere', apiKey: 'key' },
-		model: 'command-a-vision-07-2025',
+		provider: { id: 'compatible', apiKey: 'key' },
+		model: 'model',
 		messages: [
 			{ role: 'user', content: [{ type: 'image', mimeType: 'image/gif', base64: 'R0lGODlh' }] },
 		],
