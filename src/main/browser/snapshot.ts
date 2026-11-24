@@ -24,7 +24,8 @@ export function saveTabs(final = false): void {
 		}[] = [];
 		for (const tab of [...paneTabs.values()].sort((a, b) => a.position - b.position)) {
 			const contents = tab.view.webContents;
-			if (tab.chat === undefined || contents.isDestroyed()) continue;
+			// Private, Tor and proxy tabs leave nothing behind, so they are not restored.
+			if (tab.chat === undefined || tab.route !== 'direct' || contents.isDestroyed()) continue;
 			const all = tab.pending ?? {
 				entries: contents.navigationHistory.getAllEntries(),
 				index: contents.navigationHistory.getActiveIndex(),
