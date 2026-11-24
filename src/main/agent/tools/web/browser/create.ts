@@ -6,6 +6,7 @@ import { drop, readCapture } from './capture';
 import { visit } from '../../../../browser/visit';
 import { acting, pane, paneEvents, paneTabs, type BrowserTab } from './pane';
 import { prepare } from './prepare';
+import { answerDownload } from './release';
 
 const PARTITION = 'persist:agent-browser';
 const CONSOLE_BUFFER_MAX = 100;
