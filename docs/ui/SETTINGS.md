@@ -129,6 +129,8 @@ Assistant is the central model and behavior page. It should provide collapsible 
 Only search engines with stored credentials should be selectable. The same page should link to
 Chat history, Health, Permissions, Knowledge, and Data management.
 
+Run budgets set optional turn and token limits for each new main chat run. Leave either field empty to disable that limit. Token checks use estimated input before sending and provider usage when available afterward. When the next call exceeds the allowance, the user can stop or continue for one call. Background work, delegated agents and automatic history compaction use separate model calls.
+
 ### Voice
 
 Voice settings configure realtime conversation and provide access to voice history and tool settings. Coding is currently marked **Soon** in the navigation catalog, and `/code` and `/settings/code` redirect to Workspace.
