@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
 
 jest.mock('react-i18next', () => ({
+	initReactI18next: { type: '3rdParty', init: () => undefined },
 	useTranslation: () => ({ t: (key: string): string => key }),
 }));
 
