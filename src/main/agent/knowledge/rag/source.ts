@@ -55,10 +55,17 @@ export async function* collectRagSources(
 			return 'unreadable';
 		}
 		if (typeof segments === 'string') return segments;
-		if (segments.reduce((length, segment) => length + segment.text.length, 0) > KNOWLEDGE_MAX_FILE_TEXT)
+		if (
+			segments.reduce((length, segment) => length + segment.text.length, 0) >
+			KNOWLEDGE_MAX_FILE_TEXT
+		)
 			return 'too-large';
 		if (!segments.some((segment) => /\S/.test(segment.text))) return 'empty';
-		if (segments.some((segment) => isKnowledgeSourceSecret({ relativePath: shown, content: segment.text })))
+		if (
+			segments.some((segment) =>
+				isKnowledgeSourceSecret({ relativePath: shown, content: segment.text })
+			)
+		)
 			return 'credential';
 		return { source, sourceIndex, file, size, modified, segments };
 	};
