@@ -30,7 +30,13 @@
 	"copyright": "© 2026 Kucedr Project. All rights reserved.",
 	"type": "module",
 	"license": "MIT",
-	"main": "./out/main/index.js",
+	"links": {
+		"terms": "https://www.kucedr.com/terms-and-conditions/",
+		"privacy": "https://www.kucedr.com/privacy-policy/",
+		"license": "https://github.com/HaraldBregu/kucedr/blob/main/LICENSE",
+		"security": "https://github.com/HaraldBregu/kucedr/blob/main/SECURITY.md"
+	},
+	"main":"./out/main/index.js",
 	"scripts": {
 		"postinstall": "install-electron --no",
 		"dev": "cross-env NODE_ENV=development electron-vite dev --inspect --sourcemap",
@@ -149,6 +155,7 @@
 		"node-pty": "^1.1.0",
 		"openai": "^7.56.0",
 		"orb-ui": "^0.10.0",
+		"pdfjs-dist": "6.5.438",
 		"playwright-core": "^1.64.1",
 		"react": "^19.3.0",
 		"react-day-picker": "^10.0.1",
