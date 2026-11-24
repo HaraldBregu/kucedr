@@ -9,7 +9,7 @@ jest.spyOn(catalog, 'providerModels').mockImplementation((provider) => {
 it.each([true, false])('sends supported effort to OpenAI with streaming=%s', async (streaming) => {
 	const create = jest.fn().mockImplementation(async () => streaming ? (async function* () { yield* []; })() : { id: 'r', output: [], usage: {} });
 	const model = new LlmModel({ openAIClientFactory: () => ({ responses: { create } }) as never });
-	for await (const _ of model.stream({ provider: { id: 'openai', apiKey: 'key' }, model: 'supported', messages: [{ role: 'user', content: 'hi' }], maxTokens: 100, effort: 'none', streaming })) {}
+	for await (const _event of model.stream({ provider: { id: 'openai', apiKey: 'key' }, model: 'supported', messages: [{ role: 'user', content: 'hi' }], maxTokens: 100, effort: 'none', streaming })) { void _event; }
 	expect(create.mock.calls[0][0].reasoning.effort).toBe('low');
 });
 
