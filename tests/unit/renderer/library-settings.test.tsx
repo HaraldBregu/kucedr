@@ -120,7 +120,7 @@ it('shows the view controls and file actions in the header with list selected by
 
 	await userEvent
 		.setup()
-		.click(within(header).getByRole('button', { name: 'settings.library.collections' }));
+		.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 	expect(document.querySelectorAll('article')).toHaveLength(1);
 });
 
