@@ -78,7 +78,7 @@ export default function PrivacyPage(): React.JSX.Element {
 						title={t('settings.browser.connections.proxy')}
 						description={t('settings.privacy.proxyDescription')}
 						actions={
-							<Link to="/settings/browser" className={buttonVariants({ variant: 'outline' })}>
+							<Link to="/settings/browser#connections" className={buttonVariants({ variant: 'outline' })}>
 								{t('settings.privacy.openConnections')}
 							</Link>
 						}

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import type { BrowserConnections } from '@shared/browser';
 import type {
@@ -25,6 +25,8 @@ const PICKS_FILES_AND_FOLDERS_TOGETHER = navigator.platform.startsWith('Mac');
 
 export default function BrowserSettingsPage(): React.JSX.Element {
 	const { t } = useTranslation();
+	const { hash } = useLocation();
+	const connectionsRow = useRef<HTMLDivElement>(null);
 	const [sources, setSources] = useState<BrowserSource[] | null>(null);
 	const [skipped, setSkipped] = useState<string[]>([]);
 	const [kinds, setKinds] = useState({ bookmarks: true, history: true, settings: true });
@@ -49,6 +51,12 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 		void window.browserPane.passwordsStatus().then(setPasswords);
 		void window.browserPane.connections().then(setRoutes);
 	}, []);
+	const connectionsLoaded = routes !== null;
+	useEffect(() => {
+		if (connectionsLoaded && hash === '#connections') {
+			connectionsRow.current?.scrollIntoView({ block: 'start' });
+		}
+	}, [connectionsLoaded, hash]);
 	const saveRoutes = async (): Promise<boolean> => {
 		if (!routes) return false;
 		try {
@@ -280,7 +288,7 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 			{routes ? (
 				<SettingsPanel>
 					<SettingsRow
-						title={t('settings.browser.connections.title')}
+						title={<span ref={connectionsRow}>{t('settings.browser.connections.title')}</span>}
 						description={t('settings.browser.connections.description')}
 					/>
 					<SettingsRow
