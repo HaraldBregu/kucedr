@@ -2,12 +2,19 @@ import { app, session } from 'electron';
 import type { BrowserRoute } from '../../../../../shared/browser';
 import { connections } from '../../../../browser/connections';
 import { findTor } from '../../../../browser/tor';
+import { getPrivacyRoute, isPrivacyEnabled } from '../../../../privacy/state';
 import { guard } from './guard';
 import { holdDownload } from './hold';
 
 const prepared = new Map<string, Promise<void>>();
 
 async function proxyRules(route: BrowserRoute): Promise<string> {
+	if (isPrivacyEnabled()) {
+		if (route === 'tor') throw new Error('Tor tabs are unavailable while Privacy Mode is on.');
+		const proxy = getPrivacyRoute();
+		if (!proxy) throw new Error('Privacy Mode is blocking online access.');
+		return proxy;
+	}
 	if (route === 'tor') {
 		const address = await findTor();
 		if (!address)
@@ -36,7 +43,7 @@ export function prepare(partition: string, route: BrowserRoute): Promise<void> {
 	browsing.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
 	browsing.setPermissionCheckHandler(() => false);
 	browsing.on('will-download', (event, item, contents) => holdDownload(event, item, contents, route));
-	const routed = route === 'tor' || route === 'proxy';
+	const routed = isPrivacyEnabled() || route === 'tor' || route === 'proxy';
 	let open = !routed;
 	guard(browsing, routed, () => open);
 	const ready = routed

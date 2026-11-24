@@ -15,12 +15,15 @@ export async function command(request: BrowserPaneCommand): Promise<void> {
 	const contents = tab.view.webContents;
 	switch (request.command) {
 		case 'back':
+			await tab.ready;
 			contents.navigationHistory.goBack();
 			break;
 		case 'forward':
+			await tab.ready;
 			contents.navigationHistory.goForward();
 			break;
 		case 'reload':
+			await tab.ready;
 			contents.reload();
 			break;
 		case 'stop':

@@ -1,16 +1,17 @@
 import { session, WebContentsView } from 'electron';
 import type { BrowserRoute } from '../../../../../shared/browser';
+import { visit } from '../../../../browser/visit';
+import { isPrivacyEnabled } from '../../../../privacy/state';
 import { resetAutofill } from './autofill';
 import { watchMouseButtons } from './buttons';
 import { drop, readCapture } from './capture';
-import { visit } from '../../../../browser/visit';
+import { favicon } from './favicon';
 import { acting, pane, paneEvents, paneTabs, type BrowserTab } from './pane';
 import { prepare } from './prepare';
 import { answerDownload } from './release';
 
 const PARTITION = 'persist:agent-browser';
 const CONSOLE_BUFFER_MAX = 100;
-const FAVICON_MAX_BYTES = 200_000;
 let disposable = 0;
 
 // Direct tabs share the profile with the user's logins. Every other tab gets its own in-memory
@@ -21,6 +22,7 @@ export function createTab(
 	route: BrowserRoute = 'direct',
 	partition = route === 'direct' ? PARTITION : `${route}-${++disposable}`
 ): BrowserTab {
+	const ready = prepare(partition, route);
 	const view = new WebContentsView({
 		webPreferences: {
 			partition,
@@ -36,7 +38,7 @@ export function createTab(
 		logs: [],
 		route,
 		partition,
-		ready: prepare(partition, route),
+		ready,
 		blocked: [],
 		chat,
 		owner,
@@ -53,7 +55,9 @@ export function createTab(
 		changed();
 	});
 	contents.setWebRTCIPHandlingPolicy(
-		route === 'tor' || route === 'proxy' ? 'disable_non_proxied_udp' : 'default_public_interface_only'
+		isPrivacyEnabled() || route === 'tor' || route === 'proxy'
+			? 'disable_non_proxied_udp'
+			: 'default_public_interface_only'
 	);
 	contents.debugger.attach('1.3');
 	void contents.debugger
@@ -63,7 +67,10 @@ export function createTab(
 		if (/^https?:/i.test(url)) {
 			const popup = createTab(tab.chat, tab.owner, route, partition);
 			popup.agent = tab.agent;
-			void popup.view.webContents.loadURL(url).catch(() => undefined);
+			const target = popup.view.webContents;
+			void popup.ready.then(() => {
+				if (!target.isDestroyed()) return target.loadURL(url);
+			}).catch(() => undefined);
 		}
 		return { action: 'deny' };
 	});
@@ -88,22 +95,12 @@ export function createTab(
 	contents.on('page-favicon-updated', (_event, icons) => {
 		const icon = icons.find((candidate) => /^https?:|^data:/i.test(candidate));
 		if (!icon) return;
-		// The renderer's CSP serves https and data icons directly; http (localhost) icons it
-		// blocks, so those are fetched in the browsing session and passed on as data.
-		if (/^https:|^data:/i.test(icon)) {
-			tab.icon = icon;
-			changed();
-			return;
-		}
 		const page = contents.getURL();
-		void contents.session
-			.fetch(icon)
-			.then(async (response) => {
-				const bytes = Buffer.from(await response.arrayBuffer());
-				if (!response.ok || bytes.length > FAVICON_MAX_BYTES || contents.isDestroyed()) return;
-				if (contents.getURL() !== page) return;
-				const type = response.headers.get('content-type')?.split(';')[0] || 'image/x-icon';
-				tab.icon = `data:${type};base64,${bytes.toString('base64')}`;
+		void tab.ready
+			.then(() => favicon(contents.session, icon))
+			.then((data) => {
+				if (!data || contents.isDestroyed() || contents.getURL() !== page) return;
+				tab.icon = data;
 				changed();
 			})
 			.catch(() => undefined);
