@@ -18,6 +18,7 @@ function ChatContainerRoot({ children, className, ...props }: ChatContainerRootP
 			resize="smooth"
 			initial="instant"
 			role="log"
+			aria-live="off"
 			{...props}
 		>
 			{children}
