@@ -6,7 +6,12 @@ const model = (id: string, inputTemplates?: Record<string, string>) =>
 		id,
 		name: 'Test Model',
 		provider: { name: 'Test' },
-		metadata: { documentationUrl: '', protocol: 'batch-embed-contents', inputs: {}, inputTemplates },
+		metadata: {
+			documentationUrl: '',
+			protocol: 'batch-embed-contents',
+			inputs: {},
+			inputTemplates,
+		},
 	}) as unknown as CatalogModel;
 
 beforeEach(() => {
