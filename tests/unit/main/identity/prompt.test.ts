@@ -17,10 +17,9 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		workspacePath(config);
 		const file = path.join(config.location, 'AGENTS.md');
 		await writeFile(file, 'Static instructions must not be used');
-		const first = await buildWorkspaceContext(config, 'full', 'Remembered preference');
+		const first = await buildWorkspaceContext(config, 'full');
 		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 		expect(first).toContain('Missing profile content: identity, soul, user');
-		expect(first).not.toContain('Remembered preference');
 		await updateSoul({ tone: 'Calm and direct', boundaries: 'Respect privacy' });
 		const partial = await buildWorkspaceContext(config);
 		expect(partial).toContain('Missing profile content: identity, user');
