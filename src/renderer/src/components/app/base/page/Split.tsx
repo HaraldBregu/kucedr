@@ -52,6 +52,13 @@ export function Split({
 			}
 			{...props}
 		>
+			<button
+				type="button"
+				className="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus-visible:ring-2 focus-visible:ring-ring"
+				onClick={() => document.getElementById('split-pane-main')?.focus()}
+			>
+				Skip to content
+			</button>
 			{isMobile ? (
 				<Sheet
 					open={state.sidebarOpenMobile}
