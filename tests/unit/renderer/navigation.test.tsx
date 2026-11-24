@@ -199,7 +199,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(returnToChat).toHaveAttribute('href', '/home');
 	expect(within(sidebar as HTMLElement).getAllByRole('link')[0]).toBe(returnToChat);
 	expect(
-		within(workspace as HTMLElement).getByRole('navigation', {
+		screen.getByRole('navigation', {
 			name: 'settings.breadcrumb.label',
 		})
 	).toBeInTheDocument();
