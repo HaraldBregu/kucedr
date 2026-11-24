@@ -207,7 +207,7 @@ it.each(['approve', 'approve_always', 'reject'] as const)('records %s for an out
 });
 
 it('reuses a saved outside location for create, edit, move, delete, undo and redo across runs', async () => {
-	const directory = path.join(userDataLocation(), 'trusted-outside');
+	const directory = path.join(outsideRoot, 'trusted-outside');
 	fs.mkdirSync(directory, { recursive: true });
 	const permissions = getPermissions();
 	setPermissions({ ...permissions, write: { ...permissions.write, allow: [...permissions.write.allow, { root: realPath(directory), recursive: true }] } });
