@@ -120,6 +120,8 @@ export interface ModelMetadata {
 	readonly promptField?: string;
 	/** Instruction prefixes; `{text}` is replaced by the input text. */
 	readonly inputTemplates?: { readonly query?: string; readonly document?: string };
+	/** Embedding: requests the provider accepts at the same time while indexing. */
+	readonly concurrency?: number;
 	readonly harness?: ModelHarness;
 	readonly families?: readonly ModelFamily[];
 }
