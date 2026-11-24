@@ -21,10 +21,6 @@ beforeEach(() => {
 
 afterEach(() => {
 	global.fetch = originalFetch;
-	if (originalClientId === undefined) delete process.env.GOOGLE_CLIENT_ID;
-	else process.env.GOOGLE_CLIENT_ID = originalClientId;
-	if (originalSecret === undefined) delete process.env.GOOGLE_CLIENT_SECRET;
-	else process.env.GOOGLE_CLIENT_SECRET = originalSecret;
 	jest.clearAllMocks();
 });
 
