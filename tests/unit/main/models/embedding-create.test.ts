@@ -72,19 +72,25 @@ it.each(
 	await expect(createEmbedding({ texts: ['first'] })).rejects.toThrow('malformed embeddings');
 });
 
-it('permits the explicitly selected local BGE endpoint for Knowledge without an API key', async () => {
+it('permits an explicitly selected local embedding model for Knowledge without an API key', async () => {
 	getProvider.mockReturnValue(undefined);
+	findModel.mockReturnValue({
+		id: 'local-embedding',
+		location: 'local',
+		url: 'http://localhost:8080/embeddings',
+		provider: { name: 'Local' },
+	});
 	generateEmbeddings.mockResolvedValue([[0.1, 0.2]]);
 	await expect(
 		new SelectedEmbeddingProvider().embed({
 			texts: ['document'],
 			inputType: 'document',
-			providerId: 'bge',
-			modelId: 'bge-m3',
+			providerId: 'local',
+			modelId: 'local-embedding',
 		})
-	).resolves.toMatchObject({ providerId: 'bge', modelId: 'bge-m3' });
+	).resolves.toMatchObject({ providerId: 'local', modelId: 'local-embedding' });
 	expect(generateEmbeddings).toHaveBeenCalledWith(
-		expect.objectContaining({ apiKey: '', modelId: 'bge-m3' })
+		expect.objectContaining({ apiKey: '', model: expect.objectContaining({ id: 'local-embedding' }) })
 	);
 });
 
