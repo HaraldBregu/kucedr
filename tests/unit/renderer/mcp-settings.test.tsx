@@ -37,6 +37,10 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'mcp', { configurable: true, value: mcpApi });
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: { mcps: jest.fn().mockResolvedValue([]) },
+	});
 	mcpApi.registry.mockResolvedValue({
 		servers: [
 			{
