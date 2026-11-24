@@ -55,6 +55,12 @@ beforeEach(() => {
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: {
+			themes: jest.fn().mockResolvedValue([]),
+			getSelectedTheme: jest.fn().mockResolvedValue(null),
+			onThemesChanged: jest.fn(() => jest.fn()),
+			getSidebarTranslucency: jest.fn().mockResolvedValue(false),
+			onThemeModeChanged: jest.fn(() => jest.fn()),
+			getNotificationsEnabled: jest.fn().mockResolvedValue(true),
 			getTrayEnabled: jest.fn().mockResolvedValue(true),
 			setTrayEnabled: jest.fn().mockResolvedValue(undefined),
 			getTrayClickAction: jest.fn().mockResolvedValue('toggle-chat'),
