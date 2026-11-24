@@ -13,7 +13,12 @@ export function knowledgeCard(): string {
 		store = ragVectorStore();
 		const index = store.getIndex(configuration.indexName);
 		if (!index) return '';
-		const key = [index.indexName, index.generation, index.completedAt, ...configuration.folders].join('\0');
+		const key = [
+			index.indexName,
+			index.generation,
+			index.completedAt,
+			...configuration.folders,
+		].join('\0');
 		if (cached?.key === key) return cached.card;
 		const { chunks, paths } = store.summary(index.indexName);
 		const formats = new Map<string, number>();
