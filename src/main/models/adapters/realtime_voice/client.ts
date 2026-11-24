@@ -1,5 +1,7 @@
+import https from 'node:https';
 import OpenAI from 'openai';
 import { OpenAIRealtimeWS } from 'openai/realtime/ws';
+import { privacyTransportInstalled } from '../../../privacy/transport';
 import type {
 	RealtimeVoiceModelSpec,
 	RealtimeVoiceProviderSpec,
@@ -14,5 +16,11 @@ export function createRealtimeSocket(
 		apiKey: provider.apiKey,
 		baseURL: model.url,
 	});
-	return new OpenAIRealtimeWS({ model: model.id }, client) as unknown as RealtimeVoiceSocket;
+	return new OpenAIRealtimeWS(
+		{
+			model: model.id,
+			...(privacyTransportInstalled ? { options: { agent: https.globalAgent } } : {}),
+		},
+		client
+	) as unknown as RealtimeVoiceSocket;
 }
