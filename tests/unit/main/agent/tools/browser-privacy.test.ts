@@ -25,10 +25,10 @@ const mockLaunch = jest.fn();
 jest.mock('electron', () => ({
 	app: { getName: () => 'Kucedr' },
 	session: { fromPartition: () => mockSession },
-	shell: { openExternal: mockOpenExternal },
+	shell: { openExternal: (...args: unknown[]) => mockOpenExternal(...args) },
 }));
-jest.mock('node:dns/promises', () => ({ lookup: mockLookup }));
-jest.mock('playwright-core', () => ({ chromium: { launchPersistentContext: mockLaunch } }));
+jest.mock('node:dns/promises', () => ({ lookup: (...args: unknown[]) => mockLookup(...args) }));
+jest.mock('playwright-core', () => ({ chromium: { launchPersistentContext: (...args: unknown[]) => mockLaunch(...args) } }));
 jest.mock('../../../../../src/main/agent/tools/web/browser/guard', () => ({ guard: jest.fn() }));
 jest.mock('../../../../../src/main/agent/tools/web/browser/hold', () => ({
 	holdDownload: jest.fn(),
