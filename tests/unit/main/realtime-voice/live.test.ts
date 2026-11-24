@@ -34,7 +34,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		jest.useFakeTimers();
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string }> = [];
-		const pending = new OpenAILiveVoiceAdapter(
+		const pending = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => socket,
@@ -67,7 +67,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 	it('restores history and refreshes context from incoming transcripts outside instructions', async () => {
 		const socket = new FakeLiveSocket();
 		const contextForTurn = jest.fn(async () => 'User prefers concise answers.');
-		const adapter = new OpenAILiveVoiceAdapter(
+		const adapter = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => socket,
@@ -115,7 +115,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		jest.useFakeTimers();
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string; itemId?: string; transcript?: string }> = [];
-		const pending = new OpenAILiveVoiceAdapter(
+		const pending = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => socket,
@@ -150,7 +150,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		jest.useFakeTimers();
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string }> = [];
-		const adapter = new OpenAILiveVoiceAdapter(
+		const adapter = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => socket,
@@ -201,7 +201,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		jest.useFakeTimers();
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string; itemId?: string; transcript?: string }> = [];
-		const adapter = new OpenAILiveVoiceAdapter(
+		const adapter = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => socket,
@@ -245,7 +245,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 	it('interrupts Live speech with the supported instruction command and closes after transport failure', async () => {
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string }> = [];
-		const adapter = new OpenAILiveVoiceAdapter(
+		const adapter = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => socket,
@@ -269,7 +269,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 		expect(socket.closed).toBe(true);
 		expect(events).toContainEqual({ type: 'closed' });
 		const failing = new FakeLiveSocket();
-		const pending = new OpenAILiveVoiceAdapter(
+		const pending = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => failing,
@@ -285,7 +285,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 
 	it('rejects and closes immediately when setup returns a protocol error', async () => {
 		const socket = new FakeLiveSocket();
-		const adapter = new OpenAILiveVoiceAdapter(
+		const adapter = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => socket,
@@ -308,7 +308,7 @@ describe('OpenAILiveVoiceAdapter', () => {
 	it('surfaces an abnormal provider close after setup', async () => {
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string; message?: string }> = [];
-		const adapter = new OpenAILiveVoiceAdapter(
+		const adapter = new LiveVoiceAdapter(
 			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
 			liveModel,
 			() => socket,
