@@ -93,7 +93,7 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		// the agent is not driving it, so the list follows the user, not the agent.
 		setInterval(() => {
 			for (const tab of new Set(paneShown.values()))
-				if (!tab.view.webContents.isDestroyed() && !(tab.chat && acting.has(tab.chat)))
+				if (tab.route === 'direct' && !tab.view.webContents.isDestroyed() && !(tab.chat && acting.has(tab.chat)))
 					void pollAutofill(tab);
 		}, 250).unref();
 
