@@ -1,5 +1,6 @@
 import {
 	Download,
+	Folders,
 	HardDrive,
 	Layers,
 	Library,
