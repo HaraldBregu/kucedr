@@ -261,7 +261,7 @@
 			"both": "Facts and summaries"
 		},
 		"title": "Settings",
-		"returnToChat": "Return to Home",
+		"returnToChat": "Back to home",
 		"description": "Configure your application preferences",
 		"search": "Search",
 		"searchLabel": "Search settings",
