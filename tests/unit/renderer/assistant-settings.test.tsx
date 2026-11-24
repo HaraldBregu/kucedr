@@ -307,7 +307,11 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'services', {
 		configurable: true,
-		value: { list: jest.fn().mockResolvedValue([]) },
+		value: {
+			list: jest.fn().mockResolvedValue([
+				{ id: 'brave', name: 'Brave', type: 'SEARCH_ENGINE', provider: { id: 'brave', name: 'Brave' } },
+			]),
+		},
 	});
 	Object.defineProperty(window, 'tasks', {
 		configurable: true,
