@@ -414,7 +414,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 													<div className="truncate text-[13px] font-medium leading-4 text-foreground">
 														Search web
 													</div>
-													<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
+													<p className="mt-0.5 truncate text-xs leading-4 text-muted-foreground">
 														{selectedSearchEngineDescription}
 													</p>
 												</div>
