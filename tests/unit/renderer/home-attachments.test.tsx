@@ -278,12 +278,9 @@ describe('Home prompt attachments', () => {
 	it('explains why voice input is disabled when speech-to-text is unavailable', async () => {
 		renderPage();
 
-		const voiceButton = await screen.findByRole('button', {
-			name: 'Choose a speech-to-text provider and model in Settings.',
-		});
+		const voiceButton = await screen.findByRole('button', { name: 'Dictate' });
 		expect(voiceButton).toBeDisabled();
-		expect(voiceButton.parentElement).toHaveAttribute(
-			'data-tooltip',
+		expect(voiceButton).toHaveAccessibleDescription(
 			'Choose a speech-to-text provider and model in Settings.'
 		);
 	});
