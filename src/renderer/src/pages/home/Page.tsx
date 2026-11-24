@@ -974,9 +974,7 @@ function PageContent(): ReactElement {
 					)}
 				>
 					<ModeBackground modes={agent.modes} modeIds={agent.modeIds} status={runStatus} />
-					<span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
-						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
-					</span>
+					<Announcer key={chatSessionId} message={lastMessage} loading={agent.isLoading} />
 					{(!showEmptyConversation || (browserAlive && !browserOpen)) && (
 						<div className="absolute right-2 top-12 z-40 flex items-center gap-1 sm:right-3">
 							{browserAlive && !browserOpen ? (
@@ -1060,7 +1058,13 @@ function PageContent(): ReactElement {
 				</div>
 				{browserOpen && browserCovers ? (
 					<div className="absolute inset-x-0 bottom-0 top-12 z-40 bg-background">
-						<BrowserPane tabs={browser.tabs} acting={browser.acting} onClose={() => setBrowserHidden(true)} />
+						<BrowserPane
+							tabs={browser.tabs}
+							acting={browser.acting}
+							chat={chatSessionId}
+							onStop={agent.stopResponse}
+							onClose={() => setBrowserHidden(true)}
+						/>
 					</div>
 				) : null}
 			</Split>
@@ -1072,7 +1076,13 @@ function PageContent(): ReactElement {
 						className="relative w-px shrink-0 bg-border outline-none after:absolute after:inset-y-0 after:-left-1 after:w-2 hover:bg-ring focus-visible:bg-ring"
 					/>
 					<Panel id="home-browser" defaultSize="45%" minSize={320} className="min-w-0">
-						<BrowserPane tabs={browser.tabs} acting={browser.acting} onClose={() => setBrowserHidden(true)} />
+						<BrowserPane
+							tabs={browser.tabs}
+							acting={browser.acting}
+							chat={chatSessionId}
+							onStop={agent.stopResponse}
+							onClose={() => setBrowserHidden(true)}
+						/>
 					</Panel>
 				</>
 			) : null}
