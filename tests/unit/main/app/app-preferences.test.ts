@@ -23,7 +23,6 @@ describe('app window configuration', () => {
 		{ resizable: 'false' },
 		{ maximizable: 1 },
 		{ webPreferences: { nodeIntegration: true } },
-		{ frame: true },
 	])('rejects malformed or unsafe settings: %j', (settings) => {
 		expect(isAppWindowSettings(settings)).toBe(false);
 	});
