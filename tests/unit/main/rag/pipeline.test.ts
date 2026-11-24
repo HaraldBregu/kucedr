@@ -13,6 +13,18 @@ jest.mock('../../../../src/main/settings_store', () => ({ getProvider: jest.fn()
 jest.mock('../../../../src/main/agent/knowledge/rag/embedding', () => ({
 	SelectedEmbeddingProvider: jest.fn(() => ({ embed })),
 }));
+jest.mock('../../../../src/main/agent/knowledge/rag/scan', () => ({
+	scanRag: async (indexName: string, vector: number[], topK: number) => {
+		const { SqliteVectorStore } = jest.requireActual('../../../../src/main/agent/knowledge/rag/sqlite');
+		const { ragVectorFile } = jest.requireActual('../../../../src/main/agent/knowledge/rag/vector_file');
+		const store = new SqliteVectorStore(ragVectorFile());
+		try {
+			return store.search(indexName, vector, topK);
+		} finally {
+			store.close();
+		}
+	},
+}));
 
 import { indexRag } from '../../../../src/main/agent/knowledge/rag/rag_index';
 import { queryKnowledgeTool } from '../../../../src/main/agent/tools/knowledge/query_knowledge';
@@ -59,9 +71,9 @@ it('indexes local files and serves evidence through Query knowledge across persi
 			'# Refunds\n\nRequest a refund within thirty days.'
 		);
 		await writeFile(path.join(sources, 'delivery.md'), '# Delivery\n\nOrders arrive in five days.');
-		await expect(indexRag([sources], 'fixture')).resolves.toEqual({ files: 2, vectors: 2 });
-		await expect(indexRag([sources], 'fixture')).resolves.toEqual({ files: 2, vectors: 2 });
-		expect(embed).toHaveBeenCalledTimes(2);
+		await expect(indexRag([sources], 'fixture')).resolves.toEqual({ files: 2, vectors: 2, skipped: 0, skippedReasons: {}, skippedFiles: [] });
+		await expect(indexRag([sources], 'fixture')).resolves.toEqual({ files: 2, vectors: 2, skipped: 0, skippedReasons: {}, skippedFiles: [] });
+		expect(embed).toHaveBeenCalledTimes(1);
 		const evidence = JSON.parse(
 			(await queryKnowledgeTool.run({ query: 'refund policy', count: 3 })) as string
 		);
@@ -70,7 +82,7 @@ it('indexes local files and serves evidence through Query knowledge across persi
 			expect.objectContaining({
 				path: 'sources/refunds.md',
 				range: { lineStart: 1, lineEnd: 3 },
-				excerpt: '# Refunds\n\nRequest a refund within thirty days.',
+				excerpt: 'sources/refunds.md\n\n# Refunds\n\nRequest a refund within thirty days.',
 			}),
 		]);
 		await rm(path.join(sources, 'refunds.md'));
@@ -80,7 +92,7 @@ it('indexes local files and serves evidence through Query knowledge across persi
 		);
 		expect(removed).toMatchObject({ route: 'abstain', abstain: true, results: [] });
 		await rm(path.join(sources, 'delivery.md'));
-		await expect(indexRag([sources], 'fixture')).resolves.toEqual({ files: 0, vectors: 0 });
+		await expect(indexRag([sources], 'fixture')).resolves.toEqual({ files: 0, vectors: 0, skipped: 0, skippedReasons: {}, skippedFiles: [] });
 		const requests = embed.mock.calls.length;
 		expect(
 			JSON.parse((await queryKnowledgeTool.run({ query: 'refund policy' })) as string)
