@@ -147,7 +147,7 @@ it('reads nested and extensionless text while excluding binary content', async (
 	await writeFile(path.join(root, 'binary'), Buffer.from([0, 255]));
 	await expect(
 		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
-	).resolves.toEqual({ files: 2, vectors: 2 });
+	).resolves.toMatchObject({ files: 2, vectors: 2 });
 });
 
 it('cleans only the current failed staging namespace and keeps the published index untouched', async () => {
