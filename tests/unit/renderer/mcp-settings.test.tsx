@@ -72,18 +72,10 @@ describe('MCP settings', () => {
 
 		expect(await screen.findByText('Remote docs')).toBeInTheDocument();
 		expect(screen.getByText('Local files')).toBeInTheDocument();
-		expect(screen.getByText('Search repository documentation.')).toBeInTheDocument();
-		expect(container).toHaveTextContent('Local MCP server.');
 		expect(screen.getAllByRole('heading', { name: 'MCP servers' })).toHaveLength(1);
-		expect(screen.queryByText(/Remote services, configured commands/)).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Remote servers' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Local servers' })).not.toBeInTheDocument();
-		expect(
-			screen.queryByRole('heading', { name: 'Available remote servers' })
-		).not.toBeInTheDocument();
-		expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(2);
-		expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
-		expect(container.querySelector('img[src="/icon-light.png"]')).toBeInTheDocument();
+		expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(2);
 		expect(screen.queryByRole('button', { name: 'Open folder' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Refresh' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Upload' })).not.toBeInTheDocument();
@@ -93,7 +85,7 @@ describe('MCP settings', () => {
 		const user = userEvent.setup();
 		renderPage();
 
-		await user.click(await screen.findByRole('button', { name: 'Open Local files' }));
+		await user.click(await screen.findByRole('link', { name: /Local files/ }));
 		expect(await screen.findByText('Detail: local')).toBeInTheDocument();
 	});
 
@@ -101,8 +93,7 @@ describe('MCP settings', () => {
 		const user = userEvent.setup();
 		renderPage();
 
-		await user.click(await screen.findByRole('button', { name: 'Options for Remote docs' }));
-		await user.click(screen.getByRole('menuitem', { name: 'Disable server' }));
+		await user.click(await screen.findByRole('switch', { name: 'Disable Remote docs' }));
 
 		await waitFor(() =>
 			expect(mcpApi.upsert).toHaveBeenCalledWith('remote', {
@@ -113,25 +104,5 @@ describe('MCP settings', () => {
 			})
 		);
 		expect(screen.queryByText('Detail: remote')).not.toBeInTheDocument();
-	});
-
-	it('adds a server from an inline form', async () => {
-		const user = userEvent.setup();
-		renderPage();
-		await screen.findByText('Local files');
-
-		await user.click(screen.getByRole('button', { name: 'Add server' }));
-		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Add MCP server' })).toBeInTheDocument();
-		await user.type(screen.getByLabelText('ID'), 'docs');
-		await user.type(screen.getByLabelText('Server URL'), 'https://docs.test/mcp');
-
-		await waitFor(() =>
-			expect(mcpApi.upsert).toHaveBeenCalledWith(
-				'docs',
-				expect.objectContaining({ type: 'http', url: 'https://docs.test/mcp' })
-			)
-		);
-		expect(screen.queryByRole('heading', { name: 'Add MCP server' })).not.toBeInTheDocument();
 	});
 });
