@@ -131,6 +131,8 @@ export function BrowserTabs({
 							>
 								{tab.loading ? (
 									<Loader2 className="size-3.5 shrink-0 animate-spin" />
+								) : look ? (
+									<look.icon aria-label={`${look.label} tab`} className="size-3.5 shrink-0" />
 								) : tab.icon ? (
 									<img src={tab.icon} alt="" className="size-3.5 shrink-0 rounded-sm" />
 								) : (
