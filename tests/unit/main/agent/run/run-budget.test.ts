@@ -86,3 +86,49 @@ it('stops before invoking the provider when the first prompt exceeds the token b
 	await expect(call.next()).rejects.toBeInstanceOf(RunBudgetStopped);
 	expect(stream).not.toHaveBeenCalled();
 });
+
+it('caps the outgoing output allowance and warns using the provider-reported usage', async () => {
+	const stream = jest.fn(async function* () {
+		yield { type: 'model_call_delta' as const, delta: 'Done.' };
+		yield {
+			type: 'model_call_end' as const,
+			model: 'model',
+			usage: { inputTokens: 800, outputTokens: 2 },
+		};
+	});
+	const budget = new ChatRunBudget({ turns: 1, tokens: 1000 }, 'test', 7);
+	const events = [];
+	for await (const event of runModelTurn(
+		{ runId: 'test', task: 'chat', message: 'hello' } as RuntimeInput,
+		{ id: 'test', apiKey: '' } as ResolvedProvider,
+		'model',
+		'instructions',
+		[{ role: 'user', content: 'hello' }],
+		[],
+		signal,
+		{},
+		{ stream },
+		'',
+		[],
+		true,
+		undefined,
+		undefined,
+		undefined,
+		[],
+		undefined,
+		budget
+	))
+		events.push(event);
+	const context = events.find((event) => event.type === 'context_usage');
+	if (context?.type !== 'context_usage') throw Error('Expected estimated input');
+	expect(stream).toHaveBeenCalledWith(
+		expect.objectContaining({ maxTokens: 1000 - context.context.inputTokens })
+	);
+	expect(events).toContainEqual({
+		type: 'run_budget_warning',
+		unit: 'tokens',
+		used: 802,
+		limit: 1000,
+	});
+	expect(events).toContainEqual({ type: 'run_budget_warning', unit: 'turns', used: 1, limit: 1 });
+});
