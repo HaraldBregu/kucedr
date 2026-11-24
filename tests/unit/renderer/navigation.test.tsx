@@ -16,6 +16,10 @@ jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
 }));
 
+jest.mock('../../../src/renderer/src/components/app/navigationbar/NavigationBar', () => ({
+	NavigationBar: ({ contextContent }: { contextContent?: unknown }) => contextContent ?? null,
+}));
+
 beforeEach(() => {
 	Object.defineProperty(window, 'matchMedia', {
 		configurable: true,
