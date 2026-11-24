@@ -69,8 +69,8 @@ export function createTab(
 			popup.agent = tab.agent;
 			const target = popup.view.webContents;
 			void popup.ready
-				.then(() => {
-					if (!target.isDestroyed()) return target.loadURL(url);
+				.then(async () => {
+					if (!target.isDestroyed()) await target.loadURL(url);
 				})
 				.catch(() => undefined);
 		}
