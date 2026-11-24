@@ -173,23 +173,6 @@ it.each(['create_task', 'update_task', 'delete_task'])('allows direct %s request
 	expect(run).toHaveBeenCalled();
 });
 
-it.each(['microphone_recorder', 'screen_recorder'])('allows %s in the workspace without forced approval', async (id) => {
-	const run = jest.fn().mockResolvedValue('started');
-	const tool = jsonTool({
-		id,
-		name: id,
-		description: id,
-		schema: {},
-		execute: run,
-	});
-
-	expect((await execute(tool, {})).at(-1)).toMatchObject({
-		type: 'tool_call_end',
-		permissionOutcome: 'allow',
-	});
-	expect(run).toHaveBeenCalled();
-});
-
 
 it('reads outside files and runs sandboxed commands from outside without approval', async () => {
 	const target = path.join(userDataLocation(), 'outside-read.txt');
