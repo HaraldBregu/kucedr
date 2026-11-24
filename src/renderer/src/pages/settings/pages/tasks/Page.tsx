@@ -308,7 +308,7 @@ const TasksPage: React.FC = () => {
 											{task.name}
 										</ItemTitle>
 										<div className="ml-auto flex shrink-0 items-center gap-3">
-											<span className="max-w-[45%] truncate text-right text-[11px] text-muted-foreground sm:max-w-none">
+											<span className="max-w-[45%] truncate text-right text-xs text-muted-foreground sm:max-w-none">
 												{describeSchedule(task.cronExpression, t)}
 											</span>
 											<div
@@ -326,7 +326,7 @@ const TasksPage: React.FC = () => {
 											</div>
 										</div>
 									</div>
-									<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
+									<p className="line-clamp-2 max-w-full text-xs leading-4 text-muted-foreground">
 										{task.description ?? task.prompt}
 									</p>
 								</ItemContent>
