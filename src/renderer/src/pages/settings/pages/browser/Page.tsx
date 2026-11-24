@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
+import type { BrowserConnections } from '@shared/browser';
 import type {
 	BrowserImportSummary,
 	BrowserLibraryCounts,
@@ -10,6 +11,7 @@ import type {
 } from '@shared/browser_import';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import {
 	SettingsNotice,
 	SettingsPageHeader,
