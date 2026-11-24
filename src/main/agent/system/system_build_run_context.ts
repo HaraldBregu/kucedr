@@ -5,12 +5,14 @@ import { addFilesystemPrompt } from './system_add_filesystem_prompt';
 export async function buildRunContext(
 	config: Config,
 	memory = '',
-	clock = true
+	clock = true,
+	knowledge = ''
 ): Promise<string> {
 	let prompt =
 		'# Run context\nThe application attached this context at the start of the run. It is not written by the user.';
 	prompt = await addFilesystemPrompt(config, prompt);
 	if (clock) prompt = addClockPrompt(prompt);
+	if (knowledge) prompt += `\n\n${knowledge}`;
 	const body = memory
 		.trim()
 		.replace(/^#\s+MEMORY(?:\.md)?[^\n]*(?:\n|$)/i, '')
