@@ -5,6 +5,7 @@ export const app = {
 	getVersion: (): string => '0.0.0-test',
 	isPackaged: false,
 	isReady: jest.fn(() => true),
+	on: jest.fn(),
 	once: jest.fn(),
 	quit: jest.fn(),
 	exit: jest.fn(),
