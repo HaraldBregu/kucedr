@@ -14,10 +14,10 @@ export function ActivityHeader({ range, onRangeChange }: ActivityHeaderProps): R
 	return (
 		<div className="flex flex-col items-start gap-2">
 			<div className="min-w-0">
-				<h2 className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+				<h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 					{t('settings.activity.title')}
 				</h2>
-				<p className="mt-0.5 max-w-2xl text-[10px] leading-4 text-muted-foreground">
+				<p className="mt-0.5 max-w-2xl text-xs leading-4 text-muted-foreground">
 					{t('settings.activity.description')}
 				</p>
 			</div>
