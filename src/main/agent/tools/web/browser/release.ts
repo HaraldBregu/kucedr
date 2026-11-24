@@ -12,7 +12,7 @@ export function answerDownload(tab: BrowserTab, answer: 'save' | 'cancel' | 'dis
 		download.item.resume();
 	} else if (answer === 'cancel' && (download.state === 'asking' || download.state === 'saving')) {
 		tab.download = undefined;
-		if (download.received) rmSync(path.dirname(download.path), { recursive: true, force: true });
+		if (download.received) discardDownload(download.path);
 		else download.item.cancel();
 	} else if (answer === 'dismiss' && (download.state === 'done' || download.state === 'failed')) {
 		tab.download = undefined;
