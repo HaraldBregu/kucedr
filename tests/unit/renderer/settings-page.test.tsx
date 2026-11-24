@@ -31,6 +31,10 @@ jest.mock('@/contexts', () => ({
 beforeAll(() => {
 	Object.defineProperty(globalThis, '__APP_NAME__', { configurable: true, value: 'Kucedr' });
 	Object.defineProperty(globalThis, '__APP_VERSION__', { configurable: true, value: '1.0.0' });
+	Object.defineProperty(globalThis, '__APP_LINKS__', {
+		configurable: true,
+		value: { terms: '', privacy: '', license: '', security: '' },
+	});
 });
 
 beforeEach(() => {
