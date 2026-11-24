@@ -131,15 +131,13 @@ it.each([
 	['/settings/mcp', 'settings.tabs.mcp'],
 	['/settings/services', 'settings.tabs.services'],
 	['/settings/models', 'settings.tabs.models'],
-	['/settings/storage/providers', 'settings.tabs.providers'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/plugins', 'settings.tabs.plugins'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
 	if (
 		path === '/settings/general/persona' ||
 		path === '/settings/agent/tools' ||
-		path === '/settings/agent/mcp-tools' ||
-		path === '/settings/storage/providers'
+		path === '/settings/agent/mcp-tools'
 	) {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else {
