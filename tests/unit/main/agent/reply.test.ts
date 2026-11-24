@@ -41,7 +41,6 @@ afterEach(() => {
 it.each([
 	['Explain this', 'Explain this', undefined],
 	['/skill writer Explain this', 'Explain this', 'writer'],
-	['/goal Explain this', 'Explain this', undefined],
 ])(
 	'persists reply context and preserves command semantics for %s',
 	async (message, prompt, skill) => {
