@@ -233,11 +233,10 @@ it.each(['embeddingRecipient', 'folders'])(
 );
 
 it('includes a match exactly at the configured minimum similarity', async () => {
-	const match = search()[0];
 	configuration.mockReturnValue({ ...configuration(), minimumScore: 1 });
 	search.mockReturnValue([
-		{ ...match, score: 1 },
-		{ ...match, score: 0 },
+		{ id: 'record-one', score: 1 },
+		{ id: 'record-two', score: 0 },
 	]);
 	await expect(
 		searchRag('query', 'knowledge-base', 5, { embeddings, vectors })
