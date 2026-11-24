@@ -103,12 +103,12 @@ export function SettingsSection({
 			<div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
 				<div className="min-w-0">
 					{!hideTitle && (
-						<h2 className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+						<h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 							{title}
 						</h2>
 					)}
 					{description && (
-						<p className="mt-0.5 max-w-2xl text-[10px] leading-4 text-muted-foreground">
+						<p className="mt-0.5 max-w-2xl text-xs leading-4 text-muted-foreground">
 							{description}
 						</p>
 					)}
