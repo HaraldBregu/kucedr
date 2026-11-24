@@ -4,10 +4,10 @@ import { closeTab } from './close';
 import { createTab } from './create';
 import { pane, paneEvents, paneTabs } from './pane';
 
-export function command(request: BrowserPaneCommand): void {
+export async function command(request: BrowserPaneCommand): Promise<void> {
 	const tab = request.targetId === undefined ? undefined : paneTabs.get(request.targetId);
 	if (request.command === 'new') {
-		createTab(tab?.chat ?? request.chat);
+		createTab(tab?.chat ?? request.chat, undefined, request.route);
 		paneEvents.emit('change');
 		return;
 	}
