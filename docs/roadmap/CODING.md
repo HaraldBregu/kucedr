@@ -1,6 +1,7 @@
 # 20. Coding page
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: proposal. Plan: [Coding Chat](../CODING_CHAT.md), the page
+shipped as a second chat kind next to the agent chat.
 
 ## What exists today
 
