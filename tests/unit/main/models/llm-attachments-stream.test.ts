@@ -1,9 +1,9 @@
 import { LlmModel } from '../../../../src/main/models/adapters/llm/llm_model';
 import type { LlmRequest } from '../../../../src/main/models/adapters/llm/llm_types';
 
-const request = (providerId: string): LlmRequest => ({
+const request = (providerId: string, model = 'model'): LlmRequest => ({
 	provider: { id: providerId, apiKey: 'key' },
-	model: 'model',
+	model,
 	messages: [
 		{
 			role: 'user',
@@ -45,7 +45,7 @@ describe('LLM streaming attachment payloads', () => {
 		const model = new LlmModel({
 			openAIClientFactory: () => ({ responses: { create } }) as never,
 		});
-		const openAIRequest = request('openai');
+		const openAIRequest = request('openai', 'gpt-5.4');
 		openAIRequest.messages[0].content = [
 			{ type: 'image', mimeType: 'image/png', base64: 'aW1hZ2U=' },
 			{
