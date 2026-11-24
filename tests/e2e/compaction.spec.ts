@@ -71,7 +71,7 @@ test('automatic compaction preserves history and sends the summary to the model'
 		}, sessionId);
 		await page.reload();
 		await expect(page).toHaveURL(/#\/home$/);
-		await expect(page.getByText(original, { exact: true })).toBeVisible();
+		await expect(page.locator('[data-chat-turn]').getByText(original, { exact: true })).toBeVisible();
 		const editor = page.locator('[data-slot="home-composer-shell"] [role="textbox"]');
 		await editor.fill('Continue the discussion.');
 		await editor.press('Enter');
@@ -85,7 +85,7 @@ test('automatic compaction preserves history and sends the summary to the model'
 		expect(requests.at(-1)).not.toContain(original);
 		await page.reload();
 		await expect(marker).toBeVisible();
-		await expect(page.getByText(original, { exact: true })).toBeVisible();
+		await expect(page.locator('[data-chat-turn]').getByText(original, { exact: true })).toBeVisible();
 		expect(await page.evaluate((query) => window.agent.searchSessions(query), original))
 			.toEqual(expect.arrayContaining([expect.objectContaining({ id: sessionId })]));
 	} finally {
