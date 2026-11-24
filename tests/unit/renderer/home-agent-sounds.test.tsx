@@ -51,7 +51,7 @@ beforeEach(() => {
 it('plays each chat cue once for a live successful run, without reacting to token or tool events', async () => {
 	const { result } = renderHook(() => useHomeAgent({ setMode: jest.fn() }));
 	act(() => result.current.setInput('Hello'));
-	act(() => {
+	await act(async () => {
 		void result.current.handleSubmit();
 	});
 	expect(playSound).toHaveBeenCalledWith('send');
