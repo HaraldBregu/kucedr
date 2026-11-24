@@ -179,11 +179,7 @@ Today's 846 ms comes on top of the embedding network call, and it blocks the mai
 
 ## Open decisions
 
-- **Schema change for step 4.**
-  - Making rows independent of the generation needs a one-time change to the `rag_chunks` table.
-  - Existing rows can be converted in place, with no re-embedding.
-  - This is a migration, so it needs the user's approval.
-  - Without it, step 4 keeps only parts 1, 3 and 4. Unchanged rows are then still copied on every run, but nothing is re-read or re-embedded.
+- ~~**Schema change for step 4.**~~ Not needed. `publish` moves reused rows to the new generation in place (see Landed), so `rag_chunks` keeps its columns and existing rows.
 - **`int8` vectors.**
   - They would cut the worker's memory from 123 MB to 31 MB at the limit, at the same speed, with the top 50 rescored from the stored `Float32` vectors.
   - Add this only if memory turns out to matter; typical indexes are far below the limit.
