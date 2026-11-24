@@ -12,7 +12,7 @@ const closeMcpMock = jest.fn();
 const mockLoadMcpTools = jest.fn(async () => ({
 	tools: [],
 	entries: [],
-		diagnostics: {
+	diagnostics: {
 		configuredServers: 0,
 		enabledServers: 0,
 		connectedServers: 0,
@@ -75,7 +75,7 @@ describe('run stream system prompt', () => {
 		mockLoadMcpTools.mockReset().mockResolvedValue({
 			tools: [],
 			entries: [],
-						diagnostics: {
+			diagnostics: {
 				configuredServers: 0,
 				enabledServers: 0,
 				connectedServers: 0,
@@ -598,7 +598,7 @@ describe('run stream system prompt', () => {
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
 			expect(systemPrompt).toContain(
-				"### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice"
+				'### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice'
 			);
 			expect(systemPrompt).toContain('# Agent runtime context');
 			expect(systemPrompt).toContain('### IDENTITY');
@@ -768,7 +768,7 @@ describe('run stream system prompt', () => {
 	});
 
 	it.each(['minimal', 'workspace'] as const)(
-		'includes complete memory in %s main chat context',
+		'preserves durable memory and recalls relevant summaries in %s main chat context',
 		async (contextMode) => {
 			const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
 			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
@@ -778,7 +778,9 @@ describe('run stream system prompt', () => {
 			session.category = 'main';
 			session.messages = [{ role: 'user', content: 'Current correction' }];
 			const memory = `# Memory\n${Array.from({ length: 500 }, (_, index) => `- Memory ${index}`).join('\n')}\n`;
-			const read = jest.fn(async () => memory);
+			const read = jest.fn(
+				async () => memory + '## Summaries\n- Discussed the correction.\n- Chose lavender.'
+			);
 			for await (const event of stream(
 				{ location: root },
 				session,
@@ -797,7 +799,10 @@ describe('run stream system prompt', () => {
 			))
 				void event;
 			expect(read).toHaveBeenCalledTimes(1);
-			expect(JSON.stringify(runModelTurnMock.mock.calls[0][4])).toContain('- Memory 499');
+			const messages = JSON.stringify(runModelTurnMock.mock.calls[0][4]);
+			expect(messages).toContain('- Memory 499');
+			expect(messages).toContain('- Discussed the correction.');
+			expect(messages).not.toContain('lavender');
 			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
 			await fs.rm(root, { recursive: true, force: true });
 		}
@@ -875,7 +880,6 @@ describe('run stream system prompt', () => {
 			await fs.rm(root, { recursive: true, force: true });
 		}
 	});
-
 
 	it('emits exactly one terminal event when cancelled', async () => {
 		const session = createSessionState();
@@ -997,7 +1001,11 @@ describe('run stream system prompt', () => {
 						content: '',
 						model: 'pinned-model',
 						toolCalls: [
-							{ id: 'delegate', name: 'subagent', args: { tasks: [{ id: 'inspect', task: 'inspect' }] } },
+							{
+								id: 'delegate',
+								name: 'subagent',
+								args: { tasks: [{ id: 'inspect', task: 'inspect' }] },
+							},
 						],
 					}
 				: { content: 'parent result', model: 'pinned-model', toolCalls: [] };
@@ -1231,7 +1239,11 @@ describe('run stream system prompt', () => {
 				type: 'run_finished',
 				result: {
 					stopReason:
-						outcome === 'cancel' ? 'cancelled' : outcome === 'tools' ? 'budget_exhausted' : 'end_turn',
+						outcome === 'cancel'
+							? 'cancelled'
+							: outcome === 'tools'
+								? 'budget_exhausted'
+								: 'end_turn',
 					...(outcome === 'empty' ? { text: 'done' } : {}),
 				},
 			});
@@ -1302,11 +1314,7 @@ describe('run stream system prompt', () => {
 		const tools = ['read', 'complete_bootstrap', 'list_tasks', 'update_task'].map((id) =>
 			jsonTool({
 				id,
-				category: id.includes('task')
-					? 'task'
-					: id === 'complete_bootstrap'
-						? 'bootstrap'
-						: 'core',
+				category: id.includes('task') ? 'task' : id === 'complete_bootstrap' ? 'bootstrap' : 'core',
 				name: id,
 				description: `${id} description`,
 				schema: { type: 'object' },
@@ -1401,24 +1409,38 @@ describe('run stream system prompt', () => {
 	});
 
 	it('exposes permitted model tools when tool search is disabled', async () => {
-		const modelTool = (id: string): Tool => jsonTool({
-			id, category: 'integration', name: id, description: 'Model operation',
-			schema: { type: 'object' }, execute: jest.fn(),
-		});
+		const modelTool = (id: string): Tool =>
+			jsonTool({
+				id,
+				category: 'integration',
+				name: id,
+				description: 'Model operation',
+				schema: { type: 'object' },
+				execute: jest.fn(),
+			});
 		const allowed = modelTool('mdl__provider__model_fim');
 		const denied = modelTool('mdl__provider__model_edit');
 		for await (const _event of stream(
 			{ location: '/workspace' },
 			createSessionState(),
 			{
-				runId: 'model-tools-no-search', task: 'chat', message: 'Complete code',
-				model: 'test-model', type: 'default', agentId: 'main', contextMode: 'minimal',
-				toolsDeny: ['tool_search', denied.id], approvalWindowId: 1,
+				runId: 'model-tools-no-search',
+				task: 'chat',
+				message: 'Complete code',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+				toolsDeny: ['tool_search', denied.id],
+				approvalWindowId: 1,
 			},
 			new AbortController().signal,
 			{ tools: [allowed, denied], progressiveDiscovery: true }
-		)) void _event;
-		expect((runModelTurnMock.mock.calls[0][5] as Tool[]).map((tool) => tool.id)).toEqual([allowed.id]);
+		))
+			void _event;
+		expect((runModelTurnMock.mock.calls[0][5] as Tool[]).map((tool) => tool.id)).toEqual([
+			allowed.id,
+		]);
 	});
 
 	it('uses cached MCP tools and exposes a match after tool_search', async () => {
@@ -1436,7 +1458,7 @@ describe('run stream system prompt', () => {
 		mockLoadMcpTools.mockResolvedValue({
 			tools: [mcpTool],
 			entries: [{ tool: mcpTool, serverId: 'billing', serverName: 'Billing' }],
-						diagnostics: {
+			diagnostics: {
 				configuredServers: 1,
 				enabledServers: 1,
 				connectedServers: 1,
@@ -1588,7 +1610,7 @@ describe('run stream system prompt', () => {
 				tools: [],
 				entries: [],
 				uncataloged: [{ serverId: 'gmail', serverName: 'Gmail' }],
-								diagnostics: {
+				diagnostics: {
 					configuredServers: 1,
 					enabledServers: 1,
 					connectedServers: 0,
@@ -1604,7 +1626,7 @@ describe('run stream system prompt', () => {
 				tools: [gmail],
 				entries: [{ tool: gmail, serverId: 'gmail', serverName: 'Gmail' }],
 				uncataloged: [],
-								diagnostics: {
+				diagnostics: {
 					configuredServers: 1,
 					enabledServers: 1,
 					connectedServers: 0,
