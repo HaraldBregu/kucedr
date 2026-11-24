@@ -301,7 +301,7 @@ export async function indexRag(
 			embeddingRecipient,
 			folders: [...sources],
 		});
-		return result(records.length);
+		return result(records.length + reusedChunks);
 	} catch (error) {
 		if (mirror && uploadStarted && !published) {
 			try {
