@@ -299,11 +299,11 @@ it('allows configuration and authentication from the host and Coding app only', 
 	const handler = (channel: string) =>
 		(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
 
-	await expect(handler(CodingChannels.connectCodex)(event)).resolves.toEqual({
+	await expect(handler(CodingChannels.connect)(event)).resolves.toEqual({
 		success: true,
 		data: { configured: true, type: 'oauth' },
 	});
-	expect(connectCodex).toHaveBeenCalledWith(8, expect.any(Function), undefined);
+	expect(connect).toHaveBeenCalledWith(8, expect.any(Function), undefined);
 	expect(sender.send).toHaveBeenCalledWith(CodingChannels.authEvent, {
 		type: 'progress',
 		message: 'Waiting',
