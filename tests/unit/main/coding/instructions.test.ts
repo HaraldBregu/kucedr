@@ -24,7 +24,8 @@ const files = ['AGENTS.override.md', 'AGENTS.md'];
 
 it('uses harness filename precedence, reports inherited sources, and isolates workspace saves', async () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
-	const agentDirectory = path.join(root, 'coding-global');
+	mockRoot = root;
+	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectsDirectory = path.join(root, 'projects');
 	const firstDirectory = path.join(projectsDirectory, 'first');
 	const secondDirectory = path.join(projectsDirectory, 'second');
@@ -88,7 +89,8 @@ it('uses harness filename precedence, reports inherited sources, and isolates wo
 
 it('creates AGENTS.md and preserves an explicitly saved empty file', async () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
-	const agentDirectory = path.join(root, 'coding-global');
+	mockRoot = root;
+	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectDirectory = path.join(root, 'project');
 	mkdirSync(agentDirectory);
 	mkdirSync(projectDirectory);
@@ -123,7 +125,8 @@ it('creates AGENTS.md and preserves an explicitly saved empty file', async () =>
 
 it('rejects stale revisions without overwriting external edits', async () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
-	const agentDirectory = path.join(root, 'coding-global');
+	mockRoot = root;
+	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectDirectory = path.join(root, 'project');
 	mkdirSync(agentDirectory);
 	mkdirSync(projectDirectory);
@@ -150,7 +153,8 @@ it('rejects stale revisions without overwriting external edits', async () => {
 
 it('reports symbolic links as read-only and rejects saving them', async () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
-	const agentDirectory = path.join(root, 'coding-global');
+	mockRoot = root;
+	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectDirectory = path.join(root, 'project');
 	mkdirSync(agentDirectory);
 	mkdirSync(projectDirectory);
@@ -178,7 +182,8 @@ it('reports symbolic links as read-only and rejects saving them', async () => {
 
 it('rejects existing and submitted content above 256 KiB', async () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
-	const agentDirectory = path.join(root, 'coding-global');
+	mockRoot = root;
+	const agentDirectory = path.join(root, 'coder', runtime);
 	const projectDirectory = path.join(root, 'project');
 	mkdirSync(agentDirectory);
 	mkdirSync(projectDirectory);
