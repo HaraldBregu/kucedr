@@ -10,6 +10,7 @@ import { modelOutputLimit } from './run_model_output_limit';
 import { modelInputLimit, MODEL_CONTEXT_SAFETY_TOKENS } from './run_model_input_limit';
 import { fitModelContext } from './run_model_context_budget';
 import type { KeyedLimiter } from '../limiter';
+import type { ChatRunBudget } from '../execution/chat_budget';
 import type { ExecutionBudget } from '../execution/budget';
 import { retryAfterMs } from './run_retry_after';
 import { resolveContextWindow } from '../../models/context';
@@ -42,7 +43,8 @@ export async function* runModelTurn(
 	onContextAccepted?: (systemPrompt: string | undefined) => void,
 	budget?: ExecutionBudget,
 	requiredContextMessages: Message[] = [],
-	compactHistory?: () => Promise<{ summary: string; userIndex: number; messages: Message[] } | undefined>
+	compactHistory?: () => Promise<{ summary: string; userIndex: number; messages: Message[] } | undefined>,
+	chatBudget?: ChatRunBudget
 ): AsyncGenerator<RuntimeEvent, ModelTurn> {
 	const maxRetries = 2;
 	const contextWindow = await resolveContextWindow(provider, modelId);
@@ -124,6 +126,10 @@ export async function* runModelTurn(
 		let usage: ModelTurn['usage'];
 		const providerItems: MessageContentBlock[] = [];
 		const pending = new Map<string, { name: string; argsText: string }>();
+		const outputTokens = chatBudget
+			? yield* chatBudget.beforeCall(context.estimatedTokens, maxTokens, signal)
+			: maxTokens;
+		let invoked = false;
 		const lease = providerLimiter
 			? await providerLimiter.acquire(provider.id.trim().toLowerCase(), signal)
 			: undefined;
@@ -140,7 +146,8 @@ export async function* runModelTurn(
 
 		try {
 			signal.throwIfAborted();
-			settleUsage = budget?.reserveModel(context.estimatedTokens, maxTokens);
+			settleUsage = budget?.reserveModel(context.estimatedTokens, outputTokens);
+			invoked = true;
 			for await (const event of llm.stream({
 				provider,
 				model,
@@ -148,7 +155,7 @@ export async function* runModelTurn(
 				systemPrompt: context.systemPrompt,
 				messages: context.messages,
 				tools: context.tools,
-				maxTokens,
+				maxTokens: outputTokens,
 				options: modelOptions,
 				signal,
 				streaming,
@@ -249,6 +256,13 @@ export async function* runModelTurn(
 				content,
 				toolCalls: turn.toolCalls.map(({ id, name }) => ({ id, name })),
 			});
+			if (chatBudget) {
+				chatBudget.record(usage?.context
+					? usage.context.inputTokens + usage.context.outputTokens
+					: context.estimatedTokens + outputTokens);
+				invoked = false;
+				yield* chatBudget.warnings();
+			}
 			return turn;
 		} catch (error) {
 			if (
@@ -267,8 +281,10 @@ export async function* runModelTurn(
 					? { inputTokens: usage.inputTokens ?? 0, outputTokens: usage.outputTokens ?? 0 }
 					: undefined
 			);
+			if (invoked) chatBudget?.record(context.estimatedTokens + outputTokens);
 			lease?.release();
 		}
+		if (chatBudget) yield* chatBudget.warnings();
 		if (retryDelay !== undefined) await wait(retryDelay, undefined, { signal });
 	}
 

@@ -1,7 +1,7 @@
 import { promptMemory } from '../../memory/prompt';
 import type { MemoryService } from '../../../shared/memory_types';
 import { getResolvedProvider } from '../../settings_store';
-import { getToolConfiguration } from '../agent_store';
+import { getRunBudget, getToolConfiguration } from '../agent_store';
 import { getAgentProfileModel } from '../agent_profiles';
 import {
 	addAssistantMessage,
@@ -65,6 +65,7 @@ import { redoFileTool } from '../tools/core/redo';
 import type { RunStop } from '../extension';
 import { projectPromptAttachments, resolvePromptInputCapabilities } from '../attachments';
 import { createBackgroundBrowser } from '../tools/web/browser/background';
+import { ChatRunBudget, RunBudgetStopped } from '../execution/chat_budget';
 import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
@@ -114,6 +115,13 @@ export async function* stream(
 			if (event.type === 'run_finished') terminal = true;
 		}
 	} catch (error) {
+		if (error instanceof RunBudgetStopped) {
+			session.stopReason = 'budget_exhausted';
+			const event = { type: 'run_finished', result: toResult(session, 'success') } as const;
+			tryAppendRun(session, event);
+			yield event;
+			return;
+		}
 		const errorEvent = {
 			type: 'run_error',
 			message: error instanceof Error ? error.message : String(error),
@@ -167,6 +175,10 @@ async function* loop(
 			paid: MAX_PAID_TOOL_CALLS,
 			output: MAX_TOOL_OUTPUT_BYTES,
 		});
+	const chatBudget = session.category === 'main' && input.task === 'chat' &&
+		input.type === 'default' && input.approvalWindowId !== undefined
+		? new ChatRunBudget(getRunBudget(), runId, input.approvalWindowId)
+		: undefined;
 	const toolProfile = input.toolProfile ?? 'chat';
 	const extension = input.extension;
 	const restricted = extension?.restricted === true;
@@ -605,7 +617,8 @@ async function* loop(
 				},
 				budget,
 				skillContext,
-				attemptCompaction ? compactHistory : undefined
+				attemptCompaction ? compactHistory : undefined,
+				chatBudget
 			);
 
 			if (synthesisOnly && (turn.toolCalls.length > 0 || !turn.content.trim())) {
