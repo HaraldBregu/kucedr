@@ -79,7 +79,7 @@ export function SettingsSidebar(): React.JSX.Element {
 					}}
 				>
 					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
-					<span>{t('settings.returnToChat', 'Return to Home')}</span>
+					<span>{t('settings.returnToChat', 'Back to home')}</span>
 				</Link>
 			</div>
 			<nav aria-label={t('settings.title')} className="flex min-h-0 flex-1 flex-col">
