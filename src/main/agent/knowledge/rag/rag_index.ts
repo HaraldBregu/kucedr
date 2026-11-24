@@ -73,10 +73,25 @@ export async function indexRag(
 	let published = false;
 	let vectorValues = 0;
 	const records: VectorRecord[] = [];
+	const uploads: VectorRecord[] = [];
+	const reused: VectorReuse[] = [];
+	const stamps: VectorSource[] = [];
+	const known = new Map<string, { fingerprint: string; count: number }>();
 	const pending: Omit<VectorRecord, 'vector'>[] = [];
+	const sending: Promise<void>[] = [];
 	const skipped: RagSkipped[] = [];
+	const stamp = `${VERSION}\0${embeddingRecipient}`;
+	const active = vectorStore.getIndex(selectedIndexName);
+	const concurrency = Math.max(
+		1,
+		Math.trunc(
+			embeddingProvider.concurrency?.(providerId, modelId) ?? KNOWLEDGE_EMBED_CONCURRENCY
+		)
+	);
 	let dimensions: number | undefined;
 	let indexedFiles = 0;
+	let reusedChunks = 0;
+	let embedding = 0;
 	const result = (vectors: number): RagIndexResult => ({
 		files: indexedFiles,
 		vectors,
