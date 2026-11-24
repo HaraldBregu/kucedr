@@ -119,19 +119,23 @@ describe('LlmModel non-streaming transport', () => {
 			usage: { input_tokens: 4, cache_creation_input_tokens: 6, cache_read_input_tokens: 10, output_tokens: 3 },
 		});
 		const model = new LlmModel({
-			anthropicClientFactory: () => ({ messages: { create } }) as never,
+			messagesClientFactory: () => ({ messages: { create } }) as never,
 		});
 		const events: LlmEvent[] = [];
 		for await (const event of model.stream(
-			request('anthropic', [
-				{ type: 'image', mimeType: 'image/jpeg', base64: 'aW1hZ2U=' },
-				{
-					type: 'document',
-					name: 'brief.pdf',
-					mimeType: 'application/pdf',
-					base64: 'cGRm',
-				},
-			])
+			request(
+				'anthropic',
+				[
+					{ type: 'image', mimeType: 'image/jpeg', base64: 'aW1hZ2U=' },
+					{
+						type: 'document',
+						name: 'brief.pdf',
+						mimeType: 'application/pdf',
+						base64: 'cGRm',
+					},
+				],
+				'claude-sonnet-4-6'
+			)
 		))
 			events.push(event);
 
@@ -139,7 +143,7 @@ describe('LlmModel non-streaming transport', () => {
 			expect.objectContaining({
 				cache_control: { type: 'ephemeral' },
 				stream: false,
-				model: 'model',
+				model: 'claude-sonnet-4-6',
 				tools: [
 					expect.objectContaining({
 						name: 'lookup',
