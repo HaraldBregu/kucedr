@@ -93,7 +93,6 @@ it('forwards trimmed reply context without modifying slash commands', async () =
 	});
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.send, '/skill writer Expand this', {
 		runId: 'reply-run',
-		interactionMode: 'default',
 		replyTo: 'Earlier assistant message\nwith details',
 	});
 });
