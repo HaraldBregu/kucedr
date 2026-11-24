@@ -149,7 +149,8 @@ export async function indexRag(
 	const unchanged = (source: string, file: string, size: number, modified: number): boolean => {
 		const sourceId = identify(source, file);
 		const stored = vectorStore.source(selectedIndexName, sourceId);
-		if (stored?.size !== size || stored.modified !== modified || stored.stamp !== stamp) return false;
+		if (stored?.size !== size || stored.modified !== modified || stored.stamp !== stamp)
+			return false;
 		const count = vectorStore.reusable(
 			selectedIndexName,
 			sourceId,
