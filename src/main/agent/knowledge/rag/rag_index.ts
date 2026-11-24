@@ -265,7 +265,13 @@ export async function indexRag(
 		assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
 		if (mirror) {
 			uploadStarted = true;
-			await mirror.upload(selectedIndexName, generation, dimensions, records, signal);
+			await mirror.upload(
+				selectedIndexName,
+				generation,
+				dimensions,
+				[...records, ...uploads],
+				signal
+			);
 		}
 		signal.throwIfAborted();
 		assertRagConsent(configuration, providerId, modelId, selectedIndexName, true);
