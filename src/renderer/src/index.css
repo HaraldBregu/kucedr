@@ -474,7 +474,7 @@ input[type='range']:hover::-moz-range-thumb {
 
 @media (forced-colors: active) {
 	:focus-visible {
-		outline-color: Highlight !important;
+		outline: 2px solid Highlight !important;
 	}
 }
 
