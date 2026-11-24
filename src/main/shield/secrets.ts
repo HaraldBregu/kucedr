@@ -31,6 +31,6 @@ export function storedSecrets(): string[] {
 		add(provider.apiKey);
 	for (const server of getMcpServersState())
 		for (const key of MCP_TOKENS) add((server as unknown as Record<string, unknown>)[key]);
-	cache = { at: Date.now(), values: [...values] };
+	cache = { stamp, values: [...values] };
 	return cache.values;
 }
