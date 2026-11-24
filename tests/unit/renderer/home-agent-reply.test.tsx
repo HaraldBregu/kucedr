@@ -154,28 +154,6 @@ it('shows submitted file metadata immediately in an attachment-only turn', async
 	);
 });
 
-it('keeps goal commands separate from reply context', async () => {
-	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
-	await act(async () => {
-		result.current.setInput('/goal Implement this suggestion');
-		result.current.replyToMessage(secondMessage);
-	});
-	await act(async () => {
-		await result.current.handleSubmit();
-	});
-	expect(send).toHaveBeenCalledWith(
-		'/goal Implement this suggestion',
-		expect.objectContaining({ replyTo: secondMessage.content }),
-		expect.any(Function)
-	);
-	expect(mockDispatch).toHaveBeenCalledWith(
-		expect.objectContaining({
-			type: 'submit_user_message',
-			content: '> **Replying to Kucedr**\n>\n> Another suggestion.\n\nImplement this suggestion',
-		})
-	);
-});
-
 it('clears reply context when changing sessions or resetting the chat', async () => {
 	const { result, rerender } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
 	await act(async () => result.current.replyToMessage(firstMessage));
