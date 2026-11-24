@@ -23,6 +23,7 @@ shipped as a second chat kind next to the agent chat.
 | 20.2 | Same permission rules | The coding agent asks before the same actions the main agent asks about | The permission system | M |
 | 20.3 | Terminal inside coding | Commands run in the app's terminal, visible and stoppable | [Terminal](TERMINAL.md), 14.2 and 14.6 | M |
 | 20.4 | Version control view | See changed files and differences, commit from the page | Nothing today | M |
+| 20.5 | More coding harnesses | Pick a harness other than Codex for a coding chat | A second protocol adapter (`acp`), [plan](../CODING_CHAT.md) | M |
 
 ## Open decisions
 
