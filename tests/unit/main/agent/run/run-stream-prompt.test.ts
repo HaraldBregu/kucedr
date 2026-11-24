@@ -1361,7 +1361,7 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [{ id: 'run-bash', name: 'query_knowledge', args: { command: 'pwd' } }],
+					toolCalls: [{ id: 'run-bash', name: 'run_command', args: { command: 'pwd' } }],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
