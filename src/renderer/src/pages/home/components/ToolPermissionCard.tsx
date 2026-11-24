@@ -99,7 +99,7 @@ export function ToolPermissionCard({
 			<CardContent className="space-y-2">
 				{permission.targets.length > 0 && (
 					<div>
-						<p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{t('toolPermission.location')}</p>
+						<p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('toolPermission.location')}</p>
 						<div className="space-y-1">
 							{permission.targets.map((target) => (
 								<p key={target} className="break-all rounded-md bg-muted px-2 py-1.5 font-mono text-xs">{target}</p>
