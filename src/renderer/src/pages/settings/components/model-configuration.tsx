@@ -109,18 +109,18 @@ export function ModelProviderConfiguration({
 			{children}
 
 			{configState.providers.length === 0 && (
-				<p className="text-[11px] leading-4 text-muted-foreground">
+				<p className="text-xs leading-4 text-muted-foreground">
 					{t('settings.providers.noProviders')}
 				</p>
 			)}
 			{configState.providers.length > 0 && configState.modelGroups.length === 0 && (
-				<p className="text-[11px] leading-4 text-muted-foreground">
+				<p className="text-xs leading-4 text-muted-foreground">
 					{t('settings.modelServices.noModels')}
 				</p>
 			)}
 			{configState.saved && (
 				<SettingsAutoDismiss>
-					<p className="text-[11px] leading-4 text-muted-foreground">
+					<p className="text-xs leading-4 text-muted-foreground">
 						{t('settings.modelServices.saved')}
 					</p>
 				</SettingsAutoDismiss>
@@ -180,18 +180,18 @@ export function ModelProviderConfiguration({
 				/>
 				<div className={cn('pb-4 empty:hidden', padded && 'px-4')}>{children}</div>
 				{configState.providers.length === 0 && (
-					<p className={cn('pb-3 text-[11px] leading-4 text-muted-foreground', padded && 'px-4')}>
+					<p className={cn('pb-3 text-xs leading-4 text-muted-foreground', padded && 'px-4')}>
 						{t('settings.providers.noProviders')}
 					</p>
 				)}
 				{configState.providers.length > 0 && configState.modelGroups.length === 0 && (
-					<p className={cn('pb-3 text-[11px] leading-4 text-muted-foreground', padded && 'px-4')}>
+					<p className={cn('pb-3 text-xs leading-4 text-muted-foreground', padded && 'px-4')}>
 						{t('settings.modelServices.noModels')}
 					</p>
 				)}
 				{configState.saved && (
 					<SettingsAutoDismiss>
-						<p className={cn('pb-3 text-[11px] leading-4 text-muted-foreground', padded && 'px-4')}>
+						<p className={cn('pb-3 text-xs leading-4 text-muted-foreground', padded && 'px-4')}>
 							{t('settings.modelServices.saved')}
 						</p>
 					</SettingsAutoDismiss>
@@ -250,7 +250,7 @@ export function ModelProviderConfiguration({
 						</div>
 						<p
 							className={cn(
-								'mt-0.5 truncate text-[11px] leading-4 text-muted-foreground',
+								'mt-0.5 truncate text-xs leading-4 text-muted-foreground',
 								pluginItemStyle && 'text-xs leading-tight'
 							)}
 						>
