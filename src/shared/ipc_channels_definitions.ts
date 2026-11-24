@@ -574,6 +574,10 @@ export const BrowserChannels = {
 	passwordsNeverRemove: 'browser:passwords:never-remove',
 	passwordsMatch: 'browser:passwords:match',
 	passwordsFill: 'browser:passwords:fill',
+	downloadAnswer: 'browser:download:answer',
+	connections: 'browser:connections',
+	connectionsSet: 'browser:connections:set',
+	torFind: 'browser:tor:find',
 } as const;
 
 export const MemoryChannels = {
