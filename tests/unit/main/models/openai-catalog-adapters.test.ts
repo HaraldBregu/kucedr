@@ -93,7 +93,13 @@ describe('current OpenAI model contracts', () => {
 		'opens a modern transcription session for %s',
 		async (modelId) => {
 			const emit = jest.fn();
-			const adapter = createOpenAISttAdapter({ id: 'openai', name: 'OpenAI', apiKey: 'key' });
+			const adapter = createTranscriptionsSttAdapter({
+				id: 'openai',
+				name: 'OpenAI',
+				apiKey: 'key',
+				baseURL: 'https://api.openai.com/v1',
+				protocol: 'transcriptions-intent',
+			});
 			const connection = await adapter.startRealtime!(
 				{
 					sessionId: 'session',
