@@ -1,8 +1,6 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { importApps } from '../../../../src/main/apps/app_import';
-import { listApps } from '../../../../src/main/apps/app_list';
 import { readAppManifestFromDirectory } from '../../../../src/main/apps/app_read';
 
 describe('package app window configuration', () => {
