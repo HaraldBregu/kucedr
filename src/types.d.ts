@@ -24,4 +24,5 @@
   declare const __APP_VERSION__: string;                                                                                                                                                                             
   declare const __APP_AUTHOR__: string;                                                                                                                                                                              
   declare const __APP_HOMEPAGE__: string;
+  declare const __APP_LINKS__: { terms: string; privacy: string; license: string; security: string };
   declare const __APP_LICENSE__: string;                                                                                                                                                                             
