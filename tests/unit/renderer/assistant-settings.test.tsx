@@ -676,6 +676,7 @@ it('announces a Voice setup save error', async () => {
 	expect(selector).toBeDefined();
 	if (!selector) return;
 	await user.click(selector);
+	await user.click(screen.getByRole('button', { name: 'xAI' }));
 	await user.click(await screen.findByRole('menuitemradio', { name: /Grok Voice/ }));
 
 	expect(await screen.findByRole('alert')).toHaveTextContent('Realtime setup could not be saved.');
