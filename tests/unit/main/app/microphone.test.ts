@@ -50,7 +50,7 @@ it.each([null, undefined, 42, {}, '', '   '])('rejects an invalid microphone ID:
 
 it('persists the selected Voice Agent appearance', () => {
 	expect(getVoiceAgentAppearance()).toBe('persona');
-	setVoiceAgentAppearance('orb-07');
-	expect(mockAppStore.voiceAgentAppearance).toBe('orb-07');
-	expect(getVoiceAgentAppearance()).toBe('orb-07');
+	setVoiceAgentAppearance('radial');
+	expect(mockAppStore.voiceAgentAppearance).toBe('radial');
+	expect(getVoiceAgentAppearance()).toBe('radial');
 });
