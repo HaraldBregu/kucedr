@@ -1,4 +1,3 @@
-import { planCommandError } from '../../../../../src/main/agent/plan/command';
 import { commandEnvironment } from '../../../../../src/main/agent/execution/environment';
 
 it('does not inherit application credentials into shell commands', () => {
