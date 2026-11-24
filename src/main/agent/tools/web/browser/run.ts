@@ -117,9 +117,10 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		case 'open': {
 			if (!params.url) throw new Error('open requires a url.');
 			const url = address(params.url);
-			const tab = createTab(scope?.sessionId, scope?.runId);
+			const tab = createTab(scope?.sessionId, scope?.runId, params.route);
 			const contents = tab.view.webContents;
 			try {
+				await tab.ready;
 				await settle(contents, () => void contents.loadURL(url).catch(() => undefined), signal);
 			} catch (error) {
 				closeTab(tab);
