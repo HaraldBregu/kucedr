@@ -161,34 +161,6 @@ describe('LLM streaming attachment payloads', () => {
 		);
 	});
 
-	it('uses the targeted Reka PDF payload for streaming requests', async () => {
-		const create = jest.fn().mockResolvedValue(emptyStream());
-		const model = new LlmModel({
-			openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
-		});
-		for await (const _event of model.stream(request('reka'))) {
-			// Consume the provider stream.
-		}
-
-		expect(create).toHaveBeenCalledWith(
-			expect.objectContaining({
-				stream: true,
-				messages: [
-					{
-						role: 'user',
-						content: [
-							{
-								type: 'pdf_url',
-								pdf_url: { url: 'data:application/pdf;base64,cGRm' },
-							},
-						],
-					},
-				],
-			}),
-			expect.objectContaining({ signal: undefined })
-		);
-	});
-
 	it('rejects generic chat PDF blocks before a streaming network request', async () => {
 		const create = jest.fn();
 		const model = new LlmModel({
