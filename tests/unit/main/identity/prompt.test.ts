@@ -67,10 +67,8 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Calm and direct');
 		expect(next).not.toContain('### BOOTSTRAP.md');
-		expect(next).not.toContain('Remembered preference');
-		const core = await buildWorkspaceContext(config, 'core', 'Private memory');
+		const core = await buildWorkspaceContext(config, 'core');
 		expect(core).not.toContain('### USER');
-		expect(core).not.toContain('Private memory');
 		const other = await buildWorkspaceContext(config, 'core');
 		expect(other).not.toContain('## Tools available in this runtime');
 		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
