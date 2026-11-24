@@ -15,8 +15,10 @@ export async function configurePrivacy(): Promise<void> {
 	const sessions = [session.defaultSession, session.fromPartition(APP_SESSION_PARTITION)];
 	let ready = false;
 	for (const target of sessions) {
-		target.webRequest.onBeforeRequest({ urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'] },
-			(_details, callback) => callback({ cancel: !ready }));
+		target.webRequest.onBeforeRequest(
+			{ urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'] },
+			(_details, callback) => callback({ cancel: !ready })
+		);
 	}
 	try {
 		await Promise.all([app.setProxy(config), ...sessions.map((target) => target.setProxy(config))]);
