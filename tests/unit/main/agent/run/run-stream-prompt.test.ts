@@ -1413,7 +1413,7 @@ describe('run stream system prompt', () => {
 			{
 				runId: 'model-tools-no-search', task: 'chat', message: 'Complete code',
 				model: 'test-model', type: 'default', agentId: 'main', contextMode: 'minimal',
-				toolsDeny: ['tool_search', denied.id],
+				toolsDeny: ['tool_search', denied.id], approvalWindowId: 1,
 			},
 			new AbortController().signal,
 			{ tools: [allowed, denied], progressiveDiscovery: true }
