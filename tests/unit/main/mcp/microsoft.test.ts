@@ -36,14 +36,13 @@ it('resolves all Microsoft 365 catalog endpoints and recognizes saved templates'
 });
 
 it('reports missing configuration before connecting and leaves Learn available', () => {
-	delete process.env.MICROSOFT_TENANT_ID;
-	delete process.env.MICROSOFT_CLIENT_ID;
+	settings = {};
 	expect(loadMcps().find((entry) => entry.id === 'microsoft-mail')?.url).toBe(template);
-	expect(() => parseMcpUrl(template)).toThrow('MICROSOFT_TENANT_ID');
-	expect(() => mcpOAuthOptions(template)).toThrow('MICROSOFT_TENANT_ID');
+	expect(() => parseMcpUrl(template)).toThrow('Set Tenant ID');
+	expect(() => mcpOAuthOptions(template)).toThrow('Set Tenant ID');
 	expect(mcpOAuthOptions('https://learn.microsoft.com/api/mcp')).toEqual({});
-	process.env.MICROSOFT_TENANT_ID = tenantId;
-	expect(() => mcpOAuthOptions(template)).toThrow('MICROSOFT_CLIENT_ID');
+	settings = { tenant_id: tenantId };
+	expect(() => mcpOAuthOptions(template)).toThrow('Microsoft plugin settings');
 });
 
 it.each(['common', '../other', '00000000-0000-0000-0000-000000000000'])(
