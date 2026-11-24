@@ -67,7 +67,7 @@ describe('search service selection', () => {
 describe('search service execution', () => {
 	it('uses the selected service request metadata and normalizes its response', async () => {
 		selectSearchEngine('custom/custom-search');
-		(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => ({ data: { items: [{ title: 'Found', url: 'https://result.example', snippet: 'Text' }] } }) });
+		(global.fetch as jest.Mock).mockResolvedValue(new Response(JSON.stringify({ data: { items: [{ title: 'Found', url: 'https://result.example', snippet: 'Text' }] } })));
 		const controller = new AbortController();
 		await expect(searchWeb({ query: 'latest', count: 3 }, controller.signal)).resolves.toEqual({
 			query: 'latest', results: [{ title: 'Found', url: 'https://result.example', description: 'Text' }],
