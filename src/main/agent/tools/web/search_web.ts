@@ -22,6 +22,7 @@ const searchWebTool = tool({
 			.describe('Number of results to return (default 5).'),
 	}),
 	execute: async ({ query, count }, signal) => {
+		if (leaks(query)) throw new Error('Blocked: the search contains a stored key or token.');
 		return JSON.stringify(await searchWeb({ query, count }, signal));
 	},
 });
