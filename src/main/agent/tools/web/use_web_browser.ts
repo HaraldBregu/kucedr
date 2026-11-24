@@ -84,7 +84,11 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			session.context = launched;
 			launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
 			await launched.route('**/*', async (route) => {
-				const allowed = await publicUrl(route.request().url()).then(() => true, () => false);
+				const request = route.request();
+				const allowed =
+					!leaks(request.url()) &&
+					!leaks(request.postData() ?? '') &&
+					(await publicUrl(request.url()).then(() => true, () => false));
 				await (allowed ? route.continue() : route.abort('blockedbyclient')).catch(() => undefined);
 			});
 			launched.on('page', (page) => {
