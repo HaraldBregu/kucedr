@@ -134,9 +134,9 @@ it('uses the configured redirect consistently in client metadata and OAuth', () 
 
 it('isolates Google options from generic MCP servers and requires the Google secret', () => {
 	expect(mcpOAuthOptions('https://example.com/mcp')).toEqual({});
-	delete process.env.GOOGLE_CLIENT_SECRET;
+	pluginSettings.mockReturnValue({ client_id: 'registered-client' });
 	expect(() => mcpOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1')).toThrow(
-		'GOOGLE_CLIENT_SECRET'
+		'Google plugin settings'
 	);
 });
 
