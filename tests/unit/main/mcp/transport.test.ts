@@ -102,7 +102,7 @@ it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.goog
 			client_secret: 'configured-secret',
 		});
 		expect(createOAuthProvider).toHaveBeenCalledWith(
-			expect.objectContaining({ clientId: 'environment-id', clientSecret: 'environment-secret' })
+			expect.objectContaining({ clientId: 'plugin-id', clientSecret: 'plugin-secret' })
 		);
 	}
 );
