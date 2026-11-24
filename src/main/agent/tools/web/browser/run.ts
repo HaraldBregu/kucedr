@@ -96,6 +96,8 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			targetId: tab.id,
 			url: tab.view.webContents.getURL(),
 			title: tab.view.webContents.getTitle(),
+			...(tab.route === 'direct' ? {} : { route: tab.route }),
+			...(tab.blocked.length ? { blocked: tab.blocked.slice(-10) } : {}),
 		});
 	const capture = (tab: BrowserTab, options: object = {}): Promise<Capture> =>
 		tab.view.webContents.debugger.sendCommand('Page.captureScreenshot', {
