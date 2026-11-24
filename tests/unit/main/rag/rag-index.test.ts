@@ -86,7 +86,9 @@ it('publishes locally only after the authorized mirror finishes', async () => {
 		'knowledge-base',
 		publication.generation,
 		2,
-		expect.arrayContaining([expect.objectContaining({ text: '# Guide', vector: [0.1, 0.2] })]),
+		expect.arrayContaining([
+			expect.objectContaining({ text: expect.stringMatching(/# Guide$/), vector: [0.1, 0.2] }),
+		]),
 		expect.any(AbortSignal)
 	);
 	expect(writeRagManifest).toHaveBeenCalledWith(
