@@ -1,21 +1,16 @@
 import { app, type DownloadItem, type Event, type WebContents } from 'electron';
-import { existsSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
+import { mkdirSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import type { BrowserRoute } from '../../../../../shared/browser';
 import { block } from './block';
+import { finishDownload } from './finish';
 import { tabFor } from './owner';
 import { paneEvents } from './pane';
 
-function freePath(folder: string, name: string): string {
-	const extension = path.extname(name);
-	const stem = name.slice(0, name.length - extension.length);
-	let candidate = path.join(folder, name);
-	for (let copy = 1; existsSync(candidate); copy++) candidate = path.join(folder, `${stem} (${copy})${extension}`);
-	return candidate;
-}
-
-// A download starts paused in the Downloads folder and waits for the user's answer in the pane,
-// whoever started it. Tor tabs never download.
+// A download goes to a holding folder, paused, and reaches Downloads only when the user agrees
+// in the pane, whoever started it. A small file can arrive before the answer; it then waits in
+// the holding folder. Tor tabs never download.
 export function holdDownload(event: Event, item: DownloadItem, contents: WebContents, route: BrowserRoute): void {
 	const tab = tabFor(contents);
 	if (!tab || route === 'tor') {
@@ -23,17 +18,26 @@ export function holdDownload(event: Event, item: DownloadItem, contents: WebCont
 		if (tab) block(tab, item.getURL(), 'download');
 		return;
 	}
-	const file = freePath(app.getPath('downloads'), path.basename(item.getFilename()) || 'download');
-	item.setSavePath(file);
+	const folder = path.join(app.getPath('temp'), 'kucedr-downloads', randomUUID());
+	mkdirSync(folder, { recursive: true });
+	const file = path.basename(item.getFilename()) || 'download';
+	item.setSavePath(path.join(folder, file));
 	item.pause();
-	if (tab.download?.state === 'asking') tab.download.item.cancel();
+	if (tab.download?.state === 'asking') {
+		tab.download.item.cancel();
+		rmSync(path.dirname(tab.download.path), { recursive: true, force: true });
+	}
 	const site = URL.canParse(item.getURL()) ? new URL(item.getURL()).host : '';
-	tab.download = { item, path: file, file: path.basename(file), site, state: 'asking' };
+	tab.download = { item, path: path.join(folder, file), file, site, state: 'asking' };
 	item.once('done', (_event, state) => {
-		if (tab.download?.item !== item) return;
-		tab.download =
-			state === 'cancelled' ? undefined : { ...tab.download, state: state === 'completed' ? 'done' : 'failed' };
-		paneEvents.emit('change');
+		const current = tab.download;
+		if (current?.item !== item) return;
+		if (state !== 'completed') {
+			tab.download = state === 'cancelled' ? undefined : { ...current, state: 'failed' };
+			rmSync(folder, { recursive: true, force: true });
+			paneEvents.emit('change');
+		} else if (current.state === 'saving') finishDownload(tab);
+		else tab.download = { ...current, received: true };
 	});
 	paneEvents.emit('change');
 }
