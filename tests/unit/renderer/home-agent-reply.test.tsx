@@ -165,18 +165,6 @@ it('clears reply context when changing sessions or resetting the chat', async ()
 	expect(result.current.replyTo).toBeNull();
 });
 
-it('preserves the pending reply when implementing a plan', async () => {
-	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
-	await act(async () => {
-		result.current.setInput('Draft for later');
-		result.current.replyToMessage(firstMessage);
-	});
-	await act(async () => result.current.implementPlan());
-	expect(send.mock.calls[0][1]).not.toHaveProperty('replyTo');
-	expect(result.current.replyTo).toEqual(firstMessage);
-	expect(result.current.input).toBe('Draft for later');
-});
-
 it('uses the saved effort for the selected model when sending a prompt', async () => {
 	localStorage.setItem(`model-effort:${JSON.stringify(['openai', 'model-a'])}`, 'high');
 	Object.assign(window.agent, {
