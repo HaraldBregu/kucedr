@@ -21,6 +21,7 @@ Part of the [Roadmap](README.md). Status: proposal.
 | 18.3 | Memory per workspace | Work and personal memory kept apart | [Multiple workspaces](WORKSPACES.md), 10.2 | M |
 | 18.4 | Knowledge sources at a glance | Each source shows when it was last indexed, how much it holds, and any error | The Knowledge page | S |
 | 18.5 | Refresh while closed | Knowledge stays current when the window is closed | Run while closed ([Automation](AUTOMATION.md), 16.7) | L |
+| 18.6 | Agent uses knowledge well | The agent knows what the knowledge base holds, finds exact names and codes, and can read around a hit ([KNOWLEDGE_RETRIEVAL.md](../KNOWLEDGE_RETRIEVAL.md)) | `query_knowledge`, the vector store | M |
 
 ## Open decisions
 
