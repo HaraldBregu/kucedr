@@ -143,7 +143,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 							<>
 								<span
 									className={cn(
-										'inline-flex h-6 items-center rounded-md border px-2 text-[11px] font-medium',
+										'inline-flex h-6 items-center rounded-md border px-2 text-xs font-medium',
 										statusClassName(status)
 									)}
 								>
@@ -168,7 +168,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 							<>
 								<span
 									className={cn(
-										'inline-flex h-6 items-center rounded-md border px-2 text-[11px] font-medium',
+										'inline-flex h-6 items-center rounded-md border px-2 text-xs font-medium',
 										statusClassName(status)
 									)}
 								>
@@ -254,7 +254,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 
 						{recorderState === 'recorded' && recordedUrl && (
 							<div className="flex flex-col gap-1.5">
-								<p className="text-[11px] font-medium text-muted-foreground">
+								<p className="text-xs font-medium text-muted-foreground">
 									{t('settings.system.media.test.result')}
 								</p>
 								{media.video ? (
