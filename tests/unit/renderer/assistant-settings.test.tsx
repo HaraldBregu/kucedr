@@ -455,7 +455,6 @@ it('lists every built-in agent tool on the Tools page', async () => {
 		'Update health',
 		'Run task now',
 		'Load skill',
-		'Get goal',
 		'Request user input',
 		'Complete bootstrap',
 	]) {
