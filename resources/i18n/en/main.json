@@ -2546,6 +2546,23 @@
 			"queued": "Queued follow-ups",
 			"remove": "Remove follow-up"
 		},
+		"insights": {
+			"title": "Run insights",
+			"firstToken": "Time to first token",
+			"turns": "Model turns",
+			"input": "Input tokens",
+			"output": "Output tokens",
+			"cached": "Cached input tokens",
+			"cost": "Cost (USD)",
+			"unavailable": "Unavailable",
+			"timeline": "Timeline",
+			"model": "Model",
+			"tool": "Tool",
+			"duration": "Took {{time}}",
+			"error": "Could not load run insights.",
+			"empty": "No run data was recorded for this reply.",
+			"loading": "Loading run insights…"
+		},
 		"regenerate": {
 			"label": "Regenerate",
 			"retry": "Retry",

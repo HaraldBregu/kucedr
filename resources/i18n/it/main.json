@@ -2546,6 +2546,23 @@
 			"queued": "Messaggi in coda",
 			"remove": "Rimuovi messaggio in coda"
 		},
+		"insights": {
+			"title": "Dettagli esecuzione",
+			"firstToken": "Tempo al primo token",
+			"turns": "Turni del modello",
+			"input": "Token in ingresso",
+			"output": "Token in uscita",
+			"cached": "Token in ingresso in cache",
+			"cost": "Costo (USD)",
+			"unavailable": "Non disponibile",
+			"timeline": "Sequenza temporale",
+			"model": "Modello",
+			"tool": "Strumento",
+			"duration": "Durata {{time}}",
+			"error": "Impossibile caricare i dettagli.",
+			"empty": "Nessun dato di esecuzione registrato per questa risposta.",
+			"loading": "Caricamento dei dettagli…"
+		},
 		"regenerate": {
 			"label": "Rigenera",
 			"retry": "Riprova",

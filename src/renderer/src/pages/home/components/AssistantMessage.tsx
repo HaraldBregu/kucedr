@@ -15,6 +15,7 @@ import { type AgentMessage, type AgentToolPart } from '../context';
 import { useReadMessageAloud } from '../hooks';
 import { markdownComponents } from './markdown';
 import { statusLabel, isRunningState } from './status';
+import { Insights } from '../Insights';
 import { UserInputCard } from './UserInputCard';
 import { ScreenSourceCard } from './ScreenSourceCard';
 import { McpAuthorizationCard } from './McpAuthorizationCard';
@@ -150,6 +151,7 @@ function statusLabelContent(
 }
 
 export function AssistantMessage({
+	sessionId,
 	message,
 	isStreaming = false,
 	className,
@@ -160,6 +162,7 @@ export function AssistantMessage({
 	canAct = false,
 	onAction,
 }: {
+	readonly sessionId?: string;
 	readonly message: AgentMessage;
 	readonly isStreaming?: boolean;
 	readonly showHeader?: boolean;
@@ -295,6 +298,10 @@ export function AssistantMessage({
 	const readAloudTitle =
 		speakErrorMessage ?? (isSpeaking ? 'Reading message aloud' : 'Read message aloud');
 
+	const reply = message.runId ?? message.completedAtMs;
+	const insights = sessionId && reply !== undefined && !isStreaming && message.state !== 'idle'
+		? <Insights key={sessionId + ':' + reply} sessionId={sessionId} reply={reply} />
+		: null;
 	return (
 		<Message data-chat-response={message.id} className={cn('flex w-full flex-col', className)}>
 			{activityTools.length > 0 && (
@@ -452,9 +459,11 @@ export function AssistantMessage({
 								<RefreshCw className="size-3.5" />
 							</Button>
 						)}
+					{insights}
 					</MessageActions>
 				</>
 			)}
+			{!hasContent && insights && <MessageActions className="mt-1 gap-1">{insights}</MessageActions>}
 			{showActivity && !hasTools && (
 				<div className="flex w-full flex-col">
 					<span className={statusClassName}>

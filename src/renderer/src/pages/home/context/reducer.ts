@@ -447,7 +447,7 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 		if (content.length === 0 && tools.length === 0) return;
 
 		const last = out[out.length - 1];
-		if (last && isAgentMessage(last)) {
+		if (last && isAgentMessage(last) && last.runId === message.runId) {
 			out[out.length - 1] = {
 				...last,
 				content:
@@ -471,6 +471,7 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 
 		out.push({
 			id: `agent-history-${index}`,
+			runId: message.runId,
 			role: 'agent',
 			type: 'agent',
 			content,

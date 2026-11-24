@@ -8,6 +8,7 @@ import { markdownComponents } from './components/markdown';
 import { UserMessage } from './components/UserMessage';
 
 export const Messages = memo(function Messages({
+	sessionId,
 	messages,
 	isLoading,
 	voiceMode,
@@ -18,6 +19,7 @@ export const Messages = memo(function Messages({
 	modes,
 	onAction,
 }: {
+	readonly sessionId?: string;
 	readonly messages: readonly HomeChatMessage[];
 	readonly isLoading: boolean;
 	readonly voiceMode: boolean;
@@ -79,6 +81,7 @@ export const Messages = memo(function Messages({
 
 				return (
 					<AssistantMessage
+						sessionId={sessionId}
 						key={message.id}
 						message={message}
 						isStreaming={isLoading && message.id === activeAgentId}

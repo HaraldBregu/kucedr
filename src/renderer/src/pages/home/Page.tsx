@@ -1030,6 +1030,7 @@ function PageContent(): ReactElement {
 							>
 								<ChatContainerContent className="mx-auto min-h-full w-full max-w-4xl gap-5 px-12 pt-18">
 									<Messages
+										sessionId={voiceMode === null ? chatSessionId : undefined}
 										messages={visibleMessages}
 										isLoading={agent.isLoading}
 										voiceMode={voiceMode !== null}
