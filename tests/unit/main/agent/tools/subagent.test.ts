@@ -329,12 +329,9 @@ describe('subagentTool', () => {
 				};
 			})()
 		);
-		const tool = subagentTool({ location: '/agent' }, [], {
-			type: 'default',
-			interactionMode: 'default',
-		});
+		const tool = subagentTool({ location: '/agent' }, () => [], { type: 'default' });
 
-		await expect(tool.run({ task: 'inspect' })).resolves.toMatchObject({
+		await expect(tool.run({ tasks: [{ id: 'one', task: 'inspect' }] })).resolves.toMatchObject({
 			status,
 			text: 'canonical result',
 			stopReason,
