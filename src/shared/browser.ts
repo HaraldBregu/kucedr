@@ -63,6 +63,7 @@ export interface BrowserPaneCommand {
 	readonly url?: string;
 	readonly chat?: string;
 	readonly index?: number;
+	readonly route?: BrowserRoute;
 }
 
 export interface BrowserPaneView {
