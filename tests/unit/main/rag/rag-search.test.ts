@@ -12,17 +12,25 @@ import type {
 	EmbeddingProvider,
 	VectorStore,
 } from '../../../../src/main/agent/knowledge/rag/types';
-import { searchRag } from '../../../../src/main/agent/knowledge/rag/rag_search';
 
+let searchRag: typeof import('../../../../src/main/agent/knowledge/rag/rag_search').searchRag;
 const embed = jest.fn();
 const embeddings: EmbeddingProvider = { embed };
 const getIndex = jest.fn();
 const search = jest.fn();
+const keyword = jest.fn();
+const chunks = jest.fn();
 const vectors: VectorStore = {
 	getIndex,
 	getReusableSource: jest.fn(),
+	reusable: jest.fn(),
+	source: jest.fn(),
 	publish: jest.fn(),
 	search,
+	keyword,
+	chunks,
+	around: jest.fn(),
+	summary: jest.fn(),
 	exportIndex: jest.fn(),
 	purge: jest.fn(),
 	close: jest.fn(),
@@ -30,6 +38,24 @@ const vectors: VectorStore = {
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	jest.isolateModules(() => {
+		({ searchRag } = require('../../../../src/main/agent/knowledge/rag/rag_search'));
+	});
+	keyword.mockReturnValue([]);
+	chunks.mockImplementation((_indexName: string, ids: string[]) =>
+		ids.map((id) => ({
+			id,
+			sourceId: 'source-one',
+			sourceFingerprint: 'fingerprint',
+			path: 'documents/guide.md',
+			chunkIndex: 0,
+			lineStart: 4,
+			lineEnd: 6,
+			text: 'Local guide text',
+			checksum: 'checksum',
+			indexedAt: '2026-08-08T00:00:00.000Z',
+		}))
+	);
 	readRagManifest.mockReturnValue(undefined);
 	recipient.mockReturnValue('approved-recipient');
 	configuration.mockReturnValue({
