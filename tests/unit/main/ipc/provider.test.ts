@@ -264,8 +264,9 @@ describe('provider credential IPC boundary', () => {
 			'databases'
 		);
 		expect(listProviders).toHaveBeenCalledWith('databases');
-		expect(saved).toEqual(provider);
-		expect(listed).toEqual([provider]);
+		const status = { id: 'pinecone', name: 'Pinecone', baseUrl: 'https://api.pinecone.io', saved: true };
+		expect(saved).toEqual(status);
+		expect(listed).toEqual([status]);
 		expect(() =>
 			handler(registerCommandWithEvent, ProviderChannels.set)(
 				{},
