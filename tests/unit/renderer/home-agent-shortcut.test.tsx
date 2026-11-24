@@ -6,6 +6,8 @@ jest.mock('../../../src/renderer/src/pages/home/context', () => ({
 	useHomeAgentContext: () => ({ chatState: {}, dispatchChat: jest.fn() }),
 }));
 
+jest.mock('../../../src/renderer/src/hooks/use-modes', () => ({ useModes: () => [] }));
+
 it.each([
 	['Command+N', { metaKey: true }],
 	['Ctrl+N', { ctrlKey: true }],
