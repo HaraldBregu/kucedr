@@ -265,6 +265,12 @@ export const useWebBrowserTool = tool({
 			.optional()
 			.describe('Tab id from "tabs" output, which marks the tab on screen ("shown") and this chat\'s tabs ("mine").'),
 		url: z.string().optional().describe('URL for open/navigate.'),
+		route: z
+			.enum(BROWSER_ROUTES)
+			.optional()
+			.describe(
+				'open: how the new tab connects. "private": no logins, history or cookies kept, wiped when closed. "tor": through Tor, needed for .onion sites; Tor must be running and the user approves. "proxy": through the proxy the user set. Default "direct", with the user\'s logins. Only the browser is routed; page text you read still reaches the model provider.'
+			),
 		back: z.boolean().optional().describe('navigate: go back in history instead of to a url.'),
 		forward: z.boolean().optional().describe('navigate: go forward in history.'),
 		reload: z.boolean().optional().describe('navigate: reload the page.'),
