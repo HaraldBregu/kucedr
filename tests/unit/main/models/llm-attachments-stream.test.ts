@@ -89,7 +89,7 @@ describe('LLM streaming attachment payloads', () => {
 		const model = new LlmModel({
 			anthropicClientFactory: () => ({ messages: { stream } }) as never,
 		});
-		const anthropicRequest = request('anthropic');
+		const anthropicRequest = request('anthropic', 'claude-sonnet-4-6');
 		anthropicRequest.messages[0].content = [
 			{ type: 'image', mimeType: 'image/png', base64: 'aW1hZ2U=' },
 			{
