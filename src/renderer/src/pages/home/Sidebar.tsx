@@ -484,6 +484,11 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							window.dispatchEvent(new Event('kucedr:show-chat'));
 						}}
 						onKeyDown={(event) => {
+							if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) {
+								event.preventDefault();
+								openMenu();
+								return;
+							}
 							if (event.key !== 'Delete' && event.key !== 'Backspace') return;
 							event.preventDefault();
 							deleteSessions(selectionTargets(session));
