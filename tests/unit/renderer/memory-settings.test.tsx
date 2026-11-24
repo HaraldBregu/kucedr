@@ -48,6 +48,10 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'memory', { configurable: true, value: api });
+	Object.defineProperty(window, 'dataControls', {
+		configurable: true,
+		value: { listScopes: jest.fn().mockResolvedValue([]) },
+	});
 	api.getConfig.mockResolvedValue(config);
 	api.status.mockResolvedValue({ running: false, lastSuccess: null, error: null, pending: 0 });
 	api.list.mockResolvedValue([{ id: 'fact-1', fact: 'Prefers tea' }]);
