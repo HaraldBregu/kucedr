@@ -146,8 +146,8 @@ it('revokes copied remote consent during the save after its database, index, or 
 	const configuration = {
 		...getRagConfiguration(),
 		indexName: 'knowledge-base',
-		databaseProviderId: 'pinecone',
-		databaseId: 'pinecone',
+		databaseProviderId: 'script',
+		databaseId: 'vector-db',
 		embeddingProviderId: 'openai',
 		embeddingModelId: 'text-embedding-3-small',
 		embeddingConsent: {
