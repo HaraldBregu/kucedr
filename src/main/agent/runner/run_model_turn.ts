@@ -41,7 +41,8 @@ export async function* runModelTurn(
 	providerLimiter?: KeyedLimiter,
 	onContextAccepted?: (systemPrompt: string | undefined) => void,
 	budget?: ExecutionBudget,
-	requiredContextMessages: Message[] = []
+	requiredContextMessages: Message[] = [],
+	compactHistory?: () => Promise<{ summary: string; userIndex: number; messages: Message[] } | undefined>
 ): AsyncGenerator<RuntimeEvent, ModelTurn> {
 	const maxRetries = 2;
 	const contextWindow = await resolveContextWindow(provider, modelId);
@@ -56,15 +57,31 @@ export async function* runModelTurn(
 	const maxTokens = contextWindow
 		? Math.min(outputLimit, Math.max(1, contextWindow - MODEL_CONTEXT_SAFETY_TOKENS - 2_048))
 		: outputLimit;
-	const context = fitModelContext({
+	const maxInputTokens = modelInputLimit(provider.id, modelId, maxTokens, contextWindow);
+	const contextInput = {
 		systemPrompt,
 		protectedSystemPrompt,
 		requiredContextMessages,
 		contextMessages,
 		messages,
 		tools,
-		maxInputTokens: modelInputLimit(provider.id, modelId, maxTokens, contextWindow),
-	});
+		maxInputTokens,
+	};
+	let context;
+	if (compactHistory && contextWindow) {
+		context = fitModelContext({ ...contextInput, maxInputTokens: Infinity });
+		if (context.estimatedTokens >= maxInputTokens * 0.8) {
+			const compacted = await compactHistory();
+			if (compacted) {
+				yield { type: 'history_compacted', summary: compacted.summary, userIndex: compacted.userIndex };
+				context = fitModelContext({ ...contextInput, messages: compacted.messages });
+			} else if (context.estimatedTokens > maxInputTokens) {
+				context = fitModelContext(contextInput);
+			}
+		}
+	} else {
+		context = fitModelContext(contextInput);
+	}
 	onContextAccepted?.(context.systemPrompt);
 	const contextUsage = {
 		providerId: provider.id,

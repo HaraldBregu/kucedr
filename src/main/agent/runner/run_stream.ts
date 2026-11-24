@@ -43,6 +43,8 @@ import type {
 	ToolCall,
 } from '../types';
 import { runModelTurn } from './run_model_turn';
+import { autoCompact } from '../compaction/automatic';
+import { projectHistory } from '../compaction/projection';
 import { runToolCalls } from './run_tool_calls';
 import { runMcpRecovery } from './run_mcp_recovery';
 import { mcpAuthorizationStopped } from './mcp_authorization_stopped';
@@ -509,6 +511,25 @@ async function* loop(
 				knowledge ? knowledgeCard() : ''
 			)
 		);
+		let attemptCompaction = session.category === 'main' && input.task === 'chat' && !restricted;
+		const modelHistory = (): Message[] => {
+			const history = projectHistory(session.messages).filter(
+				(message) =>
+					!Array.isArray(message.content) ||
+					!message.content.some((block) => block.internal && block.kind === 'skill')
+			);
+			return promptCapabilities ? projectPromptAttachments(history, promptCapabilities) : history;
+		};
+		const compactHistory = async () => {
+			attemptCompaction = false;
+			try {
+				const checkpoint = await autoCompact(session, options.providerLimiter, signal);
+				return checkpoint && { ...checkpoint, messages: modelHistory() };
+			} catch {
+				signal.throwIfAborted();
+				return undefined;
+			}
+		};
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
@@ -563,20 +584,12 @@ async function* loop(
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			if (extension?.prompt) systemPrompt += `\n\n${extension.prompt}`;
-			const history = session.messages.filter(
-				(message) =>
-					!Array.isArray(message.content) ||
-					!message.content.some((block) => block.internal && block.kind === 'skill')
-			);
-			const messages = promptCapabilities
-				? projectPromptAttachments(history, promptCapabilities)
-				: history;
 			const turn = yield* runModelTurn(
 				input,
 				provider,
 				modelId,
 				systemPrompt,
-				messages,
+				modelHistory(),
 				turnTools,
 				signal,
 				modelOptions,
@@ -590,7 +603,8 @@ async function* loop(
 					if (input.deferPersist) persist(session);
 				},
 				budget,
-				skillContext
+				skillContext,
+				attemptCompaction ? compactHistory : undefined
 			);
 
 			if (synthesisOnly && (turn.toolCalls.length > 0 || !turn.content.trim())) {
