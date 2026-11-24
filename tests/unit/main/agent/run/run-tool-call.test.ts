@@ -32,7 +32,8 @@ describe('runToolCall', () => {
 		await executing;
 		controller.abort(new Error('cancelled'));
 
-		await expect(pending).rejects.toThrow('cancelled');
+		expect((await pending).value).toMatchObject({ type: 'tool_call_end', isError: true });
+		await expect(events.next()).rejects.toThrow('cancelled');
 		expect(receivedSignal?.aborted).toBe(true);
 		expect(call.result).toMatchObject({ isError: true, content: expect.stringContaining('Cancelled') });
 	});
