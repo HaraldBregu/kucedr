@@ -76,11 +76,14 @@ test('automatic compaction preserves history and sends the summary to the model'
 		await editor.fill('Continue the discussion.');
 		await editor.press('Enter');
 		await expect(page.getByText('Compacted chat reply.', { exact: true })).toBeVisible();
+		expect(requests.at(-1)?.includes(summary), JSON.stringify(requests.map((request) => ({
+			characters: request.length, containsOriginal: request.includes(original),
+			containsSummary: request.includes(summary),
+		})))).toBe(true);
 		const marker = page.getByText('Earlier messages automatically summarized', { exact: true });
 		await expect(marker).toBeVisible();
 		await marker.click();
 		await expect(page.getByText(summary, { exact: true })).toBeVisible();
-		expect(requests.at(-1)).toContain(summary);
 		expect(requests.at(-1)).toContain('Continue the discussion.');
 		expect(requests.at(-1)).not.toContain(original);
 		await page.reload();
