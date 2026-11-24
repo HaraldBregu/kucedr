@@ -372,6 +372,12 @@ export class SqliteVectorStore implements VectorStore {
 		return rows.map(mapChunk);
 	}
 
+	summary(indexName: string): { chunks: number; paths: string[] } {
+		const { count } = this.activeCountStatement.get(indexName) as unknown as { count: number };
+		const rows = this.pathsStatement.all(indexName) as unknown as Array<{ path: string }>;
+		return { chunks: count, paths: rows.map((row) => row.path) };
+	}
+
 	exportIndex(indexName: string, generation?: string): VectorPublication | undefined {
 		const index = this.getIndex(indexName);
 		if (!index || (generation && generation !== index.generation)) return undefined;
