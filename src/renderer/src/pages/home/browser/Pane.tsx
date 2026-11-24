@@ -63,7 +63,7 @@ export function BrowserPane({
 				active={active.targetId}
 				onSelect={(targetId) => run(targetId, 'focus')}
 				onClose={(targetId) => run(targetId, 'close')}
-				onNew={() => run(active.targetId, 'new')}
+				onNew={(route) => run(active.targetId, 'new', undefined, undefined, route)}
 				onMove={(targetId, index) => run(targetId, 'move', undefined, index)}
 			/>
 			<BrowserToolbar
