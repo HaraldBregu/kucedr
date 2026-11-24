@@ -82,7 +82,7 @@ describe('search service execution', () => {
 	it('executes a different service using its own POST metadata', async () => {
 		mockPluginSettings.mockImplementation((id) => id === 'other' ? { apiKey: 'other-key' } : {});
 		selectSearchEngine('other/other-search');
-		(global.fetch as jest.Mock).mockResolvedValue({ ok: true, json: async () => ({ results: [{ title: 'Found', url: 'https://result.example', content: 'Text' }] }) });
+		(global.fetch as jest.Mock).mockResolvedValue(new Response(JSON.stringify({ results: [{ title: 'Found', url: 'https://result.example', content: 'Text' }] })));
 		await expect(searchWeb({ query: 'latest', count: 2 })).resolves.toEqual({
 			query: 'latest', results: [{ title: 'Found', url: 'https://result.example', description: 'Text' }],
 		});
