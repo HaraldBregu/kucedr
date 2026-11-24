@@ -1225,7 +1225,7 @@ describe('run stream system prompt', () => {
 				type: 'run_finished',
 				result: {
 					stopReason:
-						outcome === 'cancel' ? 'cancelled' : outcome === 'tools' ? 'error' : 'end_turn',
+						outcome === 'cancel' ? 'cancelled' : outcome === 'tools' ? 'budget_exhausted' : 'end_turn',
 					...(outcome === 'empty' ? { text: 'done' } : {}),
 				},
 			});
