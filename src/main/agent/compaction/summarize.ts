@@ -1,3 +1,4 @@
+import { resolveContextWindow } from '../../models/context';
 import { getResolvedProvider } from '../../settings_store';
 import { getAgentProfileModel } from '../agent_profiles';
 import { getCompactModel } from '../agent_store';
@@ -18,12 +19,13 @@ export async function summarize(
 	providerLimiter: KeyedLimiter | undefined,
 	signal?: AbortSignal
 ): Promise<string> {
-	const chunks = splitChunks(messages.map(transcriptLine).filter(Boolean).join('\n\n'));
 	let summary = '';
 	let inputTokens = 0;
 	const profile = getCompactModel() ?? getAgentProfileModel('chat', 'textToText');
 	const provider = getResolvedProvider(profile.providerId);
 	if (!provider || !profile.modelId) throw new Error('Chat compaction requires a configured text model.');
+	const contextWindow = await resolveContextWindow(provider, profile.modelId);
+	const chunks = splitChunks(messages.map(transcriptLine).filter(Boolean).join('\n\n'), contextWindow);
 	const timeout = AbortSignal.timeout(5 * 60_000);
 	const deadline = signal ? AbortSignal.any([signal, timeout]) : timeout;
 
