@@ -277,6 +277,70 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 					/>
 				</SettingsPanel>
 			) : null}
+			{routes ? (
+				<SettingsPanel>
+					<SettingsRow
+						title={t('settings.browser.connections.title')}
+						description={t('settings.browser.connections.description')}
+					/>
+					<SettingsRow
+						title={t('settings.browser.connections.tor')}
+						description={
+							torFound === undefined
+								? t('settings.browser.connections.torDescription')
+								: torFound
+									? t('settings.browser.connections.torFound', { address: torFound })
+									: t('settings.browser.connections.torMissing')
+						}
+						actionClassName="w-auto justify-end gap-2"
+						actions={
+							<>
+								<Input
+									aria-label={t('settings.browser.connections.tor')}
+									autoComplete="off"
+									spellCheck={false}
+									className="h-8 w-44 text-xs"
+									placeholder={t('settings.browser.connections.automatic')}
+									value={routes.tor}
+									onChange={(event) => setRoutes({ ...routes, tor: event.target.value })}
+								/>
+								<Button type="button" variant="outline" onClick={() => void checkTor()}>
+									{t('settings.browser.connections.check')}
+								</Button>
+							</>
+						}
+					/>
+					<SettingsRow
+						title={t('settings.browser.connections.proxy')}
+						description={t('settings.browser.connections.proxyDescription')}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Input
+								aria-label={t('settings.browser.connections.proxy')}
+								autoComplete="off"
+								spellCheck={false}
+								className="h-8 w-56 text-xs"
+								placeholder="socks5://127.0.0.1:1080"
+								value={routes.proxy}
+								onChange={(event) => setRoutes({ ...routes, proxy: event.target.value })}
+							/>
+						}
+					/>
+					<SettingsRow
+						title={t('settings.browser.connections.limits')}
+						description={t('settings.browser.connections.limitsDescription')}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Button type="button" onClick={() => void saveRoutes()}>
+								{t('settings.browser.connections.save')}
+							</Button>
+						}
+					/>
+				</SettingsPanel>
+			) : null}
+			{routesNotice ? (
+				<SettingsNotice variant={routesNotice.error ? 'destructive' : 'default'}>{routesNotice.text}</SettingsNotice>
+			) : null}
 		</SettingsPageShell>
 	);
 }
