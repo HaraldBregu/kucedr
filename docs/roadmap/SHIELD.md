@@ -1,6 +1,15 @@
 # 13. Network shield
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 13.3, 13.5, 13.11 and the WebRTC part of 13.6 built
+2026-11-24 ([Browser routes and shield](../BROWSER_ROUTES.md)); 13.13 is half built (every site
+permission request is denied, with no way to allow one); the rest proposal.
+
+Built: every browser pane session checks each request in `onBeforeRequest`
+(`src/main/agent/tools/web/browser/guard.ts`, rules in `src/main/shield/`). Public pages cannot
+reach the local network (no DNS-rebinding check yet); stored keys and tokens never leave in an
+address or request body, also for `fetch_web_page`, `search_web` and background browsing; downloads
+wait in a holding folder for the user's answer. Blocked requests are listed per tab under the
+toolbar's shield button. The "What exists today" list below is from 2026-11-19.
 
 One set of rules for everything Kucedr sends and receives, enforced in the main process and shown
 to the user, to protect the user's privacy. It protects Kucedr's own traffic; it is not a firewall
