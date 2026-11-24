@@ -3,7 +3,7 @@ import {
 	llmBuildAnthropicMessages,
 	llmToTranscriptEntry,
 } from '../../../../src/main/models/adapters/llm/llm_shared';
-import type { LlmEvent, LlmRequest } from '../../../../src/main/models/adapters/llm/llm_types';
+import type { LlmEvent } from '../../../../src/main/models/adapters/llm/llm_types';
 
 it('preserves signed Anthropic thinking when returning tool results', async () => {
 	const thinking = { type: 'thinking', thinking: '', signature: 'signed' };
