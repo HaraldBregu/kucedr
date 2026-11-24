@@ -75,7 +75,7 @@ export function Discover(): ReactElement {
 											{session.title.trim() || t('settings.chatHistory.untitled')}
 										</span>
 									</span>
-									<span className="self-start text-[11px] text-muted-foreground">
+									<span className="self-start text-xs text-muted-foreground">
 										<time
 											dateTime={new Date(session.updatedAtMs ?? session.createdAtMs).toISOString()}
 										>
