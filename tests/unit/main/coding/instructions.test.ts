@@ -77,7 +77,7 @@ it('uses harness filename precedence, reports inherited sources, and isolates wo
 	const saved = await instructions.save(first, {
 		content: 'updated override',
 		expectedRevision: firstResult.revision,
-	});
+	}, runtime, files);
 
 	expect(saved.content).toBe('updated override');
 	expect(readFileSync(path.join(firstDirectory, 'AGENTS.override.md'), 'utf8')).toBe(
