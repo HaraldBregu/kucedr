@@ -251,6 +251,23 @@ describe('LlmModel non-streaming transport', () => {
 		);
 	});
 
+	it('retains the cost reported by an OpenRouter model', async () => {
+		const create = jest.fn().mockResolvedValue({
+			choices: [{ message: { content: 'reply' }, finish_reason: 'stop' }],
+			usage: { prompt_tokens: 4, completion_tokens: 2, cost: 0.00012 },
+		});
+		const model = new LlmModel({
+			chatClientFactory: () => ({ chat: { completions: { create } } }) as never,
+		});
+		const events: LlmEvent[] = [];
+		for await (const event of model.stream(request('openrouter', 'hello', 'openrouter/auto')))
+			events.push(event);
+		expect(events).toContainEqual(expect.objectContaining({
+			type: 'model_call_end',
+			usage: expect.objectContaining({ costUsd: 0.00012 }),
+		}));
+	});
+
 	it('uses custom OpenAI chat completions with the configured base URL', async () => {
 		const create = jest.fn().mockResolvedValue({
 			choices: [{ message: { content: 'custom reply' }, finish_reason: 'stop' }],
