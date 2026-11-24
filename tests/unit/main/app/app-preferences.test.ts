@@ -59,6 +59,7 @@ describe('app window configuration', () => {
 				{ width: 480, maximizable: false }
 			)
 		).toEqual({
+			...APP_WINDOW_DEFAULTS,
 			width: 480,
 			height: 900,
 			minWidth: 480,
