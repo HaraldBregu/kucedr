@@ -111,6 +111,26 @@ export function AppSidebarFooter(): React.JSX.Element {
 						} />
 						<TooltipContent>{t('settings.title')}</TooltipContent>
 						</Tooltip>
+						{location.pathname !== '/workspace' && (
+						<Tooltip>
+						<TooltipTrigger render={
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className="absolute right-20 top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary"
+							aria-label={workspaceLabel}
+							onClick={() => {
+								playSound('navigate');
+								navigate('/workspace');
+							}}
+						>
+							<Folders className="size-4" strokeWidth={1.8} />
+						</Button>
+						} />
+						<TooltipContent>{workspaceLabel}</TooltipContent>
+						</Tooltip>
+						)}
 						<Tooltip>
 						<TooltipTrigger render={
 						<Button
