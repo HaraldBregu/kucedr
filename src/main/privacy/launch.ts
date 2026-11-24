@@ -1,6 +1,6 @@
 import { app, dialog } from 'electron';
 import { spawn } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { getPrivacy, getPrivacyRoute, isPrivacyEnabled, setPrivacy } from './state';
@@ -18,7 +18,7 @@ export function launchPrivacy(): boolean {
 	app.commandLine.appendSwitch('disable-quic');
 	app.commandLine.appendSwitch('host-resolver-rules', 'MAP * ~NOTFOUND, EXCLUDE 127.0.0.1');
 	app.commandLine.appendSwitch('force-webrtc-ip-handling-policy', 'disable_non_proxied_udp');
-	app.commandLine.appendSwitch('proxy-server', isChild && proxy ? proxy : 'socks5://127.0.0.1:0');
+	app.commandLine.appendSwitch('proxy-server', isChild && proxy ? proxy : 'socks5://127.0.0.1:1');
 	app.commandLine.appendSwitch('proxy-bypass-list', '<-loopback>');
 	if (isChild && getPrivacy().supported) return false;
 
@@ -47,7 +47,7 @@ export function launchPrivacy(): boolean {
 			child.once('error', () => resolve(null));
 			child.once('exit', resolve);
 		});
-		const restart = await import('node:fs').then(({ existsSync }) => existsSync(restartFile));
+		const restart = existsSync(restartFile);
 		rmSync(directory, { recursive: true, force: true });
 		if (restart) app.relaunch();
 		else if (code !== 0 && Date.now() - started < 15_000) {

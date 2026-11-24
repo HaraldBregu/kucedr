@@ -9,7 +9,7 @@ export async function configurePrivacy(): Promise<void> {
 	const route = getPrivacyRoute();
 	const config = {
 		mode: 'fixed_servers' as const,
-		proxyRules: route ?? 'socks5://127.0.0.1:0',
+		proxyRules: route ?? 'socks5://127.0.0.1:1',
 		proxyBypassRules: '<-loopback>',
 	};
 	try {
