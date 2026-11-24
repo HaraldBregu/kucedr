@@ -1,6 +1,7 @@
 # Roadmap
 
-Status: proposal, written 2026-11-19. Built since: sealed credentials on disk (1.2), completion
+Status: proposal, written 2026-11-19. Built since: sealed credentials on disk (1.2), the first four agent efficiency
+features ([2.1–2.4](PERFORMANCE.md)), completion
 notifications (3.1), regenerate and retry (3.3), the browser pane (3.9), browser control from the
 chat (3.12) and most of browser import
 (23), replies that survive leaving Home (5.3), fast knowledge retrieval (18.6), and private, Tor
@@ -54,7 +55,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
    unencrypted on disk today. Saved plugin credentials are decrypted in the main process, and
    the plugin detail page receives configured field names only (1.2).
 3. **Agent efficiency.** Automatic compaction, Run insights, run budgets and lighter first messages
-   (2.1–2.4) are built. The performance check (2.7) comes before streaming and startup work.
+   (2.1–2.4) are built. Next, measure startup time, streaming smoothness and bundle size (2.7). Use that baseline
+   to prioritize smooth streaming (2.5) and startup and sidebar work (2.6).
 4. **Accessibility: screen-reader chat and full keyboard use** (4.1–4.2). A screen-reader user
    cannot follow a streamed reply today.
 5. **User experience: search across chats** (3.2). Completion notifications (3.1) were built
