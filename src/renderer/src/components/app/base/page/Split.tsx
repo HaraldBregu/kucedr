@@ -167,7 +167,7 @@ export function Split({
 				className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background"
 			>
 				<NavigationBar className={overlayNavigation ? 'absolute inset-x-0 top-0 bg-background/70 backdrop-blur-md' : undefined} showWorkspace contextContent={navigationContent} rightContent={navigationActions} startContent={isMobile || !state.sidebarOpen ? <Toggle /> : undefined} />
-				<div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
+				<div id="split-pane-main" tabIndex={-1} className="relative flex min-h-0 flex-1 flex-col overflow-hidden outline-none">{children}</div>
 			</main>
 		</div>
 	);
