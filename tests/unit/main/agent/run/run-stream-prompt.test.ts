@@ -1120,7 +1120,7 @@ describe('run stream system prompt', () => {
 				events.push(event);
 
 			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
-			if (boundary !== 'turns') expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
+			if (boundary !== 'turns') expect(runModelTurnMock.mock.calls[1][5]).toEqual([tool]);
 			expect(execute).toHaveBeenCalledTimes(['output', 'turns'].includes(boundary) ? 1 : 0);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
