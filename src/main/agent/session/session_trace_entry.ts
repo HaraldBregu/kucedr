@@ -22,6 +22,7 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 		return {
 			type: event.type,
 			...(typeof event.sessionId === 'string' ? { sessionId: event.sessionId } : {}),
+			...(typeof event.runId === 'string' ? { runId: event.runId } : {}),
 			...(typeof event.model === 'string' ? { model: event.model } : {}),
 			...(typeof event.providerId === 'string' ? { providerId: event.providerId } : {}),
 			...(Array.isArray(event.modeIds) ? { modeIds: event.modeIds } : {}),
@@ -140,6 +141,7 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 			...(usage
 				? {
 						usage: {
+							...(typeof usage.costUsd === 'number' ? { costUsd: usage.costUsd } : {}),
 							...(typeof usage.inputTokens === 'number' ? { inputTokens: usage.inputTokens } : {}),
 							...(typeof usage.cachedTokens === 'number'
 								? { cachedTokens: usage.cachedTokens }
