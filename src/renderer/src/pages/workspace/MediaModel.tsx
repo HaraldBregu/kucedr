@@ -30,6 +30,6 @@ export function MediaModel({ kind, onSelectionChange }: { readonly kind: keyof t
 			setError(false);
 			void set({ providerId, modelId }).then(() => setSelection({ providerId, modelId })).catch(() => setError(true)).finally(() => setSaving(false));
 		}} disabled={saving || groups.length === 0} inline buttonDropdown compactPopover showFieldLabel={false} buttonClassName="h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground" labels={{ label }} />
-		{error ? <span role="alert" className="text-[11px] text-destructive">Model unavailable</span> : null}
+		{error ? <span role="alert" className="text-xs text-destructive">Model unavailable</span> : null}
 	</div>;
 }
