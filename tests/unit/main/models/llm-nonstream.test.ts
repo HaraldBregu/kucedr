@@ -50,26 +50,30 @@ describe('LlmModel non-streaming transport', () => {
 			usage: { input_tokens: 3, output_tokens: 2 },
 		});
 		const model = new LlmModel({
-			openAIClientFactory: () => ({ responses: { create } }) as never,
+			chatClientFactory: () => ({ responses: { create } }) as never,
 		});
 		const events: LlmEvent[] = [];
 		for await (const event of model.stream(
-			request('openai', [
-				{ type: 'image', mimeType: 'image/png', base64: 'aW1hZ2U=' },
-				{
-					type: 'document',
-					name: 'brief.pdf',
-					mimeType: 'application/pdf',
-					base64: 'cGRm',
-				},
-			])
+			request(
+				'openai',
+				[
+					{ type: 'image', mimeType: 'image/png', base64: 'aW1hZ2U=' },
+					{
+						type: 'document',
+						name: 'brief.pdf',
+						mimeType: 'application/pdf',
+						base64: 'cGRm',
+					},
+				],
+				'gpt-5.4'
+			)
 		))
 			events.push(event);
 
 		expect(create).toHaveBeenCalledWith(
 			expect.objectContaining({
 				stream: false,
-				model: 'model',
+				model: 'gpt-5.4',
 				input: [
 					{
 						role: 'user',
