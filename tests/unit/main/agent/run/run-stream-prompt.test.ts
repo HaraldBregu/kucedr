@@ -1395,7 +1395,7 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock.mock.calls[0][3].match(/^## Tools$/gm)).toHaveLength(1);
 		expect(runModelTurnMock.mock.calls[1][3].match(/^## Tools$/gm)).toHaveLength(1);
 		expect(session.toolCalls.find((call) => call.id === 'find-bash')?.result?.content).toContain(
-			'"selectedToolIds":["query_knowledge"]'
+			'"selectedToolIds":["run_command"]'
 		);
 		expect(execute).toHaveBeenCalledTimes(1);
 	});
