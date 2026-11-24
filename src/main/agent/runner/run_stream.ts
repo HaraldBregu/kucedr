@@ -497,9 +497,16 @@ async function* loop(
 			session.category === 'main' && options.memory?.getConfig().includeInPrompt
 				? await options.memory.read().catch(() => '')
 				: '';
+		const knowledge = (search?.eligible() ?? tools).some((tool) => tool.id === 'query_knowledge');
+		if (knowledge) warmRag();
 		addRunContext(
 			session,
-			await buildRunContext(config, memoryContext, options.instructions === undefined)
+			await buildRunContext(
+				config,
+				memoryContext,
+				options.instructions === undefined,
+				knowledge ? knowledgeCard() : ''
+			)
 		);
 		while (true) {
 			if (signal.aborted) return;
