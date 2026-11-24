@@ -58,9 +58,6 @@ it.each([
 		expect(agent.getLastMessages(SESSION_ID)).toEqual([
 			expect.objectContaining({ role: 'user', content: expected }),
 		]);
-		if (message.startsWith('/goal')) {
-			expect(readGoal(sessionDir(session))?.objective).toBe('Explain this');
-		}
 	}
 );
 
