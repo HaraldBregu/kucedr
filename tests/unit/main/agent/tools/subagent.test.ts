@@ -205,7 +205,7 @@ describe('subagentTool', () => {
 				})()
 		);
 		const pool = new KeyedLimiter(3);
-		const tool = subagentsTool({ location: '/agent' }, [], { type: 'default' }, pool);
+		const tool = subagentTool({ location: '/agent' }, () => [], { type: 'default', subagentLimiter: pool });
 		const first = tool.run({
 			tasks: [
 				{ id: 'a', task: 'a' },
