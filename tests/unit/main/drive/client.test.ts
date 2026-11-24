@@ -2,17 +2,16 @@ jest.mock('../../../../src/main/mcp', () => ({
 	getMcpOauth: jest.fn(),
 	saveMcpOauth: jest.fn(),
 }));
+jest.mock('../../../../src/main/plugins/plugins_settings', () => ({
+	pluginSettings: () => ({ client_id: 'client-id', client_secret: 'client-secret' }),
+}));
 
 import { getMcpOauth, saveMcpOauth } from '../../../../src/main/mcp';
 import { DriveClient } from '../../../../src/main/drive/client';
 
 const originalFetch = global.fetch;
-const originalClientId = process.env.GOOGLE_CLIENT_ID;
-const originalSecret = process.env.GOOGLE_CLIENT_SECRET;
 
 beforeEach(() => {
-	process.env.GOOGLE_CLIENT_ID = 'client-id';
-	process.env.GOOGLE_CLIENT_SECRET = 'client-secret';
 	jest.mocked(getMcpOauth).mockReturnValue({
 		tokensClientId: 'client-id',
 		tokens: { access_token: 'old-token', refresh_token: 'refresh-token', token_type: 'Bearer' },
