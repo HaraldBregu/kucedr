@@ -82,7 +82,7 @@ export default function PluginPage(): React.JSX.Element {
 	const [confirming, setConfirming] = useState(false);
 	const [settings, setSettings] = useState<Record<string, string>>({});
 	const [editingSetting, setEditingSetting] = useState<string | null>(null);
-	const savedSettings = useRef<Record<string, string>>({});
+	const [savedSettings, setSavedSettings] = useState<Record<string, string>>({});
 
 	const load = useCallback(async (): Promise<void> => {
 		const [
