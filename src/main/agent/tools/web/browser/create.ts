@@ -76,6 +76,7 @@ export function createTab(
 	});
 	contents.on('did-start-navigation', (event) => {
 		if (!event.isMainFrame || event.isSameDocument) return;
+		tab.blocked.length = 0;
 		tab.error = undefined;
 		tab.icon = undefined;
 		tab.pointer = undefined;
