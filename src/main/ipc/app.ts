@@ -99,6 +99,8 @@ import { openExternal } from '../handoff';
 import { unfurlUrl } from '../unfurl';
 import type { ExecSandbox } from '../agent/sandbox';
 import type { WindowContextManager } from '../window_context';
+import { getPrivacy, requireUnrestrictedNetwork, setPrivacy } from '../privacy/state';
+import { restart } from '../privacy/restart';
 import { TrustedRenderer } from './core/trusted';
 
 export interface AppIpcDeps {
@@ -571,6 +573,10 @@ export class AppIpc implements IpcModule {
 			}, AppChannels.openAppDataFolder)
 		);
 
+		ipcMain.handle(AppChannels.getPrivacy, wrapTrustedHandler(getPrivacy, AppChannels.getPrivacy));
+		ipcMain.handle(AppChannels.setPrivacy, wrapTrustedHandler(setPrivacy, AppChannels.setPrivacy));
+		ipcMain.handle(AppChannels.restart, wrapTrustedHandler(restart, AppChannels.restart));
+
 		ipcMain.handle(
 			AppChannels.getAvailableUpdate,
 			wrapSimpleHandler(() => availableUpdateVersion, AppChannels.getAvailableUpdate)
@@ -579,6 +585,7 @@ export class AppIpc implements IpcModule {
 		ipcMain.handle(
 			AppChannels.installUpdate,
 			wrapTrustedHandler(async () => {
+				requireUnrestrictedNetwork();
 				// ponytail: unsigned mac builds can't self-install; sign + notarize to drop this branch
 				if (process.platform === 'darwin') {
 					await shell.openExternal('https://github.com/HaraldBregu/kucedr/releases/latest');

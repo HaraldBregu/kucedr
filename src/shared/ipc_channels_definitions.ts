@@ -235,6 +235,10 @@ export const DriveChannels = {
 } as const;
 
 export const AppChannels = {
+	getPrivacy: 'app:get-privacy',
+	setPrivacy: 'app:set-privacy',
+	privacyChanged: 'app:privacy-changed',
+	restart: 'app:restart',
 	openAppDataFolder: 'app:open-app-data-folder',
 	openDataFolder: 'app:open-data-folder',
 	getActivity: 'app:get-activity',

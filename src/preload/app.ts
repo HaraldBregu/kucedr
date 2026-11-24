@@ -7,6 +7,10 @@ import { optionalTrimmedString } from './normalize';
 import type { AppStoreValue } from '../shared/app_store_types';
 
 export const app: AppApi = {
+	getPrivacy: () => typedInvokeUnwrap(AppChannels.getPrivacy),
+	setPrivacy: (enabled) => typedInvokeUnwrap(AppChannels.setPrivacy, enabled),
+	onPrivacyChanged: (callback) => typedOn(AppChannels.privacyChanged, callback),
+	restart: () => typedInvokeUnwrap(AppChannels.restart),
 	getAppStoreValue: <T extends AppStoreValue = AppStoreValue>(
 		key: string
 	): Promise<T | undefined> => {

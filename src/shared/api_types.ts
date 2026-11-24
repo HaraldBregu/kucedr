@@ -631,6 +631,10 @@ export interface AppApi extends AppStorageApi {
 	getTrayClickAction: () => Promise<import('./app_types').TrayClickAction>;
 	getLaunchState: () => Promise<AppLaunchState>;
 	onTrayEnabledChanged: (callback: (enabled: boolean) => void) => () => void;
+	getPrivacy: () => Promise<import('./privacy').PrivacyState>;
+	setPrivacy: (enabled: boolean) => Promise<import('./privacy').PrivacyState>;
+	onPrivacyChanged: (callback: (state: import('./privacy').PrivacyState) => void) => () => void;
+	restart: () => Promise<void>;
 	getAvailableUpdate: () => Promise<string | null>;
 	installUpdate: () => Promise<void>;
 	onUpdateAvailable: (callback: (version: string) => void) => () => void;

@@ -50,6 +50,8 @@ import { findBrowserProfiles } from './agent/permissions/browsers';
 import { paneEvents } from './agent/tools/web/browser/pane';
 import { history } from './browser/history';
 import { restoreTabs } from './browser/restore';
+import { configurePrivacy } from './privacy/configure';
+import { isPrivacyEnabled, privacyChanged } from './privacy/state';
 import { saveTabs } from './browser/snapshot';
 
 // // DIAG: bump V8 old-space heap to confirm whether crashes (Chromium OOM,
@@ -85,8 +87,11 @@ const services = bootstrapServices();
 const { eventBus, appState, windowFactory, logger, windowContextManager, agentService } = services;
 const mainWindow = new Main(appState, windowFactory, windowContextManager);
 const voiceWindow = new VoiceWindow(windowFactory, windowContextManager);
-agentService.start(logger);
-startRagSchedule(logger);
+if (!isPrivacyEnabled()) {
+	agentService.start(logger);
+	startRagSchedule(logger);
+}
+privacyChanged.on('change', (state) => eventBus.broadcast(AppChannels.privacyChanged, state));
 // Re-bind safety net with the real logger now that it exists.
 setupProcessSafetyNet(logger);
 setupMemoryMonitor(logger);
@@ -200,7 +205,12 @@ const menuManager = new Menu({
 	},
 });
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+	if (isPrivacyEnabled()) {
+		await configurePrivacy();
+		agentService.start(logger);
+		startRagSchedule(logger);
+	}
 	void services.memoryService
 		.start()
 		.catch((error) => logger.error('Memory', 'Failed to start memory processing', error));
@@ -211,7 +221,7 @@ app.whenReady().then(() => {
 	});
 	void findBrowserProfiles().catch((error) => logger.error('Permissions', 'Browser profile scan failed', error));
 	recordAppLaunch();
-	if (app.isPackaged) startUpdater(eventBus, logger);
+	if (app.isPackaged && !isPrivacyEnabled()) startUpdater(eventBus, logger);
 	startStorageSync(logger, services.storageOperations);
 	services.cloudService.initialize();
 	const authInitialization = services.authService.initialize();
