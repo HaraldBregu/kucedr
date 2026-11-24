@@ -53,9 +53,7 @@ jest.mock('../../../../src/main/models/selection', () => ({
 }));
 jest.mock('../../../../src/main/models/adapters/realtime_voice', () => ({
 	buildRealtimeVoiceAdapter: jest.fn(),
-	realtimeVoiceDefaultVoice: () => 'marin',
-	supportsRealtimeVoiceModel: () => true,
-	supportsRealtimeVoiceTools: () => true,
+	realtimeVoiceProtocol: () => ({ tools: true }),
 }));
 jest.mock('../../../../src/main/apps/app_render', () => ({ openAppWindows: new Map() }));
 
