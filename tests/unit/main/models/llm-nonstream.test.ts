@@ -3,10 +3,11 @@ import type { LlmEvent, LlmRequest } from '../../../../src/main/models/adapters/
 
 const request = (
 	providerId: string,
-	content: LlmRequest['messages'][number]['content'] = 'hello'
+	content: LlmRequest['messages'][number]['content'] = 'hello',
+	model = 'model'
 ): LlmRequest => ({
 	provider: { id: providerId, apiKey: 'key' },
-	model: 'model',
+	model,
 	messages: [{ role: 'user', content }],
 	tools: [
 		{
