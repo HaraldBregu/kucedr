@@ -30,6 +30,7 @@ import {
 } from '../browser/passwords';
 import { answerOffer } from '../agent/tools/web/browser/capture';
 import { answerDownload } from '../agent/tools/web/browser/release';
+import { getPrivacy, privacyChanged } from '../privacy/state';
 import { connections } from '../browser/connections';
 import { findTor } from '../browser/tor';
 import { pickFiles } from '../browser/pick';
@@ -241,6 +242,7 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		trusted.query(BrowserChannels.connections, () => connections());
 		trusted.command(BrowserChannels.connectionsSet, (value) => {
 			connections(checkConnections(value));
+			privacyChanged.emit('change', getPrivacy());
 		});
 		trusted.query(BrowserChannels.torFind, async () => (await findTor()) ?? null);
 		trusted.commandWithEvent(BrowserChannels.view, ({ sender }, request) => {

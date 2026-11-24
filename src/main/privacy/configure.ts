@@ -43,7 +43,7 @@ export async function configurePrivacy(): Promise<void> {
 		socket.once('close', () => finish(false));
 		socket.once('connect', () => socket.write(Buffer.from([5, 1, 0])));
 		socket.on('data', (data) => {
-			reply = Buffer.concat([reply, data]);
+			reply = Buffer.concat([reply, Buffer.from(data)]);
 			if (reply.length >= 2) finish(reply[0] === 5 && reply[1] === 0);
 		});
 	};

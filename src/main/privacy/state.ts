@@ -12,7 +12,7 @@ const events = new EventEmitter();
 
 let enabled = false;
 try {
-	enabled = JSON.parse(readFileSync(file, 'utf8')) === true;
+	enabled = JSON.parse(readFileSync(file, 'utf8')) !== false;
 } catch (error) {
 	enabled = (error as NodeJS.ErrnoException).code !== 'ENOENT';
 }
