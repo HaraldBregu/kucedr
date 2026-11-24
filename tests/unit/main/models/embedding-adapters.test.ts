@@ -93,7 +93,12 @@ it.each([
 				})
 			)
 		);
-		await generateEmbeddings({ ...options, model: model(protocol), inputType, texts: ['document'] });
+		await generateEmbeddings({
+			...options,
+			model: model(protocol),
+			inputType,
+			texts: ['document'],
+		});
 		const init = jest.mocked(global.fetch).mock.calls[0]?.[1];
 		expect(JSON.parse(String(init?.body))).toMatchObject({ model: 'test-model', ...expected });
 	}
