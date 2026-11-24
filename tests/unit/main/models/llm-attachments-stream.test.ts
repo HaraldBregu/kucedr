@@ -43,7 +43,7 @@ describe('LLM streaming attachment payloads', () => {
 	it('uses OpenAI Responses image and PDF payloads', async () => {
 		const create = jest.fn().mockResolvedValue(emptyStream());
 		const model = new LlmModel({
-			openAIClientFactory: () => ({ responses: { create } }) as never,
+			chatClientFactory: () => ({ responses: { create } }) as never,
 		});
 		const openAIRequest = request('openai', 'gpt-5.4');
 		openAIRequest.messages[0].content = [
@@ -136,7 +136,7 @@ describe('LLM streaming attachment payloads', () => {
 	it('uses image_url for generic compatible streaming requests', async () => {
 		const create = jest.fn().mockResolvedValue(emptyStream());
 		const model = new LlmModel({
-			openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
+			chatClientFactory: () => ({ chat: { completions: { create } } }) as never,
 		});
 		for await (const _event of model.stream(imageRequest('compatible'))) {
 			// Consume the provider stream.
@@ -164,7 +164,7 @@ describe('LLM streaming attachment payloads', () => {
 	it('rejects generic chat PDF blocks before a streaming network request', async () => {
 		const create = jest.fn();
 		const model = new LlmModel({
-			openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
+			chatClientFactory: () => ({ chat: { completions: { create } } }) as never,
 		});
 
 		await expect(async () => {
