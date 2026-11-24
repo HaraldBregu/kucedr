@@ -110,7 +110,8 @@ it('searches SQLite with the exact embedding identity used to build the index', 
 		},
 		expect.any(AbortSignal)
 	);
-	expect(search).toHaveBeenCalledWith('knowledge-base', [0.1, 0.2], 5);
+	expect(search).toHaveBeenCalledWith('knowledge-base', [0.1, 0.2], 50);
+	expect(keyword).toHaveBeenCalledWith('knowledge-base', 'query', 50);
 });
 
 it('passes cancellation to the query embedding provider', async () => {
