@@ -22,10 +22,17 @@ import { writeRagManifest } from './rag_manifest';
 import { getRagConfiguration } from './rag_store';
 import { chunkSpans } from './spans';
 import { ragVectorStore } from './vector';
-import type { RagIndexDependencies, RagIndexResult, VectorRecord } from './types';
+import type {
+	RagIndexDependencies,
+	RagIndexResult,
+	VectorRecord,
+	VectorReuse,
+	VectorSource,
+} from './types';
 
 const BATCH_SIZE = 64;
 const SKIPPED_LISTED = 200;
+const VERSION = 'knowledge-chunks-v4';
 
 export async function indexRag(
 	folders: readonly string[],
