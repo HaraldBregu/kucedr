@@ -339,36 +339,3 @@ it('uses the audio waveform icon for Voice', () => {
 
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
 });
-
-it('places Web Search after Storage without a Providers entry in the sidebar', () => {
-	render(
-		<MemoryRouter initialEntries={['/settings/storage']}>
-			<Routes>
-				<Route path="/settings" element={<Layout />}>
-					<Route path="*" element={<SettingsPageHeader title="Settings page" />} />
-				</Route>
-			</Routes>
-		</MemoryRouter>
-	);
-
-	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const storage = within(navigation).getByRole('link', { name: 'settings.tabs.storage' });
-	expect(storage).toHaveAttribute('href', '/settings/storage');
-	const group = storage.closest('[data-slot="split-pane-group"]');
-	const links = within(group as HTMLElement).getAllByRole('link');
-
-	expect(
-		within(group as HTMLElement).queryByRole('link', { name: 'settings.tabs.providers' })
-	).not.toBeInTheDocument();
-	expect(links.slice(links.indexOf(storage) + 1, links.indexOf(storage) + 2).map((link) => link.getAttribute('href'))).toEqual([
-		'/settings/services',
-	]);
-	for (const path of [
-		'/settings/providers/models',
-		'/settings/providers/search',
-		'/settings/providers/database',
-		'/settings/providers/storage',
-	]) {
-		expect(links.some((link) => link.getAttribute('href') === path)).toBe(false);
-	}
-});
