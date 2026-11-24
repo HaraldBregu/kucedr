@@ -55,8 +55,8 @@ it('defaults, normalizes, and validates the configured RAG index name', () => {
 		expect.objectContaining({
 			enabled: true,
 			indexName: 'knowledge-base',
-			databaseProviderId: 'pinecone',
-			databaseId: 'pinecone',
+			databaseProviderId: 'script',
+			databaseId: 'vector-db',
 			embeddingProviderId: 'openai',
 			embeddingModelId: 'text-embedding-3-small',
 			embeddingConsent: null,
