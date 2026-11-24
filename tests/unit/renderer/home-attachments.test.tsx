@@ -26,6 +26,7 @@ jest.mock('../../../src/renderer/src/pages/home/hooks', () => ({
 		chatState: { messages },
 		editUserMessage: jest.fn(),
 		clearReply,
+		followUps: [],
 		replyTo,
 		replyToMessage: jest.fn(),
 		handleSubmit,
