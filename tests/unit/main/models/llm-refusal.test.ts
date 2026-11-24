@@ -22,12 +22,12 @@ describe('OpenAI Responses refusal delivery', () => {
 				: response
 		);
 		const model = new LlmModel({
-			openAIClientFactory: () => ({ responses: { create } }) as never,
+			chatClientFactory: () => ({ responses: { create } }) as never,
 		});
 		const events: LlmEvent[] = [];
 		for await (const event of model.stream({
 			provider: { id: 'openai', apiKey: 'key' },
-			model: 'model',
+			model: 'gpt-5.4',
 			messages: [{ role: 'user', content: 'request' }],
 			maxTokens: 100,
 			streaming,
