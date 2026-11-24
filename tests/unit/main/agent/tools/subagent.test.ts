@@ -55,10 +55,10 @@ describe('subagentTool', () => {
 				yield { type: 'assistant_message', content: 'done', toolCalls: [] };
 			})()
 		);
-		const tool = subagentTool({ location: '/agent' }, [], { type: 'default' });
+		const tool = subagentTool({ location: '/agent' }, () => [], { type: 'default' });
 
-		await tool.run({ task: 'first' });
-		await tool.run({ task: 'second' });
+		await tool.run({ tasks: [{ id: 'first', task: 'first' }] });
+		await tool.run({ tasks: [{ id: 'second', task: 'second' }] });
 
 		const first = mockStream.mock.calls[0][1] as SessionState;
 		const second = mockStream.mock.calls[1][1] as SessionState;
