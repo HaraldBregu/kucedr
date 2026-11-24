@@ -3,9 +3,10 @@ import http from 'node:http';
 import https from 'node:https';
 import { syncBuiltinESMExports } from 'node:module';
 import { createServer, type AddressInfo, type Socket } from 'node:net';
-import { getGlobalDispatcher, setGlobalDispatcher } from 'undici';
-import WebSocket, { WebSocketServer } from 'ws';
+import { fetch, getGlobalDispatcher, setGlobalDispatcher } from 'undici';
+import { WebSocketServer } from 'ws';
 import { installPrivacyTransport } from '../../../../src/main/privacy/transport';
+import { privacyWebSocket } from '../../../../src/main/privacy/websocket';
 
 const originalHttpAgent = http.globalAgent;
 const originalHttpsAgent = https.globalAgent;
@@ -67,7 +68,7 @@ test('routes Fetch redirects, native HTTP and WebSocket destination names throug
 		for await (const chunk of nativeResponse) chunks.push(chunk);
 		expect(Buffer.concat(chunks).toString()).toBe('native.invalid received');
 
-		const socket = new WebSocket('ws://voice.invalid/');
+		const socket = privacyWebSocket('ws://voice.invalid/');
 		try {
 			const [message] = await once(socket, 'message');
 			expect(message.toString()).toBe('proxied');
@@ -94,6 +95,6 @@ test('blocks Fetch, native HTTPS, and WebSocket when no route is available', asy
 	});
 	const native = https.get('https://blocked.invalid/');
 	await expect(once(native, 'response')).rejects.toThrow('The network is blocked by Privacy Mode.');
-	const socket = new WebSocket('wss://blocked.invalid/');
+	const socket = privacyWebSocket('wss://blocked.invalid/');
 	await expect(once(socket, 'open')).rejects.toThrow('The network is blocked by Privacy Mode.');
 });

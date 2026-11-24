@@ -10,7 +10,6 @@ export let privacyTransportInstalled = false;
 
 export function installPrivacyTransport(proxy: string | undefined): void {
 	if (proxy) {
-		// The native HTTP agent uses the explicit remote-DNS SOCKS5 scheme.
 		const remoteDnsProxy = `socks5h://${new URL(proxy).host}`;
 		http.globalAgent = new SocksProxyAgent(remoteDnsProxy);
 		Object.assign(https, { globalAgent: new SocksProxyAgent(remoteDnsProxy) });
