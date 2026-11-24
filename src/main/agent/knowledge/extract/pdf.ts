@@ -4,7 +4,10 @@ import { KNOWLEDGE_REQUEST_TIMEOUT_MS } from '../limits';
 import type { RagSegment } from '../rag/types';
 
 export function pdfText(bytes: Buffer, signal?: AbortSignal): Promise<RagSegment[]> {
-	const stop = AbortSignal.any([AbortSignal.timeout(KNOWLEDGE_REQUEST_TIMEOUT_MS), ...(signal ? [signal] : [])]);
+	const stop = AbortSignal.any([
+		AbortSignal.timeout(KNOWLEDGE_REQUEST_TIMEOUT_MS),
+		...(signal ? [signal] : []),
+	]);
 	stop.throwIfAborted();
 	const worker = createWorker({
 		workerData: new Uint8Array(bytes),
