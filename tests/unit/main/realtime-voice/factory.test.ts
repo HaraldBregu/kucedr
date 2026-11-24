@@ -1,11 +1,16 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import {
 	buildRealtimeVoiceAdapter,
-	realtimeVoiceDefaultVoice,
-	realtimeVoiceModelRefs,
-	supportsRealtimeVoiceModel,
-	supportsRealtimeVoiceTools,
-	XAIRealtimeVoiceAdapter,
+	FlatRealtimeVoiceAdapter,
+	LiveVoiceAdapter,
+	RealtimeSessionVoiceAdapter,
+	realtimeVoiceProtocol,
 } from '../../../../src/main/models/adapters/realtime_voice';
+
+const provider = { id: 'openai', name: 'OpenAI', apiKey: 'key' };
+const model = (protocol?: string) =>
+	({ id: 'model', name: 'Model', metadata: protocol ? { protocol } : undefined }) as never;
 
 describe('realtime voice adapter factory', () => {
 	it('covers every realtime voice model in the bundled provider catalog', () => {
@@ -17,41 +22,39 @@ describe('realtime voice adapter factory', () => {
 				const manifestPath = path.join(modelsPath, modelDirectory, 'manifest.json');
 				if (!fs.existsSync(manifestPath)) return [];
 				const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-				return manifest.type === 'realtime-voice-model'
-					? [{ providerId, modelId: manifest.id as string }]
-					: [];
+				return manifest.type === 'realtime-voice-model' ? [manifest] : [];
 			});
 		});
 		expect(catalog.length).toBeGreaterThan(0);
-		expect(realtimeVoiceModelRefs()).toEqual(expect.arrayContaining(catalog));
-	});
-	it('publishes the exact stable provider/model allow-list', () => {
-		expect(realtimeVoiceModelRefs()).toEqual([
-			{ providerId: 'openai', modelId: 'gpt-realtime-2.1' },
-			{ providerId: 'openai', modelId: 'gpt-realtime-2.1-mini' },
-			{ providerId: 'openai', modelId: 'gpt-live-1' },
-			{ providerId: 'xai', modelId: 'grok-voice-latest' },
-			{ providerId: 'google', modelId: 'gemini-3.8-live' },
-			{ providerId: 'google', modelId: 'gemini-3.8-live-extended-thinking' },
-			{ providerId: 'qwen', modelId: 'qwen3.8-omni-flash-realtime' },
-		]);
-		expect(supportsRealtimeVoiceModel(' XAI ', 'grok-voice-latest')).toBe(true);
-		expect(supportsRealtimeVoiceTools('openai', 'gpt-realtime-2.1')).toBe(true);
-		expect(supportsRealtimeVoiceTools('xai', 'grok-voice-latest')).toBe(true);
-		expect(supportsRealtimeVoiceTools('openai', 'gpt-live-1')).toBe(false);
-		expect(supportsRealtimeVoiceModel('google', 'gemini-3.1-flash-live-preview')).toBe(false);
-		expect(supportsRealtimeVoiceModel('qwen', 'qwen3.5-omni')).toBe(false);
-		expect(realtimeVoiceDefaultVoice(' XAI ')).toBe('eve');
+		for (const manifest of catalog) {
+			expect(() => realtimeVoiceProtocol(manifest, providerIdOf(manifest))).not.toThrow();
+		}
 	});
 
-	it('builds a provider-specific adapter and rejects unknown providers', () => {
-		expect(buildRealtimeVoiceAdapter({ id: ' XAI ', name: 'xAI', apiKey: 'key' })).toBeInstanceOf(
-			XAIRealtimeVoiceAdapter
+	it('enables tools for every protocol except live', () => {
+		expect(realtimeVoiceProtocol(model('realtime'), 'OpenAI').tools).toBe(true);
+		expect(realtimeVoiceProtocol(model('realtime-flat'), 'xAI').tools).toBe(true);
+		expect(realtimeVoiceProtocol(model('agent'), 'Deepgram').tools).toBe(true);
+		expect(realtimeVoiceProtocol(model('live'), 'OpenAI').tools).toBe(false);
+	});
+
+	it('builds the adapter declared by the model protocol and rejects unknown protocols', () => {
+		expect(buildRealtimeVoiceAdapter(provider, model('realtime'))).toBeInstanceOf(
+			RealtimeSessionVoiceAdapter
 		);
-		expect(() =>
-			buildRealtimeVoiceAdapter({ id: 'unknown', name: 'Unknown', apiKey: 'key' })
-		).toThrow('not supported');
+		expect(buildRealtimeVoiceAdapter(provider, model('realtime-flat'))).toBeInstanceOf(
+			FlatRealtimeVoiceAdapter
+		);
+		expect(buildRealtimeVoiceAdapter(provider, model('live'))).toBeInstanceOf(LiveVoiceAdapter);
+		expect(() => buildRealtimeVoiceAdapter(provider, model('unknown'))).toThrow(
+			'declares no supported protocol'
+		);
+		expect(() => buildRealtimeVoiceAdapter(provider, model())).toThrow(
+			'declares no supported protocol'
+		);
 	});
 });
-import fs from 'node:fs';
-import path from 'node:path';
+
+function providerIdOf(manifest: { name?: string }): string {
+	return manifest.name ?? '';
+}
