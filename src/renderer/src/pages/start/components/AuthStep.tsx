@@ -337,8 +337,15 @@ export function AuthStep(): React.JSX.Element {
 				</Card>
 				{!recovery && mode !== 'forgot' ? (
 					<p className="text-muted-foreground px-6 text-center text-sm leading-normal">
-						By continuing, you agree to our <a href="#">Terms of Service</a> and{' '}
-						<a href="#">Privacy Policy</a>.
+						By continuing, you agree to our{' '}
+						<a href={__APP_LINKS__.terms} onClick={handleExternalLinkClick}>
+							Terms of Service
+						</a>{' '}
+						and{' '}
+						<a href={__APP_LINKS__.privacy} onClick={handleExternalLinkClick}>
+							Privacy Policy
+						</a>
+						.
 					</p>
 				) : null}
 			</div>
