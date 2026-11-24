@@ -9,6 +9,7 @@ import { purgeRagManifest } from './rag_manifest_purge';
 import { isLocalRagDatabase } from '../../../../shared/rag_database';
 import type { RagSkipped } from '../../../../shared/rag_status';
 import {
+	KNOWLEDGE_EMBED_CONCURRENCY,
 	KNOWLEDGE_MAX_RECORDS,
 	KNOWLEDGE_MAX_VECTOR_VALUES,
 	KNOWLEDGE_REQUEST_TIMEOUT_MS,
