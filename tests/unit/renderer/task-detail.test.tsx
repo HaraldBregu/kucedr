@@ -78,6 +78,7 @@ beforeEach(() => {
 			history,
 			setEnabled,
 			runNow: jest.fn(),
+			isRunning: jest.fn().mockResolvedValue(false),
 			delete: jest.fn(),
 			getRuntime: jest.fn(),
 			setRuntime: jest.fn(),
