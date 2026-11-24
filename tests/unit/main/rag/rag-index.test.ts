@@ -104,7 +104,7 @@ it.each(['embedding', 'mirror', 'account', 'model', 'index'])(
 	'blocks unapproved or changed %s disclosure before any export',
 	async (change) => {
 		if (change === 'embedding')
-			configuration.embeddingConsent = { providerId: 'openai', modelId: 'test-model' };
+			configuration.embeddingConsent = { providerId: 'openai', modelId: 'text-embedding-3-small' };
 		if (change === 'mirror') configuration.mirrorConsent = null;
 		if (change === 'account') getProvider.mockReturnValue({ apiKey: 'different-account' });
 		if (change === 'model') configuration.embeddingModelId = 'changed-model';
@@ -187,7 +187,7 @@ it('does not remove a successfully published generation when manifest persistenc
 it('stops when consent is revoked between embedding batches and publication', async () => {
 	embed.mockImplementation(async () => {
 		configuration.mirrorConsent = null;
-		return { providerId: 'openai', modelId: 'test-model', dimensions: 2, embeddings: [[1, 2]] };
+		return { providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 2, embeddings: [[1, 2]] };
 	});
 	await expect(
 		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
@@ -239,7 +239,7 @@ it('reuses unchanged source vectors and removes deleted files from the next loca
 it('does not publish after sources change during embedding', async () => {
 	embed.mockImplementationOnce(async () => {
 		configuration = { ...configuration, folders: ['/different-source'] };
-		return { providerId: 'openai', modelId: 'test-model', dimensions: 2, embeddings: [[1, 2]] };
+		return { providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 2, embeddings: [[1, 2]] };
 	});
 	await expect(
 		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
@@ -256,7 +256,7 @@ it.each([
 ])('rejects unusable vector %j before publication', async (...vector) => {
 	embed.mockResolvedValue({
 		providerId: 'openai',
-		modelId: 'test-model',
+		modelId: 'text-embedding-3-small',
 		dimensions: 2,
 		embeddings: [vector],
 	});
