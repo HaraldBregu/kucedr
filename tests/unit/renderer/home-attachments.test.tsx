@@ -219,7 +219,26 @@ describe('Home prompt attachments', () => {
 		});
 		Object.defineProperty(window, 'app', {
 			configurable: true,
-			value: { getPathForFile: (file: File) => `/tmp/${file.name}` },
+			value: {
+				getPathForFile: (file: File) => `/tmp/${file.name}`,
+				getThemeData: jest.fn(async () => ({ colors: {} })),
+				onThemeModeChanged: jest.fn(() => () => undefined),
+			},
+		});
+		Object.defineProperty(window, 'browserPane', {
+			configurable: true,
+			value: {
+				onChanged: jest.fn(() => () => undefined),
+				state: jest.fn(async () => ({ tabs: [], acting: [] })),
+			},
+		});
+		Object.defineProperty(globalThis, 'ResizeObserver', {
+			configurable: true,
+			value: class {
+				observe(): void {}
+				unobserve(): void {}
+				disconnect(): void {}
+			},
 		});
 		Object.defineProperty(window, 'agent', {
 			configurable: true,
