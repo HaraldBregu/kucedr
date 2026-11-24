@@ -1,6 +1,5 @@
 import { shell } from 'electron';
-import { rmSync } from 'node:fs';
-import path from 'node:path';
+import { discardDownload } from './discard';
 import { finishDownload } from './finish';
 import { paneEvents, type BrowserTab } from './pane';
 
