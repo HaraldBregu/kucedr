@@ -285,13 +285,13 @@ describe('Home prompt attachments', () => {
 		);
 	});
 
-	it('keeps the picker and Send available with an empty prompt', async () => {
+	it('keeps the picker available and Send disabled with an empty prompt', async () => {
 		renderPage();
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
 		);
 		expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled();
-		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
+		expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
 	});
 
 	it('offers Library and computer sources from the attachment button', async () => {
