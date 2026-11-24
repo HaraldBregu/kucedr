@@ -2522,6 +2522,13 @@
 			"retry": "Riprova",
 			"confirm": "Rigenerare questa risposta? I messaggi successivi verranno eliminati. I file modificati dalle risposte eliminate non vengono ripristinati."
 		},
+		"announce": {
+			"responding": "Kucedr sta rispondendo",
+			"awaiting": "In attesa della tua risposta",
+			"failed": "Risposta non riuscita. {{error}}",
+			"stopped": "Risposta interrotta",
+			"complete": "Risposta completata"
+		},
 		"placeholderDescription": "Inizia una conversazione con l'AI per fare brainstorming, redigere o perfezionare idee."
 	},
 	"writing": {
