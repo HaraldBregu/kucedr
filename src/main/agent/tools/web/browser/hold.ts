@@ -1,9 +1,10 @@
 import { app, type DownloadItem, type Event, type WebContents } from 'electron';
 import { randomUUID } from 'node:crypto';
-import { mkdirSync, rmSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import type { BrowserRoute } from '../../../../../shared/browser';
 import { block } from './block';
+import { discardDownload } from './discard';
 import { finishDownload } from './finish';
 import { tabFor } from './owner';
 import { paneEvents } from './pane';
