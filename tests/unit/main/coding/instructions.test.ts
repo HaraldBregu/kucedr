@@ -116,7 +116,7 @@ it('creates AGENTS.md and preserves an explicitly saved empty file', async () =>
 	const saved = await instructions.save(project, {
 		content: '',
 		expectedRevision: initial.revision,
-	});
+	}, runtime, files);
 
 	expect(saved).toMatchObject({ content: '', exists: true, editable: true });
 	expect(existsSync(path.join(projectDirectory, 'AGENTS.md'))).toBe(true);
@@ -146,7 +146,7 @@ it('rejects stale revisions without overwriting external edits', async () => {
 	writeFileSync(filePath, 'external edit');
 
 	await expect(
-		instructions.save(project, { content: 'Kucedr edit', expectedRevision: initial.revision })
+		instructions.save(project, { content: 'Kucedr edit', expectedRevision: initial.revision }, runtime, files)
 	).rejects.toThrow('changed outside Kucedr');
 	expect(readFileSync(filePath, 'utf8')).toBe('external edit');
 });
