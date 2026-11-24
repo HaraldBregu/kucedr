@@ -13,6 +13,12 @@ jest.mock('../../../../src/main/mcp/mcp_store', () => ({
 jest.mock('../../../../src/main/mcp/mcp_google_fetch', () => ({
 	createGoogleMcpFetch: jest.fn(() => 'google-fetch'),
 }));
+jest.mock('../../../../src/main/plugins/plugins_settings', () => ({
+	pluginSettings: () => ({ client_id: 'plugin-id', client_secret: 'plugin-secret' }),
+}));
+jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
+	pluginProviders: () => jest.requireActual('./providers').mcpProviders,
+}));
 
 import { getMcpOauth } from '../../../../src/main/mcp/mcp_store';
 import { createOAuthProvider } from '../../../../src/main/mcp/mcp_oauth_create_provider';
