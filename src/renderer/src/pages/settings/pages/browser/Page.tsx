@@ -31,6 +31,9 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 	const [busy, setBusy] = useState(false);
 	const [passwords, setPasswords] = useState<BrowserPasswordStatus | null>(null);
 	const [passwordAdded, setPasswordAdded] = useState<number | null>(null);
+	const [routes, setRoutes] = useState<BrowserConnections | null>(null);
+	const [torFound, setTorFound] = useState<string | null | undefined>(undefined);
+	const [routesNotice, setRoutesNotice] = useState<{ readonly error: boolean; readonly text: string } | null>(null);
 	const host = (template: string): string => {
 		try {
 			return new URL(template).hostname.replace(/^www\./, '');
