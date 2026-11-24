@@ -13,6 +13,8 @@ jest.mock('../../../../src/main/agent/knowledge/rag/rag_manifest', () => ({
 	readRagManifest: jest.fn(),
 }));
 jest.mock('../../../../src/main/settings_store', () => ({ getProvider }));
+const vectorScriptKey = jest.fn();
+jest.mock('../../../../src/main/database/vector_keys', () => ({ vectorScriptKey }));
 
 import { indexRag } from '../../../../src/main/agent/knowledge/rag/rag_index';
 import { authorizeRagDisclosure } from '../../../../src/main/agent/knowledge/rag/disclosure';
