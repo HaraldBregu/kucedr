@@ -1,15 +1,36 @@
 import { useEffect, useState, type CSSProperties, type ReactElement } from 'react';
-import { ArrowLeft, ArrowRight, BookMarked, Globe, KeyRound, PanelRightClose, RotateCw, Square, Star, X } from 'lucide-react';
-import type { BrowserPaneCommand, BrowserPaneTab } from '../../../../../shared/browser';
+import {
+	ArrowLeft,
+	ArrowRight,
+	BookMarked,
+	Globe,
+	KeyRound,
+	PanelRightClose,
+	RotateCw,
+	ShieldAlert,
+	Square,
+	Star,
+	X,
+} from 'lucide-react';
+import type { BrowserBlocked, BrowserPaneCommand, BrowserPaneTab } from '../../../../../shared/browser';
 import type { BrowserPlace } from '../../../../../shared/browser_import';
 import { loginLabel } from '../../../../../shared/login_label';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { ROUTE_LOOKS } from './routes';
 
 const DRAG = { WebkitAppRegion: 'drag' } as CSSProperties;
 const NO_DRAG = { WebkitAppRegion: 'no-drag' } as CSSProperties;
 const MENU_BOOKMARKS = 45;
+const MENU_BLOCKED = 40;
+const BLOCKED_REASONS: Record<BrowserBlocked['reason'], string> = {
+	local: 'Local network',
+	secret: 'Stored key or token',
+	route: 'Connection not ready',
+	download: 'Download',
+};
 
 export function BrowserToolbar({
 	tab,
