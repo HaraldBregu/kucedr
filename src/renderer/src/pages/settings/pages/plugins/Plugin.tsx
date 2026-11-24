@@ -119,7 +119,7 @@ export default function PluginPage(): React.JSX.Element {
 		): T[] => entries.filter((entry) => entry.provider.plugin?.id === pluginId);
 		setPlugin(plugins.find((item) => item.id === pluginId) ?? null);
 		setSettings(values);
-		savedSettings.current = values;
+		setSavedSettings(values);
 		setContents({
 			models: owned(models),
 			mcps: owned(mcps),
