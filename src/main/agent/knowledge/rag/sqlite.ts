@@ -3,24 +3,52 @@ import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync, type StatementSync } from 'node:sqlite';
 import { validateVector } from './validate';
+import { ftsQuery } from './terms';
 import type {
 	IndexRow,
 	RecordRow,
+	VectorChunk,
+	VectorHit,
 	VectorIndex,
-	VectorMatch,
 	VectorPublication,
 	VectorRecord,
+	VectorSource,
 	VectorStore,
 } from './types';
+
+const ACTIVE = `
+	FROM rag_chunks c
+	JOIN rag_indexes i
+		ON i.index_name = c.index_name AND i.active_generation = c.generation`;
+const CHUNK_COLUMNS = `c.id, c.source_id, c.source_fingerprint, c.path, c.chunk_index,
+	c.line_start, c.line_end, c.text, c.checksum, c.indexed_at`;
+
+interface Matrix {
+	key: string;
+	ids: string[];
+	dimensions: number;
+	values: Float32Array;
+}
 
 export class SqliteVectorStore implements VectorStore {
 	private readonly database: DatabaseSync;
 	private readonly getIndexStatement: StatementSync;
 	private readonly reusableSourceStatement: StatementSync;
+	private readonly reusableCountStatement: StatementSync;
 	private readonly activeRecordsStatement: StatementSync;
+	private readonly activeVectorsStatement: StatementSync;
+	private readonly activeCountStatement: StatementSync;
+	private readonly chunksStatement: StatementSync;
+	private readonly neighboursStatement: StatementSync;
+	private readonly keywordStatement: StatementSync;
+	private readonly sourceStatement: StatementSync;
+	private readonly insertSourceStatement: StatementSync;
+	private readonly deleteSourcesStatement: StatementSync;
 	private readonly insertRecordStatement: StatementSync;
+	private readonly reuseRecordsStatement: StatementSync;
 	private readonly publishIndexStatement: StatementSync;
 	private readonly deleteOldRecordsStatement: StatementSync;
+	private matrix: Matrix | undefined;
 
 	constructor(file: string) {
 		if (file !== ':memory:') mkdirSync(path.dirname(file), { recursive: true, mode: 0o700 });
@@ -55,6 +83,16 @@ export class SqliteVectorStore implements VectorStore {
 			) STRICT;
 			CREATE INDEX IF NOT EXISTS rag_chunks_source
 				ON rag_chunks (index_name, generation, source_id, source_fingerprint);
+			CREATE TABLE IF NOT EXISTS rag_sources (
+				index_name TEXT NOT NULL,
+				source_id TEXT NOT NULL,
+				size INTEGER NOT NULL,
+				modified REAL NOT NULL,
+				stamp TEXT NOT NULL,
+				fingerprint TEXT NOT NULL,
+				PRIMARY KEY (index_name, source_id)
+			) STRICT;
+			CREATE VIRTUAL TABLE IF NOT EXISTS rag_chunks_fts USING fts5(text, content='rag_chunks');
 		`);
 		const columns = new Set(
 			(
@@ -74,30 +112,62 @@ export class SqliteVectorStore implements VectorStore {
 			FROM rag_indexes WHERE index_name = ?
 		`);
 		this.reusableSourceStatement = this.database.prepare(`
-			SELECT c.id, c.source_id, c.source_fingerprint, c.path, c.chunk_index,
-				c.line_start, c.line_end, c.text,
-				c.checksum, c.indexed_at, c.vector
-			FROM rag_chunks c
-			JOIN rag_indexes i
-				ON i.index_name = c.index_name AND i.active_generation = c.generation
+			SELECT ${CHUNK_COLUMNS}, c.vector ${ACTIVE}
 			WHERE c.index_name = ? AND c.source_id = ? AND c.source_fingerprint = ?
 				AND i.provider_id = ? AND i.model_id = ?
 			ORDER BY c.chunk_index
 		`);
-		this.activeRecordsStatement = this.database.prepare(`
-			SELECT c.id, c.source_id, c.source_fingerprint, c.path, c.chunk_index,
-				c.line_start, c.line_end, c.text,
-				c.checksum, c.indexed_at, c.vector
-			FROM rag_chunks c
+		this.reusableCountStatement = this.database.prepare(`
+			SELECT count(*) AS count ${ACTIVE}
+			WHERE c.index_name = ? AND c.source_id = ? AND c.source_fingerprint = ?
+				AND i.provider_id = ? AND i.model_id = ?
+		`);
+		this.activeRecordsStatement = this.database.prepare(
+			`SELECT ${CHUNK_COLUMNS}, c.vector ${ACTIVE} WHERE c.index_name = ?`
+		);
+		this.activeVectorsStatement = this.database.prepare(
+			`SELECT c.id, c.vector ${ACTIVE} WHERE c.index_name = ?`
+		);
+		this.activeCountStatement = this.database.prepare(
+			`SELECT count(*) AS count ${ACTIVE} WHERE c.index_name = ?`
+		);
+		this.chunksStatement = this.database.prepare(`
+			SELECT ${CHUNK_COLUMNS} ${ACTIVE}
+			WHERE c.index_name = ? AND c.id IN (SELECT value FROM json_each(?))
+		`);
+		this.neighboursStatement = this.database.prepare(`
+			SELECT ${CHUNK_COLUMNS} ${ACTIVE}
+			WHERE c.index_name = ? AND c.source_id = ? AND c.chunk_index BETWEEN ? AND ?
+			ORDER BY c.chunk_index
+		`);
+		this.keywordStatement = this.database.prepare(`
+			SELECT c.id FROM rag_chunks_fts f
+			JOIN rag_chunks c ON c.rowid = f.rowid
 			JOIN rag_indexes i
 				ON i.index_name = c.index_name AND i.active_generation = c.generation
-			WHERE c.index_name = ?
+			WHERE rag_chunks_fts MATCH ? AND c.index_name = ?
+			ORDER BY f.rank LIMIT ?
 		`);
+		this.sourceStatement = this.database.prepare(`
+			SELECT source_id, size, modified, stamp, fingerprint
+			FROM rag_sources WHERE index_name = ? AND source_id = ?
+		`);
+		this.insertSourceStatement = this.database.prepare(`
+			INSERT INTO rag_sources (index_name, source_id, size, modified, stamp, fingerprint)
+			VALUES (?, ?, ?, ?, ?, ?)
+		`);
+		this.deleteSourcesStatement = this.database.prepare(
+			'DELETE FROM rag_sources WHERE index_name = ?'
+		);
 		this.insertRecordStatement = this.database.prepare(`
 			INSERT INTO rag_chunks (
 				index_name, generation, id, source_id, source_fingerprint, path, chunk_index,
 				line_start, line_end, text, checksum, indexed_at, vector
 			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		`);
+		this.reuseRecordsStatement = this.database.prepare(`
+			UPDATE rag_chunks SET generation = ?
+			WHERE index_name = ? AND generation = ? AND source_id = ? AND source_fingerprint = ?
 		`);
 		this.publishIndexStatement = this.database.prepare(`
 			INSERT INTO rag_indexes (
@@ -137,14 +207,55 @@ export class SqliteVectorStore implements VectorStore {
 		return rows.length > 0 ? rows.map(mapRecord) : undefined;
 	}
 
+	reusable(
+		indexName: string,
+		sourceId: string,
+		sourceFingerprint: string,
+		providerId: string,
+		modelId: string
+	): number {
+		const row = this.reusableCountStatement.get(
+			indexName,
+			sourceId,
+			sourceFingerprint,
+			providerId,
+			modelId
+		) as unknown as { count: number };
+		return row.count;
+	}
+
+	source(indexName: string, sourceId: string): VectorSource | undefined {
+		const row = this.sourceStatement.get(indexName, sourceId) as unknown as
+			| {
+					source_id: string;
+					size: number;
+					modified: number;
+					stamp: string;
+					fingerprint: string;
+			  }
+			| undefined;
+		return row
+			? {
+					sourceId: row.source_id,
+					size: row.size,
+					modified: row.modified,
+					stamp: row.stamp,
+					fingerprint: row.fingerprint,
+				}
+			: undefined;
+	}
+
 	publish(publication: VectorPublication): void {
-		if (publication.records.length === 0) throw new Error('Cannot publish an empty vector index.');
+		const reused = publication.reused ?? [];
+		if (publication.records.length === 0 && reused.length === 0)
+			throw new Error('Cannot publish an empty vector index.');
 		for (const record of publication.records) {
 			validateVector(record.vector, publication.dimensions);
 		}
 
 		this.database.exec('BEGIN IMMEDIATE');
 		try {
+			const active = this.getIndex(publication.indexName);
 			for (const record of publication.records) {
 				this.insertRecordStatement.run(
 					publication.indexName,
@@ -162,6 +273,20 @@ export class SqliteVectorStore implements VectorStore {
 					encodeVector(record.vector)
 				);
 			}
+			for (const source of reused) {
+				if (
+					!active ||
+					active.dimensions !== publication.dimensions ||
+					this.reuseRecordsStatement.run(
+						publication.generation,
+						publication.indexName,
+						active.generation,
+						source.sourceId,
+						source.sourceFingerprint
+					).changes === 0
+				)
+					throw new Error('A reused Knowledge source is no longer in the active index.');
+			}
 			this.publishIndexStatement.run(
 				publication.indexName,
 				publication.generation,
@@ -171,6 +296,17 @@ export class SqliteVectorStore implements VectorStore {
 				publication.completedAt
 			);
 			this.deleteOldRecordsStatement.run(publication.indexName, publication.generation);
+			this.deleteSourcesStatement.run(publication.indexName);
+			for (const source of publication.sources ?? [])
+				this.insertSourceStatement.run(
+					publication.indexName,
+					source.sourceId,
+					source.size,
+					source.modified,
+					source.stamp,
+					source.fingerprint
+				);
+			this.database.exec(`INSERT INTO rag_chunks_fts(rag_chunks_fts) VALUES('rebuild')`);
 			this.database.exec('COMMIT');
 		} catch (error) {
 			this.database.exec('ROLLBACK');
@@ -178,7 +314,7 @@ export class SqliteVectorStore implements VectorStore {
 		}
 	}
 
-	search(indexName: string, vector: readonly number[], topK: number): VectorMatch[] {
+	search(indexName: string, vector: readonly number[], topK: number): VectorHit[] {
 		const index = this.getIndex(indexName);
 		if (!index) return [];
 		if (vector.length !== index.dimensions)
@@ -186,14 +322,59 @@ export class SqliteVectorStore implements VectorStore {
 		validateVector(vector, index.dimensions);
 		if (!Number.isFinite(topK)) throw new Error('Knowledge result count must be finite.');
 		const count = Math.max(1, Math.min(Math.trunc(topK), 100));
-		const rows = this.activeRecordsStatement.all(indexName) as unknown as RecordRow[];
-		return rows
-			.map((row) => {
-				const record = mapRecord(row);
-				return { ...record, score: cosine(vector, record.vector) };
-			})
-			.sort((left, right) => right.score - left.score || left.id.localeCompare(right.id))
-			.slice(0, count);
+		const key = `${indexName}\0${index.generation}\0${index.completedAt}`;
+		if (this.matrix?.key !== key) {
+			this.matrix = undefined;
+			this.matrix = this.loadMatrix(indexName, index.dimensions, key);
+		}
+		const { ids, dimensions, values } = this.matrix;
+		const query = normalize(Float32Array.from(vector));
+		const hits: VectorHit[] = [];
+		for (let row = 0; row < ids.length; row += 1) {
+			let score = 0;
+			const offset = row * dimensions;
+			for (let column = 0; column < dimensions; column += 1)
+				score += values[offset + column] * query[column];
+			if (hits.length < count || score >= hits[hits.length - 1].score) {
+				hits.push({ id: ids[row], score });
+				hits.sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
+				if (hits.length > count) hits.pop();
+			}
+		}
+		return hits;
+	}
+
+	keyword(indexName: string, query: string, topK: number): string[] {
+		const match = ftsQuery(query);
+		if (!match) return [];
+		const rows = this.keywordStatement.all(
+			match,
+			indexName,
+			Math.max(1, Math.min(Math.trunc(topK), 100))
+		) as unknown as Array<{ id: string }>;
+		return rows.map((row) => row.id);
+	}
+
+	chunks(indexName: string, ids: readonly string[]): VectorChunk[] {
+		if (ids.length === 0) return [];
+		const rows = this.chunksStatement.all(indexName, JSON.stringify(ids)) as unknown as Omit<
+			RecordRow,
+			'vector'
+		>[];
+		const byId = new Map(rows.map((row) => [row.id, mapChunk(row)]));
+		return ids.flatMap((id) => byId.get(id) ?? []);
+	}
+
+	around(indexName: string, id: string, span: number): VectorChunk[] {
+		const [chunk] = this.chunks(indexName, [id]);
+		if (!chunk) return [];
+		const rows = this.neighboursStatement.all(
+			indexName,
+			chunk.sourceId,
+			chunk.chunkIndex - span,
+			chunk.chunkIndex + span
+		) as unknown as Omit<RecordRow, 'vector'>[];
+		return rows.map(mapChunk);
 	}
 
 	exportIndex(indexName: string, generation?: string): VectorPublication | undefined {
@@ -219,6 +400,8 @@ export class SqliteVectorStore implements VectorStore {
 			const indexRemoved =
 				this.database.prepare('DELETE FROM rag_indexes WHERE index_name = ?').run(indexName)
 					.changes > 0;
+			this.deleteSourcesStatement.run(indexName);
+			this.database.exec(`INSERT INTO rag_chunks_fts(rag_chunks_fts) VALUES('rebuild')`);
 			this.database.exec('COMMIT');
 			return { records: Number(records), indexRemoved };
 		} catch (error) {
@@ -228,7 +411,25 @@ export class SqliteVectorStore implements VectorStore {
 	}
 
 	close(): void {
+		this.matrix = undefined;
 		this.database.close();
+	}
+
+	private loadMatrix(indexName: string, dimensions: number, key: string): Matrix {
+		const { count } = this.activeCountStatement.get(indexName) as unknown as { count: number };
+		const ids: string[] = [];
+		const values = new Float32Array(count * dimensions);
+		for (const row of this.activeVectorsStatement.iterate(indexName) as Iterable<{
+			id: string;
+			vector: Uint8Array;
+		}>) {
+			if (ids.length === count) break;
+			const vector = new Float32Array(Uint8Array.from(row.vector).buffer);
+			if (vector.length !== dimensions) continue;
+			values.set(normalize(vector), ids.length * dimensions);
+			ids.push(row.id);
+		}
+		return { key, ids, dimensions, values: values.subarray(0, ids.length * dimensions) };
 	}
 }
 
@@ -243,7 +444,7 @@ function mapIndex(row: IndexRow): VectorIndex {
 	};
 }
 
-function mapRecord(row: RecordRow): VectorRecord {
+function mapChunk(row: Omit<RecordRow, 'vector'>): VectorChunk {
 	return {
 		id: row.id,
 		sourceId: row.source_id,
@@ -255,8 +456,11 @@ function mapRecord(row: RecordRow): VectorRecord {
 		text: row.text,
 		checksum: row.checksum,
 		indexedAt: row.indexed_at,
-		vector: decodeVector(row.vector),
 	};
+}
+
+function mapRecord(row: RecordRow): VectorRecord {
+	return { ...mapChunk(row), vector: decodeVector(row.vector) };
 }
 
 function encodeVector(values: readonly number[]): Uint8Array {
@@ -268,14 +472,10 @@ function decodeVector(value: Uint8Array): number[] {
 	return [...new Float32Array(bytes.buffer)];
 }
 
-function cosine(left: readonly number[], right: readonly number[]): number {
-	let dot = 0;
-	let leftNorm = 0;
-	let rightNorm = 0;
-	for (let index = 0; index < left.length; index += 1) {
-		dot += left[index] * right[index];
-		leftNorm += left[index] * left[index];
-		rightNorm += right[index] * right[index];
-	}
-	return leftNorm === 0 || rightNorm === 0 ? 0 : dot / Math.sqrt(leftNorm * rightNorm);
+function normalize(vector: Float32Array): Float32Array {
+	let norm = 0;
+	for (const value of vector) norm += value * value;
+	norm = Math.sqrt(norm);
+	if (norm > 0) for (let index = 0; index < vector.length; index += 1) vector[index] /= norm;
+	return vector;
 }
