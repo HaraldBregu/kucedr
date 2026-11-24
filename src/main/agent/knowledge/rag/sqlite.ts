@@ -132,6 +132,9 @@ export class SqliteVectorStore implements VectorStore {
 		this.activeCountStatement = this.database.prepare(
 			`SELECT count(*) AS count ${ACTIVE} WHERE c.index_name = ?`
 		);
+		this.pathsStatement = this.database.prepare(
+			`SELECT min(c.path) AS path ${ACTIVE} WHERE c.index_name = ? GROUP BY c.source_id`
+		);
 		this.chunksStatement = this.database.prepare(`
 			SELECT ${CHUNK_COLUMNS} ${ACTIVE}
 			WHERE c.index_name = ? AND c.id IN (SELECT value FROM json_each(?))
