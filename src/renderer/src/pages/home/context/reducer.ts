@@ -247,7 +247,7 @@ function applyResponseEvent(
 				return {
 					...message,
 					state: 'awaiting_input',
-					budgetWarning: event.questions.some((question) => question.id === 'run-budget') ? undefined : message.budgetWarning,
+					budgetWarning: event.toolCallId.startsWith('run-budget:') ? undefined : message.budgetWarning,
 					tools: updateAgentToolPart(message.tools, event.toolCallId, {
 						type: mcpAuthorization ? 'request_mcp_authorization' : screenSource ? 'select_screen_source' : 'ask',
 						state: 'input-available',

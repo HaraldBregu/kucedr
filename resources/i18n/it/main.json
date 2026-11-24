@@ -1747,6 +1747,9 @@
 			"save": "Salva limiti",
 			"loadError": "Impossibile caricare i limiti di esecuzione.",
 			"saveError": "Impossibile salvare i limiti di esecuzione.",
+			"paused": "Esecuzione in pausa per limite raggiunto",
+			"stop": "Interrompi esecuzione",
+			"continue": "Continua per una chiamata al modello",
 			"warningTurns": "Limite di turni quasi raggiunto ({{used}} su {{limit}} turni).",
 			"warningTokens": "Limite di token quasi raggiunto ({{used}} su {{limit}} token)."
 		},

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -34,6 +35,7 @@ export function UserInputCard({
 	readonly tool: AgentToolPart;
 	readonly pending?: PendingUserInput;
 }): ReactElement | null {
+	const { t } = useTranslation();
 	const questions = (pending?.questions ??
 		(tool.input as { questions?: AgentUserInputQuestion[] } | undefined)?.questions ??
 		[]) as AgentUserInputQuestion[];
@@ -92,6 +94,19 @@ export function UserInputCard({
 		setStep(index);
 	};
 
+	const sendAnswers = async (answers: AgentUserInputAnswer[]): Promise<void> => {
+		setSubmitting(true);
+		setError('');
+		try {
+			const accepted = await window.agent.respondUserInput(pending, answers);
+			if (!accepted) setError('These questions are no longer active. Stop and retry.');
+		} catch (cause) {
+			setError(cause instanceof Error ? cause.message : 'Could not submit these answers.');
+		} finally {
+			setSubmitting(false);
+		}
+	};
+
 	const submit = async (event: FormEvent): Promise<void> => {
 		event.preventDefault();
 		if (!answerFor(question.id)) {
@@ -106,17 +121,30 @@ export function UserInputCard({
 			questionId: candidate.id,
 			answer: answerFor(candidate.id),
 		}));
-		setSubmitting(true);
-		setError('');
-		try {
-			const accepted = await window.agent.respondUserInput(pending, answers);
-			if (!accepted) setError('These questions are no longer active. Stop and retry.');
-		} catch (cause) {
-			setError(cause instanceof Error ? cause.message : 'Could not submit these answers.');
-		} finally {
-			setSubmitting(false);
-		}
+		await sendAnswers(answers);
 	};
+
+	if (pending.toolCallId.startsWith('run-budget:') && question.id === 'run-budget') {
+		return (
+			<Card size="sm" className="max-w-2xl border-info/30" role="group" aria-label={t('settings.runBudget.paused')}>
+				<CardHeader>
+					<CardTitle>{t('settings.runBudget.paused')}</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<p className="text-sm">{question.question}</p>
+					{error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+				</CardContent>
+				<CardFooter className="justify-end gap-2">
+					{(['Stop', 'Continue'] as const).map((answer) => (
+						<Button key={answer} type="button" size="sm" variant={answer === 'Stop' ? 'outline' : 'default'}
+							disabled={submitting} onClick={() => void sendAnswers([{ questionId: question.id, answer }])}>
+							{t(answer === 'Stop' ? 'settings.runBudget.stop' : 'settings.runBudget.continue')}
+						</Button>
+					))}
+				</CardFooter>
+			</Card>
+		);
+	}
 
 	return (
 		<Card className="max-w-2xl gap-4 border-info/30 py-4">

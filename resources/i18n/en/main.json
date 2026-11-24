@@ -1747,6 +1747,9 @@
 			"save": "Save limits",
 			"loadError": "Could not load run budgets.",
 			"saveError": "Could not save run budgets.",
+			"paused": "Run paused at budget limit",
+			"stop": "Stop run",
+			"continue": "Continue for one model call",
 			"warningTurns": "Approaching the turn limit ({{used}} of {{limit}} turns).",
 			"warningTokens": "Approaching the token limit ({{used}} of {{limit}} tokens)."
 		},
