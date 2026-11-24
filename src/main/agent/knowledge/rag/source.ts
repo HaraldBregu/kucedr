@@ -43,8 +43,13 @@ export async function* collectRagSources(
 		try {
 			({ size, mtimeMs: modified } = await lstat(full));
 			if (size > KNOWLEDGE_MAX_FILE_BYTES) return 'too-large';
-			if (unchanged?.(source, file, size, modified)) return { source, sourceIndex, file, size, modified };
-			segments = await extractText(file, await readFileBounded(full, KNOWLEDGE_MAX_FILE_BYTES, signal), signal);
+			if (unchanged?.(source, file, size, modified))
+				return { source, sourceIndex, file, size, modified };
+			segments = await extractText(
+				file,
+				await readFileBounded(full, KNOWLEDGE_MAX_FILE_BYTES, signal),
+				signal
+			);
 		} catch {
 			signal?.throwIfAborted();
 			return 'unreadable';
