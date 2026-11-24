@@ -126,8 +126,7 @@ export async function indexRag(
 			embedded.embeddings.length !== batch.length ||
 			embedded.embeddings.some(
 				(vector) =>
-					vector.length !== embedded.dimensions ||
-					vector.some((value) => !Number.isFinite(value))
+					vector.length !== embedded.dimensions || vector.some((value) => !Number.isFinite(value))
 			)
 		)
 			throw new Error('Invalid or excessive embedding vectors.');
