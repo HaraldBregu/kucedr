@@ -3,7 +3,8 @@
 Status: proposal, written 2026-11-19. Built since: sealed credentials on disk (1.2), completion
 notifications (3.1), regenerate and retry (3.3), the browser pane (3.9), browser control from the
 chat (3.12) and most of browser import
-(23), and replies that survive leaving Home (5.3); each area file says what is left. Each feature
+(23), replies that survive leaving Home (5.3), and fast knowledge retrieval (18.6); each area file
+says what is left. Each feature
 gets its own detailed plan before any implementation starts.
 
 This folder lists the features proposed for Kucedr, one file per area. Each file says what the user
