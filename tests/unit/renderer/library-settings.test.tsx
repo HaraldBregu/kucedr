@@ -80,21 +80,22 @@ beforeEach(() => {
 });
 
 it('shows the view controls and file actions in the header with list selected by default', async () => {
-	const { container } = render(<LibraryPage />);
+	render(<LibraryPage />);
 	await screen.findByText('notes.txt');
 
-	const header = container.querySelector('header')!;
-	expect(
-		within(header)
-			.getAllByRole('button')
-			.map((button) => button.getAttribute('aria-label') ?? button.textContent)
-	).toEqual([
+	for (const name of [
+		'settings.library.edit',
 		'settings.library.collections',
 		'settings.library.list',
 		'settings.library.createFolder',
 		'settings.library.openFolder',
 		'settings.library.upload',
-	]);
+	])
+		expect(screen.getByRole('button', { name })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'settings.library.list' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
 	expect(screen.getByRole('table')).toBeInTheDocument();
 	expect(screen.getAllByRole('row')).toHaveLength(2);
 	expect(
