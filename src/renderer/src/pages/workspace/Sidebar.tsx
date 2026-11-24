@@ -305,7 +305,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					<SidebarMenuItem>
 						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/home')}>
 							<ArrowLeft className="size-4 shrink-0" />
-							<span className="truncate">{t('settings.returnToChat', 'Return to Home')}</span>
+							<span className="truncate">{t('settings.returnToChat', 'Back to home')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
