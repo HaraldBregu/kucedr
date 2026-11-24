@@ -88,6 +88,13 @@ test('automatic compaction preserves history and sends the summary to the model'
 		await expect(page.locator('[data-chat-turn]').getByText(original, { exact: true })).toBeVisible();
 		expect(await page.evaluate((query) => window.agent.searchSessions(query), original))
 			.toEqual(expect.arrayContaining([expect.objectContaining({ id: sessionId })]));
+		const calls = requests.length;
+		await editor.fill('Follow up after reload.');
+		await editor.press('Enter');
+		await expect(page.getByText('Compacted chat reply.', { exact: true })).toHaveCount(2);
+		expect(requests).toHaveLength(calls + 1);
+		expect(requests.at(-1)).toContain(summary);
+		expect(requests.at(-1)).not.toContain(original);
 	} finally {
 		await closeApp(app, userDataDir);
 		await new Promise<void>((resolve) => server.close(() => resolve()));
