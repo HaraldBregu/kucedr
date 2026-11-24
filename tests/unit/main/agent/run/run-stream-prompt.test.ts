@@ -1072,7 +1072,7 @@ describe('run stream system prompt', () => {
 			events.push(event);
 
 		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
-		expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
+		expect(runModelTurnMock.mock.calls[1][5]).toEqual([subagents]);
 		expect(events.at(-1)).toMatchObject({
 			type: 'run_finished',
 			result: { text: 'done', stopReason: 'budget_exhausted' },
