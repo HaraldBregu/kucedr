@@ -216,6 +216,8 @@ beforeEach(() => {
 			setModelId: jest.fn().mockResolvedValue(true),
 			getModelOptions: jest.fn().mockResolvedValue({}),
 			setModelOptions: jest.fn().mockResolvedValue({}),
+			getRunBudget: jest.fn().mockResolvedValue({}),
+			setRunBudget: jest.fn().mockImplementation(async (value) => value),
 			getCompactModel: jest.fn().mockResolvedValue({ providerId: '', modelId: '', options: {} }),
 			setCompactModel: jest.fn().mockResolvedValue({ providerId: '', modelId: '', options: {} }),
 			getToolModel: jest.fn().mockImplementation(async (kind) => toolModels[kind]),

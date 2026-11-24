@@ -1738,6 +1738,18 @@
 			"connectError": "Impossibile collegare Codex.",
 			"disconnectError": "Impossibile disconnettere Codex."
 		},
+		"runBudget": {
+			"title": "Limiti di esecuzione",
+			"description": "Le nuove esecuzioni in chat si fermano prima di una chiamata al modello che supererebbe uno dei limiti. Lascia vuoto un campo per disattivare il relativo limite.",
+			"turns": "Turni del modello per esecuzione",
+			"tokens": "Token per esecuzione",
+			"unlimited": "Illimitato",
+			"save": "Salva limiti",
+			"loadError": "Impossibile caricare i limiti di esecuzione.",
+			"saveError": "Impossibile salvare i limiti di esecuzione.",
+			"warningTurns": "Limite di turni quasi raggiunto ({{used}} su {{limit}} turni).",
+			"warningTokens": "Limite di token quasi raggiunto ({{used}} su {{limit}} token)."
+		},
 		"modelServices": {
 			"title": "Servizi modello",
 			"description": "Rivedi i servizi modello con incarichi specifici disponibili in Kucedr.",

@@ -56,6 +56,7 @@ export interface AgentMessage {
 	readonly skillIds?: readonly string[];
 	readonly state: AgentRunState;
 	readonly tools: readonly AgentToolPart[];
+	readonly budgetWarning?: { readonly unit: 'turns' | 'tokens'; readonly used: number; readonly limit: number };
 	readonly pendingPermission?: PendingToolPermission;
 	readonly pendingUserInput?: PendingUserInput;
 	readonly errorText?: string;

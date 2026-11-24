@@ -127,6 +127,13 @@ function applyResponseEvent(
 	const ensured = ensureAgentForRun(state, messageRunId);
 	if (ensured.message.runId && ensured.message.runId !== messageRunId) return state;
 
+	if (event.type === 'run_budget_warning') {
+		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
+			...message,
+			budgetWarning: { unit: event.unit, used: event.used, limit: event.limit },
+		}));
+	}
+
 	if (event.type === 'history_compacted') {
 		let userIndex = 0;
 		return {
@@ -240,6 +247,7 @@ function applyResponseEvent(
 				return {
 					...message,
 					state: 'awaiting_input',
+					budgetWarning: event.questions.some((question) => question.id === 'run-budget') ? undefined : message.budgetWarning,
 					tools: updateAgentToolPart(message.tools, event.toolCallId, {
 						type: mcpAuthorization ? 'request_mcp_authorization' : screenSource ? 'select_screen_source' : 'ask',
 						state: 'input-available',

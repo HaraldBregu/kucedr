@@ -1738,6 +1738,18 @@
 			"connectError": "Unable to connect Codex.",
 			"disconnectError": "Unable to disconnect Codex."
 		},
+		"runBudget": {
+			"title": "Run budgets",
+			"description": "New chat runs pause before a model call would exceed either limit. Leave a field empty to disable its limit.",
+			"turns": "Model turns per run",
+			"tokens": "Tokens per run",
+			"unlimited": "Unlimited",
+			"save": "Save limits",
+			"loadError": "Could not load run budgets.",
+			"saveError": "Could not save run budgets.",
+			"warningTurns": "Approaching the turn limit ({{used}} of {{limit}} turns).",
+			"warningTokens": "Approaching the token limit ({{used}} of {{limit}} tokens)."
+		},
 		"modelServices": {
 			"title": "Model services",
 			"description": "Review the job-specific model services available to Kucedr.",

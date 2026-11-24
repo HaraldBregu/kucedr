@@ -464,6 +464,14 @@ export function AssistantMessage({
 				</>
 			)}
 			{!hasContent && insights && <MessageActions className="mt-1 gap-1">{insights}</MessageActions>}
+			{isStreaming && message.budgetWarning && (
+				<p role="status" className="text-sm text-muted-foreground">
+					{t(message.budgetWarning.unit === 'turns' ? 'settings.runBudget.warningTurns' : 'settings.runBudget.warningTokens', {
+						used: message.budgetWarning.used,
+						limit: message.budgetWarning.limit,
+					})}
+				</p>
+			)}
 			{showActivity && !hasTools && (
 				<div className="flex w-full flex-col">
 					<span className={statusClassName}>

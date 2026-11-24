@@ -41,6 +41,7 @@ import {
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import { AgentMediaModelConfiguration } from './media';
 import { ProfileMediaModels } from './profilemodels';
+import { Budgets } from './budgets';
 import { SearchEngineService } from './search';
 
 type CatalogProvider = PublicProvider;
@@ -356,6 +357,8 @@ const AssistantPage: React.FC = () => {
 					showOptions={false}
 				/>
 			</SettingsPanel>
+
+			<Budgets />
 
 			<SettingsSection title={t('settings.overview.groups.mlModels')}>
 				<SettingsPanel>
