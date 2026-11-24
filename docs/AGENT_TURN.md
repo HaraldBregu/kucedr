@@ -148,10 +148,6 @@ Not worth doing: session persistence, settings and memory reads, startup, MCP st
 
 Checked: `typecheck:node` and eslint pass. A bundled check confirmed that two prompt builds are byte-identical, that the clock and filesystem listing are absent from the run prompt and still present for voice, and that the context is attached to the right message without changing the saved message. Not run: the unit suite. `run-stream-prompt`, `system-prompt` and `system-filesystem` probably still expect the old layout. Not confirmed: a live model call. Restart the dev app before measuring.
 
-### On-demand memory summaries (2026-11-25)
-
-Main chat now includes durable memory and selects saved conversation summaries by the words in the current request. The selection runs locally for each new request, including follow-ups. The 10.6K-token first call above was measured before this change.
-
 ### Re-measuring
 
 Measure turns per run, the turn-1 cache hit rate and the median run time from `run.jsonl` (`model_call_end` has `durationMs`, `firstTokenLatencyMs` and `usage.cachedTokens`; `run_finished` has `numTurns`), then compare them with the tables above.
@@ -367,10 +363,6 @@ No shipped manifest used any of these.
 
 **Not run:** the unit suite. Tests that assert the `(Name)` format, the category descriptions or memory-in-full will need updating.
 
-### On-demand memory summaries (2026-11-25)
-
-Main chat now includes durable memory and selects saved conversation summaries by the words in the current request. The selection runs locally for each new request, including follow-ups. The 10.6K-token first call above was measured before this change.
-
 ### Re-measuring
 Re-run the per-call analysis over `run.jsonl` with a newer start date. It pairs each call with the previous call of its session and compares the `prefix` hashes to name the cause of a miss. Compare:
 - the turn-1 hit rate per provider;
@@ -451,7 +443,7 @@ A command started with a `timeout` and without `background` now holds the turn u
 
 ### On-demand memory summaries (2026-11-25)
 
-Main chat now includes durable memory and selects saved conversation summaries by the words in the current request. The selection runs locally for each new request, including follow-ups. The 10.6K-token first call above was measured before this change.
+Main chat now includes durable memory and selects saved conversation summaries by the words in the current request. The selection runs locally for each new request, including follow-ups. In a synthetic fixture with 15 summaries, an unrelated opening request included 93 bytes of memory from a 5,736-byte file. The 10.6K-token first call above was measured before this change.
 
 ### Re-measuring
 Re-run the per-call analysis with `since` set after 2026-11-18, and compare:
