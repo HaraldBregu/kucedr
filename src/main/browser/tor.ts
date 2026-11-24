@@ -1,4 +1,5 @@
 import { connect } from 'node:net';
+import { requireUnrestrictedNetwork } from '../privacy/state';
 import { connections } from './connections';
 
 // Tor Browser listens on 9150, the Tor service on 9050.
@@ -24,6 +25,7 @@ function answers(address: string): Promise<boolean> {
 }
 
 export async function findTor(): Promise<string | undefined> {
+	requireUnrestrictedNetwork();
 	const configured = connections().tor;
 	for (const address of configured ? [configured] : CANDIDATES) if (await answers(address)) return address;
 	return undefined;
