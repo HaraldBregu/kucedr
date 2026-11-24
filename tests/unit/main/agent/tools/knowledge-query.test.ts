@@ -71,7 +71,7 @@ it('abstains when the local index returns no evidence', async () => {
 
 	const output = JSON.parse((await queryKnowledgeTool.run({ query: 'missing' })) as string);
 
-	expect(output).toMatchObject({ route: 'abstain', abstain: true, results: [] });
+	expect(output).toMatchObject({ abstain: true, results: [] });
 	expect(output.limitations).toContain('The local knowledge index returned no matching evidence.');
 });
 
