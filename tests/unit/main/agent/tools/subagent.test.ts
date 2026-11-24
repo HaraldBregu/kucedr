@@ -131,6 +131,7 @@ describe('subagentTool', () => {
 			name: 'Read file',
 			description: 'read',
 			schema: { type: 'object' },
+			readOnly: true,
 			execute: () => undefined,
 		});
 		const unsafe = jsonTool({
