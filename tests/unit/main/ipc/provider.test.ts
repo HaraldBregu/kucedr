@@ -96,7 +96,7 @@ describe('provider credential IPC boundary', () => {
 		expect(listResult).toEqual([saved]);
 	});
 
-	it('saves and returns the submitted API key', async () => {
+	it('saves the submitted API key and returns its saved status', async () => {
 		register();
 		const provider = {
 			id: 'openai',
