@@ -50,7 +50,7 @@ describe('ExecSandbox permissions', () => {
 			await sandbox.wrap('pwd', '/workspace', 'linux-command');
 			const config = initialize.mock.calls.at(-1)?.[0];
 			expect(config.filesystem.denyRead).not.toContain(config.seccomp.applyPath);
-			await sandbox.wrap('pwd', agentLocation(), 'linux-plan', undefined, [], 'plan');
+			await sandbox.wrap('pwd', agentLocation(), 'linux-plan', undefined, [], true);
 			const plan = JSON.parse(writeFile.mock.calls.at(-1)?.[1] as string);
 			expect(plan.filesystem.allowRead).toContain(plan.seccomp.applyPath);
 		} finally {
