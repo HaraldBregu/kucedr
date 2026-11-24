@@ -1,34 +1,28 @@
-import { app, session, WebContentsView } from 'electron';
+import { session, WebContentsView } from 'electron';
+import type { BrowserRoute } from '../../../../../shared/browser';
 import { resetAutofill } from './autofill';
 import { watchMouseButtons } from './buttons';
 import { drop, readCapture } from './capture';
 import { visit } from '../../../../browser/visit';
 import { acting, pane, paneEvents, paneTabs, type BrowserTab } from './pane';
+import { prepare } from './prepare';
 
 const PARTITION = 'persist:agent-browser';
 const CONSOLE_BUFFER_MAX = 100;
 const FAVICON_MAX_BYTES = 200_000;
-let prepared = false;
+let disposable = 0;
 
-export function createTab(chat?: string, owner?: string): BrowserTab {
-	if (!prepared) {
-		prepared = true;
-		const browsing = session.fromPartition(PARTITION);
-		browsing.setUserAgent(
-			browsing
-				.getUserAgent()
-				.split(' ')
-				.filter((part) => !/^electron\//i.test(part) && !part.startsWith(`${app.getName()}/`))
-				.join(' ')
-		);
-		browsing.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
-		browsing.setPermissionCheckHandler(() => false);
-		// ponytail: downloads are cancelled; hold and offer them when the network shield lands
-		browsing.on('will-download', (event) => event.preventDefault());
-	}
+// Direct tabs share the profile with the user's logins. Every other tab gets its own in-memory
+// profile (shared only with its popups), wiped when its last tab closes.
+export function createTab(
+	chat?: string,
+	owner?: string,
+	route: BrowserRoute = 'direct',
+	partition = route === 'direct' ? PARTITION : `${route}-${++disposable}`
+): BrowserTab {
 	const view = new WebContentsView({
 		webPreferences: {
-			partition: PARTITION,
+			partition,
 			sandbox: true,
 			contextIsolation: true,
 			nodeIntegration: false,
@@ -39,6 +33,10 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 		id: `t${pane.next++}`,
 		view,
 		logs: [],
+		route,
+		partition,
+		ready: prepare(partition, route),
+		blocked: [],
 		chat,
 		owner,
 		agent: owner !== undefined,
@@ -49,13 +47,20 @@ export function createTab(chat?: string, owner?: string): BrowserTab {
 	const changed = (): void => {
 		paneEvents.emit('change');
 	};
+	tab.ready.catch((error: unknown) => {
+		tab.error = error instanceof Error ? error.message : String(error);
+		changed();
+	});
+	contents.setWebRTCIPHandlingPolicy(
+		route === 'tor' || route === 'proxy' ? 'disable_non_proxied_udp' : 'default_public_interface_only'
+	);
 	contents.debugger.attach('1.3');
 	void contents.debugger
 		.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true })
 		.catch(() => undefined);
 	contents.setWindowOpenHandler(({ url }) => {
 		if (/^https?:/i.test(url)) {
-			const popup = createTab(tab.chat, tab.owner);
+			const popup = createTab(tab.chat, tab.owner, route, partition);
 			popup.agent = tab.agent;
 			void popup.view.webContents.loadURL(url).catch(() => undefined);
 		}
