@@ -1461,6 +1461,13 @@ export interface BrowserInvokeChannelMap {
 	[BrowserChannels.passwordsNeverRemove]: { args: [site: string]; result: void };
 	[BrowserChannels.passwordsMatch]: { args: [targetId: string]; result: import('./browser_import').BrowserLogin[] };
 	[BrowserChannels.passwordsFill]: { args: [targetId: string, id: string]; result: void };
+	[BrowserChannels.downloadAnswer]: {
+		args: [targetId: string, answer: 'save' | 'cancel' | 'dismiss' | 'show'];
+		result: void;
+	};
+	[BrowserChannels.connections]: { args: []; result: import('./browser').BrowserConnections };
+	[BrowserChannels.connectionsSet]: { args: [connections: import('./browser').BrowserConnections]; result: void };
+	[BrowserChannels.torFind]: { args: []; result: string | null };
 }
 
 export interface BrowserEventChannelMap {
