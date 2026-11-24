@@ -41,11 +41,23 @@ So the gap is mostly **product surface** (no way in), **one chat list** (coding 
 
 ## Design
 
-### 1. One sidebar, two stores
+### 1. One sessions folder, one sidebar
 
-Keep the two stores (agent sessions under `src/main/agent/session/`, coding sessions under `src/main/coding/sessions.ts`). Do not merge the formats: the harness owns its own history, Kucedr only keeps a transcript.
+Coding sessions live in the same `~/.kucedr/sessions/<uuid>/` folder as agent chats, with `type: 'coding'` in `info.json` (next to `main`, `task`, `health`, `subagent`, `voice`). Sync (`src/main/storage/storage_sync_folders.ts`) and export (`src/main/data/data_controller.ts`) then cover them with no extra code. `~/.kucedr/coder/sessions/records` is empty today, so nothing migrates.
 
-The sidebar list merges both: `listSessions` (agent) + `coding.listSessions` (all projects), each row tagged `kind: 'agent' | 'coding'`, sorted by `updatedAt`. Rename, pin, archive and delete route by `kind`.
+| File | Agent chat | Coding chat |
+| --- | --- | --- |
+| `info.json` | type, title, pinned, archived | same, plus harness, model, repository folder, `nativeSessionId` |
+| `messages.json` | yes | no: the harness owns its history |
+| `transcript.jsonl` | no | Kucedr's copy of the events (today's `transcript.ts`) |
+
+Required with the first coding write:
+
+- Add `'coding'` to `sessionType()` (`src/main/agent/session/session_session_type.ts`). It maps unknown types to `main`, so without this a coding session shows up as an agent chat.
+- The agent refuses coding sessions where it does not already check for `main`: send, compaction, memory capture.
+- `CoderSessions` (`src/main/coding/sessions.ts`) reads and writes `sessionsRoot()` instead of `coder/sessions/records` and `coder/workspaces/<id>/sessions`.
+
+The sidebar lists `main` and `coding` together, each row tagged by type, sorted by update time. Rename, pin, archive and delete already work on `info.json` for both.
 
 ### 2. Routes
 
