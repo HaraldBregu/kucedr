@@ -198,11 +198,11 @@ it('changes the application theme from Settings', async () => {
 		</MemoryRouter>
 	);
 
-	expect(screen.getByRole('button', { name: 'System theme' })).toHaveAttribute(
-		'aria-pressed',
+	expect(screen.getByRole('radio', { name: 'settings.theme.system' })).toHaveAttribute(
+		'aria-checked',
 		'true'
 	);
-	await user.click(screen.getByRole('button', { name: 'Dark theme' }));
+	await user.click(screen.getByRole('radio', { name: 'settings.theme.dark' }));
 
 	expect(mockSetTheme).toHaveBeenCalledWith('dark');
 });
