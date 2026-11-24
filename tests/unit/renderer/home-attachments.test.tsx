@@ -11,7 +11,9 @@ const triggerFileUpload = jest.fn();
 jest.mock('../../../src/renderer/src/pages/home/Outline', () => ({ ChatOutline: () => null }));
 jest.mock('../../../src/renderer/src/pages/home/Details', () => ({ ChatDetails: ({ open }: { open: boolean }) => <aside id="chat-information" aria-label="Chat information" hidden={!open}><input aria-label="Details search" /></aside> }));
 let replyTo: { id: string; content: string } | null = null;
-let messages: { id: string; role: string }[] = [{ id: 'agent-welcome', role: 'agent' }];
+let messages: { id: string; role: string; tools?: [] }[] = [
+	{ id: 'agent-welcome', role: 'agent', tools: [] },
+];
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({
