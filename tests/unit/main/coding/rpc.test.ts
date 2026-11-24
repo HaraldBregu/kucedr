@@ -25,7 +25,7 @@ describe('CodexRpc', () => {
 	});
 
 	it('isolates storage and correlates responses when they arrive out of order', async () => {
-		const rpc = new CodexRpc('/bin/codex', '/coder/codex');
+		const rpc = new AppServerRpc('/bin/codex', '/coder/codex', false, { homeEnv: 'CODEX_HOME' }, 'Codex');
 		const first = rpc.request('first', {});
 		const second = rpc.request('second', {});
 		child.stdout.write('{"id":2,"result":"second"}\n{"id":1,"result":"first"}\n');
@@ -43,7 +43,7 @@ describe('CodexRpc', () => {
 	});
 
 	it('rejects pending requests if the subprocess exits', async () => {
-		const rpc = new CodexRpc('/bin/codex', '/coder/codex');
+		const rpc = new AppServerRpc('/bin/codex', '/coder/codex', false, { homeEnv: 'CODEX_HOME' }, 'Codex');
 		const result = rpc.request('thread/start', {});
 		child.emit('exit', 1);
 		await expect(result).rejects.toThrow('Codex exited');
@@ -51,7 +51,7 @@ describe('CodexRpc', () => {
 	});
 
 	it('handles bidirectional requests without blocking notifications', async () => {
-		const rpc = new CodexRpc('/bin/codex', '/coder/codex');
+		const rpc = new AppServerRpc('/bin/codex', '/coder/codex', false, { homeEnv: 'CODEX_HOME' }, 'Codex');
 		rpc.onRequest = jest.fn().mockResolvedValue({ decision: 'decline' });
 		rpc.onNotification = jest.fn();
 		const data: string[] = [];
