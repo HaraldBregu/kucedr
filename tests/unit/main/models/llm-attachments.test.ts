@@ -1,5 +1,5 @@
 import {
-	llmBuildAnthropicMessages,
+	llmBuildMessages,
 	llmBuildChatMessages,
 	llmBuildResponseInput,
 	llmToTranscriptEntry,
@@ -39,7 +39,7 @@ describe('LLM attachment payload builders', () => {
 	});
 
 	it('serializes Anthropic images and PDFs with their verified MIME types', () => {
-		expect(llmBuildAnthropicMessages([{ role: 'user', content: [image, pdf] }])).toEqual([
+		expect(llmBuildMessages([{ role: 'user', content: [image, pdf] }])).toEqual([
 			{
 				role: 'user',
 				content: [
@@ -78,7 +78,7 @@ describe('LLM attachment payload builders', () => {
 		expect(() => llmBuildResponseInput(transcript(tiff as typeof image))).toThrow(
 			'unsupported image MIME type image/tiff'
 		);
-		expect(() => llmBuildAnthropicMessages(transcript(tiff as typeof image))).toThrow(
+		expect(() => llmBuildMessages(transcript(tiff as typeof image))).toThrow(
 			'unsupported image MIME type image/tiff'
 		);
 		expect(() => llmBuildChatMessages('', transcript(tiff as typeof image))).toThrow(
