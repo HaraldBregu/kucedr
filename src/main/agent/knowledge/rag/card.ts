@@ -32,6 +32,8 @@ export function knowledgeCard(): string {
 		].join('\n');
 		cached = { key, card };
 		return card;
+	} catch {
+		return '';
 	} finally {
 		store.close();
 	}
