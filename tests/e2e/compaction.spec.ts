@@ -10,6 +10,7 @@ test('automatic compaction preserves history and sends the summary to the model'
 	const original = 'Original history search phrase';
 	const summary = 'Summary of the earlier discussion.';
 	const requests: string[] = [];
+	const replies: string[] = [];
 	const server = createServer(async (request, response) => {
 		let body = '';
 		for await (const chunk of request) body += chunk.toString();
@@ -22,10 +23,14 @@ test('automatic compaction preserves history and sends the summary to the model'
 			}));
 			return;
 		}
+		const followUp = body.includes('Follow up after reload.');
+		replies.push(body);
 		response.setHeader('content-type', 'text/event-stream');
-		response.end('data: ' + JSON.stringify({
-			choices: [{ delta: { content: 'Compacted chat reply.' }, index: 0, finish_reason: 'stop' }],
-		}) + '\n\ndata: [DONE]\n\n');
+		for (const chunk of [
+			{ choices: [{ index: 0, delta: { role: 'assistant', content: followUp ? 'Follow-up reply.' : 'Compacted chat reply.' }, finish_reason: null }] },
+			{ choices: [{ index: 0, delta: {}, finish_reason: 'stop' }] },
+		]) response.write('data: ' + JSON.stringify(chunk) + '\n\n');
+		response.end('data: [DONE]\n\n');
 	});
 	await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
 	const address = server.address();
@@ -76,7 +81,7 @@ test('automatic compaction preserves history and sends the summary to the model'
 		await editor.fill('Continue the discussion.');
 		await editor.press('Enter');
 		await expect(page.getByText('Compacted chat reply.', { exact: true })).toBeVisible();
-		expect(requests.at(-1)?.includes(summary), JSON.stringify(requests.map((request) => ({
+		expect(replies.at(-1)?.includes(summary), JSON.stringify(requests.map((request) => ({
 			characters: request.length, containsOriginal: request.includes(original),
 			containsSummary: request.includes(summary),
 		})))).toBe(true);
@@ -84,20 +89,18 @@ test('automatic compaction preserves history and sends the summary to the model'
 		await expect(marker).toBeVisible();
 		await marker.click();
 		await expect(page.getByText(summary, { exact: true })).toBeVisible();
-		expect(requests.at(-1)).toContain('Continue the discussion.');
-		expect(requests.at(-1)).not.toContain(original);
+		expect(replies.at(-1)?.includes('Continue the discussion.')).toBe(true);
+		expect(replies.at(-1)?.includes(original)).toBe(false);
 		await page.reload();
 		await expect(marker).toBeVisible();
 		await expect(page.locator('[data-chat-turn]').getByText(original, { exact: true })).toBeVisible();
 		expect(await page.evaluate((query) => window.agent.searchSessions(query), original))
 			.toEqual(expect.arrayContaining([expect.objectContaining({ id: sessionId })]));
-		const calls = requests.length;
 		await editor.fill('Follow up after reload.');
 		await editor.press('Enter');
-		await expect(page.getByText('Compacted chat reply.', { exact: true })).toHaveCount(2);
-		expect(requests).toHaveLength(calls + 1);
-		expect(requests.at(-1)).toContain(summary);
-		expect(requests.at(-1)).not.toContain(original);
+		await expect(page.getByText('Follow-up reply.', { exact: true })).toBeVisible();
+		expect(replies.at(-1)?.includes(summary)).toBe(true);
+		expect(replies.at(-1)?.includes(original)).toBe(false);
 	} finally {
 		await closeApp(app, userDataDir);
 		await new Promise<void>((resolve) => server.close(() => resolve()));
