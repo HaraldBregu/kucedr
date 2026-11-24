@@ -1,6 +1,6 @@
 # Knowledge retrieval — how the agent uses the knowledge base, fast
 
-> **Status:** plan, 2026-11-24. No code yet. Roadmap [Memory and knowledge](roadmap/MEMORY.md), 18.6.
+> **Status:** future plan, written 2026-11-24; not scheduled and no code yet. Roadmap [Memory and knowledge](roadmap/MEMORY.md), 18.6. Before starting, re-check the "What exists today" lines against the code and re-run the measurements.
 
 ## The question
 
