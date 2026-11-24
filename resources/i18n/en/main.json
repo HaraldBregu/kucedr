@@ -1347,8 +1347,8 @@
 				"check": "Check",
 				"proxy": "Proxy",
 				"proxyDescription": "The proxy address your VPN provider gives you, as socks5://host:port or http://host:port. Proxies that need a username and password are not supported yet.",
-				"limits": "What these tabs do not cover",
-				"limitsDescription": "A tab route applies to that tab. Privacy Mode controls the rest of Kucedr. What the assistant reads from a page can still go to your model provider.",
+				"limits": "Tab routing",
+				"limitsDescription": "A tab route applies to that tab. Privacy Mode applies across Kucedr. The assistant can still send page content to your model provider. Tor Browser has its own privacy protections.",
 				"save": "Save",
 				"saved": "Connections saved. New tabs use them."
 			},

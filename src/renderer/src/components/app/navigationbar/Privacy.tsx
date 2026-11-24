@@ -20,13 +20,14 @@ export function Privacy(): React.JSX.Element | null {
 	const Icon = icons[state.status];
 	const status = t(`settings.privacy.status.${state.status}`);
 	const label = t('settings.privacy.toolbarStatus', { status });
+	const pending = state.restartRequired ? t('settings.privacy.restartRequired') : undefined;
 	return (
 		<Tooltip>
 			<TooltipTrigger
 				render={
 					<Link
 						to="/settings/privacy"
-						aria-label={label}
+						aria-label={pending ? `${label} · ${pending}` : label}
 						className={cn(
 							buttonVariants({ variant: 'ghost', size: 'icon' }),
 							'rounded-full dark:hover:bg-accent',
@@ -43,7 +44,7 @@ export function Privacy(): React.JSX.Element | null {
 			/>
 			<TooltipContent side="bottom">
 				{label}
-				{state.restartRequired && <span className="block">{t('settings.privacy.restartRequired')}</span>}
+				{pending && <span className="block">{pending}</span>}
 			</TooltipContent>
 		</Tooltip>
 	);

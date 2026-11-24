@@ -1347,8 +1347,8 @@
 				"check": "Verifica",
 				"proxy": "Proxy",
 				"proxyDescription": "L'indirizzo proxy fornito dal tuo servizio VPN, come socks5://host:porta o http://host:porta. I proxy che richiedono nome utente e password non sono ancora supportati.",
-				"limits": "Cosa queste schede non coprono",
-				"limitsDescription": "La connessione scelta per una scheda si applica a quella scheda. La modalità privacy gestisce il resto di Kucedr. Il contenuto letto dall'assistente può comunque arrivare al fornitore del modello.",
+				"limits": "Instradamento delle schede",
+				"limitsDescription": "La connessione scelta per una scheda si applica a quella scheda. La modalità privacy si applica a tutto Kucedr. L'assistente può comunque inviare il contenuto delle pagine al fornitore del modello. Tor Browser ha le proprie protezioni per la privacy.",
 				"save": "Salva",
 				"saved": "Connessioni salvate. Le nuove schede le useranno."
 			},
