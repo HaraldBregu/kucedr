@@ -84,9 +84,7 @@ export async function indexRag(
 	const active = vectorStore.getIndex(selectedIndexName);
 	const concurrency = Math.max(
 		1,
-		Math.trunc(
-			embeddingProvider.concurrency?.(providerId, modelId) ?? KNOWLEDGE_EMBED_CONCURRENCY
-		)
+		Math.trunc(embeddingProvider.concurrency?.(providerId, modelId) ?? KNOWLEDGE_EMBED_CONCURRENCY)
 	);
 	let dimensions: number | undefined;
 	let indexedFiles = 0;
