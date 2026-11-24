@@ -106,4 +106,9 @@ export interface BrowserPaneApi {
 	passwordsNeverRemove(site: string): Promise<void>;
 	passwordsMatch(targetId: string): Promise<BrowserLogin[]>;
 	passwordsFill(targetId: string, id: string): Promise<void>;
+	downloadAnswer(targetId: string, answer: 'save' | 'cancel' | 'dismiss' | 'show'): Promise<void>;
+	connections(): Promise<BrowserConnections>;
+	connectionsSet(connections: BrowserConnections): Promise<void>;
+	// The Tor address that answers now, or null.
+	torFind(): Promise<string | null>;
 }
