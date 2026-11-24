@@ -402,6 +402,7 @@ it('starts a new chat with the selected file attached', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await screen.findByText('notes.txt');
+	await user.click(screen.getByRole('button', { name: 'settings.library.edit' }));
 	await user.click(screen.getByRole('checkbox', { name: 'settings.library.selectFile' }));
 	await user.click(screen.getByRole('button', { name: 'settings.library.startChat' }));
 	expect(mockSetSessionId).toHaveBeenCalledWith(expect.any(String));
