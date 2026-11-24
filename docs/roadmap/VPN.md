@@ -1,15 +1,24 @@
 # 12. Private and VPN browsing
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 12.1, 12.2 and the route indicator of 12.4 built
+2026-11-24 ([Browser routes and shield](../BROWSER_ROUTES.md)); 12.3 and the per-workspace default
+proposal.
 
 The agent's browser can browse privately, leaving nothing behind, and through a VPN so sites do not
 see the user's network address.
 
 ## What exists today
 
-Nothing. The browser keeps one permanent profile with the user's logins
-(`~/.kucedr/agent-browser`) and connects directly. If the user already runs a VPN for the whole
-computer, the agent's browser goes through it with no work from Kucedr.
+- **Private tabs (12.1).** Each private tab has its own in-memory session (shared only with its
+  popups), wiped when its last tab closes, kept out of history and tab restore, and never offered
+  saved passwords.
+- **Proxy tabs (12.2).** Settings → Browser → Connections takes `socks5://host:port` or
+  `http://host:port`. Proxy tabs use it with no direct fallback. Proxies that need a username and
+  password are not supported yet (Chromium's SOCKS client has no password support).
+- **Route indicator (12.4).** The tab strip shows a route icon and the toolbar a Private, Tor or
+  Proxy badge with what the route covers.
+- Direct tabs keep the one permanent profile with the user's logins. If the user already runs a
+  VPN for the whole computer, the browser goes through it with no work from Kucedr.
 
 A VPN for the whole computer needs operating-system permission (on macOS a special entitlement from
 Apple and signed builds) and is a different product. What Kucedr can do itself is route its own
