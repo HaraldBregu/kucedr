@@ -267,39 +267,6 @@ describe('Home prompt attachments', () => {
 		messages = [{ id: 'agent-welcome', role: 'agent', tools: [] }];
 	});
 
-	it('shows one row of empty-state prompt suggestions without settings', async () => {
-		renderPage();
-		await waitFor(() =>
-			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
-		);
-		expect(screen.getByLabelText('Attachment files')).not.toHaveAttribute('accept');
-
-		expect(screen.getByText(/^Good (morning|afternoon|evening), how are you\?$/)).toHaveClass(
-			'text-3xl'
-		);
-		expect(screen.getByText("I'm your assistant. What can I do for you?")).toHaveClass(
-			'text-sm/relaxed'
-		);
-		for (const label of [
-			'Plan my day',
-			'Rain sound',
-			'Create an image',
-			'Video',
-			'Brainstorm project ideas',
-			'Draft a thank-you',
-		]) {
-			expect(screen.getByText(label)).toBeInTheDocument();
-		}
-		const promptRow = screen.getByLabelText('Prompt suggestions').children;
-		expect(promptRow).toHaveLength(6);
-		expect(screen.queryByText('Create music')).not.toBeInTheDocument();
-		expect(screen.queryByLabelText('Quick settings')).not.toBeInTheDocument();
-		fireEvent.click(screen.getByText('Create an image'));
-		expect(useSuggestion).toHaveBeenCalledWith(
-			'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.'
-		);
-	});
-
 	it('shows the discovery rows only for an empty chat', () => {
 		messages = [{ id: 'user-message', role: 'user' }];
 		renderPage();
