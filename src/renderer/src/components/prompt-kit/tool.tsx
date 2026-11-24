@@ -111,7 +111,7 @@ function ToolInput({ input }: { readonly input: unknown }) {
 
 	return (
 		<div>
-			<h4 className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
+			<h4 className="mb-1 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
 				Input
 			</h4>
 			<div className="max-h-40 overflow-auto rounded-sm bg-muted/40 px-2 py-1.5 font-mono text-xs text-muted-foreground">
@@ -150,7 +150,7 @@ function DelegationOutput({ output }: { readonly output: unknown }) {
 
 	return (
 		<div>
-			<h4 className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
+			<h4 className="mb-1 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
 				Subagent result
 			</h4>
 			<div className="space-y-1.5 rounded-sm bg-muted/40 px-2 py-1.5 text-xs text-muted-foreground">
@@ -207,7 +207,7 @@ function DelegationTasks({ input, output }: { readonly input: unknown; readonly 
 						<span className="truncate" title={taskText}>
 							{taskText || status}
 						</span>
-						<span className="ml-auto shrink-0 text-[10px] capitalize text-muted-foreground/70">
+						<span className="ml-auto shrink-0 text-xs capitalize text-muted-foreground/70">
 							{status}
 						</span>
 					</div>
@@ -223,7 +223,7 @@ function ToolOutput({ output, type }: { readonly output: unknown; readonly type:
 
 	return (
 		<div>
-			<h4 className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
+			<h4 className="mb-1 text-xs font-medium uppercase tracking-wider text-muted-foreground/70">
 				Output
 			</h4>
 			<div className="max-h-60 overflow-auto rounded-sm bg-muted/40 px-2 py-1.5 font-mono text-xs text-muted-foreground">
@@ -294,7 +294,7 @@ function Tool({
 								</span>
 								<StatusIcon state={state} />
 								{displayDurationMs !== undefined && (
-									<span className="ml-auto shrink-0 text-[10px] tabular-nums text-muted-foreground/50">
+									<span className="ml-auto shrink-0 text-xs tabular-nums text-muted-foreground/50">
 										{formatDuration(displayDurationMs)}
 									</span>
 								)}
@@ -315,7 +315,7 @@ function Tool({
 
 						{state === 'output-error' && toolPart.errorText && (
 							<div>
-								<h4 className="mb-1 text-[10px] font-medium uppercase tracking-wider text-destructive/80">
+								<h4 className="mb-1 text-xs font-medium uppercase tracking-wider text-destructive/80">
 									Error
 								</h4>
 								<div className="rounded-sm bg-destructive/10 px-2 py-1.5 text-xs text-destructive">
@@ -329,7 +329,7 @@ function Tool({
 						)}
 
 						{toolCallId && (
-							<div className="flex min-w-0 items-center justify-between gap-2 font-mono text-[10px] text-muted-foreground/60">
+							<div className="flex min-w-0 items-center justify-between gap-2 font-mono text-xs text-muted-foreground/60">
 								<span className="truncate">{toolCallId}</span>
 								{displayTokens !== undefined && displayTokens > 0 && (
 									<span className="shrink-0 tabular-nums">
