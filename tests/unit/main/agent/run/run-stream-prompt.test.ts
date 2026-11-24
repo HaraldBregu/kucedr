@@ -1218,12 +1218,9 @@ describe('run stream system prompt', () => {
 					if (outcome === 'cancel' && event.type === 'tool_call_end') controller.abort();
 				}
 			};
-			if (outcome === 'tools') await expect(run()).rejects.toThrow('non-empty final answer');
-			else await run();
+			await run();
 			expect(execute).toHaveBeenCalledTimes(1);
-			expect(runModelTurnMock).toHaveBeenCalledTimes(
-				outcome === 'cancel' ? 1 : outcome === 'tools' ? 2 : 3
-			);
+			expect(runModelTurnMock).toHaveBeenCalledTimes(outcome === 'cancel' ? 1 : 3);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
 				result: {
