@@ -68,9 +68,11 @@ export function createTab(
 			const popup = createTab(tab.chat, tab.owner, route, partition);
 			popup.agent = tab.agent;
 			const target = popup.view.webContents;
-			void popup.ready.then(() => {
-				if (!target.isDestroyed()) return target.loadURL(url);
-			}).catch(() => undefined);
+			void popup.ready
+				.then(() => {
+					if (!target.isDestroyed()) return target.loadURL(url);
+				})
+				.catch(() => undefined);
 		}
 		return { action: 'deny' };
 	});
@@ -97,7 +99,7 @@ export function createTab(
 		if (!icon) return;
 		const page = contents.getURL();
 		void tab.ready
-			.then(() => favicon(contents.session, icon))
+			.then(() => (contents.isDestroyed() ? undefined : favicon(contents.session, icon)))
 			.then((data) => {
 				if (!data || contents.isDestroyed() || contents.getURL() !== page) return;
 				tab.icon = data;
