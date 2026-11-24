@@ -260,6 +260,7 @@ it('moves selected files to the parent folder from the selection menu', async ()
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await user.click(await screen.findByRole('button', { name: 'settings.library.openFolderNamed' }));
+	await user.click(screen.getByRole('button', { name: 'settings.library.edit' }));
 	await user.click(screen.getByRole('checkbox', { name: 'settings.library.selectFile' }));
 	await user.click(screen.getByRole('button', { name: 'settings.library.more' }));
 	await user.click(screen.getByRole('menuitem', { name: 'settings.library.moveToParent' }));
