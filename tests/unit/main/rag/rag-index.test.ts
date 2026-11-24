@@ -132,11 +132,11 @@ it.each([
 	'sk-abcdefghijklmnopqrstuvwxyz123456',
 	'-----BEGIN PRIVATE KEY-----',
 	'Authorization: Bearer syntheticcredential1234',
-])('rejects synthetic secrets before export', async (content) => {
+])('skips synthetic secrets before export', async (content) => {
 	await writeFile(path.join(root, 'guide.md'), content);
 	await expect(
 		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
-	).rejects.toThrow('credential-like');
+	).resolves.toMatchObject({ files: 0, skippedReasons: { credential: 1 } });
 	expect(embed).not.toHaveBeenCalled();
 	expect(upload).not.toHaveBeenCalled();
 });
