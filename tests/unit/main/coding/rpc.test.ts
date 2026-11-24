@@ -5,7 +5,7 @@ import { AppServerRpc } from '../../../../src/main/coding/harness/rpc';
 
 jest.mock('node:child_process', () => ({ spawn: jest.fn() }));
 
-describe('CodexRpc', () => {
+describe('AppServerRpc', () => {
 	let child: EventEmitter & {
 		stdin: PassThrough;
 		stdout: PassThrough;
