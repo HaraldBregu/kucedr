@@ -22,6 +22,8 @@ export function launchPrivacy(): boolean {
 	app.commandLine.appendSwitch('proxy-bypass-list', '<-loopback>');
 	if (isChild && getPrivacy().supported) return false;
 
+	app.commandLine.removeSwitch('remote-debugging-port');
+	app.commandLine.removeSwitch('remote-debugging-pipe');
 	void app.whenReady().then(async () => {
 		if (!getPrivacy().supported) {
 			dialog.showErrorBox('Privacy Mode unavailable', 'Kucedr could not start the macOS network sandbox.');
@@ -29,6 +31,7 @@ export function launchPrivacy(): boolean {
 			return;
 		}
 
+		app.dock?.hide();
 		const profile = [
 			'(version 1)',
 			'(allow default)',
@@ -42,11 +45,18 @@ export function launchPrivacy(): boolean {
 			env: { ...process.env, [CHILD_PARENT]: String(process.pid), [RESTART]: restartFile },
 			stdio: 'inherit',
 		});
+		const terminate = (): void => { child.kill(); };
+		app.once('before-quit', terminate);
+		process.once('SIGTERM', terminate);
+		process.once('SIGINT', terminate);
 		const started = Date.now();
 		const code = await new Promise<number | null>((resolve) => {
 			child.once('error', () => resolve(null));
 			child.once('exit', resolve);
 		});
+		app.removeListener('before-quit', terminate);
+		process.removeListener('SIGTERM', terminate);
+		process.removeListener('SIGINT', terminate);
 		const restart = existsSync(restartFile);
 		rmSync(directory, { recursive: true, force: true });
 		if (restart) app.relaunch();
@@ -64,6 +74,9 @@ export function launchPrivacy(): boolean {
 				app.relaunch();
 			}
 		}
+		app.quit();
+	}).catch((error: unknown) => {
+		dialog.showErrorBox('Privacy Mode could not start', error instanceof Error ? error.message : String(error));
 		app.quit();
 	});
 	return true;
