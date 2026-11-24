@@ -239,6 +239,9 @@ describe('AgentIpc run ownership', () => {
 			success: false,
 		});
 		await expect(
+			handler(AgentChannels.getRunInsights)(event, '11111111-1111-4111-8111-111111111111', 'run-1')
+		).resolves.toMatchObject({ success: false, error: { message: 'Privileged IPC is unavailable to app views.' } });
+		await expect(
 			handler(AgentChannels.policySet)(event, {
 				read: { allow: ['*'], deny: [] },
 				write: { allow: ['*'], deny: [] },
