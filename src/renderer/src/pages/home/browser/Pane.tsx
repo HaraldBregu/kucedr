@@ -84,6 +84,16 @@ export function BrowserPane({
 					}
 				/>
 			) : null}
+			{active.download ? (
+				<BrowserDownloadBar
+					download={active.download}
+					onAnswer={(answer) =>
+						void window.browserPane
+							.downloadAnswer(active.targetId, answer)
+							.catch((cause: unknown) => setError(cause instanceof Error ? cause.message : String(cause)))
+					}
+				/>
+			) : null}
 			{error ? (
 				<p role="alert" className="shrink-0 truncate px-3 py-1 text-xs text-destructive">
 					{error}
