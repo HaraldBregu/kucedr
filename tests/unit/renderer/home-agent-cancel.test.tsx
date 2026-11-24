@@ -8,6 +8,8 @@ jest.mock('../../../src/renderer/src/pages/home/context', () => ({
 	useHomeAgentContext: () => ({ chatState: {}, dispatchChat: mockDispatch }),
 }));
 
+jest.mock('../../../src/renderer/src/hooks/use-modes', () => ({ useModes: () => [] }));
+
 function deferred<T>(): { promise: Promise<T>; resolve: (value: T) => void } {
 	let resolve = (_value: T) => {};
 	const promise = new Promise<T>((done) => {
