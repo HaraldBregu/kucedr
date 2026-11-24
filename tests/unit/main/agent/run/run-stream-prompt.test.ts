@@ -561,10 +561,10 @@ describe('run stream system prompt', () => {
 				await fs.stat(path.join(session.sessionsPath, session.folderName, 'run.jsonl'))
 			).toBeDefined();
 			expect(memory.length).toBeGreaterThan(4_000);
-			expect(systemPrompt).toContain('- Memory 499');
+			expect(runContext).toContain('- Memory 499');
 			expect(read).toHaveBeenCalledTimes(1);
 			expect(contextMessages).toEqual([]);
-			expect(messages[0]).toEqual({ role: 'user', content: 'Current request' });
+			expect(messages[1]).toEqual({ role: 'user', content: 'Current request' });
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
