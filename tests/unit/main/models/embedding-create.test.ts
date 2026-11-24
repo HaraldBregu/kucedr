@@ -46,12 +46,13 @@ it('keeps each input aligned with its selected provider and model', async () => 
 	expect(generateEmbeddings).toHaveBeenCalledWith(
 		expect.objectContaining({
 			texts: ['first', 'second'],
-			providerId: 'openai',
-			modelId: 'custom-model',
+			model: expect.objectContaining({ id: 'custom-model' }),
+			baseURL: 'https://api.example.test/v1/embeddings',
 			apiKey: 'saved-key',
 			inputType: 'query',
 		})
 	);
+	expect(findModel).toHaveBeenCalledWith('openai', 'embedding', 'custom-model');
 	expect(result).toMatchObject({ providerId: 'openai', modelId: 'custom-model', dimensions: 2 });
 });
 
