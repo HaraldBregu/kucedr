@@ -92,9 +92,7 @@ export async function searchRag(
 					)
 				: undefined;
 		embedding?.catch(() => undefined);
-		const keywords = texts.map((text) =>
-			vectorStore.keyword(selectedIndexName, text, CANDIDATES)
-		);
+		const keywords = texts.map((text) => vectorStore.keyword(selectedIndexName, text, CANDIDATES));
 		const embedded = await embedding;
 		signal.throwIfAborted();
 		if (embedded) {
