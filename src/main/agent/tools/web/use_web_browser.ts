@@ -312,6 +312,8 @@ export const useWebBrowserTool = tool({
 	execute: async (params, signal) => {
 		signal?.throwIfAborted();
 		if (!browserSessions.getStore()) return observe(() => run(params, signal));
+		if (params.route && params.route !== 'direct')
+			throw new Error('Private, Tor and proxy tabs are only available in the browser pane, not in background runs.');
 		const session = browserSession();
 		if (session.closed) throw new Error('Browser run has ended.');
 		switch (params.action) {
