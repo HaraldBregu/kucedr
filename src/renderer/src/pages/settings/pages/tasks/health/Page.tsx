@@ -412,7 +412,7 @@ const HealthPage: React.FC = () => {
 
 					{saved && (
 						<SettingsAutoDismiss>
-							<p className="text-[11px] leading-4 text-muted-foreground">
+							<p className="text-xs leading-4 text-muted-foreground">
 								{t('settings.health.saved')}
 							</p>
 						</SettingsAutoDismiss>
