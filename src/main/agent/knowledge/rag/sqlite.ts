@@ -38,6 +38,7 @@ export class SqliteVectorStore implements VectorStore {
 	private readonly activeRecordsStatement: StatementSync;
 	private readonly activeVectorsStatement: StatementSync;
 	private readonly activeCountStatement: StatementSync;
+	private readonly pathsStatement: StatementSync;
 	private readonly chunksStatement: StatementSync;
 	private readonly neighboursStatement: StatementSync;
 	private readonly keywordStatement: StatementSync;
