@@ -87,7 +87,7 @@ describe('LLM streaming attachment payloads', () => {
 	it('uses Anthropic image and PDF payloads', async () => {
 		const stream = jest.fn().mockReturnValue(emptyStream());
 		const model = new LlmModel({
-			anthropicClientFactory: () => ({ messages: { stream } }) as never,
+			messagesClientFactory: () => ({ messages: { stream } }) as never,
 		});
 		const anthropicRequest = request('anthropic', 'claude-sonnet-4-6');
 		anthropicRequest.messages[0].content = [

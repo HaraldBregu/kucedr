@@ -13,7 +13,7 @@ jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
 }));
 
 it.each([true, false])('reads cached input usage from Inception when streaming=%s', async (streaming) => {
-	const usage = { prompt_tokens: 20, completion_tokens: 3, cached_input_tokens: 12 };
+	const usage = { prompt_tokens: 20, completion_tokens: 3, prompt_tokens_details: { cached_tokens: 12 } };
 	const create = jest.fn().mockImplementation(async () =>
 		streaming
 			? (async function* () {
