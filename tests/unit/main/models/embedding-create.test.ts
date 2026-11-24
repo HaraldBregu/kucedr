@@ -115,13 +115,20 @@ it('does not call the embedding API for an already canceled request', async () =
 	expect(generateEmbeddings).not.toHaveBeenCalled();
 });
 
-it('requires the documented workspace gateway for Qwen embeddings', async () => {
+it('requires the documented base URL for models with a base URL rule', async () => {
 	getProvider.mockReturnValue({
 		apiKey: 'key',
-		baseUrl: 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1',
+		baseUrl: 'https://other.example.test/v1',
+	});
+	findModel.mockReturnValue({
+		id: 'gateway-embedding',
+		location: 'remote',
+		url: 'https://gateway.example.test/v1',
+		provider: { name: 'Test' },
+		metadata: { baseUrlRule: { pattern: '^https://gateway\\.example\\.test$' } },
 	});
 	await expect(
-		createEmbedding({ providerId: 'qwen', modelId: 'text-embedding-v4', texts: ['document'] })
-	).rejects.toThrow('Set the Qwen provider base URL');
+		createEmbedding({ providerId: 'test', modelId: 'gateway-embedding', texts: ['document'] })
+	).rejects.toThrow('Set the Test provider base URL');
 	expect(generateEmbeddings).not.toHaveBeenCalled();
 });
