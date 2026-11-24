@@ -1,6 +1,7 @@
 import { BrowserWindow, dialog } from 'electron';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { z } from 'zod';
+import { BROWSER_ROUTES, type BrowserConnections } from '../../shared/browser';
 import { BrowserChannels } from '../../shared/ipc_channels_definitions';
 import { pollAutofill } from '../agent/tools/web/browser/autofill';
 import { command } from '../agent/tools/web/browser/command';
