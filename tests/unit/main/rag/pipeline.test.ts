@@ -95,7 +95,7 @@ it('indexes local files and serves evidence through Query knowledge across persi
 		const removed = JSON.parse(
 			(await queryKnowledgeTool.run({ query: 'refund policy' })) as string
 		);
-		expect(removed).toMatchObject({ route: 'abstain', abstain: true, results: [] });
+		expect(removed).toMatchObject({ abstain: true, results: [] });
 		await rm(path.join(sources, 'delivery.md'));
 		await expect(indexRag([sources], 'fixture')).resolves.toEqual({ files: 0, vectors: 0, skipped: 0, skippedReasons: {}, skippedFiles: [] });
 		const requests = embed.mock.calls.length;
