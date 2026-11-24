@@ -233,6 +233,8 @@ export interface AgentApi {
 	setModelId: (modelId: string) => Promise<boolean>;
 	getModelOptions: () => Promise<Record<string, unknown>>;
 	setModelOptions: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
+	getRunBudget: () => Promise<import('./agent_types').AgentRunBudget>;
+	setRunBudget: (budget: import('./agent_types').AgentRunBudget) => Promise<import('./agent_types').AgentRunBudget>;
 	getCompactModel: () => Promise<import('./agent_types').AgentMediaModelSettings>;
 	setCompactModel: (
 		settings: import('./agent_types').AgentMediaModelSettings

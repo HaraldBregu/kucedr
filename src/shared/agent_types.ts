@@ -1,5 +1,17 @@
 export type ModelReasoningEffort = 'none' | 'instant' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
 
+export interface AgentRunBudget {
+	turns?: number;
+	tokens?: number;
+}
+
+export interface AgentRunBudgetWarning {
+	type: 'run_budget_warning';
+	unit: 'turns' | 'tokens';
+	used: number;
+	limit: number;
+}
+
 export type AgentRunState =
 	| 'idle'
 	| 'thinking'
@@ -343,6 +355,7 @@ export type AgentRunStreamEvent =
 			model: string;
 			effort?: ModelReasoningEffort;
 	  }
+	| AgentRunBudgetWarning
 	| { type: 'context_usage'; context: AgentContextUsage }
 	| { type: 'model_usage'; usage?: AgentTokenUsage }
 	| { type: 'capability_resolution_start' }

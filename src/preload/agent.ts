@@ -370,6 +370,8 @@ export const agent: AgentApi = {
 	setModelOptions: (options: Record<string, unknown>): Promise<Record<string, unknown>> => {
 		return typedInvokeUnwrap(AgentChannels.setModelOptions, options);
 	},
+	getRunBudget: () => typedInvokeUnwrap(AgentChannels.getRunBudget),
+	setRunBudget: (budget) => typedInvokeUnwrap(AgentChannels.setRunBudget, budget),
 	getCompactModel: () => typedInvokeUnwrap(AgentChannels.getCompactModel),
 	setCompactModel: (settings) => typedInvokeUnwrap(AgentChannels.setCompactModel, settings),
 	getToolModel: (kind, profileId) => {

@@ -72,6 +72,8 @@ import { getResolvedProvider } from '../settings_store';
 import {
 	getModelId,
 	getModelOptions,
+	getRunBudget,
+	setRunBudget,
 	getCompactModel,
 	getProviderId,
 	getToolConfiguration,
@@ -1087,6 +1089,14 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				},
 				AgentChannels.setModelOptions
 			)
+		);
+		ipcMain.handle(
+			AgentChannels.getRunBudget,
+			wrapAgentHandler(mainAccess, getRunBudget, AgentChannels.getRunBudget)
+		);
+		ipcMain.handle(
+			AgentChannels.setRunBudget,
+			wrapAgentHandler(mainAccess, setRunBudget, AgentChannels.setRunBudget)
 		);
 		ipcMain.handle(
 			AgentChannels.getCompactModel,

@@ -332,6 +332,11 @@ export interface AgentInvokeChannelMap {
 		args: [options: Record<string, unknown>];
 		result: Record<string, unknown>;
 	};
+	[AgentChannels.getRunBudget]: { args: []; result: import('./agent_types').AgentRunBudget };
+	[AgentChannels.setRunBudget]: {
+		args: [budget: import('./agent_types').AgentRunBudget];
+		result: import('./agent_types').AgentRunBudget;
+	};
 	[AgentChannels.getCompactModel]: {
 		args: [];
 		result: import('./agent_types').AgentMediaModelSettings;

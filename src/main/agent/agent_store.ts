@@ -1,5 +1,7 @@
+import { z } from 'zod';
 import path from 'node:path';
 import type {
+	AgentRunBudget,
 	AgentChatbotModelKind,
 	AgentMediaModelSettings,
 	AgentToolModelKind,
@@ -141,6 +143,22 @@ export function setChatbotModel(
 	settings: AgentMediaModelSettings
 ): void {
 	setAgentProfileModel('chat', kind, settings);
+}
+
+const runBudgetSchema = z.object({
+	turns: z.number().int().positive().max(Number.MAX_SAFE_INTEGER).optional(),
+	tokens: z.number().int().positive().max(Number.MAX_SAFE_INTEGER).optional(),
+}).strict();
+
+export function getRunBudget(): AgentRunBudget {
+	const budget = runBudgetSchema.safeParse(getAgentProfileDocument('chat').runBudget);
+	return budget.success ? budget.data : {};
+}
+
+export function setRunBudget(value: unknown): AgentRunBudget {
+	const budget = runBudgetSchema.parse(value);
+	setAgentProfileDocument('chat', { ...getAgentProfileDocument('chat'), runBudget: budget });
+	return budget;
 }
 
 export function getCompactModel(): AgentMediaModelSettings | undefined {

@@ -830,6 +830,7 @@ function runtimeEventToAgentEvents(
 			},
 		];
 	}
+	if (event.type === 'run_budget_warning') return [{ ...event, agentId, runId }];
 	if (event.type === 'context_usage') return [{ ...event, agentId, runId }];
 	if (event.type === 'model_call_end') {
 		return [{ type: 'model_usage', usage: event.usage, agentId, runId }];

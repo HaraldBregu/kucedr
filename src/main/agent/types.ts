@@ -218,6 +218,7 @@ export interface McpDiscoveryDiagnostics {
 
 export type RuntimeEvent =
 	| { type: 'history_compacted'; userIndex: number; summary: string }
+	| import('../../shared/agent_types').AgentRunBudgetWarning
 	| RuntimeModelEvent
 	| { type: 'context_usage'; context: import('../../shared/agent_types').AgentContextUsage }
 	| { type: 'provider_queue_metrics'; providerId: string; queueDelayMs: number; attempt: number }
