@@ -986,7 +986,13 @@ describe('run stream system prompt', () => {
 			const mainCalls = runModelTurnMock.mock.calls.filter(
 				(call) => call[0].agentId === 'main'
 			).length;
-			return mainCalls === 1
+			if (mainCalls === 1)
+				return {
+					content: '',
+					model: 'pinned-model',
+					toolCalls: [{ id: 'find', name: 'tool_search', args: { query: 'subagent' } }],
+				};
+			return mainCalls === 2
 				? {
 						content: '',
 						model: 'pinned-model',
