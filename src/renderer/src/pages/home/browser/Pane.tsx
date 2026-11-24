@@ -33,10 +33,16 @@ export function BrowserPane({
 			}),
 		[]
 	);
-	const run = (targetId: string, command: BrowserPaneCommand['command'], url?: string, index?: number): void => {
+	const run = (
+		targetId: string,
+		command: BrowserPaneCommand['command'],
+		url?: string,
+		index?: number,
+		route?: BrowserRoute
+	): void => {
 		setError(null);
 		void window.browserPane
-			.command({ targetId, command, url, index })
+			.command({ targetId, command, url, index, route })
 			.catch((cause: unknown) => setError(cause instanceof Error ? cause.message : String(cause)));
 	};
 
