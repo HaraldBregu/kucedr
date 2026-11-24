@@ -139,8 +139,8 @@ describe('buildSystemPrompt', () => {
 			'minimal'
 		);
 
-		expect(prompt).toContain('- `read` (read) — Read a file');
-		expect(prompt).toContain('- `write` (write) — Write a file');
+		expect(prompt).toContain('- `read` — Read a file');
+		expect(prompt).toContain('- `write` — Write a file');
 	});
 
 	it('puts the clock last so everything before it stays the same across builds', async () => {
