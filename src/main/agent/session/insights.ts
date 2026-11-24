@@ -39,10 +39,11 @@ export async function readRunInsights(
 			if (['model_call_start', 'model_call_end', 'tool_call_start', 'tool_call_end'].includes(event.type)) {
 				events.push({ time, event });
 			} else if (event.type === 'run_finished') {
-				if (typeof selector === 'string') return summarizeRun(events, event);
+				const terminal = event.result ?? event;
+				if (typeof selector === 'string') return summarizeRun(events, terminal);
 				if (selector <= time) {
 					if (match) return null;
-					match = summarizeRun(events, event);
+					match = summarizeRun(events, terminal);
 				}
 				events = undefined;
 			}
