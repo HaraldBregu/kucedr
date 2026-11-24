@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { getSearchSettings, searchWeb } from '../../../search';
+import { leaks } from '../../../shield/leaks';
 import type { Tool } from '../../types';
 import { tool } from '../tool';
 
