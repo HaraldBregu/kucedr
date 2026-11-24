@@ -25,10 +25,10 @@ describe('current OpenAI model contracts', () => {
 		const fetch = jest
 			.spyOn(globalThis, 'fetch')
 			.mockResolvedValue(new Response(JSON.stringify({ data: [{ b64_json: 'UklGRimage' }] })));
-		const result = await buildImageAdapter({
-			id: 'openai',
+		const result = await buildImageAdapter('images', 'GPT Image', {
 			name: 'OpenAI',
 			apiKey: 'key',
+			baseURL: 'https://api.openai.com/v1',
 		}).generate({
 			modelId: 'gpt-image-2.5-flare',
 			prompt: 'cat',
