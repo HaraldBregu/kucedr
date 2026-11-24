@@ -1,3 +1,9 @@
+const pluginSettings = jest.fn();
+jest.mock('../../../../src/main/plugins/plugins_settings', () => ({ pluginSettings }));
+jest.mock('../../../../src/main/plugins/plugins_providers', () => ({
+	pluginProviders: () => jest.requireActual('./providers').mcpProviders,
+}));
+
 import { mcpOAuthOptions } from '../../../../src/main/mcp/oauth_options';
 import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
 import { createOAuthProvider } from '../../../../src/main/mcp/mcp_oauth_create_provider';
