@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { createAudioFile } from './stt_audio';
 import { SttProviderAuthError, SttProviderRequestError } from './stt_errors';
 import type {
@@ -89,7 +90,7 @@ export function createListenSttAdapter(opts: ListenSttAdapterOptions): SttAdapte
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
-			const socket = new WebSocket(listenRealtimeUrl(provider, request), {
+			const socket = privacyWebSocket(listenRealtimeUrl(provider, request), {
 				headers: { Authorization: `${LISTEN_AUTH_SCHEME} ${provider.apiKey}` },
 			});
 			await waitForOpen(socket);

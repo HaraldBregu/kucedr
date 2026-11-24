@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { createAudioFile } from './stt_audio';
 import { SttProviderAuthError } from './stt_errors';
 import type {
@@ -80,7 +81,7 @@ export function createTranscriptionsSttAdapter(opts: TranscriptionsSttAdapterOpt
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
-			const socket = new WebSocket(realtimeUrl(provider.baseURL, request, intent), {
+			const socket = privacyWebSocket(realtimeUrl(provider.baseURL, request, intent), {
 				headers: {
 					Authorization: `${REALTIME_AUTH_SCHEME} ${provider.apiKey}`,
 				},

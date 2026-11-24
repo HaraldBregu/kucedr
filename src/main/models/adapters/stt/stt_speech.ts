@@ -1,5 +1,6 @@
 import { createAudioFile } from './stt_audio';
 import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { SttProviderAuthError, SttProviderRequestError } from './stt_errors';
 import type {
 	SttAdapter,
@@ -84,7 +85,7 @@ export function createSpeechSttAdapter(opts: SpeechSttAdapterOptions): SttAdapte
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
-			const socket = new WebSocket(speechRealtimeUrl(provider.baseURL, request), {
+			const socket = privacyWebSocket(speechRealtimeUrl(provider.baseURL, request), {
 				headers: {
 					[SPEECH_API_KEY_HEADER]: provider.apiKey,
 				},

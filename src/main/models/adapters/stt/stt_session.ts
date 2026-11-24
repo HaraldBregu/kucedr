@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { SttProviderAuthError, SttProviderUnsupportedError } from './stt_errors';
 import type {
 	SttAdapter,
@@ -37,7 +38,7 @@ export function createSessionSttAdapter(provider: SttProviderSpec): SttAdapter {
 			request: SttAdapterRealtimeStartRequest,
 			emit: SttRealtimeEventHandler
 		): Promise<SttRealtimeConnection> {
-			const socket = new WebSocket(sessionUrl(provider.baseURL, request), {
+			const socket = privacyWebSocket(sessionUrl(provider.baseURL, request), {
 				headers: {
 					Authorization: `${SESSION_AUTH_SCHEME} ${provider.apiKey}`,
 					[SESSION_BETA_HEADER]: SESSION_BETA_VALUE,

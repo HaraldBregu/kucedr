@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { randomUUID } from 'node:crypto';
 import { SttProviderAuthError, SttProviderUnsupportedError } from './stt_errors';
 import type {
@@ -31,7 +31,7 @@ async function streaming(
 	endpoint.pathname = '/api-ws/v1/inference';
 	endpoint.search = '';
 	const taskId = randomUUID();
-	const socket = new WebSocket(endpoint, {
+	const socket = privacyWebSocket(endpoint, {
 		headers: { Authorization: `Bearer ${provider.apiKey}` },
 	});
 	const sentences = new Map<number, string>();

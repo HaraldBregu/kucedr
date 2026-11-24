@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import {
 	REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH,
 	REALTIME_VOICE_SAMPLE_RATE,
@@ -29,7 +30,7 @@ export function createAgentVoiceAdapter(
 	provider: RealtimeVoiceProviderSpec,
 	model: RealtimeVoiceModelSpec,
 	socketFactory: (url: string, apiKey: string) => WebSocket = (url, apiKey) =>
-		new WebSocket(url, { headers: { Authorization: `Token ${apiKey}` } })
+		privacyWebSocket(url, { headers: { Authorization: `Token ${apiKey}` } })
 ): RealtimeVoiceAdapter {
 	return {
 		async connect(request, emit, signal) {

@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { inputDefault } from './defaults';
 import { speechResult } from './tts_audio';
 import type { SpeechProviderSpec, SpeechAdapterRequest } from './tts_types';
@@ -26,7 +26,7 @@ export async function synthesizeDialogue(
 		(typeof request.options?.voice_id === 'string'
 			? request.options.voice_id
 			: inputDefault(request.metadata, ['voice_id']));
-	const socket = new WebSocket(endpoint, { headers: { 'xi-api-key': provider.apiKey } });
+	const socket = privacyWebSocket(endpoint, { headers: { 'xi-api-key': provider.apiKey } });
 	const chunks: Buffer[] = [];
 	const audio = await new Promise<Buffer>((resolve, reject) => {
 		let completed = false;

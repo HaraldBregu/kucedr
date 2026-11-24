@@ -3,7 +3,7 @@ import { turnContext } from './context';
 import { realtimeVoiceCloseError } from './close';
 import { liveVoiceHistory } from './history';
 import { realtimeVoiceTransportError } from './transport';
-import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../../../../shared/realtime_voice';
 import type {
 	RealtimeVoiceAdapter,
@@ -346,7 +346,7 @@ function createLiveSocket(
 	provider: RealtimeVoiceProviderSpec,
 	model: RealtimeVoiceModelSpec
 ): LiveSocket {
-	return new WebSocket(realtimeVoiceSocketUrl(model, undefined, provider.name).toString(), {
+	return privacyWebSocket(realtimeVoiceSocketUrl(model, undefined, provider.name).toString(), {
 		headers: { Authorization: `Bearer ${provider.apiKey}` },
 	});
 }

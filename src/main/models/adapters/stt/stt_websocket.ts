@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { createAudioFile } from './stt_audio';
 import { SttProviderAuthError, SttProviderRequestError } from './stt_errors';
 import type { SttAdapter, SttProviderSpec } from './stt_types';
@@ -51,7 +51,7 @@ export function createWebsocketSttAdapter(provider: SttProviderSpec): SttAdapter
 				endpoint.searchParams.set('language', request.language);
 			if (request.metadata?.inputs.keyterm && request.prompt)
 				endpoint.searchParams.set('keyterm', request.prompt);
-			const socket = new WebSocket(endpoint, { headers: { 'X-API-Key': provider.apiKey } });
+			const socket = privacyWebSocket(endpoint, { headers: { 'X-API-Key': provider.apiKey } });
 			let transcript = '';
 			let closed = false;
 			const emitClosed = (): void => {

@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../../../../shared/realtime_voice';
 import { realtimeVoiceCloseError } from './close';
 import { turnContext } from './context';
@@ -31,7 +32,7 @@ interface BidiMessage {
 export function createBidiVoiceAdapter(
 	provider: RealtimeVoiceProviderSpec,
 	model: RealtimeVoiceModelSpec,
-	socketFactory: (url: string) => WebSocket = (url) => new WebSocket(url)
+	socketFactory: (url: string) => WebSocket = (url) => privacyWebSocket(url)
 ): RealtimeVoiceAdapter {
 	return {
 		async connect(request, emit, signal) {

@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import WebSocket from 'ws';
+import type WebSocket from 'ws';
+import { privacyWebSocket } from '../../../privacy/websocket';
 import { realtimeVoiceSocketUrl } from './endpoint';
 import { CompatibleRealtimeVoiceAdapter } from './realtime_voice_compatible';
 import { createPcmResampler } from './resample';
@@ -16,7 +17,7 @@ export function createBetaRealtimeVoiceAdapter(
 	provider: RealtimeVoiceProviderSpec,
 	model: RealtimeVoiceModelSpec,
 	socketFactory: (url: string, options: WebSocket.ClientOptions) => WebSocket = (url, options) =>
-		new WebSocket(url, options)
+		privacyWebSocket(url, options)
 ): RealtimeVoiceAdapter {
 	return {
 		async connect(request, emit, signal) {
