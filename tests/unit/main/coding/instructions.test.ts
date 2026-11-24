@@ -104,7 +104,7 @@ it('creates AGENTS.md and preserves an explicitly saved empty file', async () =>
 		available: true,
 	};
 	const instructions = new CodingInstructions();
-	const initial = await instructions.get(project);
+	const initial = await instructions.get(project, runtime, files);
 
 	expect(initial).toMatchObject({
 		activeFilePath: path.join(projectDirectory, 'AGENTS.md'),
@@ -142,7 +142,7 @@ it('rejects stale revisions without overwriting external edits', async () => {
 		available: true,
 	};
 	const instructions = new CodingInstructions();
-	const initial = await instructions.get(project);
+	const initial = await instructions.get(project, runtime, files);
 	writeFileSync(filePath, 'external edit');
 
 	await expect(
@@ -171,7 +171,7 @@ it('reports symbolic links as read-only and rejects saving them', async () => {
 		available: true,
 	};
 	const instructions = new CodingInstructions();
-	const initial = await instructions.get(project);
+	const initial = await instructions.get(project, runtime, files);
 
 	expect(initial).toMatchObject({ content: 'outside', exists: true, editable: false });
 	await expect(
@@ -197,7 +197,7 @@ it('rejects existing and submitted content above 256 KiB', async () => {
 		available: true,
 	};
 	const instructions = new CodingInstructions();
-	const initial = await instructions.get(project);
+	const initial = await instructions.get(project, runtime, files);
 
 	await expect(
 		instructions.save(project, {
@@ -206,5 +206,5 @@ it('rejects existing and submitted content above 256 KiB', async () => {
 		})
 	).rejects.toThrow('256 KiB');
 	writeFileSync(path.join(projectDirectory, 'AGENTS.md'), 'a'.repeat(256 * 1024 + 1));
-	await expect(instructions.get(project)).rejects.toThrow('256 KiB');
+	await expect(instructions.get(project, runtime, files)).rejects.toThrow('256 KiB');
 });
