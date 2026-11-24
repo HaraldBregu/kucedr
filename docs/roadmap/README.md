@@ -20,7 +20,7 @@ on an outside decision.
 
 | # | Area | Features |
 | --- | --- | --- |
-| 1 | [Privacy](PRIVACY.md) | Privacy centre, sealed credentials, encrypted data, app lock, encrypted backup, private chat, storage management, account deletion, encrypted sync |
+| 1 | [Privacy](PRIVACY.md) | Privacy centre, sealed credentials, encrypted data, app lock, encrypted backup, private chat, storage management, account deletion, encrypted sync, app-wide Privacy Mode |
 | 2 | [Performance and agent efficiency](PERFORMANCE.md) | Automatic compaction, run insights, run budgets, lighter first message, smooth streaming, instant start, performance check, spend tracking |
 | 3 | [User experience](EXPERIENCE.md) | Notifications, search across chats, regenerate, "/" menu, shortcut guide, failure states, undo, attachment checks, browser pane, chat export and import, agent cursor in the browser pane, browser control from the chat |
 | 4 | [Accessibility](ACCESSIBILITY.md) | Screen-reader chat, full keyboard use, high contrast and text size, named controls, automatic checks |
