@@ -54,7 +54,7 @@ export function Split({
 		>
 			<button
 				type="button"
-				className="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm focus:not-sr-only focus:absolute focus:left-1/2 focus:top-2 focus:-translate-x-1/2focus-visible:ring-2 focus-visible:ring-ring"
+				className="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm focus:not-sr-only focus:absolute focus:left-1/2 focus:top-2 focus:-translate-x-1/2 focus-visible:ring-2 focus-visible:ring-ring"
 				onClick={() => document.getElementById('split-pane-main')?.focus()}
 			>
 				Skip to content
