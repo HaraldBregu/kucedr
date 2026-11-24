@@ -1,10 +1,17 @@
 import { EventEmitter } from 'node:events';
-import type { BrowserWindow, WebContents, WebContentsView } from 'electron';
+import type { BrowserWindow, DownloadItem, WebContents, WebContentsView } from 'electron';
+import type { BrowserBlocked, BrowserDownload, BrowserRoute } from '../../../../../shared/browser';
 
 export interface BrowserTab {
 	readonly id: string;
 	readonly view: WebContentsView;
 	readonly logs: string[];
+	readonly route: BrowserRoute;
+	readonly partition: string;
+	// Settles when the tab's connection is in place; rejects when Tor or the proxy is unavailable.
+	readonly ready: Promise<void>;
+	readonly blocked: BrowserBlocked[];
+	download?: BrowserDownload & { readonly item: DownloadItem; readonly path: string };
 	chat?: string;
 	owner?: string;
 	agent?: boolean;
