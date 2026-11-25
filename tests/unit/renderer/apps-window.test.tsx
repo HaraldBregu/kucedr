@@ -13,6 +13,7 @@ jest.mock('react-i18next', () => {
 const settings = { ...APP_WINDOW_DEFAULTS, width: 1200, height: 900, resizable: false };
 
 beforeEach(() => {
+	Object.assign(globalThis, { __VITE_ENV__: { DEV: false, PROD: true } });
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'apps', {
 		configurable: true,
