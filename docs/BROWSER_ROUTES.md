@@ -45,5 +45,5 @@ Blocked requests are listed per tab (last 50, cleared on each new page) and coun
 1. Private tab: a cookie set there is absent from a direct tab and from a second private tab; nothing in history; not restored.
 2. Tor tab against a fake SOCKS5 server: the request arrives as a domain name (`ATYP 3`), including `.onion`; with the server stopped the tab fails and nothing loads directly.
 3. Proxy tab: requests reach the configured proxy; a stopped proxy fails the tab.
-4. Shield: a public page's `fetch('http://127.0.0.1:…')` is blocked and listed; typing `localhost` loads; a URL holding a saved key is blocked.
+4. Shield: a public page's `fetch('http://127.0.0.1:…')` is blocked and listed; typing `localhost` loads; a URL holding a saved key is blocked; `?utm_source=x&keep=1#frag` commits as `?keep=1#frag`.
 5. Download: the bar appears; Cancel leaves no file; Download saves it.
