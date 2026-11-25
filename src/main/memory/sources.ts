@@ -21,7 +21,8 @@ export async function scanSources(
 		const id = entry.name.slice(0, -3).toLowerCase();
 		if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.md') || !isUuid(id)) continue;
 		if (sessionId && id !== sessionId) continue;
-		sources.push(snapshotSource(id, await fs.readFile(path.join(root, entry.name), 'utf8')));
+		const content = unseal(await fs.readFile(path.join(root, entry.name))).toString('utf8');
+		sources.push(snapshotSource(id, content));
 	}
 	return sources.sort(
 		(left, right) =>
