@@ -593,6 +593,13 @@
 			"nameDescription": "Nome dell'applicazione installata",
 			"version": "Versione",
 			"versionDescription": "Versione corrente della build dell'app",
+			"updates": {
+				"title": "Aggiornamenti",
+				"description": "Solo versioni stabili, anche versioni beta, o nessun controllo",
+				"stable": "Stabile",
+				"beta": "Beta",
+				"off": "Disattivati"
+			},
 			"author": "Autore",
 			"authorDescription": "Editore dichiarato nei metadati dell'app",
 			"license": "Licenza",
