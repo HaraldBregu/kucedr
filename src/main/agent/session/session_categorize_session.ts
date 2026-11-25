@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
+import { readSealed } from '../../vault/read';
 import { atomicWriteFile } from './session_atomic_write';
 import { infoFile } from './session_info_file';
 import { sessionsRoot } from './session_sessions_root';
@@ -6,9 +7,10 @@ import { sessionsRoot } from './session_sessions_root';
 export function categorizeSession(sessionId: string, location: string, category: string | null): void {
 	const filePath = infoFile(sessionsRoot(location), sessionId);
 	if (!existsSync(filePath)) return;
+	const content = readSealed(filePath);
 	let info: Record<string, unknown>;
 	try {
-		info = JSON.parse(readFileSync(filePath, 'utf8')) as Record<string, unknown>;
+		info = JSON.parse(content) as Record<string, unknown>;
 	} catch {
 		info = {};
 	}
