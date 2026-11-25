@@ -1,14 +1,18 @@
 import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { decrypt } from './decrypt.mjs';
 import { describe } from './describe.mjs';
 import { download } from './download.mjs';
+import { head } from './head.mjs';
 import { list } from './list.mjs';
+import { BACKUP } from './magic.mjs';
 import { isProtected } from './protected.mjs';
 import { target } from './target.mjs';
 
 export async function pull(client, { provider, roots, protectedRoot }) {
 	const result = { downloaded: [], skipped: [], failed: [] };
+	const keys = new Map();
 	for (const { path: root, prefix } of roots) {
 		try {
 			await fs.mkdir(root, { recursive: true });
