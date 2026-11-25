@@ -390,6 +390,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					}
 				).notifications.run;
 				if (signal.category === 'health') return lines.healthTitle;
+				if (isLocked()) return app.name;
 				if (signal.category === 'task')
 					return (
 						listSchedules().find((schedule) => schedule.sessionIds.includes(signal.sessionId))
