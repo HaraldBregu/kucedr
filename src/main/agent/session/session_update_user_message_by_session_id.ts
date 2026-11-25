@@ -20,7 +20,7 @@ export function updateUserMessageBySessionId(
 
 	for (const candidate of [filePath, backupPath]) {
 		if (!existsSync(candidate)) continue;
-		const messages = parseMessages(readFileSync(candidate, 'utf8'));
+		const messages = parseMessages(readSealed(candidate));
 		if (!messages) continue;
 
 		let remaining = userOffsetFromEnd;
