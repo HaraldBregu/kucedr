@@ -11,6 +11,7 @@ jest.mock('../../../../src/main/mcp', () => ({
 	listConfiguredMcpServers: jest.fn(() => ({})),
 	listMcpRegistry: jest.fn(() => []),
 	mcpLocalRoot: jest.fn(() => '/mcp'),
+	mcpToolDetails: jest.fn(),
 	saveMcpOauth: jest.fn(),
 	setMcpServers: jest.fn(),
 	startOauthCallbackServer: jest.fn(),
