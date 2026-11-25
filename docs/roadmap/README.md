@@ -4,8 +4,9 @@ Status: proposal, written 2026-11-19. Built since: sealed credentials on disk (1
 release of app-wide Privacy Mode (1.10), the first four agent efficiency
 features ([2.1–2.4](PERFORMANCE.md)), a chat list that updates on change (2.6), the performance
 check (2.7), completion
-notifications (3.1), regenerate and retry (3.3), offline and failure states (3.6, 15.4), the
-browser pane (3.9), the agent cursor (3.11), browser control from the chat (3.12) and most of
+notifications (3.1), search across chats (3.2), regenerate and retry (3.3), the full "/" menu
+(3.4), offline and failure states (3.6, 15.4), undo and the archive view (3.7), attachment checks
+(3.8), the browser pane (3.9), the agent cursor (3.11), browser control from the chat (3.12) and most of
 browser import
 (23), screen-reader chat, keyboard use, high contrast and named controls (4.1–4.4), update
 channels and crash recovery (5.1, 5.2), replies that survive leaving Home (5.3), the legal pages and third-party notices (6.4), setup with a local model (15.1), fast knowledge retrieval (18.6),
