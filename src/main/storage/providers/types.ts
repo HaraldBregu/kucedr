@@ -1,6 +1,9 @@
 import type { StorageProvider } from '../../../shared/storage_types';
 
-export type StoredStorageProvider = Omit<StorageProvider, 'hasSecretAccessKey' | 'hasPassphrase'> & {
+export type StoredStorageProvider = Omit<
+	StorageProvider,
+	'hasSecretAccessKey' | 'hasPassphrase'
+> & {
 	secretAccessKey: string;
 	passphrase?: string;
 };
