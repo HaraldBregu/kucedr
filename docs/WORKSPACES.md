@@ -263,7 +263,9 @@ renderer re-sends them into their workspace and chat.
   and `associateSession` resolve the owning store from it. Cron fires every workspace's schedules,
   whatever the windows show. Task tools and the list IPC are scoped to the caller's workspace.
 - **Health** runs in the default workspace.
-- **Coder** (hidden today) is pinned to the default workspace.
+- **Coding agents:** harness homes and Coder sessions live under the workspace root
+  (`<root>/coder`), so harness sign-ins and threads stay per workspace. For the default workspace
+  that is today's `~/.kucedr/coder`. See [CODING_TOOLS.md](CODING_TOOLS.md).
 
 ## Isolation
 
