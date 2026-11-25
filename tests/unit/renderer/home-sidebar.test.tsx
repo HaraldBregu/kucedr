@@ -413,7 +413,7 @@ it('shows Settings as a sidebar footer button', async () => {
 	);
 
 	await screen.findByText('settings.chatHistory.empty');
-	expect(screen.getByRole('button', { name: 'settings.title', exact: true }).closest('[data-slot="sidebar-footer"]')).toBeNull();
+	expect(screen.getByRole('button', { name: 'settings.title', exact: true }).closest('[data-slot="sidebar-footer"]')).not.toBeNull();
 	expect(screen.queryByRole('button', { name: 'settings.sidebar.help' })).not.toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })
