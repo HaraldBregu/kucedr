@@ -32,3 +32,6 @@ shipped as a second chat kind next to the agent chat.
 - **Ship or remove.** Recommended: decide before more work lands. Half-built and unreachable, the
   page costs maintenance and delivers nothing. If it ships, 20.2 comes first.
 - **One coding agent or several.** The harness supports one today; more is a later choice.
+- **The chat tool and the page.** 20.6 uses the harness without the coding page, so it is useful
+  whether the page ships or is removed. It runs every harness in the app sandbox, which covers 20.2
+  for that path.
