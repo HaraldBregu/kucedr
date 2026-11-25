@@ -100,16 +100,32 @@ vec4 scene(vec2 uv) {
 	f = mix(f, 0.75, smoke);
 
 	float flicker = 0.8 + 0.2 * abs(cnoise(vec2(uTime * 25.0, 3.1)));
-	float flame = exp(-pow(r.x / (0.006 + below * 0.12), 2.0)) * smoothstep(-0.12 * flicker, 0.0, r.y) * step(r.y, 0.0);
-	flame = clamp(flame * 1.4, 0.0, 1.0);
-	color = mix(color, vec3(1.0, 0.85, 0.6), flame);
-	f = mix(f, 1.0, flame);
+	float e = max(-0.012 - r.y, 0.0);
+	float plume = exp(-pow(r.x / (0.007 + e * 0.1), 2.0)) * smoothstep(-0.14 * flicker, -0.012, r.y) * step(r.y, -0.012);
+	float core = exp(-pow(r.x / (0.004 + e * 0.03), 2.0)) * smoothstep(-0.05 * flicker, -0.012, r.y) * step(r.y, -0.012);
+	core *= 0.75 + 0.25 * cos(e * 260.0 - uTime * 4.0);
+	color = mix(color, vec3(1.0, 0.55, 0.2), clamp(plume * 1.3, 0.0, 1.0));
+	color = mix(color, vec3(1.0, 0.95, 0.85), clamp(core * 1.5, 0.0, 1.0));
+	f = mix(f, 1.0, clamp(max(plume * 1.3, core), 0.0, 1.0));
 
-	float taper = clamp((0.18 - r.y) / 0.04, 0.0, 1.0);
-	float fins = 0.012 * smoothstep(0.045, 0.0, r.y);
-	float body = step(abs(r.x), 0.011 * taper + fins) * step(0.0, r.y) * step(r.y, 0.18);
-	color = mix(color, vec3(0.96), body);
-	f = mix(f, 0.95, body);
+	float w = 0.009;
+	float t = clamp((r.y - 0.15) / 0.05, 0.0, 1.0);
+	float half = w * pow(1.0 - t, 0.6);
+	float body = step(abs(r.x), half) * step(0.0, r.y) * step(r.y, 0.2);
+	float n = clamp(r.x / max(half, 0.0001), -1.0, 1.0);
+	float shade = 0.35 + 0.65 * clamp(sqrt(1.0 - n * n) * 0.8 - n * 0.35, 0.0, 1.0);
+	float band = max(step(0.105, r.y) * step(r.y, 0.112), step(0.04, r.y) * step(r.y, 0.045));
+	vec3 hull = mix(vec3(0.95, 0.95, 0.93), vec3(0.15), band) * shade;
+	color = mix(color, hull, body);
+	f = mix(f, mix(0.95, 0.3, band) * shade, body);
+
+	float fin = step(w, abs(r.x)) * step(abs(r.x), w + 0.009 * clamp((0.035 - r.y) / 0.04, 0.0, 1.0)) * step(-0.006, r.y) * step(r.y, 0.035);
+	color = mix(color, vec3(0.18, 0.18, 0.2), fin);
+	f = mix(f, 0.35, fin);
+
+	float bell = step(abs(r.x), 0.004 + max(-r.y, 0.0) * 0.45) * step(-0.012, r.y) * step(r.y, 0.0);
+	color = mix(color, vec3(0.3, 0.28, 0.27) * (0.6 + 0.4 * (1.0 - abs(r.x) / 0.01)), bell);
+	f = mix(f, 0.4, bell);
 	return vec4(color, f);
 }
 
