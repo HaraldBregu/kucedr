@@ -22,6 +22,7 @@ function createWindow() {
 		autoHideMenuBar: true,
 		show: jest.fn(),
 		webContents: {
+			on: jest.fn(),
 			navigationHistory: {
 				canGoBack: jest.fn(() => true),
 				canGoForward: jest.fn(() => true),
