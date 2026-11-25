@@ -5,7 +5,7 @@ jest.mock('node:fs', () => ({
 	lstatSync: jest.fn(() => ({ isSymbolicLink: () => false })),
 	readdirSync: jest.fn(),
 	readlinkSync: jest.fn(),
-	realpathSync: jest.fn((value: string) => value),
+	realpathSync: Object.assign(jest.fn((value: string) => value), { native: (value: string) => value }),
 	statSync: jest.fn(),
 }));
 
