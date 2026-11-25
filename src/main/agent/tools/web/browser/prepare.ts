@@ -43,8 +43,12 @@ export function prepare(partition: string, route: BrowserRoute): Promise<void> {
 			.filter((part) => !/^electron\//i.test(part) && !part.startsWith(`${app.getName()}/`))
 			.join(' ')
 	);
-	browsing.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
-	browsing.setPermissionCheckHandler(() => false);
+	browsing.setPermissionRequestHandler(askPermission(partition, route));
+	browsing.setPermissionCheckHandler((_contents, permission, origin, details) => {
+		const kinds = uses(permission, details.mediaType ? [details.mediaType] : undefined);
+		const site = URL.canParse(origin) ? new URL(origin).origin : '';
+		return kinds.length > 0 && kinds.every((kind) => sitePermits.get(`${partition} ${site} ${kind}`) === true);
+	});
 	browsing.on('will-download', (event, item, contents) => holdDownload(event, item, contents, route));
 	const routed = isPrivacyEnabled() || route === 'tor' || route === 'proxy';
 	let open = !routed;
