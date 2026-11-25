@@ -247,10 +247,10 @@ export class PtyManager {
 		const onNavigation = (
 			_event: Electron.Event,
 			_url: string,
-			_isSameDocument: boolean,
+			isSameDocument: boolean,
 			isMainFrame: boolean
 		): void => {
-			if (isMainFrame) this.killOwner(owner.id);
+			if (isMainFrame && !isSameDocument) this.killOwner(owner.id);
 		};
 		owner.once('destroyed', onDestroyed);
 		owner.on('render-process-gone', onRenderProcessGone);
