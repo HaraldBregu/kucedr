@@ -174,7 +174,7 @@ const TaskDetailsPage: React.FC = () => {
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={task.name}
-				description={task.description ?? t('settings.cron.detail.noDescription')}
+				description={task.description || t('settings.cron.detail.noDescription')}
 				action={
 					<div className="flex items-center gap-3">
 						{running && (
