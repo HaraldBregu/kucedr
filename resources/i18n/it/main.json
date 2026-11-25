@@ -3212,6 +3212,18 @@
 		"create": "Crea e pianifica un'attività con questi dettagli: {{message}}",
 		"createEmpty": "Voglio creare e pianificare un'attività. Chiedimi qual è il messaggio dell'attività.",
 		"delete": "Elimina l'attività pianificata con questi dettagli: {{message}}",
-		"deleteEmpty": "Voglio eliminare un'attività pianificata. Mostrami l'elenco delle attività pianificate e chiedimi quale eliminare."
+		"deleteEmpty": "Voglio eliminare un'attività pianificata. Mostrami l'elenco delle attività pianificate e chiedimi quale eliminare.",
+		"about": {
+			"task_list": "Mostra le attività pianificate",
+			"create_task": "Crea e pianifica un'attività",
+			"delete_task": "Elimina un'attività pianificata"
+		}
+	},
+	"slash": {
+		"skills": "Skill",
+		"tasks": "Attività"
+	},
+	"attachments": {
+		"tooLarge": "{{name}} supera {{size}}, il limite per i file senza un limite di dimensione indicato dal modello. Rimuovilo per inviare."
 	}
 }
