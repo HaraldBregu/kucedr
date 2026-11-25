@@ -31,7 +31,7 @@ export function clearMessagesBySessionId(
 			recursive: true,
 			force: true,
 		});
-	} else writeFileSync(filePath, '[]\n', 'utf8');
+	} else writeFileSync(filePath, seal('[]\n'));
 
 	if (!isUuid(sessionId)) return;
 	const runPath = sessionPath(root, sessionFolderName(sessionId), 'run.jsonl');
