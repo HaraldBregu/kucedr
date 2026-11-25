@@ -22,7 +22,7 @@ Part of the [Roadmap](README.md). Status: proposal.
 | 16.2 | Run history | Each task shows when it last ran, whether it worked, and a link to that run's chat | The chats a task already creates | S |
 | 16.3 | Failures surfaced | A failed or stuck task is shown on the task and raises a notification. Built 2026-11-25: each run saves `lastRun` (time and error); a failed or timed-out run shows Failed in the list and the error on the task page, and the existing notifier says "Task failed". Checked in the app with a mock provider that refuses the request | Notifications ([User experience](EXPERIENCE.md), 3.1), `tasks_fire.ts` | S |
 | 16.4 | Catch-up | A task missed while the app was closed runs once at next start, if the user chose that | The schedule record | S |
-| 16.5 | Limits | A minimum interval between runs and a cap on tasks running at once | Run budgets ([Performance](PERFORMANCE.md), 2.3) | S |
+| 16.5 | Limits | A minimum interval between runs and a cap on tasks running at once. Built 2026-11-25: a schedule may fire at most once every 5 minutes, refused when saved and skipped when scheduled (saved data included); at most 3 tasks run at once, Run now says so and a scheduled run is skipped. Checked in the app: `*/2` and `* * * * *` refused, a seeded every-minute task never fired, the fourth Run now refused | `tasks_limits.ts`, `tasks_interval.ts` | S |
 | 16.6 | Health results | Health findings appear in the app with what needs attention, and every health setting takes effect | The Health page | M |
 | 16.7 | Run while closed | Tasks run when the window is closed, from the menu bar or system tray | Nothing today | L |
 
