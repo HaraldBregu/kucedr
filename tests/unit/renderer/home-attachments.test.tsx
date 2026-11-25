@@ -439,6 +439,7 @@ describe('Home prompt attachments', () => {
 				resolveSubmit = resolve;
 			})
 		);
+		input = 'Describe this';
 		renderPage();
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
