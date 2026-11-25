@@ -14,7 +14,7 @@ import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 
 export function ChatDetails({ onClose, scroll, messages, model, draft, hasAttachments, search, onJump, onAttach, onWorkspaceAttach }: {
 	readonly onClose: () => void;
-	readonly search: string;
+	readonly search: { query: string; position?: number };
 	readonly scroll: React.RefObject<StickToBottomContext | null>;
 	readonly messages: readonly HomeChatMessage[];
 	readonly model?: { providerId: string; modelId: string; contextWindow?: number };
