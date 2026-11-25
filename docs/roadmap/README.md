@@ -59,9 +59,9 @@ Features are numbered by area, for example 3.9 is the browser pane.
    unencrypted on disk today. Saved plugin credentials are decrypted in the main process, and
    the plugin detail page receives configured field names only (1.2).
 3. **Agent efficiency.** Automatic compaction, Run insights, run budgets and lighter first messages
-   (2.1–2.4) are built, and so is the performance check (2.7). Its first baseline shows smooth
-   streaming in a new chat, so startup and the sidebar (2.6) come before smooth streaming (2.5),
-   which needs a long-chat measurement first.
+   (2.1–2.4) are built, and so are the sidebar update on change (2.6) and the performance check
+   (2.7). Next, a smaller first renderer chunk (4 MB today) for start time, and a long-chat
+   measurement before any streaming work (2.5).
 4. **Accessibility checks** (4.5), once its two development dependencies are approved and
    `eslint-plugin-jsx-a11y` supports ESLint 10. Screen-reader chat, full keyboard use, high
    contrast and named controls (4.1–4.4) were built 2026-11-24.
