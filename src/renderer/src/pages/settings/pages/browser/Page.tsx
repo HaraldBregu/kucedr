@@ -38,6 +38,7 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 	const [routes, setRoutes] = useState<BrowserConnections | null>(null);
 	const [torFound, setTorFound] = useState<string | null | undefined>(undefined);
 	const [routesNotice, setRoutesNotice] = useState<{ readonly error: boolean; readonly text: string } | null>(null);
+	const [cursor, setCursor] = useState<boolean | null>(null);
 	const host = (template: string): string => {
 		try {
 			return new URL(template).hostname.replace(/^www\./, '');
