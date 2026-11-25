@@ -188,6 +188,21 @@ export class PtyManager {
 	}
 
 	private sendData(session: TerminalSession, data: string): void {
+		const pending = this.output.get(session.id);
+		if (pending) {
+			pending.data += data;
+			if (pending.data.length >= outputFlushLength) this.flush(session);
+			return;
+		}
+		this.output.set(session.id, { data, timer: setTimeout(() => this.flush(session), outputInterval) });
+	}
+
+	private flush(session: TerminalSession): void {
+		const pending = this.output.get(session.id);
+		if (!pending) return;
+		clearTimeout(pending.timer);
+		this.output.delete(session.id);
+		const data = pending.data;
 		if (!this.sessions.has(session.id) || session.owner.isDestroyed()) return;
 		try {
 			const event: TerminalDataEvent = { id: session.id, data };
