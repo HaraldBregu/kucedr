@@ -2,7 +2,7 @@
 
 **Proposed mission:** Help independent analysts turn company research into client briefs that another person can verify.
 
-This research, dated 25 November 2026, narrows the investigation desk proposed in the product mission to one initial market. The user is an analyst at a boutique due-diligence firm checking suppliers or business partners. The buyer is the firm owner who pays for research, review, and revisions. The commercial question is whether Kucedr can reduce the time spent verifying a bespoke brief enough for that firm to pay for it. [Product direction](PRODUCT.md)
+This research, dated 25 November 2026, narrows the investigation desk proposed in the product mission to one initial market. The user is an analyst at a boutique due-diligence firm checking suppliers or business partners. The buyer is the firm owner who pays for research, review, and revisions. The commercial question is whether Kucedr can reduce the time spent verifying a bespoke brief enough for that firm to pay for it. [Product direction](PRODUCT.md) · [How Kucedr competes](COMPETITION.md) · [Margins and unit economics](ECONOMICS.md)
 
 ## The first client brief
 
