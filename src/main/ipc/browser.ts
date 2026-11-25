@@ -29,6 +29,7 @@ import {
 	updateLogin,
 } from '../browser/passwords';
 import { answerOffer } from '../agent/tools/web/browser/capture';
+import { answerPermission } from '../agent/tools/web/browser/answer';
 import { answerDownload } from '../agent/tools/web/browser/release';
 import { getPrivacy, privacyChanged } from '../privacy/state';
 import { connections } from '../browser/connections';
