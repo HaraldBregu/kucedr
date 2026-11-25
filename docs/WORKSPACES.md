@@ -284,7 +284,8 @@ folders alone would therefore be cosmetic.
 - **writable** is `[ws.files, ws.library]`.
 
 Protected roots are checked before allow rules, so no rule can open another workspace. Content
-crosses workspaces only by user action.
+crosses workspaces only by user action. This includes an older "always allow" rule for a folder
+that later becomes another workspace's folder: it stops working outside that workspace.
 
 "Always allow" rules are stored per workspace. The default keeps the `permissions` key in
 `settings/chat.json`. Other workspaces use `~/.kucedr/workspaces/<id>/settings/permissions.json`. A
