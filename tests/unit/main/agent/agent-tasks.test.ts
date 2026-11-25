@@ -60,7 +60,7 @@ it('prevents scheduled agents from mutating tasks while honoring saved tool rest
 				type: 'background',
 				sessionId: mockAssociateSession.mock.calls[index][1],
 				runId: expect.any(String),
-				toolsAllow: [],
+				...(index === 1 ? { toolsAllow: [] } : {}),
 				toolsDeny,
 				streamEvent: expect.any(Function),
 				streaming: false,
