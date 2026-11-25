@@ -322,6 +322,14 @@ const TaskDetailsPage: React.FC = () => {
 			</SettingsSection>
 
 			<div className="flex justify-end gap-2">
+				<Button
+					variant="outline"
+					size="sm"
+					disabled={deleting}
+					onClick={() => navigate(`/settings/tasks/${encodeURIComponent(task.id)}/edit`)}
+				>
+					{t('settings.cron.form.edit')}
+				</Button>
 				{running ? (
 					<Button variant="outline" size="sm" onClick={() => void stop()}>
 						{t('settings.cron.actions.stop')}
