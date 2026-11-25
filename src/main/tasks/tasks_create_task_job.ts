@@ -11,6 +11,13 @@ export function createTaskJob(schedule: TaskSchedule): TaskJobHandle | undefined
 		);
 		return undefined;
 	}
+	if (cronInterval(schedule.cronExpression) < MIN_TASK_INTERVAL_MINUTES) {
+		console.warn(
+			'[Task]',
+			`Schedule ${schedule.id} skipped: it runs more often than every ${MIN_TASK_INTERVAL_MINUTES} minutes.`
+		);
+		return undefined;
+	}
 	const task = cron.schedule(schedule.cronExpression, () => fire(schedule.id), {
 		name: `tasks:${schedule.id}`,
 	});
