@@ -410,6 +410,8 @@ name. New text goes through `react-i18next` under a `spaces.*` namespace, becaus
   sandbox, `local-resource://file`, the shared sandbox `TMPDIR`, and reads of folders outside
   `~/.kucedr` that the user never granted.
 - **One vault key and one backup passphrase** cover every workspace.
+- **Picked folders are not encrypted or backed up** by Kucedr, and other apps can change them at
+  any time.
 - **Approvals expire** if the user stays away from a workspace longer than the timeout.
 - **Deleting a workspace** is left out. When added, it must be refused while the workspace has live
   runs, voice, a running task or an index job, and must clear its partition.
