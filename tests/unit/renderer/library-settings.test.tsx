@@ -698,7 +698,7 @@ it('sorts table columns in both directions', async () => {
 		screen
 			.getAllByRole('row')
 			.slice(1)
-			.map((row) => row.querySelectorAll('td')[1]?.textContent);
+			.map((row) => row.querySelectorAll('td')[0]?.textContent);
 	expect(names()).toEqual(['alpha.png', 'bravo.png', 'charlie.png']);
 	const sizeHeader = screen.getByRole('columnheader', { name: 'settings.library.size' });
 	await user.click(within(sizeHeader).getByRole('button'));
