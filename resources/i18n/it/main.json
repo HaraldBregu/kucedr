@@ -258,7 +258,15 @@
 			"type": "Tipo di memoria",
 			"facts": "Fatti",
 			"summaries": "Riepiloghi",
-			"both": "Fatti e riepiloghi"
+			"both": "Fatti e riepiloghi",
+			"remembered": "Cosa ricorda l'assistente",
+			"rememberedDescription": "Ogni voce mostra la sezione, la chat da cui proviene e quando è stata aggiunta. Le modifiche hanno effetto subito.",
+			"rememberedEmpty": "Ancora niente in memoria.",
+			"fromChat": "Da “{{title}}”",
+			"fromEarlierChat": "Da una chat precedente",
+			"editFact": "Modifica memoria",
+			"editFactDescription": "L'assistente usa il nuovo testo dal prossimo messaggio.",
+			"fact": "Memoria"
 		},
 		"title": "Impostazioni",
 		"returnToChat": "Torna alla Home",
