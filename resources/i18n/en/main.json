@@ -3290,6 +3290,14 @@
 			"delete_task": "Delete a scheduled task"
 		}
 	},
+	"lock": {
+		"description": "Kucedr is locked.",
+		"passphrase": "Passphrase",
+		"unlock": "Unlock",
+		"touchId": "Use Touch ID",
+		"failed": "Could not unlock Kucedr.",
+		"touchIdReason": "unlock your chats"
+	},
 	"slash": {
 		"skills": "Skills",
 		"tasks": "Tasks"
