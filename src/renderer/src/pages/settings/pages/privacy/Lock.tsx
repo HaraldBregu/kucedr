@@ -181,7 +181,12 @@ export function Lock(): React.JSX.Element {
 				)}
 			</SettingsPanel>
 			{error && !dialog && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
-			<Dialog open={dialog} onOpenChange={(next) => (next ? setDialog(true) : close())}>
+			<Dialog
+				open={dialog}
+				onOpenChange={(next) => {
+					if (!next) close();
+				}}
+			>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>{t('settings.privacy.lock.dialogTitle')}</DialogTitle>
