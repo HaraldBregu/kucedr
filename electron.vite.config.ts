@@ -26,6 +26,7 @@ export default defineConfig({
 						execFileSync('npm', ['run', 'build'], {
 							cwd: resolve(__dirname, 'resources/plugins/bootstrap/scripts', script),
 							stdio: 'inherit',
+							shell: process.platform === 'win32',
 						});
 					}
 				},

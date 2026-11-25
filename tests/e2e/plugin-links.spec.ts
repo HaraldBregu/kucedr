@@ -1,11 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { spawn } from 'node:child_process';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { launchApp } from './helpers';
 import { closeApp } from './close';
 
-const APP_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const details = (id: string): RegExp => new RegExp(`#/?settings/plugins/(marketplace/)?${id}$`);
 
 test('plugin links open plugin details on cold and warm launch without installing', async () => {
@@ -29,10 +26,15 @@ test('plugin links open plugin details on cold and warm launch without installin
 			page.evaluate(async () => (await window.plugins.list()).map((plugin) => plugin.id));
 		const before = await installedIds();
 
-		const executable = await app.evaluate(() => process.execPath);
+		const [executable, argv] = await app.evaluate(
+			() => [process.execPath, process.argv.slice(1)] as const
+		);
 		const second = spawn(
 			executable,
-			[`--user-data-dir=${userDataDir}`, APP_ROOT, 'kucedr://plugins/cohere'],
+			[
+				...argv.filter((arg) => !/^--(inspect|remote-debugging-port)|^kucedr:/.test(arg)),
+				'kucedr://plugins/cohere',
+			],
 			{
 				env: {
 					...process.env,
@@ -40,10 +42,13 @@ test('plugin links open plugin details on cold and warm launch without installin
 					ELECTRON_RENDERER_URL: '',
 					KUCEDR_E2E_DATA_ROOT: userDataDir,
 				},
-				stdio: 'ignore',
+				stdio: ['ignore', 'ignore', 'pipe'],
 			}
 		);
-		await new Promise((resolve) => second.once('exit', resolve));
+		let output = '';
+		second.stderr?.on('data', (chunk) => (output += chunk));
+		const code = await new Promise((resolve) => second.once('exit', resolve));
+		expect(code, output).toBe(0);
 		await expect(page).toHaveURL(details('cohere'));
 
 		const openUrl = (url: string): Promise<void> =>
