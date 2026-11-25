@@ -273,7 +273,15 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				const options = mcpOAuthOptions(serverUrl);
 				const managedCredentials = Boolean(findMcpService(serverUrl)?.oauth?.client_id_setting);
 				this.activeOAuthCallback?.close();
-				const callback = await startOauthCallbackServer(state);
+				const port =
+					managedCredentials || server.clientId
+						? 3001
+						: registeredPort(getMcpOauth(server.id).redirect_uris);
+				const callback = await startOauthCallbackServer(
+					state,
+					undefined,
+					getMcpOAuthRedirectUrl(undefined, port)
+				);
 				this.activeOAuthCallback = callback;
 				try {
 					let authorizationUrl: string | undefined;
