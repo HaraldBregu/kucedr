@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { unseal } from '../vault/unseal';
 
 export interface DataArchiveFile {
 	path: string;
