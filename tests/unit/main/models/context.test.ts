@@ -12,8 +12,8 @@ it('covers every bundled chat model with a documented positive context limit', (
 	const models = loadModels().filter((model) => model.type === 'llm');
 	const root = path.resolve('resources/plugins');
 	const expected = readdirSync(root, { withFileTypes: true }).filter((entry) => entry.isDirectory()).flatMap(({ name: providerId }) => {
-		return ((readPluginModels(path.join(root, providerId)) ?? []) as { type: string; id: string }[])
-			.filter((model: { type: string }) => model.type === 'large-language-model')
+		return ((readPluginModels(path.join(root, providerId)) ?? []) as { type: string; id: string; discoveryOnly?: boolean }[])
+			.filter((model) => model.type === 'large-language-model' && !model.discoveryOnly)
 			.map((model: { id: string }) => `${providerId}/${model.id}`);
 	});
 	expect(models.map((model) => `${model.provider.id}/${model.id}`).sort()).toEqual(expected.sort());
