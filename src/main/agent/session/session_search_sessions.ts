@@ -86,6 +86,7 @@ export async function searchSessions(
 						lastMessageAtMs: stats.mtimeMs,
 						archived: info.archived === true,
 						snippets,
+						position,
 					};
 				} catch {
 					return undefined;
