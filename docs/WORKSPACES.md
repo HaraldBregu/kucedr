@@ -66,10 +66,14 @@ does not move.
 | Partition   | `persist:agent-browser`     | `persist:agent-browser-<id>`           |
 | Overrides and rules | `settings/*.json` (unchanged) | `~/.kucedr/workspaces/<id>/settings/` |
 
-`sessionsRoot(location)` already returns the sibling `sessions` folder of the files folder
-([session_sessions_root.ts](../src/main/agent/session/session_sessions_root.ts)), so chats split with no
-change to it or its callers. Never nest workspace folders under `sessions/`: `listSessions` treats
-every UUID folder there as a chat.
+Only the files folder can live outside `~/.kucedr`. Everything else stays under the workspace's root,
+so nothing Kucedr manages is ever written into the user's folder.
+
+`sessionsRoot(location)` returns the sibling `sessions` folder of the files folder
+([session_sessions_root.ts](../src/main/agent/session/session_sessions_root.ts)). That is wrong for a picked
+folder, whose parent belongs to the user. Its 22 callers read `config.workspace.sessions` instead, and
+`sessionsRoot` is removed. Never nest workspace folders under `sessions/`: `listSessions` treats every
+UUID folder there as a chat.
 
 The registry lives in `~/.kucedr/workspaces/workspaces.json`, inside the backed-up folder, so a
 restore brings names back:
