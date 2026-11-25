@@ -12,10 +12,7 @@ jest.mock('react-i18next', () => {
 		'settings.tabs.storage': 'Storage',
 		'settings.overview.descriptions.storage': 'Back up files to your storage provider',
 		'settings.storage.description': 'Choose folders to back up securely.',
-		'settings.storage.provider.title': 'Storage',
-		'settings.storage.provider.description':
-			'Choose a saved Amazon S3 or S3-compatible provider.',
-		'settings.storage.provider.placeholder': 'Select storage provider',
+		'settings.storage.service.title': 'Storage service',
 		'settings.storage.cancel': 'Cancel',
 		'settings.storage.sync.title': 'Backups',
 		'settings.storage.sync.description': 'Back up selected folders on a schedule',
