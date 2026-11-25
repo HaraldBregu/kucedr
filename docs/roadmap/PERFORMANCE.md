@@ -1,6 +1,6 @@
 # 2. Performance and agent efficiency
 
-Part of the [Roadmap](README.md). Status: 2.1–2.4 built. The remaining items are proposed.
+Part of the [Roadmap](README.md). Status: 2.1–2.4 and 2.7 built. The remaining items are proposed.
 
 Agent-turn speed has five measured rounds in [AGENT_TURN.md](../AGENT_TURN.md). The model call
 dominates, so the features that matter reduce turns and prompt size, then make the app feel instant
