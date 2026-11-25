@@ -1,6 +1,7 @@
 # 1. Privacy
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 1.2 built 2026-11-23, the first release of 1.10
+2026-11-24; the rest proposal.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
