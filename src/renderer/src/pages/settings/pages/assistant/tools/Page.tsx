@@ -3,21 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
 	AlertTriangle,
-	BookOpen,
-	FileText,
-	Globe,
-	HeartPulse,
 	Image as ImageIcon,
-	ListTodo,
-	Monitor,
 	Music2,
-	Network,
 	Search as SearchIcon,
-	Settings,
 	Sparkles,
 	Video,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
 	Select,
