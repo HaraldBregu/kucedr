@@ -128,9 +128,9 @@ app.on('browser-window-created', (_event, win) => {
 
 const trayManager = new Tray({
 	onToggleChat: () => mainWindow.toggleVisibility(),
-	onStartPersona: () => voiceWindow.start(),
+	onStartPersona: () => (isLocked() ? mainWindow.showOrCreate() : voiceWindow.start()),
 	onHidePersona: () => voiceWindow.hide(),
-	onShowPersona: () => voiceWindow.show(),
+	onShowPersona: () => (isLocked() ? mainWindow.showOrCreate() : voiceWindow.show()),
 	onQuit: () => {
 		appState.setQuitting();
 		app.quit();
