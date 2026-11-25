@@ -125,21 +125,8 @@ void main() {
 	vec2 uv = (gl_FragCoord.xy - 0.5) * uCell / uResolution - 0.5;
 	uv.x *= uResolution.x / uResolution.y;
 
-	vec2 warp = vec2(0.0);
-	float ring = 0.0;
-	for (int i = 0; i < ${MAX_RIPPLES}; i++) {
-		if (i >= uRippleCount) break;
-		vec4 ripple = uRipples[i];
-		vec2 delta = uv - ripple.xy;
-		float dist = length(delta);
-		float life = clamp(ripple.z / ${RIPPLE_SECONDS.toFixed(2)}, 0.0, 1.0);
-		float wave = exp(-pow((dist - ripple.z * 0.9) / 0.07, 2.0)) * (1.0 - life) * (1.0 - life);
-		warp += (dist > 0.0001 ? delta / dist : vec2(0.0)) * wave * 0.035;
-		ring += wave;
-	}
-
-	vec4 s = scene(uv + warp);
-	float f = mix(1.0 - s.a, s.a, uDark) + ring * 0.55;
+	vec4 s = scene(uv);
+	float f = mix(1.0 - s.a, s.a, uDark);
 	float show = clamp((uIntro * uReach - length(uv)) / 0.45, 0.0, 1.0);
 	float v = clamp(f, 0.0, 1.0) * show * show * (3.0 - 2.0 * show);
 	outColor = vec4(mix(s.rgb * 0.55, s.rgb, uDark), v);
