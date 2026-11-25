@@ -28,7 +28,7 @@ export async function push(client, { provider, roots, protectedRoot, vaultKey })
 					const key = stat.isDirectory()
 						? `${prefix}${path.relative(root, source).split(path.sep).join('/')}`
 						: path.basename(root);
-					await upload(client, provider.bucket, source, key);
+					await upload(client, provider.bucket, source, key, encryption);
 					keys.add(key);
 					uploaded.push(source);
 				} catch (error) {
