@@ -2,7 +2,7 @@
 
 Review of the chat agent permission system: `src/main/agent/permissions/*`, `src/main/agent/runner/run_tool_call.ts`, `src/main/agent/sandbox.ts`, `src/main/agent/files/*`, `src/main/agent/execution/environment.ts`, `src/main/agent/agent_profiles.ts`.
 
-Status (2026-11-22): #1, #2, #3, #5 and #6 are fixed. #4 is fixed for file access; the sandbox network part is open. #7 is fixed for the microphone; prompt self-edits are open. #8 is fixed for the MCP default; redaction is open. Open items are tracked as 21.10–21.12 in [Security hardening](roadmap/SECURITY.md). #2, #4, #5, #6 and #7 were checked in the built app on 2026-11-22 (mock model, isolated profile, throwaway `HOME`, see "Verification after fixes"); #1, #3 and #8 were only read in code. Line numbers below are from the original review and have drifted.
+Status (2026-11-22): #1, #2, #3, #5 and #6 are fixed. #4 is fixed for file access and, since 2026-11-25, for local ports (`allowLocalBinding: false`); the sandbox's internet access is open. #7 is fixed for the microphone; prompt self-edits are open. #8 is fixed for the MCP default; redaction is open. Open items are tracked as 21.10–21.12 in [Security hardening](roadmap/SECURITY.md). #2, #4, #5, #6 and #7 were checked in the built app on 2026-11-22 (mock model, isolated profile, throwaway `HOME`, see "Verification after fixes"); #1, #3 and #8 were only read in code. Line numbers below are from the original review and have drifted.
 
 ## What is already solid
 
