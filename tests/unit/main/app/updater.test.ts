@@ -32,11 +32,12 @@ describe('updater', () => {
 		jest.useRealTimers();
 	});
 
-	it('checks for prereleases without downloading them', () => {
+	it('checks for stable releases without downloading them', () => {
+		mockAutoUpdater.allowPrerelease = true;
 		updater.startUpdater(eventBus, logger);
 
 		expect(mockAutoUpdater.autoDownload).toBe(false);
-		expect(mockAutoUpdater.allowPrerelease).toBe(true);
+		expect(mockAutoUpdater.allowPrerelease).toBe(false);
 		expect(mockAutoUpdater.checkForUpdates).toHaveBeenCalledTimes(1);
 	});
 
