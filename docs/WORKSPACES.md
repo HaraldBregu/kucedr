@@ -136,6 +136,38 @@ one of these places:
 `agentLocation()`, `libraryLocation()`, `memoryPath()` and `ragLocation()` lose their global meaning.
 Each takes a workspace, or is replaced by a field on it.
 
+## Workspace from a folder
+
+**New workspace from folder…** opens the system folder dialog in the main process. The renderer
+never sends a path. The name defaults to the folder's name.
+
+Main checks the folder, using its real path, before saving it:
+
+- It exists and is a readable directory.
+- It is not the file-system root, the home folder or one of its ancestors, or a system folder. The
+  existing [broad.ts](../src/main/agent/permissions/broad.ts) check covers these.
+- It is not inside `~/.kucedr` and does not contain it.
+- It is not the folder of another workspace, and doesn't sit inside or contain one, including the
+  default `~/.kucedr/workspace`. Nested workspaces would make one workspace's files readable from
+  the other.
+
+Behaviour:
+
+- **Nothing is written into the folder.** `ensureWorkspaceFiles`
+  ([system_ensure_workspace_files.ts](../src/main/agent/system/system_ensure_workspace_files.ts)) seeds
+  `BOOTSTRAP.md` and the other starter files only into the default workspace. `memory/migrate.ts`
+  never runs on a picked folder.
+- **The folder is trusted** like any workspace folder: the agent reads and writes it without
+  asking, and runs in every other workspace are denied it.
+- **Missing folder:** if the folder is moved, deleted or on a drive that isn't connected, the
+  workspace shows "Folder not found" with **Locate…**, which re-runs the same checks. New runs are
+  refused until then. The folder is never recreated.
+- **File watching:** a picked folder can be large (a code repository, a synced drive). The watcher
+  ignores `.git` and `node_modules`. The run context already lists only top-level entries.
+- **Removing** the workspace, once deletion exists, never deletes the user's folder.
+
+The default workspace's folder stays `~/.kucedr/workspace`. Moving it is out of scope.
+
 ## Runs keep their workspace
 
 `Agent.send()` takes `workspaceId`, resolves the workspace once, and stores a run `Config`
