@@ -50,10 +50,7 @@ export async function forkSync<T>(operation: StorageOperation): Promise<T> {
 			provider,
 			roots,
 			protectedRoot: userDataLocation(),
-			vaultKey:
-				operation === 'backup' && provider.passphrase && sealedVaultKey()
-					? vaultKey().toString('base64')
-					: undefined,
+			vaultKey: key,
 		});
 	});
 	if (operation === 'restore' && isVaultEnabled()) convertVault();
