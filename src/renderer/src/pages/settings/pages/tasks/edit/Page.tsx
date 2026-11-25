@@ -139,9 +139,9 @@ const TaskEditPage: React.FC = () => {
 							title={t('settings.cron.form.tools')}
 							description={t('settings.cron.form.toolsDescription')}
 						>
-							{TOOL_GROUPS.map((group) => (
-								<SettingsPanel key={group.titleKey}>
-									{group.tools.map(([toolName, toolId, toolDescription]) => (
+							<SettingsPanel>
+								{TOOL_GROUPS.map((group) =>
+									group.tools.map(([toolName, toolId, toolDescription]) => (
 										<SettingsRow
 											key={toolId}
 											icon={group.icon}
