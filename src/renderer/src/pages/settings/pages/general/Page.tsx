@@ -233,6 +233,29 @@ const GeneralPage: React.FC = () => {
 							<span className="font-mono text-[13px] text-foreground">{__APP_VERSION__}</span>
 						}
 					/>
+					<SettingsRow
+						title={t('settings.application.updates.title')}
+						description={t('settings.application.updates.description')}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Select value={updateChannel} onValueChange={handleUpdateChannelChange}>
+								<SelectTrigger
+									size="sm"
+									className="w-28 text-xs [&_svg]:size-3"
+									aria-label={t('settings.application.updates.title')}
+								>
+									<SelectValue>{t(`settings.application.updates.${updateChannel}`)}</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{UPDATE_CHANNELS.map((channel) => (
+										<SelectItem key={channel} value={channel}>
+											{t(`settings.application.updates.${channel}`)}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						}
+					/>
 					{LEGAL_LINKS.map((link) => (
 						<button
 							key={link.url}
