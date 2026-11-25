@@ -108,6 +108,8 @@ it('replaces a stale video model selection with the current catalog default', as
 	await createVideo({ prompt: 'sunrise' });
 
 	expect(generateVideo).toHaveBeenCalledWith(
-		expect.objectContaining({ providerId: 'video-provider', modelId: 'gen4.5' })
+		expect.objectContaining({
+			model: expect.objectContaining({ id: 'gen4.5', provider: expect.objectContaining({ id: 'video-provider' }) }),
+		})
 	);
 });
