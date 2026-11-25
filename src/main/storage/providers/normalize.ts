@@ -57,6 +57,15 @@ export function normalizeStorageProvider(value: unknown): StorageProviderInput {
 	) {
 		throw new Error('Invalid storage secret access key.');
 	}
+	if (
+		input.passphrase !== undefined &&
+		(typeof input.passphrase !== 'string' || input.passphrase.length > 1024)
+	) {
+		throw new Error('Invalid backup passphrase.');
+	}
+	if (input.passphrase && input.passphrase.length < 8) {
+		throw new Error('The backup passphrase must be at least 8 characters.');
+	}
 	return {
 		...(id === undefined ? {} : { id }),
 		name: values.name,
