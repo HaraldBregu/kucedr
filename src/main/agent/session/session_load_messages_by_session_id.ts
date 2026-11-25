@@ -20,7 +20,7 @@ export function loadMessagesBySessionId(sessionId: string, location?: string): M
 			: legacyFilePath(root, sessionId);
 	for (const candidate of [filePath, filePath === currentPath ? backupPath : undefined]) {
 		if (!candidate || !existsSync(candidate)) continue;
-		const messages = parseMessages(readFileSync(candidate, 'utf8'));
+		const messages = parseMessages(readSealed(candidate));
 		if (messages !== undefined)
 			return isUuid(sessionId) ? hydrateAttachments(messages, root, sessionId) : messages;
 	}
