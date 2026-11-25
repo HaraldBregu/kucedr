@@ -251,12 +251,6 @@ function frame(now) {
 	state.speed += ((SPEED[state.status] ?? 0.5) - state.speed) * 0.04;
 	state.time += dt * state.speed;
 	state.reveal = Math.min(1, state.reveal + dt / INTRO_SECONDS);
-
-	for (let i = ripples.length - 1; i >= 0; i--) {
-		ripples[i].age += dt;
-		if (ripples[i].age >= RIPPLE_SECONDS) ripples.splice(i, 1);
-	}
-
 	render();
 	raf = requestAnimationFrame(frame);
 }
