@@ -246,6 +246,7 @@ export interface AgentSessionSearchResult {
 	lastMessageAtMs: number;
 	archived: boolean;
 	snippets: string[];
+	position: number;
 }
 
 export interface AgentSessionSnapshot {
