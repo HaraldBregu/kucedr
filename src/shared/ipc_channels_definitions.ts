@@ -599,6 +599,7 @@ export const MemoryChannels = {
 	list: 'memory:list',
 	read: 'memory:read',
 	edit: 'memory:edit',
+	update: 'memory:update',
 	forget: 'memory:forget',
 	clear: 'memory:clear',
 } as const;
