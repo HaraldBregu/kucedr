@@ -18,7 +18,8 @@ beforeEach(() => {
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	getSettings.mockImplementation(async (runtime?: CoderHarness) => ({ ...settings, runtime: runtime ?? 'pi', providerId: runtime === 'codex' ? 'openai-codex' : runtime === 'cline' ? 'cline' : 'openai' }));
 	addProject.mockResolvedValue(project);
-	Object.defineProperty(window, 'coder', { configurable: true, value: { getSettings, addProject } });
+	listHarnesses.mockResolvedValue([{ id: 'pi', name: 'Pi', provider: { id: 'openai', name: 'OpenAI' } }]);
+	Object.defineProperty(window, 'coder', { configurable: true, value: { getSettings, addProject, listHarnesses } });
 });
 
 it('validates names and creates a workspace that inherits shared settings', async () => {
