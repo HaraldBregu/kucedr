@@ -216,8 +216,6 @@ function resize() {
 }
 
 function render() {
-	const live = ripples.slice(-MAX_RIPPLES).reverse();
-	live.forEach((ripple, index) => rippleData.set([ripple.x, ripple.y, ripple.age, 1], index * 4));
 	const eased = state.reveal * state.reveal * (3 - 2 * state.reveal);
 
 	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
