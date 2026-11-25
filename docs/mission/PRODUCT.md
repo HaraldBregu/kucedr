@@ -85,6 +85,7 @@ Investigation tools today are mostly split by task; one, DeepState, is already a
 | Forensic OSINT                            | Browser capture with reports                                                          | ELITE plan $1,097 per user a year           |
 | Authentic8 Silo                           | Cloud browser that hides who is browsing ("managed attribution")                      | $1,450 to $3,450 per user a year, as listed |
 | OSIRT                                     | Local investigation browser, born in UK police training; case files, capture, hashing | Paid, price not public; 30-day trial        |
+| DeepState                                 | Local desktop agent that browses, captures into a hash-chained log and cites exhibits | $29 or $49 per seat a month                 |
 | Bellingcat Auto Archiver                  | Archives links with hashes, timestamps and screenshots; 150,000+ items kept           | Free, open source                           |
 | Nexus, OSINT Pilot, AegisStack, OpenOSINT | Agents that run OSINT tools and return findings                                       | Cloud services or terminal tools            |
 | Newsroom builds                           | The New York Times' internal "uber agent"; tools on self-hosted LibreChat             | In-house                                    |
