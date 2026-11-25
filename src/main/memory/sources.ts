@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { isUuid } from '../agent/session/session_is_uuid';
+import { unseal } from '../vault/unseal';
 import { memoryPath } from './path';
 import { snapshotSource } from './snapshot_source';
 import type { SourceSession } from './types';
