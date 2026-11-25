@@ -258,6 +258,8 @@ export const AppChannels = {
 	getAvailableUpdate: 'app:get-available-update',
 	installUpdate: 'app:install-update',
 	updateAvailable: 'app:update-available',
+	setUpdateChannel: 'app:set-update-channel',
+	getUpdateChannel: 'app:get-update-channel',
 	setKeepAwake: 'app:set-keep-awake',
 	getKeepAwake: 'app:get-keep-awake',
 	keepAwakeChanged: 'app:keep-awake-changed',
