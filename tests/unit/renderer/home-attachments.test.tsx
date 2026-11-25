@@ -219,9 +219,9 @@ describe('Home prompt attachments', () => {
 		Object.defineProperty(globalThis, 'ResizeObserver', {
 			configurable: true,
 			value: class {
-				observe(): void {}
-				unobserve(): void {}
-				disconnect(): void {}
+				observe(): void { return undefined; }
+				unobserve(): void { return undefined; }
+				disconnect(): void { return undefined; }
 			},
 		});
 		Object.defineProperty(window, 'agent', {
