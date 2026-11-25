@@ -1,13 +1,15 @@
 import { useEffect, useState, type KeyboardEvent, type ReactElement, type ReactNode } from 'react';
-import { AppWindow, Check, Globe, Layers, MonitorUp, Palette, SquareSlash, type LucideIcon } from 'lucide-react';
+import { AppWindow, Check, Globe, Layers, ListTodo, MonitorUp, Palette, Sparkles, SquareSlash, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { AgentModeInfo } from '@shared/agent_types';
 import type { App } from '@shared/installed_app_types';
 import type { PluginTheme } from '@shared/plugin_types';
+import type { SkillInfo } from '@shared/skills_types';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 import { usePromptInput } from '@/components/ui/prompt-input';
 import { useOpenApp } from '@/hooks/app';
+import { TASK_COMMANDS } from '@/pages/home/hooks/commands';
 import { SETTINGS_NAVIGATION } from '@/pages/settings/navigation';
 import { cn } from '@/lib/utils';
 
