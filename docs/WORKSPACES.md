@@ -373,8 +373,9 @@ The main process opens the file dialog, so the renderer never supplies a source 
 ### Interface
 
 The switcher is a `DropdownMenu` in the Home sidebar. It shows the active image and name, lists
-the other workspaces with their activity badges, and offers **New workspace**, **Edit** and
-**Open in new window**. Images render through `Avatar`, whose fallback shows the first letter of the
+the other workspaces with their activity badges, and offers **New workspace**,
+**New workspace from folder…**, **Edit** and **Open in new window**. Edit shows a picked folder's
+path, and a workspace whose folder is missing shows **Locate…**. Images render through `Avatar`, whose fallback shows the first letter of the
 name. New text goes through `react-i18next` under a `spaces.*` namespace, because
 `settings.workspace.*` already means the Files page.
 
