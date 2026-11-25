@@ -7,7 +7,7 @@ export function createSynthesizerSpeechAdapter(provider: SpeechProviderSpec): Sp
 		throw new SpeechProviderAuthError(`${provider.name} API key not configured.`);
 	return {
 		async synthesize(request) {
-			const endpoint = new URL(provider.baseURL || 'https://dashscope.aliyuncs.com');
+			const endpoint = new URL(provider.baseURL);
 			endpoint.protocol = 'https:';
 			endpoint.pathname = '/api/v1/services/audio/tts/SpeechSynthesizer';
 			endpoint.search = '';
