@@ -99,6 +99,14 @@ if (!isPrivacyEnabled()) {
 	startRagSchedule(logger);
 }
 privacyChanged.on('change', (state) => eventBus.broadcast(AppChannels.privacyChanged, state));
+lockChanged.on('change', (state: LockState) => {
+	eventBus.broadcast(AppChannels.lockChanged, state);
+	if (!state.locked) return;
+	voiceWindow.end();
+	for (const { window } of openAppWindows.values()) {
+		if (!window.isDestroyed()) window.hide();
+	}
+});
 // Re-bind safety net with the real logger now that it exists.
 setupProcessSafetyNet(logger);
 setupMemoryMonitor(logger);
