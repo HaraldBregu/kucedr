@@ -872,6 +872,7 @@
 				"compact": "Impossibile compattare la conversazione.",
 				"archive": "Impossibile aggiornare le chat archiviate.",
 				"pin": "Impossibile aggiornare le chat fissate.",
+				"rename": "Impossibile rinominare la chat. Riprova.",
 				"openFolder": "Impossibile aprire la cartella della cronologia chat."
 			}
 		},
