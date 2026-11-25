@@ -188,6 +188,8 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 			['Update soul', 'update_soul', 'Updates the assistant soul with structured fields.'],
 			['Get user', 'get_user', 'Reads the user profile.'],
 			['Update user', 'update_user', 'Updates the user profile with structured fields.'],
+			['Remember', 'remember', 'Saves a fact to memory when the user asks.'],
+			['Forget', 'forget', 'Deletes matching facts from memory when the user asks.'],
 			['Get identity', 'get_identity', 'Reads the assistant identity.'],
 			[
 				'Update identity',
