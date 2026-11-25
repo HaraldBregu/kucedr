@@ -338,13 +338,12 @@ it('opens a chat location from its context menu', async () => {
 	await waitFor(() => expect(openSessionFolder).toHaveBeenCalledWith('session-latest'));
 });
 
-it('requires confirmation before permanently deleting a chat', async () => {
+it('offers undo before permanently deleting a chat', async () => {
 	listSessions.mockResolvedValue([{ id: 'session-latest', title: 'Latest chat', createdAtMs: 2 }]);
 	showContextMenu.mockResolvedValue('delete');
 	deleteSession.mockResolvedValue(undefined);
-	const confirm = jest.spyOn(window, 'confirm').mockReturnValue(false);
 
-	render(
+	const { unmount } = render(
 		<MemoryRouter>
 			<ChatSessionContext.Provider value={{ sessionId: 'session-latest', setSessionId: jest.fn() }}>
 				<PageContainer>
