@@ -44,6 +44,10 @@ export class MemoryIpc {
 			trusted.assert(event);
 			return memory.edit(markdown, expected);
 		});
+		registerCommandWithEvent(MemoryChannels.update, (event, id: string, fact: string) => {
+			trusted.assert(event);
+			return memory.update(id, fact);
+		});
 		registerCommandWithEvent(MemoryChannels.forget, (event, match: string) => {
 			trusted.assert(event);
 			return memory.forget(match);
