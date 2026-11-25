@@ -248,8 +248,6 @@ function render() {
 	gl.uniform1f(s.uCell, view.cell / view.ratio);
 	gl.uniform1f(s.uTime, state.time);
 	gl.uniform1f(s.uDark, state.dark ? 1 : 0);
-	gl.uniform3fv(s.uTrail, trailData);
-	gl.uniform1i(s.uTrailCount, points.length);
 	gl.uniform4fv(s.uRipples, rippleData);
 	gl.uniform1i(s.uRippleCount, live.length);
 	gl.uniform1f(s.uIntro, eased);
