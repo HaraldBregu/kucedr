@@ -19,6 +19,10 @@ jest.mock('../../../src/renderer/src/pages/start/components/SetupProviderStep', 
 	SetupProviderStep: ({ title }: { title: string }) => <h1>{title}</h1>,
 }));
 
+jest.mock('../../../src/renderer/src/pages/start/components/SetupPluginsStep', () => ({
+	SetupPluginsStep: () => <h1>Plugins</h1>,
+}));
+
 jest.mock('../../../src/renderer/src/pages/start/components/SetupChatStep', () => ({
 	SetupChatStep: () => <h1>Chat assistant</h1>,
 }));
