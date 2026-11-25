@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
+import { readSealed } from '../../vault/read';
 import type { Message } from '../types';
 import { isUuid } from './session_is_uuid';
 import { legacyFilePath } from './session_legacy_file_path';
