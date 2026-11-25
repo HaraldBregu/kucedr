@@ -92,9 +92,12 @@ export class StorageProviderStore {
 	private write(providers: StoredStorageProvider[]): void {
 		this.assertAvailable();
 		const storage: PersistedStorageProvider[] = providers.map(
-			({ secretAccessKey, ...provider }) => ({
+			({ secretAccessKey, passphrase, ...provider }) => ({
 				...provider,
 				encryptedSecretAccessKey: this.encryption.encryptString(secretAccessKey).toString('base64'),
+				...(passphrase
+					? { encryptedPassphrase: this.encryption.encryptString(passphrase).toString('base64') }
+					: {}),
 			})
 		);
 		this.store.set('storage', storage);
