@@ -63,10 +63,17 @@ Do not create lockfiles inside `packages/sdk` or `packages/cli`.
 HTTP MCP authorization runs directly between Kucedr and the authorization server discovered
 from the MCP server. It does not use Supabase.
 
-The default callback is `http://127.0.0.1:3001/oauth/callback`. For a pre-registered OAuth
-client, register this exact URL with its authorization server. Set the connector's client
-ID and optional client secret in its advanced settings. Servers supporting dynamic client
-registration receive the callback URL automatically through the MCP SDK.
+The callback port depends on where the OAuth client comes from:
+
+- Preset client (a client ID from plugin settings, such as the Google and Microsoft plugins, or
+  typed in the connector's advanced settings): the callback is
+  `http://127.0.0.1:3001/oauth/callback`. Register this exact URL with its authorization server.
+- Self-registered client (dynamic client registration): the first sign-in asks the OS for a free
+  port and registers that callback through the MCP SDK. Later sign-ins reuse the port from the
+  server's stored `redirect_uris`, so the registration and silent token refresh survive. If that
+  port is taken, the sign-in fails like an occupied fixed port.
+
+Either way the listener opens only during a sign-in.
 
 `CLIENT_REDIRECT_URL` optionally overrides the callback for all HTTP MCP connections.
 Use an HTTP loopback address with an explicit port. Prefer `127.0.0.1` or `[::1]` over
