@@ -10,6 +10,7 @@ import { ToolActivityGroup } from './ToolActivityGroup';
 import { ToolPermissionCard } from './ToolPermissionCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { isRemoteUrl } from '@/lib/remote';
 import { cn } from '@/lib/utils';
 import { type AgentMessage, type AgentToolPart } from '../context';
 import { useReadMessageAloud } from '../hooks';
