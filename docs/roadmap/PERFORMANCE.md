@@ -31,7 +31,8 @@ silicon), from a clean production build of `dev` on that date:
 | Launch to first render (median of 3) | 705 ms |
 | 600-chunk reply, new chat | 3.8 s at 60 fps; 0 frames over 50 ms; longest frame 18 ms; 0 long tasks |
 
-Three runs gave a first window of 578–636 ms and a first render of 689–783 ms. Launch times
+Four runs of the script gave medians of 551–636 ms to the first window and 655–783 ms to the
+first render, with the same streaming numbers each time. Launch times
 include Playwright's own start-up, so compare them only with other runs of the script. Both
 jank probes were checked by blocking the page for 300 ms during a stream: the frame probe
 reported a 282 ms frame and the long-task probe one 300 ms task.
