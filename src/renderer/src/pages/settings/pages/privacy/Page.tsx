@@ -112,6 +112,8 @@ export default function PrivacyPage(): React.JSX.Element {
 					{error ?? t('settings.privacy.loadFailed')}
 				</SettingsNotice>
 			)}
+			<Lock />
+			<Encryption />
 		</SettingsPageShell>
 	);
 }
