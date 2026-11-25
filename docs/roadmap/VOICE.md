@@ -7,9 +7,9 @@ proposal.
 
 - Realtime voice (`src/main/models/adapters/realtime_voice`), dictation, read-aloud and a separate
   voice window (`src/main/voice_window.ts`).
-- Dictation has no mute control although the underlying hooks support one, and realtime status,
-  elapsed time and mute are tracked but not shown ([Home](../ui/HOME.md)) _(from docs)_.
-- Some realtime models return no transcript of what the user said.
+- Dictation and the Voice window show mute and elapsed time (19.1); the statement in this list on
+  2026-11-19 that they were not shown came from out-of-date docs.
+- Some realtime models return no transcript of what the user said; those that do show it (19.2).
 - Voice runs side-effect tools without asking ([Security audit](../SECURITY_AUDIT.md) #7, left as a
   decision).
 
