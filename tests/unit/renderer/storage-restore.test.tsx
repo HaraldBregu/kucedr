@@ -20,7 +20,7 @@ it('confirms an ordinary download without version or backup selectors', async ()
 	const user = userEvent.setup();
 	render(<Restore open disabled={false} hasFolders onOpenChange={jest.fn()} onRestore={onRestore} />);
 	expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: 'Download files' }));
+	await user.click(screen.getByRole('button', { name: 'Restore files' }));
 	expect(onRestore).toHaveBeenCalledWith();
 });
 
