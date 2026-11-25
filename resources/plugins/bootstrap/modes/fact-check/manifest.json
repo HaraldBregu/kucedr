@@ -1,0 +1,6 @@
+{
+	"title": "Fact-check",
+	"description": "Answer only from tools and skills, and fact-check every claim before answering.",
+	"command": "/fact-check",
+	"persistent": true
+}
