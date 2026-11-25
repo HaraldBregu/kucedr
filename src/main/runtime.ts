@@ -55,6 +55,7 @@ import { history } from './browser/history';
 import { restoreTabs } from './browser/restore';
 import { configurePrivacy } from './privacy/configure';
 import { isPrivacyEnabled, privacyChanged } from './privacy/state';
+import { isVaultEnabled } from './vault/state';
 import { saveTabs } from './browser/snapshot';
 import { openAppWindows } from './apps/app_render';
 import { watchIdle } from './lock/idle';
