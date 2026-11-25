@@ -35,9 +35,9 @@ Not user-facing features, but what keeps the features above from regressing.
 - A coverage threshold is set in `jest.config.cjs`, but CI never runs the coverage job.
 - Every test suite loads and passes locally (see 22.1 progress above). Whether CI is currently
   green is _not verified_.
-- There is no accessibility check ([Accessibility](ACCESSIBILITY.md), 4.5), no performance check
-  ([Performance](PERFORMANCE.md), 2.7), and the terminal smoke test is not in CI
-  ([Terminal](TERMINAL.md), 14.7).
+- There is no accessibility check ([Accessibility](ACCESSIBILITY.md), 4.5). The performance
+  check ([Performance](PERFORMANCE.md), 2.7) runs by hand before a release, not in CI, and the
+  terminal smoke test is not in CI ([Terminal](TERMINAL.md), 14.7).
 
 ## Features
 
