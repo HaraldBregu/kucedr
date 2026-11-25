@@ -71,6 +71,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	keepAwake: false,
 	soundFeedbackEnabled: false,
 	notificationsEnabled: true,
+	agentCursor: true,
 	updateChannel: 'stable',
 	chatTextSize: 'medium',
 	zoomFactor: 1,
