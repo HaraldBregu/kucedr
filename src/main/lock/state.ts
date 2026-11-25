@@ -56,7 +56,12 @@ export function getLock(): LockState {
 export function setLock(update: LockUpdate): LockState {
 	if (locked) throw new Error('Unlock the app first.');
 	if (typeof update?.enabled !== 'boolean') throw new Error('Invalid app lock setting.');
-	const { enabled, passphrase, touchId = config.touchId, idleMinutes = config.idleMinutes } = update;
+	const {
+		enabled,
+		passphrase,
+		touchId = config.touchId,
+		idleMinutes = config.idleMinutes,
+	} = update;
 	if (typeof touchId !== 'boolean' || !LOCK_IDLE_MINUTES.includes(idleMinutes)) {
 		throw new Error('Invalid app lock setting.');
 	}
