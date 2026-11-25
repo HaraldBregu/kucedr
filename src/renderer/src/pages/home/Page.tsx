@@ -860,6 +860,7 @@ function PageContent(): ReactElement {
 						modes={agent.modes}
 						modeIds={agent.modeIds}
 						onModeIdsChange={agent.setModeIds}
+						skillIds={activeSkillIds}
 						isLoading={agent.isLoading}
 						maxHeight={360}
 						onSubmit={() => void submitPrompt()}
