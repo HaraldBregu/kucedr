@@ -19,7 +19,8 @@ beforeEach(() => {
 	Object.defineProperty(window, 'win', { configurable: true, value: { showContextMenu } });
 	listMarkdownFiles.mockResolvedValue([]);
 	createMarkdownFile.mockResolvedValue(undefined);
-	Object.defineProperty(window, 'coder', { configurable: true, value: { listMarkdownFiles, createMarkdownFile, deleteMarkdownFile } });
+	getProjectInstructions.mockResolvedValue({ defaultFileName: 'AGENTS.md' });
+	Object.defineProperty(window, 'coder', { configurable: true, value: { listMarkdownFiles, createMarkdownFile, deleteMarkdownFile, getProjectInstructions } });
 });
 
 it('creates Markdown within the selected workspace and opens it', async () => {
