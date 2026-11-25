@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChatMode } from '@/contexts/chat-mode';
-import { persistChatSessionId, useChatSession } from '@/contexts/chat-session';
+import {
+	DEFAULT_CHAT_SESSION_ID,
+	persistChatSessionId,
+	useChatSession,
+} from '@/contexts/chat-session';
 import type { ModelReasoningEffort } from '@/lib/compat';
 import type { AgentResponseEvent } from '@/lib/compat';
 import type { AgentFollowUp } from '@shared/agent_types';
