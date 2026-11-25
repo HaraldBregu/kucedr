@@ -682,6 +682,18 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+			<div role="status">
+				{undo && (
+					<div className="mx-2 mb-2 flex items-center gap-2 rounded-md bg-sidebar-accent py-1 pr-1 pl-2.5 text-xs text-sidebar-accent-foreground">
+						<span className="min-w-0 flex-1 truncate">
+							{t(undo.action === 'delete' ? 'settings.chatHistory.deleted' : 'settings.chatHistory.archivedCount', { count: undo.ids.length })}
+						</span>
+						<Button type="button" variant="ghost" size="xs" onClick={undoAction}>
+							{t('common.undo')}
+						</Button>
+					</div>
+				)}
+			</div>
 			<AppSidebarFooter />
 		</div>
 	);
