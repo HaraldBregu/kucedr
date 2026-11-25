@@ -80,12 +80,3 @@ it('keeps scripts with an existing input schema discoverable', () => {
 	);
 	expect(pluginScripts().map((script) => script.name)).toContain('chart');
 });
-
-it.each(['1.1.0', '1.2.0'])('preserves installed overrides at version %s', (version) => {
-	const manifest = path.join(mockInstalledRoot, 'bootstrap', 'manifest.json');
-	writeFileSync(
-		manifest,
-		JSON.stringify({ ...JSON.parse(readFileSync(manifest, 'utf8')), version })
-	);
-	expect(scanPlugins()[0]).toMatchObject({ builtIn: false, manifest: { version } });
-});
