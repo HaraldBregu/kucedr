@@ -6,7 +6,8 @@ import { resetAutofill } from './autofill';
 import { watchMouseButtons } from './buttons';
 import { drop, readCapture } from './capture';
 import { favicon } from './favicon';
-import { acting, pane, paneEvents, paneTabs, type BrowserTab } from './pane';
+import { answerPermission } from './answer';
+import { acting, pane, paneEvents, paneTabs, sitePermits, type BrowserTab } from './pane';
 import { prepare } from './prepare';
 import { answerDownload } from './release';
 
