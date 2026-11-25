@@ -30,6 +30,7 @@ Not in this pass: tracker blocking (13.1, waits for the block-list decision), un
 1. **Local network (13.5).** A local target is `localhost`, `*.localhost`, `*.local`, or a literal private IP (`src/main/private.ts`). Routed tabs: always blocked. Other tabs: blocked when a public page started the request, except a top-level `GET` navigation. Typed addresses and agent navigations to `localhost` keep working. Ceiling: a public name that resolves to a private address (DNS rebinding) is not caught; add a cached lookup on direct tabs if it matters.
 2. **Secret guard (13.3).** The URL and the request body are matched against stored keys and tokens: model, database and search-engine API keys and connector tokens, 16 characters or more. Also applied to `fetch_web_page`, `search_web` queries and background browsing.
 3. **Downloads (13.11).** A download is paused into the Downloads folder and the tab shows a bar: Download or Cancel. Agent-started downloads wait for the user too.
+4. **Tracking parameters (13.6).** A top-level `GET` page load whose query carries `utm_*` or a click id (`…clid`, `…clkid`, any case) is redirected to the same address without them (`src/main/shield/strip.ts`). Other parameters keep their exact bytes; the fragment is untouched. Not applied to background browsing or `fetch_web_page`.
 
 Blocked requests are listed per tab (last 50, cleared on each new page) and counted on a toolbar button.
 
