@@ -480,14 +480,14 @@ it('resizes the sidebar with keyboard and pointer input and persists the width',
 	expect(toggle).toHaveClass('size-8', 'rounded-full', 'aria-expanded:bg-transparent');
 	expect(toggle).not.toHaveClass('size-7', 'text-muted-foreground');
 	expect(sidebar).toHaveClass('border-r', 'bg-sidebar');
-	expect(resizer).toHaveAttribute('aria-valuenow', '224');
-	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '224px' });
+	expect(resizer).toHaveAttribute('aria-valuenow', '256');
+	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '256px' });
 
 	fireEvent.keyDown(resizer, { key: 'ArrowRight' });
-	expect(resizer).toHaveAttribute('aria-valuenow', '232');
-	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '232px' });
+	expect(resizer).toHaveAttribute('aria-valuenow', '264');
+	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '264px' });
 
-	fireEvent.pointerDown(resizer, { button: 0, clientX: 232 });
+	fireEvent.pointerDown(resizer, { button: 0, clientX: 264 });
 	fireEvent.pointerMove(window, { clientX: 320 });
 	fireEvent.pointerUp(window);
 
