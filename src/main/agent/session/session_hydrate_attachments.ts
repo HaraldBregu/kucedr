@@ -37,7 +37,7 @@ export function hydrateAttachments(
 						if (!existsSync(filePath)) {
 							return { type: 'text', text: '[missing attachment payload omitted]' };
 						}
-						const payload = readFileSync(filePath);
+						const payload = unseal(readFileSync(filePath));
 						if (
 							payload.length !== bytes ||
 							createHash('sha256').update(payload).digest('hex') !== id
