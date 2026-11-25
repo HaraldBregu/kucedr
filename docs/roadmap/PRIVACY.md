@@ -24,7 +24,7 @@ seals it with the OS keychain, and resetting it clears it from the plugin store.
 
 ## App-wide Privacy Mode
 
-Not built (checked 2026-11-25); this is the planned behaviour.
+First release built 2026-11-24 (`src/main/privacy`, Settings → Privacy).
 
 Configure a local, unauthenticated SOCKS5 endpoint as `socks5://127.0.0.1:PORT` in Browser
 Connections, then enable Privacy Mode and restart. Changing the proxy or turning the mode off also
