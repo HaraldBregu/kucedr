@@ -56,6 +56,7 @@ module.exports = {
 			// rewritten import.meta.env accesses resolve to defined (not undefined) objects.
 			setupFiles: ['<rootDir>/tests/setup/main.ts'],
 			testMatch: ['**/*.test.ts'],
+			clearMocks: true,
 		},
 
 		// ---- Renderer process tests (jsdom env) ----
