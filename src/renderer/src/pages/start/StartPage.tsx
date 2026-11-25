@@ -53,7 +53,7 @@ const StartPage: React.FC = () => {
 	function handleContinueModelProvider(): void {
 		void window.provider
 			.list('models')
-			.then((storedProviders) => {
+			.then(async (storedProviders) => {
 				const modelProviderIds = new Set(
 					actionableProviderCatalog().map((provider) => provider.id)
 				);
@@ -62,12 +62,21 @@ const StartPage: React.FC = () => {
 						? provider.saved && Boolean(provider.baseUrl.trim())
 						: modelProviderIds.has(provider.id) && provider.saved
 				);
-				if (hasSavedKey) {
+				const keylessModels = hasSavedKey
+					? []
+					: await Promise.all(
+							providers()
+								.filter((provider) => provider.authentication === 'none' && provider.modelsUrl)
+								.map((provider) =>
+									window.provider.listModels(provider.id, true).catch(() => [])
+								)
+						);
+				if (hasSavedKey || keylessModels.some((models) => models.length > 0)) {
 					dispatch({ type: 'GO_TO_STEP', step: 'chat' });
 				} else {
 					dispatch({
 						type: 'SET_ERROR',
-						message: 'Add at least one model provider API key to continue.',
+						message: 'Add a model provider API key or run a local model to continue.',
 					});
 				}
 			})
