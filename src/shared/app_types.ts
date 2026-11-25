@@ -67,6 +67,10 @@ export const TRAY_CLICK_ACTIONS = ['toggle-chat', 'toggle-persona'] as const;
 
 export type TrayClickAction = (typeof TRAY_CLICK_ACTIONS)[number];
 
+export const UPDATE_CHANNELS = ['stable', 'beta', 'off'] as const;
+
+export type UpdateChannel = (typeof UPDATE_CHANNELS)[number];
+
 export type AppThemeColors = Record<string, string>;
 
 export interface AppThemeData {
