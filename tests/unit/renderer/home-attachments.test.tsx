@@ -265,6 +265,7 @@ describe('Home prompt attachments', () => {
 		triggerFileUpload.mockClear();
 		useSuggestion.mockClear();
 		replyTo = null;
+		input = '';
 		messages = [{ id: 'agent-welcome', role: 'agent', tools: [] }];
 	});
 
