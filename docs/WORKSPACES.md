@@ -429,7 +429,12 @@ name. New text goes through `react-i18next` under a `spaces.*` namespace, becaus
    allow" from A does not apply in B.
 4. Window binding, IPC, switcher and scoped renderer storage → verify: two windows on two workspaces
    show different files and chats, and switching one leaves the other unchanged.
-5. Continuity → verify: start a long run in A that will ask for approval, switch the window to B,
+5. Workspace from a folder → verify: a folder outside `~/.kucedr` becomes a workspace with nothing
+   written into it; its chats land in `~/.kucedr/workspaces/<id>/sessions`; the home folder, a folder
+   inside `~/.kucedr` and a folder nested in another workspace are rejected; a run in another
+   workspace is denied the folder; renaming the folder on disk shows "Folder not found", and
+   **Locate…** restores it.
+6. Continuity → verify: start a long run in A that will ask for approval, switch the window to B,
    then come back from the badge. The run finished in A, its files, Library items and memory are in
    A, and B was untouched.
 6. Tasks, voice and browser → verify: a task of A fires while every window shows B and runs in A; a
