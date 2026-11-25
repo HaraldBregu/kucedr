@@ -202,6 +202,15 @@ export function setNotificationsEnabled(enabled: boolean): void {
 	store.set('notificationsEnabled', enabled);
 }
 
+export function getAgentCursor(): boolean {
+	return store.get('agentCursor');
+}
+
+export function setAgentCursor(enabled: boolean): void {
+	if (typeof enabled !== 'boolean') throw new Error('Invalid agent cursor setting.');
+	store.set('agentCursor', enabled);
+}
+
 export function getUpdateChannel(): UpdateChannel {
 	const channel = store.get('updateChannel');
 	return UPDATE_CHANNELS.includes(channel) ? channel : 'stable';
