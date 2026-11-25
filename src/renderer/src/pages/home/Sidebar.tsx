@@ -59,6 +59,8 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const [editingCategoryId, setEditingCategoryId] = useState<string>();
 	const [dropTarget, setDropTarget] = useState<string>();
 	const [search, setSearch] = useState('');
+	const [undo, setUndo] = useState<{ action: 'archive' | 'delete'; ids: string[] }>();
+	const undone = useRef(false);
 
 	useEffect(() => localStorage.setItem('chat-categories', JSON.stringify(categories)), [categories]);
 	useEffect(() => localStorage.setItem('chat-category-assignments', JSON.stringify(assignments)), [assignments]);
