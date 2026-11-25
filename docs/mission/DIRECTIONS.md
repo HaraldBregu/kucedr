@@ -62,7 +62,7 @@ listed [at the end](#not-verified).
 | --- | --- | --- | --- | --- | --- |
 | 1 | Private AI desk for Italian professional studios | €29 to €59 a month (Simpliciter); about €1,500 a year (Lexroom) | Lexroom for research; general chatbots for documents | High: local index, Office and PDF skills, Italian, local models, run record; encryption under way | **Test first** |
 | 2 | Briefs a reviewer can check, for due-diligence firms | $49 a seat a month (DeepState); $140 (Casefleet) | DeepState | Medium: capture record, review and export still to build | **Test second** |
-| 3 | Paid extras on the open general client | One-time licences; sync at $4 to $5 a month | TypingMind; free clients with 50,000 to 190,000 stars | Highest: it is the app today | Means, not mission |
+| 3 | Paid extras on the open general client | One-time licences; sync at $4 to $5 a month | TypingMind; free clients with 50,000 to 160,000 stars | Highest: it is the app today | Means, not mission |
 | 4 | Investigation desk for journalists and researchers | $29 to $49 a seat a month | DeepState | High | Folded into 2 |
 | 5 | Private AI workspace for small companies | $8 to $20 a user a month; €500 a month installed | Open WebUI and Onyx, free; Copilot Cowork | Low: no team features | Later, through resellers |
 | 6 | Local dictation and meeting notes | $8 to $15 a month or €60 to €250 once | Wispr Flow ($361M raised) | Medium | No |
