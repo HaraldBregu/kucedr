@@ -75,6 +75,7 @@ beforeEach(() => {
 		configurable: true,
 		value: {
 			listSessions,
+			onSessionsChanged: jest.fn(() => jest.fn()),
 			renameSession,
 			deleteSession,
 			compactSession,
