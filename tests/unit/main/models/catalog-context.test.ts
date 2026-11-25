@@ -21,9 +21,7 @@ afterEach(() => rmSync(catalogDirectory, { recursive: true, force: true }));
 it.each([undefined, 8192])(
 	'fills missing user-catalog limits while respecting an explicit %s token limit',
 	(limit) => {
-		const manifest = pluginProvider(
-			JSON.parse(readFileSync(path.resolve('resources/plugins/openai/manifest.json'), 'utf8'))
-		)!;
+		const manifest = readPlugin(path.resolve('resources/plugins/openai'), 'openai', true).provider!;
 		const model: any = manifest.models!.find((item: { id: string }) => item.id === 'gpt-5.4-mini');
 		delete model.metadata.contextWindow;
 		delete model.metadata.contextWindowDocumentationUrl;
