@@ -162,6 +162,7 @@ export const agent: AgentApi = {
 		return typedInvokeUnwrap(AgentChannels.viewSession, sessionId);
 	},
 	onOpenSession: (listener) => typedOn(AgentChannels.openSession, listener),
+	onSessionsChanged: (listener) => typedOn(AgentChannels.sessionsChanged, listener),
 	openSessionsFolder: (): Promise<void> => {
 		return typedInvokeUnwrap(AgentChannels.openSessionsFolder);
 	},
