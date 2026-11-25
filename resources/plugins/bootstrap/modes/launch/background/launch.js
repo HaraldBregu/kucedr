@@ -265,18 +265,9 @@ function schedule() {
 }
 
 addEventListener('message', ({ data }) => {
-	if (data?.type === 'pointer') {
-		if (state.reduced || !data.press || typeof data.x !== 'number' || typeof data.y !== 'number') return;
-		const [x, y] = toUv(data.x, data.y);
-		ripples.push({ x, y, age: 0 });
-		if (ripples.length > MAX_RIPPLES) ripples.shift();
-		return;
-	}
+	if (data?.type === 'pointer') return;
 	if (data?.type === 'agent') state.status = data.status;
-	if (data?.type === 'motion') {
-		state.reduced = data.reduced;
-		if (state.reduced) ripples.length = 0;
-	}
+	if (data?.type === 'motion') state.reduced = data.reduced;
 	if (data?.type === 'visible') state.visible = data.value;
 	if (data?.type === 'theme') state.dark = data.dark;
 	schedule();
