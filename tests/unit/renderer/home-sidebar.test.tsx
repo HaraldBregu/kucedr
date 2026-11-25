@@ -284,7 +284,6 @@ it('requires confirmation before compacting a chat and refreshes its snapshot', 
 });
 
 it('clears only the chosen chat after confirmation and refreshes its transcript', async () => {
-	const user = userEvent.setup();
 	listSessions.mockResolvedValue([{ id: 'session-latest', title: 'Latest chat', createdAtMs: 2 }]);
 	showContextMenu.mockResolvedValue('clear');
 	clearMessages.mockResolvedValue(undefined);
