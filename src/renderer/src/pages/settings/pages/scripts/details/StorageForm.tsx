@@ -24,6 +24,7 @@ const FIELDS = [
 	{ key: 'endpoint', type: 'url', placeholder: 'https://s3.example.com' },
 	{ key: 'accessKeyId', type: 'text', placeholder: '' },
 	{ key: 'secretAccessKey', type: 'password', placeholder: '' },
+	{ key: 'passphrase', type: 'password', placeholder: '' },
 ] as const;
 
 interface StorageFormProps {
