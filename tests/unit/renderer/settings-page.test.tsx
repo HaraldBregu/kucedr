@@ -61,6 +61,7 @@ beforeEach(() => {
 			getSidebarTranslucency: jest.fn().mockResolvedValue(false),
 			onThemeModeChanged: jest.fn(() => jest.fn()),
 			getNotificationsEnabled: jest.fn().mockResolvedValue(true),
+			getUpdateChannel: jest.fn().mockResolvedValue('stable'),
 			getTrayEnabled: jest.fn().mockResolvedValue(true),
 			setTrayEnabled: jest.fn().mockResolvedValue(undefined),
 			getTrayClickAction: jest.fn().mockResolvedValue('toggle-chat'),
