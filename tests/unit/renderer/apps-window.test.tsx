@@ -65,7 +65,7 @@ it('shows app information before its window configuration', async () => {
 		</MemoryRouter>
 	);
 
-	const information = await screen.findByRole('heading', { name: 'settings.apps.information' });
+	const information = await screen.findByRole('heading', { name: 'My App' });
 	const configuration = screen.getByRole('heading', { name: 'settings.apps.window.title' });
 	expect(information.compareDocumentPosition(configuration)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 });
