@@ -305,11 +305,7 @@ addEventListener('message', ({ data }) => {
 	if (data?.type === 'agent') state.status = data.status;
 	if (data?.type === 'motion') {
 		state.reduced = data.reduced;
-		if (state.reduced) {
-			pointer.inside = false;
-			trail.length = 0;
-			ripples.length = 0;
-		}
+		if (state.reduced) ripples.length = 0;
 	}
 	if (data?.type === 'visible') state.visible = data.value;
 	if (data?.type === 'theme') state.dark = data.dark;
