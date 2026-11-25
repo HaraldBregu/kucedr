@@ -3224,6 +3224,6 @@
 		"tasks": "Attività"
 	},
 	"attachments": {
-		"tooLarge": "{{name}} supera {{size}}, il limite per i file senza un limite di dimensione indicato dal modello. Rimuovilo per inviare."
+		"tooLarge": "{{name}} è troppo grande per essere inviato. I file possono arrivare a {{size}}."
 	}
 }
