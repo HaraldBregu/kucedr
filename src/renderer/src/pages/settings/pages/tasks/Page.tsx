@@ -291,7 +291,7 @@ const TasksPage: React.FC = () => {
 										</div>
 									</div>
 									<p className="line-clamp-2 max-w-full text-xs leading-4 text-muted-foreground">
-										{task.description ?? task.prompt}
+										{task.description || task.prompt}
 									</p>
 								</ItemContent>
 							</Item>
