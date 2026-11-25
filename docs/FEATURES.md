@@ -310,10 +310,10 @@ Kucedr persists cron schedule records with:
 
 The Tasks settings screen selects the task provider/model and lists each schedule's name, prompt,
 cron expression, and enabled state. Task details expose metadata, **Run now**, and confirmed
-deletion. Creating a task or editing its name, schedule, or prompt remains agent-driven rather
-than a direct Settings form.
+deletion. **New task** and **Edit** open a form for the name, instructions, cron schedule (shown in
+plain words) and allowed tools.
 
-Scheduled tasks run as background agents with the full tool catalog by default. A non-empty persisted tool allowlist narrows the tools available to that schedule; a blank allowlist keeps the full catalog.
+Scheduled tasks run as background agents with only the tools in their allowlist; a blank allowlist means no tools. A schedule may fire at most once every 5 minutes, and at most 3 tasks run at once. A failed run is shown on the task and raises a notification.
 
 Scheduled prompts and **Run now** invoke the agent directly as background runs.
 
