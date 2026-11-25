@@ -21,6 +21,7 @@ export async function pull(client, { provider, roots, protectedRoot }) {
 			if (!objects.length) throw new Error(`No stored files were found in ${prefix}`);
 			for (const item of objects) {
 				let temporary;
+				let plain;
 				try {
 					const file = await target(root, item.key, prefix);
 					if (isProtected(file, protectedRoot)) throw new Error('Download targets a protected application folder.');
@@ -29,15 +30,29 @@ export async function pull(client, { provider, roots, protectedRoot }) {
 					await download(client, provider.bucket, item.key, temporary);
 					if ((await fs.stat(temporary)).size !== item.size)
 						throw new Error('Downloaded file size does not match storage.');
-					await fs.rename(temporary, file);
+					if ((await head(temporary, BACKUP.length)).equals(BACKUP)) {
+						if (!provider.passphrase)
+							throw Object.assign(
+								new Error(
+									'This backup is encrypted. Add the backup passphrase in the storage settings to restore it.'
+								),
+								{ fatal: true }
+							);
+						plain = `${file}.kucedr-${randomUUID()}.tmp`;
+						await decrypt(temporary, plain, item.key, provider.passphrase, keys);
+					}
+					await fs.rename(plain ?? temporary, file);
 					result.downloaded.push(item.key);
 				} catch (error) {
+					if (error.fatal) throw error;
 					result.failed.push({ path: item.key, error: describe(error) });
 				} finally {
 					if (temporary) await fs.rm(temporary, { force: true });
+					if (plain) await fs.rm(plain, { force: true });
 				}
 			}
 		} catch (error) {
+			if (error.fatal) throw error;
 			result.failed.push({ path: root, error: describe(error) });
 		}
 	}
