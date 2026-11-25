@@ -344,7 +344,7 @@ it('masks saved model keys until editing', async () => {
 		{
 			id: 'openai',
 			name: 'OpenAI',
-			apiKey: 'model-secret',
+			saved: true,
 		},
 	]);
 	render(
