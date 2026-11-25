@@ -2,7 +2,8 @@ import { resolveContextWindow } from '../../../../src/main/models/context';
 import * as catalog from '../../../../src/main/models';
 import { loadModels } from '../../../../src/main/models';
 import { modelContextWindow } from '../../../../src/shared/model_context';
-import { readdirSync, readFileSync } from 'node:fs';
+import { readPluginModels } from '../../../../src/main/plugins/plugins_models_read';
+import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
 afterEach(() => jest.restoreAllMocks());
