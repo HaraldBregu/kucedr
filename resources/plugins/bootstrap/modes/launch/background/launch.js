@@ -72,7 +72,20 @@ vec4 scene(vec2 uv) {
 	vec3 color = mix(vec3(0.45, 0.32, 0.2), vec3(0.2, 0.42, 0.78), smoothstep(0.0, 0.85, y));
 	float f = mix(0.1, 0.4, smoothstep(0.0, 0.9, y));
 
-	vec2 c = vec2(uv.x * 1.3, uv.y * 2.0 + uTime * 0.2);
+	vec2 m = (uv - vec2(-uResolution.x / uResolution.y * 0.3, 0.3)) / 0.06;
+	float d = length(m);
+	color += vec3(0.25, 0.3, 0.4) * exp(-max(d - 1.0, 0.0) * 1.5) * 0.4;
+	f += exp(-max(d - 1.0, 0.0) * 1.5) * 0.12;
+	float moon = smoothstep(1.0, 0.94, d);
+	vec3 normal = vec3(m, sqrt(max(1.0 - d * d, 0.0)));
+	float lit = clamp(dot(normal, normalize(vec3(0.7, 0.25, 0.65))), 0.0, 1.0);
+	float maria = smoothstep(0.35, 0.75, fbm(m * 0.9 + 4.0));
+	float craters = smoothstep(0.75, 0.95, fbm(m * 3.0 + 9.0));
+	float surface = (0.3 + 0.7 * lit) * (1.0 - 0.3 * maria) * (1.0 - 0.15 * craters);
+	color = mix(color, vec3(0.93, 0.92, 0.88) * surface, moon);
+	f = mix(f, 0.25 + 0.7 * surface, moon);
+
+	vec2 c =vec2(uv.x * 1.3, uv.y * 2.0 + uTime * 0.2);
 	float cloud = smoothstep(0.6, 1.0, fbm(c + fbm(c - uTime * 0.03))) * smoothstep(0.15, 0.55, y);
 	color = mix(color, vec3(0.93, 0.91, 0.87), cloud);
 	f = mix(f, 0.85, cloud);
