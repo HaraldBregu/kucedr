@@ -43,27 +43,27 @@ float fbm(vec2 p) {
 
 vec3 scene(vec2 uv) {
 	float aspect = resolution.x / resolution.y;
-	vec3 c = mix(vec3(0.24, 0.17, 0.11), vec3(0.24, 0.45, 0.72), smoothstep(0.05, 0.95, uv.y));
+	vec3 c = mix(vec3(0.1, 0.07, 0.05), vec3(0.12, 0.3, 0.6), smoothstep(0.0, 0.9, uv.y));
 	float clouds = fbm(vec2(uv.x * 2.2, uv.y * 3.0 + time * 0.5));
-	c = mix(c, vec3(0.78, 0.74, 0.68), smoothstep(0.5, 0.78, clouds) * 0.8);
+	c = mix(c, vec3(0.92, 0.9, 0.86), smoothstep(0.48, 0.72, clouds) * smoothstep(0.25, 0.6, uv.y));
 	float haze = fbm(vec2(uv.x * 1.3 + 7.0, uv.y * 1.6 + time * 0.2));
-	c = mix(c, vec3(0.42, 0.33, 0.24), smoothstep(0.55, 0.0, uv.y) * haze * 0.9);
+	c = mix(c, vec3(0.5, 0.38, 0.26), smoothstep(0.45, 0.0, uv.y) * smoothstep(0.35, 0.7, haze));
 
-	vec2 r = uv - vec2(aspect * 0.72, 0.52);
+	vec2 r = uv - vec2(aspect * 0.72, 0.5);
 	float below = max(-r.y, 0.0);
-	float width = 0.012 + below * 0.22;
+	float width = 0.02 + below * 0.35;
 	float drift = (fbm(vec2(r.y * 3.0 + time * 1.5, 2.0)) - 0.5) * width;
-	float trail = smoothstep(width, width * 0.2, abs(r.x + drift)) * step(r.y, -0.04);
-	float billow = fbm(vec2(r.x * 9.0, r.y * 5.0 + time * 2.0));
-	c = mix(c, vec3(0.72, 0.66, 0.58), trail * smoothstep(0.25, 0.65, billow) * 0.9);
+	float trail = smoothstep(width, width * 0.4, abs(r.x + drift)) * smoothstep(-0.05, -0.12, r.y);
+	float billow = fbm(vec2(r.x * 7.0, r.y * 4.0 + time * 2.0));
+	c = mix(c, vec3(0.88, 0.82, 0.74), trail * smoothstep(0.2, 0.55, billow));
 
-	float flicker = 0.75 + 0.25 * noise(vec2(time * 30.0, 1.0));
-	float flame = exp(-pow(r.x / (0.004 + below * 0.12), 2.0)) * smoothstep(-0.09 * flicker, 0.0, r.y) * step(r.y, 0.0);
-	c = mix(c, vec3(1.0, 0.86, 0.62), clamp(flame * 1.4, 0.0, 1.0));
+	float flicker = 0.8 + 0.2 * noise(vec2(time * 30.0, 1.0));
+	float flame = exp(-pow(r.x / (0.008 + below * 0.15), 2.0)) * smoothstep(-0.14 * flicker, 0.0, r.y) * step(r.y, 0.0);
+	c = mix(c, vec3(1.0, 0.9, 0.7), clamp(flame * 1.5, 0.0, 1.0));
 
-	float taper = clamp((0.13 - r.y) / 0.03, 0.0, 1.0);
-	float body = step(abs(r.x), 0.007 * taper) * step(0.0, r.y) * step(r.y, 0.13);
-	return mix(c, vec3(0.06, 0.05, 0.05), body);
+	float taper = clamp((0.22 - r.y) / 0.05, 0.0, 1.0);
+	float body = step(abs(r.x), 0.013 * taper) * step(0.0, r.y) * step(r.y, 0.22);
+	return mix(c, vec3(0.95), body);
 }
 
 void main() {
