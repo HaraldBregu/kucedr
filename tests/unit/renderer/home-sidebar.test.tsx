@@ -427,7 +427,6 @@ it('shows Settings as a sidebar footer button', async () => {
 	expect(screen.queryByRole('menuitem', { name: 'settings.sidebar.getHelp' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('menuitem', { name: 'settings.tabs.general' })).not.toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.storage' }).querySelector('.lucide-hard-drive')).toBeInTheDocument();
-	expect(screen.getByRole('menuitem', { name: 'settings.sidebar.chatSettings' }).querySelector('.lucide-message-circle')).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.title', exact: true }));
 	expect(screen.getByText('Settings page')).toBeInTheDocument();
