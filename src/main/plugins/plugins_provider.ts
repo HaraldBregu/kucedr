@@ -48,6 +48,14 @@ export function pluginProvider(manifest: PluginManifest): ProviderManifest | und
 		...(iconFullBleed && { iconFullBleed }),
 		...(order !== undefined && { order }),
 		...(baseUrlSetting && { baseUrlSetting }),
+		...(settings && {
+			settings: Object.entries(settings.inputSchema.properties).map(([key, input]) => ({
+				key,
+				label: input.title ?? key,
+				type: input.format === 'password' ? 'password' : 'text',
+				required: settings.inputSchema.required?.includes(key) ?? false,
+			})),
+		}),
 	};
 	const errors = validateProviderManifest(provider);
 	if (errors.length > 0) throw new Error(errors.join(' '));
