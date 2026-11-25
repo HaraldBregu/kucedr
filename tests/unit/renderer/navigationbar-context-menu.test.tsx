@@ -1,6 +1,6 @@
 import { Provider as PageProvider } from '../../../src/renderer/src/components/app/base/page/Provider';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { render, screen, waitFor, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { NavigationBar } from '../../../src/renderer/src/components/app/navigationbar/NavigationBar';
 import userEvent from '@testing-library/user-event';
 import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
