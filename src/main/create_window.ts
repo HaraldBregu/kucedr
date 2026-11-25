@@ -95,6 +95,7 @@ export class Main {
 		attachWindowHandlers(win);
 		this.trackWindowVisibility(win);
 		attachRouteNavigation(win);
+		reloadAfterCrash(win, () => this.appState.isQuitting);
 
 		win.once('ready-to-show', () => {
 			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
