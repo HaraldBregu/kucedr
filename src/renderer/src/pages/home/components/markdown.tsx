@@ -1,4 +1,5 @@
 import type { Components } from 'react-markdown';
+import { RemoteImage } from '@/components/remote-image';
 import { handleExternalLinkClick, isExternalHref } from '@/lib/external-links';
 
 function markdownLink(className: string): NonNullable<Components['a']> {
