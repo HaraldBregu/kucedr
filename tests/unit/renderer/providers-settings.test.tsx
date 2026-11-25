@@ -117,7 +117,7 @@ describe('Providers settings', () => {
 		jest
 			.mocked(actionableProviderCatalog)
 			.mockReturnValue([
-				{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true },
+				{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true, baseUrlSetting: qwenBaseUrl },
 			]);
 		const user = userEvent.setup();
 		render(
@@ -139,7 +139,7 @@ describe('Providers settings', () => {
 		jest
 			.mocked(actionableProviderCatalog)
 			.mockReturnValue([
-				{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true },
+				{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true, baseUrlSetting: qwenBaseUrl },
 			]);
 		const user = userEvent.setup();
 		render(
@@ -171,7 +171,7 @@ describe('Providers settings', () => {
 		jest
 			.mocked(actionableProviderCatalog)
 			.mockReturnValue([
-				{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true },
+				{ id: 'qwen', name: 'Qwen', capabilities: 'AI provider', supported: true, baseUrlSetting: qwenBaseUrl },
 			]);
 		const baseUrl = 'https://saved-workspace.cn-beijing.maas.aliyuncs.com/compatible-mode/v1';
 		jest
