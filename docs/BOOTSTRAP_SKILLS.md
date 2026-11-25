@@ -11,7 +11,7 @@ A skill here is a folder with a `SKILL.md` (agentskills.io format) plus optional
 | Put it in | When |
 |---|---|
 | **Skill** | A multi-step procedure for one kind of task, driven with tools the agent already has (`bash`, `read`/`write`, `search_web`, `use_web_browser`, tasks, knowledge, media) |
-| **Mode** (`modes/`) | A behaviour or tone for the whole chat (plan, short, factchecker) |
+| **Mode** (`modes/`) | A behaviour or tone for the whole chat (plan, short, fact-check) |
 | **Script** (`scripts/`) | A new tool or renderer the model calls (chart, draw, maps) |
 
 ## Skill types, ranked
