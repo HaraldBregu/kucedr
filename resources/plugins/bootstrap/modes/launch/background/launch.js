@@ -110,9 +110,9 @@ vec4 scene(vec2 uv) {
 
 	float w = 0.009;
 	float t = clamp((r.y - 0.15) / 0.05, 0.0, 1.0);
-	float half = w * pow(1.0 - t, 0.6);
-	float body = step(abs(r.x), half) * step(0.0, r.y) * step(r.y, 0.2);
-	float n = clamp(r.x / max(half, 0.0001), -1.0, 1.0);
+	float radius = w * pow(1.0 - t, 0.6);
+	float body = step(abs(r.x), radius) * step(0.0, r.y) * step(r.y, 0.2);
+	float n = clamp(r.x / max(radius, 0.0001), -1.0, 1.0);
 	float shade = 0.35 + 0.65 * clamp(sqrt(1.0 - n * n) * 0.8 - n * 0.35, 0.0, 1.0);
 	float band = max(step(0.105, r.y) * step(r.y, 0.112), step(0.04, r.y) * step(r.y, 0.045));
 	vec3 hull = mix(vec3(0.95, 0.95, 0.93), vec3(0.15), band) * shade;
