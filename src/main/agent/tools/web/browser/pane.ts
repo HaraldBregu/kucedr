@@ -1,6 +1,11 @@
 import { EventEmitter } from 'node:events';
 import type { BrowserWindow, DownloadItem, WebContents, WebContentsView } from 'electron';
-import type { BrowserBlocked, BrowserDownload, BrowserRoute } from '../../../../../shared/browser';
+import type {
+	BrowserBlocked,
+	BrowserDownload,
+	BrowserPermissionRequest,
+	BrowserRoute,
+} from '../../../../../shared/browser';
 
 export interface BrowserTab {
 	readonly id: string;
