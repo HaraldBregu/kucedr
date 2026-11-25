@@ -176,7 +176,7 @@ describe('Providers settings', () => {
 		const baseUrl = 'https://saved-workspace.cn-beijing.maas.aliyuncs.com/compatible-mode/v1';
 		jest
 			.mocked(window.provider.list)
-			.mockResolvedValue([{ id: 'qwen', name: 'Qwen', apiKey: 'saved-key', baseUrl }]);
+			.mockResolvedValue([{ id: 'qwen', name: 'Qwen', saved: true, baseUrl }]);
 		const user = userEvent.setup();
 		render(
 			<MemoryRouter>
