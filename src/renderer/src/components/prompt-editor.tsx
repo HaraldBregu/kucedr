@@ -25,6 +25,7 @@ function PromptEditorArea({
 	modes,
 	modeIds,
 	onModeIdsChange,
+	skillIds,
 }: {
 	readonly placeholder?: string;
 	readonly ariaLabel?: string;
@@ -32,6 +33,7 @@ function PromptEditorArea({
 	readonly modes?: readonly AgentModeInfo[];
 	readonly modeIds?: readonly string[];
 	readonly onModeIdsChange?: (modeIds: string[]) => void;
+	readonly skillIds?: readonly string[];
 }): ReactElement {
 	const { value, setValue, onSubmit, disabled, textareaRef } = usePromptInput();
 
