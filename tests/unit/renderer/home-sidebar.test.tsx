@@ -80,6 +80,7 @@ beforeEach(() => {
 			compactSession,
 			clearMessages,
 			openSessionFolder,
+			categorizeSession: jest.fn().mockResolvedValue(undefined),
 		},
 	});
 	Object.defineProperty(window, 'win', {
