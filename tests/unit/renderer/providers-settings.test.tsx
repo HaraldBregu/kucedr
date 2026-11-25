@@ -44,6 +44,12 @@ jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
 		error instanceof Error ? error.message : fallback,
 }));
 
+const qwenBaseUrl = {
+	title: 'Workspace URL',
+	pattern: '^https://[^/]+\\.(ap-southeast-1|cn-beijing|cn-hongkong)\\.maas\\.aliyuncs\\.com/',
+	errorMessage: 'Enter a Qwen workspace URL for Singapore, Beijing, or Hong Kong.',
+};
+
 beforeEach(() => {
 	jest.mocked(actionableProviderCatalog).mockReturnValue([
 		{
