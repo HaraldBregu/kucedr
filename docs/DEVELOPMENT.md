@@ -459,6 +459,20 @@ Continue only when `git status --short` has no output. This ensures the version 
 release tag are created from the current `main` branch rather than an unmerged feature
 branch.
 
+Before an Electron release, also run the performance check and compare it with the baseline in
+[Performance](roadmap/PERFORMANCE.md#performance-check-27). Quit `npm run dev` first, because the
+build rewrites `out/`:
+
+```sh
+npm run build
+npm run perf
+```
+
+It launches the built app with a throwaway profile three times, then streams a 600-chunk reply
+from a local mock model, and prints bundle sizes, the median time to the first window and the
+first render, and the frame rate, long frames and long tasks during the stream. Keep the window
+visible while it runs; a covered window is throttled and reports a lower frame rate.
+
 ### Release the Electron app
 
 The root manifest version and tag must match exactly.
