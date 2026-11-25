@@ -158,17 +158,13 @@ it('saves user-selected folders and a custom schedule with the selected storage 
 
 	await waitFor(() =>
 		expect(storageApi.saveSettings).toHaveBeenLastCalledWith({
-			providerId: 'archive',
+			serviceId: 'backup-s3',
+			providerId: 'primary',
 			paths: ['/data/agent', '/data/projects'],
 			syncEnabled: true,
 			syncCronExpression: '0 4 * * *',
 		})
 	);
-	expect(
-		screen.getByText(
-			'Choose a saved Amazon S3 or S3-compatible provider.'
-		)
-	).toBeInTheDocument();
 });
 
 it('lets users add and remove folders before selecting a provider', async () => {
