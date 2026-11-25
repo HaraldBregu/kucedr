@@ -1,5 +1,6 @@
 import { activate } from './tasks_activate';
 import { normalizeCron } from './tasks_normalize_cron';
+import { normalizeTools } from './tasks_normalize_tools';
 import { stopRun } from './tasks_stop_run';
 import { unscheduleJob } from './tasks_unschedule_job';
 import { update } from './tasks_update';
