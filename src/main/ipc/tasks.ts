@@ -5,6 +5,7 @@ import type { WindowContextManager } from '../window_context';
 import { TaskChannels } from '../../shared/ipc_channels_definitions';
 import {
 	configureScheduleCapabilities,
+	createSchedule,
 	deleteSchedule,
 	getSchedule,
 	getRuntime,
