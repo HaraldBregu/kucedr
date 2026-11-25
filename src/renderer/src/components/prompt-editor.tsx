@@ -72,6 +72,7 @@ function PromptEditor({
 	modes,
 	modeIds,
 	onModeIdsChange,
+	skillIds,
 	expanded,
 	value,
 	hideEditor,
