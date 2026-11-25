@@ -23,6 +23,7 @@ import {
 import { DataControls } from '../../components/data';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import { initialModelConfigurationState } from '../../components/model-configuration-state';
+import { Remembered } from './Remembered';
 
 export default function MemoryPage(): React.JSX.Element {
 	const { t } = useTranslation();
