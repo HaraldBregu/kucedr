@@ -97,9 +97,10 @@ largest ones.
 [Law 132/2025, art. 13](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-09-23;132~art13) ·
 [CNF model notice (secondary)](https://edotto.com/articolo/avvocati-il-modello-di-informativa-sulluso-ai-del-cnf)
 
-**They already pay.** Lawyers using AI rose from 27.5% to 55.3% in a year. Lexroom reports more
-than 8,000 firms, about 6,500 of them with one to ten professionals, paying about €1,500 a year on
-average with 93% retention, and has raised over $73 million. Simpliciter charges €29 plus VAT a
+**They already pay.** Lawyers using AI rose from 27.5% to 55.3% in a year. Lexroom reported more
+than 7,000 firms in February 2026, about 6,500 of them with one to ten professionals, paying about
+€1,500 a year on average with 93% retention; by May it had more than 8,000 firms and over
+$73 million raised. Simpliciter charges €29 plus VAT a
 month for one user and 200 interactions, €59 for three users and 600, and claims 45,000
 professionals. Libra costs €900 to €2,400 a user a year.
 [Lexroom (secondary)](https://thenextweb.com/news/lexroom-50-million-series-b-civil-law-legal-ai-europe) ·
