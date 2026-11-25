@@ -16,3 +16,26 @@ around the model. The baseline for streaming, startup and bundle size (2.7) is b
 | 2.6 | Instant start and sidebar | Window appears before background services start; the chat list updates on change | 1.29 s from services ready to window shown on the surveyed machine; `src/renderer/src/pages/home/Sidebar.tsx` re-reads every chat from disk every 1.5 s | M |
 | 2.7 | Performance check | A repeatable measurement of start time, streaming smoothness and bundle size, run before each release | Built 2026-11-25: `npm run perf` (`scripts/perf.mjs`) after `npm run build`; listed in the release preflight ([Development](../DEVELOPMENT.md#release-preflight-for-every-product)). Not in CI | S |
 | 2.8 | Spend tracking | Cost per provider and per chat over time, with prices read from plugin manifests | Shares its data with 2.2 | M |
+
+## Performance check (2.7)
+
+`npm run perf` measures a built app. Baseline, 2026-11-25, on the development Mac (Apple
+silicon), from a clean production build of commit `4d13b57663` plus later working changes:
+
+| Measure | Value |
+| --- | --- |
+| Main bundle | 1,562 KB |
+| Preload bundle | 107 KB |
+| Renderer bundle | 19,603 KB; largest chunk 4,114 KB |
+| Launch to first window (median of 3) | 578 ms |
+| Launch to first render (median of 3) | 705 ms |
+| 600-chunk reply, new chat | 3.8 s at 60 fps; 0 frames over 50 ms; longest frame 18 ms; 0 long tasks |
+
+Three runs gave a first window of 578–636 ms and a first render of 689–783 ms. Launch times
+include Playwright's own start-up, so compare them only with other runs of the script. Both
+jank probes were checked by blocking the page for 300 ms during a stream: the frame probe
+reported a 282 ms frame and the long-task probe one 300 ms task.
+
+What this means for the next items: streaming in a new chat is already smooth, so 2.5 needs a
+measurement in a long chat before any work; the 4 MB renderer chunk and the sidebar's 1.5 s
+re-read (2.6) are the more likely costs.
