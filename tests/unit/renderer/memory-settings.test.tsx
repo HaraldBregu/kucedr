@@ -48,6 +48,7 @@ const api = {
 	list: jest.fn(),
 	read: jest.fn(),
 	edit: jest.fn(),
+	update: jest.fn(),
 	forget: jest.fn(),
 	clear: jest.fn(),
 	refresh: jest.fn(),
