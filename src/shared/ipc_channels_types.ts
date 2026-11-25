@@ -714,6 +714,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: boolean;
 	};
+	[AppChannels.setUpdateChannel]: {
+		args: [channel: import('./app_types').UpdateChannel];
+		result: void;
+	};
+	[AppChannels.getUpdateChannel]: {
+		args: [];
+		result: import('./app_types').UpdateChannel;
+	};
 	[AppChannels.setChatTextSize]: {
 		args: [size: import('./app_types').ChatTextSize];
 		result: void;
