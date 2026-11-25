@@ -32,7 +32,7 @@ jest.mock('../../../src/renderer/src/pages/home/hooks', () => ({
 		replyToMessage: jest.fn(),
 		handleSubmit,
 		historyLoading: false,
-		input: '',
+		input,
 		inputRef: { current: null },
 		isLoading: false,
 		modeIds: [],
