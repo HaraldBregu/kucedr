@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useOnboarding } from '@/contexts/useOnboarding';
+import { providers } from '@/lib/providers';
 import { SetupChatStep } from './components/SetupChatStep';
 import { SetupVoiceStep } from './components/SetupVoiceStep';
 import { SetupProviderStep } from './components/SetupProviderStep';
