@@ -24,6 +24,8 @@ seals it with the OS keychain, and resetting it clears it from the plugin store.
 
 ## App-wide Privacy Mode
 
+Not built (checked 2026-11-25); this is the planned behaviour.
+
 Configure a local, unauthenticated SOCKS5 endpoint as `socks5://127.0.0.1:PORT` in Browser
 Connections, then enable Privacy Mode and restart. Changing the proxy or turning the mode off also
 requires a restart. The provider still receives data sent to it by the app. Browser profile storage
