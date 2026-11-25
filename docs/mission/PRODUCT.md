@@ -89,13 +89,14 @@ Investigation tools today are mostly split by task; one, DeepState, is already a
 | Nexus, OSINT Pilot, AegisStack, OpenOSINT | Agents that run OSINT tools and return findings                                       | Cloud services or terminal tools            |
 | Newsroom builds                           | The New York Times' internal "uber agent"; tools on self-hosted LibreChat             | In-house                                    |
 
-Kucedr would be the one that puts the browser, the agent, the evidence and the knowledge on the
-investigator's own machine, with the model of their choice.
+DeepState already puts the browser, the agent, the evidence and the model of the user's choice on
+the investigator's own machine. Where Kucedr can still lead, and the company-research competitors
+the [commercial research](RESEARCH.md) adds, are in [How Kucedr competes](COMPETITION.md).
 
 Each tool has a research note in this folder: [Maltego and Hunchly](MALTEGO.md),
 [Forensic OSINT](FORENSIC_OSINT.md), [Authentic8](AUTHENTIC8.md), [OSIRT](OSIRT.md),
 [Bellingcat](BELLINGCAT.md), [Nexus](NEXUS.md), [OSINT Pilot](OSINT_PILOT.md),
-[AegisStack](AEGISSTACK.md) and [OpenOSINT](OPENOSINT.md).
+[AegisStack](AEGISSTACK.md), [OpenOSINT](OPENOSINT.md) and [DeepState](DEEPSTATE.md).
 
 ## 3. Directions considered
 
