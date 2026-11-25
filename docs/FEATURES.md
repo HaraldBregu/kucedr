@@ -82,7 +82,7 @@ Provider API keys are sealed with the OS keychain in Kucedr's local application 
 - Multiple files can be attached to one request. The tray shows filenames, types, sizes, removal actions, image previews, and recorded-audio playback.
 - Queued files persist as session drafts. Sending captures them for the agent request and clears the tray.
 - Submitted attachments render with the user message and are restored from conversation history.
-- The current renderer does not validate model capability, file count, type, or size before enabling Send. An unsupported file can fail when the agent or provider processes it.
+- Files are checked against the selected model's attachment rules when added and before sending: a type the model cannot read, or a file over the manifest's count or size limits, is refused with a message. Files with no size limit in the manifest, including text files, are limited to 5 MB.
 
 ### Slash commands
 
