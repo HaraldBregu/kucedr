@@ -200,6 +200,16 @@ export function setNotificationsEnabled(enabled: boolean): void {
 	store.set('notificationsEnabled', enabled);
 }
 
+export function getUpdateChannel(): UpdateChannel {
+	const channel = store.get('updateChannel');
+	return UPDATE_CHANNELS.includes(channel) ? channel : 'stable';
+}
+
+export function setUpdateChannel(channel: UpdateChannel): void {
+	if (!UPDATE_CHANNELS.includes(channel)) throw new Error('Invalid update channel.');
+	store.set('updateChannel', channel);
+}
+
 export function getChatTextSize(): ChatTextSize {
 	const size = store.get('chatTextSize');
 	return CHAT_TEXT_SIZES.includes(size) ? size : 'medium';
