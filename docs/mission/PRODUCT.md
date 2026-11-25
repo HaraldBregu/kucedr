@@ -77,7 +77,7 @@ Read on 2026-11-25.
   public facts about one person can amount to stalking under some laws. Vendors publish ethics
   policies; few show how they enforce them.
 
-Investigation tools today are split by task, and none is a local AI desk:
+Investigation tools today are mostly split by task; one, DeepState, is already a local AI desk:
 
 | Tool                                      | What it does                                                                          | Price signal                                |
 | ----------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------- |
