@@ -35,12 +35,24 @@ function getLlmModelGroups(): ProviderModelGroup[] {
 	return toModelGroups('llm');
 }
 
-function getAssistantLlmModelGroups(): ProviderModelGroup[] {
+async function getAssistantLlmModelGroups(): Promise<ProviderModelGroup[]> {
+	const groups = getLlmModelGroups();
+	const keyless = await Promise.all(
+		providers()
+			.filter(
+				(provider) =>
+					provider.authentication === 'none' &&
+					provider.modelsUrl &&
+					!groups.some((group) => group.provider.id === provider.id)
+			)
+			.map(async (provider) => ({ provider, models: await liveProviderModels(provider.id, []) }))
+	);
 	const localProvider =
 		providers().find((provider) => provider.id === 'custom') ??
 		({ id: 'custom', name: 'Custom model provider', baseUrl: '' } as PublicProvider);
 	return [
-		...getLlmModelGroups(),
+		...groups,
+		...keyless.filter((group) => group.models.length > 0),
 		{
 			provider: localProvider,
 			models: [{ id: 'local', name: 'Local model' }],
