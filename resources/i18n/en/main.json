@@ -258,7 +258,15 @@
 			"type": "Memory Type",
 			"facts": "Facts",
 			"summaries": "Summaries",
-			"both": "Facts and summaries"
+			"both": "Facts and summaries",
+			"remembered": "What the assistant remembers",
+			"rememberedDescription": "Each item shows its section, the chat it came from, and when it was added. Changes take effect at once.",
+			"rememberedEmpty": "Nothing remembered yet.",
+			"fromChat": "From “{{title}}”",
+			"fromEarlierChat": "From an earlier chat",
+			"editFact": "Edit memory",
+			"editFactDescription": "The assistant uses the new text from the next message on.",
+			"fact": "Memory"
 		},
 		"title": "Settings",
 		"returnToChat": "Back to home",
@@ -1110,7 +1118,22 @@
 				"notSet": "Not set",
 				"promptInput": "Prompt input",
 				"enabled": "Enable schedule",
-				"enabledDescription": "Allow this schedule to run at its configured time."
+				"enabledDescription": "Allow this schedule to run at its configured time.",
+				"lastRunFailed": "The last run failed ({{time}}): {{error}}"
+			},
+			"form": {
+				"newTitle": "New task",
+				"editTitle": "Edit task",
+				"description": "Tell the task what to do, when to run, and which tools it may use.",
+				"name": "Name",
+				"instructions": "Instructions",
+				"instructionsPlaceholder": "What should the task do?",
+				"schedule": "Schedule",
+				"scheduleHint": "A cron expression, such as 0 9 * * * for every day at 09:00. Leave it empty to run the task only with Run now. A task runs at most once every 5 minutes.",
+				"tools": "Allowed tools",
+				"toolsDescription": "The task can use only the tools you choose. It cannot ask for approval while it runs, so tools set to Ask or Deny in Tools stay off.",
+				"saving": "Saving...",
+				"saveError": "The task was not saved."
 			},
 			"history": {
 				"pageTitle": "Task history",
