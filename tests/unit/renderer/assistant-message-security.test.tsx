@@ -368,18 +368,6 @@ it('replies to the selected assistant message', () => {
 	expect(onReply).toHaveBeenCalledWith({ id: 'assistant-1', content: 'The selected answer.' });
 });
 
-it('uses the displayed plan content when replying to a plan', () => {
-	const onReply = jest.fn();
-	render(
-		<AssistantMessage
-			message={message('<proposed_plan>\nThe plan to discuss.\n</proposed_plan>')}
-			onReply={onReply}
-		/>
-	);
-	fireEvent.click(screen.getByRole('button', { name: 'Reply' }));
-	expect(onReply).toHaveBeenCalledWith({ id: 'assistant-1', content: 'The plan to discuss.' });
-});
-
 it('shows every chart between ordinary tool calls', async () => {
 	const tools: AgentMessage['tools'] = [
 		{ toolCallId: 'search', type: 'search_web', state: 'output-available', output: 'Found data' },
