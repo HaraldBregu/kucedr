@@ -84,8 +84,10 @@ export function WorkspaceMarkdownEditor({
 				// ponytail: audio lives in the image node so `![alt](file.mp3)` round-trips through markdown; give it its own node if it needs more than playback
 				addNodeView() {
 					const audio = ReactNodeViewRenderer((props: NodeViewProps) => <WorkspaceAudio {...props} path={path} />, { stopEvent: () => true });
+					const remote = ReactNodeViewRenderer((props: NodeViewProps) => <WorkspaceRemoteImage {...props} path={path} />, { stopEvent: () => true });
 					return (props) => {
 						if (workspaceFileType(String(props.node.attrs.src ?? '')).kind === 'audio') return audio(props);
+						if (isRemoteUrl(workspaceResourceUrl(path, String(props.node.attrs.src ?? '')))) return remote(props);
 						const dom = document.createElement('img');
 						const attributes = mergeAttributes(this.options.HTMLAttributes, props.HTMLAttributes);
 						for (const [name, value] of Object.entries(attributes)) if (value != null) dom.setAttribute(name, String(value));
