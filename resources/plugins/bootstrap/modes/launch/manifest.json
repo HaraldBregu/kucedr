@@ -1,0 +1,6 @@
+{
+	"title": "Launch",
+	"description": "Launch a product or software release with a professional, ship-ready launch mindset.",
+	"command": "/launch",
+	"persistent": true
+}
