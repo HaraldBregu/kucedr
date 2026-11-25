@@ -313,7 +313,7 @@ cron expression, and enabled state. Task details expose metadata, **Run now**, a
 deletion. **New task** and **Edit** open a form for the name, instructions, cron schedule (shown in
 plain words) and allowed tools.
 
-Scheduled tasks run as background agents with only the tools in their allowlist; a blank allowlist means no tools. A schedule may fire at most once every 5 minutes, and at most 3 tasks run at once. A failed run is shown on the task and raises a notification.
+Scheduled tasks saved from the task form run as background agents with only the tools ticked there; none ticked means no tools. Tasks created by the agent, or saved before the form existed, have no allowlist and keep the full catalog until edited in the form. A schedule may fire at most once every 5 minutes, and at most 3 tasks run at once. A failed run is shown on the task and raises a notification.
 
 Scheduled prompts and **Run now** invoke the agent directly as background runs.
 
