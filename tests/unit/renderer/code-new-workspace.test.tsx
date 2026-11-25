@@ -9,6 +9,7 @@ jest.mock('react-i18next', () => {
 
 const getSettings = jest.fn();
 const addProject = jest.fn();
+const listHarnesses = jest.fn();
 const settings: CodingSettings = { runtime: 'pi', providerId: 'openai', modelId: 'example-model', thinkingLevel: 'medium', toolMode: 'read-only' };
 const project = { id: 'new-project', name: 'My workspace', directory: '/managed/new-project', available: true };
 
