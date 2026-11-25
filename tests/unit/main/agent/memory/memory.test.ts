@@ -291,7 +291,7 @@ it('serializes manual edits and forgets IDs or matching content while retaining 
  expect(h.markdown()).toContain('- second schedule');
  expect(h.markdown()).not.toContain('- first schedule');
  expect(h.state().suppressed).toContain(records[0].id);
- await expect(h.memory.forget('schedule')).resolves.toEqual({ removed: 1 });
+ await expect(h.memory.forget('schedule')).resolves.toEqual({ removed: 1, facts: ['second schedule'] });
  expect(h.markdown()).not.toContain('schedule');
  expect(h.markdown()).toContain('- retained');
  await expect(h.memory.forget(records[0].id)).resolves.toEqual({ removed: 0 });
