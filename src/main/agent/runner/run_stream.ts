@@ -253,6 +253,8 @@ async function* loop(
 			undoFileTool(session.runContext.fileHistory),
 			redoFileTool(session.runContext.fileHistory)
 		);
+		if (session.category === 'main' && options.memory?.getConfig().enabled)
+			tools.push(rememberTool(options.memory, session.id), forgetTool(options.memory));
 	}
 	const extended = !options.tools && !bootstrap;
 	const extensionTools = extended ? (extension?.tools ?? []) : [];
