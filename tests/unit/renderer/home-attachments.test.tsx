@@ -307,6 +307,7 @@ describe('Home prompt attachments', () => {
 	});
 
 	it('adds selected app Library files to the prompt', async () => {
+		input = 'Describe this';
 		renderPage();
 		fireEvent.click(await screen.findByRole('button', { name: 'Add attachment' }));
 		fireEvent.click(await screen.findByText('From Library'));
