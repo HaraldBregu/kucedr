@@ -1612,6 +1612,7 @@ export interface AppEventChannelMap {
 	[AppChannels.updateAvailable]: { data: string | null };
 	[AppChannels.privacyChanged]: { data: import('./privacy').PrivacyState };
 	[AppChannels.keepAwakeChanged]: { data: boolean };
+	[AppChannels.lockChanged]: { data: import('./lock').LockState };
 	[AppChannels.soundFeedbackEnabledChanged]: { data: boolean };
 	[AppChannels.chatTextSizeChanged]: { data: import('./app_types').ChatTextSize };
 	[AppChannels.zoomFactorChanged]: { data: import('./app_types').ZoomFactor };
