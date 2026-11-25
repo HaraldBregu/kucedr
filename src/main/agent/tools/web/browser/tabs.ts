@@ -22,6 +22,7 @@ export function tabs(): BrowserPaneState {
 			...(tab.download
 				? { download: { file: tab.download.file, site: tab.download.site, state: tab.download.state } }
 				: {}),
+			...(tab.permission ? { permission: { site: tab.permission.site, kinds: [...tab.permission.kinds] } } : {}),
 			...(tab.icon ? { icon: tab.icon } : {}),
 			...(tab.offer
 				? { offer: { username: tab.offer.username, site: new URL(tab.offer.url).host, update: tab.offer.update } }
