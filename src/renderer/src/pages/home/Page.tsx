@@ -1007,7 +1007,7 @@ function PageContent(): ReactElement {
 							{showEmptyConversation ? null : (
 							<Popover open={detailsPopoverOpen} onOpenChange={(open) => {
 							setDetailsPopoverOpen(open);
-							setChatSearch('');
+							setChatSearch({ query: '' });
 						}}>
 					<Tooltip>
 						<TooltipTrigger render={<PopoverTrigger asChild>{infoButton}</PopoverTrigger>} />
