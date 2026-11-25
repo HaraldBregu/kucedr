@@ -235,6 +235,7 @@ app.whenReady().then(async () => {
 			.refresh('wake')
 			.catch((error) => logger.error('Memory', 'Wake refresh failed', error));
 	});
+	watchIdle();
 	void findBrowserProfiles().catch((error) => logger.error('Permissions', 'Browser profile scan failed', error));
 	recordAppLaunch();
 	if (app.isPackaged && !isPrivacyEnabled()) startUpdater(eventBus, logger);
