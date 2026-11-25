@@ -34,7 +34,8 @@
 		"terms": "https://www.kucedr.com/terms-and-conditions/",
 		"privacy": "https://www.kucedr.com/privacy-policy/",
 		"license": "https://github.com/HaraldBregu/kucedr/blob/main/LICENSE",
-		"security": "https://github.com/HaraldBregu/kucedr/blob/main/SECURITY.md"
+		"security": "https://github.com/HaraldBregu/kucedr/blob/main/SECURITY.md",
+		"notices": "https://github.com/HaraldBregu/kucedr/blob/main/THIRD_PARTY_NOTICES.md"
 	},
 	"main": "./out/main/index.js",
 	"scripts": {
