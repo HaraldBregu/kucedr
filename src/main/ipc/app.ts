@@ -721,6 +721,15 @@ export class AppIpc implements IpcModule {
 			}, AppChannels.getKeepAwake)
 		);
 
+		ipcMain.handle(AppChannels.getLock, wrapTrustedHandler(getLock, AppChannels.getLock));
+		ipcMain.handle(AppChannels.setLock, wrapTrustedHandler(setLock, AppChannels.setLock));
+		ipcMain.handle(AppChannels.unlock, wrapTrustedHandler(unlock, AppChannels.unlock));
+		ipcMain.handle(
+			AppChannels.unlockWithTouchId,
+			wrapTrustedHandler(unlockWithTouchId, AppChannels.unlockWithTouchId)
+		);
+		ipcMain.handle(AppChannels.lockNow, wrapTrustedHandler(lock, AppChannels.lockNow));
+
 		ipcMain.handle(
 			AppChannels.setSoundFeedbackEnabled,
 			wrapTrustedHandler((enabled: boolean) => {
