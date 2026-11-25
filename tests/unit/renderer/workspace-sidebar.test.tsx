@@ -25,6 +25,7 @@ const revealWorkspaceEntry = jest.fn();
 const deleteWorkspaceFile = jest.fn();
 const deleteWorkspaceDirectory = jest.fn();
 const showContextMenu = jest.fn();
+const confirmDelete = jest.fn();
 let workspaceChanged: ((event: WorkspaceChangeEvent) => void) | undefined;
 
 beforeEach(() => {
