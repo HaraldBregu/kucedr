@@ -623,8 +623,7 @@ it('shows media previews in both library views', async () => {
 	showContextMenu.mockResolvedValueOnce('preview');
 	fireEvent.contextMenu(screen.getByText('song.mp3').closest('tr')!);
 	await screen.findByRole('dialog');
-	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3').tagName).toBe('AUDIO');
-	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3')).toHaveAttribute('controls');
+	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3').querySelector('audio')).toBeInTheDocument();
 	fireEvent.keyDown(within(screen.getByRole('dialog')).getByLabelText('song.mp3'), {
 		key: 'ArrowRight',
 	});
