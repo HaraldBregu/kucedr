@@ -3290,6 +3290,14 @@
 			"delete_task": "Elimina un'attività pianificata"
 		}
 	},
+	"lock": {
+		"description": "Kucedr è bloccato.",
+		"passphrase": "Passphrase",
+		"unlock": "Sblocca",
+		"touchId": "Usa Touch ID",
+		"failed": "Impossibile sbloccare Kucedr.",
+		"touchIdReason": "sbloccare le tue chat"
+	},
 	"slash": {
 		"skills": "Skill",
 		"tasks": "Attività"
