@@ -172,10 +172,7 @@ it('uses the Assistant controls for a custom model provider', async () => {
 	);
 
 	await screen.findByTestId('setup-assistant-select');
-	expect(window.provider.listCustomModels).toHaveBeenCalledWith({
-		baseUrl: 'https://models.example/v1',
-		apiKey: 'custom-key',
-	});
+	expect(window.provider.listCustomModels).toHaveBeenCalledWith({ id: 'custom' });
 });
 
 it('saves a compaction model and clears it when disabled', async () => {
