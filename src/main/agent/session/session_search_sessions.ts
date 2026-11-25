@@ -30,10 +30,17 @@ export async function searchSessions(
 					]);
 					if (['task', 'health', 'subagent', 'voice'].includes(info.type as string))
 						return undefined;
+					let next = 0;
 					const messages = (parseMessages(raw) ?? [])
-						.filter((message) => message.role === 'user' || message.role === 'assistant')
-						.map((message) => ({
+						.map((message) => {
+							const position = next;
+							next += toHistoryMessages(message).length;
+							return { message, position };
+						})
+						.filter(({ message }) => message.role === 'user' || message.role === 'assistant')
+						.map(({ message, position }) => ({
 							role: message.role,
+							position,
 							text:
 								typeof message.content === 'string'
 									? message.content
