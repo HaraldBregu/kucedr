@@ -1,5 +1,6 @@
 import { getProviderApiConfigurationUrl } from '../../../../shared';
 import {
+	liveProviderModels,
 	providerIdsFor,
 	providerModels,
 	providers,
