@@ -223,7 +223,7 @@ catalogue) help either way and can finish first.
 ## 8. How it pays
 
 - The core stays open source under MIT. For investigators that is a feature: they can check what
-  touches their data, as they can with OSIRT and Bellingcat's tools.
+  touches their data, as they can with Bellingcat's Auto Archiver and OpenOSINT.
 - Sell what the open-source app cannot do alone: encrypted case backup and sync (after 1.5),
   hosted search and model access for people who do not want their own keys (9.5), and support.
 - Price between single-purpose tools and institutional platforms: Hunchly is $169 a year, Forensic
