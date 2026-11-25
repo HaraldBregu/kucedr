@@ -116,7 +116,38 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			});
 	};
 
-	const activeSessions = sessions.filter((session) => !session.archived);
+	useEffect(() => {
+		if (!undo) return;
+		undone.current = false;
+		const finish = (): void => {
+			if (undo.action !== 'delete' || undone.current) return;
+			void Promise.all(undo.ids.map((id) => window.agent.deleteSession(id)))
+				.then(() => setSessions((current) => current.filter((item) => !undo.ids.includes(item.id))))
+				.catch(() => setActionError(t('settings.chatHistory.errors.delete')));
+		};
+		const timer = window.setTimeout(() => setUndo(undefined), 6000);
+		window.addEventListener('beforeunload', finish);
+		return () => {
+			window.clearTimeout(timer);
+			window.removeEventListener('beforeunload', finish);
+			finish();
+		};
+	}, [undo, t]);
+
+	const undoAction = (): void => {
+		if (!undo) return;
+		undone.current = true;
+		setUndo(undefined);
+		if (undo.action === 'archive')
+			void Promise.all(undo.ids.map((id) => window.agent.archiveSession(id, false)))
+				.then(() => window.agent.listSessions())
+				.then(setSessions)
+				.catch(() => setActionError(t('settings.chatHistory.errors.archive')));
+	};
+
+	const activeSessions = sessions.filter(
+		(session) => !session.archived && !(undo?.action === 'delete' && undo.ids.includes(session.id))
+	);
 	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? activeSessions[0]?.id : sessionId;
 	const clearSelection = (): void => {
 		setSelectedIds(new Set());
