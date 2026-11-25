@@ -9,7 +9,7 @@ jest.mock('../../../../src/main/shared/user_data_location', () => ({
 
 import { findModel } from '../../../../src/main/models';
 import { modelContextWindow } from '../../../../src/shared/model_context';
-import { pluginProvider } from '../../../../src/main/plugins/plugins_provider';
+import { readPlugin } from '../../../../src/main/plugins/plugins_read';
 
 beforeEach(() => {
 	catalogDirectory = mkdtempSync(path.join(tmpdir(), 'kucedr-catalog-context-'));
