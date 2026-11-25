@@ -125,7 +125,11 @@ it('keeps backup controls disabled when no providers exist', async () => {
 
 it('retries a failed provider load and restores the saved selection', async () => {
 	const user = userEvent.setup();
-	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: 'primary' });
+	storageApi.getSettings.mockResolvedValue({
+		...settings,
+		serviceId: 'backup-s3',
+		providerId: 'primary',
+	});
 	storageApi.listProviders.mockRejectedValueOnce(new Error('Could not open storage credentials'));
 	render(
 		<MemoryRouter>
@@ -136,12 +140,8 @@ it('retries a failed provider load and restores the saved selection', async () =
 	expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 	await user.click(screen.getByRole('button', { name: 'Try Again' }));
 	await waitFor(() => expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled());
-	expect(screen.getByRole('combobox', { name: 'Storage' })).toHaveTextContent('Production files');
-	expect(
-		screen.getByText(
-			'Choose a saved Amazon S3 or S3-compatible provider.'
-		)
-	).toBeInTheDocument();
+	expect(screen.getByRole('combobox', { name: 'Storage service' })).toHaveTextContent('S3 backup');
+	expect(screen.getByText('Production files · files')).toBeInTheDocument();
 });
 
 it('keeps a failed settings save editable and does not start a backup', async () => {
