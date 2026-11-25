@@ -146,14 +146,18 @@ it('retries a failed provider load and restores the saved selection', async () =
 
 it('keeps a failed settings save editable and does not start a backup', async () => {
 	const user = userEvent.setup();
-	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: 'primary' });
+	storageApi.getSettings.mockResolvedValue({
+		...settings,
+		serviceId: 'backup-s3',
+		providerId: 'primary',
+	});
 	storageApi.saveSettings.mockRejectedValueOnce(new Error('Unable to save'));
 	render(
 		<MemoryRouter>
 			<StoragePage />
 		</MemoryRouter>
 	);
-	await user.click(await screen.findByRole('button', { name: 'Upload' }));
+	await user.click(await screen.findByRole('button', { name: 'Backup' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not save storage settings.');
 	expect(storageApi.backup).not.toHaveBeenCalled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
