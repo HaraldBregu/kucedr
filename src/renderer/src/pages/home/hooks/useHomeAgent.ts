@@ -644,6 +644,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		editUserMessage,
 		followUps,
 		handleSubmit,
+		historyError,
 		historyLoading,
 		input,
 		inputRef,
