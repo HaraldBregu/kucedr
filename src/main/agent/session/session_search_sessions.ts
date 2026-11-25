@@ -5,6 +5,7 @@ import { isUuid } from './session_is_uuid';
 import { messagesFile } from './session_messages_file';
 import { parseMessages } from './session_parse_messages';
 import { sessionsRoot } from './session_sessions_root';
+import { toHistoryMessages } from './session_to_history_messages';
 
 export async function searchSessions(
 	location: string,
