@@ -266,7 +266,7 @@ export class ExecSandbox {
 			network: {
 				allowedDomains: ['*'],
 				deniedDomains: [],
-				allowLocalBinding: true,
+				allowLocalBinding: false,
 				allowUnixSockets: [],
 				allowAllUnixSockets: false,
 			},
