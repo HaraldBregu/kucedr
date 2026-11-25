@@ -3224,6 +3224,6 @@
 		"tasks": "Tasks"
 	},
 	"attachments": {
-		"tooLarge": "{{name}} is larger than {{size}}, the limit for files without a size limit from the model. Remove it to send."
+		"tooLarge": "{{name}} is too large to send. Files can be up to {{size}}."
 	}
 }
