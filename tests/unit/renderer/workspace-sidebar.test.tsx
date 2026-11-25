@@ -105,7 +105,7 @@ it('creates, renames, and deletes a file through the right click menu', async ()
 	await screen.findByText('Workspace is empty.');
 	fireEvent.contextMenu(tree);
 	await user.type(await screen.findByRole('textbox', { name: 'Name' }), 'draft.md');
-	await user.click(screen.getByRole('button', { name: 'Create' }));
+	await user.keyboard('{Enter}');
 	await waitFor(() => expect(createWorkspaceFile).toHaveBeenCalledWith('', 'draft.md'));
 	expect(onFileSelect).toHaveBeenCalledWith({ type: 'file', name: 'draft.md', path: 'draft.md' });
 
