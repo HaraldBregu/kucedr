@@ -124,6 +124,8 @@ export function createTab(
 	// History keeps the user's own browsing in direct tabs only.
 	const user = (): boolean => route === 'direct' && !(tab.chat && acting.has(tab.chat));
 	contents.on('did-navigate', (_event, url) => {
+		tab.granted = undefined;
+		answerPermission(tab, 'dismiss');
 		if (user()) visit(url);
 	});
 	contents.on('did-navigate-in-page', (_event, url, isMainFrame) => {
