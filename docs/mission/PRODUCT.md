@@ -79,15 +79,15 @@ Read on 2026-11-25.
 
 Investigation tools today are split by task, and none is a local AI desk:
 
-| Tool                                      | What it does                                                                           | Price signal                                |
-| ----------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------- |
-| Hunchly (Maltego since 2025)              | Browser extension that captures every page visited into a case                         | $169 or €149 a year                         |
-| Forensic OSINT                            | Browser capture with reports                                                           | ELITE plan $1,097 per user a year           |
-| Authentic8 Silo                           | Cloud browser that hides who is browsing ("managed attribution")                       | $1,450 to $3,450 per user a year, as listed |
-| OSIRT                                     | Local investigation browser, born in UK police training; case files, capture, hashing  | Paid, price not public; 30-day trial        |
-| Bellingcat Auto Archiver                  | Archives links with hashes, timestamps and screenshots; 150,000+ items kept            | Free, open source                           |
-| Nexus, OSINT Pilot, AegisStack, OpenOSINT | Agents that run OSINT tools and return findings                                        | Cloud services or terminal tools            |
-| Newsroom builds                           | The New York Times' internal "uber agent"; tools on self-hosted LibreChat              | In-house                                    |
+| Tool                                      | What it does                                                                          | Price signal                                |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------- |
+| Hunchly (Maltego since 2025)              | Browser extension that captures every page visited into a case                        | $169 or €149 a year                         |
+| Forensic OSINT                            | Browser capture with reports                                                          | ELITE plan $1,097 per user a year           |
+| Authentic8 Silo                           | Cloud browser that hides who is browsing ("managed attribution")                      | $1,450 to $3,450 per user a year, as listed |
+| OSIRT                                     | Local investigation browser, born in UK police training; case files, capture, hashing | Paid, price not public; 30-day trial        |
+| Bellingcat Auto Archiver                  | Archives links with hashes, timestamps and screenshots; 150,000+ items kept           | Free, open source                           |
+| Nexus, OSINT Pilot, AegisStack, OpenOSINT | Agents that run OSINT tools and return findings                                       | Cloud services or terminal tools            |
+| Newsroom builds                           | The New York Times' internal "uber agent"; tools on self-hosted LibreChat             | In-house                                    |
 
 Kucedr would be the one that puts the browser, the agent, the evidence and the knowledge on the
 investigator's own machine, with the model of their choice.
