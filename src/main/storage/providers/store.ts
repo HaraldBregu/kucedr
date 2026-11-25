@@ -47,6 +47,7 @@ export class StorageProviderStore {
 			...input,
 			id: input.id ?? randomUUID(),
 			secretAccessKey,
+			passphrase: input.passphrase || providers[index]?.passphrase,
 		};
 		if (index === -1) providers.push(provider);
 		else providers[index] = provider;
