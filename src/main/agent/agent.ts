@@ -40,7 +40,6 @@ import type { Config, Message, RunSignal, RuntimeEvent, RuntimeInput } from './t
 import type {
 	AgentRunOptions,
 	AgentFollowUp,
-	AgentHistoryContentBlock,
 	AgentSessionSnapshot,
 	AgentHistoryMessage,
 	AgentPromptInputCapabilities,
