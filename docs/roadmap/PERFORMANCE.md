@@ -39,5 +39,5 @@ jank probes were checked by blocking the page for 300 ms during a stream: the fr
 reported a 282 ms frame and the long-task probe one 300 ms task.
 
 What this means for the next items: streaming in a new chat is already smooth, so 2.5 needs a
-measurement in a long chat before any work; the 4 MB renderer chunk and the sidebar's 1.5 s
-re-read (2.6) are the more likely costs.
+measurement in a long chat before any work. The sidebar's 1.5 s re-read is gone (2.6); the
+4 MB renderer chunk is the likeliest cost left at start.
