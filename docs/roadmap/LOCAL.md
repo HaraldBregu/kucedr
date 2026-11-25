@@ -11,7 +11,7 @@ Using Kucedr with models that run on the user's own machine, with nothing sent t
 - Downloading models from inside the app is designed in [Plugin system](../PLUGIN_SYSTEM.md) and
   not built.
 - Knowledge search needs an embedding model; whether a local one is available is _not verified_.
-- There is no offline detection anywhere in the app.
+- Home says when the machine is offline (15.4).
 
 ## Features
 
