@@ -2659,6 +2659,9 @@
 		"delete": "Elimina",
 		"insertImage": "Inserisci immagine"
 	},
+	"remoteImage": {
+		"load": "Carica immagine"
+	},
 	"inferenceSettings": {
 		"title": "Impostazioni Inferenza",
 		"description": "Configura modello e parametri.",
