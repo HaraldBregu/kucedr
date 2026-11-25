@@ -856,6 +856,12 @@ function PageContent(): ReactElement {
 				<div className="pointer-events-none absolute inset-x-0 bottom-0 mx-auto h-10 max-w-4xl bg-background px-8 bg-clip-content" />
 			)}
 			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-3xl px-8' : 'max-w-4xl px-8')}>
+				{online ? null : (
+					<p role="status" className="mb-2 text-xs text-muted-foreground">
+						You&apos;re offline. Local models still work; cloud models, web search and connected services
+						need a connection.
+					</p>
+				)}
 				{attachmentError && <p role="alert" className="mb-2 text-xs text-destructive">{attachmentError}</p>}
 				<RecorderErrorMessage
 					message={voiceErrorMessage}
