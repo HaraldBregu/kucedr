@@ -54,8 +54,9 @@ Features are numbered by area, for example 3.9 is the browser pane.
 
 ## Recommended order
 
-1. **Voice mute, status and transcript** (19.1, 19.2). The legal pages and notices (6.4) and
-   offline and failure states (3.6, 15.4) were finished 2026-11-25.
+1. **Shield odds and ends** (13.6, 13.7, 13.13, 13.14). Legal pages and notices (6.4), offline and
+   failure states (3.6, 15.4) and voice mute, status and transcript (19.1, 19.2) were finished
+   2026-11-25.
 2. **Privacy: Privacy centre, encrypted data and app lock** (1.1, 1.3–1.4). Chats and memory sit
    unencrypted on disk today. Saved plugin credentials are decrypted in the main process, and
    the plugin detail page receives configured field names only (1.2).
