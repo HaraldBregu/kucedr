@@ -3,6 +3,8 @@ import type { LoggerService } from '../shared';
 
 type ShellEnvironmentReader = (shell?: string) => Promise<Readonly<Record<string, string>>>;
 
+const loginEnvironmentTimeout = 5000;
+
 export class EnvironmentManager {
 	private loginEnvironment?: Promise<Readonly<Record<string, string>>>;
 
