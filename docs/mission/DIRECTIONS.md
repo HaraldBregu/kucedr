@@ -42,9 +42,9 @@ listed [at the end](#not-verified).
    [ChatGPT Work (secondary)](https://ppc.land/openai-kills-atlas-browser-folds-it-into-new-chatgpt-work-agent)
 2. **Local processing earns no premium.** Privacy-first products charge the same as cloud ones or
    less. Among Italian lawyers the barriers to AI are skills (47.1%), errors (42.8%) and distrust
-   (23.4%); about 40% take no privacy measures at all when using AI, 52% in small firms.
-   [Censis 2026 via Guida al Diritto (secondary)](https://ntplusdiritto.ilsole24ore.com/art/avvocati-numeri-ripresa-ma-futuro-incerto-pesa-ricambio-generazionale-AI1siInC) ·
-   [Milan bar survey (secondary)](https://www.fiscoetasse.com/)
+   (23.4%); about 40% take no privacy measures at all when using AI, 52% in small firms. Both
+   figures are secondary: Censis 2026 as reported by Guida al Diritto on 6 June 2026, and a Milan
+   bar survey as reported by Fisco e Tasse on 22 May 2025.
 3. **Small buyers pay for three things:** licensed data (Lexroom's legal sources), accountability
    for an outcome (grant consultants' success fees of 3% to 10%), and someone to set it up (the top
    blocker for Italian firms not using AI is skills, 58.6%).
