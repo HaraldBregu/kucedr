@@ -22,7 +22,9 @@ const render = (): void => {
 	root.render(
 		<StrictMode>
 			<AppProvider>
-				<VoiceWindow chatSessionId={chatSessionId} />
+				<LockGate>
+					<VoiceWindow chatSessionId={chatSessionId} />
+				</LockGate>
 			</AppProvider>
 		</StrictMode>
 	);
