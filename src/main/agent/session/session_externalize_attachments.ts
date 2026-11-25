@@ -41,7 +41,7 @@ export function externalizeAttachments(messages: Message[], state: SessionState)
 								`.${id}.${process.pid}.${Date.now()}.tmp`
 							);
 							try {
-								writeFileSync(temporaryPath, bytes, { flag: 'wx' });
+								writeFileSync(temporaryPath, seal(bytes), { flag: 'wx' });
 								renameSync(temporaryPath, filePath);
 							} finally {
 								if (existsSync(temporaryPath)) rmSync(temporaryPath, { force: true });
