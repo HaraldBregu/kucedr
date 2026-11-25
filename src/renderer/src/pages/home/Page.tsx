@@ -543,6 +543,16 @@ function PageContent(): ReactElement {
 	}, [attachments, attachmentsSessionId, chatSessionId]);
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
 	const [attachmentError, setAttachmentError] = useState<string | null>(null);
+	const [online, setOnline] = useState(navigator.onLine);
+	useEffect(() => {
+		const update = (): void => setOnline(navigator.onLine);
+		window.addEventListener('online', update);
+		window.addEventListener('offline', update);
+		return () => {
+			window.removeEventListener('online', update);
+			window.removeEventListener('offline', update);
+		};
+	}, []);
 	const [transcribingRecording, setTranscribingRecording] = useState(false);
 	const transcriptionRunRef = useRef(0);
 	const visibleMessages = useMemo(
