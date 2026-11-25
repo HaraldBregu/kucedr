@@ -1,5 +1,6 @@
 import type {
 	MemoryConfig,
+	MemoryEntry,
 	MemoryMessage,
 	MemoryService,
 	MemoryStatus,
