@@ -1,8 +1,6 @@
-// Launch: a rocket climbing through clouds, dithered with an 8×8 Bayer matrix, with click ripples and an intro reveal.
+// Launch: a rocket climbing through clouds, dithered with an 8×8 Bayer matrix, with an intro reveal.
 const PIXEL = 1;
-const MAX_RIPPLES = 4;
 const INTRO_SECONDS = 1.8;
-const RIPPLE_SECONDS = 1.6;
 const SPEED = { idle: 0.5, thinking: 1, reasoning: 1, awaiting_input: 0.3, answering: 1.6, using_tools: 2.2 };
 
 const VERTEX = `#version 300 es
