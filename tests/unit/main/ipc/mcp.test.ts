@@ -28,6 +28,7 @@ import {
 	getMcpServers,
 	getMcpToolCatalog,
 	getMcpOauth,
+	mcpToolDetails,
 	startOauthCallbackServer,
 } from '../../../../src/main/mcp';
 import { McpChannels } from '../../../../src/shared/ipc_channels_definitions';
