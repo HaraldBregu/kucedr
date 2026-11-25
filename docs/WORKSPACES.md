@@ -437,7 +437,7 @@ name. New text goes through `react-i18next` under a `spaces.*` namespace, becaus
 6. Continuity → verify: start a long run in A that will ask for approval, switch the window to B,
    then come back from the badge. The run finished in A, its files, Library items and memory are in
    A, and B was untouched.
-6. Tasks, voice and browser → verify: a task of A fires while every window shows B and runs in A; a
+7. Tasks, voice and browser → verify: a task of A fires while every window shows B and runs in A; a
    voice call started in A keeps A's memory after a switch; B's browser has none of A's sign-ins.
 7. Settings overrides → verify: picking a model in B leaves the default workspace's model unchanged,
    runs in B use the override, and **Use default** restores the global model.
