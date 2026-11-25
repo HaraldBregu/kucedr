@@ -47,9 +47,10 @@ it('prevents scheduled agents from mutating tasks while honoring saved tool rest
 		updatedAt: '2026-08-11T00:00:00.000Z',
 	});
 
-	await runner(schedule());
-	await runner(schedule([]));
-	await runner(schedule(['read', 'bash']));
+	const signal = new AbortController().signal;
+	await runner(schedule(), signal);
+	await runner(schedule([]), signal);
+	await runner(schedule(['read', 'bash']), signal);
 
 	for (const [index, call] of send.mock.calls.slice(0, 2).entries()) {
 		expect(call).toEqual([
