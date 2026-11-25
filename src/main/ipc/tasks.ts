@@ -31,9 +31,36 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 
 	register({ windows, apps, agent }: TaskIpcDependencies, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
+		const parseRequest = (request: unknown): TaskScheduleCreateRequest => {
+			const { name, description, cronExpression, prompt, toolsAllow } = (request ?? {}) as Record<
+				string,
+				unknown
+			>;
+			if (
+				typeof name !== 'string' ||
+				!name.trim() ||
+				typeof prompt !== 'string' ||
+				!prompt.trim() ||
+				(description !== undefined && typeof description !== 'string') ||
+				(cronExpression !== undefined && typeof cronExpression !== 'string') ||
+				!Array.isArray(toolsAllow) ||
+				toolsAllow.some((tool) => typeof tool !== 'string')
+			)
+				throw new Error('Invalid task.');
+			return { name, description, cronExpression, prompt, toolsAllow };
+		};
 		registerQueryWithEvent(TaskChannels.list, (event) => {
 			trusted.assert(event);
 			return listSchedules();
+		});
+		registerCommandWithEvent(TaskChannels.create, (event, request: unknown) => {
+			trusted.assert(event);
+			return createSchedule(parseRequest(request));
+		});
+		registerCommandWithEvent(TaskChannels.update, (event, scheduleId: string, request: unknown) => {
+			trusted.assert(event);
+			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
+			return updateSchedule(scheduleId, parseRequest(request));
 		});
 		registerQueryWithEvent(TaskChannels.history, (event, scheduleId: string) => {
 			trusted.assert(event);
