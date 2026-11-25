@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { seal } from '../../vault/seal';
 import type { SessionState } from './session_types';
 import { infoFile } from './session_info_file';
 import { messagesBackupFilePath } from './session_messages_backup_file_path';
