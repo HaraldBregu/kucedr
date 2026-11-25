@@ -200,8 +200,8 @@ function PromptSlash({
 
 	const execute = (item: SlashItem): void => {
 		if (item.disabled) return;
-		item.run();
-		setValue('');
+		item.run?.();
+		setValue(item.insert ?? '');
 	};
 
 	const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
