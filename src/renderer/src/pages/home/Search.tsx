@@ -3,17 +3,20 @@ import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 
-export function ChatSearch({ scroll, active, refreshKey, initialQuery }: {
+export function ChatSearch({ scroll, active, refreshKey, initialQuery, initialPosition }: {
 	readonly scroll: RefObject<StickToBottomContext | null>;
 	readonly active: boolean;
 	readonly refreshKey: unknown;
 	readonly initialQuery: string;
+	readonly initialPosition?: number;
 }): React.JSX.Element {
+	const { t } = useTranslation();
 	const [query, setQuery] = useState(initialQuery);
 	const [index, setIndex] = useState(0);
 	const [count, setCount] = useState(0);
 	const [first, setFirst] = useState<Node>();
 	const ranges = useRef<Range[]>([]);
+	const target = useRef(initialPosition);
 	const needle = active ? query.trim() : '';
 	useEffect(() => {
 		const content = scroll.current?.contentRef.current;
