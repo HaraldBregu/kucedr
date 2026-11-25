@@ -153,6 +153,8 @@ export class Memory implements MemoryService {
 	async remember(fact: string, source?: string): Promise<MemoryEntry> {
 		const text = fact.trim().replace(/\s+/gu, ' ');
 		if (!text || text.length > 2000) throw new Error('A memory fact is required.');
+		if (privateContent(text))
+			throw new Error('Memory does not store credentials or sensitive private information.');
 		this.invalidate();
 		return this.lock(async () => {
 			const markdown = await this.read();
