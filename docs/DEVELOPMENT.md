@@ -468,7 +468,14 @@ npm run build
 npm run perf
 ```
 
-It launches the built app with a throwaway profile three times, then streams a 600-chunk reply
+When dependencies changed since the last release, also regenerate the third-party notices that
+ship with the app and are linked from Settings → General, and commit the result:
+
+```sh
+npm run notices
+```
+
+The performance check launches the built app with a throwaway profile three times, then streams a 600-chunk reply
 from a local mock model, and prints bundle sizes, the median time to the first window and the
 first render, and the frame rate, long frames and long tasks during the stream. Keep the window
 visible while it runs; a covered window is throttled and reports a lower frame rate.
