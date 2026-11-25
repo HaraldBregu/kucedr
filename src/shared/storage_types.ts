@@ -7,11 +7,16 @@ export interface StorageProvider {
 	accessKeyId: string;
 	forcePathStyle: boolean;
 	hasSecretAccessKey: boolean;
+	hasPassphrase: boolean;
 }
 
-export type StorageProviderInput = Omit<StorageProvider, 'id' | 'hasSecretAccessKey'> & {
+export type StorageProviderInput = Omit<
+	StorageProvider,
+	'id' | 'hasSecretAccessKey' | 'hasPassphrase'
+> & {
 	id?: string;
 	secretAccessKey?: string;
+	passphrase?: string;
 };
 
 export interface StorageSyncSettings {

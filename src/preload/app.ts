@@ -105,6 +105,12 @@ export const app: AppApi = {
 	onKeepAwakeChanged: (callback: (enabled: boolean) => void): (() => void) => {
 		return typedOn(AppChannels.keepAwakeChanged, callback);
 	},
+	getLock: () => typedInvokeUnwrap(AppChannels.getLock),
+	setLock: (update) => typedInvokeUnwrap(AppChannels.setLock, update),
+	unlock: (passphrase) => typedInvokeUnwrap(AppChannels.unlock, passphrase),
+	unlockWithTouchId: () => typedInvokeUnwrap(AppChannels.unlockWithTouchId),
+	lockNow: () => typedInvokeUnwrap(AppChannels.lockNow),
+	onLockChanged: (callback) => typedOn(AppChannels.lockChanged, callback),
 	setSoundFeedbackEnabled: (enabled: boolean): Promise<void> => {
 		return typedInvokeUnwrap(AppChannels.setSoundFeedbackEnabled, enabled);
 	},
