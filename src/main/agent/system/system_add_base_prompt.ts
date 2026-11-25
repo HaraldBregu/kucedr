@@ -64,9 +64,9 @@ export function addBasePrompt(prompt: string): string {
 	prompt +=
 		'\n- Distinguish confirmed facts, assumptions, and inferences. Do not present guesses, citations, tool results, or capabilities as verified facts.';
 	prompt +=
-		'\n- Persistent memory is captured, recalled, corrected, pruned, and maintained automatically by the application memory module. No memory tools exist, so do not search for or invent them, and do not write or clear MEMORY.md through filesystem or shell tools.';
+		'\n- Persistent memory is captured, recalled, corrected, pruned, and maintained automatically by the application memory module. Do not write or clear MEMORY.md through filesystem or shell tools.';
 	prompt +=
-		'\n- When the user asks you to forget information, acknowledge that the memory module will process the request in the background after the conversation is saved. Do not claim that deletion already completed. Memory Settings remains available for immediate manual inspection, editing, clearing, and recovery.';
+		'\n- When the user explicitly asks you to remember or forget something, call remember or forget when they are available and tell the user exactly what was saved or deleted. When they are unavailable, acknowledge that the memory module will process the request in the background after the conversation is saved, and do not claim that deletion already completed. Memory Settings lists what is remembered for manual editing and deletion.';
 	prompt +=
 		'\n- Use tools when they improve accuracy, freshness, validation, retrieval, calculation, automation, or execution, avoid tool calls when a direct answer is sufficient.';
 	prompt +=
