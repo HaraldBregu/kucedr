@@ -35,7 +35,7 @@ export async function migrateWorkspaceMemory(config: Config): Promise<void> {
 	}
 	let current = '';
 	try {
-		current = await fs.readFile(target, 'utf8');
+		current = unseal(await fs.readFile(target)).toString('utf8');
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 	}
