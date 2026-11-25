@@ -641,7 +641,9 @@ export interface AppApi extends AppStorageApi {
 	restart: () => Promise<void>;
 	getAvailableUpdate: () => Promise<string | null>;
 	installUpdate: () => Promise<void>;
-	onUpdateAvailable: (callback: (version: string) => void) => () => void;
+	onUpdateAvailable: (callback: (version: string | null) => void) => () => void;
+	setUpdateChannel: (channel: import('./app_types').UpdateChannel) => Promise<void>;
+	getUpdateChannel: () => Promise<import('./app_types').UpdateChannel>;
 	setKeepAwake: (enabled: boolean) => Promise<void>;
 	getKeepAwake: () => Promise<boolean>;
 	onKeepAwakeChanged: (callback: (enabled: boolean) => void) => () => void;
