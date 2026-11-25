@@ -56,6 +56,7 @@ jest.mock('../../../../src/main/models', () => ({
 	findModel: jest.fn(() => ({
 		metadata: { documentationStatus: 'verified', promptAttachments: [] },
 	})),
+	loadProviders: () => [],
 }));
 jest.mock('../../../../src/main/agent/session', () => {
 	const actual = jest.requireActual('../../../../src/main/agent/session');
