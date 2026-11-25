@@ -158,9 +158,13 @@ it('reads cached tool names without reconnecting', async () => {
 	jest
 		.mocked(BrowserWindow.fromWebContents)
 		.mockReturnValue({ id: 1, webContents: sender } as never);
-	jest.mocked(getMcpToolCatalog).mockReturnValue([
-		{ name: 'invoice_search', description: 'Find invoices', inputSchema: { type: 'object' } },
-	]);
+	const tools = [
+		{ name: 'invoice_search', description: 'Find invoices', inputSchema: { type: 'object' as const } },
+	];
+	jest.mocked(getMcpToolCatalog).mockReturnValue(tools);
+	jest
+		.mocked(mcpToolDetails)
+		.mockReturnValue([{ name: 'invoice_search', description: 'Find invoices', permission: 'ask' }]);
 	new McpIpc().register(
 		{ windows: { has: () => true }, apps: { has: () => false } } as never,
 		{} as never
