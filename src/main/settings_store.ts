@@ -70,6 +70,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	keepAwake: false,
 	soundFeedbackEnabled: false,
 	notificationsEnabled: true,
+	updateChannel: 'stable',
 	chatTextSize: 'medium',
 	zoomFactor: 1,
 	workspaceWideContent: false,
