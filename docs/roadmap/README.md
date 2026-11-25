@@ -105,6 +105,11 @@ The user-experience area was chosen to be planned in detail first; see
 - The terminal panel (14.2) comes before the terminal inside the coding page (20.3).
 - Sealed credentials (1.2) and the workspace decision (10) come before imported passwords and
   sign-ins are stored (23.3–23.5).
+- Signed builds (6.1) come before computer use on macOS (24.3), because Accessibility and Screen
+  Recording grants do not hold across unsigned updates.
+- Untrusted content marking (13.10) comes before the agent acts on what it reads from the screen
+  (24.2, 24.9).
+- Model downloads (15.2) come before a separate computer (24.10).
 
 ## Not planned
 
