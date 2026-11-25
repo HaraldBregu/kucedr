@@ -30,6 +30,10 @@ export async function forkSync<T>(operation: StorageOperation): Promise<T> {
 				: 'Select at least one folder to download into.'
 		);
 	}
+	const key =
+		operation === 'backup' && provider.passphrase && sealedVaultKey()
+			? vaultKey().toString('base64')
+			: undefined;
 	const child = utilityProcess.fork(
 		path.join(script.directory, ...script.metadata.entry.split('/')),
 		[],
