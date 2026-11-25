@@ -8,21 +8,24 @@ Not user-facing features, but what keeps the features above from regressing.
 
 - `npm run lint` runs again: the React version is pinned in `eslint.config.mjs`, because
   `eslint-plugin-react` cannot detect it under ESLint 10. It reports 0 errors and about 90 warnings.
-- Jest: 433 suites, 2453 tests, 1 failing (was 162 failing suites and 482 failing tests). Suites
+- Jest: 433 suites, 2453 tests, all passing (was 162 failing suites and 482 failing tests). Suites
   for removed features were deleted (plan and goal modes, media adapters now in plugin manifests,
   the Codex and Pi coding runtimes, app import, bundled MCP demo servers). The rest were updated to
   the current APIs.
-- Still failing: `tests/unit/main/models/context.test.ts`. `iteracompute/models/qwen3.8-flash` and
-  `openrouter/models/auto` have no `contextWindowDocumentationUrl`, and neither provider's docs
-  page states the context window the manifest uses.
-- Found while doing this:
-  - Creating the first file in an empty workspace never showed the name field (fixed in
-    `pages/workspace/Sidebar.tsx`).
-  - `src/main/mcp/oauth_options.ts` lists no setting names in its "Set … in the plugin settings"
-    error, because `pluginProvider()` drops `settings`.
-  - `src/main/models/adapters/tts/tts_synthesizer.ts:10` hard-codes a provider URL.
-  - `clearMocks`/`resetMocks` in `jest.config.cjs` are not applied to the `main` and `renderer`
-    projects.
+- `iteracompute/models/qwen3.8-flash` and `openrouter/models/auto` link their model pages as
+  `contextWindowDocumentationUrl`; each page states the context window the manifest uses.
+- Found while doing this, all fixed:
+  - Creating the first file in an empty workspace never showed the name field
+    (`pages/workspace/Sidebar.tsx`).
+  - The "Set … in the plugin settings" error in `src/main/mcp/oauth_options.ts` named no
+    settings, because `pluginProvider()` dropped `settings`. It now keeps each setting's key,
+    title, type and whether it is required.
+  - `src/main/models/adapters/tts/tts_synthesizer.ts` fell back to a hard-coded provider URL; it
+    now uses the provider's configured URL only.
+  - `clearMocks`, `resetMocks` and `restoreMocks` at the root of `jest.config.cjs` never applied,
+    because Jest reads them per project. `clearMocks` is now set on both projects. Turning on
+    `resetMocks` and `restoreMocks` as well fails 34 suites (153 tests) that set mock behaviour
+    once per file, so they were removed rather than enabled.
 
 ## What exists today
 
