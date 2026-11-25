@@ -132,12 +132,27 @@ export class PtyManager {
 	kill(ownerId: number, id: string): boolean {
 		const session = this.ownedSession(ownerId, id);
 		if (!session) return false;
+		const exited = session.exited;
 		this.remove(session);
+		if (exited) return true;
+		let gone = false;
+		const exit = session.process.onExit(() => {
+			gone = true;
+		});
 		try {
 			session.process.kill();
 		} catch (error) {
 			this.logger.warn('PtyManager', `Failed to terminate terminal ${id}`, error);
 		}
+		setTimeout(() => {
+			exit.dispose();
+			if (gone || process.platform === 'win32') return;
+			try {
+				session.process.kill('SIGKILL');
+			} catch (error) {
+				this.logger.warn('PtyManager', `Failed to force-stop terminal ${id}`, error);
+			}
+		}, forceKillDelay).unref();
 		return true;
 	}
 
