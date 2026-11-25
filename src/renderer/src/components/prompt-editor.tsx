@@ -58,7 +58,7 @@ function PromptEditorArea({
 	);
 
 	return modes && onModeIdsChange ? (
-		<PromptSlash modes={modes} modeIds={modeIds ?? []} onModeIdsChange={onModeIdsChange}>
+		<PromptSlash modes={modes} modeIds={modeIds ?? []} onModeIdsChange={onModeIdsChange} skillIds={skillIds ?? []}>
 			{editor}
 		</PromptSlash>
 	) : (
