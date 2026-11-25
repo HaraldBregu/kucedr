@@ -201,6 +201,20 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		items.push({ label: t('settings.cron.detail.title') });
 	}
 
+	if (
+		location.pathname === '/settings/tasks/new' ||
+		(location.pathname.startsWith('/settings/tasks/') && location.pathname.endsWith('/edit'))
+	) {
+		items[0] = { ...items[0], path: current.path };
+		items.push({
+			label: t(
+				location.pathname.endsWith('/edit')
+					? 'settings.cron.form.editTitle'
+					: 'settings.cron.form.newTitle'
+			),
+		});
+	}
+
 	if (location.pathname.startsWith('/settings/skills/skilldetails/')) {
 		const skillId = decodeURIComponent(location.pathname.split('/').at(-1) ?? '');
 		items[0] = { ...items[0], path: current.path };
