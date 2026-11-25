@@ -152,6 +152,8 @@ export const RecorderChannels = {
 
 export const TaskChannels = {
 	list: 'tasks:list',
+	create: 'tasks:create',
+	update: 'tasks:update',
 	history: 'tasks:history',
 	runNow: 'tasks:run-now',
 	isRunning: 'tasks:is-running',
