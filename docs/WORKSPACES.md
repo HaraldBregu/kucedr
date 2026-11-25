@@ -209,7 +209,7 @@ attachments were being read.
 
 1. The renderer calls `workspaces.select(id)`. Main validates the ID, updates
    `WindowContext.workspaceId` and sends `currentChanged` to that window only.
-2. Main ensures the workspace's folders exist and lazily starts its file watcher, sessions
+2. Main ensures the workspace's data folders exist (never a picked folder) and lazily starts its file watcher, sessions
    watcher and memory service. They stay alive until the workspace is deleted.
 3. The renderer remounts its routes with `key={workspaceId}`, opens that workspace's last chat and
    hides the other workspace's browser tabs.
