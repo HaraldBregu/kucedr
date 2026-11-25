@@ -34,6 +34,8 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
 import { parseMcpUrl } from '../mcp/url';
+import { getMcpOAuthRedirectUrl } from '../mcp/redirect';
+import { registeredPort } from '../mcp/port';
 import { externalUrl } from '../external';
 import { openExternal } from '../handoff';
 import { requireUnrestrictedNetwork } from '../privacy/state';
