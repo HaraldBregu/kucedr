@@ -316,7 +316,7 @@ Voice forwards only `tool_permission_request`, so a `user_input_request` never a
 
 ### 24. Low — CSP
 
-`script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net`; `local-resource://file/*` serves any absolute path in the default session. No HTML-injection sink is known today; if one appears, the trusted renderer can run shell commands and approve its own tool calls.
+`script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'`; `local-resource://file/*` serves any absolute path in the default session. The CDN script source, `worker-src blob:`, `frame-src 'self' data: blob:` and `connect-src ws: wss: blob: data: local-resource:` and the CDN were removed as unused; `connect-src` is `'self'`. `'unsafe-inline'` stays because plugin script frames are `srcdoc` and inherit the window policy. No HTML-injection sink is known today; if one appears, the trusted renderer can run shell commands and approve its own tool calls.
 
 ---
 
