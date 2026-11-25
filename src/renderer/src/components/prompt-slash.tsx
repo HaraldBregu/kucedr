@@ -54,6 +54,7 @@ function PromptSlash({
 	const [selected, setSelected] = useState(0);
 	const [dismissed, setDismissed] = useState(false);
 	const [apps, setApps] = useState<App[]>([]);
+	const [skills, setSkills] = useState<SkillInfo[]>([]);
 	const [themes, setThemes] = useState<PluginTheme[]>([]);
 	const [sidebarTranslucency, setSidebarTranslucency] = useState<boolean | null>(null);
 	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(null);
