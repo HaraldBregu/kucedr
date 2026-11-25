@@ -2,7 +2,7 @@ import type { WebContents } from 'electron';
 import { statSync } from 'node:fs';
 import { homedir } from 'node:os';
 import path from 'node:path';
-import { spawn, type IPty, type IPtyForkOptions, type IWindowsPtyForkOptions } from 'node-pty';
+import type { IPty, IPtyForkOptions, IWindowsPtyForkOptions } from 'node-pty';
 import { TerminalChannels } from '../../shared/ipc_channels_definitions';
 import type {
 	TerminalCreateRequest,
