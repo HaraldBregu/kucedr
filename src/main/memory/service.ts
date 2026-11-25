@@ -191,7 +191,7 @@ export class Memory implements MemoryService {
 					? entry.id === query
 					: entry.fact.toLowerCase().includes(query)
 			);
-			if (!entries.length) return { removed: 0 };
+			if (!entries.length) return { removed: 0, facts: [] };
 			const lines = new Set(entries.map((entry) => entry.lineIndex));
 			await this.replace(
 				markdown
