@@ -38,6 +38,36 @@ Settings → Cloud ──saveSettings──▶ backup/store (serviceId, paths, c
 Upload / schedule ──▶ backup/operations ──▶ backup/fork ──▶ selected STORAGE script ──▶ S3
 ```
 
+## Encryption
+
+The storage form has an optional **Backup passphrase**. It is saved next to the S3 provider and
+sealed with `safeStorage` like the secret key (`encryptedPassphrase`); the renderer only sees
+`hasPassphrase`, and saving with the field empty keeps the saved passphrase. It must be at least
+8 characters. A lost passphrase makes the encrypted backups unrecoverable.
+
+With a passphrase, `backup-s3` encrypts every file into its staging file before upload, so no
+plaintext copy is written to the temp folder. Each object is:
+
+```
+"\0kbackup" (8) ‖ salt (16) ‖ IV (12) ‖ AES-256-GCM ciphertext ‖ tag (16)
+```
+
+The object key is the additional authenticated data, so an object cannot be moved to another
+key. The key is `scrypt(passphrase, salt, 32, N 2^17, r 8, p 1)`, derived once per run with one
+random salt per run. Files sealed by the encrypted data folder (`"\0kvault1"`) are opened with the
+vault key (sent by `fork.ts` only for a backup with a passphrase) and their plaintext is
+encrypted, so the backup restores on another device; without the vault key they are encrypted as
+they are. Without a passphrase, files upload unchanged, as before.
+
+Restore decrypts objects that start with `"\0kbackup"` into a second temp file next to the target
+and renames it only after the tag verifies. A missing or wrong passphrase, or a changed object,
+stops the whole restore. Other objects restore as they are, so older unencrypted buckets still
+work. After a restore, `fork.ts` runs `convertVault()` when the encrypted data folder is on, so
+restored plaintext is sealed again.
+
+Not hidden: object keys still show folder and file names, and object sizes show file sizes
+(plus 52 bytes). Backups stay a mirror without history.
+
 ## Verification
 
 ```sh
