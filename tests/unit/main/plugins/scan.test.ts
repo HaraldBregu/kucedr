@@ -46,10 +46,16 @@ beforeEach(() => {
 		JSON.stringify({
 			title: 'Chart',
 			description: 'Render a chart',
-			metadata: { version: '1.0.0', category: 'data', entry: 'index.mjs' },
+			metadata: {
+				version: '1.0.0',
+				category: 'data',
+				entry: 'index.mjs',
+				instructions: 'instructions.md',
+			},
 		})
 	);
 	writeFileSync(path.join(chart, 'index.mjs'), '');
+	writeFileSync(path.join(chart, 'instructions.md'), 'Render a chart.');
 	refreshPlugins();
 });
 
