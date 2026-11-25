@@ -176,6 +176,7 @@ export default function StorageForm({
 										aria-describedby={description ? `storage-${field.key}-description` : undefined}
 										required={
 											(field.key !== 'endpoint' || !!preset) &&
+											field.key !== 'passphrase' &&
 											!(field.key === 'secretAccessKey' && provider?.hasSecretAccessKey)
 										}
 										placeholder={
