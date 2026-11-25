@@ -1378,6 +1378,13 @@
 			"restartDescription": "Riavvia Kucedr per applicare la modifica.",
 			"restart": "Riavvia Kucedr",
 			"providerData": "I fornitori ricevono comunque i prompt, i file e l'audio che invii loro.",
+			"encryption": {
+				"title": "Crittografa i dati su questo dispositivo",
+				"description": "Chat, memoria, allegati e note sulla salute vengono crittografati con una chiave conservata nel portachiavi di sistema. Le esportazioni restano file leggibili. Se la voce nel portachiavi va persa, questi dati non si possono recuperare.",
+				"unavailable": "Il portachiavi di sistema non è disponibile su questo dispositivo, quindi non è possibile modificare la crittografia.",
+				"loadFailed": "Impossibile caricare la crittografia.",
+				"saveFailed": "Impossibile modificare la crittografia."
+			},
 			"loadFailed": "Impossibile caricare la modalità privacy.",
 			"saveFailed": "Impossibile salvare la modalità privacy.",
 			"restartFailed": "Impossibile riavviare Kucedr."
