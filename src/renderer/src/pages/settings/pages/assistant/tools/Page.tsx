@@ -37,6 +37,7 @@ import type {
 import { isAgentToolAllowedForProfile } from '../../../../../../../shared/agent_tools';
 import { isAgentToolConfigurable } from '../../../../../../../shared/agent_tools';
 import { ToolPermissionControl } from './Permission';
+import { ORDERED_AGENT_TOOL_GROUPS } from './groups';
 
 const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat' }) => {
 	const { t } = useTranslation();
