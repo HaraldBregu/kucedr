@@ -114,7 +114,8 @@ logger.info('CrashReporter', `Crash dumps path: ${app.getPath('crashDumps')}`);
 logger.info('Main', 'Starting app');
 logger.info('Main', 'Enabling IPC modules...');
 registerIpcHandlers(services, eventBus, {
-	openVoiceConversation: (chatSessionId) => voiceWindow.open(chatSessionId),
+	openVoiceConversation: (chatSessionId) =>
+		isLocked() ? mainWindow.showOrCreate() : voiceWindow.open(chatSessionId),
 });
 setupAppLifecycle(appState, logger);
 setupEventLogging(logger);
