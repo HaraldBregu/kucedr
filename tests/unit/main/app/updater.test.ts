@@ -16,7 +16,7 @@ import * as updater from '../../../../src/main/updater';
 
 const broadcast = jest.fn();
 const warn = jest.fn();
-const eventBus = { broadcast } as unknown as EventBus;
+const eventBus = { broadcast, on: jest.fn() } as unknown as EventBus;
 const logger = { warn } as unknown as LoggerService;
 
 describe('updater', () => {
