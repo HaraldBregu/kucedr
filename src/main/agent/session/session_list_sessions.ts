@@ -41,9 +41,9 @@ function sessionTitle(sessionId: string, location: string): string {
 
 function sessionPinned(sessionId: string, location: string): boolean {
 	try {
-		const info = JSON.parse(
-			readFileSync(infoFile(sessionsRoot(location), sessionId), 'utf8')
-		) as { pinned?: unknown };
+		const info = JSON.parse(readSealed(infoFile(sessionsRoot(location), sessionId))) as {
+			pinned?: unknown;
+		};
 		return info.pinned === true;
 	} catch {
 		return false;
