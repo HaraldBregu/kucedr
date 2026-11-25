@@ -30,7 +30,7 @@ Keep these properties when changing the code below.
 | 3 | High | User plugin with a bundled id replaces it and inherits its secrets | Partial: `CORE_PLUGIN_ID = 'bootstrap'`, a user `bootstrap` folder is ignored, core is never disabled; provider-id override is documented (`PLUGIN_SYSTEM.md`), Decision |
 | 4 | High | Prompt injection persists as a scheduled task that never asks | Fixed: agent can only pause; prompt/cron edits disable; `run_task_now` refuses disabled tasks |
 | 5 | High | App views can drive the voice agent and read its tool results | Fixed: voice IPC uses `TrustedRenderer`; no events forwarded to apps |
-| 6 | High | Read anywhere + open network + auto-loaded remote images = exfiltration | Partial: remote images in assistant messages render as links; in user messages and workspace documents they load only on click; summary messages still load them; credential deny list is a Decision |
+| 6 | High | Read anywhere + open network + auto-loaded remote images = exfiltration | Partial: remote images in assistant messages render as links; in user messages, summary messages and workspace documents they load only on click; credential deny list is a Decision |
 | 7 | Medium | Voice runs side-effect tools unattended | Decision |
 | 8 | Medium | `env` on elevated host commands (`PERMISSIONS_SECURITY.md` #6) | Fixed: rejected in `parseInput`, before approval |
 | 9 | Medium | macOS case-insensitive deny bypass (`PERMISSIONS_SECURITY.md` #5) | Fixed: `realpathSync.native` + case-insensitive compare on darwin/win32 |
