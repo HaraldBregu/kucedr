@@ -40,10 +40,10 @@ export async function migrateWorkspaceMemory(config: Config): Promise<void> {
 		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 	}
 	if (!current) {
-		await atomicWrite(target, legacyContent);
+		await atomicWrite(target, seal(legacyContent));
 	} else if (legacyContent.trim() && !current.includes(legacyContent.trim())) {
 		const separator = current.endsWith('\n') ? '\n' : '\n\n';
-		await atomicWrite(target, `${current}${separator}${legacyContent}`);
+		await atomicWrite(target, seal(`${current}${separator}${legacyContent}`));
 	}
 	await fs.unlink(legacy);
 }
