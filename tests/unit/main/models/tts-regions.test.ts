@@ -3,6 +3,23 @@ import { getProvider } from '../../../../src/main/settings_store';
 import { buildSpeechAdapter } from '../../../../src/main/models/adapters/tts/tts_factory';
 
 jest.mock('../../../../src/main/settings_store', () => ({ getProvider: jest.fn() }));
+jest.mock('../../../../src/main/models', () => ({
+	supportsCapability: () => true,
+	providerModels: () => [{ id: 'qwen-audio-3.0-tts-plus' }],
+	loadProviders: () => [],
+	defaultProviderId: () => undefined,
+	findModel: () => ({
+		id: 'qwen-audio-3.0-tts-plus',
+		url: 'https://dashscope.aliyuncs.com/api/v1',
+		metadata: {
+			protocol: 'speech-synthesizer',
+			baseUrlRule: {
+				pattern:
+					'^https://(?:dashscope(?:-intl)?\\.aliyuncs\\.com|[a-z0-9][a-z0-9-]*\\.(?:ap-southeast-1|cn-beijing|cn-hongkong)\\.maas\\.aliyuncs\\.com)(?:/|$)',
+			},
+		},
+	}),
+}));
 jest.mock('../../../../src/main/models/adapters/tts/tts_factory', () => ({
 	buildSpeechAdapter: jest.fn(() => ({
 		synthesize: jest.fn().mockResolvedValue({ audio: 'result' }),
@@ -35,7 +52,8 @@ describe('regional speech models', () => {
 				'tool'
 			);
 			expect(buildSpeechAdapter).toHaveBeenLastCalledWith(
-				expect.objectContaining({ baseURL: expected })
+				expect.objectContaining({ baseURL: expected }),
+				expect.anything()
 			);
 		}
 	);
