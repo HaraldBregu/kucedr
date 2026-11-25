@@ -21,15 +21,15 @@ import {
 import { ORDERED_AGENT_TOOL_GROUPS } from '../../assistant/tools/groups';
 import { describeSchedule } from '../schedule';
 
-const TOOL_GROUPS = ORDERED_AGENT_TOOL_GROUPS.filter((group) => group.titleKey !== 'tasks')
-	.map((group) => ({
-		...group,
-		tools: [
+const TOOLS = ORDERED_AGENT_TOOL_GROUPS.filter((group) => group.titleKey !== 'tasks').flatMap(
+	(group) =>
+		[
 			...(group.titleKey === 'web' ? [['Search web', 'search_web', 'Searches the web.'] as const] : []),
 			...group.tools,
-		].filter(([, id]) => isAgentToolAllowedForProfile('tasks', { kind: 'builtin', id })),
-	}))
-	.filter((group) => group.tools.length > 0);
+		]
+			.filter(([, id]) => isAgentToolAllowedForProfile('tasks', { kind: 'builtin', id }))
+			.map(([name, id, description]) => ({ name, id, description, icon: group.icon }))
+);
 
 const TaskEditPage: React.FC = () => {
 	const { t } = useTranslation();
