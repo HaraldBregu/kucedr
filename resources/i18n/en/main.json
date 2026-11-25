@@ -2475,7 +2475,8 @@
 		"restartApp": "Restart App",
 		"agents": "Agents",
 		"openFolder": "Open folder",
-		"search": "Search"
+		"search": "Search",
+		"undo": "Undo"
 	},
 	"providers": {
 		"title": "Providers",
