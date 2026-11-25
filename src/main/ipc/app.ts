@@ -34,6 +34,7 @@ import type {
 	AppThemeData,
 	AppThemeColors,
 	TrayClickAction,
+	UpdateChannel,
 	VoiceAgentAppearance,
 	WorkspaceTextSize,
 	ChatTextSize,
