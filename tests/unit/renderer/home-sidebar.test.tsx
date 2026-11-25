@@ -353,15 +353,16 @@ it('offers undo before permanently deleting a chat', async () => {
 		</MemoryRouter>
 	);
 
-	const chat = await screen.findByRole('button', { name: 'Latest chat' });
-	fireEvent.contextMenu(chat);
-	await waitFor(() => expect(confirm).toHaveBeenCalled());
+	fireEvent.contextMenu(await screen.findByRole('button', { name: 'Latest chat' }));
+	await waitFor(() => expect(screen.queryByRole('button', { name: 'Latest chat' })).toBeNull());
+	fireEvent.click(screen.getByRole('button', { name: 'common.undo' }));
 	expect(deleteSession).not.toHaveBeenCalled();
 
-	confirm.mockReturnValue(true);
-	fireEvent.contextMenu(chat);
-	await waitFor(() => expect(deleteSession).toHaveBeenCalledWith('session-latest'));
+	fireEvent.contextMenu(await screen.findByRole('button', { name: 'Latest chat' }));
 	await waitFor(() => expect(screen.queryByRole('button', { name: 'Latest chat' })).toBeNull());
+	expect(deleteSession).not.toHaveBeenCalled();
+	unmount();
+	expect(deleteSession).toHaveBeenCalledWith('session-latest');
 });
 
 it('starts a new chat from the sidebar', async () => {
