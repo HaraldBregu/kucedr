@@ -31,8 +31,8 @@ only #17, #22 and #24 were checked in code. Rows 21.10–21.12 are the open find
 - **21.1, 21.2 and 21.3 are recorded as "decision" in the audit.** Recommended: ask before
   side-effect actions in voice, trusted skills win, and restored code stays disabled until the user
   confirms it.
-- **21.10 and 21.11 are product decisions.** Recommended: turn off local binding for sandboxed
-  commands now and design the network allow-list with [Network shield](SHIELD.md); show a diff for
-  prompt self-edits, and decide whether first-run setup should ask too.
+- **21.10 and 21.11 are product decisions.** Local binding for sandboxed commands is off since
+  2026-11-25; design the network allow-list with [Network shield](SHIELD.md). Recommended: show a
+  diff for prompt self-edits, and decide whether first-run setup should ask too.
 - **Order.** 21.3 before hosted storage ([Payments](PAYMENTS.md), 9.1), since restore becomes a
   common path once backup is a product.
