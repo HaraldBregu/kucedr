@@ -26,7 +26,7 @@ it('confirms an ordinary download without version or backup selectors', async ()
 
 it('requires selected folders before downloading', () => {
 	render(<Restore open disabled={false} hasFolders={false} onOpenChange={jest.fn()} onRestore={jest.fn()} />);
-	expect(screen.getByRole('button', { name: 'Download files' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Restore files' })).toBeDisabled();
 });
 
 it('cancels without starting a download', async () => {
