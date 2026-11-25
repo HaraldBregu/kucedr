@@ -19,6 +19,8 @@ export interface BrowserTab {
 	// path is the holding file until the user agrees, then the file in Downloads; received is set
 	// when the bytes arrived before the answer.
 	download?: BrowserDownload & { readonly item: DownloadItem; readonly path: string; readonly received?: boolean };
+	// A site permission request waiting for the user's answer in the pane.
+	permission?: BrowserPermissionRequest & { readonly origin: string; readonly answer: (allowed: boolean) => void };
 	chat?: string;
 	owner?: string;
 	agent?: boolean;
