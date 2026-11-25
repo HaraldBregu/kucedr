@@ -45,6 +45,7 @@ const AccountPage = lazy(() => import('./pages/settings/pages/account/Page'));
 const CloudPage = lazy(() => import('./pages/settings/pages/cloud/Page'));
 const TasksPage = lazy(() => import('./pages/settings/pages/tasks/Page'));
 const TaskDetailsPage = lazy(() => import('./pages/settings/pages/tasks/detail/Page'));
+const TaskEditPage = lazy(() => import('./pages/settings/pages/tasks/edit/Page'));
 const GeneralPage = lazy(() => import('./pages/settings/pages/general/Page'));
 const PersonaPage = lazy(() => import('./pages/settings/pages/general/persona/Page'));
 const GeneralMediaDetailPage = lazy(() => import('./pages/settings/pages/general/media/Page'));
