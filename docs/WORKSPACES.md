@@ -276,7 +276,8 @@ folders alone would therefore be cosmetic.
 
 - **read** adds every other workspace's content. For the default workspace that is all of
   `~/.kucedr/workspaces`. For workspace X it is the default's `workspace`, `sessions`, `memory`,
-  `library` and `rag`, plus every sibling workspace folder. It also adds every workspace's `browser`
+  `library` and `rag`, plus every sibling workspace folder. Either way it adds every other
+  workspace's picked folder. It also adds every workspace's `browser`
   folder, the whole Electron `Partitions` directory, `~/.kucedr/agent-browser`, `~/.kucedr/settings`
   and `~/.kucedr/logs`.
 - **write** is unchanged: all of `~/.kucedr` stays write-protected.
