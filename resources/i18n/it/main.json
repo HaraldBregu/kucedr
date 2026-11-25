@@ -1118,7 +1118,22 @@
 				"notSet": "Non impostata",
 				"promptInput": "Prompt di input",
 				"enabled": "Abilita attività",
-				"enabledDescription": "Consenti l'esecuzione dell'attività all'orario configurato."
+				"enabledDescription": "Consenti l'esecuzione dell'attività all'orario configurato.",
+				"lastRunFailed": "L'ultima esecuzione non è riuscita ({{time}}): {{error}}"
+			},
+			"form": {
+				"newTitle": "Nuova attività",
+				"editTitle": "Modifica attività",
+				"description": "Indica cosa deve fare l'attività, quando eseguirla e quali strumenti può usare.",
+				"name": "Nome",
+				"instructions": "Istruzioni",
+				"instructionsPlaceholder": "Cosa deve fare l'attività?",
+				"schedule": "Pianificazione",
+				"scheduleHint": "Un'espressione cron, ad esempio 0 9 * * * per ogni giorno alle 09:00. Lasciala vuota per eseguire l'attività solo con Esegui ora. Un'attività viene eseguita al massimo una volta ogni 5 minuti.",
+				"tools": "Strumenti consentiti",
+				"toolsDescription": "L'attività può usare solo gli strumenti che scegli. Durante l'esecuzione non può chiedere approvazioni, quindi gli strumenti impostati su Chiedi o Nega in Strumenti restano disattivati.",
+				"saving": "Salvataggio...",
+				"saveError": "L'attività non è stata salvata."
 			},
 			"history": {
 				"pageTitle": "Cronologia attività",
