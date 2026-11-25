@@ -418,7 +418,7 @@ it('continues through chat and voice, goes back, and saves only on Finish', asyn
 		expect(within(document.querySelector('footer')!).getByRole('status')).toHaveTextContent('Chat assistant · 3 of 4');
 		await user.click(screen.getByRole('button', { name: 'Continue' }));
 		expect(await screen.findByRole('heading', { name: 'Voice assistant' })).toBeInTheDocument();
-		expect(within(document.querySelector('footer')!).getByRole('status')).toHaveTextContent('Voice assistant · 3 of 3');
+		expect(within(document.querySelector('footer')!).getByRole('status')).toHaveTextContent('Voice assistant · 4 of 4');
 		expect(save).not.toHaveBeenCalled();
 		await user.click(screen.getByRole('button', { name: 'Back' }));
 		expect(screen.getByRole('heading', { name: 'Chat assistant' })).toBeInTheDocument();
