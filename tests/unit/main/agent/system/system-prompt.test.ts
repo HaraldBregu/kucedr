@@ -29,9 +29,9 @@ describe('addBasePrompt', () => {
 	it('directs the assistant to retain durable user context automatically', () => {
 		const prompt = addBasePrompt('');
 		expect(prompt).toContain('captured, recalled, corrected, pruned, and maintained automatically');
-		expect(prompt).toContain('No memory tools exist');
+		expect(prompt).toContain('call remember or forget when they are available');
 		expect(prompt).toContain('process the request in the background');
-		expect(prompt).toContain('Do not claim that deletion already completed');
+		expect(prompt).toContain('do not claim that deletion already completed');
 		expect(prompt).not.toContain('forget_memory');
 	});
 	it('directs the assistant to use every recorder for matching user requests', () => {
