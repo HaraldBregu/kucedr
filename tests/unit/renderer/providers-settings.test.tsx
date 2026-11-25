@@ -505,7 +505,7 @@ it('places connected model providers before unconnected ones', async () => {
 	]);
 	jest
 		.mocked(window.provider.list)
-		.mockResolvedValue([{ id: 'anthropic', name: 'Anthropic', apiKey: 'saved-key' }]);
+		.mockResolvedValue([{ id: 'anthropic', name: 'Anthropic', saved: true }]);
 	render(
 		<MemoryRouter>
 			<ProvidersPage section="models" />
