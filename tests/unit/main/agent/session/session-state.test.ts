@@ -138,7 +138,7 @@ describe('stringifyRunEntry', () => {
 			type: 'run_started',
 			tools: ['read'],
 			skillDiagnostics: [{ level: 'error', code: 'invalid', message: 'private path' }],
-			skillActivations: [{ id: 'writer', name: 'writer', hash: 'abc', trust: 'user-controlled' }],
+			skillActivations: [{ id: 'writer', name: 'writer', hash: 'abc' }],
 		});
 		expect(JSON.parse(started!).event).toMatchObject({
 			skillDiagnosticCount: 1,
