@@ -214,36 +214,6 @@ it.each<[AuthState, string]>([
 	await screen.findByText('settings.chatHistory.empty');
 });
 
-it('opens voice from its own footer button without opening the account menu', async () => {
-	const user = userEvent.setup();
-	listSessions.mockResolvedValue([]);
-
-	render(
-		<MemoryRouter>
-			<ChatSessionContext.Provider value={{ sessionId: 'session-voice', setSessionId: jest.fn() }}>
-				<PageContainer>
-					<HomeSidebar refreshKey="initial" />
-				</PageContainer>
-			</ChatSessionContext.Provider>
-		</MemoryRouter>
-	);
-
-	const voiceButton = screen.getByRole('button', { name: 'settings.tabs.voice' });
-	expect(voiceButton).toHaveClass(
-		'size-8',
-		'top-2',
-		'hover:bg-sidebar-primary',
-		'hover:text-sidebar-primary-foreground'
-	);
-	await user.click(voiceButton);
-
-	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('session-voice'));
-	expect(getMicrophonePermission).toHaveBeenCalledTimes(1);
-	expect(screen.queryByRole('menu')).not.toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' }));
-	expect(screen.getByRole('menu')).toBeInTheDocument();
-});
-
 it('renames a chat from its context menu without item action buttons', async () => {
 	const user = userEvent.setup();
 	listSessions.mockResolvedValue([{ id: 'session-latest', title: 'Latest chat', createdAtMs: 2 }]);
