@@ -17,6 +17,8 @@ export function requiresExplicitRequest(tool: Tool): boolean {
 		'update_soul',
 		'update_user',
 		'update_health',
+		'remember',
+		'forget',
 		'create_task',
 		'update_task',
 		'delete_task',
