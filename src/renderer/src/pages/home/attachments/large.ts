@@ -16,6 +16,6 @@ export function largeAttachmentError(
 		);
 	});
 	return large
-		? i18n.t('attachments.tooLarge', { name: large.name, size: formatFileSize(MAX_BYTES) })
+		? i18next.t('attachments.tooLarge', { name: large.name, size: formatFileSize(MAX_BYTES) })
 		: undefined;
 }
