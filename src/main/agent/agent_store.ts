@@ -87,6 +87,8 @@ const RUNTIME_TOOL_KEYS = {
 	update_user: 'update_user',
 	update_identity: 'update_identity',
 	update_health: 'update_health',
+	remember: 'remember',
+	forget: 'forget',
 	create_task: 'create_task',
 	update_task: 'update_task',
 	delete_task: 'delete_task',
