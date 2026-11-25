@@ -22,6 +22,7 @@ import { workspaceResourceUrl } from './Resource';
 import { WorkspaceLibraryPicker } from './LibraryPicker';
 import { WorkspaceImagePreview } from './Preview';
 import { WorkspaceOutline } from './Outline';
+import { WorkspaceRemoteImage } from './Remote';
 import { WorkspaceToolbar } from './Toolbar';
 import { WorkspaceUrlDialog } from './UrlDialog';
 import { pluginScriptRef } from '../../../../shared/plugin_script_ref';
