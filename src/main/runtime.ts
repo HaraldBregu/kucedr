@@ -251,6 +251,7 @@ app.whenReady().then(async () => {
 	app.once('before-quit', () => {
 		void stopWatchingApps();
 	});
+	watchSessions(agentLocation(), () => eventBus.broadcast(AgentChannels.sessionsChanged));
 	// Apply persisted settings on startup (updateLanguage builds the menu)
 	const storedLanguage = getLanguage();
 	menuManager.updateLanguage(storedLanguage);
