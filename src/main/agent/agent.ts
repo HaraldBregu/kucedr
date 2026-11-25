@@ -472,6 +472,7 @@ export class Agent {
 				id: record.request.sessionId,
 				createdAtMs: stored?.createdAtMs ?? record.request.queuedAt,
 				updatedAtMs: Math.max(stored?.updatedAtMs ?? 0, record.request.queuedAt),
+				lastMessageAtMs: Math.max(stored?.lastMessageAtMs ?? 0, record.request.queuedAt),
 				title: stored?.title ?? record.request.message.slice(0, 80),
 				pinned: stored?.pinned,
 				archived: stored?.archived,
@@ -479,7 +480,10 @@ export class Agent {
 				runStatus: record.lifecycle.status,
 			});
 		}
-		return [...byId.values()].sort((left, right) => right.createdAtMs - left.createdAtMs);
+		return [...byId.values()].sort(
+			(left, right) =>
+				(right.lastMessageAtMs ?? right.createdAtMs) - (left.lastMessageAtMs ?? left.createdAtMs)
+		);
 	}
 
 	renameSession(sessionId: string, title: string): Promise<void> {
