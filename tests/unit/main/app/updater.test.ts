@@ -10,6 +10,7 @@ const mockAutoUpdater = Object.assign(new EventEmitter(), {
 });
 
 jest.mock('electron-updater', () => ({ autoUpdater: mockAutoUpdater }));
+jest.mock('../../../../src/main/settings_store', () => ({ getUpdateChannel: () => 'stable' }));
 
 import * as updater from '../../../../src/main/updater';
 
