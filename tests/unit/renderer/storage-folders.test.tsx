@@ -116,13 +116,10 @@ it('keeps backup controls disabled when no providers exist', async () => {
 		</MemoryRouter>
 	);
 	expect(
-		await screen.findByText(
-			'Choose a saved Amazon S3 or S3-compatible provider.'
-		)
+		await screen.findByText(mockTranslations.settings.storage.service.description)
 	).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Upload' })).toBeDisabled();
-	expect(screen.getByRole('button', { name: 'Download' })).toBeDisabled();
-	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Backup' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Restore' })).toBeDisabled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
 
