@@ -79,7 +79,11 @@ it('routes PTY data only to the owner and enforces owner control', async () => {
 	await expect(
 		manager.create(owner, { id: 'terminal-1234', cols: 80, rows: 24, cwd: process.cwd() })
 	).resolves.toMatchObject({ id: 'terminal-1234', shell: '/bin/zsh' });
-	harness.emitData('hello');
+	harness.emitData('hel');
+	harness.emitData('lo');
+	expect(owner.send).not.toHaveBeenCalled();
+	await new Promise((resolve) => setTimeout(resolve, 20));
+	expect(owner.send).toHaveBeenCalledTimes(1);
 	expect(owner.send).toHaveBeenCalledWith(TerminalChannels.data, {
 		id: 'terminal-1234',
 		data: 'hello',
