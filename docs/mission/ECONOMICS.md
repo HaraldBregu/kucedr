@@ -126,7 +126,7 @@ An unlimited hosted plan is a bet on how hard customers use it. Nexus sells cred
 worth about €12 at cost per seat (13 standard Sonnet briefs or two heavy ones) and sell further
 credits at about twice cost. With the allowance fully used, the seat keeps 72% before support,
 close to the 76% public SaaS median and well above the 45% ICONIQ reports for AI products in 2025.
-[Nexus pricing](NEXUS.md#prices) · [OSINT Pilot pricing](OSINT_PILOT.md#prices) ·
+[Nexus pricing](companies/NEXUS.md#prices) · [OSINT Pilot pricing](companies/OSINT_PILOT.md#prices) ·
 [Clouded Judgement, 20 Nov 2026](https://cloudedjudgement.substack.com/p/clouded-judgement-111926-security) ·
 [ICONIQ State of AI 2026](https://www.iconiq.com/growth/insights/state-of-ai-2026)
 
@@ -214,7 +214,7 @@ of British Investigators directory. An individual seat cannot carry any paid acq
 to come from the open-source project, word of mouth and listings such as Bellingcat's toolkit.
 [ChartMogul churn](https://chartmogul.com/blog/good-customer-churn-rate/) ·
 [CAC payback 2026](https://www.getaleph.com/answers/cac-payback-period-saas-2026) ·
-[Bellingcat](BELLINGCAT.md)
+[Bellingcat](companies/BELLINGCAT.md)
 
 The funnel this implies is large. ChartMogul's 2026 report puts median free-to-paid conversion at
 8% and calls 6% to 8% good for AI-native products; a secondary source puts open-source users who

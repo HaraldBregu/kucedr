@@ -12,11 +12,11 @@ plan arithmetic are in [Margins and unit economics](ECONOMICS.md).
   hash-chained log, and writes a PDF dossier whose AI text cites numbered exhibits. It runs on the
   user's own Anthropic, OpenAI or OpenRouter key or on Ollama. It costs $29 a seat a month with
   the user's own key and $49 with managed AI. The [product direction's](PRODUCT.md#2-what-the-market-says)
-  statement that no tool is a local AI desk no longer holds. [DeepState](DEEPSTATE.md)
+  statement that no tool is a local AI desk no longer holds. [DeepState](companies/DEEPSTATE.md)
 - **AI drafting alone is a commodity.** Hyperresearch sells a cited company report for $9 or $49 a
   run, OpenDossier a company report for $49, NC Data one for €22.50, and Claude Pro includes
-  Research for $20 a month. [Hyperresearch](HYPERRESEARCH.md) · [OpenDossier](OPENDOSSIER.md) ·
-  [NC Data](NCDATA.md)
+  Research for $20 a month. [Hyperresearch](companies/HYPERRESEARCH.md) · [OpenDossier](companies/OPENDOSSIER.md) ·
+  [NC Data](companies/NCDATA.md)
 - **The opening left is the reviewer handoff inside the firm's own deliverable.** No product read
   does all of: keep the page as the analyst saw it, link one sentence of an editable brief to the
   exact passage, let a reviewer approve or correct that sentence, and export the brief in the firm's
@@ -30,12 +30,12 @@ plan arithmetic are in [Margins and unit economics](ECONOMICS.md).
 
 | Segment | Products and published prices | What they own | Gap for Kucedr |
 | --- | --- | --- | --- |
-| Local AI investigation desk | [DeepState](DEEPSTATE.md): $29 a seat a month (own key), $49 (managed AI). [OSIRT](OSIRT.md): local investigation browser, no AI stated, prices not public | Agent, capture, hash chain and dossier on the analyst's machine | Editable brief in the firm's template; per-sentence review |
-| Cloud AI investigation agents | [Nexus](NEXUS.md): €119 to €219 a month. [OSINT Pilot](OSINT_PILOT.md): about $13 to $20 an investigation. [AegisStack](AEGISSTACK.md): not published. [OpenOSINT](OPENOSINT.md): free MIT, plans €300 to €1,000 a year | Multi-step agents over many OSINT tools; Nexus has a hash-chained custody trail | Local data and the user's model; company briefs rather than OSINT on people |
-| AI-drafted company reports | [Xapien](XAPIEN.md): from 250 reports a year, price not published. [Hyperresearch](HYPERRESEARCH.md): $9 or $49 a run. [OpenDossier](OPENDOSSIER.md): $49 report, $99 to $149 a seat a month, analyst brief from $1,000. [NC Data](NCDATA.md): €22.50 a report, €59.90 a month | Fast cited drafts, licensed data, sentence-level sourcing (Xapien), per-claim status (OpenDossier) | No preserved page capture stated in any of them; output is their report, not the firm's |
-| Evidence capture | [Hunchly](MALTEGO.md): €149 a year. [Forensic OSINT](FORENSIC_OSINT.md): $197 to $1,097 a year. [Bellingcat Auto Archiver](BELLINGCAT.md): free | Timestamps, hashes, MHTML, WACZ, signed PDFs | No agent, no drafting, no review |
-| Institutional platforms | [Maltego](MALTEGO.md): €3,000 to €7,500 a year. [Videris](VIDERIS.md): £30,000 a year for four users. [Authentic8 Silo](AUTHENTIC8.md): $1,450 to $3,450 a user a year | Data catalogues, managed attribution, audit trails, certifications | Priced and sold for banks, government and large firms |
-| AI case review | [Casefleet](CASEFLEET.md): $140 a user a month | AI proposes a cited fact, a person approves it, Word export links each citation to its file | Litigation only, uploaded documents only, cloud |
+| Local AI investigation desk | [DeepState](companies/DEEPSTATE.md): $29 a seat a month (own key), $49 (managed AI). [OSIRT](companies/OSIRT.md): local investigation browser, no AI stated, prices not public | Agent, capture, hash chain and dossier on the analyst's machine | Editable brief in the firm's template; per-sentence review |
+| Cloud AI investigation agents | [Nexus](companies/NEXUS.md): €119 to €219 a month. [OSINT Pilot](companies/OSINT_PILOT.md): about $13 to $20 an investigation. [AegisStack](companies/AEGISSTACK.md): not published. [OpenOSINT](companies/OPENOSINT.md): free MIT, plans €300 to €1,000 a year | Multi-step agents over many OSINT tools; Nexus has a hash-chained custody trail | Local data and the user's model; company briefs rather than OSINT on people |
+| AI-drafted company reports | [Xapien](companies/XAPIEN.md): from 250 reports a year, price not published. [Hyperresearch](companies/HYPERRESEARCH.md): $9 or $49 a run. [OpenDossier](companies/OPENDOSSIER.md): $49 report, $99 to $149 a seat a month, analyst brief from $1,000. [NC Data](companies/NCDATA.md): €22.50 a report, €59.90 a month | Fast cited drafts, licensed data, sentence-level sourcing (Xapien), per-claim status (OpenDossier) | No preserved page capture stated in any of them; output is their report, not the firm's |
+| Evidence capture | [Hunchly](companies/MALTEGO.md): €149 a year. [Forensic OSINT](companies/FORENSIC_OSINT.md): $197 to $1,097 a year. [Bellingcat Auto Archiver](companies/BELLINGCAT.md): free | Timestamps, hashes, MHTML, WACZ, signed PDFs | No agent, no drafting, no review |
+| Institutional platforms | [Maltego](companies/MALTEGO.md): €3,000 to €7,500 a year. [Videris](companies/VIDERIS.md): £30,000 a year for four users. [Authentic8 Silo](companies/AUTHENTIC8.md): $1,450 to $3,450 a user a year | Data catalogues, managed attribution, audit trails, certifications | Priced and sold for banks, government and large firms |
+| AI case review | [Casefleet](companies/CASEFLEET.md): $140 a user a month | AI proposes a cited fact, a person approves it, Word export links each citation to its file | Litigation only, uploaded documents only, cloud |
 | Do it yourself | Word and Zotero (free); Claude Pro $20 a month with Research; ChatGPT Plus $20 a month with deep research | The firm's templates, habits and existing citations | Nothing joins capture, drafting and review |
 
 ## The reviewer test, product by product

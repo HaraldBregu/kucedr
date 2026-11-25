@@ -94,10 +94,10 @@ DeepState already puts the browser, the agent, the evidence and the model of the
 the investigator's own machine. Where Kucedr can still lead, and the company-research competitors
 the [commercial research](RESEARCH.md) adds, are in [How Kucedr competes](COMPETITION.md).
 
-Each tool has a research note in this folder: [Maltego and Hunchly](MALTEGO.md),
-[Forensic OSINT](FORENSIC_OSINT.md), [Authentic8](AUTHENTIC8.md), [OSIRT](OSIRT.md),
-[Bellingcat](BELLINGCAT.md), [Nexus](NEXUS.md), [OSINT Pilot](OSINT_PILOT.md),
-[AegisStack](AEGISSTACK.md), [OpenOSINT](OPENOSINT.md) and [DeepState](DEEPSTATE.md).
+Each tool has a research note in this folder: [Maltego and Hunchly](companies/MALTEGO.md),
+[Forensic OSINT](companies/FORENSIC_OSINT.md), [Authentic8](companies/AUTHENTIC8.md), [OSIRT](companies/OSIRT.md),
+[Bellingcat](companies/BELLINGCAT.md), [Nexus](companies/NEXUS.md), [OSINT Pilot](companies/OSINT_PILOT.md),
+[AegisStack](companies/AEGISSTACK.md), [OpenOSINT](companies/OPENOSINT.md) and [DeepState](companies/DEEPSTATE.md).
 
 ## 3. Directions considered
 

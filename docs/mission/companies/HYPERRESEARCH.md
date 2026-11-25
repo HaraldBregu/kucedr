@@ -1,6 +1,6 @@
 # Hyperresearch
 
-Research note for the [company-brief direction](RESEARCH.md). Read 2026-11-25 from the sources at the end.
+Research note for the [company-brief direction](../RESEARCH.md). Read 2026-11-25 from the sources at the end.
 "Not stated" means the pages read did not say.
 
 ## At a glance

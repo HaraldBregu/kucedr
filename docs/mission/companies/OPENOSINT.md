@@ -1,6 +1,6 @@
 # OpenOSINT
 
-Research note for the [product direction](PRODUCT.md). Read 2026-11-25 from the sources at the end.
+Research note for the [product direction](../PRODUCT.md). Read 2026-11-25 from the sources at the end.
 "Not stated" means the pages read did not say.
 
 ## At a glance
