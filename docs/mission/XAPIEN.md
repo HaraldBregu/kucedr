@@ -72,4 +72,4 @@ A G-Cloud search for "xapien" returned no services. G2 blocked fetching, so its 
 - [Xapien](https://xapien.com/), [plans](https://xapien.com/plans/), [platform](https://xapien.com/our-platform/), [about us](https://xapien.com/about-us/) and [FAQ](https://xapien.com/?p=291), Digital Insight Technologies
 - [How Xapien works for due diligence](https://xapien.com/how-xapien-works-for-due-diligence/), Xapien, 2023
 - [Will I be charged for re-running my report?](https://help.xapien.com/en/articles/13611269-will-i-be-charged-for-re-running-my-report) and [How do I share my report?](https://help.xapien.com/en/articles/13603249-how-do-i-share-my-report), Xapien help centre
-- [Xapien pricing on G2](https://www.g2.com/products/xapien/pricing) and [G-Cloud search for "xapien"](https://www.applytosupply.digitalmarketplace.service.gov.uk/g-cloud/search?q=xapien), third-party listings
+- [G-Cloud search for "xapien"](https://www.applytosupply.digitalmarketplace.service.gov.uk/g-cloud/search?q=xapien), Digital Marketplace
