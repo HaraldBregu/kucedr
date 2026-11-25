@@ -71,6 +71,7 @@ import { sessionType } from './session/session_session_type';
 import { sessionsRoot } from './session/session_sessions_root';
 import { sessionFolderName } from './session/session_session_folder_name';
 import { sessionPath } from './session/session_session_path';
+import { toHistoryMessages } from './session/session_to_history_messages';
 import { formatReplyMessage } from '../../shared/reply';
 import type { AgentToolProfileId } from '../../shared/agent_tools';
 import { registry } from './tools/core/process';
