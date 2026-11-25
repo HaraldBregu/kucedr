@@ -1488,6 +1488,8 @@ export interface BrowserInvokeChannelMap {
 	[BrowserChannels.connections]: { args: []; result: import('./browser').BrowserConnections };
 	[BrowserChannels.connectionsSet]: { args: [connections: import('./browser').BrowserConnections]; result: void };
 	[BrowserChannels.torFind]: { args: []; result: string | null };
+	[BrowserChannels.cursor]: { args: []; result: boolean };
+	[BrowserChannels.cursorSet]: { args: [enabled: boolean]; result: void };
 }
 
 export interface BrowserEventChannelMap {
