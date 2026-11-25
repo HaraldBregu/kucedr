@@ -69,6 +69,10 @@ test('plugin links open plugin details on cold and warm launch without installin
 		await openUrl('kucedr://plugins/no-such-plugin');
 		await expect(page).toHaveURL(details('no-such-plugin'));
 
+		expect(before).toContain('bootstrap');
+		await openUrl('kucedr://plugins/bootstrap');
+		await expect(page).toHaveURL(details('bootstrap'));
+
 		expect(await installedIds()).toEqual(before);
 		expect(before.filter((id) => ['cartesia', 'cohere', 'ideogram'].includes(id))).toEqual([]);
 	} finally {
