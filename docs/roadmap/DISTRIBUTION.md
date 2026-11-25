@@ -7,7 +7,7 @@ Part of the [Roadmap](README.md). Status: proposal.
 | 6.1 | Signed and notarised builds | No Gatekeeper or SmartScreen warning at install | `electron-builder.json` has `notarize: false` and `forceCodeSigning: false` today | L, needs paid certificates |
 | 6.2 | Website and user docs | A landing page and help site | `package.json` references a `website` folder that does not exist; [LANDING_PAGE.md](../LANDING_PAGE.md) is the brief | L |
 | 6.3 | arm64 builds for Windows and Linux | The app runs natively on arm64 PCs and Linux machines | `electron-builder.json` builds x64 only for both; macOS already ships both | M |
-| 6.4 | Legal pages | Working Terms of Service and Privacy Policy, and a notices file for bundled third-party work | The sign-up screen links both to nowhere (`src/renderer/src/pages/start/components/AuthStep.tsx`) while accounts already exist | S, needs the texts |
+| 6.4 | Legal pages | Working Terms of Service and Privacy Policy, and a notices file for bundled third-party work | Since 2026-11-24 the sign-up screen (`src/renderer/src/pages/start/components/AuthStep.tsx`) links both to kucedr.com through `links` in `package.json`, and both pages load. No notices file yet | S |
 | 6.5 | Published CLI and SDK | The command-line tool and the SDK installable from npm | Both exist in `packages/cli` and `packages/sdk`; the publish workflow is disabled | S |
 
 6.4 is in the first step of the [recommended order](README.md#recommended-order).
