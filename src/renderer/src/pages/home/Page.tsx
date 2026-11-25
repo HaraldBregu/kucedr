@@ -84,6 +84,7 @@ import { ChatDetails } from './Details';
 import { LIBRARY_DRAG_TYPE } from '../settings/pages/library/drag';
 import { droppedLibraryFiles } from './attachments/library';
 import { accepts } from './attachments/accepts';
+import { largeAttachmentError } from './attachments/large';
 import { Provider, welcomeMessage } from './context';
 import {
 	useAudioRecorder,
