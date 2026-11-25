@@ -128,14 +128,6 @@ void main() {
 	vec2 uv = (gl_FragCoord.xy - 0.5) * uCell / uResolution - 0.5;
 	uv.x *= uResolution.x / uResolution.y;
 
-	float touch = 0.0;
-	for (int i = 0; i < ${MAX_TRAIL}; i++) {
-		if (i >= uTrailCount) break;
-		vec3 point = uTrail[i];
-		float reach = ${RADIUS.toFixed(2)} * mix(0.55, 1.0, point.z);
-		touch = max(touch, point.z * (1.0 - smoothstep(0.0, reach, length(uv - point.xy))));
-	}
-
 	vec2 warp = vec2(0.0);
 	float ring = 0.0;
 	for (int i = 0; i < ${MAX_RIPPLES}; i++) {
