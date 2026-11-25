@@ -105,13 +105,9 @@ module.exports = {
 			setupFiles: ['<rootDir>/tests/setup/polyfills.ts'],
 			setupFilesAfterEnv: ['<rootDir>/tests/setup/renderer.ts'],
 			testMatch: ['**/*.test.ts', '**/*.test.tsx'],
+			clearMocks: true,
 		},
 	],
-
-	// Automatically clear, reset, and restore mocks between tests
-	clearMocks: true,
-	resetMocks: true,
-	restoreMocks: true,
 
 	// Global coverage config
 	collectCoverageFrom: [
