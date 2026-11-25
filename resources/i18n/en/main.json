@@ -872,6 +872,7 @@
 				"compact": "Could not compact the conversation.",
 				"archive": "Could not update the archived chats.",
 				"pin": "Could not update the pinned chats.",
+				"rename": "Could not rename the chat. Try again.",
 				"openFolder": "Could not open the chat history folder."
 			}
 		},
