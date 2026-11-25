@@ -117,6 +117,10 @@ it has a story, and its buyers expect compliance work a one-person project canno
 Direction 1 ships on what exists plus three features, and what it adds later (encryption, app lock,
 local models, separate cases) is what direction 2 needs anyway.
 
+A second search on 26 November 2026 looked at twelve further directions and moved direction 2,
+narrowed to Italian professional studios, to the first one to test:
+[What Kucedr could be](DIRECTIONS.md).
+
 ## 4. The product
 
 **Kucedr, the private desk for investigations.** Browse without exposing yourself. Let the agent
