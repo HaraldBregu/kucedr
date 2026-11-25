@@ -451,6 +451,14 @@ export interface RecorderEventChannelMap {
 
 export interface TaskInvokeChannelMap {
 	[TaskChannels.list]: { args: []; result: import('../main/tasks').TaskSchedule[] };
+	[TaskChannels.create]: {
+		args: [request: import('../main/tasks').TaskScheduleCreateRequest];
+		result: import('../main/tasks').TaskSchedule;
+	};
+	[TaskChannels.update]: {
+		args: [scheduleId: string, request: import('../main/tasks').TaskScheduleUpdateRequest];
+		result: import('../main/tasks').TaskSchedule;
+	};
 	[TaskChannels.history]: {
 		args: [scheduleId: string];
 		result: import('./agent_types').AgentSessionSummary[];
