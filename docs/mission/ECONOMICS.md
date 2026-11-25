@@ -44,8 +44,8 @@ machine. Searches are priced at Brave's $5 per 1,000.
 
 OpenAI's gpt-6.2-sol has the same list price as Sonnet 5.5 and gpt-6-luna the same as Haiku 5.5, so
 the table holds for either provider. Haiku 5.5 costs five times more per token for prompts above
-100,000 tokens. Cache reads cost one-twentieth of the input price on both providers' lists, and
-batch processing halves the price. A loop that re-reads the same context could cut the input share
+100,000 tokens. Cache reads cost one-twentieth of the input price for the Sonnet- and Opus-class
+models on both providers' lists (one-tenth for the smallest), and batch processing halves the price. A loop that re-reads the same context could cut the input share
 sharply; measure it before counting on it.
 [Anthropic pricing](https://platform.claude.com/docs/en/about-claude/pricing) ·
 [OpenAI pricing](https://developers.openai.com/api/docs/pricing) ·
