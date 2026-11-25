@@ -6,8 +6,6 @@ import { getPrivacyRoute, isPrivacyEnabled } from '../../../../privacy/state';
 import { askPermission } from './ask';
 import { guard } from './guard';
 import { holdDownload } from './hold';
-import { sitePermits } from './pane';
-import { uses } from './uses';
 
 const prepared = new Map<string, Promise<void>>();
 
