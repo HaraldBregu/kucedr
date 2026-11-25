@@ -644,6 +644,7 @@ export interface AgentEventChannelMap {
 	[AgentChannels.response]: { data: import('./agent_types').AgentResponseEvent };
 	[AgentChannels.workspaceChanged]: { data: import('./agent_types').WorkspaceChangeEvent };
 	[AgentChannels.openSession]: { data: string };
+	[AgentChannels.sessionsChanged]: { data: void };
 }
 
 export interface AppInvokeChannelMap {
