@@ -1,6 +1,11 @@
 import { parseMemories } from './parse';
 
-export function stampMemories(next: string, previous: string, date = new Date()): string {
+export function stampMemories(
+	next: string,
+	previous: string,
+	date = new Date(),
+	source?: string
+): string {
 	const existing = new Map(parseMemories(previous).map((entry) => [entry.id, entry]));
 	const timestamp = date.toISOString();
 	return next
@@ -11,7 +16,8 @@ export function stampMemories(next: string, previous: string, date = new Date())
 			if (!entry) return clean;
 			const prior = existing.get(entry.id);
 			const createdAt = prior ? prior.createdAt : timestamp;
-			return createdAt ? `${clean} <!-- kucedr:created:${createdAt} -->` : clean;
+			const origin = entry.source ? undefined : prior ? prior.source : source;
+			return `${clean}${origin ? ` <!-- kucedr:source:${origin} -->` : ''}${createdAt ? ` <!-- kucedr:created:${createdAt} -->` : ''}`;
 		})
 		.join('\n');
 }
