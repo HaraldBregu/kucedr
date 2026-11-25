@@ -13,6 +13,7 @@ import { snapshotMarkdown } from './snapshot';
 import { generateMemory } from './generate';
 import { stampMemories } from './stamp';
 import { appendMemory } from './append';
+import { privateContent } from './private';
 import { baseline } from './baseline';
 
 export class Memory implements MemoryService {
