@@ -104,6 +104,8 @@ import type { ExecSandbox } from '../agent/sandbox';
 import type { WindowContextManager } from '../window_context';
 import { getPrivacy, requireUnrestrictedNetwork, setPrivacy } from '../privacy/state';
 import { restart } from '../privacy/restart';
+import { getLock, lock, setLock, unlock } from '../lock/state';
+import { unlockWithTouchId } from '../lock/touch';
 import { TrustedRenderer } from './core/trusted';
 
 export interface AppIpcDeps {
