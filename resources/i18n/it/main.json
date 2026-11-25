@@ -1598,6 +1598,8 @@
 			"emptyDescription": "Aggiungi un bucket per configurare l'archiviazione dei file.",
 			"endpointHint": "Facoltativo per Amazon S3. Per gli altri provider, usa l'endpoint del servizio senza il nome del bucket.",
 			"secretHint": "Lascia vuoto per mantenere la chiave segreta salvata.",
+			"passphraseHint": "Facoltativa. I backup vengono cifrati con questa passphrase prima del caricamento. Se la perdi, i backup non potranno essere ripristinati.",
+			"passphraseSavedHint": "I backup vengono cifrati con la passphrase salvata prima del caricamento. Lascia vuoto per mantenerla. Se la perdi, i backup non potranno essere ripristinati.",
 			"loadError": "Impossibile caricare le connessioni di archiviazione.",
 			"saveError": "Impossibile salvare questa connessione di archiviazione.",
 			"removeError": "Impossibile rimuovere questa connessione di archiviazione.",
@@ -1609,6 +1611,7 @@
 				"endpoint": "URL endpoint",
 				"accessKeyId": "ID chiave di accesso",
 				"secretAccessKey": "Chiave di accesso segreta",
+				"passphrase": "Passphrase del backup",
 				"forcePathStyle": "Usa indirizzamento path-style"
 			}
 		},
