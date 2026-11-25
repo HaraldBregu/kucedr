@@ -94,11 +94,11 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				});
 		};
 		load();
-		const interval = window.setInterval(load, 1500);
+		const offSessionsChanged = window.agent.onSessionsChanged(load);
 
 		return () => {
 			active = false;
-			window.clearInterval(interval);
+			offSessionsChanged();
 		};
 	}, [refreshKey, sessionId]);
 
