@@ -582,6 +582,8 @@ export class AppIpc implements IpcModule {
 		ipcMain.handle(AppChannels.getPrivacy, wrapTrustedHandler(getPrivacy, AppChannels.getPrivacy));
 		ipcMain.handle(AppChannels.setPrivacy, wrapTrustedHandler(setPrivacy, AppChannels.setPrivacy));
 		ipcMain.handle(AppChannels.restart, wrapTrustedHandler(restart, AppChannels.restart));
+		ipcMain.handle(AppChannels.getVault, wrapTrustedHandler(getVault, AppChannels.getVault));
+		ipcMain.handle(AppChannels.setVault, wrapTrustedHandler(setVault, AppChannels.setVault));
 
 		ipcMain.handle(
 			AppChannels.getAvailableUpdate,
