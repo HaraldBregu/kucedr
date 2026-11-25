@@ -11,9 +11,10 @@ const RUNS = 3;
 const CHUNKS = 600;
 const END = 'Performance check complete.';
 
-async function files(dir) {
-	const entries = await readdir(dir, { withFileTypes: true, recursive: true });
-	return Promise.all(
+const bundle = {};
+for (const part of ['main', 'preload', 'renderer']) {
+	const entries = await readdir(path.join(appDir, 'out', part), { withFileTypes: true, recursive: true });
+	const list = await Promise.all(
 		entries
 			.filter((entry) => entry.isFile() && !entry.name.endsWith('.map'))
 			.map(async (entry) => {
@@ -21,11 +22,6 @@ async function files(dir) {
 				return { file, bytes: (await stat(file)).size };
 			})
 	);
-}
-
-const bundle = {};
-for (const part of ['main', 'preload', 'renderer']) {
-	const list = await files(path.join(appDir, 'out', part));
 	bundle[`${part}KB`] = Math.round(list.reduce((sum, item) => sum + item.bytes, 0) / 1024);
 	if (part === 'renderer') {
 		const largest = list.filter((item) => item.file.endsWith('.js')).sort((a, b) => b.bytes - a.bytes)[0];
@@ -41,20 +37,22 @@ const server = createServer((request, response) => {
 	let body = '';
 	request.on('data', (chunk) => (body += chunk));
 	request.on('end', async () => {
-		const send = (delta, finish = null) =>
-			`data: ${JSON.stringify({ choices: [{ index: 0, delta, finish_reason: finish }] })}\n\n`;
 		if (!JSON.parse(body || '{}').stream) {
 			response.setHeader('content-type', 'application/json');
 			return response.end(JSON.stringify({ choices: [{ index: 0, message: { role: 'assistant', content: 'Perf' }, finish_reason: 'stop' }] }));
 		}
 		response.setHeader('content-type', 'text/event-stream');
-		for (let index = 0; index < CHUNKS; index += 1) {
-			const text = index === 200 ? '\n\n```js\n' : index === 260 ? '\n```\n\n' : index % 60 === 59 ? `word${index}\n\n` : `word${index} `;
-			response.write(send({ content: text }));
+		const deltas = [
+			...Array.from({ length: CHUNKS }, (_, index) => ({
+				content: index === 200 ? '\n\n```js\n' : index === 260 ? '\n```\n\n' : index % 60 === 59 ? `word${index}\n\n` : `word${index} `,
+			})),
+			{ content: END },
+		];
+		for (const delta of deltas) {
+			response.write(`data: ${JSON.stringify({ choices: [{ index: 0, delta, finish_reason: null }] })}\n\n`);
 			await new Promise((resolve) => setTimeout(resolve, 5));
 		}
-		response.write(send({ content: END }));
-		response.write(send({}, 'stop'));
+		response.write(`data: ${JSON.stringify({ choices: [{ index: 0, delta: {}, finish_reason: 'stop' }] })}\n\n`);
 		response.end('data: [DONE]\n\n');
 	});
 });
@@ -62,7 +60,6 @@ await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
 const baseUrl = `http://127.0.0.1:${server.address().port}/v1`;
 
 const dataDir = await mkdtemp(path.join(os.tmpdir(), 'kucedr-perf-'));
-const median = (values) => values.sort((a, b) => a - b)[Math.floor(values.length / 2)];
 const windowMs = [];
 const renderMs = [];
 let streaming;
@@ -91,16 +88,14 @@ try {
 			const editor = page.locator('[data-slot="home-composer-shell"] [role="textbox"]');
 			await editor.waitFor();
 			await page.evaluate(() => {
-				const perf = { longTasks: [], frames: [], on: true };
+				const perf = { longTasks: [], frames: [], on: true, last: performance.now() };
 				window.__perf = perf;
 				new PerformanceObserver((list) => list.getEntries().forEach((entry) => perf.longTasks.push(entry.duration))).observe({ type: 'longtask' });
-				let last = performance.now();
-				const tick = (now) => {
-					perf.frames.push(now - last);
-					last = now;
+				requestAnimationFrame(function tick(now) {
+					perf.frames.push(now - perf.last);
+					perf.last = now;
 					if (perf.on) requestAnimationFrame(tick);
-				};
-				requestAnimationFrame(tick);
+				});
 			});
 			const sent = performance.now();
 			await editor.fill('Write a long answer.');
@@ -131,8 +126,8 @@ try {
 
 const result = {
 	...bundle,
-	firstWindowMs: Math.round(median(windowMs)),
-	firstRenderMs: Math.round(median(renderMs)),
+	firstWindowMs: Math.round(windowMs.sort((a, b) => a - b)[Math.floor(RUNS / 2)]),
+	firstRenderMs: Math.round(renderMs.sort((a, b) => a - b)[Math.floor(RUNS / 2)]),
 	...streaming,
 };
 console.table(result);
