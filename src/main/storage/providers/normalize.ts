@@ -75,5 +75,6 @@ export function normalizeStorageProvider(value: unknown): StorageProviderInput {
 		accessKeyId: values.accessKeyId,
 		forcePathStyle: input.forcePathStyle,
 		secretAccessKey: (input.secretAccessKey as string | undefined)?.trim(),
+		passphrase: input.passphrase as string | undefined,
 	};
 }
