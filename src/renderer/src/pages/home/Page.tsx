@@ -436,7 +436,7 @@ function PageContent(): ReactElement {
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
 	const [detailsPopoverOpen, setDetailsPopoverOpen] = useState(false);
-	const [chatSearch, setChatSearch] = useState('');
+	const [chatSearch, setChatSearch] = useState<{ query: string; position?: number }>({ query: '' });
 	const browser = useBrowserTabs();
 	const [browserHidden, setBrowserHidden] = useState(false);
 	const browserAlive = browser.tabs.length > 0;
@@ -647,10 +647,11 @@ function PageContent(): ReactElement {
 		(files: File[]): void => {
 			const accepted = files.filter((file) => accepts(file.name, filesAccept));
 			const rejected = files.filter((file) => !accepts(file.name, filesAccept));
-			const limitError = attachmentLimitError(
-				[...attachments.map((attachment) => attachment.file), ...accepted],
-				capabilities?.rules ?? []
-			);
+			const limitError =
+				attachmentLimitError(
+					[...attachments.map((attachment) => attachment.file), ...accepted],
+					capabilities?.rules ?? []
+				) ?? largeAttachmentError(accepted, capabilities?.rules ?? []);
 			setAttachmentError(
 				rejected.length > 0
 					? `${rejected.map((file) => file.name).join(', ')} can't be attached to this model.`
