@@ -17,13 +17,15 @@ const App: React.FC = () => {
 	return (
 		<ErrorBoundary level="root">
 			<AppProvider>
-				<AuthProvider>
-					<OnboardingProvider>
-						<PageProvider>
-							<RouterProvider router={router} />
-						</PageProvider>
-					</OnboardingProvider>
-				</AuthProvider>
+				<LockGate>
+					<AuthProvider>
+						<OnboardingProvider>
+							<PageProvider>
+								<RouterProvider router={router} />
+							</PageProvider>
+						</OnboardingProvider>
+					</AuthProvider>
+				</LockGate>
 			</AppProvider>
 		</ErrorBoundary>
 	);
