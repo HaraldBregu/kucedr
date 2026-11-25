@@ -151,7 +151,7 @@ export class Agent {
 				type: 'background',
 				sessionId,
 				runId,
-				toolsAllow: schedule.toolsAllow ?? [],
+				...(schedule.toolsAllow ? { toolsAllow: schedule.toolsAllow } : {}),
 				toolsDeny: SCHEDULED_TASK_TOOLS_DENY,
 				streamEvent: (event) => {
 					if (event.type === 'run_state' && event.state === 'error') failure = event.label;
