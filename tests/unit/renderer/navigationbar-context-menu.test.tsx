@@ -23,7 +23,6 @@ beforeEach(() => {
 			removeEventListener: jest.fn(),
 		})),
 	});
-	showContextMenu.mockReset().mockResolvedValue(null);
 	Object.defineProperty(window, 'win', {
 		configurable: true,
 		value: {
