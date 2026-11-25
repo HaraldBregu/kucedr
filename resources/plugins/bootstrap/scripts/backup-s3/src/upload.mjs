@@ -2,15 +2,19 @@ import { Upload } from '@aws-sdk/lib-storage';
 import { createReadStream, promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { encrypt } from './encrypt.mjs';
 import { requestError } from './request.mjs';
+import { unvault } from './unvault.mjs';
 
-export async function upload(client, bucket, source, key) {
+export async function upload(client, bucket, source, key, encryption) {
 	const staging = await fs.mkdtemp(path.join(tmpdir(), 'kucedr-upload-'));
 	const file = path.join(staging, 'file');
 	try {
 		const original = await fs.lstat(source);
 		if (!original.isFile() || original.isSymbolicLink()) throw new Error('Upload source is not a regular file.');
-		await fs.copyFile(source, file);
+		if (encryption)
+			await encrypt(await unvault(source, encryption.vaultKey), file, encryption.key, encryption.salt, key);
+		else await fs.copyFile(source, file);
 		const { size } = await fs.stat(file);
 		const body = createReadStream(file);
 		try {
