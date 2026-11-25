@@ -50,6 +50,7 @@ export const markdownComponents: Partial<Components> = {
 		<th className="border-b border-border px-3 py-2 font-semibold">{children}</th>
 	),
 	td: ({ children }) => <td className="border-t border-border px-3 py-2">{children}</td>,
+	img: ({ src, alt }) => <RemoteImage src={typeof src === 'string' ? src : undefined} alt={alt} />,
 };
 
 export const userMarkdownComponents: Partial<Components> = {
