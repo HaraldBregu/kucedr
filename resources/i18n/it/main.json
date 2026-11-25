@@ -2605,7 +2605,8 @@
 			"stopped": "Risposta interrotta",
 			"complete": "Risposta completata"
 		},
-		"placeholderDescription": "Inizia una conversazione con l'AI per fare brainstorming, redigere o perfezionare idee."
+		"placeholderDescription": "Inizia una conversazione con l'AI per fare brainstorming, redigere o perfezionare idee.",
+		"search": "Cerca nella chat"
 	},
 	"writing": {
 		"titlePlaceholder": "Untitled",
