@@ -30,9 +30,8 @@ Not user-facing features, but what keeps the features above from regressing.
   end-to-end tests and packaging on three systems.
 - `tests/integration` is empty.
 - A coverage threshold is set in `jest.config.cjs`, but CI never runs the coverage job.
-- At least one test suite imports a module that no longer exists
-  (`tests/unit/main/coding/coding.test.ts`); others were reported and _not verified_. Whether CI is
-  currently green is _not verified_.
+- Every test suite loads; one test fails (see 22.1 progress above). Whether CI is currently green
+  is _not verified_.
 - There is no accessibility check ([Accessibility](ACCESSIBILITY.md), 4.5), no performance check
   ([Performance](PERFORMANCE.md), 2.7), and the terminal smoke test is not in CI
   ([Terminal](TERMINAL.md), 14.7).
