@@ -155,7 +155,7 @@ open a case -> browse and ask: user and agent share tabs, each tab has a route
 Example: a reporter checks whether a company named in a leak is a shell. They open the case "Acme
 shell check" with the proxy route as its default. The agent searches company registries, archived
 versions of the company site and the directors' other companies; each page it reads is captured
-with its hash. Factchecker marks one claim that has a single source. The reporter exports a memo
+with its hash. Fact-check marks one claim that has a single source. The reporter exports a memo
 with the claims table, the evidence list and the case log, and sets a weekly check on the registry
 entry.
 
