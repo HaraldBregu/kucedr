@@ -15,7 +15,7 @@ export function createSchedule(request: TaskScheduleCreateRequest): TaskSchedule
 			request.cronExpression === undefined ? undefined : normalizeCron(request.cronExpression),
 		enabled: request.enabled ?? true,
 		prompt: request.prompt.trim(),
-		toolsAllow: request.toolsAllow,
+		toolsAllow: request.toolsAllow && normalizeTools(request.toolsAllow),
 		sessionIds: [],
 		createdAt: nowIso,
 		updatedAt: nowIso,
