@@ -7,9 +7,7 @@ Using Kucedr with models that run on the user's own machine, with nothing sent t
 ## What exists today
 
 - A keyless Ollama plugin is bundled (`resources/plugins/ollama`).
-- Setup cannot finish without a cloud key: the model step only continues when a provider with a
-  saved API key exists (`src/renderer/src/pages/start/StartPage.tsx`). A user with only local
-  models cannot reach Home.
+- Setup can finish with a local model and no key (15.1).
 - Downloading models from inside the app is designed in [Plugin system](../PLUGIN_SYSTEM.md) and
   not built.
 - Knowledge search needs an embedding model; whether a local one is available is _not verified_.
