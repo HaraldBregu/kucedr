@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { openrouterInputs } from '../../../src/main/ipc/openrouter';
+import { inputs as openrouterInputs } from '../../../src/main/ipc/inputs';
 import type { ModelInputSchema } from '../../../src/shared/model_types';
 import { ModelOptions } from '../../../src/renderer/src/components/model-options';
 
