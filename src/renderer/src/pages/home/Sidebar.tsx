@@ -237,7 +237,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		setSessionTitle?.(result.title.trim() || t('settings.chatHistory.untitled'), result.id);
 		navigate('/home');
 		window.dispatchEvent(new Event('kucedr:show-chat'));
-		window.dispatchEvent(new CustomEvent('kucedr:search-chat', { detail: search.trim() }));
+		window.dispatchEvent(new CustomEvent('kucedr:search-chat', { detail: { query: search.trim(), position: result.position } }));
 	};
 
 	const pinnedSessions = activeSessions.filter((session) => session.pinned);
