@@ -9,9 +9,12 @@ notifications (3.1), search across chats (3.2), regenerate and retry (3.3), the 
 (3.8), the browser pane (3.9), the agent cursor (3.11), browser control from the chat (3.12) and most of
 browser import
 (23), screen-reader chat, keyboard use, high contrast and named controls (4.1–4.4), update
-channels and crash recovery (5.1, 5.2), replies that survive leaving Home (5.3), the legal pages and third-party notices (6.4), setup with a local model (15.1), fast knowledge retrieval (18.6),
+channels and crash recovery (5.1, 5.2), replies that survive leaving Home (5.3), the legal pages and third-party notices (6.4), setup with a local model (15.1), the task form, failed-run notices and
+task limits (16.1, 16.3, 16.5), seeing and editing memory and remembering in chat (18.1, 18.2),
+fast knowledge retrieval (18.6),
 private, Tor and proxy tabs with the first network shield pieces (11.1–11.3, 12.1, 12.2, 13.3,
-13.5, 13.11, part of 13.6), and a green test baseline (22.1); each
+13.5, 13.11, part of 13.6), most of the terminal back end (14.1), and a green test baseline
+(22.1); each
 area file says what is left. Each feature
 gets its own detailed plan before any implementation starts.
 
