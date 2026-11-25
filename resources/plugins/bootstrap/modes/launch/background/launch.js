@@ -74,9 +74,9 @@ void main() {
 	float level = mix(1.0 - light, light, dark);
 	ivec2 m = ivec2(mod(cell, 4.0));
 	float on = step(BAYER[m.x + m.y * 4] / 16.0 + 0.03, level);
-	float dot = smoothstep(0.44, 0.32, length(fract(frag / size) - 0.5));
+	float disc = smoothstep(0.44, 0.32, length(fract(frag / size) - 0.5));
 	float x = abs(frag.x / resolution.x - 0.5) * 2.0;
-	float a = on * dot * opacity * mix(0.45, 1.0, smoothstep(0.1, 0.8, x));
+	float a = on * disc * opacity * mix(0.45, 1.0, smoothstep(0.1, 0.8, x));
 	color = vec4(mix(c * 0.55, c, dark) * a, a);
 }`;
 
