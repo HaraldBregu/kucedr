@@ -17,7 +17,7 @@ it('covers every bundled chat model with a documented positive context limit', (
 			.map((model: { id: string }) => `${providerId}/${model.id}`);
 	});
 	expect(models.map((model) => `${model.provider.id}/${model.id}`).sort()).toEqual(expected.sort());
-	expect(new Set(models.map((model) => model.provider.id)).size).toBe(12);
+	expect(new Set(models.map((model) => model.provider.id)).size).toBe(8);
 	for (const model of models) {
 		expect(modelContextWindow(model.metadata)).toBeGreaterThan(0);
 		expect(model.metadata?.contextWindowDocumentationUrl).toMatch(/^https:\/\//);
