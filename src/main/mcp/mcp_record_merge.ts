@@ -1,5 +1,6 @@
 import type { McpData } from '../../shared/mcp_types';
 import type { McpRecord } from './mcp_types';
+import { splitRecord } from './mcp_split_record';
 
 export function mergeMcpRecord(
 	id: string,
