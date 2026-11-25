@@ -14,13 +14,6 @@ jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
 }));
 
-const showContextMenu = jest.fn();
-const contextMenuItems = [
-	{ id: '/settings/general', label: 'settings.tabs.general' },
-	{ id: '/settings/agent', label: 'settings.overview.groups.agent' },
-	{ id: '/settings/apps', label: 'settings.tabs.apps' },
-];
-
 beforeEach(() => {
 	Object.defineProperty(window, 'matchMedia', {
 		configurable: true,
