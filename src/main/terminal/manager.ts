@@ -22,16 +22,22 @@ export type PtySpawn = (
 	options: IPtyForkOptions | IWindowsPtyForkOptions
 ) => IPty;
 
+const maximumSessions = 32;
+const outputInterval = 16;
+const outputFlushLength = 64 * 1024;
+const forceKillDelay = 3000;
+
 export class PtyManager {
 	private readonly sessions = new Map<string, TerminalSession>();
 	private readonly pendingIds = new Set<string>();
 	private readonly ownerCleanup = new Map<number, () => void>();
+	private readonly output = new Map<string, { data: string; timer: NodeJS.Timeout }>();
 
 	constructor(
 		private readonly logger: Pick<LoggerService, 'info' | 'warn' | 'error'>,
 		private readonly shellDetector: ShellDetector,
 		private readonly environmentManager: EnvironmentManager,
-		private readonly spawnPty: PtySpawn = spawn
+		private readonly spawnPty?: PtySpawn
 	) {}
 
 	get count(): number {
