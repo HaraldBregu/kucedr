@@ -14,6 +14,7 @@ import {
 	MousePointerClick,
 	PanelTop,
 	Scale,
+	ScrollText,
 	ShieldCheck,
 	SunMoon,
 	Type,
