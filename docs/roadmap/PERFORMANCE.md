@@ -20,7 +20,7 @@ around the model. The baseline for streaming, startup and bundle size (2.7) is b
 ## Performance check (2.7)
 
 `npm run perf` measures a built app. Baseline, 2026-11-25, on the development Mac (Apple
-silicon), from a clean production build of commit `4d13b57663` plus later working changes:
+silicon), from a clean production build of `dev` on that date:
 
 | Measure | Value |
 | --- | --- |
