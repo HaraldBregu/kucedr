@@ -124,8 +124,8 @@ vec4 scene(vec2 uv) {
 	f = mix(f, 0.65, fin);
 
 	float bell = step(abs(r.x), 0.004 + max(-r.y, 0.0) * 0.45) * step(-0.012, r.y) * step(r.y, 0.0);
-	color = mix(color, vec3(0.3, 0.28, 0.27) * (0.6 + 0.4 * (1.0 - abs(r.x) / 0.01)), bell);
-	f = mix(f, 0.4, bell);
+	color = mix(color, vec3(0.55, 0.5, 0.47) * (0.6 + 0.4 * (1.0 - abs(r.x) / 0.01)), bell);
+	f = mix(f, 0.6, bell);
 	return vec4(color, f);
 }
 
