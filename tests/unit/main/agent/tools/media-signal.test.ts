@@ -94,11 +94,11 @@ it('generates and saves each requested image', async () => {
 	);
 });
 
-it('limits image count from one to eight', () => {
+it('limits image count from one to three', () => {
 	const tool = createImageTool();
 	expect(tool.parseInput({ prompt: 'generate this' })).toMatchObject({ count: 1 });
-	expect(tool.parseInput({ prompt: 'generate this', count: 8 })).toMatchObject({ count: 8 });
+	expect(tool.parseInput({ prompt: 'generate this', count: 3 })).toMatchObject({ count: 3 });
 	expect(() => tool.parseInput({ prompt: 'generate this', count: 0 })).toThrow();
-	expect(() => tool.parseInput({ prompt: 'generate this', count: 9 })).toThrow();
+	expect(() => tool.parseInput({ prompt: 'generate this', count: 4 })).toThrow();
 	expect(() => tool.parseInput({ prompt: 'generate this', count: 1.5 })).toThrow();
 });
