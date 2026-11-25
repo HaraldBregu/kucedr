@@ -109,10 +109,10 @@ export class ExecSandbox {
 	annotate(commandId: string, stderr: string): string {
 		const annotated = SandboxManager.annotateStderrWithSandboxFailures(commandId, stderr);
 		if (annotated !== stderr) {
-			return `${annotated}\nA sandbox restriction blocked this operation. Declare the outside directory in additionalRoots to request access.`;
+			return `${annotated}\nA sandbox restriction blocked this operation. Declare the outside directory in additionalRoots to request access. A command that listens on a port or connects to a local service needs elevated.`;
 		}
 		if (/operation not permitted|permission denied|\bEPERM\b/i.test(stderr)) {
-			return `${stderr}\nA filesystem sandbox may have blocked this operation. Declare the outside directory in additionalRoots to request access.`;
+			return `${stderr}\nThe sandbox may have blocked this operation. Declare the outside directory in additionalRoots to request access. A command that listens on a port or connects to a local service needs elevated.`;
 		}
 		return stderr;
 	}
