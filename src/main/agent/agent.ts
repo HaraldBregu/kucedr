@@ -170,6 +170,7 @@ export class Agent {
 						}
 					: {}),
 			});
+			if (failure) throw new Error(failure);
 		});
 		void startTask().catch((error) => {
 			logger.error('Task', 'Failed to start persistent tasks scheduler', error);
