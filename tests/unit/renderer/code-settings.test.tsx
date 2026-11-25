@@ -22,7 +22,11 @@ beforeEach(() => {
 		providerId: runtime === 'codex' ? 'openai-codex' : runtime === 'cline' ? 'cline' : 'openai',
 	}));
 	saveSettings.mockResolvedValue(settings);
-	Object.defineProperty(window, 'coder', { configurable: true, value: { getSettings, saveSettings } });
+	const listHarnesses = jest.fn().mockResolvedValue([
+		{ id: 'pi', name: 'Pi', provider: { id: 'openai', name: 'OpenAI' } },
+		{ id: 'codex', name: 'Codex', provider: { id: 'openai-codex', name: 'OpenAI Codex' } },
+	]);
+	Object.defineProperty(window, 'coder', { configurable: true, value: { getSettings, saveSettings, listHarnesses } });
 });
 
 it('loads shared defaults and saves edited settings only on submit', async () => {
