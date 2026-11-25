@@ -420,7 +420,7 @@ it('masks saved Search keys until editing', async () => {
 		{
 			id: 'brave',
 			name: 'Brave',
-			apiKey: 'search-secret',
+			saved: true,
 		},
 	]);
 	jest.mocked(window.search.getSettings).mockResolvedValue({
