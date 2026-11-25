@@ -11,6 +11,9 @@ side:
 - **A workspace is a case.** Everything that holds its content stays inside it: files, chats,
   Library, memory, knowledge, browser sign-ins, scheduled tasks and file-access grants. Setup stays
   shared.
+- **A workspace can use any folder.** The user can create a workspace from a folder anywhere on
+  disk. Its files stay where they are, and Kucedr keeps the workspace's chats, memory and the rest
+  in its own data folder.
 - **Each window has its own workspace.** Two windows can show two workspaces at once. Switching a
   window only changes that window.
 - **Nothing in flight is interrupted.** A chat that is streaming, running tools or waiting for an
