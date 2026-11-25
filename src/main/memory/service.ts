@@ -401,7 +401,9 @@ export class Memory implements MemoryService {
 								return !entry || !this.state.suppressed.includes(entry.id);
 							})
 							.join('\n');
-						await this.dependencies.write(stampMemories(filtered, markdown));
+						await this.dependencies.write(
+							stampMemories(filtered, markdown, undefined, source.id)
+						);
 					}
 					const processed = new Set([
 						...(this.state.checkpoints[source.id] ?? []),
