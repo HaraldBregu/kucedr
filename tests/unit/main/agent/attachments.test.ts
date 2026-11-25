@@ -2,6 +2,7 @@ const findModel = jest.fn();
 
 jest.mock('../../../../src/main/models', () => ({
 	findModel: (...args: unknown[]) => findModel(...args),
+	loadProviders: () => [],
 }));
 
 import { resolvePromptInputCapabilities } from '../../../../src/main/agent/attachments/capabilities';
