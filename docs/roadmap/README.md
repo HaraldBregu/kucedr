@@ -78,7 +78,9 @@ Features are numbered by area, for example 3.9 is the browser pane.
    built 2026-11-25.
 7. **The next network shield pieces**: tracker blocking (13.1) and the network view (13.8). The
    secret guard (13.3) and local network protection (13.5) were built 2026-11-24.
-8. **Terminal back-end fixes** (14.1), before any terminal screen is built on it.
+8. **The rest of the terminal back end**: flow control and kept history (14.1) and a clean
+   environment (14.4), before any terminal screen is built on it. Most of 14.1 was built
+   2026-11-25.
 
 The user-experience area was chosen to be planned in detail first; see
 [User experience in detail](EXPERIENCE.md#user-experience-in-detail).
