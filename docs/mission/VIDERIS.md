@@ -76,7 +76,7 @@ platform; its pricing document shows the same figures.
   credits, against the research's €250 assisted pilot. Its buyers are banks, governments and
   corporate risk teams.
 - What Kucedr can own: a single analyst's machine and model, the firm's own report template, and a
-  reviewer reopening the preserved page. Videris is cloud SaaS in the UK and EU only.
+  reviewer reopening the preserved page. Videris is sold as SaaS hosted in the UK and EU.
 
 ## Sources
 
