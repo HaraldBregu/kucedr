@@ -70,7 +70,7 @@ it('shows app information before its window configuration', async () => {
 	expect(information.compareDocumentPosition(configuration)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 });
 
-it('offers deletion from the detail page options menu', async () => {
+it('offers deletion from the detail page header', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/apps/my-app']}>
