@@ -49,6 +49,9 @@ export class PtyManager {
 		if (this.sessions.has(request.id) || this.pendingIds.has(request.id)) {
 			throw new Error(`Terminal session already exists: ${request.id}`);
 		}
+		if (this.sessions.size + this.pendingIds.size >= maximumSessions) {
+			throw new Error(`Close a terminal first: at most ${maximumSessions} can be open.`);
+		}
 		this.pendingIds.add(request.id);
 
 		try {
