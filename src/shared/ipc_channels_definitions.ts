@@ -587,6 +587,8 @@ export const BrowserChannels = {
 	connections: 'browser:connections',
 	connectionsSet: 'browser:connections:set',
 	torFind: 'browser:tor:find',
+	cursor: 'browser:cursor',
+	cursorSet: 'browser:cursor:set',
 } as const;
 
 export const MemoryChannels = {
