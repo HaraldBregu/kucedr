@@ -2662,6 +2662,15 @@
 	"remoteImage": {
 		"load": "Load image"
 	},
+	"browserPermission": {
+		"label": "Site permission",
+		"camera": "{{site}} wants to use your camera.",
+		"microphone": "{{site}} wants to use your microphone.",
+		"both": "{{site}} wants to use your camera and microphone.",
+		"allow": "Allow",
+		"block": "Block",
+		"close": "Close"
+	},
 	"inferenceSettings": {
 		"title": "Inference Settings",
 		"description": "Configure model and parameters.",
