@@ -12,6 +12,7 @@ import { fingerprint } from './fingerprint';
 import { snapshotMarkdown } from './snapshot';
 import { generateMemory } from './generate';
 import { stampMemories } from './stamp';
+import { appendMemory } from './append';
 import { baseline } from './baseline';
 
 export class Memory implements MemoryService {
