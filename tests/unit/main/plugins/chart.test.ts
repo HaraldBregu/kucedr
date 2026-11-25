@@ -95,9 +95,10 @@ it('loads script instructions on demand and runs the chart examples', async () =
 });
 
 it('executes the agent tool and returns success only after generating the HTML', async () => {
-	await expect(runScript.run({ name: 'chart', input })).resolves.toEqual({
+	await expect(runScript.run({ name: 'chart', input })).resolves.toMatchObject({
 		ok: true,
 		shown: 'Chart displayed to the user.',
+		script: { name: 'chart', plugin: 'bootstrap' },
 	});
 	await expect(runScript.run({ name: 'chart', input: { ...input, data: [] } })).rejects.toThrow(
 		'data must contain between 1 and 200 rows'
