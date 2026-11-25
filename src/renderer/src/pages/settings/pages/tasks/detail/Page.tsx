@@ -201,6 +201,15 @@ const TaskDetailsPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
+			{task.lastRun?.error && (
+				<SettingsNotice variant="destructive" icon={AlertTriangle}>
+					{t('settings.cron.detail.lastRunFailed', {
+						time: new Date(task.lastRun.at).toLocaleString(),
+						error: task.lastRun.error,
+					})}
+				</SettingsNotice>
+			)}
+
 			<SettingsSection title={t('settings.cron.detailsTitle')}>
 				<Card size="sm" className="gap-0! p-0!">
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
