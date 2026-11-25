@@ -140,19 +140,26 @@ export class Agent {
 	}): void {
 		if (this.isStarted) return;
 		this.isStarted = true;
-		setTaskRunner((schedule, signal) => {
+		setTaskRunner(async (schedule, signal) => {
 			const runtime = getRuntime();
-			const toolsAllow = schedule.toolsAllow;
 			const sessionId = randomUUID();
 			const runId = randomUUID();
+			let failure: string | undefined;
 			associateSession(schedule.id, sessionId);
 			signal.addEventListener('abort', () => this.cancel(runId), { once: true });
-			return this.send(schedule.prompt, 'tasks', {
+			await this.send(schedule.prompt, 'tasks', {
 				type: 'background',
 				sessionId,
 				runId,
-				...(toolsAllow?.length ? { toolsAllow } : {}),
+				toolsAllow: schedule.toolsAllow ?? [],
 				toolsDeny: SCHEDULED_TASK_TOOLS_DENY,
+				streamEvent: (event) => {
+					if (event.type === 'run_state' && event.state === 'error') failure = event.label;
+					if (event.type === 'run_finished' && event.stopReason === 'timeout')
+						failure = 'The run timed out.';
+					if (event.type === 'run_finished' && event.stopReason === 'error')
+						failure ??= 'The run failed.';
+				},
 				streaming: false,
 				contextMode: 'minimal',
 				...(runtime
