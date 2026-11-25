@@ -71,9 +71,10 @@ Features are numbered by area, for example 3.9 is the browser pane.
 4. **Accessibility checks** (4.5), once its two development dependencies are approved and
    `eslint-plugin-jsx-a11y` supports ESLint 10. Screen-reader chat, full keyboard use, high
    contrast and named controls (4.1–4.4) were built 2026-11-24.
-5. **User experience: search across chats** (3.2). Completion notifications (3.1) were built
-   2026-11-21–22.
-6. **Model downloads and offline behaviour** (15.2, 15.4). Setup with a local model (15.1) was
+5. **User experience: shortcut guide** (3.5), then the interface polish, starting with in-app
+   confirmations and empty states (3.13, 3.14). Search across chats (3.2) and the "/" menu (3.4)
+   were built 2026-11-25.
+6. **Model downloads** (15.2). Setup with a local model (15.1) and offline behaviour (15.4) were
    built 2026-11-25.
 7. **The next network shield pieces**: tracker blocking (13.1) and the network view (13.8). The
    secret guard (13.3) and local network protection (13.5) were built 2026-11-24.
