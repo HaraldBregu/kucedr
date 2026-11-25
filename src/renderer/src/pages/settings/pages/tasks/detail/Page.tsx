@@ -329,7 +329,7 @@ const TaskDetailsPage: React.FC = () => {
 					disabled={deleting}
 					onClick={() => navigate(`/settings/tasks/${encodeURIComponent(task.id)}/edit`)}
 				>
-					{t('settings.cron.form.edit')}
+					{t('common.edit')}
 				</Button>
 				{running ? (
 					<Button variant="outline" size="sm" onClick={() => void stop()}>
