@@ -148,9 +148,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				.catch(() => setActionError(t('settings.chatHistory.errors.archive')));
 	};
 
-	const activeSessions = sessions.filter(
-		(session) => !session.archived && !(undo?.action === 'delete' && undo.ids.includes(session.id))
-	);
+	const activeSessions = sessions.filter((session) => !session.archived && !deleted.includes(session.id));
 	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? activeSessions[0]?.id : sessionId;
 	const clearSelection = (): void => {
 		setSelectedIds(new Set());
