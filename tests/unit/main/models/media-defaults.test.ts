@@ -109,7 +109,10 @@ it('replaces a stale video model selection with the current catalog default', as
 
 	expect(generateVideo).toHaveBeenCalledWith(
 		expect.objectContaining({
-			model: expect.objectContaining({ id: 'gen4.5', provider: expect.objectContaining({ id: 'video-provider' }) }),
+			model: expect.objectContaining({
+				id: 'gen4.5',
+				provider: expect.objectContaining({ id: 'video-provider' }),
+			}),
 		})
 	);
 });
