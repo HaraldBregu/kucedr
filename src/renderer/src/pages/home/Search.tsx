@@ -64,16 +64,18 @@ export function ChatSearch({ scroll, active, refreshKey, initialQuery, initialPo
 			<Input
 				type="search"
 				value={query}
-				placeholder="Search chat"
-				aria-label="Search chat"
+				placeholder={t('chat.search')}
+				aria-label={t('chat.search')}
 				className="h-8 pr-12 pl-8 [&::-webkit-search-cancel-button]:hidden"
 				onChange={(event) => {
+					target.current = undefined;
 					setQuery(event.target.value);
 					setIndex(0);
 				}}
 				onKeyDown={(event) => {
 					if (event.key !== 'Enter' || !count) return;
 					event.preventDefault();
+					target.current = undefined;
 					setIndex((Math.min(index, count - 1) + (event.shiftKey ? count - 1 : 1)) % count);
 				}}
 			/>
