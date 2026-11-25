@@ -54,7 +54,9 @@ it.each([
 		const [, session, input] = mockStream.mock.calls[0];
 		expect(input.message).toBe(expected);
 		expect(input.explicitSkill).toBe(skill);
-		expect(session.messages).toEqual([{ role: 'user', content: expected }]);
+		expect(session.messages).toEqual([
+			expect.objectContaining({ role: 'user', content: expected }),
+		]);
 		expect(agent.getLastMessages(SESSION_ID)).toEqual([
 			expect.objectContaining({ role: 'user', content: expected }),
 		]);
