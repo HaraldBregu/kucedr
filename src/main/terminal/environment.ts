@@ -20,7 +20,15 @@ export class EnvironmentManager {
 		let login: Readonly<Record<string, string>> = {};
 
 		if (this.platform === 'darwin') {
-			this.loginEnvironment ??= this.readShellEnvironment(shell).catch((error: unknown) => {
+			this.loginEnvironment ??= Promise.race([
+				this.readShellEnvironment(shell),
+				new Promise<never>((_, reject) => {
+					setTimeout(
+						() => reject(new Error(`No answer from ${shell} within ${loginEnvironmentTimeout / 1000}s`)),
+						loginEnvironmentTimeout
+					).unref();
+				}),
+			]).catch((error: unknown) => {
 				this.logger.warn('EnvironmentManager', 'Unable to read the login-shell environment', {
 					error: error instanceof Error ? error.message : String(error),
 				});
