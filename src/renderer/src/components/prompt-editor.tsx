@@ -14,6 +14,7 @@ export type PromptEditorProps = Omit<PromptInputProps, 'children'> & {
 	readonly modes?: readonly AgentModeInfo[];
 	readonly modeIds?: readonly string[];
 	readonly onModeIdsChange?: (modeIds: string[]) => void;
+	readonly skillIds?: readonly string[];
 	readonly hideEditor?: boolean;
 };
 
