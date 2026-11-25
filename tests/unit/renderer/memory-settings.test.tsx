@@ -61,6 +61,10 @@ beforeEach(() => {
 		configurable: true,
 		value: { listScopes: jest.fn().mockResolvedValue([]) },
 	});
+	Object.defineProperty(window, 'agent', {
+		configurable: true,
+		value: { listSessions: jest.fn().mockResolvedValue([]) },
+	});
 	api.getConfig.mockResolvedValue(config);
 	api.status.mockResolvedValue({ running: false, lastSuccess: null, error: null, pending: 0 });
 	api.list.mockResolvedValue([{ id: 'fact-1', fact: 'Prefers tea' }]);
