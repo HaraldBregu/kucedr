@@ -1,6 +1,22 @@
 # 14. Terminal
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 14.1 mostly built 2026-11-25; the rest proposal.
+
+## 14.1 progress, 2026-11-25
+
+Checked in the built app through the preload API, with `/bin/sh`.
+
+- Terminals survive page changes: same-document navigations no longer end them. A full reload
+  still ends them; keeping them across reloads needs a reattach API, which belongs with 14.2.
+- `node-pty` loads on the first terminal, not at start-up, so a broken native module can no longer
+  stop the app from starting.
+- Output is sent in batches (every 16 ms or 64 KB): 1.5 MB of output arrived in 23 messages.
+- Stopping sends a forced kill after 3 s if the shell has not exited; at most 32 terminals.
+- The login-environment read (`shell-env`) gives up after 5 s and falls back to the inherited
+  environment. Before, a shell whose startup files never finish made every terminal hang.
+- `node-pty` 1.1.0 ships its macOS `spawn-helper` without execute permission, so every spawn failed
+  with `posix_spawnp failed`. `postinstall` now restores the permission; check a packaged build.
+- Still open from the review: flow control and kept history, and plugin views seeing the API.
 
 ## What exists today
 
