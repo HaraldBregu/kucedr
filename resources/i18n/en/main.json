@@ -2605,7 +2605,8 @@
 			"stopped": "Reply stopped",
 			"complete": "Reply complete"
 		},
-		"placeholderDescription": "Start a conversation with AI to brainstorm, draft, or refine ideas."
+		"placeholderDescription": "Start a conversation with AI to brainstorm, draft, or refine ideas.",
+		"search": "Search chat"
 	},
 	"writing": {
 		"titlePlaceholder": "Untitled",
