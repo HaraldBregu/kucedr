@@ -1,4 +1,4 @@
-// Launch: an fbm wave field dithered with an 8×8 Bayer matrix, with a cursor erase trail, click ripples, and an intro reveal.
+// Launch: a rocket climbing through clouds, dithered with an 8×8 Bayer matrix, with a cursor erase trail, click ripples, and an intro reveal.
 const PIXEL = 2;
 const RADIUS = 0.35;
 const TRAIL = 0.5;
@@ -12,11 +12,12 @@ const VERTEX = `#version 300 es
 in vec2 aPosition;
 void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }`;
 
-const WAVE = `#version 300 es
+const SCENE = `#version 300 es
 precision highp float;
 uniform vec2 uResolution;
 uniform float uCell;
 uniform float uTime;
+uniform float uDark;
 uniform vec3 uTrail[${MAX_TRAIL}];
 uniform int uTrailCount;
 uniform vec4 uRipples[${MAX_RIPPLES}];
@@ -66,6 +67,39 @@ float fbm(vec2 p) {
 	return value;
 }
 
+vec4 scene(vec2 uv) {
+	float y = uv.y + 0.5;
+	vec3 color = mix(vec3(0.45, 0.32, 0.2), vec3(0.2, 0.42, 0.78), smoothstep(0.0, 0.85, y));
+	float f = mix(0.1, 0.4, smoothstep(0.0, 0.9, y));
+
+	vec2 c = vec2(uv.x * 1.3, uv.y * 2.0 + uTime * 0.2);
+	float cloud = smoothstep(0.6, 1.0, fbm(c + fbm(c - uTime * 0.03))) * smoothstep(0.15, 0.55, y);
+	color = mix(color, vec3(0.93, 0.91, 0.87), cloud);
+	f = mix(f, 0.85, cloud);
+
+	vec2 r = uv - vec2(uResolution.x / uResolution.y * 0.25, -0.02);
+	float below = max(-r.y, 0.0);
+	float width = 0.015 + below * 0.4;
+	float sway = (fbm(vec2(r.y * 2.0 + uTime * 0.6, 1.7)) - 0.5) * width * 0.6;
+	float trail = smoothstep(width, width * 0.3, abs(r.x + sway)) * smoothstep(-0.03, -0.1, r.y);
+	float smoke = trail * smoothstep(0.2, 0.6, fbm(vec2(r.x * 6.0, r.y * 3.0 + uTime * 0.8)));
+	color = mix(color, vec3(0.86, 0.8, 0.72), smoke);
+	f = mix(f, 0.75, smoke);
+
+	float flicker = 0.8 + 0.2 * abs(cnoise(vec2(uTime * 25.0, 3.1)));
+	float flame = exp(-pow(r.x / (0.006 + below * 0.12), 2.0)) * smoothstep(-0.12 * flicker, 0.0, r.y) * step(r.y, 0.0);
+	flame = clamp(flame * 1.4, 0.0, 1.0);
+	color = mix(color, vec3(1.0, 0.85, 0.6), flame);
+	f = mix(f, 1.0, flame);
+
+	float taper = clamp((0.18 - r.y) / 0.04, 0.0, 1.0);
+	float fins = 0.012 * smoothstep(0.045, 0.0, r.y);
+	float body = step(abs(r.x), 0.011 * taper + fins) * step(0.0, r.y) * step(r.y, 0.18);
+	color = mix(color, vec3(0.96), body);
+	f = mix(f, 0.95, body);
+	return vec4(color, f);
+}
+
 void main() {
 	vec2 uv = (gl_FragCoord.xy - 0.5) * uCell / uResolution - 0.5;
 	uv.x *= uResolution.x / uResolution.y;
@@ -91,11 +125,11 @@ void main() {
 		ring += wave;
 	}
 
-	vec2 p = uv + warp;
-	float f = fbm(p + fbm(p - uTime * 0.05)) - 0.5 * touch + ring * 0.55;
+	vec4 s = scene(uv + warp);
+	float f = mix(1.0 - s.a, s.a, uDark) - 0.5 * touch + ring * 0.55;
 	float show = clamp((uIntro * uReach - length(uv)) / 0.45, 0.0, 1.0);
 	float v = clamp(f, 0.0, 1.0) * show * show * (3.0 - 2.0 * show);
-	outColor = vec4(floor(v * 255.0) / 255.0, fract(v * 255.0), 0.0, 1.0);
+	outColor = vec4(mix(s.rgb * 0.55, s.rgb, uDark), v);
 }`;
 
 const DITHER = `#version 300 es
@@ -103,7 +137,6 @@ precision highp float;
 uniform sampler2D uField;
 uniform ivec2 uFieldSize;
 uniform float uCellDevice;
-uniform vec3 uColor;
 uniform float uOpacity;
 out vec4 outColor;
 
@@ -121,12 +154,11 @@ const float bayer8[64] = float[64](
 void main() {
 	vec2 cell = floor(gl_FragCoord.xy / uCellDevice);
 	vec4 field = texelFetch(uField, clamp(ivec2(cell), ivec2(0), uFieldSize - 1), 0);
-	float f = field.r + field.g / 255.0;
 	ivec2 c = ivec2(mod(cell, 8.0));
-	float v = f + (bayer8[c.y * 8 + c.x] / 64.0 - 0.25) / 3.0;
+	float v = field.a + (bayer8[c.y * 8 + c.x] / 64.0 - 0.25) / 3.0;
 	v = clamp(v - mix(0.2, 0.0, smoothstep(0.45, 0.8, v)), 0.0, 1.0);
 	float a = floor(v * 3.0 + 0.5) / 3.0 * uOpacity;
-	outColor = vec4(uColor * a, a);
+	outColor = vec4(field.rgb * a, a);
 }`;
 
 const canvas = document.querySelector('canvas');
@@ -151,16 +183,7 @@ function link(fragment) {
 	return { program, uniforms };
 }
 
-function rgb(css) {
-	const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
-	probe.fillStyle = '#888';
-	probe.fillStyle = css;
-	probe.fillRect(0, 0, 1, 1);
-	const [r, g, b] = probe.getImageData(0, 0, 1, 1).data;
-	return [r / 255, g / 255, b / 255];
-}
-
-const wave = link(WAVE);
+const scene = link(SCENE);
 const dither = link(DITHER);
 gl.bindVertexArray(gl.createVertexArray());
 gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
@@ -176,7 +199,7 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 const framebuffer = gl.createFramebuffer();
 
 const view = { ratio: 1, cell: 1, cols: 1, rows: 1 };
-const state = { status: 'idle', reduced: false, visible: true, speed: 0.5, time: 0, reveal: 0, color: [0.5, 0.5, 0.5], opacity: 0.45 };
+const state = { status: 'idle', reduced: false, visible: true, dark: true, speed: 0.5, time: 0, reveal: 0 };
 const pointer = { x: 0, y: 0, inside: false, set: false, hx: 0, hy: 0, presence: 0 };
 const trail = [];
 const ripples = [];
@@ -208,17 +231,18 @@ function render() {
 
 	gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 	gl.viewport(0, 0, view.cols, view.rows);
-	gl.useProgram(wave.program);
-	const w = wave.uniforms;
-	gl.uniform2f(w.uResolution, innerWidth, innerHeight);
-	gl.uniform1f(w.uCell, view.cell / view.ratio);
-	gl.uniform1f(w.uTime, state.time);
-	gl.uniform3fv(w.uTrail, trailData);
-	gl.uniform1i(w.uTrailCount, points.length);
-	gl.uniform4fv(w.uRipples, rippleData);
-	gl.uniform1i(w.uRippleCount, live.length);
-	gl.uniform1f(w.uIntro, eased);
-	gl.uniform1f(w.uReach, 0.5 * Math.hypot(innerWidth / innerHeight, 1) + 0.45);
+	gl.useProgram(scene.program);
+	const s = scene.uniforms;
+	gl.uniform2f(s.uResolution, innerWidth, innerHeight);
+	gl.uniform1f(s.uCell, view.cell / view.ratio);
+	gl.uniform1f(s.uTime, state.time);
+	gl.uniform1f(s.uDark, state.dark ? 1 : 0);
+	gl.uniform3fv(s.uTrail, trailData);
+	gl.uniform1i(s.uTrailCount, points.length);
+	gl.uniform4fv(s.uRipples, rippleData);
+	gl.uniform1i(s.uRippleCount, live.length);
+	gl.uniform1f(s.uIntro, eased);
+	gl.uniform1f(s.uReach, 0.5 * Math.hypot(innerWidth / innerHeight, 1) + 0.45);
 	gl.drawArrays(gl.TRIANGLES, 0, 3);
 
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -230,8 +254,7 @@ function render() {
 	gl.uniform1i(d.uField, 0);
 	gl.uniform2i(d.uFieldSize, view.cols, view.rows);
 	gl.uniform1f(d.uCellDevice, view.cell);
-	gl.uniform3fv(d.uColor, state.color);
-	gl.uniform1f(d.uOpacity, state.opacity);
+	gl.uniform1f(d.uOpacity, state.dark ? 0.5 : 0.4);
 	gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 
@@ -307,10 +330,7 @@ addEventListener('message', ({ data }) => {
 		}
 	}
 	if (data?.type === 'visible') state.visible = data.value;
-	if (data?.type === 'theme') {
-		state.color = rgb(data.colors?.foreground || (data.dark ? '#d4d4d4' : '#404040'));
-		state.opacity = data.dark ? 0.45 : 0.35;
-	}
+	if (data?.type === 'theme') state.dark = data.dark;
 	schedule();
 });
 addEventListener('resize', resize);
