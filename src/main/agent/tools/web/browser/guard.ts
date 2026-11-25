@@ -19,7 +19,14 @@ export function guard(browsing: Session, routed: boolean, open: () => boolean): 
 		if (reason) {
 			const tab = tabFor(details.webContents);
 			if (tab) block(tab, details.url, reason);
+			return callback({ cancel: true });
 		}
-		callback({ cancel: reason !== undefined });
+		let redirectURL: string | undefined;
+		try {
+			redirectURL = tidy(details);
+		} catch {
+			redirectURL = undefined;
+		}
+		callback(redirectURL ? { redirectURL } : { cancel: false });
 	});
 }
