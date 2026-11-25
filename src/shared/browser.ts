@@ -58,6 +58,7 @@ export interface BrowserPaneTab {
 	readonly offer?: { readonly username: string; readonly site: string; readonly update: boolean };
 	readonly blocked?: readonly BrowserBlocked[];
 	readonly download?: BrowserDownload;
+	readonly permission?: BrowserPermissionRequest;
 }
 
 export interface BrowserPaneState {
