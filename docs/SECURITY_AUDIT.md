@@ -48,7 +48,7 @@ Keep these properties when changing the code below.
 | 21 | Low | `use_web_browser` reaches private hosts; `private.ts` misses ranges | Partial: `192.0.0.0/24` added; `198.18.0.0/15` skipped (Clash/Surge fake-IP range); browser policy is a Decision |
 | 22 | Low | Tasks: global off-switch bypassed; no cron frequency cap | Partial: `activate()` respects the off-switch; frequency cap open |
 | 23 | Low | `select_screen_source` in voice blocks the tool queue for 10 minutes | Fixed: voice builds tools with `restricted: true` |
-| 24 | Low | CSP `unsafe-inline` + CDN scripts; `local-resource://file` serves any path | Open |
+| 24 | Low | CSP `unsafe-inline` + CDN scripts; `local-resource://file` serves any path | Partial: unused CSP sources removed (CDN, workers, ws/wss, data/blob frames and connects); `unsafe-inline` and the any-path handler stay |
 | 25 | Low | Updater: `allowPrerelease`, unsigned Linux, Windows `forceCodeSigning: false` | Decision |
 | 26 | Low | `SECURITY.md` describes messaging channels that no longer exist | Fixed |
 
