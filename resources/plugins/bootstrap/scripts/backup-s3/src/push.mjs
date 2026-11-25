@@ -1,12 +1,18 @@
+import { randomBytes } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { derive } from './derive.mjs';
 import { describe } from './describe.mjs';
 import { list } from './list.mjs';
 import { remove } from './remove.mjs';
 import { upload } from './upload.mjs';
 import { walk } from './walk.mjs';
 
-export async function push(client, { provider, roots, protectedRoot }) {
+export async function push(client, { provider, roots, protectedRoot, vaultKey }) {
+	const salt = randomBytes(16);
+	const encryption = provider.passphrase
+		? { key: await derive(provider.passphrase, salt), salt, vaultKey }
+		: undefined;
 	const uploaded = [];
 	const deleted = [];
 	const failed = [];
