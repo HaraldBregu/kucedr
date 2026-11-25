@@ -24,10 +24,10 @@ export async function searchSessions(
 				try {
 					const file = messagesFile(root, entry.name);
 					const [raw, stats, info] = await Promise.all([
-						readFile(file, 'utf8'),
+						readFile(file).then((data) => unseal(data).toString('utf8')),
 						stat(file),
-						readFile(infoFile(root, entry.name), 'utf8')
-							.then((text) => JSON.parse(text) as Record<string, unknown>)
+						readFile(infoFile(root, entry.name))
+							.then((data) => JSON.parse(unseal(data).toString('utf8')) as Record<string, unknown>)
 							.catch((): Record<string, unknown> => ({})),
 					]);
 					if (['task', 'health', 'subagent', 'voice'].includes(info.type as string))
