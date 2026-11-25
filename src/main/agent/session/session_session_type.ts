@@ -5,7 +5,7 @@ import { infoFile } from './session_info_file';
 
 export function sessionType(sessionsPath: string, sessionId: string): SessionCategory {
 	try {
-		const info = JSON.parse(readFileSync(infoFile(sessionsPath, sessionId), 'utf8')) as {
+		const info = JSON.parse(readSealed(infoFile(sessionsPath, sessionId))) as {
 			type?: unknown;
 		};
 		const type = info?.type;
