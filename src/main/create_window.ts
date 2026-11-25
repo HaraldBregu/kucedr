@@ -5,6 +5,7 @@ import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
 import { getPlatformTranslucencyOptions } from './translucency';
 import { attachRouteNavigation } from './attach_route_navigation';
+import { reloadAfterCrash } from './reload_after_crash';
 import { getWindowSize } from './settings_store';
 import { WINDOW_SIZES } from '../shared/window_size';
 
