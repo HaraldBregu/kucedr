@@ -31,6 +31,7 @@
 		"documentationUrl": "https://openrouter.ai/openrouter/auto",
 		"documentationStatus": "unverified",
 		"contextWindow": 2000000,
+		"contextWindowDocumentationUrl": "https://openrouter.ai/openrouter/auto",
 		"inputs": {}
 	},
 	"location": "remote"
