@@ -1014,7 +1014,7 @@ function PageContent(): ReactElement {
 						<TooltipContent side="bottom">{detailsPopoverOpen ? 'Hide chat information' : 'Show chat information'}</TooltipContent>
 					</Tooltip>
 					<PopoverContent align="end" sideOffset={-32} className="w-64 border-0 bg-transparent p-0 shadow-lg" onInteractOutside={(event) => {
-						if (chatSearch) event.preventDefault();
+						if (chatSearch.query) event.preventDefault();
 					}}>
 						{chatDetails}
 					</PopoverContent>
