@@ -354,6 +354,8 @@ export interface CodingApi {
 
 export interface TaskApi {
 	list: () => Promise<TaskSchedule[]>;
+	create: (request: TaskScheduleCreateRequest) => Promise<TaskSchedule>;
+	update: (scheduleId: string, request: TaskScheduleUpdateRequest) => Promise<TaskSchedule>;
 	history: (scheduleId: string) => Promise<AgentSessionSummary[]>;
 	runNow: (scheduleId: string) => Promise<TaskScheduledTask>;
 	isRunning: (scheduleId: string) => Promise<boolean>;
