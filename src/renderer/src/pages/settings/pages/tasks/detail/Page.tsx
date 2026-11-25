@@ -225,9 +225,9 @@ const TaskDetailsPage: React.FC = () => {
 							<ItemTitle>{t('settings.cron.detail.schedule')}</ItemTitle>
 						</ItemContent>
 						<ItemActions className="ml-auto justify-end">
-							<code className="max-w-[55vw] truncate text-xs">
-								{task.cronExpression ?? t('settings.cron.detail.notScheduled')}
-							</code>
+							<span className="max-w-[55vw] truncate text-xs" title={task.cronExpression}>
+								{describeSchedule(task.cronExpression, t)}
+							</span>
 						</ItemActions>
 					</Item>
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
