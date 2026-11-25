@@ -172,6 +172,10 @@ Small, local changes:
 
 → verify: typecheck passes. The prompt Tools section and `run_started.tools` match step 5's output, and recorder start/status/stop works for all three devices.
 
+### Coding agent tool (separate plan)
+
+A new delegation tool, `use_coding_agent`, hands coding work to an external harness (Codex, and through the `acp` adapter Cline, Pi, OpenCode and others), run inside the app sandbox. Plan: [CODING_TOOLS.md](CODING_TOOLS.md), roadmap 20.5–20.8.
+
 ## Implementation status (2026-11-14)
 
 **Done**
