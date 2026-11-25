@@ -4,7 +4,7 @@ import path from 'node:path';
 
 export async function atomicWrite(
 	filePath: string,
-	content: string,
+	content: string | Uint8Array,
 	signal?: AbortSignal
 ): Promise<void> {
 	const temporaryPath = path.join(
