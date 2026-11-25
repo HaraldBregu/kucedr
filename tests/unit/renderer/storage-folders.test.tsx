@@ -89,26 +89,20 @@ beforeEach(() => {
 	});
 });
 
-it('shows the storage provider description beneath the title and before backup setup', async () => {
+it('shows the storage service description beneath the title', async () => {
 	render(
 		<MemoryRouter>
 			<StoragePage />
 		</MemoryRouter>
 	);
-	const title = screen.getByRole('heading', { name: 'Storage', exact: true });
-	const description = await screen.findByText(
-		'Choose a saved Amazon S3 or S3-compatible provider.'
-	);
-	const backup = screen.getByRole('heading', { name: 'Folders' });
+	const title = screen.getByRole('heading', { name: 'Cloud', exact: true });
+	const description = await screen.findByText(mockTranslations.settings.storage.service.description);
 	expect(
 		title.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING
 	).toBeTruthy();
-	expect(
-		description.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING
-	).toBeTruthy();
 	expect(screen.queryByRole('button', { name: 'Sign in' })).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
-	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
+	expect(screen.getByRole('combobox', { name: 'Storage service' })).toBeEnabled();
 	expect(screen.queryByText('Media library')).not.toBeInTheDocument();
 	expect(screen.queryByText('/Users/haraldbregu/.kucedr/library')).not.toBeInTheDocument();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
