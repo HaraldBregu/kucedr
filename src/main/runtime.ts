@@ -56,6 +56,10 @@ import { restoreTabs } from './browser/restore';
 import { configurePrivacy } from './privacy/configure';
 import { isPrivacyEnabled, privacyChanged } from './privacy/state';
 import { saveTabs } from './browser/snapshot';
+import { openAppWindows } from './apps/app_render';
+import { watchIdle } from './lock/idle';
+import { isLocked, lockChanged } from './lock/state';
+import type { LockState } from '../shared/lock';
 
 // // DIAG: bump V8 old-space heap to confirm whether crashes (Chromium OOM,
 // // exception 0xE0000008) come from the V8/JS heap or from native/C++
