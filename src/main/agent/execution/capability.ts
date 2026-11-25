@@ -28,6 +28,8 @@ const PERSIST = new Set([
 	'update_task',
 	'delete_task',
 	'update_health',
+	'remember',
+	'forget',
 ]);
 const PROFILE = new Set(['update_identity', 'update_soul', 'update_user']);
 const EXTERNAL = new Set(['search_web', 'fetch_web_page', 'query_knowledge']);
