@@ -111,7 +111,6 @@ export interface BrowserPaneApi {
 	connectionsSet(connections: BrowserConnections): Promise<void>;
 	// The Tor address that answers now, or null.
 	torFind(): Promise<string | null>;
-	// Whether the agent's pointer is drawn on pages it acts on.
 	cursor(): Promise<boolean>;
 	cursorSet(enabled: boolean): Promise<void>;
 }
