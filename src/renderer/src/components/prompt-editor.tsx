@@ -94,6 +94,7 @@ function PromptEditor({
 				modes={modes}
 				modeIds={modeIds}
 				onModeIdsChange={onModeIdsChange}
+				skillIds={skillIds}
 			/>}
 		</PromptInput>
 	);
