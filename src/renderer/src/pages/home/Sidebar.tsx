@@ -135,7 +135,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			window.removeEventListener('beforeunload', finish);
 			finish();
 		};
-	}, [undo, t]);
+	}, [undo, deleteError]);
 
 	const undoAction = (): void => {
 		if (!undo) return;
