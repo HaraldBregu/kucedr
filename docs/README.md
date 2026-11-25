@@ -32,7 +32,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [SDK](../packages/sdk/README.md): embedded app bridge and optional HTTP client contract.
 - [CLI](../packages/cli/README.md): desktop launch, plugin installation, and terminal interface.
 - [Terminal](TERMINAL.md): native terminal lifecycle and IPC.
-- [Product direction](PRODUCT.md): proposed focus on open-source investigations, the market read behind it, and what it changes in the roadmap.
+- [Product direction](mission/PRODUCT.md): proposed focus on open-source investigations, the market read behind it, and what it changes in the roadmap.
 - [Roadmap](roadmap/README.md): proposed features, one file per area, with sizes and open decisions.
 - [Multiple workspaces plan](WORKSPACES.md): proposed named workspaces, with folders named by ID.
 - [Embedded agent browser plan](AGENT_BROWSER_PLAN.md): proposed browser pane inside the main window.
