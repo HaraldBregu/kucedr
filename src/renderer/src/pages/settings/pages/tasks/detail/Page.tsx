@@ -15,6 +15,7 @@ import {
 	SettingsPageShell,
 	SettingsSection,
 } from '../../../components';
+import { describeSchedule } from '../schedule';
 
 type Task = Awaited<ReturnType<typeof window.tasks.list>>[number];
 type TaskHistory = Awaited<ReturnType<typeof window.tasks.history>>;
