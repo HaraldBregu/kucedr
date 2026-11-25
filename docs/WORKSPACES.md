@@ -418,7 +418,8 @@ name. New text goes through `react-i18next` under a `spaces.*` namespace, becaus
 
 ## Implementation order
 
-1. Workspace value and registry → verify: with no registry file, every resolved path equals today's.
+1. Workspace value and registry, with session code reading `config.workspace.sessions` → verify: with
+   no registry file, every resolved path equals today's.
 2. Run binding (config, scope, `currentWorkspace()`, tools, media, memory, knowledge, browser, deferred
    operations, profile fallbacks) → verify: no argument-less `agentLocation()`, `libraryLocation()`,
    `memoryPath()` or `ragLocation()` is left in the run path, and a default-workspace chat works as
