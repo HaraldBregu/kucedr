@@ -656,6 +656,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 		replyTo,
 		replyToMessage,
 		resetChat,
+		retryHistory,
 		runModeAction,
 		setInput,
 		setModeIds,
