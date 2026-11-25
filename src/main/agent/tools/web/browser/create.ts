@@ -93,7 +93,6 @@ export function createTab(
 		tab.pointer = undefined;
 		tab.filled = false;
 		resetAutofill(tab);
-		answerPermission(tab, 'dismiss');
 		changed();
 	});
 	contents.on('page-favicon-updated', (_event, icons) => {
