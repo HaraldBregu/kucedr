@@ -57,6 +57,8 @@ import {
 	setSoundFeedbackEnabled as setStoredSoundFeedbackEnabled,
 	getNotificationsEnabled as getStoredNotificationsEnabled,
 	setNotificationsEnabled as setStoredNotificationsEnabled,
+	getUpdateChannel as getStoredUpdateChannel,
+	setUpdateChannel as setStoredUpdateChannel,
 	getChatTextSize as getStoredChatTextSize,
 	setChatTextSize as setStoredChatTextSize,
 	getZoomFactor as getStoredZoomFactor,
