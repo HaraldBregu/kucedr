@@ -1,6 +1,6 @@
 # 15. Local models and offline use
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 15.1 built 2026-11-25; the rest proposal.
 
 Using Kucedr with models that run on the user's own machine, with nothing sent to a cloud provider.
 
