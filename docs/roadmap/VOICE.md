@@ -1,6 +1,7 @@
 # 19. Voice
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 19.1 and 19.2 built (checked 2026-11-25); 19.3 and 19.4
+proposal.
 
 ## What exists today
 
