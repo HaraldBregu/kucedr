@@ -348,6 +348,8 @@ A new `WorkspaceChannels` group, wrapped with `wrapIpcHandler` and renderer chec
 | `current`     | Return the caller window's workspace                                   |
 | `select`      | Validate the ID and bind it to the caller's window                     |
 | `create`      | Validate the name, generate the ID, save and create the folders        |
+| `createFromFolder` | Open the folder dialog, check the folder, then create as above   |
+| `locate`      | Pick a new folder for a workspace whose folder is missing              |
 | `rename`      | Validate the name and update the registry                              |
 | `openWindow`  | Open a new window on the given workspace                               |
 | `pickImage`   | Open the file dialog, copy the chosen image and update the registry    |
