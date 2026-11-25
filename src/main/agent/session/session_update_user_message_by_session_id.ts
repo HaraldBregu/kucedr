@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
+import { readSealed } from '../../vault/read';
 import { messagesBackupFile } from './session_messages_backup_file';
 import { messagesFile } from './session_messages_file';
 import { parseMessages } from './session_parse_messages';
