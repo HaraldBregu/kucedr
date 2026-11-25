@@ -51,6 +51,7 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 		void window.browserPane.library().then(setCounts);
 		void window.browserPane.passwordsStatus().then(setPasswords);
 		void window.browserPane.connections().then(setRoutes);
+		void window.browserPane.cursor().then(setCursor);
 	}, []);
 	const connectionsLoaded = routes !== null;
 	useEffect(() => {
