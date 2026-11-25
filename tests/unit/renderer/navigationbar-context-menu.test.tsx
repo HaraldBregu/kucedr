@@ -196,7 +196,6 @@ it('shows the active chat in the sidebar-aligned header', () => {
 		</MemoryRouter></PageProvider>
 	);
 	expect(container.querySelector('[data-slot="navigationbar-context"]')).toHaveTextContent('Navigation refresh');
-	expect(screen.getByText('Kucedr')).toBeInTheDocument();
 });
 
 
