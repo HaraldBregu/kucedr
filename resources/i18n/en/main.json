@@ -2659,6 +2659,9 @@
 		"delete": "Delete",
 		"insertImage": "Insert image"
 	},
+	"remoteImage": {
+		"load": "Load image"
+	},
 	"inferenceSettings": {
 		"title": "Inference Settings",
 		"description": "Configure model and parameters.",
