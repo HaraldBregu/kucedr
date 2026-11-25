@@ -105,7 +105,7 @@ describe('messagesFile', () => {
 describe('createSessionState', () => {
 	it('returns fresh default state', () => {
 		const s = createSessionState();
-		expect(s.maxTurns).toBe(20);
+		expect(s.maxTurns).toBe(32);
 		expect(s.numTurns).toBe(0);
 		expect(s.model).toBe('default');
 		expect(s.messages).toEqual([]);
