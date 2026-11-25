@@ -1,6 +1,6 @@
 # 6. Distribution and trust
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 6.4 built 2026-11-25; the rest proposal.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
