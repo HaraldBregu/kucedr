@@ -198,6 +198,7 @@ export interface AgentApi {
 	searchSessions: (query: string) => Promise<AgentSessionSearchResult[]>;
 	viewSession: (sessionId: string | null) => Promise<void>;
 	onOpenSession: (listener: (sessionId: string) => void) => () => void;
+	onSessionsChanged: (listener: () => void) => () => void;
 	openSessionsFolder: () => Promise<void>;
 	openSessionFolder: (sessionId: string) => Promise<void>;
 	renameSession: (sessionId: string, title: string) => Promise<void>;
