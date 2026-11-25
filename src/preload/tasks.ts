@@ -6,6 +6,12 @@ export const tasks: TaskApi = {
 	list: () => {
 		return typedInvokeUnwrap(TaskChannels.list);
 	},
+	create: (request) => {
+		return typedInvokeUnwrap(TaskChannels.create, request);
+	},
+	update: (scheduleId, request) => {
+		return typedInvokeUnwrap(TaskChannels.update, scheduleId, request);
+	},
 	history: (scheduleId: string) => {
 		return typedInvokeUnwrap(TaskChannels.history, scheduleId);
 	},
