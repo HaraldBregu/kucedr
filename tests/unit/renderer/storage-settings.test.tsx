@@ -256,7 +256,7 @@ it('rehydrates a running backup after the page remounts', async () => {
 		</MemoryRouter>
 	);
 	expect(await screen.findByText('Upload is running in the background…')).toBeInTheDocument();
-	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeDisabled();
+	expect(screen.getByRole('combobox', { name: 'Storage service' })).toBeDisabled();
 	first.unmount();
 	expect(unsubscribeOperationStatus).toHaveBeenCalledTimes(unsubscribeCount + 1);
 });
@@ -350,7 +350,7 @@ it.each([undefined, 'deleted'])(
 		expect(screen.queryByRole('menuitem', { name: 'Cancel' })).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
-		expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
+		expect(screen.getByRole('combobox', { name: 'Storage service' })).toBeEnabled();
 		expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Sign in' })).not.toBeInTheDocument();
 	}
