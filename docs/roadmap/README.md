@@ -51,8 +51,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
 
 ## Recommended order
 
-1. **Working Terms and Privacy links (6.4).** Small and affects every user today. Replies that
-   survive leaving Home (5.3) were built 2026-11-21.
+1. **A notices file for bundled third-party work (6.4).** The Terms and Privacy links point to
+   kucedr.com since 2026-11-24. Replies that survive leaving Home (5.3) were built 2026-11-21.
 2. **Privacy: Privacy centre, encrypted data and app lock** (1.1, 1.3–1.4). Chats and memory sit
    unencrypted on disk today. Saved plugin credentials are decrypted in the main process, and
    the plugin detail page receives configured field names only (1.2).
