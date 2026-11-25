@@ -28,7 +28,7 @@ export interface BrowserDownload {
 }
 
 // What a site may ask for in the pane; every other request is denied without asking.
-export type BrowserSitePermission = 'camera' | 'microphone' | 'location' | 'notifications';
+export type BrowserSitePermission = 'camera' | 'microphone';
 
 export interface BrowserPermissionRequest {
 	readonly site: string;
