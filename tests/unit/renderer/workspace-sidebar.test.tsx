@@ -29,7 +29,7 @@ const confirmDelete = jest.fn();
 let workspaceChanged: ((event: WorkspaceChangeEvent) => void) | undefined;
 
 beforeEach(() => {
-	jest.clearAllMocks();
+	jest.resetAllMocks();
 	workspaceChanged = undefined;
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
