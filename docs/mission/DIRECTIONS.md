@@ -156,7 +156,7 @@ once.
 [TypingMind team pricing](https://custom.typingmind.com/pricing)
 
 This is not a mission, for the reason the [product direction](PRODUCT.md#1-where-kucedr-stands)
-gives: a general assistant serves no one in particular, and the free clients have hundreds of times
+gives: a general assistant serves no one in particular, and the free clients have thousands of times
 Kucedr's audience. But signed builds, checkout and encrypted backup are needed by every direction,
 so build them once and offer them to everyone: a supporter or commercial licence and paid backup,
 alongside whichever desk is chosen.
