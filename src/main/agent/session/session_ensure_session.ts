@@ -13,7 +13,7 @@ export function ensureSession(state: SessionState): void {
 	mkdirSync(sessionDir(state), { recursive: true });
 	const infoPath = infoFile(state.sessionsPath, state.id);
 	if (!existsSync(infoPath))
-		writeFileSync(infoPath, `${JSON.stringify({ type: state.category })}\n`, 'utf8');
+		writeFileSync(infoPath, seal(`${JSON.stringify({ type: state.category })}\n`));
 	if (!existsSync(messagesFilePath(state)))
 		writeMessagesFile(messagesFilePath(state), messagesBackupFilePath(state), '[]\n');
 	if (!existsSync(runFilePath(state))) writeFileSync(runFilePath(state), '', 'utf8');
