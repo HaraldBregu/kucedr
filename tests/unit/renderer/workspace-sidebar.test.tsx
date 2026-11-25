@@ -49,15 +49,16 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
-		value: { showContextMenu },
+		value: { showContextMenu, confirmDelete },
 	});
+	confirmDelete.mockResolvedValue(true);
 });
 
-it('shows a Return to Home button in the sidebar header', async () => {
+it('shows a Back to home button in the sidebar header', async () => {
 	listWorkspaceFiles.mockResolvedValue([]);
 	render(<MemoryRouter><WorkspaceSidebar onFileSelect={jest.fn()} onEntryRenamed={jest.fn()} onEntryDeleted={jest.fn()} selectedPath={null} /></MemoryRouter>);
 
-	expect(screen.getByRole('button', { name: 'Return to Home' })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Back to home' })).toBeInTheDocument();
 	await screen.findByText('Workspace is empty.');
 });
 
