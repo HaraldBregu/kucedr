@@ -25,19 +25,20 @@ export interface TaskSchedule {
 	prompt: string;
 	toolsAllow?: string[];
 	sessionIds: string[];
+	lastRun?: { at: string; error?: string };
 	createdAt: string;
 	updatedAt: string;
 }
 
 export type TaskScheduleCreateRequest = Omit<
 	TaskSchedule,
-	'id' | 'createdAt' | 'updatedAt' | 'enabled' | 'sessionIds'
+	'id' | 'createdAt' | 'updatedAt' | 'enabled' | 'sessionIds' | 'lastRun'
 > & {
 	enabled?: boolean;
 };
 
 export type TaskScheduleUpdateRequest = Partial<
-	Omit<TaskSchedule, 'id' | 'createdAt' | 'updatedAt'>
+	Omit<TaskSchedule, 'id' | 'createdAt' | 'updatedAt' | 'lastRun'>
 >;
 
 export interface TaskRuntime {
