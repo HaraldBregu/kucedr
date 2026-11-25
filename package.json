@@ -38,7 +38,7 @@
 	},
 	"main": "./out/main/index.js",
 	"scripts": {
-		"postinstall": "install-electron --no",
+		"postinstall": "install-electron --no && node -e \"const fs=require('fs');for(const arch of ['darwin-arm64','darwin-x64'])try{fs.chmodSync('node_modules/node-pty/prebuilds/'+arch+'/spawn-helper',0o755)}catch{}\"",
 		"dev": "cross-env NODE_ENV=development electron-vite dev --inspect --sourcemap",
 		"dev:website": "npm run dev --workspace website",
 		"dev:staging": "cross-env NODE_ENV=staging electron-vite dev --inspect --sourcemap --mode staging",
