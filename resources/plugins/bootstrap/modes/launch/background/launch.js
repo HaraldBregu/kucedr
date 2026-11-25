@@ -200,10 +200,6 @@ const framebuffer = gl.createFramebuffer();
 
 const view = { ratio: 1, cell: 1, cols: 1, rows: 1 };
 const state = { status: 'idle', reduced: false, visible: true, dark: true, speed: 0.5, time: 0, reveal: 0 };
-const ripples = [];
-const rippleData = new Float32Array(MAX_RIPPLES * 4);
-
-const toUv = (x, y) => [(x / innerWidth - 0.5) * (innerWidth / innerHeight), -(y / innerHeight - 0.5)];
 
 function resize() {
 	view.ratio = Math.min(devicePixelRatio, 2);
