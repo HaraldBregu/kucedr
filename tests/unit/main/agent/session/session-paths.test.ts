@@ -112,6 +112,7 @@ describe('createSessionState', () => {
 		expect(s.usage).toEqual({ inputTokens: 0, outputTokens: 0 });
 		expect(s.runContext).toEqual({
 			loadedSkills: [],
+			skillsTracked: false,
 			fileAccess: { readDirectories: new Set(), createdFiles: new Set() },
 			fileHistory: { operations: [] },
 		});
