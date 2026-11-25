@@ -12,6 +12,7 @@
 		"documentationUrl": "https://iteracompute.com/docs.html",
 		"documentationStatus": "unverified",
 		"contextWindow": 1048576,
+		"contextWindowDocumentationUrl": "https://iteracompute.com/models/qwen3-8-flash/",
 		"inputs": {}
 	},
 	"location": "remote"
