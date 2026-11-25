@@ -297,7 +297,7 @@ it.each([
 	['models', 'OpenAI', 'openai'],
 	['databases', 'Pinecone', 'pinecone'],
 ] as const)('resets a saved %s API key', async (section, name, id) => {
-	jest.mocked(window.provider.list).mockResolvedValue([{ id, name, apiKey: 'saved-key' }]);
+	jest.mocked(window.provider.list).mockResolvedValue([{ id, name, saved: true }]);
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
