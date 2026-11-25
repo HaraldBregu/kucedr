@@ -574,7 +574,7 @@ it('places connected database providers before unconnected ones', async () => {
 	]);
 	jest
 		.mocked(window.provider.list)
-		.mockResolvedValue([{ id: 'weaviate', name: 'Weaviate', apiKey: 'saved-key' }]);
+		.mockResolvedValue([{ id: 'weaviate', name: 'Weaviate', saved: true }]);
 	render(
 		<MemoryRouter>
 			<ProvidersPage section="databases" />
