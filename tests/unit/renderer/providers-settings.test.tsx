@@ -273,7 +273,7 @@ it('loads and displays saved Database keys', async () => {
 			id: 'pinecone',
 			name: 'Pinecone',
 			baseUrl: 'https://api.pinecone.io',
-			apiKey: 'database-secret',
+			saved: true,
 		},
 	]);
 	render(
