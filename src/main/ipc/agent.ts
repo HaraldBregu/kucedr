@@ -17,6 +17,7 @@ import { loadProviders } from '../models';
 import { getLanguage, getNotificationsEnabled, getProvider } from '../settings_store';
 import { loadTranslations } from '../i18n';
 import { createNotifier } from '../notifications/notifier';
+import { isLocked } from '../lock/state';
 import { listSchedules } from '../tasks';
 import type {
 	AgentContextMode,
