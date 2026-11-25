@@ -57,4 +57,5 @@ export const userMarkdownComponents: Partial<Components> = {
 	a: markdownLink(
 		'font-medium text-link-on-primary underline decoration-link-on-primary/40 underline-offset-4 hover:opacity-80'
 	),
+	img: ({ src, alt }) => <RemoteImage src={typeof src === 'string' ? src : undefined} alt={alt} />,
 };
