@@ -196,7 +196,7 @@ an app window.
 ## 6. Keep, move, stop
 
 - **Keep in the core:** the agent, the browser and its routes, the shield, capture, knowledge,
-  memory, tasks, voice, the Plan, Goal and Factchecker modes, and the `deep-research`, `pdf`,
+  memory, tasks, voice, the Plan, Goal and Fact-check modes, and the `deep-research`, `pdf`,
   `docx`, `xlsx`, `data`, `media` and `doc-coauthoring` skills.
 - **Move to optional plugins:** the Arcade, Tetris, Triangle, Pulse and Taxes apps; the personal
   skills (`inbox-triage`, `calendar-planning`, `weekly-review`); the developer skills
