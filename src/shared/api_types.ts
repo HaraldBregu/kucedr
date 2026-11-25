@@ -649,6 +649,8 @@ export interface AppApi extends AppStorageApi {
 	setPrivacy: (enabled: boolean) => Promise<import('./privacy').PrivacyState>;
 	onPrivacyChanged: (callback: (state: import('./privacy').PrivacyState) => void) => () => void;
 	restart: () => Promise<void>;
+	getVault: () => Promise<import('./vault').VaultState>;
+	setVault: (enabled: boolean) => Promise<import('./vault').VaultState>;
 	getAvailableUpdate: () => Promise<string | null>;
 	installUpdate: () => Promise<void>;
 	onUpdateAvailable: (callback: (version: string | null) => void) => () => void;
