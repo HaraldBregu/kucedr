@@ -85,10 +85,17 @@ restore brings names back:
 			"id": "0f8b6c1e-52a7-4c3e-9d41-7a1c2e6b90d3",
 			"name": "Client work",
 			"image": "6d2e9a40-1b7c-4f35-8e02-c94d7f1a3b68.png"
+		},
+		{
+			"id": "9a41c7e2-3b6d-4f10-8c25-1e7d0b9f4a63",
+			"name": "Acme",
+			"folder": "/Users/me/Clients/Acme"
 		}
 	]
 }
 ```
+
+`folder` is optional. When it is set, it is the workspace's files folder.
 
 - The default workspace is implicit: id `default`, named "Personal", never written to the file.
 - **IDs** come from `crypto.randomUUID()` and are never shown.
