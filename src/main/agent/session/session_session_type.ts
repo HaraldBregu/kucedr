@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readSealed } from '../../vault/read';
 import type { SessionCategory } from './session_types';
 import { DEFAULT_CATEGORY } from './session_types';
 import { infoFile } from './session_info_file';
