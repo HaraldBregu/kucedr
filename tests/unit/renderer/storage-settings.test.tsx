@@ -137,7 +137,7 @@ beforeEach(() => {
 	});
 });
 
-it('saves user-selected folders and a custom schedule with the selected storage provider', async () => {
+it('saves user-selected folders and a custom schedule with the selected storage service', async () => {
 	const user = userEvent.setup();
 	storageApi.pickFolders.mockResolvedValue(['/data/agent', '/data/projects']);
 	render(
@@ -146,8 +146,6 @@ it('saves user-selected folders and a custom schedule with the selected storage 
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('combobox', { name: 'Storage' }));
-	await user.click(await screen.findByRole('option', { name: 'Archive' }));
 	await user.click(await screen.findByRole('button', { name: 'Add folders' }));
 	await user.click(screen.getByRole('combobox', { name: 'Upload interval' }));
 	await user.click(await screen.findByRole('option', { name: 'Every day' }));
