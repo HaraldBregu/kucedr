@@ -1,6 +1,6 @@
 # 22. Quality: tests, CI and docs accuracy
 
-Part of the [Roadmap](README.md). Status: 22.1 nearly done 2026-11-25; 22.2–22.4 open.
+Part of the [Roadmap](README.md). Status: 22.1 done 2026-11-25; 22.2–22.4 open.
 
 Not user-facing features, but what keeps the features above from regressing.
 
