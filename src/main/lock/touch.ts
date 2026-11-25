@@ -6,7 +6,7 @@ import { getLock, unlocked } from './state';
 
 export async function unlockWithTouchId(): Promise<LockState> {
 	const state = getLock();
-	if (!state.locked || !state.enabled || !state.touchId || !state.touchIdAvailable) return state;
+	if (!state.locked || !state.touchId || !state.touchIdAvailable) return state;
 	const { lock } = loadTranslations(getLanguage(), 'main') as unknown as {
 		lock: { touchIdReason: string };
 	};
