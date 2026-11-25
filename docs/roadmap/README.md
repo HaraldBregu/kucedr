@@ -65,7 +65,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
    contrast and named controls (4.1–4.4) were built 2026-11-24.
 5. **User experience: search across chats** (3.2). Completion notifications (3.1) were built
    2026-11-21–22.
-6. **Setup with a local model** (15.1), which is also the most private way to use the app.
+6. **Model downloads and offline behaviour** (15.2, 15.4). Setup with a local model (15.1) was
+   built 2026-11-25.
 7. **The next network shield pieces**: tracker blocking (13.1) and the network view (13.8). The
    secret guard (13.3) and local network protection (13.5) were built 2026-11-24.
 8. **Terminal back-end fixes** (14.1), before any terminal screen is built on it.
