@@ -117,6 +117,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			});
 	};
 
+	const deleteError = t('settings.chatHistory.errors.delete');
 	useEffect(() => {
 		if (!undo) return;
 		undone.current = false;
