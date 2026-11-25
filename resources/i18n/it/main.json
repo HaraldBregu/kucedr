@@ -2475,7 +2475,8 @@
 		"restartApp": "Riavvia App",
 		"agents": "Agenti",
 		"openFolder": "Apri cartella",
-		"search": "Cerca"
+		"search": "Cerca",
+		"undo": "Annulla"
 	},
 	"providers": {
 		"title": "Provider",
