@@ -39,7 +39,7 @@ it('exposes configured model operations and calls the documented endpoint throug
 	expect(tool.parseInput({ state: 'text' })).toEqual({ state: 'text' });
 	expect(() => tool.parseInput({})).toThrow();
 	await expect(tool.run({ state: 'text' }, signal)).resolves.toEqual({ answers: { result: true } });
-	expect(OpenAI).toHaveBeenCalledWith({ apiKey: 'secret', baseURL: 'https://example.com/v1' });
+	expect(OpenAI).toHaveBeenCalledWith({ apiKey: 'secret', baseURL: 'https://example.com/v1', maxRetries: 0 });
 	expect(post).toHaveBeenCalledWith('/decisions', {
 		body: { state: 'text', model: 'special-model' }, signal,
 	});
