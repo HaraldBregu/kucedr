@@ -79,6 +79,7 @@ it('prevents scheduled agents from mutating tasks while honoring saved tool rest
 			runId: expect.any(String),
 			toolsAllow: ['read', 'bash'],
 			toolsDeny,
+			streamEvent: expect.any(Function),
 			streaming: false,
 			contextMode: 'minimal',
 			providerId: 'task-provider',
