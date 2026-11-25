@@ -591,7 +591,9 @@ export class AppIpc implements IpcModule {
 				requireUnrestrictedNetwork();
 				// ponytail: unsigned mac builds can't self-install; sign + notarize to drop this branch
 				if (process.platform === 'darwin') {
-					await shell.openExternal('https://github.com/HaraldBregu/kucedr/releases/latest');
+					await shell.openExternal(
+						`https://github.com/HaraldBregu/kucedr/releases/tag/v${availableUpdateVersion}`
+					);
 					return;
 				}
 				await autoUpdater.downloadUpdate();
