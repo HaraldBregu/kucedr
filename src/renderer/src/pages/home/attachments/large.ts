@@ -1,5 +1,5 @@
 import type { PromptAttachmentRule } from '@shared/model_types';
-import i18n from '@/i18n';
+import i18next from 'i18next';
 import { formatFileSize } from './size';
 
 const MAX_BYTES = 5 * 1024 * 1024;
