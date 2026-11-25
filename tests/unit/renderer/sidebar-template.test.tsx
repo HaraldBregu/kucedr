@@ -46,7 +46,7 @@ it('renders the page header inside the content pane beside a full-height sidebar
 	expect(header).toContainElement(within(content).getByRole('button', { name: 'Chat information' }));
 	expect(header).not.toHaveClass('fixed');
 	expect(sidebar).not.toHaveClass('fixed', 'top-12', 'pt-12');
-	expect(within(sidebar).queryByText('Kucedr')).not.toBeInTheDocument();
+	expect(within(sidebar).getByText('Kucedr')).toBeInTheDocument();
 	expect(within(sidebar).getByRole('button', { name: 'Toggle Sidebar' })).toHaveAttribute('aria-expanded', 'true');
 });
 
