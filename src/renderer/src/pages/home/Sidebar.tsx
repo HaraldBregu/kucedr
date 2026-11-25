@@ -173,22 +173,11 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	};
 
 	const deleteSessions = (targets: AgentSessionSummary[]): void => {
-		const message =
-			targets.length === 1
-				? t('settings.chatHistory.confirmDeleteSession', {
-						title: targets[0].title.trim() || t('settings.chatHistory.untitled'),
-					})
-				: t('settings.chatHistory.confirmDeleteSessions', { total: targets.length });
-		if (!window.confirm(message)) return;
-		const ids = new Set(targets.map((item) => item.id));
+		const ids = targets.map((item) => item.id);
 		setActionError('');
 		clearSelection();
-		void Promise.all(targets.map((item) => window.agent.deleteSession(item.id)))
-			.then(() => {
-				setSessions((current) => current.filter((item) => !ids.has(item.id)));
-				if (currentSessionId && ids.has(currentSessionId)) setSessionId(crypto.randomUUID());
-			})
-			.catch(() => setActionError(t('settings.chatHistory.errors.delete')));
+		setUndo({ action: 'delete', ids });
+		if (currentSessionId && ids.includes(currentSessionId)) setSessionId(crypto.randomUUID());
 	};
 
 	const archiveSessions = (targets: AgentSessionSummary[]): void => {
