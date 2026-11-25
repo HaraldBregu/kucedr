@@ -1,8 +1,9 @@
 # 13. Network shield
 
 Part of the [Roadmap](README.md). Status: 13.3, 13.5, 13.11 and the WebRTC part of 13.6 built
-2026-11-24 ([Browser routes and shield](../BROWSER_ROUTES.md)); 13.13 is half built (every site
-permission request is denied, with no way to allow one); the rest proposal.
+2026-11-24 ([Browser routes and shield](../BROWSER_ROUTES.md)); on 2026-11-25 the tracking-parameter
+part of 13.6, the first part of 13.7, the camera and microphone part of 13.13, and 13.14 for the
+sign-in callback; the rest proposal.
 
 Built: every browser pane session checks each request in `onBeforeRequest`
 (`src/main/agent/tools/web/browser/guard.ts`, rules in `src/main/shield/`). Public pages cannot
