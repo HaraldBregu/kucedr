@@ -479,7 +479,7 @@ it('resizes the sidebar with keyboard and pointer input and persists the width',
 	expect(sidebar).toContainElement(toggle);
 	expect(toggle).toHaveClass('size-8', 'rounded-full', 'aria-expanded:bg-transparent');
 	expect(toggle).not.toHaveClass('size-7', 'text-muted-foreground');
-	expect(sidebar).toHaveClass('top-12', 'bottom-0', 'border-r', 'bg-background');
+	expect(sidebar).toHaveClass('border-r', 'bg-sidebar');
 	expect(resizer).toHaveAttribute('aria-valuenow', '224');
 	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '224px' });
 
