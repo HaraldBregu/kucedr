@@ -27,6 +27,7 @@ import {
 	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
+import { describeSchedule } from './schedule';
 
 type Task = Awaited<ReturnType<typeof window.tasks.list>>[number];
 
