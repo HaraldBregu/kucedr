@@ -84,7 +84,7 @@ it('does not present an unstored model as selected', async () => {
 	);
 });
 
-it('offers only batch transcription models and saves through validated selection', async () => {
+it('offers transcription models and saves through validated selection', async () => {
 	const user = userEvent.setup();
 	const saveSelection = jest.fn().mockResolvedValue(true);
 	api.getProviderId.mockResolvedValue(undefined);
