@@ -350,7 +350,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 					<p className="px-2 py-1 text-xs text-destructive" role="alert">{t('workspaceSidebar.error', 'Unable to load Workspace files.')}</p>
 				) : entries.length === 0 && !pendingAction ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.empty', 'Workspace is empty.')}</p>
-				) : shownEntries.length === 0 ? (
+				) : shownEntries.length === 0 && !pendingAction ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.noResults', 'No matching files.')}</p>
 				) : (
 					<WorkspaceTree expanded={!!search} entries={shownEntries} creating={pendingAction} onCreate={confirmAction} onCreateCancel={() => { setPendingAction(null); setActionError(''); }}onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} onRenameStart={setRenamingEntry} selectedPath={selectedPath} selection={selection} onSelect={selectEntry} onMove={moveEntries} />
