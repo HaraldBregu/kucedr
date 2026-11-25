@@ -1,18 +1,20 @@
 import type { Session } from 'electron';
 import type { BrowserBlocked } from '../../../../../shared/browser';
+import { strip } from '../../../../shield/strip';
 import { verdict } from '../../../../shield/verdict';
 import { block } from './block';
-import { hygiene } from './hygiene';
 import { tabFor } from './owner';
 
 // The network shield for one tab session: every request is checked before it leaves. Nothing
-// leaves before the session's connection is in place, or when a check cannot run.
+// leaves before the session's connection is in place, or when a check cannot run. A page load
+// that carries tracking parameters goes to the same address without them.
 export function guard(browsing: Session, routed: boolean, open: () => boolean): void {
-	const tidy = hygiene(browsing);
 	browsing.webRequest.onBeforeRequest((details, callback) => {
 		let reason: BrowserBlocked['reason'] | undefined;
+		let redirectURL: string | undefined;
 		try {
 			reason = open() ? verdict(details, routed) : 'route';
+			if (!reason && details.resourceType === 'mainFrame' && details.method === 'GET') redirectURL = strip(details.url);
 		} catch {
 			reason = 'route';
 		}
@@ -20,12 +22,6 @@ export function guard(browsing: Session, routed: boolean, open: () => boolean): 
 			const tab = tabFor(details.webContents);
 			if (tab) block(tab, details.url, reason);
 			return callback({ cancel: true });
-		}
-		let redirectURL: string | undefined;
-		try {
-			redirectURL = tidy(details);
-		} catch {
-			redirectURL = undefined;
 		}
 		callback(redirectURL ? { redirectURL } : { cancel: false });
 	});
