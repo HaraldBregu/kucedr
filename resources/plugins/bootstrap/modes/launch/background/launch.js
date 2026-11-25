@@ -15,8 +15,6 @@ uniform vec2 uResolution;
 uniform float uCell;
 uniform float uTime;
 uniform float uDark;
-uniform vec3 uTrail[${MAX_TRAIL}];
-uniform int uTrailCount;
 uniform vec4 uRipples[${MAX_RIPPLES}];
 uniform int uRippleCount;
 uniform float uIntro;
