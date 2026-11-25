@@ -165,7 +165,7 @@ it('reveals the active chat session after loading and when history reopens', asy
 	const listSessions = jest.fn().mockResolvedValue(sessions).mockImplementationOnce(() => new Promise<AgentSessionSummary[]>((resolve) => { finishLoading = resolve; }));
 	Object.defineProperty(window, 'agent', { configurable: true, value: { listSessions } });
 	render(
-		<PageProvider><MemoryRouter initialEntries={['/home']}>
+		<PageProvider initialState={{ sidebarOpen: false }}><MemoryRouter initialEntries={['/home']}>
 			<ChatSessionContext.Provider value={{ sessionId: 'older', setSessionId: jest.fn() }}>
 				<NavigationBar showWorkspace />
 			</ChatSessionContext.Provider>
