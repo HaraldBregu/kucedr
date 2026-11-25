@@ -29,7 +29,7 @@ export function externalizeAttachments(messages: Message[], state: SessionState)
 						);
 						mkdirSync(directory, { recursive: true });
 						if (existsSync(filePath)) {
-							const stored = readFileSync(filePath);
+							const stored = unseal(readFileSync(filePath));
 							if (stored.length !== bytes.length || !stored.equals(bytes)) {
 								throw new Error(`Attachment blob checksum mismatch: ${id}`);
 							}
