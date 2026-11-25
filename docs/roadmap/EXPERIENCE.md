@@ -30,7 +30,8 @@ The browser pane later carries [Tor tabs](TOR.md) and [private and VPN tabs](VPN
 
 ## User experience in detail
 
-Suggested order for what is left: 3.4, 3.2, 3.5. 3.1, 3.3 and the browser pane (3.9) are built.
+Suggested order for what is left: 3.5, then the interface polish items below. 3.1–3.4, 3.6–3.9,
+3.11 and 3.12 are built.
 
 The interface polish items added 2026-11-25 (3.13–3.18) are small and independent. Suggested
 order: 3.13 and 3.14 first (quick, visible everywhere), then 3.17 and 3.16 (what a new user meets
