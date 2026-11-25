@@ -35,13 +35,24 @@ export async function forkSync<T>(operation: StorageOperation): Promise<T> {
 		[],
 		{ cwd: script.directory, serviceName: `${script.title} (${script.plugin.name})` }
 	);
-	return new Promise<T>((resolve, reject) => {
-		child.once('message', (reply: { result?: T; error?: string }) => {
+	const reply = await new Promise<{ result?: T; error?: string }>((resolve, reject) => {
+		child.once('message', (message: { result?: T; error?: string }) => {
 			child.kill();
-			if (reply.error !== undefined) reject(new Error(reply.error));
-			else resolve(reply.result as T);
+			resolve(message);
 		});
 		child.once('exit', (code) => reject(new Error(`${script.title} exited with code ${code}.`)));
-		child.postMessage({ operation, provider, roots, protectedRoot: userDataLocation() });
+		child.postMessage({
+			operation,
+			provider,
+			roots,
+			protectedRoot: userDataLocation(),
+			vaultKey:
+				operation === 'backup' && provider.passphrase && sealedVaultKey()
+					? vaultKey().toString('base64')
+					: undefined,
+		});
 	});
+	if (operation === 'restore' && isVaultEnabled()) convertVault();
+	if (reply.error !== undefined) throw new Error(reply.error);
+	return reply.result as T;
 }
