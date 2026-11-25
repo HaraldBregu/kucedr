@@ -34,19 +34,9 @@ import {
 import { McpChannels } from '../../../../src/shared/ipc_channels_definitions';
 import { McpIpc } from '../../../../src/main/ipc/mcp';
 
-const originalGoogleClientId = process.env.GOOGLE_CLIENT_ID;
-const originalGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-
 beforeEach(() => {
 	jest.clearAllMocks();
 	testMcpServer.mockResolvedValue({ ok: true, tools: [], toolCount: 0, durationMs: 0 });
-});
-
-afterAll(() => {
-	if (originalGoogleClientId === undefined) delete process.env.GOOGLE_CLIENT_ID;
-	else process.env.GOOGLE_CLIENT_ID = originalGoogleClientId;
-	if (originalGoogleClientSecret === undefined) delete process.env.GOOGLE_CLIENT_SECRET;
-	else process.env.GOOGLE_CLIENT_SECRET = originalGoogleClientSecret;
 });
 
 describe('MCP IPC', () => {
