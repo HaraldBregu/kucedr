@@ -47,6 +47,7 @@ export type AppSettingsState = {
 	keepAwake: boolean;
 	soundFeedbackEnabled: boolean;
 	notificationsEnabled: boolean;
+	updateChannel: UpdateChannel;
 	chatTextSize: ChatTextSize;
 	zoomFactor: ZoomFactor;
 	workspaceWideContent: boolean;
