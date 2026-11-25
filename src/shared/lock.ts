@@ -1,4 +1,4 @@
-export const LOCK_IDLE_MINUTES = [0, 1, 5, 15, 30, 60] as const;
+export const LOCK_IDLE_MINUTES: readonly number[] = [0, 1, 5, 15, 30, 60];
 
 export interface LockState {
 	readonly enabled: boolean;
