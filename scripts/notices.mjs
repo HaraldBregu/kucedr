@@ -36,7 +36,7 @@ while (stack.length > 0) {
 		.map((file) => readFileSync(path.join(found, file), 'utf8').trim())
 		.join('\n\n');
 	packages.set(found, { id: `${manifest.name}@${manifest.version} (${license})`, text });
-	stack.push(...Object.keys({ ...manifest.dependencies, ...manifest.optionalDependencies }).map((dep) => [found, dep]));
+	stack.push(...Object.keys(manifest.dependencies ?? {}).map((dep) => [found, dep]));
 }
 
 const groups = new Map();
