@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Restore from '../../../src/renderer/src/pages/settings/pages/storage/Restore';
+import Restore from '../../../src/renderer/src/pages/settings/pages/cloud/Restore';
 import mockTranslations from '../../../resources/i18n/en/main.json';
 
 jest.mock('react-i18next', () => {
