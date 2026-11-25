@@ -71,7 +71,7 @@ void main() {
 	vec2 cell = floor(frag / size);
 	vec3 c = scene((cell + 0.5) * size / resolution.y);
 	float light = dot(c, vec3(0.299, 0.587, 0.114));
-	float level = mix(1.0 - light, light, dark);
+	float level = smoothstep(0.05, 0.85, mix(1.0 - light, light, dark));
 	ivec2 m = ivec2(mod(cell, 4.0));
 	float on = step(BAYER[m.x + m.y * 4] / 16.0 + 0.03, level);
 	float disc = smoothstep(0.44, 0.32, length(fract(frag / size) - 0.5));
