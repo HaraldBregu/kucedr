@@ -115,7 +115,7 @@ them: the place where the client's own documents are read, compared and drafted 
 | Need | Today | Missing |
 | --- | --- | --- |
 | Work on client files locally | Local index over folders, with consent before text leaves the machine; Word, Excel and PDF skills | A workspace per client ([planned](../WORKSPACES.md)) |
-| Show which AI was used | A run record per chat; the index records each recipient of document text | A client notice and an AI-use register generated from those records |
+| Show which AI was used | A run record per chat; the index asks consent for each recipient of document text | A client notice and an AI-use register generated from those records |
 | Keep files safe at rest | Sealed keys; vault encryption and app lock in progress | Finished and verified on a release |
 | Start without API keys | Setup centred on providers and keys | A ready hosted model in the EU under a no-retention contract, and a local model path |
 | Trust the installer | Unsigned builds | Signed and notarised builds |
