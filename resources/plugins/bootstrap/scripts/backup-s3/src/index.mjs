@@ -1,4 +1,4 @@
-// Receives one { operation, provider, roots, protectedRoot } message and replies with { result } or { error }.
+// Receives one { operation, provider, roots, protectedRoot, vaultKey? } message and replies with { result } or { error }.
 import { createClient } from './client.mjs';
 import { describe } from './describe.mjs';
 import { pull } from './pull.mjs';
