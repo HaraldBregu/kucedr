@@ -170,6 +170,14 @@ const GeneralPage: React.FC = () => {
 		void window.app.setTrayClickAction(option.value);
 	};
 
+	const handleUpdateChannelChange = (next: string | null): void => {
+		const channel = UPDATE_CHANNELS.find((item) => item === next);
+		if (!channel) return;
+		const previous = updateChannel;
+		setUpdateChannel(channel);
+		void window.app.setUpdateChannel(channel).catch(() => setUpdateChannel(previous));
+	};
+
 	const handleOpenAppDataFolder = useCallback(() => {
 		void window.app.openAppDataFolder();
 	}, []);
