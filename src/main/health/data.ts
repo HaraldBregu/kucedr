@@ -32,10 +32,10 @@ async function ensureHealth(config: Config): Promise<string> {
 }
 
 export async function getHealth(config: Config): Promise<string> {
-	return readFile(await ensureHealth(config), 'utf8');
+	return unseal(await readFile(await ensureHealth(config))).toString('utf8');
 }
 
 export async function updateHealth(config: Config, content: string): Promise<string> {
-	await atomicWrite(await ensureHealth(config), content);
+	await atomicWrite(await ensureHealth(config), seal(content));
 	return content;
 }
