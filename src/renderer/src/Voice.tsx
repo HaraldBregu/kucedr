@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { loadCatalog } from './lib/providers';
 import { VoiceWindow } from './components/voice-window';
 import { AppProvider } from './contexts';
+import { LockGate } from './lock/Gate';
 import './i18n';
 import './index.css';
 
