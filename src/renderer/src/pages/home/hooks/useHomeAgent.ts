@@ -294,6 +294,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 							saveRuntime(event.sessionId, nextRuntime);
 						if (event.sessionId !== sessionId) {
 							resolvedSessionRef.current = { requestId, sessionId: event.sessionId };
+							if (currentSessionIdRef.current === sessionId) persistChatSessionId(event.sessionId);
 						}
 					}
 					if (
