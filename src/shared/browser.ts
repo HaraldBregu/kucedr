@@ -27,6 +27,14 @@ export interface BrowserDownload {
 	readonly state: 'asking' | 'saving' | 'done' | 'failed';
 }
 
+// What a site may ask for in the pane; every other request is denied without asking.
+export type BrowserSitePermission = 'camera' | 'microphone' | 'location' | 'notifications';
+
+export interface BrowserPermissionRequest {
+	readonly site: string;
+	readonly kinds: readonly BrowserSitePermission[];
+}
+
 export interface BrowserConnections {
 	// host:port of a Tor SOCKS port; empty finds Tor Browser or the Tor service.
 	readonly tor: string;
