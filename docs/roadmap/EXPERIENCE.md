@@ -161,3 +161,89 @@ Built as planned below; the complications are still unverified.
 - _Check._ Ask the agent to click a link and fill a form: the pointer travels to each target and
   the click is marked; a screenshot taken by the agent shows no pointer; the user can click in the
   page while the pointer is visible; with reduce-motion on, nothing glides.
+
+## Interface polish
+
+Added 2026-11-25 from a read of `src/renderer/src`. Paths below are relative to that folder. None of
+these items were checked in the running app.
+
+### 3.13 Confirmations in the app's style
+
+- _Behaviour._ Deleting a chat, all chats, a task, a task's history or library files asks in a
+  Kucedr dialog: a title naming what goes, a red action button named for the action ("Delete
+  chat", not "OK"), and Cancel focused by default. It follows the theme and the app language.
+- _Found._ `window.confirm` in `pages/settings/pages/assistant/chathistory/Page.tsx`,
+  `pages/settings/pages/tasks/detail/Page.tsx`, `pages/settings/pages/library/Page.tsx` and four
+  more files, 11 calls in all. The system box shows the app name as its title and cannot be styled.
+- _Builds on._ `components/ui/dialog.tsx`. There is no alert-dialog component; one shared
+  confirmation built on the existing dialog is enough, with no new dependency.
+- _Open decision._ Recommended: where undo (3.7) can restore the item, skip the question and offer
+  Undo instead; keep the dialog for what cannot come back.
+- _Check._ No `window.confirm` remains in `src/renderer`; each delete still asks, and Escape cancels.
+
+### 3.14 Consistent empty and loading states
+
+- _Behaviour._ An empty list shows an icon, one line saying what belongs there and, where it makes
+  sense, the button that adds the first item. While loading, the same placeholder rows appear on
+  every page instead of a blank area or a spinner in one place and rows in another.
+- _Found._ `SettingsEmptyState` is used in 26 files and `SettingsLoadingRows` in 29. Pages that
+  check for an empty list without them include `assistant/Page.tsx`, `assistant/tools/Mcp.tsx`,
+  `plugins/Available.tsx`, `permissions/Page.tsx`, `browser/Page.tsx`, `knowledge/Search.tsx`,
+  `knowledge/Embedding.tsx`, `cloud/Page.tsx` and `account/Activity.tsx` under
+  `pages/settings/pages` _(whether each one shows an empty list to the user is not verified)_.
+- _Builds on._ The two shared components above and `components/ui/empty.tsx`.
+- _Kept out._ New illustrations. The existing icon-and-text pattern is enough.
+- _Check._ With a fresh profile, every Settings page with a list shows the shared empty state.
+
+### 3.15 A visual consistency pass
+
+- _Behaviour._ Nothing visibly new. Pages stop drifting apart: colours follow the theme in light,
+  dark and [plugin themes](../PLUGIN_THEMES_PLAN.md), and text sizes come from one scale.
+- _Found._ 41 fixed palette colours such as `bg-blue-500` across 11 files, most in
+  `pages/settings/pages/library/Selection.tsx` and `pages/settings/components/theme.tsx`; these do
+  not follow a theme. 59 fixed pixel sizes, most often `text-[13px]` (16 uses).
+- _Approach._ Replace each fixed colour with the theme colour that means the same thing
+  (`primary`, `destructive`, `muted`), and each fixed text size with the nearest step on the
+  scale. Colours that show a theme itself (the swatches in `theme.tsx`) stay fixed.
+- _Open decision._ Whether 13px should become a named step on the scale, since it is used so often.
+  Recommended: yes, rather than rounding 16 places to 12 or 14.
+- _Check._ Switching between light, dark and one plugin theme leaves no element in the old colours.
+
+### 3.16 A useful empty chat
+
+- _Behaviour._ Under the greeting, three or four short starting points chosen from what is set
+  up: for example "Summarise my unread mail" when mail is connected, "Open a page in the browser",
+  "Continue: <last chat title>". Choosing one fills the composer; it does not send.
+- _Found._ `EmptyConversation` in `pages/home/Page.tsx` shows only "Good morning, how are you?";
+  the greeting and question are hard-coded English. `components/ui/prompt-suggestion.tsx` exists and
+  nothing uses it.
+- _Constraint._ No product or vendor names written into the suggestions; they come from what is
+  installed and connected.
+- _Open decision._ Recommended: no suggestions written by a model, so the empty chat stays instant
+  and costs nothing.
+- _Check._ A fresh profile with one provider shows suggestions; each fills the composer; the
+  greeting is translated.
+
+### 3.17 Smoother first-run setup
+
+- _Behaviour._ Setup asks for what the first chat needs (a model), lets the rest wait, and ends
+  in a chat that works. Plugins and voice can be skipped and found later in Settings.
+- _Found._ `SETUP_STEPS` in `pages/start/setupConstants.ts` runs plugins, model, chat, voice, so
+  plugins come before any model is connected. No skip action was found in `pages/start`. Step
+  titles and descriptions are hard-coded English in the same file.
+- _Builds on._ The reducer in `pages/start/state` and the flow described in
+  [Start page](../ui/START.md); the local model setup (15.1) adds a path here later.
+- _Open decision._ Recommended order: model, chat, then an optional "more" screen covering plugins
+  and voice with a Skip button.
+- _Check._ A fresh profile reaches a working chat after connecting one provider and skipping the
+  rest, and the skipped parts are reachable from Settings.
+
+### 3.18 Find any setting
+
+- _Behaviour._ Typing in the command menu matches the names of individual options, not only page
+  titles. Choosing one opens the page and scrolls to the option, briefly highlighted.
+- _Found._ The command menu (`experience/CommandMenu.tsx`) builds its Settings entries from
+  `SETTINGS_NAVIGATION` (`pages/settings/navigation.ts`), which holds pages, not options.
+- _Approach._ Give each option an id and its label key, listed next to its page in the navigation
+  data, so the menu and the page share one list. No separate search box in Settings.
+- _Check._ Typing "sound" offers the sound switch and lands on it.
