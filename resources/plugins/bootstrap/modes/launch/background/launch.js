@@ -296,20 +296,10 @@ function schedule() {
 
 addEventListener('message', ({ data }) => {
 	if (data?.type === 'pointer') {
-		if (state.reduced) return;
-		pointer.inside = typeof data.x === 'number' && typeof data.y === 'number';
-		if (!pointer.inside) return;
-		pointer.x = data.x;
-		pointer.y = data.y;
-		if (!pointer.set) {
-			[pointer.hx, pointer.hy] = toUv(data.x, data.y);
-			pointer.set = true;
-		}
-		if (data.press) {
-			const [x, y] = toUv(data.x, data.y);
-			ripples.push({ x, y, age: 0 });
-			if (ripples.length > MAX_RIPPLES) ripples.shift();
-		}
+		if (state.reduced || !data.press || typeof data.x !== 'number' || typeof data.y !== 'number') return;
+		const [x, y] = toUv(data.x, data.y);
+		ripples.push({ x, y, age: 0 });
+		if (ripples.length > MAX_RIPPLES) ripples.shift();
 		return;
 	}
 	if (data?.type === 'agent') state.status = data.status;
