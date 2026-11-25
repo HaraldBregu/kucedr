@@ -490,7 +490,7 @@ function PageContent(): ReactElement {
 			updateMode('chat');
 		};
 		const search = (event: Event): void => {
-			setChatSearch((event as CustomEvent<string>).detail);
+			setChatSearch((event as CustomEvent<{ query: string; position: number }>).detail);
 			setDetailsPopoverOpen(true);
 		};
 		window.addEventListener('kucedr:open-extension', open);
