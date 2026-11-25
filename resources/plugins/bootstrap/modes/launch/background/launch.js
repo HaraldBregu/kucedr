@@ -142,7 +142,7 @@ void main() {
 	}
 
 	vec4 s = scene(uv + warp);
-	float f = mix(1.0 - s.a, s.a, uDark) - 0.5 * touch + ring * 0.55;
+	float f = mix(1.0 - s.a, s.a, uDark) + ring * 0.55;
 	float show = clamp((uIntro * uReach - length(uv)) / 0.45, 0.0, 1.0);
 	float v = clamp(f, 0.0, 1.0) * show * show * (3.0 - 2.0 * show);
 	outColor = vec4(mix(s.rgb * 0.55, s.rgb, uDark), v);
