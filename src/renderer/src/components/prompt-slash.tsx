@@ -26,21 +26,25 @@ type SlashItem = {
 	readonly group: string;
 	readonly label: string;
 	readonly hint?: string;
+	readonly description?: string;
 	readonly icon: LucideIcon;
 	readonly disabled?: boolean;
 	readonly checked?: boolean;
-	readonly run: () => void;
+	readonly run?: () => void;
+	readonly insert?: string;
 };
 
 function PromptSlash({
 	modes,
 	modeIds,
 	onModeIdsChange,
+	skillIds,
 	children,
 }: {
 	readonly modes: readonly AgentModeInfo[];
 	readonly modeIds: readonly string[];
 	readonly onModeIdsChange: (modeIds: string[]) => void;
+	readonly skillIds: readonly string[];
 	readonly children: ReactNode;
 }): ReactElement {
 	const { t } = useTranslation();
