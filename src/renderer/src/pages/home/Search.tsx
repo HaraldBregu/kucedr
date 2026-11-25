@@ -35,6 +35,12 @@ export function ChatSearch({ scroll, active, refreshKey, initialQuery, initialPo
 				}
 			}
 		}
+		const position = target.current;
+		if (content && position !== undefined) {
+			const message = Array.from(content.querySelectorAll<HTMLElement>('[data-chat-turn],[data-chat-response]')).findLast((element) => Number((element.dataset.chatTurn ?? element.dataset.chatResponse)?.split('-history-')[1]) <= position);
+			const at = message ? found.findIndex((range) => message.contains(range.startContainer)) : -1;
+			if (at >= 0) setIndex(at);
+		}
 		ranges.current = found;
 		setCount(found.length);
 		setFirst(found[0]?.startContainer);
