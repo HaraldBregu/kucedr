@@ -24,6 +24,7 @@ beforeEach(() => {
 					title: 'My App',
 					description: 'Uploaded app',
 					metadata: { version: '1.0.0', category: 'Tools', entry: 'index.html' },
+					mode: 'window',
 				},
 			]),
 			getSettings: jest.fn().mockResolvedValue(settings),
