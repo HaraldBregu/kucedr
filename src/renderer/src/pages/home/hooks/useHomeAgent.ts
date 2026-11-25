@@ -573,7 +573,9 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				};
 				pending.forEach((event) => applyLive(event));
 			})
-			.catch(() => undefined)
+			.catch(() => {
+				if (!cancelled && sessionId !== DEFAULT_CHAT_SESSION_ID) setHistoryError(true);
+			})
 			.finally(() => {
 				if (!cancelled) setHistoryLoading(false);
 			});
@@ -583,7 +585,9 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			offResponse();
 			resolvedSessionRef.current = undefined;
 		};
-	}, [dispatchChat, sessionId, updateFollowUps]);
+	}, [dispatchChat, sessionId, updateFollowUps, historyAttempt]);
+
+	const retryHistory = useCallback(() => setHistoryAttempt((attempt) => attempt + 1), []);
 
 	useEffect(() => {
 		const refresh = (event: Event): void => {
