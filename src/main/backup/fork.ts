@@ -8,6 +8,9 @@ import { transferRoots } from '../storage/roots';
 import { storagePrefix } from '../storage/storage_prefix';
 import { getStorageSettings } from './store';
 import { requireUnrestrictedNetwork } from '../privacy/state';
+import { convertVault } from '../vault/convert';
+import { vaultKey } from '../vault/key';
+import { isVaultEnabled, sealedVaultKey } from '../vault/state';
 
 /** Runs the selected STORAGE script in a utility process and returns its result. */
 export async function forkSync<T>(operation: StorageOperation): Promise<T> {
