@@ -59,7 +59,7 @@ function PromptSlash({
 	const [sidebarTranslucency, setSidebarTranslucency] = useState<boolean | null>(null);
 	const [selectedTheme, setSelectedTheme] = useState<{ pluginId: string; themeId: string } | null>(null);
 	const text = value.trimStart();
-	const query = /^\/\S*$/.test(text) ? text.slice(1).toLowerCase() : null;
+	const query = /^\/\S*$/.test(text) ? text.slice(1).replaceAll('\\', '').toLowerCase() : null;
 
 	useEffect(() => {
 		setSelected(0);
