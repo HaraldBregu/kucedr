@@ -26,7 +26,7 @@ export function promptMemory(markdown: string, query: string): string {
 		}
 		if (heading && summaryLevel) continue;
 		if (summaryLevel || /<!-- kucedr:summary:/.test(line)) {
-			const clean = line.replace(/ <!-- kucedr:(?:fact|summary|created):[^ ]* -->/g, '').trim();
+			const clean = line.replace(/ <!-- kucedr:(?:fact|summary|source|created):[^ ]* -->/g, '').trim();
 			if (!clean) {
 				record = -1;
 			} else if (record < 0 || /^[-*+]\s|^\d+[.)]\s/.test(clean)) {
