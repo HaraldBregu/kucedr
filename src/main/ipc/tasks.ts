@@ -16,6 +16,8 @@ import {
 	runScheduleNow,
 	setRuntime,
 	stopRun,
+	updateSchedule,
+	type TaskScheduleCreateRequest,
 } from '../tasks';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
