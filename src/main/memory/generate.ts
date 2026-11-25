@@ -37,7 +37,7 @@ export async function generateMemory(
 			signal
 		)
 	).trim();
-	const unstamped = (line: string) => line.replace(/ <!-- kucedr:created:[^>]* -->/g, '');
+	const unstamped = (line: string) => line.replace(/ <!-- kucedr:(?:source|created):[^>]* -->/g, '');
 	const existingLines = new Set(existing.split('\n').map(unstamped));
 	if (
 		!markdown ||
