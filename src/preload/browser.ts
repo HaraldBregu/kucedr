@@ -50,4 +50,6 @@ export const browserPane: BrowserPaneApi = {
 	connections: () => typedInvokeUnwrap(BrowserChannels.connections),
 	connectionsSet: (connections) => typedInvokeUnwrap(BrowserChannels.connectionsSet, connections),
 	torFind: () => typedInvokeUnwrap(BrowserChannels.torFind),
+	cursor: () => typedInvokeUnwrap(BrowserChannels.cursor),
+	cursorSet: (enabled) => typedInvokeUnwrap(BrowserChannels.cursorSet, enabled),
 };
