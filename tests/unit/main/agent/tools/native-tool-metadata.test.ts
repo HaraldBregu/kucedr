@@ -50,8 +50,8 @@ it('explains task capabilities and example user requests to the model', () => {
 		'Create and persist a reusable background agent task'
 	);
 	expect(createTaskTool.description).toContain('New tasks are deliberately saved disabled');
-	expect(listTasksTool.description).toContain('Show my scheduled tasks');
-	expect(updateTaskTool.description).toContain('enable and disable scheduled execution');
+	expect(listTasksTool.description).toContain('List every persisted background task');
+	expect(updateTaskTool.description).toContain('pause scheduled execution');
 	expect(deleteTaskTool.description).toContain('explicit deletion request');
 	expect(runTaskNowTool.description).toContain('without changing its saved prompt');
 });
