@@ -79,6 +79,9 @@ beforeEach(() => {
 	operationListener = undefined;
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'storage', { configurable: true, value: storageApi });
+	Object.defineProperty(window, 'scripts', { configurable: true, value: scriptsApi });
+	scriptsApi.list.mockResolvedValue([{ name: 'backup-s3', title: 'S3 backup', type: 'STORAGE' }]);
+	storageApi.getNextRun.mockResolvedValue(undefined);
 	storageApi.listProviders.mockResolvedValue([
 		{
 			id: 'primary',
