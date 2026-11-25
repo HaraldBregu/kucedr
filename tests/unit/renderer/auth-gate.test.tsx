@@ -406,7 +406,7 @@ it('continues through chat and voice, goes back, and saves only on Finish', asyn
 	});
 	window.provider = {
 		list: jest.fn(async () => [
-			{ id: 'custom', baseUrl: 'https://models.example/v1', apiKey: 'test-key' },
+			{ id: 'custom', baseUrl: 'https://models.example/v1', apiKey: 'test-key', saved: true },
 		]),
 	} as never;
 	try {
