@@ -177,6 +177,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		const ids = targets.map((item) => item.id);
 		setActionError('');
 		clearSelection();
+		setDeleted((current) => [...current, ...ids]);
 		setUndo({ action: 'delete', ids });
 		if (currentSessionId && ids.includes(currentSessionId)) setSessionId(crypto.randomUUID());
 	};
