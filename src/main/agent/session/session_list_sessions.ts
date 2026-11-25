@@ -1,5 +1,6 @@
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, statSync } from 'node:fs';
 import type { AgentSessionSummary } from '../../../shared/agent_types';
+import { readSealed } from '../../vault/read';
 import type { SessionCategory } from './session_types';
 import { DEFAULT_CATEGORY } from './session_types';
 import { infoFile } from './session_info_file';
