@@ -4,7 +4,7 @@ Part of the [Roadmap](README.md). Status: 2.1–2.4 and 2.7 built. The remaining
 
 Agent-turn speed has five measured rounds in [AGENT_TURN.md](../AGENT_TURN.md). The model call
 dominates, so the features that matter reduce turns and prompt size, then make the app feel instant
-around the model. The next step is a repeatable baseline for streaming, startup and bundle size (2.7).
+around the model. The baseline for streaming, startup and bundle size (2.7) is below.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
