@@ -147,6 +147,7 @@ Use `TrustedRenderer` for realtime voice IPC.
 
 **Fix**
 - Render remote images in assistant messages as links, not `<img>`.
+- Show remote images in user messages and workspace documents as a "Load image" button that loads that one image on click (`components/remote-image.tsx`).
 - *Decision:* inject a non-removable read deny list for credential paths (`~/.ssh`, `~/.aws`, `~/.gnupg`, `~/.config/gh`, `~/.netrc`, `~/.docker/config.json`, `~/.kube`, browser profiles, `~/.kucedr/{providers,mcp,storage,credentials,settings,agent-browser}`). It flows into sandbox `denyRead`, so sandboxed `git push` over SSH, `gh`, `aws` and `docker` stop working.
 
 ---
