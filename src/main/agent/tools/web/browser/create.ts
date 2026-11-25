@@ -141,9 +141,8 @@ export function createTab(
 		if (tab.download?.state === 'asking') answerDownload(tab, 'cancel');
 		answerPermission(tab, 'dismiss');
 		if (route !== 'direct' && ![...paneTabs.values()].some((other) => other.partition === partition)) {
+		if (route !== 'direct' && ![...paneTabs.values()].some((other) => other.partition === partition))
 			void session.fromPartition(partition).clearData().catch(() => undefined);
-			for (const key of sitePermits.keys()) if (key.startsWith(`${partition} `)) sitePermits.delete(key);
-		}
 		changed();
 	});
 	paneTabs.set(tab.id, tab);
