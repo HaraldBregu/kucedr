@@ -46,12 +46,12 @@ it('isolates operations between active sessions', () => {
 	expect(history.operations).toEqual([]);
 });
 
-it('rejects oversized history snapshots before loading their contents', () => {
+it('flags oversized history snapshots before loading their contents', () => {
 	fs.mkdirSync(root, { recursive: true });
 	const target = path.join(root, 'large.txt');
 	fs.writeFileSync(target, '');
 	fs.truncateSync(target, 2 * 1024 * 1024 + 1);
-	expect(() => captureFiles([target])).toThrow('byte limit');
+	expect(captureFiles([target])).toEqual([{ path: target, exists: true, tooLarge: true }]);
 });
 
 it('rejects symlinked history targets instead of following them', () => {
