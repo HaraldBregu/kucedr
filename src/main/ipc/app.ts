@@ -753,6 +753,21 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
+			AppChannels.setUpdateChannel,
+			wrapTrustedHandler((channel: UpdateChannel) => {
+				setStoredUpdateChannel(channel);
+				eventBus.emit('updates:changed', { channel });
+			}, AppChannels.setUpdateChannel)
+		);
+
+		ipcMain.handle(
+			AppChannels.getUpdateChannel,
+			wrapSimpleHandler(() => {
+				return getStoredUpdateChannel();
+			}, AppChannels.getUpdateChannel)
+		);
+
+		ipcMain.handle(
 			AppChannels.setChatTextSize,
 			wrapTrustedHandler((size: ChatTextSize) => {
 				setStoredChatTextSize(size);
