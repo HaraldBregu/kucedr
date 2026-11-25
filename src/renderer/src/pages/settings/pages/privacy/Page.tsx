@@ -15,6 +15,8 @@ import {
 	SettingsPanel,
 	SettingsRow,
 } from '../../components';
+import { Encryption } from './Encryption';
+import { Lock } from './Lock';
 
 export default function PrivacyPage(): React.JSX.Element {
 	const { t } = useTranslation();
