@@ -103,7 +103,7 @@ Each tool has a research note in this folder: [Maltego and Hunchly](MALTEGO.md),
 
 | #   | Direction                                                                   | Fit with what exists                                                     | Competition                                 | Willingness to pay                                          | Verdict         |
 | --- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------- | ----------------------------------------------------------- | --------------- |
-| 1   | Investigation desk                                                          | High: routes, shield, capture, knowledge, Factchecker, tasks, run record | Split across tools; priced for institutions | High: $169 to $3,450 per seat a year                        | **Recommended** |
+| 1   | Investigation desk                                                          | High: routes, shield, capture, knowledge, Fact-check, tasks, run record  | Split across tools; priced for institutions | High: $169 to $3,450 per seat a year                        | **Recommended** |
 | 2   | Private workspace for confidential work (lawyers, accountants, consultants) | Medium: local models and Privacy Mode; no encryption at rest or app lock | Legal AI platforms; local model apps        | High, but buyers expect certifications Kucedr does not hold | Second choice   |
 | 3   | Privacy-first AI browser for everyone                                       | High                                                                     | Chrome, Edge, Brave, Comet; Atlas closed    | Low                                                         | No              |
 | 4   | Personal assistant (mail, calendar, reviews, voice)                         | High                                                                     | Cowork, ChatGPT, Gemini, OpenClaw           | Medium                                                      | No              |
@@ -147,7 +147,7 @@ government buyers need procurement and certification work the first versions wil
 ```text
 open a case -> browse and ask: user and agent share tabs, each tab has a route
             -> capture: address, time, route and SHA-256 kept for each item
-            -> verify: Factchecker by default, no source means no claim
+            -> verify: Fact-check by default, no source means no claim
             -> report: claims linked to captures, evidence list and case log attached
             -> watch: scheduled checks capture changes and say what changed
 ```
