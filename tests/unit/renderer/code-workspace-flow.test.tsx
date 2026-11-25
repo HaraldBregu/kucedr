@@ -33,6 +33,8 @@ beforeEach(() => {
 	addProject.mockImplementation(async () => { listProjects.mockResolvedValue([project]); return project; });
 	Object.defineProperty(window, 'coder', { configurable: true, value: {
 		listProjects, addProject, listMarkdownFiles, openProject,
+		listHarnesses: jest.fn().mockResolvedValue([{ id: 'pi', name: 'Pi', provider: { id: 'openai-codex', name: 'OpenAI Codex' } }]),
+		getProjectInstructions: jest.fn().mockResolvedValue({ defaultFileName: 'AGENTS.md' }),
 		getSettings: jest.fn(async (runtime: CoderHarness = 'pi') => ({ runtime, providerId: runtime === 'cline' ? 'cline' : 'openai-codex', modelId: '', thinkingLevel: 'medium', toolMode: 'read-only' })),
 	} });
 });
