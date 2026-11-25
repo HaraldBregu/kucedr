@@ -30,4 +30,5 @@ Part of the [Roadmap](README.md). Status: proposal.
 
 - **Approvals in unattended runs.** A task cannot ask the user. Recommended: a task may only use
   the tools chosen when it was created, and anything else fails with a clear message.
+  Decided 2026-11-25 with 16.1: taken as recommended.
 - **16.7** changes what "quitting" the app means and should be an explicit setting.
