@@ -7,9 +7,12 @@ import {
 	ChevronRight,
 	History,
 	ListChecks,
+	Plus,
 	ShieldCheck,
 	Wrench,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { ModelOptions } from '@/components/model-options';
