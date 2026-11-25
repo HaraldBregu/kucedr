@@ -9,6 +9,7 @@ jest.mock('react-i18next', () => {
 const listMarkdownFiles = jest.fn();
 const createMarkdownFile = jest.fn();
 const deleteMarkdownFile = jest.fn();
+const getProjectInstructions = jest.fn();
 const showContextMenu = jest.fn();
 
 beforeEach(() => {
