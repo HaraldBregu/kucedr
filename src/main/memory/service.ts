@@ -148,7 +148,39 @@ export class Memory implements MemoryService {
 			);
 		});
 	}
-	async forget(match: string): Promise<{ removed: number }> {
+	async remember(fact: string, source?: string): Promise<MemoryEntry> {
+		const text = fact.trim().replace(/\s+/gu, ' ');
+		if (!text || text.length > 2000) throw new Error('A memory fact is required.');
+		this.invalidate();
+		return this.lock(async () => {
+			const markdown = await this.read();
+			const id = parseMemories(`- ${text}`)[0].id;
+			const existing = parseMemories(markdown).find((entry) => entry.id === id);
+			const next = existing
+				? markdown
+				: stampMemories(appendMemory(markdown, text), markdown, undefined, source);
+			if (!existing) await this.replace(next, []);
+			const { lineIndex: _line, ...entry } = parseMemories(next).find((item) => item.id === id)!;
+			return entry;
+		});
+	}
+	async update(id: string, fact: string): Promise<void> {
+		const text = fact.trim().replace(/\s+/gu, ' ');
+		if (!text || text.length > 2000) throw new Error('A memory fact is required.');
+		this.invalidate();
+		await this.lock(async () => {
+			const markdown = await this.read();
+			const entry = parseMemories(markdown).find((item) => item.id === id);
+			if (!entry) throw new Error('Memory changed while editing. Reload before saving.');
+			const lines = markdown.split('\n');
+			lines[entry.lineIndex] = lines[entry.lineIndex].replace(
+				/^(\s*[-*]\s+)(?:\[memory-[a-f0-9]{16}\] )?.+?((?: <!-- kucedr:[^>]* -->)*)$/i,
+				(_line, bullet: string, markers: string) => `${bullet}${text}${markers}`
+			);
+			await this.replace(stampMemories(lines.join('\n'), markdown), [id]);
+		});
+	}
+	async forget(match: string): Promise<{ removed: number; facts: string[] }> {
 		const query = match.trim().toLowerCase();
 		if (!query) throw new Error('A memory ID or text match is required.');
 		this.invalidate();
