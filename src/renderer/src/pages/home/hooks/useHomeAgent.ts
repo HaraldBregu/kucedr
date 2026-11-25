@@ -514,6 +514,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			if (cancelled) return;
 			if (!requestActiveRef.current) setIsLoading(false);
 			setHistoryLoading(true);
+			setHistoryError(false);
 		});
 		agent
 			.getSessionSnapshot(sessionId)
