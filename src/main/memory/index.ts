@@ -15,6 +15,7 @@ import { validateConfiguration } from './configuration';
 import type { MemoryState } from './types';
 import { sessionMemoryPath } from './session_path';
 import { writeMemoryFile } from './file';
+import { unseal } from '../vault/unseal';
 
 export { memoryPath } from './path';
 
