@@ -11,6 +11,8 @@ export const app: AppApi = {
 	setPrivacy: (enabled) => typedInvokeUnwrap(AppChannels.setPrivacy, enabled),
 	onPrivacyChanged: (callback) => typedOn(AppChannels.privacyChanged, callback),
 	restart: () => typedInvokeUnwrap(AppChannels.restart),
+	getVault: () => typedInvokeUnwrap(AppChannels.getVault),
+	setVault: (enabled) => typedInvokeUnwrap(AppChannels.setVault, enabled),
 	getAppStoreValue: <T extends AppStoreValue = AppStoreValue>(
 		key: string
 	): Promise<T | undefined> => {
