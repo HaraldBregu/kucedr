@@ -276,23 +276,6 @@ function frame(now) {
 	state.time += dt * state.speed;
 	state.reveal = Math.min(1, state.reveal + dt / INTRO_SECONDS);
 
-	pointer.presence += ((pointer.inside ? 1 : 0) - pointer.presence) * (1 - Math.exp(-dt / (pointer.inside ? 0.12 : 0.35)));
-	if (pointer.set) {
-		const [tx, ty] = toUv(pointer.x, pointer.y);
-		const moved = Math.hypot(tx - pointer.hx, ty - pointer.hy);
-		const follow = 1 - Math.exp(-dt / 0.06);
-		pointer.hx += (tx - pointer.hx) * follow;
-		pointer.hy += (ty - pointer.hy) * follow;
-		const decay = Math.exp(-dt / (0.08 + TRAIL * 0.7));
-		for (const point of trail) point.weight *= decay;
-		const head = trail[0];
-		if (!head || Math.hypot(head.x - pointer.hx, head.y - pointer.hy) > 0.012 || moved > 0.012) {
-			trail.unshift({ x: pointer.hx, y: pointer.hy, weight: pointer.presence });
-		} else {
-			Object.assign(head, { x: pointer.hx, y: pointer.hy, weight: pointer.presence });
-		}
-		while (trail.length > MAX_TRAIL || (trail.length > 1 && trail[trail.length - 1].weight < 0.01)) trail.pop();
-	}
 	for (let i = ripples.length - 1; i >= 0; i--) {
 		ripples[i].age += dt;
 		if (ripples[i].age >= RIPPLE_SECONDS) ripples.splice(i, 1);
