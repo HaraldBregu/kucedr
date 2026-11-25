@@ -504,9 +504,17 @@ version. It builds on native macOS, Windows, and Linux runners. After every plat
 succeeds, it creates one GitHub Release containing DMG, PKG, macOS ZIP, NSIS EXE, portable
 EXE, DEB, RPM, AppImage, and tar.gz artifacts.
 
-Releases are published as GitHub pre-releases while Kucedr is in beta. The manifest version
-and tag stay plain semantic versions; only the GitHub Release carries the beta marker. Remove
-`prerelease: true` from `pipeline.yml` for the first stable release.
+Every release is published as a GitHub pre-release, which is the beta channel. The manifest
+version and tag stay plain semantic versions; only the GitHub Release carries the beta marker.
+The app's Settings → General → Updates offers Stable (the default), Beta or Off. Stable checks
+only releases that are not marked pre-release, so a release reaches Stable users once it is
+promoted after testing:
+
+```sh
+gh release edit v1.1.0 --prerelease=false
+```
+
+Until a release is promoted, Stable users get no update.
 
 Verify:
 
