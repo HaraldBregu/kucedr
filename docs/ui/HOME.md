@@ -198,9 +198,9 @@ and permission requests should use the same conversation components as text chat
 speech should stop current assistant playback so the user can interrupt. Ending the panel,
 switching sessions, or leaving Home should stop the session and release audio resources.
 
-The current visible conversation panel shows the persona and a top-right **End voice
-conversation** control. Realtime status, elapsed time, and mute state are tracked but are not shown
-as separate controls in this panel.
+Realtime voice runs in the separate Voice window (`components/voice-window.tsx`). It shows the
+persona, whose animation follows the session state, a microphone button that mutes and unmutes,
+**End** and the elapsed time. It deliberately has no text status line.
 
 ### Read aloud
 
