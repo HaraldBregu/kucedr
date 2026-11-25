@@ -269,6 +269,9 @@ const TasksPage: React.FC = () => {
 											{task.name}
 										</ItemTitle>
 										<div className="ml-auto flex shrink-0 items-center gap-3">
+											{task.lastRun?.error && (
+												<Badge variant="destructive">{t('settings.cron.status.failed')}</Badge>
+											)}
 											<span className="max-w-[45%] truncate text-right text-xs text-muted-foreground sm:max-w-none">
 												{describeSchedule(task.cronExpression, t)}
 											</span>
