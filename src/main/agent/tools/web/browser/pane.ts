@@ -21,6 +21,8 @@ export interface BrowserTab {
 	download?: BrowserDownload & { readonly item: DownloadItem; readonly path: string; readonly received?: boolean };
 	// A site permission request waiting for the user's answer in the pane.
 	permission?: BrowserPermissionRequest & { readonly origin: string; readonly answer: (allowed: boolean) => void };
+	// What the user allowed on this page, as `origin kind`; cleared when the tab navigates.
+	granted?: Set<string>;
 	chat?: string;
 	owner?: string;
 	agent?: boolean;
