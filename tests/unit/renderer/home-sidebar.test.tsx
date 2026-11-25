@@ -196,9 +196,10 @@ it.each<[AuthState, string]>([
 	}
 	[
 		['settings.tabs.account', '/settings/account'],
-		['settings.tabs.storage', '/settings/storage'],
-		['settings.sidebar.chatSettings', '/settings/agent'],
+		['settings.tabs.storage', '/settings/cloud'],
+		['library.title', '/settings/library'],
 		['settings.tabs.apps', '/settings/apps'],
+		['settings.tabs.plugins', '/settings/plugins'],
 	].forEach(([name, href]) => {
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
