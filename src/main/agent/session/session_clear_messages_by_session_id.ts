@@ -24,7 +24,7 @@ export function clearMessagesBySessionId(
 	if (isUuid(sessionId)) {
 		const backupPath = messagesBackupFile(root, sessionId);
 		writeMessagesFile(filePath, backupPath, '[]\n');
-		writeFileSync(backupPath, '[]\n', 'utf8');
+		writeFileSync(backupPath, seal('[]\n'));
 		const attachmentsPath = sessionPath(root, sessionFolderName(sessionId), 'attachments');
 		if (existsSync(attachmentsPath)) rmSync(attachmentsPath, { recursive: true, force: true });
 		rmSync(sessionPath(root, sessionFolderName(sessionId), 'modes'), {
