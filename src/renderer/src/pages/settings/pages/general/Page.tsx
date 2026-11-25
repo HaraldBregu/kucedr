@@ -72,6 +72,7 @@ const LEGAL_LINKS = [
 	{ url: __APP_LINKS__.terms, titleKey: 'settings.application.termsOfService', icon: FileText },
 	{ url: __APP_LINKS__.privacy, titleKey: 'settings.application.privacyPolicy', icon: Lock },
 	{ url: __APP_LINKS__.license, titleKey: 'settings.application.license', icon: Scale },
+	{ url: __APP_LINKS__.notices, titleKey: 'settings.application.thirdPartyNotices', icon: ScrollText },
 	{ url: __APP_LINKS__.security, titleKey: 'settings.application.securityPolicy', icon: ShieldCheck },
 ];
 
