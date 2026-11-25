@@ -618,6 +618,22 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
+								path: 'new',
+								element: (
+									<SettingsRouteWrapper>
+										<TaskEditPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: ':taskId/edit',
+								element: (
+									<SettingsRouteWrapper>
+										<TaskEditPage key="edit" />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
 								path: 'history',
 								element: (
 									<SettingsRouteWrapper>
