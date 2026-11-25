@@ -74,6 +74,7 @@ it('prevents scheduled agents from mutating tasks while honoring saved tool rest
 		{
 			type: 'background',
 			sessionId: mockAssociateSession.mock.calls[2][1],
+			runId: expect.any(String),
 			toolsAllow: ['read', 'bash'],
 			toolsDeny,
 			streaming: false,
