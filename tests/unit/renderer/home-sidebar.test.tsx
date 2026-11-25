@@ -299,14 +299,13 @@ it('clears only the chosen chat after confirmation and refreshes its transcript'
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
+	const confirm = jest.spyOn(window, 'confirm').mockReturnValue(false);
 	const chat = await screen.findByRole('button', { name: 'Latest chat' });
 	fireEvent.contextMenu(chat);
-	let dialog = await screen.findByRole('dialog');
-	await user.click(within(dialog).getByRole('button', { name: 'common.cancel' }));
+	await waitFor(() => expect(confirm).toHaveBeenCalled());
 	expect(clearMessages).not.toHaveBeenCalled();
+	confirm.mockReturnValue(true);
 	fireEvent.contextMenu(chat);
-	dialog = await screen.findByRole('dialog');
-	await user.click(within(dialog).getByRole('button', { name: 'settings.chatHistory.clear' }));
 	await waitFor(() => expect(clearMessages).toHaveBeenCalledWith('session-latest'));
 	expect(refresh).toHaveBeenCalled();
 	expect(screen.getByRole('button', { name: 'Latest chat' })).toBeInTheDocument();
