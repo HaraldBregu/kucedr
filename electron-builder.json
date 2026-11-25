@@ -5,6 +5,7 @@
 	"files": [
 		"out/**",
 		"resources/**",
+		"THIRD_PARTY_NOTICES.md",
 		"!resources/sounds/**",
 		"!resources/svgs/**"
 	],
