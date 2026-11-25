@@ -9,6 +9,7 @@ export const memory: MemoryApi = {
 	list: () => typedInvokeUnwrap(MemoryChannels.list),
 	read: () => typedInvokeUnwrap(MemoryChannels.read),
 	edit: (markdown, expected) => typedInvokeUnwrap(MemoryChannels.edit, markdown, expected),
+	update: (id, fact) => typedInvokeUnwrap(MemoryChannels.update, id, fact),
 	forget: (match) => typedInvokeUnwrap(MemoryChannels.forget, match),
 	clear: () => typedInvokeUnwrap(MemoryChannels.clear),
 };
