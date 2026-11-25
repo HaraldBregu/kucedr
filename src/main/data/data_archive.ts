@@ -22,7 +22,7 @@ export class DataArchive {
 		}
 		if (stats.isSymbolicLink()) throw new Error(`Refusing to export symlink: ${archivePath}`);
 		if (!stats.isFile()) return;
-		const bytes = await fs.readFile(filePath);
+		const bytes = unseal(await fs.readFile(filePath));
 		this.entries.push({
 			path: archivePath.split(path.sep).join('/'),
 			bytes: bytes.byteLength,
