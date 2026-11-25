@@ -91,9 +91,11 @@ export const app: AppApi = {
 	installUpdate: () => {
 		return typedInvokeUnwrap(AppChannels.installUpdate);
 	},
-	onUpdateAvailable: (callback: (version: string) => void): (() => void) => {
+	onUpdateAvailable: (callback: (version: string | null) => void): (() => void) => {
 		return typedOn(AppChannels.updateAvailable, callback);
 	},
+	setUpdateChannel: (channel) => typedInvokeUnwrap(AppChannels.setUpdateChannel, channel),
+	getUpdateChannel: () => typedInvokeUnwrap(AppChannels.getUpdateChannel),
 	setKeepAwake: (enabled: boolean): Promise<void> => {
 		return typedInvokeUnwrap(AppChannels.setKeepAwake, enabled);
 	},
