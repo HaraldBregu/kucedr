@@ -140,6 +140,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		if (!undo) return;
 		undone.current = true;
 		setUndo(undefined);
+		setDeleted((current) => current.filter((id) => !undo.ids.includes(id)));
 		if (undo.action === 'archive')
 			void Promise.all(undo.ids.map((id) => window.agent.archiveSession(id, false)))
 				.then(() => window.agent.listSessions())
