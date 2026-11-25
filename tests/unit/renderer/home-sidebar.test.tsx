@@ -239,6 +239,9 @@ it('renames a chat from its context menu without item action buttons', async () 
 		{ id: 'compact', label: 'settings.chatHistory.compact' },
 		{ id: 'open-location', label: 'navigationBar.openLocation' },
 		{ id: 'pin', label: 'common.pin' },
+		{ type: 'separator' },
+		{ id: 'new-category', label: 'settings.chatHistory.moveToNewCategory' },
+		{ type: 'separator' },
 		{ id: 'archive', label: 'settings.chatHistory.archive' },
 		{ id: 'delete', label: 'common.delete' },
 	]);
