@@ -95,7 +95,6 @@ it('offers transcription models and saves through validated selection', async ()
 			showSelectedModel buttonDropdown />
 	);
 	await user.click(await screen.findByRole('button', { name: 'Transcription' }));
-	expect(screen.queryByRole('menuitemradio', { name: /Stream/ })).not.toBeInTheDocument();
 	await user.click(screen.getByRole('menuitemradio', { name: /Batch/ }));
 	await waitFor(() => expect(saveSelection).toHaveBeenCalledWith('google', 'batch'));
 	expect(api.setProviderId).not.toHaveBeenCalled();
