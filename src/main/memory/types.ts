@@ -41,5 +41,7 @@ export interface StoredEntry {
 	id: string;
 	fact: string;
 	lineIndex: number;
+	section?: string;
+	source?: string;
 	createdAt?: string;
 }
