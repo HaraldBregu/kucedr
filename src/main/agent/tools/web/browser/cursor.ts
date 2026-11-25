@@ -76,7 +76,8 @@ export async function cursor(
 	at: { x: number; y: number } = { x: 0, y: 0 },
 	ref = ''
 ): Promise<number> {
-	const code = `${SCRIPT}(${JSON.stringify(mode)}, ${at.x}, ${at.y}, ${JSON.stringify(ref)})`;
+	if (mode !== 'clear' && !getAgentCursor()) return 0;
+	const code =`${SCRIPT}(${JSON.stringify(mode)}, ${at.x}, ${at.y}, ${JSON.stringify(ref)})`;
 	return (await tab.view.webContents
 		.executeJavaScriptInIsolatedWorld(WORLD, [{ code }])
 		.catch(() => 0)) as number;
