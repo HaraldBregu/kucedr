@@ -178,8 +178,8 @@ The dictation panel should show a recording indicator, waveform, elapsed time, *
 transcript and return to chat. Capture must respect both Kucedr's microphone setting and system
 permission.
 
-The underlying dictation hooks support muting, but the current panel does not expose a mute
-control.
+The panel shows its state (Connecting…, Listening, Finishing…, or Recording and Transcribing… for
+batch models), the waveform, elapsed time and a mute button.
 
 ### Realtime Voice
 
