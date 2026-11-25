@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import StoragePage from '../../../src/renderer/src/pages/settings/pages/storage/Page';
+import StoragePage from '../../../src/renderer/src/pages/settings/pages/cloud/Page';
 import type { StorageProvider } from '../../../src/shared/storage_types';
 import mockTranslations from '../../../resources/i18n/en/main.json';
 
