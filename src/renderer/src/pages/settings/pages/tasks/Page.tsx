@@ -221,6 +221,12 @@ const TasksPage: React.FC = () => {
 			<SettingsSection
 				title={t('settings.cron.schedulesTitle')}
 				description={t('settings.cron.schedulesDescription')}
+				action={
+					<Button variant="outline" size="sm" onClick={() => navigate('/settings/tasks/new')}>
+						<Plus className="size-3" />
+						{t('settings.cron.form.newTitle')}
+					</Button>
+				}
 			>
 				<SettingsPanel>
 					{loading ? (
