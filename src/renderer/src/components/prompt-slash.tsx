@@ -123,6 +123,24 @@ function PromptSlash({
 							icon: SquareSlash,
 							run: () => onModeIdsChange([...modeIds, mode.id]),
 						})),
+					...skills.map((skill) => {
+						const on = skillIds.some((id) => id.toLowerCase() === skill.id.toLowerCase());
+						return {
+							group: t('slash.skills'),
+							label: skill.name,
+							description: skill.description,
+							icon: Sparkles,
+							checked: on,
+							insert: on ? `/skill off ${skill.id} ` : `/skill ${skill.id} `,
+						};
+					}),
+					...Object.keys(TASK_COMMANDS).map((command) => ({
+						group: t('slash.tasks'),
+						label: command,
+						description: t(`taskCommands.about.${command.slice(1)}`),
+						icon: ListTodo,
+						insert: `${command} `,
+					})),
 					...apps.map((app) => ({
 						group: 'Apps',
 						label: app.title,
