@@ -232,6 +232,8 @@ catalogue) help either way and can finish first.
   user a month.
 - Consider free plans for non-profit newsrooms and human-rights groups. Their use is the reference
   this market trusts.
+- Margins, break-even and the prices to test against DeepState and the company-research tools are
+  in [Margins and unit economics](ECONOMICS.md) and [How Kucedr competes](COMPETITION.md#how-to-compete).
 
 ## 9. How to know it works
 
