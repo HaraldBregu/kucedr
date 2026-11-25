@@ -1341,6 +1341,8 @@
 			"importing": "Importazione…",
 			"done": "Importati {{bookmarks}} segnalibri e {{history}} voci di cronologia.",
 			"searchSet": "Motore di ricerca impostato su {{host}}.",
+			"cursor": "Mostra il puntatore dell'agente",
+			"cursorDescription": "Disegna un puntatore sulla pagina dove l'agente fa clic e scrive. Disattivalo per evitare il breve spostamento prima di ogni clic.",
 			"stored": "Salvati in Kucedr",
 			"storedDescription": "{{bookmarks}} segnalibri, {{history}} voci di cronologia. Ricerca con {{host}}.",
 			"connections": {
