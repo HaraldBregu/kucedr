@@ -289,6 +289,25 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 					/>
 				</SettingsPanel>
 			) : null}
+			{cursor !== null ? (
+				<SettingsPanel>
+					<SettingsRow
+						title={t('settings.browser.cursor')}
+						description={t('settings.browser.cursorDescription')}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Switch
+								checked={cursor}
+								onCheckedChange={(checked) => {
+									setCursor(checked);
+									void window.browserPane.cursorSet(checked).catch(() => setCursor(!checked));
+								}}
+								aria-label={t('settings.browser.cursor')}
+							/>
+						}
+					/>
+				</SettingsPanel>
+			) : null}
 			{routes ? (
 				<SettingsPanel>
 					<SettingsRow
