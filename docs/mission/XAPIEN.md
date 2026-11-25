@@ -43,7 +43,7 @@ unlimited users and a "Discuss pricing" button:
 - **Allowance rules (help centre):** going "slightly over" the allowance is not charged; failed
   reports and reruns caused by outages do not count; regenerating a report does not count.
 
-G2 and Capterra show no price, and a G-Cloud search for "xapien" returned no services.
+A G-Cloud search for "xapien" returned no services. G2 blocked fetching, so its listing was not read.
 
 ## Evidence and AI
 
