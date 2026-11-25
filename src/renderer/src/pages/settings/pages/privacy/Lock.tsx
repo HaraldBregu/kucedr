@@ -213,7 +213,7 @@ export function Lock(): React.JSX.Element {
 							/>
 						</SettingsField>
 						{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
-						<DialogFooter className="border-0 bg-transparent p-0">
+						<DialogFooter>
 							<Button type="button" variant="outline" onClick={close}>
 								{t('common.cancel')}
 							</Button>
