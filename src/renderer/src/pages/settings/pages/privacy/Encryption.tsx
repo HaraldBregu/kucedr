@@ -31,7 +31,9 @@ export function Encryption(): React.JSX.Element {
 		try {
 			setState(await window.app.setVault(enabled));
 		} catch (cause) {
-			setError(cause instanceof Error ? cause.message : t('settings.privacy.encryption.saveFailed'));
+			setError(
+				cause instanceof Error ? cause.message : t('settings.privacy.encryption.saveFailed')
+			);
 			void window.app.getVault().then(setState, () => undefined);
 		} finally {
 			setBusy(false);
