@@ -32,7 +32,10 @@ test('plugin links open plugin details on cold and warm launch without installin
 		const second = spawn(
 			executable,
 			[
-				...argv.filter((arg) => !/^--(inspect|remote-debugging-port)|^kucedr:/.test(arg)),
+				...(process.platform === 'linux' ? ['--no-sandbox'] : []),
+				...argv.filter(
+					(arg) => !/^--(inspect|remote-debugging-port|no-sandbox)|^kucedr:/.test(arg)
+				),
 				'kucedr://plugins/cohere',
 			],
 			{
