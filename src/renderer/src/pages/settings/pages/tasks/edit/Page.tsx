@@ -140,30 +140,28 @@ const TaskEditPage: React.FC = () => {
 							description={t('settings.cron.form.toolsDescription')}
 						>
 							<SettingsPanel>
-								{TOOL_GROUPS.map((group) =>
-									group.tools.map(([toolName, toolId, toolDescription]) => (
-										<SettingsRow
-											key={toolId}
-											icon={group.icon}
-											title={toolName}
-											description={toolDescription}
-											actionClassName="w-auto justify-end"
-											actions={
-												<Checkbox
-													aria-label={toolName}
-													checked={toolsAllow.includes(toolId)}
-													onCheckedChange={(checked) =>
-														setToolsAllow((current) =>
-															checked
-																? [...current, toolId]
-																: current.filter((item) => item !== toolId)
-														)
-													}
-												/>
-											}
-										/>
-									))
-								)}
+								{TOOLS.map((tool) => (
+									<SettingsRow
+										key={tool.id}
+										icon={tool.icon}
+										title={tool.name}
+										description={tool.description}
+										actionClassName="w-auto justify-end"
+										actions={
+											<Checkbox
+												aria-label={tool.name}
+												checked={toolsAllow.includes(tool.id)}
+												onCheckedChange={(checked) =>
+													setToolsAllow((current) =>
+														checked
+															? [...current, tool.id]
+															: current.filter((item) => item !== tool.id)
+													)
+												}
+											/>
+										}
+									/>
+								))}
 							</SettingsPanel>
 						</SettingsSection>
 					</fieldset>
