@@ -9,6 +9,8 @@ export interface MemoryConfig {
 export interface MemoryEntry {
 	id: string;
 	fact: string;
+	section?: string;
+	source?: string;
 	createdAt?: string;
 }
 export interface MemoryStatus {
@@ -30,7 +32,9 @@ export interface MemoryService {
 	list(): Promise<MemoryEntry[]>;
 	read(): Promise<string>;
 	edit(markdown: string, expected?: string): Promise<void>;
-	forget(match: string): Promise<{ removed: number }>;
+	remember(fact: string, source?: string): Promise<MemoryEntry>;
+	update(id: string, fact: string): Promise<void>;
+	forget(match: string): Promise<{ removed: number; facts: string[] }>;
 	clear(): Promise<void>;
 	capture(sessionId: string, messages: readonly MemoryMessage[]): Promise<void>;
 	remove(sessionId: string): Promise<void>;
@@ -45,6 +49,7 @@ export interface MemoryApi {
 	list(): Promise<MemoryEntry[]>;
 	read(): Promise<string>;
 	edit(markdown: string, expected?: string): Promise<void>;
-	forget(match: string): Promise<{ removed: number }>;
+	update(id: string, fact: string): Promise<void>;
+	forget(match: string): Promise<{ removed: number; facts: string[] }>;
 	clear(): Promise<void>;
 }
