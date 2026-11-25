@@ -18,8 +18,8 @@ Part of the [Roadmap](README.md). Status: 4.1–4.4 built 2026-11-24; 4.5 open.
   muted text, borders and rings, and forced-colours mode keeps a visible focus outline. The
   bootstrap plugin adds a "High Contrast" theme in Settings › General.
 - **4.4** A scan of icon-only buttons found none without a name.
-- **4.5** is blocked: `npm run lint` crashes today (`eslint-plugin-react` against ESLint 10), and
-  `eslint-plugin-jsx-a11y` does not yet support ESLint 10.
+- **4.5** is blocked: `npm run lint` runs again since 2026-11-25 ([Quality](QUALITY.md), 22.1),
+  but `eslint-plugin-jsx-a11y` 6.10.2, the latest on 2026-11-25, supports ESLint up to 9 only.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
