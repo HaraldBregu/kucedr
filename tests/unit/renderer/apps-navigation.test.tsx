@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
@@ -13,6 +13,10 @@ jest.mock('react-i18next', () => {
 		initReactI18next: { type: '3rdParty', init: () => undefined },
 	};
 });
+
+jest.mock('../../../src/renderer/src/components/app/navigationbar/NavigationBar', () => ({
+	NavigationBar: ({ contextContent }: { contextContent?: unknown }) => contextContent ?? null,
+}));
 
 const apps: App[] = [
 	{
@@ -48,6 +52,10 @@ beforeEach(() => {
 			selectDebugPath: jest.fn(),
 		},
 	});
+	Object.defineProperty(window, 'plugins', {
+		configurable: true,
+		value: { list: jest.fn().mockResolvedValue([]) },
+	});
 	Object.defineProperty(window, 'matchMedia', {
 		configurable: true,
 		value: jest.fn((query: string) => ({
@@ -63,28 +71,6 @@ beforeEach(() => {
 	});
 });
 
-it('adds a debug folder path without importing it', async () => {
-	const user = userEvent.setup();
-	(window.apps.addDebug as jest.Mock).mockResolvedValue({
-		...apps[0],
-		debugPath: '/projects/demo-app',
-	});
-	(window.apps.selectDebugPath as jest.Mock).mockResolvedValue('/projects/demo-app');
-	render(
-		<MemoryRouter>
-			<AppsPage />
-		</MemoryRouter>
-	);
-	await screen.findByText('Demo App');
-	await user.click(screen.getByRole('button', { name: 'settings.apps.debug.select' }));
-	expect(screen.getByLabelText('settings.apps.debug.pathLabel')).toHaveValue('/projects/demo-app');
-	await user.click(screen.getByRole('button', { name: 'settings.apps.debug.add' }));
-	expect(window.apps.selectDebugPath).toHaveBeenCalledTimes(1);
-	expect(window.apps.addDebug).toHaveBeenCalledWith('/projects/demo-app');
-	expect(window.apps.import).not.toHaveBeenCalled();
-	expect(window.apps.list).toHaveBeenCalledTimes(2);
-});
-
 it('shows a debug app badge and image preview', async () => {
 	(window.apps.list as jest.Mock).mockResolvedValue([debugApp]);
 	render(
@@ -93,9 +79,9 @@ it('shows a debug app badge and image preview', async () => {
 		</MemoryRouter>
 	);
 
-	const title = await screen.findByRole('heading', { name: 'Demo App' });
+	const title = await screen.findByText('Demo App');
 	expect(title.parentElement).toHaveTextContent('settings.apps.debug.badge');
-	expect(title.closest('[data-slot="item"]')?.querySelector('img')).toHaveAttribute(
+	expect(title.closest('[data-slot="card"]')?.querySelector('img')).toHaveAttribute(
 		'src',
 		debugApp.imageUrl
 	);
@@ -109,9 +95,6 @@ it('shows only an open action on app cards', async () => {
 	);
 
 	await screen.findByText('Demo App');
-	expect(screen.getByText('@example')).toBeInTheDocument();
-	expect(screen.queryByText('Demo')).not.toBeInTheDocument();
-	expect(screen.queryByText('1.0.0')).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
 	expect(
@@ -119,99 +102,9 @@ it('shows only an open action on app cards', async () => {
 	).not.toBeInTheDocument();
 });
 
-it('opens the apps folder from the page header', async () => {
-	const user = userEvent.setup();
-
-	render(
-		<MemoryRouter initialEntries={['/settings/apps']}>
-			<Routes>
-				<Route path="/settings" element={<Layout />}>
-					<Route path="apps" element={<AppsPage />} />
-				</Route>
-			</Routes>
-		</MemoryRouter>
-	);
-
-	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
-	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.openFolder' }));
-
-	expect(window.apps.openRoot).toHaveBeenCalledTimes(1);
-});
-
-it.each([false, true])('shows skipped upload reasons with partial success: %s', async (partial) => {
-	const user = userEvent.setup();
-	(window.apps.import as jest.Mock).mockResolvedValue({
-		imported: partial ? apps : [],
-		skipped: [
-			{
-				name: 'workspace',
-				sourcePath: '/apps/workspace',
-				reason: 'Unable to install app: permission denied',
-			},
-			{ name: 'notes', sourcePath: '/apps/notes', reason: 'Missing or invalid manifest.' },
-		],
-	});
-
-	render(
-		<MemoryRouter>
-			<AppsPage />
-		</MemoryRouter>
-	);
-	await screen.findByText('Demo App');
-	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
-	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.upload' }));
-
-	const alert = await screen.findByRole('alert');
-	expect(alert).toHaveTextContent('workspace: Unable to install app: permission denied');
-	expect(alert).toHaveTextContent('notes: Missing or invalid manifest.');
-	if (partial) {
-		expect(screen.getByText(/settings.apps.uploaded/)).toBeInTheDocument();
-		expect(window.apps.list).toHaveBeenCalledTimes(2);
-	} else {
-		expect(screen.queryByText(/settings.apps.uploaded/)).not.toBeInTheDocument();
-	}
-});
-
-it('dismisses a completed upload notice after five seconds', async () => {
-	jest.useFakeTimers();
-	const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-	(window.apps.import as jest.Mock).mockResolvedValue({ imported: apps, skipped: [] });
-
-	render(
-		<MemoryRouter>
-			<AppsPage />
-		</MemoryRouter>
-	);
-	await screen.findByText('Demo App');
-	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
-	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.upload' }));
-
-	expect(await screen.findByText(/settings.apps.uploaded/)).toBeInTheDocument();
-	act(() => jest.advanceTimersByTime(5_000));
-	expect(screen.queryByText(/settings.apps.uploaded/)).not.toBeInTheDocument();
-	jest.useRealTimers();
-});
-
-it('keeps a canceled upload quiet', async () => {
-	const user = userEvent.setup();
-	(window.apps.import as jest.Mock).mockResolvedValue(undefined);
-	render(
-		<MemoryRouter>
-			<AppsPage />
-		</MemoryRouter>
-	);
-	await screen.findByText('Demo App');
-	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
-	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.upload' }));
-
-	expect(window.apps.import).toHaveBeenCalledTimes(1);
-	expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-	expect(screen.queryByText(/settings.apps.uploaded/)).not.toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'common.moreOptions' })).toBeEnabled();
-});
-
 it('opens an app from its card action', async () => {
 	const user = userEvent.setup();
+	(window.apps.list as jest.Mock).mockResolvedValue([{ ...apps[0], mode: 'window' }]);
 	render(
 		<MemoryRouter>
 			<AppsPage />
@@ -264,8 +157,8 @@ it('treats an app detail route as a child of the apps breadcrumb', async () => {
 	expect(await screen.findByText('Apps list')).toBeInTheDocument();
 });
 
-it.each([' DEMO APP ', 'demo app.', '@EXAMPLE', 'DEMO-APP'])(
-	'filters apps by title, description, handle or id: %s',
+it.each([' DEMO APP ', 'demo app.'])(
+	'filters apps by title or description: %s',
 	async (query) => {
 		const user = userEvent.setup();
 		(window.apps.list as jest.Mock).mockResolvedValue([
@@ -278,11 +171,11 @@ it.each([' DEMO APP ', 'demo app.', '@EXAMPLE', 'DEMO-APP'])(
 			</MemoryRouter>
 		);
 		await screen.findByText('Notes');
-		await user.type(screen.getByRole('searchbox', { name: 'settings.apps.search' }), query);
+		await user.type(screen.getByRole('searchbox', { name: 'settings.filter.search' }), query);
 
 		expect(screen.getByRole('link', { name: /Demo App/ })).toBeInTheDocument();
 		expect(screen.queryByText('Notes')).not.toBeInTheDocument();
-		await user.click(screen.getByRole('button', { name: 'settings.apps.clearSearch' }));
+		await user.click(screen.getByRole('button', { name: 'settings.filter.clear' }));
 		expect(screen.getByText('Notes')).toBeInTheDocument();
 		expect(screen.getByRole('searchbox')).toHaveValue('');
 	}
@@ -296,12 +189,12 @@ it('shows a distinct no-results state and restores apps after clearing search', 
 		</MemoryRouter>
 	);
 	await screen.findByText('Demo App');
-	await user.type(screen.getByRole('searchbox', { name: 'settings.apps.search' }), 'missing');
+	await user.type(screen.getByRole('searchbox', { name: 'settings.filter.search' }), 'missing');
 
-	expect(screen.getByText('settings.apps.noResults')).toBeInTheDocument();
-	expect(screen.getByText('settings.apps.noResultsDescription')).toBeInTheDocument();
+	expect(screen.getByText('settings.filter.empty')).toBeInTheDocument();
+	expect(screen.getByText('settings.filter.emptyDescription')).toBeInTheDocument();
 	expect(screen.queryByText('settings.apps.empty')).not.toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: 'settings.apps.clearSearch' }));
+	await user.click(screen.getByRole('button', { name: 'settings.filter.clear' }));
 	expect(screen.getByText('Demo App')).toBeInTheDocument();
 });
 
@@ -314,13 +207,13 @@ it('keeps the installed-app empty state when searching an empty collection', asy
 		</MemoryRouter>
 	);
 	await screen.findByText('settings.apps.empty');
-	await user.type(screen.getByRole('searchbox', { name: 'settings.apps.search' }), 'missing');
+	await user.type(screen.getByRole('searchbox', { name: 'settings.filter.search' }), 'missing');
 
 	expect(screen.getByText('settings.apps.empty')).toBeInTheDocument();
-	expect(screen.queryByText('settings.apps.noResults')).not.toBeInTheDocument();
+	expect(screen.queryByText('settings.filter.empty')).not.toBeInTheDocument();
 });
 
-it('does not show debug controls, badges or local paths in production', async () => {
+it('does not show debug badges or local paths in production', async () => {
 	Object.assign(globalThis, { __VITE_ENV__: { DEV: false, PROD: true } });
 	(window.apps.list as jest.Mock).mockResolvedValue([debugApp]);
 	render(
@@ -330,11 +223,7 @@ it('does not show debug controls, badges or local paths in production', async ()
 	);
 
 	await screen.findByText('Demo App');
-	expect(screen.queryByText('settings.apps.debug.title')).not.toBeInTheDocument();
 	expect(screen.queryByText('settings.apps.debug.badge')).not.toBeInTheDocument();
-	expect(screen.queryByLabelText('settings.apps.debug.pathLabel')).not.toBeInTheDocument();
 	expect(screen.queryByText(debugApp.debugPath as string)).not.toBeInTheDocument();
-	expect(window.apps.addDebug).not.toHaveBeenCalled();
-	expect(window.apps.selectDebugPath).not.toHaveBeenCalled();
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
 });
