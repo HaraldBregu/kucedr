@@ -593,6 +593,13 @@
 			"nameDescription": "Installed application name",
 			"version": "Version",
 			"versionDescription": "Current application build version",
+			"updates": {
+				"title": "Updates",
+				"description": "Stable releases only, beta releases too, or no update checks",
+				"stable": "Stable",
+				"beta": "Beta",
+				"off": "Off"
+			},
 			"author": "Author",
 			"authorDescription": "Publisher declared in the app metadata",
 			"license": "License",
