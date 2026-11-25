@@ -1,4 +1,5 @@
 import { existsSync, rmSync, writeFileSync } from 'node:fs';
+import { seal } from '../../vault/seal';
 import { isUuid } from './session_is_uuid';
 import { legacyFilePath } from './session_legacy_file_path';
 import { messagesBackupFile } from './session_messages_backup_file';
