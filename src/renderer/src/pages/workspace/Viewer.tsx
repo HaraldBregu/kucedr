@@ -7,6 +7,7 @@ import type { WorkspaceTextSize } from '@shared/app_types';
 import { workspaceFileType } from '@shared/workspace';
 import { AudioPlayer } from '@/components/audio-player';
 import { Markdown } from '@/components/prompt-kit/markdown';
+import { RemoteImage } from '@/components/remote-image';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { Input } from '@/components/ui/input';
