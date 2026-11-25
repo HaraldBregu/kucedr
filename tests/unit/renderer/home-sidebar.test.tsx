@@ -85,7 +85,15 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
-		value: { showContextMenu, confirmSignOut, openVoiceConversation },
+		value: {
+			showContextMenu,
+			confirmSignOut,
+			openVoiceConversation,
+			isFullScreen: jest.fn().mockResolvedValue(false),
+			isMaximized: jest.fn().mockResolvedValue(false),
+			onFullScreenChange: jest.fn(() => jest.fn()),
+			onMaximizeChange: jest.fn(() => jest.fn()),
+		},
 	});
 	Object.defineProperty(window, 'app', {
 		configurable: true,
