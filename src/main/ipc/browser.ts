@@ -240,6 +240,10 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			const tab = paneTabs.get(targetId.parse(id));
 			if (tab) answerDownload(tab, z.enum(['save', 'cancel', 'dismiss', 'show']).parse(answer));
 		});
+		trusted.command(BrowserChannels.permissionAnswer, (id, answer) => {
+			const tab = paneTabs.get(targetId.parse(id));
+			if (tab) answerPermission(tab, z.enum(['allow', 'block', 'dismiss']).parse(answer));
+		});
 		trusted.query(BrowserChannels.connections, () => connections());
 		trusted.command(BrowserChannels.connectionsSet, (value) => {
 			connections(checkConnections(value));
