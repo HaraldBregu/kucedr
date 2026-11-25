@@ -151,8 +151,8 @@ site visit and source commentary. €29 is 2% to 6% of a €500 to €1,500 repo
 
 What the firm will pay depends on the time Kucedr saves, not on the report price. Published
 investigator rates are €60 an hour in Italy (Dogma) and £65 to £80 an hour in the UK (London Private
-Investigators, Tremark). One hour saved on a brief is worth €60 to €95 to the firm, and a €29 price
-takes a third to a half of it. Twenty minutes saved, the illustration in the commercial research,
+Investigators, Tremark). One hour saved on a brief is worth €60 to £80 to the firm, and a €29 price
+takes roughly a third to a half of it. Twenty minutes saved, the illustration in the commercial research,
 is worth about €20, less than the price. The pilot's paired timings decide which case applies.
 [Dogma rates](https://www.dogma.it/it/tariffe-agenzia-investigativa) ·
 [Tremark](https://www.tremark.co.uk/how-much-do-private-investigators-cost/)
