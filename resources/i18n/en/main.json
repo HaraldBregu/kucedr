@@ -3212,6 +3212,18 @@
 		"create": "Create and schedule a task with those details: {{message}}",
 		"createEmpty": "I want to create and schedule a task. Ask me what the task message should be.",
 		"delete": "Delete the scheduled task with those details: {{message}}",
-		"deleteEmpty": "I want to delete a scheduled task. Show the list of scheduled tasks and ask me which one to delete."
+		"deleteEmpty": "I want to delete a scheduled task. Show the list of scheduled tasks and ask me which one to delete.",
+		"about": {
+			"task_list": "Show your scheduled tasks",
+			"create_task": "Create and schedule a task",
+			"delete_task": "Delete a scheduled task"
+		}
+	},
+	"slash": {
+		"skills": "Skills",
+		"tasks": "Tasks"
+	},
+	"attachments": {
+		"tooLarge": "{{name}} is larger than {{size}}, the limit for files without a size limit from the model. Remove it to send."
 	}
 }
