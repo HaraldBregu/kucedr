@@ -148,7 +148,13 @@ export default function StorageForm({
 										: t('settings.storageProviders.endpointHint')
 									: field.key === 'secretAccessKey' && provider?.hasSecretAccessKey
 										? t('settings.storageProviders.secretHint')
-										: undefined;
+										: field.key === 'passphrase'
+											? t(
+													provider?.hasPassphrase
+														? 'settings.storageProviders.passphraseSavedHint'
+														: 'settings.storageProviders.passphraseHint'
+												)
+											: undefined;
 							return (
 								<SettingsField
 									key={field.key}
