@@ -11,7 +11,6 @@ shipped as a second chat kind next to the agent chat.
   Settings entry is marked "coming soon" (`src/renderer/src/pages/settings/navigation.ts`).
 - The coding agent does not follow the app's permission rules
   ([PERMISSIONS_AGENTS.md](../PERMISSIONS_AGENTS.md), left as a decision) _(from docs)_.
-- Its unit test imports a module that no longer exists (`tests/unit/main/coding/coding.test.ts`).
 - Its command output is shown as plain text and runs through its own path, separate from the
   terminal ([Terminal](TERMINAL.md)).
 
