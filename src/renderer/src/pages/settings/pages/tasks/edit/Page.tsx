@@ -162,9 +162,9 @@ const TaskEditPage: React.FC = () => {
 												/>
 											}
 										/>
-									))}
-								</SettingsPanel>
-							))}
+									))
+								)}
+							</SettingsPanel>
 						</SettingsSection>
 					</fieldset>
 					<div className="flex justify-end gap-2">
