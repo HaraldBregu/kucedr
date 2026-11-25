@@ -177,6 +177,7 @@ export default function MemoryPage(): React.JSX.Element {
 							}
 						/>
 					</SettingsPanel>
+					<Remembered />
 					<SettingsSection title={t('settings.dataControls.title')}>
 						<DataControls kinds={['memory']} />
 					</SettingsSection>
