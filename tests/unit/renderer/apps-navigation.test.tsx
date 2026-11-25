@@ -8,7 +8,10 @@ import type { App } from '../../../src/shared/installed_app_types';
 jest.mock('react-i18next', () => {
 	const t = (key: string, values?: Record<string, string>): string =>
 		values ? `${key} ${JSON.stringify(values)}` : key;
-	return { useTranslation: () => ({ t }) };
+	return {
+		useTranslation: () => ({ t }),
+		initReactI18next: { type: '3rdParty', init: () => undefined },
+	};
 });
 
 const apps: App[] = [
