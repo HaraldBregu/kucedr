@@ -245,6 +245,8 @@ export const AppChannels = {
 	setPrivacy: 'app:set-privacy',
 	privacyChanged: 'app:privacy-changed',
 	restart: 'app:restart',
+	getVault: 'app:get-vault',
+	setVault: 'app:set-vault',
 	openAppDataFolder: 'app:open-app-data-folder',
 	openDataFolder: 'app:open-data-folder',
 	getActivity: 'app:get-activity',
