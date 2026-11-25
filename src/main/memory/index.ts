@@ -54,10 +54,13 @@ export function createMemory(configuration: () => Config): MemoryService {
 					throw error;
 				}),
 		read: () =>
-			fs.readFile(memoryPath(), 'utf8').catch((error: NodeJS.ErrnoException) => {
-				if (error.code === 'ENOENT') return '';
-				throw error;
-			}),
+			fs
+				.readFile(memoryPath())
+				.then((data) => unseal(data).toString('utf8'))
+				.catch((error: NodeJS.ErrnoException) => {
+					if (error.code === 'ENOENT') return '';
+					throw error;
+				}),
 		write: (markdown) => writeMemoryFile(memoryPath(), markdown),
 		writeSession: (sessionId, markdown) =>
 			writeMemoryFile(sessionMemoryPath(sessionId), markdown),
