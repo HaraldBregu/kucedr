@@ -30,7 +30,6 @@ beforeEach(() => {
 			isMaximized: jest.fn().mockResolvedValue(false),
 			onFullScreenChange: jest.fn(() => jest.fn()),
 			onMaximizeChange: jest.fn(() => jest.fn()),
-			showContextMenu,
 		},
 	});
 });
