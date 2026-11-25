@@ -60,11 +60,14 @@ const storageApi = {
 	onOperationStatusChanged: jest.fn(),
 	backup: jest.fn(),
 	restore: jest.fn(),
+	getNextRun: jest.fn(),
 };
+const scriptsApi = { list: jest.fn() };
 
 let operationListener: ((status: StorageOperationStatus) => void) | undefined;
 const unsubscribeOperationStatus = jest.fn();
 const settings = {
+	serviceId: 'backup-s3',
 	providerId: 'primary',
 	paths: [] as string[],
 	syncEnabled: false,
