@@ -188,6 +188,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			.then(() => {
 				setSessions((current) => current.filter((item) => !ids.has(item.id)));
 				if (currentSessionId && ids.has(currentSessionId)) setSessionId(crypto.randomUUID());
+				setUndo({ action: 'archive', ids: [...ids] });
 			})
 			.catch(() => setActionError(t('settings.chatHistory.errors.archive')));
 	};
