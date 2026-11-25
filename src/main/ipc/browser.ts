@@ -14,7 +14,7 @@ import { library } from '../browser/library';
 import { confirmDeletion } from '../browser/confirm';
 import { bookmarksHtml } from '../browser/html';
 import { loadTranslations } from '../i18n';
-import { getLanguage } from '../settings_store';
+import { getAgentCursor, getLanguage, setAgentCursor } from '../settings_store';
 import { fillLogin } from '../browser/fill';
 import {
 	clearLogins,
