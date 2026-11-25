@@ -339,6 +339,7 @@ describe('Home prompt attachments', () => {
 	});
 
 	it('keeps a queued image visible and Send enabled', async () => {
+		input = 'Describe this';
 		renderPage();
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
