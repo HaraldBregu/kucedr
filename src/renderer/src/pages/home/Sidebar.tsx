@@ -122,9 +122,10 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		undone.current = false;
 		const finish = (): void => {
 			if (undo.action !== 'delete' || undone.current) return;
-			void Promise.all(undo.ids.map((id) => window.agent.deleteSession(id)))
-				.then(() => setSessions((current) => current.filter((item) => !undo.ids.includes(item.id))))
-				.catch(() => setActionError(t('settings.chatHistory.errors.delete')));
+			void Promise.all(undo.ids.map((id) => window.agent.deleteSession(id))).catch(() => {
+				setDeleted((current) => current.filter((id) => !undo.ids.includes(id)));
+				setActionError(t('settings.chatHistory.errors.delete'));
+			});
 		};
 		const timer = window.setTimeout(() => setUndo(undefined), 6000);
 		window.addEventListener('beforeunload', finish);
