@@ -245,6 +245,8 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			privacyChanged.emit('change', getPrivacy());
 		});
 		trusted.query(BrowserChannels.torFind, async () => (await findTor()) ?? null);
+		trusted.query(BrowserChannels.cursor, () => getAgentCursor());
+		trusted.command(BrowserChannels.cursorSet, (enabled) => setAgentCursor(z.boolean().parse(enabled)));
 		trusted.commandWithEvent(BrowserChannels.view, ({ sender }, request) => {
 			const next = viewSchema.parse(request);
 			const tab = next ? paneTabs.get(next.targetId) : undefined;
