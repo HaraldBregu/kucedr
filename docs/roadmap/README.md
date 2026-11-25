@@ -59,8 +59,9 @@ Features are numbered by area, for example 3.9 is the browser pane.
 3. **Agent efficiency.** Automatic compaction, Run insights, run budgets and lighter first messages
    (2.1–2.4) are built. Next, measure startup time, streaming smoothness and bundle size (2.7). Use that baseline
    to prioritize smooth streaming (2.5) and startup and sidebar work (2.6).
-4. **Accessibility: screen-reader chat and full keyboard use** (4.1–4.2). A screen-reader user
-   cannot follow a streamed reply today.
+4. **Accessibility checks** (4.5), once its two development dependencies are approved and
+   `eslint-plugin-jsx-a11y` supports ESLint 10. Screen-reader chat, full keyboard use, high
+   contrast and named controls (4.1–4.4) were built 2026-11-24.
 5. **User experience: search across chats** (3.2). Completion notifications (3.1) were built
    2026-11-21–22.
 6. **Setup with a local model** (15.1), which is also the most private way to use the app.
