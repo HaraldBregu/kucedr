@@ -37,7 +37,7 @@ it('creates the recognized instructions filename and opens existing instructions
 	const onOpen = jest.fn();
 	const view = render(<WorkspaceFiles onDeleted={jest.fn()} projectId="workspace-b" selectedFile={null} creation="instructions" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	await screen.findByText('No files yet.');
-	expect(screen.getByLabelText('File name')).toHaveValue('AGENTS.md');
+	await waitFor(() => expect(screen.getByLabelText('File name')).toHaveValue('AGENTS.md'));
 	listMarkdownFiles.mockResolvedValue(['AGENTS.md']);
 	fireEvent.submit(screen.getByLabelText('File name').closest('form')!);
 	await waitFor(() => expect(onOpen).toHaveBeenCalledWith('AGENTS.md'));
