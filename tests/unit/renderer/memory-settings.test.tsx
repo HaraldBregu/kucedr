@@ -62,7 +62,7 @@ beforeEach(() => {
 
 it('shows the selected model and reveals its options when expanded', async () => {
 	const user = userEvent.setup();
-	render(<MemoryPage />);
+	renderPage();
 	const modelSelect = await screen.findByRole('button', { name: 'settings.memory.model' });
 	const heading = screen.getByRole('heading', { name: 'settings.memory.title' });
 	expect(modelSelect).toHaveTextContent('GPT');
@@ -80,13 +80,13 @@ it('shows the selected model and reveals its options when expanded', async () =>
 
 it('saves independent memory configuration automatically', async () => {
 	const user = userEvent.setup();
-	render(<MemoryPage />);
+	renderPage();
 	await user.click(await screen.findByRole('switch', { name: 'settings.memory.enabled' }));
 	await waitFor(() => expect(api.configure).toHaveBeenCalledWith({ ...config, enabled: false }));
 });
 
 it('does not show scheduling controls', async () => {
-	render(<MemoryPage />);
+	renderPage();
 	await screen.findByRole('button', { name: 'settings.memory.model' });
 	expect(screen.queryByText('settings.memory.schedule')).not.toBeInTheDocument();
 	expect(screen.queryByText('settings.memory.frequency')).not.toBeInTheDocument();
@@ -95,7 +95,7 @@ it('does not show scheduling controls', async () => {
 });
 
 it('does not load or show the memory file content', async () => {
-	render(<MemoryPage />);
+	renderPage();
 	await screen.findByRole('button', { name: 'settings.memory.model' });
 	expect(api.read).not.toHaveBeenCalled();
 	expect(api.list).not.toHaveBeenCalled();
