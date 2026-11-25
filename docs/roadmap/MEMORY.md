@@ -16,8 +16,8 @@ Part of the [Roadmap](README.md). Status: proposal.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
-| 18.1 | See and edit memory | A page listing what the agent remembers, where each item came from, with edit and delete | The memory files | M |
-| 18.2 | Remember and forget in chat | "Remember this" and "forget that" take effect at once and say what changed | The memory module | S–M |
+| 18.1 | See and edit memory | A page listing what the agent remembers, where each item came from, with edit and delete. **Built 2026-11-25**: Settings › Memory lists each `MEMORY.md` record with its section, source chat (a `kucedr:source` marker stamped by the generator and `remember`) and date; edit and delete go through the module's lock. Checked in the app with memory seeded by a mock model; races with the generator checked against the service | The memory files | M |
+| 18.2 | Remember and forget in chat | "Remember this" and "forget that" take effect at once and say what changed. **Built 2026-11-25**: `remember` and `forget` tools in main chats (explicit request only, permission configurable) return the saved or deleted facts. Checked in the app with a mock model calling both | The memory module | S–M |
 | 18.3 | Memory per workspace | Work and personal memory kept apart | [Multiple workspaces](WORKSPACES.md), 10.2 | M |
 | 18.4 | Knowledge sources at a glance | Each source shows when it was last indexed, how much it holds, and any error | The Knowledge page | S |
 | 18.5 | Refresh while closed | Knowledge stays current when the window is closed | Run while closed ([Automation](AUTOMATION.md), 16.7) | L |
