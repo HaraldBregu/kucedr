@@ -87,6 +87,7 @@
 		"test:coverage": "jest --config jest.config.cjs --coverage",
 		"test:e2e": "npx playwright test --config playwright.config.ts",
 		"perf": "node scripts/perf.mjs",
+		"notices": "node scripts/notices.mjs",
 		"shadcn": "shadcn-ui",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
