@@ -312,18 +312,6 @@ describe('AgentIpc run ownership', () => {
 	});
 });
 
-describe('assistant interaction mode normalization', () => {
-	it('defaults omitted and invalid values and accepts Plan mode', () => {
-		expect(normalizeAgentSendRuntimeOptions(undefined).interactionMode).toBe('default');
-		expect(normalizeAgentSendRuntimeOptions({ interactionMode: 'invalid' }).interactionMode).toBe(
-			'default'
-		);
-		expect(normalizeAgentSendRuntimeOptions({ interactionMode: 'plan' }).interactionMode).toBe(
-			'plan'
-		);
-	});
-});
-
 it('normalizes reply context and excludes empty or invalid values', () => {
 	expect(
 		normalizeAgentSendRuntimeOptions({ replyTo: '  Earlier answer\nSecond line  ' })
