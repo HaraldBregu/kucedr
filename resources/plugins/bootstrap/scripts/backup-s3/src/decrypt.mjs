@@ -30,7 +30,6 @@ export async function decrypt(source, file, aad, passphrase, keys) {
 			for await (const chunk of chunks) yield decipher.update(chunk);
 			let rest;
 			try {
-				if (size < HEADER + 16) throw new Error('The backup file is too short.');
 				rest = decipher.final();
 			} catch {
 				throw Object.assign(new Error('The backup passphrase is wrong, or the backup was changed.'), {
