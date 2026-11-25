@@ -69,18 +69,18 @@ beforeAll(() => {
 	});
 });
 
-it('discovers the bundled chart without an input schema', () => {
+it('discovers the bundled chart with its input schema', () => {
 	const scripts = pluginScripts();
 	expect(scripts).toEqual(
 		expect.arrayContaining([
 			expect.objectContaining({
 				name: 'chart',
 				fence: 'chart',
-				plugin: { id: 'bootstrap', name: 'Bootstrap' },
+				plugin: expect.objectContaining({ id: 'bootstrap', name: 'Bootstrap' }),
+				inputSchema: expect.objectContaining({ type: 'object' }),
 			}),
 		])
 	);
-	expect(scripts.find((script) => script.name === 'chart')).not.toHaveProperty('inputSchema');
 });
 
 it('loads script instructions on demand and runs the chart examples', async () => {
