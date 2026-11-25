@@ -27,5 +27,5 @@ shipped as a second chat kind next to the agent chat.
 ## Open decisions
 
 - **Ship or remove.** Recommended: decide before more work lands. Half-built and unreachable, the
-  page costs maintenance (a broken test today) and delivers nothing. If it ships, 20.2 comes first.
+  page costs maintenance and delivers nothing. If it ships, 20.2 comes first.
 - **One coding agent or several.** The harness supports one today; more is a later choice.
