@@ -12,11 +12,13 @@ import { getTaskState, setTaskState, taskStorePath } from './tasks/tasks_store';
 import type { PersistedTaskState } from './tasks/tasks_types';
 import {
 	TRAY_CLICK_ACTIONS,
+	UPDATE_CHANNELS,
 	VOICE_AGENT_APPEARANCES,
 	type AppLanguage,
 	type AppLaunchState,
 	type AppTheme,
 	type TrayClickAction,
+	type UpdateChannel,
 	type VoiceAgentAppearance,
 	type WorkspaceTextSize,
 	CHAT_TEXT_SIZES,
