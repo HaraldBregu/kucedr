@@ -20,11 +20,18 @@ export function mergeMcpRecord(
 		existing.command === data.command &&
 		(existing.cwd ?? '') === (data.cwd ?? '') &&
 		JSON.stringify(existing.args ?? []) === JSON.stringify(data.args ?? []);
+	const clientChanged = data.type === 'http' && data.client_id !== existing?.client_id;
 
 	return {
 		...(preserveHttpSecrets || preserveStdioSecrets ? existing : undefined),
 		id,
-		...data,
+		...(clientChanged
+			? {
+					...splitRecord({ ...data, id }).data,
+					client_id: data.client_id,
+					client_secret: data.client_secret,
+				}
+			: data),
 		...(preserveHttpSecrets && {
 			token: data.token ?? existing.token,
 			client_secret: data.client_secret ?? existing.client_secret,
