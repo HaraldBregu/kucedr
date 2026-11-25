@@ -224,7 +224,7 @@ function PromptSlash({
 				side="top"
 				align="start"
 				sideOffset={12}
-				className="w-64 p-1"
+				className="w-80 p-1"
 				onOpenAutoFocus={(event) => event.preventDefault()}
 				onCloseAutoFocus={(event) => event.preventDefault()}
 			>
