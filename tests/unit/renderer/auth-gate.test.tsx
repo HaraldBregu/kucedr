@@ -283,7 +283,7 @@ it('shows Welcome before setup for a restored unconfigured signed-in user', asyn
 	await user.click(screen.getByRole('button', { name: 'Get started' }));
 	expect(await screen.findByRole('heading', { name: 'Plugins' })).toBeInTheDocument();
 	expect(screen.queryByText('Version 1.1.0')).not.toBeInTheDocument();
-	expect(screen.getByText('Model').parentElement).toHaveTextContent('Model · 1 of 3');
+	expect(within(document.querySelector('footer')!).getByRole('status')).toHaveTextContent('Plugins · 1 of 4');
 	expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
 });
 
