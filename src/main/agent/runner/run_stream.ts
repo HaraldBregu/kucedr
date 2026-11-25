@@ -255,7 +255,7 @@ async function* loop(
 			undoFileTool(session.runContext.fileHistory),
 			redoFileTool(session.runContext.fileHistory)
 		);
-		if (session.category === 'main' && options.memory?.getConfig().enabled)
+		if (session.category === 'main' && options.memory)
 			tools.push(rememberTool(options.memory, session.id), forgetTool(options.memory));
 	}
 	const extended = !options.tools && !bootstrap;
