@@ -177,12 +177,13 @@ it('reads cached tool names without reconnecting', async () => {
 		data: {
 			ok: true,
 			tools: ['invoice_search'],
-			toolDetails: [{ name: 'invoice_search', description: 'Find invoices' }],
+			toolDetails: [{ name: 'invoice_search', description: 'Find invoices', permission: 'ask' }],
 			toolCount: 1,
 			durationMs: 0,
 		},
 	});
 	expect(getMcpToolCatalog).toHaveBeenCalledWith('invoices');
+	expect(mcpToolDetails).toHaveBeenCalledWith('invoices', tools);
 	expect(testMcpServer).not.toHaveBeenCalled();
 });
 
