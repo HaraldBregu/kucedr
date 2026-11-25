@@ -286,7 +286,7 @@ it('serializes manual edits and forgets IDs or matching content while retaining 
  const records = await h.memory.list();
  expect(records).toHaveLength(3);
  expect(records.every((record) => typeof record.createdAt === 'string')).toBe(true);
- await expect(h.memory.forget(records[0].id)).resolves.toEqual({ removed: 1 });
+ await expect(h.memory.forget(records[0].id)).resolves.toEqual({ removed: 1, facts: ['first schedule'] });
  expect(h.markdown()).toContain('# Notes');
  expect(h.markdown()).toContain('- second schedule');
  expect(h.markdown()).not.toContain('- first schedule');
