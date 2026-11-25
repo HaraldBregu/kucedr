@@ -8,6 +8,7 @@ import { attachRouteNavigation } from './attach_route_navigation';
 import { reloadAfterCrash } from './reload_after_crash';
 import { getWindowSize } from './settings_store';
 import { WINDOW_SIZES } from '../shared/window_size';
+import { WindowChannels } from '../shared/ipc_channels_definitions';
 
 const MINIMUM_WINDOW_WIDTH = 650;
 const MINIMUM_WINDOW_HEIGHT = 600;
@@ -152,6 +153,20 @@ export class Main {
 
 		preferredWindow.show();
 		preferredWindow.focus();
+	}
+
+	showRoute(route: string): void {
+		const win = this.getPreferredWindow();
+		if (!win) {
+			this.createLauncherWindow({ closeToTray: true, content: { hash: route } });
+			return;
+		}
+
+		if (win.webContents.isLoading()) this.windowFactory.loadContent(win, { hash: route });
+		else win.webContents.send(WindowChannels.openRoute, route);
+		if (win.isMinimized()) win.restore();
+		win.show();
+		win.focus();
 	}
 
 	hide(): void {

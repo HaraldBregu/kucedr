@@ -11,7 +11,7 @@ const APP_ROOT = path.resolve(dirname, '../..');
  * Launch the built Electron app and return the app handle plus its first window.
  * Requires a prior `npm run build` so that out/main, out/preload and out/renderer exist.
  */
-export async function launchApp(): Promise<{
+export async function launchApp(extraArgs: string[] = []): Promise<{
 	app: ElectronApplication;
 	page: Page;
 	userDataDir: string;
@@ -20,7 +20,7 @@ export async function launchApp(): Promise<{
 	let app: ElectronApplication | undefined;
 	try {
 		app = await electron.launch({
-			args: [`--user-data-dir=${userDataDir}`, APP_ROOT],
+			args: [`--user-data-dir=${userDataDir}`, APP_ROOT, ...extraArgs],
 			// ponytail: force production renderer (loadFile) even if a dev URL leaked into env
 			env: {
 				...process.env,

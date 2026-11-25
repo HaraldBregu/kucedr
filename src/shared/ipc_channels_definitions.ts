@@ -540,6 +540,7 @@ export const WindowChannels = {
 	navigationBarButtonClicked: 'window:navigationbar-button:clicked',
 	navigationBarSidebarWidthSet: 'window:navigationbar-sidebar-width:set',
 	navigationBarSidebarWidthChanged: 'window:navigationbar-sidebar-width:changed',
+	openRoute: 'window:open-route',
 	popupMenu: 'window:popup-menu',
 	showContextMenu: 'window:context-menu:show',
 	confirmSignOut: 'window:confirm-sign-out',

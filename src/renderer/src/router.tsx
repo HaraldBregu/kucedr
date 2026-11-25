@@ -170,6 +170,7 @@ function RootRouteComponent(): React.JSX.Element {
 			}),
 		[navigate, selectSession]
 	);
+	useEffect(() => window.win.onOpenRoute((route) => navigate(`/${route}`)), [navigate]);
 
 	return (
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>

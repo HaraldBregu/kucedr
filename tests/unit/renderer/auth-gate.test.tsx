@@ -301,6 +301,24 @@ it('takes skipped sign-in to home when configuration is complete', async () => {
 	await waitFor(() => expect(screen.getByLabelText('Current route')).toHaveTextContent('/home'));
 });
 
+it('returns skipped sign-in to the app route a link opened', async () => {
+	const user = userEvent.setup();
+	window.auth = authApi({ status: 'signedOut', persistence: 'encrypted' });
+	window.agent = {
+		getProvider: jest.fn(async () => ({ id: 'provider' }) as never),
+		getModelId: jest.fn(async () => 'model'),
+	} as never;
+	renderFlow('/settings/plugins/marketplace/brave');
+
+	await user.click(await screen.findByRole('button', { name: 'Get started' }));
+	await user.click(await screen.findByRole('button', { name: 'Skip' }));
+	await waitFor(() =>
+		expect(screen.getByLabelText('Current route')).toHaveTextContent(
+			'/settings/plugins/marketplace/brave'
+		)
+	);
+});
+
 it('takes skipped sign-in to setup in place when configuration is incomplete', async () => {
 	const user = userEvent.setup();
 	window.auth = authApi({ status: 'signedOut', persistence: 'encrypted' });

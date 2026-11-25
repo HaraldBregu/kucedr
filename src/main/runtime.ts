@@ -46,6 +46,7 @@ import { AgentChannels, AppChannels } from '../shared/ipc_channels_definitions';
 import { watchSessions } from './agent/session/session_watch';
 import { agentLocation } from './shared/agent_location';
 import { authLinks } from './cloud/links';
+import { pluginLinkId, pluginLinks } from './plugins/plugins_link';
 import { loadLocalEnvironment } from './cloud/environment';
 import { VoiceWindow } from './voice_window';
 import { findBrowserProfiles } from './agent/permissions/browsers';
@@ -238,6 +239,12 @@ app.whenReady().then(async () => {
 	});
 	app.once('before-quit', unsubscribeAuthLinks);
 	void authInitialization.then(() => authLinks.flush());
+	const unsubscribePluginLinks = pluginLinks.subscribe(async (url) => {
+		const id = pluginLinkId(new URL(url));
+		if (id) mainWindow.showRoute(`settings/plugins/marketplace/${id}`);
+	});
+	app.once('before-quit', unsubscribePluginLinks);
+	void pluginLinks.flush();
 	setKeepAwake(getKeepAwake());
 	registerLocalResourceProtocolHandler(logger);
 	setupMediaPermissionHandlers(services.appRegistry);

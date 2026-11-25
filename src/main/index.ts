@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog } from 'electron';
 import path from 'node:path';
 import { authLinks } from './cloud/links';
+import { pluginLinks } from './plugins/plugins_link';
 import { setStartupProxy } from './privacy/launch';
 import { getPrivacyRoute, isPrivacyEnabled } from './privacy/state';
 
@@ -12,17 +13,17 @@ if (process.defaultApp && process.argv[1]) {
 	app.setAsDefaultProtocolClient('kucedr');
 }
 
-authLinks.pushArguments(process.argv);
+if (!authLinks.pushArguments(process.argv)) pluginLinks.pushArguments(process.argv);
 app.on('open-url', (event, url) => {
 	event.preventDefault();
-	authLinks.push(url);
+	if (!authLinks.push(url)) pluginLinks.push(url);
 });
 
 if (!app.requestSingleInstanceLock()) {
 	app.quit();
 } else {
 	app.on('second-instance', (_event, commandLine) => {
-		if (authLinks.pushArguments(commandLine)) return;
+		if (authLinks.pushArguments(commandLine) || pluginLinks.pushArguments(commandLine)) return;
 		const existingWindow = BrowserWindow.getAllWindows().find((win) => !win.isDestroyed());
 		if (!existingWindow) return;
 		if (existingWindow.isMinimized()) existingWindow.restore();

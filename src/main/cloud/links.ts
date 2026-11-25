@@ -1,6 +1,8 @@
-export class AuthLinkBroker {
+export class LinkBroker {
 	private readonly queue: string[] = [];
 	private listener?: (url: string) => Promise<void>;
+
+	constructor(private readonly matches: (url: URL) => boolean) {}
 
 	push(url: string): boolean {
 		if (!this.accepts(url)) return false;
@@ -31,12 +33,13 @@ export class AuthLinkBroker {
 	private accepts(value: string): boolean {
 		if (value.length > 4096) return false;
 		try {
-			const url = new URL(value);
-			return url.protocol === 'kucedr:' && url.hostname === 'auth' && url.pathname === '/callback';
+			return this.matches(new URL(value));
 		} catch {
 			return false;
 		}
 	}
 }
 
-export const authLinks = new AuthLinkBroker();
+export const authLinks = new LinkBroker(
+	(url) => url.protocol === 'kucedr:' && url.hostname === 'auth' && url.pathname === '/callback'
+);

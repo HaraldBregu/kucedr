@@ -84,4 +84,7 @@ export const win: WindowApi = {
 	onNavigationBarSidebarWidthChanged: (callback: (width: number | null) => void): (() => void) => {
 		return typedOn(WindowChannels.navigationBarSidebarWidthChanged, callback);
 	},
+	onOpenRoute: (callback: (route: string) => void): (() => void) => {
+		return typedOn(WindowChannels.openRoute, callback);
+	},
 } satisfies WindowApi;

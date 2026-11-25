@@ -28,11 +28,16 @@ export function StartupGate({ children }: { readonly children: ReactNode }): Rea
 	}
 
 	if (phase !== 'ready') {
-		return location.pathname === '/start' ? <>{children}</> : <Navigate to="/start" replace />;
+		return location.pathname === '/start' ? (
+			<>{children}</>
+		) : (
+			<Navigate to="/start" replace state={applicationPath ? { from: location.pathname } : undefined} />
+		);
 	}
 
 	if (onboardingPath) {
-		return <Navigate to="/home" replace />;
+		const from = (location.state as { from?: string } | null)?.from;
+		return <Navigate to={from ?? '/home'} replace />;
 	}
 
 	return <>{children}</>;

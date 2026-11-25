@@ -170,6 +170,7 @@ export interface WindowApi {
 	onNavigationBarButtonClick: (callback: (buttonId: string) => void) => () => void;
 	setNavigationBarSidebarWidth: (width: number | null) => void;
 	onNavigationBarSidebarWidthChanged: (callback: (width: number | null) => void) => () => void;
+	onOpenRoute: (callback: (route: string) => void) => () => void;
 }
 
 export interface AgentApi {

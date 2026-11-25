@@ -1416,6 +1416,7 @@ export interface WindowEventChannelMap {
 	};
 	[WindowChannels.navigationBarButtonClicked]: { data: string };
 	[WindowChannels.navigationBarSidebarWidthChanged]: { data: number | null };
+	[WindowChannels.openRoute]: { data: string };
 }
 
 export interface TerminalInvokeChannelMap {
