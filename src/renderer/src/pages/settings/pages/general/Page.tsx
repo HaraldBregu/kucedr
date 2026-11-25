@@ -24,7 +24,12 @@ import {
 } from 'lucide-react';
 import { WINDOW_SIZES, type WindowSize } from '../../../../../../shared/window_size';
 import type { PluginTheme } from '@shared/plugin_types';
-import { ZOOM_FACTORS, type ZoomFactor } from '../../../../../../shared/app_types';
+import {
+	UPDATE_CHANNELS,
+	ZOOM_FACTORS,
+	type UpdateChannel,
+	type ZoomFactor,
+} from '../../../../../../shared/app_types';
 import { Button } from '@/components/ui/button';
 import {
 	Select,
