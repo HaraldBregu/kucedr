@@ -384,6 +384,8 @@ name. New text goes through `react-i18next` under a `spaces.*` namespace, becaus
 - Pin the existing `agent`, `sessions` and `library` backup folders to the default workspace's paths
   ([storage_sync_folders.ts](../src/main/storage/storage_sync_folders.ts)), and add one `workspaces` folder
   for `~/.kucedr/workspaces`. Skip `*/browser` in it.
+- Picked folders are not backed up. They are the user's own folders. A restore brings back the
+  workspace's chats, memory and Library, and the workspace then asks to **Locate…** its folder.
 - `vault/convert.ts` converts `sessions` and `memory` in every workspace root.
 
 ## Fixes needed on the way
