@@ -107,7 +107,7 @@ export const MODEL_SERVICE_DEFINITIONS: readonly ModelServiceDefinition[] = [
 			]);
 			return provider && modelId ? { providerId: provider.id, modelId } : undefined;
 		},
-		loadModelGroups: () => Promise.resolve(getAssistantLlmModelGroups()),
+		loadModelGroups: getAssistantLlmModelGroups,
 		saveSelection: async (provider, model) => {
 			await window.agent.setProvider(provider);
 			return window.agent.setModelId(model.id);
