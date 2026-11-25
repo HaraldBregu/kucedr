@@ -109,8 +109,8 @@ providers, models and keys before any research starts.
 
 ### Hosted: Kucedr pays for the model and search
 
-A seat at €49 a month (**assumption**, between Hunchly's €149 a year and Nexus's €119 a month),
-before support:
+A seat at €49 a month (**assumption**, close to DeepState's $49 seat with managed AI and below
+Nexus's €119 a month), before support:
 
 | Monthly usage per seat | Model and search | Gross margin |
 | --- | --- | --- |
