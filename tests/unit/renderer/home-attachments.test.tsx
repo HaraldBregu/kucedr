@@ -398,6 +398,7 @@ describe('Home prompt attachments', () => {
 	});
 
 	it('allows any file in the picker without showing the unsupported type message', async () => {
+		input = 'Describe this';
 		renderPage();
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
