@@ -692,10 +692,14 @@ function PageContent(): ReactElement {
 		}
 		if (agent.modeIds.length > 0 && !hasPromptText) return;
 		const unsupported = attachments.filter((attachment) => !accepts(attachment.file.name, filesAccept));
-		const limitError = attachmentLimitError(
-			attachments.map((attachment) => attachment.file),
-			capabilities?.rules ?? []
-		);
+		const limitError =
+			attachmentLimitError(
+				attachments.map((attachment) => attachment.file),
+				capabilities?.rules ?? []
+			) ?? largeAttachmentError(
+				attachments.map((attachment) => attachment.file),
+				capabilities?.rules ?? []
+			);
 		if (unsupported.length > 0 || limitError) {
 			setAttachmentError(
 				unsupported.length > 0
