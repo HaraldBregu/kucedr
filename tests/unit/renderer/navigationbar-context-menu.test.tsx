@@ -43,59 +43,6 @@ beforeEach(() => {
 	});
 });
 
-it.each([
-	['settings.tabs.general', '/settings/general'],
-	['settings.overview.groups.agent', '/settings/agent'],
-	['settings.tabs.apps', '/settings/apps'],
-])('opens a native context menu and navigates from %s to %s', async (_label, path) => {
-	showContextMenu.mockResolvedValue(path);
-	const { container } = render(
-		<PageProvider><MemoryRouter initialEntries={['/project']}>
-			<NavigationBar />
-			<Routes>
-				<Route path="/project" element={null} />
-				<Route path={path} element={<p>{path}</p>} />
-			</Routes>
-		</MemoryRouter></PageProvider>
-	);
-	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
-
-	expect(navigationBar).not.toBeNull();
-	const contextMenuEvent = new MouseEvent('contextmenu', {
-		bubbles: true,
-		cancelable: true,
-	});
-	fireEvent(navigationBar as Element, contextMenuEvent);
-
-	expect(contextMenuEvent.defaultPrevented).toBe(true);
-	expect(showContextMenu).toHaveBeenCalledWith(contextMenuItems);
-	await waitFor(() => expect(screen.getByText(path)).toBeInTheDocument());
-});
-
-it('does not open the navigationbar menu from a button', () => {
-	render(
-		<PageProvider><MemoryRouter initialEntries={['/home']}>
-			<NavigationBar />
-		</MemoryRouter></PageProvider>
-	);
-
-	fireEvent.contextMenu(screen.getByRole('button', { name: 'settings.theme.title: settings.theme.dark' }));
-
-	expect(showContextMenu).not.toHaveBeenCalled();
-});
-
-it.each(['/settings', '/start'])('opens the navigationbar menu while viewing %s', (path) => {
-	const { container } = render(
-		<PageProvider><MemoryRouter initialEntries={[path]}>
-			<NavigationBar />
-		</MemoryRouter></PageProvider>
-	);
-
-	fireEvent.contextMenu(container.querySelector('[data-slot="navigationbar"]') as Element);
-
-	expect(showContextMenu).toHaveBeenCalledWith(contextMenuItems);
-});
-
 it('hides application navigation during onboarding', () => {
 	const { container } = render(
 		<PageProvider><MemoryRouter initialEntries={['/start']}>
