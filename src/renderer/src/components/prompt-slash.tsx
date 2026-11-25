@@ -73,6 +73,10 @@ function PromptSlash({
 			.list()
 			.then(setApps)
 			.catch(() => setApps([]));
+		void window.skills
+			.list()
+			.then((items) => setSkills(items.filter((skill) => !skill.diagnostics?.some((issue) => issue.level === 'error'))))
+			.catch(() => setSkills([]));
 	}, [active]);
 
 	useEffect(() => {
