@@ -70,12 +70,15 @@ export class StorageProviderStore {
 		this.assertAvailable();
 		try {
 			return storage.map((value) => {
-				const { encryptedSecretAccessKey, ...metadata } = value;
+				const { encryptedSecretAccessKey, encryptedPassphrase, ...metadata } = value;
 				const provider = normalizeStorageProvider({
 					...metadata,
 					secretAccessKey: this.encryption.decryptString(
 						Buffer.from(encryptedSecretAccessKey, 'base64')
 					),
+					passphrase: encryptedPassphrase
+						? this.encryption.decryptString(Buffer.from(encryptedPassphrase, 'base64'))
+						: undefined,
 				});
 				if (!provider.id || !provider.secretAccessKey)
 					throw new Error('Invalid storage provider data.');
