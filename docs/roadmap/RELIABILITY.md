@@ -1,6 +1,6 @@
 # 5. Reliability and updates
 
-Part of the [Roadmap](README.md). Status: proposal.
+Part of the [Roadmap](README.md). Status: 5.1–5.3 built.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
