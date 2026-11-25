@@ -4,6 +4,8 @@ import path from 'node:path';
 import type { Config } from '../agent/types';
 import { workspacePath } from '../agent/system';
 import { atomicWrite } from '../shared/atomic_write';
+import { seal } from '../vault/seal';
+import { unseal } from '../vault/unseal';
 import { healthRoot } from './root';
 
 const HEALTH_FILE = 'HEALTH.md';
