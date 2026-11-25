@@ -22,7 +22,10 @@ shipped as a second chat kind next to the agent chat.
 | 20.2 | Same permission rules | The coding agent asks before the same actions the main agent asks about | The permission system | M |
 | 20.3 | Terminal inside coding | Commands run in the app's terminal, visible and stoppable | [Terminal](TERMINAL.md), 14.2 and 14.6 | M |
 | 20.4 | Version control view | See changed files and differences, commit from the page | Nothing today | M |
-| 20.5 | More coding harnesses | Pick a harness other than Codex for a coding chat | A second protocol adapter (`acp`), [plan](../CODING_CHAT.md) | M |
+| 20.5 | More coding harnesses | Pick a harness other than Codex (Cline, Pi, OpenCode and others) for a coding chat or for the chat agent's coding tool | A second protocol adapter (`acp`), [plan](../CODING_CHAT.md), [tools plan](../CODING_TOOLS.md) | L |
+| 20.6 | Coding agent as a chat tool | Ask the main chat for a code change or fix, and it hands the work to a coding agent (Codex first), then reports what changed and how to continue | The existing harness, the app sandbox, [plan](../CODING_TOOLS.md) | M |
+| 20.7 | Live coding-agent progress | Watch the coding agent's messages, commands and file changes in the chat while it works, with no 9-minute limit | 20.6, a tool progress event | M |
+| 20.8 | Coding-agent approvals in the chat | When the coding agent needs permission, the chat asks with the usual approval card instead of declining | 20.6, 20.7 | M |
 
 ## Open decisions
 
