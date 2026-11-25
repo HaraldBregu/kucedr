@@ -58,11 +58,10 @@ export async function searchSessions(
 						}));
 					const snippets: string[] = [];
 					let position = 0;
-					for (const message of messages) {
-						const { text } = message;
+					for (const { text, position: found } of messages) {
 						const at = text.toLowerCase().indexOf(needle);
 						if (at < 0) continue;
-						if (snippets.length === 0) position = message.position;
+						if (snippets.length === 0) position = found;
 						const start = Math.max(0, at - 24);
 						snippets.push(
 							(start > 0 ? '…' : '') +
