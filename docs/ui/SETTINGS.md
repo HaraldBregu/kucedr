@@ -196,7 +196,7 @@ account sign-in is separate from this backup configuration. See [Cloud architect
 
 ### Memory
 
-Memory settings enable or disable automatic memory processing and select its provider, model, model options, and memory type (**Facts**, **Summaries**, or **Both**). Changes save shortly after selection. Memory content is maintained by the memory module; this page is configuration, not a memory-file editor.
+Memory settings enable or disable automatic memory processing and select its provider, model, model options, and memory type (**Facts**, **Summaries**, or **Both**). Changes save shortly after selection. **What the assistant remembers** lists each record in `MEMORY.md` with its section, the chat it came from when known, and the date it was added; each record can be edited or deleted, and the change applies at once through the memory module.
 
 ### Knowledge
 
