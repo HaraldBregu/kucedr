@@ -439,7 +439,7 @@ name. New text goes through `react-i18next` under a `spaces.*` namespace, becaus
    A, and B was untouched.
 7. Tasks, voice and browser → verify: a task of A fires while every window shows B and runs in A; a
    voice call started in A keeps A's memory after a switch; B's browser has none of A's sign-ins.
-7. Settings overrides → verify: picking a model in B leaves the default workspace's model unchanged,
+8. Settings overrides → verify: picking a model in B leaves the default workspace's model unchanged,
    runs in B use the override, and **Use default** restores the global model.
 8. Backups and encryption → verify: both workspace locations back up and restore with their names,
    and enabling the vault seals every workspace's chats and memory.
