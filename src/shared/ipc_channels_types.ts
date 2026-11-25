@@ -703,6 +703,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: import('./app_types').AppLaunchState;
 	};
+	[AppChannels.getLock]: { args: []; result: import('./lock').LockState };
+	[AppChannels.setLock]: {
+		args: [update: import('./lock').LockUpdate];
+		result: import('./lock').LockState;
+	};
+	[AppChannels.unlock]: { args: [passphrase: string]; result: import('./lock').LockState };
+	[AppChannels.unlockWithTouchId]: { args: []; result: import('./lock').LockState };
+	[AppChannels.lockNow]: { args: []; result: import('./lock').LockState };
 	[AppChannels.setLanguage]: {
 		args: [language: import('./app_types').AppLanguage];
 		result: void;
