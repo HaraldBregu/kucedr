@@ -2,7 +2,8 @@
 
 Status: proposal, written 2026-11-19. Built since: sealed credentials on disk (1.2), the first
 release of app-wide Privacy Mode (1.10), the first four agent efficiency
-features ([2.1–2.4](PERFORMANCE.md)), the performance check (2.7), completion
+features ([2.1–2.4](PERFORMANCE.md)), a chat list that updates on change (2.6), the performance
+check (2.7), completion
 notifications (3.1), regenerate and retry (3.3), the browser pane (3.9), most of the agent cursor
 (3.11), browser control from the chat (3.12) and most of browser import
 (23), screen-reader chat, keyboard use, high contrast and named controls (4.1–4.4), update
