@@ -370,6 +370,8 @@ async function* loop(
 				'update_identity',
 				'update_soul',
 				'update_user',
+				'remember',
+				'forget',
 				'load_script',
 				'run_script',
 				...(ask ? ['ask'] : []),
