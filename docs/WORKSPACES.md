@@ -441,9 +441,9 @@ name. New text goes through `react-i18next` under a `spaces.*` namespace, becaus
    voice call started in A keeps A's memory after a switch; B's browser has none of A's sign-ins.
 8. Settings overrides → verify: picking a model in B leaves the default workspace's model unchanged,
    runs in B use the override, and **Use default** restores the global model.
-8. Backups and encryption → verify: both workspace locations back up and restore with their names,
+9. Backups and encryption → verify: both workspace locations back up and restore with their names,
    and enabling the vault seals every workspace's chats and memory.
-9. Workspace images → verify: an image can be set, replaced and removed, a renamed `.txt` is rejected,
+10. Workspace images → verify: an image can be set, replaced and removed, a renamed `.txt` is rejected,
    and a workspace with no image shows its first letter.
 
 ## Open decisions
