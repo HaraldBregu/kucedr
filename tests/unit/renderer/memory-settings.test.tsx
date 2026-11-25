@@ -107,11 +107,9 @@ it('does not show scheduling controls', async () => {
 	expect(screen.queryByText('settings.memory.timezone')).not.toBeInTheDocument();
 });
 
-it('does not load or show the memory file content', async () => {
+it('lists remembered facts without showing the raw memory file', async () => {
 	renderPage();
-	await screen.findByRole('button', { name: 'settings.memory.model' });
+	expect(await screen.findByText('Prefers tea')).toBeInTheDocument();
 	expect(api.read).not.toHaveBeenCalled();
-	expect(api.list).not.toHaveBeenCalled();
 	expect(screen.queryByText('# Notes')).not.toBeInTheDocument();
-	expect(screen.queryByText('Prefers tea')).not.toBeInTheDocument();
 });
