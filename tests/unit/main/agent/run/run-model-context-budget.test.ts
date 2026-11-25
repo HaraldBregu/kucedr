@@ -202,6 +202,6 @@ describe('fitModelContext', () => {
 				tools: [],
 				maxInputTokens: 500,
 			})
-		).toThrow('active skill instructions');
+		).toThrow('mode instructions');
 	});
 });
