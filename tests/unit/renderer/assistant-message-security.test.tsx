@@ -108,6 +108,7 @@ it('shows a failed MCP tool before its authorization request', () => {
 		/>
 	);
 
+	fireEvent.click(screen.getByRole('button', { name: 'Thought for 1 sec' }));
 	const failedCall = screen.getByText('Search Gmail');
 	const authorization = screen.getByText('Authorize Gmail');
 	expect(failedCall.compareDocumentPosition(authorization) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
