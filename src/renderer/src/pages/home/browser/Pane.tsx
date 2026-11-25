@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactElement } from 'react';
 import type { BrowserPaneCommand, BrowserPaneTab, BrowserRoute } from '../../../../../shared/browser';
 import { cn } from '@/lib/utils';
 import { BrowserDownloadBar } from './Download';
+import { BrowserPermissionBar } from './Permission';
 import { BrowserOffer } from './Offer';
 import { BrowserScreen } from './Screen';
 import { BrowserTabs } from './Tabs';
