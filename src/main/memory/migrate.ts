@@ -2,6 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { Config } from '../agent/types';
 import { atomicWrite } from '../shared/atomic_write';
+import { seal } from '../vault/seal';
+import { unseal } from '../vault/unseal';
 import { memoryPath, MEMORY_FILE } from './path';
 
 export async function migrateWorkspaceMemory(config: Config): Promise<void> {
