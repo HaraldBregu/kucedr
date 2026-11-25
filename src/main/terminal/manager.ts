@@ -217,6 +217,7 @@ export class PtyManager {
 		event: { readonly exitCode: number; readonly signal?: number }
 	): void {
 		if (!this.sessions.has(session.id)) return;
+		this.flush(session);
 		if (!session.owner.isDestroyed()) {
 			try {
 				const payload: TerminalExitEvent = { id: session.id, ...event };
