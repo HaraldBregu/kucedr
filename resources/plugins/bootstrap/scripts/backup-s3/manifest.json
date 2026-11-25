@@ -30,8 +30,14 @@
 					"bucket": { "type": "string", "title": "Bucket" },
 					"forcePathStyle": { "type": "boolean", "default": false },
 					"accessKeyId": { "type": "string", "title": "Access key ID" },
-					"secretAccessKey": { "type": "string", "title": "Secret access key" }
+					"secretAccessKey": { "type": "string", "title": "Secret access key" },
+					"passphrase": { "type": "string", "title": "Backup passphrase", "description": "Optional. When set, every file is encrypted with a key derived from it before upload, and encrypted objects need it to restore." }
 				}
+			},
+			"vaultKey": {
+				"type": "string",
+				"title": "Vault key",
+				"description": "Optional base64 data key of the encrypted Kucedr data folder. With a passphrase, sealed files are opened before they are encrypted for upload."
 			},
 			"roots": {
 				"type": "array",
