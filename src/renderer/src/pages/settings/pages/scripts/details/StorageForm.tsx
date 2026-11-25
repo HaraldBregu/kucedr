@@ -162,7 +162,9 @@ export default function StorageForm({
 									label={t(`settings.storageProviders.fields.${field.key}`)}
 									description={description}
 									className={
-										field.key === 'endpoint' || field.key === 'name' ? 'sm:col-span-2' : undefined
+										field.key === 'endpoint' || field.key === 'name' || field.key === 'passphrase'
+											? 'sm:col-span-2'
+											: undefined
 									}
 								>
 									<Input
