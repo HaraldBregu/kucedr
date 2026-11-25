@@ -9,6 +9,10 @@ jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (_key: string, fallback?: string): string => fallback ?? _key }),
 }));
 
+jest.mock('@/components/app/base/page/hooks/use-page-context', () => ({
+	usePageContext: () => ({ state: { sidebarOpen: true, sidebarOpenMobile: false }, isMobile: false }),
+}));
+
 const scrollIntoView = jest.fn();
 
 beforeEach(() => {
