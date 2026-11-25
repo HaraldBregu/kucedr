@@ -56,6 +56,7 @@ export default function StorageForm({
 		endpoint: provider?.endpoint ?? '',
 		accessKeyId: provider?.accessKeyId ?? '',
 		secretAccessKey: '',
+		passphrase: '',
 		forcePathStyle: provider?.forcePathStyle ?? preset?.metadata.forcePathStyle ?? false,
 	});
 	const [saving, setSaving] = useState(false);
