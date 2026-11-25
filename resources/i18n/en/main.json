@@ -1598,6 +1598,8 @@
 			"emptyDescription": "Add a bucket to configure your file storage.",
 			"endpointHint": "Optional for Amazon S3. For other providers, use the service endpoint without the bucket name.",
 			"secretHint": "Leave blank to keep the saved secret key.",
+			"passphraseHint": "Optional. Backups are encrypted with this passphrase before upload. If you lose it, the backups cannot be restored.",
+			"passphraseSavedHint": "Backups are encrypted with the saved passphrase before upload. Leave blank to keep it. If you lose it, the backups cannot be restored.",
 			"loadError": "Could not load storage connections.",
 			"saveError": "Could not save this storage connection.",
 			"removeError": "Could not remove this storage connection.",
@@ -1609,6 +1611,7 @@
 				"endpoint": "Endpoint URL",
 				"accessKeyId": "Access key ID",
 				"secretAccessKey": "Secret access key",
+				"passphrase": "Backup passphrase",
 				"forcePathStyle": "Use path-style addressing"
 			}
 		},
