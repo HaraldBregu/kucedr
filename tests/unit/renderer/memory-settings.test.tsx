@@ -1,6 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import MemoryPage from '../../../src/renderer/src/pages/settings/pages/memory/Page';
+
+const renderPage = (): ReturnType<typeof render> =>
+	render(
+		<MemoryRouter>
+			<MemoryPage />
+		</MemoryRouter>
+	);
 
 const mockProvider = { id: 'openai', name: 'OpenAI', baseUrl: 'https://openai.example' };
 const mockModel = {
