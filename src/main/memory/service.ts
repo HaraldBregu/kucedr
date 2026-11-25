@@ -200,7 +200,7 @@ export class Memory implements MemoryService {
 					.join('\n'),
 				entries.map((entry) => entry.id)
 			);
-			return { removed: entries.length };
+			return { removed: entries.length, facts: [...new Set(entries.map((entry) => entry.fact))] };
 		});
 	}
 	async clear(): Promise<void> {
