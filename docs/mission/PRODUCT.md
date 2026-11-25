@@ -290,7 +290,7 @@ Read 2026-11-25. Vendor pages describe their own products.
 - [Hunchly plans and pricing](https://hunch.ly/pricing) and [Hunchly's story](https://hunch.ly/about-hunchly-story)
 - [Forensic OSINT ELITE plan](https://www.forensicosint.com/bogo), vendor
 - [Silo plans and pricing](https://authentic8.com/products/sfrold/pricing/) and [what managed attribution is](https://authentic8.com/resources/what-is-managed-attribution/), Authentic8
-- [OSIRT, an investigative tool for law enforcement](https://pure.canterbury.ac.uk/en/publications/open-source-internet-research-tool-osirt-an-investigative-tool-fo-2/), Canterbury Christ Church University
+- [OSIRT, an investigative tool for law enforcement](https://pure.canterbury.ac.uk/en/publications/open-source-internet-research-tool-osirt-an-investigative-tool-fo-2/), Canterbury Christ Church University, and [OSIRT Ltd](https://osirt.co.uk/)
 - [Auto Archiver](https://bellingcat.gitbook.io/toolkit/more/all-tools/auto-archiver), Bellingcat, and [its 150,000 preserved items](https://www.niemanlab.org/2025/08/it-just-got-easier-to-make-an-archival-copy-of-that-website-youre-digging-into/), Nieman Lab, 2025-08
 - [Nexus](https://www.nexus-osint.ai/agentic-osint), [OSINT Pilot](https://osintpilot.com/), [AegisStack](https://www.aegisstack.ai/), [OpenOSINT](https://geantechnology.com/2026/07/25/openosint-ai-powered-intelligence-investigation-platform/)
 - ["Uber agents," undercover AI personas, and other ways newsrooms are using AI in investigations](https://www.niemanlab.org/2026/10/uber-agents-undercover-ai-personas-and-other-ways-newsrooms-are-using-ai-in-investigations/), Nieman Lab, 2026-10
