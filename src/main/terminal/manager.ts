@@ -233,6 +233,8 @@ export class PtyManager {
 	private remove(session: TerminalSession): void {
 		session.exited = true;
 		this.sessions.delete(session.id);
+		clearTimeout(this.output.get(session.id)?.timer);
+		this.output.delete(session.id);
 		session.dataSubscription.dispose();
 		session.exitSubscription?.dispose();
 		this.untrackOwner(session.owner.id);
