@@ -18,7 +18,7 @@ Part of the [Roadmap](README.md). Status: proposal.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
-| 16.1 | Create and edit tasks | A form for name, instructions, schedule and allowed tools, with the schedule shown in plain words | The Tasks page | M |
+| 16.1 | Create and edit tasks | A form for name, instructions, schedule and allowed tools, with the schedule shown in plain words. Built 2026-11-25: New task and Edit open `tasks/edit/Page.tsx`; a task uses only the tools ticked there (none ticked means no tools), any other call fails with "not available for this agent". Checked in the app: create, edit, plain-words schedule in English and Italian, only the chosen tool offered to the model, a call to another tool refused | `tasks:create` / `tasks:update` IPC, `tools/groups.ts` | M |
 | 16.2 | Run history | Each task shows when it last ran, whether it worked, and a link to that run's chat | The chats a task already creates | S |
 | 16.3 | Failures surfaced | A failed or stuck task is shown on the task and raises a notification | Notifications ([User experience](EXPERIENCE.md), 3.1) | S |
 | 16.4 | Catch-up | A task missed while the app was closed runs once at next start, if the user chose that | The schedule record | S |
