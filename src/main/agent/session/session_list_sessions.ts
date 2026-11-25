@@ -13,9 +13,9 @@ import { sessionsRoot } from './session_sessions_root';
 
 function sessionTitle(sessionId: string, location: string): string {
 	try {
-		const info = JSON.parse(
-			readFileSync(infoFile(sessionsRoot(location), sessionId), 'utf8')
-		) as { title?: unknown };
+		const info = JSON.parse(readSealed(infoFile(sessionsRoot(location), sessionId))) as {
+			title?: unknown;
+		};
 		if (typeof info.title === 'string' && info.title.trim()) return info.title.trim();
 	} catch {
 		void 0;
