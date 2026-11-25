@@ -629,7 +629,7 @@ const routes: RouteObject[] = [
 								path: ':taskId/edit',
 								element: (
 									<SettingsRouteWrapper>
-										<TaskEditPage key="edit" />
+										<TaskEditPage />
 									</SettingsRouteWrapper>
 								),
 							},
