@@ -6,10 +6,10 @@ import { isRemoteUrl } from '@/lib/remote';
 
 export function RemoteImage({ src, alt }: { readonly src?: string; readonly alt?: string }): React.JSX.Element {
 	const { t } = useTranslation();
-	const [loaded, setLoaded] = useState(false);
-	if (loaded || !src || !isRemoteUrl(src)) return <img src={src} alt={alt ?? ''} />;
+	const [loadedSrc, setLoadedSrc] = useState<string>();
+	if (loadedSrc === src || !src || !isRemoteUrl(src)) return <img src={src} alt={alt ?? ''} />;
 	return (
-		<Button type="button" variant="secondary" size="sm" title={src} onClick={() => setLoaded(true)}>
+		<Button type="button" variant="secondary" size="sm" title={src} onClick={() => setLoadedSrc(src)}>
 			<ImageIcon />
 			{t('remoteImage.load', 'Load image')}
 		</Button>
