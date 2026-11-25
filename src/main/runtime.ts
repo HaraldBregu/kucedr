@@ -223,7 +223,7 @@ const menuManager = new Menu({
 });
 
 app.whenReady().then(async () => {
-	if (isPrivacyEnabled()) {
+	if (isPrivacyEnabled() || isVaultEnabled()) {
 		await configurePrivacy();
 		agentService.start(logger);
 		startRagSchedule(logger);
