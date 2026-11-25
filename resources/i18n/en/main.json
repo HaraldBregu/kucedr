@@ -1378,6 +1378,13 @@
 			"restartDescription": "Restart Kucedr to apply the change.",
 			"restart": "Restart Kucedr",
 			"providerData": "Providers still receive the prompts, files and audio you send to them.",
+			"encryption": {
+				"title": "Encrypt data on this device",
+				"description": "Chats, memory, attachments and health notes are encrypted with a key kept in the system keychain. Exports still give readable files. If the keychain entry is lost, this data cannot be recovered.",
+				"unavailable": "The system keychain is unavailable on this device, so encryption cannot be changed.",
+				"loadFailed": "Could not load encryption.",
+				"saveFailed": "Could not change encryption."
+			},
 			"loadFailed": "Could not load Privacy Mode.",
 			"saveFailed": "Could not save Privacy Mode.",
 			"restartFailed": "Could not restart Kucedr."
