@@ -452,7 +452,7 @@ describe('Home prompt attachments', () => {
 		fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
 		await waitFor(() => expect(handleSubmit).toHaveBeenCalledTimes(1));
 		await waitFor(() => expect(screen.queryByText('diagram.png')).not.toBeInTheDocument());
-		expect(handleSubmit).toHaveBeenCalledWith([file], undefined);
+		expect(handleSubmit).toHaveBeenCalledWith([file]);
 		resolveSubmit(false);
 	});
 
