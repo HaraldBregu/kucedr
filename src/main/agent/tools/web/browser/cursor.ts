@@ -1,3 +1,4 @@
+import { getAgentCursor } from '../../../../settings_store';
 import type { BrowserTab } from './pane';
 
 const WORLD = 4117;
