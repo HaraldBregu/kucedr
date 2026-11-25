@@ -587,6 +587,7 @@ export const BrowserChannels = {
 	passwordsMatch: 'browser:passwords:match',
 	passwordsFill: 'browser:passwords:fill',
 	downloadAnswer: 'browser:download:answer',
+	permissionAnswer: 'browser:permission:answer',
 	connections: 'browser:connections',
 	connectionsSet: 'browser:connections:set',
 	torFind: 'browser:tor:find',
