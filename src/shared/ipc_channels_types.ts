@@ -683,6 +683,8 @@ export interface AppInvokeChannelMap {
 	[AppChannels.getPrivacy]: { args: []; result: import('./privacy').PrivacyState };
 	[AppChannels.setPrivacy]: { args: [enabled: boolean]; result: import('./privacy').PrivacyState };
 	[AppChannels.restart]: { args: []; result: void };
+	[AppChannels.getVault]: { args: []; result: import('./vault').VaultState };
+	[AppChannels.setVault]: { args: [enabled: boolean]; result: import('./vault').VaultState };
 	[AppChannels.getAvailableUpdate]: {
 		args: [];
 		result: string | null;
