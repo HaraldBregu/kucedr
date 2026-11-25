@@ -478,7 +478,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 											)
 										);
 										if (isActive) setSessionTitle?.(nextTitle, session.id);
-									});
+									}).catch(() => setActionError(t('settings.chatHistory.errors.rename')));
 						}}
 						aria-label={`Rename ${title}`}
 						className="h-8 min-w-0 flex-1"
