@@ -1047,7 +1047,23 @@ function PageContent(): ReactElement {
 					{showEmptyConversation ? (
 						<div className="flex min-h-[calc(50dvh+7rem)] w-full shrink-0 flex-col justify-end gap-4 pb-6 pt-10">
 							<div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4">
-								<EmptyConversation />
+								{agent.historyError ? (
+									<Empty role="alert" className="flex-none border-0 p-0">
+										<EmptyHeader>
+											<EmptyTitle>Could not load this chat</EmptyTitle>
+											<EmptyDescription>
+												Its messages could not be read. Try again, or start a new chat.
+											</EmptyDescription>
+										</EmptyHeader>
+										<EmptyContent>
+											<Button type="button" variant="outline" size="sm" onClick={agent.retryHistory}>
+												Try again
+											</Button>
+										</EmptyContent>
+									</Empty>
+								) : (
+									<EmptyConversation />
+								)}
 							</div>
 							{composer}
 						</div>
