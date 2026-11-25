@@ -61,7 +61,8 @@ export class PtyManager {
 			const cwd = this.resolveCwd(request.cwd);
 			let process: IPty;
 			try {
-				process = this.spawnPty(detectedShell.executable, detectedShell.args, {
+				const spawnPty = this.spawnPty ?? (await import('node-pty')).spawn;
+				process = spawnPty(detectedShell.executable, detectedShell.args, {
 					name: 'xterm-256color',
 					cols: request.cols,
 					rows: request.rows,
