@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { seal } from '../../vault/seal';
+import { unseal } from '../../vault/unseal';
 import type { Message } from '../types';
 import { sessionPath } from './session_session_path';
 import type { SessionState } from './session_types';
