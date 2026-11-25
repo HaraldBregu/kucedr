@@ -142,7 +142,7 @@ describe('stringifyRunEntry', () => {
 		});
 		expect(JSON.parse(started!).event).toMatchObject({
 			skillDiagnosticCount: 1,
-			skillActivations: [{ id: 'writer', name: 'writer', hash: 'abc', trust: 'user-controlled' }],
+			skillActivations: [{ id: 'writer', name: 'writer', hash: 'abc' }],
 		});
 		expect(started).not.toContain('private path');
 
