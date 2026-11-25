@@ -23,8 +23,8 @@ export function Remembered(): React.JSX.Element {
 	const reload = (): void => {
 		void window.memory.list().then(setEntries).catch(fail);
 	};
+	useEffect(reload, []);
 	useEffect(() => {
-		reload();
 		void window.agent
 			.listSessions(true)
 			.then((sessions) => setChats(new Map(sessions.map((session) => [session.id, session.title]))))
