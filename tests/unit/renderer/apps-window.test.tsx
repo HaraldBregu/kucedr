@@ -82,8 +82,7 @@ it('offers deletion from the detail page header', async () => {
 	);
 
 	await screen.findByText('My App');
-	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
-	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.deleteAction' }));
+	await user.click(screen.getByRole('button', { name: 'settings.apps.deleteAction' }));
 
 	expect(window.apps.delete).toHaveBeenCalledWith('my-app');
 	expect(await screen.findByText('Apps list')).toBeInTheDocument();
