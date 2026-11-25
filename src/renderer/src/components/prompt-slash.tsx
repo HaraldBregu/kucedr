@@ -252,7 +252,12 @@ function PromptSlash({
 								onClick={() => execute(item)}
 							>
 								<item.icon />
-								<span className="truncate">{item.label}</span>
+								<span className="flex min-w-0 flex-col">
+									<span className="truncate">{item.label}</span>
+									{item.description ? (
+										<span className="truncate text-xs text-muted-foreground">{item.description}</span>
+									) : null}
+								</span>
 								{item.checked && (
 									<Check aria-hidden="true" className="ml-auto" />
 								)}
