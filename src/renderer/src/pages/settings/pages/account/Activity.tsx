@@ -3,7 +3,9 @@ import { CalendarHeatmap, calendarPeriods } from '@thilakbhat/heatmap-ui';
 import '@thilakbhat/heatmap-ui/styles.css';
 import './Activity.css';
 import { useTranslation } from 'react-i18next';
+import { ChartNoAxesColumnIncreasing } from 'lucide-react';
 import { useApp } from '@/contexts';
+import { SettingsEmptyState, SettingsLoadingRows } from '../../components';
 
 export type ActivityRange = 'untilToday' | 'currentYear' | 'lastYear';
 
@@ -12,6 +14,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 	const { theme } = useApp();
 	const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
 	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
+	const [loading, setLoading] = useState(true);
 	const [failed, setFailed] = useState(false);
 	const [tooltip, setTooltip] = useState<{
 		readonly label: string;
@@ -46,6 +49,9 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 			})
 			.catch(() => {
 				if (active) setFailed(true);
+			})
+			.finally(() => {
+				if (active) setLoading(false);
 			});
 		return () => {
 			active = false;
@@ -64,7 +70,11 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 				}}
 				onPointerLeave={() => setTooltip(null)}
 			>
-				<CalendarHeatmap
+				{loading ? <SettingsLoadingRows rows={3} /> : failed ? (
+					<SettingsEmptyState icon={ChartNoAxesColumnIncreasing} title={t('settings.activity.error')} />
+				) : visibleValues.length === 0 ? (
+					<SettingsEmptyState icon={ChartNoAxesColumnIncreasing} title={t('settings.activity.empty')} />
+				) : <CalendarHeatmap
 					values={[...visibleValues]}
 					weeks={{ max: 90 }}
 					gap={2}
@@ -83,16 +93,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 						t('settings.activity.day', { date: day.date, count: day.value })
 					}
 					showLegend
-				/>
-				{failed ? (
-					<p className="mt-3 text-xs text-muted-foreground">
-						{t('settings.activity.error')}
-					</p>
-				) : visibleValues.length === 0 ? (
-					<p className="mt-3 text-xs text-muted-foreground">
-						{t('settings.activity.empty')}
-					</p>
-				) : null}
+				/>}
 			</div>
 			{tooltip && (
 				<div
