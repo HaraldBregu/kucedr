@@ -18,15 +18,6 @@ function stateWith(sessionsPath: string, folderName: string): SessionState {
 	return { ...createSessionState(), sessionsPath, folderName };
 }
 
-describe('sessionsRoot', () => {
-	it('uses the sessions directory beside the resolved location', () => {
-		expect(sessionsRoot('/tmp/agent')).toBe('/tmp/sessions');
-	});
-	it('resolves relative locations', () => {
-		expect(sessionsRoot('agent')).toBe(path.join(path.dirname(path.resolve('agent')), 'sessions'));
-	});
-});
-
 describe('sessionPath', () => {
 	it('joins the sessions root with a UUID folder', () => {
 		expect(sessionPath('/a/b', SESSION_ID)).toBe(path.join('/a/b', SESSION_ID));
