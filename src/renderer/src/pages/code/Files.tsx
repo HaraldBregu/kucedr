@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { File } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { useConfirmation } from '@/components/ui/confirmation';
 import { Input } from '@/components/ui/input';
 import { SPLIT_ITEM_CLASS, SPLIT_ITEM_ACTIVE_CLASS } from '@/components/app/base/page/styles';
 import { cn } from '@/lib/utils';
@@ -19,6 +20,7 @@ interface WorkspaceFilesProps {
 
 export function WorkspaceFiles({ projectId, selectedFile, onOpen, onDeleted, creation, onCancelCreation }: WorkspaceFilesProps): React.JSX.Element {
 	const { t } = useTranslation();
+	const { confirm, dialog } = useConfirmation();
 	const [files, setFiles] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
@@ -84,7 +86,7 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen, onDeleted, cre
 					{ id: 'delete', label: t('common.delete', 'Delete'), enabled: !busy },
 				]).then(async (action) => {
 					if (action === 'open') onOpen(fileName);
-					else if (action === 'delete' && !submitting.current && window.confirm(t('codeFiles.confirmDelete', 'Delete "{{name}}"? This permanently deletes the file and any unsaved changes.', { name: fileName }))) {
+					else if (action === 'delete' && !submitting.current && await confirm({ title: t('codeFiles.deleteTitle', 'Delete {{name}}?', { name: fileName }), description: t('codeFiles.confirmDelete', 'This permanently deletes the file and any unsaved changes.', { name: fileName }) })) {
 						submitting.current = true;
 						setBusy(true);
 						setError('');
