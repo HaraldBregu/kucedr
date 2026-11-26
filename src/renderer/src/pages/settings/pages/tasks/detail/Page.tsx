@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, FolderOpen, History, ListChecks, LoaderCircle, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useConfirmation } from '@/components/ui/confirmation';
 import { Card } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
@@ -22,6 +23,7 @@ type TaskHistory = Awaited<ReturnType<typeof window.tasks.history>>;
 
 const TaskDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
+	const { confirm, dialog } = useConfirmation();
 	const navigate = useNavigate();
 	const { taskId } = useParams<{ taskId: string }>();
 	const decodedTaskId = decodeURIComponent(taskId ?? '');
@@ -125,7 +127,7 @@ const TaskDetailsPage: React.FC = () => {
 		}
 	};
 	const deleteTask = async (): Promise<void> => {
-		if (!window.confirm(t('settings.cron.actions.confirmRemove', { id: task.id }))) return;
+		if (!(await confirm({ title: task.name, description: t('settings.cron.actions.confirmRemove', { id: task.id }) }))) return;
 		setDeleting(true);
 		setError(null);
 		try {
@@ -159,7 +161,7 @@ const TaskDetailsPage: React.FC = () => {
 		}
 	};
 	const deleteHistory = async (sessionId: string): Promise<void> => {
-		if (!window.confirm(t('settings.cron.history.confirmDelete'))) return;
+		if (!(await confirm({ title: t('settings.cron.history.title'), description: t('settings.cron.history.confirmDelete') }))) return;
 		setDeletingHistoryId(sessionId);
 		setError(null);
 		try {
@@ -173,6 +175,7 @@ const TaskDetailsPage: React.FC = () => {
 	};
 	return (
 		<SettingsPageShell>
+			{dialog}
 			<SettingsPageHeader
 				title={task.name}
 				description={task.description || t('settings.cron.detail.noDescription')}
