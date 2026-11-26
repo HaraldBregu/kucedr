@@ -113,7 +113,7 @@ describe('session persistence', () => {
 		]);
 		fs.writeFileSync(messagesFilePath(state), '{corrupt', 'utf8');
 
-		expect(loadMessagesBySessionId(SESSION_ID, location)).toEqual([
+		expect(loadMessagesBySessionId(SESSION_ID, sessions)).toEqual([
 			{ role: 'user', content: 'first' },
 		]);
 		expect(JSON.parse(fs.readFileSync(messagesBackupFilePath(state), 'utf8'))).toEqual([
@@ -134,7 +134,7 @@ describe('session persistence', () => {
 
 		insertUserMessage(state, 1, 'Show the message I sent.');
 
-		expect(loadMessagesBySessionId(SESSION_ID, location)).toEqual([
+		expect(loadMessagesBySessionId(SESSION_ID, sessions)).toEqual([
 			{ role: 'user', content: 'Earlier message' },
 			{ role: 'user', content: 'Show the message I sent.' },
 			{ role: 'assistant', content: 'Later response' },
@@ -155,8 +155,8 @@ describe('session persistence', () => {
 		];
 		persist(state);
 
-		expect(updateUserMessageBySessionId(SESSION_ID, location, 1, 'Updated question')).toBe(true);
-		expect(loadMessagesBySessionId(SESSION_ID, location)).toEqual([
+		expect(updateUserMessageBySessionId(SESSION_ID, sessions, 1, 'Updated question')).toBe(true);
+		expect(loadMessagesBySessionId(SESSION_ID, sessions)).toEqual([
 			{ role: 'user', content: 'Updated question' },
 		]);
 	});
@@ -187,7 +187,7 @@ describe('session persistence', () => {
 		expect(
 			fs.readdirSync(path.join(path.dirname(messagesFilePath(state)), 'attachments'))
 		).toHaveLength(1);
-		expect(loadMessagesBySessionId(SESSION_ID, location)[0].content).toEqual(
+		expect(loadMessagesBySessionId(SESSION_ID, sessions)[0].content).toEqual(
 			state.messages[0].content
 		);
 	});
@@ -206,7 +206,7 @@ describe('session persistence', () => {
 
 		persist(state);
 
-		expect(loadMessagesBySessionId(SESSION_ID, location)[0].content).toEqual(state.messages[0].content);
+		expect(loadMessagesBySessionId(SESSION_ID, sessions)[0].content).toEqual(state.messages[0].content);
 	});
 
 	it('writes only semantic run events and skips raw deltas', () => {
