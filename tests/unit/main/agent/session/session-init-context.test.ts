@@ -8,6 +8,7 @@ import {
 } from '../../../../../src/main/agent/session';
 import { EXPIRED_SKILL_CONTEXT } from '../../../../../src/main/agent/session/session_sanitize_messages';
 import type { ToolCall } from '../../../../../src/main/agent/types';
+import { buildWorkspace } from '../../../../../src/main/workspaces/build';
 
 describe('session context boundaries', () => {
 	const roots: string[] = [];
