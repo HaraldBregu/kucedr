@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlertTriangle, ArchiveRestore, FolderOpen, LoaderCircle, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useConfirmation } from '@/components/ui/confirmation';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { AgentSessionCategory, AgentSessionSummary } from '@/lib/compat';
 import {
@@ -26,6 +27,7 @@ interface ChatHistoryPageProps {
 
 const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 	const { t } = useTranslation();
+	const { confirm, dialog } = useConfirmation();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -76,7 +78,7 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 
 	const handleDelete = async (session: AgentSessionSummary): Promise<void> => {
 		const title = session.title.trim() || t('settings.chatHistory.untitled');
-		if (!window.confirm(t('settings.chatHistory.confirmDeleteSession', { title }))) return;
+		if (!(await confirm({ title, description: t('settings.chatHistory.confirmDeleteSession', { title }) }))) return;
 		setDeletingSessionId(session.id);
 		setError(null);
 		try {
@@ -102,7 +104,7 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 	};
 
 	const handleDeleteAll = async (): Promise<void> => {
-		if (!window.confirm(t('settings.chatHistory.confirmDelete'))) return;
+		if (!(await confirm({ title: t('settings.chatHistory.title'), description: t('settings.chatHistory.confirmDelete') }))) return;
 		setActionsOpen(false);
 		setDeletingAll(true);
 		setError(null);
@@ -207,6 +209,7 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 
 	return (
 		<SettingsPageShell>
+			{dialog}
 			<SettingsPageHeader
 				title={t(titleKey)}
 				description={t(descriptionKey)}
