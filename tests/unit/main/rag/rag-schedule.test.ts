@@ -60,7 +60,7 @@ describe('RAG indexing schedule', () => {
 		subscribeRagConfiguration.mockReturnValue(unsubscribe);
 		getNextRun.mockReturnValue(new Date('2026-10-09T01:00:00.000Z'));
 		getRagConfiguration.mockReturnValue(configuration);
-		indexRag.mockResolvedValue({ files: 1, vectors: 2 });
+		indexRag.mockResolvedValue(result);
 	});
 
 	afterEach(() => stopRagSchedule());
