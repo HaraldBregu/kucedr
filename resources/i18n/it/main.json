@@ -2411,6 +2411,27 @@
 			"remoteAllNamespacesDescription": "Tutti i namespace di Kucedr nell'indice del database vettoriale configurato; gli altri namespace e l'indice restano intatti.",
 			"loadError": "Impossibile caricare gli ambiti di gestione dati.",
 			"actionError": "Impossibile completare l'operazione di gestione dati."
+		},
+		"storageManagement": {
+			"title": "Utilizzo dello spazio",
+			"total": "Dati totali dell'app",
+			"loadError": "Impossibile misurare lo spazio usato dall'app.",
+			"retention": "Pulizia automatica dei log",
+			"retentionDescription": "All'avvio di Kucedr vengono rimossi i log più vecchi di 30 giorni.",
+			"cleanup": "Pulisci i dati",
+			"memoryControls": "Controlli memoria",
+			"knowledgeControls": "Controlli conoscenza",
+			"areas": {
+				"workspace": "Chat e area di lavoro",
+				"workspaces": "Altre aree di lavoro",
+				"logs": "Log",
+				"providers": "Provider",
+				"browser": "Browser",
+				"coder": "Programmazione",
+				"plugins": "Plugin",
+				"storage": "Archiviazione cloud",
+				"other": "Altri file"
+			}
 		}
 	},
 	"dialogs": {

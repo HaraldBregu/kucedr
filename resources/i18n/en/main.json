@@ -2411,6 +2411,27 @@
 			"remoteAllNamespacesDescription": "Every Kucedr-owned namespace in the configured vector database index; unrelated namespaces and the index remain.",
 			"loadError": "Unable to load data-management scopes.",
 			"actionError": "Unable to complete the data-management action."
+		},
+		"storageManagement": {
+			"title": "Storage use",
+			"total": "Total app data",
+			"loadError": "Unable to measure app storage.",
+			"retention": "Automatic log cleanup",
+			"retentionDescription": "Logs older than 30 days are removed when Kucedr starts.",
+			"cleanup": "Clean up data",
+			"memoryControls": "Memory controls",
+			"knowledgeControls": "Knowledge controls",
+			"areas": {
+				"workspace": "Chats and workspace",
+				"workspaces": "Other workspaces",
+				"logs": "Logs",
+				"providers": "Providers",
+				"browser": "Browser",
+				"coder": "Coding",
+				"plugins": "Plugins",
+				"storage": "Cloud storage",
+				"other": "Other files"
+			}
 		}
 	},
 	"dialogs": {
