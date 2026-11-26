@@ -50,6 +50,7 @@ describe('RAG indexing schedule', () => {
 		cronExpression: '0 3 * * *',
 		timezone: 'Europe/Rome',
 	};
+	const result = { files: 1, vectors: 2, skipped: 0, skippedReasons: {}, skippedFiles: [] };
 
 	beforeEach(() => {
 		stopRagSchedule();
