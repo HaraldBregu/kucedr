@@ -53,13 +53,18 @@ export function SettingsPageHeader({
 	iconPosition = 'inline',
 	action,
 }: SettingsPageHeaderProps): React.JSX.Element {
-	const renderedIcon = iconNode ?? (Icon ? <Icon className="size-3" strokeWidth={1.8} /> : null);
+	const renderedIcon = iconNode ?? (
+		Icon ? <Icon className={iconPosition === 'top' ? 'size-6' : 'size-3'} strokeWidth={1.8} /> : null
+	);
 
 	return (
 		<header className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
 			<div className={cn('flex min-w-0', iconPosition === 'top' ? 'flex-col gap-2' : 'items-start gap-2')}>
 				{renderedIcon && (
-					<div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted/70 text-muted-foreground">
+					<div className={cn(
+						'flex shrink-0 items-center justify-center rounded-md bg-muted/70 text-muted-foreground',
+						iconPosition === 'top' ? 'size-10' : 'size-6'
+					)}>
 						{renderedIcon}
 					</div>
 				)}
