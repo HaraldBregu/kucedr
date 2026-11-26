@@ -119,7 +119,7 @@ describe('chat agent tool controls', () => {
 
 		const enabledEvents = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			runInput,
 			new AbortController().signal,
@@ -163,7 +163,7 @@ describe('chat agent tool controls', () => {
 		runModelTurnMock.mockReset().mockImplementation(finalTurn);
 		const disabledEvents = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			runInput,
 			new AbortController().signal,
@@ -203,7 +203,7 @@ describe('chat agent tool controls', () => {
 		}
 		const events = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{ ...input, interactionMode },
 			new AbortController().signal,
