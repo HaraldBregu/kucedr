@@ -76,8 +76,8 @@ One sequence for both. The step numbers and the check for each step are in the p
 
 - **Steps 1–3 come first and change nothing on screen.** With no workspace list on disk, every
   folder must resolve to today's path. Step 2 is the large one: about 90 call sites.
-- **Steps 1–7 are the first usable version.** Before step 7 a second workspace would still show the
-  first one's browser tabs and tasks.
+- **Steps 1–7 are the first usable version.** Before step 7, scheduled tasks and voice still run in
+  the default workspace, and the browser's separation has not been checked.
 - **Step 9 comes before a release.** Until then a new workspace is not backed up, and switching
   encryption on does not convert its chats.
 - Steps 8 and 10 can follow in either order.
