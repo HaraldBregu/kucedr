@@ -19,7 +19,7 @@ settings stay shared.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
-| 10.1 | Workspaces and switcher | Create, name, picture and switch workspaces; each has its own files | The [Multiple workspaces plan](../WORKSPACES.md) as written | M |
+| 10.1 | Workspaces and switcher | Create a workspace by picking a folder, name, picture and switch workspaces | The [Multiple workspaces plan](../WORKSPACES.md) | M |
 | 10.2 | Separate chats and memory | Each workspace has its own chat list and its own memory, so what the agent learns at work never appears in a personal chat | Chats live in `~/.kucedr/sessions`, memory in `~/.kucedr/memory`; both become per workspace | M |
 | 10.3 | Separate sign-ins | Each workspace has its own browser logins and its own connected accounts (work mail and calendar apart from personal) | The agent's browser profile (`~/.kucedr/agent-browser`) and connector tokens are single and shared today | M–L |
 | 10.4 | Per-workspace defaults | A default model and instructions per workspace; keys, plugins, skills and app settings stay shared | Model slots in Settings | S |
