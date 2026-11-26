@@ -54,7 +54,7 @@ export function SettingsPageHeader({
 	action,
 }: SettingsPageHeaderProps): React.JSX.Element {
 	const renderedIcon = iconNode ?? (
-		Icon ? <Icon className={iconPosition === 'top' ? 'size-6' : 'size-3'} strokeWidth={1.8} /> : null
+		Icon ? <Icon className={iconPosition === 'top' ? 'size-8' : 'size-3'} strokeWidth={1.8} /> : null
 	);
 
 	return (
@@ -63,7 +63,7 @@ export function SettingsPageHeader({
 				{renderedIcon && (
 					<div className={cn(
 						'flex shrink-0 items-center justify-center rounded-md bg-muted/70 text-muted-foreground',
-						iconPosition === 'top' ? 'size-10' : 'size-6'
+						iconPosition === 'top' ? 'size-14' : 'size-6'
 					)}>
 						{renderedIcon}
 					</div>
