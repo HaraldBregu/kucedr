@@ -35,14 +35,14 @@ export const markdownComponents: Partial<Components> = {
 	h2: ({ children }) => <h2 className="mb-2 mt-1 text-lg font-semibold">{children}</h2>,
 	h3: ({ children }) => <h3 className="mb-2 mt-1 text-base font-semibold">{children}</h3>,
 	h4: ({ children }) => <h4 className="mb-2 mt-1 text-sm font-semibold">{children}</h4>,
-	h5: ({ children }) => <h5 className="mb-2 mt-1 text-[13px] font-semibold">{children}</h5>,
+	h5: ({ children }) => <h5 className="mb-2 mt-1 text-13 font-semibold">{children}</h5>,
 	h6: ({ children }) => (
 		<h6 className="mb-2 mt-1 text-xs font-semibold uppercase text-muted-foreground">{children}</h6>
 	),
 	hr: () => <hr className="my-4 border-border" />,
 	table: ({ children }) => (
 		<div className="my-3 overflow-x-auto rounded-md border border-border">
-			<table className="w-full border-collapse text-left text-[12px]">{children}</table>
+			<table className="w-full border-collapse text-left text-xs">{children}</table>
 		</div>
 	),
 	thead: ({ children }) => <thead className="bg-muted/60">{children}</thead>,

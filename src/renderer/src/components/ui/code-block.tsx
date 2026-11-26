@@ -52,7 +52,7 @@ function CodeBlockCode({ code, language = 'tsx', theme, className, ...props }: C
 	const highlightedHtml = highlighted?.key === highlightKey ? highlighted.html : null;
 
 	const classNames = cn(
-		'w-full overflow-x-auto bg-code text-[13px] text-code-foreground [&>pre]:min-w-full [&>pre]:w-max [&>pre]:!bg-transparent [&>pre]:px-4 [&>pre]:py-4',
+		'w-full overflow-x-auto bg-code text-13 text-code-foreground [&>pre]:min-w-full [&>pre]:w-max [&>pre]:!bg-transparent [&>pre]:px-4 [&>pre]:py-4',
 		className
 	);
 

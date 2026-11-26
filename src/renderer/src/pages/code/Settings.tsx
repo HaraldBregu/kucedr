@@ -223,7 +223,7 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 												title={
 													<Label
 														htmlFor={field.key === 'modelId' ? 'coder-model' : `coder-${field.key}`}
-														className="text-[13px]"
+											className="text-13"
 													>
 														{field.label}
 													</Label>

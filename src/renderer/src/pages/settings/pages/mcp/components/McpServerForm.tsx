@@ -348,11 +348,11 @@ export function McpServerForm({
 					)}
 					{!isGoogleRemote && (
 						<details className="p-4">
-							<summary className="cursor-pointer text-[13px] text-muted-foreground">
+							<summary className="cursor-pointer text-13 text-muted-foreground">
 								Advanced
 							</summary>
 							<div className="mt-3 divide-y divide-border/60 border-y border-border/60">
-								<p className="text-[12px] text-muted-foreground">
+								<p className="text-xs text-muted-foreground">
 									The default OAuth callback is http://127.0.0.1:3001/oauth/callback. Register this
 									URL if your authorization server requires it. To use another loopback URL, set
 									CLIENT_REDIRECT_URL in .env and restart Kucedr.
@@ -539,12 +539,12 @@ export function McpServerForm({
 			)}
 
 			{type === 'stdio' && (
-				<p className="text-[13px] text-muted-foreground">
+				<p className="text-13 text-muted-foreground">
 					Saved local MCP commands run with your desktop account&apos;s privileges. Tool approvals apply
 					after the server launches.
 				</p>
 			)}
-			{error && <p className="text-[13px] text-destructive">{error}</p>}
+			{error && <p className="text-13 text-destructive">{error}</p>}
 
 			{saving && <p className="px-5 py-3 text-xs text-muted-foreground">Saving…</p>}
 		</div>

@@ -242,7 +242,7 @@ export function ModelProviderConfiguration({
 					<div className="min-w-0 flex-1">
 						<div
 							className={cn(
-								'truncate text-[13px] font-medium leading-4 text-foreground',
+								'truncate text-13 font-medium leading-4 text-foreground',
 								pluginItemStyle && 'text-sm leading-tight'
 							)}
 						>

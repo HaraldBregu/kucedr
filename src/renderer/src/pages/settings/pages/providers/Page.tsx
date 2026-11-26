@@ -753,7 +753,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							</Card>
 						)}
 						{!addingCustomMcp && customMcpServers.length === 0 && (
-							<div className="px-0.5 text-[13px] text-muted-foreground">
+							<div className="px-0.5 text-13 text-muted-foreground">
 								No custom MCP servers configured.
 							</div>
 						)}

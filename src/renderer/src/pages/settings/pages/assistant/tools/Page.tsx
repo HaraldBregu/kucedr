@@ -237,7 +237,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 													<SearchIcon className="size-5" aria-hidden="true" />
 												</SettingsItemMedia>
 												<div className="min-w-0 flex-1">
-													<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+											<div className="truncate text-13 font-medium leading-4 text-foreground">
 														Search web
 													</div>
 													<p className="mt-0.5 truncate text-xs leading-4 text-muted-foreground">

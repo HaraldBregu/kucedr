@@ -191,7 +191,7 @@ export function SettingsRow({
 					</SettingsItemMedia>
 				) : null}
 				<div className="min-w-0 flex-1">
-					<div className="text-[13px] font-medium leading-4 tracking-normal text-foreground">
+					<div className="text-13 font-medium leading-4 tracking-normal text-foreground">
 						{title}
 					</div>
 					{description && (

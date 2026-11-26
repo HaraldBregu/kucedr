@@ -46,8 +46,8 @@ export function McpOAuthButton({
 
 	if (phase === 'done' || authenticated) {
 		return (
-			<div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
-				<Check className="size-3.5 text-emerald-500" />
+			<div className="flex items-center gap-1.5 text-13 text-muted-foreground">
+				<Check className="size-3.5 text-primary" />
 				Authenticated
 				<Button
 					type="button"
@@ -80,7 +80,7 @@ export function McpOAuthButton({
 						? 'Checking authentication'
 						: 'Connect with OAuth'}
 			</Button>
-			{error && <p className="text-[13px] text-destructive">{error}</p>}
+			{error && <p className="text-13 text-destructive">{error}</p>}
 		</div>
 	);
 }

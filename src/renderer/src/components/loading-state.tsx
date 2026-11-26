@@ -17,10 +17,10 @@ export function LoadingState({ label = 'Churning', startedAtMs, className }: {
   const elapsed = total < 60 ? `${total.toFixed(1)}s` : `${Math.floor(total / 60)}m ${(total % 60).toFixed(1)}s`;
 
   return (
-    <span className={cn('flex w-fit items-center gap-2.5 text-neutral-900 dark:text-neutral-100', className)}>
+    <span className={cn('flex w-fit items-center gap-2.5 text-foreground', className)}>
       <LoaderIcon role="status" aria-label="Loading" className="size-4 animate-spin motion-reduce:animate-none" />
-      <span className="text-[13px] font-medium">{label}</span>
-      <span role="timer" aria-label={`Elapsed time ${elapsed}`} className="font-mono text-[12px] tabular-nums text-neutral-400 dark:text-neutral-500">{elapsed}</span>
+      <span className="text-13 font-medium">{label}</span>
+      <span role="timer" aria-label={`Elapsed time ${elapsed}`} className="font-mono text-xs tabular-nums text-muted-foreground">{elapsed}</span>
     </span>
   );
 }

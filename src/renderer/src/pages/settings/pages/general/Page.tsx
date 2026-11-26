@@ -225,14 +225,14 @@ const GeneralPage: React.FC = () => {
 						title={t('settings.application.name')}
 						description={t('settings.application.nameDescription')}
 						actionClassName="w-auto justify-end"
-						actions={<span className="text-[13px] text-foreground">{__APP_NAME__}</span>}
+						actions={<span className="text-13 text-foreground">{__APP_NAME__}</span>}
 					/>
 					<SettingsRow
 						title={t('settings.application.version')}
 						description={t('settings.application.versionDescription')}
 						actionClassName="w-auto justify-end"
 						actions={
-							<span className="font-mono text-[13px] text-foreground">{__APP_VERSION__}</span>
+							<span className="font-mono text-13 text-foreground">{__APP_VERSION__}</span>
 						}
 					/>
 					<SettingsRow

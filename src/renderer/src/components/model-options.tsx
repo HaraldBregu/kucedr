@@ -211,14 +211,14 @@ export function ModelOptions({
 			{advanced.length > 0 && (
 				inlineAdvanced ? (
 					<>
-						<div className={cn('py-3 text-[12px] font-medium text-muted-foreground', padded && 'px-4')}>
+						<div className={cn('py-3 text-xs font-medium text-muted-foreground', padded && 'px-4')}>
 							Advanced properties
 						</div>
 						{advanced}
 					</>
 				) : (
 					<Collapsible>
-						<CollapsibleTrigger className="group flex min-h-10 w-full items-center justify-between px-4 py-3 text-left text-[12px] font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
+						<CollapsibleTrigger className="group flex min-h-10 w-full items-center justify-between px-4 py-3 text-left text-xs font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
 							<span>Advanced</span>
 							<ChevronDown className="size-3.5 transition-transform group-data-panel-open:rotate-180" />
 						</CollapsibleTrigger>

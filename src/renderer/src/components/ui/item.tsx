@@ -88,7 +88,7 @@ function ItemTitle({ children, className }: ItemTitleProps): React.JSX.Element {
 		<div
 			data-slot="item-title"
 			className={cn(
-				'line-clamp-1 flex w-fit shrink-0 items-center text-[13px] font-medium text-foreground',
+				'line-clamp-1 flex w-fit shrink-0 items-center text-13 font-medium text-foreground',
 				className
 			)}
 		>
