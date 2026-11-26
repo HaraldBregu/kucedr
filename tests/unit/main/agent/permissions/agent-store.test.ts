@@ -20,7 +20,6 @@ jest.mock('electron-store', () =>
 );
 
 import {
-	AGENT_DIRECTORY,
 	addPermissionRule,
 	getRunBudget,
 	setRunBudget,
