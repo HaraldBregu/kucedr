@@ -101,6 +101,7 @@ function createCommandItem({
 	description,
 	icon,
 	path,
+	targetId,
 	keywords,
 }: Omit<AppRouteItem, 'searchValue' | 'keywords'> & {
 	readonly keywords?: string;
@@ -113,6 +114,7 @@ function createCommandItem({
 		description,
 		icon,
 		path,
+		targetId,
 		keywords: keywordList,
 		searchValue: [label, description, keywords].filter(Boolean).join(' '),
 	};
