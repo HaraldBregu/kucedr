@@ -2,6 +2,7 @@ jest.mock('../../../src/main/memory', () => ({ createMemory: jest.fn() }));
 jest.mock('../../../src/main/agent/sandbox', () => ({ ExecSandbox: jest.fn() }));
 
 import { cleanup, type MainServices } from '../../../src/main/bootstrap';
+import { memories } from '../../../src/main/memory/all';
 
 it('settles storage operations before cloud and auth teardown', async () => {
 	let finishStorage: (() => void) | undefined;
