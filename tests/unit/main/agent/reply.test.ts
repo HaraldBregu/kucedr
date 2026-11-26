@@ -3,10 +3,14 @@ import os from 'node:os';
 import path from 'node:path';
 
 let location: string;
+let workspace: Workspace;
 const mockStream = jest.fn();
 
 jest.mock('../../../../src/main/shared/agent_location', () => ({
 	agentLocation: () => location,
+}));
+jest.mock('../../../../src/main/workspaces/current', () => ({
+	currentWorkspace: () => workspace,
 }));
 jest.mock('../../../../src/main/tasks', () => ({ initTask: jest.fn() }));
 jest.mock('../../../../src/main/health', () => ({}));
