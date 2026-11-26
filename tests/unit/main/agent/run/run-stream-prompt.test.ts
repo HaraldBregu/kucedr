@@ -682,7 +682,7 @@ describe('run stream system prompt', () => {
 			const workspace = path.join(root, 'workspace');
 			const events = [];
 			for await (const event of stream(
-				{ location: workspace },
+				{ location: workspace, workspace: buildWorkspace('default', root, workspace) },
 				createSessionState(),
 				{
 					runId: 'onboarding',
@@ -728,7 +728,7 @@ describe('run stream system prompt', () => {
 			await fs.writeFile(path.join(workspace, 'SOUL.md'), '# Soul');
 			await fs.writeFile(path.join(workspace, 'USER.md'), '- **Name:** Alice');
 			for await (const event of stream(
-				{ location: workspace },
+				{ location: workspace, workspace: buildWorkspace('default', root, workspace) },
 				createSessionState(),
 				{
 					runId: 'profile-tools',
