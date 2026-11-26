@@ -24,6 +24,7 @@ import { TerminalIpc } from '../terminal';
 import { BrowserIpc } from '../browser';
 import { AuthIpc } from '../auth';
 import { CloudIpc } from '../cloud';
+import { WorkspacesIpc } from '../workspaces';
 import type { EventBus } from '../../event_bus';
 import type { MainServices } from '../../bootstrap';
 import { memoryFor } from '../../memory/for';
@@ -32,7 +33,10 @@ import { currentWorkspace } from '../../workspaces/current';
 export function registerIpcHandlers(
 	services: MainServices,
 	eventBus: EventBus,
-	options: { openVoiceConversation?: (chatSessionId: string) => void } = {}
+	options: {
+		openVoiceConversation?: (chatSessionId: string) => void;
+		openWorkspaceWindow?: (workspaceId: string) => void;
+	} = {}
 ): void {
 	const {
 		logger,
@@ -72,6 +76,17 @@ export function registerIpcHandlers(
 	safeRegister('auth', () =>
 		new AuthIpc().register(
 			{ auth: authService, windows: windowContextManager, apps: appRegistry },
+			eventBus
+		)
+	);
+	safeRegister('workspaces', () =>
+		new WorkspacesIpc().register(
+			{
+				agent: agentService,
+				windows: windowContextManager,
+				apps: appRegistry,
+				openWindow: options.openWorkspaceWindow,
+			},
 			eventBus
 		)
 	);

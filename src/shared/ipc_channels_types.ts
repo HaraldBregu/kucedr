@@ -63,6 +63,7 @@ import {
 	BrowserChannels,
 	AuthChannels,
 	CloudChannels,
+	WorkspacesChannels,
 } from './ipc_channels_definitions';
 
 export interface CodingInvokeChannelMap {
@@ -1604,7 +1605,8 @@ export interface InvokeChannelMap
 		TerminalInvokeChannelMap,
 		BrowserInvokeChannelMap,
 		AuthInvokeChannelMap,
-		CloudInvokeChannelMap {}
+		CloudInvokeChannelMap,
+		WorkspacesInvokeChannelMap {}
 
 export interface SendChannelMap extends WindowSendChannelMap, TerminalSendChannelMap {}
 
@@ -1635,6 +1637,27 @@ export interface AuthEventChannelMap {
 	[AuthChannels.stateChanged]: { data: import('./auth_types').AuthState };
 }
 
+export interface WorkspacesInvokeChannelMap {
+	[WorkspacesChannels.list]: {
+		args: [];
+		result: import('./workspaces_types').WorkspacesState;
+	};
+	[WorkspacesChannels.select]: { args: [id: string]; result: void };
+	[WorkspacesChannels.create]: {
+		args: [];
+		result: import('./workspaces_types').WorkspaceInfo | null;
+	};
+	[WorkspacesChannels.rename]: { args: [id: string, name: string]; result: void };
+	[WorkspacesChannels.locate]: { args: [id: string]; result: boolean };
+	[WorkspacesChannels.openWindow]: { args: [id: string]; result: void };
+	[WorkspacesChannels.pickImage]: { args: [id: string]; result: boolean };
+	[WorkspacesChannels.removeImage]: { args: [id: string]; result: void };
+}
+
+export interface WorkspacesEventChannelMap {
+	[WorkspacesChannels.changed]: { data: void };
+}
+
 export interface CloudEventChannelMap {
 	[CloudChannels.sessionChanged]: { data: import('./cloud_types').CloudChange };
 }
@@ -1657,7 +1680,8 @@ export interface EventChannelMap
 		TerminalEventChannelMap,
 		BrowserEventChannelMap,
 		AuthEventChannelMap,
-		CloudEventChannelMap {}
+		CloudEventChannelMap,
+		WorkspacesEventChannelMap {}
 
 export interface MemoryInvokeChannelMap {
 	[MemoryChannels.getConfig]: { args: []; result: MemoryConfig };

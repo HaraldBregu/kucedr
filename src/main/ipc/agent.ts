@@ -455,22 +455,27 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					const window = renderer.assert(event);
 					const runtimeOptions = normalizeAgentSendRuntimeOptions(options);
 					const runId = runtimeOptions.runId ?? randomUUID();
+					const workspaceId = isRecord(options)
+						? optionalTrimmedString(options.workspaceId)
+						: undefined;
 					let finished: AgentSendResult['finished'];
-					const text = await agent.send(message, 'main', {
-						...runtimeOptions,
-						runId,
-						type: 'default',
-						windowId: window.id,
-						streamEvent: (responseEvent) => {
-							if (
-								responseEvent.type === 'run_finished' &&
-								responseEvent.agentId === 'main' &&
-								responseEvent.runId === runId
-							)
-								finished = responseEvent;
-							eventBus.sendTo(window.id, AgentChannels.response, responseEvent);
-						},
-					});
+					const send = (): Promise<string> =>
+						agent.send(message, 'main', {
+							...runtimeOptions,
+							runId,
+							type: 'default',
+							windowId: window.id,
+							streamEvent: (responseEvent) => {
+								if (
+									responseEvent.type === 'run_finished' &&
+									responseEvent.agentId === 'main' &&
+									responseEvent.runId === runId
+								)
+									finished = responseEvent;
+								eventBus.sendTo(window.id, AgentChannels.response, responseEvent);
+							},
+						});
+					const text = await (workspaceId ? withinWorkspace(workspaceId, send) : send());
 					return { text, ...(finished ? { finished } : {}) };
 				},
 				AgentChannels.send

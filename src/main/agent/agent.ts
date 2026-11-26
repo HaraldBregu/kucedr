@@ -1,5 +1,6 @@
 import type { MemoryService } from '../../shared/memory_types';
 import { randomUUID } from 'node:crypto';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import {
 	clearMessages as clearSessionMessages,
@@ -126,6 +127,7 @@ export class Agent {
 	private readonly histories = new Map<string, import('./history/types').FileHistory>();
 	private isStarted = false;
 	onRun?: (signal: RunSignal) => void;
+	onActivity?: () => void;
 
 	constructor(
 		readonly sandbox: ExecSandbox,
@@ -205,6 +207,8 @@ export class Agent {
 		const normalizedAgentId = agentId.trim();
 		const category = AGENT_CATEGORIES[normalizedAgentId] ?? 'main';
 		const workspace = currentWorkspace();
+		if (workspace.id !== DEFAULT_WORKSPACE && !existsSync(workspace.files))
+			throw new Error('This workspace folder was not found. Locate it to continue.');
 		const sessionId = resolveSessionId(options.sessionId, workspace.sessions, category);
 		const runId = options.runId ?? randomUUID();
 		const profileModel = getAgentProfileModel(
@@ -237,6 +241,7 @@ export class Agent {
 		});
 		const run = { sessionId, category, windowId: options.windowId, workspaceId: workspace.id };
 		this.onRun?.({ ...run, phase: 'started' });
+		this.onActivity?.();
 		const scheduled = this.scheduler.run(
 			sessionId,
 			() => workspaceScope.run(workspace, () => this.process(record)),
@@ -251,6 +256,7 @@ export class Agent {
 		record.completion = completion;
 		const cleanup = () => {
 			completeRun(this.runs, record);
+			this.onActivity?.();
 		};
 		void completion.then(cleanup, cleanup);
 		void completion.then(
@@ -442,6 +448,18 @@ export class Agent {
 		const stamped = { ...event, seq: record.responseEvents.length };
 		record.responseEvents.push(stamped);
 		record.request.options.streamEvent?.(stamped);
+		const waiting =
+			event.type === 'tool_permission_request'
+				? 'approval'
+				: event.type === 'user_input_request'
+					? 'question'
+					: ['tool_call_result', 'user_input_result', 'run_finished'].includes(event.type)
+						? undefined
+						: record.waiting;
+		if (waiting !== record.waiting) {
+			record.waiting = waiting;
+			this.onActivity?.();
+		}
 		if (event.type === 'tool_permission_request' || event.type === 'user_input_request')
 			this.onRun?.({
 				sessionId: record.request.sessionId,
@@ -453,9 +471,24 @@ export class Agent {
 			});
 	}
 
+	listActivity(): Record<string, { running: number; waiting: number }> {
+		const activity: Record<string, { running: number; waiting: number }> = {};
+		for (const record of this.runs.values()) {
+			if (record.request.category !== 'main' && record.request.category !== 'task') continue;
+			const entry = (activity[record.request.workspaceId] ??= { running: 0, waiting: 0 });
+			if (record.waiting) entry.waiting += 1;
+			else entry.running += 1;
+		}
+		return activity;
+	}
+
 	getSessionSnapshot(sessionId: string): AgentSessionSnapshot {
+		const { id } = currentWorkspace();
 		const active = [...this.runs.values()].find(
-			(record) => record.request.category === 'main' && record.request.sessionId === sessionId
+			(record) =>
+				record.request.category === 'main' &&
+				record.request.sessionId === sessionId &&
+				record.request.workspaceId === id
 		);
 		return {
 			messages: this.getLastMessages(sessionId),

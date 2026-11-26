@@ -26,6 +26,7 @@ import type {
 	BrowserPaneApi,
 	AuthApi,
 	CloudApi,
+	WorkspacesApi,
 } from '../shared/api_types';
 
 declare global {
@@ -56,5 +57,6 @@ declare global {
 		browserPane: BrowserPaneApi;
 		auth: AuthApi;
 		cloud: CloudApi;
+		workspaces: WorkspacesApi;
 	}
 }

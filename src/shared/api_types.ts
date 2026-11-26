@@ -145,6 +145,7 @@ export type { TerminalApi } from './terminal';
 export type { BrowserPaneApi } from './browser';
 export type { AuthApi } from './auth_types';
 export type { CloudApi } from './cloud_types';
+export type { WorkspacesApi } from './workspaces_types';
 
 export interface WindowApi {
 	minimize: () => void;

@@ -3,6 +3,7 @@ import type { AppState } from './app_state';
 import type { RendererContentOptions, WindowFactory } from './window_factory';
 import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
+import { bindWorkspace } from './workspaces/bind';
 import { getPlatformTranslucencyOptions } from './translucency';
 import { attachRouteNavigation } from './attach_route_navigation';
 import { reloadAfterCrash } from './reload_after_crash';
@@ -81,17 +82,19 @@ export class Main {
 	private createLauncherWindow(
 		options: {
 			closeToTray?: boolean;
+			workspaceId?: string;
 			content?: RendererContentOptions;
 			onReadyToShow?: (win: BrowserWindow) => void;
 		} = {}
 	): BrowserWindow {
-		const { closeToTray = false, content, onReadyToShow } = options;
+		const { closeToTray = false, workspaceId, content, onReadyToShow } = options;
 		const win = this.windowFactory.create(this.createStartupWindowOptions(), content);
 		win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
 		this.appWindows.add(win);
 
 		// Create window context for isolated services
 		this.windowContextManager.create(win);
+		if (workspaceId) bindWorkspace(win.webContents, workspaceId);
 
 		attachWindowHandlers(win);
 		this.trackWindowVisibility(win);
@@ -200,8 +203,8 @@ export class Main {
 		this.onWindowVisibilityChange = callback;
 	}
 
-	createAdditionalWindow(): BrowserWindow {
-		return this.createLauncherWindow();
+	createAdditionalWindow(workspaceId?: string): BrowserWindow {
+		return this.createLauncherWindow({ workspaceId });
 	}
 
 	createWindowForFile(filePath: string): BrowserWindow {

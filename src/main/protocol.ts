@@ -15,7 +15,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { resolveWorkspaceFile } from './ipc/workspace';
 import { rangeResponse } from './range';
-import { agentLocation } from './shared/agent_location';
+import { DEFAULT_WORKSPACE } from '../shared/workspaces_types';
+import { resolveWorkspace } from './workspaces/resolve';
 import type { LoggerService } from './shared';
 import type { AppRegistry } from './apps/app_registry';
 import { isAppId } from './apps/app_id';
@@ -80,7 +81,10 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 				}
 				let pathname = decodeURIComponent(url.pathname);
 				if (url.host === 'agent') {
-					pathname = await resolveWorkspaceFile(agentLocation(), pathname.replace(/^\/+/, ''));
+					const workspace = resolveWorkspace(
+						(allowAbsolutePaths && url.searchParams.get('workspace')) || DEFAULT_WORKSPACE
+					);
+					pathname = await resolveWorkspaceFile(workspace.files, pathname.replace(/^\/+/, ''));
 				} else if (process.platform === 'win32' && /^\/[A-Za-z]:/.test(pathname)) {
 					pathname = pathname.slice(1);
 				}

@@ -120,6 +120,7 @@ logger.info('Main', 'Enabling IPC modules...');
 registerIpcHandlers(services, eventBus, {
 	openVoiceConversation: (chatSessionId) =>
 		isLocked() ? mainWindow.showOrCreate() : voiceWindow.open(chatSessionId),
+	openWorkspaceWindow: (workspaceId) => void mainWindow.createAdditionalWindow(workspaceId),
 });
 setupAppLifecycle(appState, logger);
 setupEventLogging(logger);

@@ -30,6 +30,7 @@ export interface AgentRunRecord<TOptions = unknown> {
 	readonly responseEvents: AgentResponseEvent[];
 	readonly followUps: AgentFollowUp[];
 	lifecycle: AgentRunLifecycle;
+	waiting?: 'approval' | 'question';
 	completion?: Promise<AgentRunOutcome>;
 }
 

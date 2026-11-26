@@ -357,6 +357,18 @@ export const AuthChannels = {
 	stateChanged: 'auth:state:changed',
 } as const;
 
+export const WorkspacesChannels = {
+	list: 'workspaces:list',
+	select: 'workspaces:select',
+	create: 'workspaces:create',
+	rename: 'workspaces:rename',
+	locate: 'workspaces:locate',
+	openWindow: 'workspaces:open-window',
+	pickImage: 'workspaces:image:pick',
+	removeImage: 'workspaces:image:remove',
+	changed: 'workspaces:changed',
+} as const;
+
 export const CloudChannels = {
 	listSessions: 'cloud:sessions:list',
 	upsertSession: 'cloud:sessions:upsert',
