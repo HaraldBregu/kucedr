@@ -155,7 +155,8 @@ it('preserves updates from text and two voice writers sharing one coordinator', 
 		releaseSession,
 	} = require('../../../../src/main/agent/session');
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-session-writers-'));
-	const config = { location: path.join(temporaryRoot, 'agent') };
+	const location = path.join(temporaryRoot, 'agent');
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	const coordinator = new SessionCoordinator();
 	const factory = realtimeVoiceConversationFactory(config, coordinator);
 	const first = factory(SESSION_ID, 'model');
@@ -214,7 +215,8 @@ it.each(['clear', 'delete', 'edit'])(
 			releaseSession,
 		} = require('../../../../src/main/agent/session');
 		const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-session-invalidated-'));
-		const config = { location: path.join(temporaryRoot, 'agent') };
+		const location = path.join(temporaryRoot, 'agent');
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 		const coordinator = new SessionCoordinator();
 		const state = createSessionState();
 		init(
@@ -275,7 +277,8 @@ it('keeps deferred prompts private until validation accepts them and preserves c
 		releaseSession,
 	} = require('../../../../src/main/agent/session');
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-session-deferred-'));
-	const config = { location: path.join(temporaryRoot, 'agent') };
+	const location = path.join(temporaryRoot, 'agent');
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	const coordinator = new SessionCoordinator();
 	const voice = realtimeVoiceConversationFactory(config, coordinator)(SESSION_ID, 'model');
 	const voiceSessionId = voice.persistenceSessionId!;
