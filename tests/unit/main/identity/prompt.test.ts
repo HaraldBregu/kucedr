@@ -13,7 +13,10 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 	const previous = process.env.KUCEDR_E2E_DATA_ROOT;
 	process.env.KUCEDR_E2E_DATA_ROOT = root;
 	try {
-		const config = { location: path.join(root, 'workspace') };
+		const config = {
+			location: path.join(root, 'workspace'),
+			workspace: buildWorkspace('default', root, path.join(root, 'workspace')),
+		};
 		workspacePath(config);
 		const file = path.join(config.location, 'AGENTS.md');
 		await writeFile(file, 'Static instructions must not be used');
