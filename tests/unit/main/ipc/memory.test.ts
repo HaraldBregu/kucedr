@@ -26,7 +26,7 @@ beforeEach(() => {
 	new MemoryIpc().register({
 		windows: windows as never,
 		apps: apps as never,
-		memory: memory as never,
+		memory: () => memory as never,
 	});
 });
 
