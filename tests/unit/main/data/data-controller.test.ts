@@ -8,7 +8,7 @@ const sessionId = '11111111-1111-4111-8111-111111111111';
 
 it('prevents an active background index from republishing data during a purge', async () => {
 	const controller = new DataController({
-		config: { location: '/tmp' },
+		config: { location: '/tmp', workspace: buildWorkspace('default', '/', '/tmp') },
 		listSessions: () => [],
 		deleteSession: jest.fn(),
 	});
