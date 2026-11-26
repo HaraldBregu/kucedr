@@ -10,6 +10,7 @@ const manifest = JSON.stringify({
 	id: 'sample',
 	title: 'Sample',
 	description: 'A sample plugin.',
+	author: 'Kucedr',
 	version: '1.0.0',
 });
 const skill = '---\nname: sample\ndescription: Read a sample.\n---\nRead the sample.';
@@ -20,7 +21,7 @@ let mockEntryLimit: number;
 jest.mock('../../../../src/main/plugins/limits', () => ({
 	get MAX_ARCHIVE_BYTES() { return mockByteLimit; },
 	get MAX_ARCHIVE_ENTRIES() { return mockEntryLimit; },
-}));
+}), { virtual: true });
 jest.mock('../../../../src/main/plugins/plugins_root', () => ({
 	pluginsRoot: () => path.join(root, 'installed'),
 }));
