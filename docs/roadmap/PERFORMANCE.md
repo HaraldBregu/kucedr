@@ -1,7 +1,6 @@
 # 2. Performance and agent efficiency
 
-Part of the [Roadmap](README.md). Status: 2.1–2.4, 2.6 and 2.7 built. The remaining items are
-proposed.
+Part of the [Roadmap](README.md). Status: 2.1–2.7 built. Spend tracking (2.8) remains proposed.
 
 Agent-turn speed has five measured rounds in [AGENT_TURN.md](../AGENT_TURN.md). The model call
 dominates, so the features that matter reduce turns and prompt size, then make the app feel instant
@@ -39,6 +38,6 @@ include Playwright's own start-up, so compare them only with other runs of the s
 jank probes were checked by blocking the page for 300 ms during a stream: the frame probe
 reported a 282 ms frame and the long-task probe one 300 ms task.
 
-What this means for the next items: streaming in a new chat is already smooth, so 2.5 needs a
-measurement in a long chat before any work. The sidebar's 1.5 s re-read is gone (2.6); the
-4 MB renderer chunk is the likeliest cost left at start.
+What this means for the next items: streaming is smooth in both a new chat and a 20-turn history.
+The sidebar's 1.5 s re-read is gone (2.6). The largest renderer chunk is smaller than the
+2026-11-25 baseline; see the current bundle result above.
