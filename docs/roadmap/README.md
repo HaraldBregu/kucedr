@@ -14,7 +14,7 @@ task limits (16.1, 16.3, 16.5), seeing and editing memory and remembering in cha
 fast knowledge retrieval (18.6), knowledge sources at a glance (18.4), the honest model catalogue (8.9), the one-time browser import offer (23.1), voice mute, status and transcripts (19.1, 19.2),
 private, Tor and proxy tabs with the first network shield pieces (11.1–11.3, 12.1, 12.2, 13.3,
 13.5, 13.11, part of 13.6), first parts of 13.7 and 13.13, the sign-in callback port (13.14), most
-of the terminal back end (14.1), the shortcut guide (3.5), themed renderer confirmations (3.13), consistent Settings empty and loading states (3.14), smoother first-run setup (3.17), desktop plugin archive limits (21.4), and a green test baseline
+of the terminal back end (14.1), the shortcut guide (3.5), themed renderer confirmations (3.13), consistent Settings empty and loading states (3.14), smoother first-run setup (3.17), a useful empty chat (3.16), desktop plugin archive limits (21.4), and a green test baseline
 (22.1); each
 area file says what is left. Each feature
 gets its own detailed plan before any implementation starts.
@@ -73,9 +73,9 @@ Features are numbered by area, for example 3.9 is the browser pane.
 4. **Accessibility checks** (4.5), once its two development dependencies are approved and
    `eslint-plugin-jsx-a11y` supports ESLint 10. Screen-reader chat, full keyboard use, high
    contrast and named controls (4.1–4.4) were built 2026-11-24.
-5. **User experience: a useful empty chat** (3.16), then the remaining interface polish. The
-   shortcut guide (3.5), confirmations (3.13), consistent empty and loading states (3.14), smoother
-   first-run setup (3.17), search across chats (3.2) and the "/" menu (3.4) are built.
+5. **User experience: visual consistency** (3.15), then find any setting (3.18). The shortcut guide
+   (3.5), confirmations (3.13), consistent empty and loading states (3.14), smoother first-run setup
+   (3.17), useful empty chat (3.16), search across chats (3.2) and the "/" menu (3.4) are built.
 6. **Model downloads** (15.2). Setup with a local model (15.1) and offline behaviour (15.4) were
    built 2026-11-25.
 7. **The next network shield pieces**: tracker blocking (13.1) and the network view (13.8). The

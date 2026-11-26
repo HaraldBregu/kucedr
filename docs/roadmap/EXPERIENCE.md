@@ -19,7 +19,7 @@ Part of the [Roadmap](README.md). Status: proposal; 3.1–3.4, 3.6–3.9, 3.11 a
 | 3.13 | Confirmations in the app's style | Delete and remove prompts look like the rest of Kucedr, follow the theme and are translated, instead of a plain system box | Built 2026-11-26; all renderer confirmations now use the shared themed dialog | S |
 | 3.14 | Consistent empty and loading states | Every list says what belongs there and how to add the first item; every page shows the same loading rows | Built 2026-11-26 for the identified Settings lists; shared placeholders now cover plugin discovery, permissions, browser profiles, knowledge search and embedding models, cloud folders, MCP tools and account activity | S |
 | 3.15 | A visual consistency pass | Colours, text sizes and spacing come from the theme everywhere, so light, dark and plugin themes look right on every page | 41 fixed palette colours in 11 files and 59 fixed pixel sizes in the renderer | S–M |
-| 3.16 | A useful empty chat | A new chat offers a few starting points instead of a greeting only | `EmptyConversation` in `pages/home/Page.tsx`; `components/ui/prompt-suggestion.tsx` exists and is used nowhere | S |
+| 3.16 | A useful empty chat | A new chat offers a few starting points instead of a greeting only | Built 2026-11-26: localized greeting, three prompt starters and a recent-chat continuation suggestion when available | S |
 | 3.17 | Smoother first-run setup | Connect a model first, skip what can wait, and land in a chat that works | Built 2026-11-26: model → chat → optional plugins and voice, with Skip for now | S–M |
 | 3.18 | Find any setting | Typing a setting's name (for example "sound" or "dark") finds the switch, not only the page | The command menu lists Settings pages from `SETTINGS_NAVIGATION`; individual options are not searchable | S |
 
@@ -201,18 +201,11 @@ for deletions that can be restored remains a separate follow-up to 3.7.
 
 ### 3.16 A useful empty chat
 
-- _Behaviour._ Under the greeting, three or four short starting points chosen from what is set
-  up: for example "Summarise my unread mail" when mail is connected, "Open a page in the browser",
-  "Continue: <last chat title>". Choosing one fills the composer; it does not send.
-- _Found._ `EmptyConversation` in `pages/home/Page.tsx` shows only "Good morning, how are you?";
-  the greeting and question are hard-coded English. `components/ui/prompt-suggestion.tsx` exists and
-  nothing uses it.
-- _Constraint._ No product or vendor names written into the suggestions; they come from what is
-  installed and connected.
-- _Open decision._ Recommended: no suggestions written by a model, so the empty chat stays instant
-  and costs nothing.
-- _Check._ A fresh profile with one provider shows suggestions; each fills the composer; the
-  greeting is translated.
+Built 2026-11-26. The empty chat shows a translated time-of-day greeting and three localized prompt
+starters. When a prior chat exists, it also offers “Continue: <title>”. Selecting any suggestion
+fills and focuses the composer without sending it. Suggestions are static and make no model request.
+Typecheck, targeted ESLint and translation JSON parsing pass; a fresh-profile visual interaction
+check was not performed.
 
 ### 3.17 Smoother first-run setup
 
