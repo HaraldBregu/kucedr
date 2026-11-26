@@ -27,12 +27,8 @@ settings stay shared.
 
 ## Open decisions
 
-- **How much a workspace separates.** Recommended: 10.1 and 10.2 together as the first version. For
-  "work and personal", shared chats and memory is the part that would surprise people. Deciding
-  before implementation matters: the existing plan notes that separating them later changes where
-  chats and memory are stored, and existing data would need a home. Existing chats and memory would
-  stay with the first workspace. The [Multiple workspaces plan](../WORKSPACES.md) is updated once
-  this is decided.
+- **How much a workspace separates.** Decided 2026-11-26: everything that holds content (10.1–10.3
+  in one plan). Existing chats and memory stay with the default workspace.
 - **10.3 with the browser pane.** If the browser pane (3.9) is built first, its saved logins should
   be designed per workspace from the start.
 - **Shared on purpose:** model keys, plugins, skills, app settings, the account and anything paid
