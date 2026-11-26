@@ -25,6 +25,7 @@ import {
 	X,
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 import type { LibraryFile } from '../../../../shared/library_types';
 import type { AgentPromptInputCapabilities } from '../../../../shared/agent_types';
@@ -33,6 +34,7 @@ import { workspaceFileType } from '../../../../shared/workspace';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
+import { PromptSuggestion } from '@/components/ui/prompt-suggestion';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
@@ -171,17 +173,43 @@ function RecorderErrorMessage({
 	);
 }
 
-function EmptyConversation(): ReactElement {
+function EmptyConversation({
+	sessionId,
+	onSelect,
+}: {
+	readonly sessionId: string;
+	readonly onSelect: (prompt: string) => void;
+}): ReactElement {
+	const { t } = useTranslation();
+	const [lastChatTitle, setLastChatTitle] = useState<string>();
 	const hour = new Date().getHours();
-	const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+	const greeting = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+	useEffect(() => {
+		let active = true;
+		void window.agent.listSessions().then((sessions) => {
+			const previous = sessions
+				.filter((session) => session.id !== sessionId)
+				.sort((left, right) => right.createdAtMs - left.createdAtMs)[0];
+			if (active && previous) setLastChatTitle(previous.title.trim() || t('settings.chatHistory.untitled'));
+		}).catch(() => undefined);
+		return () => { active = false; };
+	}, [sessionId, t]);
 	return (
-		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
+		<Empty className="mx-auto max-w-2xl flex-none border-0 p-0">
 			<EmptyHeader className="max-w-lg flex-row gap-2">
 				<LogoView className="size-10 !bg-current dark:!bg-current" />
 				<EmptyTitle className="text-3xl font-bold leading-tight text-foreground">
-					{greeting}, how are you?
+					{t(`chat.empty.greeting.${greeting}`)}
 				</EmptyTitle>
 			</EmptyHeader>
+			<EmptyContent className="mt-3 flex-row flex-wrap justify-center gap-2">
+				{lastChatTitle ? <PromptSuggestion onClick={() => onSelect(t('chat.empty.suggestions.continue', { title: lastChatTitle }))}>{t('chat.empty.suggestions.continue', { title: lastChatTitle })}</PromptSuggestion> : null}
+				{(['summarize', 'draft', 'plan'] as const).map((suggestion) => (
+					<PromptSuggestion key={suggestion} onClick={() => onSelect(t(`chat.empty.suggestions.${suggestion}`))}>
+						{t(`chat.empty.suggestions.${suggestion}`)}
+					</PromptSuggestion>
+				))}
+			</EmptyContent>
 		</Empty>
 	);
 }
@@ -1062,7 +1090,13 @@ function PageContent(): ReactElement {
 										</EmptyContent>
 									</Empty>
 								) : (
-									<EmptyConversation />
+									<EmptyConversation
+										sessionId={chatSessionId}
+										onSelect={(prompt) => {
+											agent.setInput(prompt);
+											window.dispatchEvent(new Event('kucedr:focus-chat-input'));
+										}}
+									/>
 								)}
 							</div>
 							{composer}
