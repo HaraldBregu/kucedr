@@ -40,7 +40,7 @@ export function SpaceEdit({ workspace, onClose }: SpaceEditProps): ReactElement 
 		>
 			<DialogContent showCloseButton={false}>
 				<DialogHeader>
-					<DialogTitle>{t('spaces.edit')}</DialogTitle>
+					<DialogTitle>{t('spaces.editTitle')}</DialogTitle>
 					<DialogDescription className="break-all">
 						{workspace.missing ? t('spaces.missing') : workspace.folder}
 					</DialogDescription>
