@@ -6,7 +6,7 @@ Status: proposal, 2026-11-26. Nothing here is implemented. Roadmap items 20.5–
 ## Goal
 
 The main chat agent can hand coding work to an external coding agent (a "harness") such as Codex,
-Cline, Pi or OpenCode. The user asks in the normal chat, for example "fix the failing test in
+Claude, Cursor, Pi or OpenCode ([Harness notes](#harness-notes)). The user asks in the normal chat, for example "fix the failing test in
 my-app". The agent delegates the task, then reports what changed and how to continue.
 
 - **One tool.** `use_coding_agent` works with every harness. Harnesses are picked by ID from
