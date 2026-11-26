@@ -21,7 +21,7 @@ export async function downloadPlugin(url: string, integrity?: string): Promise<P
 	const tooLarge = new Error('The plugin archive is larger than 200 MB.');
 	if (Number(response.headers.get('content-length')) > MAX_DOWNLOAD_BYTES) throw tooLarge;
 
-	const chunks: Uint8Array[] = [];
+	const chunks: Uint8Array<ArrayBuffer>[] = [];
 	const checksum = integrity ? createHash('sha512') : undefined;
 	let size = 0;
 	const reader = response.body.getReader();
