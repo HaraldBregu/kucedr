@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import {
 	SidebarGroup,
 	SidebarGroupContent,
+	SidebarHeader,
 	SidebarGroupLabel,
 	SidebarMenu,
 	SidebarMenuButton,
@@ -573,7 +574,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
 			{dialog}
-			<header className="shrink-0 px-2">
+			<SidebarHeader className="shrink-0">
 				<SidebarMenu>
 					<Spaces />
 					<SidebarMenuItem>
@@ -604,7 +605,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						</SidebarMenuItem>
 					)}
 				</SidebarMenu>
-			</header>
+			</SidebarHeader>
 			<ChatFinder query={search} onQueryChange={setSearch} onOpen={openResult} />
 			<section
 				className={cn('no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3', search.trim() && 'hidden')}

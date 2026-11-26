@@ -36,6 +36,7 @@ export function Spaces(): ReactElement | null {
 				<DropdownMenuTrigger asChild>
 					<SidebarMenuButton
 						type="button"
+						size="lg"
 						className="px-2.5 text-sm data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						aria-label={t('spaces.switch')}
 					>
@@ -44,8 +45,10 @@ export function Spaces(): ReactElement | null {
 					</SidebarMenuButton>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent
-					className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
+					className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
 					align="start"
+					side="right"
+					sideOffset={4}
 				>
 					{workspaces.map((workspace) => (
 						<DropdownMenuItem
