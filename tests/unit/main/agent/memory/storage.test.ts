@@ -41,7 +41,7 @@ describe('memory storage', () => {
 		expect(await fs.readFile(path.join(root, 'memory', 'settings.json'), 'utf8')).toContain(
 			'"initialized":true'
 		);
-		expect(await fs.readFile(memoryPath(), 'utf8')).toContain('Prefers concise answers');
+		expect(await fs.readFile(memoryPath(workspace), 'utf8')).toContain('Prefers concise answers');
 		await expect(fs.stat(legacySettings)).rejects.toMatchObject({ code: 'ENOENT' });
 		await expect(fs.stat(legacyMemory)).rejects.toMatchObject({ code: 'ENOENT' });
 	});
@@ -49,12 +49,12 @@ describe('memory storage', () => {
 	it('merges distinct workspace notes without replacing standalone memory', async () => {
 		const legacyMemory = path.join(workspace.files, 'MEMORY.md');
 		await fs.mkdir(path.dirname(memoryPath(workspace)), { recursive: true });
-		await fs.writeFile(memoryPath(), '# Memory\n\n- Uses TypeScript\n');
+		await fs.writeFile(memoryPath(workspace), '# Memory\n\n- Uses TypeScript\n');
 		await fs.writeFile(legacyMemory, '# Manual notes\n\n- Prefers concise answers\n');
 
 		await migrateWorkspaceMemory({ location: workspace });
 
-		const migrated = await fs.readFile(memoryPath(), 'utf8');
+		const migrated = await fs.readFile(memoryPath(workspace), 'utf8');
 		expect(migrated).toContain('Uses TypeScript');
 		expect(migrated).toContain('Prefers concise answers');
 		await expect(fs.stat(legacyMemory)).rejects.toMatchObject({ code: 'ENOENT' });
