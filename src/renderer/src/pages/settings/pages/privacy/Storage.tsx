@@ -34,7 +34,8 @@ export function Storage(): React.JSX.Element {
 	}, []);
 
 	return (
-		<SettingsSection title={t('settings.storageManagement.title')}>
+		<>
+			<SettingsSection title={t('settings.storageManagement.title')}>
 			{error ? (
 				<SettingsNotice variant="destructive">{t('settings.storageManagement.loadError')}</SettingsNotice>
 			) : (
@@ -69,9 +70,10 @@ export function Storage(): React.JSX.Element {
 					/>
 				</SettingsPanel>
 			)}
-		</SettingsSection>
-		<SettingsSection title={t('settings.dataControls.title')}>
-			<DataControls kinds={['sessions']} />
-		</SettingsSection>
+			</SettingsSection>
+			<SettingsSection title={t('settings.dataControls.title')}>
+				<DataControls kinds={['sessions']} />
+			</SettingsSection>
+		</>
 	);
 }
