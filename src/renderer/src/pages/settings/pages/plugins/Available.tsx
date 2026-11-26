@@ -50,12 +50,12 @@ export default function Available({
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{plugins === null && !error && <SettingsLoadingRows rows={3} />}
 			{plugins?.length === 0 && (
-				<SettingsEmptyState title={t('settings.integrations.marketplace.empty')} />
+				<SettingsEmptyState title={t('settings.integrations.marketplace.empty')} description={t('settings.integrations.marketplace.emptyDescription')} />
 			)}
 			{plugins && plugins.length > 0 && <SettingsFilter filter={filter} />}
 			<div className="grid grid-cols-1 gap-3">
 				{plugins && plugins.length > 0 && filter.items.length === 0 && (
-					<SettingsEmptyState title={t('settings.integrations.marketplace.noResults', 'No integrations match this search.')} />
+					<SettingsEmptyState title={t('settings.integrations.marketplace.noResults')} description={t('settings.integrations.marketplace.noResultsDescription')} />
 				)}
 				{filter.items.map((plugin) => (
 					<Card

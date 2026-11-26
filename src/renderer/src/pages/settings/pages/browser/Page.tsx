@@ -120,7 +120,7 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 					}
 				/>
 				{sources === null ? <SettingsLoadingRows rows={2} /> : null}
-				{sources?.length === 0 ? <SettingsEmptyState icon={Globe} title={t('settings.browser.none')} /> : null}
+				{sources?.length === 0 ? <SettingsEmptyState icon={Globe} title={t('settings.browser.noneTitle')} description={t('settings.browser.none')} /> : null}
 				{sources?.map((source) => {
 					const name = [source.app, source.profile].filter(Boolean).join(' — ');
 					return (
