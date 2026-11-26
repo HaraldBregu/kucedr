@@ -450,6 +450,7 @@ describe('RealtimeVoiceManager', () => {
 			resolveConfiguration: async () => ({ ...configuration, context }),
 			createConversation: realtimeVoiceConversationFactory({
 				location: path.join(temporaryRoot, 'agent'),
+				workspace: buildWorkspace('default', temporaryRoot, path.join(temporaryRoot, 'agent')),
 			}),
 			resources: new KeyedMutex(),
 			emit: () => undefined,
