@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, Download, Sparkles, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useConfirmation } from '@/components/ui/confirmation';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import type { SkillInfo, SkillLoadResult } from '../../../../../../../shared/skills_types';
 import {
@@ -32,6 +33,7 @@ function skillVersion(skill: SkillInfo): string {
 
 const SkillDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
+	const { confirm, dialog } = useConfirmation();
 	const navigate = useNavigate();
 	const { skillId } = useParams<{ skillId: string }>();
 	const decodedSkillId = decodeURIComponent(skillId ?? '');
@@ -89,8 +91,7 @@ const SkillDetailsPage: React.FC = () => {
 
 	const handleDelete = useCallback(async (): Promise<void> => {
 		if (!skill) return;
-		const message = t('settings.skills.confirmDelete', { name: skill.manifest.name });
-		if (!window.confirm(message)) return;
+		if (!(await confirm({ title: t('settings.skills.title'), description: t('settings.skills.confirmDelete', { name: skill.manifest.name }) }))) return;
 
 		setDeleting(true);
 		setErrorMessage('');
@@ -103,7 +104,7 @@ const SkillDetailsPage: React.FC = () => {
 		} finally {
 			setDeleting(false);
 		}
-	}, [navigate, skill, t]);
+	}, [confirm, navigate, skill, t]);
 
 	if (loading) {
 		return (
@@ -139,6 +140,7 @@ const SkillDetailsPage: React.FC = () => {
 
 	return (
 		<SettingsPageShell>
+			{dialog}
 			<SettingsPageHeader
 				title={skill.manifest.name}
 				description={skill.manifest.description || t('settings.skills.noDescription')}
