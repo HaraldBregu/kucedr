@@ -50,10 +50,9 @@ function sessionPinned(sessionId: string, root: string): boolean {
 }
 
 export function listSessions(
-	location: string,
+	root: string,
 	category: SessionCategory = DEFAULT_CATEGORY
 ): AgentSessionSummary[] {
-	const root = sessionsRoot(location);
 	if (!existsSync(root)) return [];
 	try {
 		return readdirSync(root, { withFileTypes: true })
