@@ -73,7 +73,7 @@ it('shows the failed MCP call, waits for authorization, then retries the same ar
 	session.messages = [{ role: 'user', content: 'Find the email' }];
 	const events: RuntimeEvent[] = [];
 	const iterator = stream(
-		{ location: '/workspace' },
+		{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 		session,
 		{
 			runId: 'run',
@@ -161,7 +161,7 @@ it('stops after cancellation without retrying the failed MCP call', async () => 
 	const session = createSessionState();
 	session.messages = [{ role: 'user', content: 'Find the email' }];
 	const iterator = stream(
-		{ location: '/workspace' },
+		{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 		session,
 		{
 			runId: 'run',
