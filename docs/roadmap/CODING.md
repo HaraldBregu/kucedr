@@ -26,6 +26,7 @@ shipped as a second chat kind next to the agent chat.
 | 20.6 | Coding agent as a chat tool | Ask the main chat for a code change or fix, and it hands the work to a coding agent (Codex first), then reports what changed and how to continue | The existing harness, the app sandbox, [plan](../CODING_TOOLS.md) | M |
 | 20.7 | Live coding-agent progress | Watch the coding agent's messages, commands and file changes in the chat while it works, with no 9-minute limit | 20.6, a tool progress event | M |
 | 20.8 | Coding-agent approvals in the chat | When the coding agent needs permission, the chat asks with the usual approval card instead of declining | 20.6, 20.7 | M |
+| 20.9 | Steer a running coding agent | Send a correction while the coding agent works, without stopping it. Only for harnesses that support it (Claude, Codex, Pi); the others offer Stop and a new call | 20.7, each harness's own protocol, since ACP has no steer message | M |
 
 ## Open decisions
 
