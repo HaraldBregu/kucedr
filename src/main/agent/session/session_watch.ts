@@ -1,9 +1,7 @@
 import { mkdirSync, watch } from 'node:fs';
 import path from 'node:path';
-import { sessionsRoot } from './session_sessions_root';
 
-export function watchSessions(location: string, onChange: () => void): void {
-	const root = sessionsRoot(location);
+export function watchSessions(root: string, onChange: () => void): void {
 	let timer: NodeJS.Timeout | undefined;
 	mkdirSync(root, { recursive: true });
 	try {
