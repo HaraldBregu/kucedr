@@ -1,7 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import os from 'node:os';
-import path from 'node:path';
+import { Blob } from 'node:buffer';
 import type { PluginInfo } from '../../shared/plugin_types';
 import { installPluginArchive } from './plugins_install_archive';
 
@@ -24,6 +22,7 @@ export async function downloadPlugin(url: string, integrity?: string): Promise<P
 	if (Number(response.headers.get('content-length')) > MAX_DOWNLOAD_BYTES) throw tooLarge;
 
 	const chunks: Uint8Array[] = [];
+	const checksum = integrity ? createHash('sha512') : undefined;
 	let size = 0;
 	const reader = response.body.getReader();
 	for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
@@ -32,22 +31,11 @@ export async function downloadPlugin(url: string, integrity?: string): Promise<P
 			await reader.cancel();
 			throw tooLarge;
 		}
+		checksum?.update(chunk.value);
 		chunks.push(chunk.value);
 	}
-	const archive = Buffer.concat(chunks);
-	if (
-		integrity &&
-		`sha512-${createHash('sha512').update(archive).digest('base64')}` !== integrity
-	) {
+	if (checksum && `sha512-${checksum.digest('base64')}` !== integrity) {
 		throw new Error('The downloaded plugin does not match the catalog checksum.');
 	}
-
-	const temporary = await mkdtemp(path.join(os.tmpdir(), 'kucedr-plugin-download-'));
-	try {
-		const file = path.join(temporary, 'plugin.tgz');
-		await writeFile(file, archive);
-		return await installPluginArchive(file);
-	} finally {
-		await rm(temporary, { recursive: true, force: true });
-	}
+	return installPluginArchive(new Blob(chunks));
 }
