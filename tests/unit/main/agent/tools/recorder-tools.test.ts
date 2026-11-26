@@ -21,8 +21,8 @@ jest.mock('../../../../../src/main/recorder', () => ({ microphone, camera, scree
 jest.mock('../../../../../src/main/shared/agent_location', () => ({
 	agentLocation: () => '/workspace',
 }));
-jest.mock('../../../../../src/main/shared/library_location', () => ({
-	libraryLocation: () => '/library',
+jest.mock('../../../../../src/main/workspaces/current', () => ({
+	currentWorkspace: () => ({ id: 'default', files: '/workspace', library: '/library' }),
 }));
 
 import { recorderTools } from '../../../../../src/main/agent/tools/system/recorder';
