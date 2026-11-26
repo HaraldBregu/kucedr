@@ -7,7 +7,7 @@ import type {
 	AgentToolReference,
 } from '../../../../../../../shared/agent_tools';
 import { Button } from '@/components/ui/button';
-import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../../components';
+import { SettingsEmptyState, SettingsLoadingRows, SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 import { ToolPermissionControl } from './Permission';
 
@@ -45,8 +45,8 @@ export default function Mcp({ settings, disabled, onChange }: McpProps): React.J
 	return (
 		<SettingsSection title={t(`${prefix}.title`)} description={t(`${prefix}.description`)}>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
-			{!registry && !error && <SettingsNotice>{t(`${prefix}.loading`)}</SettingsNotice>}
-			{registry && servers.length === 0 && <SettingsNotice>{t(`${prefix}.empty`)}</SettingsNotice>}
+			{!registry && !error && <SettingsLoadingRows rows={2} />}
+			{registry && servers.length === 0 && <SettingsEmptyState title={t(`${prefix}.empty`)} />}
 			{servers.length > 0 && (
 				<SettingsPanel>
 					{servers.map((server) => {

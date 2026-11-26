@@ -9,7 +9,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { SettingsPanel, SettingsRow, SettingsSection } from '../../components';
+import { SettingsEmptyState, SettingsPanel, SettingsRow, SettingsSection } from '../../components';
 import { VALUE_SEPARATOR, type KnowledgeState } from './state';
 
 export default function Embedding({ knowledge }: { knowledge: KnowledgeState }): JSX.Element {
@@ -66,6 +66,7 @@ export default function Embedding({ knowledge }: { knowledge: KnowledgeState }):
 						</Select>
 					}
 				/>
+				{embeddingModels.length === 0 && <SettingsEmptyState title={t('settings.knowledge.embeddingNoModels')} />}
 				<SettingsRow
 					title={t('settings.knowledge.embeddingConsent')}
 					description={t('settings.knowledge.embeddingConsentDescription')}

@@ -21,6 +21,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import {
+	SettingsEmptyState,
 	SettingsLoadingRows,
 	SettingsNotice,
 	SettingsPageHeader,
@@ -235,6 +236,7 @@ const PermissionsPage: React.FC = () => {
 							description={t('settings.permissions.workspaceDescription')}
 							actions={<Badge variant="secondary">{t('settings.permissions.trusted')}</Badge>}
 						/>
+						{customRows.length === 0 && <SettingsEmptyState icon={FolderOpen} title={t('settings.permissions.emptyTitle')} description={t('settings.permissions.emptyDescription')} />}
 						{customRows.map((row) => (
 							<SettingsRow
 								key={`${row.bucket}:${ruleKey(row.rule)}`}
