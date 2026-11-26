@@ -2,6 +2,7 @@ import { memo, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AgentModeInfo } from '@shared/agent_types';
 import { Markdown } from '@/components/prompt-kit/markdown';
+import { useConfirmation } from '@/components/ui/confirmation';
 import type { HomeChatMessage } from './context/state';
 import { AssistantMessage } from './components/AssistantMessage';
 import { markdownComponents } from './components/markdown';
@@ -35,8 +36,10 @@ export const Messages = memo(function Messages({
 	readonly onAction: (prompt: string) => void;
 }): ReactElement {
 	const { t } = useTranslation();
+	const { confirm, dialog } = useConfirmation();
 	return (
 		<>
+			{dialog}
 			{messages.map((message, index) => {
 				const previous = index > 0 ? messages[index - 1] : null;
 				const showAssistantHeader = !previous || previous.role !== 'agent';
@@ -97,13 +100,13 @@ export const Messages = memo(function Messages({
 						canRegenerate={!isLoading && !voiceMode}
 						onRegenerate={
 							messages.slice(0, index).some((earlier) => earlier.role === 'user')
-								? () => {
+								? async () => {
 										if (
 											messages.slice(index + 1).some((later) => later.role === 'user') &&
-											!window.confirm(t('chat.regenerate.confirm'))
+											!(await confirm({ title: t('chat.regenerate.title', 'Regenerate response?'), description: t('chat.regenerate.confirm'), confirmLabel: t('chat.regenerate.action', 'Regenerate') }))
 										)
 											return;
-										void onRegenerate(message.id);
+										await onRegenerate(message.id);
 									}
 								: undefined
 						}
