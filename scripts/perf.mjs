@@ -9,6 +9,7 @@ import path from 'node:path';
 const appDir = path.resolve(process.argv[2] ?? '.');
 const RUNS = 3;
 const CHUNKS = 600;
+const HISTORY_TURNS = 20;
 const END = 'Performance check complete.';
 
 const bundle = {};
@@ -29,6 +30,7 @@ for (const part of ['main', 'preload', 'renderer']) {
 	}
 }
 
+let streamedRequests = 0;
 const server = createServer((request, response) => {
 	if (request.url.endsWith('/models')) {
 		response.setHeader('content-type', 'application/json');
@@ -42,6 +44,12 @@ const server = createServer((request, response) => {
 			return response.end(JSON.stringify({ choices: [{ index: 0, message: { role: 'assistant', content: 'Perf' }, finish_reason: 'stop' }] }));
 		}
 		response.setHeader('content-type', 'text/event-stream');
+		streamedRequests += 1;
+		if (streamedRequests <= HISTORY_TURNS) {
+			response.write(`data: ${JSON.stringify({ choices: [{ index: 0, delta: { content: 'Earlier answer.' }, finish_reason: null }] })}\n\n`);
+			response.write(`data: ${JSON.stringify({ choices: [{ index: 0, delta: {}, finish_reason: 'stop' }] })}\n\n`);
+			return response.end('data: [DONE]\n\n');
+		}
 		const deltas = [
 			...Array.from({ length: CHUNKS }, (_, index) => ({
 				content: index === 200 ? '\n\n```js\n' : index === 260 ? '\n```\n\n' : index % 60 === 59 ? `word${index}\n\n` : `word${index} `,
@@ -110,14 +118,14 @@ try {
 			const sent = performance.now();
 			await editor.fill('Write a long answer.');
 			await editor.press('Enter');
-			await page.getByText(END, { exact: false }).waitFor({ timeout: 60_000 });
+			await page.getByText(END, { exact: true }).last().waitFor({ timeout: 60_000 });
 			const durationMs = performance.now() - sent;
 			const { longTasks, frames } = await page.evaluate(() => {
 				window.__perf.on = false;
 				return window.__perf;
 			});
 			streaming = {
-				scenario: '20-turn history',
+				scenario: `${HISTORY_TURNS}-turn history`,
 				chunks: CHUNKS,
 				durationMs: Math.round(durationMs),
 				fps: Math.round((frames.length / durationMs) * 1000),
