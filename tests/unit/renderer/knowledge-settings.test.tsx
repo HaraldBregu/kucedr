@@ -78,6 +78,8 @@ jest.mock('react-i18next', () => {
 		'settings.knowledge.mirrorConsent': 'Store plaintext knowledge in the vector database',
 		'settings.knowledge.indexName': 'Index name',
 		'settings.knowledge.sourceFolder': 'Source folders',
+		'settings.knowledge.sourceStats': '{{files}} files · {{chunks}} passages · indexed {{date}}',
+		'settings.knowledge.notIndexed': 'not indexed',
 		'settings.knowledge.pickFolder': 'Choose folder',
 		'settings.knowledge.removeFolderPath': 'Remove {{folder}}',
 		'settings.knowledge.index': 'Generate index',
@@ -239,12 +241,20 @@ beforeEach(() => {
 
 it('organizes Knowledge into source, embedding, storage, indexing and search controls', async () => {
 	configuration.folders = ['/Users/example/docs'];
+	status.sources = [{
+		folder: '/Users/example/docs',
+		files: 3,
+		chunks: 7,
+		indexedAt: '2026-11-26T12:00:00.000Z',
+		error: null,
+	}];
 	render(
 		<MemoryRouter>
 			<KnowledgePage />
 		</MemoryRouter>
 	);
 	await screen.findByText('/Users/example/docs');
+	expect(await screen.findByText(/3 files · 7 passages · indexed/)).toBeInTheDocument();
 	for (const name of ['Source folders', 'Embedding', 'Storage', 'Indexing']) {
 		expect(screen.getByRole('heading', { name })).toBeInTheDocument();
 	}

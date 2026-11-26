@@ -42,6 +42,14 @@ it('stores Float32 vectors, reuses source fingerprints, and performs exact cosin
 	const store = new SqliteVectorStore(':memory:');
 	try {
 		store.publish(publication);
+		expect(store.summary('knowledge-base')).toEqual({
+			chunks: 2,
+			paths: ['documents/guide.md', 'documents/notes.md'],
+			byPath: [
+				{ path: 'documents/guide.md', chunks: 1 },
+				{ path: 'documents/notes.md', chunks: 1 },
+			],
+		});
 
 		expect(store.getIndex('knowledge-base')).toEqual({
 			indexName: 'knowledge-base',
