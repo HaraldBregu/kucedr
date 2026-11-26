@@ -39,7 +39,9 @@
 		"save": "Save",
 		"saveError": "Unable to save file.",
 		"discardReload": "Discard edits and reload",
-		"reload": "Reload"
+		"reload": "Reload",
+		"deleteTitle": "Delete {{name}}?",
+		"deleteDescription": "This permanently deletes the file and any unsaved changes."
 	},
 	"codeSettings": {
 		"title": "Coder settings",
@@ -2710,6 +2712,8 @@
 		"regenerate": {
 			"label": "Regenerate",
 			"retry": "Retry",
+			"title": "Regenerate response?",
+			"action": "Regenerate",
 			"confirm": "Regenerate this reply? The messages after it will be discarded. Files changed by the discarded replies are not restored."
 		},
 		"announce": {

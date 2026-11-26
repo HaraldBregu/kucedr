@@ -39,7 +39,9 @@
 		"save": "Salva",
 		"saveError": "Impossibile salvare il file.",
 		"discardReload": "Scarta le modifiche e ricarica",
-		"reload": "Ricarica"
+		"reload": "Ricarica",
+		"deleteTitle": "Eliminare {{name}}?",
+		"deleteDescription": "Il file e le modifiche non salvate verranno eliminati definitivamente."
 	},
 	"codeSettings": {
 		"title": "Impostazioni Coder",
@@ -2710,6 +2712,8 @@
 		"regenerate": {
 			"label": "Rigenera",
 			"retry": "Riprova",
+			"title": "Rigenerare la risposta?",
+			"action": "Rigenera",
 			"confirm": "Rigenerare questa risposta? I messaggi successivi verranno eliminati. I file modificati dalle risposte eliminate non vengono ripristinati."
 		},
 		"announce": {

@@ -161,7 +161,7 @@ const TaskDetailsPage: React.FC = () => {
 		}
 	};
 	const deleteHistory = async (sessionId: string): Promise<void> => {
-		if (!(await confirm({ title: t('settings.cron.history.title'), description: t('settings.cron.history.confirmDelete') }))) return;
+		if (!(await confirm({ title: t('settings.cron.history.delete'), description: t('settings.cron.history.confirmDelete') }))) return;
 		setDeletingHistoryId(sessionId);
 		setError(null);
 		try {

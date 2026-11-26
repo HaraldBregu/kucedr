@@ -87,7 +87,7 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen, onDeleted, cre
 					{ id: 'delete', label: t('common.delete', 'Delete'), enabled: !busy },
 				]).then(async (action) => {
 					if (action === 'open') onOpen(fileName);
-					else if (action === 'delete' && !submitting.current && await confirm({ title: t('codeFiles.deleteTitle', 'Delete {{name}}?', { name: fileName }), description: t('codeFiles.confirmDelete', 'This permanently deletes the file and any unsaved changes.', { name: fileName }) })) {
+					else if (action === 'delete' && !submitting.current && await confirm({ title: t('codeFiles.deleteTitle', { name: fileName }), description: t('codeFiles.deleteDescription') })) {
 						submitting.current = true;
 						setBusy(true);
 						setError('');
