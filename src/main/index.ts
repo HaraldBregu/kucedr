@@ -4,7 +4,9 @@ import { authLinks } from './cloud/links';
 import { pluginLinks } from './plugins/plugins_link';
 import { setStartupProxy } from './privacy/launch';
 import { getPrivacyRoute, isPrivacyEnabled } from './privacy/state';
+import { restrictUserData } from './shared/restrict_user_data';
 
+restrictUserData();
 setStartupProxy();
 
 if (process.defaultApp && process.argv[1]) {
