@@ -118,7 +118,7 @@ describe('RAG indexing schedule', () => {
 		await expect(runRagIndexing()).rejects.toThrow('already running');
 		expect(indexRag).toHaveBeenCalledTimes(1);
 		expect(getRagStatus()).toMatchObject({ running: true, trigger: 'manual', outcome: 'running' });
-		complete({ files: 1, vectors: 2 });
+		complete(result);
 		await manual;
 		expect(getRagStatus()).toMatchObject({
 			running: false,
@@ -177,7 +177,7 @@ describe('RAG indexing schedule', () => {
 		});
 		subscribeRagConfiguration.mock.calls[0][0]();
 		expect(indexRag.mock.calls[0][2].signal.aborted).toBe(false);
-		complete({ files: 1, vectors: 2 });
+		complete(result);
 		await manual;
 	});
 
