@@ -194,7 +194,7 @@ const StartPage: React.FC = () => {
 							size="sm"
 							disabled={
 								isBusy ||
-								(step !== 'plugins' && step !== 'modelProvider' && !canContinueModels)
+								(step !== 'modelProvider' && !canContinueModels)
 							}
 							onClick={handlePrimaryAction}
 						>
