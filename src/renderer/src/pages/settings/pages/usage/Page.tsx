@@ -60,6 +60,7 @@ export default function UsagePage(): React.JSX.Element {
 				title={t('settings.usage.title')}
 				description={t('settings.usage.description')}
 				icon={ChartNoAxesColumnIncreasing}
+				iconPosition="top"
 			/>
 			{failed ? (
 				<SettingsNotice variant="destructive">{t('settings.usage.loadError')}</SettingsNotice>
