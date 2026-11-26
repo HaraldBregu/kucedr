@@ -1,6 +1,6 @@
 # Roadmap
 
-Status: proposal, written 2026-11-19. Built since: sealed credentials on disk (1.2), the first
+Status: proposal, written 2026-11-19. Built since: storage management (1.7), sealed credentials on disk (1.2), the first
 release of app-wide Privacy Mode (1.10), the backup portability warning (1.12), the first four agent efficiency
 features ([2.1–2.4](PERFORMANCE.md)), a chat list that updates on change (2.6), the performance
 check (2.7), completion
@@ -60,7 +60,7 @@ Features are numbered by area, for example 3.9 is the browser pane.
 
 ## Recommended order
 
-1. **Small items left from the 2026-11-25 list:** storage management (1.7). Built since: redaction length in
+1. **Small items left from the 2026-11-25 list:** Built since: storage management (1.7), redaction length in
    approval cards (21.12), legal pages and notices (6.4), offline
    and failure states (3.6, 15.4), voice status (19.1, 19.2), and parts of the shield (13.6, 13.7,
    13.13, 13.14).
