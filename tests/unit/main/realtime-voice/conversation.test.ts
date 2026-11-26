@@ -15,7 +15,7 @@ it('captures finalized realtime voice turns in their persisted order', () => {
 	const capture = jest.fn(async () => undefined);
 	try {
 		const conversation = realtimeVoiceConversationFactory(
-			{ location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) },
+			{ location, workspace: buildWorkspace('default', temporaryRoot, location) },
 			undefined,
 			{ capture } as unknown as MemoryService
 		)(SESSION_ID, 'model');
@@ -38,7 +38,7 @@ it('captures finalized realtime voice turns in their persisted order', () => {
 it('persists only finalized voice transcripts at their reserved turn position', () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-conversation-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	try {
 		const conversation = realtimeVoiceConversationFactory(config)(SESSION_ID, 'model');
 		const voiceSessionId = conversation.persistenceSessionId;
@@ -78,7 +78,7 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 it('refines an existing final transcript after late user insertion without duplicating or truncating messages', () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-refined-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	const capture = jest.fn(async () => undefined);
 	const conversation = realtimeVoiceConversationFactory(config, undefined, {
 		capture,
