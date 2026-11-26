@@ -55,7 +55,7 @@ export function realtimeVoiceConversationFactory(
 			'voice',
 			coordinator
 		);
-		const contextMessages = loadMessagesBySessionId(chatSessionId, config.location);
+		const contextMessages = loadMessagesBySessionId(chatSessionId, config.workspace.sessions);
 		const toolCalls = new Map<string, ToolCall>();
 		const completedToolCalls = new Set<string>();
 		const capture = () => {

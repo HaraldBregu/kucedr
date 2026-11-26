@@ -1,3 +1,6 @@
+import { DEFAULT_WORKSPACE } from '../shared/workspaces_types';
+import { bindWorkspace } from './workspaces/bind';
+import { workspaceScope } from './workspaces/scope';
 import { app, type BrowserWindow } from 'electron';
 import type { RendererContentOptions, WindowFactory } from './window_factory';
 import type { WindowContextManager } from './window_context';
@@ -77,6 +80,7 @@ export class VoiceWindow {
 		this.window = win;
 		win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
 		this.windowContextManager.create(win);
+		bindWorkspace(win.webContents, workspaceScope.getStore()?.id ?? DEFAULT_WORKSPACE);
 		attachWindowHandlers(win);
 		win.setAlwaysOnTop(true, 'floating');
 		if (typeof win.setVisibleOnAllWorkspaces === 'function') {

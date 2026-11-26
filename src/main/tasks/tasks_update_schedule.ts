@@ -1,4 +1,5 @@
 import { activate } from './tasks_activate';
+import { getSchedule } from './tasks_get_schedule';
 import { normalizeCron } from './tasks_normalize_cron';
 import { normalizeTools } from './tasks_normalize_tools';
 import { stopRun } from './tasks_stop_run';
@@ -10,6 +11,7 @@ export function updateSchedule(
 	scheduleId: string,
 	request: TaskScheduleUpdateRequest
 ): TaskSchedule {
+	getSchedule(scheduleId);
 	const now = new Date().toISOString();
 	const patch: Partial<TaskSchedule> = { updatedAt: now };
 	if (typeof request.name === 'string') patch.name = request.name.trim();

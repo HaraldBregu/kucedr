@@ -21,11 +21,12 @@ export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): Re
 		createAdapter: buildRealtimeVoiceAdapter,
 		resources: agent.resources,
 		memoryContext: (query) => agent.memory?.context(query) ?? Promise.resolve(''),
-		createConversation: realtimeVoiceConversationFactory(
-			agent.config,
-			agent.sessions,
-			agent.memory
-		),
+		createConversation: (chatSessionId, modelId) =>
+			realtimeVoiceConversationFactory(
+				agent.config,
+				agent.sessions,
+				agent.memory
+			)(chatSessionId, modelId),
 		emit: (windowId, event) => {
 			eventBus.sendTo(windowId, RealtimeVoiceChannels.sessionEvent, event);
 		},

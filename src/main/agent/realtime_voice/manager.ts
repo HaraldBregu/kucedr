@@ -1,3 +1,4 @@
+import { workspaceScope } from '../../workspaces/scope';
 import { randomUUID } from 'node:crypto';
 import {
 	REALTIME_VOICE_CHANNELS,
@@ -69,6 +70,9 @@ export class RealtimeVoiceManager {
 	async start(windowId: number, request: RealtimeVoiceStartRequest): Promise<RealtimeVoiceSession> {
 		const chatSessionId = request?.chatSessionId?.trim();
 		if (!chatSessionId) throw new Error('Realtime voice chat session id is required.');
+		const workspace = workspaceScope.getStore();
+		const scoped = <T>(run: () => T): T => (workspace ? workspaceScope.run(workspace, run) : run());
+		const { memoryContext: recall } = this.dependencies;
 		const generation = (this.generations.get(windowId) ?? 0) + 1;
 		this.generations.set(windowId, generation);
 		const previous = this.byWindow.get(windowId);
@@ -150,7 +154,7 @@ export class RealtimeVoiceManager {
 			const connection = await this.dependencies.createAdapter(provider, model).connect(
 				{
 					...adapterConfiguration,
-					contextForTurn: this.dependencies.memoryContext,
+					...(recall ? { contextForTurn: (query: string) => scoped(() => recall(query)) } : {}),
 					history: [
 						...context,
 						...(memoryContext
@@ -164,7 +168,7 @@ export class RealtimeVoiceManager {
 						...active.conversation.history,
 					],
 				},
-				(event) => this.handleAdapterEvent(active, event),
+				(event) => scoped(() => this.handleAdapterEvent(active, event)),
 				controller.signal
 			);
 			if (

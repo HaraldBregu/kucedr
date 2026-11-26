@@ -33,13 +33,13 @@ export interface TaskSchedule {
 
 export type TaskScheduleCreateRequest = Omit<
 	TaskSchedule,
-	'id' | 'createdAt' | 'updatedAt' | 'enabled' | 'sessionIds' | 'lastRun'
+	'id' | 'createdAt' | 'updatedAt' | 'enabled' | 'sessionIds' | 'lastRun' | 'workspaceId'
 > & {
 	enabled?: boolean;
 };
 
 export type TaskScheduleUpdateRequest = Partial<
-	Omit<TaskSchedule, 'id' | 'createdAt' | 'updatedAt' | 'lastRun'>
+	Omit<TaskSchedule, 'id' | 'createdAt' | 'updatedAt' | 'lastRun' | 'workspaceId'>
 >;
 
 export interface TaskRuntime {
