@@ -101,12 +101,14 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		labelKey: 'settings.application.menuBar',
 		descriptionKey: 'settings.application.menuBarDescription',
 		keywords: 'tray dock icon toggle',
+		targetId: 'settings-menu-bar',
 	},
 	{
 		path: '/settings/general',
 		labelKey: 'settings.application.appData',
 		descriptionKey: 'settings.application.appDataDescription',
 		keywords: 'folder files storage',
+		targetId: 'settings-app-data',
 	},
 	// Application
 	{
@@ -114,6 +116,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		labelKey: 'settings.theme.title',
 		keywords: 'appearance dark light system mode',
 		targetId: 'settings-theme',
+	},
+	{
+		path: '/settings/general',
+		labelKey: 'settings.theme.appearance',
+		keywords: 'theme plugin appearance colors palette',
+		targetId: 'settings-theme-appearance',
 	},
 	{
 		path: '/settings/general',
@@ -134,6 +142,14 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		labelKey: 'settings.application.interfaceSize.title',
 		descriptionKey: 'settings.application.interfaceSize.description',
 		keywords: 'zoom scale font text size bigger larger accessibility',
+		targetId: 'settings-interface-size',
+	},
+	{
+		path: '/settings/general',
+		labelKey: 'settings.application.chatTextSize.title',
+		descriptionKey: 'settings.application.chatTextSize.description',
+		keywords: 'chat font text size readability',
+		targetId: 'settings-chat-text-size',
 	},
 	{
 		path: '/settings/browser/passwords',
