@@ -20,15 +20,16 @@ export function init(
 	state.lease?.release();
 	state.lease = undefined;
 	state.pendingMessages = undefined;
-	state.id = resolveSessionId(input.sessionId, config.location, category);
+	const root = config.workspace.sessions;
+	state.id = resolveSessionId(input.sessionId, root, category);
 	state.category = category;
 	state.folderName = sessionFolderName(state.id);
-	state.sessionsPath = sessionsRoot(config.location);
-	const storedMessages = loadMessagesBySessionId(state.id, config.location);
+	state.sessionsPath = root;
+	const storedMessages = loadMessagesBySessionId(state.id, root);
 	const legacySessionId = input.legacySessionId ?? input.sessionId;
 	const legacyMessages =
 		legacySessionId && legacySessionId !== state.id && storedMessages.length === 0
-			? loadMessagesBySessionId(legacySessionId, config.location)
+			? loadMessagesBySessionId(legacySessionId, root)
 			: [];
 	state.messages = sanitizeMessages([
 		...(storedMessages.length > 0 ? storedMessages : legacyMessages),
