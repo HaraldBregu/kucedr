@@ -241,6 +241,14 @@ export interface AgentRunInsights {
 	}[];
 }
 
+export interface AgentSpendReport {
+	totalCostUsd: number;
+	reportedRunCount: number;
+	byMonth: { month: string; costUsd: number; runCount: number }[];
+	byProvider: { providerId: string; costUsd: number; inputTokens: number; outputTokens: number; runCount: number }[];
+	bySession: { sessionId: string; title: string; costUsd: number; inputTokens: number; outputTokens: number; runCount: number }[];
+}
+
 export interface AgentSessionSearchResult {
 	id: string;
 	title: string;
