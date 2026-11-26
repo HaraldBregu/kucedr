@@ -26,7 +26,7 @@ import { WorkspaceRemoteImage } from './Remote';
 import { WorkspaceToolbar } from './Toolbar';
 import { WorkspaceUrlDialog } from './UrlDialog';
 import { pluginScriptRef } from '../../../../shared/plugin_script_ref';
-import { SHORTCUTS } from '@shared/app_types';
+import { SHORTCUTS, type ShortcutId } from '@shared/app_types';
 
 interface WorkspaceMarkdownEditorProps {
 	readonly toolbarTarget: HTMLElement | null;
@@ -102,9 +102,30 @@ export function WorkspaceMarkdownEditor({
 			Markdown.configure({ markedOptions: { gfm: true } }),
 			WorkspaceSearch.configure({ onMatchCount }),
 			Extension.create({
-				name: 'clearFormatting',
+				name: 'workspaceShortcuts',
 				addKeyboardShortcuts() {
-					return { 'Mod-\\': () => this.editor.chain().focus().unsetAllMarks().clearNodes().run() };
+					const bindings: readonly [ShortcutId, () => boolean][] = [
+						['editorUndo', () => this.editor.chain().focus().undo().run()],
+						['editorRedo', () => this.editor.chain().focus().redo().run()],
+						['editorHeading1', () => this.editor.chain().focus().toggleHeading({ level: 1 }).run()],
+						['editorHeading2', () => this.editor.chain().focus().toggleHeading({ level: 2 }).run()],
+						['editorHeading3', () => this.editor.chain().focus().toggleHeading({ level: 3 }).run()],
+						['editorBold', () => this.editor.chain().focus().toggleBold().run()],
+						['editorItalic', () => this.editor.chain().focus().toggleItalic().run()],
+						['editorUnderline', () => this.editor.chain().focus().toggleUnderline().run()],
+						['editorStrikethrough', () => this.editor.chain().focus().toggleStrike().run()],
+						['editorInlineCode', () => this.editor.chain().focus().toggleCode().run()],
+						['editorClearFormatting', () => this.editor.chain().focus().unsetAllMarks().clearNodes().run()],
+						['editorBulletedList', () => this.editor.chain().focus().toggleBulletList().run()],
+						['editorNumberedList', () => this.editor.chain().focus().toggleOrderedList().run()],
+						['editorTaskList', () => this.editor.chain().focus().toggleTaskList().run()],
+						['editorQuote', () => this.editor.chain().focus().toggleBlockquote().run()],
+						['editorCodeBlock', () => this.editor.chain().focus().toggleCodeBlock().run()],
+					];
+					return Object.fromEntries(bindings.map(([id, run]) => [
+						SHORTCUTS.find((shortcut) => shortcut.id === id && 'tiptapKey' in shortcut)!.tiptapKey,
+						run,
+					]));
 				},
 			}),
 		],
