@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Globe } from 'lucide-react';
 import type { BrowserConnections } from '@shared/browser';
 import type {
 	BrowserImportSummary,
@@ -15,6 +15,8 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import {
 	SettingsNotice,
+	SettingsEmptyState,
+	SettingsLoadingRows,
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
@@ -117,8 +119,8 @@ export default function BrowserSettingsPage(): React.JSX.Element {
 						</Button>
 					}
 				/>
-				{sources === null ? <SettingsRow title={t('settings.browser.looking')} /> : null}
-				{sources?.length === 0 ? <SettingsRow title={t('settings.browser.none')} /> : null}
+				{sources === null ? <SettingsLoadingRows rows={2} /> : null}
+				{sources?.length === 0 ? <SettingsEmptyState icon={Globe} title={t('settings.browser.none')} /> : null}
 				{sources?.map((source) => {
 					const name = [source.app, source.profile].filter(Boolean).join(' — ');
 					return (

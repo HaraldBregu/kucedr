@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { AvailablePlugin } from '@shared/plugin_types';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SettingsNotice } from '../../components';
+import { SettingsEmptyState, SettingsLoadingRows, SettingsNotice } from '../../components';
 import { SettingsFilter } from '../../components/filter';
 import { useSettingsFilter } from '../../hooks/filter';
 import PluginIcon from './PluginIcon';
@@ -48,18 +48,15 @@ export default function Available({
 	return (
 		<section className="flex flex-col gap-4 pb-4">
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
-			{plugins === null && !error && (
-				<p className="text-sm text-muted-foreground">
-					{t('settings.integrations.marketplace.loading')}
-				</p>
-			)}
+			{plugins === null && !error && <SettingsLoadingRows rows={3} />}
 			{plugins?.length === 0 && (
-				<p className="text-sm text-muted-foreground">
-					{t('settings.integrations.marketplace.empty')}
-				</p>
+				<SettingsEmptyState title={t('settings.integrations.marketplace.empty')} />
 			)}
 			{plugins && plugins.length > 0 && <SettingsFilter filter={filter} />}
 			<div className="grid grid-cols-1 gap-3">
+				{plugins && plugins.length > 0 && filter.items.length === 0 && (
+					<SettingsEmptyState title={t('settings.integrations.marketplace.noResults', 'No integrations match this search.')} />
+				)}
 				{filter.items.map((plugin) => (
 					<Card
 						key={plugin.id}

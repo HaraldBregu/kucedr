@@ -4,7 +4,7 @@ import { LoaderCircle, Search as SearchIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SettingsPanel, SettingsRow, SettingsSection } from '../../components';
+import { SettingsEmptyState, SettingsPanel, SettingsRow, SettingsSection } from '../../components';
 import type { KnowledgeState } from './state';
 
 export default function Search({ knowledge }: { knowledge: KnowledgeState }): JSX.Element {
@@ -91,9 +91,7 @@ export default function Search({ knowledge }: { knowledge: KnowledgeState }): JS
 					)}
 					<div aria-live="polite" aria-busy={searching}>
 						{matches?.length === 0 && (
-							<p className="text-xs leading-4 text-muted-foreground">
-								{t('settings.knowledge.noResults')}
-							</p>
+							<SettingsEmptyState title={t('settings.knowledge.noResults')} />
 						)}
 						{Boolean(matches?.length) && (
 							<ul className="grid min-w-0 gap-3">

@@ -17,6 +17,7 @@ import type {
 	StorageSyncSettings,
 } from '@shared/storage_types';
 import {
+	SettingsEmptyState,
 	SettingsLoadingRows,
 	SettingsNotice,
 	SettingsPageHeader,
@@ -267,7 +268,7 @@ const CloudPage: React.FC = () => {
 						<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 							<CardContent className="p-0!">
 								{storage.paths.length === 0 && (
-									<SettingsRow title={t('settings.storage.sync.empty')} />
+										<SettingsEmptyState title={t('settings.storage.sync.empty')} />
 								)}
 								{storage.paths.map((selectedPath) => (
 									<SettingsRow
