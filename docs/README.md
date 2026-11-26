@@ -32,6 +32,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [SDK](../packages/sdk/README.md): embedded app bridge and optional HTTP client contract.
 - [CLI](../packages/cli/README.md): desktop launch, plugin installation, and terminal interface.
 - [Terminal](TERMINAL.md): native terminal lifecycle and IPC.
+- [Mission](mission/MISSION.md): proposed mission (secure, private, encrypted, free, no content rules from the app), what the code supports today, and what it reorders.
 - [Product direction](mission/PRODUCT.md): proposed focus on open-source investigations, the market read behind it, and what it changes in the roadmap.
 - [Roadmap](roadmap/README.md): proposed features, one file per area, with sizes and open decisions.
 - [Multiple workspaces plan](WORKSPACES.md): proposed named workspaces, with folders named by ID.
