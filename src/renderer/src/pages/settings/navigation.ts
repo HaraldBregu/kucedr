@@ -46,6 +46,7 @@ export interface SettingsDetailItem {
 	readonly descriptionKey?: string;
 	readonly keywords?: string;
 	readonly icon?: LucideIcon;
+	readonly targetId?: string;
 }
 
 export interface SettingsModelServiceItem {
@@ -93,6 +94,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		labelKey: 'settings.language.title',
 		descriptionKey: 'settings.language.description',
 		keywords: 'locale english italian i18n',
+		targetId: 'settings-language',
 	},
 	{
 		path: '/settings/general',
@@ -111,6 +113,21 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		path: '/settings/general',
 		labelKey: 'settings.theme.title',
 		keywords: 'appearance dark light system mode',
+		targetId: 'settings-theme',
+	},
+	{
+		path: '/settings/general',
+		labelKey: 'settings.application.soundFeedback',
+		descriptionKey: 'settings.application.soundFeedbackDescription',
+		keywords: 'sound effects audio feedback',
+		targetId: 'settings-sound',
+	},
+	{
+		path: '/settings/general',
+		labelKey: 'settings.application.runNotifications',
+		descriptionKey: 'settings.application.runNotificationsDescription',
+		keywords: 'notifications alerts finished runs background',
+		targetId: 'settings-notifications',
 	},
 	{
 		path: '/settings/general',

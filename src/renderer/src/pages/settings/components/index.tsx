@@ -138,6 +138,7 @@ export function SettingsPanel({ children, className }: SettingsPanelProps): Reac
 }
 
 interface SettingsRowProps {
+	readonly id?: string;
 	readonly title: ReactNode;
 	readonly description?: ReactNode;
 	readonly icon?: LucideIcon;
@@ -151,6 +152,7 @@ interface SettingsRowProps {
 }
 
 export function SettingsRow({
+	id,
 	title,
 	description,
 	icon: Icon,
@@ -166,8 +168,9 @@ export function SettingsRow({
 
 	return (
 		<div
+			id={id}
 			role={onClick ? 'link' : undefined}
-			tabIndex={onClick ? 0 : undefined}
+			tabIndex={onClick ? 0 : id ? -1 : undefined}
 			onClick={onClick}
 			onKeyDown={
 				onClick &&

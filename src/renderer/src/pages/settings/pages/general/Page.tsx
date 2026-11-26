@@ -280,6 +280,7 @@ const GeneralPage: React.FC = () => {
 			<SettingsSection title={t('settings.application.actions')}>
 				<SettingsPanel>
 					<SettingsRow
+						id="settings-sound"
 						title={t('settings.application.soundFeedback')}
 						description={t('settings.application.soundFeedbackDescription')}
 						media={<Volume2 className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
@@ -293,6 +294,7 @@ const GeneralPage: React.FC = () => {
 						}
 					/>
 					<SettingsRow
+						id="settings-notifications"
 						title={t('settings.application.runNotifications')}
 						description={t('settings.application.runNotificationsDescription')}
 						media={<Bell className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
@@ -429,6 +431,7 @@ const GeneralPage: React.FC = () => {
 						/>
 					</Link>
 					<SettingsRow
+						id="settings-language"
 						title={t('settings.language.title')}
 						description={t('settings.language.description')}
 						media={
@@ -549,6 +552,7 @@ const GeneralPage: React.FC = () => {
 						}
 					/>
 					<SettingsRow
+						id="settings-theme"
 						title={t('settings.theme.title')}
 						media={<SunMoon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						actionClassName="w-auto justify-end"
