@@ -28,13 +28,13 @@ import {
 } from './contexts/chat-session';
 import { cn } from './lib/utils';
 import HomePage from './pages/home/Page';
-import WorkspacePage from './pages/workspace/Page';
 import StartPage from './pages/start/StartPage';
 import { StartupGate } from './auth/Gate';
 import { useOnboarding } from './contexts/useOnboarding';
 import { useAuth } from './contexts/AuthContext';
 
 const MemoryPage = lazy(() => import('./pages/settings/pages/memory/Page'));
+const WorkspacePage = lazy(() => import('./pages/workspace/Page'));
 const LibraryPage = lazy(() => import('./pages/settings/pages/library/Page'));
 const BrowserSettingsPage = lazy(() => import('./pages/settings/pages/browser/Page'));
 const BrowserPasswordsPage = lazy(() => import('./pages/settings/pages/browser/passwords/Page'));
