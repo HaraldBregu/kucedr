@@ -35,14 +35,14 @@ export function LibrarySelection({
 		<div
 			role="toolbar"
 			aria-label={t('settings.library.selectionActions')}
-			className="sticky bottom-6 z-40 mx-auto flex w-fit max-w-full items-center gap-2 overflow-x-auto rounded-full bg-neutral-900 px-4 py-3 text-white shadow-xl sm:gap-3 sm:px-6"
+			className="sticky bottom-6 z-40 mx-auto flex w-fit max-w-full items-center gap-2 overflow-x-auto rounded-full border border-border bg-popover px-4 py-3 text-popover-foreground shadow-xl sm:gap-3 sm:px-6"
 		>
 			<span className="mr-2 shrink-0 whitespace-nowrap text-sm sm:text-base">
 				{t('settings.library.selectedCount', { count })}
 			</span>
 			<Button
 				size="sm"
-				className="shrink-0 rounded-full bg-white text-neutral-900 hover:bg-neutral-200"
+				className="shrink-0 rounded-full"
 				onClick={onStartChat}
 				disabled={busy}
 			>
@@ -51,7 +51,7 @@ export function LibrarySelection({
 			</Button>
 			<Button
 				size="sm"
-				variant="outline"
+				variant="secondary"
 				className="shrink-0 rounded-full border-neutral-600 bg-neutral-800 text-white hover:bg-neutral-700 hover:text-white"
 				onClick={onDownload}
 				disabled={busy}
@@ -74,7 +74,7 @@ export function LibrarySelection({
 					<Button
 						size="icon-sm"
 						variant="ghost"
-						className="shrink-0 text-white hover:bg-neutral-700 hover:text-white"
+						className="shrink-0 text-muted-foreground hover:bg-muted hover:text-foreground"
 						aria-label={t('settings.library.more')}
 					>
 						<Ellipsis className="size-5" />
@@ -94,7 +94,7 @@ export function LibrarySelection({
 			<Button
 				size="icon-sm"
 				variant="ghost"
-				className="shrink-0 text-white hover:bg-neutral-700 hover:text-white"
+				className="shrink-0 text-muted-foreground hover:bg-muted hover:text-foreground"
 				aria-label={t('settings.library.clearSelection')}
 				onClick={onClear}
 			>

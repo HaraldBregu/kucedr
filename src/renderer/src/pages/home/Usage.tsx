@@ -45,7 +45,7 @@ export function Usage({
 						percent !== undefined && percent >= 95
 							? 'text-destructive'
 							: percent !== undefined && percent >= 80
-								? 'text-amber-500'
+								? 'text-muted-foreground'
 								: 'text-muted-foreground'
 					)}
 					role="progressbar"

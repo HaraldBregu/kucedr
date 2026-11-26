@@ -433,7 +433,7 @@ const CloudPage: React.FC = () => {
 								variant={operationStatus?.state === 'failed' ? 'destructive' : 'default'}
 								className={
 									operationStatus?.state === 'partial'
-										? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300'
+										? 'border-border bg-muted/40 text-foreground'
 										: undefined
 								}
 							>

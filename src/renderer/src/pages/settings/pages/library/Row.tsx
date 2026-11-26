@@ -62,7 +62,7 @@ export function LibraryRow({
 						checked={selected}
 						onCheckedChange={(checked) => onSelect(checked === true)}
 						aria-label={t('settings.library.selectFile', { name: file.name })}
-						className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white"
+						className="border-muted-foreground/60 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
 					/>
 				)}
 			</TableCell>}

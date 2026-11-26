@@ -29,12 +29,12 @@ function formatElapsed(seconds: number): string {
 function statusClassName(status: MicrophoneSystemPermissionStatus): string {
 	switch (status) {
 		case 'granted':
-			return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300';
+			return 'border-primary/30 bg-primary/10 text-primary';
 		case 'denied':
 		case 'restricted':
 			return 'border-destructive/30 bg-destructive/10 text-destructive';
 		case 'not-determined':
-			return 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300';
+			return 'border-border bg-muted/40 text-muted-foreground';
 		default:
 			return 'border-border bg-muted/40 text-muted-foreground';
 	}

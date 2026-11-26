@@ -7,7 +7,7 @@ export default function Portability(): React.JSX.Element {
 	return (
 		<SettingsNotice
 			icon={AlertTriangle}
-			className="border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+			className="border-border bg-muted/40 text-foreground"
 		>
 			{t('settings.storageProviders.portabilityWarning')}
 		</SettingsNotice>
