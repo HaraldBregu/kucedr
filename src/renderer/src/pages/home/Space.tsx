@@ -26,7 +26,7 @@ export function Space({
 				.join(' · ');
 	return (
 		<>
-			<Avatar className={large ? 'size-8 rounded-lg bg-sidebar-primary text-sidebar-primary-foreground' : 'size-5 rounded-md'}>
+			<Avatar className={large ? 'size-6 rounded-lg bg-sidebar-primary text-sidebar-primary-foreground' : 'size-5 rounded-md'}>
 				{workspace.image && <AvatarImage src={workspace.image} alt="" />}
 				<AvatarFallback
 					className={large
