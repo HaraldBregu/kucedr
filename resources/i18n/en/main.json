@@ -1631,6 +1631,7 @@
 			"endpointHint": "Optional for Amazon S3. For other providers, use the service endpoint without the bucket name.",
 			"secretHint": "Leave blank to keep the saved secret key.",
 			"passphraseHint": "Optional. Backups are encrypted with this passphrase before upload. If you lose it, the backups cannot be restored.",
+			"portabilityWarning": "Files encrypted by Kucedr can only be restored with this device’s keychain. Save a backup passphrase in the storage configuration before uploading to make future backups restorable on another device.",
 			"passphraseSavedHint": "Backups are encrypted with the saved passphrase before upload. Leave blank to keep it. If you lose it, the backups cannot be restored.",
 			"loadError": "Could not load storage connections.",
 			"saveError": "Could not save this storage connection.",

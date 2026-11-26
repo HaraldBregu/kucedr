@@ -1,7 +1,7 @@
 # 1. Privacy
 
 Part of the [Roadmap](README.md). Status: 1.2 built 2026-11-23, the first release of 1.10
-2026-11-24; the rest proposal.
+2026-11-24. The backup portability warning (1.12) is built.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
@@ -16,7 +16,7 @@ Part of the [Roadmap](README.md). Status: 1.2 built 2026-11-23, the first releas
 | 1.9 | Encrypted sync across devices | Chats and settings on a second device, readable only by the user | Sync code exists but is not wired in ([Cloud file synchronization design](../STORAGE_SYNC.md)); after 1.5 | L |
 | 1.10 | App-wide Privacy Mode | Route supported external connections through a local SOCKS5 proxy and pause unsupported network features. Settings → Privacy shows the active state. | [Browser proxy](VPN.md), with Electron session and Node transport policies. | L |
 | 1.11 | Lost app lock passphrase | The lock dialog says how to get back in without Touch ID: quit, delete `settings/lock.json`, restart; chats are untouched because the lock encrypts nothing | `src/main/lock/state.ts` treats a missing file as lock off; dialog text in `settings.privacy.lock.dialogDescription` | S |
-| 1.12 | Backup without passphrase warning | A warning when 1.3 is on and the storage provider has no backup passphrase, because those backups stay sealed to this device's keychain and cannot restore elsewhere | `src/main/backup/fork.ts` sends the vault key only with a passphrase; `hasPassphrase` in `src/shared/storage_types.ts` | S |
+| 1.12 | Backup without passphrase warning | Built. Settings → Cloud and the storage configuration show a warning when data encryption is on and the provider has no saved backup passphrase. It explains how to make future backups of vault-encrypted files portable. | [Backup encryption](../BACKUP.md#encryption) | S |
 
 Related areas: the [Network shield](SHIELD.md) supplies the "what leaves the machine" view for
 1.1 and guards stored keys on the way out; [Memory and knowledge](MEMORY.md) covers seeing and

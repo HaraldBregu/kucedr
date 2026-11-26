@@ -25,6 +25,7 @@ import {
 	SettingsSection,
 } from '../../components';
 import { SYNC_INTERVALS } from './constants';
+import Portability from '../../components/Portability';
 import type { PluginScriptInfo } from '@shared/plugin_types';
 import Service from './Service';
 import Restore from './Restore';
@@ -34,6 +35,7 @@ const CloudPage: React.FC = () => {
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
 	const [services, setServices] = useState<PluginScriptInfo[]>([]);
 	const [providers, setProviders] = useState<StorageProvider[]>([]);
+	const [vaultEnabled, setVaultEnabled] = useState(false);
 	const [nextRun, setNextRun] = useState<string>();
 	const [cronInvalid, setCronInvalid] = useState(false);
 	const [settingsLoading, setSettingsLoading] = useState(true);
@@ -66,19 +68,21 @@ const CloudPage: React.FC = () => {
 			window.scripts.list(),
 			window.storage.listProviders(),
 			window.storage.getNextRun(),
-		]).then(([settingsResult, statusResult, servicesResult, providersResult, nextRunResult]) => {
+			window.app.getVault(),
+		]).then(([settingsResult, statusResult, servicesResult, providersResult, nextRunResult, vaultResult]) => {
 			if (cancelled) return;
 
 			if (settingsResult.status === 'fulfilled') setSettings(settingsResult.value);
 			if (servicesResult.status === 'fulfilled')
 				setServices(servicesResult.value.filter((script) => script.type === 'STORAGE'));
 			if (providersResult.status === 'fulfilled') setProviders(providersResult.value);
+			if (vaultResult.status === 'fulfilled') setVaultEnabled(vaultResult.value.enabled);
 			if (nextRunResult.status === 'fulfilled') setNextRun(nextRunResult.value);
 			if (statusResult.status === 'fulfilled' && statusResult.value) {
 				applyOperationStatus(statusResult.value);
 			}
 
-			const failed = [settingsResult, statusResult, servicesResult, providersResult].some(
+			const failed = [settingsResult, statusResult, servicesResult, providersResult, vaultResult].some(
 				(result) => result.status === 'rejected'
 			);
 			setLoadFailed(failed);
@@ -294,6 +298,7 @@ const CloudPage: React.FC = () => {
 						</Card>
 					</SettingsSection>
 
+					{vaultEnabled && selectedProvider && !selectedProvider.hasPassphrase && <Portability />}
 					<div className="flex flex-wrap items-center gap-2">
 						<Button
 							disabled={controlsDisabled || storage.paths.length === 0}

@@ -1,7 +1,7 @@
 # Roadmap
 
 Status: proposal, written 2026-11-19. Built since: sealed credentials on disk (1.2), the first
-release of app-wide Privacy Mode (1.10), the first four agent efficiency
+release of app-wide Privacy Mode (1.10), the backup portability warning (1.12), the first four agent efficiency
 features ([2.1–2.4](PERFORMANCE.md)), a chat list that updates on change (2.6), the performance
 check (2.7), completion
 notifications (3.1), search across chats (3.2), regenerate and retry (3.3), the full "/" menu

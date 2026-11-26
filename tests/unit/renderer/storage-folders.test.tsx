@@ -64,6 +64,10 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'storage', { configurable: true, value: storageApi });
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: { getVault: jest.fn().mockResolvedValue({ enabled: false, available: true }) },
+	});
 	Object.defineProperty(window, 'scripts', { configurable: true, value: scriptsApi });
 	scriptsApi.list.mockResolvedValue([{ name: 'backup-s3', title: 'S3 backup', type: 'STORAGE' }]);
 	storageApi.getNextRun.mockResolvedValue(undefined);
@@ -87,6 +91,22 @@ beforeEach(() => {
 		failed: 0,
 		revision: 1,
 	});
+});
+
+it.each([
+	[true, false, true],
+	[true, true, false],
+	[false, false, false],
+])('shows the portability warning for vault=%s and saved passphrase=%s', async (enabled, hasPassphrase, visible) => {
+	jest.mocked(window.app.getVault).mockResolvedValue({ enabled, available: true });
+	storageApi.listProviders.mockResolvedValue([
+		{ ...providers[0], hasPassphrase: !hasPassphrase },
+		{ ...providers[1], hasPassphrase },
+	]);
+	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: 'archive', serviceId: 'backup-s3' });
+	render(<MemoryRouter><StoragePage /></MemoryRouter>);
+	expect(await screen.findByRole('button', { name: mockTranslations.settings.storage.backup })).toBeEnabled();
+	expect(Boolean(screen.queryByText(mockTranslations.settings.storageProviders.portabilityWarning))).toBe(visible);
 });
 
 it('shows the storage service description beneath the title', async () => {
