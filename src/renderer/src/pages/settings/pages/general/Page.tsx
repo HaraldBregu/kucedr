@@ -9,6 +9,7 @@ import {
 	Coffee,
 	FileText,
 	FolderOpen,
+	Keyboard,
 	Languages,
 	Lock,
 	MousePointerClick,
@@ -416,6 +417,16 @@ const GeneralPage: React.FC = () => {
 							</Select>
 						}
 					/>
+					<Link to="/settings/general/shortcuts" className="block hover:bg-muted/40">
+						<SettingsRow
+							title={t('settings.shortcuts.title')}
+							description={t('settings.shortcuts.description')}
+							media={<Keyboard className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+							className="grid-cols-[minmax(0,1fr)_auto]"
+							actionClassName="w-auto justify-end"
+							actions={<ChevronRight className="size-4 text-muted-foreground" />}
+						/>
+					</Link>
 					<Link to="/settings/general/persona" className="block hover:bg-muted/40">
 						<SettingsRow
 							title={t('settings.voiceAgent.title')}
