@@ -337,6 +337,8 @@ In a production build on macOS, with an isolated profile and home folder and a m
 - **Model:** picking a model in B leaves the default's unchanged, runs in B use it, and **Use
   default model** restores the global one.
 - **Open chat from another workspace:** the open-chat event switches the window and shows the chat.
+- **Damaged list:** a registry that does not parse is kept aside, the previous copy is used, and a
+  window whose workspace is no longer listed goes back to the default workspace.
 
 Not checked: voice (needs a realtime key), Windows and Linux, encryption and backup of a second
 workspace, a real system notification, the screen-recorder refusal, memory generation and knowledge
