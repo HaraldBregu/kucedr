@@ -28,11 +28,14 @@ jest.mock('../../../../src/main/agent/runner/run_stream', () => ({
 
 import { Agent } from '../../../../src/main/agent/agent';
 import type { ExecSandbox } from '../../../../src/main/agent/sandbox';
+import { buildWorkspace } from '../../../../src/main/workspaces/build';
+import type { Workspace } from '../../../../src/main/workspaces/types';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 
 beforeEach(() => {
 	location = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-reply-')), 'agent');
+	workspace = buildWorkspace('default', path.dirname(location), location);
 	mockStream.mockReset().mockImplementation(async function* () {
 		yield* [];
 	});
