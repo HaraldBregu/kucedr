@@ -16,6 +16,8 @@ it('settles storage operations before cloud and auth teardown', async () => {
 	};
 	const cloudService = { destroy: jest.fn(async () => undefined) };
 	const authService = { destroy: jest.fn() };
+	const memory = { stop: jest.fn(async () => undefined) };
+	memories.set('default', memory as never);
 	const services = {
 		logger: { info: jest.fn(), destroy: jest.fn() },
 		terminalManager: { shutdown: jest.fn() },
