@@ -40,6 +40,7 @@ const id = '123e4567-e89b-12d3-a456-426614174000';
 beforeEach(() => {
 	jest.clearAllMocks();
 	jest.mocked(desktopCapturer.getSources).mockResolvedValue([{ id: 'screen:1', name: 'Screen 1' }] as never);
+	jest.mocked(BrowserWindow.getAllWindows).mockReturnValue([{ webContents: { id: 1 } }] as never);
 	for (const recorder of [microphone, camera, screen]) {
 		recordingOwners.delete(recorder as never);
 		recorder.start.mockImplementation(({ url }: { url: string }) => ({
