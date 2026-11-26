@@ -45,7 +45,7 @@ describe('agent filesystem prompt', () => {
 		await fs.writeFile(path.join(root, 'library', 'archive', 'notes.txt'), 'private-content');
 		await fs.writeFile(path.join(root, 'notes.txt'), 'root-content');
 
-		const prompt = await addFilesystemPrompt({ location: root }, 'base');
+		const prompt = await addFilesystemPrompt(config, 'base');
 		const inventory = prompt.split('\n').filter((line) => line.startsWith('- "'));
 
 		expect(prompt).toContain('## Agent filesystem');
@@ -59,11 +59,11 @@ describe('agent filesystem prompt', () => {
 	});
 
 	it('reflects filesystem changes each time the prompt is built', async () => {
-		const before = await addFilesystemPrompt({ location: root }, 'base');
+		const before = await addFilesystemPrompt(config, 'base');
 		await fs.writeFile(path.join(root, 'new.txt'), 'text');
-		const afterCreate = await addFilesystemPrompt({ location: root }, 'base');
+		const afterCreate = await addFilesystemPrompt(config, 'base');
 		await fs.rm(path.join(root, 'new.txt'));
-		const afterDelete = await addFilesystemPrompt({ location: root }, 'base');
+		const afterDelete = await addFilesystemPrompt(config, 'base');
 
 		expect(before).not.toContain('new.txt');
 		expect(afterCreate).toContain('- "new.txt"');
@@ -83,7 +83,7 @@ describe('agent filesystem prompt', () => {
 		await fs.mkdir(path.join(root, 'library'));
 		await fs.writeFile(path.join(root, 'library', 'clip.mp4'), 'video');
 
-		const prompt = await buildSystemPrompt({ location: root });
+		const prompt = await buildSystemPrompt(config);
 
 		expect(prompt).toContain('## Agent filesystem');
 		expect(prompt).toContain('- "library/"');
@@ -91,11 +91,11 @@ describe('agent filesystem prompt', () => {
 	});
 
 	it('refreshes the inventory in minimal system prompts without adding it to runtime context', async () => {
-		const before = await buildSystemPrompt({ location: root }, [], [], undefined, 'minimal');
+		const before = await buildSystemPrompt(config, [], [], undefined, 'minimal');
 		await fs.mkdir(path.join(root, 'project'));
 		await fs.writeFile(path.join(root, 'notes.txt'), 'notes');
-		const after = await buildSystemPrompt({ location: root }, [], [], undefined, 'minimal');
-		const context = await buildWorkspaceContext({ location: root });
+		const after = await buildSystemPrompt(config, [], [], undefined, 'minimal');
+		const context = await buildWorkspaceContext(config);
 
 		expect(before).toContain('## Agent filesystem');
 		expect(before).not.toContain('- "project/"');
@@ -110,7 +110,7 @@ describe('agent filesystem prompt', () => {
 		await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
 		await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 
-		const bootstrapContext = await buildWorkspaceContext({ location: root });
+		const bootstrapContext = await buildWorkspaceContext(config);
 		expect(bootstrapContext).toContain('# Agent runtime context');
 		expect(bootstrapContext).toContain('- **Name:** Identity');
 		expect(bootstrapContext).toContain('- **Tone:** # Soul');
@@ -118,12 +118,12 @@ describe('agent filesystem prompt', () => {
 		expect(bootstrapContext).toContain('# Bootstrap questions');
 
 		await fs.rm(path.join(root, 'BOOTSTRAP.md'));
-		const profileContext = await buildWorkspaceContext({ location: root });
+		const profileContext = await buildWorkspaceContext(config);
 		expect(profileContext).not.toContain('# Bootstrap questions');
 	});
 
 	it('keeps loaded skills in a protected prompt segment for custom subagents', async () => {
-		const prompt = await buildSystemPrompt({ location: root }, [], 'Subagent rules');
+		const prompt = await buildSystemPrompt(config, [], 'Subagent rules');
 		const protectedPrompt = buildLoadedSkillPrompt([
 			{
 				id: 'writer',
@@ -144,8 +144,8 @@ describe('agent filesystem prompt', () => {
 	});
 
 	it('ships bootstrap instructions that reference available tools', async () => {
-		workspacePath({ location: root });
-		const context = await buildWorkspaceContext({ location: root });
+		workspacePath(config);
+		const context = await buildWorkspaceContext(config);
 
 		expect(context).toContain('use `complete_bootstrap`');
 		expect(context).not.toContain('startup_files');
@@ -154,8 +154,8 @@ describe('agent filesystem prompt', () => {
 	it('keeps the user profile out of the system prompt', async () => {
 		await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 
-		const prompt = await buildSystemPrompt({ location: root });
-		const context = await buildWorkspaceContext({ location: root });
+		const prompt = await buildSystemPrompt(config);
+		const context = await buildWorkspaceContext(config);
 
 		expect(prompt).not.toContain('Alice');
 		expect(context).toContain('Missing profile content: identity, soul');
