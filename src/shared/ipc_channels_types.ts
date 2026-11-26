@@ -1621,6 +1621,7 @@ export interface InvokeChannelMap
 export interface SendChannelMap extends WindowSendChannelMap, TerminalSendChannelMap {}
 
 export interface AppEventChannelMap {
+	[AppChannels.shortcut]: { data: import('./app_types').ShortcutId };
 	[AppChannels.modelsChanged]: { data: void };
 	[AppChannels.trayEnabledChanged]: { data: boolean };
 	[AppChannels.updateAvailable]: { data: string | null };

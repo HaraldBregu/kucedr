@@ -244,6 +244,8 @@ export const DriveChannels = {
 } as const;
 
 export const AppChannels = {
+	shortcut: 'app:shortcut',
+	showShortcutGuide: 'app:show-shortcut-guide',
 	getPrivacy: 'app:get-privacy',
 	setPrivacy: 'app:set-privacy',
 	privacyChanged: 'app:privacy-changed',

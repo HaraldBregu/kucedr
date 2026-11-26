@@ -1,4 +1,5 @@
 import type { BrowserWindow } from 'electron';
+import { AppChannels } from '../shared/ipc_channels_definitions';
 import { SHORTCUTS, type ShortcutId } from '../shared/app_types';
 
 interface KeyCombo {
@@ -59,7 +60,7 @@ export class ShortcutManager {
 			const match = this.findMatch(input);
 			if (!match) return;
 			event.preventDefault();
-			win.webContents.send('app:shortcut', match.id);
+			win.webContents.send(AppChannels.shortcut, match.id);
 		});
 	}
 

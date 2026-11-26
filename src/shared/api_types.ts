@@ -632,6 +632,7 @@ export interface ModelsApi {
 }
 
 export interface AppApi extends AppStorageApi {
+	onShortcut: (callback: (shortcut: import('./app_types').ShortcutId) => void) => () => void;
 	models: () => Promise<CatalogModel[]>;
 	vectorDatabases: () => Promise<CatalogService[]>;
 	storages: () => Promise<CatalogStorage[]>;
