@@ -49,7 +49,10 @@ export class WorkspacesIpc implements IpcModule<WorkspacesIpcDeps> {
 			const current = workspaces.some((workspace) => workspace.id === bound)
 				? bound
 				: DEFAULT_WORKSPACE;
-			if (current !== bound) boundWorkspaces.delete(event.sender.id);
+			if (current !== bound) {
+				boundWorkspaces.delete(event.sender.id);
+				event.sender.send(WorkspacesChannels.changed);
+			}
 			return {
 				current,
 				workspaces: workspaces.map((workspace) => ({ ...workspace, ...activity[workspace.id] })),
