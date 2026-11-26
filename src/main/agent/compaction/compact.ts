@@ -26,7 +26,6 @@ export async function compactConversation(
 	if (!summary.trim()) throw new Error('Conversation compaction produced an empty summary.');
 
 	const next = [{ role: 'summary' as const, content: summary.trim() }, ...retained];
-	const root = sessionsRoot(config.location);
 	const folder = sessionFolderName(resolvedSessionId);
 	writeMessagesFile(
 		sessionPath(root, folder, 'messages.json'),
