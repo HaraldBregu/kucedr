@@ -39,7 +39,7 @@ export function Space({
 				</AvatarFallback>
 			</Avatar>
 			<span className="grid min-w-0 flex-1 truncate text-left leading-tight">
-				<span className="truncate">{name}</span>
+				<span className={large ? 'truncate text-base font-medium' : 'truncate'}>{name}</span>
 				{subtitle ? (
 					<span className="truncate text-[10px] text-muted-foreground">{subtitle}</span>
 				) : status ? (
