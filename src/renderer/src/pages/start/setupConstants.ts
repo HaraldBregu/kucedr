@@ -191,38 +191,30 @@ export const MODEL_SERVICE_DEFINITIONS: readonly ModelServiceDefinition[] = [
 	},
 ];
 
-export const SETUP_STEPS: readonly SetupStep[] = ['plugins', 'modelProvider', 'chat', 'voice'];
+export const SETUP_STEPS: readonly SetupStep[] = ['modelProvider', 'chat', 'extras'];
 
 export const ONBOARDING_STEPS: readonly OnboardingStep[] = SETUP_STEPS;
 
 export const ONBOARDING_STEP_TITLES: Record<OnboardingStep, string> = {
-	landing: 'Welcome',
-	auth: 'Account',
-	modelProvider: 'Model',
-	chat: 'Chat assistant',
-	voice: 'Voice assistant',
-	plugins: 'Plugins',
+	landing: 'start.progress.welcome',
+	auth: 'start.progress.account',
+	modelProvider: 'start.progress.model',
+	chat: 'start.progress.chat',
+	extras: 'start.progress.extras',
 };
 
 export const STEP_COPY: Record<SetupStep, { title: string; description: string }> = {
 	modelProvider: {
-		title: 'Model providers',
-		description:
-			'Connect the model providers you want to use. You can add more providers at any time.',
+		title: 'start.steps.modelProvider.title',
+		description: 'start.steps.modelProvider.description',
 	},
 	chat: {
-		title: 'Chat assistant',
-		description:
-			'Choose your chat model and tools. You can update these choices anytime in Settings.',
+		title: 'start.steps.chat.title',
+		description: 'start.steps.chat.description',
 	},
-	voice: {
-		title: 'Voice assistant',
-		description:
-			'Choose how your assistant speaks, listens, and handles live conversations. You can update these choices anytime in Settings.',
-	},
-	plugins: {
-		title: 'Plugins',
-		description: 'Learn how plugins extend Kucedr with new capabilities.',
+	extras: {
+		title: 'start.steps.extras.title',
+		description: 'start.steps.extras.description',
 	},
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { ONBOARDING_STEPS, ONBOARDING_STEP_TITLES } from '../setupConstants';
 import type { OnboardingStep } from '../setupTypes';
@@ -8,6 +9,7 @@ type SetupStepProgressProps = {
 };
 
 export function SetupStepProgress({ currentStep }: SetupStepProgressProps): React.JSX.Element {
+	const { t } = useTranslation();
 	const currentIndex = ONBOARDING_STEPS.indexOf(currentStep);
 	const currentStepName = ONBOARDING_STEP_TITLES[currentStep];
 
@@ -33,7 +35,7 @@ export function SetupStepProgress({ currentStep }: SetupStepProgressProps): Reac
 				role="status"
 				aria-live="polite"
 			>
-				<span className="font-medium text-foreground">{currentStepName}</span>
+				<span className="font-medium text-foreground">{t(currentStepName)}</span>
 				{` · ${currentIndex + 1} of ${ONBOARDING_STEPS.length}`}
 			</p>
 		</div>
