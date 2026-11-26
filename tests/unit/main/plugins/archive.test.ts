@@ -1,8 +1,9 @@
+import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { create } from 'tar';
-import { installPluginArchive } from '../../../../src/main/plugins/plugins_install_archive';
+import { downloadPlugin } from '../../../../src/main/plugins/plugins_download';
 import { refreshPlugins } from '../../../../src/main/plugins/plugins_scan';
 
 const manifest = JSON.stringify({
@@ -14,6 +15,7 @@ const manifest = JSON.stringify({
 	version: '1.0.0',
 });
 const skill = '---\nname: sample\ndescription: Read a sample.\n---\nRead the sample.';
+const url = 'https://plugins.example/sample.tgz';
 let root: string;
 let mockByteLimit: number;
 let mockEntryLimit: number;
@@ -42,6 +44,12 @@ beforeEach(async () => {
 	await writeFile(path.join(root, 'package', 'manifest.json'), manifest);
 	await writeFile(path.join(root, 'package', 'skills', 'sample', 'SKILL.md'), skill);
 	await mkdir(path.join(root, 'temporary'));
+	jest.spyOn(globalThis, 'fetch').mockImplementation(async (request) => {
+		expect(String(request)).toBe(url);
+		const response = new Response(new Uint8Array(await readFile(path.join(root, 'plugin.tgz'))));
+		Object.defineProperty(response, 'url', { value: url });
+		return response;
+	});
 	jest.spyOn(os, 'tmpdir').mockReturnValue(path.join(root, 'temporary'));
 	mockByteLimit = Buffer.byteLength(manifest + skill);
 	mockEntryLimit = 5;
@@ -61,10 +69,22 @@ it.each(['root', 'wrapped'])('installs a %s plugin within the archive limits', a
 		{ file, gzip: true, cwd: wrapped ? root : path.join(root, 'package') },
 		wrapped ? ['package'] : ['manifest.json', 'skills']
 	);
-	await expect(installPluginArchive(file)).resolves.toMatchObject({
+	const checksum = wrapped
+		? `sha512-${createHash('sha512').update(await readFile(file)).digest('base64')}`
+		: undefined;
+	await expect(downloadPlugin(url, checksum)).resolves.toMatchObject({
 		id: 'sample',
 		version: '1.0.0',
 	});
+	expect(await readdir(path.join(root, 'temporary'))).toEqual([]);
+});
+
+it('rejects a mismatched catalogue checksum before installing', async () => {
+	const file = path.join(root, 'plugin.tgz');
+	await create({ file, cwd: root, gzip: true }, ['package']);
+	const checksum = `sha512-${createHash('sha512').update('different package').digest('base64')}`;
+	await expect(downloadPlugin(url, checksum)).rejects.toThrow('does not match the catalog checksum');
+	await expect(readdir(path.join(root, 'installed'))).rejects.toMatchObject({ code: 'ENOENT' });
 	expect(await readdir(path.join(root, 'temporary'))).toEqual([]);
 });
 
@@ -73,7 +93,7 @@ it.each(['bytes', 'entries'])(
 	async (limit) => {
 		const file = path.join(root, 'plugin.tgz');
 		await create({ file, cwd: root, gzip: true }, ['package']);
-		await installPluginArchive(file);
+		await downloadPlugin(url);
 		await writeFile(
 			path.join(root, 'package', 'manifest.json'),
 			manifest.replace('1.0.0', '1.0.1')
@@ -85,7 +105,7 @@ it.each(['bytes', 'entries'])(
 			limit === 'bytes'
 				? `The unpacked plugin archive exceeds the limit of ${mockByteLimit} bytes.`
 				: `Plugin archives can contain at most ${mockEntryLimit} entries.`;
-		await expect(installPluginArchive(file)).rejects.toThrow(message);
+		await expect(downloadPlugin(url)).rejects.toThrow(message);
 		expect(await readFile(path.join(root, 'installed', 'sample', 'manifest.json'), 'utf8')).toBe(
 			manifest
 		);
