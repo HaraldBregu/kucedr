@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { workspaceFileType } from '../../../../../../shared/workspace';
 import { Button } from '@/components/ui/button';
+import { useConfirmation } from '@/components/ui/confirmation';
 import { cn } from '@/lib/utils';
 import { useChatSession } from '@/contexts/chat-session';
 import { saveDraftAttachments } from '../../../home/attachments/save';
@@ -33,6 +34,7 @@ const FILE_BATCH_SIZE = 48;
 
 const LibraryPage: React.FC = () => {
 	const { t } = useTranslation();
+	const { confirm, dialog } = useConfirmation();
 	const navigate = useNavigate();
 	const { setSessionId } = useChatSession();
 	const [files, setFiles] = useState<LibraryFile[]>([]);
@@ -215,10 +217,7 @@ const LibraryPage: React.FC = () => {
 	}, [selectedFiles, t]);
 
 	const handleDeleteSelected = useCallback(async (): Promise<void> => {
-		if (
-			!window.confirm(t('settings.library.confirmDeleteSelected', { count: selectedFiles.length }))
-		)
-			return;
+		if (!(await confirm({ title: t('settings.library.title'), description: t('settings.library.confirmDeleteSelected', { count: selectedFiles.length }) }))) return;
 		setSelectionBusy(true);
 		setErrorMessage('');
 		try {
@@ -231,7 +230,7 @@ const LibraryPage: React.FC = () => {
 		} finally {
 			setSelectionBusy(false);
 		}
-	}, [loadFiles, selectedFiles, selectedPaths, t]);
+	}, [confirm, loadFiles, selectedFiles, selectedPaths, t]);
 
 	const handleMove = useCallback(
 		async (paths: string[], folder: string): Promise<void> => {
@@ -284,7 +283,7 @@ const LibraryPage: React.FC = () => {
 				file.kind === 'folder'
 					? 'settings.library.confirmDeleteFolder'
 					: 'settings.library.confirmDelete';
-			if (!window.confirm(t(confirmation, { name: file.name }))) return;
+			if (!(await confirm({ title: t('settings.library.title'), description: t(confirmation, { name: file.name }) }))) return;
 			setDeletingPath(file.relativePath);
 			setErrorMessage('');
 			try {
@@ -310,7 +309,7 @@ const LibraryPage: React.FC = () => {
 				setDeletingPath(null);
 			}
 		},
-		[t]
+		[confirm, t]
 	);
 
 	const handleContextMenu = useCallback(
@@ -352,6 +351,7 @@ const LibraryPage: React.FC = () => {
 
 	return (
 		<SettingsPageShell className="max-w-none">
+			{dialog}
 			<SettingsPageHeader
 				title={t('library.title')}
 				description={t('settings.library.description')}
