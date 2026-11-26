@@ -13,8 +13,8 @@ const parseFile = jest.fn();
 jest.mock('../../../../../src/main/shared/agent_location', () => ({
 	agentLocation: () => agentDir,
 }));
-jest.mock('../../../../../src/main/shared/library_location', () => ({
-	libraryLocation: () => libraryDir,
+jest.mock('../../../../../src/main/workspaces/current', () => ({
+	currentWorkspace: () => ({ id: 'default', files: agentDir, library: libraryDir }),
 }));
 jest.mock('../../../../../src/main/models/image', () => ({ createImage }));
 jest.mock('../../../../../src/main/models/video', () => ({ createVideo }));
