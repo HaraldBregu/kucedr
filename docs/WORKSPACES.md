@@ -23,7 +23,8 @@ side:
   Another workspace can override some of them, starting with the agent's provider and model.
 
 This matches [PRODUCT.md](mission/PRODUCT.md) ("separate everything: files, chats, memory, knowledge,
-sign-ins") and items 10.1–10.3 of [roadmap/WORKSPACES.md](roadmap/WORKSPACES.md).
+sign-ins") and items 10.1–10.4 and 10.6–10.9 of [roadmap/WORKSPACES.md](roadmap/WORKSPACES.md),
+which maps each step of the [implementation order](#implementation-order) to those items.
 
 ## What a workspace owns
 
