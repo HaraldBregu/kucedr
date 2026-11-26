@@ -11,7 +11,10 @@ export function SpacesGate({ children }: { readonly children: ReactNode }): Reac
 	const refresh = useCallback(
 		() =>
 			(window.workspaces?.list() ?? Promise.reject())
-				.then(setState)
+				.then((next) => {
+					active.id = next.current;
+					setState(next);
+				})
 				.catch(() => setState((value) => value ?? { current: DEFAULT_WORKSPACE, workspaces: [] })),
 		[]
 	);
