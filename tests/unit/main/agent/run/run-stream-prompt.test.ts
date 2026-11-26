@@ -64,6 +64,7 @@ import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { ExecutionBudget } from '../../../../../src/main/agent/execution/budget';
 import * as authorizeModule from '../../../../../src/main/agent/tools/mcp/authorize';
 import * as mcpModule from '../../../../../src/main/mcp';
+import { buildWorkspace } from '../../../../../src/main/workspaces/build';
 
 const sandbox = {} as ExecSandbox;
 
