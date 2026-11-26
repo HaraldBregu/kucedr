@@ -1,5 +1,5 @@
 import { turnStart } from '../runner/run_turn_start';
-import { loadMessages, resolveStoredSessionId, sessionFolderName, sessionsRoot } from '../session';
+import { loadMessages, resolveStoredSessionId, sessionFolderName } from '../session';
 import { sessionPath } from '../session/session_session_path';
 import { writeMessagesFile } from '../session/session_write_messages';
 import type { Config } from '../types';
