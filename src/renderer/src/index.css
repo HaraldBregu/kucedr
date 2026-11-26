@@ -19,6 +19,7 @@
 
 @theme inline {
 	--text-13: 0.8125rem;
+	--text-15: 0.9375rem;
 	--font-sans: var(--font-sans);
 	--font-heading: var(--font-sans);
 	--font-mono: var(--font-mono);
