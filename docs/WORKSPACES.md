@@ -1,12 +1,11 @@
-# Multiple workspaces plan
+# Multiple workspaces
 
-Status: proposal. Nothing here is implemented. Today there is one workspace, fixed at
-`~/.kucedr/workspace` ([agent_location.ts](../src/main/shared/agent_location.ts)).
+Status: built 2026-11-26, except the items under [Not built](#not-built). What was checked in the
+running app, and what was not, is under [What was checked](#what-was-checked).
 
-## Goal
+## What the user gets
 
-Users can create several named workspaces, each with an optional image, and work in them side by
-side:
+Several named workspaces, each with an optional picture, used side by side:
 
 - **A workspace is a case.** Everything that holds its content stays inside it: files, chats,
   Library, memory, knowledge, browser sign-ins, scheduled tasks and file-access grants. Setup stays
@@ -14,17 +13,16 @@ side:
 - **A new workspace is a folder the user picks.** The default workspace stays at
   `~/.kucedr/workspace`, unchanged. Creating a workspace means choosing a folder anywhere on disk;
   Kucedr keeps a reference to it. Its files stay where they are, and Kucedr keeps the workspace's
-  chats, memory and the rest in its own data folder.
+  chats, memory and the rest in its own data folder. Nothing is written into the picked folder.
 - **Each window has its own workspace.** Two windows can show two workspaces at once. Switching a
   window only changes that window.
 - **Nothing in flight is interrupted.** A chat that is streaming, running tools or waiting for an
   approval keeps going in the workspace it started in when its window switches away.
-- **Settings can differ per workspace.** The default workspace uses the global settings unchanged.
-  Another workspace can override some of them, starting with the agent's provider and model.
+- **The chat model can differ per workspace.** The default workspace uses the global model. Another
+  workspace follows it until the user picks a different model there.
 
 This matches [PRODUCT.md](mission/PRODUCT.md) ("separate everything: files, chats, memory, knowledge,
-sign-ins") and items 10.1–10.4 and 10.6–10.9 of [roadmap/WORKSPACES.md](roadmap/WORKSPACES.md),
-which maps each step of the [implementation order](#implementation-order) to those items.
+sign-ins") and items 10.1–10.4 and 10.6–10.9 of [roadmap/WORKSPACES.md](roadmap/WORKSPACES.md).
 
 ## What a workspace owns
 
@@ -33,24 +31,20 @@ which maps each step of the [implementation order](#implementation-order) to tho
 | Files                                            | Providers, keys, model catalog                  |
 | Chats of every kind (main, voice, task, subagent) | Plugins, skills                                 |
 | Library (captures, screenshots, recordings, media) | MCP servers and tokens                          |
-| Memory content and memory state                  | USER, SOUL, IDENTITY                            |
-| Knowledge folders, consent and index             | Memory and knowledge provider/model setup       |
-| Browser partition, history, passwords, bookmarks, tabs | App settings, theme, language, lock, tray  |
-| Scheduled tasks                                  | Vault key, backup account                       |
-| "Always allow" file rules                        | Health checklist (runs in the default workspace) |
-| Setting overrides (see below)                    |                                                 |
+| Memory content, memory state and memory settings | USER, SOUL, IDENTITY                            |
+| Knowledge folders, consent, index and settings   | App settings, theme, language, lock, tray       |
+| Browser partition, history, passwords, bookmarks, tabs | Vault key, backup account                  |
+| Scheduled tasks                                  | Health checklist (runs in the default workspace) |
+| "Always allow" file rules                        | Tor and proxy addresses, the task and voice models |
+| The chat model, when overridden                  | Coder projects and harness sign-ins             |
 
-Chats cannot stay shared. A chat stores its workspace in its own history: `SYSTEM.md` holds the
-absolute workspace path, every run context lists the root and its top-level files, and tool results
-return absolute paths. Reopened in another workspace, it sends those to the model while relative
-tool paths resolve against the other workspace's files.
+Chats cannot stay shared: a chat stores its workspace path in its own history, and tool results
+return absolute paths. The Library cannot stay shared: browser screenshots, recordings and generated
+media are saved there without a prompt. Memory cannot stay shared: every durable `MEMORY.md` line is
+injected into every main turn, and the memory folder keeps a plain-text copy of every chat.
 
-The Library cannot stay shared either. Browser screenshots, recordings and generated media are
-saved there without a prompt, and [PRODUCT.md](mission/PRODUCT.md) §5 ties every capture to a case.
-
-Memory cannot stay shared. Every durable `MEMORY.md` line is injected into every main turn
-([memory/prompt.ts](../src/main/memory/prompt.ts)), and the memory folder also keeps a plain-text copy
-of every chat.
+Memory and knowledge settings are whole per workspace, including the memory model and the embedding
+model. A new workspace starts with knowledge off and no embedding model chosen.
 
 ## Layout
 
@@ -66,19 +60,11 @@ does not move.
 | Knowledge   | `~/.kucedr/rag`             | `~/.kucedr/workspaces/<id>/rag`        |
 | Browser     | `~/.kucedr/browser`         | `~/.kucedr/workspaces/<id>/browser`    |
 | Partition   | `persist:agent-browser`     | `persist:agent-browser-<id>`           |
-| Overrides and rules | `settings/*.json` (unchanged) | `~/.kucedr/workspaces/<id>/settings/` |
+| Rules and model override | `settings/chat.json` (unchanged) | `~/.kucedr/workspaces/<id>/settings/` |
 
-Only the files folder can live outside `~/.kucedr`. Everything else stays under the workspace's root,
-so nothing Kucedr manages is ever written into the user's folder.
+Only the files folder can live outside `~/.kucedr`.
 
-`sessionsRoot(location)` returns the sibling `sessions` folder of the files folder
-([session_sessions_root.ts](../src/main/agent/session/session_sessions_root.ts)). That is wrong for a picked
-folder, whose parent belongs to the user. Its 22 callers read `config.workspace.sessions` instead, and
-`sessionsRoot` is removed. Never nest workspace folders under `sessions/`: `listSessions` treats every
-UUID folder there as a chat.
-
-The registry lives in `~/.kucedr/workspaces/workspaces.json`, inside the backed-up folder, so a
-restore brings names back:
+The registry lives in `~/.kucedr/workspaces/workspaces.json`:
 
 ```json
 {
@@ -88,378 +74,270 @@ restore brings names back:
 			"name": "Client work",
 			"folder": "/Users/me/Documents/Client work",
 			"image": "6d2e9a40-1b7c-4f35-8e02-c94d7f1a3b68.png"
-		},
-		{
-			"id": "9a41c7e2-3b6d-4f10-8c25-1e7d0b9f4a63",
-			"name": "Acme",
-			"folder": "/Users/me/Clients/Acme"
 		}
 	]
 }
 ```
 
-`folder` is required: it is the workspace's files folder, stored as its real path. An entry without
-a valid absolute `folder` is ignored.
-
-- The default workspace is implicit: id `default`, named "Personal", never written to the file.
+- The default workspace is implicit: id `default`, shown as "Personal", never written to the file.
 - **IDs** come from `crypto.randomUUID()` and are never shown.
-- **Names** are trimmed, 1–64 characters, and unique ignoring case.
-- **Invalid data:** an ID must be `default` or a UUID before it is joined into a path. Unknown or
-  invalid IDs are rejected.
-- **Missing file:** only the default workspace exists, so existing installs need no migration.
+- **Names** are trimmed, 1–64 characters, and unique ignoring case. A new workspace is named after
+  its folder, with a number added when that name is taken.
+- **Invalid data:** an entry without a UUID id, a name or an absolute `folder` is ignored. An unknown
+  id never resolves, so it is never joined into a path.
+- **Missing file:** only the default workspace exists, so existing installs need no migration. The
+  file is created with the first workspace.
+- A registry that exists but cannot be parsed is an error: workspace management fails, the default
+  workspace keeps working, and the file is not overwritten.
 
-## The workspace value
+## How code finds its workspace
 
-A new `src/main/workspaces/` module resolves an ID into one frozen value:
+`src/main/workspaces/` resolves an id into one frozen value (`resolve.ts`, `build.ts`, `types.ts`):
+`id`, `root`, `files`, `sessions`, `library`, `memory`, `rag`, `browser`, `coder`, `settings` and
+`partition`.
 
-```ts
-interface Workspace {
-	readonly id: string;
-	readonly root: string;
-	readonly files: string;
-	readonly sessions: string;
-	readonly library: string;
-	readonly memory: string;
-	readonly rag: string;
-	readonly browser: string;
-	readonly partition: string;
-}
-```
+There is **no process-wide active workspace**. A piece of work runs inside the scope of one
+workspace (`scope.ts`, an `AsyncLocalStorage`), and `currentWorkspace()` (`current.ts`) reads it and
+**throws outside a scope**, so a path that was never bound fails loudly instead of using the default.
+The scope is entered in a few places only:
 
-There is **no process-wide active workspace**. Every piece of code gets its workspace from exactly
-one of these places:
+| Entry                      | Workspace                                                    |
+| -------------------------- | ------------------------------------------------------------ |
+| An IPC call from a window  | The window's workspace (`wrapIpcHandler`, `sender.ts`)        |
+| `agent.send` from the chat | The id the renderer captured when the user pressed Enter      |
+| An agent run and its tools | The workspace of the call that admitted it, kept for the whole run |
+| A scheduled task           | The schedule's `workspaceId`                                  |
+| A voice call               | The voice window's workspace, kept for the session            |
+| A browser tab's own events | The tab's workspace                                           |
+| Knowledge indexing on a schedule | The workspace whose schedule fired                      |
+| Health, startup            | `default`                                                     |
 
-| Caller                     | Workspace comes from                                      |
-| -------------------------- | --------------------------------------------------------- |
-| An agent run and its tools | The run, frozen when it is admitted                        |
-| An IPC call from a window  | The window's context, or the ID the renderer sent with it |
-| A scheduled task           | The schedule                                              |
-| A voice call               | The voice window, frozen when the call starts             |
-| Health, tray, setup, deep links | `default`                                            |
-
-`agentLocation()`, `libraryLocation()`, `memoryPath()` and `ragLocation()` lose their global meaning.
-Each takes a workspace, or is replaced by a field on it.
+`agentLocation()` still exists and means the default workspace's files: the bootstrap and profile
+files, Coder projects and the default backup folders use it. `libraryLocation()` and `sessionsRoot()`
+are gone; session code takes the sessions folder, and a run's `Config` carries its `workspace`.
 
 ## Creating a workspace
 
 **New workspace…** opens the system folder dialog in the main process; it is the only way to create
-one. The renderer never sends a path. The name defaults to the folder's name.
+one. The renderer never sends a path.
 
-Main checks the folder, using its real path, before saving it:
+Main checks the folder, using its real path, before saving it (`folder.ts`):
 
 - It exists and is a readable directory.
-- It is not the file-system root, the home folder or one of its ancestors, or a system folder. The
-  existing [broad.ts](../src/main/agent/permissions/broad.ts) check covers these.
+- It is not the file-system root, the home folder or one of its ancestors.
 - It is not inside `~/.kucedr` and does not contain it.
-- It is not the folder of another workspace, and doesn't sit inside or contain one, including the
-  default `~/.kucedr/workspace`. Nested workspaces would make one workspace's files readable from
-  the other.
+- It is not the folder of another workspace, and doesn't sit inside or contain one.
 
 Behaviour:
 
-- **Nothing is written into the folder.** `ensureWorkspaceFiles`
-  ([system_ensure_workspace_files.ts](../src/main/agent/system/system_ensure_workspace_files.ts)) seeds
-  `BOOTSTRAP.md` and the other starter files only into the default workspace. `memory/migrate.ts`
-  never runs on a picked folder.
+- **Nothing is written into the folder.** `BOOTSTRAP.md` is seeded only into the default workspace,
+  and the legacy `MEMORY.md` and `HEALTH.md` migrations run only there.
 - **The folder is trusted** like any workspace folder: the agent reads and writes it without
   asking, and runs in every other workspace are denied it.
 - **Missing folder:** if the folder is moved, deleted or on a drive that isn't connected, the
-  workspace shows "Folder not found" with **Locate…**, which re-runs the same checks. New runs are
-  refused until then. The folder is never recreated.
-- **File watching:** a picked folder can be large (a code repository, a synced drive). The watcher
-  ignores `.git` and `node_modules`. The run context already lists only top-level entries.
-- **Removing** the workspace, once deletion exists, never deletes the user's folder.
-
-The default workspace's folder stays `~/.kucedr/workspace`. Moving it is out of scope.
+  switcher shows "Folder not found" and the edit dialog offers **Locate folder…**, which runs the
+  same checks. New runs are refused until then. The folder is never recreated.
+- **File watching:** the Files watcher ignores `.git` and `node_modules`.
 
 ## Runs keep their workspace
 
-`Agent.send()` takes `workspaceId`, resolves the workspace once, and stores a run `Config`
-(`{ location: ws.files, workspace: ws }`) on the run record. Everything the run does reads that value:
+`Agent.send()` reads the current workspace once and runs the whole run inside its scope. Everything
+the run does reads that value:
 
-- **Run loop:** session directory, init, stream, subagents and the post-run memory capture use the
-  record's config, never `Agent.config`. A run queued in the scheduler still starts in its own
-  workspace.
-- **Tools:** `ExecutionScope` and the tool security context get a required `workspace`. A new
-  `currentWorkspace()` reads it from the scope and **throws outside a scope**, so a leftover global
-  read fails loudly. `parseInput` moves inside `executionScope.run` in
-  [run_tool_call.ts](../src/main/agent/runner/run_tool_call.ts).
-- **Files and bash:** read, write, edit, patch and bash resolve against `currentWorkspace().files`.
-- **Media:** `mediaDirectory`, `saveMedia` and `mediaAccess` take the workspace. Generation that
-  finishes after a switch saves into the run's own Library.
-- **Memory:** `memoryFor(ws)` is a lazy map of memory services, each bound to `ws.memory` for its
-  store, sources scan and settings state. The run gets its instance at admit time.
-- **Knowledge:** `query_knowledge` and index jobs are bound to `ws.rag`. Every
-  `getRagConfiguration()` and `assertRagCurrent()` in the run and job paths takes that root, so a
-  job is never compared against another workspace's settings.
-- **Browser:** tabs carry `workspace` and are created in `ws.partition`. Popups inherit the opener's
-  workspace. Tab listing, `targetId` lookups and `shown()` only match the run's workspace. History,
-  passwords and bookmarks are cached per workspace.
-- **Permissions and sandbox:** `getPermissions(ws)`, `addPermissionRule(ws, …)`,
-  `protectedRoots(ws)` and `isBroadTarget(t, ws)`. The check after an approval wait uses the same
-  workspace as the first check.
-- **Deferred session operations** (edit, clear, delete) capture the session's config and memory
-  instance before `scheduler.run`. They often run after the window has switched.
-- **Profile tools:** the legacy `USER.md`, `SOUL.md` and `IDENTITY.md` fallbacks in
-  [user/get.ts](../src/main/user/get.ts) and its siblings are pinned to the default workspace's files.
+- **Files and bash:** read, write, edit, patch and bash resolve against the workspace's files.
+- **Media:** generated media, recordings and browser screenshots are saved in the run's Library.
+- **Memory:** `memoryFor(workspace)` is a lazy map of memory services; the run uses its workspace's.
+- **Knowledge:** the settings store, vector file, search worker, indexing job and schedule are per
+  workspace. A non-default workspace's default index name is `kucedr-<id>`, so remote mirrors don't
+  share a namespace.
+- **Browser:** tabs carry their workspace and are created in its partition. Popups inherit it. Tab
+  listing, `targetId` lookups and "the tab on screen" only match the run's workspace. History,
+  passwords, bookmarks and saved tabs are kept per workspace.
+- **Permissions and sandbox:** rules and protected folders are read for the run's workspace, before
+  and after an approval wait.
+- **Deferred session operations** (edit, clear, delete, rename, pin) capture the workspace before
+  they are queued.
+- **Profile files:** `USER.md`, `SOUL.md`, `IDENTITY.md` and `BOOTSTRAP.md` are read from the
+  default workspace in every workspace.
 
-The renderer sends the `workspaceId` it showed **when the user acted** with every session-scoped
-call (send, follow-up, edit, rename, pin, delete, compact, snapshot). Main resolves the workspace
-from that ID, never from the window's current one, and rejects the call if the session is not in
-that workspace. A prompt typed in A therefore runs in A, even if the window switched while
-attachments were being read.
+A run is refused when its workspace's folder is missing.
 
 ## Switching a window
 
-1. The renderer calls `workspaces.select(id)`. Main validates the ID, updates
-   `WindowContext.workspaceId` and sends `currentChanged` to that window only.
-2. Main ensures the workspace's data folders exist (never the picked folder) and lazily starts its file watcher, sessions
-   watcher and memory service. They stay alive until the workspace is deleted.
-3. The renderer remounts its routes with `key={workspaceId}`, opens that workspace's last chat and
-   hides the other workspace's browser tabs.
+1. The renderer calls `workspaces.select(id)`. Main validates the id, binds it to that window
+   (`bind.ts`, keyed by the window's web contents) and tells that window.
+2. On the first use of a workspace, main starts its chat-list watcher and its memory service and
+   restores its browser tabs (`open.ts`). They stay alive until the app quits.
+3. The renderer (`src/renderer/src/spaces/Gate.tsx`) remounts its routes under the new id, opens
+   that workspace's last chat and shows only its browser tabs.
 
 The switch never touches runs, pending approvals or questions, the run scheduler, the sandbox,
-processes, voice, cron jobs, index jobs or other windows. It must not call `cancelAll()`,
-`rejectPendingToolPermissions()`, `interruptPendingUserInput()` or `sandbox.invalidate()`.
-
-A submitted prompt must reach main even if the page remounts. `useHomeAgent` stops aborting a send
-on a workspace switch. Main returns follow-ups that a run never delivered in `run_finished`, and the
-renderer re-sends them into their workspace and chat.
+processes, voice, tasks, index jobs or other windows.
 
 ### Seeing other workspaces' activity
 
-- `Agent.listActivity()` returns live runs across all workspaces (workspace, chat, title, running /
-  waiting for approval / waiting for an answer), with a push event when it changes.
-- The switcher shows a badge per workspace, for example "Client work · 1 running · 1 needs approval".
-- Run signals carry `workspaceId`. A notification click switches the window to that workspace and
-  opens the chat, where the approval card is replayed and can be answered.
-- Approvals still expire after 120 seconds and questions after 10 minutes, as they do today when the
-  user is in another chat.
+- `Agent.listActivity()` counts live chat and task runs per workspace: running, or waiting for an
+  approval or an answer. Every window is told when it changes.
+- The switcher shows it next to each workspace, for example "Client work · 1 running · 1 needs you".
+- A notification names the workspace. Clicking it opens the chat; a window showing another
+  workspace switches to the chat's workspace first.
+- Approvals still expire after 120 seconds and questions after 10 minutes.
 
 ## Windows
 
-- `WindowContext` gets a mutable `workspaceId`, `WindowContextManager` gets `windowsIn(workspaceId)`,
-  and `TrustedRenderer` gets `workspace(event)`, built on `assert()`
-  ([trusted.ts](../src/main/ipc/core/trusted.ts)). IPC handlers that touch workspace content move to
-  event-aware wrappers. Handlers that only touch setup stay as they are.
-- **Events:** a new `sendToWorkspace(id, channel, …)` sends to `windowsIn(id)`. File tree, chat list,
-  Library, memory, knowledge, tasks, browser tab and model-override events are workspace-scoped.
-  Agent responses, `openSession` and voice stay window-scoped. Theme, language, zoom, tray and the
-  model catalog stay global. Events from a run use the run's workspace.
-- **New windows:** Menu > New Window opens the default workspace, as today, and so does a window
-  opened for a file (`createWindowForFile`). The switcher gets **Open in new window**, which opens
-  a chosen workspace.
-- **Same workspace in two windows** is allowed. Both get its events and share its content and
-  overrides. As today, a reply streams in the window that started it, and a browser tab is drawn in
-  one window at a time and moves to the window that shows it.
-- **Voice:** the voice window is opened with the opener's workspace, and `startSession` carries it.
-  `manager.start` resolves it once and passes it to configuration, the conversation, a per-call
-  memory context and the tool runtime. Tray-started voice uses the default workspace.
-- **Renderer storage:** all windows share one `localStorage`. A helper `scoped(key)` returns `key` for
-  the default workspace and `key@<id>` for others. It is used for `chat-session-id`, chat categories
-  and collapsed groups, prompt attachments, `chat-runtime:<id>` and `workspace-selected-file`. UI
-  preferences stay unscoped. The window's workspace ID is never stored in `localStorage`.
-- **Restart:** one window opens on the default workspace, as today.
-- **Closing a window** still cancels its runs ([bootstrap.ts](../src/main/bootstrap.ts)), as today.
+- **New windows:** File → New Window opens the default workspace, as before, and so does a window
+  opened for a file. **Open in new window** in the switcher opens a chosen workspace.
+- **Same workspace in two windows** is allowed. Both get its chat-list, file and tab events. As
+  before, a reply streams in the window that started it, and a browser tab is drawn in one window
+  at a time.
+- **Events:** chat-list, file-tree and browser-tab events go only to windows showing that workspace.
+  Theme, language, zoom, tray and the model catalog stay global.
+- **Voice:** the voice window takes the workspace of the window that opened it. A voice call
+  started from the tray uses the default workspace.
+- **Window storage:** all windows share one `localStorage`. `scoped(key)` returns `key` for the
+  default workspace and `key@<id>` for others, for the open chat, chat categories and collapsed
+  groups, draft attachments, per-chat runtime and the selected file. The window's workspace id is
+  never stored there.
+- **Files in the window:** `local-resource://agent/…` carries `?workspace=<id>` for a non-default
+  workspace. Plugin app views cannot pass it and always get the default workspace.
+- **Restart:** one window opens on the default workspace.
+- **Closing a window** still cancels its runs.
 
 ## Background work
 
-- **Scheduled tasks** stay in the one shared task store (`settings/tasks`). Each schedule gets a
-  `workspaceId`, with a missing value meaning `default`. Cron fires every schedule in its own
-  workspace, whatever the windows show. Task tools and the list IPC filter by the caller's
-  workspace, and a call on another workspace's schedule is refused.
+- **Scheduled tasks** stay in the one shared task store (`settings/tasks`). Each schedule has a
+  `workspaceId`, with a missing value meaning `default`. A schedule fires in its own workspace,
+  whatever the windows show. Task tools and the task IPC only see the caller's workspace, and a call
+  on another workspace's schedule is refused as not found.
 - **Health** runs in the default workspace.
-- **Coding agents:** harness homes and Coder sessions live under the workspace root
-  (`<root>/coder`), so harness sign-ins and threads stay per workspace. For the default workspace
-  that is today's `~/.kucedr/coder`. See [CODING_TOOLS.md](CODING_TOOLS.md).
 
 ## Isolation
 
-Today interactive runs read any path that is not protected without asking
-([resolve_permission.ts](../src/main/agent/permissions/resolve_permission.ts)), and
-[protected.ts](../src/main/agent/permissions/protected.ts) protects none of the content folders. Separate
-folders alone would therefore be cosmetic.
-
-`protectedRoots(ws)` is computed for the run's workspace:
+Interactive runs read any path that is not protected without asking, so separate folders alone
+would be cosmetic. `protectedRoots()` is computed for the run's workspace:
 
 - **read** adds every other workspace's content. For the default workspace that is all of
   `~/.kucedr/workspaces`. For workspace X it is the default's `workspace`, `sessions`, `memory`,
-  `library` and `rag`, plus every sibling workspace folder. Either way it adds every other
-  workspace's picked folder. It also adds every workspace's `browser`
-  folder, the whole Electron `Partitions` directory, `~/.kucedr/agent-browser`, `~/.kucedr/settings`
-  and `~/.kucedr/logs`.
+  `library` and `rag`, plus every other workspace's data folder. Either way it adds every other
+  workspace's picked folder, every `browser` folder, the whole Electron `Partitions` directory,
+  `~/.kucedr/agent-browser`, `~/.kucedr/settings` and `~/.kucedr/logs`.
 - **write** is unchanged: all of `~/.kucedr` stays write-protected.
-- **writable** is `[ws.files, ws.library]`.
+- **writable** is the workspace's files and Library.
 
-Protected roots are checked before allow rules, so no rule can open another workspace. Content
-crosses workspaces only by user action. This includes an older "always allow" rule for a folder
-that later becomes another workspace's folder: it stops working outside that workspace.
+Protected roots are checked before allow rules, so no rule can open another workspace, and the same
+list feeds the command sandbox.
 
-"Always allow" rules are stored per workspace. The default keeps the `permissions` key in
-`settings/chat.json`. Other workspaces use `~/.kucedr/workspaces/<id>/settings/permissions.json`. A
-grant made in A never applies in B.
+"Always allow" rules are stored per workspace: the default keeps the `permissions` key in
+`settings/chat.json`, others use `~/.kucedr/workspaces/<id>/settings/permissions.json`.
 
-**Sandbox:**
+On macOS and Linux the sandbox policy is built per command, so saving rules no longer stops running
+commands there.
 
-- On macOS and Linux the filesystem policy is applied per command, so two runs in different
-  workspaces each get their own. Drop `sandbox.invalidate()` on permission saves there
-  ([ipc/agent.ts](../src/main/ipc/agent.ts)), because it kills every workspace's commands.
-- On Windows, grant the `~/.kucedr/workspaces` parent and the default roots once at session level
-  and deny other workspaces per command, so creating a workspace never resets the sandbox. Per-command
-  denies are ACEs on the shared sandbox user. Check that they don't block a concurrent command in
-  another workspace. If they do, run sandboxed commands from different workspaces one at a time.
+**Screen recorder:** the `application` and `workspace` targets are refused when no window shows the
+run's workspace.
 
-**Screen recorder:** refuse the `application` and `workspace` targets when no window shows the run's
-workspace, because the window would show another workspace's content.
+## Chat model per workspace
 
-## Settings per workspace
+A non-default workspace stores an override in `~/.kucedr/workspaces/<id>/settings/chat.json`
+(`llm`: provider, model and options together).
 
-The default workspace and the global settings files never change. Another workspace stores only
-the keys the user changed, in `~/.kucedr/workspaces/<id>/settings/chat.json`, with the same key names
-as the global `settings/chat.json`.
-
-- **v1 overrides one setting:** the agent's chat model, the `chat` profile's `llm` slot (provider,
-  model and options together). The format leaves room for voice, tasks and media models later.
-- **Lookup:** `resolveChatModel(workspaceId)` returns the override if the workspace is not the default
-  and the override's provider still exists. Otherwise it returns the global value. Options are never
-  mixed between layers.
-- **Stale override:** if the provider was removed, the global value is used and the UI says so.
-- **Use default** deletes the key, and the workspace follows the global value again, including
-  later changes.
-- **Writes:** a separate electron-store per workspace with key-level `set` and `delete`. It never
-  goes through `agent_profiles` `read()`/`write()`, whose normalisation would fill every slot.
-- **Runs pin settings at admit time.** `send()` pins provider, model and options from
-  `resolveChatModel(ws)`. Changing an override or the global default never changes a running run.
-  Compaction falls back to the run's pinned model when `compact_llm` is not set.
-
-New IPC: `setModel({ providerId, modelId, options })` writes the global value from a default-workspace
-window and the override from any other, atomically. `clearModel()` removes the override.
-`getModelScope()` returns `{ workspaceId, isDefault, overridden, stale, global }`. The model getters
-resolve through `resolveChatModel` for the caller's workspace. `setProvider` and `setModelId` stay
-global writers for onboarding.
-
-**Interface:** in a non-default workspace, Settings > Agent shows a badge with the workspace name and
-a **Use default model** switch, following the memory page's switch row. When it is off, the existing
-model picker writes the override. The Home composer picker calls `setModel`, so choosing a model in a
-non-default workspace overrides it for that workspace only. Nothing changes in the default workspace's
-UI.
+- The existing model getters and setters work on the caller's workspace: in a non-default workspace
+  the composer picker and Settings → Chat read and write the override; in the default workspace they
+  read and write the global model.
+- If the override's provider was removed, the global model is used.
+- Settings → Chat shows **Use default model** in a non-default workspace. Turning it on deletes the
+  override (`clearModel`); `getModelScope` says whether one exists.
+- A run pins its provider and model when it is admitted.
+- Tasks, voice and health keep their own shared models.
 
 ## Workspace management
 
-### IPC
-
-A new `WorkspaceChannels` group, wrapped with `wrapIpcHandler` and renderer checks:
+`WorkspacesChannels`, exposed as `window.workspaces`:
 
 | Channel       | Behavior                                                               |
 | ------------- | ---------------------------------------------------------------------- |
-| `list`        | Return the workspaces, the caller's workspace and activity counts      |
-| `current`     | Return the caller window's workspace                                   |
-| `select`      | Validate the ID and bind it to the caller's window                     |
-| `create`      | Open the folder dialog, check the folder, generate the ID, save the reference and create the data folders |
-| `locate`      | Pick a new folder for a workspace whose folder is missing              |
+| `list`        | The caller window's workspace, and every workspace with its activity   |
+| `select`      | Validate the id and bind it to the caller's window                     |
+| `create`      | Open the folder dialog, check the folder, save the reference           |
 | `rename`      | Validate the name and update the registry                              |
+| `locate`      | Pick a new folder for a workspace whose folder is missing              |
 | `openWindow`  | Open a new window on the given workspace                               |
-| `pickImage`   | Open the file dialog, copy the chosen image and update the registry    |
-| `removeImage` | Clear `image` and delete its file                                      |
+| `pickImage`   | Open the file dialog, check and copy the image, update the registry    |
+| `removeImage` | Clear the image and delete its file                                    |
+| `changed`     | Event: the list, a name, a picture or the activity changed             |
 
-The registry is saved with the existing `atomic_write` helper. Preload exposes them as
-`window.workspaces`. A `WorkspaceProvider` in `RootRouteComponent` holds `{ id, name, isDefault }`.
+**Pictures:** PNG, JPEG and WebP up to 5 MB, checked by size and leading bytes in the main process.
+The file is copied to `~/.kucedr/workspaces/images/<new uuid>.<ext>` and the previous one deleted.
 
-### Images
-
-The main process opens the file dialog, so the renderer never supplies a source path:
-
-- **Allowed files:** PNG, JPEG and WebP up to 5 MB. SVG is excluded because it can contain scripts.
-- **Validation:** check size and leading bytes in the main process, not just the extension.
-- **Saving:** copy to `~/.kucedr/workspaces/images/<new uuid>.<ext>`, update the registry, then delete
-  the previous image. A new name on each change also avoids a stale cached image.
-
-`list` returns images as `local-resource://file/...` URLs, which the main window can already load
-([protocol.ts](../src/main/protocol.ts)).
-
-### Interface
-
-The switcher is a `DropdownMenu` in the Home sidebar. It shows the active image and name, lists
-the other workspaces with their activity badges, and offers **New workspace…**, **Edit** and
-**Open in new window**. Edit shows the workspace's folder path, and a workspace whose folder is
-missing shows **Locate…**. Images render through `Avatar`, whose fallback shows the first letter of the
-name. New text goes through `react-i18next` under a `spaces.*` namespace, because
-`settings.workspace.*` already means the Files page.
+**Interface:** the switcher is the first item of the Home sidebar (`pages/home/Spaces.tsx`). It
+lists the workspaces with their activity and offers **New workspace…**, **Edit workspace…** (name,
+folder path, picture, **Locate folder…**) and **Open in new window**. Text is under `spaces.*`,
+because `settings.workspace.*` already means the Files page.
 
 ## Backups and encryption
 
-- Pin the existing `agent`, `sessions` and `library` backup folders to the default workspace's paths
-  ([storage_sync_folders.ts](../src/main/storage/storage_sync_folders.ts)), and add one `workspaces` folder
-  for `~/.kucedr/workspaces`. Skip `*/browser` in it.
-- Picked folders are not backed up. They are the user's own folders. A restore brings back the
-  workspace's chats, memory and Library, and the workspace then asks to **Locate…** its folder.
-- `vault/convert.ts` converts `sessions` and `memory` in every workspace root.
+- The default backup folders stay the default workspace's. `~/.kucedr/workspaces` can be added as a
+  backup folder; the backup script skips each workspace's `browser` folder.
+- Picked folders are not backed up by Kucedr. After a restore the workspace asks to locate its
+  folder.
+- Switching encryption on or off converts the chats and memory of every workspace.
 
-## Fixes needed on the way
+## Not built
 
-- `memory/migrate.ts` moves any `MEMORY.md` at the files root into memory and deletes the original.
-  Run it only for the default workspace, or a client's file with that name would be consumed.
-- Qualify the default knowledge `indexName` with the workspace ID for non-default workspaces, so
-  remote mirrors don't share a namespace.
-- `coding/projects.ts`, `health/data.ts` and `data/data_controller.ts` read the global locations. Pin
-  them to the default workspace, or pass the caller's workspace for export.
-- "Workspace" already means the Files page, the editor model, Coder projects and cloud-sync roots.
-  Use `workspaces` / `WorkspaceChannels` / `spaces.*` for the new names.
+- **Deleting a workspace**, and moving a chat to another workspace. Deleting must be refused while
+  the workspace has live runs, voice, a running task or an index job, and must clear its partition.
+- **Renaming the default workspace.**
+- **A system-folder check** when picking a folder (the root, home and its ancestors, Kucedr's data
+  and other workspaces are refused).
+- **Windows sandbox:** the session-level policy differs per workspace, so a command in another
+  workspace re-initialises the sandbox and stops running commands. Not built and not tested.
+- **Coder storage per workspace:** harness homes and Coder sessions stay in `~/.kucedr/coder`.
+- **A prompt sent in the instant before a switch** (while its attachments are read) is dropped, as
+  when switching chats. Follow-ups queued for a run are not re-sent after a switch.
+- **A notice for a stale model override.** The global model is used silently.
+- **Connected accounts per workspace.** A connector linked in one workspace can be called from
+  another ([Integrations](roadmap/INTEGRATIONS.md), 17.4).
+- **Reopening every window on its workspace after a restart.**
 
-## Known limitations
+## Known limits
 
-- **Existing data stays in the default workspace.** Today's memory and Library mix every client and
-  can't be split automatically. Confidential work should start in a new workspace.
-- **Sign-ins:** users sign in again in each workspace.
-- **MCP connectors are shared.** A connector linked in A can be called from B. Per-workspace enabling
-  is roadmap 10.3.
-- **Not covered by isolation:** elevated host commands after approval, MCP servers, Codex's own
-  sandbox, `local-resource://file`, the shared sandbox `TMPDIR`, and reads of folders outside
-  `~/.kucedr` that the user never granted.
+- **Existing data stays in the default workspace.** Confidential work should start in a new one.
+- **Sign-ins:** users sign in again in each workspace's browser.
+- **Not covered by isolation:** elevated host commands after approval, MCP servers,
+  `local-resource://file` in the main window, the shared sandbox temp folder, and reads of folders
+  outside `~/.kucedr` that are not another workspace's.
 - **One vault key and one backup passphrase** cover every workspace.
-- **Picked folders are not encrypted or backed up** by Kucedr, and other apps can change them at
-  any time.
-- **Approvals expire** if the user stays away from a workspace longer than the timeout.
-- **Deleting a workspace** is left out. When added, it must be refused while the workspace has live
-  runs, voice, a running task or an index job, and must clear its partition.
+- **Picked folders are not encrypted** by Kucedr, and other apps can change them at any time.
+- **Approvals expire** if the user stays away longer than the timeout.
 
-## Implementation order
+## What was checked
 
-1. Workspace value and registry, with session code reading `config.workspace.sessions` → verify: with
-   no registry file, every resolved path equals today's.
-2. Run binding (config, scope, `currentWorkspace()`, tools, media, memory, knowledge, browser, deferred
-   operations, profile fallbacks) → verify: no argument-less `agentLocation()`, `libraryLocation()`,
-   `memoryPath()` or `ragLocation()` is left in the run path, and a default-workspace chat works as
-   before.
-3. Isolation (`protectedRoots(ws)`, per-workspace rules, sandbox) → verify: a run in B is denied
-   reading A's files, chats, memory and Library with the read tool and with bash, and an "always
-   allow" from A does not apply in B.
-4. Creating a workspace from a folder → verify: a folder outside `~/.kucedr` becomes a workspace with
-   nothing written into it; its chats land in `~/.kucedr/workspaces/<id>/sessions`; the home folder, a
-   folder inside `~/.kucedr` and a folder nested in another workspace are rejected; a run in another
-   workspace is denied the folder.
-5. Window binding, IPC, switcher and scoped renderer storage → verify: two windows on two workspaces
-   show different files and chats, switching one leaves the other unchanged, and renaming a
-   workspace's folder on disk shows "Folder not found" until **Locate…** restores it.
-6. Continuity → verify: start a long run in A that will ask for approval, switch the window to B,
-   then come back from the badge. The run finished in A, its files, Library items and memory are in
-   A, and B was untouched.
-7. Tasks, voice and browser → verify: a task of A fires while every window shows B and runs in A; a
-   voice call started in A keeps A's memory after a switch; B's browser has none of A's sign-ins.
-8. Settings overrides → verify: picking a model in B leaves the default workspace's model unchanged,
-   runs in B use the override, and **Use default** restores the global model.
-9. Backups and encryption → verify: both workspace locations back up and restore with their names,
-   and enabling the vault seals every workspace's chats and memory.
-10. Workspace images → verify: an image can be set, replaced and removed, a renamed `.txt` is rejected,
-   and a workspace with no image shows its first letter.
+In a production build on macOS, with an isolated profile and home folder and a mock model
+(2026-11-26):
 
-## Open decisions
+- **Default unchanged:** with no registry, every folder is today's; no registry is written.
+- **Create:** a picked folder becomes a workspace with nothing written into it; its chats land in
+  `~/.kucedr/workspaces/<id>/sessions`; the model is told the picked folder as its root. The home
+  folder, a folder inside `~/.kucedr`, a folder nested in a workspace and a folder containing one
+  are refused.
+- **Isolation, both directions:** the read tool and sandboxed bash are denied the other workspace's
+  files, chats and memory; each reads and writes its own. An "always allow" rule saved in one
+  workspace is absent in the other.
+- **Windows:** two windows on two workspaces list different chats; switching one leaves the other.
+- **Continuity:** a slow reply started in B finished in B after its window switched to A, with
+  nothing in A; the running count appeared and cleared.
+- **Tasks:** a task is listed only in its workspace, the other workspace cannot run it, and it ran
+  in its own workspace while every window showed another.
+- **Browser:** a tab opened in B is listed only in B and uses `persist:agent-browser-<id>`;
+  bookmarks are separate and stored under the workspace.
+- **Missing folder:** shown as missing, runs refused, folder not recreated, **Locate** restores it.
+- **Rename and pictures:** rename shows in the switcher, a duplicate name is refused; a picture can
+  be set, replaced and removed, and a renamed text file is refused.
+- **Model:** picking a model in B leaves the default's unchanged, runs in B use it, and **Use
+  default model** restores the global one.
+- **Open chat from another workspace:** the open-chat event switches the window and shows the chat.
 
-Each has a recommendation, used above unless changed:
-
-- **What Menu > New Window opens.** Recommended: the default workspace.
-- **Restoring windows on relaunch.** Recommended: not in v1.
-- **Closing a window with running chats.** Recommended: keep cancelling them, as today. Letting them
-  finish in the background is a later step.
-- **More overridable settings.** Recommended: only the chat model in v1.
-- **Renaming the default workspace.** Recommended: allowed, as a display name only.
+Not checked: voice (needs a realtime key), Windows and Linux, encryption and backup of a second
+workspace, a real system notification, the screen-recorder refusal, memory generation and knowledge
+indexing in a second workspace, a real site sign-in in two workspaces, saved passwords per
+workspace, and tabs restored per workspace after a restart.
