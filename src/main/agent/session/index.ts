@@ -30,7 +30,6 @@ export { resolveStoredSessionId } from './session_resolve_stored_session_id';
 export { sessionDir } from './session_session_dir';
 export { sessionFolderName } from './session_session_folder_name';
 export { sessionPath } from './session_session_path';
-export { sessionsRoot } from './session_sessions_root';
 export { toResult } from './session_to_result';
 export {
 	DEFAULT_CATEGORY,
