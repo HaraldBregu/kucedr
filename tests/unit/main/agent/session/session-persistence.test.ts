@@ -34,7 +34,7 @@ describe('session persistence', () => {
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
-		state.sessionsPath = sessionsRoot(location);
+		state.sessionsPath = sessions;
 		state.messages = [{ role: 'user', content: 'Plan today' }];
 		persist(state);
 		const directory = path.join(state.sessionsPath, SESSION_ID);
@@ -102,7 +102,7 @@ describe('session persistence', () => {
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
-		state.sessionsPath = sessionsRoot(location);
+		state.sessionsPath = sessions;
 		state.messages = [{ role: 'user', content: 'first' }];
 		persist(state);
 		state.messages = [{ role: 'user', content: 'second' }];
@@ -126,7 +126,7 @@ describe('session persistence', () => {
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
-		state.sessionsPath = sessionsRoot(location);
+		state.sessionsPath = sessions;
 		state.messages = [
 			{ role: 'user', content: 'Earlier message' },
 			{ role: 'assistant', content: 'Later response' },
@@ -146,7 +146,7 @@ describe('session persistence', () => {
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
-		state.sessionsPath = sessionsRoot(location);
+		state.sessionsPath = sessions;
 		state.messages = [
 			{ role: 'user', content: 'First question' },
 			{ role: 'assistant', content: 'First answer' },
@@ -166,7 +166,7 @@ describe('session persistence', () => {
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
-		state.sessionsPath = sessionsRoot(location);
+		state.sessionsPath = sessions;
 		const base64 = Buffer.from('attachment payload').toString('base64');
 		state.messages = [
 			{
@@ -197,7 +197,7 @@ describe('session persistence', () => {
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
-		state.sessionsPath = sessionsRoot(location);
+		state.sessionsPath = sessions;
 		const base64 = Buffer.alloc(20 * 1024 * 1024 + 1).toString('base64');
 		state.messages = [{
 			role: 'user',
