@@ -38,8 +38,9 @@ it('captures finalized realtime voice turns in their persisted order', () => {
 it('persists only finalized voice transcripts at their reserved turn position', () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-conversation-'));
 	const location = path.join(temporaryRoot, 'agent');
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	try {
-		const conversation = realtimeVoiceConversationFactory({ location })(SESSION_ID, 'model');
+		const conversation = realtimeVoiceConversationFactory(config)(SESSION_ID, 'model');
 		const voiceSessionId = conversation.persistenceSessionId;
 		expect(voiceSessionId).toBeDefined();
 		expect(
