@@ -356,6 +356,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Settings,
 	},
 	{
+		path: '/settings/shortcuts',
+		labelKey: 'settings.shortcuts.title',
+		descriptionKey: 'settings.shortcuts.description',
+		icon: Keyboard,
+	},
+	{
 		path: '/settings/cloud',
 		labelKey: 'settings.tabs.storage',
 		descriptionKey: 'settings.overview.descriptions.storage',
