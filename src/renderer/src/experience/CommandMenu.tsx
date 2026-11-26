@@ -413,28 +413,28 @@ export function CommandMenu({
 	);
 
 	useEffect(() => {
-		const handler = (e: KeyboardEvent): void => {
-			const isSettingsShortcut =
-				e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && e.key === ',';
-			const isSearchShortcut =
-				(e.metaKey || e.ctrlKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 'f';
-
-			if (isSettingsShortcut) {
-				e.preventDefault();
-				playSound('navigate');
-				navigateTo('/settings/general');
-				return;
-			}
-
-			if (isSearchShortcut && searchEnabled) {
-				e.preventDefault();
+		return window.app.onShortcut((shortcut) => {
+			if (shortcut === 'commandMenu' && searchEnabled) {
 				playSound('navigate');
 				setOpen(true);
+			} else if (shortcut === 'settings') {
+				playSound('navigate');
+				navigateTo('/settings/general');
+			} else if (shortcut === 'chatHistory') {
+				playSound('navigate');
+				navigateTo('/settings/agent/chathistory');
+			} else if (shortcut === 'newChat' || shortcut === 'focusComposer') {
+				playSound('navigate');
+				const eventName = shortcut === 'newChat' ? 'kucedr:new-chat' : 'kucedr:focus-composer';
+				if (location.pathname !== '/home') {
+					navigateTo('/home');
+					window.setTimeout(() => window.dispatchEvent(new Event(eventName)), 0);
+				} else {
+					window.dispatchEvent(new Event(eventName));
+				}
 			}
-		};
-		window.addEventListener('keydown', handler);
-		return () => window.removeEventListener('keydown', handler);
-	}, [navigateTo, searchEnabled, setOpen]);
+		});
+	}, [location.pathname, navigateTo, searchEnabled, setOpen]);
 
 	return (
 		<CommandDialog
