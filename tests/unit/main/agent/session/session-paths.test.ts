@@ -1,7 +1,6 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { sessionsRoot } from '../../../../../src/main/agent/session/session_sessions_root';
 import { sessionPath } from '../../../../../src/main/agent/session/session_session_path';
 import { sessionDir } from '../../../../../src/main/agent/session/session_session_dir';
 import { messagesFilePath } from '../../../../../src/main/agent/session/session_messages_file_path';
