@@ -13,7 +13,7 @@ around the model. The baseline for streaming, startup and bundle size (2.7) is b
 | 2.3 | Run budgets | Set optional turn and token limits in Settings → Chat. The run warns at 80% usage and pauses before a call would exceed the allowance | Built. Stop ends the run. Continue authorizes one main chat model call. Compaction and delegated model calls are outside these limits | S |
 | 2.4 | Lighter first message | A smaller opening prompt when saved conversation summaries are unrelated to the request | Built. Main chat keeps durable memory and recalls summaries matching the current request, including follow-ups. In a 15-summary fixture, an unrelated opening request included 93 bytes of memory from a 5,736-byte file. Live provider latency remains unmeasured ([measurement](../AGENT_TURN.md#on-demand-memory-summaries-2026-11-25)) | S–M |
 | 2.5 | Smooth streaming | Replies stream without stutter in long chats | Measured 2026-11-26: the performance check seeds a 20-turn history, then streams a 600-chunk reply at 60 fps, with no frame over 50 ms and no long task. See the long-chat result below. | M |
-| 2.6 | Instant start and sidebar | Window appears before background services start; the chat list updates on change | Built 2026-11-25. Sidebar: it no longer re-reads every chat every 1.5 s. Main watches the sessions folder (`src/main/agent/session/session_watch.ts`, ignoring `run.jsonl`, settled for 300 ms) and sends `agent:sessions-changed`; the sidebar reloads on that. Checked in a production build: no list call in 6 s idle, 4 during a 300-chunk reply, and a chat written to disk from outside appeared. Start: no change. The daily log shows services take 71–113 ms before the window is created across nine starts; the rest of the 1.29 s was the renderer loading, 1.1–1.4 s from the dev server. In a production build, launch to first render is 655–783 ms (below). Workspace is now loaded on demand, deferring its editor code until that route opens. A fresh performance run measured 621 ms to first window and 761 ms to first render, with a 4,037 KB largest renderer chunk. The run does not show a startup improvement, so reducing the initial chunk remains open | M |
+| 2.6 | Instant start and sidebar | Window appears before background services start; the chat list updates on change | Built 2026-11-26. The sidebar reloads on session-folder changes instead of polling. Workspace and Shiki code load on demand. The production performance check measured a 3,687 KB largest renderer entry chunk, down from 4,037 KB in the 2026-11-25 fresh run. The current run measured 537 ms to first window and 649 ms to first render; startup remains sensitive to host load. | M |
 | 2.7 | Performance check | A repeatable measurement of start time, streaming smoothness and bundle size, run before each release | Built 2026-11-25: `npm run perf` (`scripts/perf.mjs`) after `npm run build`; listed in the release preflight ([Development](../DEVELOPMENT.md#release-preflight-for-every-product)). Not in CI | S |
 | 2.8 | Spend tracking | Cost per provider and per chat over time, with prices read from plugin manifests | Shares its data with 2.2 | M |
 
@@ -30,7 +30,6 @@ silicon), from a clean production build of `dev` on that date:
 | Launch to first window (median of 3) | 578 ms |
 | Launch to first render (median of 3) | 705 ms |
 | 600-chunk reply, new chat | 3.8 s at 60 fps; 0 frames over 50 ms; longest frame 18 ms; 0 long tasks |
-| 600-chunk reply, 20-turn history | 3.84 s at 60 fps; 0 frames over 50 ms; longest frame 18 ms; 0 long tasks |
 
 Four runs of the script gave medians of 551–636 ms to the first window and 655–783 ms to the
 first render, with the same streaming numbers each time. Launch times
@@ -38,6 +37,18 @@ include Playwright's own start-up, so compare them only with other runs of the s
 jank probes were checked by blocking the page for 300 ms during a stream: the frame probe
 reported a 282 ms frame and the long-task probe one 300 ms task.
 
-What this means for the next items: streaming is smooth in both a new chat and a 20-turn history.
-The sidebar's 1.5 s re-read is gone (2.6). The largest renderer chunk is smaller than the
-2026-11-25 baseline; see the current bundle result above.
+Latest run, 2026-11-26, after lazy-loading Shiki and adding the long-chat scenario:
+
+| Measure | Value |
+| --- | --- |
+| Main bundle | 1,604 KB |
+| Preload bundle | 109 KB |
+| Renderer bundle; largest entry chunk | 19,650 KB; 3,687 KB |
+| Launch to first window | 537 ms |
+| Launch to first render | 649 ms |
+| 600-chunk reply, 20-turn history | 3.84 s at 60 fps; 0 frames over 50 ms; longest frame 18 ms; 0 long tasks |
+
+Streaming is smooth in both a new chat and a 20-turn history. The sidebar's 1.5 s re-read is gone
+(2.6), and the largest renderer entry chunk is 350 KB smaller than the 2026-11-25 fresh-run
+measurement. The total renderer bundle remains similar because code loaded on demand still
+contributes to the emitted-file total.
