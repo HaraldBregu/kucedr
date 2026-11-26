@@ -1,7 +1,7 @@
 import { executionScope } from '../../../../../src/main/agent/execution/scope';
 import { recordingOwners } from '../../../../../src/main/agent/recordings/store';
 import type { Tool } from '../../../../../src/main/agent/types';
-import { desktopCapturer } from 'electron';
+import { BrowserWindow, desktopCapturer } from 'electron';
 import path from 'node:path';
 import os from 'node:os';
 const scope = {
