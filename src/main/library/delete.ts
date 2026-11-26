@@ -1,10 +1,10 @@
 import { realpath, rm, stat, unlink } from 'node:fs/promises';
 import path from 'node:path';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 
 export async function deleteLibraryEntry(
 	relativePath: string,
-	root = libraryLocation()
+	root = currentWorkspace().library
 ): Promise<void> {
 	const resolvedRoot = await realpath(root);
 	const candidate = path.resolve(resolvedRoot, relativePath);

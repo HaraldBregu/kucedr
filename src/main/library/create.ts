@@ -1,11 +1,11 @@
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 import { resolveLibraryFolder } from './folder';
 
 export async function createLibraryFolder(
 	name: string,
-	root = libraryLocation(),
+	root = currentWorkspace().library,
 	parent = ''
 ): Promise<void> {
 	const folderName = name.trim();

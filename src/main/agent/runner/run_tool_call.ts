@@ -1,6 +1,6 @@
 import type { RuntimeEvent, Tool, ToolCall } from '../types';
 import { fileToolState, isFileCreation, rememberTool, type FileAccessContext } from '../context';
-import { agentLocation } from '../../shared/agent_location';
+import { currentWorkspace } from '../../workspaces/current';
 import {
 	addPermissionRule,
 	getPermissions,
@@ -83,7 +83,7 @@ export async function* runToolCall(
 			parseError = error;
 		}
 	}
-	const state = fileToolState(toolCall.name, canonicalInput, agentLocation());
+	const state = fileToolState(toolCall.name, canonicalInput, currentWorkspace().files);
 	const createsFile = state ? isFileCreation(state) : false;
 
 	yield {
@@ -120,7 +120,7 @@ export async function* runToolCall(
 	} else if (parseError) {
 		output = `Error: invalid input for '${toolCall.name}': ${parseError instanceof Error ? parseError.message : String(parseError)}`;
 		isError = true;
-	} else if ((gateError = extension?.gate(tool, canonicalInput, agentLocation()))) {
+	} else if ((gateError = extension?.gate(tool, canonicalInput, currentWorkspace().files))) {
 		output = `Error: ${gateError}`;
 		isError = true;
 	} else if (

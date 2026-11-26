@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { z } from 'zod';
-import { agentLocation } from '../../../shared/agent_location';
+import { currentWorkspace } from '../../../workspaces/current';
 import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { decodeUtf8 } from '../../files/text';
@@ -25,7 +25,7 @@ export const applyPatchTool = tool({
 	access: ({ input }) => ({
 		write: parsePatch(input).flatMap((hunk) =>
 			[hunk.path, ...(hunk.kind === 'update' && hunk.movePath ? [hunk.movePath] : [])].map(
-				(target) => resolveUserPath(target, agentLocation())
+				(target) => resolveUserPath(target, currentWorkspace().files)
 			)
 		),
 	}),

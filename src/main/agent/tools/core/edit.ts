@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { agentLocation } from '../../../shared/agent_location';
+import { currentWorkspace } from '../../../workspaces/current';
 import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { writeAuthorizedFile } from '../../files/write';
@@ -21,7 +21,7 @@ export const editTool = tool({
 		oldText: z.string().min(1).describe('Exact text to replace.'),
 		newText: z.string().describe('Replacement text.'),
 	}),
-	access: ({ path: filePath }) => ({ write: [resolveUserPath(filePath, agentLocation())] }),
+	access: ({ path: filePath }) => ({ write: [resolveUserPath(filePath, currentWorkspace().files)] }),
 	execute: async ({ path: filePath, oldText, newText }, signal) => {
 		const resolved = authorizeFilePath(filePath);
 		const original = decodeUtf8(await readFileBounded(resolved, MAX_READ_BYTES, signal), resolved);

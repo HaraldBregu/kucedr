@@ -3,7 +3,7 @@ import { readLines } from '../../files/lines';
 import { decodeUtf8 } from '../../files/text';
 import { authorizeFilePath } from '../../files/authorize';
 import { z } from 'zod';
-import { agentLocation } from '../../../shared/agent_location';
+import { currentWorkspace } from '../../../workspaces/current';
 import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { PATH_DESCRIPTION } from './fields';
@@ -21,7 +21,7 @@ export const readTool = tool({
 		offset: z.number().int().min(1).optional().describe('First line to read, 1-based.'),
 		limit: z.number().int().min(1).optional().describe('Maximum number of lines to read.'),
 	}),
-	access: ({ path: filePath }) => ({ read: [resolveUserPath(filePath, agentLocation())] }),
+	access: ({ path: filePath }) => ({ read: [resolveUserPath(filePath, currentWorkspace().files)] }),
 	execute: async ({ path: filePath, offset, limit }, signal) => {
 		const resolved = authorizeFilePath(filePath);
 		if (offset === undefined && limit === undefined)

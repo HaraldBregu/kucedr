@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import { realPath } from '../../shared/real_path';
 import { resolveUserPath } from '../../shared/user_path';
-import { agentLocation } from '../../shared/agent_location';
+import { currentWorkspace } from '../../workspaces/current';
 import { authorizedPaths } from '../permissions/access';
 
 export function authorizeFilePath(filePath: string): string {
-	const resolved = realPath(resolveUserPath(filePath, agentLocation()));
+	const resolved = realPath(resolveUserPath(filePath, currentWorkspace().files));
 	const grant = authorizedPaths.getStore()?.find((entry) => entry.path === resolved);
 	if (!grant) throw new Error('File path is outside the approved operation.');
 	let stat: fs.Stats | undefined;

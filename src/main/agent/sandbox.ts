@@ -16,7 +16,7 @@ import { getPermissions } from './agent_store';
 import { userDataLocation } from '../shared/user_data_location';
 import { ruleMatches } from './permissions/rule_matches';
 import type { PermissionRule } from './permissions/permissions_types';
-import { agentLocation } from '../shared/agent_location';
+import { currentWorkspace } from '../workspaces/current';
 import { sandboxSystemReads } from './sandbox/reads';
 import { realPath } from '../shared/real_path';
 import { isPathWithin } from './permissions/permissions_path';
@@ -298,7 +298,7 @@ export class ExecSandbox {
 		await fs.mkdir(this.temporaryDirectory, { recursive: true });
 		const settingsPath = path.join(this.temporaryDirectory, `${commandId}.json`);
 		const readPaths = [
-			agentLocation(),
+			currentWorkspace().files,
 			this.temporaryDirectory,
 			...sandboxSystemReads(),
 			...(process.platform === 'linux' ? [this.vendoredSeccompPath()] : []),
@@ -315,10 +315,10 @@ export class ExecSandbox {
 				allowAllUnixSockets: false,
 			},
 			filesystem: {
-				denyRead: [path.parse(agentLocation()).root, ...deniedReads.map((rule) => rule.root), ...protectedRoots().read],
+				denyRead: [path.parse(currentWorkspace().files).root, ...deniedReads.map((rule) => rule.root), ...protectedRoots().read],
 				allowRead: readPaths,
 				allowWrite: [this.temporaryDirectory],
-				denyWrite: [agentLocation(), ...persistentDefaults],
+				denyWrite: [currentWorkspace().files, ...persistentDefaults],
 			},
 			enableWeakerNestedSandbox: false,
 			enableWeakerNetworkIsolation: false,

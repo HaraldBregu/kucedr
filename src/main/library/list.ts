@@ -1,9 +1,9 @@
 import { mkdir, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import type { LibraryFile } from '../../shared/library_types';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 
-export async function listLibraryFiles(root = libraryLocation()): Promise<LibraryFile[]> {
+export async function listLibraryFiles(root = currentWorkspace().library): Promise<LibraryFile[]> {
 	await mkdir(root, { recursive: true });
 	const directories = [root];
 	const files: LibraryFile[] = [];

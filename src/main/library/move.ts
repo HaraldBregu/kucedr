@@ -1,11 +1,11 @@
 import { lstat, mkdir, realpath, rename, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 
 export async function moveLibraryEntries(
 	relativePaths: string[],
 	destinationFolder: string,
-	root = libraryLocation()
+	root = currentWorkspace().library
 ): Promise<void> {
 	if (relativePaths.length === 0) return;
 	await mkdir(root, { recursive: true });

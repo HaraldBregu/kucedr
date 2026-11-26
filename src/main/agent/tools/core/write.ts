@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { agentLocation } from '../../../shared/agent_location';
+import { currentWorkspace } from '../../../workspaces/current';
 import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { writeAuthorizedFile } from '../../files/write';
@@ -16,7 +16,7 @@ export const writeTool = tool({
 		path: z.string().min(1).describe(PATH_DESCRIPTION),
 		content: z.string().describe('UTF-8 text content to write.'),
 	}),
-	access: ({ path: filePath }) => ({ write: [resolveUserPath(filePath, agentLocation())] }),
+	access: ({ path: filePath }) => ({ write: [resolveUserPath(filePath, currentWorkspace().files)] }),
 	execute: async ({ path: filePath, content }, signal) => {
 		const resolved = authorizeFilePath(filePath);
 		await writeAuthorizedFile(resolved, content, signal);

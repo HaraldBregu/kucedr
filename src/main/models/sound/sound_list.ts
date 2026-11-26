@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { libraryLocation } from '../../shared/library_location';
+import { currentWorkspace } from '../../workspaces/current';
 import type { SoundFile } from '../../../shared/sound_types';
 
 const AUDIO_EXTENSIONS = new Set(['.mp3', '.wav', '.ogg', '.flac', '.m4a', '.aac', '.webm']);
 
 export async function listSounds(): Promise<SoundFile[]> {
-	const soundDir = libraryLocation();
+	const soundDir = currentWorkspace().library;
 	let entries;
 	try {
 		entries = await fs.readdir(soundDir, { withFileTypes: true });

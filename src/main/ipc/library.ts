@@ -57,7 +57,7 @@ export class LibraryIpc implements IpcModule<LibraryIpcDependencies> {
 		});
 		registerQueryWithEvent(LibraryChannels.getRoot, (event) => {
 			trusted.assert(event);
-			return library.getLibraryRoot();
+			return currentWorkspace().library;
 		});
 	}
 }

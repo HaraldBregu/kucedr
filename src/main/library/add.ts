@@ -2,11 +2,11 @@ import { constants } from 'node:fs';
 import { copyFile, mkdir, realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
 import type { LibraryFile } from '../../shared/library_types';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 
 export async function addLibraryFile(
 	sourcePath: string,
-	root = libraryLocation()
+	root = currentWorkspace().library
 ): Promise<LibraryFile> {
 	await mkdir(root, { recursive: true });
 	const source = await realpath(sourcePath);

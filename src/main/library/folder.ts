@@ -1,10 +1,10 @@
 import { mkdir, realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 
 export async function resolveLibraryFolder(
 	relativePath: string,
-	root = libraryLocation()
+	root = currentWorkspace().library
 ): Promise<string> {
 	await mkdir(root, { recursive: true });
 	const resolvedRoot = await realpath(root);

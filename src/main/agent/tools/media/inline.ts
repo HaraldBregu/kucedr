@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { agentLocation } from '../../../shared/agent_location';
+import { currentWorkspace } from '../../../workspaces/current';
 import { realPath } from '../../../shared/real_path';
 import { resolveUserPath } from '../../../shared/user_path';
 import { executionScope } from '../../execution/scope';
@@ -22,7 +22,7 @@ const MIME_TYPES: Record<string, string> = {
 
 export async function inlineFiles(value: unknown, key?: string): Promise<unknown> {
 	if (key === 'url' && typeof value === 'string' && !/^(https?|data):/i.test(value)) {
-		const filePath = realPath(resolveUserPath(value, agentLocation()));
+		const filePath = realPath(resolveUserPath(value, currentWorkspace().files));
 		const mimeType = MIME_TYPES[path.extname(filePath).toLowerCase()];
 		if (!mimeType) throw new Error(`Unsupported media file type: ${value}`);
 		const permission = resolvePermission({

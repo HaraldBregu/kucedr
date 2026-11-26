@@ -5,7 +5,7 @@ import { terminateProcessTree } from '../../execution/terminate';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
-import { agentLocation } from '../../../shared/agent_location';
+import { currentWorkspace } from '../../../workspaces/current';
 import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { MAX_WAIT_MS, registry, type ProcessSession } from './process';
@@ -108,7 +108,7 @@ async function runExec(
 		host: hostInput,
 	} = input;
 	if (readOnly) {
-		const policyError = readOnlyShellError(input, agentLocation());
+		const policyError = readOnlyShellError(input, currentWorkspace().files);
 		if (policyError) throw new Error(policyError);
 	}
 
@@ -118,10 +118,10 @@ async function runExec(
 
 	const env = commandEnvironment(envInput);
 
-	const roots = resolveExecRoots(input, agentLocation());
-	const cwd = roots[0] ?? resolveUserPath(workdir ?? '.', agentLocation());
+	const roots = resolveExecRoots(input, currentWorkspace().files);
+	const cwd = roots[0] ?? resolveUserPath(workdir ?? '.', currentWorkspace().files);
 	if (readOnly) {
-		const relative = path.relative(agentLocation(), cwd);
+		const relative = path.relative(currentWorkspace().files, cwd);
 		if (relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative))
 			throw new Error('Read-only commands must run inside the workspace.');
 	}
@@ -401,7 +401,7 @@ export function execTool(
 		readOnly,
 		inputSchema: execInputSchema,
 		access: (input) => {
-			const [workdir, ...roots] = resolveExecRoots(input, agentLocation());
+			const [workdir, ...roots] = resolveExecRoots(input, currentWorkspace().files);
 			if (!workdir) return {};
 			if (input.elevated === true) return { exec: [workdir, ...roots], host: true };
 			const exec = (input.additionalRoots ?? []).map((root) => resolveUserPath(root, workdir));
@@ -424,8 +424,8 @@ export function execTool(
 			if (input.elevated === true && input.env && typeof input.env === 'object' && Object.keys(input.env).length > 0)
 				throw new Error('Elevated commands cannot override the environment.');
 			if (readOnly || input.elevated === true) return input;
-			const roots = resolveExecRoots(input, agentLocation());
-			const requested = ((input.additionalRoots as string[] | undefined) ?? []).map((root) => resolveUserPath(root, roots[0] ?? agentLocation()));
+			const roots = resolveExecRoots(input, currentWorkspace().files);
+			const requested = ((input.additionalRoots as string[] | undefined) ?? []).map((root) => resolveUserPath(root, roots[0] ?? currentWorkspace().files));
 			const required = sandbox.requiredRoots(requested);
 			return required.length > 0
 				? { ...input, additionalRoots: [...((input.additionalRoots as string[] | undefined) ?? []), ...required] }

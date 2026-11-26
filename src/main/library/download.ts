@@ -2,12 +2,12 @@ import { copyFile, mkdir, realpath, stat } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import path from 'node:path';
 import { dialog, type BrowserWindow } from 'electron';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 
 export async function downloadLibraryFiles(
 	window: BrowserWindow,
 	relativePaths: string[],
-	root = libraryLocation()
+	root = currentWorkspace().library
 ): Promise<boolean> {
 	if (relativePaths.length === 0) return false;
 	const resolvedRoot = await realpath(root);

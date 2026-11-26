@@ -18,8 +18,7 @@ import {
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import { copyFile, cp, mkdir } from 'node:fs/promises';
 import path from 'node:path';
-import { agentLocation } from '../shared/agent_location';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 import { userDataLocation } from '../shared/user_data_location';
 import type { IpcModule } from './core/module';
 import type { EventBus } from '../event_bus';
@@ -423,7 +422,7 @@ async function saveImageAs(imagePath: string, window: BrowserWindow | null): Pro
 }
 
 function validatedAgentImagePath(requestedPath: string): string {
-	const roots = [agentLocation(), libraryLocation()];
+	const roots = [currentWorkspace().files, currentWorkspace().library];
 	for (const root of roots) {
 		try {
 			const realRoot = realpathSync(path.resolve(root));
@@ -462,7 +461,7 @@ function showImageContextMenu(event: IpcMainInvokeEvent, requestedPath: string):
 }
 
 function validatedAudioPath(requestedPath: string): string {
-	const roots = [agentLocation(), libraryLocation(), path.resolve(userDataLocation(), 'sound')];
+	const roots = [currentWorkspace().files, currentWorkspace().library, path.resolve(userDataLocation(), 'sound')];
 	for (const root of roots) {
 		try {
 			const realRoot = realpathSync(path.resolve(root));
@@ -490,7 +489,7 @@ function showAudioContextMenu(event: IpcMainInvokeEvent, requestedPath: string):
 }
 
 function validatedVideoPath(requestedPath: string): string {
-	const roots = [agentLocation(), libraryLocation(), path.resolve(userDataLocation(), 'video')];
+	const roots = [currentWorkspace().files, currentWorkspace().library, path.resolve(userDataLocation(), 'video')];
 	for (const root of roots) {
 		try {
 			const realRoot = realpathSync(path.resolve(root));

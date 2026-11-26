@@ -1,13 +1,13 @@
 import path from 'node:path';
 import type { LibraryFile } from '../../shared/library_types';
-import { libraryLocation } from '../shared/library_location';
+import { currentWorkspace } from '../workspaces/current';
 import { addLibraryFile } from './add';
 import { resolveLibraryFolder } from './folder';
 
 export async function addLibraryFiles(
 	paths: readonly string[],
 	destinationFolder = '',
-	root = libraryLocation()
+	root = currentWorkspace().library
 ): Promise<LibraryFile[]> {
 	const destination = await resolveLibraryFolder(destinationFolder, root);
 	const resolvedRoot = await resolveLibraryFolder('', root);
