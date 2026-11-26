@@ -17,7 +17,7 @@ Part of the [Roadmap](README.md). Status: proposal; 3.1–3.4, 3.6–3.9, 3.11 a
 | 3.11 | Agent cursor in the browser pane | A pointer glides to where the agent is about to click, marks the click, and shows what it is typing into, so the user can follow what the agent does on the page | Built; see "As built" in the [browser plan](../AGENT_BROWSER_PLAN.md). The switch to turn it off was added 2026-11-25 in Settings › Browser (`agentCursor`, on by default); with it off the pointer and the glide before each click are skipped. Checked in the built app with a mock model | S–M |
 | 3.12 | Browser control from the chat | "Click Sign in on this page" acts on the tab on screen; follow-up messages continue in the same tab; the agent never closes the user's tabs; scroll, reload, and Stop in the pane; see [Browser control plan](../BROWSER_CONTROL.md) | Built 2026-11-23: the tab on screen is used first, tabs list `shown` and `mine`, the agent closes only tabs it opened in that chat, `scroll`, `reload`, and Stop in the pane toolbar; checked in the built app, including after a restart. Not checked: task runs, two chats acting at once, two windows; see [Status](../BROWSER_CONTROL.md#status) | M |
 | 3.13 | Confirmations in the app's style | Delete and remove prompts look like the rest of Kucedr, follow the theme and are translated, instead of a plain system box | Built 2026-11-26; all renderer confirmations now use the shared themed dialog | S |
-| 3.14 | Consistent empty and loading states | Every list says what belongs there and how to add the first item; every page shows the same loading rows | `SettingsEmptyState` and `SettingsLoadingRows` in `pages/settings/components/index.tsx`, used by most Settings pages but not all | S |
+| 3.14 | Consistent empty and loading states | Every list says what belongs there and how to add the first item; every page shows the same loading rows | Built 2026-11-26 for the identified Settings lists; shared placeholders now cover plugin discovery, permissions, browser profiles, knowledge search and embedding models, cloud folders, MCP tools and account activity | S |
 | 3.15 | A visual consistency pass | Colours, text sizes and spacing come from the theme everywhere, so light, dark and plugin themes look right on every page | 41 fixed palette colours in 11 files and 59 fixed pixel sizes in the renderer | S–M |
 | 3.16 | A useful empty chat | A new chat offers a few starting points instead of a greeting only | `EmptyConversation` in `pages/home/Page.tsx`; `components/ui/prompt-suggestion.tsx` exists and is used nowhere | S |
 | 3.17 | Smoother first-run setup | Connect a model first, skip what can wait, and land in a chat that works | Four steps in `SETUP_STEPS` (`pages/start/setupConstants.ts`): plugins, model, chat, voice | S–M |
@@ -174,15 +174,14 @@ for deletions that can be restored remains a separate follow-up to 3.7.
 
 ### 3.14 Consistent empty and loading states
 
-- _Behaviour._ An empty list shows an icon, one line saying what belongs there and, where it makes
-  sense, the button that adds the first item. While loading, the same placeholder rows appear on
-  every page instead of a blank area or a spinner in one place and rows in another.
-- _Found._ `SettingsEmptyState` is used in 26 files and `SettingsLoadingRows` in 29. Pages that
-  check for an empty list without them include `assistant/Page.tsx`, `assistant/tools/Mcp.tsx`,
-  `plugins/Available.tsx`, `permissions/Page.tsx`, `browser/Page.tsx`, `knowledge/Search.tsx`,
-  `knowledge/Embedding.tsx`, `cloud/Page.tsx` and `account/Activity.tsx` under
-  `pages/settings/pages` _(whether each one shows an empty list to the user is not verified)_.
-- _Builds on._ The two shared components above and `components/ui/empty.tsx`.
+- _Behaviour._ Empty and loading states use the shared settings placeholders. Added them to plugin
+  discovery and filtering, permission locations, browser profiles, knowledge search results and
+  embedding model selection, cloud backup folders, MCP tool configuration and account activity.
+  Existing cloud and permissions loading placeholders remain in use.
+- _Builds on._ `SettingsEmptyState`, `SettingsLoadingRows` and `components/ui/empty.tsx`.
+- _Verification._ Typecheck and targeted ESLint pass. Empty and loading states were not visually
+  checked in the running app; other Settings pages may still have list-like content that needs a
+  separate review.
 - _Kept out._ New illustrations. The existing icon-and-text pattern is enough.
 - _Check._ With a fresh profile, every Settings page with a list shows the shared empty state.
 
