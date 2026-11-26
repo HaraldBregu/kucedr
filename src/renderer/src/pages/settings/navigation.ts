@@ -177,19 +177,19 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Media permissions
 	{
-		path: '/settings/general',
-		labelKey: 'settings.microphone.title',
+		path: '/settings/general/media/microphone',
+		labelKey: 'settings.system.media.microphone.label',
 		descriptionKey: 'settings.microphone.systemPermissionDescription',
 		keywords: 'microphone audio recorder permission activate disable',
 	},
 	{
-		path: '/settings/general',
-		labelKey: 'settings.camera.title',
+		path: '/settings/general/media/camera',
+		labelKey: 'settings.system.media.camera.label',
 		descriptionKey: 'settings.camera.systemPermissionDescription',
 		keywords: 'camera webcam video permission activate disable',
 	},
 	{
-		path: '/settings/general',
+		path: '/settings/general/media/screen',
 		labelKey: 'settings.application.accessibility',
 		descriptionKey: 'settings.application.accessibilityDescription',
 		keywords: 'permission system',
