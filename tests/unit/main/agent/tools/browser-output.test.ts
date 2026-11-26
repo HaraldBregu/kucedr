@@ -12,8 +12,8 @@ jest.mock('playwright-core', () => ({ chromium: { launchPersistentContext } }));
 jest.mock('../../../../../src/main/shared/agent_location', () => ({
 	agentLocation: () => workspace,
 }));
-jest.mock('../../../../../src/main/shared/library_location', () => ({
-	libraryLocation: () => libraryDir,
+jest.mock('../../../../../src/main/workspaces/current', () => ({
+	currentWorkspace: () => ({ id: 'default', files: workspace, library: libraryDir }),
 }));
 
 import { createBackgroundBrowser } from '../../../../../src/main/agent/tools/web/browser/background';
