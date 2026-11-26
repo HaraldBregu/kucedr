@@ -192,7 +192,7 @@ describe('run stream system prompt', () => {
 		const session = createSessionState();
 		session.messages = [{ role: 'user', content: 'Use the writer skill to draft this' }];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			session,
 			{
 				runId: 'implicit-minimal',
@@ -251,7 +251,7 @@ describe('run stream system prompt', () => {
 		const session = createSessionState();
 		const events = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			session,
 			{
 				runId: 'missing',
@@ -294,7 +294,7 @@ describe('run stream system prompt', () => {
 		];
 		const events = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			session,
 			{
 				runId: 'pinned',
@@ -332,7 +332,7 @@ describe('run stream system prompt', () => {
 			{ role: 'user', content: 'Stop using the "writer" skill.' },
 		];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			session,
 			{
 				runId: 'unload',
@@ -357,7 +357,7 @@ describe('run stream system prompt', () => {
 	it('lists skills when explicitly requested even when the registry is empty', async () => {
 		const events = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'empty-skills',
@@ -386,7 +386,7 @@ describe('run stream system prompt', () => {
 		});
 		const events = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'gmail-without-skills',
@@ -411,7 +411,7 @@ describe('run stream system prompt', () => {
 	it('can expose skill listing without exposing skill loading', async () => {
 		const events = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'list-only-skills',
@@ -436,7 +436,7 @@ describe('run stream system prompt', () => {
 	it('applies main toolsAllow and toolsDeny to the subagent tool', async () => {
 		const noTools = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'allow-none',
@@ -456,7 +456,7 @@ describe('run stream system prompt', () => {
 
 		const denied = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'deny-subagent',
@@ -890,7 +890,7 @@ describe('run stream system prompt', () => {
 		const events = [];
 
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			session,
 			{
 				runId: 'run',
@@ -924,7 +924,7 @@ describe('run stream system prompt', () => {
 
 		await expect(async () => {
 			for await (const event of stream(
-				{ location: '/workspace' },
+				{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 				session,
 				{
 					runId: 'run',
@@ -957,7 +957,7 @@ describe('run stream system prompt', () => {
 		const events = [];
 
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			session,
 			{
 				runId: 'run',
@@ -1009,7 +1009,7 @@ describe('run stream system prompt', () => {
 		});
 
 		for await (const _event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'parent-run',
@@ -1066,7 +1066,7 @@ describe('run stream system prompt', () => {
 			.mockImplementationOnce(successfulTurn);
 		const events = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'delegation-synthesis',
@@ -1116,7 +1116,7 @@ describe('run stream system prompt', () => {
 			});
 			const events = [];
 			for await (const event of stream(
-				{ location: '/workspace' },
+				{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 				session,
 				{
 					task: 'chat',
@@ -1160,7 +1160,7 @@ describe('run stream system prompt', () => {
 		const events = [];
 		await expect(async () => {
 			for await (const event of stream(
-				{ location: '/workspace' },
+				{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 				createSessionState(),
 				{
 					task: 'chat',
@@ -1213,7 +1213,7 @@ describe('run stream system prompt', () => {
 			const events = [];
 			const run = async () => {
 				for await (const event of stream(
-					{ location: '/workspace' },
+					{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 					session,
 					{
 						task: 'chat',
@@ -1280,7 +1280,7 @@ describe('run stream system prompt', () => {
 			.mockImplementationOnce(successfulTurn);
 
 		for await (const _event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'file-edit',
@@ -1320,7 +1320,7 @@ describe('run stream system prompt', () => {
 		);
 
 		for await (const _event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'enable-scheduled-tasks',
@@ -1373,7 +1373,7 @@ describe('run stream system prompt', () => {
 		const session = createSessionState();
 
 		for await (const _event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			session,
 			{
 				runId: 'search-native',
@@ -1413,7 +1413,7 @@ describe('run stream system prompt', () => {
 		const allowed = modelTool('mdl__provider__model_fim');
 		const denied = modelTool('mdl__provider__model_edit');
 		for await (const _event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'model-tools-no-search', task: 'chat', message: 'Complete code',
@@ -1466,7 +1466,7 @@ describe('run stream system prompt', () => {
 			})
 			.mockImplementationOnce(successfulTurn);
 		for await (const _event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'mcp-search',
@@ -1536,7 +1536,7 @@ describe('run stream system prompt', () => {
 			.mockImplementationOnce(successfulTurn);
 		const session = createSessionState();
 		for await (const _event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			session,
 			{
 				runId: 'gmail-search',
@@ -1636,7 +1636,7 @@ describe('run stream system prompt', () => {
 		const events: unknown[] = [];
 		try {
 			for await (const _event of stream(
-				{ location: '/workspace' },
+				{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 				createSessionState(),
 				{
 					runId: 'gmail-auth-search',
