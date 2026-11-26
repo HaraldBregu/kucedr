@@ -2289,6 +2289,8 @@
 			"indexNamePlaceholder": "kucedr",
 			"documentsDescription": "Indicizza i file di testo in queste cartelle, incluse le sottocartelle. I file invariati riutilizzano gli embedding.",
 			"sourceFolder": "Cartelle sorgente",
+			"sourceStats": "{{files}} file · {{chunks}} passaggi · indicizzata {{date}}",
+			"notIndexed": "non indicizzata",
 			"sourcePlaceholder": "Scegli una o più cartelle contenenti file di testo",
 			"pickFolder": "Scegli cartella",
 			"pickFolderError": "Impossibile scegliere una cartella sorgente.",

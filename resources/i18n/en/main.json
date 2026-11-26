@@ -2289,6 +2289,8 @@
 			"indexNamePlaceholder": "kucedr",
 			"documentsDescription": "Index text files from these folders, including subfolders. Unchanged files reuse their embeddings.",
 			"sourceFolder": "Source folders",
+			"sourceStats": "{{files}} files · {{chunks}} passages · indexed {{date}}",
+			"notIndexed": "not indexed",
 			"sourcePlaceholder": "Choose one or more folders containing text files",
 			"pickFolder": "Choose folder",
 			"pickFolderError": "Unable to choose a source folder.",
