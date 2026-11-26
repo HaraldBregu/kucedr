@@ -107,17 +107,12 @@ Built as planned below; the complications are still unverified.
 
 ### 3.5 Shortcut guide
 
-- _Behaviour._ One screen, opened from the Help menu and the command menu, listing every shortcut
-  by area. The same list drives the menu and the key handlers, so the guide cannot go stale.
-- _Found on the way._ ⌘K, ⌘D and Ctrl+Alt+N are captured and do nothing: `src/main/shortcuts.ts`
-  forwards them to the window as `app:shortcut` and nothing listens. Decide what each does or
-  remove them. ⌘K usually opens a command menu; here that is on ⌘F.
-- _Builds on._ `SHORTCUT_ACCELERATORS` in `src/shared/app_types.ts`; `CommandShortcut` in
-  `src/renderer/src/components/ui/command.tsx` for key labels.
-- _Constraint._ Keys must work on non-US layouts, as zoom already does by registering both ⌘+ and
-  ⌘=.
-- _Kept out._ Rebinding keys.
-- _Check._ Every shortcut in the guide works, and no working shortcut is missing from it.
+Built 2026-11-26. Settings › Keyboard shortcuts lists app, chat, workspace editor and browser tab
+shortcuts from `SHORTCUTS` in `src/shared/app_types.ts`; Help and the command menu open the page.
+That registry also supplies app shortcut dispatch, native menu accelerators (including both zoom-in
+keys), browser tab bindings and workspace toolbar labels. The previously intercepted no-op
+shortcuts were removed; ⌘D/Ctrl+D now opens chat history. Rebinding is not included. No dedicated
+automated accessibility check was added for this page.
 
 ### 3.11 Agent cursor in the browser pane
 
