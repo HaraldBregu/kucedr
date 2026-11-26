@@ -50,7 +50,7 @@ it('creates soul and user profiles only through update tools', async () => {
 		await rm(legacyUser);
 		await rm(bootstrap);
 		await updateUserTool.run({ name: 'Alice' });
-		workspacePath({ location: workspace });
+		workspacePath(config);
 		await expect(readFile(bootstrap)).rejects.toMatchObject({ code: 'ENOENT' });
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
