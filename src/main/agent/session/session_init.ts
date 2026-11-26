@@ -6,7 +6,6 @@ import { persist } from './session_persist';
 import { resolveSessionId } from './session_resolve_session_id';
 import { sanitizeMessages } from './session_sanitize_messages';
 import { sessionFolderName } from './session_session_folder_name';
-import { sessionsRoot } from './session_sessions_root';
 import { DEFAULT_CATEGORY } from './session_types';
 import type { SessionCoordinator } from './coordinator';
 import { messagesFilePath } from './session_messages_file_path';
