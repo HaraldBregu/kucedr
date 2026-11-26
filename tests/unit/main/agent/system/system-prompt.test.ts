@@ -5,7 +5,13 @@ import { addSkillPrompt } from '../../../../../src/main/agent/system/system_add_
 import { addToolsPrompt } from '../../../../../src/main/agent/system/system_add_tools_prompt';
 import { buildLoadedSkillPrompt } from '../../../../../src/main/agent/system/system_build_loaded_skill_prompt';
 import { buildSystemPrompt } from '../../../../../src/main/agent/system/system_build_prompt';
-import type { Tool } from '../../../../../src/main/agent/types';
+import type { Config, Tool } from '../../../../../src/main/agent/types';
+import { buildWorkspace } from '../../../../../src/main/workspaces/build';
+
+const config: Config = {
+	location: '/workspace',
+	workspace: buildWorkspace('default', '/', '/workspace'),
+};
 
 function tool(name: string, description?: string): Tool {
 	return { id: name, category: 'system', name, description } as Tool;
