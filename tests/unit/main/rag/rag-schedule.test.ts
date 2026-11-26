@@ -20,7 +20,11 @@ jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({
 }));
 jest.mock('../../../../src/main/agent/knowledge/rag/rag_index', () => ({ indexRag }));
 jest.mock('../../../../src/main/agent/knowledge/rag/vector', () => ({
-	ragVectorStore: () => ({ getIndex, close }),
+	ragVectorStore: () => ({
+		getIndex,
+		close,
+		summary: () => ({ chunks: 0, paths: [], byPath: [] }),
+	}),
 }));
 
 import {
