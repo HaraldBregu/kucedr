@@ -261,10 +261,10 @@ renderer re-sends them into their workspace and chat.
 
 ## Background work
 
-- **Scheduled tasks** store their `workspaceId`, with a missing value meaning `default`. Main keeps a
-  schedule → workspace index loaded from every workspace, and `exists`, `requireSchedule`, `update`
-  and `associateSession` resolve the owning store from it. Cron fires every workspace's schedules,
-  whatever the windows show. Task tools and the list IPC are scoped to the caller's workspace.
+- **Scheduled tasks** stay in the one shared task store (`settings/tasks`). Each schedule gets a
+  `workspaceId`, with a missing value meaning `default`. Cron fires every schedule in its own
+  workspace, whatever the windows show. Task tools and the list IPC filter by the caller's
+  workspace, and a call on another workspace's schedule is refused.
 - **Health** runs in the default workspace.
 - **Coding agents:** harness homes and Coder sessions live under the workspace root
   (`<root>/coder`), so harness sign-ins and threads stay per workspace. For the default workspace
