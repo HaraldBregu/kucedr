@@ -87,6 +87,13 @@
 	--animate-panel-up: panel-up 0.2s ease-out;
 }
 
+.settings-command-highlight {
+	outline: 2px solid var(--ring);
+	outline-offset: 3px;
+	background-color: color-mix(in srgb, var(--accent) 65%, transparent);
+	transition: background-color 200ms ease-out;
+}
+
 :root {
 	color-scheme: light;
 	--radius: 0.75rem;

@@ -128,6 +128,28 @@ function RouteWrapper({
 }
 
 function SettingsRouteWrapper({ children }: { readonly children: ReactNode }): React.JSX.Element {
+	const location = useLocation();
+	const navigate = useNavigate();
+	useEffect(() => {
+		const targetId = (location.state as { settingsTargetId?: string } | null)?.settingsTargetId;
+		if (!targetId) return;
+		let attempts = 0;
+		let frame = 0;
+		const focusTarget = (): void => {
+			const target = document.getElementById(targetId);
+			if (target) {
+				target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				target.focus({ preventScroll: true });
+				target.classList.add('settings-command-highlight');
+				window.setTimeout(() => target.classList.remove('settings-command-highlight'), 1600);
+				navigate(location.pathname, { replace: true, state: null });
+				return;
+			}
+			if (attempts++ < 60) frame = window.requestAnimationFrame(focusTarget);
+		};
+		frame = window.requestAnimationFrame(focusTarget);
+		return () => window.cancelAnimationFrame(frame);
+	}, [location.pathname, location.state, navigate]);
 	return (
 		<ErrorBoundary level="route">
 			<Suspense fallback={<SettingsPageSkeleton />}>{children}</Suspense>

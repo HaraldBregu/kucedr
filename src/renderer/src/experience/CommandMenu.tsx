@@ -38,6 +38,7 @@ interface AppRouteItem {
 	readonly description?: string;
 	readonly icon: LucideIcon;
 	readonly path: string;
+	readonly targetId?: string;
 	readonly searchValue: string;
 	readonly keywords: string[];
 }
@@ -131,6 +132,7 @@ function mapSettingsDetailItem(item: SettingsDetailItem, t: TFunction): AppRoute
 		description: item.descriptionKey ? t(item.descriptionKey) : undefined,
 		icon: item.icon ?? getSettingsRouteIcon(item.path),
 		path: item.path,
+		targetId: item.targetId,
 		keywords: item.keywords,
 	});
 }
@@ -179,7 +181,7 @@ function CommandMenuItem({
 	onSelect,
 }: {
 	readonly item: AppRouteItem;
-	readonly onSelect: (path: string) => void;
+	readonly onSelect: (path: string, targetId?: string) => void;
 }): React.JSX.Element {
 	const Icon = item.icon;
 
@@ -187,7 +189,7 @@ function CommandMenuItem({
 		<CommandItem
 			value={item.searchValue}
 			keywords={item.keywords}
-			onSelect={() => onSelect(item.path)}
+			onSelect={() => onSelect(item.path, item.targetId)}
 		>
 			<Icon className="size-4" aria-hidden="true" />
 			<span className="min-w-0 flex-1 truncate">{item.label}</span>
@@ -304,9 +306,9 @@ export function CommandMenu({
 	);
 
 	const navigateTo = useCallback(
-		(path: string) => {
+		(path: string, targetId?: string) => {
 			setOpen(false);
-			navigate(path);
+			navigate(path, targetId ? { state: { settingsTargetId: targetId } } : undefined);
 		},
 		[navigate, setOpen]
 	);
