@@ -122,10 +122,11 @@ export function WorkspaceMarkdownEditor({
 						['editorQuote', () => this.editor.chain().focus().toggleBlockquote().run()],
 						['editorCodeBlock', () => this.editor.chain().focus().toggleCodeBlock().run()],
 					];
-					return Object.fromEntries(bindings.map(([id, run]) => [
-						SHORTCUTS.find((shortcut) => shortcut.id === id && 'tiptapKey' in shortcut)!.tiptapKey,
-						run,
-					]));
+					return bindings.reduce<Record<string, () => boolean>>((shortcuts, [id, run]) => {
+						const shortcut = SHORTCUTS.find((item) => item.id === id);
+						if (shortcut && 'tiptapKey' in shortcut) shortcuts[shortcut.tiptapKey] = run;
+						return shortcuts;
+					}, {});
 				},
 			}),
 		],
