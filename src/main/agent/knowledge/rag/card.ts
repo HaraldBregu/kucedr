@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { currentWorkspace } from '../../../workspaces/current';
 import { getRagConfiguration } from './rag_store';
 import { ragVectorStore } from './vector';
 import type { VectorStore } from './types';
@@ -14,6 +15,7 @@ export function knowledgeCard(): string {
 		const index = store.getIndex(configuration.indexName);
 		if (!index) return '';
 		const key = [
+			currentWorkspace().id,
 			index.indexName,
 			index.generation,
 			index.completedAt,

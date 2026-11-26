@@ -5,43 +5,55 @@ import { runRagIndexing } from './run';
 import { getRagConfiguration, subscribeRagConfiguration } from './rag_store';
 import { ragIndexingSignature } from './signature';
 import type { RagScheduleLogger } from './types';
+import { DEFAULT_WORKSPACE } from '../../../../shared/workspaces_types';
+import { currentWorkspace } from '../../../workspaces/current';
+import { readWorkspaces } from '../../../workspaces/read';
+import { workspaceScope } from '../../../workspaces/scope';
+import { withinWorkspace } from '../../../workspaces/within';
 
-let task: ScheduledTask | undefined;
+const tasks = new Map<string, ScheduledTask>();
 let scheduleLogger: RagScheduleLogger | undefined;
 let unsubscribe: (() => void) | undefined;
+const revisions = new Map<string, number>();
 let revision = 0;
 
 export function startRagSchedule(logger: RagScheduleLogger): void {
 	unsubscribe?.();
 	scheduleLogger = logger;
 	unsubscribe = subscribeRagConfiguration(rescheduleRagIndexing);
-	schedule();
+	for (const id of [DEFAULT_WORKSPACE, ...readWorkspaces().map((record) => record.id)])
+		withinWorkspace(id, schedule);
 }
 
 export function stopRagSchedule(): void {
-	revision += 1;
+	revisions.clear();
 	unsubscribe?.();
 	unsubscribe = undefined;
-	cancelRagIndexing();
-	task?.destroy();
-	task = undefined;
+	for (const [id, task] of tasks) {
+		withinWorkspace(id, cancelRagIndexing);
+		task.destroy();
+	}
+	tasks.clear();
 	scheduleLogger = undefined;
 }
 
 export function rescheduleRagIndexing(): void {
-	if (ragJob.configuration && ragJob.configuration !== ragIndexingSignature(getRagConfiguration()))
+	const job = ragJob();
+	if (job.configuration && job.configuration !== ragIndexingSignature(getRagConfiguration()))
 		cancelRagIndexing();
 	if (scheduleLogger) schedule();
 }
 
 export function getRagNextRun(): string | null {
-	return task?.getNextRun()?.toISOString() ?? null;
+	return tasks.get(currentWorkspace().id)?.getNextRun()?.toISOString() ?? null;
 }
 
 function schedule(): void {
 	const currentRevision = ++revision;
-	task?.destroy();
-	task = undefined;
+	const workspace = currentWorkspace();
+	revisions.set(workspace.id, currentRevision);
+	tasks.get(workspace.id)?.destroy();
+	tasks.delete(workspace.id);
 	const logger = scheduleLogger;
 	const configuration = getRagConfiguration();
 	if (
@@ -59,17 +71,21 @@ function schedule(): void {
 		'RAG',
 		`Indexing ${configuration.folders.length} folder(s) on ${configuration.cronExpression}`
 	);
-	task = cron.schedule(
-		configuration.cronExpression,
-		async () => {
-			if (currentRevision !== revision || ragJob.running) return;
-			try {
-				await runRagIndexing('scheduled');
-				logger.info('RAG', 'Scheduled indexing completed.');
-			} catch (error) {
-				logger.error('RAG', 'Scheduled indexing failed.', error);
-			}
-		},
-		{ noOverlap: true, timezone: configuration.timezone, missedExecutionTolerance: 60_000 }
+	tasks.set(
+		workspace.id,
+		cron.schedule(
+			configuration.cronExpression,
+			() =>
+				workspaceScope.run(workspace, async () => {
+					if (revisions.get(workspace.id) !== currentRevision || ragJob().running) return;
+					try {
+						await runRagIndexing('scheduled');
+						logger.info('RAG', 'Scheduled indexing completed.');
+					} catch (error) {
+						logger.error('RAG', 'Scheduled indexing failed.', error);
+					}
+				}),
+			{ noOverlap: true, timezone: configuration.timezone, missedExecutionTolerance: 60_000 }
+		)
 	);
 }

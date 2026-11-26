@@ -5,7 +5,9 @@ import { BROWSER_ROUTES, type BrowserConnections } from '../../shared/browser';
 import { BrowserChannels } from '../../shared/ipc_channels_definitions';
 import { pollAutofill } from '../agent/tools/web/browser/autofill';
 import { command } from '../agent/tools/web/browser/command';
+import { findTab } from '../agent/tools/web/browser/find';
 import { acting, pane, paneEvents, paneShown, paneTabs } from '../agent/tools/web/browser/pane';
+import { workspaceScope } from '../workspaces/scope';
 import { tabs } from '../agent/tools/web/browser/tabs';
 import { profileFiles } from '../browser/files';
 import { importFiles } from '../browser/import';
@@ -99,10 +101,10 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		setInterval(() => {
 			for (const tab of new Set(paneShown.values()))
 				if (tab.route === 'direct' && !tab.view.webContents.isDestroyed() && !(tab.chat && acting.has(tab.chat)))
-					void pollAutofill(tab);
+					void workspaceScope.run(tab.workspace, () => pollAutofill(tab));
 		}, 250).unref();
 
-		paneEvents.on('change', () => trusted.broadcast(BrowserChannels.changed, tabs()));
+		paneEvents.on('change', () => trusted.broadcastScoped(BrowserChannels.changed, tabs));
 		trusted.query(BrowserChannels.state, () => tabs());
 		trusted.command(BrowserChannels.command, (request) => command(commandSchema.parse(request)));
 		trusted.query(BrowserChannels.sources, () => browserSources());
@@ -206,7 +208,7 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			return confirmed;
 		});
 		trusted.command(BrowserChannels.passwordsOffer, (id, answer) => {
-			const tab = paneTabs.get(targetId.parse(id));
+			const tab = findTab(targetId.parse(id));
 			if (tab) answerOffer(tab, z.enum(['save', 'never', 'dismiss']).parse(answer));
 		});
 		trusted.query(BrowserChannels.passwordsNever, () => neverSites());
@@ -227,21 +229,21 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		});
 		// Saved passwords belong to direct tabs; private, Tor and proxy tabs never see them.
 		trusted.command(BrowserChannels.passwordsMatch, (id) => {
-			const tab = paneTabs.get(targetId.parse(id));
+			const tab = findTab(targetId.parse(id));
 			return tab?.route === 'direct' ? matchLogins(tab.view.webContents.getURL()) : [];
 		});
 		trusted.command(BrowserChannels.passwordsFill, async (id, loginId) => {
-			const tab = paneTabs.get(targetId.parse(id));
+			const tab = findTab(targetId.parse(id));
 			if (!tab) throw new Error('This tab is closed.');
 			if (tab.route !== 'direct') throw new Error('Saved passwords are not used in this tab.');
 			await fillLogin(tab, z.string().max(64).parse(loginId));
 		});
 		trusted.command(BrowserChannels.downloadAnswer, (id, answer) => {
-			const tab = paneTabs.get(targetId.parse(id));
+			const tab = findTab(targetId.parse(id));
 			if (tab) answerDownload(tab, z.enum(['save', 'cancel', 'dismiss', 'show']).parse(answer));
 		});
 		trusted.command(BrowserChannels.permissionAnswer, (id, answer) => {
-			const tab = paneTabs.get(targetId.parse(id));
+			const tab = findTab(targetId.parse(id));
 			if (tab) answerPermission(tab, z.enum(['allow', 'block', 'dismiss']).parse(answer));
 		});
 		trusted.query(BrowserChannels.connections, () => connections());
@@ -254,7 +256,7 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 		trusted.command(BrowserChannels.cursorSet, (enabled) => setAgentCursor(z.boolean().parse(enabled)));
 		trusted.commandWithEvent(BrowserChannels.view, ({ sender }, request) => {
 			const next = viewSchema.parse(request);
-			const tab = next ? paneTabs.get(next.targetId) : undefined;
+			const tab = next ? findTab(next.targetId) : undefined;
 			const window = BrowserWindow.fromWebContents(sender);
 			const current = paneShown.get(sender);
 			if (current && current !== tab && paneTabs.has(current.id)) current.view.setVisible(false);

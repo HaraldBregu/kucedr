@@ -1,3 +1,5 @@
+import { DEFAULT_WORKSPACE } from '../shared/workspaces_types';
+import { withinWorkspace } from './workspaces/within';
 import path from 'node:path';
 import Store from 'electron-store';
 import type {
@@ -107,40 +109,41 @@ type LegacyAppSettingsState = AppSettingsState & {
 const persistedSettings = { ...store.store } as LegacyAppSettingsState;
 const legacyDatabase = persistedSettings.databaseConfiguration;
 const legacyEmbedding = persistedSettings.modelSelections?.embedding;
-if (legacyDatabase || legacyEmbedding) {
-	const configuration = getRagConfiguration();
-	const hasRagDatabase =
-		ragConfigurationExisted &&
-		Boolean(configuration.databaseProviderId && configuration.databaseId);
-	const hasLegacyDatabase = Boolean(legacyDatabase?.providerId && legacyDatabase.databaseId);
-	const hasRagEmbedding = Boolean(
-		configuration.embeddingProviderId && configuration.embeddingModelId
-	);
-	const hasLegacyEmbedding = Boolean(legacyEmbedding?.providerId && legacyEmbedding.modelId);
-	saveRagConfiguration({
-		...configuration,
-		databaseProviderId: hasRagDatabase
-			? configuration.databaseProviderId
-			: hasLegacyDatabase
-				? legacyDatabase?.providerId?.trim() || ''
-				: '',
-		databaseId: hasRagDatabase
-			? configuration.databaseId
-			: hasLegacyDatabase
-				? legacyDatabase?.databaseId?.trim() || ''
-				: '',
-		embeddingProviderId: hasRagEmbedding
-			? configuration.embeddingProviderId
-			: hasLegacyEmbedding
-				? legacyEmbedding?.providerId?.trim() || ''
-				: '',
-		embeddingModelId: hasRagEmbedding
-			? configuration.embeddingModelId
-			: hasLegacyEmbedding
-				? legacyEmbedding?.modelId?.trim() || ''
-				: '',
+if (legacyDatabase || legacyEmbedding)
+	withinWorkspace(DEFAULT_WORKSPACE, () => {
+		const configuration = getRagConfiguration();
+		const hasRagDatabase =
+			ragConfigurationExisted &&
+			Boolean(configuration.databaseProviderId && configuration.databaseId);
+		const hasLegacyDatabase = Boolean(legacyDatabase?.providerId && legacyDatabase.databaseId);
+		const hasRagEmbedding = Boolean(
+			configuration.embeddingProviderId && configuration.embeddingModelId
+		);
+		const hasLegacyEmbedding = Boolean(legacyEmbedding?.providerId && legacyEmbedding.modelId);
+		saveRagConfiguration({
+			...configuration,
+			databaseProviderId: hasRagDatabase
+				? configuration.databaseProviderId
+				: hasLegacyDatabase
+					? legacyDatabase?.providerId?.trim() || ''
+					: '',
+			databaseId: hasRagDatabase
+				? configuration.databaseId
+				: hasLegacyDatabase
+					? legacyDatabase?.databaseId?.trim() || ''
+					: '',
+			embeddingProviderId: hasRagEmbedding
+				? configuration.embeddingProviderId
+				: hasLegacyEmbedding
+					? legacyEmbedding?.providerId?.trim() || ''
+					: '',
+			embeddingModelId: hasRagEmbedding
+				? configuration.embeddingModelId
+				: hasLegacyEmbedding
+					? legacyEmbedding?.modelId?.trim() || ''
+					: '',
+		});
 	});
-}
 migrateMcpStoreFromProviders();
 delete persistedSettings.databaseConfiguration;
 delete persistedSettings.modelSelections;

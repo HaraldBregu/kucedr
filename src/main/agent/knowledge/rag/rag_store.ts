@@ -11,7 +11,9 @@ import {
 	LOCAL_RAG_DATABASE_PROVIDER_ID,
 	type RagConfiguration,
 } from '../../../../shared/rag_types';
-import { userDataLocation } from '../../../shared/user_data_location';
+import { DEFAULT_WORKSPACE } from '../../../../shared/workspaces_types';
+import { currentWorkspace } from '../../../workspaces/current';
+import { resolveWorkspace } from '../../../workspaces/resolve';
 import { normalizeRagIndexName } from './rag_index_name';
 
 const DEFAULT_RAG_CONFIGURATION: RagConfiguration = {
@@ -31,21 +33,37 @@ const DEFAULT_RAG_CONFIGURATION: RagConfiguration = {
 };
 
 const configurationListeners = new Set<() => void>();
-const settingsDirectory = path.resolve(userDataLocation(), 'rag');
+const settingsDirectory = path.resolve(resolveWorkspace(DEFAULT_WORKSPACE).rag);
 export const ragConfigurationExisted = existsSync(path.join(settingsDirectory, 'settings.json'));
+export const ragConfigurationStorePath = path.join(settingsDirectory, 'settings.json');
 
-const store = new Store<RagConfiguration>({
-	name: 'settings',
-	cwd: settingsDirectory,
-	accessPropertiesByDotNotation: false,
-	configFileMode: 0o600,
-	defaults: DEFAULT_RAG_CONFIGURATION,
-});
+const stores = new Map<string, Store<RagConfiguration>>();
 
-export const ragConfigurationStorePath = store.path;
-restrictSettingsFile(store.path);
+function ragStore(): Store<RagConfiguration> {
+	const workspace = currentWorkspace();
+	let store = stores.get(workspace.id);
+	if (!store) {
+		store = new Store<RagConfiguration>({
+			name: 'settings',
+			cwd: path.resolve(workspace.rag),
+			accessPropertiesByDotNotation: false,
+			configFileMode: 0o600,
+			defaults: {
+				...DEFAULT_RAG_CONFIGURATION,
+				indexName:
+					workspace.id === DEFAULT_WORKSPACE
+						? DEFAULT_RAG_INDEX_NAME
+						: `${DEFAULT_RAG_INDEX_NAME}-${workspace.id}`,
+			},
+		});
+		restrictSettingsFile(store.path);
+		stores.set(workspace.id, store);
+	}
+	return store;
+}
 
 export function getRagConfiguration(): RagConfiguration {
+	const store = ragStore();
 	const configuration = {
 		...DEFAULT_RAG_CONFIGURATION,
 		...store.store,
@@ -149,6 +167,7 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 		timezone,
 		minimumScore,
 	});
+	const store = ragStore();
 	store.store = saved;
 	restrictSettingsFile(store.path);
 	for (const listener of configurationListeners) listener();

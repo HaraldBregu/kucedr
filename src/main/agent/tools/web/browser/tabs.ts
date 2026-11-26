@@ -1,9 +1,10 @@
 import type { BrowserPaneState, BrowserPaneTab } from '../../../../../shared/browser';
-import { acting, paneTabs } from './pane';
+import { workspaceTabs } from './local';
+import { acting } from './pane';
 
 export function tabs(): BrowserPaneState {
 	const list: BrowserPaneTab[] = [];
-	for (const tab of [...paneTabs.values()].sort((a, b) => a.position - b.position)) {
+	for (const tab of workspaceTabs().sort((a, b) => a.position - b.position)) {
 		const contents = tab.view.webContents;
 		if (tab.chat === undefined || contents.isDestroyed()) continue;
 		const pending = tab.pending?.entries[tab.pending.index];

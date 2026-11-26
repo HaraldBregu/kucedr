@@ -1,13 +1,12 @@
 import path from 'node:path';
 import { paneTabs } from '../agent/tools/web/browser/pane';
-import { userDataLocation } from '../shared/user_data_location';
 import { writeFileAtomic } from './write';
 
 const ENTRY_LIMIT = 50;
 const TAB_LIMIT = 100;
 const DELAY_MS = 1_000;
 
-let last = '';
+const last = new Map<string, string>();
 let timer: NodeJS.Timeout | undefined;
 let closed = false;
 
@@ -15,13 +14,16 @@ export function saveTabs(final = false): void {
 	if (closed) return;
 	const write = (): void => {
 		timer = undefined;
-		const saved: {
-			chat: string;
-			agent?: boolean;
-			order: number;
-			entries: { url: string; title: string }[];
-			index: number;
-		}[] = [];
+		const saved = new Map<
+			string,
+			{
+				chat: string;
+				agent?: boolean;
+				order: number;
+				entries: { url: string; title: string }[];
+				index: number;
+			}[]
+		>([...last.keys()].map((directory) => [directory, []]));
 		for (const tab of [...paneTabs.values()].sort((a, b) => a.position - b.position)) {
 			const contents = tab.view.webContents;
 			// Private, Tor and proxy tabs leave nothing behind, so they are not restored.
@@ -36,7 +38,9 @@ export function saveTabs(final = false): void {
 			if (!kept.length) continue;
 			const index = Math.max(0, kept.findLastIndex((entry) => entry.at <= all.index));
 			const start = Math.max(0, Math.min(index, kept.length - ENTRY_LIMIT));
-			saved.push({
+			const list = saved.get(tab.workspace.browser) ?? [];
+			saved.set(tab.workspace.browser, list);
+			list.push({
 				chat: tab.chat,
 				...(tab.agent ? { agent: true } : {}),
 				order: tab.order,
@@ -44,10 +48,12 @@ export function saveTabs(final = false): void {
 				index: index - start,
 			});
 		}
-		const tabs = JSON.stringify(saved.slice(0, TAB_LIMIT));
-		if (tabs === last) return;
-		last = tabs;
-		writeFileAtomic(path.join(userDataLocation(), 'browser', 'tabs.json'), `{"saved":${Date.now()},"tabs":${tabs}}`);
+		for (const [directory, list] of saved) {
+			const tabs = JSON.stringify(list.slice(0, TAB_LIMIT));
+			if (tabs === last.get(directory)) continue;
+			last.set(directory, tabs);
+			writeFileAtomic(path.join(directory, 'tabs.json'), `{"saved":${Date.now()},"tabs":${tabs}}`);
+		}
 	};
 	if (final) {
 		clearTimeout(timer);

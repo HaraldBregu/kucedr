@@ -10,8 +10,9 @@ import { answerPermission } from './answer';
 import { acting, pane, paneEvents, paneTabs, type BrowserTab } from './pane';
 import { prepare } from './prepare';
 import { answerDownload } from './release';
+import { currentWorkspace } from '../../../../workspaces/current';
+import { workspaceScope } from '../../../../workspaces/scope';
 
-const PARTITION = 'persist:agent-browser';
 const CONSOLE_BUFFER_MAX = 100;
 let disposable = 0;
 
@@ -21,8 +22,9 @@ export function createTab(
 	chat?: string,
 	owner?: string,
 	route: BrowserRoute = 'direct',
-	partition = route === 'direct' ? PARTITION : `${route}-${++disposable}`
+	partition = route === 'direct' ? currentWorkspace().partition : `${route}-${++disposable}`
 ): BrowserTab {
+	const workspace = currentWorkspace();
 	const ready = prepare(partition, route);
 	const view = new WebContentsView({
 		webPreferences: {
@@ -46,6 +48,7 @@ export function createTab(
 		agent: owner !== undefined,
 		order: ++pane.order,
 		position: ++pane.position,
+		workspace,
 	};
 	const contents = view.webContents;
 	const changed = (): void => {
@@ -66,7 +69,9 @@ export function createTab(
 		.catch(() => undefined);
 	contents.setWindowOpenHandler(({ url }) => {
 		if (/^https?:/i.test(url)) {
-			const popup = createTab(tab.chat, tab.owner, route, partition);
+			const popup = workspaceScope.run(workspace, () =>
+				createTab(tab.chat, tab.owner, route, partition)
+			);
 			popup.agent = tab.agent;
 			const target = popup.view.webContents;
 			void popup.ready
@@ -81,7 +86,7 @@ export function createTab(
 		if (!/^https?:/i.test(url)) event.preventDefault();
 	});
 	contents.on('console-message', (event) => {
-		if (readCapture(tab, event.message)) return;
+		if (workspaceScope.run(workspace, () => readCapture(tab, event.message))) return;
 		tab.logs.push(`[${event.level}] ${event.message}`);
 		if (tab.logs.length > CONSOLE_BUFFER_MAX) tab.logs.shift();
 	});
@@ -123,16 +128,18 @@ export function createTab(
 		contents.on(name as 'did-stop-loading', changed);
 	// History keeps the user's own browsing in direct tabs only.
 	const user = (): boolean => route === 'direct' && !(tab.chat && acting.has(tab.chat));
+	const record = (url: string, title?: string): void =>
+		workspaceScope.run(workspace, () => visit(url, title));
 	contents.on('did-navigate', (_event, url) => {
 		tab.granted = undefined;
 		answerPermission(tab, 'dismiss');
-		if (user()) visit(url);
+		if (user()) record(url);
 	});
 	contents.on('did-navigate-in-page', (_event, url, isMainFrame) => {
-		if (isMainFrame && user()) visit(url);
+		if (isMainFrame && user()) record(url);
 	});
 	contents.on('page-title-updated', (_event, title) => {
-		if (user()) visit(contents.getURL(), title);
+		if (user()) record(contents.getURL(), title);
 	});
 	watchMouseButtons(contents);
 	contents.once('destroyed', () => {

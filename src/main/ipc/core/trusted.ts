@@ -2,6 +2,8 @@ import { BrowserWindow, type IpcMainInvokeEvent } from 'electron';
 import type { InvokeChannelMap } from '../../../shared/ipc_channels_types';
 import type { AppRegistry } from '../../apps/app_registry';
 import type { WindowContextManager } from '../../window_context';
+import { workspaceScope } from '../../workspaces/scope';
+import { senderWorkspace } from '../../workspaces/sender';
 import { registerCommandWithEvent, registerQueryWithEvent } from './gateway';
 
 export class TrustedRenderer {
@@ -58,6 +60,14 @@ export class TrustedRenderer {
 		registerCommandWithEvent(channel, (event, ...args) => {
 			this.assert(event);
 			return handler(event, ...args);
+		});
+	}
+
+	broadcastScoped(channel: string, data: () => unknown): void {
+		BrowserWindow.getAllWindows().forEach((window) => {
+			if (window.isDestroyed() || !this.windows.has(window.id)) return;
+			const workspace = senderWorkspace(window.webContents);
+			if (workspace) window.webContents.send(channel, workspaceScope.run(workspace, data));
 		});
 	}
 

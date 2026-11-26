@@ -7,7 +7,9 @@ import { closeTab } from './close';
 import { createTab } from './create';
 import { cursor } from './cursor';
 import { locate } from './locate';
-import { acting, pane, paneTabs, type BrowserTab } from './pane';
+import { findTab } from './find';
+import { workspaceTabs } from './local';
+import { acting, pane, type BrowserTab } from './pane';
 import { settle } from './settle';
 import { shown } from './shown';
 import { SNAPSHOT_SCRIPT } from './snapshot';
@@ -53,7 +55,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 	const latest = (tabs: BrowserTab[]): BrowserTab | undefined => tabs.sort((a, b) => a.order - b.order).at(-1);
 	const list = (): { targetId: string; url: string; title: string; shown: boolean; mine: boolean; route?: BrowserRoute }[] => {
 		const visible = shown();
-		return [...paneTabs.values()].map((tab) => ({
+		return workspaceTabs().map((tab) => ({
 			targetId: tab.id,
 			url: tab.pending?.entries[tab.pending.index]?.url ?? tab.view.webContents.getURL(),
 			title: tab.pending?.entries[tab.pending.index]?.title ?? tab.view.webContents.getTitle(),
@@ -69,9 +71,9 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		return parsed.toString();
 	};
 	const current = async (): Promise<BrowserTab> => {
-		const all = [...paneTabs.values()];
+		const all = workspaceTabs();
 		const tab = params.targetId
-			? paneTabs.get(params.targetId)
+			? findTab(params.targetId)
 			: (latest(all.filter((candidate) => scope && candidate.owner === scope.runId)) ??
 				shown().find(free) ??
 				latest(all.filter(mine)) ??
@@ -108,13 +110,13 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 
 	switch (params.action) {
 		case 'status':
-			return JSON.stringify({ running: paneTabs.size > 0, tabs: list() });
+			return JSON.stringify({ running: workspaceTabs().length > 0, tabs: list() });
 		case 'start':
-			if (![...paneTabs.values()].some(mine)) createTab(scope?.sessionId, scope?.runId);
+			if (!workspaceTabs().some(mine)) createTab(scope?.sessionId, scope?.runId);
 			return JSON.stringify({ running: true, tabs: list() });
 		case 'stop':
-			for (const tab of [...paneTabs.values()]) if (mine(tab) && tab.agent) closeTab(tab);
-			return JSON.stringify({ running: paneTabs.size > 0, tabs: list() });
+			for (const tab of workspaceTabs()) if (mine(tab) && tab.agent) closeTab(tab);
+			return JSON.stringify({ running: workspaceTabs().length > 0, tabs: list() });
 		case 'tabs':
 			return JSON.stringify({ tabs: list() });
 		case 'open': {
@@ -137,8 +139,8 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		}
 		case 'close': {
 			const tab = params.targetId
-				? paneTabs.get(params.targetId)
-				: latest([...paneTabs.values()].filter((candidate) => mine(candidate) && candidate.agent));
+				? findTab(params.targetId)
+				: latest(workspaceTabs().filter((candidate) => mine(candidate) && candidate.agent));
 			if (!tab)
 				throw new Error(
 					params.targetId

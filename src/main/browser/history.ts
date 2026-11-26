@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { userDataLocation } from '../shared/user_data_location';
+import { currentWorkspace } from '../workspaces/current';
 import { aside } from './aside';
 import { library } from './library';
 import { writeFileAtomic } from './write';
@@ -15,29 +15,34 @@ export interface Visit {
 	last: number;
 }
 
-let cached: Visit[] | undefined;
-let timer: NodeJS.Timeout | undefined;
+const cached = new Map<string, Visit[]>();
+const timers = new Map<string, NodeJS.Timeout>();
 
 export function history(next?: Visit[], now = false): Visit[] {
-	const file = path.join(userDataLocation(), 'browser', 'history.json');
+	const file = path.join(currentWorkspace().browser, 'history.json');
 	const write = (): void => {
-		clearTimeout(timer);
-		timer = undefined;
-		writeFileAtomic(file, JSON.stringify(cached));
+		clearTimeout(timers.get(file));
+		timers.delete(file);
+		writeFileAtomic(file, JSON.stringify(cached.get(file)));
 	};
 	if (next) {
-		cached = [...next].sort((a, b) => b.last - a.last).slice(0, HISTORY_LIMIT);
-		timer ??= setTimeout(write, DELAY_MS);
+		cached.set(
+			file,
+			[...next].sort((a, b) => b.last - a.last).slice(0, HISTORY_LIMIT)
+		);
+		if (!timers.has(file)) timers.set(file, setTimeout(write, DELAY_MS));
 	}
-	if (now && timer) write();
-	if (!cached) {
+	if (now && timers.has(file)) write();
+	let list = cached.get(file);
+	if (!list) {
 		library();
 		try {
-			cached = JSON.parse(readFileSync(file, 'utf8')) as Visit[];
+			list = JSON.parse(readFileSync(file, 'utf8')) as Visit[];
 		} catch {
 			aside(file);
-			cached = [];
+			list = [];
 		}
+		cached.set(file, list);
 	}
-	return cached;
+	return list;
 }

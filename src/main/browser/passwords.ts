@@ -4,7 +4,7 @@ import { createCipheriv, createDecipheriv, randomBytes, randomUUID } from 'node:
 import path from 'node:path';
 import { getDomain } from 'tldts';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
-import { userDataLocation } from '../shared/user_data_location';
+import { currentWorkspace } from '../workspaces/current';
 import { readLogins } from './csv';
 import { writeFileAtomic } from './write';
 
@@ -32,11 +32,11 @@ interface Store {
 	readonly never?: string[];
 }
 
-let cached: { store: Store | undefined; broken: boolean } | undefined;
-let storeKey: Buffer | undefined;
+const cache = new Map<string, { store: Store | undefined; broken: boolean }>();
+const storeKeys = new Map<string, Buffer>();
 
 function file(): string {
-	return path.join(userDataLocation(), 'browser', 'passwords.json');
+	return path.join(currentWorkspace().browser, 'passwords.json');
 }
 
 function parse(url: string): URL | undefined {
@@ -81,19 +81,23 @@ export function canFill(savedUrl: string, pageUrl: string): boolean {
 // Distinguishes a missing store (safe to create) from one that exists but cannot be read
 // (must never be overwritten, or every saved password is lost).
 function load(): { store: Store | undefined; broken: boolean } {
-	if (cached) return cached;
 	const sealed = file();
-	if (!existsSync(sealed)) return (cached = { store: undefined, broken: false });
-	try {
-		const store = JSON.parse(readFileSync(sealed, 'utf8')) as Store;
-		cached = { store, broken: store.version !== 2 || !Array.isArray(store.logins) };
-	} catch {
-		cached = { store: undefined, broken: true };
-	}
+	let cached = cache.get(sealed);
+	if (cached) return cached;
+	if (!existsSync(sealed)) cached = { store: undefined, broken: false };
+	else
+		try {
+			const store = JSON.parse(readFileSync(sealed, 'utf8')) as Store;
+			cached = { store, broken: store.version !== 2 || !Array.isArray(store.logins) };
+		} catch {
+			cached = { store: undefined, broken: true };
+		}
+	cache.set(sealed, cached);
 	return cached;
 }
 
 function unseal(store: Store): Buffer {
+	let storeKey = storeKeys.get(file());
 	if (storeKey) return storeKey;
 	if (!isSafeStorageAvailable()) throw new Error('The system keystore is unavailable, so saved passwords cannot be opened.');
 	try {
@@ -101,6 +105,7 @@ function unseal(store: Store): Buffer {
 	} catch {
 		throw new Error('Your saved passwords could not be opened with the system keystore.');
 	}
+	storeKeys.set(file(), storeKey);
 	return storeKey;
 }
 
@@ -130,7 +135,7 @@ function save(store: Store): void {
 	const target = file();
 	if (existsSync(target)) copyFileSync(target, `${target}.bak`);
 	writeFileAtomic(target, JSON.stringify(store));
-	cached = { store, broken: false };
+	cache.set(target, { store, broken: false });
 }
 
 export function passwordsAvailable(): boolean {
@@ -144,7 +149,8 @@ function writable(): Store {
 	if (broken)
 		throw new Error('Your saved passwords could not be read, so nothing was saved — saving would have overwritten them.');
 	if (store) return store;
-	storeKey = randomBytes(32);
+	const storeKey = randomBytes(32);
+	storeKeys.set(file(), storeKey);
 	return { version: 2, key: safeStorage.encryptString(storeKey.toString('base64')).toString('base64'), logins: [] };
 }
 
@@ -178,8 +184,8 @@ export function countLogins(): number {
 export function clearLogins(): void {
 	rmSync(file(), { force: true });
 	rmSync(`${file()}.bak`, { force: true });
-	cached = undefined;
-	storeKey = undefined;
+	cache.delete(file());
+	storeKeys.delete(file());
 }
 
 // Every change re-encrypts the password, since each ciphertext is bound to its site and username.

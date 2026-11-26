@@ -8,6 +8,7 @@ import { ragRecipient } from './recipient';
 
 export function getRagStatus(): RagStatus {
 	const configuration = getRagConfiguration();
+	const job = ragJob();
 	const store = ragVectorStore();
 	try {
 		const index = store.getIndex(configuration.indexName);
@@ -37,14 +38,14 @@ export function getRagStatus(): RagStatus {
 			}
 		}
 		return {
-			running: ragJob.running,
-			trigger: ragJob.trigger,
-			startedAt: ragJob.startedAt,
-			finishedAt: ragJob.finishedAt,
-			outcome: ragJob.outcome,
-			error: ragJob.error,
-			result: ragJob.result ? { ...ragJob.result } : null,
-			progress: ragJob.progress ? { ...ragJob.progress } : null,
+			running: job.running,
+			trigger: job.trigger,
+			startedAt: job.startedAt,
+			finishedAt: job.finishedAt,
+			outcome: job.outcome,
+			error: job.error,
+			result: job.result ? { ...job.result } : null,
+			progress: job.progress ? { ...job.progress } : null,
 			nextRunAt: getRagNextRun(),
 			timezone: configuration.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
 			requiresIndexing,

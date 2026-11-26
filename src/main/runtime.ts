@@ -46,7 +46,9 @@ import { AppChannels } from '../shared/ipc_channels_definitions';
 import { DEFAULT_WORKSPACE } from '../shared/workspaces_types';
 import { memories } from './memory/all';
 import { openWorkspace } from './workspaces/open';
+import { openedWorkspaces } from './workspaces/opened';
 import { resolveWorkspace } from './workspaces/resolve';
+import { withinWorkspace } from './workspaces/within';
 import { authLinks } from './cloud/links';
 import { pluginLinkId, pluginLinks } from './plugins/plugins_link';
 import { loadLocalEnvironment } from './cloud/environment';
@@ -54,7 +56,6 @@ import { VoiceWindow } from './voice_window';
 import { findBrowserProfiles } from './agent/permissions/browsers';
 import { paneEvents } from './agent/tools/web/browser/pane';
 import { history } from './browser/history';
-import { restoreTabs } from './browser/restore';
 import { configurePrivacy } from './privacy/configure';
 import { isPrivacyEnabled, privacyChanged } from './privacy/state';
 import { isVaultEnabled } from './vault/state';
@@ -230,7 +231,6 @@ app.whenReady().then(async () => {
 		agentService.start(logger);
 		startRagSchedule(logger);
 	}
-	openWorkspace(resolveWorkspace(DEFAULT_WORKSPACE));
 	powerMonitor.on('resume', () => {
 		for (const memory of memories.values())
 			void memory
@@ -294,11 +294,11 @@ app.whenReady().then(async () => {
 		trayManager.updateLanguage(language);
 	});
 
-	restoreTabs();
+	openWorkspace(resolveWorkspace(DEFAULT_WORKSPACE));
 	paneEvents.on('change', () => saveTabs());
 	app.once('before-quit', () => {
 		saveTabs(true);
-		history(undefined, true);
+		for (const id of openedWorkspaces) withinWorkspace(id, () => history(undefined, true));
 	});
 
 	// Create main window

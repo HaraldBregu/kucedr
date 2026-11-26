@@ -2,10 +2,12 @@ import type { BrowserPaneCommand } from '../../../../../shared/browser';
 import { library } from '../../../../browser/library';
 import { closeTab } from './close';
 import { createTab } from './create';
-import { pane, paneEvents, paneTabs } from './pane';
+import { findTab } from './find';
+import { workspaceTabs } from './local';
+import { pane, paneEvents } from './pane';
 
 export async function command(request: BrowserPaneCommand): Promise<void> {
-	const tab = request.targetId === undefined ? undefined : paneTabs.get(request.targetId);
+	const tab = request.targetId === undefined ? undefined : findTab(request.targetId);
 	if (request.command === 'new') {
 		createTab(tab?.chat ?? request.chat, undefined, request.route);
 		paneEvents.emit('change');
@@ -47,7 +49,7 @@ export async function command(request: BrowserPaneCommand): Promise<void> {
 			tab.order = ++pane.order;
 			break;
 		case 'move': {
-			const strip = [...paneTabs.values()].sort((a, b) => a.position - b.position).filter((item) => item !== tab);
+			const strip = workspaceTabs().sort((a, b) => a.position - b.position).filter((item) => item !== tab);
 			strip.splice(Math.min(request.index ?? strip.length, strip.length), 0, tab);
 			strip.forEach((item, at) => (item.position = at));
 			tab.order = ++pane.order;

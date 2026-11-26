@@ -3,12 +3,12 @@ import { knowledgeRoot } from '../root';
 import { randomUUID } from 'node:crypto';
 import { mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { userDataLocation } from '../../../shared/user_data_location';
+import { ragLocation } from './rag_location';
 import type { RagManifest } from './types';
 import { normalizeRagIndexName } from './rag_index_name';
 
 function manifestPath(): string {
-	return path.join(userDataLocation(), 'rag', 'index.json');
+	return path.join(ragLocation(), 'index.json');
 }
 
 export function readRagManifest(indexName?: string): RagManifest | undefined {

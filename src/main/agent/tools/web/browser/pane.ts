@@ -1,5 +1,6 @@
 import { EventEmitter } from 'node:events';
 import type { BrowserWindow, DownloadItem, WebContents, WebContentsView } from 'electron';
+import type { Workspace } from '../../../../workspaces/types';
 import type {
 	BrowserBlocked,
 	BrowserDownload,
@@ -33,6 +34,7 @@ export interface BrowserTab {
 	pointer?: { x: number; y: number };
 	filled?: boolean;
 	host?: BrowserWindow;
+	workspace: Workspace;
 	// Encrypts what the page's private script world reports about a sign-in; known only to main
 	// and that world.
 	captureKey?: Buffer;

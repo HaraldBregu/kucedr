@@ -2,11 +2,11 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { createTab } from '../agent/tools/web/browser/create';
 import { pane, paneEvents } from '../agent/tools/web/browser/pane';
-import { userDataLocation } from '../shared/user_data_location';
+import { currentWorkspace } from '../workspaces/current';
 import { aside } from './aside';
 
 export function restoreTabs(): void {
-	const file = path.join(userDataLocation(), 'browser', 'tabs.json');
+	const file = path.join(currentWorkspace().browser, 'tabs.json');
 	try {
 		const saved = JSON.parse(readFileSync(file, 'utf8')) as {
 			tabs: {

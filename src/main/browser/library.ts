@@ -1,6 +1,6 @@
 import { copyFileSync, existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { userDataLocation } from '../shared/user_data_location';
+import { currentWorkspace } from '../workspaces/current';
 import { aside } from './aside';
 import type { Visit } from './history';
 import { writeFileAtomic } from './write';
@@ -12,16 +12,17 @@ export interface Library {
 	search: string;
 }
 
-let cached: Library | undefined;
+const cache = new Map<string, Library>();
 
 export function library(next?: Library): Library {
-	const directory = path.join(userDataLocation(), 'browser');
+	const directory = currentWorkspace().browser;
 	const file = path.join(directory, 'library.json');
 	if (next) {
 		if (existsSync(file)) copyFileSync(file, `${file}.bak`);
 		writeFileAtomic(file, JSON.stringify({ bookmarks: next.bookmarks, search: next.search }));
-		cached = next;
+		cache.set(file, next);
 	}
+	let cached = cache.get(file);
 	if (!cached) {
 		const empty: Library = { bookmarks: [], search: DEFAULT_SEARCH };
 		const parse = (name: string): Library => {
@@ -40,6 +41,7 @@ export function library(next?: Library): Library {
 				cached = empty;
 			}
 		}
+		cache.set(file, cached);
 	}
 	return cached;
 }

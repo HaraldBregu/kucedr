@@ -1,9 +1,8 @@
 import { chmodSync, mkdirSync } from 'node:fs';
-import path from 'node:path';
-import { userDataLocation } from '../../../shared/user_data_location';
+import { currentWorkspace } from '../../../workspaces/current';
 
 export function ragLocation(): string {
-	const location = path.join(userDataLocation(), 'rag');
+	const location = currentWorkspace().rag;
 	mkdirSync(location, { recursive: true, mode: 0o700 });
 	chmodSync(location, 0o700);
 	return location;

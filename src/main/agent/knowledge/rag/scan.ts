@@ -9,7 +9,7 @@ interface Waiting {
 	reject(error: unknown): void;
 }
 
-let current: { worker: Worker; waiting: Map<number, Waiting> } | undefined;
+const workers = new Map<string, { worker: Worker; waiting: Map<number, Waiting> }>();
 let next = 0;
 
 export function scanRag(
@@ -19,11 +19,13 @@ export function scanRag(
 	signal?: AbortSignal
 ): Promise<VectorHit[]> {
 	signal?.throwIfAborted();
+	const file = ragVectorFile();
+	let current = workers.get(file);
 	if (!current) {
-		const worker = createWorker({ workerData: ragVectorFile() });
+		const worker = createWorker({ workerData: file });
 		const waiting = new Map<number, Waiting>();
 		const fail = (error: unknown): void => {
-			if (current?.worker === worker) current = undefined;
+			if (workers.get(file)?.worker === worker) workers.delete(file);
 			for (const entry of waiting.values()) entry.reject(error);
 			waiting.clear();
 		};
@@ -37,6 +39,7 @@ export function scanRag(
 		worker.on('error', fail);
 		worker.on('exit', (code) => fail(new Error(`Knowledge search stopped with code ${code}.`)));
 		current = { worker, waiting };
+		workers.set(file, current);
 	}
 	const { worker, waiting } = current;
 	const id = next++;

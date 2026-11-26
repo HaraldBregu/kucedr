@@ -6,11 +6,12 @@ import { ragIndexingSignature } from './signature';
 import type { RagIndexResult } from './types';
 
 export async function runRagIndexing(trigger: RagIndexTrigger = 'manual'): Promise<RagIndexResult> {
-	if (ragJob.running) throw new Error('Knowledge indexing is already running.');
+	const job = ragJob();
+	if (job.running) throw new Error('Knowledge indexing is already running.');
 	const configuration = getRagConfiguration();
 	if (configuration.enabled !== true) throw new Error('Knowledge is disabled.');
 	const controller = new AbortController();
-	Object.assign(ragJob, {
+	Object.assign(job, {
 		running: true,
 		trigger,
 		startedAt: new Date().toISOString(),
@@ -26,22 +27,22 @@ export async function runRagIndexing(trigger: RagIndexTrigger = 'manual'): Promi
 		const result = await indexRag(configuration.folders, configuration.indexName, {
 			signal: controller.signal,
 			progress: (done, total) => {
-				ragJob.progress = { done, total };
+				job.progress = { done, total };
 			},
 		});
 		controller.signal.throwIfAborted();
-		ragJob.result = result;
-		ragJob.outcome = 'completed';
+		job.result = result;
+		job.outcome = 'completed';
 		return result;
 	} catch (error) {
-		ragJob.outcome = controller.signal.aborted ? 'cancelled' : 'failed';
-		ragJob.error = error instanceof Error ? error.message : String(error);
+		job.outcome = controller.signal.aborted ? 'cancelled' : 'failed';
+		job.error = error instanceof Error ? error.message : String(error);
 		throw error;
 	} finally {
-		ragJob.running = false;
-		ragJob.progress = null;
-		ragJob.finishedAt = new Date().toISOString();
-		ragJob.controller = undefined;
-		ragJob.configuration = undefined;
+		job.running = false;
+		job.progress = null;
+		job.finishedAt = new Date().toISOString();
+		job.controller = undefined;
+		job.configuration = undefined;
 	}
 }
