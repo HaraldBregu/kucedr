@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactElement, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus } from 'lucide-react';
+import { ChevronRight, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
@@ -63,6 +63,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const [editingCategoryId, setEditingCategoryId] = useState<string>();
 	const [dropTarget, setDropTarget] = useState<string>();
 	const [search, setSearch] = useState('');
+	const [searchOpen, setSearchOpen] = useState(false);
 	const [undo, setUndo] = useState<{ action: 'archive' | 'delete'; ids: string[] }>();
 	const undone = useRef(false);
 	const [deleted, setDeleted] = useState<string[]>([]);
@@ -576,7 +577,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 			<header className="shrink-0 border-b border-sidebar-border px-2 pb-2">
 				<SidebarMenu className="gap-0">
 					<Spaces />
-					<SidebarMenuItem>
+					<SidebarMenuItem className="flex gap-1">
 						<SidebarMenuButton
 							type="button"
 							className="px-2.5 text-sm"
@@ -586,6 +587,21 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							<Plus className="size-4 shrink-0" />
 							<span className="truncate">{t('navigationBar.newChat', 'New Chat')}</span>
 						</SidebarMenuButton>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							aria-label={t('settings.chatHistory.search', 'Search chats')}
+							aria-pressed={searchOpen}
+							onClick={() => {
+								setSearchOpen((open) => {
+									if (open) setSearch('');
+									return !open;
+								});
+							}}
+						>
+							<Search className="size-4" />
+						</Button>
 					</SidebarMenuItem>
 					{openExtension && (
 						<SidebarMenuItem>
@@ -604,7 +620,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						</SidebarMenuItem>
 					)}
 				</SidebarMenu>
-				<ChatFinder query={search} onQueryChange={setSearch} onOpen={openResult} />
+				{searchOpen && <ChatFinder query={search} onQueryChange={setSearch} onOpen={openResult} />}
 			</header>
 			<section
 				className={cn('no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3', search.trim() && 'hidden')}
