@@ -47,8 +47,8 @@ describe('memory storage', () => {
 	});
 
 	it('merges distinct workspace notes without replacing standalone memory', async () => {
-		const legacyMemory = path.join(workspace, 'MEMORY.md');
-		await fs.mkdir(path.dirname(memoryPath()), { recursive: true });
+		const legacyMemory = path.join(workspace.files, 'MEMORY.md');
+		await fs.mkdir(path.dirname(memoryPath(workspace)), { recursive: true });
 		await fs.writeFile(memoryPath(), '# Memory\n\n- Uses TypeScript\n');
 		await fs.writeFile(legacyMemory, '# Manual notes\n\n- Prefers concise answers\n');
 
