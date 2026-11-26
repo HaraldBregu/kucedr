@@ -97,17 +97,30 @@ it.each([
 	[true, false, true],
 	[true, true, false],
 	[false, false, false],
-])('shows the portability warning for vault=%s and saved passphrase=%s', async (enabled, hasPassphrase, visible) => {
-	jest.mocked(window.app.getVault).mockResolvedValue({ enabled, available: true });
-	storageApi.listProviders.mockResolvedValue([
-		{ ...providers[0], hasPassphrase: !hasPassphrase },
-		{ ...providers[1], hasPassphrase },
-	]);
-	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: 'archive', serviceId: 'backup-s3' });
-	render(<MemoryRouter><StoragePage /></MemoryRouter>);
-	expect(await screen.findByRole('button', { name: mockTranslations.settings.storage.backup })).toBeEnabled();
-	expect(Boolean(screen.queryByText(mockTranslations.settings.storageProviders.portabilityWarning))).toBe(visible);
-});
+])(
+	'shows the portability warning for vault=%s and saved passphrase=%s',
+	async (enabled, hasPassphrase, visible) => {
+		jest.mocked(window.app.getVault).mockResolvedValue({ enabled, available: true });
+		storageApi.listProviders.mockResolvedValue([
+			{ ...providers[0], hasPassphrase: !hasPassphrase },
+			{ ...providers[1], hasPassphrase },
+		]);
+		storageApi.getSettings.mockResolvedValue({
+			...settings,
+			providerId: 'archive',
+			serviceId: 'backup-s3',
+		});
+		render(
+			<MemoryRouter>
+				<StoragePage />
+			</MemoryRouter>
+		);
+		const upload = await screen.findByRole('button', { name: mockTranslations.settings.storage.backup });
+		expect(upload).toBeEnabled();
+		const warning = screen.queryByText(mockTranslations.settings.storageProviders.portabilityWarning);
+		expect(warning !== null).toBe(visible);
+	}
+);
 
 it('shows the storage service description beneath the title', async () => {
 	render(

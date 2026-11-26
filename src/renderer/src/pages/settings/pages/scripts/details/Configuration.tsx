@@ -15,18 +15,15 @@ export default function Configuration(): React.JSX.Element {
 
 	useEffect(() => {
 		let cancelled = false;
-		void Promise.all([
-			window.storage.listProviders(),
-			window.storage.getSettings(),
-		]).then(
+		void Promise.all([window.storage.listProviders(), window.storage.getSettings()]).then(
 			([saved, settings]) => {
-				if (!cancelled)
+				if (!cancelled) {
 					setProvider(saved.find((entry) => entry.id === settings.providerId) ?? saved[0] ?? null);
+				}
 			},
 			(err: unknown) => {
 				if (!cancelled) {
 					setError(getErrorMessage(err, t('settings.storageProviders.loadError')));
-					setProvider(null);
 				}
 			}
 		);
@@ -52,7 +49,7 @@ export default function Configuration(): React.JSX.Element {
 			)}
 			{vaultEnabled && provider !== undefined && !provider?.hasPassphrase && <Portability />}
 			{provider === undefined ? (
-				<SettingsLoadingRows />
+				error ? null : <SettingsLoadingRows />
 			) : (
 				<StorageForm
 					key={provider?.id ?? 'new'}
