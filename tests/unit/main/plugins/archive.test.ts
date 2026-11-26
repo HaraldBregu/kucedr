@@ -70,7 +70,9 @@ it.each(['root', 'wrapped'])('installs a %s plugin within the archive limits', a
 		wrapped ? ['package'] : ['manifest.json', 'skills']
 	);
 	const checksum = wrapped
-		? `sha512-${createHash('sha512').update(await readFile(file)).digest('base64')}`
+		? `sha512-${createHash('sha512')
+				.update(await readFile(file))
+				.digest('base64')}`
 		: undefined;
 	await expect(downloadPlugin(url, checksum)).resolves.toMatchObject({
 		id: 'sample',
@@ -83,7 +85,9 @@ it('rejects a mismatched catalogue checksum before installing', async () => {
 	const file = path.join(root, 'plugin.tgz');
 	await create({ file, cwd: root, gzip: true }, ['package']);
 	const checksum = `sha512-${createHash('sha512').update('different package').digest('base64')}`;
-	await expect(downloadPlugin(url, checksum)).rejects.toThrow('does not match the catalog checksum');
+	await expect(downloadPlugin(url, checksum)).rejects.toThrow(
+		'does not match the catalog checksum'
+	);
 	await expect(readdir(path.join(root, 'installed'))).rejects.toMatchObject({ code: 'ENOENT' });
 	expect(await readdir(path.join(root, 'temporary'))).toEqual([]);
 });
