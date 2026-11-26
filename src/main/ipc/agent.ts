@@ -47,6 +47,7 @@ import {
 	sessionPath,
 } from '../agent/session';
 import { workspacePath } from '../agent/system';
+import { readWorkspaces } from '../workspaces/read';
 import { resolveWorkspace } from '../workspaces/resolve';
 import { sendToWorkspace } from '../workspaces/send';
 import { withinWorkspace } from '../workspaces/within';
@@ -388,24 +389,25 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		const workspaceAccess = renderer.assertWorkspace.bind(renderer);
 		const notifier = createNotifier({
 			enabled: getNotificationsEnabled,
-			title: (signal) => withinWorkspace(signal.workspaceId, () => {
-				const lines = (
-					loadTranslations(getLanguage(), 'main') as unknown as {
-						notifications: { run: Record<string, string> };
-					}
-				).notifications.run;
-				if (signal.category === 'health') return lines.healthTitle;
-				if (isLocked()) return app.name;
-				if (signal.category === 'task')
-					return (
-						listSchedules().find((schedule) => schedule.sessionIds.includes(signal.sessionId))
-							?.name ?? app.name
-					);
-				return (
-					agent.listSessions('main').find((session) => session.id === signal.sessionId)?.title ||
-					app.name
-				);
-			}),
+			title: (signal) =>
+				withinWorkspace(signal.workspaceId, () => {
+					const lines = (
+						loadTranslations(getLanguage(), 'main') as unknown as {
+							notifications: { run: Record<string, string> };
+						}
+					).notifications.run;
+					if (signal.category === 'health') return lines.healthTitle;
+					if (isLocked()) return app.name;
+					const title =
+						signal.category === 'task'
+							? listSchedules().find((schedule) =>
+									schedule.sessionIds.includes(signal.sessionId)
+								)?.name
+							: agent.listSessions('main').find((session) => session.id === signal.sessionId)
+									?.title;
+					const workspace = readWorkspaces().find((record) => record.id === signal.workspaceId);
+					return [title || app.name, ...(workspace ? [workspace.name] : [])].join(' · ');
+				}),
 			line: (key) =>
 				(
 					loadTranslations(getLanguage(), 'main') as unknown as {

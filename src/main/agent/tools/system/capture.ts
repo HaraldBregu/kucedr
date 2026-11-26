@@ -11,7 +11,7 @@ export async function captureSource(
 ) {
 	if (
 		!sourceId &&
-		target !== 'full_screen' &&
+		(target === 'workspace' || target === 'application') &&
 		!BrowserWindow.getAllWindows().some(
 			(window) =>
 				(boundWorkspaces.get(window.webContents.id) ?? DEFAULT_WORKSPACE) === currentWorkspace().id
