@@ -222,6 +222,6 @@ describe('RAG indexing schedule', () => {
 			outcome: 'failed',
 			error: 'Embedding endpoint unavailable',
 		});
-		await expect(runRagIndexing()).resolves.toEqual({ files: 1, vectors: 2 });
+		await expect(runRagIndexing()).resolves.toEqual(result);
 	});
 });
