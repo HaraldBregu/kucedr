@@ -247,11 +247,11 @@
 	"settings": {
 		"usage": {
 			"title": "Usage",
-			"description": "Review reported model costs by month, provider, and chat.",
+			"description": "Review reported model costs for this workspace by month, provider, and chat.",
 			"total": "Reported model spend",
 			"reportedRuns_one": "Cost reported for {{count}} run",
 			"reportedRuns_other": "Cost reported for {{count}} runs",
-			"coverage": "Costs are included only when the provider reports them. Token totals include calls without reported costs.",
+			"coverage": "Costs appear when a model manifest identifies a provider-reported cost field. Token totals also include calls without a reported cost.",
 			"byMonth": "By month",
 			"byProvider": "By provider",
 			"byChat": "By chat",

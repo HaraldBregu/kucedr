@@ -247,11 +247,11 @@
 	"settings": {
 		"usage": {
 			"title": "Utilizzo",
-			"description": "Consulta i costi dei modelli per mese, provider e chat.",
+			"description": "Consulta i costi riportati dei modelli per mese, provider e chat di quest'area di lavoro.",
 			"total": "Spesa riportata dai modelli",
 			"reportedRuns_one": "Costo riportato per {{count}} esecuzione",
 			"reportedRuns_other": "Costo riportato per {{count}} esecuzioni",
-			"coverage": "Sono inclusi solo i costi comunicati dal provider. I token includono anche le chiamate senza costi riportati.",
+			"coverage": "I costi sono mostrati quando il manifest del modello specifica il campo comunicato dal provider. I token includono anche le chiamate senza un costo riportato.",
 			"byMonth": "Per mese",
 			"byProvider": "Per provider",
 			"byChat": "Per chat",
