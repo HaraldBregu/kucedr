@@ -87,8 +87,9 @@ The registry lives in `~/.kucedr/workspaces/workspaces.json`:
   id never resolves, so it is never joined into a path.
 - **Missing file:** only the default workspace exists, so existing installs need no migration. The
   file is created with the first workspace.
-- A registry that exists but cannot be parsed is an error: workspace management fails, the default
-  workspace keeps working, and the file is not overwritten.
+- **Damaged file:** a registry that cannot be parsed is renamed aside
+  (`workspaces.json.damaged-<time>`) and the copy taken before the last change
+  (`workspaces.json.bak`) is used. The workspaces' data folders are not touched.
 
 ## How code finds its workspace
 
