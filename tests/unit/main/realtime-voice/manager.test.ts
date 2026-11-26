@@ -12,6 +12,7 @@ import {
 	RealtimeVoiceManager,
 	type ResolvedRealtimeVoiceConfiguration,
 } from '../../../../src/main/agent/realtime_voice/manager';
+import { buildWorkspace } from '../../../../src/main/workspaces/build';
 
 class FakeConnection implements RealtimeVoiceConnection {
 	readonly audio: string[] = [];
