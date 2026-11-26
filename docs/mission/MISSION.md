@@ -52,7 +52,8 @@ Limits of reading (a):
 
 - **Hosted providers keep their own rules.** A refusal from Anthropic, OpenAI or xAI streams to the
   user as text, and the app cannot remove it. "No guardrails" is fully true only with a local or
-  self-hosted model.
+  self-hosted model, and it never means helping the user get around a provider's safeguards: both
+  Anthropic's and OpenAI's policies forbid that ([FRONTIER.md](FRONTIER.md#legal-and-platform-limits)).
 - **Local-only users lose voice, Coder and media generation.** No bundled manifest has a local
   model for them. The promise covers chat, agent tools and the browser.
 - **Uncensored local models are weaker at tool use**, and page text reaches the model unmarked
