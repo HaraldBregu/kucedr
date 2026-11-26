@@ -35,7 +35,7 @@ it('settles storage operations before cloud and auth teardown', async () => {
 		await Promise.resolve();
 	}
 
-	expect(services.memoryService.stop).toHaveBeenCalledTimes(1);
+	expect(memory.stop).toHaveBeenCalledTimes(1);
 	expect(storageOperations.settle).toHaveBeenCalledTimes(1);
 	expect(cloudService.destroy).not.toHaveBeenCalled();
 	expect(authService.destroy).not.toHaveBeenCalled();
