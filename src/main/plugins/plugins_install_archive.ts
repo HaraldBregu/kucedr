@@ -19,9 +19,13 @@ export async function installPluginArchive(archive: Blob): Promise<PluginInfo> {
 			const size = 'remain' in entry ? entry.remain : entry.size;
 			bytes += size;
 			if (entries > MAX_ARCHIVE_ENTRIES) {
-				parser.abort(new Error(`Plugin archives can contain at most ${MAX_ARCHIVE_ENTRIES} entries.`));
+				parser.abort(
+					new Error(`Plugin archives can contain at most ${MAX_ARCHIVE_ENTRIES} entries.`)
+				);
 			} else if (!Number.isSafeInteger(size) || size < 0 || bytes > MAX_ARCHIVE_BYTES) {
-				parser.abort(new Error(`The unpacked plugin archive exceeds the limit of ${MAX_ARCHIVE_BYTES} bytes.`));
+				parser.abort(
+					new Error(`The unpacked plugin archive exceeds the limit of ${MAX_ARCHIVE_BYTES} bytes.`)
+				);
 			}
 			return false;
 		},
