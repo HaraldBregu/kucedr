@@ -23,7 +23,6 @@ import { SessionCoordinator } from './session/coordinator';
 import { releaseSession } from './session/release';
 import type { RunExtender } from './extension';
 import { stream } from './runner/run_stream';
-import { agentLocation } from '../shared/agent_location';
 import {
 	associateSession,
 	destroyTask,
@@ -68,13 +67,17 @@ import { preflightPromptAttachments, resolvePromptInputCapabilities } from './at
 import { workspacePath } from './system';
 import { compactConversation } from './compaction/compact';
 import { sessionType } from './session/session_session_type';
-import { sessionsRoot } from './session/session_sessions_root';
 import { sessionFolderName } from './session/session_session_folder_name';
 import { sessionPath } from './session/session_session_path';
 import { toHistoryMessages } from './session/session_to_history_messages';
 import { formatReplyMessage } from '../../shared/reply';
 import type { AgentToolProfileId } from '../../shared/agent_tools';
 import { registry } from './tools/core/process';
+import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
+import { currentWorkspace } from '../workspaces/current';
+import { resolveWorkspace } from '../workspaces/resolve';
+import { workspaceScope } from '../workspaces/scope';
+import type { Workspace } from '../workspaces/types';
 
 const RUN_PRIORITIES: Record<SessionCategory, AgentRunPriority> = {
 	main: 'high',
@@ -121,17 +124,25 @@ export class Agent {
 	// ponytail: kept in memory per chat, so undo history is lost on restart; persist it if that matters
 	private readonly histories = new Map<string, import('./history/types').FileHistory>();
 	private isStarted = false;
-	readonly config: Config;
 	onRun?: (signal: RunSignal) => void;
 
 	constructor(
 		readonly sandbox: ExecSandbox,
-		readonly memory?: MemoryService,
+		private readonly memories?: (workspace: Workspace) => MemoryService,
 		private readonly extend?: RunExtender
 	) {
-		this.config = { location: path.resolve(agentLocation()) };
-		workspacePath(this.config);
+		const workspace = resolveWorkspace(DEFAULT_WORKSPACE);
+		workspacePath({ location: workspace.files, workspace });
 		initTask();
+	}
+
+	get config(): Config {
+		const workspace = currentWorkspace();
+		return { location: path.resolve(workspace.files), workspace };
+	}
+
+	get memory(): MemoryService | undefined {
+		return this.memories?.(currentWorkspace());
 	}
 
 	start(logger: {
@@ -190,7 +201,8 @@ export class Agent {
 	async send(message: string, agentId: string, options: AgentSendOptions): Promise<string> {
 		const normalizedAgentId = agentId.trim();
 		const category = AGENT_CATEGORIES[normalizedAgentId] ?? 'main';
-		const sessionId = resolveSessionId(options.sessionId, this.config.location, category);
+		const workspace = currentWorkspace();
+		const sessionId = resolveSessionId(options.sessionId, workspace.sessions, category);
 		const runId = options.runId ?? randomUUID();
 		const profileModel = getAgentProfileModel(
 			AGENT_TOOL_PROFILES[normalizedAgentId] ?? 'chat',
@@ -217,14 +229,16 @@ export class Agent {
 			message,
 			options: commandOptions,
 			queuedAt: Date.now(),
+			workspaceId: workspace.id,
 			...(options.windowId === undefined ? {} : { windowId: options.windowId }),
 		});
-		const run = { sessionId, category, windowId: options.windowId };
+		const run = { sessionId, category, windowId: options.windowId, workspaceId: workspace.id };
 		this.onRun?.({ ...run, phase: 'started' });
-		const scheduled = this.scheduler.run(sessionId, () => this.process(record), {
-			priority: RUN_PRIORITIES[category],
-			signal: record.controller.signal,
-		});
+		const scheduled = this.scheduler.run(
+			sessionId,
+			() => workspaceScope.run(workspace, () => this.process(record)),
+			{ priority: RUN_PRIORITIES[category], signal: record.controller.signal }
+		);
 		const completion = scheduled.catch((error): AgentRunOutcome => {
 			if (record.lifecycle.status === 'cancelling' && !record.lifecycle.session) {
 				return { text: '', stopReason: 'cancelled' };
@@ -267,7 +281,7 @@ export class Agent {
 				category: request.category,
 				modeIds: options.modeIds ?? [],
 				sessionDirectory: sessionPath(
-					sessionsRoot(this.config.location),
+					currentWorkspace().sessions,
 					sessionFolderName(request.sessionId)
 				),
 				...(providerId ? { providerId } : {}),
@@ -430,6 +444,7 @@ export class Agent {
 				sessionId: record.request.sessionId,
 				category: record.request.category,
 				windowId: record.request.windowId,
+				workspaceId: record.request.workspaceId,
 				phase: 'waiting',
 				reason: event.type === 'tool_permission_request' ? 'approval' : 'question',
 			});
@@ -455,12 +470,13 @@ export class Agent {
 	}
 
 	compactSession(sessionId: string): Promise<AgentCompactSessionResult> {
-		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
-		if (sessionType(sessionsRoot(this.config.location), resolvedSessionId) !== 'main')
+		const config = this.config;
+		const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
+		if (sessionType(config.workspace.sessions, resolvedSessionId) !== 'main')
 			return Promise.reject(new Error('Only main chat sessions can be compacted.'));
 		return this.scheduler.run(
 			resolvedSessionId,
-			() => compactConversation(this.config, resolvedSessionId, this.providerLimiter),
+			() => compactConversation(config, resolvedSessionId, this.providerLimiter),
 			{ priority: 'high' }
 		);
 	}
@@ -471,10 +487,12 @@ export class Agent {
 				.flatMap((sessionCategory) => this.listSessions(sessionCategory))
 				.sort((left, right) => right.createdAtMs - left.createdAtMs);
 		}
-		const sessions = listSessions(this.config.location, category);
+		const workspace = currentWorkspace();
+		const sessions = listSessions(workspace.sessions, category);
 		const byId = new Map(sessions.map((session) => [session.id, session]));
 		for (const record of this.runs.values()) {
-			if (record.request.category !== category) continue;
+			if (record.request.category !== category || record.request.workspaceId !== workspace.id)
+				continue;
 			const stored = byId.get(record.request.sessionId);
 			byId.set(record.request.sessionId, {
 				id: record.request.sessionId,
@@ -495,33 +513,37 @@ export class Agent {
 	}
 
 	renameSession(sessionId: string, title: string): Promise<void> {
+		const root = currentWorkspace().sessions;
 		return this.scheduler.run(
 			sessionId,
-			async () => renameStoredSession(sessionId, this.config.location, title),
+			async () => renameStoredSession(sessionId, root, title),
 			{ priority: 'high' }
 		);
 	}
 
 	pinSession(sessionId: string, pinned: boolean): Promise<void> {
+		const root = currentWorkspace().sessions;
 		return this.scheduler.run(
 			sessionId,
-			async () => pinStoredSession(sessionId, this.config.location, pinned),
+			async () => pinStoredSession(sessionId, root, pinned),
 			{ priority: 'high' }
 		);
 	}
 
 	categorizeSession(sessionId: string, category: string | null): Promise<void> {
+		const root = currentWorkspace().sessions;
 		return this.scheduler.run(
 			sessionId,
-			async () => categorizeStoredSession(sessionId, this.config.location, category),
+			async () => categorizeStoredSession(sessionId, root, category),
 			{ priority: 'high' }
 		);
 	}
 
 	archiveSession(sessionId: string, archived: boolean): Promise<void> {
+		const root = currentWorkspace().sessions;
 		return this.scheduler.run(
 			sessionId,
-			async () => archiveStoredSession(sessionId, this.config.location, archived),
+			async () => archiveStoredSession(sessionId, root, archived),
 			{ priority: 'high' }
 		);
 	}
@@ -535,20 +557,22 @@ export class Agent {
 	}
 
 	editUserMessage(sessionId: string, userOffsetFromEnd: number, content?: string): Promise<boolean> {
-		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
+		const config = this.config;
+		const memory = this.memory;
+		const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
 		return this.scheduler.run(
 			resolvedSessionId,
 			async () => {
 				const updated = updateUserMessageBySessionId(
 					resolvedSessionId,
-					this.config.location,
+					config.workspace.sessions,
 					userOffsetFromEnd,
 					content,
 					this.sessions
 				);
 				if (updated)
-					await this.memory
-						?.capture(resolvedSessionId, loadMessages(this.config, resolvedSessionId))
+					await memory
+						?.capture(resolvedSessionId, loadMessages(config, resolvedSessionId))
 						.catch(() => undefined);
 				return updated;
 			},
@@ -557,31 +581,35 @@ export class Agent {
 	}
 
 	clearMessages(sessionId: string): Promise<void> {
-		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
+		const config = this.config;
+		const memory = this.memory;
+		const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
 		const completions = this.cancelSession(resolvedSessionId);
 		return this.scheduler.run(
 			resolvedSessionId,
 			async () => {
 				await Promise.allSettled(completions);
-				clearSessionMessages(createSessionState(), this.config, resolvedSessionId, this.sessions);
+				clearSessionMessages(createSessionState(), config, resolvedSessionId, this.sessions);
 				this.histories.delete(resolvedSessionId);
-				await this.memory?.remove(resolvedSessionId).catch(() => undefined);
+				await memory?.remove(resolvedSessionId).catch(() => undefined);
 			},
 			{ priority: 'high' }
 		);
 	}
 
 	deleteSession(sessionId: string): Promise<void> {
-		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
+		const config = this.config;
+		const memory = this.memory;
+		const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
 		const completions = this.cancelSession(resolvedSessionId);
 		registry.terminate(resolvedSessionId);
 		return this.scheduler.run(
 			resolvedSessionId,
 			async () => {
 				await Promise.allSettled(completions);
-				deleteStoredSession(createSessionState(), this.config, resolvedSessionId, this.sessions);
+				deleteStoredSession(createSessionState(), config, resolvedSessionId, this.sessions);
 				this.histories.delete(resolvedSessionId);
-				await this.memory?.remove(resolvedSessionId).catch(() => undefined);
+				await memory?.remove(resolvedSessionId).catch(() => undefined);
 			},
 			{ priority: 'high' }
 		);

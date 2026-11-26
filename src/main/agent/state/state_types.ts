@@ -15,6 +15,7 @@ export interface AgentRunRequest<TOptions = unknown> {
 	readonly message: string;
 	readonly options: TOptions;
 	readonly queuedAt: number;
+	readonly workspaceId: string;
 	readonly windowId?: number;
 }
 
