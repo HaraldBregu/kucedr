@@ -49,6 +49,7 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen, onDeleted, cre
 	}, [projectId, revision, t]);
 	return (
 		<div className="min-w-0">
+			{dialog}
 			{creation && <form className="flex min-h-11 items-center gap-2 px-2.5 py-2" onSubmit={(event) => {
 				event.preventDefault();
 				if (submitting.current) return;
