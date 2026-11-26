@@ -7,6 +7,7 @@ import { WINDOW_SIZES, type WindowSize } from '../shared/window_size';
 import {
 	CHAT_TEXT_SIZES,
 	ZOOM_FACTORS,
+	getShortcutAccelerator,
 	type ChatTextSize,
 	type ZoomFactor,
 } from '../shared/app_types';
@@ -14,6 +15,7 @@ import {
 interface MenuManagerCallbacks {
 	onLanguageChange: (lng: string) => void;
 	onNewWindow: () => void;
+	onShowShortcutGuide?: () => void;
 	onOpenAppDataFolder?: () => void;
 	onOpenDataFolder?: () => void;
 	getTrayEnabled?: () => boolean;
@@ -112,7 +114,7 @@ export class Menu {
 				submenu: [
 					{
 						label: m.newWindow,
-						accelerator: 'CmdOrCtrl+Shift+N',
+						accelerator: getShortcutAccelerator('newWindow'),
 						click: (): void => {
 							this.callbacks.onNewWindow();
 						},
@@ -139,8 +141,8 @@ export class Menu {
 				submenu: [
 					...(isMac
 						? [
-								{ label: m.back, accelerator: 'Cmd+[', click: (): void => navigate(-1) },
-								{ label: m.forward, accelerator: 'Cmd+]', click: (): void => navigate(1) },
+								{ label: m.back, accelerator: getShortcutAccelerator('back'), click: (): void => navigate(-1) },
+								{ label: m.forward, accelerator: getShortcutAccelerator('forward'), click: (): void => navigate(1) },
 								{ type: 'separator' as const },
 							]
 						: []),
@@ -149,17 +151,17 @@ export class Menu {
 					{ type: 'separator' as const },
 					{
 						label: m.actualSize,
-						accelerator: 'CmdOrCtrl+0',
+						accelerator: getShortcutAccelerator('zoomReset'),
 						click: (): void => this.callbacks.onZoomFactorChange?.(1),
 					},
-					{ label: m.zoomIn, accelerator: 'CmdOrCtrl+Plus', click: (): void => zoom(1) },
+					{ label: m.zoomIn, accelerator: getShortcutAccelerator('zoomIn'), click: (): void => zoom(1) },
 					{
 						label: m.zoomIn,
 						accelerator: 'CmdOrCtrl+=',
 						visible: false,
 						click: (): void => zoom(1),
 					},
-					{ label: m.zoomOut, accelerator: 'CmdOrCtrl+-', click: (): void => zoom(-1) },
+					{ label: m.zoomOut, accelerator: getShortcutAccelerator('zoomOut'), click: (): void => zoom(-1) },
 					...(isMac
 						? []
 						: [
