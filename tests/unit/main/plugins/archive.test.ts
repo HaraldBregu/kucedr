@@ -21,7 +21,7 @@ let mockEntryLimit: number;
 jest.mock('../../../../src/main/plugins/limits', () => ({
 	get MAX_ARCHIVE_BYTES() { return mockByteLimit; },
 	get MAX_ARCHIVE_ENTRIES() { return mockEntryLimit; },
-}), { virtual: true });
+}));
 jest.mock('../../../../src/main/plugins/plugins_root', () => ({
 	pluginsRoot: () => path.join(root, 'installed'),
 }));
@@ -67,7 +67,10 @@ it.each(['bytes', 'entries'])('preserves the installed plugin and cleans up on e
 	if (limit === 'bytes') mockEntryLimit += 1;
 	await writeFile(path.join(root, 'package', 'README.md'), limit === 'bytes' ? 'Sample.' : '');
 	await create({ file, cwd: root, gzip: true }, ['package']);
-	await expect(installPluginArchive(file)).rejects.toThrow();
+	const message = limit === 'bytes'
+		? `The unpacked plugin archive exceeds the limit of ${mockByteLimit} bytes.`
+		: `Plugin archives can contain at most ${mockEntryLimit} entries.`;
+	await expect(installPluginArchive(file)).rejects.toThrow(message);
 	expect(await readFile(path.join(root, 'installed', 'sample', 'manifest.json'), 'utf8')).toBe(manifest);
 	expect(await readdir(path.join(root, 'installed'))).toEqual(['sample']);
 	expect(await readdir(path.join(root, 'temporary'))).toEqual([]);
