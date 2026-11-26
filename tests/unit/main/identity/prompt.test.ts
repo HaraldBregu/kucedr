@@ -3,6 +3,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { buildWorkspaceContext } from '../../../../src/main/agent/system/system_build_workspace_context';
 import { workspacePath } from '../../../../src/main/agent/system/system_workspace_path';
+import { buildWorkspace } from '../../../../src/main/workspaces/build';
 import { updateSoul } from '../../../../src/main/soul';
 import { updateIdentity } from '../../../../src/main/identity';
 import { updateUser } from '../../../../src/main/user';
