@@ -93,16 +93,16 @@ try {
 				sessionStorage.setItem('kucedr-onboarding-started', 'true');
 			}, baseUrl);
 			await page.reload();
-			await page.evaluate(async () => {
+			await page.evaluate(async (historyTurns) => {
 				const sessionId = 'long-chat-performance';
-				for (let index = 0; index < 20; index += 1) {
+				for (let index = 0; index < historyTurns; index += 1) {
 					await window.agent.send(
 						`Earlier conversation turn ${index + 1}. Please answer briefly.`,
 						{ sessionId }
 					);
 				}
 				await window.agent.viewSession(sessionId);
-			});
+			}, HISTORY_TURNS);
 			const editor = page.locator('[data-slot="home-composer-shell"] [role="textbox"]');
 			await editor.waitFor();
 			await page.evaluate(() => {
