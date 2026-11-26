@@ -33,7 +33,7 @@ it('distinguishes an omitted background allowlist from an explicit empty allowli
 	const run = async (toolsAllow?: string[]): Promise<string[]> => {
 		const events = [];
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: '/workspace', workspace: buildWorkspace('default', '/', '/workspace') },
 			createSessionState(),
 			{
 				runId: 'background-run',
