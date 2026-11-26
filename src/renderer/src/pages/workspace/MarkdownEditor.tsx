@@ -26,6 +26,7 @@ import { WorkspaceRemoteImage } from './Remote';
 import { WorkspaceToolbar } from './Toolbar';
 import { WorkspaceUrlDialog } from './UrlDialog';
 import { pluginScriptRef } from '../../../../shared/plugin_script_ref';
+import { SHORTCUTS } from '@shared/app_types';
 
 interface WorkspaceMarkdownEditorProps {
 	readonly toolbarTarget: HTMLElement | null;
@@ -194,9 +195,14 @@ export function WorkspaceMarkdownEditor({
 			onKeyDown={(event) => {
 				if (!event.metaKey && !event.ctrlKey) return;
 				const key = event.key.toLowerCase();
-				if (key === 's') onSave();
-				else if (key === 'k' && !event.shiftKey) setLinkOpen(true);
-				else if (key === 'i' && event.shiftKey) fileInputRef.current?.click();
+				const shortcut = SHORTCUTS.find((item) => {
+					if (!('tiptapKey' in item) || !item.tiptapKey.startsWith('Mod-')) return false;
+					const parts = item.tiptapKey.slice(4).toLowerCase().split('-');
+					return parts.at(-1) === key && parts.includes('shift') === event.shiftKey && !event.altKey;
+				});
+				if (shortcut?.id === 'editorSave') onSave();
+				else if (shortcut?.id === 'editorLink') setLinkOpen(true);
+				else if (shortcut?.id === 'editorInsertFile') fileInputRef.current?.click();
 				else return;
 				event.preventDefault();
 			}}
