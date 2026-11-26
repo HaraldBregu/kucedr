@@ -133,7 +133,7 @@ it('captures completed main chat runs', async () => {
 	const memory = { capture } as unknown as MemoryService;
 	const agent = new Agent(
 		{ reset: jest.fn() } as unknown as ExecSandbox,
-		memory
+		() => memory
 	);
 	const control = controlRun(`capture-${agentId}`);
 	const response = agent.send('remember this', agentId, {
@@ -152,7 +152,7 @@ it.each(['tasks', 'health'])('does not expose %s runs to personal memory', async
 	const memory = { capture } as unknown as MemoryService;
 	const agent = new Agent(
 		{ reset: jest.fn() } as unknown as ExecSandbox,
-		memory
+		() => memory
 	);
 	const control = controlRun(`isolated-${agentId}`);
 	const response = agent.send('private background content', agentId, {
