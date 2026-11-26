@@ -31,8 +31,14 @@ export interface DataPurgeResult {
 	remoteNamespacesDeleted?: number;
 }
 
+export interface StorageUsage {
+	areas: { name: string; bytes: number }[];
+	totalBytes: number;
+}
+
 export interface DataApi {
 	listScopes: () => Promise<DataScope[]>;
+	getStorageUsage: () => Promise<StorageUsage>;
 	export: (scope: DataScope) => Promise<DataExportResult | undefined>;
 	previewPurge: (scope: DataScope) => Promise<DataPurgePreview>;
 	purge: (scope: DataScope, confirmationId: string) => Promise<DataPurgeResult | undefined>;
