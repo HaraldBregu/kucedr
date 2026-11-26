@@ -19,8 +19,12 @@ let mockByteLimit: number;
 let mockEntryLimit: number;
 
 jest.mock('../../../../src/main/plugins/limits', () => ({
-	get MAX_ARCHIVE_BYTES() { return mockByteLimit; },
-	get MAX_ARCHIVE_ENTRIES() { return mockEntryLimit; },
+	get MAX_ARCHIVE_BYTES() {
+		return mockByteLimit;
+	},
+	get MAX_ARCHIVE_ENTRIES() {
+		return mockEntryLimit;
+	},
 }));
 jest.mock('../../../../src/main/plugins/plugins_root', () => ({
 	pluginsRoot: () => path.join(root, 'installed'),
@@ -53,25 +57,39 @@ afterEach(async () => {
 it.each(['root', 'wrapped'])('installs a %s plugin within the archive limits', async (layout) => {
 	const file = path.join(root, 'plugin.tgz');
 	const wrapped = layout === 'wrapped';
-	await create({ file, gzip: true, cwd: wrapped ? root : path.join(root, 'package') },
-		wrapped ? ['package'] : ['manifest.json', 'skills']);
-	await expect(installPluginArchive(file)).resolves.toMatchObject({ id: 'sample', version: '1.0.0' });
+	await create(
+		{ file, gzip: true, cwd: wrapped ? root : path.join(root, 'package') },
+		wrapped ? ['package'] : ['manifest.json', 'skills']
+	);
+	await expect(installPluginArchive(file)).resolves.toMatchObject({
+		id: 'sample',
+		version: '1.0.0',
+	});
 	expect(await readdir(path.join(root, 'temporary'))).toEqual([]);
 });
 
-it.each(['bytes', 'entries'])('preserves the installed plugin and cleans up on excess %s', async (limit) => {
-	const file = path.join(root, 'plugin.tgz');
-	await create({ file, cwd: root, gzip: true }, ['package']);
-	await installPluginArchive(file);
-	await writeFile(path.join(root, 'package', 'manifest.json'), manifest.replace('1.0.0', '1.0.1'));
-	if (limit === 'bytes') mockEntryLimit += 1;
-	await writeFile(path.join(root, 'package', 'README.md'), limit === 'bytes' ? 'Sample.' : '');
-	await create({ file, cwd: root, gzip: true }, ['package']);
-	const message = limit === 'bytes'
-		? `The unpacked plugin archive exceeds the limit of ${mockByteLimit} bytes.`
-		: `Plugin archives can contain at most ${mockEntryLimit} entries.`;
-	await expect(installPluginArchive(file)).rejects.toThrow(message);
-	expect(await readFile(path.join(root, 'installed', 'sample', 'manifest.json'), 'utf8')).toBe(manifest);
-	expect(await readdir(path.join(root, 'installed'))).toEqual(['sample']);
-	expect(await readdir(path.join(root, 'temporary'))).toEqual([]);
-});
+it.each(['bytes', 'entries'])(
+	'preserves the installed plugin and cleans up on excess %s',
+	async (limit) => {
+		const file = path.join(root, 'plugin.tgz');
+		await create({ file, cwd: root, gzip: true }, ['package']);
+		await installPluginArchive(file);
+		await writeFile(
+			path.join(root, 'package', 'manifest.json'),
+			manifest.replace('1.0.0', '1.0.1')
+		);
+		if (limit === 'bytes') mockEntryLimit += 1;
+		await writeFile(path.join(root, 'package', 'README.md'), limit === 'bytes' ? 'Sample.' : '');
+		await create({ file, cwd: root, gzip: true }, ['package']);
+		const message =
+			limit === 'bytes'
+				? `The unpacked plugin archive exceeds the limit of ${mockByteLimit} bytes.`
+				: `Plugin archives can contain at most ${mockEntryLimit} entries.`;
+		await expect(installPluginArchive(file)).rejects.toThrow(message);
+		expect(await readFile(path.join(root, 'installed', 'sample', 'manifest.json'), 'utf8')).toBe(
+			manifest
+		);
+		expect(await readdir(path.join(root, 'installed'))).toEqual(['sample']);
+		expect(await readdir(path.join(root, 'temporary'))).toEqual([]);
+	}
+);
