@@ -103,7 +103,7 @@ it.each(['success', 'failure', 'cancel', 'return'])(
 			});
 		const controller = new AbortController();
 		const events = stream(
-			{ location: userDataLocation() },
+			{ location: userDataLocation(), workspace: resolveWorkspace('default') },
 			createSessionState(),
 			{
 				runId: 'background-browser',
@@ -145,7 +145,7 @@ it('gives a background child its own browser when it inherits the parent tools',
 	try {
 		await parent.tool.run({ action: 'start' });
 		for await (const event of stream(
-			{ location: userDataLocation() },
+			{ location: userDataLocation(), workspace: resolveWorkspace('default') },
 			createSessionState(),
 			{
 				runId: 'child-browser',
@@ -175,7 +175,7 @@ it.each([
 	'preserves browser restrictions for $agentId',
 	async ({ agentId, toolsAllow, source }) => {
 		for await (const event of stream(
-			{ location: userDataLocation() },
+			{ location: userDataLocation(), workspace: resolveWorkspace('default') },
 			createSessionState(),
 			{
 				runId: 'restricted',
