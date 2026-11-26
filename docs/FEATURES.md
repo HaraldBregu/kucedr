@@ -498,6 +498,7 @@ There are no bundled app source folders in this checkout. The built-in Workspace
 - The tray toggles visibility and provides localized Show/Hide and Quit actions.
 - Native menus include New Window, standard editing commands, reload, window controls, English/Italian selection, developer console, and refresh. On Windows and Linux the Quit item uses Ctrl+Q.
 - The app can open additional launcher windows.
+- Workspaces: the default workspace plus any folder the user picks, each with its own files, chats, Library, memory, knowledge, browser data, tasks and file rules. Each window shows one workspace; the switcher in the Home sidebar creates, switches, edits and opens a workspace in a new window. See [Multiple workspaces](WORKSPACES.md).
 
 ## 7. Privacy, storage, and security
 
