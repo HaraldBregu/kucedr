@@ -3,6 +3,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { Parser, x as extract } from 'tar';
 import type { PluginInfo } from '../../shared/plugin_types';
@@ -30,12 +31,12 @@ export async function installPluginArchive(archive: Blob): Promise<PluginInfo> {
 			return false;
 		},
 	});
-	await pipeline(archive.stream(), parser);
+	await pipeline(Readable.fromWeb(archive.stream()), parser);
 
 	const temporary = await mkdtemp(path.join(os.tmpdir(), 'kucedr-plugin-'));
 	try {
 		await pipeline(
-			archive.stream(),
+			Readable.fromWeb(archive.stream()),
 			extract({
 				cwd: temporary,
 				strict: true,
