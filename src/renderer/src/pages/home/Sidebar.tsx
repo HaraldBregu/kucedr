@@ -6,6 +6,7 @@ import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Button } from '@/components/ui/button';
+import { useConfirmation } from '@/components/ui/confirmation';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -43,6 +44,7 @@ interface HomeSidebarProps {
 
 export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
+	const { confirm, dialog } = useConfirmation();
 	const navigate = useNavigate();
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
@@ -442,12 +444,13 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					if (action === 'open-location') {
 						void window.agent.openSessionFolder(session.id);
 					}
-					if (action === 'clear' && window.confirm(t('settings.chatHistory.confirmClear', { title }))) {
+					if (action === 'clear') void confirm({ title: t('settings.chatHistory.clear', 'Clear chat'), description: t('settings.chatHistory.confirmClear', { title }), confirmLabel: t('common.clear', 'Clear') }).then((confirmed) => {
+						if (!confirmed) return;
 						setActionError('');
 						void window.agent.clearMessages(session.id)
 							.then(() => window.dispatchEvent(new CustomEvent('kucedr:session-history-cleared', { detail: session.id })))
 							.catch(() => setActionError(t('settings.chatHistory.errors.clear')));
-					}
+					});
 					if (action === 'compact') setPendingAction({ id: session.id, title });
 					if (action === 'pin') togglePin(targets);
 					if (action === 'archive') archiveSessions(targets);
@@ -569,6 +572,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
+			{dialog}
 			<header className="shrink-0 px-2">
 				<SidebarMenu>
 					<Spaces />
