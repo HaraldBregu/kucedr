@@ -38,9 +38,9 @@ function sessionTitle(sessionId: string, root: string): string {
 	return text.trim().replace(/\s+/g, ' ').slice(0, 60);
 }
 
-function sessionPinned(sessionId: string, location: string): boolean {
+function sessionPinned(sessionId: string, root: string): boolean {
 	try {
-		const info = JSON.parse(readSealed(infoFile(sessionsRoot(location), sessionId))) as {
+		const info = JSON.parse(readSealed(infoFile(root, sessionId))) as {
 			pinned?: unknown;
 		};
 		return info.pinned === true;
