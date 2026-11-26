@@ -20,7 +20,7 @@ function sessionTitle(sessionId: string, root: string): string {
 		void 0;
 	}
 	const text =
-		loadMessagesBySessionId(sessionId, location)
+		loadMessagesBySessionId(sessionId, root)
 			.filter((message) => message.role === 'user')
 			.map((message) =>
 				typeof message.content === 'string'
