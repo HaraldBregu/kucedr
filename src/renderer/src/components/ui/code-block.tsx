@@ -1,7 +1,6 @@
 import { cn } from '@/lib/utils';
 import { useIsDark } from '@/hooks/use-is-dark';
 import React, { useEffect, useState } from 'react';
-import { codeToHtml } from 'shiki';
 
 export type CodeBlockProps = {
 	children?: React.ReactNode;
@@ -39,7 +38,8 @@ function CodeBlockCode({ code, language = 'tsx', theme, className, ...props }: C
 	useEffect(() => {
 		if (!code) return;
 		let cancelled = false;
-		void codeToHtml(code, { lang: language, theme: activeTheme })
+		void import('shiki')
+			.then(({ codeToHtml }) => codeToHtml(code, { lang: language, theme: activeTheme }))
 			.then((html) => {
 				if (!cancelled) setHighlighted({ key: highlightKey, html });
 			})
