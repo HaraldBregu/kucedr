@@ -2,6 +2,7 @@ import { type Dirent, readdirSync, readFileSync, statSync, utimesSync } from 'no
 import path from 'node:path';
 import { atomicWriteFile } from '../agent/session/session_atomic_write';
 import { userDataLocation } from '../shared/user_data_location';
+import { readWorkspaces } from '../workspaces/read';
 import { MAGIC } from './magic';
 import { isVaultEnabled } from './state';
 import { unseal } from './unseal';
@@ -32,8 +33,13 @@ export function convertVault(): void {
 		}
 		if (changed) utimesSync(directory, times.atime, times.mtime);
 	};
-	const root = userDataLocation();
-	convert(path.join(root, 'sessions'), true, (name) => name !== 'run.jsonl');
-	convert(path.join(root, 'memory'), false, (name) => name.endsWith('.md'));
-	convert(path.join(root, 'health'), false, (name) => name === 'HEALTH.md');
+	const data = userDataLocation();
+	for (const root of [
+		data,
+		...readWorkspaces().map((record) => path.join(data, 'workspaces', record.id)),
+	]) {
+		convert(path.join(root, 'sessions'), true, (name) => name !== 'run.jsonl');
+		convert(path.join(root, 'memory'), false, (name) => name.endsWith('.md'));
+	}
+	convert(path.join(data, 'health'), false, (name) => name === 'HEALTH.md');
 }

@@ -1,11 +1,23 @@
-import { desktopCapturer } from 'electron';
+import { BrowserWindow, desktopCapturer } from 'electron';
 import path from 'node:path';
+import { DEFAULT_WORKSPACE } from '../../../../shared/workspaces_types';
 import { agentLocation } from '../../../shared/agent_location';
+import { boundWorkspaces } from '../../../workspaces/bound';
+import { currentWorkspace } from '../../../workspaces/current';
 
 export async function captureSource(
 	target: 'full_screen' | 'workspace' | 'application' | undefined,
 	sourceId: string | undefined
 ) {
+	if (
+		!sourceId &&
+		target !== 'full_screen' &&
+		!BrowserWindow.getAllWindows().some(
+			(window) =>
+				(boundWorkspaces.get(window.webContents.id) ?? DEFAULT_WORKSPACE) === currentWorkspace().id
+		)
+	)
+		throw new Error('No window shows this workspace, so the app window cannot be recorded.');
 	const sources = await desktopCapturer.getSources({ types: ['screen', 'window'] });
 	if (sources.length === 0) {
 		throw new Error('No display or window is available to record.');

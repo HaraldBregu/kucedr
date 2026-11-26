@@ -29,7 +29,7 @@ export interface StorageSyncSettings {
 }
 
 export interface StorageSyncFolder {
-	key: 'agent' | 'sessions' | 'library' | 'skills';
+	key: 'agent' | 'sessions' | 'library' | 'skills' | 'workspaces';
 	path: string;
 }
 

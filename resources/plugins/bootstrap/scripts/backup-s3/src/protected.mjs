@@ -16,7 +16,11 @@ function realPath(target) {
 export function isProtected(value, protectedRoot) {
 	const resolved = realPath(value);
 	const root = realPath(protectedRoot);
-	return ['settings', 'providers', 'storage', 'browser']
-		.map((name) => path.join(root, name))
-		.some((folder) => resolved === folder || resolved.startsWith(`${folder}${path.sep}`));
+	const workspace = path.relative(path.join(root, 'workspaces'), resolved).split(path.sep);
+	return (
+		(workspace[0] !== '..' && workspace[1] === 'browser') ||
+		['settings', 'providers', 'storage', 'browser']
+			.map((name) => path.join(root, name))
+			.some((folder) => resolved === folder || resolved.startsWith(`${folder}${path.sep}`))
+	);
 }
