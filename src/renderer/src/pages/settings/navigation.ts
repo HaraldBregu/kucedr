@@ -356,7 +356,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Settings,
 	},
 	{
-		path: '/settings/shortcuts',
+		path: '/settings/general/shortcuts',
 		labelKey: 'settings.shortcuts.title',
 		descriptionKey: 'settings.shortcuts.description',
 		icon: Keyboard,

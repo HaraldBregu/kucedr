@@ -338,11 +338,7 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'shortcuts',
-						element: (
-							<SettingsRouteWrapper>
-								<ShortcutsPage />
-							</SettingsRouteWrapper>
-						),
+						element: <Navigate to="/settings/general/shortcuts" replace />,
 					},
 					{
 						path: 'editor',
@@ -446,6 +442,14 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<PersonaPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'shortcuts',
+								element: (
+									<SettingsRouteWrapper>
+										<ShortcutsPage />
 									</SettingsRouteWrapper>
 								),
 							},

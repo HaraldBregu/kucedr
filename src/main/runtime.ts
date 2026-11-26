@@ -185,7 +185,7 @@ const menuManager = new Menu({
 		logger.info('Menu', 'Creating new launcher window');
 		mainWindow.createAdditionalWindow();
 	},
-	onShowShortcutGuide: () => mainWindow.showRoute('settings/shortcuts'),
+	onShowShortcutGuide: () => mainWindow.showRoute('settings/general/shortcuts'),
 	onOpenAppDataFolder: () => {
 		void shell.openPath(app.getPath('userData'));
 	},

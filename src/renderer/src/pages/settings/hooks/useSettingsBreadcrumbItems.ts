@@ -81,6 +81,12 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.voiceAgent.title') },
 		];
 	}
+	if (location.pathname === '/settings/general/shortcuts') {
+		return [
+			{ label: t('settings.tabs.general'), path: '/settings/general' },
+			{ label: t('settings.shortcuts.title') },
+		];
+	}
 	if (location.pathname === '/settings/browser/passwords') {
 		return [
 			{ label: t('settings.browser.title'), path: '/settings/browser' },
