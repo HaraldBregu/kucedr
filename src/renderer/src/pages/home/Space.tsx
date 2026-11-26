@@ -16,9 +16,9 @@ export function Space({ workspace }: { readonly workspace: WorkspaceInfo }): Rea
 				.join(' · ');
 	return (
 		<>
-			<Avatar className="size-5 rounded-md">
+			<Avatar className="size-8 rounded-lg">
 				{workspace.image && <AvatarImage src={workspace.image} alt="" />}
-				<AvatarFallback className="rounded-md text-xs font-medium">
+				<AvatarFallback className="rounded-lg text-sm font-medium">
 					{name.slice(0, 1).toUpperCase()}
 				</AvatarFallback>
 			</Avatar>
