@@ -32,7 +32,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		titleKey: 'settings.overview.groups.assistant',
 		items: [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
-			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/usage'),
 			...SETTINGS_NAVIGATION.filter((item) =>
 				['/settings/editor', '/settings/voice', '/settings/tasks', '/settings/health'].includes(item.path)
 			),
