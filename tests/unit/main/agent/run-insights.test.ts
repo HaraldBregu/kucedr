@@ -7,7 +7,7 @@ import { semanticRunEntry } from '../../../../src/main/agent/session/session_tra
 const id = '528530b2-a683-4439-a035-598a61dcbe60';
 const start = Date.UTC(2026, 0, 1);
 let root: string;
-let location: string;
+let sessions: string;
 let trace: string;
 
 beforeEach(async () => {
