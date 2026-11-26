@@ -69,7 +69,7 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 		expect(messages[0].content).toBe('First spoken message.');
 		expect(messages[2].content).toBe('Second spoken message.');
 		expect(JSON.stringify(messages)).not.toContain('Voice message');
-		expect(realtimeVoiceConversationFactory({ location })(SESSION_ID, 'model').history).toEqual([]);
+		expect(realtimeVoiceConversationFactory(config)(SESSION_ID, 'model').history).toEqual([]);
 	} finally {
 		fs.rmSync(temporaryRoot, { recursive: true, force: true });
 	}
