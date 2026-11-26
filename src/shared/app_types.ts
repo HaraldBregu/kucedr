@@ -99,7 +99,7 @@ export const SHORTCUTS = [
 	{ id: 'chatHistory', area: 'chat', target: 'renderer', labelKey: 'chatHistory', accelerator: 'CmdOrCtrl+D', mac: '⌘D', win: 'Ctrl+D', linux: 'Ctrl+D' },
 	{ id: 'newWindow', area: 'app', target: 'menu', labelKey: 'newWindow', accelerator: 'CmdOrCtrl+Shift+N', mac: '⌘⇧N', win: 'Ctrl+Shift+N', linux: 'Ctrl+Shift+N' },
 	{ id: 'zoomReset', area: 'app', target: 'menu', labelKey: 'zoomReset', accelerator: 'CmdOrCtrl+0', mac: '⌘0', win: 'Ctrl+0', linux: 'Ctrl+0' },
-	{ id: 'zoomIn', area: 'app', target: 'menu', labelKey: 'zoomIn', accelerator: 'CmdOrCtrl+Plus', mac: '⌘+', win: 'Ctrl++', linux: 'Ctrl++' },
+	{ id: 'zoomIn', area: 'app', target: 'menu', labelKey: 'zoomIn', accelerator: 'CmdOrCtrl+Plus', acceleratorAlias: 'CmdOrCtrl+=', mac: '⌘+', win: 'Ctrl++', linux: 'Ctrl++' },
 	{ id: 'zoomOut', area: 'app', target: 'menu', labelKey: 'zoomOut', accelerator: 'CmdOrCtrl+-', mac: '⌘−', win: 'Ctrl+-', linux: 'Ctrl+-' },
 	{ id: 'back', area: 'app', target: 'menu', labelKey: 'back', accelerator: 'Cmd+[', mac: '⌘[', win: '', linux: '' },
 	{ id: 'forward', area: 'app', target: 'menu', labelKey: 'forward', accelerator: 'Cmd+]', mac: '⌘]', win: '', linux: '' },
@@ -133,8 +133,9 @@ export function getShortcutLabel(id: ShortcutId, platform: 'mac' | 'win' | 'linu
 	return SHORTCUTS.find((shortcut) => shortcut.id === id)?.[platform] ?? '';
 }
 
-export function getShortcutAccelerator(id: ShortcutId): string | undefined {
-	return SHORTCUTS.find((shortcut) => shortcut.id === id)?.accelerator;
+export function getShortcutAccelerator(id: ShortcutId, alias = false): string | undefined {
+	const shortcut = SHORTCUTS.find((item) => item.id === id);
+	return alias ? ('acceleratorAlias' in shortcut! ? shortcut.acceleratorAlias : undefined) : ('accelerator' in shortcut! ? shortcut.accelerator : undefined);
 }
 
 export interface ModelModuleSettings {

@@ -157,7 +157,7 @@ export class Menu {
 					{ label: m.zoomIn, accelerator: getShortcutAccelerator('zoomIn'), click: (): void => zoom(1) },
 					{
 						label: m.zoomIn,
-						accelerator: 'CmdOrCtrl+=',
+							accelerator: getShortcutAccelerator('zoomIn', true),
 						visible: false,
 						click: (): void => zoom(1),
 					},
