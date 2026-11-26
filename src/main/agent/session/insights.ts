@@ -1,15 +1,14 @@
 import { open } from 'node:fs/promises';
 import type { AgentRunInsights } from '../../../shared/agent_types';
 import { sessionPath } from './session_session_path';
-import { sessionsRoot } from './session_sessions_root';
 import { summarizeRun, type TimedRunEvent } from './summarize';
 
 export async function readRunInsights(
-	location: string,
+	root: string,
 	sessionId: string,
 	selector: string | number,
 ): Promise<AgentRunInsights | null> {
-	const file = sessionPath(sessionsRoot(location), sessionId, 'run.jsonl');
+	const file = sessionPath(root, sessionId, 'run.jsonl');
 	const handle = await open(file, 'r').catch((error: NodeJS.ErrnoException) => {
 		if (error.code === 'ENOENT') return null;
 		throw error;
