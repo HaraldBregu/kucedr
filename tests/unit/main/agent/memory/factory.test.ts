@@ -25,6 +25,7 @@ import { getProvider } from '../../../../../src/main/settings_store';
 import { scanSources } from '../../../../../src/main/memory/sources';
 import type { MemoryState } from '../../../../../src/main/memory/types';
 import { atomicWrite } from '../../../../../src/main/shared/atomic_write';
+import { buildWorkspace } from '../../../../../src/main/workspaces/build';
 
 it('persists independent configuration and invokes the configured provider directly without tools', async () => {
 	let persisted: MemoryState | undefined;
