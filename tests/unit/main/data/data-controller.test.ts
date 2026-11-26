@@ -18,13 +18,13 @@ it('prevents an active background index from republishing data during a purge', 
 		indexName: 'knowledge-base',
 	};
 	const preview = await controller.previewPurge(scope);
-	ragJob.running = true;
+	ragJob().running = true;
 	try {
 		await expect(controller.purge(scope, preview.confirmationId)).rejects.toThrow(
 			'Cancel Knowledge indexing'
 		);
 	} finally {
-		ragJob.running = false;
+		ragJob().running = false;
 	}
 });
 
