@@ -43,6 +43,17 @@
 		"deleteTitle": "Eliminare {{name}}?",
 		"deleteDescription": "Il file e le modifiche non salvate verranno eliminati definitivamente."
 	},
+	"start": {
+		"progress": { "welcome": "Benvenuto", "account": "Account", "model": "Modello", "chat": "Chat", "extras": "Configurazione facoltativa" },
+		"steps": {
+			"modelProvider": { "title": "Connetti un modello", "description": "Scegli un provider per il modello di chat. Potrai aggiungerne altri in Impostazioni." },
+			"chat": { "title": "Configura la chat", "description": "Scegli il modello e gli strumenti per la chat. Potrai modificarli in qualsiasi momento nelle Impostazioni." },
+			"extras": { "title": "Personalizza Kucedr", "description": "Configura plugin e voce ora, oppure esplorali più tardi nelle Impostazioni." },
+			"voice": { "title": "Assistente vocale", "description": "Scegli come l'assistente parla, ascolta e gestisce le conversazioni dal vivo. Potrai modificare queste opzioni in qualsiasi momento nelle Impostazioni." }
+		},
+		"extras": { "plugins": "Plugin", "voice": "Voce" },
+		"back": "Indietro", "continue": "Continua", "finish": "Fine", "saving": "Salvataggio…", "skipExtras": "Salta per ora"
+	},
 	"codeSettings": {
 		"title": "Impostazioni Coder",
 		"description": "Impostazioni predefinite per le nuove sessioni in tutti gli spazi di lavoro. Le sessioni esistenti mantengono le proprie impostazioni salvate.",

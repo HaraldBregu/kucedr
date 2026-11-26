@@ -43,6 +43,17 @@
 		"deleteTitle": "Delete {{name}}?",
 		"deleteDescription": "This permanently deletes the file and any unsaved changes."
 	},
+	"start": {
+		"progress": { "welcome": "Welcome", "account": "Account", "model": "Model", "chat": "Chat", "extras": "Optional setup" },
+		"steps": {
+			"modelProvider": { "title": "Connect a model", "description": "Choose a provider for your chat model. You can add more providers later in Settings." },
+			"chat": { "title": "Set up your chat", "description": "Choose your chat model and tools. You can change these choices anytime in Settings." },
+			"extras": { "title": "Make Kucedr yours", "description": "Set up plugins and voice now, or skip and explore them later in Settings." },
+			"voice": { "title": "Voice assistant", "description": "Choose how your assistant speaks, listens, and handles live conversations. You can update these choices anytime in Settings." }
+		},
+		"extras": { "plugins": "Plugins", "voice": "Voice" },
+		"back": "Back", "continue": "Continue", "finish": "Finish", "saving": "Saving…", "skipExtras": "Skip for now"
+	},
 	"codeSettings": {
 		"title": "Coder settings",
 		"description": "Defaults for new sessions in every workspace. Existing sessions keep their saved settings.",
