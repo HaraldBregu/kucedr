@@ -9,11 +9,10 @@ import { isUuid } from './session_is_uuid';
 import { loadMessagesBySessionId } from './session_load_messages_by_session_id';
 import { sessionPath } from './session_session_path';
 import { sessionType } from './session_session_type';
-import { sessionsRoot } from './session_sessions_root';
 
-function sessionTitle(sessionId: string, location: string): string {
+function sessionTitle(sessionId: string, root: string): string {
 	try {
-		const info = JSON.parse(readSealed(infoFile(sessionsRoot(location), sessionId))) as {
+		const info = JSON.parse(readSealed(infoFile(root, sessionId))) as {
 			title?: unknown;
 		};
 		if (typeof info.title === 'string' && info.title.trim()) return info.title.trim();
