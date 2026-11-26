@@ -43,6 +43,7 @@ import { useWebBrowserTool } from '../../../../../src/main/agent/tools/web/use_w
 import { createBackgroundBrowser } from '../../../../../src/main/agent/tools/web/browser/background';
 import { userDataLocation } from '../../../../../src/main/shared/user_data_location';
 import { setModelId } from '../../../../../src/main/agent/agent_store';
+import { resolveWorkspace } from '../../../../../src/main/workspaces/resolve';
 
 function browserContext() {
 	const events = new EventEmitter();
