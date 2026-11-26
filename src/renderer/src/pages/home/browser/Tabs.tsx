@@ -4,6 +4,7 @@ import type { BrowserPaneTab, BrowserRoute } from '../../../../../shared/browser
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ROUTE_LOOKS } from './routes';
+import { SHORTCUTS } from '@shared/app_types';
 
 const DRAG = { WebkitAppRegion: 'drag' } as CSSProperties;
 const NO_DRAG = { WebkitAppRegion: 'no-drag' } as CSSProperties;
@@ -107,11 +108,9 @@ export function BrowserTabs({
 								type="button"
 								role="tab"
 								aria-selected={selected}
-								aria-keyshortcuts={
-									IS_MAC
-										? 'Meta+Shift+ArrowLeft Meta+Shift+ArrowRight'
-										: 'Control+Shift+ArrowLeft Control+Shift+ArrowRight'
-								}
+								aria-keyshortcuts={SHORTCUTS.filter((shortcut) => shortcut.id === 'browserMoveTabLeft' || shortcut.id === 'browserMoveTabRight')
+									.map((shortcut) => shortcut.tiptapKey.replace('Mod-', `${IS_MAC ? 'Meta' : 'Control'}+`).replaceAll('-', '+'))
+									.join(' ')}
 								title={look ? `${label} (${look.label} tab)` : label}
 								className="flex h-full min-w-0 flex-1 items-center gap-2 rounded-t-lg pl-3 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
 								onClick={() => onSelect(tab.targetId)}
@@ -119,9 +118,13 @@ export function BrowserTabs({
 									if (event.button === 1) onClose(tab.targetId);
 								}}
 								onKeyDown={(event) => {
-									const step = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0;
-									const modifier = IS_MAC ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
-									if (!step || !modifier || !event.shiftKey || event.altKey) return;
+									const shortcutId = SHORTCUTS.find((shortcut) => {
+										if (shortcut.id !== 'browserMoveTabLeft' && shortcut.id !== 'browserMoveTabRight') return false;
+										const direction = shortcut.id === 'browserMoveTabLeft' ? 'ArrowLeft' : 'ArrowRight';
+										return event.key === direction && event.shiftKey && !event.altKey && (IS_MAC ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey);
+									})?.id;
+									const step = shortcutId === 'browserMoveTabLeft' ? -1 : shortcutId === 'browserMoveTabRight' ? 1 : 0;
+									if (!step) return;
 									event.preventDefault();
 									const index = at + step;
 									if (index < 0 || index >= tabs.length) return;
