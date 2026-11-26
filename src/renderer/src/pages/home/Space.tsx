@@ -32,7 +32,7 @@ export function Space({
 				{workspace.image && <AvatarImage src={workspace.image} alt="" />}
 				<AvatarFallback
 					className={large
-						? 'rounded-sm bg-gradient-to-br from-amber-400 to-orange-600 text-sm font-medium text-white'
+						? 'rounded-full bg-gradient-to-br from-amber-400 to-orange-600 text-sm font-medium text-white'
 						: 'rounded-full text-xs font-medium'}
 				>
 					{showAvatarLabel ? name.slice(0, 1).toUpperCase() : null}
