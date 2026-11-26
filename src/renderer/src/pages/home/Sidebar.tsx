@@ -604,8 +604,8 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						</SidebarMenuItem>
 					)}
 				</SidebarMenu>
+				<ChatFinder query={search} onQueryChange={setSearch} onOpen={openResult} />
 			</header>
-			<ChatFinder query={search} onQueryChange={setSearch} onOpen={openResult} />
 			<section
 				className={cn('no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3', search.trim() && 'hidden')}
 				aria-busy={loading}
