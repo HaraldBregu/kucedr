@@ -5,6 +5,7 @@ import {
 	Brain,
 	Bot,
 	Layers,
+	Keyboard,
 	Cloud,
 	Code2,
 	FileCode,
@@ -297,6 +298,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 ] as const;
 
 export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
+	{
+		path: '/settings/shortcuts',
+		labelKey: 'settings.shortcuts.title',
+		descriptionKey: 'settings.shortcuts.description',
+		icon: Keyboard,
+	},
 	{
 		path: '/settings/models',
 		labelKey: 'settings.tabs.models',

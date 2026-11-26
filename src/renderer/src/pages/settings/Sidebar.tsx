@@ -23,6 +23,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				'/settings/library',
 				'/settings/browser',
 				'/settings/privacy',
+				'/settings/shortcuts',
 			].includes(item.path)
 		),
 	},

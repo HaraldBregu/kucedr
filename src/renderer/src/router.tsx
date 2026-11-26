@@ -67,6 +67,7 @@ const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Pa
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
 const EditorPage = lazy(() => import('./pages/settings/pages/editor/Page'));
+const ShortcutsPage = lazy(() => import('./pages/settings/pages/shortcuts/Page'));
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
 const McpToolsPage = lazy(() => import('./pages/settings/pages/assistant/mcptools/Page'));
@@ -312,6 +313,14 @@ const routes: RouteObject[] = [
 					{
 						path: 'workspace',
 						element: <Navigate to="/workspace" replace />,
+					},
+					{
+						path: 'shortcuts',
+						element: (
+							<SettingsRouteWrapper>
+								<ShortcutsPage />
+							</SettingsRouteWrapper>
+						),
 					},
 					{
 						path: 'editor',
