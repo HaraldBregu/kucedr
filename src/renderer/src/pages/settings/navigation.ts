@@ -332,12 +332,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 
 export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 	{
-		path: '/settings/shortcuts',
-		labelKey: 'settings.shortcuts.title',
-		descriptionKey: 'settings.shortcuts.description',
-		icon: Keyboard,
-	},
-	{
 		path: '/settings/models',
 		labelKey: 'settings.tabs.models',
 		descriptionKey: 'settings.overview.descriptions.models',
