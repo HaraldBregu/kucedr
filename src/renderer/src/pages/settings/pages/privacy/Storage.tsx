@@ -34,7 +34,7 @@ export function Storage(): React.JSX.Element {
 	}, []);
 
 	return (
-		<>
+		<div className="flex flex-col gap-4">
 			<SettingsSection title={t('settings.storageManagement.title')}>
 			{error ? (
 				<SettingsNotice variant="destructive">{t('settings.storageManagement.loadError')}</SettingsNotice>
@@ -74,6 +74,6 @@ export function Storage(): React.JSX.Element {
 			<SettingsSection title={t('settings.dataControls.title')}>
 				<DataControls kinds={['sessions']} />
 			</SettingsSection>
-		</>
+		</div>
 	);
 }
