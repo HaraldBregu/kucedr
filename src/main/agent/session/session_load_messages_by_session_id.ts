@@ -7,11 +7,9 @@ import { messagesBackupFile } from './session_messages_backup_file';
 import { messagesFile } from './session_messages_file';
 import { hydrateAttachments } from './session_hydrate_attachments';
 import { parseMessages } from './session_parse_messages';
-import { sessionsRoot } from './session_sessions_root';
 
-export function loadMessagesBySessionId(sessionId: string, location?: string): Message[] {
-	if (!location) return [];
-	const root = sessionsRoot(location);
+export function loadMessagesBySessionId(sessionId: string, root?: string): Message[] {
+	if (!root) return [];
 	const currentPath = isUuid(sessionId) ? messagesFile(root, sessionId) : undefined;
 	const backupPath = isUuid(sessionId) ? messagesBackupFile(root, sessionId) : undefined;
 	const filePath =
