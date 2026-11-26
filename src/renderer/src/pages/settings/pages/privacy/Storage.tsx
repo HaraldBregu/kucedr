@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { buttonVariants } from '@/components/ui/button';
 import type { StorageUsage } from '@shared/data_types';
+import { DataControls } from '../../components/data';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../components';
 
 function formatBytes(bytes: number): string {
@@ -68,6 +69,9 @@ export function Storage(): React.JSX.Element {
 					/>
 				</SettingsPanel>
 			)}
+		</SettingsSection>
+		<SettingsSection title={t('settings.dataControls.title')}>
+			<DataControls kinds={['sessions']} />
 		</SettingsSection>
 	);
 }
