@@ -24,7 +24,9 @@ import { cn } from '@/lib/utils';
 import { playSound } from '@/lib/sounds/play';
 import type { AgentSessionSearchResult } from '@shared/agent_types';
 import type { OpenExtension } from './components/ExtensionPage';
+import { scoped } from '@/spaces/scoped';
 import { ChatFinder } from './Finder';
+import { Spaces } from './Spaces';
 import { stored } from './stored';
 
 const SESSION_MIME = 'application/x-chat-session';
@@ -63,9 +65,9 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const undone = useRef(false);
 	const [deleted, setDeleted] = useState<string[]>([]);
 
-	useEffect(() => localStorage.setItem('chat-categories', JSON.stringify(categories)), [categories]);
-	useEffect(() => localStorage.setItem('chat-category-assignments', JSON.stringify(assignments)), [assignments]);
-	useEffect(() => localStorage.setItem('chat-collapsed-groups', JSON.stringify(collapsed)), [collapsed]);
+	useEffect(() => localStorage.setItem(scoped('chat-categories'), JSON.stringify(categories)), [categories]);
+	useEffect(() => localStorage.setItem(scoped('chat-category-assignments'), JSON.stringify(assignments)), [assignments]);
+	useEffect(() => localStorage.setItem(scoped('chat-collapsed-groups'), JSON.stringify(collapsed)), [collapsed]);
 	const syncedCategories = useRef<Record<string, string | null>>({});
 	useEffect(() => {
 		for (const session of sessions) {
@@ -569,6 +571,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="shrink-0 px-2">
 				<SidebarMenu>
+					<Spaces />
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							type="button"

@@ -1,10 +1,12 @@
+import { scoped } from '@/spaces/scoped';
+
 export const DRAFT_STORAGE_KEY = 'kucedr-prompt-attachments';
 
 export function readDraftAttachments(
 	sessionId: string
 ): { path: string; name: string; mimeType: string }[] {
 	try {
-		const drafts = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) ?? '{}') as Record<
+		const drafts = JSON.parse(localStorage.getItem(scoped(DRAFT_STORAGE_KEY)) ?? '{}') as Record<
 			string,
 			unknown
 		>;

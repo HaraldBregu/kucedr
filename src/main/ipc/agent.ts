@@ -410,8 +410,8 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 						notifications: { run: Record<string, string> };
 					}
 				).notifications.run[key],
-			open: (windowId, sessionId) =>
-				eventBus.sendTo(windowId, AgentChannels.openSession, sessionId),
+			open: (windowId, sessionId, workspaceId) =>
+				eventBus.sendTo(windowId, AgentChannels.openSession, { sessionId, workspaceId }),
 			resolve: (sessionId, workspaceId) =>
 				resolveStoredSessionId(sessionId, resolveWorkspace(workspaceId).sessions),
 		});

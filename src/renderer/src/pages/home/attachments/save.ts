@@ -1,4 +1,5 @@
 import type { PromptAttachment } from './types';
+import { scoped } from '@/spaces/scoped';
 import { DRAFT_STORAGE_KEY } from './read';
 
 export function saveDraftAttachments(
@@ -6,7 +7,7 @@ export function saveDraftAttachments(
 	attachments: readonly PromptAttachment[]
 ): void {
 	try {
-		const drafts = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) ?? '{}') as Record<
+		const drafts = JSON.parse(localStorage.getItem(scoped(DRAFT_STORAGE_KEY)) ?? '{}') as Record<
 			string,
 			unknown
 		>;
@@ -18,7 +19,7 @@ export function saveDraftAttachments(
 				name: attachment.file.name,
 				mimeType: attachment.file.type,
 			}));
-		localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(next));
+		localStorage.setItem(scoped(DRAFT_STORAGE_KEY), JSON.stringify(next));
 	} catch {
 		return;
 	}

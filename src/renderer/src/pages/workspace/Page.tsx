@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { WorkspaceTextSize } from '@shared/app_types';
 import { PageContainer, Split } from '@/components/app/base/page';
+import { scoped } from '@/spaces/scoped';
 import { WorkspaceSidebar } from './Sidebar';
 import { WorkspaceViewer } from './Viewer';
 import { WorkspaceBreadcrumb } from './Breadcrumb';
@@ -34,7 +35,7 @@ export default function WorkspacePage(): React.JSX.Element {
 	useEffect(() => {
 		if (initialized.current) return;
 		initialized.current = true;
-		const saved = localStorage.getItem(SELECTED_FILE_KEY);
+		const saved = localStorage.getItem(scoped(SELECTED_FILE_KEY));
 		if (!path && saved && (navigationType !== 'POP' || location.key === 'default')) selectFile({ type: 'file', path: saved, name: saved.split(/[\\/]/).pop() ?? saved }, true);
 	}, [location.key, navigationType, path, selectFile]);
 	useEffect(() => {
@@ -45,7 +46,7 @@ export default function WorkspacePage(): React.JSX.Element {
 		void window.app.setWorkspaceWideContent(next);
 	}, []);
 	useEffect(() => {
-		if (path) localStorage.setItem(SELECTED_FILE_KEY, path);
+		if (path) localStorage.setItem(scoped(SELECTED_FILE_KEY), path);
 	}, [path]);
 	useEffect(() => {
 		void window.app.getWorkspaceTextSize().then(setTextSize);
@@ -61,7 +62,7 @@ export default function WorkspacePage(): React.JSX.Element {
 		else if (path.startsWith(`${sourcePath}/`) || path.startsWith(`${sourcePath}\\`)) selectFile({ type: 'file', path: `${nextPath}/${path.slice(sourcePath.length + 1)}`, name: selectedFile?.name ?? '' }, true);
 	}} onEntryDeleted={(deletedPath) => {
 		if (path && (path === deletedPath || path.startsWith(`${deletedPath}/`) || path.startsWith(`${deletedPath}\\`))) {
-			localStorage.removeItem(SELECTED_FILE_KEY);
+			localStorage.removeItem(scoped(SELECTED_FILE_KEY));
 			navigate('/workspace', { replace: true });
 		}
 	}} selectedPath={path} beforeEntryChange={() => flushRef.current?.() ?? Promise.resolve()} />;

@@ -28,6 +28,7 @@ const NO_MODES: readonly AgentModeInfo[] = [];
 import { ImageGallery } from './ImageGallery';
 import { generatedMedia } from './media';
 import { useTranslation } from 'react-i18next';
+import { spaced } from '@/spaces/spaced';
 
 function isLocalImagePath(value: string): boolean {
 	return (
@@ -46,7 +47,7 @@ function localResourceUrl(path: string): string {
 	if (!isLocalImagePath(path)) {
 		const url = new URL('local-resource://agent/');
 		url.pathname = `/${posixPath.replace(/^\/+/, '')}`;
-		return url.toString();
+		return spaced(url).toString();
 	}
 	// Windows paths start with a drive letter (C:\...) rather than a slash, so add
 	// a leading slash to produce a valid slash-separated pathname.

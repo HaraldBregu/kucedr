@@ -3312,5 +3312,20 @@
 	},
 	"attachments": {
 		"tooLarge": "{{name}} è troppo grande per essere inviato. I file possono arrivare a {{size}}."
+	},
+	"spaces": {
+		"personal": "Personale",
+		"switch": "Cambia spazio di lavoro",
+		"create": "Nuovo spazio di lavoro…",
+		"edit": "Modifica spazio di lavoro…",
+		"openWindow": "Apri in una nuova finestra",
+		"name": "Nome dello spazio di lavoro",
+		"locate": "Trova cartella…",
+		"picture": "Scegli immagine…",
+		"removePicture": "Rimuovi immagine",
+		"missing": "Cartella non trovata",
+		"running": "{{count}} in corso",
+		"waiting_one": "{{count}} in attesa di te",
+		"waiting_other": "{{count}} in attesa di te"
 	}
 }

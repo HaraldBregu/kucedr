@@ -3312,5 +3312,20 @@
 	},
 	"attachments": {
 		"tooLarge": "{{name}} is too large to send. Files can be up to {{size}}."
+	},
+	"spaces": {
+		"personal": "Personal",
+		"switch": "Switch workspace",
+		"create": "New workspace…",
+		"edit": "Edit workspace…",
+		"openWindow": "Open in new window",
+		"name": "Workspace name",
+		"locate": "Locate folder…",
+		"picture": "Choose picture…",
+		"removePicture": "Remove picture",
+		"missing": "Folder not found",
+		"running": "{{count}} running",
+		"waiting_one": "{{count}} needs you",
+		"waiting_other": "{{count}} need you"
 	}
 }

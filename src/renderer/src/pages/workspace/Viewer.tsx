@@ -9,6 +9,7 @@ import { AudioPlayer } from '@/components/audio-player';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { RemoteImage } from '@/components/remote-image';
 import { Button } from '@/components/ui/button';
+import { spaced } from '@/spaces/spaced';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -75,7 +76,10 @@ export function WorkspaceViewer({ file, onFileSelect, ref, wide, onWideChange, t
 	const kind = file ? workspaceFileType(file.path).kind : null;
 	const media = kind === 'image' || kind === 'audio' || kind === 'video' || kind === 'pdf';
 	const mediaUrl = file && media ? new URL('local-resource://agent/') : null;
-	if (mediaUrl && file) mediaUrl.pathname = `/${file.path.replaceAll('\\', '/')}`;
+	if (mediaUrl && file) {
+		mediaUrl.pathname = `/${file.path.replaceAll('\\', '/')}`;
+		spaced(mediaUrl);
+	}
 	const searchable = kind !== null && !media && kind !== 'unsupported';
 	const visibleMarkdownMode = kind === 'markdown' && findOpen && content.includes('<!--') ? 'source' : markdownMode;
 	const textSearch = kind === 'markdown' && visibleMarkdownMode === 'preview';

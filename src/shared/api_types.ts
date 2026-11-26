@@ -199,7 +199,9 @@ export interface AgentApi {
 	getRunInsights: (sessionId: string, run: string | number) => Promise<AgentRunInsights | null>;
 	searchSessions: (query: string) => Promise<AgentSessionSearchResult[]>;
 	viewSession: (sessionId: string | null) => Promise<void>;
-	onOpenSession: (listener: (sessionId: string) => void) => () => void;
+	onOpenSession: (
+		listener: (target: { sessionId: string; workspaceId: string }) => void
+	) => () => void;
 	onSessionsChanged: (listener: () => void) => () => void;
 	openSessionsFolder: () => Promise<void>;
 	openSessionFolder: (sessionId: string) => Promise<void>;

@@ -22,6 +22,7 @@ import { saveRuntime } from '../runtime/save';
 import { providerModels, providers } from '@/lib/providers';
 import { modelEfforts } from '@shared/effort';
 import { resolveModelMetadata } from '@shared/metadata';
+import { active } from '@/spaces/active';
 
 type WindowWithOptionalAgent = Window & {
 	agent?: Window['agent'];
@@ -181,6 +182,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 
 			const requestId = requestIdRef.current + 1;
 			const runId = crypto.randomUUID();
+			const workspaceId = active.id;
 			requestIdRef.current = requestId;
 			requestActiveRef.current = true;
 			activeRunIdRef.current = runId;
@@ -269,6 +271,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 							: {}),
 					runId,
 					sessionId,
+					workspaceId,
 					modeIds: runModeIds,
 					...(sendOptions.replyTo ? { replyTo: sendOptions.replyTo } : {}),
 					...(sendOptions.replaceMessageId && !sendOptions.resend

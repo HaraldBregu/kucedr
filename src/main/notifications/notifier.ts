@@ -6,7 +6,7 @@ export function createNotifier(deps: {
 	enabled: () => boolean;
 	title: (signal: RunSignal) => string;
 	line: (key: string) => string;
-	open: (windowId: number, sessionId: string) => void;
+	open: (windowId: number, sessionId: string, workspaceId: string) => void;
 	resolve: (sessionId: string, workspaceId: string) => string;
 }): {
 	run: (signal: RunSignal) => void;
@@ -54,7 +54,7 @@ export function createNotifier(deps: {
 				if (!window) return;
 				window.show();
 				window.focus();
-				deps.open(window.id, signal.sessionId);
+				deps.open(window.id, signal.sessionId, signal.workspaceId);
 			});
 			shown.set(signal.sessionId, notification);
 			app.setBadgeCount(shown.size);

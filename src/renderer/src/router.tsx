@@ -30,6 +30,8 @@ import { cn } from './lib/utils';
 import HomePage from './pages/home/Page';
 import StartPage from './pages/start/StartPage';
 import { StartupGate } from './auth/Gate';
+import { active } from './spaces/active';
+import { SpacesGate } from './spaces/Gate';
 import { useOnboarding } from './contexts/useOnboarding';
 import { useAuth } from './contexts/AuthContext';
 
@@ -163,7 +165,8 @@ function RootRouteComponent(): React.JSX.Element {
 	}, [visibleSessionId]);
 	useEffect(
 		() =>
-			window.agent.onOpenSession((sessionId) => {
+			window.agent.onOpenSession(({ sessionId, workspaceId }) => {
+				if (workspaceId !== active.id) return;
 				selectSession(sessionId);
 				navigate('/home');
 				window.dispatchEvent(new Event('kucedr:show-chat'));
@@ -230,7 +233,9 @@ const routes: RouteObject[] = [
 	{
 		element: (
 			<StartupGate>
-				<RootRouteComponent />
+				<SpacesGate>
+					<RootRouteComponent />
+				</SpacesGate>
 			</StartupGate>
 		),
 		errorElement: (
