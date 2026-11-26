@@ -6,6 +6,7 @@ import { updateSoulTool } from '../../../../src/main/agent/tools/soul/update';
 import { getUserTool } from '../../../../src/main/agent/tools/user/get';
 import { updateUserTool } from '../../../../src/main/agent/tools/user/update';
 import { workspacePath } from '../../../../src/main/agent/system/system_workspace_path';
+import { buildWorkspace } from '../../../../src/main/workspaces/build';
 
 it('creates soul and user profiles only through update tools', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kucedr-profiles-'));
