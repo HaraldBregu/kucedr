@@ -70,15 +70,15 @@ manifest.
 | [Deepgram](https://console.deepgram.com) | `deepgram` | Speech to text, Text to speech | Available |
 | [DeepSeek](https://platform.deepseek.com/api_keys) | `deepseek` | Chat | Available |
 | [ElevenLabs](https://elevenlabs.io/app/settings/api-keys) | `elevenlabs` | Speech to text, Text to speech, Audio | Available |
-| [Google](https://aistudio.google.com/apikey) | `google` | Chat, Speech to text, Text to speech, Realtime voice, Image, Video, Audio, Embeddings | Mixed: existing Lyria Realtime is catalog only |
+| [Google](https://aistudio.google.com/apikey) | `google` | Chat, Speech to text, Text to speech, Realtime voice, Image, Video, Embeddings | Available |
 | [Ideogram](https://ideogram.ai/manage-api) | `ideogram` | Image | Available |
 | [Jina AI](https://jina.ai/api-dashboard) | `jina` | Embeddings | Available |
 | [Kimi](https://platform.kimi.ai/console/api-keys) | `kimi` | Chat | Available |
-| [Kling AI](https://app.klingai.com/global/dev) | `kling` | Image, Video, Audio | Available |
-| [MiniMax](https://platform.minimax.io/user-center/basic-information/interface-key) | `minimax` | Chat, Speech to text, Text to speech, Image, Video, Audio | Available |
+| [Kling AI](https://app.klingai.com/global/dev) | `kling` | Image, Video | Available |
+| [MiniMax](https://platform.minimax.io/user-center/basic-information/interface-key) | `minimax` | Chat, Speech to text, Text to speech, Image, Video | Available |
 | [Mistral AI](https://console.mistral.ai/api-keys) | `mistral` | Chat, Speech to text, Text to speech, Embeddings | Available |
 | [OpenAI](https://platform.openai.com/api-keys) | `openai` | Chat, Speech to text, Text to speech, Realtime voice, Image, Embeddings | Available |
-| [Pika](https://pika.art) | `pika` | Text to speech, Video, Audio | Partial: existing Pika 2.2 requires fal.run |
+| [Pika](https://pika.art) | `pika` | Video | Partial: existing Pika 2.2 requires fal.run |
 | [Pinecone](https://app.pinecone.io)                                                | `pinecone`          | Vector database                                                  | RAG mirroring with the user's selected database and saved credentials    |
 | [Qwen and Wan](https://modelstudio.console.alibabacloud.com) | `qwen` | Chat, Speech to text, Text to speech, Realtime voice, Image, Video, Embeddings | Available |
 | [Reka AI](https://platform.reka.ai/apikeys) | `reka` | Chat | Available |
@@ -179,10 +179,7 @@ Names and IDs match the bundled manifests. Model metadata links to the official 
 | Provider | Cataloged models |
 | --- | --- |
 | ElevenLabs | Eleven Music (`eleven-music`); ElevenLabs Sound Effects (`elevenlabs-sound-effects`); Eleven Music v2 (`music_v2`); Eleven Music v2.5 (`music_v2_5`); Eleven Sound Effects v2 (`eleven_text_to_sound_v2`); Eleven Sound Effects v3 (`eleven_text_to_sound_v3`) |
-| Google DeepMind / Google | Lyria 3.5 (`lyria-3.5`); Lyria 3 Pro Preview (`lyria-3-pro-preview`); Lyria 3 Clip Preview (`lyria-3-clip-preview`); Lyria Realtime (`lyria-realtime`) |
-| Kuaishou / Kling AI | Kling Audio (`kling-audio`) |
-| MiniMax | Music 3.0 (`music-3.0`); Music 2.6 (`music-2.6`); Music Cover (`music-cover`) |
-| Pika | Pika Music (`pika-music`); Pika SFX (`pika-sfx`) |
+| ElevenLabs | Eleven Music (`eleven-music`); Eleven Music v2 (`music_v2`); Eleven Music v2.5 (`music_v2_5`); ElevenLabs Sound Effects (`elevenlabs-sound-effects`); Eleven Sound Effects v2 (`eleven_text_to_sound_v2`); Eleven Sound Effects v3 (`eleven_text_to_sound_v3`) |
 
 ### Embeddings
 
@@ -196,7 +193,7 @@ Names and IDs match the bundled manifests. Model metadata links to the official 
 
 Anthropic uses Messages, OpenAI uses Responses, and the other chat providers use their compatible Chat Completions endpoints. Cohere uses its dedicated compatibility URL. Native media, speech, realtime, and embedding factories route the other capabilities.
 
-Google `lyria-realtime` is an existing catalog-only entry: realtime music needs a separate WebSocket protocol. Other Google music models use Interactions. The retained Google image preview IDs shut down on June 25; select their stable replacements. See [Google deprecations](https://ai.google.dev/gemini-api/docs/deprecations).
+The built-in audio catalog contains only the six ElevenLabs models listed above, and each has an executable adapter. Google, Kling, MiniMax and Pika audio models are not listed in the app catalog because their adapters are not implemented. The retained Google image preview IDs shut down on June 25; select their stable replacements. See [Google deprecations](https://ai.google.dev/gemini-api/docs/deprecations).
 
 Pika 2.5 and Pika audio use the native Pika developer API. Existing Pika 2.2 uses fal.run and needs compatible credentials. MiniMax `music-3.0` is restricted to existing paying accounts. Google Omni video uses Interactions; uploaded-video extension is unavailable in the EEA, Switzerland, and UK. See [MiniMax models](https://platform.minimax.io/docs/guides/models-intro) and [Google Omni](https://ai.google.dev/gemini-api/docs/omni).
 

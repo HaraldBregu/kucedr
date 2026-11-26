@@ -60,8 +60,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
 
 ## Recommended order
 
-1. **Small items left from the 2026-11-25 list:** storage management (1.7), an honest model
-   catalogue (8.9) and the one-time browser import offer (23.1). Built since: redaction length in
+1. **Small items left from the 2026-11-25 list:** storage management (1.7) and the one-time browser
+   import offer (23.1). Built since: redaction length in
    approval cards (21.12), legal pages and notices (6.4), offline
    and failure states (3.6, 15.4), voice status (19.1, 19.2), and parts of the shield (13.6, 13.7,
    13.13, 13.14).

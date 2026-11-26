@@ -31,7 +31,7 @@ Plugins that can sign the user in to a service (OAuth) and plugins that can be p
 | 8.6 | Paid plugins sold in the catalogue | A price in the catalogue, purchase through the same checkout as [Payments](PAYMENTS.md), and download and updates only for buyers | 8.1, 8.4, payments (9.2, 9.3) | L |
 | 8.7 | Publisher accounts and payouts | Authors register, are verified, sign their packages and receive their share of sales | Later phases 3 and 4 of [Plugin system](../PLUGIN_SYSTEM.md) | L |
 | 8.8 | App bridge and settings forms | Plugin apps can read the theme, insert text in the composer and prompt the agent; each plugin gets a settings form generated from its manifest | Designed in [Plugin system](../PLUGIN_SYSTEM.md), partly built | M |
-| 8.9 | Honest catalogue | Models listed without a working adapter are hidden or labelled | [FEATURES.md](../FEATURES.md) marks some as catalogue-only | S |
+| 8.9 | Honest catalogue | Models listed without a working adapter are hidden or labelled | Built 2026-11-26: the built-in audio catalog contains only the six ElevenLabs models with executable adapters. Provider and feature references no longer list unsupported Google, Kling, MiniMax or Pika audio models as catalog entries | S |
 
 What a plugin may reach on the network is covered by the [Network shield](SHIELD.md), 13.4.
 
