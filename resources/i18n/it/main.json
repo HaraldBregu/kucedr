@@ -245,6 +245,15 @@
 		"inaccessibleBanner": "La cartella del tuo workspace non e piu accessibile. Seleziona un nuovo workspace."
 	},
 	"settings": {
+		"shortcuts": {
+			"title": "Scorciatoie da tastiera",
+			"description": "Consulta le scorciatoie disponibili in Kucedr, nell'editor dell'area di lavoro e nelle schede del browser.",
+			"groups": { "app": "Applicazione", "chat": "Chat", "workspace": "Editor dell'area di lavoro", "browser": "Browser" },
+			"keys": {
+				"commandMenu": "Apri il menu dei comandi", "settings": "Apri le impostazioni", "newChat": "Avvia una nuova chat", "focusComposer": "Vai al campo di chat", "chatHistory": "Apri la cronologia chat", "newWindow": "Apri una nuova finestra", "zoomReset": "Reimposta lo zoom", "zoomIn": "Aumenta lo zoom", "zoomOut": "Riduci lo zoom", "back": "Vai indietro", "forward": "Vai avanti",
+				"editorUndo": "Annulla", "editorRedo": "Ripeti", "editorHeading1": "Titolo 1", "editorHeading2": "Titolo 2", "editorHeading3": "Titolo 3", "editorBold": "Grassetto", "editorItalic": "Corsivo", "editorUnderline": "Sottolineato", "editorStrikethrough": "Barrato", "editorInlineCode": "Codice in linea", "editorClearFormatting": "Rimuovi formattazione", "editorBulletedList": "Elenco puntato", "editorNumberedList": "Elenco numerato", "editorTaskList": "Elenco attività", "editorQuote": "Citazione", "editorCodeBlock": "Blocco di codice", "editorSave": "Salva file", "editorLink": "Inserisci collegamento", "editorInsertFile": "Inserisci file", "browserMoveTabLeft": "Sposta scheda a sinistra", "browserMoveTabRight": "Sposta scheda a destra"
+			}
+		},
 		"usage": {
 			"title": "Utilizzo",
 			"description": "Consulta i costi riportati dei modelli per mese, provider e chat di quest'area di lavoro.",
