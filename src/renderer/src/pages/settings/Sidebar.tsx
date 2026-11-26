@@ -23,6 +23,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				'/settings/library',
 				'/settings/browser',
 				'/settings/privacy',
+				'/settings/usage',
 			].includes(item.path)
 		),
 	},
