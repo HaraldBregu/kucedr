@@ -4,15 +4,13 @@ import { isUuid } from './session_is_uuid';
 import { legacyFilePath } from './session_legacy_file_path';
 import { sessionFolderName } from './session_session_folder_name';
 import { sessionPath } from './session_session_path';
-import { sessionsRoot } from './session_sessions_root';
 import type { SessionCoordinator } from './coordinator';
 
 export function deleteSessionBySessionId(
 	sessionId: string,
-	location: string,
+	root: string,
 	coordinator?: SessionCoordinator
 ): void {
-	const root = sessionsRoot(location);
 	if (isUuid(sessionId)) coordinator?.invalidate(messagesFile(root, sessionId));
 	if (isUuid(sessionId)) {
 		const folderPath = sessionPath(root, sessionFolderName(sessionId));
