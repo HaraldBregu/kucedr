@@ -9,7 +9,7 @@ import {
 	SettingsPanel,
 	SettingsRow,
 	SettingsSection,
-} from '../../../components';
+} from '../../components';
 
 function formatCost(value: number, locale: string): string {
 	return value.toLocaleString(locale, {
