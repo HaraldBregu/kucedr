@@ -4,15 +4,12 @@ import '@thilakbhat/heatmap-ui/styles.css';
 import './Activity.css';
 import { useTranslation } from 'react-i18next';
 import { ChartNoAxesColumnIncreasing } from 'lucide-react';
-import { useApp } from '@/contexts';
 import { SettingsEmptyState, SettingsLoadingRows } from '../../components';
 
 export type ActivityRange = 'untilToday' | 'currentYear' | 'lastYear';
 
 export function Activity({ range }: { readonly range: ActivityRange }): React.JSX.Element {
 	const { t } = useTranslation();
-	const { theme } = useApp();
-	const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
 	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [failed, setFailed] = useState(false);
@@ -31,15 +28,6 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 	const visibleValues = range === 'untilToday'
 		? values
 		: values.filter((day) => day.date.startsWith(`${selectedYear}-`) && day.date <= end);
-	const isDark = theme === 'system' ? systemDark : theme === 'dark';
-
-	useEffect(() => {
-		const media = window.matchMedia('(prefers-color-scheme: dark)');
-		const onChange = (event: MediaQueryListEvent): void => setSystemDark(event.matches);
-		media.addEventListener('change', onChange);
-		return () => media.removeEventListener('change', onChange);
-	}, []);
-
 	useEffect(() => {
 		let active = true;
 		void window.app
@@ -83,9 +71,8 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 					{...(range === 'untilToday' ? period.range : { to: end })}
 					shape="rounded"
 					scale="linear"
-					colors={isDark ? ['#0e4429', '#006d32', '#26a641', '#39d353'] : undefined}
-					emptyColor={isDark ? '#2c2c2e' : 'var(--muted)'}
-					data-heatmap-theme={isDark ? 'dark' : 'light'}
+					colors={['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)']}
+					emptyColor="var(--muted)"
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
 					ariaLabel={t('settings.activity.title')}
