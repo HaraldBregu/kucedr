@@ -52,7 +52,7 @@ export function LibrarySelection({
 			<Button
 				size="sm"
 				variant="secondary"
-				className="shrink-0 rounded-full border-neutral-600 bg-neutral-800 text-white hover:bg-neutral-700 hover:text-white"
+				className="shrink-0 rounded-full"
 				onClick={onDownload}
 				disabled={busy}
 			>
