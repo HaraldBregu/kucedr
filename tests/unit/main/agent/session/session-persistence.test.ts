@@ -67,20 +67,21 @@ describe('session persistence', () => {
 
 	it('deletes only the session folder matching the selected id', () => {
 		const location = path.join(temporaryRoot, 'workspace');
+		const workspace = buildWorkspace('default', temporaryRoot, location);
 		const otherId = '22222222-2222-4222-8222-222222222222';
 		for (const id of [SESSION_ID, otherId]) {
 			const state = createSessionState();
 			state.id = id;
 			state.folderName = id;
-			state.sessionsPath = sessionsRoot(location);
+			state.sessionsPath = workspace.sessions;
 			state.messages = [{ role: 'user', content: id }];
 			persist(state);
 		}
 
-		deleteSession(createSessionState(), { location } as Parameters<typeof deleteSession>[1], SESSION_ID);
+		deleteSession(createSessionState(), { location, workspace }, SESSION_ID);
 
-		expect(fs.existsSync(path.join(sessionsRoot(location), SESSION_ID))).toBe(false);
-		expect(fs.existsSync(path.join(sessionsRoot(location), otherId))).toBe(true);
+		expect(fs.existsSync(path.join(temporaryRoot, 'sessions', SESSION_ID))).toBe(false);
+		expect(fs.existsSync(path.join(temporaryRoot, 'sessions', otherId))).toBe(true);
 	});
 
 	it('keeps the target intact and removes the temporary file when rename fails', () => {
