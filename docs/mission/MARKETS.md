@@ -314,7 +314,7 @@ through the customer's own key. The human concludes.
 | Encryption on by default | S | Gate 2; case files hold personal data |
 | Local embeddings | M | Gate 3; remote embeddings break the local claim |
 | [FRONTIER.md](FRONTIER.md)'s real-Tor and real-proxy packet-capture test on macOS and Windows, on the current Electron 44.x | S | Gate 4. Routes were only checked against a fake SOCKS5 server; MISSION.md section 7 forbids the address claim until this passes |
-| One recorded case run with a local model using tools and the browser end to end | Gate 5 | MISSION.md: no local model has yet run with tools or the browser. Until it passes, say that case text reaches the chosen hosted provider (a GDPR Chapter V transfer for EU and UK case files) |
+| One recorded case run with a local model using tools and the browser end to end | S | Gate 5. MISSION.md: no local model has yet run with tools or the browser. Until it passes, say that case text reaches the chosen hosted provider (a GDPR Chapter V transfer for EU and UK case files) |
 | Capture record: URL, UTC, route, SHA-256, append-only per case | M | Core of D01 and D02 |
 | RFC 3161 timestamp from a qualified (eIDAS) TSA on each capture | S | The Italian court convention for a copia forense |
 | Named proxy profiles per tab plus proxy login (bring-your-own provider) | M | Investigators bring their own regional proxies; today there is one proxy without authentication |
