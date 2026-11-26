@@ -16,6 +16,9 @@ import {
 import { modelsFor, providers } from '@/lib/providers';
 import { liveProviderModels, providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
+import { Switch } from '@/components/ui/switch';
+import { useSpaces } from '@/spaces/context';
+import { DEFAULT_WORKSPACE } from '@shared/workspaces_types';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import { exclusive } from '@/lib/exclusive';
 import { modelEfforts } from '@shared/effort';
@@ -115,6 +118,9 @@ const AssistantPage: React.FC = () => {
 		providerId: '',
 		modelId: '',
 	});
+	const { current } = useSpaces();
+	const [overridden, setOverridden] = useState(false);
+	const [revision, setRevision] = useState(0);
 	const model = modelsFor('llm').find(
 		(item) => item.provider.id === state.providerId && item.id === state.modelId
 	);
@@ -138,10 +144,13 @@ const AssistantPage: React.FC = () => {
 		return () => {
 			mounted = false;
 		};
-	}, [t]);
+	}, [t, revision]);
 	useEffect(() => {
 		void window.agent.getModelOptions().then(setModelOptions);
-	}, []);
+	}, [revision]);
+	useEffect(() => {
+		void window.agent.getModelScope().then((scope) => setOverridden(scope.overridden));
+	}, [revision, state.providerId, state.modelId, state.saving]);
 	useEffect(() => {
 		void window.agent.getCompactModel().then((model) => {
 			setCompactModel({ providerId: model.providerId, modelId: model.modelId });
@@ -278,6 +287,25 @@ const AssistantPage: React.FC = () => {
 			)}
 
 			<SettingsPanel>
+				{current !== DEFAULT_WORKSPACE && (
+					<SettingsRow
+						title={t('spaces.defaultModel')}
+						description={t('spaces.defaultModelDescription')}
+						actions={
+							<Switch
+								aria-label={t('spaces.defaultModel')}
+								checked={!overridden}
+								disabled={state.loading || state.saving}
+								onCheckedChange={(checked) =>
+									void (checked
+										? window.agent.clearModel()
+										: window.agent.setModelId(state.modelId)
+									).then(() => setRevision((value) => value + 1))
+								}
+							/>
+						}
+					/>
+				)}
 				<ModelProviderConfiguration
 					configState={state}
 					idPrefix="assistant"

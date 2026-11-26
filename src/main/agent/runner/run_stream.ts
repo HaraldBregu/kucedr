@@ -1,7 +1,7 @@
 import { promptMemory } from '../../memory/prompt';
 import type { MemoryService } from '../../../shared/memory_types';
 import { getResolvedProvider } from '../../settings_store';
-import { getRunBudget, getToolConfiguration } from '../agent_store';
+import { getModelOptions, getRunBudget, getToolConfiguration } from '../agent_store';
 import { getAgentProfileModel } from '../agent_profiles';
 import {
 	addAssistantMessage,
@@ -168,7 +168,11 @@ async function* loop(
 	const selectedModel = getAgentProfileModel(input.toolProfile ?? 'chat', 'textToText');
 	const provider = getResolvedProvider(input.providerId ?? selectedModel.providerId);
 	const modelId = input.model ?? selectedModel.modelId;
-	const modelOptions = options.modelOptions ?? structuredClone(selectedModel.options);
+	const modelOptions =
+		options.modelOptions ??
+		structuredClone(
+			(input.toolProfile ?? 'chat') === 'chat' ? getModelOptions() : selectedModel.options
+		);
 	const runId = input.runId ?? session.id;
 	const budget =
 		options.budget ??

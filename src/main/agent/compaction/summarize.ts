@@ -1,7 +1,6 @@
 import { resolveContextWindow } from '../../models/context';
 import { getResolvedProvider } from '../../settings_store';
-import { getAgentProfileModel } from '../agent_profiles';
-import { getCompactModel } from '../agent_store';
+import { getCompactModel, getModelId, getModelOptions, getProviderId } from '../agent_store';
 import { runModelTurn } from '../runner/run_model_turn';
 import type { Message, RuntimeInput } from '../types';
 import type { KeyedLimiter } from '../limiter';
@@ -21,7 +20,11 @@ export async function summarize(
 ): Promise<string> {
 	let summary = '';
 	let inputTokens = 0;
-	const profile = getCompactModel() ?? getAgentProfileModel('chat', 'textToText');
+	const profile = getCompactModel() ?? {
+		providerId: getProviderId() ?? '',
+		modelId: getModelId() ?? '',
+		options: getModelOptions(),
+	};
 	const provider = getResolvedProvider(profile.providerId);
 	if (!provider || !profile.modelId) throw new Error('Chat compaction requires a configured text model.');
 	const contextWindow = await resolveContextWindow(provider, profile.modelId);

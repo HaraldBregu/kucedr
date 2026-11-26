@@ -51,6 +51,8 @@ export const AgentChannels = {
 	getModelId: 'agent:get-model-id',
 	setModelId: 'agent:set-model-id',
 	getModelOptions: 'agent:get-model-options',
+	getModelScope: 'agent:get-model-scope',
+	clearModel: 'agent:clear-model',
 	setModelOptions: 'agent:set-model-options',
 	getRunBudget: 'agent:run-budget:get',
 	setRunBudget: 'agent:run-budget:set',

@@ -211,10 +211,11 @@ export class Agent {
 			throw new Error('This workspace folder was not found. Locate it to continue.');
 		const sessionId = resolveSessionId(options.sessionId, workspace.sessions, category);
 		const runId = options.runId ?? randomUUID();
-		const profileModel = getAgentProfileModel(
-			AGENT_TOOL_PROFILES[normalizedAgentId] ?? 'chat',
-			'textToText'
-		);
+		const profile = AGENT_TOOL_PROFILES[normalizedAgentId] ?? 'chat';
+		const profileModel =
+			profile === 'chat'
+				? { providerId: getProviderId(), modelId: getModelId() }
+				: getAgentProfileModel(profile, 'textToText');
 		const pinnedProviderId =
 			options.providerId?.trim() || profileModel.providerId || getProviderId();
 		const pinnedModelId =

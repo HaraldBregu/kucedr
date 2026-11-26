@@ -74,7 +74,9 @@ import { resolveContextWindow } from '../models/context';
 import { getResolvedProvider } from '../settings_store';
 import {
 	getModelId,
+	clearModelOverride,
 	getModelOptions,
+	isModelOverridden,
 	getRunBudget,
 	setRunBudget,
 	getCompactModel,
@@ -1094,6 +1096,18 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		ipcMain.handle(
 			AgentChannels.getModelOptions,
 			wrapAgentHandler(mainAccess, () => getModelOptions(), AgentChannels.getModelOptions)
+		);
+		ipcMain.handle(
+			AgentChannels.getModelScope,
+			wrapAgentHandler(
+				mainAccess,
+				() => ({ overridden: isModelOverridden() }),
+				AgentChannels.getModelScope
+			)
+		);
+		ipcMain.handle(
+			AgentChannels.clearModel,
+			wrapAgentHandler(mainAccess, clearModelOverride, AgentChannels.clearModel)
 		);
 		ipcMain.handle(
 			AgentChannels.setModelOptions,

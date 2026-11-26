@@ -18,6 +18,8 @@ import { agentLocation } from '../shared/agent_location';
 import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
 import { currentWorkspace } from '../workspaces/current';
 import { resolveWorkspace } from '../workspaces/resolve';
+import { getResolvedProvider } from '../settings_store';
+import { chatOverride } from './override';
 import { storePermissions } from './permissions/store';
 import { storedPermissions } from './permissions/stored';
 import { migratePermissions } from './permissions/migrate_permissions';
@@ -113,32 +115,40 @@ function isSearchEngineSettings(value: unknown): value is SearchEngineSettings {
 	);
 }
 
+function chatModel(): AgentMediaModelSettings {
+	const saved = chatOverride()?.get('llm');
+	return saved && getResolvedProvider(saved.providerId)
+		? structuredClone(saved)
+		: getAgentProfileModel('chat', 'textToText');
+}
+function setChatModel(change: Partial<AgentMediaModelSettings>): void {
+	const store = chatOverride();
+	if (store) store.set('llm', { ...chatModel(), ...change });
+	else setAgentProfileModel('chat', 'textToText', { ...chatModel(), ...change });
+}
+export function isModelOverridden(): boolean {
+	return chatOverride()?.has('llm') === true;
+}
+export function clearModelOverride(): void {
+	chatOverride()?.delete('llm');
+}
 export function getProviderId(): string | undefined {
-	return getAgentProfileModel('chat', 'textToText').providerId || undefined;
+	return chatModel().providerId || undefined;
 }
 export function setProviderId(providerId: string): void {
-	setAgentProfileModel('chat', 'textToText', {
-		...getAgentProfileModel('chat', 'textToText'),
-		providerId,
-	});
+	setChatModel({ providerId });
 }
 export function getModelId(): string | undefined {
-	return getAgentProfileModel('chat', 'textToText').modelId || undefined;
+	return chatModel().modelId || undefined;
 }
 export function setModelId(modelId: string): void {
-	setAgentProfileModel('chat', 'textToText', {
-		...getAgentProfileModel('chat', 'textToText'),
-		modelId,
-	});
+	setChatModel({ modelId });
 }
 export function getModelOptions(): Record<string, unknown> {
-	return getAgentProfileModel('chat', 'textToText').options;
+	return chatModel().options;
 }
 export function setModelOptions(options: Record<string, unknown>): void {
-	setAgentProfileModel('chat', 'textToText', {
-		...getAgentProfileModel('chat', 'textToText'),
-		options,
-	});
+	setChatModel({ options });
 }
 export function getChatbotModel(kind: AgentChatbotModelKind): AgentMediaModelSettings {
 	return getAgentProfileModel('chat', kind);

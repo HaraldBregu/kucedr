@@ -10,8 +10,7 @@ export function SpacesGate({ children }: { readonly children: ReactNode }): Reac
 	const [state, setState] = useState<WorkspacesState>();
 	const refresh = useCallback(
 		() =>
-			window.workspaces
-				.list()
+			(window.workspaces?.list() ?? Promise.reject())
 				.then(setState)
 				.catch(() => setState((value) => value ?? { current: DEFAULT_WORKSPACE, workspaces: [] })),
 		[]
@@ -19,7 +18,7 @@ export function SpacesGate({ children }: { readonly children: ReactNode }): Reac
 	const select = useCallback((id: string) => window.workspaces.select(id), []);
 	useEffect(() => {
 		void refresh();
-		return window.workspaces.onChanged(() => void refresh());
+		return window.workspaces?.onChanged(() => void refresh());
 	}, [refresh]);
 	useEffect(
 		() =>

@@ -329,6 +329,8 @@ export interface AgentInvokeChannelMap {
 		result: boolean;
 	};
 	[AgentChannels.getModelOptions]: { args: []; result: Record<string, unknown> };
+	[AgentChannels.getModelScope]: { args: []; result: { overridden: boolean } };
+	[AgentChannels.clearModel]: { args: []; result: void };
 	[AgentChannels.setModelOptions]: {
 		args: [options: Record<string, unknown>];
 		result: Record<string, unknown>;

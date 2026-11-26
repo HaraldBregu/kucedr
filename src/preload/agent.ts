@@ -365,6 +365,8 @@ export const agent: AgentApi = {
 	setModelId: (modelId: string): Promise<boolean> => {
 		return typedInvokeUnwrap(AgentChannels.setModelId, modelId);
 	},
+	getModelScope: () => typedInvokeUnwrap(AgentChannels.getModelScope),
+	clearModel: () => typedInvokeUnwrap(AgentChannels.clearModel),
 	getModelOptions: (): Promise<Record<string, unknown>> => {
 		return typedInvokeUnwrap(AgentChannels.getModelOptions);
 	},

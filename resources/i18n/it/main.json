@@ -3325,6 +3325,8 @@
 		"removePicture": "Rimuovi immagine",
 		"missing": "Cartella non trovata",
 		"running": "{{count}} in corso",
+		"defaultModel": "Usa il modello predefinito",
+		"defaultModelDescription": "Questo spazio di lavoro segue il modello di chat scelto in Personale. Disattiva per scegliere un altro modello qui.",
 		"waiting_one": "{{count}} in attesa di te",
 		"waiting_other": "{{count}} in attesa di te"
 	}

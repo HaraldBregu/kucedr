@@ -243,6 +243,8 @@ export interface AgentApi {
 	getModelId: () => Promise<string | undefined>;
 	setModelId: (modelId: string) => Promise<boolean>;
 	getModelOptions: () => Promise<Record<string, unknown>>;
+	getModelScope: () => Promise<{ overridden: boolean }>;
+	clearModel: () => Promise<void>;
 	setModelOptions: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
 	getRunBudget: () => Promise<import('./agent_types').AgentRunBudget>;
 	setRunBudget: (budget: import('./agent_types').AgentRunBudget) => Promise<import('./agent_types').AgentRunBudget>;
