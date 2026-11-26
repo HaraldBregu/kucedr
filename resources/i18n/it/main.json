@@ -2437,6 +2437,10 @@
 		"dataControls": {
 			"title": "Gestione dati",
 			"description": "Esporta o elimina la memoria e le sessioni dell'assistente.",
+			"exportAllTitle": "Esporta tutti i dati locali",
+			"exportAllDescription": "Salva in un unico file leggibile le sessioni dell'assistente, la memoria persistente e l'indice locale della conoscenza. I dati remoti della conoscenza non sono inclusi.",
+			"exportAllAction": "Esporta tutto",
+			"exportAllError": "Impossibile esportare tutti i dati locali.",
 			"export": "Esporta",
 			"purge": "Elimina",
 			"memory": "Memoria persistente",

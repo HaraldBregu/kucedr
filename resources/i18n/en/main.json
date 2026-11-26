@@ -2437,6 +2437,10 @@
 		"dataControls": {
 			"title": "Data management",
 			"description": "Export or purge assistant memory and sessions.",
+			"exportAllTitle": "Export all local data",
+			"exportAllDescription": "Save assistant sessions, persistent memory and the local knowledge index in one readable file. Remote knowledge data is not included.",
+			"exportAllAction": "Export everything",
+			"exportAllError": "Unable to export all local data.",
 			"export": "Export",
 			"purge": "Purge",
 			"memory": "Persistent memory",
