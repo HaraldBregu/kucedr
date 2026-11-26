@@ -309,6 +309,7 @@ const GeneralPage: React.FC = () => {
 					/>
 					<SettingsRow
 						title={t('settings.application.menuBar')}
+						id="settings-menu-bar"
 						description={t('settings.application.menuBarDescription')}
 						media={
 							<PanelTop className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -461,6 +462,7 @@ const GeneralPage: React.FC = () => {
 					/>
 					<SettingsRow
 						title={t('settings.application.interfaceSize.title')}
+						id="settings-interface-size"
 						description={t('settings.application.interfaceSize.description')}
 						media={<ZoomIn className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						actionClassName="w-auto justify-end"
@@ -485,6 +487,7 @@ const GeneralPage: React.FC = () => {
 					/>
 					<SettingsRow
 						title={t('settings.application.chatTextSize.title')}
+						id="settings-chat-text-size"
 						description={t('settings.application.chatTextSize.description')}
 						media={<Type className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						actionClassName="w-auto justify-end"
@@ -510,6 +513,7 @@ const GeneralPage: React.FC = () => {
 						}
 					/>
 					<SettingsRow
+						id="settings-theme-appearance"
 						title={t('settings.theme.appearance')}
 						actionClassName="w-auto justify-end"
 						actions={
@@ -587,6 +591,7 @@ const GeneralPage: React.FC = () => {
 			<SettingsSection title={t('settings.application.data')}>
 				<SettingsPanel>
 					<SettingsRow
+						id="settings-app-data"
 						title={t('settings.application.appData')}
 						description={t('settings.application.appDataDescription')}
 						media={
