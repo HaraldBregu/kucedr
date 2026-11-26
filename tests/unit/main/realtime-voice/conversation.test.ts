@@ -15,7 +15,7 @@ it('captures finalized realtime voice turns in their persisted order', () => {
 	const capture = jest.fn(async () => undefined);
 	try {
 		const conversation = realtimeVoiceConversationFactory(
-			{ location, workspace: buildWorkspace('default', temporaryRoot, location) },
+			{ location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) },
 			undefined,
 			{ capture } as unknown as MemoryService
 		)(SESSION_ID, 'model');
@@ -38,7 +38,7 @@ it('captures finalized realtime voice turns in their persisted order', () => {
 it('persists only finalized voice transcripts at their reserved turn position', () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-conversation-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
 	try {
 		const conversation = realtimeVoiceConversationFactory(config)(SESSION_ID, 'model');
 		const voiceSessionId = conversation.persistenceSessionId;
@@ -50,7 +50,7 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 		).toEqual({ type: 'voice' });
 		conversation.beginUserTurn('user-1');
 		conversation.addAssistantTranscript('First answer.');
-		expect(loadMessagesBySessionId(voiceSessionId!, location)).toEqual([
+		expect(loadMessagesBySessionId(voiceSessionId!, config.workspace.sessions)).toEqual([
 			expect.objectContaining({ role: 'assistant' }),
 		]);
 
@@ -59,7 +59,7 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 		conversation.addAssistantTranscript('Second answer.');
 		conversation.beginUserTurn('user-2');
 
-		const messages = loadMessagesBySessionId(voiceSessionId!, location);
+		const messages = loadMessagesBySessionId(voiceSessionId!, config.workspace.sessions);
 		expect(messages.map((message) => message.role)).toEqual([
 			'user',
 			'assistant',
@@ -78,7 +78,7 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 it('refines an existing final transcript after late user insertion without duplicating or truncating messages', () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-refined-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
 	const capture = jest.fn(async () => undefined);
 	const conversation = realtimeVoiceConversationFactory(config, undefined, {
 		capture,
@@ -95,7 +95,7 @@ it('refines an existing final transcript after late user insertion without dupli
 		const captures = capture.mock.calls.length;
 		conversation.finalizeUserTurn('user-2', 'Hello, what is two plus two?');
 		expect(capture).toHaveBeenCalledTimes(captures);
-		const messages = loadMessagesBySessionId(conversation.persistenceSessionId!, location);
+		const messages = loadMessagesBySessionId(conversation.persistenceSessionId!, config.workspace.sessions);
 		expect(messages.map((message) => message.role)).toEqual([
 			'user',
 			'assistant',
