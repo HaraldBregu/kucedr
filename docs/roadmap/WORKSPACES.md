@@ -6,14 +6,14 @@ Several named workspaces, for example one for work and one for personal use, wit
 
 ## What exists today
 
-One fixed workspace at `~/.kucedr/workspace` (`src/main/shared/agent_location.ts`). The
-[Multiple workspaces plan](../WORKSPACES.md) already covers the registry, generated folder names,
-rename without moving files, images, the switcher in the Workspace sidebar, switching by
-relaunching the app, permission clean-up on switch, and backup.
+One fixed workspace at `~/.kucedr/workspace` (`src/main/shared/agent_location.ts`); nothing of
+the [Multiple workspaces plan](../WORKSPACES.md) is built (checked 2026-11-26).
 
-That plan separates files only. Chats, memory, settings, providers, skills and Library stay shared,
-and its limitations section says this is not suitable for keeping confidential client work apart.
-Its first open question is whether each workspace should also have its own chats and memory.
+The plan was decided 2026-11-26: `~/.kucedr/workspace` stays the default workspace, unchanged. A new
+workspace is a folder the user picks anywhere on disk; Kucedr keeps a reference to it and writes
+nothing into it. Each workspace is a separate case: files, chats, Library, memory, knowledge,
+browser sign-ins, scheduled tasks and file-access rules. Keys, providers, plugins, skills and app
+settings stay shared.
 
 ## Features
 
