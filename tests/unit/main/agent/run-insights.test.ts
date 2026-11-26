@@ -12,8 +12,8 @@ let trace: string;
 
 beforeEach(async () => {
 	root = await mkdtemp(path.join(os.tmpdir(), 'kucedr-insights-'));
-	location = path.join(root, 'settings');
-	const folder = path.join(root, 'sessions', id);
+	sessions = path.join(root, 'sessions');
+	const folder = path.join(sessions, id);
 	await mkdir(folder, { recursive: true });
 	trace = path.join(folder, 'run.jsonl');
 });
