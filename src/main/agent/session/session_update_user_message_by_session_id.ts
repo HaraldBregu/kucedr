@@ -3,18 +3,16 @@ import { readSealed } from '../../vault/read';
 import { messagesBackupFile } from './session_messages_backup_file';
 import { messagesFile } from './session_messages_file';
 import { parseMessages } from './session_parse_messages';
-import { sessionsRoot } from './session_sessions_root';
 import { writeMessagesFile } from './session_write_messages';
 import type { SessionCoordinator } from './coordinator';
 
 export function updateUserMessageBySessionId(
 	sessionId: string,
-	location: string,
+	root: string,
 	userOffsetFromEnd: number,
 	content: string | undefined,
 	coordinator?: SessionCoordinator
 ): boolean {
-	const root = sessionsRoot(location);
 	const filePath = messagesFile(root, sessionId);
 	const backupPath = messagesBackupFile(root, sessionId);
 
