@@ -216,7 +216,7 @@ it.each(['clear', 'delete', 'edit'])(
 		} = require('../../../../src/main/agent/session');
 		const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-session-invalidated-'));
 		const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
+		const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 		const coordinator = new SessionCoordinator();
 		const state = createSessionState();
 		init(
