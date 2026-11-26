@@ -245,10 +245,12 @@ renderer re-sends them into their workspace and chat.
   Library, memory, knowledge, tasks, browser tab and model-override events are workspace-scoped.
   Agent responses, `openSession` and voice stay window-scoped. Theme, language, zoom, tray and the
   model catalog stay global. Events from a run use the run's workspace.
-- **New windows:** Menu > New Window opens the default workspace, as today. The switcher gets
-  **Open in new window**, which opens a chosen workspace.
+- **New windows:** Menu > New Window opens the default workspace, as today, and so does a window
+  opened for a file (`createWindowForFile`). The switcher gets **Open in new window**, which opens
+  a chosen workspace.
 - **Same workspace in two windows** is allowed. Both get its events and share its content and
-  overrides.
+  overrides. As today, a reply streams in the window that started it, and a browser tab is drawn in
+  one window at a time and moves to the window that shows it.
 - **Voice:** the voice window is opened with the opener's workspace, and `startSession` carries it.
   `manager.start` resolves it once and passes it to configuration, the conversation, a per-call
   memory context and the tool runtime. Tray-started voice uses the default workspace.
