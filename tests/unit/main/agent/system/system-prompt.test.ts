@@ -122,7 +122,7 @@ describe('addToolsPrompt', () => {
 describe('buildSystemPrompt', () => {
 	it('lists scripts with their instructions path but keeps instructions and schemas out', async () => {
 		const prompt = await buildSystemPrompt(
-			{ location: '/workspace' },
+			config,
 			[tool('load_script', 'Load script'), tool('run_script', 'Run script')],
 			[],
 			undefined,
@@ -139,7 +139,7 @@ describe('buildSystemPrompt', () => {
 
 	it('keeps the native tool catalog visible in minimal context', async () => {
 		const prompt = await buildSystemPrompt(
-			{ location: '/workspace' },
+			config,
 			[tool('read', 'Read a file'), tool('write', 'Write a file')],
 			undefined,
 			'minimal'
@@ -151,12 +151,12 @@ describe('buildSystemPrompt', () => {
 
 	it('puts the clock last so everything before it stays the same across builds', async () => {
 		const build = () =>
-			buildSystemPrompt({ location: '/workspace' }, [tool('read', 'Read a file')], undefined, 'minimal');
+			buildSystemPrompt(config, [tool('read', 'Read a file')], undefined, 'minimal');
 		const first = await build();
 		const clock = first.lastIndexOf('\n## ');
 		expect(first.slice(clock)).toContain('## Current UTC date and time');
 		expect((await build()).slice(0, clock)).toBe(first.slice(0, clock));
-		expect(await buildSystemPrompt({ location: '/workspace' }, [], 'Custom instructions.')).not.toContain(
+		expect(await buildSystemPrompt(config, [], 'Custom instructions.')).not.toContain(
 			'## Current UTC date and time'
 		);
 	});
