@@ -78,8 +78,9 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 it('refines an existing final transcript after late user insertion without duplicating or truncating messages', () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-refined-'));
 	const location = path.join(temporaryRoot, 'agent');
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	const capture = jest.fn(async () => undefined);
-	const conversation = realtimeVoiceConversationFactory({ location }, undefined, {
+	const conversation = realtimeVoiceConversationFactory(config, undefined, {
 		capture,
 	} as unknown as MemoryService)(SESSION_ID, 'model');
 	try {
