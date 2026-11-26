@@ -3,11 +3,13 @@ import type { LlmEvent } from '../models/adapters/llm';
 import type { SkillDiagnostic } from '../../shared/skills_types';
 import type { AgentToolReference, AgentToolProfileId } from '../../shared/agent_tools';
 import type { ToolCategory } from './tools/category';
+import type { Workspace } from '../workspaces/types';
 
 export type { ToolCategory } from './tools/category';
 
 export interface Config {
 	location: string;
+	workspace: Workspace;
 }
 
 export type MessageRole = 'system' | 'user' | 'assistant' | 'summary';
