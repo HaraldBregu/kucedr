@@ -13,7 +13,7 @@ const CHAT_SESSION_ID = '11111111-1111-4111-8111-111111111111';
 it('runs native Realtime function calls through the existing tool runner and emits normalized lifecycle events', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-success-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
 	const conversation = realtimeVoiceConversationFactory(config)(CHAT_SESSION_ID, 'model');
 	const events: Array<Record<string, unknown>> = [];
 	let settleResult = (): void => undefined;
@@ -94,7 +94,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 			outputText: 'hello',
 			status: 'ok',
 		});
-		expect(loadMessagesBySessionId(conversation.persistenceSessionId!, location)).toEqual([
+		expect(loadMessagesBySessionId(conversation.persistenceSessionId!, config.workspace.sessions)).toEqual([
 			expect.objectContaining({
 				role: 'assistant',
 				toolCalls: [
@@ -108,7 +108,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 			}),
 		]);
 		const restored = realtimeVoiceConversationFactory(config)(CHAT_SESSION_ID, 'model');
-		expect(loadMessagesBySessionId(restored.persistenceSessionId!, location)).toEqual([]);
+		expect(loadMessagesBySessionId(restored.persistenceSessionId!, config.workspace.sessions)).toEqual([]);
 	} finally {
 		fs.rmSync(temporaryRoot, { recursive: true, force: true });
 	}
@@ -117,7 +117,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 it('persists failed Realtime tool calls with their canonical input and error outcome', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-error-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
 	const conversation = realtimeVoiceConversationFactory(config)(CHAT_SESSION_ID, 'model');
 	let resolveResult = (): void => undefined;
 	const resultAdded = new Promise<void>((resolve) => (resolveResult = resolve));
@@ -164,7 +164,7 @@ it('persists failed Realtime tool calls with their canonical input and error out
 			arguments: '{"value":42}',
 		});
 		await resultAdded;
-		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, location)[0]
+		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, config.workspace.sessions)[0]
 			.toolCalls?.[0];
 		expect(call).toMatchObject({
 			id: 'call-error',
@@ -181,7 +181,7 @@ it('persists failed Realtime tool calls with their canonical input and error out
 it('preserves the existing permission request identity and returns rejected tool status', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-denied-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
 	const conversation = realtimeVoiceConversationFactory(config)(CHAT_SESSION_ID, 'model');
 	let resolvePermission = (_event: Record<string, unknown>): void => undefined;
 	const permissionEvent = new Promise<Record<string, unknown>>(
@@ -257,7 +257,7 @@ it('preserves the existing permission request identity and returns rejected tool
 			6
 		);
 		expect(await toolResult).toContain('permission denied');
-		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, location)[0]
+		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, config.workspace.sessions)[0]
 			.toolCalls?.[0];
 		expect(call).toMatchObject({
 			id: 'call-permission',
