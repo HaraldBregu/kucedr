@@ -34,7 +34,7 @@ describe('memory storage', () => {
 		await fs.writeFile(legacySettings, '{"initialized":true}\n');
 		await fs.writeFile(legacyMemory, '# Memory\n\n- Prefers concise answers\n');
 
-		expect(prepareMemorySettings()).toBe(path.join(root, 'memory'));
+		expect(prepareMemorySettings(workspace)).toBe(path.join(root, 'memory'));
 		await migrateWorkspaceMemory(workspace);
 		await migrateWorkspaceMemory(workspace);
 
@@ -68,7 +68,7 @@ describe('memory storage', () => {
 		await fs.writeFile(legacySettings, '{"source":"legacy"}\n');
 		await fs.writeFile(settings, '{"source":"current"}\n');
 
-		prepareMemorySettings();
+		prepareMemorySettings(workspace);
 
 		const files = await fs.readdir(path.join(root, 'memory'));
 		expect(files).toContain('settings.json');
