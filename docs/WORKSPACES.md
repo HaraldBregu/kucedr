@@ -85,6 +85,7 @@ restore brings names back:
 		{
 			"id": "0f8b6c1e-52a7-4c3e-9d41-7a1c2e6b90d3",
 			"name": "Client work",
+			"folder": "/Users/me/Documents/Client work",
 			"image": "6d2e9a40-1b7c-4f35-8e02-c94d7f1a3b68.png"
 		},
 		{
