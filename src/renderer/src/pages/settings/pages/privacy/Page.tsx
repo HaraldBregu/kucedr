@@ -56,6 +56,7 @@ export default function PrivacyPage(): React.JSX.Element {
 				title={t('settings.privacy.title')}
 				description={t('settings.privacy.description')}
 				icon={ShieldCheck}
+				iconPosition="top"
 			/>
 			{state ? (
 				<SettingsPanel>
