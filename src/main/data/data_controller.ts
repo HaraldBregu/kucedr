@@ -8,6 +8,7 @@ import type {
 	DataPurgePreview,
 	DataPurgeResult,
 	DataScope,
+	StorageUsage,
 } from '../../shared/data_types';
 import type { Config } from '../agent/types';
 import { memoryPath } from '../memory/path';
@@ -20,6 +21,8 @@ import { DataArchive } from './data_archive';
 import { purgeRemoteRagNamespaces } from './data_purge_remote';
 import { isLocalRagDatabase } from '../../shared/rag_database';
 import { ragJob } from '../agent/knowledge/rag/job';
+import { userDataLocation } from '../shared/user_data_location';
+import { readStorageUsage } from './storage_usage';
 
 interface AgentDataPort {
 	memory?: Pick<MemoryService, 'clear'>;
@@ -37,6 +40,10 @@ export class DataController {
 	private readonly pendingPurges = new Map<string, PendingPurge>();
 
 	constructor(private readonly agent: AgentDataPort) {}
+
+	getStorageUsage(): Promise<StorageUsage> {
+		return readStorageUsage(userDataLocation());
+	}
 
 	listScopes(): DataScope[] {
 		const scopes: DataScope[] = [{ kind: 'memory' }];
