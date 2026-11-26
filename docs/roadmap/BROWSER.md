@@ -158,7 +158,7 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
-| 23.1 | Import screen | Settings → Browser → Import: the browsers and profiles found on the machine, a tick box per kind of data, and a summary of what came in. Offered once when the pane first opens. Can be run again without creating duplicates | No browser settings page today | S |
+| 23.1 | Import screen | Settings → Browser → Import: the browsers and profiles found on the machine, a tick box per kind of data, and a summary of what came in. Offered once when the pane first opens. Can be run again without creating duplicates | Built 2026-11-26: when the pane first opens, it checks for profiles with bookmarks or history and offers a one-time prompt listing each profile and available data. Review import opens Settings → Browser. The prompt is dismissed once per renderer profile | S |
 | 23.2 | Bookmarks and history | Bookmarks and visited pages from the other browser, suggested while typing in the address field; a small bookmarks menu | Read from the other browser's files, or from an exported bookmarks file; the address field has no suggestions today | M |
 | 23.3 | Saved passwords | A password list in Kucedr, with offer-to-save and fill on the matching site, managed in Settings | Secrets sealed with the system keystore as elsewhere ([Privacy](PRIVACY.md), 1.2); no password store today | M–L |
 | 23.4 | Import passwords | Passwords from the file every browser and password manager can export, then directly from the other browser where the system allows | 23.3 | S from a file; M–L direct |

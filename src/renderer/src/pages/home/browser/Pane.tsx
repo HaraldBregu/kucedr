@@ -1,6 +1,8 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import type { BrowserPaneCommand, BrowserPaneTab, BrowserRoute } from '../../../../../shared/browser';
+import type { BrowserSource } from '../../../../../shared/browser_import';
 import { cn } from '@/lib/utils';
+import { BrowserImportOffer } from './ImportOffer';
 import { BrowserDownloadBar } from './Download';
 import { BrowserPermissionBar } from './Permission';
 import { BrowserOffer } from './Offer';
@@ -9,6 +11,7 @@ import { BrowserTabs } from './Tabs';
 import { BrowserToolbar } from './Toolbar';
 
 const IS_MAC = navigator.platform.startsWith('Mac');
+const IMPORT_OFFER_KEY = 'kucedr-browser-import-offer-shown';
 
 export function BrowserPane({
 	tabs,
@@ -27,6 +30,19 @@ export function BrowserPane({
 	const busy = acting.includes(active.chat);
 	const [error, setError] = useState<string | null>(null);
 	const [suggesting, setSuggesting] = useState(false);
+	const [importSources, setImportSources] = useState<BrowserSource[] | null>(null);
+	useEffect(() => {
+		if (window.localStorage.getItem(IMPORT_OFFER_KEY)) return;
+		let active = true;
+		void window.browserPane.sources().then((sources) => {
+			if (!active || sources.length === 0) return;
+			window.localStorage.setItem(IMPORT_OFFER_KEY, 'shown');
+			setImportSources(sources);
+		}).catch(() => undefined);
+		return () => {
+			active = false;
+		};
+	}, []);
 	useEffect(() => setError(null), [active.targetId, active.url]);
 	useEffect(
 		() =>
@@ -60,6 +76,9 @@ export function BrowserPane({
 				run(active.targetId, event.button === 3 ? 'back' : 'forward');
 			}}
 		>
+			{importSources && (
+				<BrowserImportOffer sources={importSources} onDismiss={() => setImportSources(null)} />
+			)}
 			<BrowserTabs
 				tabs={tabs}
 				active={active.targetId}
