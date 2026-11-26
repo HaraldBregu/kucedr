@@ -39,6 +39,7 @@ export class SqliteVectorStore implements VectorStore {
 	private readonly activeVectorsStatement: StatementSync;
 	private readonly activeCountStatement: StatementSync;
 	private readonly pathsStatement: StatementSync;
+	private readonly pathCountsStatement: StatementSync;
 	private readonly chunksStatement: StatementSync;
 	private readonly neighboursStatement: StatementSync;
 	private readonly keywordStatement: StatementSync;
@@ -134,6 +135,9 @@ export class SqliteVectorStore implements VectorStore {
 		);
 		this.pathsStatement = this.database.prepare(
 			`SELECT min(c.path) AS path ${ACTIVE} WHERE c.index_name = ? GROUP BY c.source_id`
+		);
+		this.pathCountsStatement = this.database.prepare(
+			`SELECT c.path AS path, count(*) AS chunks ${ACTIVE} WHERE c.index_name = ? GROUP BY c.path`
 		);
 		this.chunksStatement = this.database.prepare(`
 			SELECT ${CHUNK_COLUMNS} ${ACTIVE}
@@ -376,10 +380,18 @@ export class SqliteVectorStore implements VectorStore {
 		return rows.map(mapChunk);
 	}
 
-	summary(indexName: string): { chunks: number; paths: string[] } {
+	summary(indexName: string): {
+		chunks: number;
+		paths: string[];
+		byPath: Array<{ path: string; chunks: number }>;
+	} {
 		const { count } = this.activeCountStatement.get(indexName) as unknown as { count: number };
 		const rows = this.pathsStatement.all(indexName) as unknown as Array<{ path: string }>;
-		return { chunks: count, paths: rows.map((row) => row.path) };
+		const byPath = this.pathCountsStatement.all(indexName) as unknown as Array<{
+			path: string;
+			chunks: number;
+		}>;
+		return { chunks: count, paths: rows.map((row) => row.path), byPath };
 	}
 
 	exportIndex(indexName: string, generation?: string): VectorPublication | undefined {

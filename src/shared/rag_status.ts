@@ -34,4 +34,11 @@ export interface RagStatus {
 		dimensions: number;
 		completedAt: string;
 	} | null;
+	sources?: Array<{
+		folder: string;
+		files: number;
+		chunks: number;
+		indexedAt: string | null;
+		error: string | null;
+	}>;
 }

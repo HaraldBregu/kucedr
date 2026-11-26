@@ -5,6 +5,7 @@ import { getRagConfiguration } from './rag_store';
 import { ragVectorStore } from './vector';
 import { readRagManifest } from './rag_manifest';
 import { ragRecipient } from './recipient';
+import path from 'node:path';
 
 export function getRagStatus(): RagStatus {
 	const configuration = getRagConfiguration();
@@ -13,6 +14,7 @@ export function getRagStatus(): RagStatus {
 	try {
 		const index = store.getIndex(configuration.indexName);
 		const manifest = readRagManifest(configuration.indexName);
+		const sourceStats = index ? store.summary(configuration.indexName).byPath : [];
 		let requiresIndexing = Boolean(
 			index &&
 			(index.providerId !== configuration.embeddingProviderId ||
@@ -58,6 +60,22 @@ export function getRagStatus(): RagStatus {
 						completedAt: index.completedAt,
 					}
 				: null,
+			sources: configuration.folders.map((folder) => {
+				const name = path.basename(folder);
+				const matching = sourceStats.filter(
+					(source) => source.path === name || source.path.startsWith(`${name}${path.sep}`)
+				);
+				const skipped = job.result?.skippedFiles.filter(
+					(file) => file.path === name || file.path.startsWith(`${name}${path.sep}`)
+				);
+				return {
+					folder,
+					files: new Set(matching.map((source) => source.path)).size,
+					chunks: matching.reduce((total, source) => total + source.chunks, 0),
+					indexedAt: index?.completedAt ?? null,
+					error: skipped?.length ? `${skipped.length} source files skipped` : job.error,
+				};
+			}),
 		};
 	} finally {
 		store.close();

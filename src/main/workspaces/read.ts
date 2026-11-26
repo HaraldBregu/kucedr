@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { z } from 'zod';
 import type { WorkspaceRecord } from '../../shared/workspaces_types';
+import { aside } from '../browser/aside';
 import { workspacesFile } from './file';
 
 const record = z.object({
@@ -12,16 +13,25 @@ const record = z.object({
 });
 
 export function readWorkspaces(): WorkspaceRecord[] {
-	let content: string;
-	try {
-		content = readFileSync(workspacesFile(), 'utf8');
-	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return [];
-		throw error;
+	const file = workspacesFile();
+	for (const candidate of [file, `${file}.bak`]) {
+		let content: string;
+		try {
+			content = readFileSync(candidate, 'utf8');
+		} catch {
+			continue;
+		}
+		try {
+			const { workspaces } = z
+				.object({ workspaces: z.array(z.unknown()) })
+				.parse(JSON.parse(content));
+			return workspaces.flatMap((entry) => {
+				const parsed = record.safeParse(entry);
+				return parsed.success ? [parsed.data] : [];
+			});
+		} catch {
+			if (candidate === file) aside(file);
+		}
 	}
-	const { workspaces } = z.object({ workspaces: z.array(z.unknown()) }).parse(JSON.parse(content));
-	return workspaces.flatMap((entry) => {
-		const parsed = record.safeParse(entry);
-		return parsed.success ? [parsed.data] : [];
-	});
+	return [];
 }
