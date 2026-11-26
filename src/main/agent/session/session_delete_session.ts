@@ -10,7 +10,7 @@ export function deleteSession(
 	sessionId: string,
 	coordinator?: SessionCoordinator
 ): void {
-	const resolvedSessionId = resolveStoredSessionId(sessionId, config.location);
-	deleteSessionBySessionId(resolvedSessionId, config.location, coordinator);
+	const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
+	deleteSessionBySessionId(resolvedSessionId, config.workspace.sessions, coordinator);
 	if (state.id === resolvedSessionId) state.messages = [];
 }
