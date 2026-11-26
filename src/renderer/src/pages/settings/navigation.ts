@@ -1,5 +1,6 @@
 import {
 	AudioLines,
+	ChartNoAxesColumnIncreasing,
 	BookOpenText,
 	Brain,
 	Bot,
@@ -343,6 +344,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.privacy.title',
 		descriptionKey: 'settings.privacy.description',
 		icon: ShieldCheck,
+	},
+	{
+		path: '/settings/usage',
+		labelKey: 'settings.usage.title',
+		descriptionKey: 'settings.usage.description',
+		icon: ChartNoAxesColumnIncreasing,
 	},
 	{
 		path: '/workspace',
