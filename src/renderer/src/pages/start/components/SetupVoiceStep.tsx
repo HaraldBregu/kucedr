@@ -1,11 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Radio } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import VoiceConfiguration from '@pages/settings/pages/assistant/voice';
 import { SetupMediaTools } from './SetupMediaTools';
 import { SetupStepHeader } from './SetupStepHeader';
 import type { SetupAssistantProps } from './SetupService';
-import { STEP_COPY } from '../setupConstants';
 
 export function SetupVoiceStep({
 	serviceStates,
@@ -13,9 +13,10 @@ export function SetupVoiceStep({
 	savingConfig,
 	onServiceChange,
 }: SetupAssistantProps): React.JSX.Element {
+	const { t } = useTranslation();
 	return (
 		<div className="mx-auto flex min-h-full w-full min-w-0 max-w-2xl flex-col justify-center py-8">
-			<SetupStepHeader title={STEP_COPY.voice.title} description={STEP_COPY.voice.description} />
+			<SetupStepHeader title={t('start.steps.voice.title')} description={t('start.steps.voice.description')} />
 			<div className="mt-6 grid min-w-0 gap-6">
 				<section aria-label="Voice Assistant" className="min-w-0">
 					<Card size="sm" className="gap-0! p-0!">

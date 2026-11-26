@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Download, Search, Tag, User } from 'lucide-react';
 import type { AvailablePlugin, PluginInfo } from '@shared/plugin_types';
 import { Badge } from '@/components/ui/badge';
@@ -7,10 +8,10 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PluginIcon from '../../settings/pages/plugins/PluginIcon';
-import { STEP_COPY } from '../setupConstants';
 import { SetupStepHeader } from './SetupStepHeader';
 
 export function SetupPluginsStep(): React.JSX.Element {
+	const { t } = useTranslation();
 	const [tab, setTab] = useState<'installed' | 'download'>('installed');
 	const [installed, setInstalled] = useState<PluginInfo[] | null>(null);
 	const [available, setAvailable] = useState<AvailablePlugin[] | null>(null);
@@ -55,7 +56,7 @@ export function SetupPluginsStep(): React.JSX.Element {
 
 	return (
 		<div className="mx-auto flex h-full min-h-0 w-full max-w-3xl flex-col pt-8">
-			<SetupStepHeader title={STEP_COPY.plugins.title} description={STEP_COPY.plugins.description} />
+			<SetupStepHeader title={t('start.steps.extras.title')} description={t('start.steps.extras.description')} />
 			{error && (
 				<p
 					className="mt-4 shrink-0 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"

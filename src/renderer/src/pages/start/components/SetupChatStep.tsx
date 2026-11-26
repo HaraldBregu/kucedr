@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { SetupMediaTools } from './SetupMediaTools';
 import { SetupStepHeader } from './SetupStepHeader';
@@ -12,6 +13,7 @@ export function SetupChatStep({
 	savingConfig,
 	onServiceChange,
 }: SetupAssistantProps): React.JSX.Element {
+	const { t } = useTranslation();
 	const [availableLocalModels, setAvailableLocalModels] = useState<string[]>([]);
 	const [localProviderName, setLocalProviderName] = useState<string>();
 	const assistantModelGroups = useMemo(
@@ -50,7 +52,7 @@ export function SetupChatStep({
 
 	return (
 		<div className="mx-auto flex min-h-full w-full min-w-0 max-w-2xl flex-col justify-center py-8">
-			<SetupStepHeader title={STEP_COPY.chat.title} description={STEP_COPY.chat.description} />
+			<SetupStepHeader title={t(STEP_COPY.chat.title)} description={t(STEP_COPY.chat.description)} />
 			<div className="mt-6 grid min-w-0 gap-6">
 				<section aria-label="Chat Assistant" className="min-w-0">
 					<Card size="sm" className="gap-0! p-0!">

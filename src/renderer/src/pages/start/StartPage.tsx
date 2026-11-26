@@ -7,10 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useOnboarding } from '@/contexts/useOnboarding';
 import { providers } from '@/lib/providers';
 import { SetupChatStep } from './components/SetupChatStep';
-import { SetupVoiceStep } from './components/SetupVoiceStep';
 import { SetupProviderStep } from './components/SetupProviderStep';
 import { SetupStepProgress } from './components/SetupStepProgress';
-import { SetupPluginsStep } from './components/SetupPluginsStep';
 import { SetupExtrasStep } from './components/SetupExtrasStep';
 import {
 	actionableProviderCatalog,
