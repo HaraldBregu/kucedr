@@ -1,14 +1,16 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import type { Config } from '../agent/types';
+import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
+import type { Workspace } from '../workspaces/types';
 import { atomicWrite } from '../shared/atomic_write';
 import { seal } from '../vault/seal';
 import { unseal } from '../vault/unseal';
 import { memoryPath, MEMORY_FILE } from './path';
 
-export async function migrateWorkspaceMemory(config: Config): Promise<void> {
-	const legacy = path.join(path.resolve(config.location), MEMORY_FILE);
-	const target = memoryPath();
+export async function migrateWorkspaceMemory(workspace: Workspace): Promise<void> {
+	if (workspace.id !== DEFAULT_WORKSPACE) return;
+	const legacy = path.join(path.resolve(workspace.files), MEMORY_FILE);
+	const target = memoryPath(workspace);
 	if (legacy === target) return;
 	let legacyContent: string;
 	try {

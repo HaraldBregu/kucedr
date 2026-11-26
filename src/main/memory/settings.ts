@@ -2,14 +2,16 @@ import { existsSync, mkdirSync, readFileSync, renameSync, statSync, unlinkSync }
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { userDataLocation } from '../shared/user_data_location';
-import { memoryPath, MEMORY_SETTINGS_FILE } from './path';
+import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
+import type { Workspace } from '../workspaces/types';
+import { MEMORY_SETTINGS_FILE } from './path';
 
-export function prepareMemorySettings(): string {
-	const directory = path.dirname(memoryPath());
+export function prepareMemorySettings(workspace: Workspace): string {
+	const directory = workspace.memory;
 	const target = path.join(directory, MEMORY_SETTINGS_FILE);
 	const legacy = path.join(userDataLocation(), 'settings', 'memory.json');
 	mkdirSync(directory, { recursive: true });
-	if (!existsSync(legacy)) return directory;
+	if (workspace.id !== DEFAULT_WORKSPACE || !existsSync(legacy)) return directory;
 	if (!existsSync(target)) {
 		renameSync(legacy, target);
 		return directory;

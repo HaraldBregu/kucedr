@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import Store from 'electron-store';
 import type { MemoryService } from '../../shared/memory_types';
-import type { Config } from '../agent/types';
+import type { Workspace } from '../workspaces/types';
 import { getChatbotModel } from '../agent/agent_store';
 import { LlmModel } from '../models/adapters/llm';
 import { getProvider } from '../settings_store';
@@ -18,11 +18,14 @@ import { writeMemoryFile } from './file';
 import { unseal } from '../vault/unseal';
 
 export { memoryPath } from './path';
+export { memoryFor } from './for';
+export { memories } from './all';
 
-export function createMemory(configuration: () => Config): MemoryService {
+export function createMemory(workspace: Workspace): MemoryService {
+	const file = memoryPath(workspace);
 	const store = new Store<MemoryState>({
 		name: 'settings',
-		cwd: prepareMemorySettings(),
+		cwd: prepareMemorySettings(workspace),
 		accessPropertiesByDotNotation: false,
 		defaults: defaultState(),
 	});
@@ -43,11 +46,11 @@ export function createMemory(configuration: () => Config): MemoryService {
 			};
 		},
 		validate: validateConfiguration,
-		prepare: () => migrateWorkspaceMemory(configuration()),
-		sources: (sessionId) => scanSources(undefined, sessionId),
+		prepare: () => migrateWorkspaceMemory(workspace),
+		sources: (sessionId) => scanSources(workspace.memory, sessionId),
 		exists: () =>
 			fs
-				.access(memoryPath())
+				.access(file)
 				.then(() => true)
 				.catch((error: NodeJS.ErrnoException) => {
 					if (error.code === 'ENOENT') return false;
@@ -55,17 +58,17 @@ export function createMemory(configuration: () => Config): MemoryService {
 				}),
 		read: () =>
 			fs
-				.readFile(memoryPath())
+				.readFile(file)
 				.then((data) => unseal(data).toString('utf8'))
 				.catch((error: NodeJS.ErrnoException) => {
 					if (error.code === 'ENOENT') return '';
 					throw error;
 				}),
-		write: (markdown) => writeMemoryFile(memoryPath(), markdown),
+		write: (markdown) => writeMemoryFile(file, markdown),
 		writeSession: (sessionId, markdown) =>
-			writeMemoryFile(sessionMemoryPath(sessionId), markdown),
+			writeMemoryFile(sessionMemoryPath(workspace, sessionId), markdown),
 		removeSession: async (sessionId) => {
-			await fs.rm(sessionMemoryPath(sessionId), { force: true });
+			await fs.rm(sessionMemoryPath(workspace, sessionId), { force: true });
 		},
 		infer: async (config, systemPrompt, request, signal) => {
 			const provider = getProvider(config.providerId, 'models');

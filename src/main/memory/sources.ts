@@ -2,14 +2,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { isUuid } from '../agent/session/session_is_uuid';
 import { unseal } from '../vault/unseal';
-import { memoryPath } from './path';
 import { snapshotSource } from './snapshot_source';
 import type { SourceSession } from './types';
 
-export async function scanSources(
-	root = path.dirname(memoryPath()),
-	sessionId?: string
-): Promise<SourceSession[]> {
+export async function scanSources(root: string, sessionId?: string): Promise<SourceSession[]> {
 	const entries = await fs
 		.readdir(root, { withFileTypes: true })
 		.catch((error: NodeJS.ErrnoException) => {
