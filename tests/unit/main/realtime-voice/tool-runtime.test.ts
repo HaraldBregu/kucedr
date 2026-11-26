@@ -7,6 +7,7 @@ import { loadMessagesBySessionId } from '../../../../src/main/agent/session/sess
 import { realtimeVoiceConversationFactory } from '../../../../src/main/agent/realtime_voice/conversation';
 import { RealtimeVoiceToolRuntime } from '../../../../src/main/agent/realtime_voice/tool_runtime';
 import type { RealtimeVoiceConnection } from '../../../../src/main/models/adapters/realtime_voice';
+import { buildWorkspace } from '../../../../src/main/workspaces/build';
 
 const CHAT_SESSION_ID = '11111111-1111-4111-8111-111111111111';
 
