@@ -417,6 +417,11 @@ const GeneralPage: React.FC = () => {
 							</Select>
 						}
 					/>
+				</SettingsPanel>
+			</SettingsSection>
+
+			<SettingsSection title={t('settings.theme.appearance')}>
+				<SettingsPanel>
 					<Link to="/settings/general/shortcuts" className="block hover:bg-muted/40">
 						<SettingsRow
 							title={t('settings.shortcuts.title')}
