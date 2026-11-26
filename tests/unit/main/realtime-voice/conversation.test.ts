@@ -2,9 +2,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { loadMessagesBySessionId } from '../../../../src/main/agent/session/session_load_messages_by_session_id';
-import { sessionsRoot } from '../../../../src/main/agent/session/session_sessions_root';
 import { realtimeVoiceConversationFactory } from '../../../../src/main/agent/realtime_voice/conversation';
 import { realtimeVoiceHistory } from '../../../../src/main/agent/realtime_voice/history';
+import { buildWorkspace } from '../../../../src/main/workspaces/build';
 import type { MemoryService } from '../../../../src/shared/memory_types';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
