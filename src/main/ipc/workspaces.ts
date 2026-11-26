@@ -44,12 +44,15 @@ export class WorkspacesIpc implements IpcModule<WorkspacesIpcDeps> {
 		registerQueryWithEvent(WorkspacesChannels.list, (event) => {
 			trusted.assert(event);
 			const activity = agent.listActivity();
+			const workspaces = listWorkspaces();
+			const bound = boundWorkspaces.get(event.sender.id) ?? DEFAULT_WORKSPACE;
+			const current = workspaces.some((workspace) => workspace.id === bound)
+				? bound
+				: DEFAULT_WORKSPACE;
+			if (current !== bound) boundWorkspaces.delete(event.sender.id);
 			return {
-				current: boundWorkspaces.get(event.sender.id) ?? DEFAULT_WORKSPACE,
-				workspaces: listWorkspaces().map((workspace) => ({
-					...workspace,
-					...activity[workspace.id],
-				})),
+				current,
+				workspaces: workspaces.map((workspace) => ({ ...workspace, ...activity[workspace.id] })),
 			};
 		});
 		registerCommandWithEvent(WorkspacesChannels.select, (event, id) => {
