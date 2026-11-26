@@ -213,10 +213,9 @@ targeted ESLint and translation JSON parsing pass; a fresh-profile run was not p
 
 ### 3.18 Find any setting
 
-- _Behaviour._ Typing in the command menu matches the names of individual options, not only page
-  titles. Choosing one opens the page and scrolls to the option, briefly highlighted.
-- _Found._ The command menu (`experience/CommandMenu.tsx`) builds its Settings entries from
-  `SETTINGS_NAVIGATION` (`pages/settings/navigation.ts`), which holds pages, not options.
-- _Approach._ Give each option an id and its label key, listed next to its page in the navigation
-  data, so the menu and the page share one list. No separate search box in Settings.
-- _Check._ Typing "sound" offers the sound switch and lands on it.
+Built 2026-11-26. The command menu searches the shared `SETTINGS_DETAIL_ITEMS` catalog alongside
+Settings pages. Selecting a catalog item navigates to its page; entries with a control target scroll
+it into view, focus it and briefly highlight it. General settings targets include language, theme,
+theme appearance, sound feedback, run notifications, menu bar, interface size, chat text size and
+application data. Microphone, camera and screen recording searches open their respective detail
+pages. Typecheck and targeted ESLint pass; live command-menu navigation was not visually checked.
