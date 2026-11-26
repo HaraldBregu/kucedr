@@ -32,7 +32,7 @@ const emptyPermissions = {
 	exec: { allow: [], deny: [] },
 };
 const rule = (root: string, recursive = true) => ({ root, recursive });
-const libraryRule = rule(path.resolve(libraryLocation()));
+const libraryRule = rule(path.resolve(resolveWorkspace('default').library));
 const media = (input: Record<string, unknown>) =>
 	mediaAccess(typeof input.directory === 'string' ? input.directory : undefined);
 const accessFor: Record<string, Tool['access']> = {
