@@ -44,6 +44,7 @@ jest.mock('electron-store', () =>
 		};
 	})
 );
+jest.mock('../../../../src/main/settings_store', () => ({ getResolvedProvider: jest.fn() }));
 
 import {
 	getCompactModel,

@@ -21,10 +21,9 @@ export default function Sources({ knowledge }: { knowledge: KnowledgeState }): J
 		>
 			<SettingsPanel>
 				{configuration?.folders.length ? (
-					configuration.folders.map((folder) => (
-						(() => {
-							const source = status?.sources?.find((entry) => entry.folder === folder);
-							return (
+					configuration.folders.map((folder) => {
+						const source = status?.sources?.find((entry) => entry.folder === folder);
+						return (
 						<SettingsRow
 							key={folder}
 							icon={FolderOpen}
@@ -66,8 +65,6 @@ export default function Sources({ knowledge }: { knowledge: KnowledgeState }): J
 								</Button>
 							}
 						/>
-							);
-						})()
 						);
 					})
 				) : (
