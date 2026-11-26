@@ -187,7 +187,7 @@ const StartPage: React.FC = () => {
 							disabled={isBusy}
 							onClick={handleBack}
 						>
-							Back
+							{t('start.back')}
 						</Button>
 						<Button
 							type="button"
