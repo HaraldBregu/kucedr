@@ -42,7 +42,7 @@ it('exports and purges memory only after a matching one-use preview', async () =
 		'utf8'
 	);
 	const controller = new DataController({
-		config: { location: workspace },
+		config: { location: workspace, workspace: buildWorkspace('default', root, workspace) },
 		listSessions: () => [],
 		deleteSession: jest.fn(),
 		memory: { clear: jest.fn(() => fs.writeFile(memoryFile, '', 'utf8')) },
@@ -78,7 +78,7 @@ it('exports and deletes only explicitly listed sessions through the agent lock b
 		await fs.rm(path.join(root, 'sessions', id), { recursive: true, force: true });
 	});
 	const controller = new DataController({
-		config: { location: workspace },
+		config: { location: workspace, workspace: buildWorkspace('default', root, workspace) },
 		listSessions: () => [{ id: sessionId, title: 'Session', createdAtMs: 1 }],
 		deleteSession,
 	});
