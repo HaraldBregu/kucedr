@@ -5,16 +5,14 @@ import { infoFile } from './session_info_file';
 import { isUuid } from './session_is_uuid';
 import { messagesFile } from './session_messages_file';
 import { parseMessages } from './session_parse_messages';
-import { sessionsRoot } from './session_sessions_root';
 import { toHistoryMessages } from './session_to_history_messages';
 
 export async function searchSessions(
-	location: string,
+	root: string,
 	query: string
 ): Promise<AgentSessionSearchResult[]> {
 	const needle = query.trim().toLowerCase();
 	if (!needle) return [];
-	const root = sessionsRoot(location);
 	const entries = await readdir(root, { withFileTypes: true }).catch(() => []);
 	// ponytail: reads and parses every chat on each query (about 30 ms for 88 chats / 11 MB); index with the knowledge store's SQLite once a query passes about 300 ms
 	const results = await Promise.all(
