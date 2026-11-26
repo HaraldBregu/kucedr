@@ -18,6 +18,7 @@ import {
 import { Encryption } from './Encryption';
 import { Lock } from './Lock';
 import { Storage } from './Storage';
+import { Destinations } from './Destinations';
 
 export default function PrivacyPage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -115,6 +116,7 @@ export default function PrivacyPage(): React.JSX.Element {
 			)}
 			<Lock />
 			<Encryption />
+			<Destinations />
 			<Storage />
 		</SettingsPageShell>
 	);
