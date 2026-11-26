@@ -91,47 +91,50 @@ export interface UrlMetadata {
 	readonly favicon: string;
 }
 
-export const ShortcutId = {
-	openDocumentList: 'openDocumentList',
-	openAppSearch: 'openAppSearch',
-	newDocument: 'newDocument',
-} as const;
+export const SHORTCUTS = [
+	{ id: 'commandMenu', area: 'app', labelKey: 'commandMenu', accelerator: 'CmdOrCtrl+F', mac: '⌘F', win: 'Ctrl+F', linux: 'Ctrl+F' },
+	{ id: 'settings', area: 'app', labelKey: 'settings', accelerator: 'Cmd+,', mac: '⌘,', win: '', linux: '' },
+	{ id: 'newChat', area: 'chat', labelKey: 'newChat', accelerator: 'CmdOrCtrl+N', mac: '⌘N', win: 'Ctrl+N', linux: 'Ctrl+N' },
+	{ id: 'focusComposer', area: 'chat', labelKey: 'focusComposer', accelerator: 'CmdOrCtrl+/', mac: '⌘/', win: 'Ctrl+/', linux: 'Ctrl+/' },
+	{ id: 'chatHistory', area: 'chat', labelKey: 'chatHistory', accelerator: 'CmdOrCtrl+D', mac: '⌘D', win: 'Ctrl+D', linux: 'Ctrl+D' },
+	{ id: 'newWindow', area: 'app', labelKey: 'newWindow', accelerator: 'CmdOrCtrl+Shift+N', mac: '⌘⇧N', win: 'Ctrl+Shift+N', linux: 'Ctrl+Shift+N' },
+	{ id: 'zoomReset', area: 'app', labelKey: 'zoomReset', accelerator: 'CmdOrCtrl+0', mac: '⌘0', win: 'Ctrl+0', linux: 'Ctrl+0' },
+	{ id: 'zoomIn', area: 'app', labelKey: 'zoomIn', accelerator: 'CmdOrCtrl+Plus', mac: '⌘+', win: 'Ctrl++', linux: 'Ctrl++' },
+	{ id: 'zoomOut', area: 'app', labelKey: 'zoomOut', accelerator: 'CmdOrCtrl+-', mac: '⌘−', win: 'Ctrl+-', linux: 'Ctrl+-' },
+	{ id: 'back', area: 'app', labelKey: 'back', accelerator: 'Cmd+[', mac: '⌘[', win: '', linux: '' },
+	{ id: 'forward', area: 'app', labelKey: 'forward', accelerator: 'Cmd+]', mac: '⌘]', win: '', linux: '' },
+	{ id: 'editorUndo', area: 'workspace', labelKey: 'editorUndo', tiptapKey: 'Mod-z', mac: '⌘Z', win: 'Ctrl+Z', linux: 'Ctrl+Z' },
+	{ id: 'editorRedo', area: 'workspace', labelKey: 'editorRedo', tiptapKey: 'Mod-Shift-z', mac: '⌘⇧Z', win: 'Ctrl+Shift+Z', linux: 'Ctrl+Shift+Z' },
+	{ id: 'editorHeading1', area: 'workspace', labelKey: 'editorHeading1', tiptapKey: 'Mod-Alt-1', mac: '⌘⌥1', win: 'Ctrl+Alt+1', linux: 'Ctrl+Alt+1' },
+	{ id: 'editorHeading2', area: 'workspace', labelKey: 'editorHeading2', tiptapKey: 'Mod-Alt-2', mac: '⌘⌥2', win: 'Ctrl+Alt+2', linux: 'Ctrl+Alt+2' },
+	{ id: 'editorHeading3', area: 'workspace', labelKey: 'editorHeading3', tiptapKey: 'Mod-Alt-3', mac: '⌘⌥3', win: 'Ctrl+Alt+3', linux: 'Ctrl+Alt+3' },
+	{ id: 'editorBold', area: 'workspace', labelKey: 'editorBold', tiptapKey: 'Mod-b', mac: '⌘B', win: 'Ctrl+B', linux: 'Ctrl+B' },
+	{ id: 'editorItalic', area: 'workspace', labelKey: 'editorItalic', tiptapKey: 'Mod-i', mac: '⌘I', win: 'Ctrl+I', linux: 'Ctrl+I' },
+	{ id: 'editorUnderline', area: 'workspace', labelKey: 'editorUnderline', tiptapKey: 'Mod-u', mac: '⌘U', win: 'Ctrl+U', linux: 'Ctrl+U' },
+	{ id: 'editorStrikethrough', area: 'workspace', labelKey: 'editorStrikethrough', tiptapKey: 'Mod-Shift-s', mac: '⌘⇧S', win: 'Ctrl+Shift+S', linux: 'Ctrl+Shift+S' },
+	{ id: 'editorInlineCode', area: 'workspace', labelKey: 'editorInlineCode', tiptapKey: 'Mod-e', mac: '⌘E', win: 'Ctrl+E', linux: 'Ctrl+E' },
+	{ id: 'editorClearFormatting', area: 'workspace', labelKey: 'editorClearFormatting', tiptapKey: 'Mod-\\', mac: '⌘\\', win: 'Ctrl+\\', linux: 'Ctrl+\\' },
+	{ id: 'editorBulletedList', area: 'workspace', labelKey: 'editorBulletedList', tiptapKey: 'Mod-Shift-8', mac: '⌘⇧8', win: 'Ctrl+Shift+8', linux: 'Ctrl+Shift+8' },
+	{ id: 'editorNumberedList', area: 'workspace', labelKey: 'editorNumberedList', tiptapKey: 'Mod-Shift-7', mac: '⌘⇧7', win: 'Ctrl+Shift+7', linux: 'Ctrl+Shift+7' },
+	{ id: 'editorTaskList', area: 'workspace', labelKey: 'editorTaskList', tiptapKey: 'Mod-Shift-9', mac: '⌘⇧9', win: 'Ctrl+Shift+9', linux: 'Ctrl+Shift+9' },
+	{ id: 'editorQuote', area: 'workspace', labelKey: 'editorQuote', tiptapKey: 'Mod-Shift-b', mac: '⌘⇧B', win: 'Ctrl+Shift+B', linux: 'Ctrl+Shift+B' },
+	{ id: 'editorCodeBlock', area: 'workspace', labelKey: 'editorCodeBlock', tiptapKey: 'Mod-Alt-c', mac: '⌘⌥C', win: 'Ctrl+Alt+C', linux: 'Ctrl+Alt+C' },
+	{ id: 'editorSave', area: 'workspace', labelKey: 'editorSave', tiptapKey: 'Mod-s', mac: '⌘S', win: 'Ctrl+S', linux: 'Ctrl+S' },
+	{ id: 'editorLink', area: 'workspace', labelKey: 'editorLink', tiptapKey: 'Mod-k', mac: '⌘K', win: 'Ctrl+K', linux: 'Ctrl+K' },
+	{ id: 'editorInsertFile', area: 'workspace', labelKey: 'editorInsertFile', tiptapKey: 'Mod-Shift-i', mac: '⌘⇧I', win: 'Ctrl+Shift+I', linux: 'Ctrl+Shift+I' },
+	{ id: 'browserMoveTabLeft', area: 'browser', labelKey: 'browserMoveTabLeft', tiptapKey: 'Mod-Shift-ArrowLeft', mac: '⌘⇧←', win: 'Ctrl+Shift+←', linux: 'Ctrl+Shift+←' },
+	{ id: 'browserMoveTabRight', area: 'browser', labelKey: 'browserMoveTabRight', tiptapKey: 'Mod-Shift-ArrowRight', mac: '⌘⇧→', win: 'Ctrl+Shift+→', linux: 'Ctrl+Shift+→' },
+] as const;
 
-export type ShortcutId = (typeof ShortcutId)[keyof typeof ShortcutId];
-
-export interface ShortcutBinding {
-	mac: string;
-	win: string;
-	linux: string;
-}
-
-export const SHORTCUT_BINDINGS: Record<ShortcutId, ShortcutBinding> = {
-	[ShortcutId.openDocumentList]: {
-		mac: '⌘D',
-		win: 'Ctrl+D',
-		linux: 'Ctrl+D',
-	},
-	[ShortcutId.openAppSearch]: {
-		mac: '⌘K',
-		win: 'Ctrl+K',
-		linux: 'Ctrl+K',
-	},
-	[ShortcutId.newDocument]: {
-		mac: '⌃⌥N',
-		win: 'Ctrl+Alt+N',
-		linux: 'Ctrl+Alt+N',
-	},
-};
-
-export const SHORTCUT_ACCELERATORS: Record<ShortcutId, string> = {
-	[ShortcutId.openDocumentList]: 'CmdOrCtrl+D',
-	[ShortcutId.openAppSearch]: 'CmdOrCtrl+K',
-	[ShortcutId.newDocument]: 'Ctrl+Alt+N',
-};
+export type ShortcutId = (typeof SHORTCUTS)[number]['id'];
+export type ShortcutArea = (typeof SHORTCUTS)[number]['area'];
 
 export function getShortcutLabel(id: ShortcutId, platform: 'mac' | 'win' | 'linux'): string {
-	const binding = SHORTCUT_BINDINGS[id];
-	return binding[platform];
+	return SHORTCUTS.find((shortcut) => shortcut.id === id)?.[platform] ?? '';
+}
+
+export function getShortcutAccelerator(id: ShortcutId): string | undefined {
+	return SHORTCUTS.find((shortcut) => shortcut.id === id)?.accelerator;
 }
 
 export interface ModelModuleSettings {
