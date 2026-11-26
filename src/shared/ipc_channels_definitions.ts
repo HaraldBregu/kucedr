@@ -12,6 +12,7 @@ export const AgentChannels = {
 	listSessions: 'agent:list-sessions',
 	sessionsChanged: 'agent:sessions-changed',
 	getRunInsights: 'agent:get-run-insights',
+	getSpendReport: 'agent:get-spend-report',
 	searchSessions: 'agent:search-sessions',
 	viewSession: 'agent:view-session',
 	openSession: 'agent:open-session',

@@ -197,6 +197,7 @@ export interface AgentApi {
 	listModes: () => Promise<import('./agent_types').AgentModeInfo[]>;
 	listSessions: (includeAll?: boolean) => Promise<AgentSessionSummary[]>;
 	getRunInsights: (sessionId: string, run: string | number) => Promise<AgentRunInsights | null>;
+	getSpendReport: () => Promise<import('./agent_types').AgentSpendReport>;
 	searchSessions: (query: string) => Promise<AgentSessionSearchResult[]>;
 	viewSession: (sessionId: string | null) => Promise<void>;
 	onOpenSession: (

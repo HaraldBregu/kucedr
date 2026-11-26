@@ -192,6 +192,10 @@ export interface CodingEventChannelMap {
 }
 
 export interface AgentInvokeChannelMap {
+	[AgentChannels.getSpendReport]: {
+		args: [];
+		result: import('./agent_types').AgentSpendReport;
+	};
 	[AgentChannels.getRunInsights]: {
 		args: [sessionId: string, run: string | number];
 		result: import('./agent_types').AgentRunInsights | null;

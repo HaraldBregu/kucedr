@@ -1,6 +1,7 @@
 import { authorizeRagDisclosure } from '../agent/knowledge/rag/disclosure';
 import { app, BrowserWindow, dialog, ipcMain, shell, type IpcMainInvokeEvent } from 'electron';
 import { readRunInsights } from '../agent/session/insights';
+import { readSpendReport } from '../agent/session/spend_report';
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -577,6 +578,15 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				(includeAll: boolean = false) => agent.listSessions(includeAll ? 'all' : 'main'),
 				AgentChannels.listSessions
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.getSpendReport,
+			wrapAgentHandler(
+				mainAccess,
+				() => readSpendReport(agent.config.workspace.sessions, agent.listSessions('all')),
+				AgentChannels.getSpendReport
 			)
 		);
 
