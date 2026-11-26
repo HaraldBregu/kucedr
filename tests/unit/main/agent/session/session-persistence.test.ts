@@ -44,11 +44,11 @@ describe('session persistence', () => {
 		fs.utimesSync(messagesFilePath(state), transcriptTime, transcriptTime);
 		fs.utimesSync(runFilePath(state), oldTime, oldTime);
 		fs.utimesSync(directory, oldTime, oldTime);
-		expect(listSessions(location)[0].updatedAtMs).toBe(transcriptTime.getTime());
+		expect(listSessions(sessions)[0].updatedAtMs).toBe(transcriptTime.getTime());
 		fs.writeFileSync(runFilePath(state), '{}\n');
 		fs.utimesSync(runFilePath(state), runTime, runTime);
 		fs.utimesSync(directory, oldTime, oldTime);
-		expect(listSessions(location)[0].updatedAtMs).toBe(runTime.getTime());
+		expect(listSessions(sessions)[0].updatedAtMs).toBe(runTime.getTime());
 	});
 
 	it('stores the latest system prompt beside run.jsonl', () => {
