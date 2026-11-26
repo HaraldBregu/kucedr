@@ -37,7 +37,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [Paying markets worldwide](mission/MARKETS.md): markets that pay, researched across Europe, the Americas, China, India, Japan and South Korea; recommends an investigation and due-diligence desk sold first in the UK and USA.
 - [Product direction](mission/PRODUCT.md): proposed focus on open-source investigations, the market read behind it, and what it changes in the roadmap.
 - [Roadmap](roadmap/README.md): proposed features, one file per area, with sizes and open decisions.
-- [Multiple workspaces plan](WORKSPACES.md): proposed workspaces, each a folder the user picks and shown in its own window.
+- [Multiple workspaces](WORKSPACES.md): workspaces, each a folder the user picks and shown in its own window; how they are kept apart and what was checked.
 - [Embedded agent browser plan](AGENT_BROWSER_PLAN.md): proposed browser pane inside the main window.
 - [Pluggable agent modes](AGENT_MODES.md): agent modes as data-only plugin contributions.
 - [Contributing](../CONTRIBUTING.md): repository workflow and contribution rules.
