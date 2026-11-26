@@ -45,7 +45,7 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 		expect(voiceSessionId).toBeDefined();
 		expect(
 			JSON.parse(
-				fs.readFileSync(path.join(sessionsRoot(location), voiceSessionId!, 'info.json'), 'utf8')
+				fs.readFileSync(path.join(temporaryRoot, 'sessions', voiceSessionId!, 'info.json'), 'utf8')
 			)
 		).toEqual({ type: 'voice' });
 		conversation.beginUserTurn('user-1');
