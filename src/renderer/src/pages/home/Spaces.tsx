@@ -46,6 +46,8 @@ export function Spaces(): ReactElement | null {
 				<DropdownMenuContent
 					className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
 					align="start"
+					side="right"
+					sideOffset={4}
 				>
 					{workspaces.map((workspace) => (
 						<DropdownMenuItem
