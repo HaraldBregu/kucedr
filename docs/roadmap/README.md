@@ -2,7 +2,7 @@
 
 Status: proposal, written 2026-11-19. Built since: the long-chat streaming measurement (2.5), storage management (1.7), sealed credentials on disk (1.2), the first
 release of app-wide Privacy Mode (1.10), the backup portability warning (1.12), the first four agent efficiency
-features ([2.1–2.4](PERFORMANCE.md)), a chat list that updates on change (2.6), the performance
+   features ([2.1–2.8](PERFORMANCE.md)), a chat list that updates on change (2.6), the performance
 check (2.7), completion
 notifications (3.1), search across chats (3.2), regenerate and retry (3.3), the full "/" menu
 (3.4), offline and failure states (3.6, 15.4), undo and the archive view (3.7), attachment checks
@@ -68,8 +68,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
    unencrypted on disk today. Saved plugin credentials are decrypted in the main process, and
    the plugin detail page receives configured field names only (1.2).
 3. **Agent efficiency.** Automatic compaction, Run insights, run budgets, lighter first messages,
-   long-chat streaming measurement, the smaller renderer entry chunk and the performance check
-   (2.1–2.7) are built. Spend tracking (2.8) remains proposed.
+   long-chat streaming measurement, the smaller renderer entry chunk, the performance check and
+   spend tracking (2.1–2.8) are built.
 4. **Accessibility checks** (4.5), once its two development dependencies are approved and
    `eslint-plugin-jsx-a11y` supports ESLint 10. Screen-reader chat, full keyboard use, high
    contrast and named controls (4.1–4.4) were built 2026-11-24.

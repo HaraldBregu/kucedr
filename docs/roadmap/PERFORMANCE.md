@@ -1,6 +1,6 @@
 # 2. Performance and agent efficiency
 
-Part of the [Roadmap](README.md). Status: 2.1–2.7 built. Spend tracking (2.8) remains proposed.
+Part of the [Roadmap](README.md). Status: 2.1–2.8 built. Spend tracking reports provider-returned costs when model manifests identify the response field; it does not estimate prices when unavailable.
 
 Agent-turn speed has five measured rounds in [AGENT_TURN.md](../AGENT_TURN.md). The model call
 dominates, so the features that matter reduce turns and prompt size, then make the app feel instant
@@ -15,7 +15,7 @@ around the model. The baseline for streaming, startup and bundle size (2.7) is b
 | 2.5 | Smooth streaming | Replies stream without stutter in long chats | Measured 2026-11-26: the performance check seeds a 20-turn history, then streams a 600-chunk reply at 60 fps, with no frame over 50 ms and no long task. See the long-chat result below. | M |
 | 2.6 | Instant start and sidebar | Window appears before background services start; the chat list updates on change | Built 2026-11-26. The sidebar reloads on session-folder changes instead of polling. Workspace and Shiki code load on demand. The production performance check measured a 3,687 KB largest renderer entry chunk, down from 4,037 KB in the 2026-11-25 fresh run. The current run measured 537 ms to first window and 649 ms to first render; startup remains sensitive to host load. | M |
 | 2.7 | Performance check | A repeatable measurement of start time, streaming smoothness and bundle size, run before each release | Built 2026-11-25: `npm run perf` (`scripts/perf.mjs`) after `npm run build`; listed in the release preflight ([Development](../DEVELOPMENT.md#release-preflight-for-every-product)). Not in CI | S |
-| 2.8 | Spend tracking | Cost per provider and per chat over time, with prices read from plugin manifests | Shares its data with 2.2 | M |
+| 2.8 | Spend tracking | Built 2026-11-26. Settings → Usage shows reported cost totals by month, provider, and chat from local run traces. It reads response costs through the model manifest's `costUsdPath`; token totals remain visible when no cost is reported. Current manifests declare provider-returned cost fields for OpenRouter. No price estimate is shown when a model does not report a cost. | Shares run usage with 2.2 | M |
 
 ## Performance check (2.7)
 
