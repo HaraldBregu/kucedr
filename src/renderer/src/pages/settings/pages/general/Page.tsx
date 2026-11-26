@@ -259,22 +259,6 @@ const GeneralPage: React.FC = () => {
 							</Select>
 						}
 					/>
-					{LEGAL_LINKS.map((link) => (
-						<button
-							key={link.url}
-							type="button"
-							className="block w-full text-left hover:bg-muted/40"
-							onClick={() => void window.app.openExternalUrl(link.url)}
-						>
-							<SettingsRow
-								title={t(link.titleKey)}
-								media={<link.icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
-								className="grid-cols-[minmax(0,1fr)_auto]"
-								actionClassName="w-auto justify-end"
-								actions={<ChevronRight className="size-4 text-muted-foreground" />}
-							/>
-						</button>
-					))}
 				</SettingsPanel>
 			</SettingsSection>
 
@@ -632,6 +616,27 @@ const GeneralPage: React.FC = () => {
 							</Button>
 						}
 					/>
+				</SettingsPanel>
+			</SettingsSection>
+
+			<SettingsSection title={t('settings.application.information')}>
+				<SettingsPanel>
+					{LEGAL_LINKS.map((link) => (
+						<button
+							key={link.url}
+							type="button"
+							className="block w-full text-left hover:bg-muted/40"
+							onClick={() => void window.app.openExternalUrl(link.url)}
+						>
+							<SettingsRow
+								title={t(link.titleKey)}
+								media={<link.icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+								className="grid-cols-[minmax(0,1fr)_auto]"
+								actionClassName="w-auto justify-end"
+								actions={<ChevronRight className="size-4 text-muted-foreground" />}
+							/>
+						</button>
+					))}
 				</SettingsPanel>
 			</SettingsSection>
 		</SettingsPageShell>
