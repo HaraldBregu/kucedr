@@ -30,6 +30,7 @@ import { createSessionState } from '../../../../../src/main/agent/session';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
 import { respondUserInput } from '../../../../../src/main/agent/user_input/user_input_pending';
+import { buildWorkspace } from '../../../../../src/main/workspaces/build';
 
 const input = {
 	runId: 'profile-tool-test',
