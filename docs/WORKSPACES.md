@@ -58,7 +58,7 @@ does not move.
 
 | Store       | Default workspace           | Other workspaces                       |
 | ----------- | --------------------------- | -------------------------------------- |
-| Files       | `~/.kucedr/workspace`       | `~/.kucedr/workspaces/<id>/files`, or the folder the user picked |
+| Files       | `~/.kucedr/workspace`       | The folder the user picked             |
 | Chats       | `~/.kucedr/sessions`        | `~/.kucedr/workspaces/<id>/sessions`   |
 | Library     | `~/.kucedr/library`         | `~/.kucedr/workspaces/<id>/library`    |
 | Memory      | `~/.kucedr/memory`          | `~/.kucedr/workspaces/<id>/memory`     |
