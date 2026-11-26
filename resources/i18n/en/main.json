@@ -2698,6 +2698,15 @@
 	"chat": {
 		"titlePlaceholder": "Untitled Chat",
 		"placeholder": "Chat coming soon",
+		"empty": {
+			"greeting": { "morning": "Good morning", "afternoon": "Good afternoon", "evening": "Good evening" },
+			"suggestions": {
+				"continue": "Continue: {{title}}",
+				"summarize": "Summarize a document for me",
+				"draft": "Help me improve a draft",
+				"plan": "Help me plan a project"
+			}
+		},
 		"toolSelection": {
 			"selecting": "Selecting tools…",
 			"selected": "Selected: {{tools}}"
