@@ -616,29 +616,18 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 	}, []);
 
 	useEffect(() => {
-		const handler = (event: KeyboardEvent): void => {
-			if (
-				(event.metaKey || event.ctrlKey) &&
-				!event.altKey &&
-				!event.shiftKey &&
-				event.key.toLowerCase() === 'n'
-			) {
-				event.preventDefault();
-				playSound('navigate');
-				setSessionId(crypto.randomUUID());
-				switchToTyping();
-				// The direct focus above lands first; the event re-focuses once the new
-				// session's history has loaded, which otherwise steals focus back.
-				window.dispatchEvent(new Event('kucedr:focus-chat-input'));
-				return;
-			}
-			if ((event.metaKey || event.ctrlKey) && event.key === '/') {
-				event.preventDefault();
-				switchToTyping();
-			}
+		const newChat = (): void => {
+			setSessionId(crypto.randomUUID());
+			switchToTyping();
+			window.dispatchEvent(new Event('kucedr:focus-chat-input'));
 		};
-		window.addEventListener('keydown', handler);
-		return () => window.removeEventListener('keydown', handler);
+		const focusComposer = (): void => switchToTyping();
+		window.addEventListener('kucedr:new-chat', newChat);
+		window.addEventListener('kucedr:focus-composer', focusComposer);
+		return () => {
+			window.removeEventListener('kucedr:new-chat', newChat);
+			window.removeEventListener('kucedr:focus-composer', focusComposer);
+		};
 	}, [setSessionId, switchToTyping]);
 
 	return {
