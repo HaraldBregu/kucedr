@@ -228,13 +228,12 @@ app.whenReady().then(async () => {
 		agentService.start(logger);
 		startRagSchedule(logger);
 	}
-	void services.memoryService
-		.start()
-		.catch((error) => logger.error('Memory', 'Failed to start memory processing', error));
+	memoryFor(resolveWorkspace(DEFAULT_WORKSPACE));
 	powerMonitor.on('resume', () => {
-		void services.memoryService
-			.refresh('wake')
-			.catch((error) => logger.error('Memory', 'Wake refresh failed', error));
+		for (const memory of memories.values())
+			void memory
+				.refresh('wake')
+				.catch((error) => logger.error('Memory', 'Wake refresh failed', error));
 	});
 	watchIdle();
 	void findBrowserProfiles().catch((error) => logger.error('Permissions', 'Browser profile scan failed', error));

@@ -18,8 +18,6 @@ import { writeMemoryFile } from './file';
 import { unseal } from '../vault/unseal';
 
 export { memoryPath } from './path';
-export { memoryFor } from './for';
-export { memories } from './all';
 
 export function createMemory(workspace: Workspace): MemoryService {
 	const file = memoryPath(workspace);

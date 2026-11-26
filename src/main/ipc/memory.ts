@@ -13,48 +13,48 @@ export class MemoryIpc {
 	}: {
 		windows: WindowContextManager;
 		apps: AppRegistry;
-		memory: MemoryService;
+		memory: () => MemoryService;
 	}): void {
 		const trusted = new TrustedRenderer(windows, apps);
 		registerQueryWithEvent(MemoryChannels.getConfig, (event) => {
 			trusted.assert(event);
-			return memory.getConfig();
+			return memory().getConfig();
 		});
 		registerCommandWithEvent(MemoryChannels.configure, (event, patch: Partial<MemoryConfig>) => {
 			trusted.assert(event);
-			return memory.configure(patch);
+			return memory().configure(patch);
 		});
 		registerCommandWithEvent(MemoryChannels.refresh, (event) => {
 			trusted.assert(event);
-			return memory.refresh();
+			return memory().refresh();
 		});
 		registerQueryWithEvent(MemoryChannels.status, (event) => {
 			trusted.assert(event);
-			return memory.status();
+			return memory().status();
 		});
 		registerQueryWithEvent(MemoryChannels.list, (event) => {
 			trusted.assert(event);
-			return memory.list();
+			return memory().list();
 		});
 		registerQueryWithEvent(MemoryChannels.read, (event) => {
 			trusted.assert(event);
-			return memory.read();
+			return memory().read();
 		});
 		registerCommandWithEvent(MemoryChannels.edit, (event, markdown: string, expected?: string) => {
 			trusted.assert(event);
-			return memory.edit(markdown, expected);
+			return memory().edit(markdown, expected);
 		});
 		registerCommandWithEvent(MemoryChannels.update, (event, id: string, fact: string) => {
 			trusted.assert(event);
-			return memory.update(id, fact);
+			return memory().update(id, fact);
 		});
 		registerCommandWithEvent(MemoryChannels.forget, (event, match: string) => {
 			trusted.assert(event);
-			return memory.forget(match);
+			return memory().forget(match);
 		});
 		registerCommandWithEvent(MemoryChannels.clear, (event) => {
 			trusted.assert(event);
-			return memory.clear();
+			return memory().clear();
 		});
 	}
 }

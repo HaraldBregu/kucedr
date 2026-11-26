@@ -8,7 +8,7 @@ export function memoryFor(workspace: Workspace): MemoryService {
 	if (!memory) {
 		memory = createMemory(workspace);
 		memories.set(workspace.id, memory);
-		void memory.start();
+		void memory.start().catch(() => undefined);
 	}
 	return memory;
 }

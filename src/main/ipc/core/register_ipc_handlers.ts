@@ -94,7 +94,7 @@ export function registerIpcHandlers(
 		new MemoryIpc().register({
 			windows: windowContextManager,
 			apps: appRegistry,
-			memory: services.memoryService,
+			memory: () => memoryFor(currentWorkspace()),
 		})
 	);
 	safeRegister('coder', () =>

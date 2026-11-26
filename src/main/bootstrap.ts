@@ -1,5 +1,5 @@
-import { createMemory } from './memory';
-import type { MemoryService } from '../shared/memory_types';
+import { memories } from './memory/all';
+import { memoryFor } from './memory/for';
 import { AppState } from './app_state';
 import { EventBus } from './event_bus';
 import { WindowContextManager } from './window_context';
@@ -35,7 +35,6 @@ export interface MainServices {
 	eventBus: EventBus;
 	logger: LoggerService;
 	agentService: Agent;
-	memoryService: MemoryService;
 	codingService: Coding;
 	realtimeVoiceManager: RealtimeVoiceManager;
 	windowFactory: WindowFactory;
@@ -58,8 +57,7 @@ export function bootstrapServices(): BootstrapResult {
 	const appRegistry = new AppRegistry();
 	const appStorage = new AppStorage();
 	const windowFactory = new WindowFactory(logger, appRegistry);
-	const memoryService = createMemory(() => agentService.config);
-	const agentService = new Agent(new ExecSandbox(), memoryService, modeExtension);
+	const agentService = new Agent(new ExecSandbox(), memoryFor, modeExtension);
 	const codingStore = new CodingStore();
 	const codingService = new Coding({
 		store: codingStore,
@@ -109,7 +107,6 @@ export function bootstrapServices(): BootstrapResult {
 		eventBus,
 		logger,
 		agentService,
-		memoryService,
 		codingService,
 		realtimeVoiceManager,
 		windowFactory,
@@ -132,14 +129,13 @@ export async function cleanup(services: MainServices): Promise<void> {
 		cloudService,
 		authService,
 		agentService,
-		memoryService,
 		codingService,
 		storageOperations,
 	} = services;
 	logger.info('Bootstrap', 'Starting cleanup');
 	const recorderCleanup = Promise.all([microphone.destroy(), camera.destroy(), screen.destroy()]);
 	terminalManager.shutdown();
-	await memoryService.stop();
+	await Promise.all([...memories.values()].map((memory) => memory.stop()));
 	agentService.destroy();
 	codingService.destroy();
 	await realtimeVoiceManager.stopAll();
