@@ -1012,6 +1012,10 @@ export interface DataInvokeChannelMap {
 		args: [];
 		result: import('./data_types').DataScope[];
 	};
+	[DataChannels.getStorageUsage]: {
+		args: [];
+		result: import('./data_types').StorageUsage;
+	};
 	[DataChannels.export]: {
 		args: [scope: import('./data_types').DataScope];
 		result: import('./data_types').DataExportResult | undefined;

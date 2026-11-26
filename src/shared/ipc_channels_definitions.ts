@@ -461,6 +461,7 @@ export const SearchChannels = {
 
 export const DataChannels = {
 	listScopes: 'data:scopes:list',
+	getStorageUsage: 'data:storage-usage:get',
 	export: 'data:export',
 	previewPurge: 'data:purge:preview',
 	purge: 'data:purge',

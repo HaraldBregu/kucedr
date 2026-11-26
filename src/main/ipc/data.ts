@@ -24,6 +24,7 @@ export class DataIpc implements IpcModule<DataIpcDeps> {
 		const controller = new DataController(agent);
 		const trusted = new TrustedRenderer(windows, apps);
 		trusted.query(DataChannels.listScopes, () => controller.listScopes());
+		trusted.query(DataChannels.getStorageUsage, () => controller.getStorageUsage());
 		trusted.commandWithEvent(DataChannels.export, async (event, input) => {
 			const scope = normalizeDataScope(input);
 			const options = {
