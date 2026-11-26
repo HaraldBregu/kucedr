@@ -134,7 +134,7 @@ describe('run stream system prompt', () => {
 			const events = [];
 			try {
 				for await (const event of stream(
-					{ location: root },
+					{ location: root, workspace: buildWorkspace('default', path.dirname(root), root) },
 					session,
 					{
 						runId: `explicit-${contextMode}`,
@@ -494,7 +494,7 @@ describe('run stream system prompt', () => {
 			session.messages = [{ role: 'user', content: 'Current request' }];
 
 			for await (const event of stream(
-				{ location: root },
+				{ location: root, workspace: buildWorkspace('default', path.dirname(root), root) },
 				session,
 				{
 					runId: 'run',
@@ -580,7 +580,7 @@ describe('run stream system prompt', () => {
 			session.messages = [{ role: 'user', content: 'Hello' }];
 
 			for await (const event of stream(
-				{ location: root },
+				{ location: root, workspace: buildWorkspace('default', path.dirname(root), root) },
 				session,
 				{
 					runId: 'minimal-profile',
@@ -616,7 +616,7 @@ describe('run stream system prompt', () => {
 			session.messages = [{ role: 'user', content: 'Hello' }];
 
 			for await (const event of stream(
-				{ location: root },
+				{ location: root, workspace: buildWorkspace('default', path.dirname(root), root) },
 				session,
 				{
 					runId: 'bootstrap',
@@ -646,7 +646,7 @@ describe('run stream system prompt', () => {
 			await fs.rm(path.join(root, 'BOOTSTRAP.md'));
 			runModelTurnMock.mockClear();
 			for await (const event of stream(
-				{ location: root },
+				{ location: root, workspace: buildWorkspace('default', path.dirname(root), root) },
 				createSessionState(),
 				{
 					runId: 'after-bootstrap',
@@ -782,7 +782,7 @@ describe('run stream system prompt', () => {
 				async () => memory + '## Summaries\n- Discussed the correction.\n- Chose lavender.'
 			);
 			for await (const event of stream(
-				{ location: root },
+				{ location: root, workspace: buildWorkspace('default', path.dirname(root), root) },
 				session,
 				{
 					runId: `memory-${contextMode}`,
@@ -817,7 +817,7 @@ describe('run stream system prompt', () => {
 			session.messages = [{ role: 'user', content: 'Background request' }];
 			const read = jest.fn(async () => '- Private preference.');
 			for await (const event of stream(
-				{ location: root },
+				{ location: root, workspace: buildWorkspace('default', path.dirname(root), root) },
 				session,
 				{
 					runId: `isolated-${category}`,
@@ -852,7 +852,7 @@ describe('run stream system prompt', () => {
 			await fs.writeFile(path.join(root, 'BOOTSTRAP.md'), '# Bootstrap');
 
 			for await (const event of stream(
-				{ location: root },
+				{ location: root, workspace: buildWorkspace('default', path.dirname(root), root) },
 				session,
 				{
 					runId: 'task-bootstrap',
