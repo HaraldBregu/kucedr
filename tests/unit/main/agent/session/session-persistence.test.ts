@@ -11,10 +11,10 @@ import { createSessionState } from '../../../../../src/main/agent/session/sessio
 import { persist } from '../../../../../src/main/agent/session/session_persist';
 import { persistSystemPrompt } from '../../../../../src/main/agent/session/session_persist_system';
 import { runFilePath } from '../../../../../src/main/agent/session/session_run_file_path';
-import { sessionsRoot } from '../../../../../src/main/agent/session/session_sessions_root';
 import { insertUserMessage } from '../../../../../src/main/agent/session/session_insert_user_message';
 import { deleteSession } from '../../../../../src/main/agent/session/session_delete_session';
 import { updateUserMessageBySessionId } from '../../../../../src/main/agent/session/session_update_user_message_by_session_id';
+import { buildWorkspace } from '../../../../../src/main/workspaces/build';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 
