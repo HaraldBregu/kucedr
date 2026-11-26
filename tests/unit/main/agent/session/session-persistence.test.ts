@@ -30,7 +30,7 @@ describe('session persistence', () => {
 	});
 
 	it('reports the latest transcript or run update for a session', () => {
-		const location = path.join(temporaryRoot, 'agent');
+		const sessions = path.join(temporaryRoot, 'sessions');
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
@@ -98,7 +98,7 @@ describe('session persistence', () => {
 	});
 
 	it('recovers from a corrupt transcript using the last known good backup', () => {
-		const location = path.join(temporaryRoot, 'agent');
+		const sessions = path.join(temporaryRoot, 'sessions');
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
@@ -122,7 +122,7 @@ describe('session persistence', () => {
 	});
 
 	it('inserts a finalized voice transcript at its reserved position', () => {
-		const location = path.join(temporaryRoot, 'agent');
+		const sessions = path.join(temporaryRoot, 'sessions');
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
@@ -142,7 +142,7 @@ describe('session persistence', () => {
 	});
 
 	it('updates a stored user message and discards later turns', () => {
-		const location = path.join(temporaryRoot, 'agent');
+		const sessions = path.join(temporaryRoot, 'sessions');
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
@@ -162,7 +162,7 @@ describe('session persistence', () => {
 	});
 
 	it('stores attachment payloads as verified session blobs instead of transcript base64', () => {
-		const location = path.join(temporaryRoot, 'agent');
+		const sessions = path.join(temporaryRoot, 'sessions');
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
@@ -193,7 +193,7 @@ describe('session persistence', () => {
 	});
 
 	it('persists and restores an attachment above the former file-size cap', () => {
-		const location = path.join(temporaryRoot, 'agent');
+		const sessions = path.join(temporaryRoot, 'sessions');
 		const state = createSessionState();
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
