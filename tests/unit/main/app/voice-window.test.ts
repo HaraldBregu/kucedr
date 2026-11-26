@@ -2,6 +2,7 @@ const attachWindowHandlers = jest.fn();
 
 jest.mock('electron', () => ({ app: { focus: jest.fn() } }));
 jest.mock('../../../../src/main/window_events', () => ({ attachWindowHandlers }));
+jest.mock('../../../../src/main/workspaces/bind', () => ({ bindWorkspace: jest.fn() }));
 jest.mock('../../../../src/main/translucency', () => ({
 	getPlatformTranslucencyOptions: () => ({}),
 }));
