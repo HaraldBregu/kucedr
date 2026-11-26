@@ -97,7 +97,8 @@ restore brings names back:
 }
 ```
 
-`folder` is optional. When it is set, it is the workspace's files folder.
+`folder` is required: it is the workspace's files folder, stored as its real path. An entry without
+a valid absolute `folder` is ignored.
 
 - The default workspace is implicit: id `default`, named "Personal", never written to the file.
 - **IDs** come from `crypto.randomUUID()` and are never shown.
