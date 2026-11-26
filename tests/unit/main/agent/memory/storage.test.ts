@@ -29,7 +29,7 @@ describe('memory storage', () => {
 
 	it('moves legacy settings and workspace memory into the standalone folder', async () => {
 		const legacySettings = path.join(root, 'settings', 'memory.json');
-		const legacyMemory = path.join(workspace, 'MEMORY.md');
+		const legacyMemory = path.join(workspace.files, 'MEMORY.md');
 		await fs.mkdir(path.dirname(legacySettings), { recursive: true });
 		await fs.writeFile(legacySettings, '{"initialized":true}\n');
 		await fs.writeFile(legacyMemory, '# Memory\n\n- Prefers concise answers\n');
