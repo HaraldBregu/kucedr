@@ -10,7 +10,7 @@ const renameSync = jest.fn();
 const rmSync = jest.fn();
 const writeFileSync = jest.fn();
 
-jest.mock('node:fs', () => ({ mkdirSync, renameSync, rmSync, writeFileSync }));
+jest.mock('node:fs', () => ({ chmodSync: jest.fn(), mkdirSync, renameSync, rmSync, writeFileSync }));
 jest.mock('../../../../src/main/shared/user_data_location', () => ({
 	userDataLocation: () => '/user/data',
 }));
