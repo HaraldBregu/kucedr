@@ -11,10 +11,11 @@ const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 
 it('captures finalized realtime voice turns in their persisted order', () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-memory-'));
+	const location = path.join(temporaryRoot, 'agent');
 	const capture = jest.fn(async () => undefined);
 	try {
 		const conversation = realtimeVoiceConversationFactory(
-			{ location: path.join(temporaryRoot, 'agent') },
+			{ location, workspace: buildWorkspace('default', temporaryRoot, location) },
 			undefined,
 			{ capture } as unknown as MemoryService
 		)(SESSION_ID, 'model');
