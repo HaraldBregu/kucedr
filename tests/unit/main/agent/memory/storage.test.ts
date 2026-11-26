@@ -5,18 +5,20 @@ import { migrateWorkspaceMemory } from '../../../../../src/main/memory/migrate';
 import { memoryPath } from '../../../../../src/main/memory/path';
 import { prepareMemorySettings } from '../../../../../src/main/memory/settings';
 import { WORKSPACE_FILES } from '../../../../../src/main/agent/system/system_types';
+import { resolveWorkspace } from '../../../../../src/main/workspaces/resolve';
+import type { Workspace } from '../../../../../src/main/workspaces/types';
 
 describe('memory storage', () => {
 	let root: string;
-	let workspace: string;
+	let workspace: Workspace;
 	let previousDataRoot: string | undefined;
 
 	beforeEach(async () => {
 		root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-memory-storage-'));
-		workspace = path.join(root, 'workspace');
 		previousDataRoot = process.env.KUCEDR_E2E_DATA_ROOT;
 		process.env.KUCEDR_E2E_DATA_ROOT = root;
-		await fs.mkdir(workspace, { recursive: true });
+		workspace = resolveWorkspace('default');
+		await fs.mkdir(workspace.files, { recursive: true });
 	});
 
 	afterEach(async () => {
