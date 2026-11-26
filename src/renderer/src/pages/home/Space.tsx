@@ -28,11 +28,11 @@ export function Space({
 				.join(' · ');
 	return (
 		<>
-			<Avatar className={large ? 'size-6 rounded-lg bg-gradient-to-br from-sidebar-primary to-sidebar-accent text-sidebar-primary-foreground' : 'size-5 rounded-md'}>
+			<Avatar className={large ? 'size-6 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 text-white' : 'size-5 rounded-md'}>
 				{workspace.image && <AvatarImage src={workspace.image} alt="" />}
 				<AvatarFallback
 					className={large
-						? 'rounded-lg bg-gradient-to-br from-sidebar-primary to-sidebar-accent text-sm font-medium text-sidebar-primary-foreground'
+						? 'rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 text-sm font-medium text-white'
 						: 'rounded-md text-xs font-medium'}
 				>
 					{showAvatarLabel ? name.slice(0, 1).toUpperCase() : null}
