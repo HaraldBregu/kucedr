@@ -139,10 +139,10 @@ one of these places:
 `agentLocation()`, `libraryLocation()`, `memoryPath()` and `ragLocation()` lose their global meaning.
 Each takes a workspace, or is replaced by a field on it.
 
-## Workspace from a folder
+## Creating a workspace
 
-**New workspace from folder…** opens the system folder dialog in the main process. The renderer
-never sends a path. The name defaults to the folder's name.
+**New workspace…** opens the system folder dialog in the main process; it is the only way to create
+one. The renderer never sends a path. The name defaults to the folder's name.
 
 Main checks the folder, using its real path, before saving it:
 
