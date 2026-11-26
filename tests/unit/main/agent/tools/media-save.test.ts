@@ -9,8 +9,8 @@ const libraryDir = path.join(testRoot, 'library');
 jest.mock('../../../../../src/main/shared/agent_location', () => ({
 	agentLocation: (): string => agentDir,
 }));
-jest.mock('../../../../../src/main/shared/library_location', () => ({
-	libraryLocation: (): string => libraryDir,
+jest.mock('../../../../../src/main/workspaces/current', () => ({
+	currentWorkspace: () => ({ id: 'default', files: agentDir, library: libraryDir }),
 }));
 
 import { saveMedia } from '../../../../../src/main/shared/media';
