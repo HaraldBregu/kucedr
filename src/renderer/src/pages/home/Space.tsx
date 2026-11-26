@@ -8,11 +8,13 @@ export function Space({
 	large = false,
 	title = workspace.id === DEFAULT_WORKSPACE ? undefined : workspace.name,
 	subtitle,
+	showAvatarLabel = true,
 }: {
 	readonly workspace: WorkspaceInfo;
 	readonly large?: boolean;
 	readonly title?: string;
 	readonly subtitle?: string;
+	readonly showAvatarLabel?: boolean;
 }): ReactElement {
 	const { t } = useTranslation();
 	const name = title ?? (workspace.id === DEFAULT_WORKSPACE ? t('spaces.personal') : workspace.name);
@@ -33,7 +35,7 @@ export function Space({
 						? 'rounded-lg bg-sidebar-primary text-sm font-medium text-sidebar-primary-foreground'
 						: 'rounded-md text-xs font-medium'}
 				>
-					{name.slice(0, 1).toUpperCase()}
+					{showAvatarLabel ? name.slice(0, 1).toUpperCase() : null}
 				</AvatarFallback>
 			</Avatar>
 			<span className="grid min-w-0 flex-1 truncate text-left leading-tight">

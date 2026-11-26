@@ -39,7 +39,7 @@ export function Spaces(): ReactElement | null {
 						className="h-9 px-2.5 py-1.5 text-sm data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						aria-label={t('spaces.switch')}
 					>
-						<Space workspace={shown} large title="Default" />
+						<Space workspace={shown} large title="Personal" showAvatarLabel={false} />
 						<ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
 					</SidebarMenuButton>
 				</DropdownMenuTrigger>
