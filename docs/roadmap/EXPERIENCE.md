@@ -20,7 +20,7 @@ Part of the [Roadmap](README.md). Status: proposal; 3.1–3.4, 3.6–3.9, 3.11 a
 | 3.14 | Consistent empty and loading states | Every list says what belongs there and how to add the first item; every page shows the same loading rows | Built 2026-11-26 for the identified Settings lists; shared placeholders now cover plugin discovery, permissions, browser profiles, knowledge search and embedding models, cloud folders, MCP tools and account activity | S |
 | 3.15 | A visual consistency pass | Colours, text sizes and spacing come from the theme everywhere, so light, dark and plugin themes look right on every page | 41 fixed palette colours in 11 files and 59 fixed pixel sizes in the renderer | S–M |
 | 3.16 | A useful empty chat | A new chat offers a few starting points instead of a greeting only | `EmptyConversation` in `pages/home/Page.tsx`; `components/ui/prompt-suggestion.tsx` exists and is used nowhere | S |
-| 3.17 | Smoother first-run setup | Connect a model first, skip what can wait, and land in a chat that works | Four steps in `SETUP_STEPS` (`pages/start/setupConstants.ts`): plugins, model, chat, voice | S–M |
+| 3.17 | Smoother first-run setup | Connect a model first, skip what can wait, and land in a chat that works | Built 2026-11-26: model → chat → optional plugins and voice, with Skip for now | S–M |
 | 3.18 | Find any setting | Typing a setting's name (for example "sound" or "dark") finds the switch, not only the page | The command menu lists Settings pages from `SETTINGS_NAVIGATION`; individual options are not searchable | S |
 
 The terminal panel has its own area: [Terminal](TERMINAL.md).
@@ -216,17 +216,11 @@ for deletions that can be restored remains a separate follow-up to 3.7.
 
 ### 3.17 Smoother first-run setup
 
-- _Behaviour._ Setup asks for what the first chat needs (a model), lets the rest wait, and ends
-  in a chat that works. Plugins and voice can be skipped and found later in Settings.
-- _Found._ `SETUP_STEPS` in `pages/start/setupConstants.ts` runs plugins, model, chat, voice, so
-  plugins come before any model is connected. No skip action was found in `pages/start`. Step
-  titles and descriptions are hard-coded English in the same file.
-- _Builds on._ The reducer in `pages/start/state` and the flow described in
-  [Start page](../ui/START.md); the local model setup (15.1) adds a path here later.
-- _Open decision._ Recommended order: model, chat, then an optional "more" screen covering plugins
-  and voice with a Skip button.
-- _Check._ A fresh profile reaches a working chat after connecting one provider and skipping the
-  rest, and the skipped parts are reachable from Settings.
+Built 2026-11-26. Setup now goes through model provider, chat assistant, then an optional extras
+screen with Plugins and Voice tabs. **Skip for now** saves valid selections, verifies the required
+chat configuration and opens Home. Step titles, descriptions, progress labels and setup actions are
+translated in English and Italian. Plugins and voice remain available in Settings. Typecheck,
+targeted ESLint and translation JSON parsing pass; a fresh-profile run was not performed.
 
 ### 3.18 Find any setting
 
