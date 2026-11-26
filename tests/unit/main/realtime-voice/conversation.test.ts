@@ -175,21 +175,21 @@ it('preserves updates from text and two voice writers sharing one coordinator', 
 		first.addAssistantTranscript('First voice.');
 		addAssistantMessage(text, 'Text answer.', []);
 		second.addAssistantTranscript('Second voice.');
-		const textSerialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+		const textSerialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.workspace.sessions));
 		expect(textSerialized).toContain('Text question.');
 		expect(textSerialized).toContain('Text answer.');
-		expect(JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.location))).toContain(
+		expect(JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.workspace.sessions))).toContain(
 			'First voice.'
 		);
 		expect(
-			JSON.stringify(loadMessagesBySessionId(secondVoiceSessionId, config.location))
+			JSON.stringify(loadMessagesBySessionId(secondVoiceSessionId, config.workspace.sessions))
 		).toContain('Second voice.');
 		releaseSession(text);
 		expect(text.lease.signal.aborted).toBe(false);
 		addAssistantMessage(text, 'Closed writer callback.', []);
 		second.addAssistantTranscript('Still active voice.');
 		expect(
-			JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.location))
+			JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.workspace.sessions))
 		).not.toContain('Closed writer');
 	} finally {
 		first.dispose?.();
@@ -237,7 +237,7 @@ it.each(['clear', 'delete', 'edit'])(
 				expect(
 					updateUserMessageBySessionId(
 						SESSION_ID,
-						config.location,
+						config.workspace.sessions,
 						0,
 						'Edited question.',
 						coordinator
@@ -249,9 +249,9 @@ it.each(['clear', 'delete', 'edit'])(
 			addAssistantMessage(state, 'Late text callback.', []);
 			appendRun(state, { type: 'run_finished' });
 			persistSystemPrompt(state, 'Late system prompt.');
-			const serialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+			const serialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.workspace.sessions));
 			const voiceSerialized = JSON.stringify(
-				loadMessagesBySessionId(voiceSessionId, config.location)
+				loadMessagesBySessionId(voiceSessionId, config.workspace.sessions)
 			);
 			expect(serialized).not.toContain('Late');
 			expect(voiceSerialized).toContain('Late voice callback.');
@@ -297,13 +297,13 @@ it('keeps deferred prompts private until validation accepts them and preserves c
 			coordinator
 		);
 		voice.addAssistantTranscript('Concurrent voice answer.');
-		expect(JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location))).not.toContain(
+		expect(JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.workspace.sessions))).not.toContain(
 			'pending prompt'
 		);
 		persist(state);
-		let content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+		let content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.workspace.sessions));
 		expect(content).toContain('Accepted pending prompt.');
-		expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.location))).toContain(
+		expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.workspace.sessions))).toContain(
 			'Concurrent voice answer.'
 		);
 		releaseSession(state);
@@ -321,9 +321,9 @@ it('keeps deferred prompts private until validation accepts them and preserves c
 		);
 		releaseSession(state);
 		voice.addAssistantTranscript('Another voice answer.');
-		content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+		content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.workspace.sessions));
 		expect(content).not.toContain('Rejected pending prompt.');
-		expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.location))).toContain(
+		expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.workspace.sessions))).toContain(
 			'Another voice answer.'
 		);
 	} finally {
