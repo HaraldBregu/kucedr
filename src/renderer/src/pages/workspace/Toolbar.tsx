@@ -62,17 +62,17 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePluginScripts } from '@/hooks/use-plugin-scripts';
 import type { PluginScriptInfo } from '../../../../shared/plugin_types';
+import { getShortcutLabel, type ShortcutId } from '@shared/app_types';
 
 const inlineAiKey = new PluginKey('workspaceInlineAi');
 const promptPosition = (state: EditorState): number => inlineAiKey.getState(state)?.find()[0]?.from ?? state.selection.to;
 
-const mod = navigator.platform.startsWith('Mac') ? '⌘' : 'Ctrl+';
-const alt = navigator.platform.startsWith('Mac') ? '⌥' : 'Alt+';
+const shortcutPlatform = navigator.platform.startsWith('Mac') ? 'mac' : /Win/.test(navigator.platform) ? 'win' : 'linux';
 
 interface Action {
 	readonly label: string;
 	readonly icon: typeof Bold;
-	readonly shortcut?: string;
+	readonly shortcutId?: ShortcutId;
 	readonly active?: string | [string, Record<string, unknown>];
 	readonly run: (chain: ChainedCommands) => ChainedCommands;
 }
@@ -86,28 +86,28 @@ interface ToolbarItem {
 
 const groups: Action[][] = [
 	[
-		{ label: 'Undo', icon: Undo2, shortcut: `${mod}Z`, run: (chain) => chain.undo() },
-		{ label: 'Redo', icon: Redo2, shortcut: `${mod}⇧Z`, run: (chain) => chain.redo() },
+		{ label: 'Undo', icon: Undo2, shortcutId: 'editorUndo', run: (chain) => chain.undo() },
+		{ label: 'Redo', icon: Redo2, shortcutId: 'editorRedo', run: (chain) => chain.redo() },
 	],
 	[
-		{ label: 'Heading 1', icon: Heading1, shortcut: `${mod}${alt}1`, active: ['heading', { level: 1 }], run: (chain) => chain.toggleHeading({ level: 1 }) },
-		{ label: 'Heading 2', icon: Heading2, shortcut: `${mod}${alt}2`, active: ['heading', { level: 2 }], run: (chain) => chain.toggleHeading({ level: 2 }) },
-		{ label: 'Heading 3', icon: Heading3, shortcut: `${mod}${alt}3`, active: ['heading', { level: 3 }], run: (chain) => chain.toggleHeading({ level: 3 }) },
+		{ label: 'Heading 1', icon: Heading1, shortcutId: 'editorHeading1', active: ['heading', { level: 1 }], run: (chain) => chain.toggleHeading({ level: 1 }) },
+		{ label: 'Heading 2', icon: Heading2, shortcutId: 'editorHeading2', active: ['heading', { level: 2 }], run: (chain) => chain.toggleHeading({ level: 2 }) },
+		{ label: 'Heading 3', icon: Heading3, shortcutId: 'editorHeading3', active: ['heading', { level: 3 }], run: (chain) => chain.toggleHeading({ level: 3 }) },
 	],
 	[
-		{ label: 'Bold', icon: Bold, shortcut: `${mod}B`, active: 'bold', run: (chain) => chain.toggleBold() },
-		{ label: 'Italic', icon: Italic, shortcut: `${mod}I`, active: 'italic', run: (chain) => chain.toggleItalic() },
-		{ label: 'Underline', icon: Underline, shortcut: `${mod}U`, active: 'underline', run: (chain) => chain.toggleUnderline() },
-		{ label: 'Strikethrough', icon: Strikethrough, shortcut: `${mod}⇧S`, active: 'strike', run: (chain) => chain.toggleStrike() },
-		{ label: 'Inline code', icon: Code, shortcut: `${mod}E`, active: 'code', run: (chain) => chain.toggleCode() },
-		{ label: 'Clear formatting', icon: Eraser, shortcut: `${mod}\\`, run: (chain) => chain.unsetAllMarks().clearNodes() },
+		{ label: 'Bold', icon: Bold, shortcutId: 'editorBold', active: 'bold', run: (chain) => chain.toggleBold() },
+		{ label: 'Italic', icon: Italic, shortcutId: 'editorItalic', active: 'italic', run: (chain) => chain.toggleItalic() },
+		{ label: 'Underline', icon: Underline, shortcutId: 'editorUnderline', active: 'underline', run: (chain) => chain.toggleUnderline() },
+		{ label: 'Strikethrough', icon: Strikethrough, shortcutId: 'editorStrikethrough', active: 'strike', run: (chain) => chain.toggleStrike() },
+		{ label: 'Inline code', icon: Code, shortcutId: 'editorInlineCode', active: 'code', run: (chain) => chain.toggleCode() },
+		{ label: 'Clear formatting', icon: Eraser, shortcutId: 'editorClearFormatting', run: (chain) => chain.unsetAllMarks().clearNodes() },
 	],
 	[
-		{ label: 'Bulleted list', icon: List, shortcut: `${mod}⇧8`, active: 'bulletList', run: (chain) => chain.toggleBulletList() },
-		{ label: 'Numbered list', icon: ListOrdered, shortcut: `${mod}⇧7`, active: 'orderedList', run: (chain) => chain.toggleOrderedList() },
-		{ label: 'Task list', icon: ListChecks, shortcut: `${mod}⇧9`, active: 'taskList', run: (chain) => chain.toggleTaskList() },
-		{ label: 'Quote', icon: Quote, shortcut: `${mod}⇧B`, active: 'blockquote', run: (chain) => chain.toggleBlockquote() },
-		{ label: 'Code block', icon: FileCode, shortcut: `${mod}${alt}C`, active: 'codeBlock', run: (chain) => chain.toggleCodeBlock() },
+		{ label: 'Bulleted list', icon: List, shortcutId: 'editorBulletedList', active: 'bulletList', run: (chain) => chain.toggleBulletList() },
+		{ label: 'Numbered list', icon: ListOrdered, shortcutId: 'editorNumberedList', active: 'orderedList', run: (chain) => chain.toggleOrderedList() },
+		{ label: 'Task list', icon: ListChecks, shortcutId: 'editorTaskList', active: 'taskList', run: (chain) => chain.toggleTaskList() },
+		{ label: 'Quote', icon: Quote, shortcutId: 'editorQuote', active: 'blockquote', run: (chain) => chain.toggleBlockquote() },
+		{ label: 'Code block', icon: FileCode, shortcutId: 'editorCodeBlock', active: 'codeBlock', run: (chain) => chain.toggleCodeBlock() },
 		{ label: 'Divider', icon: Minus, run: (chain) => chain.setHorizontalRule() },
 		{ label: 'Table', icon: Table, run: (chain) => chain.insertTable({ rows: 3, cols: 3, withHeaderRow: true }) },	],
 ];
@@ -440,7 +440,7 @@ export function WorkspaceToolbar({ toolbarTarget, editor, linkOpen, onLinkOpenCh
 				</div>, document.body) : null}
 				<div className="mx-1 h-px bg-border" />
 				<div className="flex flex-wrap items-center justify-center gap-0.5">
-					{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} className={`rounded-lg ${state.active[5 + index] ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcut ? <span className="opacity-60">{action.shortcut}</span> : null}</TooltipContent></Tooltip>)}
+					{groups[2].map((action, index) => <Tooltip key={action.label}><TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={action.label} aria-pressed={action.active ? state.active[5 + index] : undefined} className={`rounded-lg ${state.active[5 + index] ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => action.run(editor.chain().focus()).run()}><action.icon /></Button>} /><TooltipContent>{action.label}{action.shortcutId ? <span className="opacity-60">{getShortcutLabel(action.shortcutId, shortcutPlatform)}</span> : null}</TooltipContent></Tooltip>)}
 					<Button type="button" variant="ghost" size="icon-sm" aria-label="Link" aria-pressed={state.link} className={`rounded-lg ${state.link ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'}`} onMouseDown={(event) => event.preventDefault()} onClick={() => onLinkOpenChange(true)}><Link /></Button>
 				</div>
 				<div className="mx-1 h-px bg-border" />
