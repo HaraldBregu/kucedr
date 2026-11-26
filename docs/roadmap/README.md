@@ -96,7 +96,8 @@ The user-experience area was chosen to be planned in detail first; see
 - Payments (9) come before paid plugins sold in the catalogue (8.6).
 - Signed builds (6.1) come before encrypted data and app lock protect fully (1.3, 1.4), and before
   paid plugins from outside authors (8.6, 8.7).
-- Workspaces and windows (10) are built as one sequence: a window is where a workspace is shown.
+- Workspaces and windows (10) were built as one sequence on 2026-11-26: a window is where a
+  workspace is shown.
   They come before memory (18) and integrations (17) gain per-workspace accounts. How much a
   workspace separates was decided 2026-11-26: everything that holds content.
 - Legal pages (6.4) come before one-click Google and Microsoft sign-in (17.1) and before the first
