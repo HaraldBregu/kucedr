@@ -10,7 +10,7 @@ export function clearMessages(
 	sessionId: string,
 	coordinator?: SessionCoordinator
 ): void {
-	const resolvedSessionId = resolveStoredSessionId(sessionId, config.location);
-	clearMessagesBySessionId(resolvedSessionId, config.location, coordinator);
+	const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
+	clearMessagesBySessionId(resolvedSessionId, config.workspace.sessions, coordinator);
 	if (state.id === resolvedSessionId) state.messages = [];
 }
