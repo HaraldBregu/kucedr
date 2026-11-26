@@ -111,7 +111,8 @@ Settings → Plugins has an upload tile (drop a folder or `.tgz`, or click to pi
 
 - `uploadPlugin()` installs a folder directly, or an archive through `installPluginArchive()`.
 - `downloadPlugin()` accepts https only and caps the download at 200 MB.
-- `installPluginArchive()` extracts with `tar`, keeping only files and folders (no links). The
+- `installPluginArchive()` checks the archive before writing files. It rejects more than
+  256 MiB of unpacked content or more than 10,000 entries, then extracts files and folders. The
   manifest can be at the archive root or inside one wrapper folder, such as npm's `package/`.
 - `installPlugin()` copies the source into `<root>/.install-<uuid>/`, runs `readPlugin()` and
   `validatePluginContents()`, then renames it to `<root>/<id>`. An existing install is moved to a

@@ -17,7 +17,7 @@ Keep these properties when changing the code below.
 - **Voice credentials.** Provider keys stay in main; sockets open in main to fixed hosts; the renderer gets only the session id and audio formats.
 - **Network fetch.** `unfurl` and `fetch_web_page` pin DNS, check every resolved address and every redirect hop, and cap size.
 - **Markdown.** No `rehype-raw`; `javascript:` links stripped; `file:`/UNC navigation blocked.
-- **Plugin archives.** Only file and directory entries are extracted (no links), `..` and absolute paths stripped, staging folder plus rename, 200 MB download cap.
+- **Plugin archives.** Only file and directory entries are extracted (no links), `..` and absolute paths stripped, staging folder plus rename, 200 MiB download cap, 256 MiB unpacked and 10,000 entries per desktop install.
 - **Plugin hooks.** Payload on stdin as JSON, no shell, no arguments; hook output is ignored, so model output cannot steer a hook.
 - **MCP.** stdio `shell: false` with the SDK env allowlist; OAuth uses a loopback redirect, single-use state, sealed tokens.
 
@@ -43,7 +43,7 @@ Keep these properties when changing the code below.
 | 16 | Medium | `update_soul` / `update_user` / `update_identity` always allowed (`PERMISSIONS_SECURITY.md` #7) | Decision |
 | 17 | Medium | *Suspected:* cloud restore can plant plugins, MCP servers, skills | Decision |
 | 18 | Medium | *Suspected:* no Electron fuses; entitlements allow library injection | Decision |
-| 19 | Low | Plugin catalog integrity: same-source checksum, redirects, downgrade, no extract cap | Partial: final URL after redirects must be https |
+| 19 | Low | Plugin catalog integrity: same-source checksum, redirects, downgrade, extraction limits | Partial: the final URL must be HTTPS and desktop extraction limits are enforced. Catalog signing and downgrade policy remain open. |
 | 20 | Low | Hook timeout sends SIGTERM only; stderr unbounded | Fixed: `killSignal: 'SIGKILL'`, stderr capped at 2 MB |
 | 21 | Low | `use_web_browser` reaches private hosts; `private.ts` misses ranges | Partial: `192.0.0.0/24` added; `198.18.0.0/15` skipped (Clash/Surge fake-IP range); browser policy is a Decision |
 | 22 | Low | Tasks: global off-switch bypassed; no cron frequency cap | Partial: `activate()` respects the off-switch; frequency cap open |
@@ -282,11 +282,11 @@ No Electron fuses (RunAsNode, `--inspect` enabled); entitlements include `disabl
 ### 19. Low — plugin catalog integrity
 
 - The checksum comes from the same unsigned `index.json` as the download URL.
-- Install by URL passes no checksum, and `fetch` follows redirects; https is checked on the first URL only.
+- Install by URL passes no checksum. The installer checks HTTPS on the initial and final URLs.
 - Installing replaces any version (downgrade).
-- Extracted size is not capped.
+- Desktop installs check the 256 MiB unpacked size and 10,000-entry limits before extracting files.
 
-Fix: check the final response URL is https; sign the catalog with a pinned key (Decision).
+Open decision: sign the catalog with a pinned key.
 
 ---
 

@@ -1,12 +1,32 @@
-import { existsSync, readdirSync } from 'node:fs';
+import { createReadStream, existsSync, readdirSync } from 'node:fs';
 import { mkdir, mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { x as extract } from 'tar';
+import { pipeline } from 'node:stream/promises';
+import { Parser, x as extract } from 'tar';
 import type { PluginInfo } from '../../shared/plugin_types';
+import { MAX_ARCHIVE_BYTES, MAX_ARCHIVE_ENTRIES } from './limits';
 import { installPlugin } from './plugins_install';
 
 export async function installPluginArchive(file: string): Promise<PluginInfo> {
+	let bytes = 0;
+	let entries = 0;
+	const parser = new Parser({
+		strict: true,
+		filter: (_path, entry) => {
+			entries += 1;
+			const size = 'remain' in entry ? entry.remain : entry.size;
+			bytes += size;
+			if (entries > MAX_ARCHIVE_ENTRIES) {
+				parser.abort(new Error(`Plugin archives can contain at most ${MAX_ARCHIVE_ENTRIES} entries.`));
+			} else if (!Number.isSafeInteger(size) || size < 0 || bytes > MAX_ARCHIVE_BYTES) {
+				parser.abort(new Error(`The unpacked plugin archive exceeds the limit of ${MAX_ARCHIVE_BYTES} bytes.`));
+			}
+			return false;
+		},
+	});
+	await pipeline(createReadStream(file), parser);
+
 	const temporary = await mkdtemp(path.join(os.tmpdir(), 'kucedr-plugin-'));
 	try {
 		await mkdir(temporary, { recursive: true });
