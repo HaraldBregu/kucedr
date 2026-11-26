@@ -78,7 +78,7 @@ it('persists independent configuration and invokes the configured provider direc
 		modelId: 'new-chat-model',
 		options: {},
 	});
-	const restarted = createMemory(() => ({ location: '/home/test/.kucedr/workspace' }));
+	const restarted = createMemory(workspace);
 	await restarted.start();
 	expect(restarted.getConfig()).toMatchObject({
 		providerId: 'deepseek',
