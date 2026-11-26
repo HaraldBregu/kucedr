@@ -34,7 +34,6 @@ export function SpacesGate({ children }: { readonly children: ReactNode }): Reac
 		[navigate, select]
 	);
 	if (!state) return null;
-	active.id = state.current;
 	return (
 		<SpacesContext.Provider value={{ ...state, select }}>
 			<Fragment key={state.current}>{children}</Fragment>
