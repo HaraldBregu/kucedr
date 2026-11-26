@@ -1,5 +1,5 @@
 import type { BrowserWindow } from 'electron';
-import { ShortcutId, SHORTCUT_ACCELERATORS } from '../shared/app_types';
+import { SHORTCUTS, type ShortcutId } from '../shared/app_types';
 
 interface KeyCombo {
 	key: string;
@@ -47,10 +47,10 @@ export class ShortcutManager {
 
 	constructor() {
 		const isMac = process.platform === 'darwin';
-		this.bindings = (Object.keys(SHORTCUT_ACCELERATORS) as ShortcutId[]).map((id) => ({
-			id,
-			combo: parseAccelerator(SHORTCUT_ACCELERATORS[id], isMac),
-		}));
+		this.bindings = SHORTCUTS.filter(
+			(shortcut): shortcut is (typeof SHORTCUTS)[number] & { target: 'renderer'; accelerator: string } =>
+				'target' in shortcut && shortcut.target === 'renderer' && 'accelerator' in shortcut
+		).map(({ id, accelerator }) => ({ id, combo: parseAccelerator(accelerator, isMac) }));
 	}
 
 	attach(win: BrowserWindow): void {
