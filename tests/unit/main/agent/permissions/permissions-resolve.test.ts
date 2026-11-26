@@ -8,7 +8,7 @@ import type {
 	PermissionsSchema,
 	ToolAccess,
 } from '../../../../../src/main/agent/permissions/permissions_types';
-import { libraryLocation } from '../../../../../src/main/shared/library_location';
+import { resolveWorkspace } from '../../../../../src/main/workspaces/resolve';
 import { realPath } from '../../../../../src/main/shared/real_path';
 import { builtinCapability } from '../../../../../src/main/agent/execution/capability';
 
