@@ -35,8 +35,8 @@ describe('memory storage', () => {
 		await fs.writeFile(legacyMemory, '# Memory\n\n- Prefers concise answers\n');
 
 		expect(prepareMemorySettings()).toBe(path.join(root, 'memory'));
-		await migrateWorkspaceMemory({ location: workspace });
-		await migrateWorkspaceMemory({ location: workspace });
+		await migrateWorkspaceMemory(workspace);
+		await migrateWorkspaceMemory(workspace);
 
 		expect(await fs.readFile(path.join(root, 'memory', 'settings.json'), 'utf8')).toContain(
 			'"initialized":true'
@@ -52,7 +52,7 @@ describe('memory storage', () => {
 		await fs.writeFile(memoryPath(workspace), '# Memory\n\n- Uses TypeScript\n');
 		await fs.writeFile(legacyMemory, '# Manual notes\n\n- Prefers concise answers\n');
 
-		await migrateWorkspaceMemory({ location: workspace });
+		await migrateWorkspaceMemory(workspace);
 
 		const migrated = await fs.readFile(memoryPath(workspace), 'utf8');
 		expect(migrated).toContain('Uses TypeScript');
