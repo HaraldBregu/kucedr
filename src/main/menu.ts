@@ -267,6 +267,15 @@ export class Menu {
 				],
 			},
 			{
+				label: m.help,
+				submenu: [
+					{
+						label: m.keyboardShortcuts,
+						click: (): void => this.callbacks.onShowShortcutGuide?.(),
+					},
+				],
+			},
+			{
 				label: m.developer,
 				visible: is.dev,
 				submenu: [
