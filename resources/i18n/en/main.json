@@ -245,6 +245,22 @@
 		"inaccessibleBanner": "Your workspace folder is no longer accessible. Please select a new workspace."
 	},
 	"settings": {
+		"usage": {
+			"title": "Usage",
+			"description": "Review reported model costs by month, provider, and chat.",
+			"total": "Reported model spend",
+			"reportedRuns_one": "Cost reported for {{count}} run",
+			"reportedRuns_other": "Cost reported for {{count}} runs",
+			"coverage": "Costs are included only when the provider reports them. Token totals include calls without reported costs.",
+			"byMonth": "By month",
+			"byProvider": "By provider",
+			"byChat": "By chat",
+			"tokens": "{{input}} input · {{output}} output tokens",
+			"loading": "Loading usage…",
+			"loadError": "Unable to load usage history.",
+			"empty": "No usage recorded yet.",
+			"untitled": "Untitled chat"
+		},
 		"memory": {
 			"title": "Memory",
 			"description": "Review saved facts and summaries from your conversations.",

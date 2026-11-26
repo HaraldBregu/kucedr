@@ -245,6 +245,22 @@
 		"inaccessibleBanner": "La cartella del tuo workspace non e piu accessibile. Seleziona un nuovo workspace."
 	},
 	"settings": {
+		"usage": {
+			"title": "Utilizzo",
+			"description": "Consulta i costi dei modelli per mese, provider e chat.",
+			"total": "Spesa riportata dai modelli",
+			"reportedRuns_one": "Costo riportato per {{count}} esecuzione",
+			"reportedRuns_other": "Costo riportato per {{count}} esecuzioni",
+			"coverage": "Sono inclusi solo i costi comunicati dal provider. I token includono anche le chiamate senza costi riportati.",
+			"byMonth": "Per mese",
+			"byProvider": "Per provider",
+			"byChat": "Per chat",
+			"tokens": "{{input}} token in ingresso · {{output}} in uscita",
+			"loading": "Caricamento utilizzo…",
+			"loadError": "Impossibile caricare la cronologia di utilizzo.",
+			"empty": "Nessun utilizzo registrato.",
+			"untitled": "Chat senza titolo"
+		},
 		"memory": {
 			"title": "Memoria",
 			"description": "Rivedi fatti e riepiloghi salvati dalle tue conversazioni.",
