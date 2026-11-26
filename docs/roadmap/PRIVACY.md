@@ -28,11 +28,13 @@ seals it with the OS keychain, and resetting it clears it from the plugin store.
 
 ## Privacy centre (1.1)
 
-Settings → Privacy shows total and per-area storage use, automatic log cleanup, and session,
-memory and knowledge controls. It can export sessions, persistent memory and the local knowledge
-index together as a readable JSON archive; remote knowledge data is excluded. Per-scope export and
-purge remain available. The combined export does not include provider settings or other app
-configuration. A recipient/data-flow view and configurable chat retention are still open.
+Settings → Privacy shows configured recipients for chat, web search, knowledge embeddings and
+storage, plus configured cloud backup. It also reports total and per-area storage use, automatic
+log cleanup, and session, memory and knowledge controls. It can export sessions, persistent memory
+and the local knowledge index together as a readable JSON archive; remote knowledge data is
+excluded. Per-scope export and purge remain available. The combined export does not include
+provider settings or other app configuration. A complete inventory of media, plugin and tool
+traffic, plus configurable chat retention, remains open.
 
 ## App-wide Privacy Mode
 

@@ -64,9 +64,9 @@ Features are numbered by area, for example 3.9 is the browser pane.
    approval cards (21.12), legal pages and notices (6.4), offline
    and failure states (3.6, 15.4), voice status (19.1, 19.2), and parts of the shield (13.6, 13.7,
    13.13, 13.14).
-2. **Privacy: finish the Privacy centre and vault coverage** (1.1, 1.3). The centre now reports
-   storage use and can export local sessions, memory and knowledge together; a recipient/data-flow
-   view and chat retention controls remain. Vault encryption covers sessions (except `run.jsonl`),
+2. **Privacy: finish the Privacy centre and vault coverage** (1.1, 1.3). The centre lists configured
+   chat, search, embedding, vector database and cloud backup recipients; a complete media, plugin and
+   tool traffic inventory, export of settings and chat retention controls remain. Vault encryption covers sessions (except `run.jsonl`),
    memory and health notes. App lock (1.4) and sealed credentials (1.2) are implemented.
 3. **Agent efficiency.** Automatic compaction, Run insights, run budgets, lighter first messages,
    long-chat streaming measurement, the smaller renderer entry chunk, the performance check and
