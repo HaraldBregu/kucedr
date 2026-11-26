@@ -16,7 +16,7 @@ Part of the [Roadmap](README.md). Status: proposal; 3.1–3.4, 3.6–3.9, 3.11 a
 | 3.10 | Chat export, import and sharing | Export a chat as Markdown, HTML or PDF; import chats from other assistants; later, share a chat by link | Export exists for workspace documents only (`src/main/export.ts`); a share link needs a server and is a later decision | S–M |
 | 3.11 | Agent cursor in the browser pane | A pointer glides to where the agent is about to click, marks the click, and shows what it is typing into, so the user can follow what the agent does on the page | Built; see "As built" in the [browser plan](../AGENT_BROWSER_PLAN.md). The switch to turn it off was added 2026-11-25 in Settings › Browser (`agentCursor`, on by default); with it off the pointer and the glide before each click are skipped. Checked in the built app with a mock model | S–M |
 | 3.12 | Browser control from the chat | "Click Sign in on this page" acts on the tab on screen; follow-up messages continue in the same tab; the agent never closes the user's tabs; scroll, reload, and Stop in the pane; see [Browser control plan](../BROWSER_CONTROL.md) | Built 2026-11-23: the tab on screen is used first, tabs list `shown` and `mine`, the agent closes only tabs it opened in that chat, `scroll`, `reload`, and Stop in the pane toolbar; checked in the built app, including after a restart. Not checked: task runs, two chats acting at once, two windows; see [Status](../BROWSER_CONTROL.md#status) | M |
-| 3.13 | Confirmations in the app's style | Delete and remove prompts look like the rest of Kucedr, follow the theme and are translated, instead of a plain system box | 11 `window.confirm` calls in 7 Settings files; `components/ui/dialog.tsx` already exists | S |
+| 3.13 | Confirmations in the app's style | Delete and remove prompts look like the rest of Kucedr, follow the theme and are translated, instead of a plain system box | Built 2026-11-26; all renderer confirmations now use the shared themed dialog | S |
 | 3.14 | Consistent empty and loading states | Every list says what belongs there and how to add the first item; every page shows the same loading rows | `SettingsEmptyState` and `SettingsLoadingRows` in `pages/settings/components/index.tsx`, used by most Settings pages but not all | S |
 | 3.15 | A visual consistency pass | Colours, text sizes and spacing come from the theme everywhere, so light, dark and plugin themes look right on every page | 41 fixed palette colours in 11 files and 59 fixed pixel sizes in the renderer | S–M |
 | 3.16 | A useful empty chat | A new chat offers a few starting points instead of a greeting only | `EmptyConversation` in `pages/home/Page.tsx`; `components/ui/prompt-suggestion.tsx` exists and is used nowhere | S |
@@ -34,7 +34,7 @@ Suggested order for what is left: 3.5, then the interface polish items below. 3.
 3.11 and 3.12 are built.
 
 The interface polish items added 2026-11-25 (3.13–3.18) are small and independent. Suggested
-order: 3.13 and 3.14 first (quick, visible everywhere), then 3.17 and 3.16 (what a new user meets
+order: 3.14 next (quick, visible everywhere), then 3.17 and 3.16 (what a new user meets
 first), then 3.15 and 3.18. 3.13 should be decided together with undo (3.7).
 
 ### 3.1 Completion notifications
@@ -165,17 +165,12 @@ these items were checked in the running app.
 
 ### 3.13 Confirmations in the app's style
 
-- _Behaviour._ Deleting a chat, all chats, a task, a task's history or library files asks in a
-  Kucedr dialog: a title naming what goes, a red action button named for the action ("Delete
-  chat", not "OK"), and Cancel focused by default. It follows the theme and the app language.
-- _Found._ `window.confirm` in `pages/settings/pages/assistant/chathistory/Page.tsx`,
-  `pages/settings/pages/tasks/detail/Page.tsx`, `pages/settings/pages/library/Page.tsx` and four
-  more files, 11 calls in all. The system box shows the app name as its title and cannot be styled.
-- _Builds on._ `components/ui/dialog.tsx`. There is no alert-dialog component; one shared
-  confirmation built on the existing dialog is enough, with no new dependency.
-- _Open decision._ Recommended: where undo (3.7) can restore the item, skip the question and offer
-  Undo instead; keep the dialog for what cannot come back.
-- _Check._ No `window.confirm` remains in `src/renderer`; each delete still asks, and Escape cancels.
+Built 2026-11-26. All renderer confirmations now use the shared themed dialog in
+`components/ui/confirmation.tsx`, built on the existing dialog component. It follows the app theme,
+uses translated copy, focuses Cancel by default, and closes without confirming on Escape. Delete,
+clear and regenerate actions keep their existing warning text and now have named action buttons.
+Verified by a source search: no `window.confirm` remains under `src/renderer`. The undo improvement
+for deletions that can be restored remains a separate follow-up to 3.7.
 
 ### 3.14 Consistent empty and loading states
 
