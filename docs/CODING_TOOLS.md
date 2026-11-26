@@ -225,20 +225,25 @@ names would leak into tool IDs.
 
 ## Harness notes
 
-Checked 2026-11-26. Each harness needs a bundled manifest before it is offered.
+Checked 2026-11-26 from public docs and third-party adapters, not from running the binaries. Each
+harness needs a bundled manifest before it is offered. All are user-installed except Codex.
 
-| Harness     | Protocol                    | Notes                                                        |
-| ----------- | --------------------------- | ------------------------------------------------------------ |
-| Codex       | `app-server`                | Bundled today                                                |
-| Cline       | `acp` (`cline --acp`)       | User-installed                                               |
-| OpenCode    | `acp` (`opencode acp`)      | User-installed. Check the license before shipping a manifest |
-| Goose       | `acp` (`goose acp`)         | User-installed. ACP details not confirmed                    |
-| Pi          | `acp` through `pi-acp`      | Needs `pi` on `PATH`. Sign-in is terminal only. The adapter is early |
-| Copilot CLI | `acp` (preview)             | Reportedly never asks for permission. Safe only because of the sandbox |
-| Claude      | `acp` through `claude-agent-acp` | API key only: Anthropic does not allow third-party apps to offer claude.ai sign-in. Must not be named "Claude Code" |
-| Gemini CLI  | `acp` (`gemini --acp`)      | Consumer accounts stopped working on 2026-06-18. API key or enterprise only |
+| Harness       | Executable     | Protocol                                   | Sign-in                                   | Steer | Notes |
+| ------------- | -------------- | ------------------------------------------ | ----------------------------------------- | ----- | ----- |
+| Claude        | `claude`       | `acp` through `claude-agent-acp`; steering needs the CLI's own `stream-json` input and output | API key, Bedrock or Vertex | Yes | Anthropic does not allow third-party apps to offer claude.ai sign-in. Must not be named "Claude Code" |
+| Codex         | `codex`        | `app-server`                               | ChatGPT account, API key or model provider | Yes | Bundled today. Steering through the app-server protocol, not yet confirmed |
+| OpenCode      | `opencode`     | `acp` (`opencode acp`)                     | Configured inside OpenCode                | No    | Check the license before shipping a manifest |
+| Cursor        | `cursor-agent` | `acp` (`agent acp`)                        | `agent login`, `CURSOR_API_KEY`           | No    | The docs now name the binary `agent`; the manifest checks both. Older builds lack `acp` |
+| Antigravity   | `agy` ≥ 1.5.0  | `acp` (`agy acp`)                          | Keyring and Google sign-in (terminal)     | No    | A forum thread reports that wrapping `agy` in third-party apps is not supported on consumer plans. Confirm before shipping |
+| Grok Build    | `grok`         | `acp` (`grok agent stdio`)                 | `grok login`, `XAI_API_KEY`               | No    | ACP conformance not confirmed |
+| Devin CLI     | `devin`        | `acp` (`devin acp`)                        | `devin auth login`, `WINDSURF_API_KEY`    | No    | Reportedly advertises only a browser auth method in ACP and ignores stored CLI credentials |
+| Pi            | `pi`           | `acp` through `pi-acp`; steering needs Pi's own RPC mode | Subscription login or API key | Yes | Sign-in is terminal only. Pi's RPC mode has no approvals |
+| Oh My Pi      | `omp`          | `acp` (`omp acp`)                          | Configured inside Oh My Pi                | No    | Permission prompts map to `session/request_permission` |
+| Factory Droid | `droid`        | `droid exec` with `stream-jsonrpc` input and output; ACP not confirmed | Device pairing, `FACTORY_API_KEY` | No | May need a third adapter if native ACP isn't official |
 
-Aider has no protocol and is not covered. Pi's own RPC mode is not used, because it has no approvals.
+Eight of the ten work over `acp`. Steering an active turn (roadmap 20.9) is not part of ACP, so it
+needs each harness's own protocol: Codex's `app-server`, Claude's `stream-json` and Pi's RPC mode.
+Aider has no protocol and is not covered.
 
 ## Implementation order
 
