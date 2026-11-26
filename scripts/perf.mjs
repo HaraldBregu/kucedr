@@ -85,6 +85,16 @@ try {
 				sessionStorage.setItem('kucedr-onboarding-started', 'true');
 			}, baseUrl);
 			await page.reload();
+			await page.evaluate(async () => {
+				const sessionId = 'long-chat-performance';
+				for (let index = 0; index < 20; index += 1) {
+					await window.agent.send(
+						`Earlier conversation turn ${index + 1}. Please answer briefly.`,
+						{ sessionId }
+					);
+				}
+				await window.agent.viewSession(sessionId);
+			});
 			const editor = page.locator('[data-slot="home-composer-shell"] [role="textbox"]');
 			await editor.waitFor();
 			await page.evaluate(() => {
@@ -107,6 +117,7 @@ try {
 				return window.__perf;
 			});
 			streaming = {
+				scenario: '20-turn history',
 				chunks: CHUNKS,
 				durationMs: Math.round(durationMs),
 				fps: Math.round((frames.length / durationMs) * 1000),
