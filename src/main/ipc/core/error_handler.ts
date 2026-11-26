@@ -6,6 +6,8 @@ export type { IpcResult } from '../../../shared/ipc_types';
 // Import the types we need locally
 import type { IpcResult } from '../../../shared/ipc_types';
 import { toError } from './error';
+import { workspaceScope } from '../../workspaces/scope';
+import { senderWorkspace } from '../../workspaces/sender';
 
 /**
  * Wraps an IPC handler with standardized error handling
@@ -31,7 +33,10 @@ export function wrapIpcHandler<TArgs extends unknown[], TResult>(
 ): (event: IpcMainInvokeEvent, ...args: TArgs) => Promise<IpcResult<TResult>> {
 	return async (event: IpcMainInvokeEvent, ...args: TArgs): Promise<IpcResult<TResult>> => {
 		try {
-			const result = await handler(event, ...args);
+			const workspace = senderWorkspace(event.sender);
+			const result = await (workspace
+				? workspaceScope.run(workspace, () => handler(event, ...args))
+				: handler(event, ...args));
 			return { success: true, data: result };
 		} catch (err) {
 			const error = toError(err, `${handlerName} failed.`);

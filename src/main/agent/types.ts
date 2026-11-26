@@ -134,6 +134,7 @@ export type RunSignal = {
 	sessionId: string;
 	category: SessionCategory;
 	windowId?: number;
+	workspaceId: string;
 } & (
 	| { phase: 'started' }
 	| { phase: 'waiting'; reason: 'approval' | 'question' }
