@@ -1370,7 +1370,25 @@
 		},
 		"privacy": {
 			"title": "Privacy",
-			"description": "Control how Kucedr connects to the internet.",
+			"description": "Review data destinations, local storage and network privacy controls.",
+			"destinations": {
+				"title": "Configured data destinations",
+				"description": "These services receive data when you use the related feature. Plugins and tools may contact additional services.",
+				"chat": "Chat requests",
+				"chatDescription": "Prompts, conversation context and files you send with a request go to this model provider.",
+				"search": "Web searches",
+				"searchDescription": "Search queries go to this search provider when web search is used.",
+				"embedding": "Knowledge indexing",
+				"embeddingDescription": "Selected content is sent to this model provider to create knowledge embeddings.",
+				"knowledge": "Knowledge storage",
+				"knowledgeDescription": "Indexed content and search requests go to this configured vector database.",
+				"backup": "Cloud backups",
+				"backupDescription": "Selected folders are sent to this storage provider when a backup runs.",
+				"extensions": "Plugins and tools",
+				"extensionsDescription": "Enabled plugins and external tools can contact their configured services when used. Review installed plugins and connections.",
+				"reviewExtensions": "Review plugins",
+				"loadError": "Could not load configured data destinations."
+			},
 			"lock": {
 				"title": "App lock",
 				"description": "Ask for a passphrase when Kucedr opens and after the computer has been idle.",

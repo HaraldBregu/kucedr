@@ -1370,7 +1370,25 @@
 		},
 		"privacy": {
 			"title": "Privacy",
-			"description": "Gestisci come Kucedr si connette a Internet.",
+			"description": "Controlla le destinazioni dei dati, l'archiviazione locale e le impostazioni di rete.",
+			"destinations": {
+				"title": "Destinazioni dei dati configurate",
+				"description": "Questi servizi ricevono dati quando usi la funzione corrispondente. Plugin e strumenti possono contattare altri servizi.",
+				"chat": "Richieste di chat",
+				"chatDescription": "Prompt, contesto della conversazione e file inviati con una richiesta vengono trasmessi a questo provider di modelli.",
+				"search": "Ricerche web",
+				"searchDescription": "Le query vengono inviate a questo provider quando usi la ricerca web.",
+				"embedding": "Indicizzazione della conoscenza",
+				"embeddingDescription": "I contenuti selezionati vengono inviati a questo provider per creare embedding della conoscenza.",
+				"knowledge": "Archiviazione della conoscenza",
+				"knowledgeDescription": "I contenuti indicizzati e le richieste di ricerca vengono inviati a questo database vettoriale configurato.",
+				"backup": "Backup cloud",
+				"backupDescription": "Le cartelle selezionate vengono inviate a questo provider quando viene eseguito un backup.",
+				"extensions": "Plugin e strumenti",
+				"extensionsDescription": "Plugin e strumenti esterni abilitati possono contattare i servizi configurati quando vengono usati. Controlla i plugin e le connessioni installati.",
+				"reviewExtensions": "Controlla i plugin",
+				"loadError": "Impossibile caricare le destinazioni dei dati configurate."
+			},
 			"lock": {
 				"title": "Blocco app",
 				"description": "Chiedi una passphrase all'apertura di Kucedr e dopo un periodo di inattività del computer.",
