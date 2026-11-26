@@ -24,7 +24,7 @@ only #17, #22 and #24 were checked in code. Rows 21.10–21.12 are the open find
 | 21.9 | Audit kept current | The audit table matches the code, with each item marked fixed, open or decided | [Quality](QUALITY.md), 22.4 | S |
 | 21.10 | Sandboxed commands reach any host (permissions #4) | A command the agent runs can send data to any internet host: `allowedDomains: ['*']` in `src/main/agent/sandbox.ts`. Local ports were closed 2026-11-25 (`allowLocalBinding: false`): a sandboxed command can no longer listen on a port or reach a service on `localhost`, and needs `elevated`, which asks the user, to do so. The runtime applies this on macOS only. File reads of known secrets are already denied | Left: a network allow-list, designed with [Network shield](SHIELD.md), 13.4 | S |
 | 21.11 | Assistant edits its own prompt (permissions #7) | Identity, soul and user feed every future system prompt. After setup each change asks once, but the card shows only the new values, not what they replace; during first-run setup the changes run without asking | Decide. Recommended: show a diff of old and new values in the approval card and in chat | S |
-| 21.12 | Redaction hides length (permissions #8) | The approval card shows `[REDACTED]` for secret-looking keys, so the user cannot tell what is being set | Show `[redacted, N chars]`; never redact `bash` `env` | S |
+| 21.12 | Redaction hides length (permissions #8) | Fixed 2026-11-26: secret-looking values show `[redacted, N chars]` in approval cards. Bash `env` values remain visible | `redact_approval_input.ts`, called with the tool name | S |
 
 ## Open decisions
 

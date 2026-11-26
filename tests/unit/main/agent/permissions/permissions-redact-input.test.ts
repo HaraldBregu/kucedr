@@ -10,8 +10,17 @@ it('redacts nested credential fields without changing ordinary approval scope', 
 		})
 	).toEqual({
 		url: 'https://example.com',
-		token: '[REDACTED]',
-		auth: { client_secret: '[REDACTED]', account: 'visible' },
-		items: [{ apiKey: '[REDACTED]', name: 'visible' }],
+		token: '[redacted, 6 chars]',
+		auth: { client_secret: '[redacted, 6 chars]', account: 'visible' },
+		items: [{ apiKey: '[redacted, 6 chars]', name: 'visible' }],
 	});
+});
+
+it('keeps bash environment values visible while showing redacted value lengths elsewhere', () => {
+	expect(
+		redactApprovalInput(
+			{ env: { API_KEY: 'visible' }, token: 'secret' },
+			'bash'
+		)
+	).toEqual({ env: { API_KEY: 'visible' }, token: '[redacted, 6 chars]' });
 });

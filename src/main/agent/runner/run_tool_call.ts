@@ -311,7 +311,7 @@ export async function* runToolCall(
 				approvalId,
 				toolCallId: toolCall.id,
 				toolName: toolCall.name,
-				input: redactApprovalInput(canonicalInput),
+				input: redactApprovalInput(canonicalInput, toolCall.name),
 				mode: 'ask',
 				targets: resolution.approvalTargets,
 				reason: resolution.reason ?? 'outside_trusted_location',

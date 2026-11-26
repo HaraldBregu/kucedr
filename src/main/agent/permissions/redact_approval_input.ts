@@ -1,9 +1,16 @@
 const SECRET_KEY =
 	/(?:authorization|api[_-]?key|client[_-]?secret|password|refresh[_-]?token|token)/i;
 
-export function redactApprovalInput(input: Record<string, unknown>): Record<string, unknown> {
+export function redactApprovalInput(
+	input: Record<string, unknown>,
+	toolName?: string
+): Record<string, unknown> {
 	const redact = (value: unknown, key = '', depth = 0): unknown => {
-		if (SECRET_KEY.test(key)) return '[REDACTED]';
+		if (toolName === 'bash' && key === 'env') return value;
+		if (SECRET_KEY.test(key)) {
+			const length = typeof value === 'string' ? value.length : JSON.stringify(value)?.length ?? 0;
+			return `[redacted, ${length} chars]`;
+		}
 		if (!value || typeof value !== 'object') return value;
 		if (depth >= 6) return '[nested deeper than 6 levels]';
 		if (Array.isArray(value)) {
