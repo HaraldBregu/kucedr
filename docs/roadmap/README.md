@@ -73,16 +73,16 @@ Features are numbered by area, for example 3.9 is the browser pane.
 4. **Accessibility checks** (4.5), once its two development dependencies are approved and
    `eslint-plugin-jsx-a11y` supports ESLint 10. Screen-reader chat, full keyboard use, high
    contrast and named controls (4.1–4.4) were built 2026-11-24.
-5. **User experience: find any setting** (3.18). The shortcut guide (3.5), confirmations (3.13),
-   consistent empty and loading states (3.14), visual consistency (3.15), smoother first-run setup
-   (3.17), useful empty chat (3.16), search across chats (3.2) and the "/" menu (3.4) are built.
-6. **Model downloads** (15.2). Setup with a local model (15.1) and offline behaviour (15.4) were
+5. **Model downloads** (15.2). Setup with a local model (15.1) and offline behaviour (15.4) were
    built 2026-11-25.
-7. **The next network shield pieces**: tracker blocking (13.1) and the network view (13.8). The
+6. **The next network shield pieces**: tracker blocking (13.1) and the network view (13.8). The
    secret guard (13.3) and local network protection (13.5) were built 2026-11-24.
-8. **The rest of the terminal back end**: flow control and kept history (14.1) and a clean
+7. **The rest of the terminal back end**: flow control and kept history (14.1) and a clean
    environment (14.4), before any terminal screen is built on it. Most of 14.1 was built
    2026-11-25.
+
+The Settings search item (3.18) and the other listed user-experience improvements are built; see
+[User experience in detail](EXPERIENCE.md#user-experience-in-detail) for implementation scope.
 
 The user-experience area was chosen to be planned in detail first; see
 [User experience in detail](EXPERIENCE.md#user-experience-in-detail).
