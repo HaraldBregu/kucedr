@@ -1,13 +1,13 @@
-import path from 'node:path';
 import type { Config } from '../types';
 import { readBootstrap } from './system_read_bootstrap';
+import { profileLocation } from './system_profile_location';
 import { profileStatus } from './system_profile_status';
 
 export async function buildWorkspaceContext(
 	config: Config,
 	scope: 'full' | 'core' = 'full'
 ): Promise<string> {
-	const resolvedWorkspacePath = path.resolve(config.location);
+	const resolvedWorkspacePath = profileLocation(config);
 	const { profiles, missing } = await profileStatus(resolvedWorkspacePath);
 	if (missing.length > 0) {
 		if (scope === 'core') return '';

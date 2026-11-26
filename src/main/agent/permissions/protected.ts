@@ -1,15 +1,20 @@
 import { app } from 'electron';
 import os from 'node:os';
 import path from 'node:path';
-import { agentLocation } from '../../shared/agent_location';
-import { libraryLocation } from '../../shared/library_location';
+import { DEFAULT_WORKSPACE } from '../../../shared/workspaces_types';
 import { realPath } from '../../shared/real_path';
 import { userDataLocation } from '../../shared/user_data_location';
+import { currentWorkspace } from '../../workspaces/current';
+import { readWorkspaces } from '../../workspaces/read';
+import { resolveWorkspace } from '../../workspaces/resolve';
 import { browserProfiles } from './browsers';
 
 export function protectedRoots(): { read: string[]; write: string[]; writable: string[] } {
 	const home = os.homedir();
 	const data = userDataLocation();
+	const workspace = currentWorkspace();
+	const others = readWorkspaces().filter((record) => record.id !== workspace.id);
+	const base = resolveWorkspace(DEFAULT_WORKSPACE);
 	const system =
 		process.platform === 'darwin'
 			? [
@@ -33,17 +38,28 @@ export function protectedRoots(): { read: string[]; write: string[]; writable: s
 		].map((segments) => path.join(home, ...segments)),
 		...system,
 		...browserProfiles,
-		path.join(app.getPath('sessionData'), 'Partitions', 'agent-browser'),
+		path.join(app.getPath('sessionData'), 'Partitions'),
+		...(workspace.id === DEFAULT_WORKSPACE
+			? [path.join(data, 'workspaces')]
+			: [
+					base.files,
+					base.sessions,
+					base.memory,
+					base.library,
+					base.rag,
+					workspace.browser,
+					...others.map((record) => path.join(data, 'workspaces', record.id)),
+				]),
+		...others.map((record) => record.folder),
 		...[
 			['providers'],
 			['mcp'],
 			['credentials'],
 			['browser'],
+			['agent-browser'],
+			['settings'],
+			['logs'],
 			['coder', 'credentials.json'],
-			['settings', 'account.json'],
-			['settings', 'providers.json'],
-			['settings', 'storage.json'],
-			['settings', 'provider-vault.json'],
 		].map((segments) => path.join(data, ...segments)),
 	];
 	const write = [
@@ -57,6 +73,6 @@ export function protectedRoots(): { read: string[]; write: string[]; writable: s
 	return {
 		read: [...new Set(read.map(realPath))],
 		write: [...new Set(write.map(realPath))],
-		writable: [agentLocation(), libraryLocation()].map(realPath),
+		writable: [workspace.files, workspace.library].map(realPath),
 	};
 }

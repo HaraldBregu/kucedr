@@ -45,9 +45,11 @@ import {
 	resolveStoredSessionId,
 	searchSessions,
 	sessionPath,
-	sessionsRoot,
 } from '../agent/session';
 import { workspacePath } from '../agent/system';
+import { resolveWorkspace } from '../workspaces/resolve';
+import { sendToWorkspace } from '../workspaces/send';
+import { withinWorkspace } from '../workspaces/within';
 import {
 	getPermissions,
 	permissionsView,
@@ -384,7 +386,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		const workspaceAccess = renderer.assertWorkspace.bind(renderer);
 		const notifier = createNotifier({
 			enabled: getNotificationsEnabled,
-			title: (signal) => {
+			title: (signal) => withinWorkspace(signal.workspaceId, () => {
 				const lines = (
 					loadTranslations(getLanguage(), 'main') as unknown as {
 						notifications: { run: Record<string, string> };
@@ -401,7 +403,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					agent.listSessions('main').find((session) => session.id === signal.sessionId)?.title ||
 					app.name
 				);
-			},
+			}),
 			line: (key) =>
 				(
 					loadTranslations(getLanguage(), 'main') as unknown as {
@@ -410,20 +412,28 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				).notifications.run[key],
 			open: (windowId, sessionId) =>
 				eventBus.sendTo(windowId, AgentChannels.openSession, sessionId),
-			resolve: (sessionId) => resolveStoredSessionId(sessionId, agent.config.location),
+			resolve: (sessionId, workspaceId) =>
+				resolveStoredSessionId(sessionId, resolveWorkspace(workspaceId).sessions),
 		});
 		agent.onRun = notifier.run;
 		ipcMain.handle(
 			AgentChannels.viewSession,
 			wrapIpcHandler((event, sessionId: unknown): void => {
-				notifier.view(renderer.assert(event).id, typeof sessionId === 'string' ? sessionId : null);
+				notifier.view(
+					renderer.assert(event).id,
+					typeof sessionId === 'string' ? sessionId : null,
+					agent.config.workspace.id
+				);
 			}, AgentChannels.viewSession)
 		);
-		let watcherStarted = false;
+		const watched = new Set<string>();
 		const startWorkspaceWatcher = (root: string): void => {
-			if (watcherStarted) return;
-			watcherStarted = true;
+			const { id } = agent.config.workspace;
+			if (watched.has(id)) return;
+			watched.add(id);
 			const watcher = watch(root, {
+				ignored: (file) =>
+					path.relative(root, file).split(path.sep).some((part) => part === '.git' || part === 'node_modules'),
 				ignoreInitial: true,
 				awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 25 },
 			});
@@ -433,7 +443,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 						type,
 						path: path.relative(root, changedPath),
 					};
-					eventBus.broadcast(AgentChannels.workspaceChanged, event);
+					sendToWorkspace(id, AgentChannels.workspaceChanged, event);
 				});
 			}
 		};
@@ -569,7 +579,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					const selector = typeof run === 'number' ? run : optionalTrimmedString(run);
 					if (!selector || (typeof selector === 'number' && (!Number.isSafeInteger(selector) || selector < 0)))
 						throw new Error('Invalid assistant run identifier.');
-					return readRunInsights(agent.config.location, requireUuidSessionId(sessionId), selector);
+					return readRunInsights(agent.config.workspace.sessions, requireUuidSessionId(sessionId), selector);
 				},
 				AgentChannels.getRunInsights
 			)
@@ -580,7 +590,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			wrapAgentHandler(
 				mainAccess,
 				(query: unknown) =>
-					searchSessions(agent.config.location, typeof query === 'string' ? query : ''),
+					searchSessions(agent.config.workspace.sessions, typeof query === 'string' ? query : ''),
 				AgentChannels.searchSessions
 			)
 		);
@@ -590,7 +600,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			wrapAgentHandler(
 				mainAccess,
 				async (): Promise<void> => {
-					const root = sessionsRoot(agent.config.location);
+					const root = agent.config.workspace.sessions;
 					await fs.mkdir(root, { recursive: true });
 					const error = await shell.openPath(root);
 					if (error) throw new Error(error);
@@ -604,7 +614,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			wrapAgentHandler(
 				mainAccess,
 				async (sessionId: unknown): Promise<void> => {
-					const root = sessionsRoot(agent.config.location);
+					const root = agent.config.workspace.sessions;
 					const target = sessionPath(root, requireUuidSessionId(sessionId));
 					const error = await shell.openPath(target);
 					if (error) throw new Error(error);
@@ -1199,7 +1209,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				async (value: unknown): Promise<PermissionsView> => {
 					const permissions = setPermissions(toPermissions(value));
-					await agent.sandbox.invalidate();
+					if (process.platform === 'win32') await agent.sandbox.invalidate();
 					return permissionsView(permissions);
 				},
 				AgentChannels.policySet
@@ -1212,7 +1222,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				async (): Promise<PermissionsView> => {
 					const permissions = resetPermissions();
-					await agent.sandbox.invalidate();
+					if (process.platform === 'win32') await agent.sandbox.invalidate();
 					return permissionsView(permissions);
 				},
 				AgentChannels.policyReset

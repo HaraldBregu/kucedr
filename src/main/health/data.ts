@@ -1,3 +1,4 @@
+import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
 import { copyFile, mkdir, readFile, rename } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -26,7 +27,8 @@ async function ensureHealth(config: Config): Promise<string> {
 	if (existsSync(filePath)) return filePath;
 	await mkdir(healthRoot(), { recursive: true });
 	const legacyPath = path.join(workspacePath(config), HEALTH_FILE);
-	if (existsSync(legacyPath)) await rename(legacyPath, filePath);
+	if (config.workspace.id === DEFAULT_WORKSPACE && existsSync(legacyPath))
+		await rename(legacyPath, filePath);
 	else await copyFile(templatePath(), filePath);
 	return filePath;
 }

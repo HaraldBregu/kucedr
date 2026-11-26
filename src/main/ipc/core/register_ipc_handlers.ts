@@ -26,6 +26,8 @@ import { AuthIpc } from '../auth';
 import { CloudIpc } from '../cloud';
 import type { EventBus } from '../../event_bus';
 import type { MainServices } from '../../bootstrap';
+import { memoryFor } from '../../memory/for';
+import { currentWorkspace } from '../../workspaces/current';
 
 export function registerIpcHandlers(
 	services: MainServices,

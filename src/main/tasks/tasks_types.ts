@@ -25,6 +25,7 @@ export interface TaskSchedule {
 	prompt: string;
 	toolsAllow?: string[];
 	sessionIds: string[];
+	workspaceId?: string;
 	lastRun?: { at: string; error?: string };
 	createdAt: string;
 	updatedAt: string;

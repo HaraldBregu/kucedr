@@ -40,6 +40,9 @@ module.exports = {
 				'^shell-env$': '<rootDir>/tests/mocks/shell-env.ts',
 				'^electron$': '<rootDir>/tests/mocks/electron.ts',
 				'^electron-store$': '<rootDir>/tests/mocks/electron-store.ts',
+				// Source code outside an agent run or an IPC call has no workspace bound; tests
+				// run in the default workspace unless they enter a scope themselves.
+				'workspaces/current$': '<rootDir>/tests/mocks/workspace.ts',
 				// chokidar v5 is pure ESM; substitute a CJS-compatible mock so that
 				// main-process tests can import source modules that depend on it without
 				// hitting "Cannot use import statement outside a module".

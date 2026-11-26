@@ -1,15 +1,14 @@
 import type { StorageSyncFolder } from '../../shared/storage_types';
-import { sessionsRoot } from '../agent/session';
+import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
 import { skillsRoot } from '../agent/skills/skills_root';
-import { agentLocation } from '../shared/agent_location';
-import { libraryLocation } from '../shared/library_location';
+import { resolveWorkspace } from '../workspaces/resolve';
 
 export function syncFolders(): StorageSyncFolder[] {
-	const workspace = agentLocation();
+	const workspace = resolveWorkspace(DEFAULT_WORKSPACE);
 	return [
-		{ key: 'agent', path: workspace },
-		{ key: 'sessions', path: sessionsRoot(workspace) },
-		{ key: 'library', path: libraryLocation() },
+		{ key: 'agent', path: workspace.files },
+		{ key: 'sessions', path: workspace.sessions },
+		{ key: 'library', path: workspace.library },
 		{ key: 'skills', path: skillsRoot },
 	];
 }

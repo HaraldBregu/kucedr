@@ -1,5 +1,7 @@
 import cron, { type ScheduledTask } from 'node-cron';
 import type { Agent } from '../agent/agent';
+import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
+import { withinWorkspace } from '../workspaces/within';
 import { getHealth } from './data';
 import { runHealthCheck } from './run';
 import { getHealthSettings } from './store';
@@ -10,7 +12,7 @@ let healthAgent: Agent | undefined;
 let healthLogger: HealthLogger | undefined;
 
 export function startHealth(agent: Agent, logger: HealthLogger): void {
-	void getHealth(agent.config).catch((error) =>
+	void withinWorkspace(DEFAULT_WORKSPACE, () => getHealth(agent.config)).catch((error) =>
 		logger.error('Health', 'Failed to initialize HEALTH.md', error)
 	);
 	healthAgent = agent;
@@ -48,7 +50,7 @@ function schedule(): void {
 		settings.cronExpression,
 		async () => {
 			try {
-				await runHealthCheck(agent, logger);
+				await withinWorkspace(DEFAULT_WORKSPACE, () => runHealthCheck(agent, logger));
 			} catch (error) {
 				logger.error('Health', 'Health check failed', error);
 			}

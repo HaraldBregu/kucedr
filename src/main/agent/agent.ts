@@ -77,6 +77,7 @@ import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
 import { currentWorkspace } from '../workspaces/current';
 import { resolveWorkspace } from '../workspaces/resolve';
 import { workspaceScope } from '../workspaces/scope';
+import { withinWorkspace } from '../workspaces/within';
 import type { Workspace } from '../workspaces/types';
 
 const RUN_PRIORITIES: Record<SessionCategory, AgentRunPriority> = {
@@ -158,29 +159,31 @@ export class Agent {
 			let failure: string | undefined;
 			associateSession(schedule.id, sessionId);
 			signal.addEventListener('abort', () => this.cancel(runId), { once: true });
-			await this.send(schedule.prompt, 'tasks', {
-				type: 'background',
-				sessionId,
-				runId,
-				...(schedule.toolsAllow ? { toolsAllow: schedule.toolsAllow } : {}),
-				toolsDeny: SCHEDULED_TASK_TOOLS_DENY,
-				streamEvent: (event) => {
-					if (event.type === 'run_state' && event.state === 'error') failure = event.label;
-					if (event.type === 'run_finished' && event.stopReason === 'timeout')
-						failure = 'The run timed out.';
-					if (event.type === 'run_finished' && event.stopReason === 'error')
-						failure ??= 'The run failed.';
-				},
-				streaming: false,
-				contextMode: 'minimal',
-				...(runtime
-					? {
-							providerId: runtime.providerId,
-							modelId: runtime.modelId,
-							modelOptions: runtime.options,
-						}
-					: {}),
-			});
+			await withinWorkspace(schedule.workspaceId ?? DEFAULT_WORKSPACE, () =>
+				this.send(schedule.prompt, 'tasks', {
+					type: 'background',
+					sessionId,
+					runId,
+					...(schedule.toolsAllow ? { toolsAllow: schedule.toolsAllow } : {}),
+					toolsDeny: SCHEDULED_TASK_TOOLS_DENY,
+					streamEvent: (event) => {
+						if (event.type === 'run_state' && event.state === 'error') failure = event.label;
+						if (event.type === 'run_finished' && event.stopReason === 'timeout')
+							failure = 'The run timed out.';
+						if (event.type === 'run_finished' && event.stopReason === 'error')
+							failure ??= 'The run failed.';
+					},
+					streaming: false,
+					contextMode: 'minimal',
+					...(runtime
+						? {
+								providerId: runtime.providerId,
+								modelId: runtime.modelId,
+								modelOptions: runtime.options,
+							}
+						: {}),
+				})
+			);
 			if (failure) throw new Error(failure);
 		});
 		void startTask().catch((error) => {

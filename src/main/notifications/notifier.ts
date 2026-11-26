@@ -7,36 +7,37 @@ export function createNotifier(deps: {
 	title: (signal: RunSignal) => string;
 	line: (key: string) => string;
 	open: (windowId: number, sessionId: string) => void;
-	resolve: (sessionId: string) => string;
+	resolve: (sessionId: string, workspaceId: string) => string;
 }): {
 	run: (signal: RunSignal) => void;
-	view: (windowId: number, sessionId: string | null) => void;
+	view: (windowId: number, sessionId: string | null, workspaceId: string) => void;
 } {
-	const views = new Map<number, string | null>();
+	const views = new Map<number, { sessionId: string | null; workspaceId: string }>();
 	const shown = new Map<string, Notification>();
 	const clear = (sessionId: string): void => {
 		shown.get(sessionId)?.close();
 		if (shown.delete(sessionId)) app.setBadgeCount(shown.size);
 	};
 	app.on('browser-window-focus', (_event, window) => {
-		const sessionId = views.get(window.id);
-		if (sessionId) clear(deps.resolve(sessionId));
+		const view = views.get(window.id);
+		if (view?.sessionId) clear(deps.resolve(view.sessionId, view.workspaceId));
 	});
 	return {
-		view(windowId, sessionId) {
-			views.set(windowId, sessionId);
+		view(windowId, sessionId, workspaceId) {
+			views.set(windowId, { sessionId, workspaceId });
 			if (sessionId && BrowserWindow.fromId(windowId)?.isFocused())
-				clear(deps.resolve(sessionId));
+				clear(deps.resolve(sessionId, workspaceId));
 		},
 		run(signal) {
 			const line = notificationLine(signal);
 			if (!line || !deps.enabled()) return;
 			if (
 				[...views].some(
-					([windowId, sessionId]) =>
-						sessionId &&
+					([windowId, view]) =>
+						view.sessionId &&
+						view.workspaceId === signal.workspaceId &&
 						BrowserWindow.fromId(windowId)?.isFocused() &&
-						deps.resolve(sessionId) === signal.sessionId
+						deps.resolve(view.sessionId, view.workspaceId) === signal.sessionId
 				)
 			)
 				return;

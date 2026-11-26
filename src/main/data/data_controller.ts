@@ -12,7 +12,7 @@ import type {
 import type { Config } from '../agent/types';
 import { memoryPath } from '../memory/path';
 import { MEMORY_FILE } from '../memory/path';
-import { sessionPath, sessionsRoot } from '../agent/session';
+import { sessionPath } from '../agent/session';
 import { purgeRagManifest } from '../agent/knowledge/rag';
 import { getRagConfiguration } from '../agent/knowledge/rag/rag_store';
 import { ragVectorStore } from '../agent/knowledge/rag/vector';
@@ -193,13 +193,16 @@ export class DataController {
 				store.close();
 			}
 		} else if (scope.kind === 'memory') {
-			await archive.addFile(memoryPath(), path.join('memory', MEMORY_FILE));
+			await archive.addFile(
+				memoryPath(this.agent.config.workspace),
+				path.join('memory', MEMORY_FILE)
+			);
 		} else {
 			const available = new Set(this.agent.listSessions().map((session) => session.id));
 			for (const sessionId of scope.sessionIds) {
 				if (!available.has(sessionId)) throw new Error(`Assistant session not found: ${sessionId}`);
 				await archive.addTree(
-					sessionPath(sessionsRoot(this.agent.config.location), sessionId),
+					sessionPath(this.agent.config.workspace.sessions, sessionId),
 					path.join('sessions', sessionId)
 				);
 			}

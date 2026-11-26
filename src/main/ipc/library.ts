@@ -7,6 +7,7 @@ import * as library from '../library';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
+import { currentWorkspace } from '../workspaces/current';
 
 export interface LibraryIpcDependencies {
 	windows: WindowContextManager;

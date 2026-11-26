@@ -42,9 +42,11 @@ import { setupMemoryMonitor } from './shared/metrics';
 import { bootstrapServices, cleanup } from './bootstrap';
 import { startStorageSync, stopStorageSync } from './backup';
 import { startRagSchedule, stopRagSchedule } from './agent/knowledge/rag';
-import { AgentChannels, AppChannels } from '../shared/ipc_channels_definitions';
-import { watchSessions } from './agent/session/session_watch';
-import { agentLocation } from './shared/agent_location';
+import { AppChannels } from '../shared/ipc_channels_definitions';
+import { DEFAULT_WORKSPACE } from '../shared/workspaces_types';
+import { memories } from './memory/all';
+import { openWorkspace } from './workspaces/open';
+import { resolveWorkspace } from './workspaces/resolve';
 import { authLinks } from './cloud/links';
 import { pluginLinkId, pluginLinks } from './plugins/plugins_link';
 import { loadLocalEnvironment } from './cloud/environment';
@@ -228,7 +230,7 @@ app.whenReady().then(async () => {
 		agentService.start(logger);
 		startRagSchedule(logger);
 	}
-	memoryFor(resolveWorkspace(DEFAULT_WORKSPACE));
+	openWorkspace(resolveWorkspace(DEFAULT_WORKSPACE));
 	powerMonitor.on('resume', () => {
 		for (const memory of memories.values())
 			void memory
@@ -272,7 +274,6 @@ app.whenReady().then(async () => {
 	app.once('before-quit', () => {
 		void stopWatchingApps();
 	});
-	watchSessions(agentLocation(), () => eventBus.broadcast(AgentChannels.sessionsChanged));
 	// Apply persisted settings on startup (updateLanguage builds the menu)
 	const storedLanguage = getLanguage();
 	menuManager.updateLanguage(storedLanguage);

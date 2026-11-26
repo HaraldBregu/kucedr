@@ -15,7 +15,11 @@ import type {
 } from '../../shared/agent_tools';
 import { isAgentToolConfigurable } from '../../shared/agent_tools';
 import { agentLocation } from '../shared/agent_location';
-import { libraryLocation } from '../shared/library_location';
+import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
+import { currentWorkspace } from '../workspaces/current';
+import { resolveWorkspace } from '../workspaces/resolve';
+import { storePermissions } from './permissions/store';
+import { storedPermissions } from './permissions/stored';
 import { migratePermissions } from './permissions/migrate_permissions';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
 import {
@@ -31,13 +35,11 @@ import {
 	getAgentProfileDocument,
 	getCompactChatModel,
 	getAgentProfileModel,
-	getAgentProfilePermissions,
 	getAgentProfileTool,
 	getAgentProfileTools,
 	setAgentProfileDocument,
 	setCompactChatModel,
 	setAgentProfileModel,
-	setAgentProfilePermissions,
 	setAgentProfileTool,
 } from './agent_profiles';
 
@@ -48,10 +50,11 @@ export type SearchEngineSettings = {
 	enabled: boolean;
 };
 
-export const AGENT_DIRECTORY = path.resolve(agentLocation());
-const workspaceRule: PermissionRule = { root: AGENT_DIRECTORY, recursive: true };
-const legacyLibraryRule: PermissionRule = { root: path.resolve(libraryLocation()), recursive: true };
-migratePermissions(workspaceRule, legacyLibraryRule);
+const legacyLibraryRule: PermissionRule = {
+	root: path.resolve(resolveWorkspace(DEFAULT_WORKSPACE).library),
+	recursive: true,
+};
+migratePermissions({ root: path.resolve(agentLocation()), recursive: true }, legacyLibraryRule);
 const RUNTIME_TOOL_KEYS = {
 	subagent: 'subagent',
 	read: 'read_file',
@@ -241,9 +244,11 @@ export function getToolConfiguration(
 }
 
 export function getPermissions(): PermissionsSchema {
+	const workspace = currentWorkspace();
+	const workspaceRule: PermissionRule = { root: path.resolve(workspace.files), recursive: true };
 	return withDefaultPermissions(
 		withoutDefaultPermissions(
-			normalizePermissionsSchema(getAgentProfilePermissions('chat')).permissions,
+			normalizePermissionsSchema(storedPermissions(workspace)).permissions,
 			workspaceRule,
 			legacyLibraryRule
 		),
@@ -251,14 +256,15 @@ export function getPermissions(): PermissionsSchema {
 	);
 }
 export function setPermissions(permissions: PermissionsSchema): PermissionsSchema {
-	const { droppedRules: _droppedRules, ...document } = getAgentProfileDocument('chat');
-	setAgentProfileDocument('chat', {
-		...document,
-		permissions: withoutDefaultPermissions(
-			normalizePermissionsSchema(permissions).permissions,
-			workspaceRule
-		),
+	const workspace = currentWorkspace();
+	const stored = withoutDefaultPermissions(normalizePermissionsSchema(permissions).permissions, {
+		root: path.resolve(workspace.files),
+		recursive: true,
 	});
+	if (workspace.id === DEFAULT_WORKSPACE) {
+		const { droppedRules: _droppedRules, ...document } = getAgentProfileDocument('chat');
+		setAgentProfileDocument('chat', { ...document, permissions: stored });
+	} else storePermissions(workspace, stored);
 	return getPermissions();
 }
 export function addPermissionRule(
@@ -273,14 +279,15 @@ export function addPermissionRule(
 		)
 	)
 		return;
-	setAgentProfilePermissions(
-		'chat',
+	const workspace = currentWorkspace();
+	storePermissions(
+		workspace,
 		withoutDefaultPermissions(
 			{
 				...permissions,
 				[kind]: { ...permissions[kind], [bucket]: [...permissions[kind][bucket], { ...rule }] },
 			},
-			workspaceRule
+			{ root: path.resolve(workspace.files), recursive: true }
 		)
 	);
 }
