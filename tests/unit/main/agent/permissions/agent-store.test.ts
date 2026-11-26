@@ -41,7 +41,9 @@ import {
 import { getAgentProfileDocument } from '../../../../../src/main/agent/agent_profiles';
 import { setAgentProfileTool } from '../../../../../src/main/agent/agent_profiles';
 import { resolvePermission } from '../../../../../src/main/agent/permissions/resolve_permission';
+import { resolveWorkspace } from '../../../../../src/main/workspaces/resolve';
 
+const AGENT_DIRECTORY = resolveWorkspace('default').files;
 const workspaceRule = { root: AGENT_DIRECTORY, recursive: true };
 const rule = (root: string, recursive = true) => ({ root, recursive });
 
