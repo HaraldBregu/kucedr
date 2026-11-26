@@ -19,6 +19,7 @@ jest.mock('../../../../../src/main/agent/skills', () => ({
 import { createSessionState } from '../../../../../src/main/agent/session';
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
+import { buildWorkspace } from '../../../../../src/main/workspaces/build';
 
 it('distinguishes an omitted background allowlist from an explicit empty allowlist', async () => {
 	const tools = ['read', 'bash'].map((id) =>
