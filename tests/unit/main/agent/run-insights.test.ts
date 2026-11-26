@@ -39,7 +39,7 @@ it('reads only the selected reply and aggregates its model and tool steps', asyn
 			usage: { inputTokens: 15, outputTokens: 6, cachedTokens: 9, costUsd: 0 } }),
 		row(1280, { type: 'run_finished', result: { numTurns: 2, usage: { inputTokens: 27 } } }),
 	].join('\n'));
-	const result = await readRunInsights(location, id, 'second');
+	const result = await readRunInsights(sessions,id, 'second');
 	expect(result).toEqual({
 		turns: 2, firstTokenMs: 70, inputTokens: 27, outputTokens: 8, cachedTokens: 14, costUsd: 0.5,
 		steps: [
@@ -48,8 +48,8 @@ it('reads only the selected reply and aggregates its model and tool steps', asyn
 			{ kind: 'model', name: 'example', offsetMs: 170, durationMs: 100 },
 		],
 	});
-	expect(await readRunInsights(location, id, start + 1260)).toEqual(result);
-	expect(await readRunInsights(location, id, start + 70)).toBeNull();
+	expect(await readRunInsights(sessions,id, start + 1260)).toEqual(result);
+	expect(await readRunInsights(sessions,id, start + 70)).toBeNull();
 });
 
 it('keeps incomplete cost unknown and rejects ambiguous historical timestamps', async () => {
@@ -61,12 +61,12 @@ it('keeps incomplete cost unknown and rejects ambiguous historical timestamps', 
 		row(70, { type: 'run_started' }),
 		row(100, { type: 'run_finished', result: { numTurns: 1 } }),
 	].join('\n'));
-	expect(await readRunInsights(location, id, 'one')).not.toHaveProperty('costUsd');
-	expect(await readRunInsights(location, id, start + 70)).toBeNull();
-	expect(await readRunInsights(location, id, start + 90)).toMatchObject({ turns: 1 });
+	expect(await readRunInsights(sessions,id, 'one')).not.toHaveProperty('costUsd');
+	expect(await readRunInsights(sessions,id, start + 70)).toBeNull();
+	expect(await readRunInsights(sessions,id, start + 90)).toMatchObject({ turns: 1 });
 });
 
 it('returns unavailable for missing logs and rejects an invalid session id', async () => {
-	expect(await readRunInsights(location, id, 'missing')).toBeNull();
-	await expect(readRunInsights(location, '../outside', 'missing')).rejects.toThrow('Invalid assistant session id');
+	expect(await readRunInsights(sessions,id, 'missing')).toBeNull();
+	await expect(readRunInsights(sessions,'../outside', 'missing')).rejects.toThrow('Invalid assistant session id');
 });
