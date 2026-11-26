@@ -1,6 +1,7 @@
 import React, { useReducer } from 'react';
 import { AlertCircle, ArrowRight, LoaderCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useOnboarding } from '@/contexts/useOnboarding';
@@ -10,6 +11,7 @@ import { SetupVoiceStep } from './components/SetupVoiceStep';
 import { SetupProviderStep } from './components/SetupProviderStep';
 import { SetupStepProgress } from './components/SetupStepProgress';
 import { SetupPluginsStep } from './components/SetupPluginsStep';
+import { SetupExtrasStep } from './components/SetupExtrasStep';
 import {
 	actionableProviderCatalog,
 	getErrorMessage,
@@ -24,6 +26,7 @@ import { AuthStep } from './components/AuthStep';
 import { LandingStep } from './components/LandingStep';
 
 const StartPage: React.FC = () => {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { state: authState, localOnly, requireSignIn } = useAuth();
 	const { phase, start, restart, refreshConfiguration } = useOnboarding();
@@ -35,7 +38,7 @@ const StartPage: React.FC = () => {
 		getSelectedServiceModel(serviceStates.assistant) !== undefined &&
 		!loadingModels &&
 		!savingConfig;
-	const isBusy = savingConfig;
+	const isBusy = savingConfig || loadingModels;
 	const currentStep: OnboardingStep =
 		phase === 'auth' ? 'auth' : phase === 'setup' ? step : 'landing';
 
@@ -88,18 +91,7 @@ const StartPage: React.FC = () => {
 			});
 	}
 
-	function handlePrimaryAction(): void {
-		if (step === 'modelProvider') {
-			handleContinueModelProvider();
-			return;
-		}
-
-		if (step !== 'voice') {
-			const nextStep = SETUP_STEPS[stepIndex + 1];
-			if (nextStep) dispatch({ type: 'GO_TO_STEP', step: nextStep });
-			return;
-		}
-
+	function finishSetup(): void {
 		void handleSaveModels().then(async (saved) => {
 			if (!saved) return;
 			const complete = await refreshConfiguration();
@@ -113,20 +105,37 @@ const StartPage: React.FC = () => {
 		});
 	}
 
+	function handlePrimaryAction(): void {
+		if (step === 'modelProvider') {
+			handleContinueModelProvider();
+			return;
+		}
+		if (step === 'chat') {
+			dispatch({ type: 'GO_TO_STEP', step: 'extras' });
+			return;
+		}
+		finishSetup();
+	}
+
 	function renderSetupStep(): React.JSX.Element {
 		if (step === 'modelProvider') {
 			return (
 				<SetupProviderStep
 					section="models"
-					title={STEP_COPY.modelProvider.title}
-					description={STEP_COPY.modelProvider.description}
+					title={t(STEP_COPY.modelProvider.title)}
+					description={t(STEP_COPY.modelProvider.description)}
 				/>
 			);
 		}
 
-		if (step === 'plugins') return <SetupPluginsStep />;
+		if (step === 'extras') return <SetupExtrasStep
+			serviceStates={serviceStates}
+			loadingModels={loadingModels}
+			savingConfig={savingConfig}
+			onServiceChange={handleServiceChange}
+		/>;
 
-		const AssistantStep = step === 'chat' ? SetupChatStep : SetupVoiceStep;
+		const AssistantStep = SetupChatStep;
 		return (
 			<AssistantStep
 				serviceStates={serviceStates}
@@ -191,13 +200,14 @@ const StartPage: React.FC = () => {
 							}
 							onClick={handlePrimaryAction}
 						>
-							{isBusy ? 'Saving...' : stepIndex === SETUP_STEPS.length - 1 ? 'Finish' : 'Continue'}
+							{isBusy ? t('start.saving') : step === 'extras' ? t('start.finish') : t('start.continue')}
 							{isBusy ? (
 								<LoaderCircle className="size-3.5 animate-spin" aria-hidden="true" />
 							) : (
 								<ArrowRight className="size-3.5" aria-hidden="true" />
 							)}
 						</Button>
+						{step === 'extras' ? <Button type="button" variant="ghost" size="xs" disabled={isBusy} onClick={finishSetup}>{t('start.skipExtras')}</Button> : null}
 					</div>
 				</footer>
 			) : null}
