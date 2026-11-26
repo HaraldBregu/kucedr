@@ -12,7 +12,11 @@ it('creates soul and user profiles only through update tools', async () => {
 	const previous = process.env.KUCEDR_E2E_DATA_ROOT;
 	process.env.KUCEDR_E2E_DATA_ROOT = root;
 	try {
-		const workspace = workspacePath({ location: path.join(root, 'workspace') });
+		const config = {
+			location: path.join(root, 'workspace'),
+			workspace: buildWorkspace('default', root, path.join(root, 'workspace')),
+		};
+		const workspace = workspacePath(config);
 		const bootstrap = path.join(workspace, 'BOOTSTRAP.md');
 		for (const [name, get, update, settings] of [
 			['soul', getSoulTool, updateSoulTool, { tone: 'Calm', boundaries: 'Respect privacy' }],
