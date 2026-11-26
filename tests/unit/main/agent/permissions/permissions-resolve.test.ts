@@ -92,7 +92,7 @@ describe('resolvePermission', () => {
 		expect(
 			resolve(mediaAccess(undefined), {
 				...defaults,
-				write: { allow: [], deny: [rule(realPath(libraryLocation()))] },
+				write: { allow: [], deny: [rule(realPath(resolveWorkspace('default').library))] },
 			})
 		).toBe('deny');
 		expect(builtinCapability('use_web_browser', { action: 'screenshot' })?.effects).toContain(
