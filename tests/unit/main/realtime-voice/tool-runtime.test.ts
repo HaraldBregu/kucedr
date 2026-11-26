@@ -14,7 +14,7 @@ const CHAT_SESSION_ID = '11111111-1111-4111-8111-111111111111';
 it('runs native Realtime function calls through the existing tool runner and emits normalized lifecycle events', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-success-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	const conversation = realtimeVoiceConversationFactory(config)(CHAT_SESSION_ID, 'model');
 	const events: Array<Record<string, unknown>> = [];
 	let settleResult = (): void => undefined;
@@ -118,7 +118,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 it('persists failed Realtime tool calls with their canonical input and error outcome', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-error-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	const conversation = realtimeVoiceConversationFactory(config)(CHAT_SESSION_ID, 'model');
 	let resolveResult = (): void => undefined;
 	const resultAdded = new Promise<void>((resolve) => (resolveResult = resolve));
@@ -182,7 +182,7 @@ it('persists failed Realtime tool calls with their canonical input and error out
 it('preserves the existing permission request identity and returns rejected tool status', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-denied-'));
 	const location = path.join(temporaryRoot, 'agent');
-	const config = { location, workspace: buildWorkspace('default', temporaryRoot, config.workspace.sessions) };
+	const config = { location, workspace: buildWorkspace('default', temporaryRoot, location) };
 	const conversation = realtimeVoiceConversationFactory(config)(CHAT_SESSION_ID, 'model');
 	let resolvePermission = (_event: Record<string, unknown>): void => undefined;
 	const permissionEvent = new Promise<Record<string, unknown>>(
