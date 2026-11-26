@@ -18,7 +18,7 @@ Part of the [Roadmap](README.md). Status: proposal; 3.1–3.4, 3.6–3.9, 3.11 a
 | 3.12 | Browser control from the chat | "Click Sign in on this page" acts on the tab on screen; follow-up messages continue in the same tab; the agent never closes the user's tabs; scroll, reload, and Stop in the pane; see [Browser control plan](../BROWSER_CONTROL.md) | Built 2026-11-23: the tab on screen is used first, tabs list `shown` and `mine`, the agent closes only tabs it opened in that chat, `scroll`, `reload`, and Stop in the pane toolbar; checked in the built app, including after a restart. Not checked: task runs, two chats acting at once, two windows; see [Status](../BROWSER_CONTROL.md#status) | M |
 | 3.13 | Confirmations in the app's style | Delete and remove prompts look like the rest of Kucedr, follow the theme and are translated, instead of a plain system box | Built 2026-11-26; all renderer confirmations now use the shared themed dialog | S |
 | 3.14 | Consistent empty and loading states | Every list says what belongs there and how to add the first item; every page shows the same loading rows | Built 2026-11-26 for the identified Settings lists; shared placeholders now cover plugin discovery, permissions, browser profiles, knowledge search and embedding models, cloud folders, MCP tools and account activity | S |
-| 3.15 | A visual consistency pass | Colours, text sizes and spacing come from the theme everywhere, so light, dark and plugin themes look right on every page | 41 fixed palette colours in 11 files and 59 fixed pixel sizes in the renderer | S–M |
+| 3.15 | A visual consistency pass | Colours, text sizes and spacing come from the theme everywhere, so light, dark and plugin themes look right on every page | Built 2026-11-26: status and selection colors now use theme tokens, recurring 13px/15px text uses named scale tokens, and the activity chart uses theme chart colors | S–M |
 | 3.16 | A useful empty chat | A new chat offers a few starting points instead of a greeting only | Built 2026-11-26: localized greeting, three prompt starters and a recent-chat continuation suggestion when available | S |
 | 3.17 | Smoother first-run setup | Connect a model first, skip what can wait, and land in a chat that works | Built 2026-11-26: model → chat → optional plugins and voice, with Skip for now | S–M |
 | 3.18 | Find any setting | Typing a setting's name (for example "sound" or "dark") finds the switch, not only the page | The command menu lists Settings pages from `SETTINGS_NAVIGATION`; individual options are not searchable | S |
@@ -187,17 +187,13 @@ for deletions that can be restored remains a separate follow-up to 3.7.
 
 ### 3.15 A visual consistency pass
 
-- _Behaviour._ Nothing visibly new. Pages stop drifting apart: colours follow the theme in light,
-  dark and [plugin themes](../PLUGIN_THEMES_PLAN.md), and text sizes come from one scale.
-- _Found._ 41 fixed palette colours such as `bg-blue-500` across 11 files, most in
-  `pages/settings/pages/library/Selection.tsx` and `pages/settings/components/theme.tsx`; these do
-  not follow a theme. 59 fixed pixel sizes, most often `text-[13px]` (16 uses).
-- _Approach._ Replace each fixed colour with the theme colour that means the same thing
-  (`primary`, `destructive`, `muted`), and each fixed text size with the nearest step on the
-  scale. Colours that show a theme itself (the swatches in `theme.tsx`) stay fixed.
-- _Open decision._ Whether 13px should become a named step on the scale, since it is used so often.
-  Recommended: yes, rather than rounding 16 places to 12 or 14.
-- _Check._ Switching between light, dark and one plugin theme leaves no element in the old colours.
+Built 2026-11-26. Library selection controls, system-media status, storage notices, usage status,
+loading text and the account activity chart now use theme colors. Repeated compact 13px and document
+15px text sizes use named `text-13` and `text-15` scale tokens; 12px text uses `text-xs`. Fixed
+brand artwork, native window controls, theme-preview swatches, photo-overlay controls and standalone
+HTML export colors remain purpose-specific. Production build passed. Targeted ESLint reported two
+hook dependency warnings in existing code; no errors. Light, dark and plugin-theme visuals were not
+checked in the running app.
 
 ### 3.16 A useful empty chat
 
