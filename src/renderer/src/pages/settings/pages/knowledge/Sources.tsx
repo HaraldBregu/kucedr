@@ -7,7 +7,7 @@ import type { KnowledgeState } from './state';
 
 export default function Sources({ knowledge }: { knowledge: KnowledgeState }): JSX.Element {
 	const { t } = useTranslation();
-	const { configuration, disabled, save, pickFolder } = knowledge;
+	const { configuration, status, disabled, save, pickFolder } = knowledge;
 	return (
 		<SettingsSection
 			title={t('settings.knowledge.sourceFolder')}
@@ -22,6 +22,9 @@ export default function Sources({ knowledge }: { knowledge: KnowledgeState }): J
 			<SettingsPanel>
 				{configuration?.folders.length ? (
 					configuration.folders.map((folder) => (
+						(() => {
+							const source = status?.sources?.find((entry) => entry.folder === folder);
+							return (
 						<SettingsRow
 							key={folder}
 							icon={FolderOpen}
@@ -31,8 +34,18 @@ export default function Sources({ knowledge }: { knowledge: KnowledgeState }): J
 								</span>
 							}
 							description={
-								<span className="block truncate" title={folder}>
-									{folder}
+								<span className="grid min-w-0 gap-0.5">
+									<span className="block truncate" title={folder}>{folder}</span>
+									{source && <span className="text-xs">
+										{t('settings.knowledge.sourceStats', {
+											files: source.files,
+											chunks: source.chunks,
+											date: source.indexedAt
+												? new Date(source.indexedAt).toLocaleString()
+												: t('settings.knowledge.notIndexed'),
+										})}
+									</span>}
+									{source?.error && <span className="text-xs text-destructive">{source.error}</span>}
 								</span>
 							}
 							className="grid-cols-[minmax(0,1fr)_auto]"
@@ -53,7 +66,10 @@ export default function Sources({ knowledge }: { knowledge: KnowledgeState }): J
 								</Button>
 							}
 						/>
-					))
+							);
+						})()
+						);
+					})
 				) : (
 					<SettingsRow title={t('settings.knowledge.sourcePlaceholder')} icon={FolderOpen} />
 				)}
