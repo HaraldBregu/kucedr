@@ -2,10 +2,9 @@ import { existsSync } from 'node:fs';
 import { readSealed } from '../../vault/read';
 import { atomicWriteFile } from './session_atomic_write';
 import { infoFile } from './session_info_file';
-import { sessionsRoot } from './session_sessions_root';
 
-export function categorizeSession(sessionId: string, location: string, category: string | null): void {
-	const filePath = infoFile(sessionsRoot(location), sessionId);
+export function categorizeSession(sessionId: string, root: string, category: string | null): void {
+	const filePath = infoFile(root, sessionId);
 	if (!existsSync(filePath)) return;
 	const content = readSealed(filePath);
 	let info: Record<string, unknown>;
