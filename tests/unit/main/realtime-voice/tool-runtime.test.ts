@@ -107,7 +107,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 				],
 			}),
 		]);
-		const restored = realtimeVoiceConversationFactory({ location })(CHAT_SESSION_ID, 'model');
+		const restored = realtimeVoiceConversationFactory(config)(CHAT_SESSION_ID, 'model');
 		expect(loadMessagesBySessionId(restored.persistenceSessionId!, location)).toEqual([]);
 	} finally {
 		fs.rmSync(temporaryRoot, { recursive: true, force: true });
