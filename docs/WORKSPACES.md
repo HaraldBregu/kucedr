@@ -431,13 +431,13 @@ name. New text goes through `react-i18next` under a `spaces.*` namespace, becaus
 3. Isolation (`protectedRoots(ws)`, per-workspace rules, sandbox) → verify: a run in B is denied
    reading A's files, chats, memory and Library with the read tool and with bash, and an "always
    allow" from A does not apply in B.
-4. Window binding, IPC, switcher and scoped renderer storage → verify: two windows on two workspaces
-   show different files and chats, and switching one leaves the other unchanged.
-5. Workspace from a folder → verify: a folder outside `~/.kucedr` becomes a workspace with nothing
-   written into it; its chats land in `~/.kucedr/workspaces/<id>/sessions`; the home folder, a folder
-   inside `~/.kucedr` and a folder nested in another workspace are rejected; a run in another
-   workspace is denied the folder; renaming the folder on disk shows "Folder not found", and
-   **Locate…** restores it.
+4. Creating a workspace from a folder → verify: a folder outside `~/.kucedr` becomes a workspace with
+   nothing written into it; its chats land in `~/.kucedr/workspaces/<id>/sessions`; the home folder, a
+   folder inside `~/.kucedr` and a folder nested in another workspace are rejected; a run in another
+   workspace is denied the folder.
+5. Window binding, IPC, switcher and scoped renderer storage → verify: two windows on two workspaces
+   show different files and chats, switching one leaves the other unchanged, and renaming a
+   workspace's folder on disk shows "Folder not found" until **Locate…** restores it.
 6. Continuity → verify: start a long run in A that will ask for approval, switch the window to B,
    then come back from the badge. The run finished in A, its files, Library items and memory are in
    A, and B was untouched.
