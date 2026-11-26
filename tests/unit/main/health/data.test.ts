@@ -6,10 +6,12 @@ jest.mock('../../../../src/main/shared/user_data_location', () => ({
 }));
 
 import { getHealth, updateHealth } from '../../../../src/main/health';
+import { buildWorkspace } from '../../../../src/main/workspaces/build';
 
 const root = '/tmp/kucedr-health-data-test';
 const workspace = path.join(root, 'workspace');
 const healthFile = path.join(root, 'health', 'HEALTH.md');
+const config = { location: workspace, workspace: buildWorkspace('default', root, workspace) };
 
 beforeEach(async () => {
 	await rm(root, { recursive: true, force: true });
