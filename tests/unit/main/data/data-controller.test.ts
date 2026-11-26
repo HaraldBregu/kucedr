@@ -3,6 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { DataController } from '../../../../src/main/data/data_controller';
 import { ragJob } from '../../../../src/main/agent/knowledge/rag/job';
+import { buildWorkspace } from '../../../../src/main/workspaces/build';
 
 const sessionId = '11111111-1111-4111-8111-111111111111';
 
