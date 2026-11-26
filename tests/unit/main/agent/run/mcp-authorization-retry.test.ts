@@ -22,6 +22,7 @@ import { createSessionState } from '../../../../../src/main/agent/session';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { respondUserInput } from '../../../../../src/main/agent/user_input/user_input_pending';
 import type { RuntimeEvent } from '../../../../../src/main/agent/types';
+import { buildWorkspace } from '../../../../../src/main/workspaces/build';
 import {
 	llmBuildChatMessages,
 	llmToTranscriptEntry,
