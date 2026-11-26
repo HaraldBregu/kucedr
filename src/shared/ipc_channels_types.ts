@@ -1024,6 +1024,10 @@ export interface DataInvokeChannelMap {
 		args: [scope: import('./data_types').DataScope];
 		result: import('./data_types').DataExportResult | undefined;
 	};
+	[DataChannels.exportAll]: {
+		args: [];
+		result: import('./data_types').DataExportResult | undefined;
+	};
 	[DataChannels.previewPurge]: {
 		args: [scope: import('./data_types').DataScope];
 		result: import('./data_types').DataPurgePreview;

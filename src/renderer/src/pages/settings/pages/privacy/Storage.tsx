@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import type { StorageUsage } from '@shared/data_types';
 import { DataControls } from '../../components/data';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../components';
@@ -17,6 +18,20 @@ export function Storage(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [usage, setUsage] = useState<StorageUsage | null>(null);
 	const [error, setError] = useState(false);
+	const [exporting, setExporting] = useState(false);
+	const [exportError, setExportError] = useState(false);
+
+	const exportAll = async (): Promise<void> => {
+		setExporting(true);
+		setExportError(false);
+		try {
+			await window.dataControls.exportAll();
+		} catch {
+			setExportError(true);
+		} finally {
+			setExporting(false);
+		}
+	};
 
 	useEffect(() => {
 		let mounted = true;
@@ -35,6 +50,25 @@ export function Storage(): React.JSX.Element {
 
 	return (
 		<div className="flex flex-col gap-4">
+			<SettingsSection title={t('settings.dataControls.exportAllTitle')}>
+				<SettingsPanel>
+					<SettingsRow
+						title={t('settings.dataControls.exportAllTitle')}
+						description={t('settings.dataControls.exportAllDescription')}
+						actions={
+							<Button variant="outline" disabled={exporting} onClick={() => void exportAll()}>
+								<Download className="size-3" />
+								{t('settings.dataControls.exportAllAction')}
+							</Button>
+						}
+					/>
+				</SettingsPanel>
+				{exportError && (
+					<SettingsNotice variant="destructive">
+						{t('settings.dataControls.exportAllError')}
+					</SettingsNotice>
+				)}
+			</SettingsSection>
 			<SettingsSection title={t('settings.storageManagement.title')}>
 			{error ? (
 				<SettingsNotice variant="destructive">{t('settings.storageManagement.loadError')}</SettingsNotice>

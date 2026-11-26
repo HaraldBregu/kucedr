@@ -106,6 +106,42 @@ export class DataController {
 		return { scope, filePath, files: archive.files().length, bytes: archive.bytes() };
 	}
 
+	async exportAll(filePath: string): Promise<DataExportResult> {
+		const archive = new DataArchive();
+		await archive.addFile(memoryPath(this.agent.config.workspace), path.join('memory', MEMORY_FILE));
+		for (const session of this.agent.listSessions()) {
+			await archive.addTree(
+				sessionPath(this.agent.config.workspace.sessions, session.id),
+				path.join('sessions', session.id)
+			);
+		}
+		const rag = getRagConfiguration();
+		const store = ragVectorStore();
+		try {
+			const publication = store.exportIndex(rag.indexName);
+			if (publication) archive.addJson('knowledge/index.json', publication);
+		} finally {
+			store.close();
+		}
+		const scope = { kind: 'all' } as const;
+		const document = {
+			version: 1,
+			exportedAt: new Date().toISOString(),
+			scope,
+			remoteDataIncluded: false,
+			files: archive.files(),
+		};
+		const temporaryFile = `${filePath}.${randomUUID()}.tmp`;
+		await fs.mkdir(path.dirname(filePath), { recursive: true });
+		try {
+			await fs.writeFile(temporaryFile, `${JSON.stringify(document, null, 2)}\n`, 'utf8');
+			await fs.rename(temporaryFile, filePath);
+		} finally {
+			await fs.rm(temporaryFile, { force: true });
+		}
+		return { scope, filePath, files: archive.files().length, bytes: archive.bytes() };
+	}
+
 	async previewPurge(scope: DataScope): Promise<DataPurgePreview> {
 		const archive =
 			scope.kind === 'rag' &&

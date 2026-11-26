@@ -39,6 +39,19 @@ export class DataIpc implements IpcModule<DataIpcDeps> {
 			if (result.canceled || !result.filePath) return undefined;
 			return controller.export(scope, path.resolve(result.filePath));
 		});
+		trusted.commandWithEvent(DataChannels.exportAll, async (event) => {
+			const options = {
+				title: 'Export all Kucedr data',
+				defaultPath: 'kucedr-data-export.json',
+				filters: [{ name: 'Kucedr data export', extensions: ['json'] }],
+			};
+			const window = BrowserWindow.fromWebContents(event.sender);
+			const result = await (window
+				? dialog.showSaveDialog(window, options)
+				: dialog.showSaveDialog(options));
+			if (result.canceled || !result.filePath) return undefined;
+			return controller.exportAll(path.resolve(result.filePath));
+		});
 		trusted.query(DataChannels.previewPurge, (input) => {
 			return controller.previewPurge(normalizeDataScope(input));
 		});

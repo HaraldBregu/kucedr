@@ -6,6 +6,7 @@ export const data: DataApi = {
 	listScopes: () => typedInvokeUnwrap(DataChannels.listScopes),
 	getStorageUsage: () => typedInvokeUnwrap(DataChannels.getStorageUsage),
 	export: (scope) => typedInvokeUnwrap(DataChannels.export, scope),
+	exportAll: () => typedInvokeUnwrap(DataChannels.exportAll),
 	previewPurge: (scope) => typedInvokeUnwrap(DataChannels.previewPurge, scope),
 	purge: (scope, confirmationId) =>
 		typedInvokeUnwrap(DataChannels.purge, scope, confirmationId),

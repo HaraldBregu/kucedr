@@ -465,6 +465,7 @@ export const DataChannels = {
 	listScopes: 'data:scopes:list',
 	getStorageUsage: 'data:storage-usage:get',
 	export: 'data:export',
+	exportAll: 'data:export-all',
 	previewPurge: 'data:purge:preview',
 	purge: 'data:purge',
 } as const;

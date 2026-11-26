@@ -7,7 +7,7 @@ export type DataScope =
 	| { kind: 'sessions'; sessionIds: string[] };
 
 export interface DataExportResult {
-	scope: DataScope;
+	scope: DataScope | { kind: 'all' };
 	filePath: string;
 	files: number;
 	bytes: number;
@@ -40,6 +40,7 @@ export interface DataApi {
 	listScopes: () => Promise<DataScope[]>;
 	getStorageUsage: () => Promise<StorageUsage>;
 	export: (scope: DataScope) => Promise<DataExportResult | undefined>;
+	exportAll: () => Promise<DataExportResult | undefined>;
 	previewPurge: (scope: DataScope) => Promise<DataPurgePreview>;
 	purge: (scope: DataScope, confirmationId: string) => Promise<DataPurgeResult | undefined>;
 }
