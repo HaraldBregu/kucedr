@@ -41,7 +41,7 @@ export function Spaces(): ReactElement | null {
 						aria-label={t('spaces.switch')}
 					>
 						<Space workspace={shown} large />
-						<ChevronsUpDown className="size-5 shrink-0 text-muted-foreground" />
+						<ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
 					</SidebarMenuButton>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent
