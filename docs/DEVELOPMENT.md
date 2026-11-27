@@ -482,6 +482,13 @@ ship with the app and are linked from Settings → General, and commit the resul
 npm run notices
 ```
 
+Refresh the bundled tracker list (roadmap 13.1) before each release and commit it; the app never
+downloads it:
+
+```sh
+curl -fsSL -o resources/shield/easyprivacy.txt https://easylist.to/easylist/easyprivacy.txt
+```
+
 The performance check launches the built app with a throwaway profile three times, then streams a 600-chunk reply
 from a local mock model, and prints bundle sizes, the median time to the first window and the
 first render, and the frame rate, long frames and long tasks during the stream. Keep the window
