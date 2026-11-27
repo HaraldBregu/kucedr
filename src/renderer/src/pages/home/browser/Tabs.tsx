@@ -86,7 +86,8 @@ export function BrowserTabs({
 			>
 				{tabs.map((tab, at) => {
 					const selected = tab.targetId === active;
-					const label = tab.title || (!tab.url || tab.url === 'about:blank' ? 'New tab' : tab.url);
+					const label =
+						(tab.url !== 'about:blank' && tab.title) || (!tab.url || tab.url === 'about:blank' ? 'New tab' : tab.url);
 					const look = tab.route === 'direct' ? undefined : ROUTE_LOOKS[tab.route];
 					return (
 						<div
