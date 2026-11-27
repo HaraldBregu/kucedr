@@ -18,6 +18,7 @@ export { searchSessions } from './session_search_sessions';
 export { renameSession } from './session_rename_session';
 export { categorizeSession } from './session_categorize_session';
 export { pinSession } from './session_pin_session';
+export { moveSession } from './session_move_session';
 export { archiveSession } from './session_archive_session';
 export { loadMessages } from './session_load_messages';
 export { createSessionState } from './session_module_state';
