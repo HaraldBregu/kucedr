@@ -387,12 +387,14 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				event.preventDefault();
 				showEntryMenu();
 			}} onDragOver={(event) => {
-				if (event.dataTransfer.types.includes('application/x-workspace-path')) event.preventDefault();
+				if (event.dataTransfer.types.includes('application/x-workspace-path') || event.dataTransfer.types.includes('Files')) event.preventDefault();
 			}} onDrop={(event) => {
 				const source = event.dataTransfer.getData('application/x-workspace-path');
-				if (!source) return;
+				const files = Array.from(event.dataTransfer.files, (file) => window.app.getPathForFile(file)).filter(Boolean);
+				if (!source && files.length === 0) return;
 				event.preventDefault();
-				moveEntries(source.split('\n'), '');
+				if (source) moveEntries(source.split('\n'), '');
+				else importEntries('', files);
 			}}>
 				{actionError ? <p className="px-2 py-1 text-xs text-destructive" role="alert">{actionError}</p> : null}
 				{loading ? (
