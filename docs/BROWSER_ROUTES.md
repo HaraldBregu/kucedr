@@ -1,6 +1,6 @@
 # Browser Routes and Shield — Plan
 
-> **Status:** plan and build, 2026-11-24; background browsing given the same shield 2026-11-27; tracker blocking 2026-11-27; Tor tabs report UTC and en-US 2026-11-27. Roadmap: [Tor](roadmap/TOR.md) 11.1–11.3, [Private and VPN browsing](roadmap/VPN.md) 12.1, 12.2, 12.4 (without the workspace default), [Network shield](roadmap/SHIELD.md) 13.1 (trackers), 13.3, 13.5, 13.6 (WebRTC and tracking parameters), 13.11.
+> **Status:** plan and build, 2026-11-24; background browsing given the same shield 2026-11-27; tracker blocking 2026-11-27; Tor tabs report UTC and en-US 2026-11-27; `.onion` kept off DNS outside Tor, SOCKS4 refused and malware sites blocked 2026-11-27. Roadmap: [Tor](roadmap/TOR.md) 11.1–11.3, [Private and VPN browsing](roadmap/VPN.md) 12.1, 12.2, 12.4 (without the workspace default), [Network shield](roadmap/SHIELD.md) 13.1 (trackers), 13.3, 13.5, 13.6 (WebRTC and tracking parameters), 13.11, 13.12 (malware).
 
 ## Scope
 
