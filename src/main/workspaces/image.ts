@@ -1,7 +1,7 @@
 import { copyFileSync, mkdirSync, openSync, readSync, closeSync, rmSync, statSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { userDataLocation } from '../shared/user_data_location';
+import { workspaceImages } from './images';
 import { readWorkspaces } from './read';
 import { writeWorkspaces } from './write';
 
