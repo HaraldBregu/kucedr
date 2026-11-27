@@ -51,14 +51,18 @@ function sessionPinned(sessionId: string, root: string): boolean {
 
 export function listSessions(
 	root: string,
-	category: SessionCategory = DEFAULT_CATEGORY
+	category: SessionCategory = DEFAULT_CATEGORY,
+	workspace: string = DEFAULT_WORKSPACE
 ): AgentSessionSummary[] {
 	if (!existsSync(root)) return [];
 	try {
 		return readdirSync(root, { withFileTypes: true })
 			.filter(
 				(entry) =>
-					entry.isDirectory() && isUuid(entry.name) && sessionType(root, entry.name) === category
+					entry.isDirectory() &&
+					isUuid(entry.name) &&
+					sessionType(root, entry.name) === category &&
+					sessionWorkspace(root, entry.name) === workspace
 			)
 			.map((entry) => {
 				const stats = statSync(sessionPath(root, entry.name));
