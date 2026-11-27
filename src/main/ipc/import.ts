@@ -1,32 +1,30 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import { workspaceFileType } from '../../shared/workspace';
 import { resolveWorkspaceFile } from './workspace';
+import { workspaceEntryName } from './workspace_name';
 
-export async function importWorkspaceEntries(
+export async function importWorkspaceAsset(
 	root: string,
-	destinationDirectoryPath: string,
-	sources: string[]
-): Promise<string[]> {
-	const resolvedRoot = await fs.realpath(root);
-	const resolvedDestination = await resolveWorkspaceFile(root, destinationDirectoryPath || '.');
-	if (path.resolve(resolvedRoot, destinationDirectoryPath || '.') !== resolvedDestination) {
-		throw new Error('Workspace symlinks cannot be used as import destinations.');
+	documentPath: string,
+	name: string,
+	data: Uint8Array
+): Promise<string> {
+	const normalizedName = workspaceEntryName(name).replace(/[\s()<>[\]]+/g, '-');
+	if (!['image', 'audio', 'video', 'pdf'].includes(workspaceFileType(normalizedName).kind)) {
+		throw new Error('Workspace file is not a supported asset.');
 	}
-	if (!(await fs.stat(resolvedDestination)).isDirectory()) {
-		throw new Error('Import destination is not a folder.');
-	}
-	const imported: string[] = [];
-	for (const source of sources) {
-		const targetPath = path.join(resolvedDestination, path.basename(source));
+	const directory = path.dirname(await resolveWorkspaceFile(root, documentPath));
+	const extension = path.extname(normalizedName);
+	const base = path.basename(normalizedName, extension);
+	for (let index = 0; ; index += 1) {
+		const fileName = index ? `${base}-${index}${extension}` : normalizedName;
 		try {
-			await fs.lstat(targetPath);
-			throw new Error(`An item named "${path.basename(source)}" already exists.`);
+			await fs.writeFile(path.join(directory, fileName), data, { flag: 'wx' });
+			return fileName;
 		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
 		}
-		await fs.cp(source, targetPath, { recursive: true, errorOnExist: true, force: false });
-		imported.push(path.relative(resolvedRoot, targetPath).split(path.sep).join('/'));
 	}
-	return imported;
 }
