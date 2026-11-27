@@ -403,18 +403,31 @@ export const useWebBrowserTool = tool({
 						? page.locator(refSelector(params.ref)).screenshot()
 						: page.screenshot({ fullPage: params.fullPage })
 				);
-				const file = await saveMedia(
-					'browser', 'png', data.toString('base64'), params.directory, signal
+				return saveFrom(
+					id,
+					page,
+					params.ref ? 'screenshot-element' : params.fullPage ? 'screenshot-full' : 'screenshot',
+					data.toString('base64'),
+					params.directory,
+					signal
 				);
-				return JSON.stringify({ targetId: id, path: file });
 			}
 			case 'pdf': {
 				const { id, page } = getPage(params.targetId);
 				const data = await runBrowserPageOperation(page, signal, () => page.pdf());
-				const file = await saveMedia(
-					'browser', 'pdf', data.toString('base64'), params.directory, signal
-				);
-				return JSON.stringify({ targetId: id, path: file });
+				return saveFrom(id, page, 'pdf', data.toString('base64'), params.directory, signal);
+			}
+			case 'archive': {
+				const { id, page } = getPage(params.targetId);
+				const { data } = await runBrowserPageOperation(page, signal, async () => {
+					const cdp = await page.context().newCDPSession(page);
+					try {
+						return await cdp.send('Page.captureSnapshot', { format: 'mhtml' });
+					} finally {
+						await cdp.detach().catch(() => undefined);
+					}
+				});
+				return saveFrom(id, page, 'archive', Buffer.from(data).toString('base64'), params.directory, signal);
 			}
 			case 'console': {
 				const { id } = getPage(params.targetId);
