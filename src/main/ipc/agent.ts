@@ -614,7 +614,11 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			wrapAgentHandler(
 				mainAccess,
 				(query: unknown) =>
-					searchSessions(agent.config.workspace.sessions, typeof query === 'string' ? query : ''),
+					searchSessions(
+						agent.config.workspace.sessions,
+						typeof query === 'string' ? query : '',
+						agent.config.workspace.id
+					),
 				AgentChannels.searchSessions
 			)
 		);
