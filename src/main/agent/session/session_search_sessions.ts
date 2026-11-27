@@ -31,6 +31,8 @@ export async function searchSessions(
 					]);
 					if (['task', 'health', 'subagent', 'voice'].includes(info.type as string))
 						return undefined;
+					if ((typeof info.workspace === 'string' ? info.workspace : DEFAULT_WORKSPACE) !== workspace)
+						return undefined;
 					let next = 0;
 					const messages = (parseMessages(raw) ?? [])
 						.map((message) => {
