@@ -9,6 +9,8 @@ import { isUuid } from './session_is_uuid';
 import { loadMessagesBySessionId } from './session_load_messages_by_session_id';
 import { sessionPath } from './session_session_path';
 import { sessionType } from './session_session_type';
+import { sessionWorkspace } from './session_session_workspace';
+import { DEFAULT_WORKSPACE } from '../../../shared/workspaces_types';
 
 function sessionTitle(sessionId: string, root: string): string {
 	try {
