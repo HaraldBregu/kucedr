@@ -3,6 +3,7 @@ import type { BrowserPaneCommand, BrowserPaneTab, BrowserRoute } from '../../../
 import type { BrowserSource } from '../../../../../shared/browser_import';
 import { cn } from '@/lib/utils';
 import { BrowserImportOffer } from './ImportOffer';
+import { BrowserDanger } from './Danger';
 import { BrowserDownloadBar } from './Download';
 import { BrowserPermissionBar } from './Permission';
 import { BrowserOffer } from './Offer';
