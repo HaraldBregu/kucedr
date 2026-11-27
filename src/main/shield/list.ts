@@ -3,7 +3,7 @@ import path from 'node:path';
 import { resourceRoot } from '../shared/resource_root';
 
 const RULE = /^(@@)?\|\|([a-z0-9.-]+)\^(?:\$(.*))?$/;
-export const KINDS = [
+const KINDS = [
 	'script',
 	'image',
 	'stylesheet',
