@@ -1720,7 +1720,9 @@
 				"addFolders": "Aggiungi cartelle",
 				"empty": "Aggiungi cartelle per iniziare il backup.",
 				"folder": "Cartella selezionata",
-				"removeFolder": "Rimuovi cartella"
+				"removeFolder": "Rimuovi cartella",
+				"includeWorkspaces": "Includi gli spazi di lavoro",
+				"includeWorkspacesDescription": "Esegui anche il backup della cartella di ogni spazio di lavoro, compresi quelli aggiunti in seguito."
 			},
 			"syncSaved": "Impostazioni storage salvate.",
 			"autoSync": {
