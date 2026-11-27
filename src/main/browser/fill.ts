@@ -76,6 +76,5 @@ export async function fillLogin(tab: BrowserTab, id: string): Promise<boolean> {
 		`for (const el of document.querySelectorAll('[data-kucedr-fill]')) el.removeAttribute('data-kucedr-fill')`,
 		true
 	);
-	tab.filled = true;
 	return true;
 }
