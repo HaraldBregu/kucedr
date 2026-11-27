@@ -106,10 +106,24 @@ export class WorkspacesIpc implements IpcModule<WorkspacesIpcDeps> {
 			changed();
 			return true;
 		});
-		registerQueryWithEvent(WorkspacesChannels.chats, (event, id) => {
+		const contents = (workspaceId: string): WorkspaceContents => {
+			const workspace = resolveWorkspace(workspaceId);
+			return withinWorkspace(workspaceId, () => {
+				const summaries = new Map(agent.listSessions('all').map((session) => [session.id, session]));
+				return {
+					chats: workspaceSessions(workspace.sessions, workspaceId).map((sessionId) => ({
+						id: sessionId,
+						title: summaries.get(sessionId)?.title ?? '',
+						archived: summaries.get(sessionId)?.archived === true,
+					})),
+					tasks: listSchedules().map((schedule) => schedule.name),
+					browser: existsSync(workspace.browser),
+				};
+			});
+		};
+		registerQueryWithEvent(WorkspacesChannels.contents, (event, id) => {
 			trusted.assert(event);
-			const workspace = resolveWorkspace(identifier.parse(id));
-			return workspaceSessions(workspace.sessions, workspace.id).length;
+			return contents(identifier.parse(id));
 		});
 		registerCommandWithEvent(WorkspacesChannels.reveal, async (event, id) => {
 			trusted.assert(event);
