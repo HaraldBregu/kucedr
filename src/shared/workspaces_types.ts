@@ -18,6 +18,12 @@ export interface WorkspaceInfo {
 	waiting?: number;
 }
 
+export interface WorkspaceContents {
+	chats: { id: string; title: string; archived: boolean }[];
+	tasks: string[];
+	browser: boolean;
+}
+
 export interface WorkspacesState {
 	current: string;
 	workspaces: WorkspaceInfo[];
