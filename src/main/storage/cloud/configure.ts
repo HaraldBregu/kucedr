@@ -40,7 +40,7 @@ export async function configureVersionedStorage(
 			maxCacheBytes: existing?.sync.maxCacheBytes ?? 1_073_741_824 },
 		workspaces: existing?.workspaces ?? [],
 	};
-	for (const rootPath of settings.paths) {
+	for (const rootPath of backupPaths(settings)) {
 		if (!config.workspaces.some((entry) => entry.rootPath === rootPath)) {
 			config.workspaces.push({ id: randomUUID(), rootPath });
 		}
