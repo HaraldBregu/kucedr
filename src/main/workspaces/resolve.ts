@@ -10,5 +10,5 @@ export function resolveWorkspace(id: string): Workspace {
 	if (id === DEFAULT_WORKSPACE) return buildWorkspace(id, data, path.join(data, 'workspace'));
 	const record = readWorkspaces().find((entry) => entry.id === id);
 	if (!record) throw new Error('Workspace not found.');
-	return buildWorkspace(id, path.join(data, 'workspaces', record.id), record.folder);
+	return buildWorkspace(id, data, record.folder);
 }
