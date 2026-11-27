@@ -160,7 +160,10 @@ it('allows unattended background navigation and browser interactions without app
 		expect(open.result?.isError).toBeUndefined();
 		expect(open.result?.content).toContain('https://example.com/');
 		expect(context.page.goto).toHaveBeenCalledWith('https://example.com/', { waitUntil: 'domcontentloaded' });
-		expect(click.result).toMatchObject({ content: '{"result":"clicked"}', isError: undefined });
+		expect(click.result).toMatchObject({
+			content: '<untrusted_content source="use_web_browser">\n{"result":"clicked"}\n</untrusted_content>',
+			isError: undefined,
+		});
 		expect(context.page.locator).toHaveBeenCalledWith('[data-agent-ref="e1"]');
 		expect(context.page.click).toHaveBeenCalledTimes(1);
 		expect(events).not.toContainEqual(expect.objectContaining({ type: 'tool_permission_request' }));
