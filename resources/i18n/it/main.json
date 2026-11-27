@@ -308,6 +308,8 @@
 		},
 		"title": "Impostazioni",
 		"returnToChat": "Torna alla Home",
+		"search": "Cerca impostazioni",
+		"searchEmpty": "Nessuna impostazione trovata",
 		"description": "Configura le preferenze dell'applicazione",
 		"search": "Cerca",
 		"searchLabel": "Cerca nelle impostazioni",
