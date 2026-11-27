@@ -33,7 +33,8 @@ export function BrowserScreen({
 						rect.left + rect.width * across,
 						rect.top + rect.height * down
 					);
-					return hit !== element;
+					// A modal menu sets pointer-events: none on body, so hits fall through to <html>.
+					return hit !== element && hit !== document.documentElement;
 				})
 			);
 			const next =
