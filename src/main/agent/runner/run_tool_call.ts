@@ -13,6 +13,7 @@ import { inputFingerprint } from '../permissions/input_fingerprint';
 import { redactApprovalInput } from '../permissions/redact_approval_input';
 import { formatToolOutput } from './run_common';
 import { limitToolOutput } from './run_limit_output';
+import { untrusted } from './untrusted';
 import type { KeyedMutex } from '../mutex';
 import type { AgentUserInputQuestion } from '../../../shared/agent_types';
 import { waitForUserInput } from '../user_input/user_input_pending';
