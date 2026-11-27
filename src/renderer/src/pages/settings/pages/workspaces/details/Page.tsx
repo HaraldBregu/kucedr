@@ -188,7 +188,7 @@ const WorkspaceDetailsPage: React.FC = () => {
 				</SettingsSection>
 			)}
 			{deleting && (
-				<Delete name={title} chats={chats ?? 0} onClose={() => setDeleting(false)} onConfirm={remove} />
+				<Delete name={title} contents={contents} onClose={() => setDeleting(false)} onConfirm={remove} />
 			)}
 		</SettingsPageShell>
 	);
