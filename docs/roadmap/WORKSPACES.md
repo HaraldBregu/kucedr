@@ -19,6 +19,32 @@ workspace is shown.
 - **Shared on purpose:** model keys, providers, plugins, skills, connectors, app settings, the
   account and anything paid for ([Payments](PAYMENTS.md)).
 
+## Decided 2026-11-27: no `~/.kucedr/workspaces` folder
+
+Replaces the per-workspace data folders in [Layout](../WORKSPACES.md#layout). Kucedr no longer
+creates `~/.kucedr/workspaces`.
+
+- **Registry:** `~/.kucedr/settings/workspaces.json`, same format as today.
+- **Pictures:** stored under `~/.kucedr/settings/` next to the registry, instead of
+  `~/.kucedr/workspaces/images/`.
+- **Chats:** every session stays directly in `~/.kucedr/sessions/`. Each session carries
+  `"workspace": "<id>"`; the chat list, search and the read guard filter by it. A session without the
+  property belongs to the default workspace, so existing chats need no migration.
+- **Memory, knowledge and settings:** use the default folders `~/.kucedr/memory`, `~/.kucedr/rag`
+  and `~/.kucedr/settings`. No per-workspace copies of these folders.
+
+Open:
+
+- Memory and knowledge in one folder: are they shared by all workspaces, or does each entry
+  (memory lines, indexed folders, vectors, settings such as the chat model override and "always
+  allow" rules) carry a workspace id? This decides whether 10.2 and 10.4 stay as they are.
+- Library and browser data are not covered: keep them in the default `library` and `browser`
+  folders with a workspace id, or give them another home.
+- The read guard in 10.2 denies another workspace's chats by folder today; with one sessions folder
+  it has to deny by the session's `workspace` property.
+- Installs that already have `~/.kucedr/workspaces/`: move its data into the new layout, or treat
+  it as test data.
+
 ## Features
 
 | # | Feature | What the user gets | Status | Size |
