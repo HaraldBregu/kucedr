@@ -12,7 +12,10 @@ reach the local network, including through a public name that resolves to a priv
 (checked on direct and private tabs since 2026-11-27); stored keys and tokens never leave in an
 address or request body, also for `fetch_web_page`, `search_web` and background browsing; downloads
 wait in a holding folder for the user's answer. Blocked requests are listed per tab under the
-toolbar's shield button. The "What exists today" list below is from 2026-11-19.
+toolbar's shield button. Background browsing calls the same `verdict` (`src/main/shield/verdict.ts`)
+for every request and for WebSockets opened by pages and frames, not yet for WebSockets opened in
+workers ([Browser routes and shield](../BROWSER_ROUTES.md#background-browsing-headless-chrome-in-background-runs)).
+The "What exists today" list below is from 2026-11-19.
 
 One set of rules for everything Kucedr sends and receives, enforced in the main process and shown
 to the user, to protect the user's privacy. It protects Kucedr's own traffic; it is not a firewall
