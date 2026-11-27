@@ -97,9 +97,11 @@ export function SettingsSidebar(): React.JSX.Element {
 					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
 					<span>{t('settings.returnToChat', 'Back to home')}</span>
 				</Link>
-				<div className="relative pt-2">
-					<Search aria-hidden="true" className="pointer-events-none absolute left-2.5 top-[calc(50%+0.25rem)] z-10 size-4 -translate-y-1/2 text-muted-foreground" />
-					<Input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('settings.search', 'Search settings')} aria-label={t('settings.search', 'Search settings')} className="h-8 pl-8" />
+				<div className="px-2 pt-2">
+					<div className="relative">
+						<Search aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
+						<Input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('settings.search', 'Search settings')} aria-label={t('settings.search', 'Search settings')} className="h-8 pl-8" />
+					</div>
 				</div>
 			</div>
 			<nav aria-label={t('settings.title')} className="flex min-h-0 flex-1 flex-col">
