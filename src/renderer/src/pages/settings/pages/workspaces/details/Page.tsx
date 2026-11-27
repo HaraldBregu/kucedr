@@ -24,7 +24,7 @@ const WorkspaceDetailsPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { workspaceId = '' } = useParams<{ workspaceId: string }>();
 	const { current, workspaces, select } = useSpaces();
-	const { confirm, dialog } = useConfirmation();
+	const [deleting, setDeleting] = useState(false);
 	const workspace = workspaces.find((item) => item.id === workspaceId);
 	const [name, setName] = useState('');
 	const [chats, setChats] = useState<number>();
