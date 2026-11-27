@@ -32,8 +32,8 @@ export interface WorkspacesApi {
 	openWindow(id: string): Promise<void>;
 	pickImage(id: string): Promise<boolean>;
 	removeImage(id: string): Promise<void>;
-	chats(id: string): Promise<number>;
+	contents(id: string): Promise<WorkspaceContents>;
 	reveal(id: string): Promise<void>;
-	remove(id: string): Promise<void>;
+	remove(id: string, deleteChats: boolean): Promise<void>;
 	onChanged(callback: () => void): () => void;
 }
