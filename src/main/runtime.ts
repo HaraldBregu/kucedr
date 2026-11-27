@@ -99,7 +99,8 @@ const services = bootstrapServices();
 const { eventBus, appState, windowFactory, logger, windowContextManager, agentService } = services;
 const mainWindow = new Main(appState, windowFactory, windowContextManager);
 const voiceWindow = new VoiceWindow(windowFactory, windowContextManager);
-if (!isPrivacyEnabled() && !isVaultEnabled()) {
+const startedEarly = !isPrivacyEnabled() && !isVaultEnabled();
+if (startedEarly) {
 	agentService.start(logger);
 	startRagSchedule(logger);
 }
