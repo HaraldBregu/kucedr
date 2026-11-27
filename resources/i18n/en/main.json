@@ -308,6 +308,8 @@
 		},
 		"title": "Settings",
 		"returnToChat": "Back to home",
+		"search": "Search settings",
+		"searchEmpty": "No settings found",
 		"description": "Configure your application preferences",
 		"search": "Search",
 		"searchLabel": "Search settings",
