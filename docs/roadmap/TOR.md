@@ -71,10 +71,11 @@ Tor tabs share one mechanism with private and VPN tabs; see
 - **No fallback.** If Tor is not running or drops, a Tor tab fails. It never retries over the normal
   connection. Address lookups also go through Tor.
 - **Downloads off** in Tor tabs.
-- **Approval.** The first time a chat opens a Tor tab, the user approves it; existing tool approvals
-  still apply.
-- **Interactive only.** Background and scheduled runs do not use Tor in the first version. Their
-  address check in `src/main/public.ts` rejects `.onion` before any lookup.
+- **Approval.** Each time the agent opens a Tor tab, the user approves it; the answer is never
+  remembered (`src/main/agent/execution/capability.ts`). Existing tool approvals still apply.
+- **Interactive only.** Background and scheduled runs do not use Tor in the first version:
+  `use_web_browser` there refuses any route but direct, and their address check in
+  `src/main/public.ts` rejects `.onion` before any lookup.
 - **Slower pages.** Tor tabs get longer time limits than the tool's default.
 
 ## What the user must be told, in the app
