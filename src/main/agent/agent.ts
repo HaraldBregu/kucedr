@@ -11,6 +11,7 @@ import {
 	loadMessages,
 	renameSession as renameStoredSession,
 	pinSession as pinStoredSession,
+	moveSession as moveStoredSession,
 	categorizeSession as categorizeStoredSession,
 	archiveSession as archiveStoredSession,
 	resolveSessionId,
