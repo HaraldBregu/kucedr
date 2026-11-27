@@ -19,6 +19,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			[
 				'/settings/account',
 				'/settings/general',
+				'/settings/workspaces',
 				'/settings/cloud',
 				'/settings/library',
 				'/settings/browser',
