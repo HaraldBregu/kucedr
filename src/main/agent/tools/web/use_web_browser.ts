@@ -123,6 +123,7 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 				if (allowed) socket.connectToServer();
 				else await socket.close().catch(() => undefined);
 			});
+			session.context = launched;
 			launched.on('page', (page) => {
 				if (![...session.pages.values()].includes(page)) trackPage(page, session);
 				void page.opener().then((opener) => {
