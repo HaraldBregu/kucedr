@@ -56,6 +56,7 @@ not moved and no longer read.
 | 10.7 | Open in new window | The switcher opens a chosen workspace in its own window. File → New Window opens the default workspace | Built 2026-11-26. Checked in the app | S |
 | 10.8 | Work continues in the background | A reply, tool run or approval keeps going in the workspace it started in when its window switches away. The switcher shows what is running or waiting in each workspace, and a notification opens the right one | Built 2026-11-26. A slow reply finishing after a switch, the running count, a task firing in its own workspace and opening a chat from another workspace checked in the app. A real system notification and the "needs you" count not checked | M |
 | 10.9 | Windows kept apart | A window's last chat, drafts, selected file and browser tabs belong to its workspace, and a change reaches only the windows showing that workspace | Built 2026-11-26. Checked in the app for chats and browser tabs | S–M |
+| 10.10 | Sealed case | A workspace option, proposed on for case workspaces: it neither reads nor writes the shared memory, keeps its own knowledge sources and keeps its captures in its own folder, so one client's facts never surface in another's chats. The default workspace keeps shared memory | Proposal 2026-11-27 for the [investigation desk](../mission/TARGET.md); reopens the 2026-11-27 shared-memory decision for case workspaces only | M |
 
 ## Left
 
