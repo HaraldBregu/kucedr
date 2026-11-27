@@ -32,6 +32,7 @@ export function verdict(
 		const navigation = request.resourceType === 'mainFrame' && request.method === 'GET';
 		if (origin !== undefined && !fromLocal && !navigation) return 'local';
 	}
+	if (dangerous(url.hostname)) return 'dangerous';
 	if (leaks(request.url) || request.uploadData?.some((part) => part.bytes && leaks(part.bytes.toString('latin1'))))
 		return 'secret';
 	if (tracker(url.hostname, request.resourceType, top)) return 'tracker';
