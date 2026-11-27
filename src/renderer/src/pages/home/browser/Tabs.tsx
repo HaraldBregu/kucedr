@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, Globe, Loader2, Plus, VenetianMask, X } from 'lucide-react';
 import type { BrowserPaneTab, BrowserRoute } from '../../../../../shared/browser';
 import { Button } from '@/components/ui/button';
