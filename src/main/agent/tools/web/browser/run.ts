@@ -1,6 +1,5 @@
 import type { BrowserRoute } from '../../../../../shared/browser';
 import { wake } from '../../../../browser/wake';
-import { saveMedia } from '../../../../shared/media';
 import { executionScope } from '../../../execution/scope';
 import { act, type BrowserAct } from './act';
 import { closeTab } from './close';
