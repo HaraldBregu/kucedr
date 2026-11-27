@@ -19,7 +19,7 @@ export async function forkSync<T>(operation: StorageOperation): Promise<T> {
 	const script = pluginScripts('STORAGE').find((entry) => entry.name === settings.serviceId);
 	if (!script) throw new Error('Select a storage service for backup.');
 	const provider = storageProviders.resolve(settings.providerId);
-	const roots = transferRoots(settings.paths).map((root) => ({
+	const roots = transferRoots(backupPaths(settings)).map((root) => ({
 		path: root,
 		prefix: storagePrefix(root),
 	}));
