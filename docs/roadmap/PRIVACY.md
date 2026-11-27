@@ -59,7 +59,9 @@ set, loopback is blocked too. Checked 2026-11-27 in the built app with a logging
 the proxy: a chat to a mock model at `model.example.test` reached it through the proxy as a name
 (ATYP domain), and the same chat with the model at `127.0.0.1` reached it directly with no proxy
 request. Fetch to `localhost` and `[::1]`, HTTP and a WebSocket to `127.0.0.1` went direct; Fetch,
-HTTP and a WebSocket to other names went through the proxy as names.
+HTTP and a WebSocket to other names went through the proxy as names. HTTPS and a secure WebSocket
+to `127.0.0.1` and `localhost` were checked in plain Node against `transport.ts`, not in the built
+app, and went direct.
 
 Outbound paths while Privacy Mode is on, audited from the code 2026-11-27:
 
