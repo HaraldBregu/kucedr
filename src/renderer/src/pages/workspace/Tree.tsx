@@ -120,7 +120,7 @@ export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, on
 							}}
 						>
 							{(() => {
-								const Icon = fileIcons[workspaceFileType(entry.path).kind] ?? File;
+								const Icon = fileIcon(entry.path);
 								return <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />;
 							})()}
 							<span className="truncate">{entry.name}</span>
