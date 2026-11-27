@@ -17,7 +17,7 @@ site or Product Hunt rather than the company's own pages. What could not be chec
   [PRODUCT.md](PRODUCT.md#3-directions-considered) rows 4 and 7). Its business model needs hosting,
   accounts and unattended runs, which conflict with the Private promise and with keeping approvals
   ([MISSION.md](MISSION.md#1-the-mission-in-five-promises) §1 and §2).
-- **Kucedr would arrive tenth, with 12 stars,** against products holding 10k to 28k stars that ship
+- **Kucedr would arrive about tenth among the open copies, with 12 stars,** against products holding 10k to 28k stars that ship
   daily, and against model companies that include the same job in a $20 plan.
 - **Take three small things, all inside the current plan:** copy OpenBot's release signing and
   software bill of materials for the signed-builds gate; correct the messaging claim in
