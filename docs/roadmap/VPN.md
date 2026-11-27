@@ -32,6 +32,7 @@ browser through a VPN connection, leaving the rest of the machine untouched.
 | 12.2 | Browse through a proxy | The user enters the proxy address their VPN provider gives them; chosen tabs, or every tab, go through it | Same mechanism as Tor tabs: a tab whose network session uses a different connection | S |
 | 12.3 | Browse through a VPN profile | Import a WireGuard file from any VPN provider; the browser pane uses it, with no administrator rights and no effect on other apps | Needs a small bundled VPN program, shipped and updated like built-in Tor (11.4) | L |
 | 12.4 | Route indicator and per-workspace default | The toolbar shows how each tab connects: direct, private, VPN or Tor. A workspace can default to one, for example work always through the company proxy | Browser pane toolbar; [Multiple workspaces](WORKSPACES.md) | S |
+| 12.5 | Proxy profiles with login | Several named proxies (address, port, username, password), chosen per tab or as a case's default route, for example a regional proxy from the investigator's own provider. The password is sealed and never reaches the agent | Today one proxy address with no login (`src/main/browser/connections.ts`); Electron's `login` event answers proxy authentication; sealed storage ([Privacy](PRIVACY.md), 1.2). Proposal 2026-11-27 for the [investigation desk](../mission/TARGET.md) | S–M |
 
 ## One mechanism with Tor
 
