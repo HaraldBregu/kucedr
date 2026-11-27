@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties, type ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
 	ArrowLeft,
 	ArrowRight,
