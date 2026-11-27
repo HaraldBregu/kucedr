@@ -108,6 +108,17 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			format: 'png',
 			...options,
 		}) as Promise<Capture>;
+	const save = async (tab: BrowserTab, kind: CaptureKind, base64: string): Promise<string> => {
+		const contents = tab.view.webContents;
+		const saved = await saveCapture(
+			kind,
+			base64,
+			{ url: contents.getURL(), title: contents.getTitle(), route: tab.route, workspace: tab.workspace.id },
+			params.directory,
+			signal
+		);
+		return JSON.stringify({ targetId: tab.id, ...saved });
+	};
 
 	switch (params.action) {
 		case 'status':
