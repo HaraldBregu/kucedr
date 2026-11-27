@@ -12,6 +12,11 @@ Using Kucedr with models that run on the user's own machine, with nothing sent t
   not built.
 - Knowledge search needs an embedding model; whether a local one is available is _not verified_.
 - Home says when the machine is offline (15.4).
+- A real Ollama run (2026-11-27, `qwen3:latest`, a browser and capture task) failed: every model
+  call used 4,098 input tokens, Ollama's default context, so the prompt was cut and the model never
+  saw the URL. The `/v1` endpoint cannot set the context size and the app does not warn. Parked;
+  re-run with a 32K context before claiming a local run works (gate 5 of
+  [Target](../mission/TARGET.md)).
 
 ## Features
 
