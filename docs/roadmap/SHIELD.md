@@ -134,9 +134,7 @@ send data out. 13.10 and 13.3 work as a pair.
   3.0 (it is dual licensed with GPL-3.0), credited in `THIRD_PARTY_NOTICES.md`, updated with
   releases. 13.12 ships the urlhaus-filter malware list (CC0), credited the same way. Ad lists
   (EasyList) and a phishing list are still open.
-- **First step.** 13.1, 13.3, 13.5 and 13.8 work without the browser pane; the pane (3.9) later
-  shows the shield's state.
-- **Where filtering happens.** The browser pane is planned as a separate web view with its own
-  network session ([Embedded agent browser plan](../AGENT_BROWSER_PLAN.md)), which is the hook for
-  filtering, cookies, downloads and site permissions. Until the pane exists, the first pieces apply
-  to page fetches, search, shell commands and background browsing.
+- **First step.** Resolved: 13.3 and 13.5 came first (2026-11-24), then the tracker part of 13.1
+  (2026-11-27). 13.8 is still open.
+- **Where filtering happens.** Resolved: each pane tab has its own network session, and the shield
+  runs in its `onBeforeRequest` ([Browser routes and shield](../BROWSER_ROUTES.md)).
