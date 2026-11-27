@@ -641,7 +641,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 					<SidebarMenuItem className="flex gap-1">
 						<SidebarMenuButton
 							type="button"
-							className="px-2.5 text-sm"
+							className="h-9 px-2.5 py-1.5 text-sm"
 							aria-label={t('navigationBar.newChat', 'New chat')}
 							onClick={() => startChat()}
 						>
