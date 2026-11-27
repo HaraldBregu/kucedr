@@ -23,9 +23,21 @@ export function convertVault(): void {
 			if (entry.isDirectory() && deep) convert(file, deep, covered);
 			if (!entry.isFile() || !covered(entry.name)) continue;
 			const raw = readFileSync(file);
-			if (raw.subarray(0, MAGIC.length).equals(MAGIC) === isVaultEnabled()) continue;
 			const stats = statSync(file);
-			atomicWriteFile(file, unseal(raw));
+			if (entry.name === 'run.jsonl') {
+				const text = raw.toString('utf8');
+				const next = text
+					.split('\n')
+					.map((line) => (line ? sealLine(unsealLine(line)) : line))
+					.join('\n');
+				if (next === text) continue;
+				const temporary = path.join(directory, `.run.jsonl.${randomUUID()}.tmp`);
+				writeFileSync(temporary, next, 'utf8');
+				renameSync(temporary, file);
+			} else {
+				if (raw.subarray(0, MAGIC.length).equals(MAGIC) === isVaultEnabled()) continue;
+				atomicWriteFile(file, unseal(raw));
+			}
 			// Chat lists sort by these times, so a rewrite must not reorder them.
 			utimesSync(file, stats.atime, stats.mtime);
 			changed = true;
