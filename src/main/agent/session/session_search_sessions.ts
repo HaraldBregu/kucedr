@@ -9,7 +9,8 @@ import { toHistoryMessages } from './session_to_history_messages';
 
 export async function searchSessions(
 	root: string,
-	query: string
+	query: string,
+	workspace: string
 ): Promise<AgentSessionSearchResult[]> {
 	const needle = query.trim().toLowerCase();
 	if (!needle) return [];
