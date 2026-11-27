@@ -58,7 +58,7 @@ Since 2026-11-27 it asks the same rules as the pane (`src/main/agent/tools/web/u
 ## User surface
 
 - Pane: a "New private, Tor or proxy tab" button next to "New tab"; a route badge in the toolbar; route icons in the tab strip; the shield button when something was blocked; the download bar. Route labels, hints, that menu and the blocked reasons are translated (en, it); the Tor and proxy hints say the assistant's web search and page fetch use the normal network.
-- Settings → Browser → Connections: Tor address (empty = automatic) with a Check button, proxy address (`socks5://host:port`, `http://host:port`), and what the routes do not cover: only the pane is routed, page text still goes to the model provider, and this is not Tor Browser.
+- Settings → Browser → Connections: Tor address (empty = automatic) with a Check button, proxy address (`socks5://host:port`, `http://host:port`, `https://host:port`), and what the routes do not cover: only the pane is routed, page text still goes to the model provider, and this is not Tor Browser.
 - Agent: `use_web_browser` `open` takes `route`. Opening a Tor tab always asks the user.
 
 ## Verify
