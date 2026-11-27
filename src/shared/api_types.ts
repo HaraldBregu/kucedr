@@ -236,6 +236,7 @@ export interface AgentApi {
 	archiveWorkspaceEntry: (entryPath: string, action: 'compress' | 'extract' | 'export-downloads' | 'export-choose') => Promise<string>;
 	createWorkspaceDirectory: (parentPath: string, name: string) => Promise<string>;
 	moveWorkspaceEntry: (sourcePath: string, destinationDirectoryPath: string) => Promise<string>;
+	transferWorkspaceEntry: (sourcePath: string, workspaceId: string) => Promise<void>;
 	renameWorkspaceEntry: (sourcePath: string, name: string) => Promise<string>;
 	revealWorkspaceEntry: (entryPath: string) => Promise<void>;
 	deleteWorkspaceFile: (filePath: string) => Promise<void>;
