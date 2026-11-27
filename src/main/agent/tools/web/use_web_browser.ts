@@ -1,3 +1,4 @@
+import { rm } from 'node:fs/promises';
 import { chromium, type BrowserContext, type Page } from 'playwright-core';
 import { z } from 'zod';
 import { BROWSER_ROUTES } from '../../../../shared/browser';
