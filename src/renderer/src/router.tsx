@@ -818,6 +818,27 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
+						path: 'workspaces',
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<WorkspacesPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: ':workspaceId',
+								element: (
+									<SettingsRouteWrapper>
+										<WorkspaceDetailsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
+					},
+					{
 						path: 'scripts',
 						children: [
 							{
