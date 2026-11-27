@@ -38,8 +38,6 @@ export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
 	const navigate = useNavigate();
-	const location = useLocation();
-	const workspaceLabel = t('settings.workspace.title', 'Workspace');
 	const [updateVersion, setUpdateVersion] = useState<string | null>(null);
 	const [updating, setUpdating] = useState(false);
 	useEffect(() => {
