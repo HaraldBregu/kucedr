@@ -10,8 +10,6 @@ export function getMcpToolPermission(id: string, toolName: string): AgentToolPer
 	const catalog = mcpCatalogStore.get('catalogs')[id];
 	const stored = catalog?.permissions?.[toolName];
 	if (stored && catalog?.permissionHashes?.[toolName] === mcpToolHash(tool)) return stored;
-	const approval = getMcpServers()[id]?.require_approval;
-	return approval === 'never' || (approval !== 'always' && tool.annotations?.readOnlyHint === true)
-		? 'allow'
-		: 'ask';
+	// A server's own readOnlyHint is not trusted: only the user's choice allows a tool without asking.
+	return getMcpServers()[id]?.require_approval === 'never' ? 'allow' : 'ask';
 }
