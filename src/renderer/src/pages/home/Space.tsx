@@ -21,19 +21,19 @@ export function Space({
 	const status = workspace.missing
 		? t('spaces.missing')
 		: [
-				workspace.running ? t('spaces.running', { count: workspace.running }) : '',
+				workspace.running && !large ? t('spaces.running', { count: workspace.running }) : '',
 				workspace.waiting ? t('spaces.waiting', { count: workspace.waiting }) : '',
 			]
 				.filter(Boolean)
 				.join(' · ');
 	return (
 		<>
-			<Avatar className={large ? 'size-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 text-white' : 'size-5 rounded-full'}>
+			<Avatar className={large ? 'size-6 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white' : 'size-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white'}>
 				{workspace.image && <AvatarImage src={workspace.image} alt="" />}
 				<AvatarFallback
 					className={large
-						? 'rounded-full bg-gradient-to-br from-amber-400 to-orange-600 text-sm font-medium text-white'
-						: 'rounded-full text-xs font-medium'}
+						? 'rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-sm font-medium text-white'
+						: 'rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-xs font-medium text-white'}
 				>
 					{showAvatarLabel ? name.slice(0, 1).toUpperCase() : null}
 				</AvatarFallback>
