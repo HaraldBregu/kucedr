@@ -281,10 +281,10 @@ export const NavigationBar = React.memo(function NavigationBar({
 							{rightContent}
 						</div>
 					)}
+					<Privacy />
 				</div>
 
 				{!isMac && <WindowControls isMaximized={isMaximized} />}
-				<Privacy />
 			</NavigationBarContainer>
 		</NavigationBarProvider>
 	);
