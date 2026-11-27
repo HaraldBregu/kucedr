@@ -185,6 +185,11 @@ function getPage(targetId?: string): { id: string; page: Page } {
 	return { id: last[0], page: last[1] };
 }
 
+async function shielded(request: ShieldRequest): Promise<boolean> {
+	if (verdict(request, false)) return false;
+	return publicUrl(request.url.replace(/^ws(s?):/i, 'http$1:')).then(() => true, () => false);
+}
+
 async function assertHttpUrl(url: string): Promise<string> {
 	const parsed = new URL(url);
 	if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:')
