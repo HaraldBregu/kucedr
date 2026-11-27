@@ -656,6 +656,19 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							type="button"
 							variant="ghost"
 							size="icon-sm"
+							className="absolute inset-y-0 right-9 my-auto text-muted-foreground"
+							aria-label={t('settings.workspace.title', 'Workspace')}
+							onClick={() => {
+								playSound('navigate');
+								navigate('/workspace');
+							}}
+						>
+							<Briefcase className="size-4" />
+						</Button>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-sm"
 							className="absolute inset-y-0 right-1 my-auto text-muted-foreground"
 							aria-label={t('settings.chatHistory.search', 'Search chats')}
 							aria-pressed={searchOpen}
