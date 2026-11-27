@@ -2,9 +2,6 @@ import type { WebContents } from 'electron';
 
 const AUTO_ATTACH = { autoAttach: true, waitForDebuggerOnStart: true, flatten: true };
 
-// Tor tabs report UTC, en-US and the session's user agent in the page, its frames and its
-// workers. A frame or worker is held until that is set; service workers and other targets are
-// never started. Resolves once the overrides are in place, after a blank first page.
 export async function disguise(contents: WebContents): Promise<void> {
 	const send = (method: string, params: object, session?: string): Promise<unknown> =>
 		contents.debugger.sendCommand(method, params, session);
