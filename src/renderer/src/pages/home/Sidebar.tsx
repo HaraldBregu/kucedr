@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactElement, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus, Search } from 'lucide-react';
+import { Briefcase, ChevronRight, LayoutPanelLeft, MoreVertical, Pin, PinOff, Plus, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
