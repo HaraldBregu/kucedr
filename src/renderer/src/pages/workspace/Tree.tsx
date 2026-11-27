@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { ChevronRight, File, Folder,FileImage, FileMusic, FileText, FileVideo } from 'lucide-react';
-import { workspaceFileType } from '@shared/workspace';
+import { ChevronRight, File, Folder } from 'lucide-react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { WorkspaceRenameInput } from './RenameInput';
+import { fileIcon } from './icon';
 
 export interface WorkspaceAction {
 	readonly kind: 'create-file' | 'create-folder';
