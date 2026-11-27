@@ -392,6 +392,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: ChartNoAxesColumnIncreasing,
 	},
 	{
+		path: '/settings/workspaces',
+		labelKey: 'settings.workspaces.title',
+		descriptionKey: 'settings.workspaces.description',
+		icon: Briefcase,
+	},
+	{
 		path: '/workspace',
 		labelKey: 'settings.workspace.title',
 		descriptionKey: 'settings.workspace.description',
