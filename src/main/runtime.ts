@@ -233,6 +233,7 @@ const menuManager = new Menu({
 		nativeTheme.themeSource = theme;
 	},
 });
+lockChanged.on('change', () => menuManager.create());
 
 app.whenReady().then(async () => {
 	enableVaultOnFreshInstall();
