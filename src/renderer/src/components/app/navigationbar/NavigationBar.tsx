@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
-import { AudioLines, ChevronDown, Menu, Moon, Plus, Search, Sun } from 'lucide-react';
+import { AudioLines, ChevronDown, Menu, Moon, Plus, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts';
 import { usePageContext } from '@/components/app/base/page/hooks/use-page-context';
 import { NavigationBarProvider } from './context/NavigationBarContext';
-import { useCommandMenu } from '@/contexts/command-menu';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -69,7 +68,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
-	const { open: openCommandMenu } = useCommandMenu();
 	const { sessionId, sessionTitle, setSessionId, setSessionTitle } = useChatSession();
 	const { state, isMobile } = usePageContext();
 	const sidebarExpanded = showWorkspace && !isMobile && state.sidebarOpen;
@@ -87,7 +85,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isSettings = location.pathname.startsWith('/settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
 	const homeLabel = t('navigationBar.chat', 'Chat');
-	const searchLabel = t('navigationBar.search');
 	const chatHistoryLabel = t('settings.chatHistory.title');
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
@@ -168,24 +165,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	);
 	const navigationButtons = showWorkspace ? (
 		<>
-			<Tooltip>
-				<TooltipTrigger render={
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon"
-						className="size-8 rounded-full dark:hover:bg-accent"
-						onClick={() => {
-							playSound('navigate');
-							openCommandMenu();
-						}}
-						aria-label={searchLabel}
-					>
-						<Search className="size-4" strokeWidth={1.8} />
-					</Button>
-				} />
-				<TooltipContent side="bottom">{searchLabel}</TooltipContent>
-			</Tooltip>
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
