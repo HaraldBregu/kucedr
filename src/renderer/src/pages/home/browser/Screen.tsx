@@ -62,7 +62,7 @@ export function BrowserScreen({
 				<p role="alert" className="text-center text-sm text-muted-foreground">
 					This page could not be loaded. {error}
 				</p>
-			) : null}
+			) : null)}
 		</div>
 	);
 }
