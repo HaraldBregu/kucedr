@@ -38,7 +38,9 @@ The agent's browser can open `.onion` addresses, shown in the browser pane like 
   as "Onion address". `src/main/public.ts` (page fetch, link previews, background browsing) refuses
   `.onion` and local names before any lookup. Checked in the built app: no `dns.lookup` call was
   made for `.onion`, `.ONION.`, `printer.local.` or a single-label name, and a proxy tab still sent
-  `.onion` to the SOCKS5 server as a name.
+  `.onion` to the SOCKS5 server as a name. Not covered: the shell sandbox's filter looks every
+  name up with the system resolver, `.onion` included (`src/main/agent/sandbox/egress.ts`, by code
+  reading).
 - **Chromium's own lookups.** A page's `<link rel=dns-prefetch>` for a `.onion` name skips the
   shield, and Chromium sent it to DNS. Outside Privacy Mode the app and the background browser now
   start with a host-resolver rule that fails every local `.onion` lookup. Checked with Chromium's
