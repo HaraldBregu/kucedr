@@ -41,7 +41,7 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 				</DropdownMenuContent>
 			</DropdownMenu>}
 			{crumbs.map((crumb) => (
-				<span key={crumb.key} className={crumb.file ? 'flex min-w-0 flex-1 items-center' : 'flex min-w-0 shrink items-center'}>
+				<span key={crumb.key} className={crumb.file ? 'flex min-w-0 items-center' : 'flex min-w-9 shrink-[1000] items-center'}>
 					<ChevronRight aria-hidden="true" className="mx-0.5 size-3 shrink-0 text-muted-foreground" />
 					<DropdownMenu open={openPath === crumb.key} onOpenChange={(open) => setOpenPath(open ? crumb.key : null)}>
 						<DropdownMenuTrigger asChild>
