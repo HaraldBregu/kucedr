@@ -8,7 +8,7 @@ export function local(hostname: string): boolean {
 	const host = hostname
 		.toLowerCase()
 		.replace(/^\[(.*)\]$/, '$1')
-		.replace(/\.$/, '');
+		.replace(/\.+$/, '');
 	// URL parsing writes IPv4-mapped IPv6 in hex (::ffff:7f00:1); judge the embedded IPv4.
 	const mapped = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(host);
 	if (mapped) {
