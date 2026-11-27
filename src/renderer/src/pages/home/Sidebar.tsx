@@ -254,7 +254,10 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				if (category) {
 					localStorage.setItem(
 						scoped('chat-categories', workspaceId),
-						JSON.stringify([...stored<ChatCategory[]>('chat-categories', [], workspaceId), category])
+						JSON.stringify([
+							...stored<ChatCategory[]>('chat-categories', [], workspaceId).filter((item) => item.id !== category.id),
+							category,
+						])
 					);
 					localStorage.setItem(
 						scoped('chat-category-assignments', workspaceId),
