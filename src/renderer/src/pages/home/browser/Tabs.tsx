@@ -177,17 +177,17 @@ export function BrowserTabs({
 				type="button"
 				variant="ghost"
 				size="icon-xs"
-				aria-label="New private, Tor or proxy tab"
+				aria-label={t('browserPane.newRouted')}
 				aria-haspopup="menu"
-				title="New private, Tor or proxy tab"
+				title={t('browserPane.newRouted')}
 				style={NO_DRAG}
 				className="mb-1.5 size-6 shrink-0 rounded-full"
 				onClick={() =>
 					void window.win
 						.showContextMenu([
-							{ id: 'private', label: 'New private tab' },
-							{ id: 'tor', label: 'New Tor tab' },
-							{ id: 'proxy', label: 'New proxy tab' },
+							{ id: 'private', label: t('browserPane.newPrivate') },
+							{ id: 'tor', label: t('browserPane.newTor') },
+							{ id: 'proxy', label: t('browserPane.newProxy') },
 						])
 						.then((route) => {
 							if (route === 'private' || route === 'tor' || route === 'proxy') onNew(route);
