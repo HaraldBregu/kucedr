@@ -1,5 +1,6 @@
 import type { BrowserRoute } from '../../../../../shared/browser';
 import { wake } from '../../../../browser/wake';
+import { refuse } from '../../../../shield/refuse';
 import { executionScope } from '../../../execution/scope';
 import { act, type BrowserAct } from './act';
 import { closeTab } from './close';
