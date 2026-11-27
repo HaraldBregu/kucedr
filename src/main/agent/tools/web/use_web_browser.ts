@@ -26,6 +26,7 @@ const ACTIONS = [
 	'snapshot',
 	'screenshot',
 	'pdf',
+	'archive',
 	'console',
 	'act',
 ] as const;
