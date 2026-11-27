@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useMatch } from 'react-router-dom';
 import { mcps, storages, vectorDatabases } from '@/lib/providers';
+import { useSpaces } from '@/spaces/context';
+import { DEFAULT_WORKSPACE } from '@shared/workspaces_types';
 import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from '../navigation';
 import { getSystemMedia } from '../pages/general/media/media';
 
