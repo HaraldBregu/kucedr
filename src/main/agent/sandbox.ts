@@ -18,6 +18,7 @@ import { ruleMatches } from './permissions/rule_matches';
 import type { PermissionRule } from './permissions/permissions_types';
 import { currentWorkspace } from '../workspaces/current';
 import { sandboxSystemReads } from './sandbox/reads';
+import { egress } from './sandbox/egress';
 import { realPath } from '../shared/real_path';
 import { isPathWithin } from './permissions/permissions_path';
 import { protectedRoots } from './permissions/protected';
