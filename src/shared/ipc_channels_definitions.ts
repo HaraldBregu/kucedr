@@ -372,6 +372,9 @@ export const WorkspacesChannels = {
 	openWindow: 'workspaces:open-window',
 	pickImage: 'workspaces:image:pick',
 	removeImage: 'workspaces:image:remove',
+	chats: 'workspaces:chats',
+	reveal: 'workspaces:reveal',
+	remove: 'workspaces:remove',
 	changed: 'workspaces:changed',
 } as const;
 
