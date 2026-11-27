@@ -296,6 +296,10 @@ export interface AgentInvokeChannelMap {
 		args: [parentPath: string, name: string];
 		result: string;
 	};
+	[AgentChannels.transferWorkspaceEntry]: {
+		args: [sourcePath: string, workspaceId: string];
+		result: void;
+	};
 	[AgentChannels.moveWorkspaceEntry]: {
 		args: [sourcePath: string, destinationDirectoryPath: string];
 		result: string;
