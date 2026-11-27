@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { playSound } from '@/lib/sounds/play';
+import { SidebarVoiceButton } from './SidebarVoiceButton';
 
 export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -86,7 +87,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							<SidebarMenuButton
 								size="lg"
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-								className="h-10 pr-20data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								className="h-10 pr-28 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
 								<accountItem.icon className="size-4 shrink-0" strokeWidth={1.8} />
 								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
@@ -112,6 +113,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 						} />
 						<TooltipContent>{t('settings.title')}</TooltipContent>
 						</Tooltip>
+						<SidebarVoiceButton />
 						<Tooltip>
 						<TooltipTrigger render={
 						<Button

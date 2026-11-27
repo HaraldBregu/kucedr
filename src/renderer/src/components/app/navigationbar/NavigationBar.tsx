@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
-import { AudioLines, ChevronDown, Menu, Moon, Plus, Sun } from 'lucide-react';
+import { ChevronDown, Menu, Moon, Plus, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -21,7 +21,6 @@ import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session
 import type { AgentSessionSummary } from '@/lib/compat';
 import { revealSelection } from '@/lib/selection';
 import { playSound } from '@/lib/sounds/play';
-import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
@@ -74,7 +73,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
 	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
 	const [chatSessionsLoadError, setChatSessionsLoadError] = useState(false);
-	const [voiceError, setVoiceError] = useState<string | null>(null);
 	const chatSessionsRef = useRef<HTMLDivElement>(null);
 
 	const isHome = location.pathname === '/home';
@@ -163,36 +161,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 					</DropdownMenuContent>
 				</DropdownMenu>
 	);
-	const navigationButtons = showWorkspace ? (
-		<>
-			<Tooltip>
-				<TooltipTrigger render={
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon"
-						className="size-8 rounded-full dark:hover:bg-accent"
-						aria-label={t('settings.tabs.voice')}
-						onClick={() => {
-							setVoiceError(null);
-							void ensureAppMicrophoneAccess()
-								.then(() => window.win.openVoiceConversation(sessionId))
-								.catch((error: unknown) => {
-									setVoiceError(
-										error instanceof Error && error.message.trim()
-											? error.message
-											: 'Voice could not be opened.'
-									);
-								});
-						}}
-					>
-						<AudioLines className="size-4" strokeWidth={1.8} />
-					</Button>
-				} />
-				<TooltipContent side="bottom">{voiceError ?? t('settings.tabs.voice')}</TooltipContent>
-			</Tooltip>
-		</>
-	) : null;
 	return (
 		<NavigationBarProvider value={{ isMac, isFullScreen }}>
 			<NavigationBarContainer
@@ -260,7 +228,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<div
 					className={`z-10 mr-3 ${actionGroupClassName}`}
 				>
-					{navigationButtons}
 					<Tooltip>
 						<TooltipTrigger render={
 							<Button
