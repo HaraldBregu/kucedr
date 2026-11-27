@@ -105,16 +105,19 @@ export function BrowserToolbar({
 			icon: ShieldAlert,
 			show: blocked.length > 0,
 			run: () =>
-				void window.win.showContextMenu(
-					blocked
+				void window.win.showContextMenu([
+					...(tab.trackers
+						? [{ id: 'trackers', label: t('browserPane.trackers', { count: tab.trackers }), enabled: false }]
+						: []),
+					...blocked
 						.slice(-MENU_BLOCKED)
 						.reverse()
 						.map((item, index) => ({
 							id: String(index),
 							label: `${t(BLOCKED_REASONS[item.reason])}: ${item.url}`.slice(0, 90),
 							enabled: false,
-						}))
-				),
+						})),
+				]),
 		},
 		{
 			label: 'Bookmarks',
