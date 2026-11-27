@@ -244,6 +244,8 @@ async function runAct(params: {
 	direction?: 'up' | 'down' | 'left' | 'right';
 	amount?: number;
 }, signal?: AbortSignal): Promise<string> {
+	if (secret(params))
+		throw new Error('Blocked: the action contains a stored key or token, which must not be given to a page.');
 	const { page } = getPage(params.targetId);
 	return runBrowserPageOperation(page, signal, async () => {
 		const timeout = params.timeoutMs;
