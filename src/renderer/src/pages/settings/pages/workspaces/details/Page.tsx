@@ -17,6 +17,7 @@ import {
 	SettingsSection,
 	SettingsValue,
 } from '../../../components';
+import { Delete } from './Delete';
 
 const WorkspaceDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
