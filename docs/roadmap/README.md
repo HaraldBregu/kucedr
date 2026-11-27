@@ -83,6 +83,14 @@ Features are numbered by area, for example 3.9 is the browser pane.
    environment (14.4), before any terminal screen is built on it. Most of 14.1 was built
    2026-11-25.
 
+**If the investigation desk is adopted** ([Target](../mission/TARGET.md), proposal 2026-11-27), this
+order changes. The trust gates come first and start now: signed builds (6.1), the vault on by
+default and covering `run.jsonl` (1.3), local knowledge (15.3), a real Tor and proxy check, a
+recorded local-model run, and the security items 13.10, 21.3, 21.5 and 21.10. Cases and evidence
+(25), the sealed case (10.10), the per-case route (12.4) and proxy profiles (12.5) follow only if
+the buyer test passes. Computer use (24), the coding page (20), the terminal panel (14.2 onward),
+integrations (17), the rest of browser import (23) and the plugin catalogue (8) wait.
+
 The Settings search item (3.18) and the other listed user-experience improvements are built; see
 [User experience in detail](EXPERIENCE.md#user-experience-in-detail) for implementation scope.
 
