@@ -41,6 +41,11 @@ export async function command(request: BrowserPaneCommand): Promise<void> {
 					? text
 					: `${local ? 'http' : 'https'}://${text}`;
 			if (!text || !URL.canParse(url)) throw new Error('Enter a web address or search words.');
+			if ((tab.route === 'direct' || tab.route === 'private') && !isPrivacyEnabled() && onion(new URL(url).hostname))
+				throw new Error(
+					(loadTranslations(getLanguage(), 'main') as unknown as { browserPane: Record<string, string> }).browserPane
+						.onionOutsideTor
+				);
 			await tab.ready;
 			void contents.loadURL(url).catch(() => undefined);
 			break;
