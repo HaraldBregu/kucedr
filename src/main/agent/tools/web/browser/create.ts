@@ -11,6 +11,7 @@ import { answerPermission } from './answer';
 import { acting, pane, paneEvents, paneTabs, type BrowserTab } from './pane';
 import { prepare } from './prepare';
 import { answerDownload } from './release';
+import { disguise } from './disguise';
 import { currentWorkspace } from '../../../../workspaces/current';
 import { workspaceScope } from '../../../../workspaces/scope';
 
