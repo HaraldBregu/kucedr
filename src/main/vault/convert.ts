@@ -1,4 +1,5 @@
-import { type Dirent, readdirSync, readFileSync, statSync, utimesSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
+import { type Dirent, readdirSync, readFileSync, renameSync, statSync, utimesSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { atomicWriteFile } from '../agent/session/session_atomic_write';
 import { userDataLocation } from '../shared/user_data_location';
