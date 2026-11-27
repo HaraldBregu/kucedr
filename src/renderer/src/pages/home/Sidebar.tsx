@@ -24,6 +24,7 @@ import type { AgentSessionSummary } from '@/lib/compat';
 import { cn } from '@/lib/utils';
 import { playSound } from '@/lib/sounds/play';
 import type { AgentSessionSearchResult } from '@shared/agent_types';
+import { DEFAULT_WORKSPACE } from '@shared/workspaces_types';
 import type { OpenExtension } from './components/ExtensionPage';
 import { scoped } from '@/spaces/scoped';
 import { useSpaces } from '@/spaces/context';
