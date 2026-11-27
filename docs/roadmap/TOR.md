@@ -26,7 +26,8 @@ The agent's browser can open `.onion` addresses, shown in the browser pane like 
   own address anyway, and wrong dates would break sites. Checked in the built app with a logging
   SOCKS5 server as Tor: the page, a cross-site frame and a worker in each reported `UTC`, `en-US`
   and that user agent, also after a cross-site navigation; every request carried it with
-  `Accept-Language: en-US,en;q=0.9` and no `Sec-CH-*` header; direct and private tabs in the same
+  `Accept-Language: en-US,en;q=0.9` and no `Sec-CH-*` header, over HTTP and HTTPS; a page's service
+  worker never ran; direct and private tabs in the same
   run still reported `Europe/Rome` and `it`. With the time zone override made to fail, the tab
   showed the error and nothing reached the server or the proxy. Screen size, fonts, canvas and
   macOS in the user agent still show, so it is still easier to recognise than Tor Browser.
