@@ -346,12 +346,12 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			<header className="shrink-0 border-b border-sidebar-border/50 px-2 pb-2">
 				<SidebarMenu>
 					<Spaces />
-					<SidebarMenuItem className="flex gap-1">
-						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/home')}>
+					<SidebarMenuItem className="relative">
+						<SidebarMenuButton type="button" className="h-9 py-1.5 pl-2.5 pr-18 text-sm" onClick={() => navigate('/home')}>
 							<ArrowLeft className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.returnToChat', 'Back to home')}</span>
 						</SidebarMenuButton>
-						<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.search', 'Search files')} aria-pressed={searchOpen} onClick={() => {
+						<Button type="button" variant="ghost" size="icon-sm" className="absolute inset-y-0 right-9 my-auto text-muted-foreground" aria-label={t('workspaceSidebar.search', 'Search files')} aria-pressed={searchOpen} onClick={() => {
 							setSearchOpen((open) => {
 								if (open) setQuery('');
 								return !open;
