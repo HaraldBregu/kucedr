@@ -2891,8 +2891,8 @@
 			"tracker": "Tracker o pubblicità",
 			"dangerous": "Sito malware noto"
 		},
-		"trackers_one": "{{count}} richiesta di tracciamento bloccata in questa pagina",
-		"trackers_other": "{{count}} richieste di tracciamento bloccate in questa pagina",
+		"trackers_one": "{{count}} richiesta di tracciamento o pubblicità bloccata in questa pagina",
+		"trackers_other": "{{count}} richieste di tracciamento o pubblicità bloccate in questa pagina",
 		"onionOutsideTor": "Gli indirizzi onion si aprono solo in una scheda Tor, così l'indirizzo non viene cercato sulla rete normale. Apri una nuova scheda Tor dal pulsante con la maschera accanto a Nuova scheda e inseriscilo lì."
 	},
 	"inferenceSettings": {
