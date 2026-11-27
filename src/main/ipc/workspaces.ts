@@ -1,4 +1,7 @@
 import { BrowserWindow, dialog, shell } from 'electron';
+import { existsSync } from 'node:fs';
+import type { WorkspaceContents } from '../../shared/workspaces_types';
+import { listSchedules } from '../tasks/tasks_list_schedules';
 import { z } from 'zod';
 import { WorkspacesChannels } from '../../shared/ipc_channels_definitions';
 import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
