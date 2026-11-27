@@ -18,11 +18,17 @@ export function guard(browsing: Session, routed: boolean, open: () => boolean): 
 		} catch {
 			reason = 'route';
 		}
-		if (reason) {
+		const deny = (why: BrowserBlocked['reason']): void => {
 			const tab = tabFor(details.webContents);
-			if (tab) block(tab, details.url, reason);
-			return callback({ cancel: true });
-		}
-		callback(redirectURL ? { redirectURL } : { cancel: false });
+			if (tab) block(tab, details.url, why);
+			callback({ cancel: true });
+		};
+		const allow = (): void => callback(redirectURL ? { redirectURL } : { cancel: false });
+		if (reason) return deny(reason);
+		if (routed) return allow();
+		rebound(browsing, details).then(
+			(local) => (local ? deny('local') : allow()),
+			() => deny('route')
+		);
 	});
 }
