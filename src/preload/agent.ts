@@ -321,6 +321,11 @@ export const agent: AgentApi = {
 			normalizedName
 		);
 	},
+	transferWorkspaceEntry: (sourcePath, workspaceId) => {
+		const normalizedSourcePath = optionalTrimmedString(sourcePath);
+		if (!normalizedSourcePath) throw new Error('Invalid workspace source path.');
+		return typedInvokeUnwrap(AgentChannels.transferWorkspaceEntry, normalizedSourcePath, workspaceId);
+	},
 	moveWorkspaceEntry: (sourcePath, destinationDirectoryPath) => {
 		const normalizedSourcePath = optionalTrimmedString(sourcePath);
 		if (!normalizedSourcePath) throw new Error('Invalid workspace source path.');
