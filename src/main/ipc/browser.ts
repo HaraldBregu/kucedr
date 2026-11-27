@@ -32,6 +32,7 @@ import {
 } from '../browser/passwords';
 import { answerOffer } from '../agent/tools/web/browser/capture';
 import { answerPermission } from '../agent/tools/web/browser/answer';
+import { pass } from '../agent/tools/web/browser/pass';
 import { answerDownload } from '../agent/tools/web/browser/release';
 import { getPrivacy, privacyChanged } from '../privacy/state';
 import { connections } from '../browser/connections';
