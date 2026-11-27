@@ -93,11 +93,30 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
 			await launched.route('**/*', async (route) => {
 				const request = route.request();
-				const allowed =
-					!leaks(request.url()) &&
-					!leaks(request.postData() ?? '') &&
-					(await publicUrl(request.url()).then(() => true, () => false));
-				await (allowed ? route.continue() : route.abort('blockedbyclient')).catch(() => undefined);
+				const navigation =
+					request.isNavigationRequest() && request.method() === 'GET' && !request.frame().parentFrame();
+				const body = request.postDataBuffer();
+				const allowed = await shielded({
+					url: request.url(),
+					method: request.method(),
+					resourceType: navigation ? 'mainFrame' : request.resourceType(),
+					uploadData: body ? [{ bytes: body }] : undefined,
+				}).catch(() => false);
+				const location = allowed && navigation ? strip(request.url()) : undefined;
+				await (
+					!allowed
+						? route.abort('blockedbyclient')
+						: location
+							? route.fulfill({ status: 307, headers: { location } })
+							: route.continue()
+				).catch(() => undefined);
+			});
+			await launched.routeWebSocket(/.*/, async (socket) => {
+				const allowed = await shielded({ url: socket.url(), method: 'GET', resourceType: 'webSocket' }).catch(
+					() => false
+				);
+				if (allowed) socket.connectToServer();
+				else await socket.close().catch(() => undefined);
 			});
 			launched.on('page', (page) => {
 				if (![...session.pages.values()].includes(page)) trackPage(page, session);
