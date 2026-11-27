@@ -2888,11 +2888,11 @@
 			"route": "Connection not ready",
 			"download": "Download",
 			"onion": "Onion address, open it in a Tor tab",
-			"tracker": "Tracker",
+			"tracker": "Tracker or ad",
 			"dangerous": "Known malware site"
 		},
-		"trackers_one": "{{count}} tracker request blocked on this page",
-		"trackers_other": "{{count}} tracker requests blocked on this page",
+		"trackers_one": "{{count}} tracker or ad request blocked on this page",
+		"trackers_other": "{{count}} tracker and ad requests blocked on this page",
 		"onionOutsideTor": "Onion addresses open only in a Tor tab, so the address is not looked up on your normal network. Open a new Tor tab from the mask button next to New tab and enter it there."
 	},
 	"inferenceSettings": {
