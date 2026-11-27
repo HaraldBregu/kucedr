@@ -34,13 +34,14 @@ export function prepare(partition: string, route: BrowserRoute): Promise<void> {
 	const existing = prepared.get(partition);
 	if (existing) return existing;
 	const browsing = session.fromPartition(partition);
-	browsing.setUserAgent(
-		browsing
-			.getUserAgent()
-			.split(' ')
-			.filter((part) => !/^electron\//i.test(part) && !part.startsWith(`${app.getName()}/`))
-			.join(' ')
-	);
+	const agent = browsing
+		.getUserAgent()
+		.split(' ')
+		.filter((part) => !/^electron\//i.test(part) && !part.startsWith(`${app.getName()}/`))
+		.join(' ');
+	if (route === 'tor')
+		browsing.setUserAgent(agent.replace(/Chrome\/(\d+)[\d.]*/, 'Chrome/$1.0.0.0'), 'en-US,en');
+	else browsing.setUserAgent(agent);
 	browsing.setPermissionRequestHandler(askPermission(route));
 	browsing.setPermissionCheckHandler(() => false);
 	browsing.on('will-download', (event, item, contents) => holdDownload(event, item, contents, route));
