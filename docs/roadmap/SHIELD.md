@@ -91,8 +91,9 @@ send data out. 13.10 and 13.3 work as a pair.
 - **Default level.** Recommended: Standard (block trackers, guard secrets, protect the local
   network, log everything) with Strict as a choice (ask before each new site, allow list only).
   Asking for every site by default would make the agent tiresome.
-- **Block lists.** Which community lists to ship, and their licences, need checking before
-  bundling.
+- **Block lists.** Resolved 2026-11-27: EasyPrivacy, bundled as a separate data file under CC BY-SA
+  3.0 (it is dual licensed with GPL-3.0), credited in `THIRD_PARTY_NOTICES.md`, updated with
+  releases. Ad lists (EasyList) and 13.12's dangerous-site lists are still open.
 - **First step.** 13.1, 13.3, 13.5 and 13.8 work without the browser pane; the pane (3.9) later
   shows the shield's state.
 - **Where filtering happens.** The browser pane is planned as a separate web view with its own
