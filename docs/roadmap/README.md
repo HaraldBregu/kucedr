@@ -94,7 +94,8 @@ Features are numbered by area, for example 3.9 is the browser pane.
 **If the investigation desk is adopted** ([Target](../mission/TARGET.md), proposal 2026-11-27), this
 order changes. The trust gates come first and start now: signed builds (6.1), the vault on by
 default and covering `run.jsonl` (1.3), local knowledge (15.3), a real Tor and proxy check, a
-recorded local-model run, and the security items 13.10, 21.3, 21.5 and 21.10. Cases and evidence
+recorded local-model run, and the security item 21.10 step 2 (13.10, 21.3, 21.5 and 21.10 step 1
+were built 2026-11-27). Cases and evidence
 (25), the sealed case (10.10), the per-case route (12.4) and proxy profiles (12.5) follow only if
 the buyer test passes. Computer use (24), the coding page (20), the terminal panel (14.2 onward),
 integrations (17), the rest of browser import (23) and the plugin catalogue (8) wait.
