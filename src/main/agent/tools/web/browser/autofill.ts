@@ -141,7 +141,7 @@ const SCRIPT = `((payloadJson) => {
 		document.addEventListener(
 			'focusin',
 			(e) => {
-				if (af.isLogin(e.target)) { af.el = e.target; af.seq += 1; af.req = { origin: location.origin }; }
+				if (af.isLogin(e.target)) { af.el = e.target; af.typed = false; af.seq += 1; af.req = { origin: location.origin }; }
 				else if (e.target !== host) af.hide();
 			},
 			true
