@@ -111,7 +111,7 @@ export function BrowserTabs({
 								aria-keyshortcuts={SHORTCUTS.filter((shortcut) => shortcut.id === 'browserMoveTabLeft' || shortcut.id === 'browserMoveTabRight')
 									.map((shortcut) => shortcut.tiptapKey.replace('Mod-', `${IS_MAC ? 'Meta' : 'Control'}+`).replaceAll('-', '+'))
 									.join(' ')}
-								title={look ? `${label} (${look.label} tab)` : label}
+								title={look ? `${label} (${t('browserPane.routeTab', { route: t(look.label) })})` : label}
 								className="flex h-full min-w-0 flex-1 items-center gap-2 rounded-t-lg pl-3 pr-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
 								onClick={() => onSelect(tab.targetId)}
 								onAuxClick={(event) => {
