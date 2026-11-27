@@ -5,6 +5,7 @@ import { strip } from '../../../../shield/strip';
 import { verdict } from '../../../../shield/verdict';
 import { block } from './block';
 import { tabFor } from './owner';
+import { passed } from './passed';
 
 // The network shield for one tab session: every request is checked before it leaves. Nothing
 // leaves before the session's connection is in place, or when a check cannot run. A page load
