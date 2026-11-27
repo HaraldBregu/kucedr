@@ -15,6 +15,13 @@ see the user's network address.
 - **Proxy tabs (12.2).** Settings → Browser → Connections takes `socks5://host:port` or
   `http://host:port`. Proxy tabs use it with no direct fallback. Proxies that need a username and
   password are not supported yet (Chromium's SOCKS client has no password support).
+- **Names resolve on the proxy (2026-11-27).** `socks4://` and `socks4a://` are refused, on save
+  and when a saved address is read back (it is then treated as no proxy), because SOCKS4 looks names
+  up locally. Only `socks5://`, `http://` and `https://` reach Chromium, and all three send the name
+  to the proxy. Checked in the built app: both SOCKS4 forms are refused, a saved `socks4://` reads
+  as empty, and a proxy tab sent `site.example.test` and a `.onion` name to a logging SOCKS5 server
+  as names (`ATYP 3`). The proxy tab hint says the assistant's web search and page fetch use the
+  normal network.
 - **Route indicator (12.4).** The tab strip shows a route icon and the toolbar a Private, Tor or
   Proxy badge with what the route covers.
 - Direct tabs keep the one permanent profile with the user's logins. If the user already runs a
