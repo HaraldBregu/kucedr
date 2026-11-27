@@ -16,7 +16,7 @@ export function WorkspaceSwitcher(): React.JSX.Element | null {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button type="button" variant="ghost" size="sm" className="max-w-56 shrink rounded-full px-2.5 text-muted-foreground" aria-label={t('spaces.switch')}>
-					<Space workspace={workspace} showAvatarLabel={false} />
+					<Space workspace={workspace} showAvatarLabel={false} smallAvatar />
 					<ChevronsUpDown className="size-3.5 shrink-0" />
 				</Button>
 			</DropdownMenuTrigger>

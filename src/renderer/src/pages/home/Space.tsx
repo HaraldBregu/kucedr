@@ -6,12 +6,14 @@ import { DEFAULT_WORKSPACE, type WorkspaceInfo } from '@shared/workspaces_types'
 export function Space({
 	workspace,
 	large = false,
+	smallAvatar = false,
 	title = workspace.id === DEFAULT_WORKSPACE ? undefined : workspace.name,
 	subtitle,
 	showAvatarLabel = true,
 }: {
 	readonly workspace: WorkspaceInfo;
 	readonly large?: boolean;
+	readonly smallAvatar?: boolean;
 	readonly title?: string;
 	readonly subtitle?: string;
 	readonly showAvatarLabel?: boolean;
@@ -28,12 +30,12 @@ export function Space({
 				.join(' · ');
 	return (
 		<>
-			<Avatar className={large ? 'size-5.5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white' : 'size-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white'}>
+			<Avatar className={large ? 'size-5.5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white' : smallAvatar ? 'size-4 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white' : 'size-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white'}>
 				{workspace.image && <AvatarImage src={workspace.image} alt="" />}
 				<AvatarFallback
 					className={large
 						? 'rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-sm font-medium text-white'
-						: 'rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-xs font-medium text-white'}
+						: smallAvatar ? 'rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-[10px] font-medium text-white' : 'rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-xs font-medium text-white'}
 				>
 					{showAvatarLabel ? name.slice(0, 1).toUpperCase() : null}
 				</AvatarFallback>
