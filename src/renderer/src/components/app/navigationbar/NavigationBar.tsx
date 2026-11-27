@@ -26,6 +26,7 @@ import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
 import { Privacy } from './Privacy';
+import { LockButton } from './LockButton';
 
 // Synchronous platform check — no hooks, no async, no state.
 // macOS uses native traffic-light buttons; every other OS needs custom controls.
@@ -282,6 +283,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						</div>
 					)}
 					<Privacy />
+					<LockButton />
 				</div>
 
 				{!isMac && <WindowControls isMaximized={isMaximized} />}
