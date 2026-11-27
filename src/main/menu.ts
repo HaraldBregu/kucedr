@@ -15,6 +15,8 @@ import {
 interface MenuManagerCallbacks {
 	onLanguageChange: (lng: string) => void;
 	onNewWindow: () => void;
+	getLockEnabled?: () => boolean;
+	onLockNow?: () => void;
 	onShowShortcutGuide?: () => void;
 	onOpenAppDataFolder?: () => void;
 	onOpenDataFolder?: () => void;
