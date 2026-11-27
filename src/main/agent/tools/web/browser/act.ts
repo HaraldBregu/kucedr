@@ -1,4 +1,5 @@
 import { setTimeout as sleep } from 'node:timers/promises';
+import { block } from './block';
 import { cursor } from './cursor';
 import { locate } from './locate';
 import type { BrowserTab } from './pane';
