@@ -9,7 +9,7 @@ type RagJob = Pick<
 const jobs = new Map<string, RagJob>();
 
 export function ragJob(): RagJob {
-	const { id } = currentWorkspace();
+	const id = currentWorkspace().rag;
 	let job = jobs.get(id);
 	if (!job) {
 		job = {
