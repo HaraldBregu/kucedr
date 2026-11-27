@@ -406,7 +406,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				) : shownEntries.length === 0 && !pendingAction ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.noResults', 'No matching files.')}</p>
 				) : (
-					<WorkspaceTree expanded={!!search} entries={shownEntries} creating={pendingAction} onCreate={confirmAction} onCreateCancel={() => { setPendingAction(null); setActionError(''); }}onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} onRenameStart={setRenamingEntry} selectedPath={selectedPath} selection={selection} onSelect={selectEntry} onMove={moveEntries} />
+					<WorkspaceTree expanded={!!search} entries={shownEntries} creating={pendingAction} onCreate={confirmAction} onCreateCancel={() => { setPendingAction(null); setActionError(''); }}onFileSelect={onFileSelect} onEntryContextMenu={showEntryMenu} renamingPath={renamingEntry?.path ?? null} renameBusy={busy} onRename={confirmRename} onRenameCancel={() => { setRenamingEntry(null); setActionError(''); }} onRenameStart={setRenamingEntry} selectedPath={selectedPath} selection={selection} onSelect={selectEntry} onMove={moveEntries} onImport={(sourcePaths, destinationPath) => importEntries(destinationPath, sourcePaths)} />
 				)}
 			</nav>
 			<AppSidebarFooter />
