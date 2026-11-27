@@ -4,6 +4,7 @@ import {
 	BookOpenText,
 	Brain,
 	Bot,
+	Briefcase,
 	Layers,
 	Keyboard,
 	Cloud,
