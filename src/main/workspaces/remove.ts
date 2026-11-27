@@ -20,6 +20,7 @@ export async function removeWorkspace(id: string): Promise<void> {
 		for (const schedule of listSchedules()) deleteSchedule(schedule.id);
 		for (const tab of workspaceTabs()) closeTab(tab);
 	});
+	openedWorkspaces.delete(id);
 	writeWorkspaces(records.filter((entry) => entry !== record));
 	if (record.image && path.basename(record.image) === record.image)
 		rmSync(path.join(workspaceImages(), record.image), { force: true });
