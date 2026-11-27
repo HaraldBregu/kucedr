@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { ContextMenuDescriptor } from '@shared/window_types';
 import { workspaceFileType } from '@shared/workspace';
+import { DEFAULT_WORKSPACE } from '@shared/workspaces_types';
+import { useSpaces } from '@/spaces/context';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
