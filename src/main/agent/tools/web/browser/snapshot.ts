@@ -36,7 +36,7 @@ export const SNAPSHOT_SCRIPT = `(() => {
 				continue;
 			}
 			const parent = node.parentElement;
-			if (!parent || hidden(parent)) continue;
+			if (!parent || hidden(parent) || (parent.tagName === 'DETAILS' && !parent.open)) continue;
 			const pre = /^(pre|break-spaces)/.test(getComputedStyle(parent).whiteSpace);
 			let value = pre ? node.data : node.data.replace(/\\s+/g, ' ');
 			if (!value.trim()) {
