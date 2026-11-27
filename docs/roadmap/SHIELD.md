@@ -53,6 +53,9 @@ for the rest of the computer.
 - **Not present:** a network log, a proxy setting, an offline switch, block lists. The app sends no
   telemetry. Since 2026-11-27 two block lists ship in `resources/shield/`: EasyPrivacy and a
   URLhaus malware host list, read from disk only, never fetched by the app.
+- **Secret guard on agent input (2026-11-27):** stored keys and tokens are checked in request
+  addresses and bodies, and in the text of the agent's type, fill and evaluate actions
+  (`src/main/agent/tools/web/browser/secret.ts`).
 
 ## Outbound
 
