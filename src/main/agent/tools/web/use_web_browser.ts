@@ -5,7 +5,6 @@ import { BROWSER_ROUTES } from '../../../../shared/browser';
 import { ONION_RULES } from '../../../shield/onion';
 import { strip } from '../../../shield/strip';
 import { verdict, type ShieldRequest } from '../../../shield/verdict';
-import { webrtc } from '../../../shield/webrtc';
 import { publicUrl } from '../../../public';
 import { currentWorkspace } from '../../../workspaces/current';
 import { requireUnrestrictedNetwork } from '../../../privacy/state';
