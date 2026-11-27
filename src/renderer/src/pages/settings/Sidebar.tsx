@@ -121,7 +121,7 @@ export function SettingsSidebar(): React.JSX.Element {
 					items={footerItems}
 					activePath={activePath}
 					className="shrink-0 border-t border-sidebar-border/50 py-2"
-				/>
+				/>}
 			</nav>
 		</div>
 	);
