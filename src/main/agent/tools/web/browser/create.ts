@@ -142,6 +142,8 @@ export function createTab(
 	const record = (url: string, title?: string): void =>
 		workspaceScope.run(workspace, () => visit(url, title));
 	contents.on('did-navigate', (_event, url) => {
+		if (/^https?:/i.test(url))
+			void contents.insertCSS(cosmetic(new URL(url).hostname), { cssOrigin: 'user' }).catch(() => undefined);
 		tab.granted = undefined;
 		answerPermission(tab, 'dismiss');
 		if (user()) record(url);
