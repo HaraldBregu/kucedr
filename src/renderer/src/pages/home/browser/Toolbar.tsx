@@ -26,10 +26,11 @@ const NO_DRAG = { WebkitAppRegion: 'no-drag' } as CSSProperties;
 const MENU_BOOKMARKS = 45;
 const MENU_BLOCKED = 40;
 const BLOCKED_REASONS: Record<BrowserBlocked['reason'], string> = {
-	local: 'Local network',
-	secret: 'Stored key or token',
-	route: 'Connection not ready',
-	download: 'Download',
+	local: 'browserPane.blocked.local',
+	secret: 'browserPane.blocked.secret',
+	route: 'browserPane.blocked.route',
+	download: 'browserPane.blocked.download',
+	onion: 'browserPane.blocked.onion',
 };
 
 export function BrowserToolbar({
