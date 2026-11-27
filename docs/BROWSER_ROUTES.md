@@ -64,3 +64,4 @@ Since 2026-11-27 it asks the same rules as the pane (`src/main/agent/tools/web/u
 3. Proxy tab: requests reach the configured proxy; a stopped proxy fails the tab.
 4. Shield: a public page's `fetch('http://127.0.0.1:…')` is blocked and listed; typing `localhost` loads; a URL holding a saved key is blocked; `?utm_source=x&keep=1#frag` commits as `?keep=1#frag`.
 5. Download: the bar appears; Cancel leaves no file; Download saves it.
+6. Trackers: with `--host-resolver-rules` mapping `site-a.example.test`, `www.googletagmanager.com` and `www.google-analytics.com` to a local server, page A's two scripts and iframe from the first and `fetch` to the second never reach the server and the button shows 4 (en and it menu checked); `www.googletagmanager.com` opened as the page loads its own script. Run 2026-11-27 in the built app on direct, private and proxy tabs (logging SOCKS5 server) and in a background task with a mock model; not on a Tor tab.
