@@ -27,6 +27,7 @@ profile (`src/shared/agent_tools.ts`). Every feature below keeps that rule.
 | 19.2 | Transcript where available | What the user said appears in the chat for models that return it themselves | Built; found in place on 2026-11-25. Adapters that receive input transcripts (`live.ts`, `bidi.ts`, `agent.ts` in `src/main/models/adapters/realtime_voice`) emit `user_transcript_update` and `user_transcript_final`; the voice manager saves the user turn and sends `user_turn` with the text, which `useRealtimeVoice` adds to the chat as a user message. Not checked live, which needs a provider key | S |
 | 19.3 | Approvals by voice | Actions with side effects ask first, by voice or on screen | The approval cards used in chat | M |
 | 19.4 | Hand off to chat | Continue a voice conversation as a text chat, and the reverse | The chat a voice session creates | M |
+| 19.5 | Voice controls the browser | Ask by voice to open a site, click, type or read a page, and watch it happen. Added 2026-11-27 | The browser tool the chat agent uses (`use_web_browser`), called by the realtime model itself, which keeps the standing rule; 19.3 first, since browser actions have side effects | M–L |
 
 ## Open decisions
 
