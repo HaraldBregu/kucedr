@@ -292,7 +292,7 @@ export class RealtimeVoiceToolRuntime {
 			response.runId
 		);
 		if (!response.signal.aborted) {
-			await this.dependencies.connection()?.addToolResult(toolCall.id, finalOutput);
+			await this.dependencies.connection()?.addToolResult(toolCall.id, modelOutput);
 		}
 	}
 
