@@ -4,10 +4,10 @@ import { memories } from './all';
 import { createMemory } from './index';
 
 export function memoryFor(workspace: Workspace): MemoryService {
-	let memory = memories.get(workspace.id);
+	let memory = memories.get(workspace.memory);
 	if (!memory) {
 		memory = createMemory(workspace);
-		memories.set(workspace.id, memory);
+		memories.set(workspace.memory, memory);
 		void memory.start().catch(() => undefined);
 	}
 	return memory;
