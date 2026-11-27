@@ -35,6 +35,7 @@ import { answerPermission } from '../agent/tools/web/browser/answer';
 import { answerDownload } from '../agent/tools/web/browser/release';
 import { getPrivacy, privacyChanged } from '../privacy/state';
 import { connections } from '../browser/connections';
+import { acceptedProxy, HOST_PORT } from '../browser/proxy';
 import { findTor } from '../browser/tor';
 import { pickFiles } from '../browser/pick';
 import { browserSources, foundProfiles } from '../browser/sources';
