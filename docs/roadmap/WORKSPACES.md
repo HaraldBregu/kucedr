@@ -13,8 +13,9 @@ workspace is shown.
 - `~/.kucedr/workspace` stays the default workspace, unchanged.
 - A new workspace is a folder the user picks anywhere on disk. Kucedr keeps a reference to it and
   writes nothing into it.
-- A workspace is a separate case: files, chats, Library, memory, knowledge, browser sign-ins,
-  scheduled tasks and file-access rules. Existing chats and memory stay with the default workspace.
+- A workspace is a separate case: files, chats, browser sign-ins, scheduled tasks and file-access
+  rules. Existing chats stay with the default workspace. Memory, knowledge and the Library are shared
+  (decided 2026-11-27, below).
 - Each window shows one workspace. There is no app-wide "current workspace".
 - **Shared on purpose:** model keys, providers, plugins, skills, connectors, app settings, the
   account and anything paid for ([Payments](PAYMENTS.md)).
