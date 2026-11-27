@@ -14,7 +14,7 @@ export function guard(browsing: Session, routed: boolean, open: () => boolean): 
 		let reason: BrowserBlocked['reason'] | undefined;
 		let redirectURL: string | undefined;
 		try {
-			reason = open() ? verdict(details, routed) : 'route';
+			reason = open() ? verdict(details, routed, details.webContents?.getURL()) : 'route';
 			if (!reason && details.resourceType === 'mainFrame' && details.method === 'GET') redirectURL = strip(details.url);
 		} catch {
 			reason = 'route';
