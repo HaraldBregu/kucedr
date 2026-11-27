@@ -185,6 +185,11 @@ export const agent: AgentApi = {
 		if (!normalizedSessionId) throw new Error('Invalid assistant session id.');
 		return typedInvokeUnwrap(AgentChannels.pinSession, normalizedSessionId, pinned);
 	},
+	moveSession: (sessionId: string, workspaceId: string): Promise<void> => {
+		const normalizedSessionId = optionalTrimmedString(sessionId);
+		if (!normalizedSessionId) throw new Error('Invalid assistant session id.');
+		return typedInvokeUnwrap(AgentChannels.moveSession, normalizedSessionId, workspaceId);
+	},
 	categorizeSession: (sessionId: string, category: string | null): Promise<void> => {
 		const normalizedSessionId = optionalTrimmedString(sessionId);
 		if (!normalizedSessionId) throw new Error('Invalid assistant session id.');
