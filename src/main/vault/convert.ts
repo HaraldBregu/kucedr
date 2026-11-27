@@ -48,7 +48,7 @@ export function convertVault(): void {
 		if (changed) utimesSync(directory, times.atime, times.mtime);
 	};
 	const data = userDataLocation();
-	convert(path.join(data, 'sessions'), true, (name) => name !== 'run.jsonl');
+	convert(path.join(data, 'sessions'), true, () => true);
 	convert(path.join(data, 'memory'), false, (name) => name.endsWith('.md'));
 	convert(path.join(data, 'health'), false, (name) => name === 'HEALTH.md');
 }
