@@ -130,18 +130,20 @@ export class WorkspacesIpc implements IpcModule<WorkspacesIpcDeps> {
 			const error = await shell.openPath(resolveWorkspace(identifier.parse(id)).files);
 			if (error) throw new Error(error);
 		});
-		registerCommandWithEvent(WorkspacesChannels.remove, async (event, id) => {
+		registerCommandWithEvent(WorkspacesChannels.remove, async (event, id, deleteChats) => {
 			trusted.assert(event);
 			const workspaceId = identifier.parse(id);
 			if (workspaceId === DEFAULT_WORKSPACE) throw new Error('The Personal workspace cannot be deleted.');
 			const activity = agent.listActivity()[workspaceId];
 			if (activity?.running || activity?.waiting)
 				throw new Error('Stop the chats running in this workspace first.');
-			const workspace = resolveWorkspace(workspaceId);
+			const { chats } = contents(workspaceId);
 			await withinWorkspace(workspaceId, () =>
 				Promise.all(
-					workspaceSessions(workspace.sessions, workspaceId).map((sessionId) =>
-						agent.deleteSession(sessionId)
+					chats.map((chat) =>
+						deleteChats === true
+							? agent.deleteSession(chat.id)
+							: agent.moveSession(chat.id, DEFAULT_WORKSPACE)
 					)
 				)
 			);
