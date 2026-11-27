@@ -2882,7 +2882,8 @@
 			"route": "Connection not ready",
 			"download": "Download",
 			"onion": "Onion address, open it in a Tor tab",
-			"tracker": "Tracker"
+			"tracker": "Tracker",
+			"dangerous": "Known malware site"
 		},
 		"trackers_one": "{{count}} tracker request blocked on this page",
 		"trackers_other": "{{count}} tracker requests blocked on this page",
