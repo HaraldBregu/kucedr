@@ -297,6 +297,33 @@ const CloudPage: React.FC = () => {
 								))}
 							</CardContent>
 						</Card>
+						<Card size="sm" className="gap-0! py-0!">
+							<CardContent className="p-0!">
+								<SettingsRow
+									title={t('settings.storage.sync.includeWorkspaces')}
+									description={t('settings.storage.sync.includeWorkspacesDescription')}
+									actions={
+										<Switch
+											checked={storage.includeWorkspaces === true}
+											disabled={busy}
+											aria-label={t('settings.storage.sync.includeWorkspaces')}
+											onCheckedChange={(checked) =>
+												void updateDraft({ ...storage, includeWorkspaces: checked })
+											}
+										/>
+									}
+								/>
+								{storage.includeWorkspaces &&
+									workspaceFolders.map((workspace) => (
+										<SettingsRow
+											key={workspace.id}
+											title={workspace.name}
+											description={workspace.missing ? t('spaces.missing') : workspace.folder}
+											className="[&_p]:break-all"
+										/>
+									))}
+							</CardContent>
+						</Card>
 					</SettingsSection>
 
 					{vaultEnabled && selectedProvider && !selectedProvider.hasPassphrase && <Portability />}
