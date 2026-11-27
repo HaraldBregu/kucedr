@@ -1,4 +1,5 @@
 import {
+	ChartNoAxesColumnIncreasing,
 	Download,
 	Folders,
 	HardDrive,
@@ -47,10 +48,10 @@ export function AppSidebarFooter(): React.JSX.Element {
 	}, []);
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
 	const accountItem = {
-		title: authenticatedUser ? t('settings.tabs.account') : t('settings.title'),
+		title: t('settings.tabs.account'),
 		description: authenticatedUser?.email ?? t('settings.sidebar.summary'),
 		avatarPath: authenticatedUser?.avatarPath,
-		icon: authenticatedUser ? UserRound : Settings,
+		icon: UserRound,
 	};
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
@@ -128,12 +129,30 @@ export function AppSidebarFooter(): React.JSX.Element {
 								navigate('/workspace');
 							}}
 						>
-							<Folders className="size-4" strokeWidth={1.8} />
+							<Briefcase className="size-4" strokeWidth={1.8} />
 						</Button>
 						} />
 						<TooltipContent>{workspaceLabel}</TooltipContent>
 						</Tooltip>
 						)}
+						<Tooltip>
+						<TooltipTrigger render={
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className={`absolute ${location.pathname !== '/workspace' ? 'right-20' : 'right-11'} top-1 z-10 shrink-0 rounded-md hover:bg-sidebar-primary hover:text-sidebar-primary-foreground dark:hover:bg-sidebar-primary`}
+							aria-label={t('settings.usage.title')}
+							onClick={() => {
+								playSound('navigate');
+								navigate('/settings/usage');
+							}}
+						>
+							<ChartNoAxesColumnIncreasing className="size-4" strokeWidth={1.8} />
+						</Button>
+						} />
+						<TooltipContent>{t('settings.usage.title')}</TooltipContent>
+						</Tooltip>
 						<DropdownMenuContent
 							className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
 							side="top"
