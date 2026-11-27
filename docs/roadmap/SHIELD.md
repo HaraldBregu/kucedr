@@ -49,8 +49,8 @@ for the rest of the computer.
   scripts (`src/renderer/index.html`).
 - **One listener:** the sign-in callback on fixed port 3001 (`src/main/mcp/redirect.ts`).
 - **Not present:** a network log, a proxy setting, an offline switch, block lists. The app sends no
-  telemetry. Since 2026-11-27 one block list ships: EasyPrivacy in `resources/shield/`, read from
-  disk only, never fetched by the app.
+  telemetry. Since 2026-11-27 two block lists ship in `resources/shield/`: EasyPrivacy and a
+  URLhaus malware host list, read from disk only, never fetched by the app.
 
 ## Outbound
 
