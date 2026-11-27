@@ -83,7 +83,10 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			headless: true,
 			viewport: null,
 			timeout: DEFAULT_TIMEOUT_MS,
-			args: [`--host-resolver-rules=${ONION_RULES}`, `--webrtc-ip-handling-policy=${webrtc(false)}`],
+			args: [
+				`--host-resolver-rules=${ONION_RULES}, ${sinkhole()}`,
+				`--webrtc-ip-handling-policy=${webrtc(false)}`,
+			],
 		}).then(async (launched) => {
 			if (session.closed || signal?.aborted) {
 				await launched.close();
