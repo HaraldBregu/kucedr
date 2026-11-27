@@ -131,7 +131,9 @@ it('shows the failed MCP call, waits for authorization, then retries the same ar
 			.filter((message) => message.toolCalls?.length)
 			.map((message) => message.toolCalls?.map((call) => call.name))
 	).toEqual([[mcp.id]]);
-	expect(session.toolCalls[0].result?.content).toBe('message found');
+	expect(session.toolCalls[0].result?.content).toBe(
+		`<untrusted_content source="${mcp.id}">\nmessage found\n</untrusted_content>`
+	);
 	const replay = llmBuildChatMessages('', session.messages.flatMap(llmToTranscriptEntry), {
 		includeReasoningContent: true,
 	});
