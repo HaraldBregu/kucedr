@@ -82,8 +82,11 @@ Features are numbered by area, for example 3.9 is the browser pane.
    contrast and named controls (4.1–4.4) were built 2026-11-24.
 5. **Model downloads** (15.2). Setup with a local model (15.1) and offline behaviour (15.4) were
    built 2026-11-25.
-6. **The next network shield pieces**: tracker blocking (13.1) and the network view (13.8). The
-   secret guard (13.3) and local network protection (13.5) were built 2026-11-24.
+6. **The next network shield pieces**: the network view (13.8), site rules (13.2) and the same
+   rules for shell commands and plugins (13.4), so one decision point holds. The secret guard
+   (13.3) and local network protection (13.5) were built 2026-11-24; trackers (13.1), untrusted
+   content marking (13.10), malware sites (13.12) and the pane's rules in background browsing
+   2026-11-27.
 7. **The rest of the terminal back end**: flow control and kept history (14.1) and a clean
    environment (14.4), before any terminal screen is built on it. Most of 14.1 was built
    2026-11-25.
