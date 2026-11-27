@@ -482,11 +482,12 @@ ship with the app and are linked from Settings → General, and commit the resul
 npm run notices
 ```
 
-Refresh the bundled tracker list (roadmap 13.1) before each release and commit it; the app never
-downloads it:
+Refresh the bundled tracker list (roadmap 13.1) and malware list (13.12) before each release and
+commit them; the app never downloads them:
 
 ```sh
 curl -fsSL -o resources/shield/easyprivacy.txt https://easylist.to/easylist/easyprivacy.txt
+curl -fsSL -o resources/shield/urlhaus.txt https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-domains-online.txt
 ```
 
 The performance check launches the built app with a throwaway profile three times, then streams a 600-chunk reply
