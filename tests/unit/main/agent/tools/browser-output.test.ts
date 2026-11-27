@@ -41,6 +41,7 @@ it.each(['screenshot', 'pdf'] as const)(
 			pages: () => [page],
 			setDefaultTimeout: jest.fn(),
 			route: jest.fn(async () => undefined),
+			routeWebSocket: jest.fn(async () => undefined),
 			close: jest.fn(async () => undefined),
 		});
 		launchPersistentContext.mockResolvedValue(context);
