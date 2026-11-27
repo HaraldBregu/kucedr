@@ -47,6 +47,7 @@ export function BrowserToolbar({
 	readonly onSuggestionsOpen: (open: boolean) => void;
 }): ReactElement {
 	const blank = tab.url === 'about:blank' || tab.url === '';
+	const { t } = useTranslation();
 	const [address, setAddress] = useState(blank ? '' : tab.url);
 	useEffect(() => {
 		if (!tab.error) setAddress(blank ? '' : tab.url);
