@@ -28,6 +28,7 @@ export function BrowserTabs({
 	readonly onNew: (route?: BrowserRoute) => void;
 	readonly onMove: (targetId: string, index: number) => void;
 }): ReactElement {
+	const { t } = useTranslation();
 	const list = useRef<HTMLDivElement>(null);
 	const moved = useRef<string | null>(null);
 	const [drop, setDrop] = useState<number | null>(null);
