@@ -103,6 +103,34 @@ export class WorkspacesIpc implements IpcModule<WorkspacesIpcDeps> {
 			changed();
 			return true;
 		});
+		registerQueryWithEvent(WorkspacesChannels.chats, (event, id) => {
+			trusted.assert(event);
+			const workspace = resolveWorkspace(identifier.parse(id));
+			return workspaceSessions(workspace.sessions, workspace.id).length;
+		});
+		registerCommandWithEvent(WorkspacesChannels.reveal, async (event, id) => {
+			trusted.assert(event);
+			const error = await shell.openPath(resolveWorkspace(identifier.parse(id)).files);
+			if (error) throw new Error(error);
+		});
+		registerCommandWithEvent(WorkspacesChannels.remove, async (event, id) => {
+			trusted.assert(event);
+			const workspaceId = identifier.parse(id);
+			if (workspaceId === DEFAULT_WORKSPACE) throw new Error('The Personal workspace cannot be deleted.');
+			const activity = agent.listActivity()[workspaceId];
+			if (activity?.running || activity?.waiting)
+				throw new Error('Stop the chats running in this workspace first.');
+			const workspace = resolveWorkspace(workspaceId);
+			await withinWorkspace(workspaceId, () =>
+				Promise.all(
+					workspaceSessions(workspace.sessions, workspaceId).map((sessionId) =>
+						agent.deleteSession(sessionId)
+					)
+				)
+			);
+			await removeWorkspace(workspaceId);
+			changed();
+		});
 		registerCommandWithEvent(WorkspacesChannels.removeImage, (event, id) => {
 			trusted.assert(event);
 			setWorkspaceImage(identifier.parse(id));
