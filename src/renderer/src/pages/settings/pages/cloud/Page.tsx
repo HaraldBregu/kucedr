@@ -33,6 +33,7 @@ import Restore from './Restore';
 
 const CloudPage: React.FC = () => {
 	const { t } = useTranslation();
+	const { workspaces } = useSpaces();
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
 	const [services, setServices] = useState<PluginScriptInfo[]>([]);
 	const [providers, setProviders] = useState<StorageProvider[]>([]);
