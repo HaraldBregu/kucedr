@@ -109,12 +109,21 @@ send data out. 13.10 and 13.3 work as a pair.
 ## Rules the design keeps
 
 - **Every route.** The shield applies on direct, private, VPN and Tor tabs
-  ([Private and VPN browsing](VPN.md), [Tor](TOR.md)).
-- **Fails closed.** If a rule cannot be checked, the request is blocked.
+  ([Private and VPN browsing](VPN.md), [Tor](TOR.md)). Holds: the guard is set on every pane
+  session, and background browsing asks the same `verdict`.
+- **Fails closed.** If a rule cannot be checked, the request is blocked. Holds for the browser: a
+  check that throws blocks the request (`guard.ts`, background `shielded`), a missing or empty list
+  throws, routed tabs send nothing until their proxy is set, and the sandbox filter refuses a name
+  that does not resolve. Exceptions today: the DNS-rebinding check lets a request go when its own
+  lookup fails; WebSockets opened in background workers are not checked; `<link rel=dns-prefetch>`
+  hints skip `onBeforeRequest`, and only `.onion` names are stopped there, by a resolver rule.
 - **Local lists.** Block lists are stored and matched on the machine; no address is sent to a
   checking service.
 - **One decision point.** Browser, page fetch, search, shell and plugins ask the same rule set, so
-  a site blocked in one is blocked in all.
+  a site blocked in one is blocked in all. Not yet: the pane and background browsing ask `verdict`;
+  page fetch, link previews, search and shell each ask part of it (see What exists today), and
+  plugins ask nothing. A malware host is refused by the browser and page fetch but not by a link
+  preview or a shell command, and stored keys are not checked in shell traffic.
 
 ## Open decisions
 
