@@ -19,7 +19,7 @@ export function connections(next?: BrowserConnections): BrowserConnections {
 			const saved = JSON.parse(readFileSync(file, 'utf8')) as Partial<BrowserConnections>;
 			cached = {
 				tor: typeof saved.tor === 'string' ? saved.tor : '',
-				proxy: typeof saved.proxy === 'string' ? saved.proxy : '',
+				proxy: typeof saved.proxy === 'string' && acceptedProxy(saved.proxy) ? saved.proxy : '',
 			};
 		} catch {
 			cached = empty;
