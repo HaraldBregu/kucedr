@@ -16,7 +16,9 @@ wait in a holding folder for the user's answer. Blocked requests are listed per 
 toolbar's shield button. Background browsing calls the same `verdict` (`src/main/shield/verdict.ts`)
 for every request and for WebSockets opened by pages and frames, not yet for WebSockets opened in
 workers ([Browser routes and shield](../BROWSER_ROUTES.md#background-browsing-headless-chrome-in-background-runs)).
-The "What exists today" list below is from 2026-11-19.
+Since 2026-11-27 the same `verdict` blocks third-party requests to tracker hosts from the bundled
+EasyPrivacy list, on every pane route and in background browsing.
+The "What exists today" list below is from 2026-11-19, except the block-list line.
 
 One set of rules for everything Kucedr sends and receives, enforced in the main process and shown
 to the user, to protect the user's privacy. It protects Kucedr's own traffic; it is not a firewall
