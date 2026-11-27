@@ -51,7 +51,7 @@ Tor tabs share one mechanism with private and VPN tabs; see
 - **Approval.** The first time a chat opens a Tor tab, the user approves it; existing tool approvals
   still apply.
 - **Interactive only.** Background and scheduled runs do not use Tor in the first version. Their
-  address check in `src/main/public.ts` rejects `.onion` today, which is the right default.
+  address check in `src/main/public.ts` rejects `.onion` before any lookup.
 - **Slower pages.** Tor tabs get longer time limits than the tool's default.
 
 ## What the user must be told, in the app
