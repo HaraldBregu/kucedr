@@ -321,6 +321,8 @@ export const agent: AgentApi = {
 			normalizedName
 		);
 	},
+	importWorkspaceEntries: (destinationDirectoryPath) =>
+		typedInvokeUnwrap(AgentChannels.importWorkspaceEntries, destinationDirectoryPath.trim()),
 	transferWorkspaceEntry: (sourcePath, workspaceId) => {
 		const normalizedSourcePath = optionalTrimmedString(sourcePath);
 		if (!normalizedSourcePath) throw new Error('Invalid workspace source path.');
