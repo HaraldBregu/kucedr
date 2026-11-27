@@ -89,7 +89,6 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 				signal?.throwIfAborted();
 				throw new Error('Browser run has ended.');
 			}
-			session.context = launched;
 			launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
 			await launched.route('**/*', async (route) => {
 				const request = route.request();
