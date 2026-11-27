@@ -57,7 +57,7 @@ export function Group({
 								className={cn(
 									SPLIT_ITEM_CLASS,
 									'h-7',
-									isActive && SPLIT_ITEM_ACTIVE_CLASS
+									isActive ? SPLIT_ITEM_ACTIVE_CLASS : 'text-muted-foreground'
 								)}
 							>
 								<Icon className="size-4 shrink-0" strokeWidth={1.8} />
