@@ -298,11 +298,11 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			.finally(() => setBusy(false));
 	};
 
-	const importEntries = (parentPath: string): void => {
+	const importEntries = (parentPath: string, sourcePaths?: string[]): void => {
 		if (busy) return;
 		setBusy(true);
 		setActionError('');
-		void window.agent.importWorkspaceEntries(parentPath)
+		void window.agent.importWorkspaceEntries(parentPath, sourcePaths)
 			.then(async (imported) => {
 				if (imported.length === 0) return;
 				setSelection(new Set(imported));
