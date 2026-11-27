@@ -131,8 +131,8 @@ async function saveFrom(
 	directory?: string,
 	signal?: AbortSignal
 ): Promise<string> {
-	const page_ = { url: page.url(), title: await page.title(), route: 'direct' as const, workspace: currentWorkspace().id };
-	return JSON.stringify({ targetId: id, ...(await saveCapture(kind, base64, page_, directory, signal)) });
+	const captured = { url: page.url(), title: await page.title(), route: 'direct' as const, workspace: currentWorkspace().id };
+	return JSON.stringify({ targetId: id, ...(await saveCapture(kind, base64, captured, directory, signal)) });
 }
 
 function getPage(targetId?: string): { id: string; page: Page } {
