@@ -108,7 +108,7 @@ export function BrowserToolbar({
 						.reverse()
 						.map((item, index) => ({
 							id: String(index),
-							label: `${BLOCKED_REASONS[item.reason]}: ${item.url}`.slice(0, 90),
+							label: `${t(BLOCKED_REASONS[item.reason])}: ${item.url}`.slice(0, 90),
 							enabled: false,
 						}))
 				),
