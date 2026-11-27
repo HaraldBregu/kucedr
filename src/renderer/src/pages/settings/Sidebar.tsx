@@ -3,6 +3,7 @@ import { ArrowLeft, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { SPLIT_ITEM_CLASS, usePageContext } from '@/components/app/base/page';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import {
 	SETTINGS_MODEL_SERVICE_ITEMS,
