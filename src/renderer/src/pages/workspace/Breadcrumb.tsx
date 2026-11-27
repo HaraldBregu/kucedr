@@ -33,7 +33,7 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 				<DropdownMenuTrigger asChild>
 					<Button type="button" variant="ghost" size="sm" className="h-7 shrink-0 gap-2 px-1 aria-expanded:bg-transparent!" aria-label="Browse workspace root">
 						<Folders aria-hidden="true" className="size-4" />
-						{!sidebarOpen && <span>{t('settings.workspace.title', 'Workspace')}</span>}
+						{!sidebarOpen && <span className="max-md:hidden">{t('settings.workspace.title', 'Workspace')}</span>}
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start" className="max-h-80 min-w-64 overflow-y-auto p-0">
