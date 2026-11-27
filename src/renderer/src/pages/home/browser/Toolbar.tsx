@@ -33,6 +33,7 @@ const BLOCKED_REASONS: Record<BrowserBlocked['reason'], string> = {
 	download: 'browserPane.blocked.download',
 	onion: 'browserPane.blocked.onion',
 	tracker: 'browserPane.blocked.tracker',
+	dangerous: 'browserPane.blocked.dangerous',
 };
 
 export function BrowserToolbar({
