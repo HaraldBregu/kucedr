@@ -28,7 +28,7 @@ export function Space({
 				.join(' · ');
 	return (
 		<>
-			<Avatar className={large ? 'size-6 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white' : 'size-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white'}>
+			<Avatar className={large ? 'size-5.5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white' : 'size-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,var(--color-red-500)_15%,var(--color-purple-500),var(--color-yellow-400)_85%)] text-white'}>
 				{workspace.image && <AvatarImage src={workspace.image} alt="" />}
 				<AvatarFallback
 					className={large
