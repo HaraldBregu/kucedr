@@ -6,10 +6,12 @@ export function BrowserScreen({
 	targetId,
 	error,
 	suppressed,
+	danger,
 }: {
 	readonly targetId: string;
 	readonly error?: string;
 	readonly suppressed?: boolean;
+	readonly danger?: ReactElement;
 }): ReactElement {
 	const box = useRef<HTMLDivElement>(null);
 
