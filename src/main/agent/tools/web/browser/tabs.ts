@@ -21,6 +21,7 @@ export function tabs(): BrowserPaneState {
 			...(tab.error ? { error: tab.error } : {}),
 			...(tab.blocked.length ? { blocked: [...tab.blocked] } : {}),
 			...(tab.trackers ? { trackers: tab.trackers } : {}),
+			...(tab.danger ? { danger: tab.danger } : {}),
 			...(tab.download
 				? { download: { file: tab.download.file, site: tab.download.site, state: tab.download.state } }
 				: {}),
