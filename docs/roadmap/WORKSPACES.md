@@ -62,7 +62,6 @@ not moved and no longer read.
 ## Left
 
 - Delete and move (10.5).
-- Drag and drop from outside (10.11).
 - Renaming the default workspace.
 - Windows: the command sandbox is re-initialised when commands alternate between workspaces. Not
   built and not tested; macOS only was checked.
