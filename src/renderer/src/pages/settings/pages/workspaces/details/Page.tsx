@@ -56,15 +56,9 @@ const WorkspaceDetailsPage: React.FC = () => {
 		);
 	};
 	const remove = (): void => {
-		void confirm({
-			title: t('settings.workspaces.deleteTitle', { name: title }),
-			description: t('settings.workspaces.deleteDescription', { count: chats ?? 0 }),
-			confirmLabel: t('common.delete'),
-		}).then((confirmed) => {
-			if (!confirmed) return;
-			void attempt(window.workspaces.remove(workspace.id)).then((removed) => {
-				if (removed) void navigate('/settings/workspaces');
-			});
+		setDeleting(false);
+		void attempt(window.workspaces.remove(workspace.id)).then((removed) => {
+			if (removed) void navigate('/settings/workspaces');
 		});
 	};
 
