@@ -4,6 +4,6 @@ import { hosts } from './hosts';
 export function sinkhole(): string {
 	return [...hosts()]
 		.filter((host) => !isIP(host))
-		.map((host) => `MAP ${host} ~NOTFOUND`)
+		.map((host) => `MAP ${host} ~NOTFOUND, MAP ${host}. ~NOTFOUND`)
 		.join(', ');
 }
