@@ -263,9 +263,13 @@ export class RealtimeVoiceToolRuntime {
 			? 'Error: realtime voice tool-output budget exhausted.'
 			: outputText;
 		const finalError = isError || exhausted;
+		const modelOutput = untrusted(
+			this.dependencies.tools.find((tool) => tool.id === toolCall.name),
+			finalOutput
+		);
 		toolCall.args = input;
 		toolCall.result = {
-			content: finalOutput,
+			content: modelOutput,
 			...(finalError ? { isError: true } : {}),
 		};
 		this.dependencies.conversation.addToolResult(toolCall);
