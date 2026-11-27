@@ -1,4 +1,5 @@
 import type { BrowserBlocked } from '../../shared/browser';
+import { dangerous } from './dangerous';
 import { leaks } from './leaks';
 import { local } from './local';
 import { onion } from './onion';
