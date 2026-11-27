@@ -120,9 +120,10 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 				).catch(() => undefined);
 			});
 			await launched.routeWebSocket(/.*/, async (socket) => {
-				const allowed = await shielded({ url: socket.url(), method: 'GET', resourceType: 'webSocket' }).catch(
-					() => false
-				);
+				const allowed = await shielded(
+					{ url: socket.url(), method: 'GET', resourceType: 'webSocket' },
+					undefined
+				).catch(() => false);
 				if (allowed) socket.connectToServer();
 				else await socket.close().catch(() => undefined);
 			});
