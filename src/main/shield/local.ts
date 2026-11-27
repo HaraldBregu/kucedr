@@ -3,8 +3,7 @@ import { privateAddress } from '../private';
 
 // A host on this machine or the local network, judged from the name alone: no address lookup,
 // so it can run on Tor and proxy tabs without revealing the name.
-// ponytail: a public name that resolves to a private address (DNS rebinding) passes; add a cached
-// lookup for direct tabs if that matters.
+// A public name that resolves to a private address is caught on direct tabs by `rebound`.
 export function local(hostname: string): boolean {
 	const host = hostname
 		.toLowerCase()
