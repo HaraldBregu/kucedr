@@ -27,12 +27,12 @@ const WorkspaceDetailsPage: React.FC = () => {
 	const [deleting, setDeleting] = useState(false);
 	const workspace = workspaces.find((item) => item.id === workspaceId);
 	const [name, setName] = useState('');
-	const [chats, setChats] = useState<number>();
+	const [contents, setContents] = useState<WorkspaceContents>();
 	const [error, setError] = useState('');
 
 	useEffect(() => setName(workspace?.name ?? ''), [workspace?.name]);
 	useEffect(() => {
-		void window.workspaces.chats(workspaceId).then(setChats, () => setChats(undefined));
+		void window.workspaces.contents(workspaceId).then(setContents, () => setContents(undefined));
 	}, [workspaceId, workspaces]);
 
 	if (!workspace) {
