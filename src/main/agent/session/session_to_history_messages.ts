@@ -2,6 +2,7 @@ import type { AgentHistoryMessage } from '../../../shared/agent_types';
 import type { Message } from '../types';
 import { toHistoryContentBlocks } from './session_to_history_content_blocks';
 import { toTextContent } from './session_to_text_content';
+import { unwrap } from './unwrap';
 
 export function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 	if (message.role === 'system') return [];
