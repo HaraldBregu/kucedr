@@ -143,7 +143,7 @@ const WorkspaceDetailsPage: React.FC = () => {
 			<SettingsSection title={t('settings.workspaces.data')}>
 				<SettingsPanel>
 					<SettingsRow title={t('settings.workspaces.chats')}>
-						<SettingsValue>{chats ?? '—'}</SettingsValue>
+						<SettingsValue>{contents?.chats.length ?? '—'}</SettingsValue>
 					</SettingsRow>
 					<SettingsRow title={t('settings.workspaces.running')}>
 						<SettingsValue>{workspace.running ?? 0}</SettingsValue>
