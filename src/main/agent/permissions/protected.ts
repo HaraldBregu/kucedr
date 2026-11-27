@@ -39,17 +39,8 @@ export function protectedRoots(): { read: string[]; write: string[]; writable: s
 		...system,
 		...browserProfiles,
 		path.join(app.getPath('sessionData'), 'Partitions'),
-		...(workspace.id === DEFAULT_WORKSPACE
-			? [path.join(data, 'workspaces')]
-			: [
-					base.files,
-					base.sessions,
-					base.memory,
-					base.library,
-					base.rag,
-					workspace.browser,
-					...others.map((record) => path.join(data, 'workspaces', record.id)),
-				]),
+		...(workspace.id === DEFAULT_WORKSPACE ? [] : [base.files]),
+		...otherSessions(base.sessions, workspace.id),
 		...others.map((record) => record.folder),
 		...[
 			['providers'],
