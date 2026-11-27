@@ -1,8 +1,8 @@
 # 12. Private and VPN browsing
 
 Part of the [Roadmap](README.md). Status: 12.1, 12.2 and the route indicator of 12.4 built
-2026-11-24 ([Browser routes and shield](../BROWSER_ROUTES.md)); 12.3 and the per-workspace default
-proposal.
+2026-11-24 ([Browser routes and shield](../BROWSER_ROUTES.md)); SOCKS4 refused 2026-11-27; 12.3 and
+the per-workspace default proposal.
 
 The agent's browser can browse privately, leaving nothing behind, and through a VPN so sites do not
 see the user's network address.
