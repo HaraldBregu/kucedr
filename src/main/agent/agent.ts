@@ -21,6 +21,7 @@ import {
 	type SessionCategory,
 } from './session';
 import { SessionCoordinator } from './session/coordinator';
+import { sessionWorkspace } from './session/session_session_workspace';
 import { releaseSession } from './session/release';
 import type { RunExtender } from './extension';
 import { stream } from './runner/run_stream';
