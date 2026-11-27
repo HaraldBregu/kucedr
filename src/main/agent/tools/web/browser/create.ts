@@ -44,6 +44,7 @@ export function createTab(
 		partition,
 		ready,
 		blocked: [],
+		trackers: 0,
 		chat,
 		owner,
 		agent: owner !== undefined,
