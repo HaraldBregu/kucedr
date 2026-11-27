@@ -359,7 +359,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 						}}><Search className="size-4" /></Button>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.create', 'Create')} className="text-muted-foreground"><Plus /></Button>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label={t('workspaceSidebar.create', 'Create')} className="absolute inset-y-0 right-1 my-auto text-muted-foreground"><Plus /></Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
 							{([
