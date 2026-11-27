@@ -5,7 +5,7 @@ import type { StorageSyncLogger } from './types';
 export function isAutoSyncable(storage: StorageSyncSettings): boolean {
 	return (
 		Boolean(storage.serviceId && storage.providerId) &&
-		storage.paths.length > 0 &&
+		backupPaths(storage).length > 0 &&
 		storage.syncEnabled
 	);
 }
