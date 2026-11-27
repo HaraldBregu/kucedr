@@ -2856,6 +2856,12 @@
 		"block": "Block",
 		"close": "Close"
 	},
+	"browserDanger": {
+		"title": "Dangerous site blocked",
+		"body": "{{site}} is on the list of known malware sites that ships with Kucedr, so this page was not opened. The list is checked on this computer; the address is not sent anywhere.",
+		"continue": "Continue anyway",
+		"busy": "The assistant is using this tab. Stop it to continue."
+	},
 	"browserPane": {
 		"routes": {
 			"private": {
