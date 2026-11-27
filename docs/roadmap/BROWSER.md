@@ -178,6 +178,7 @@ it says otherwise. Windows and Linux paths are written but not exercised.
 | 23.18 | Browsing history | Pages opened in the pane are recorded, suggested in the address field, and listed in Settings → Browser → History with search and delete. Built 2026-11-23 | `history.json`, `history.ts`, `visit.ts`; moved out of `library.json` on first read | M |
 | 23.19 | Bookmarks that cannot be lost | A damaged file is never overwritten, the previous copy is kept, writes are flushed, clearing is split and confirmed, and bookmarks export to a standard file. Built 2026-11-23 | `library.ts`, `aside.ts`, `write.ts`, `html.ts`, `confirm.ts` | S |
 | 23.20 | Drag tabs to reorder | Drag a tab along the strip, or move it with the keyboard; the order is shared by every window and kept after a restart. Built 2026-11-23 | `position` in `pane.ts`, the `move` command, `Tabs.tsx` | S |
+| 23.21 | Saved passwords that work | A login saved in the password manager is offered and filled on its site every time. Added 2026-11-27 as a fix; the failing cases are to be reproduced and listed in the detailed plan | 23.9, 23.13, 23.14 (`passwords.ts`, `fill.ts`) | S–M |
 
 ## Saved data and autofill (23.9–23.12)
 
