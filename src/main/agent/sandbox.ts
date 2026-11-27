@@ -216,7 +216,7 @@ export class ExecSandbox {
 				await SandboxManager.reset();
 			}
 			try {
-				await SandboxManager.initialize(config);
+				await SandboxManager.initialize(config, egress);
 			} catch (cause) {
 				const guidance =
 					process.platform === 'win32'
