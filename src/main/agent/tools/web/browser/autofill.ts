@@ -146,7 +146,7 @@ const SCRIPT = `((payloadJson) => {
 			},
 			true
 		);
-		document.addEventListener('input', (e) => { if (e.isTrusted && e.target === af.el && af.all.length) af.filter(); }, true);
+		document.addEventListener('input', (e) => { if (e.isTrusted && e.target === af.el && af.all.length) { af.typed = true; af.filter(); } }, true);
 		document.addEventListener(
 			'mousedown',
 			(e) => {
