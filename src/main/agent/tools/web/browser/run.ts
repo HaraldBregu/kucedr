@@ -69,6 +69,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 		const parsed = new URL(value);
 		if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:')
 			throw new Error('Invalid URL: must be http or https');
+		refuse(parsed);
 		return parsed.toString();
 	};
 	const current = async (): Promise<BrowserTab> => {
