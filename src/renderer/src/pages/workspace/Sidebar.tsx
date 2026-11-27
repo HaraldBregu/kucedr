@@ -298,6 +298,24 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			.finally(() => setBusy(false));
 	};
 
+	const importEntries = (parentPath: string): void => {
+		if (busy) return;
+		setBusy(true);
+		setActionError('');
+		void window.agent.importWorkspaceEntries(parentPath)
+			.then(async (imported) => {
+				if (imported.length === 0) return;
+				setSelection(new Set(imported));
+				const files = await window.agent.listWorkspaceFiles();
+				setEntries(files);
+				onFilesLoaded?.(files);
+			})
+			.catch((cause: unknown) => {
+				setActionError(cause instanceof Error ? cause.message : t('workspaceSidebar.actionError', 'Unable to change Workspace files.'));
+			})
+			.finally(() => setBusy(false));
+	};
+
 	const confirmAction = (name: string): void => {
 		if (!pendingAction || busy) return;
 		if (!name) {
