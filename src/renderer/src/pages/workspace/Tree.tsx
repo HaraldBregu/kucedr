@@ -26,10 +26,11 @@ interface WorkspaceTreeProps {
 	readonly selection: ReadonlySet<string>;
 	readonly onSelect: (entry: WorkspaceTreeEntry, event: React.MouseEvent) => boolean;
 	readonly onMove: (sourcePaths: string[], destinationPath: string) => void;
+	readonly onImport: (sourcePaths: string[], destinationPath: string) => void;
 	readonly expanded?: boolean;
 }
 
-export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, onCreateCancel, onFileSelect, onEntryContextMenu, renamingPath, renameBusy, onRename, onRenameCancel, onRenameStart, selectedPath, selection, onSelect, onMove, expanded = false }: WorkspaceTreeProps): React.JSX.Element {
+export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, onCreateCancel, onFileSelect, onEntryContextMenu, renamingPath, renameBusy, onRename, onRenameCancel, onRenameStart, selectedPath, selection, onSelect, onMove, onImport, expanded = false }: WorkspaceTreeProps): React.JSX.Element {
 	const dragPaths = (entry: WorkspaceTreeEntry): string => (selection.has(entry.path) ? [...selection] : [entry.path]).join('\n');
 	const [openDirectories, setOpenDirectories] = useState(() => new Set(entries.filter((entry) => selectedPath && (selectedPath.startsWith(`${entry.path}/`) || selectedPath.startsWith(`${entry.path}\\`))).map((entry) => entry.path)));
 	return (
@@ -66,7 +67,7 @@ export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, on
 							event.stopPropagation();
 							event.dataTransfer.setData('application/x-workspace-path', entry.path);
 						}} onDragOver={(event) => {
-							if (!event.dataTransfer.types.includes('application/x-workspace-path')) return;
+							if (!event.dataTransfer.types.includes('application/x-workspace-path') && !event.dataTransfer.types.includes('Files')) return;
 							event.preventDefault();
 							event.stopPropagation();
 							event.currentTarget.dataset.dropTarget = '';
@@ -75,10 +76,12 @@ export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, on
 						}} onDrop={(event) => {
 							delete event.currentTarget.dataset.dropTarget;
 							const source = event.dataTransfer.getData('application/x-workspace-path');
-							if (!source) return;
+							const files = Array.from(event.dataTransfer.files, (file) => window.app.getPathForFile(file)).filter(Boolean);
+							if (!source && files.length === 0) return;
 							event.preventDefault();
 							event.stopPropagation();
-							onMove(source.split('\n'), entry.path);
+							if (source) onMove(source.split('\n'), entry.path);
+							else onImport(files, entry.path);
 						}} onDoubleClick={(event) => {
 							event.preventDefault();
 							onRenameStart(entry);
@@ -95,7 +98,7 @@ export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, on
 							</summary>
 							{entry.children?.length || creating?.parentPath === entry.path ? (
 								<div className="ml-3 pl-1">
-									<WorkspaceTree entries={entry.children ?? []} parentPath={entry.path} creating={creating} onCreate={onCreate} onCreateCancel={onCreateCancel} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} onRenameStart={onRenameStart} selectedPath={selectedPath} selection={selection} onSelect={onSelect} onMove={onMove} expanded={expanded} />
+									<WorkspaceTree entries={entry.children ?? []} parentPath={entry.path} creating={creating} onCreate={onCreate} onCreateCancel={onCreateCancel} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} onRenameStart={onRenameStart} selectedPath={selectedPath} selection={selection} onSelect={onSelect} onMove={onMove} onImport={onImport} expanded={expanded} />
 								</div>
 							) : null}
 						</details>
