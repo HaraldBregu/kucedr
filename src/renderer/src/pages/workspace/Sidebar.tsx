@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { Spaces } from '../home/Spaces';
 import { WorkspaceTree, type WorkspaceAction } from './Tree';
 
 interface WorkspaceSidebarProps {
@@ -36,6 +37,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 	const anchorPath = useRef<string | null>(null);
 	const navRef = useRef<HTMLElement>(null);
 	const [query, setQuery] = useState('');
+	const [searchOpen, setSearchOpen] = useState(false);
 	const filter = (list: WorkspaceTreeEntry[], text: string): WorkspaceTreeEntry[] => list.flatMap((item) => {
 		if (item.name.toLowerCase().includes(text)) return [item];
 		const children = filter(item.children ?? [], text);
@@ -174,9 +176,17 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		const revealLabel = navigator.platform.startsWith('Mac')
 			? t('workspaceSidebar.revealInFinder', 'Reveal in Finder')
 			: t('workspaceSidebar.revealInFileManager', 'Show in file manager');
+		const workspaceItems = entry ? otherWorkspaces.map((workspace) => ({
+			id: `workspace:${workspace.id}`,
+			label: t('spaces.moveTo', {
+				name: workspace.id === DEFAULT_WORKSPACE ? t('spaces.personal') : workspace.name,
+				defaultValue: 'Move to workspace {{name}}',
+			}),
+		})) : [];
 		const items: ContextMenuDescriptor[] = [
 			{ id: 'create-file', label: t('workspaceSidebar.newFile', 'New file') },
 			{ id: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder') },
+			...(workspaceItems.length ? [{ type: 'separator' as const }, ...workspaceItems] : []),
 			...(multiple ? [
 				{ type: 'separator' as const },
 				{ id: 'delete', label: t('workspaceSidebar.deleteCount', { count: topLevel(selection).length, defaultValue: 'Delete {{count}} items' }) },
@@ -302,35 +312,42 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		<div data-slot="workspace-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="shrink-0 border-b border-sidebar-border/50 px-2 pb-2">
 				<SidebarMenu>
-					<SidebarMenuItem>
+					<Spaces />
+					<SidebarMenuItem className="flex gap-1">
 						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/home')}>
 							<ArrowLeft className="size-4 shrink-0" />
 							<span className="truncate">{t('settings.returnToChat', 'Back to home')}</span>
 						</SidebarMenuButton>
+						<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.search', 'Search files')} aria-pressed={searchOpen} onClick={() => {
+							setSearchOpen((open) => {
+								if (open) setQuery('');
+								return !open;
+							});
+						}}><Search className="size-4" /></Button>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.create', 'Create')} className="text-muted-foreground"><Plus /></Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							{([
+								{ kind: 'create-file', label: t('workspaceSidebar.newFile', 'New file'), icon: FilePlus },
+								{ kind: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder'), icon: FolderPlus },
+							] as const).map(({ kind, label, icon: Icon }) => (
+								<DropdownMenuItem key={kind} onSelect={() => {
+									setActionError('');
+									setPendingAction({ kind, parentPath: '' });
+								}}><Icon />{label}</DropdownMenuItem>
+							))}
+						</DropdownMenuContent>
+					</DropdownMenu>
 					</SidebarMenuItem>
 				</SidebarMenu>
-				<div className="flex items-center gap-1 pt-2">
-					<div className="relative flex-1">
+				{searchOpen && <div className="px-2 pt-2">
+					<div className="relative">
 						<Search aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
-						<Input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('workspaceSidebar.search', 'Search files')} aria-label={t('workspaceSidebar.search', 'Search files')} className="h-8 pl-8" />
+						<Input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('workspaceSidebar.search', 'Search files')} aria-label={t('workspaceSidebar.search', 'Search files')} className="h-8 pl-8" autoFocus />
 					</div>
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button type="button" variant="ghost" size="icon" aria-label={t('workspaceSidebar.create', 'Create')} className="text-muted-foreground"><Plus /></Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						{([
-							{ kind: 'create-file', label: t('workspaceSidebar.newFile', 'New file'), icon: FilePlus },
-							{ kind: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder'), icon: FolderPlus },
-						] as const).map(({ kind, label, icon: Icon }) => (
-							<DropdownMenuItem key={kind} onSelect={() => {
-								setActionError('');
-								setPendingAction({ kind, parentPath: '' });
-							}}><Icon />{label}</DropdownMenuItem>
-						))}
-					</DropdownMenuContent>
-				</DropdownMenu>
-				</div>
+				</div>}
 			</header>
 			<nav ref={navRef} onKeyDown={handleTreeKey} aria-label={t('workspaceSidebar.files', 'Workspace files')} className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2" onContextMenu={(event) => {
 				event.preventDefault();
