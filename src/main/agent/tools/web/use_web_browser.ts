@@ -94,7 +94,7 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			await launched.route('**/*', async (route) => {
 				const request = route.request();
 				let navigation = false;
-				let allowed = false;
+				let allowed: boolean;
 				try {
 					navigation =
 						request.isNavigationRequest() && request.method() === 'GET' && !request.frame().parentFrame();
