@@ -144,6 +144,7 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			for (const page of launched.pages()) trackPage(page, session);
 			return launched;
 		}, (cause: unknown) => {
+			void remove();
 			signal?.throwIfAborted();
 			const detail = cause instanceof Error ? cause.message : String(cause);
 			throw new Error(
