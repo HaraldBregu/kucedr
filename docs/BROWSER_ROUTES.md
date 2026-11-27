@@ -45,7 +45,9 @@ Since 2026-11-27 it asks the same rules as the pane (`src/main/agent/tools/web/u
 - A top-level `GET` page load with tracking parameters is answered with a 307 to the stripped address (`strip.ts`).
 - WebRTC: `default_public_interface_only`, the policy of direct pane tabs, from `src/main/shield/webrtc.ts` (shared with the pane). Chrome 158 ignores `--force-webrtc-ip-handling-policy`; it honours `--webrtc-ip-handling-policy`, which is what the launch passes.
 - Checked 2026-11-27 in the built app: a scheduled task with a mock model opened a page on a fake public name (served from this machine), which opened WebSockets to `127.0.0.1` and to the LAN IP, a `fetch` to `127.0.0.1`, and an `RTCPeerConnection`. The two sockets and the fetch never reached the server; a control socket to a public name did. With mDNS hiding turned off, no ICE candidate was gathered; with the WebRTC switch removed, a host candidate carried the LAN IP. `?utm_source=x&keep=1&gclid=abc#frag` arrived as `?keep=1` and the page ended on `?keep=1#frag`.
-- Ceiling: a WebSocket opened inside a worker is not checked (Playwright routes only page and frame sockets). In the same check one reached `127.0.0.1`. Chrome's own local-network check blocked it when the page was marked public with `--ip-address-space-overrides`, but the secret guard does not see it. A `fetch` from a worker was blocked.
+- Ceiling: a WebSocket opened inside a worker is not checked (Playwright routes only page and frame sockets). In the same check one reached `127.0.0.1`. Chrome's own local-network check blocked it when the page was marked public with `--ip-address-space-overrides`, but the secret guard does not see it. A `fetch` from a worker was blocked. A headless Chrome probe the same day showed that a socket opened through an `about:blank` iframe's `WebSocket` and a service worker's `fetch` are checked.
+- Ceiling: `publicUrl` resolves the name with the system resolver and Chrome resolves it again, so an answer that changes between the two lookups passes.
+- If the request or WebSocket check cannot be installed, the browser is not used.
 
 ## User surface
 
