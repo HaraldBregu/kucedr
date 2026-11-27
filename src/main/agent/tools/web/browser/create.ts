@@ -67,7 +67,6 @@ export function createTab(
 		changed();
 	});
 	contents.setWebRTCIPHandlingPolicy(webrtc(isPrivacyEnabled() || route === 'tor' || route === 'proxy'));
-	contents.debugger.attach('1.3');
 	void contents.debugger
 		.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true })
 		.catch(() => undefined);
