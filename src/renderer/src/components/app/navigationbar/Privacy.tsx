@@ -28,7 +28,12 @@ export function Privacy(): React.JSX.Element | null {
 							active ? 'text-foreground' : 'text-muted-foreground'
 						)}
 					>
-						<Icon className="size-4" strokeWidth={1.8} aria-hidden="true" />
+						<Icon
+							className="size-4"
+							fill={active ? 'currentColor' : 'none'}
+							strokeWidth={1.8}
+							aria-hidden="true"
+						/>
 					</Link>
 				}
 			/>
