@@ -2085,8 +2085,21 @@
 			"deleteHint": "Prima di eliminare qualsiasi cosa mostra tutto ciò che verrà rimosso. Le chat vengono spostate in Personale, a meno che tu non scelga di eliminarle. La cartella e i suoi file restano.",
 			"deleteTitle": "Eliminare {{name}}?",
 			"deleteType": "Scrivi {{name}} per confermare.",
-			"deleteDescription_one": "Vengono eliminati {{count}} chat, i dati del browser, le attività pianificate e le impostazioni di questo spazio di lavoro. La cartella e i suoi file restano.",
-			"deleteDescription_other": "Vengono eliminate {{count}} chat, i dati del browser, le attività pianificate e le impostazioni di questo spazio di lavoro. La cartella e i suoi file restano."
+			"deleteIntro": "Controlla cosa succede ai dati di questo spazio di lavoro prima di eliminarlo.",
+			"deleteChats_one": "{{count}} chat",
+			"deleteChats_other": "{{count}} chat",
+			"deleteChatsToo_one": "Elimina anche questa chat in modo definitivo",
+			"deleteChatsToo_other": "Elimina anche queste {{count}} chat in modo definitivo",
+			"chatsMoved": "Verranno spostate in Personale.",
+			"chatsDeleted": "Verranno eliminate e non potranno essere recuperate.",
+			"archived": "archiviata",
+			"deleteRemoved": "Eliminato",
+			"deleteTasks_one": "{{count}} attività pianificata: {{names}}",
+			"deleteTasks_other": "{{count}} attività pianificate: {{names}}",
+			"deleteBrowser": "Schede, cronologia, password, segnalibri e accessi del browser",
+			"deleteSettings": "Nome, immagine, modello della chat e regole \"consenti sempre\" di questo spazio di lavoro",
+			"deleteKept": "Conservato",
+			"deleteKeptDescription": "La cartella e tutti i suoi file. Memoria, conoscenza e Libreria sono condivise e restano invariate."
 		},
 		"scripts": {
 			"title": "Script installati",
