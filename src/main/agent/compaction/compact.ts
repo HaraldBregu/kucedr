@@ -14,7 +14,7 @@ export async function compactConversation(
 	providerLimiter: KeyedLimiter
 ): Promise<AgentCompactSessionResult> {
 	const root = config.workspace.sessions;
-	const resolvedSessionId = resolveStoredSessionId(sessionId, root);
+	const resolvedSessionId = resolveStoredSessionId(sessionId, root, 'main', config.workspace.id);
 	const messages = loadMessages(config, resolvedSessionId);
 	const retainFrom = turnStart(messages, retainedUser(messages, false));
 	if (retainFrom === 0)
