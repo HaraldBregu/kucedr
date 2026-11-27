@@ -1,8 +1,13 @@
 import { app } from 'electron';
+import { ONION_RULES } from '../shield/onion';
 import { getPrivacyRoute, isPrivacyEnabled } from './state';
 
 export function setStartupProxy(): void {
-	if (!isPrivacyEnabled()) return;
+	if (!isPrivacyEnabled()) {
+		const rules = app.commandLine.getSwitchValue('host-resolver-rules');
+		app.commandLine.appendSwitch('host-resolver-rules', rules ? `${ONION_RULES}, ${rules}` : ONION_RULES);
+		return;
+	}
 
 	app.commandLine.appendSwitch('disable-background-networking');
 	app.commandLine.appendSwitch('disable-quic');
