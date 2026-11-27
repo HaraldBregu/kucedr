@@ -48,6 +48,7 @@ export const browserPane: BrowserPaneApi = {
 	passwordsFill: (targetId, id) => typedInvokeUnwrap(BrowserChannels.passwordsFill, targetId, id),
 	downloadAnswer: (targetId, answer) => typedInvokeUnwrap(BrowserChannels.downloadAnswer, targetId, answer),
 	permissionAnswer: (targetId, answer) => typedInvokeUnwrap(BrowserChannels.permissionAnswer, targetId, answer),
+	dangerContinue: (targetId) => typedInvokeUnwrap(BrowserChannels.dangerContinue, targetId),
 	connections: () => typedInvokeUnwrap(BrowserChannels.connections),
 	connectionsSet: (connections) => typedInvokeUnwrap(BrowserChannels.connectionsSet, connections),
 	torFind: () => typedInvokeUnwrap(BrowserChannels.torFind),
