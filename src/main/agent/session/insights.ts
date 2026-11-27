@@ -22,7 +22,7 @@ export async function readRunInsights(
 		for await (const line of lines) {
 			let row;
 			try {
-				row = JSON.parse(line);
+				row = JSON.parse(unsealLine(line));
 			} catch {
 				continue;
 			}
