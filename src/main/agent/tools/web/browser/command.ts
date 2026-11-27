@@ -1,5 +1,9 @@
 import type { BrowserPaneCommand } from '../../../../../shared/browser';
 import { library } from '../../../../browser/library';
+import { loadTranslations } from '../../../../i18n';
+import { isPrivacyEnabled } from '../../../../privacy/state';
+import { getLanguage } from '../../../../settings_store';
+import { onion } from '../../../../shield/onion';
 import { closeTab } from './close';
 import { createTab } from './create';
 import { findTab } from './find';
