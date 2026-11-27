@@ -11,7 +11,6 @@ export function syncFolders(): StorageSyncFolder[] {
 		{ key: 'agent', path: workspace.files },
 		{ key: 'sessions', path: workspace.sessions },
 		{ key: 'library', path: workspace.library },
-		{ key: 'workspaces', path: path.join(userDataLocation(), 'workspaces') },
 		{ key: 'skills', path: skillsRoot },
 	];
 }
