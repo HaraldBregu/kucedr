@@ -93,15 +93,21 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
 			await launched.route('**/*', async (route) => {
 				const request = route.request();
-				const navigation =
-					request.isNavigationRequest() && request.method() === 'GET' && !request.frame().parentFrame();
-				const body = request.postDataBuffer();
-				const allowed = await shielded({
-					url: request.url(),
-					method: request.method(),
-					resourceType: navigation ? 'mainFrame' : request.resourceType(),
-					uploadData: body ? [{ bytes: body }] : undefined,
-				}).catch(() => false);
+				let navigation = false;
+				let allowed = false;
+				try {
+					navigation =
+						request.isNavigationRequest() && request.method() === 'GET' && !request.frame().parentFrame();
+					const body = request.postDataBuffer();
+					allowed = await shielded({
+						url: request.url(),
+						method: request.method(),
+						resourceType: navigation ? 'mainFrame' : request.resourceType(),
+						uploadData: body ? [{ bytes: body }] : undefined,
+					});
+				} catch {
+					allowed = false;
+				}
 				const location = allowed && navigation ? strip(request.url()) : undefined;
 				await (
 					!allowed
