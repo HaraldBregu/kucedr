@@ -18,7 +18,7 @@ export type BrowserRoute = (typeof BROWSER_ROUTES)[number];
 
 export interface BrowserBlocked {
 	readonly url: string;
-	readonly reason: 'local' | 'secret' | 'route' | 'download';
+	readonly reason: 'local' | 'secret' | 'route' | 'download' | 'onion';
 }
 
 export interface BrowserDownload {
