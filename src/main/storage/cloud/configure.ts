@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { StorageSyncSettings } from '../../../shared/storage_types';
 import { storageProviders } from '../providers';
+import { backupPaths } from '../../backup/paths';
 import { readStorageConfig } from '../local/config';
 import { writeStorageConfig } from '../local/config_write';
 import type { StorageConfig } from '../local/types';
