@@ -50,6 +50,7 @@ import {
 import { workspacePath } from '../agent/system';
 import { readWorkspaces } from '../workspaces/read';
 import { resolveWorkspace } from '../workspaces/resolve';
+import { existsSync } from 'node:fs';
 import { sendToWorkspace } from '../workspaces/send';
 import { withinWorkspace } from '../workspaces/within';
 import {
