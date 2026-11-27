@@ -2,6 +2,7 @@ import type { BrowserBlocked } from '../../shared/browser';
 import { leaks } from './leaks';
 import { local } from './local';
 import { onion } from './onion';
+import { tracker } from './tracker';
 
 export interface ShieldRequest {
 	readonly url: string;
