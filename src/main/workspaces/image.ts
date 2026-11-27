@@ -9,7 +9,7 @@ export function setWorkspaceImage(id: string, source?: string): void {
 	const records = readWorkspaces();
 	const record = records.find((entry) => entry.id === id);
 	if (!record) throw new Error('Workspace not found.');
-	const directory = path.join(userDataLocation(), 'workspaces', 'images');
+	const directory = workspaceImages();
 	const previous = record.image;
 	delete record.image;
 	if (source) {
