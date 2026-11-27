@@ -40,7 +40,7 @@ on an outside decision.
 | 7 | [Languages](LANGUAGES.md) | Complete Italian, more languages |
 | 8 | [Plugins](PLUGINS.md) | Catalogue, sign-in (OAuth) for plugins, paid plugins, app bridge |
 | 9 | [Payments and paid services](PAYMENTS.md) | Kucedr Storage, plans and checkout, entitlements, subscription management |
-| 10 | [Workspaces and windows](WORKSPACES.md) | Workspaces from a picked folder and switcher, separate chats, memory and sign-ins, a workspace per window, open in new window, work that continues in the background |
+| 10 | [Workspaces and windows](WORKSPACES.md) | Workspaces from a picked folder and switcher, separate chats, memory and sign-ins, a workspace per window, open in new window, work that continues in the background, drag and drop into workspace folders from outside |
 | 11 | [Tor and .onion sites](TOR.md) | Tor tabs in the browser pane |
 | 12 | [Private and VPN browsing](VPN.md) | Private tabs, proxy and VPN routes for the browser pane |
 | 13 | [Network shield](SHIELD.md) | Tracker blocking, site rules, secret guard, local network protection, network view, untrusted content marking, download protection |
