@@ -20,9 +20,10 @@ workers ([Browser routes and shield](../BROWSER_ROUTES.md#background-browsing-he
 Since 2026-11-27 the same `verdict` blocks third-party requests to tracker hosts from the bundled
 EasyPrivacy list, on every pane route and in background browsing, and every request, page loads
 included, to known malware hosts (13.12); `fetch_web_page` and the agent's `use_web_browser`
-refuse those hosts with a clear error. Since 2026-11-27 `use_web_browser` also refuses a type,
-fill or evaluate action whose text carries a stored key or token, before it reaches the page, so
-the key cannot leave through a channel the request check cannot read.
+refuse those hosts with a clear error. Since 2026-11-27 `use_web_browser` also refuses an act
+whose typed text, field values, select values, wait selector or script carries a stored key or
+token, before it reaches the page, so the key cannot leave through a channel the request check
+cannot read.
 The "What exists today" list below is from 2026-11-19, except the block-list and secret-guard lines.
 
 One set of rules for everything Kucedr sends and receives, enforced in the main process and shown
