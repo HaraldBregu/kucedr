@@ -26,15 +26,21 @@ export function createTab(
 	partition = route === 'direct' ? currentWorkspace().partition : `${route}-${++disposable}`
 ): BrowserTab {
 	const workspace = currentWorkspace();
-	const ready = prepare(partition, route);
+	const prepared = prepare(partition, route);
 	const view = new WebContentsView({
 		webPreferences: {
 			partition,
 			sandbox: true,
 			contextIsolation: true,
 			nodeIntegration: false,
+			...(route === 'tor' ? { disableBlinkFeatures: 'SharedWorker' } : {}),
 		},
 	});
+	view.webContents.debugger.attach('1.3');
+	const ready =
+		route === 'tor'
+			? Promise.all([prepared, disguise(view.webContents)]).then(() => undefined)
+			: prepared;
 	view.setBounds({ x: 0, y: 0, width: pane.width, height: pane.height });
 	const tab: BrowserTab = {
 		id: `t${pane.next++}`,
