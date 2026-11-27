@@ -141,7 +141,24 @@ export function BrowserPane({
 						The assistant is using this page
 					</span>
 				) : null}
-				<BrowserScreen targetId={active.targetId} error={active.error} suppressed={suggesting} />
+				<BrowserScreen
+					targetId={active.targetId}
+					error={active.error}
+					suppressed={suggesting}
+					danger={
+						active.danger ? (
+							<BrowserDanger
+								url={active.danger}
+								busy={busy}
+								onContinue={() =>
+									void window.browserPane
+										.dangerContinue(active.targetId)
+										.catch((cause: unknown) => setError(cause instanceof Error ? cause.message : String(cause)))
+								}
+							/>
+						) : undefined
+					}
+				/>
 			</div>
 		</section>
 	);
