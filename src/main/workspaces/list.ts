@@ -22,7 +22,7 @@ export function listWorkspaces(): WorkspaceInfo[] {
 			missing: !existsSync(record.folder),
 			...(record.image && path.basename(record.image) === record.image
 				? {
-						image: `local-resource://file${pathToFileURL(path.join(userDataLocation(), 'workspaces', 'images', record.image)).pathname}`,
+						image: `local-resource://file${pathToFileURL(path.join(workspaceImages(), record.image)).pathname}`,
 					}
 				: {}),
 		})),
