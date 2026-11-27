@@ -24,6 +24,7 @@ no hosted product, only the user's own bucket.
 | 9.3 | Entitlements | The app knows what the account has paid for (plan, storage limit, renewal date) and unlocks it; works offline from the last known state | One server table written only by the payment provider's webhook | M |
 | 9.4 | Manage subscription | Change plan, update card, cancel, download invoices, all on the provider's hosted portal | Provider portal link; no billing screens to build | S |
 | 9.5 | Further paid services | Hosted AI access (use the app without bringing a model key), hosted search, larger limits | Same entitlements; each is its own product | L each |
+| 9.6 | Desk licence | A yearly per-seat licence for firms using the [investigation desk](../mission/TARGET.md): commercial terms with an acceptable-use clause, support, encrypted case backup and help with the integrity note. No feature of the MIT app is locked | 9.2–9.4; encrypted backup (1.5). Proposal 2026-11-27 | M |
 
 Paid plugins use the same checkout and entitlements; see [Plugins](PLUGINS.md), 8.6.
 
