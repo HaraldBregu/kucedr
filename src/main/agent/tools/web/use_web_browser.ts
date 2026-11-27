@@ -316,7 +316,7 @@ export const useWebBrowserTool = tool({
 		timeoutMs: z.number().int().min(1).optional().describe('act: per-action timeout override.'),
 	}),
 	access: ({ action, directory }) =>
-		action === 'screenshot' || action === 'pdf' ? mediaAccess(directory) : {},
+		action === 'screenshot' || action === 'pdf' || action === 'archive' ? mediaAccess(directory) : {},
 	execute: async (params, signal) => {
 		signal?.throwIfAborted();
 		if (!browserSessions.getStore()) return observe(() => run(params, signal));
