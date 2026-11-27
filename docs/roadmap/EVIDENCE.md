@@ -10,9 +10,11 @@ check it. The buyers are investigation firms, due-diligence boutiques and AML co
 
 ## What exists today
 
-- **Screenshots and PDFs.** `use_web_browser` saves an element or full-page PNG, or a PDF of the
-  tab, through `saveMedia` (`src/main/agent/tools/web/browser/run.ts`). The result is a file in
-  `~/.kucedr/library` and its path. No address, time, route, hash or case is recorded.
+- **Screenshots, PDFs and archives.** `use_web_browser` saves an element or full-page PNG, a PDF
+  or an MHTML archive of the tab into the Library, with `<file>.json` beside it: final address,
+  title, UTC time, route and proxy host, Privacy Mode, workspace, chat, app version and SHA-256
+  (`src/main/agent/tools/web/browser/record.ts`). The requested address before redirects and the
+  case folder are not recorded yet.
 - **Routes.** Each pane tab knows its route (direct, private, proxy, Tor) and never falls back
   (`src/main/agent/tools/web/browser/prepare.ts`).
 - **Cases.** A workspace is a picked folder with its own chats, browser sign-ins, tasks and
