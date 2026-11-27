@@ -80,4 +80,4 @@ not moved and no longer read.
 - Storage limits (9.1) count all workspaces together.
 - A workspace can set a default browsing route ([Private and VPN browsing](VPN.md), 12.4): open.
 - Browser import (23) brings bookmarks, history and passwords into the window's workspace.
-- Memory per workspace (18.3) is covered by 10.2.
+- Memory per workspace (18.3) is dropped: one memory serves every workspace.
