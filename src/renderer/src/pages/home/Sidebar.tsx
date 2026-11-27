@@ -644,7 +644,11 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							aria-label={t('navigationBar.newChat', 'New chat')}
 							onClick={() => startChat()}
 						>
-							<Plus className="size-4 shrink-0" />
+							<Avatar className="size-5.5 shrink-0 rounded-full">
+								<AvatarFallback className="rounded-full bg-sidebar-primary text-sidebar-primary-foreground">
+									<Plus className="size-3.5" />
+								</AvatarFallback>
+							</Avatar>
 							<span className="truncate">{t('navigationBar.newChat', 'New Chat')}</span>
 						</SidebarMenuButton>
 						<Button
