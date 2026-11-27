@@ -5,6 +5,7 @@ import { leaks } from '../../../shield/leaks';
 import { refuse } from '../../../shield/refuse';
 import { tool } from '../tool';
 import { decodeText } from './decode';
+import { stripHidden } from './hidden';
 
 const MAX_CHARS_DEFAULT = 20_000;
 const TIMEOUT_MS = 30_000;
