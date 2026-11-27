@@ -20,7 +20,7 @@ export function BrowserScreen({
 	// box is and whether an app overlay covers it; switch to observers if this ever shows in a profile
 	useEffect(() => {
 		const element = box.current;
-		if (!element || error || suppressed || danger) {
+		if (!element || error || suppressed || blocked) {
 			// Hidden while a renderer overlay (the address dropdown) needs to show over the page.
 			window.browserPane.view(null);
 			return;
