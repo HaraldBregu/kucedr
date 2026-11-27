@@ -12,6 +12,7 @@ import { modeExtension } from './agent/modes/extension';
 import { ExecSandbox } from './agent/sandbox';
 import { createRealtimeVoiceManager, type RealtimeVoiceManager } from './agent/realtime_voice';
 import { StorageOperations, forkSync } from './backup';
+import { holdRestoredCode } from './backup/hold';
 import { withStorageLock } from './storage';
 import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
