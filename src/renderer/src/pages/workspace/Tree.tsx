@@ -44,7 +44,10 @@ export function WorkspaceTree({ entries, parentPath = '', creating, onCreate, on
 				<li key={entry.path} className="min-w-0">
 					{renamingPath === entry.path ? (
 						<div className="flex min-h-8 items-center gap-2 rounded-md px-2 text-sm">
-							{entry.type === 'directory' ? <span aria-hidden="true" className="flex size-5 shrink-0 items-center justify-center rounded bg-border/50 text-xs font-medium uppercase text-muted-foreground dark:bg-sidebar-accent/50">{Array.from(entry.name)[0]}</span> : <File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />}
+							{entry.type === 'directory' ? <span aria-hidden="true" className="flex size-5 shrink-0 items-center justify-center rounded bg-border/50 text-xs font-medium uppercase text-muted-foreground dark:bg-sidebar-accent/50">{Array.from(entry.name)[0]}</span> : (() => {
+									const Icon = fileIcon(entry.path);
+									return <Icon className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />;
+								})()}
 							<WorkspaceRenameInput name={entry.name} busy={renameBusy} onCancel={onRenameCancel} onConfirm={onRename} />
 						</div>
 					) : entry.type === 'directory' ? (
