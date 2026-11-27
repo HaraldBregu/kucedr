@@ -105,9 +105,10 @@ const SCRIPT = `((payloadJson) => {
 			af.render();
 			af.position();
 		};
-		// Typing in the username field narrows the list to names that contain the text.
+		// Typing in the username field narrows the list to names that contain the text. A value
+		// the field already held when it was focused does not.
 		af.filter = () => {
-			const text = af.el && af.el.type !== 'password' ? af.el.value.trim().toLowerCase() : '';
+			const text = af.typed && af.el && af.el.type !== 'password' ? af.el.value.trim().toLowerCase() : '';
 			af.items = text ? af.all.filter((it) => it.label.toLowerCase().includes(text)) : af.all;
 			af.active = af.items.length ? 0 : -1;
 			af.show();
