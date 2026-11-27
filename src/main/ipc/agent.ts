@@ -418,7 +418,12 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			open: (windowId, sessionId, workspaceId) =>
 				eventBus.sendTo(windowId, AgentChannels.openSession, { sessionId, workspaceId }),
 			resolve: (sessionId, workspaceId) =>
-				resolveStoredSessionId(sessionId, resolveWorkspace(workspaceId).sessions),
+				resolveStoredSessionId(
+					sessionId,
+					resolveWorkspace(workspaceId).sessions,
+					'main',
+					workspaceId
+				),
 		});
 		agent.onRun = notifier.run;
 		ipcMain.handle(
