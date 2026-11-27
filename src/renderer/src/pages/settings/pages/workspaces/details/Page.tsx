@@ -180,7 +180,7 @@ const WorkspaceDetailsPage: React.FC = () => {
 				<SettingsSection title={t('settings.workspaces.danger')}>
 					<SettingsPanel>
 						<SettingsRow title={t('settings.workspaces.delete')} description={t('settings.workspaces.deleteHint')}>
-							<Button type="button" variant="destructive" size="sm" onClick={remove}>
+							<Button type="button" variant="destructive" size="sm" disabled={chats === undefined} onClick={() => setDeleting(true)}>
 								{t('common.delete')}
 							</Button>
 						</SettingsRow>
