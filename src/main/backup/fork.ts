@@ -7,6 +7,7 @@ import { storageProviders } from '../storage/providers';
 import { transferRoots } from '../storage/roots';
 import { storagePrefix } from '../storage/storage_prefix';
 import { getStorageSettings } from './store';
+import { backupPaths } from './paths';
 import { requireUnrestrictedNetwork } from '../privacy/state';
 import { convertVault } from '../vault/convert';
 import { vaultKey } from '../vault/key';
