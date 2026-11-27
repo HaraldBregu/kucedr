@@ -23,6 +23,11 @@ The agent's browser can open `.onion` addresses, shown in the browser pane like 
   `.onion` and local names before any lookup. Checked in the built app: no `dns.lookup` call was
   made for `.onion`, `.ONION.`, `printer.local.` or a single-label name, and a proxy tab still sent
   `.onion` to the SOCKS5 server as a name.
+- **Chromium's own lookups.** A page's `<link rel=dns-prefetch>` for a `.onion` name skips the
+  shield, and Chromium sent it to DNS. Outside Privacy Mode the app and the background browser now
+  start with a host-resolver rule that fails every local `.onion` lookup. Checked with Chromium's
+  net log in the built app and in headless Chrome: no DNS query for `.onion` names after the rule,
+  while a proxy tab still sent them to the SOCKS5 server.
 - The Tor tab hint says the assistant's web search and page fetch use the normal network.
 - Not checked against a real Tor yet. Background runs still have no Tor.
 
