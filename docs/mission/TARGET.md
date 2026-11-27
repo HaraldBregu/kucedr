@@ -11,7 +11,7 @@ read of `dev` and the [roadmap](../roadmap/README.md) on that date; nothing was 
   investigation firms, firms doing insurers' fraud work, due-diligence boutiques and anti-money-
   laundering consultants. Sell first in the UK and the USA, in English. Italy, in Italian, is the
   home channel.
-- **One product, two prices**, as [MARKETS.md](MARKETS.md#pricing) proposes: €390 per seat a year
+- **One product, two prices**, as [MARKETS.md](MARKETS.md#the-recommendation-in-detail) proposes: €390 per seat a year
   with at least three seats for investigation firms; for due diligence, a €500 assisted pilot, then
   €49 per seat a month.
 - **The character does not change.** [MISSION.md](MISSION.md) holds: the app stays free and MIT,
