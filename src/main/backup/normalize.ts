@@ -25,6 +25,7 @@ export function normalizeStorageSettings(value: unknown): StorageSyncSettings {
 		...(serviceId ? { serviceId } : {}),
 		...(providerId ? { providerId } : {}),
 		paths: normalizeStoragePaths(input.paths),
+		...(input.includeWorkspaces === true ? { includeWorkspaces: true } : {}),
 		syncEnabled: input.syncEnabled,
 		syncCronExpression,
 	};
