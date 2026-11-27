@@ -120,6 +120,7 @@ import { archiveWorkspaceEntry } from './archive';
 import { readWorkspaceTextFile } from './text';
 import { moveWorkspaceEntry } from './move';
 import { transferWorkspaceEntry } from './transfer';
+import { copyIntoWorkspace } from './copy';
 import { renameWorkspaceEntry } from './rename';
 import { revealWorkspaceEntry } from './reveal';
 import { readWorkspaceTree } from './tree';
