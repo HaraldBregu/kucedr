@@ -45,7 +45,7 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 					<ChevronRight aria-hidden="true" className="mx-0.5 size-3 shrink-0 text-muted-foreground" />
 					<DropdownMenu open={openPath === crumb.key} onOpenChange={(open) => setOpenPath(open ? crumb.key : null)}>
 						<DropdownMenuTrigger asChild>
-							<Button type="button" variant="ghost" size="sm" className={crumb.file ? 'h-6 min-w-0 justify-start px-1.5 text-left text-xs font-medium aria-expanded:bg-transparent!' : 'h-6 max-w-32 min-w-0 shrink truncate px-1.5 text-xs font-medium aria-expanded:bg-transparent!'} aria-label={`Browse ${crumb.label}`}>
+							<Button type="button" variant="ghost" size="sm" className={crumb.file ? 'h-6 min-w-0 shrink justify-start px-1.5 text-left text-xs font-medium aria-expanded:bg-transparent!' : 'h-6 max-w-32 min-w-0 shrink truncate px-1.5 text-xs font-medium aria-expanded:bg-transparent!'} aria-label={`Browse ${crumb.label}`}>
 								<span className="truncate">{crumb.label}</span>
 							</Button>
 						</DropdownMenuTrigger>
