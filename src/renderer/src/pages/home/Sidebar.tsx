@@ -646,7 +646,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							onClick={() => startChat()}
 						>
 							<Avatar className="size-5.5 shrink-0 rounded-full">
-								<AvatarFallback className="rounded-full bg-sidebar-primary text-sidebar-primary-foreground">
+								<AvatarFallback className="rounded-full bg-sidebar-accent text-sidebar-accent-foreground">
 									<Plus className="size-3.5" />
 								</AvatarFallback>
 							</Avatar>
