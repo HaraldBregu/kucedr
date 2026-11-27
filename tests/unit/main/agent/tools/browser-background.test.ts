@@ -57,7 +57,7 @@ it('isolates background browsers from one another', async () => {
 
 		for (const call of launchPersistentContext.mock.calls) {
 			expect(call).toEqual([
-				expect.any(String),
+				'',
 				expect.objectContaining({ channel: 'chrome', headless: true, viewport: null, timeout: 15_000 }),
 			]);
 		}
