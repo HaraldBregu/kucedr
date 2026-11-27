@@ -1003,9 +1003,19 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			AgentChannels.importWorkspaceEntries,
 			wrapAgentHandler(
 				workspaceAccess,
-				async (destinationDirectoryPath: unknown): Promise<string[]> => {
+				async (destinationDirectoryPath: unknown, sourcePaths?: unknown): Promise<string[]> => {
 					if (typeof destinationDirectoryPath !== 'string') {
 						throw new Error('Invalid workspace destination path.');
+					}
+					if (sourcePaths !== undefined) {
+						if (!Array.isArray(sourcePaths) || !sourcePaths.every((source) => typeof source === 'string')) {
+							throw new Error('Invalid import source paths.');
+						}
+						return copyIntoWorkspace(
+							workspacePath(agent.config),
+							destinationDirectoryPath.trim(),
+							sourcePaths
+						);
 					}
 					const window = BrowserWindow.getFocusedWindow();
 					const options: Electron.OpenDialogOptions = {
