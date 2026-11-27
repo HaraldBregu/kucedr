@@ -26,8 +26,6 @@ export async function disguise(contents: WebContents): Promise<void> {
 			.catch(() => undefined);
 	});
 	await send('Target.setAutoAttach', AUTO_ATTACH);
-	const applied = apply();
-	await contents.loadURL('about:blank');
-	await applied;
+	await Promise.all([apply(), contents.loadURL('about:blank')]);
 	contents.once('did-navigate', () => contents.navigationHistory.clear());
 }
