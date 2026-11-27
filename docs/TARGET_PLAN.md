@@ -147,3 +147,38 @@ Steps 1 and 2 are one track; step 3 is independent and can run in parallel.
   10.10 and 10.5 (phase 2).
 - **No new dependencies, tests or migrations.** Saved data is upgraded when read (mixed `run.jsonl`
   lines); nothing edits `~/.kucedr` by script.
+
+## What was built
+
+- `src/main/agent/tools/web/browser/record.ts`: `saveCapture` saves the file through `saveMedia`
+  and writes `<file>.json`. Used by the pane (`run.ts`) and by background runs
+  (`use_web_browser.ts`, route always `direct`). `saveMedia` is unchanged; the hash is taken from
+  the same decoded bytes.
+- `archive` action: MHTML through the DevTools `Page.captureSnapshot` command (what `savePage`
+  uses), in the pane and in background runs. Classed like `screenshot` (read and write) in
+  `capability.ts`.
+- `src/main/vault/seal_line.ts`, `unseal_line.ts`: `v1:` lines. `appendRun` seals each line;
+  `insights.ts` and `spend_report.ts` unseal before parsing; `convert.ts` now covers `run.jsonl`,
+  line by line, written to a temporary file and renamed.
+- `src/main/vault/fresh.ts`: on ready, with no `settings/vault.json` and no `sessions` folder and
+  the keystore available, the vault is turned on. `runtime.ts` keeps the early service start for
+  that case, since there is nothing to read yet.
+
+## What was checked
+
+In the built app with an isolated profile, a mock model and a local page at
+`site.example.test` (a redirect to `/page` with a stylesheet):
+
+- A fresh profile starts with the vault on and a sealed key in `settings/vault.json`.
+- Screenshot, full-page screenshot, PDF and archive on a direct tab, and a screenshot on a private
+  tab: each record's `sha256` equals the file's hash; `url` is the final address after the
+  redirect, `title`, `route`, `chat`, `workspace` and `app` are set.
+- The MHTML file holds the page text and the stylesheet.
+- `run.jsonl`: all 116 lines were `v1:`; the spend report still read the runs' provider from them.
+  Turning the vault off made them plain, on again sealed, readable each time.
+- A profile with a `sessions` folder and no vault file starts with the vault off and writes no
+  vault file.
+
+Not checked: proxy and Tor tabs (the `proxy` field), Privacy Mode on, the archive in a background
+run, Run insights in the UI, Windows and Linux. MHTML was checked on one local page, not on the
+three real pages step 2 names.
