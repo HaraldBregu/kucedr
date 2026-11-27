@@ -2,6 +2,7 @@ import { session, WebContentsView } from 'electron';
 import type { BrowserRoute } from '../../../../../shared/browser';
 import { visit } from '../../../../browser/visit';
 import { isPrivacyEnabled } from '../../../../privacy/state';
+import { webrtc } from '../../../../shield/webrtc';
 import { resetAutofill } from './autofill';
 import { watchMouseButtons } from './buttons';
 import { drop, readCapture } from './capture';
