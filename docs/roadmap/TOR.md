@@ -1,7 +1,8 @@
 # 11. Tor and .onion sites
 
 Part of the [Roadmap](README.md). Status: 11.1–11.3 built 2026-11-24
-([Browser routes and shield](../BROWSER_ROUTES.md)); 11.4 proposal.
+([Browser routes and shield](../BROWSER_ROUTES.md)); `.onion` kept off the normal DNS 2026-11-27;
+11.4 proposal.
 
 The agent's browser can open `.onion` addresses, shown in the browser pane like any other page.
 
