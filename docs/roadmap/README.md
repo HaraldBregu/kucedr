@@ -120,6 +120,9 @@ The user-experience area was chosen to be planned in detail first; see
 - Untrusted content marking (13.10) comes before the agent acts on what it reads from the screen
   (24.2, 24.9).
 - Model downloads (15.2) come before a separate computer (24.10).
+- The capture record (25.1) comes before the case log, claims table and bundle (25.4–25.8). The
+  sealed case (10.10) and delete (10.5) come before captures live in the case (25.3).
+- Checkout and entitlements (9.2, 9.3) come before the desk licence (9.6).
 
 ## Not planned
 
