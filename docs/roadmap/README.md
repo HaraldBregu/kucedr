@@ -43,7 +43,7 @@ on an outside decision.
 | 10 | [Workspaces and windows](WORKSPACES.md) | Workspaces from a picked folder and switcher, separate chats, memory and sign-ins, a workspace per window, open in new window, work that continues in the background, drag and drop into workspace folders from outside |
 | 11 | [Tor and .onion sites](TOR.md) | Tor tabs in the browser pane |
 | 12 | [Private and VPN browsing](VPN.md) | Private tabs, proxy and VPN routes for the browser pane |
-| 13 | [Network shield](SHIELD.md) | Tracker blocking, site rules, secret guard, local network protection, network view, untrusted content marking, download protection |
+| 13 | [Network shield](SHIELD.md) | Tracker blocking, site rules, secret guard, local network protection, network view, untrusted content marking, download protection, ads, pop-ups and cookie banners removed |
 | 14 | [Terminal](TERMINAL.md) | Back-end fixes, terminal panel, tabs, clean environment, terminal and chat together |
 | 15 | [Local models and offline use](LOCAL.md) | Setup with a local model, model downloads, local knowledge, offline behaviour |
 | 16 | [Automation](AUTOMATION.md) | Create and edit tasks, run history, failures surfaced, catch-up, health results |
