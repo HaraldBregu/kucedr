@@ -18,7 +18,9 @@ toolbar's shield button. Background browsing calls the same `verdict` (`src/main
 for every request and for WebSockets opened by pages and frames, not yet for WebSockets opened in
 workers ([Browser routes and shield](../BROWSER_ROUTES.md#background-browsing-headless-chrome-in-background-runs)).
 Since 2026-11-27 the same `verdict` blocks third-party requests to tracker hosts from the bundled
-EasyPrivacy list, on every pane route and in background browsing.
+EasyPrivacy list, on every pane route and in background browsing, and every request, page loads
+included, to known malware hosts (13.12); `fetch_web_page` and the agent's `use_web_browser`
+refuse those hosts with a clear error.
 The "What exists today" list below is from 2026-11-19, except the block-list line.
 
 One set of rules for everything Kucedr sends and receives, enforced in the main process and shown
