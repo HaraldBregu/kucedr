@@ -1,5 +1,6 @@
 import { open } from 'node:fs/promises';
 import type { AgentSessionSummary, AgentSpendReport } from '../../../shared/agent_types';
+import { unsealLine } from '../../vault/unseal_line';
 import { sessionPath } from './session_session_path';
 
 export async function readSpendReport(
