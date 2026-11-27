@@ -221,6 +221,11 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		});
 	}
 
+	if (location.pathname.startsWith('/settings/workspaces/')) {
+		items[0] = { ...items[0], path: current.path };
+		items.push({ label: t('settings.workspaces.title') === items[0].label ? workspaceLabel : workspaceLabel });
+	}
+
 	if (location.pathname.startsWith('/settings/skills/skilldetails/')) {
 		const skillId = decodeURIComponent(location.pathname.split('/').at(-1) ?? '');
 		items[0] = { ...items[0], path: current.path };
