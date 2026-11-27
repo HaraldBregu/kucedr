@@ -177,6 +177,13 @@ export function AppSidebarFooter(): React.JSX.Element {
 										</DropdownMenuItem>
 									);
 								})}
+								<DropdownMenuItem onSelect={() => openCommandMenu()}>
+									<Search />
+									<span>{t('navigationBar.find')}</span>
+									<span className="ml-auto text-xs tracking-widest text-muted-foreground">
+										{getShortcutLabel('commandMenu', shortcutPlatform)}
+									</span>
+								</DropdownMenuItem>
 							</DropdownMenuGroup>
 							{authenticatedUser ? (
 								<>
