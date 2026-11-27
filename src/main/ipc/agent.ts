@@ -997,6 +997,22 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.transferWorkspaceEntry,
+			wrapAgentHandler(
+				workspaceAccess,
+				async (sourcePath: unknown, workspaceId: unknown): Promise<void> => {
+					const normalizedSourcePath = optionalTrimmedString(sourcePath);
+					if (!normalizedSourcePath) throw new Error('Invalid workspace source path.');
+					const target = resolveWorkspace(String(workspaceId));
+					if (target.id === agent.config.workspace.id) throw new Error('Choose another workspace.');
+					if (!existsSync(target.files)) throw new Error('This workspace folder was not found.');
+					return transferWorkspaceEntry(workspacePath(agent.config), normalizedSourcePath, target.files);
+				},
+				AgentChannels.transferWorkspaceEntry
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.moveWorkspaceEntry,
 			wrapAgentHandler(
 				workspaceAccess,
