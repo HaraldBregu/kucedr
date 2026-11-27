@@ -999,6 +999,32 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.importWorkspaceEntries,
+			wrapAgentHandler(
+				workspaceAccess,
+				async (destinationDirectoryPath: unknown): Promise<string[]> => {
+					if (typeof destinationDirectoryPath !== 'string') {
+						throw new Error('Invalid workspace destination path.');
+					}
+					const window = BrowserWindow.getFocusedWindow();
+					const options: Electron.OpenDialogOptions = {
+						properties: ['openFile', 'openDirectory', 'multiSelections'],
+					};
+					const result = await (window
+						? dialog.showOpenDialog(window, options)
+						: dialog.showOpenDialog(options));
+					if (result.canceled) return [];
+					return copyIntoWorkspace(
+						workspacePath(agent.config),
+						destinationDirectoryPath.trim(),
+						result.filePaths
+					);
+				},
+				AgentChannels.importWorkspaceEntries
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.transferWorkspaceEntry,
 			wrapAgentHandler(
 				workspaceAccess,
