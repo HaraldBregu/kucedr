@@ -4,7 +4,8 @@ Part of the [Roadmap](README.md). Status: 13.3, 13.5, 13.11 and the WebRTC part 
 2026-11-24 ([Browser routes and shield](../BROWSER_ROUTES.md)); on 2026-11-25 the tracking-parameter
 part of 13.6, the first part of 13.7, the camera and microphone part of 13.13, and 13.14 for the
 sign-in callback; on 2026-11-27 background browsing got the pane's request rules, WebSocket
-checks, WebRTC policy and tracking-parameter stripping; the rest proposal.
+checks, WebRTC policy and tracking-parameter stripping, and the tracker part of 13.1 was built
+with the bundled EasyPrivacy list; the rest proposal.
 
 Built: every browser pane session checks each request in `onBeforeRequest`
 (`src/main/agent/tools/web/browser/guard.ts`, rules in `src/main/shield/`). Public pages cannot
