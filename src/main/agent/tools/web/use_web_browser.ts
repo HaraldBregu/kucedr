@@ -2,6 +2,7 @@ import { chromium, type BrowserContext, type Page } from 'playwright-core';
 import { z } from 'zod';
 import { BROWSER_ROUTES } from '../../../../shared/browser';
 import { leaks } from '../../../shield/leaks';
+import { ONION_RULES } from '../../../shield/onion';
 import { publicUrl } from '../../../public';
 import { currentWorkspace } from '../../../workspaces/current';
 import { requireUnrestrictedNetwork } from '../../../privacy/state';
