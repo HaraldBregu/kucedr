@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { responseBytes } from '../../../bytes';
 import { publicRequest } from '../../../request';
 import { leaks } from '../../../shield/leaks';
+import { refuse } from '../../../shield/refuse';
 import { tool } from '../tool';
 import { decodeText } from './decode';
 
