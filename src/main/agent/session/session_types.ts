@@ -83,6 +83,7 @@ export interface SessionState {
 	stopReason?: string;
 	modeIds?: readonly string[];
 	sessionsPath: string;
+	workspace: string;
 	folderName: string;
 	runTraceBuffer: string[];
 	runContext: RunContext;
