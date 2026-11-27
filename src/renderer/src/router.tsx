@@ -74,6 +74,8 @@ const McpToolsPage = lazy(() => import('./pages/settings/pages/assistant/mcptool
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
+const WorkspacesPage = lazy(() => import('./pages/settings/pages/workspaces/Page'));
+const WorkspaceDetailsPage = lazy(() => import('./pages/settings/pages/workspaces/details/Page'));
 const ScriptsPage = lazy(() => import('./pages/settings/pages/scripts/Page'));
 const ScriptDetailsPage = lazy(() => import('./pages/settings/pages/scripts/details/Page'));
 const ModesPage = lazy(() => import('./pages/settings/pages/modes/Page'));
