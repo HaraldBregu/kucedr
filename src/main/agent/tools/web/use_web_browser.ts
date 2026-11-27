@@ -123,6 +123,18 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 	return launched;
 }
 
+async function saveFrom(
+	id: string,
+	page: Page,
+	kind: CaptureKind,
+	base64: string,
+	directory?: string,
+	signal?: AbortSignal
+): Promise<string> {
+	const page_ = { url: page.url(), title: await page.title(), route: 'direct' as const, workspace: currentWorkspace().id };
+	return JSON.stringify({ targetId: id, ...(await saveCapture(kind, base64, page_, directory, signal)) });
+}
+
 function getPage(targetId?: string): { id: string; page: Page } {
 	const { pages } = browserSession();
 	if (targetId) {
