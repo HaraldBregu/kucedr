@@ -2,7 +2,9 @@ import type { BrowserTab } from '../agent/tools/web/browser/pane';
 import { canFill, secretFor } from './passwords';
 
 // Tags the password field and the username field before it, so each can be focused by
-// marker without a selector ever carrying the value.
+// marker without a selector ever carrying the value. The form is the one holding the field the
+// user is in, so a sign-up form elsewhere on the page is left alone; with no field focused it is
+// the first sign-in form. A sign-in split over two pages has only one of the two fields.
 const LOCATE = `(() => {
 	for (const el of document.querySelectorAll('[data-kucedr-fill]')) el.removeAttribute('data-kucedr-fill');
 	const visible = (el) => {
@@ -11,24 +13,47 @@ const LOCATE = `(() => {
 		const style = getComputedStyle(el);
 		return style.visibility !== 'hidden' && style.display !== 'none';
 	};
-	const inputs = [...document.querySelectorAll('input')].filter(visible);
-	const password = inputs.find((input) => input.type === 'password');
-	if (!password) return false;
-	password.setAttribute('data-kucedr-fill', 'password');
-	const username = inputs
-		.slice(0, inputs.indexOf(password))
-		.reverse()
-		.find((input) => ['text', 'email', 'tel', ''].includes(input.type));
+	const text = (input) => ['text', 'email', 'tel', ''].includes(input.type);
+	const named = (input) =>
+		text(input) &&
+		(/username|email/.test(input.autocomplete) || input.type === 'email' || /user|login|email|account|identifier/i.test(input.name + ' ' + input.id));
+	const fields = (el) => [...(el.form || document).querySelectorAll('input')].filter(visible);
+	const before = (el) => {
+		const list = fields(el);
+		return list.slice(0, list.indexOf(el)).reverse().find(text);
+	};
+	const all = [...document.querySelectorAll('input')].filter(visible);
+	const active = document.activeElement;
+	const focused = all.includes(active) && (active.type === 'password' || text(active)) ? active : undefined;
+	let password;
+	if (focused && focused.type === 'password') password = focused;
+	else if (focused) {
+		const list = fields(focused);
+		password = list.slice(list.indexOf(focused) + 1).find((input) => input.type === 'password');
+	} else {
+		const passwords = all.filter((input) => input.type === 'password');
+		password = passwords.find((input) => input.autocomplete !== 'new-password') || passwords[0];
+	}
+	const username = password ? before(password) : focused && named(focused) ? focused : focused ? undefined : all.find(named);
 	if (username) username.setAttribute('data-kucedr-fill', 'username');
-	return true;
+	if (password) password.setAttribute('data-kucedr-fill', 'password');
+	return Boolean(username || password);
 })()`;
 
-async function type(tab: BrowserTab, which: 'username' | 'password', value: string): Promise<void> {
+// Selects what the field holds first, so the value replaces it instead of being added to it.
+async function type(tab: BrowserTab, which: 'username' | 'password', value: string): Promise<boolean> {
 	const focused = (await tab.view.webContents.executeJavaScript(
-		`Boolean(document.querySelector('[data-kucedr-fill="${which}"]')?.focus() ?? document.querySelector('[data-kucedr-fill="${which}"]'))`,
+		`(() => {
+			const el = document.querySelector('[data-kucedr-fill="${which}"]');
+			if (!el) return false;
+			el.focus();
+			el.select();
+			return true;
+		})()`,
 		true
 	)) as boolean;
 	if (focused) await tab.view.webContents.debugger.sendCommand('Input.insertText', { text: value });
+	return focused;
 }
 
 // The password is read from the sealed store here and inserted straight into the field.
