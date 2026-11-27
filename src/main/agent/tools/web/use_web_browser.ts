@@ -267,7 +267,7 @@ export const useWebBrowserTool = tool({
 	category: 'web',
 	name: 'Use web browser',
 	description:
-		'Use the browser shown in a pane beside the chat for interactive web tasks: sign-ins, clicking, filling forms, scrolling, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. The user sees every page and can click and type in it too. "This page" means the tab on screen; without a targetId, actions go to the tab this reply last used, else the tab on screen, else this chat\'s last tab. Typical flow: snapshot (get element refs) → act (click/type/scroll on refs) → snapshot again. Refs change after navigation, and after the user has used the page. Logins survive restarts. Close only tabs you opened; the user closes the rest.',
+		'Use the browser shown in a pane beside the chat for interactive web tasks: sign-ins, clicking, filling forms, scrolling, screenshots, PDFs, full page archives (MHTML), pages that need JavaScript. Every screenshot, pdf and archive returns its SHA-256 and a record file (address, title, UTC time, route) saved beside it; cite captures by path. Heavier than fetch_web_page. The user sees every page and can click and type in it too. "This page" means the tab on screen; without a targetId, actions go to the tab this reply last used, else the tab on screen, else this chat\'s last tab. Typical flow: snapshot (get element refs) → act (click/type/scroll on refs) → snapshot again. Refs change after navigation, and after the user has used the page. Logins survive restarts. Close only tabs you opened; the user closes the rest.',
 	inputSchema: z.object({
 		action: z.enum(ACTIONS).describe('Browser command to run.'),
 		targetId: z
