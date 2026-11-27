@@ -4,6 +4,7 @@ import { cursor } from './cursor';
 import { locate } from './locate';
 import type { BrowserTab } from './pane';
 import { press } from './press';
+import { secret } from './secret';
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const BUTTONS = { left: 1, right: 2, middle: 4 };
