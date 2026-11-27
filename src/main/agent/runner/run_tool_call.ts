@@ -464,7 +464,7 @@ export async function* runToolCall(
 	}
 
 	toolCall.result = {
-		content: formatToolOutput(output),
+		content: untrusted(tool, formatToolOutput(output)),
 		isError,
 		...(authorizationRequired ? { authorizationRequired } : {}),
 	};
