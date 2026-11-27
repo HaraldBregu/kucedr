@@ -189,8 +189,8 @@ function getPage(targetId?: string): { id: string; page: Page } {
 	return { id: last[0], page: last[1] };
 }
 
-async function shielded(request: ShieldRequest): Promise<boolean> {
-	if (verdict(request, false)) return false;
+async function shielded(request: ShieldRequest, top: string | undefined): Promise<boolean> {
+	if (verdict(request, false, top)) return false;
 	return publicUrl(request.url.replace(/^ws(s?):/i, 'http$1:')).then(() => true, () => false);
 }
 
