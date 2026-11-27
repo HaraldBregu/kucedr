@@ -3,6 +3,7 @@ import https from 'node:https';
 import { syncBuiltinESMExports } from 'node:module';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { Agent, setGlobalDispatcher, Socks5ProxyAgent } from 'undici';
+import { loopback } from './loopback';
 
 const BLOCKED = 'The network is blocked by Privacy Mode.';
 
