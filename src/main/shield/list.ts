@@ -25,12 +25,14 @@ export function list(): { block: Hosts; allow: Hosts } {
 	if (hosts) return hosts;
 	const block: Hosts = new Map();
 	const allow: Hosts = new Map();
-	const text = readFileSync(path.join(resourceRoot(), 'resources/shield/easyprivacy.txt'), 'utf8');
+	const text = ['easyprivacy.txt', 'easylist.txt', 'easylist-cookie.txt']
+		.map((name) => readFileSync(path.join(resourceRoot(), 'resources/shield', name), 'utf8'))
+		.join('\n');
 	for (const line of text.split(/\r?\n/)) {
 		const rule = RULE.exec(line.trim().toLowerCase());
 		if (!rule) continue;
 		const options = (rule[3]?.split(',') ?? []).filter((option) => option !== 'third-party' && option !== '3p');
-		const kinds = options.filter((option) => KINDS.includes(option));
+		const kinds = options.filter((option) => KINDS.includes(option) || option === 'popup');
 		const without = options.filter((option) => KINDS.includes(option.slice(1)) && option.startsWith('~'));
 		if (kinds.length + without.length !== options.length || (kinds.length && without.length)) continue;
 		const applies = kinds.length ? kinds : KINDS.filter((kind) => !without.includes(`~${kind}`));
