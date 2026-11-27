@@ -17,6 +17,13 @@ The agent's browser can open `.onion` addresses, shown in the browser pane like 
   Browser on 9150, then the Tor service on 9050), with a Check button.
 - Downloads are off, saved passwords are not offered, nothing is kept or restored, and pages get
   60 s instead of 15 s.
+- **`.onion` outside Tor (2026-11-27).** A `.onion` address typed in a direct or private tab is
+  refused with a message to open it in a Tor tab; a link or redirect to one is blocked and listed
+  as "Onion address". `src/main/public.ts` (page fetch, link previews, background browsing) refuses
+  `.onion` and local names before any lookup. Checked in the built app: no `dns.lookup` call was
+  made for `.onion`, `.ONION.`, `printer.local.` or a single-label name, and a proxy tab still sent
+  `.onion` to the SOCKS5 server as a name.
+- The Tor tab hint says the assistant's web search and page fetch use the normal network.
 - Not checked against a real Tor yet. Background runs still have no Tor.
 
 Tor Browser itself cannot be embedded in Kucedr or driven by the agent. What works is sending the
