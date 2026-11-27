@@ -17,6 +17,19 @@ The agent's browser can open `.onion` addresses, shown in the browser pane like 
   Browser on 9150, then the Tor service on 9050), with a Check button.
 - Downloads are off, saved passwords are not offered, nothing is kept or restored, and pages get
   60 s instead of 15 s.
+- **Less to recognise (2026-11-27).** A Tor tab reports the time zone as UTC and the language as
+  en-US (`Intl`, `navigator.language`, `navigator.languages`, `Accept-Language`), and a Chrome user
+  agent with no app or Electron token and the version cut to `Chrome/152.0.0.0`. This covers the
+  page, its frames and their workers; shared workers are off and service workers never start. No
+  client hints are sent, as in every tab. If the time zone, language or user agent cannot be set,
+  the tab fails. Private and proxy tabs keep the machine's values: a private tab shows the user's
+  own address anyway, and wrong dates would break sites. Checked in the built app with a logging
+  SOCKS5 server as Tor: the page, a cross-site frame and a worker in each reported `UTC`, `en-US`
+  and that user agent, also after a cross-site navigation; every request carried it with
+  `Accept-Language: en-US,en;q=0.9` and no `Sec-CH-*` header; direct and private tabs in the same
+  run still reported `Europe/Rome` and `it`. With the time zone override made to fail, the tab
+  showed the error and nothing reached the server or the proxy. Screen size, fonts, canvas and
+  macOS in the user agent still show, so it is still easier to recognise than Tor Browser.
 - **`.onion` outside Tor (2026-11-27).** A `.onion` address typed in a direct or private tab is
   refused with a message to open it in a Tor tab; a link or redirect to one is blocked and listed
   as "Onion address". `src/main/public.ts` (page fetch, link previews, background browsing) refuses
