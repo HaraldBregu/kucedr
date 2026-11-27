@@ -24,6 +24,8 @@ export interface StorageSyncSettings {
 	serviceId?: string;
 	providerId?: string;
 	paths: string[];
+	/** Also back up the folder of every workspace other than Personal. */
+	includeWorkspaces?: boolean;
 	syncEnabled: boolean;
 	syncCronExpression: string;
 }
