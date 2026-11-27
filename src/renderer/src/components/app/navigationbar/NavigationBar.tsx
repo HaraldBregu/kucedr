@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useRef, useState, type ReactNode } from 'react';
-import { AudioLines, ChevronDown, Menu, Moon, Plus, Search, Sun } from 'lucide-react';
+import { AudioLines, Check, ChevronDown, ChevronsUpDown, Menu, Moon, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -27,6 +27,8 @@ import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
 import { Privacy } from './Privacy';
+import { useSpaces } from '@/spaces/context';
+import { Space } from '@/pages/home/Space';
 
 // Synchronous platform check — no hooks, no async, no state.
 // macOS uses native traffic-light buttons; every other OS needs custom controls.
@@ -72,7 +74,10 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const { open: openCommandMenu } = useCommandMenu();
 	const { sessionId, sessionTitle, setSessionId, setSessionTitle } = useChatSession();
 	const { state, isMobile } = usePageContext();
+	const { current: currentWorkspace, workspaces, select: selectWorkspace } = useSpaces();
 	const sidebarExpanded = showWorkspace && !isMobile && state.sidebarOpen;
+	const sidebarHidden = isMobile ? !state.sidebarOpenMobile : !state.sidebarOpen;
+	const [workspaceSwitchError, setWorkspaceSwitchError] = useState('');
 	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
 	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
 	const [chatSessionsLoadError, setChatSessionsLoadError] = useState(false);
@@ -91,6 +96,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const chatHistoryLabel = t('settings.chatHistory.title');
 	const newChatLabel = t('navigationBar.newChat', 'New chat');
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
+	const selectedWorkspace = workspaces.find((workspace) => workspace.id === currentWorkspace);
 	useEffect(() => {
 		if (!chatSessionsLoading && chatSessionsRef.current) revealSelection(chatSessionsRef.current);
 	}, [activeChatSessionId, chatSessions, chatSessionsLoading]);
@@ -247,6 +253,29 @@ export const NavigationBar = React.memo(function NavigationBar({
 							</Tooltip>
 						)}
 						{startContent}
+						{showWorkspace && sidebarHidden && selectedWorkspace && (
+							<DropdownMenu onOpenChange={(open) => open && setWorkspaceSwitchError('')}>
+								<DropdownMenuTrigger render={
+									<Button type="button" variant="ghost" size="sm" className="max-w-56 shrink rounded-full px-2.5 text-muted-foreground">
+										<Space workspace={selectedWorkspace} showAvatarLabel={false} />
+										<ChevronsUpDown className="size-3.5 shrink-0" />
+									</Button>
+								} />
+								<DropdownMenuContent align="start" className="min-w-56">
+									{workspaces.map((workspace) => (
+										<DropdownMenuItem key={workspace.id} onSelect={() => {
+											if (workspace.id !== currentWorkspace) {
+												void selectWorkspace(workspace.id).catch((error: unknown) => setWorkspaceSwitchError(error instanceof Error ? error.message : String(error)));
+											}
+										}}>
+											<Space workspace={workspace} />
+											{workspace.id === currentWorkspace && <Check />}
+										</DropdownMenuItem>
+									))}
+									{workspaceSwitchError && <p role="alert" className="px-2 py-1 text-xs text-destructive">{workspaceSwitchError}</p>}
+								</DropdownMenuContent>
+							</DropdownMenu>
+						)}
 
 					</div>
 					{!isHomeRoute && !isWorkspace && !isOnboarding && !isSettings && !isCode && (
