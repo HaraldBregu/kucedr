@@ -122,7 +122,7 @@ These do not wait for phase 0, because every direction and every claim in MISSIO
 | 3. Local knowledge | A local embedding model (15.3) | M |
 | 4. Routes proven | Real Tor and real proxy, with a capture of the machine's traffic on macOS and Windows ([FRONTIER.md](FRONTIER.md#first-test)) | S |
 | 5. Local run | One recorded case run with a local model using tools and the browser end to end | S |
-| Security | Electron update; MCP `readOnlyHint` auto-allow closed; DNS-rebinding check (21.5); sandbox egress (21.10); restore checks (21.3); untrusted content marking (13.10) | S each; 13.10 M |
+| Security | Done 2026-11-27: Electron 44.11.3, MCP `readOnlyHint` auto-allow closed, DNS-rebinding check (21.5), restore holds code (21.3). Open: sandbox egress (21.10), untrusted content marking (13.10) | S each; 13.10 M |
 
 **Exit:** a signed release on which "encrypted on your computer" and "sites don't see your address
 on Tor and proxy tabs" can be said ([MISSION.md](MISSION.md#7-words-and-when-they-can-be-used)).
