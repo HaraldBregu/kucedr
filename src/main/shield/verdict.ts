@@ -18,6 +18,7 @@ export function verdict(request: ShieldRequest, routed: boolean): BrowserBlocked
 	if (!URL.canParse(request.url)) return undefined;
 	const url = new URL(request.url);
 	if (!/^(https?|wss?):$/.test(url.protocol)) return undefined;
+	if (!routed && onion(url.hostname)) return 'onion';
 	if (local(url.hostname)) {
 		if (routed) return 'local';
 		const origin = request.initiatorOrigin;
