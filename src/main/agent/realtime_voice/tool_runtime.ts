@@ -3,6 +3,7 @@ import { createRunContext } from '../context';
 import type { KeyedMutex } from '../mutex';
 import { formatToolOutput } from '../runner/run_common';
 import { runToolCall } from '../runner/run_tool_call';
+import { untrusted } from '../runner/untrusted';
 import type { Tool, ToolCall } from '../types';
 import type {
 	RealtimeVoiceAdapterEvent,
