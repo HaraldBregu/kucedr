@@ -3428,6 +3428,10 @@
 		"removePicture": "Rimuovi immagine",
 		"missing": "Cartella non trovata",
 		"running": "{{count}} in corso",
+		"moveTo": "Sposta nello spazio di lavoro {{name}}",
+		"errors": {
+			"move": "Impossibile spostare la chat."
+		},
 		"defaultModel": "Usa il modello predefinito",
 		"defaultModelDescription": "Questo spazio di lavoro segue il modello di chat scelto in Personale. Disattiva per scegliere un altro modello qui.",
 		"waiting_one": "{{count}} in attesa di te",
