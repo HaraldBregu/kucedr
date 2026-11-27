@@ -21,8 +21,9 @@ export function init(
 	state.lease = undefined;
 	state.pendingMessages = undefined;
 	const root = config.workspace.sessions;
-	state.id = resolveSessionId(input.sessionId, root, category);
+	state.id = resolveSessionId(input.sessionId, root, category, config.workspace.id);
 	state.category = category;
+	state.workspace = config.workspace.id;
 	state.folderName = sessionFolderName(state.id);
 	state.sessionsPath = root;
 	const storedMessages = loadMessagesBySessionId(state.id, root);
