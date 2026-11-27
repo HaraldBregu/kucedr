@@ -98,6 +98,7 @@ export const SHORTCUTS = [
 	{ id: 'focusComposer', area: 'chat', target: 'renderer', labelKey: 'focusComposer', accelerator: 'CmdOrCtrl+/', mac: '⌘/', win: 'Ctrl+/', linux: 'Ctrl+/' },
 	{ id: 'chatHistory', area: 'chat', target: 'renderer', labelKey: 'chatHistory', accelerator: 'CmdOrCtrl+D', mac: '⌘D', win: 'Ctrl+D', linux: 'Ctrl+D' },
 	{ id: 'newWindow', area: 'app', target: 'menu', labelKey: 'newWindow', accelerator: 'CmdOrCtrl+Shift+N', mac: '⌘⇧N', win: 'Ctrl+Shift+N', linux: 'Ctrl+Shift+N' },
+	{ id: 'lockNow', area: 'app', target: 'menu', labelKey: 'lockNow', accelerator: 'CmdOrCtrl+Shift+L', mac: '⌘⇧L', win: 'Ctrl+Shift+L', linux: 'Ctrl+Shift+L' },
 	{ id: 'zoomReset', area: 'app', target: 'menu', labelKey: 'zoomReset', accelerator: 'CmdOrCtrl+0', mac: '⌘0', win: 'Ctrl+0', linux: 'Ctrl+0' },
 	{ id: 'zoomIn', area: 'app', target: 'menu', labelKey: 'zoomIn', accelerator: 'CmdOrCtrl+Plus', acceleratorAlias: 'CmdOrCtrl+=', mac: '⌘+', win: 'Ctrl++', linux: 'Ctrl++' },
 	{ id: 'zoomOut', area: 'app', target: 'menu', labelKey: 'zoomOut', accelerator: 'CmdOrCtrl+-', mac: '⌘−', win: 'Ctrl+-', linux: 'Ctrl+-' },
