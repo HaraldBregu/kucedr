@@ -3,7 +3,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { WorkspaceInfo } from '../../shared/workspaces_types';
 import { DEFAULT_WORKSPACE, DEFAULT_WORKSPACE_NAME } from '../../shared/workspaces_types';
-import { userDataLocation } from '../shared/user_data_location';
+import { workspaceImages } from './images';
 import { readWorkspaces } from './read';
 import { resolveWorkspace } from './resolve';
 
