@@ -25,8 +25,7 @@ refuse those hosts with a clear error. Since 2026-11-27 `use_web_browser` also r
 whose typed text, field values, select values, wait selector or script carries a stored key or
 token, before it reaches the page, so the key cannot leave through a channel the request check
 cannot read.
-The "What exists today" list below is from 2026-11-19, except the block-list, secret-guard and
-content-marking lines.
+The "What exists today" list below was rewritten from a read of the code on 2026-11-27.
 
 One set of rules for everything Kucedr sends and receives, enforced in the main process and shown
 to the user, to protect the user's privacy. It protects Kucedr's own traffic; it is not a firewall
