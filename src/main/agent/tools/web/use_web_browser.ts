@@ -286,7 +286,7 @@ export const useWebBrowserTool = tool({
 		reload: z.boolean().optional().describe('navigate: reload the page.'),
 		fullPage: z.boolean().optional().describe('screenshot: capture the full scrollable page.'),
 		directory: z.string().optional().describe(
-			'screenshot/pdf: directory to save the file in. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location. Relative paths resolve from the agent workspace; absolute paths and ~ are supported.'
+			'screenshot/pdf/archive: directory to save the file in. Defaults to ~/.kucedr/library; only set it when the user asks for a specific location. Relative paths resolve from the agent workspace; absolute paths and ~ are supported.'
 		),
 		limit: z.number().int().min(1).optional().describe('console: max messages to return.'),
 		maxChars: z.number().int().min(100).optional().describe('snapshot: max page text characters.'),
