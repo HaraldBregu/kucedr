@@ -29,6 +29,7 @@ export interface BrowserRun extends Omit<BrowserAct, 'kind'> {
 		| 'snapshot'
 		| 'screenshot'
 		| 'pdf'
+		| 'archive'
 		| 'console'
 		| 'act';
 	kind?: BrowserAct['kind'];
