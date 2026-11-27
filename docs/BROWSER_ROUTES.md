@@ -33,9 +33,19 @@ Not in this pass: tracker blocking (13.1, waits for the block-list decision), un
 1. **Local network (13.5).** A local target is `localhost`, `*.localhost`, `*.local`, or a literal private IP (`src/main/private.ts`). Routed tabs: always blocked. Other tabs: blocked when a public page started the request, except a top-level `GET` navigation. Typed addresses and agent navigations to `localhost` keep working. Since 2026-11-27, direct and private tabs also resolve each name through the session's resolver (`src/main/shield/rebound.ts`): a request to a name that resolves to a private address is blocked when it comes from a page loaded from a public address, except a top-level `GET`. Routed tabs skip the lookup, so the name is never revealed. Ceiling: an answer that changes between the lookup and the connection passes.
 2. **Secret guard (13.3).** The URL and the request body are matched against stored keys and tokens: model, database and search-engine API keys and connector tokens, 16 characters or more. Also applied to `fetch_web_page`, `search_web` queries and background browsing.
 3. **Downloads (13.11).** A download is paused into the Downloads folder and the tab shows a bar: Download or Cancel. Agent-started downloads wait for the user too.
-4. **Tracking parameters (13.6).** A top-level `GET` page load whose query carries `utm_*` or a click id (`…clid`, `…clkid`, any case) is redirected to the same address without them (`src/main/shield/strip.ts`). Other parameters keep their exact bytes; the fragment is untouched. Not applied to background browsing or `fetch_web_page`.
+4. **Tracking parameters (13.6).** A top-level `GET` page load whose query carries `utm_*` or a click id (`…clid`, `…clkid`, any case) is redirected to the same address without them (`src/main/shield/strip.ts`). Other parameters keep their exact bytes; the fragment is untouched. Not applied to `fetch_web_page`.
 
 Blocked requests are listed per tab (last 50, cleared on each new page) and counted on a toolbar button.
+
+## Background browsing (headless Chrome in background runs)
+
+Since 2026-11-27 it asks the same rules as the pane (`src/main/agent/tools/web/use_web_browser.ts`):
+
+- Every request (`context.route`) and every WebSocket a page or frame opens (`context.routeWebSocket`) goes through `verdict` (`src/main/shield/verdict.ts`), then the existing `publicUrl` check, which blocks every private target, also after a name lookup. A check that throws blocks.
+- A top-level `GET` page load with tracking parameters is answered with a 307 to the stripped address (`strip.ts`).
+- WebRTC: `default_public_interface_only`, the policy of direct pane tabs, from `src/main/shield/webrtc.ts` (shared with the pane). Chrome 158 ignores `--force-webrtc-ip-handling-policy`; it honours `--webrtc-ip-handling-policy`, which is what the launch passes.
+- Checked 2026-11-27 in the built app: a scheduled task with a mock model opened a page on a fake public name (served from this machine), which opened WebSockets to `127.0.0.1` and to the LAN IP, a `fetch` to `127.0.0.1`, and an `RTCPeerConnection`. The two sockets and the fetch never reached the server; a control socket to a public name did. With mDNS hiding turned off, no ICE candidate was gathered; with the WebRTC switch removed, a host candidate carried the LAN IP. `?utm_source=x&keep=1&gclid=abc#frag` arrived as `?keep=1` and the page ended on `?keep=1#frag`.
+- Ceiling: a WebSocket opened inside a worker is not checked (Playwright routes only page and frame sockets). In the same check one reached `127.0.0.1`. Chrome's own local-network check blocked it when the page was marked public with `--ip-address-space-overrides`, but the secret guard does not see it. A `fetch` from a worker was blocked.
 
 ## User surface
 
