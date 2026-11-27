@@ -98,6 +98,7 @@ export function createTab(
 		if (!event.isMainFrame || event.isSameDocument) return;
 		tab.blocked.length = 0;
 		tab.trackers = 0;
+		tab.danger = undefined;
 		tab.error = undefined;
 		tab.icon = undefined;
 		tab.pointer = undefined;
