@@ -494,6 +494,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 				.then((action) => {
 					const ids = targets.map((item) => item.id);
 					if (action?.startsWith('move:')) moveToCategory(ids, action.slice(5));
+					if (action?.startsWith('workspace:')) moveToWorkspace(ids, action.slice(10));
 					if (action === 'uncategorize') moveToCategory(ids, undefined);
 					if (action === 'new-category') createCategory(ids);
 					if (action === 'rename') {
