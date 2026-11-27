@@ -19,7 +19,9 @@ Not in this pass: tracker blocking (13.1, waits for the block-list decision), un
 
 - Tor comes from the machine: the address in Settings, else the first of `127.0.0.1:9150` (Tor Browser) and `127.0.0.1:9050` (Tor service) that answers a SOCKS5 greeting.
 - A routed session blocks every request until its proxy is applied, and stays blocked if Tor or the proxy cannot be set. Chromium with `fixed_servers` does not fall back to direct.
-- `socks5://` sends host names to the proxy, so names (including `.onion`) are not looked up on the user's connection. **To verify** with a fake SOCKS5 server.
+- `socks5://` sends host names to the proxy, so names (including `.onion`) are not looked up on the user's connection. Checked 2026-11-27 in the built app with a logging SOCKS5 server: a proxy tab sent `site.example.test` and a `.onion` name as `ATYP 3`.
+- Proxy addresses: only `socks5://`, `http://` and `https://` (`src/main/browser/proxy.ts`). `socks4://` and `socks4a://` are refused on save, and a saved one reads back as no proxy, since SOCKS4 resolves names locally.
+- `.onion` outside Tor: direct and private tabs refuse a typed `.onion` address with a message to use a Tor tab, and the shield blocks links and redirects to one (reason `onion`) before any lookup. In Privacy Mode every tab is routed, so this does not apply.
 - WebRTC: `disable_non_proxied_udp` on routed tabs, `default_public_interface_only` on the others.
 - Non-direct tabs: no browsing history, no saved-password suggestions, fill or save offers, not restored after restart.
 - Downloads are off in Tor tabs.
