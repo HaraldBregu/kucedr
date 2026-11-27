@@ -15,6 +15,7 @@ const KIND: Record<string, string> = {
 	websocket: 'websocket',
 	font: 'font',
 	media: 'media',
+	popup: 'popup',
 };
 
 export function tracker(host: string, resourceType: string, top: string | undefined): boolean {
