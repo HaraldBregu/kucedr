@@ -1,3 +1,4 @@
+import { DEFAULT_WORKSPACE } from '../../../shared/workspaces_types';
 import { createRunContext } from '../context';
 import { DEFAULT_CATEGORY, type SessionState } from './session_types';
 
