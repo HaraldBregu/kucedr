@@ -43,7 +43,7 @@ export async function runVersionedStorageSync(
 		await migrateLegacyStorageSettings(database);
 		const deviceId = getOrCreateDeviceId(database);
 		for (const workspace of config.workspaces) {
-			if (!settings.paths.includes(workspace.rootPath)) continue;
+			if (!backupPaths(settings).includes(workspace.rootPath)) continue;
 			const scope = {
 				accountId,
 				workspaceId: getOrCreateWorkspaceId(database, accountId,
