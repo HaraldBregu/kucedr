@@ -1,7 +1,7 @@
 import {
+	Briefcase,
 	ChartNoAxesColumnIncreasing,
 	Download,
-	Folders,
 	HardDrive,
 	Layers,
 	Library,
