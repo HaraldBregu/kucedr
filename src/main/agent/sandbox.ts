@@ -265,7 +265,7 @@ export class ExecSandbox {
 		const seccompPath = this.vendoredSeccompPath();
 		const config: SandboxRuntimeConfig = {
 			network: {
-				allowedDomains: ['*'],
+				allowedDomains: [],
 				deniedDomains: [],
 				allowLocalBinding: false,
 				allowUnixSockets: [],
