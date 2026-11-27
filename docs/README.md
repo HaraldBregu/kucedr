@@ -32,6 +32,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [SDK](../packages/sdk/README.md): embedded app bridge and optional HTTP client contract.
 - [CLI](../packages/cli/README.md): desktop launch, plugin installation, and terminal interface.
 - [Terminal](TERMINAL.md): native terminal lifecycle and IPC.
+- [Target](mission/TARGET.md): proposed target (a private desk for online investigations and due diligence), the current implementation against it, and the order of work.
 - [Mission](mission/MISSION.md): proposed mission (secure, private, encrypted, free, no content rules from the app), what the code supports today, and what it reorders.
 - [What Kucedr could be: third search](mission/FRONTIER.md): research, discovery and security fields checked against the code and the market; recommends defensive work on hostile content, not hacking.
 - [Paying markets worldwide](mission/MARKETS.md): markets that pay, researched across Europe, the Americas, China, India, Japan and South Korea; recommends an investigation and due-diligence desk sold first in the UK and USA.
