@@ -43,9 +43,10 @@ for the rest of the computer.
 - **The interactive browser is unfiltered:** no request filtering, no tracker limits and no
   download handling. Background browsing already filters every request
   (`src/main/agent/tools/web/use_web_browser.ts`).
-- **Web content reaches the model unmarked.** The only defence is one line in the system prompt
-  (`src/main/agent/system/system_add_base_prompt.ts`). Page snapshots have no cap on the number of
-  elements returned.
+- **Web and connector content is marked (2026-11-27).** Results of the web tools and MCP tools
+  reach the model inside an `<untrusted_content source="…">` envelope, with a system-prompt rule
+  that it is data; hidden text is dropped from snapshots and page fetches; snapshots list at most
+  200 elements (13.10).
 - **Workspace documents load remote images** when opened
   (`src/renderer/src/pages/workspace/Resource.ts`), so a file the agent writes can trigger a
   request. Assistant messages already turn remote images into links.
