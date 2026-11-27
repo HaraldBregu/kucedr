@@ -4,8 +4,10 @@ import path from 'node:path';
 import { atomicWriteFile } from '../agent/session/session_atomic_write';
 import { userDataLocation } from '../shared/user_data_location';
 import { MAGIC } from './magic';
+import { sealLine } from './seal_line';
 import { isVaultEnabled } from './state';
 import { unseal } from './unseal';
+import { unsealLine } from './unseal_line';
 
 export function convertVault(): void {
 	const convert = (directory: string, deep: boolean, covered: (name: string) => boolean): void => {
