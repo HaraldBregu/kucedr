@@ -75,8 +75,7 @@ Beside every capture file, write `<file>.json`:
 
 ### Verify
 
-- Drive `use_web_browser` with the mock provider ([app verification recipe](DEVELOPMENT.md)):
-  screenshot, full page, element and PDF on a direct and a proxy tab.
+- Drive `use_web_browser` in the built app with a mock model: screenshot, full page, element and PDF on a direct and a proxy tab.
 - For each, `shasum -a 256 <file>` equals the record's `sha256`; `route` and `url` match the tab.
 - `npm run typecheck`.
 
