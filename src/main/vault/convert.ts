@@ -2,7 +2,6 @@ import { type Dirent, readdirSync, readFileSync, statSync, utimesSync } from 'no
 import path from 'node:path';
 import { atomicWriteFile } from '../agent/session/session_atomic_write';
 import { userDataLocation } from '../shared/user_data_location';
-import { readWorkspaces } from '../workspaces/read';
 import { MAGIC } from './magic';
 import { isVaultEnabled } from './state';
 import { unseal } from './unseal';
