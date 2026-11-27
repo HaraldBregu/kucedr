@@ -444,6 +444,7 @@ export const useWebBrowserTool = tool({
 					title: string;
 					text: string;
 					elements: unknown[];
+					elementsTruncated?: string;
 				};
 				const maxText = params.maxChars ?? SNAPSHOT_MAX_TEXT;
 				return JSON.stringify({
@@ -453,6 +454,7 @@ export const useWebBrowserTool = tool({
 					text: snapshot.text.slice(0, maxText),
 					textTruncated: snapshot.text.length > maxText,
 					elements: snapshot.elements,
+					elementsTruncated: snapshot.elementsTruncated,
 				});
 			}
 			case 'screenshot': {
