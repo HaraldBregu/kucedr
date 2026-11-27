@@ -265,7 +265,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 									{workspaces.map((workspace) => (
 										<DropdownMenuItem key={workspace.id} onSelect={() => {
 											if (workspace.id !== currentWorkspace) {
-								setWorkspaceSwitchError('');
+												setWorkspaceSwitchError('');
 												void selectWorkspace(workspace.id).catch((error: unknown) => setWorkspaceSwitchError(error instanceof Error ? error.message : String(error)));
 											}
 										}}>
