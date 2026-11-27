@@ -1,5 +1,4 @@
 import {
-	Briefcase,
 	ChartNoAxesColumnIncreasing,
 	Download,
 	HardDrive,
