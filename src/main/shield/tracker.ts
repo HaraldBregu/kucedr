@@ -1,6 +1,22 @@
 import { getDomain } from 'tldts';
 import { list } from './list';
 
+const KIND: Record<string, string> = {
+	subFrame: 'subdocument',
+	document: 'subdocument',
+	script: 'script',
+	image: 'image',
+	stylesheet: 'stylesheet',
+	object: 'object',
+	xhr: 'xmlhttprequest',
+	fetch: 'xmlhttprequest',
+	ping: 'ping',
+	webSocket: 'websocket',
+	websocket: 'websocket',
+	font: 'font',
+	media: 'media',
+};
+
 export function tracker(host: string, resourceType: string, top: string | undefined): boolean {
 	if (resourceType === 'mainFrame') return false;
 	const name = host.toLowerCase().replace(/\.+$/, '');
@@ -12,6 +28,9 @@ export function tracker(host: string, resourceType: string, top: string | undefi
 		if (own === other) return false;
 	}
 	const { block, allow } = list();
+	const kind = KIND[resourceType] ?? 'other';
 	const parents = name.split('.').map((_, index, parts) => parts.slice(index).join('.'));
-	return parents.some((parent) => block.has(parent)) && !parents.some((parent) => allow.has(parent));
+	return (
+		parents.some((parent) => block.get(parent)?.has(kind)) && !parents.some((parent) => allow.get(parent)?.has(kind))
+	);
 }
