@@ -75,7 +75,9 @@ export function createTab(
 		.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true })
 		.catch(() => undefined);
 	contents.setWindowOpenHandler(({ url }) => {
-		if (/^https?:/i.test(url)) {
+		if (/^https?:/i.test(url) && tracker(new URL(url).hostname, 'popup', contents.getURL())) {
+			block(tab, url, 'tracker');
+		} else if (/^https?:/i.test(url)) {
 			const popup = workspaceScope.run(workspace, () =>
 				createTab(tab.chat, tab.owner, route, partition)
 			);
