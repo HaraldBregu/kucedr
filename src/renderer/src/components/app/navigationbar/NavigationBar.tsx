@@ -254,7 +254,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						)}
 						{startContent}
 						{showWorkspace && sidebarHidden && selectedWorkspace && (
-							<DropdownMenu onOpenChange={(open) => open && setWorkspaceSwitchError('')}>
+							<DropdownMenu>
 								<DropdownMenuTrigger render={
 									<Button type="button" variant="ghost" size="sm" className="max-w-56 shrink rounded-full px-2.5 text-muted-foreground">
 										<Space workspace={selectedWorkspace} showAvatarLabel={false} />
@@ -265,6 +265,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 									{workspaces.map((workspace) => (
 										<DropdownMenuItem key={workspace.id} onSelect={() => {
 											if (workspace.id !== currentWorkspace) {
+								setWorkspaceSwitchError('');
 												void selectWorkspace(workspace.id).catch((error: unknown) => setWorkspaceSwitchError(error instanceof Error ? error.message : String(error)));
 											}
 										}}>
