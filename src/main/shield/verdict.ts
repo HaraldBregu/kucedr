@@ -16,7 +16,11 @@ export interface ShieldRequest {
 // Routed (Tor and proxy) tabs never reach this machine or the local network. Other tabs do when
 // the user or the assistant goes there directly, but a public page cannot reach them, except by
 // a plain top-level navigation.
-export function verdict(request: ShieldRequest, routed: boolean): BrowserBlocked['reason'] | undefined {
+export function verdict(
+	request: ShieldRequest,
+	routed: boolean,
+	top: string | undefined
+): BrowserBlocked['reason'] | undefined {
 	if (!URL.canParse(request.url)) return undefined;
 	const url = new URL(request.url);
 	if (!/^(https?|wss?):$/.test(url.protocol)) return undefined;
