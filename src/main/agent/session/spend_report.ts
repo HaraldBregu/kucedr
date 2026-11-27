@@ -27,7 +27,7 @@ export async function readSpendReport(
 			for await (const line of lines) {
 				let row: { timestamp?: unknown; event?: Record<string, unknown> };
 				try {
-					row = JSON.parse(line) as typeof row;
+					row = JSON.parse(unsealLine(line)) as typeof row;
 				} catch {
 					continue;
 				}
