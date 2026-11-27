@@ -6,10 +6,6 @@ const RULE = /^(@@)?\|\|([a-z0-9.-]+)\^(?:\$(.*))?$/;
 
 let hosts: { block: Set<string>; allow: Set<string> } | undefined;
 
-// The tracker hosts of the bundled EasyPrivacy list, read once. Only `||host^` rules are used: a
-// block rule with no option or `$third-party`, an exception with no `domain=` or `~third-party`
-// option (its type options are ignored, so it allows the host for every type). Everything else
-// in the list is skipped.
 export function list(): { block: Set<string>; allow: Set<string> } {
 	if (hosts) return hosts;
 	const block = new Set<string>();
