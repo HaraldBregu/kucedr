@@ -37,6 +37,10 @@ interface Evaluation {
 
 export async function act(tab: BrowserTab, params: BrowserAct, signal?: AbortSignal): Promise<string> {
 	const contents = tab.view.webContents;
+	if (secret(params)) {
+		block(tab, contents.getURL(), 'secret');
+		throw new Error('Blocked: the action contains a stored key or token, which must not be given to a page.');
+	}
 	const timeout = params.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 	const js = <T>(code: string): Promise<T> => contents.executeJavaScript(code, true) as Promise<T>;
 	const find = (ref: string): Promise<{ x: number; y: number }> => locate(tab, ref, timeout, signal);
