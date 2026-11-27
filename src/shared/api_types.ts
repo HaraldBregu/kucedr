@@ -208,6 +208,7 @@ export interface AgentApi {
 	openSessionFolder: (sessionId: string) => Promise<void>;
 	renameSession: (sessionId: string, title: string) => Promise<void>;
 	pinSession: (sessionId: string, pinned: boolean) => Promise<void>;
+	moveSession: (sessionId: string, workspaceId: string) => Promise<void>;
 	categorizeSession: (sessionId: string, category: string | null) => Promise<void>;
 	archiveSession: (sessionId: string, archived: boolean) => Promise<void>;
 	getLastMessages: (sessionId: string) => Promise<AgentHistoryMessage[]>;
