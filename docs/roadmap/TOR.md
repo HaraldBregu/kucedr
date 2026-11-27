@@ -33,7 +33,7 @@ agent's own browser through the Tor network, which is what reaches `.onion` site
 
 | # | Feature | What the user gets | Builds on | Size |
 | --- | --- | --- | --- | --- |
-| 11.1 | Tor tabs | `.onion` addresses open in a tab that connects through Tor, marked with a Tor indicator in the pane's toolbar | Browser pane (3.9); a tab whose network session is routed through Tor | M |
+| 11.1 | Tor tabs | `.onion` addresses open in a tab that connects through Tor, marked with a Tor indicator in the pane's toolbar; other tabs refuse them without a lookup | Browser pane (3.9); a tab whose network session is routed through Tor | M |
 | 11.2 | Tor connection | Kucedr finds Tor already running on the machine (Tor Browser or the Tor service) and shows its status in Settings; an address field for a custom setup | Nothing to bundle | S |
 | 11.3 | Open any site through Tor | A per-tab choice to load an ordinary site through Tor, for the user or when the user asks the agent to | 11.1 | S |
 | 11.4 | Built-in Tor | Tor ships inside Kucedr and starts on demand, so nothing has to be installed | Adds a program to ship, sign and keep updated on three platforms | L |
