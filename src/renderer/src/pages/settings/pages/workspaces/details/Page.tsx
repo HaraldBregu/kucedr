@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSpaces } from '@/spaces/context';
-import { DEFAULT_WORKSPACE } from '@shared/workspaces_types';
+import { DEFAULT_WORKSPACE, type WorkspaceContents } from '@shared/workspaces_types';
 import {
 	SettingsEmptyState,
 	SettingsNotice,
