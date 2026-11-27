@@ -18,6 +18,7 @@ export function latestUuidSessionId(
 					entry.isDirectory() &&
 					isUuid(entry.name) &&
 					sessionType(sessionsPath, entry.name) === category &&
+					sessionWorkspace(sessionsPath, entry.name) === workspace &&
 					!isArchived(sessionsPath, entry.name)
 			)
 			.map((entry) => {
