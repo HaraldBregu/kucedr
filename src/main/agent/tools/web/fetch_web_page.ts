@@ -61,6 +61,7 @@ export const fetchWebPageTool = tool({
 		for (let hop = 0; ; hop++) {
 			if (current.protocol !== 'http:' && current.protocol !== 'https:')
 				throw new Error('Invalid URL: must be http or https');
+			refuse(current);
 			if (leaks(current.toString()))
 				throw new Error('Blocked: the address contains a stored key or token.');
 			const timeoutSignal = AbortSignal.timeout(TIMEOUT_MS);
