@@ -11,5 +11,8 @@ export const workspaces: WorkspacesApi = {
 	openWindow: (id) => typedInvokeUnwrap(WorkspacesChannels.openWindow, id),
 	pickImage: (id) => typedInvokeUnwrap(WorkspacesChannels.pickImage, id),
 	removeImage: (id) => typedInvokeUnwrap(WorkspacesChannels.removeImage, id),
+	chats: (id) => typedInvokeUnwrap(WorkspacesChannels.chats, id),
+	reveal: (id) => typedInvokeUnwrap(WorkspacesChannels.reveal, id),
+	remove: (id) => typedInvokeUnwrap(WorkspacesChannels.remove, id),
 	onChanged: (callback) => typedOn(WorkspacesChannels.changed, callback),
 };
