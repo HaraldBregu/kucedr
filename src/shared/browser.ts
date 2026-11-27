@@ -120,6 +120,7 @@ export interface BrowserPaneApi {
 	passwordsFill(targetId: string, id: string): Promise<void>;
 	downloadAnswer(targetId: string, answer: 'save' | 'cancel' | 'dismiss' | 'show'): Promise<void>;
 	permissionAnswer(targetId: string, answer: 'allow' | 'block' | 'dismiss'): Promise<void>;
+	dangerContinue(targetId: string): Promise<void>;
 	connections(): Promise<BrowserConnections>;
 	connectionsSet(connections: BrowserConnections): Promise<void>;
 	// The Tor address that answers now, or null.
