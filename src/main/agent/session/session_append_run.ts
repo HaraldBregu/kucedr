@@ -1,4 +1,5 @@
 import { appendFileSync } from 'node:fs';
+import { sealLine } from '../../vault/seal_line';
 import type { SessionState } from './session_types';
 import { ensureSession } from './session_ensure_session';
 import { runFilePath } from './session_run_file_path';
