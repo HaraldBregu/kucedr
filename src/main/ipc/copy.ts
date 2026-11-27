@@ -18,12 +18,19 @@ export async function copyIntoWorkspace(
 	}
 	const imported: string[] = [];
 	for (const source of sources) {
-		const targetPath = path.join(resolvedDestination, path.basename(source));
-		try {
-			await fs.lstat(targetPath);
-			throw new Error(`An item named "${path.basename(source)}" already exists.`);
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+		if (!path.isAbsolute(source)) throw new Error('Invalid import source path.');
+		const extension = (await fs.stat(source)).isFile() ? path.extname(source) : '';
+		const baseName = path.basename(source, extension);
+		let targetPath = path.join(resolvedDestination, path.basename(source));
+		for (let index = 1; ; index += 1) {
+			try {
+				await fs.lstat(targetPath);
+			} catch (error) {
+				if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+				break;
+			}
+			const suffix = index === 1 ? ' copy' : ` copy ${index}`;
+			targetPath = path.join(resolvedDestination, `${baseName}${suffix}${extension}`);
 		}
 		await fs.cp(source, targetPath, { recursive: true, errorOnExist: true, force: false });
 		imported.push(path.relative(resolvedRoot, targetPath).split(path.sep).join('/'));
