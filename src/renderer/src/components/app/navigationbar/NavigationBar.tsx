@@ -25,7 +25,6 @@ import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
-import { Privacy } from './Privacy';
 import { LockButton } from './LockButton';
 
 // Synchronous platform check — no hooks, no async, no state.
@@ -282,7 +281,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 							{rightContent}
 						</div>
 					)}
-					<Privacy />
 					<LockButton />
 				</div>
 
