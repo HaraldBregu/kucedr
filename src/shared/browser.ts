@@ -57,6 +57,7 @@ export interface BrowserPaneTab {
 	// A manual sign-in waiting for "Save password?"; never carries the password.
 	readonly offer?: { readonly username: string; readonly site: string; readonly update: boolean };
 	readonly blocked?: readonly BrowserBlocked[];
+	readonly trackers?: number;
 	readonly download?: BrowserDownload;
 	readonly permission?: BrowserPermissionRequest;
 }
