@@ -58,6 +58,7 @@ import { paneEvents } from './agent/tools/web/browser/pane';
 import { history } from './browser/history';
 import { configurePrivacy } from './privacy/configure';
 import { isPrivacyEnabled, privacyChanged } from './privacy/state';
+import { enableVaultOnFreshInstall } from './vault/fresh';
 import { isVaultEnabled } from './vault/state';
 import { saveTabs } from './browser/snapshot';
 import { openAppWindows } from './apps/app_render';
