@@ -36,7 +36,7 @@ Not in this pass: ad blocking (the ad part of 13.1), untrusted content marking (
 4. **Tracking parameters (13.6).** A top-level `GET` page load whose query carries `utm_*` or a click id (`…clid`, `…clkid`, any case) is redirected to the same address without them (`src/main/shield/strip.ts`). Other parameters keep their exact bytes; the fragment is untouched. Not applied to `fetch_web_page`.
 5. **Trackers (13.1).** A third-party request to a host on the bundled EasyPrivacy list (`resources/shield/easyprivacy.txt`) is blocked, reason `tracker` (`src/main/shield/list.ts`, `tracker.ts`, last check in `verdict`). Only `||host^` rules are used, with `$third-party` and type options honoured; `@@||host^` exceptions apply; rules with `domain=` or other options are skipped. Third-party means the request's registrable domain (public suffix list) differs from the tab's committed address; a request with no tab address counts as third-party. Main-frame loads are never blocked. Same on every route. On by default, no setting. Not applied to `fetch_web_page` or `search_web`.
 
-Blocked requests are listed per tab (last 50, cleared on each new page) and counted on a toolbar button. Tracker requests are counted one by one and listed once per tracker site; the list starts with "N tracker requests blocked on this page".
+Blocked requests are listed per tab (last 50, cleared on each new page) and counted on a toolbar button. Tracker requests are counted one by one and listed once per tracker origin; the list starts with "N tracker requests blocked on this page".
 
 ## Background browsing (headless Chrome in background runs)
 
