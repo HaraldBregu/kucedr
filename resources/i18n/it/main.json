@@ -2856,6 +2856,12 @@
 		"block": "Blocca",
 		"close": "Chiudi"
 	},
+	"browserDanger": {
+		"title": "Sito pericoloso bloccato",
+		"body": "{{site}} è nell'elenco dei siti malware noti incluso in Kucedr, quindi questa pagina non è stata aperta. L'elenco viene controllato su questo computer; l'indirizzo non viene inviato da nessuna parte.",
+		"continue": "Continua comunque",
+		"busy": "L'assistente sta usando questa scheda. Fermalo per continuare."
+	},
 	"browserPane": {
 		"routes": {
 			"private": {
