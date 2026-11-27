@@ -68,6 +68,15 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	const [undo, setUndo] = useState<{ action: 'archive' | 'delete'; ids: string[] }>();
 	const undone = useRef(false);
 	const [deleted, setDeleted] = useState<string[]>([]);
+	const { current: currentWorkspace, workspaces } = useSpaces();
+	const otherWorkspaces = workspaces.filter((workspace) => workspace.id !== currentWorkspace && !workspace.missing);
+	const workspaceItems = otherWorkspaces.map((workspace) => ({
+		id: `workspace:${workspace.id}`,
+		label: t('spaces.moveTo', {
+			name: workspace.id === DEFAULT_WORKSPACE ? t('spaces.personal') : workspace.name,
+			defaultValue: 'Move to workspace {{name}}',
+		}),
+	}));
 
 	useEffect(() => localStorage.setItem(scoped('chat-categories'), JSON.stringify(categories)), [categories]);
 	useEffect(() => localStorage.setItem(scoped('chat-category-assignments'), JSON.stringify(assignments)), [assignments]);
