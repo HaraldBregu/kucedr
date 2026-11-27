@@ -93,6 +93,7 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 			tab.owner = scope.runId;
 			tab.chat = scope.sessionId;
 		}
+		tab.passed = undefined;
 		tab.order = ++pane.order;
 		await wake(tab);
 		return tab;
