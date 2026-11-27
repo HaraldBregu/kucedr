@@ -28,6 +28,7 @@ function formatAppLabel(appId: string): string {
 export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] {
 	const { t } = useTranslation();
 	const location = useLocation();
+	const { workspaces } = useSpaces();
 	const mcpDetailMatch = useMatch('/settings/mcp/:mcpServerId');
 	const pluginDetailMatch = useMatch('/settings/plugins/:kind/:providerId/:entryId');
 	const modelDetailMatch = useMatch('/settings/models/:type/:providerId/:modelId');
