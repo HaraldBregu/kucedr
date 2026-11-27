@@ -97,7 +97,8 @@ send data out. 13.10 and 13.3 work as a pair.
   Asking for every site by default would make the agent tiresome.
 - **Block lists.** Resolved 2026-11-27: EasyPrivacy, bundled as a separate data file under CC BY-SA
   3.0 (it is dual licensed with GPL-3.0), credited in `THIRD_PARTY_NOTICES.md`, updated with
-  releases. Ad lists (EasyList) and 13.12's dangerous-site lists are still open.
+  releases. 13.12 ships the urlhaus-filter malware list (CC0), credited the same way. Ad lists
+  (EasyList) and a phishing list are still open.
 - **First step.** 13.1, 13.3, 13.5 and 13.8 work without the browser pane; the pane (3.9) later
   shows the shield's state.
 - **Where filtering happens.** The browser pane is planned as a separate web view with its own
