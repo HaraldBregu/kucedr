@@ -245,6 +245,34 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 		});
 	};
 
+	const moveToWorkspace = (ids: string[], workspaceId: string, category?: ChatCategory): void => {
+		const moved = new Set(ids);
+		setActionError('');
+		clearSelection();
+		void Promise.all(ids.map((id) => window.agent.moveSession(id, workspaceId)))
+			.then(() => {
+				if (category) {
+					localStorage.setItem(
+						scoped('chat-categories', workspaceId),
+						JSON.stringify([...stored<ChatCategory[]>('chat-categories', [], workspaceId), category])
+					);
+					localStorage.setItem(
+						scoped('chat-category-assignments', workspaceId),
+						JSON.stringify({
+							...stored<Record<string, string>>('chat-category-assignments', {}, workspaceId),
+							...Object.fromEntries(ids.map((id) => [id, category.id])),
+						})
+					);
+					deleteCategory(category.id);
+				} else {
+					setAssignments((current) => Object.fromEntries(Object.entries(current).filter(([id]) => !moved.has(id))));
+				}
+				setSessions((current) => current.filter((item) => !moved.has(item.id)));
+				if (currentSessionId && moved.has(currentSessionId)) setSessionId(crypto.randomUUID());
+			})
+			.catch(() => setActionError(t('spaces.errors.move', 'The chat could not be moved.')));
+	};
+
 	const createCategory = (ids: string[]): void => {
 		const id = crypto.randomUUID();
 		setCategories((current) => [...current, { id, name: t('settings.chatHistory.newCategory', 'New category') }]);
