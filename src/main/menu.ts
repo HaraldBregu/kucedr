@@ -121,6 +121,12 @@ export class Menu {
 							this.callbacks.onNewWindow();
 						},
 					},
+					{
+						label: m.lockNow,
+						accelerator: getShortcutAccelerator('lockNow'),
+						enabled: this.callbacks.getLockEnabled?.() ?? false,
+						click: (): void => this.callbacks.onLockNow?.(),
+					},
 					isMac
 						? { label: m.close, role: 'close' as const }
 						: { label: m.quit, role: 'quit' as const, accelerator: 'CmdOrCtrl+Q' },
