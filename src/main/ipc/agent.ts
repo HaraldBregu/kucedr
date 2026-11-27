@@ -676,6 +676,16 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.moveSession,
+			wrapAgentHandler(
+				mainAccess,
+				(sessionId: unknown, workspaceId: unknown): Promise<void> =>
+					agent.moveSession(requireUuidSessionId(sessionId), String(workspaceId)),
+				AgentChannels.moveSession
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.categorizeSession,
 			wrapAgentHandler(
 				mainAccess,
