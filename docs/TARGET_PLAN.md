@@ -1,6 +1,7 @@
 # Target: first implementation plan
 
-Status: plan, written 2026-11-27. Nothing here is built. It picks the code work from
+Status: steps 1–3 built 2026-11-27 and checked in the built app with a mock model and a local
+page (see [What was checked](#what-was-checked)). It picks the code work from
 [Target](mission/TARGET.md) that can start now, before the phase 0 buyer test, and plans it step by
 step. Statements about the code come from a read of `dev` on that date.
 
