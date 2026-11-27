@@ -261,7 +261,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 					className={`z-10 mr-3 ${actionGroupClassName}`}
 				>
 					{navigationButtons}
-					<Privacy />
 					<Tooltip>
 						<TooltipTrigger render={
 							<Button
@@ -285,6 +284,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				</div>
 
 				{!isMac && <WindowControls isMaximized={isMaximized} />}
+				<Privacy />
 			</NavigationBarContainer>
 		</NavigationBarProvider>
 	);
