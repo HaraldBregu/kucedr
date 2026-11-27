@@ -1,4 +1,4 @@
-import { Clock3, LoaderCircle, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { LoaderCircle, Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { buttonVariants } from '@/components/ui/button';
@@ -7,7 +7,7 @@ import { usePrivacy } from '@/hooks/privacy';
 import { cn } from '@/lib/utils';
 
 const icons = {
-	off: Clock3,
+	off: Shield,
 	connecting: LoaderCircle,
 	protected: ShieldCheck,
 	blocked: ShieldAlert,
@@ -16,11 +16,11 @@ const icons = {
 export function Privacy(): React.JSX.Element | null {
 	const { t } = useTranslation();
 	const { state } = usePrivacy();
-	if (!state || (state.status === 'off' && !state.restartRequired)) return null;
-	const Icon = icons[state.status];
-	const status = t(`settings.privacy.status.${state.status}`);
-	const label = t('settings.privacy.toolbarStatus', { status });
-	const pending = state.restartRequired ? t('settings.privacy.restartRequired') : undefined;
+	const Icon = state ? icons[state.status] : Shield;
+	const label = state
+		? t('settings.privacy.toolbarStatus', { status: t(`settings.privacy.status.${state.status}`) })
+		: t('settings.privacy.title');
+	const pending = state?.restartRequired ? t('settings.privacy.restartRequired') : undefined;
 	return (
 		<Tooltip>
 			<TooltipTrigger
