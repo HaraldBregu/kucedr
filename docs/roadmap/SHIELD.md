@@ -7,7 +7,8 @@ sign-in callback; the rest proposal.
 
 Built: every browser pane session checks each request in `onBeforeRequest`
 (`src/main/agent/tools/web/browser/guard.ts`, rules in `src/main/shield/`). Public pages cannot
-reach the local network (no DNS-rebinding check yet); stored keys and tokens never leave in an
+reach the local network, including through a public name that resolves to a private address
+(checked on direct and private tabs since 2026-11-27); stored keys and tokens never leave in an
 address or request body, also for `fetch_web_page`, `search_web` and background browsing; downloads
 wait in a holding folder for the user's answer. Blocked requests are listed per tab under the
 toolbar's shield button. The "What exists today" list below is from 2026-11-19.
