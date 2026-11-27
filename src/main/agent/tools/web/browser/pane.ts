@@ -18,6 +18,8 @@ export interface BrowserTab {
 	readonly ready: Promise<void>;
 	readonly blocked: BrowserBlocked[];
 	trackers: number;
+	danger?: string;
+	passed?: Set<string>;
 	// path is the holding file until the user agrees, then the file in Downloads; received is set
 	// when the bytes arrived before the answer.
 	download?: BrowserDownload & { readonly item: DownloadItem; readonly path: string; readonly received?: boolean };
