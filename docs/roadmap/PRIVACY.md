@@ -51,6 +51,32 @@ Background Chrome, web fetch and link previews, shell and coding commands, exter
 stdio MCP, plugin scripts, plugin-backed database and backup workers, and updates are paused in
 this version. These paths need a verified protected transport before they can be enabled.
 
+Loopback (`localhost`, `127.0.0.0/8`, `::1`) goes direct from the main process, so a local model
+such as one on `127.0.0.1` keeps working and its name is never resolved on the proxy host
+(`src/main/privacy/loopback.ts`, used by the Fetch dispatcher and the HTTP, HTTPS and WebSocket
+agents in `transport.ts`). Any other name still goes to the proxy as a name. With no valid proxy
+set, loopback is blocked too. Checked 2026-11-27 in the built app with a logging SOCKS5 server as
+the proxy: a chat to a mock model at `model.example.test` reached it through the proxy as a name
+(ATYP domain), and the same chat with the model at `127.0.0.1` reached it directly with no proxy
+request. Fetch to `localhost` and `[::1]`, HTTP and a WebSocket to `127.0.0.1` went direct; Fetch,
+HTTP and a WebSocket to other names went through the proxy as names.
+
+Outbound paths while Privacy Mode is on, audited 2026-11-27:
+
+- Proxied: the app window, plugin app views, export windows and every browser pane tab (direct and
+  private tabs included; Tor tabs are refused), through the session proxy, the startup proxy flags
+  and a request gate until the proxy is set. Main-process Fetch, Node HTTP and HTTPS, and every
+  WebSocket the app opens (`privacyWebSocket`), through the global dispatcher and agents. HTTP MCP
+  servers and model, search and cloud clients use these.
+- Paused: the auto-updater (not started; install refused), shell and coding commands (so the
+  command sandbox proxy never starts), stdio MCP servers (their own traffic is out of scope),
+  plugin scripts, the database and backup utility processes, external OAuth and links.
+- Known gaps: Chromium sessions send loopback through the proxy too (`<-loopback>`), so a local
+  service is not reachable from an app view; no renderer code calls one today. Worker threads do
+  not inherit the main-process dispatcher and agents; the knowledge index and extract workers make
+  no network calls today, so a worker that does would need its own transport first. Nothing stops
+  traffic outside Kucedr's network clients without an OS-level egress filter.
+
 ## Open decisions
 
 - **1.3 changes how the data folder behaves.** Files stop being readable by other tools, including
