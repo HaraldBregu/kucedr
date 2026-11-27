@@ -2082,7 +2082,7 @@
 			"switchDescription": "Show this workspace in this window, or open it in its own window.",
 			"danger": "Delete",
 			"delete": "Delete workspace",
-			"deleteHint": "Deletes its chats, browser data, scheduled tasks and settings. The folder and its files are kept.",
+			"deleteHint": "Shows everything that will be removed before anything is deleted. Chats move to Personal unless you choose to delete them. The folder and its files are kept.",
 			"deleteTitle": "Delete {{name}}?",
 			"deleteType": "Type {{name}} to confirm.",
 			"deleteDescription_one": "{{count}} chat, the browser data, scheduled tasks and settings of this workspace are deleted. The folder and its files are kept.",
