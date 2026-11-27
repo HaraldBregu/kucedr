@@ -7,7 +7,6 @@ import { ragIndexingSignature } from './signature';
 import type { RagScheduleLogger } from './types';
 import { DEFAULT_WORKSPACE } from '../../../../shared/workspaces_types';
 import { currentWorkspace } from '../../../workspaces/current';
-import { readWorkspaces } from '../../../workspaces/read';
 import { workspaceScope } from '../../../workspaces/scope';
 import { withinWorkspace } from '../../../workspaces/within';
 
@@ -21,8 +20,7 @@ export function startRagSchedule(logger: RagScheduleLogger): void {
 	unsubscribe?.();
 	scheduleLogger = logger;
 	unsubscribe = subscribeRagConfiguration(rescheduleRagIndexing);
-	for (const id of [DEFAULT_WORKSPACE, ...readWorkspaces().map((record) => record.id)])
-		withinWorkspace(id, schedule);
+	withinWorkspace(DEFAULT_WORKSPACE, schedule);
 }
 
 export function stopRagSchedule(): void {
@@ -41,11 +39,11 @@ export function rescheduleRagIndexing(): void {
 	const job = ragJob();
 	if (job.configuration && job.configuration !== ragIndexingSignature(getRagConfiguration()))
 		cancelRagIndexing();
-	if (scheduleLogger) schedule();
+	if (scheduleLogger) withinWorkspace(DEFAULT_WORKSPACE, schedule);
 }
 
 export function getRagNextRun(): string | null {
-	return tasks.get(currentWorkspace().id)?.getNextRun()?.toISOString() ?? null;
+	return tasks.get(DEFAULT_WORKSPACE)?.getNextRun()?.toISOString() ?? null;
 }
 
 function schedule(): void {

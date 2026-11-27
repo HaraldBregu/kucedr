@@ -1,6 +1,6 @@
 export type SidebarSide = 'left' | 'right';
 
-export const DEFAULT_SIDEBAR_WIDTH = 256;
+export const DEFAULT_SIDEBAR_WIDTH = 288;
 export const MIN_SIDEBAR_WIDTH = 256;
 export const MAX_SIDEBAR_WIDTH = 384;
 
