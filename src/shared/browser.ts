@@ -58,6 +58,8 @@ export interface BrowserPaneTab {
 	readonly offer?: { readonly username: string; readonly site: string; readonly update: boolean };
 	readonly blocked?: readonly BrowserBlocked[];
 	readonly trackers?: number;
+	// The page address blocked as a known malware site, shown instead of the page.
+	readonly danger?: string;
 	readonly download?: BrowserDownload;
 	readonly permission?: BrowserPermissionRequest;
 }
