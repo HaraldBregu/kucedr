@@ -22,10 +22,12 @@ const ENTITIES = new Map([
 
 // ponytail: regex-based HTML-to-text; add a readability lib if extraction quality matters
 function htmlToText(html: string): string {
-	return html
-		.replace(/<script[\s\S]*?<\/script>/gi, '')
-		.replace(/<style[\s\S]*?<\/style>/gi, '')
-		.replace(/<!--[\s\S]*?-->/g, '')
+	return stripHidden(
+		html
+			.replace(/<script[\s\S]*?<\/script>/gi, '')
+			.replace(/<style[\s\S]*?<\/style>/gi, '')
+			.replace(/<!--[\s\S]*?-->/g, '')
+	)
 		.replace(/<(br|\/p|\/div|\/h[1-6]|\/li|\/tr)[^>]*>/gi, '\n')
 		.replace(/<[^>]+>/g, '')
 		.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, name: string) => {
