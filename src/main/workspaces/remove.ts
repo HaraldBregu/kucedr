@@ -6,6 +6,7 @@ import { workspaceTabs } from '../agent/tools/web/browser/local';
 import { deleteSchedule } from '../tasks/tasks_delete_schedule';
 import { listSchedules } from '../tasks/tasks_list_schedules';
 import { workspaceImages } from './images';
+import { openedWorkspaces } from './opened';
 import { readWorkspaces } from './read';
 import { resolveWorkspace } from './resolve';
 import { withinWorkspace } from './within';
