@@ -24,6 +24,6 @@ export function appendRun(state: SessionState, entry: unknown): void {
 		['run_finished', 'run_error'].includes(String((entry as Record<string, unknown>).type));
 	if (!terminal && state.runTraceBuffer.length < TRACE_BUFFER_SIZE) return;
 	ensureSession(state);
-	appendFileSync(runFilePath(state), `${state.runTraceBuffer.join('\n')}\n`, 'utf8');
+	appendFileSync(runFilePath(state), `${state.runTraceBuffer.map(sealLine).join('\n')}\n`, 'utf8');
 	state.runTraceBuffer = [];
 }
