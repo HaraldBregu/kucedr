@@ -1,5 +1,6 @@
 import type { Session } from 'electron';
 import type { BrowserBlocked } from '../../../../../shared/browser';
+import { rebound } from '../../../../shield/rebound';
 import { strip } from '../../../../shield/strip';
 import { verdict } from '../../../../shield/verdict';
 import { block } from './block';
