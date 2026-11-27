@@ -98,12 +98,15 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 					navigation =
 						request.isNavigationRequest() && request.method() === 'GET' && !request.frame().parentFrame();
 					const body = request.postDataBuffer();
-					allowed = await shielded({
-						url: request.url(),
-						method: request.method(),
-						resourceType: navigation ? 'mainFrame' : request.resourceType(),
-						uploadData: body ? [{ bytes: body }] : undefined,
-					});
+					allowed = await shielded(
+						{
+							url: request.url(),
+							method: request.method(),
+							resourceType: navigation ? 'mainFrame' : request.resourceType(),
+							uploadData: body ? [{ bytes: body }] : undefined,
+						},
+						request.serviceWorker() ? undefined : request.frame().page().url()
+					);
 				} catch {
 					allowed = false;
 				}
