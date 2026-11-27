@@ -347,7 +347,7 @@ const CloudPage: React.FC = () => {
 						</Button>
 						<Button
 							variant="outline"
-							disabled={controlsDisabled || storage.paths.length === 0}
+							disabled={controlsDisabled || !hasFolders}
 							onClick={() => setRestoreOpen(true)}
 						>
 							<Download className="size-3.5" />
