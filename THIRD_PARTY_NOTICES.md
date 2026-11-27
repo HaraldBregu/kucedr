@@ -20386,3 +20386,7 @@ SOFTWARE.
 ## Data file: EasyPrivacy (CC-BY-SA-3.0)
 
 `resources/shield/easyprivacy.txt` is the EasyPrivacy filter list by "The EasyList authors (https://easylist.to/)", shipped unmodified from https://easylist.to/easylist/easyprivacy.txt. EasyList is dual licensed under GPL-3.0-or-later and CC BY-SA 3.0 Unported or later (https://easylist.to/pages/licence.html); Kucedr uses this file under the Creative Commons Attribution-ShareAlike 3.0 Unported licence, https://creativecommons.org/licenses/by-sa/3.0/.
+
+## Data file: URLhaus malicious domains (CC0-1.0)
+
+`resources/shield/urlhaus.txt` is the "Online Malicious Domains Blocklist" by Ming Di Leom (https://gitlab.com/malware-filter/urlhaus-filter), shipped unmodified from https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-domains-online.txt. It is built from URLhaus data by abuse.ch (https://urlhaus.abuse.ch/), which is CC0; the list itself is released under CC0 1.0 Universal, https://creativecommons.org/publicdomain/zero/1.0/. Neither abuse.ch nor the list author endorses Kucedr.
