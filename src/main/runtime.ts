@@ -230,7 +230,8 @@ const menuManager = new Menu({
 });
 
 app.whenReady().then(async () => {
-	if (isPrivacyEnabled() || isVaultEnabled()) {
+	enableVaultOnFreshInstall();
+	if (!startedEarly) {
 		await configurePrivacy();
 		agentService.start(logger);
 		startRagSchedule(logger);
