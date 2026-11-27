@@ -2082,6 +2082,7 @@
 			"delete": "Elimina spazio di lavoro",
 			"deleteHint": "Elimina chat, dati del browser, attività pianificate e impostazioni. La cartella e i suoi file restano.",
 			"deleteTitle": "Eliminare {{name}}?",
+			"deleteType": "Scrivi {{name}} per confermare.",
 			"deleteDescription_one": "Vengono eliminati {{count}} chat, i dati del browser, le attività pianificate e le impostazioni di questo spazio di lavoro. La cartella e i suoi file restano.",
 			"deleteDescription_other": "Vengono eliminate {{count}} chat, i dati del browser, le attività pianificate e le impostazioni di questo spazio di lavoro. La cartella e i suoi file restano."
 		},
