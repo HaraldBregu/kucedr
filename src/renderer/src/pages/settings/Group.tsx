@@ -27,7 +27,7 @@ export function Group({
 	return (
 		<section data-slot="split-pane-group" className={cn('px-2 py-1', className)}>
 			{titleKey && (
-				<h2 className="flex h-7 items-center px-2 text-xs text-sidebar-foreground/70">
+				<h2 className="flex h-7 items-center px-2 text-xs font-light text-sidebar-foreground/70">
 					{t(titleKey)}
 				</h2>
 			)}
