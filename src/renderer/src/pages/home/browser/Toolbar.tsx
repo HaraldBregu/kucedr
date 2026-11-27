@@ -98,10 +98,11 @@ export function BrowserToolbar({
 	];
 	const look = tab.route === 'direct' ? undefined : ROUTE_LOOKS[tab.route];
 	const blocked = tab.blocked ?? [];
+	const count = blocked.filter((item) => item.reason !== 'tracker').length + (tab.trackers ?? 0);
 	const trailing = [
 		{ label: 'Stop the assistant', icon: Square, show: Boolean(onStopAgent), run: () => onStopAgent?.() },
 		{
-			label: `${blocked.length} blocked ${blocked.length === 1 ? 'request' : 'requests'} on this page`,
+			label: `${count} blocked ${count === 1 ? 'request' : 'requests'} on this page`,
 			icon: ShieldAlert,
 			show: blocked.length > 0,
 			run: () =>
