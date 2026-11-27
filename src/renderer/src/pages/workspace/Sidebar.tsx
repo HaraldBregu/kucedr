@@ -204,7 +204,18 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 		];
 		setActionError('');
 		void window.win.showContextMenu(items).then(async (kind): Promise<void> => {
-			if (kind === 'reveal' && entry) await window.agent.revealWorkspaceEntry(entry.path);
+			if (kind?.startsWith('workspace:') && entry) {
+				await beforeEntryChange();
+				for (const path of multiple ? topLevel(selection) : [entry.path]) {
+					await window.agent.transferWorkspaceEntry(path, kind.slice(10));
+					onEntryDeleted(path);
+				}
+				setSelection(new Set());
+				const files = await window.agent.listWorkspaceFiles();
+				setEntries(files);
+				onFilesLoaded?.(files);
+			}
+			else if (kind === 'reveal' && entry) await window.agent.revealWorkspaceEntry(entry.path);
 			else if ((kind === 'export-downloads' || kind === 'export-choose') && entry) await window.agent.archiveWorkspaceEntry(entry.path, kind);
 			else if (kind === 'clean-assets' && entry) {
 				await window.agent.cleanWorkspaceAssets(entry.path);
