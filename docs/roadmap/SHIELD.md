@@ -34,31 +34,49 @@ for the rest of the computer.
 ## What exists today
 
 - **Web tools are allowed by default** with no per-site rule (`src/main/agent/agent_profiles.ts`).
-  Approvals are per tool, never per site.
-- **Shell commands can reach any site.** The agent's commands run in a sandbox with every domain
-  allowed (`src/main/agent/sandbox.ts`). The sandbox already supports allow and deny lists.
-- **Private-address blocking** exists (`src/main/public.ts`) for page fetches
-  (`src/main/agent/tools/web/fetch_web_page.ts`) and background browsing, not for the interactive
-  browser.
-- **The interactive browser is unfiltered:** no request filtering, no tracker limits and no
-  download handling. Background browsing already filters every request
-  (`src/main/agent/tools/web/use_web_browser.ts`).
-- **Web and connector content is marked (2026-11-27).** Results of the web tools and MCP tools
-  reach the model inside an `<untrusted_content source="…">` envelope, with a system-prompt rule
-  that it is data; hidden text is dropped from snapshots and page fetches; snapshots list at most
-  200 elements (13.10).
-- **Workspace documents load remote images** when opened
-  (`src/renderer/src/pages/workspace/Resource.ts`), so a file the agent writes can trigger a
-  request. Assistant messages already turn remote images into links.
-- **The app window's content policy is broad:** any `https:` image, any WebSocket and a CDN for
-  scripts (`src/renderer/index.html`).
-- **One listener:** the sign-in callback on fixed port 3001 (`src/main/mcp/redirect.ts`).
-- **Not present:** a network log, a proxy setting, an offline switch, block lists. The app sends no
-  telemetry. Since 2026-11-27 two block lists ship in `resources/shield/`: EasyPrivacy and a
-  URLhaus malware host list, read from disk only, never fetched by the app.
-- **Secret guard on agent input (2026-11-27):** stored keys and tokens are checked in request
-  addresses and bodies, and in the text of the agent's type, fill, select, wait and evaluate actions
-  (`src/main/agent/tools/web/browser/secret.ts`).
+  Approvals are per tool, never per site (13.2 not built).
+- **Every browser pane request is checked** in `onBeforeRequest` (`browser/guard.ts`), on direct,
+  private, proxy and Tor tabs. `verdict` (`src/main/shield/verdict.ts`) checks, in order: a
+  `.onion` host outside a routed tab, the local network, stored keys in the address or body,
+  trackers, malware hosts. Direct and private tabs then resolve the name for the DNS-rebinding
+  check (`rebound.ts`). A page load with tracking parameters is redirected without them
+  (`strip.ts`), WebRTC follows the tab's route (`webrtc.ts`), downloads wait for the user (13.11),
+  and camera and microphone requests show a bar; every other permission is denied (13.13).
+- **Background browsing** asks the same `verdict`, then `publicUrl`, for every request and every
+  WebSocket a page or frame opens, strips tracking parameters and uses the direct tabs' WebRTC
+  policy; headless Chrome's resolver rules map `.onion` and the listed malware names to
+  `~NOTFOUND` (`use_web_browser.ts`). WebSockets opened in workers are not checked.
+- **Page fetch and link previews** (`fetch_web_page`, `src/main/unfurl.ts`) go through
+  `src/main/public.ts`: `.onion` and local names are refused before any lookup, then any name that
+  resolves to a private address. `fetch_web_page` also refuses malware hosts and stored keys in the
+  address on every redirect hop; link previews check neither. `search_web` refuses a query that
+  carries a stored key.
+- **Shell commands** reach public hosts only: the sandbox's proxy refuses local names, names that
+  do not resolve and names that resolve to a private, loopback, link-local or metadata address
+  (`src/main/agent/sandbox/egress.ts`, 21.10 step 1). The read-only sandbox has no network. The
+  malware, tracker and secret checks do not apply there. Plugin scripts and local connector servers
+  are not filtered (13.4).
+- **Secret guard on agent input:** `use_web_browser` refuses a type, fill, select, wait or evaluate
+  action whose text carries a stored key or token (`browser/secret.ts`), in the pane and in
+  background browsing.
+- **Web and connector content is marked.** Results of the web tools and MCP tools reach the model
+  inside an `<untrusted_content source="…">` envelope, with a system-prompt rule that it is data;
+  hidden text is dropped from snapshots and page fetches; snapshots list at most 200 elements
+  (13.10).
+- **Remote images** in workspace documents, user messages and summary messages load only after a
+  click (13.7); assistant messages turn them into links. The app window's content policy still
+  allows any `https:` image; scripts and connections are limited to the app itself
+  (`src/renderer/index.html`).
+- **Listeners:** the sign-in callback, only during a sign-in (port 3001 for preset and typed client
+  IDs, a free port for servers that register themselves), and the command sandbox's proxy on
+  127.0.0.1 after the first sandboxed command (13.14).
+- **Block lists:** EasyPrivacy (trackers) and the urlhaus-filter malware host list ship in
+  `resources/shield/`, read from disk only, never fetched by the app. No ad, phishing or
+  cookie-banner list.
+- **Routes:** private, proxy and Tor tabs (Settings → Browser → Connections) and app-wide Privacy
+  Mode ([Privacy](PRIVACY.md), 1.10).
+- **Not present:** a network log or view (13.8), a local-only switch (13.9) and site rules (13.2).
+  The app sends no telemetry.
 
 ## Outbound
 
