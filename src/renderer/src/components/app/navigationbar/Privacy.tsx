@@ -39,8 +39,8 @@ export function Privacy(): React.JSX.Element | null {
 							{active && (
 								<defs>
 									<linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-										<stop offset="0%" stopColor="#8b5cf6" />
-										<stop offset="100%" stopColor="#06b6d4" />
+										<stop offset="0%" stopColor="#34d399" />
+										<stop offset="100%" stopColor="#059669" />
 									</linearGradient>
 								</defs>
 							)}
