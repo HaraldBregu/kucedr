@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog } from 'electron';
+import { BrowserWindow, dialog, shell } from 'electron';
 import { z } from 'zod';
 import { WorkspacesChannels } from '../../shared/ipc_channels_definitions';
 import { DEFAULT_WORKSPACE } from '../../shared/workspaces_types';
