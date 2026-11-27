@@ -488,7 +488,7 @@ const CloudPage: React.FC = () => {
 						open={restoreOpen}
 						onOpenChange={setRestoreOpen}
 						disabled={controlsDisabled}
-						hasFolders={storage.paths.length > 0}
+						hasFolders={hasFolders}
 						onRestore={() => void runRestore()}
 					/>
 				</>
