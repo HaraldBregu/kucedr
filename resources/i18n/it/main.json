@@ -2888,7 +2888,7 @@
 			"route": "Connessione non pronta",
 			"download": "Download",
 			"onion": "Indirizzo onion, aprilo in una scheda Tor",
-			"tracker": "Tracker",
+			"tracker": "Tracker o pubblicità",
 			"dangerous": "Sito malware noto"
 		},
 		"trackers_one": "{{count}} richiesta di tracciamento bloccata in questa pagina",
