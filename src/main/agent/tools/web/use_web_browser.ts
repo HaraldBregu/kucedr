@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { BROWSER_ROUTES } from '../../../../shared/browser';
 import { ONION_RULES } from '../../../shield/onion';
 import { refuse } from '../../../shield/refuse';
+import { sinkhole } from '../../../shield/sinkhole';
 import { strip } from '../../../shield/strip';
 import { verdict, type ShieldRequest } from '../../../shield/verdict';
 import { webrtc } from '../../../shield/webrtc';
