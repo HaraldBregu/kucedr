@@ -3428,6 +3428,10 @@
 		"removePicture": "Remove picture",
 		"missing": "Folder not found",
 		"running": "{{count}} running",
+		"moveTo": "Move to workspace {{name}}",
+		"errors": {
+			"move": "The chat could not be moved."
+		},
 		"defaultModel": "Use default model",
 		"defaultModelDescription": "This workspace follows the chat model chosen in Personal. Turn off to choose another model here.",
 		"waiting_one": "{{count}} needs you",
