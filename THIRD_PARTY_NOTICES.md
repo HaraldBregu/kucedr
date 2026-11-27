@@ -20382,3 +20382,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ````
+
+## Data file: EasyPrivacy (CC-BY-SA-3.0)
+
+`resources/shield/easyprivacy.txt` is the EasyPrivacy filter list by "The EasyList authors (https://easylist.to/)", shipped unmodified from https://easylist.to/easylist/easyprivacy.txt. EasyList is dual licensed under GPL-3.0-or-later and CC BY-SA 3.0 Unported or later (https://easylist.to/pages/licence.html); Kucedr uses this file under the Creative Commons Attribution-ShareAlike 3.0 Unported licence, https://creativecommons.org/licenses/by-sa/3.0/.
