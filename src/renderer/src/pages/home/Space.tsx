@@ -21,7 +21,7 @@ export function Space({
 	const status = workspace.missing
 		? t('spaces.missing')
 		: [
-				workspace.running && !large ? t('spaces.running', { count: workspace.running }) : '',
+				workspace.running ? t('spaces.running', { count: workspace.running }) : '',
 				workspace.waiting ? t('spaces.waiting', { count: workspace.waiting }) : '',
 			]
 				.filter(Boolean)
