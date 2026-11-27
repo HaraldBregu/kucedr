@@ -1,5 +1,6 @@
 import type { StorageSyncSettings } from '../../shared/storage_types';
 import type { StorageOperations } from './operations';
+import { backupPaths } from './paths';
 import type { StorageSyncLogger } from './types';
 
 export function isAutoSyncable(storage: StorageSyncSettings): boolean {
