@@ -2082,7 +2082,7 @@
 			"switchDescription": "Mostra questo spazio di lavoro in questa finestra o aprilo in una finestra separata.",
 			"danger": "Elimina",
 			"delete": "Elimina spazio di lavoro",
-			"deleteHint": "Elimina chat, dati del browser, attività pianificate e impostazioni. La cartella e i suoi file restano.",
+			"deleteHint": "Prima di eliminare qualsiasi cosa mostra tutto ciò che verrà rimosso. Le chat vengono spostate in Personale, a meno che tu non scelga di eliminarle. La cartella e i suoi file restano.",
 			"deleteTitle": "Eliminare {{name}}?",
 			"deleteType": "Scrivi {{name}} per confermare.",
 			"deleteDescription_one": "Vengono eliminati {{count}} chat, i dati del browser, le attività pianificate e le impostazioni di questo spazio di lavoro. La cartella e i suoi file restano.",
