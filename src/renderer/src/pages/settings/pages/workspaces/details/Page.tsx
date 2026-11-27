@@ -4,7 +4,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, Folders } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { useConfirmation } from '@/components/ui/confirmation';
 import { Input } from '@/components/ui/input';
 import { useSpaces } from '@/spaces/context';
 import { DEFAULT_WORKSPACE } from '@shared/workspaces_types';
