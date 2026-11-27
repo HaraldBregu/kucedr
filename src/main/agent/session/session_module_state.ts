@@ -13,6 +13,7 @@ export function createSessionState(): SessionState {
 		numTurns: 0,
 		finalText: '',
 		sessionsPath: '',
+		workspace: DEFAULT_WORKSPACE,
 		folderName: '',
 		runTraceBuffer: [],
 		runContext: createRunContext(),
