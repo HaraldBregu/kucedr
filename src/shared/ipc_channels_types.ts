@@ -1529,6 +1529,7 @@ export interface BrowserInvokeChannelMap {
 		result: void;
 	};
 	[BrowserChannels.permissionAnswer]: { args: [targetId: string, answer: 'allow' | 'block' | 'dismiss']; result: void };
+	[BrowserChannels.dangerContinue]: { args: [targetId: string]; result: void };
 	[BrowserChannels.connections]: { args: []; result: import('./browser').BrowserConnections };
 	[BrowserChannels.connectionsSet]: { args: [connections: import('./browser').BrowserConnections]; result: void };
 	[BrowserChannels.torFind]: { args: []; result: string | null };
