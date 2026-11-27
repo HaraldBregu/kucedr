@@ -6,7 +6,8 @@ part of 13.6, the first part of 13.7, the camera and microphone part of 13.13, a
 sign-in callback; on 2026-11-27 background browsing got the pane's request rules, WebSocket
 checks, WebRTC policy and tracking-parameter stripping, the tracker part of 13.1 was built
 with the bundled EasyPrivacy list, the malware part of 13.12 with a bundled URLhaus list, and
-13.3 extended to the agent's type, fill, select, wait and evaluate actions; the rest proposal.
+13.3 extended to the agent's type, fill, select, wait and evaluate actions, and 13.10 built; the
+rest proposal.
 
 Built: every browser pane session checks each request in `onBeforeRequest`
 (`src/main/agent/tools/web/browser/guard.ts`, rules in `src/main/shield/`). Public pages cannot
