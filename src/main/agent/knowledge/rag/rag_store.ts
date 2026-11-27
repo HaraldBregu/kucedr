@@ -41,23 +41,17 @@ const stores = new Map<string, Store<RagConfiguration>>();
 
 function ragStore(): Store<RagConfiguration> {
 	const workspace = currentWorkspace();
-	let store = stores.get(workspace.id);
+	let store = stores.get(workspace.rag);
 	if (!store) {
 		store = new Store<RagConfiguration>({
 			name: 'settings',
 			cwd: path.resolve(workspace.rag),
 			accessPropertiesByDotNotation: false,
 			configFileMode: 0o600,
-			defaults: {
-				...DEFAULT_RAG_CONFIGURATION,
-				indexName:
-					workspace.id === DEFAULT_WORKSPACE
-						? DEFAULT_RAG_INDEX_NAME
-						: `${DEFAULT_RAG_INDEX_NAME}-${workspace.id}`,
-			},
+			defaults: DEFAULT_RAG_CONFIGURATION,
 		});
 		restrictSettingsFile(store.path);
-		stores.set(workspace.id, store);
+		stores.set(workspace.rag, store);
 	}
 	return store;
 }
