@@ -11,8 +11,10 @@ The agent's browser can open `.onion` addresses, shown in the browser pane like 
 - **Tor tabs (11.1, 11.3).** A pane tab can use the `tor` route: its own in-memory session sent
   through `socks5://` to Tor, with no direct fallback and loopback not bypassed. Opened from the
   pane's mask button or by the agent (`use_web_browser` `open` with `route: "tor"`, which always
-  asks the user). Checked against a fake SOCKS5 server: host names, `.onion` included, reach the
-  proxy as names, and a stopped proxy fails the tab.
+  asks the user). Checked 2026-11-27 in the built app with a logging SOCKS5 server: a proxy tab
+  sent `site.example.test` and a `.onion` name as names (`ATYP 3`), and a Tor tab set to it sent
+  its requests there. No run of a `.onion` address in a Tor tab or of a stopped proxy is recorded;
+  both rest on `socks5://` and `fixed_servers` with no fallback (`browser/prepare.ts`).
 - **Tor connection (11.2).** Settings → Browser → Connections: an address, or automatic (Tor
   Browser on 9150, then the Tor service on 9050), with a Check button.
 - Downloads are off, saved passwords are not offered, nothing is kept or restored, and pages get
