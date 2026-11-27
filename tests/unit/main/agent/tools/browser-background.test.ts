@@ -30,6 +30,7 @@ function browserContext() {
 		newPage: jest.fn(async () => { events.emit('page', page); return page; }),
 		setDefaultTimeout: jest.fn(),
 		route: jest.fn(async () => undefined),
+		routeWebSocket: jest.fn(async () => undefined),
 		close: jest.fn(async () => { pageEvents.emit('close'); events.emit('close'); }),
 	});
 }
