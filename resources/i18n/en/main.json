@@ -2854,6 +2854,35 @@
 		"block": "Block",
 		"close": "Close"
 	},
+	"browserPane": {
+		"routes": {
+			"private": {
+				"label": "Private",
+				"hint": "Private tab: no logins, history or cookies are kept, and everything is wiped when it closes."
+			},
+			"tor": {
+				"label": "Tor",
+				"hint": "Tor tab: pages load through Tor and sites do not see your network address. This is not Tor Browser, so do not rely on it for anonymity. Downloads are off. The assistant's web search and page fetch do not use this tab; they go over the normal network."
+			},
+			"proxy": {
+				"label": "Proxy",
+				"hint": "Proxy tab: pages load through the proxy set in Settings → Browser. Nothing is kept after it closes. The assistant's web search and page fetch do not use this tab; they go over the normal network."
+			}
+		},
+		"routeTab": "{{route}} tab",
+		"newRouted": "New private, Tor or proxy tab",
+		"newPrivate": "New private tab",
+		"newTor": "New Tor tab",
+		"newProxy": "New proxy tab",
+		"blocked": {
+			"local": "Local network",
+			"secret": "Stored key or token",
+			"route": "Connection not ready",
+			"download": "Download",
+			"onion": "Onion address, open it in a Tor tab"
+		},
+		"onionOutsideTor": "Onion addresses open only in a Tor tab, so the address is not looked up on your normal network. Open a new Tor tab from the mask button next to New tab and enter it there."
+	},
 	"inferenceSettings": {
 		"title": "Inference Settings",
 		"description": "Configure model and parameters.",
