@@ -69,6 +69,14 @@ export function SettingsSidebar(): React.JSX.Element {
 	const { t } = useTranslation();
 	const location = useLocation();
 	const { isMobile, dispatch } = usePageContext();
+	const [query, setQuery] = useState('');
+	const needle = query.trim().toLowerCase();
+	const matches = (item: SettingsNavigationItem): boolean =>
+		!needle || t(item.sidebarLabelKey ?? item.labelKey).toLowerCase().includes(needle);
+	const groups = SETTINGS_SIDEBAR_GROUPS.map((group) => ({ ...group, items: group.items.filter(matches) })).filter(
+		(group) => group.items.length > 0
+	);
+	const footerItems = SETTINGS_SIDEBAR_FOOTER_ITEMS.filter(matches);
 	const activePath = SETTINGS_SIDEBAR_ITEMS.reduce((currentPath, item) => {
 		const matches =
 			location.pathname === item.path ||
