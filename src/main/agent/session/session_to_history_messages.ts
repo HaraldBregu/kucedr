@@ -31,7 +31,7 @@ export function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 		for (const toolCall of message.toolCalls ?? []) {
 			if (toolCall.name === 'tool_search') continue;
 			if (!toolCall.result) continue;
-			const output = toTextContent(toolCall.result.content);
+			const output = unwrap(toTextContent(toolCall.result.content));
 			const isError = toolCall.result.isError ?? output.startsWith('Error:');
 			messages.push({
 				role: 'tool',
