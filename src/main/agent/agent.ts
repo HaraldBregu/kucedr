@@ -535,7 +535,7 @@ export class Agent {
 				.sort((left, right) => right.createdAtMs - left.createdAtMs);
 		}
 		const workspace = currentWorkspace();
-		const sessions = listSessions(workspace.sessions, category);
+		const sessions = listSessions(workspace.sessions, category, workspace.id);
 		const byId = new Map(sessions.map((session) => [session.id, session]));
 		for (const record of this.runs.values()) {
 			if (record.request.category !== category || record.request.workspaceId !== workspace.id)
