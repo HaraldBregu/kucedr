@@ -1675,7 +1675,10 @@ export interface WorkspacesInvokeChannelMap {
 	[WorkspacesChannels.openWindow]: { args: [id: string]; result: void };
 	[WorkspacesChannels.pickImage]: { args: [id: string]; result: boolean };
 	[WorkspacesChannels.removeImage]: { args: [id: string]; result: void };
-	[WorkspacesChannels.contents]: { args: [id: string]; result: WorkspaceContents };
+	[WorkspacesChannels.contents]: {
+		args: [id: string];
+		result: import('./workspaces_types').WorkspaceContents;
+	};
 	[WorkspacesChannels.reveal]: { args: [id: string]; result: void };
 	[WorkspacesChannels.remove]: { args: [id: string, deleteChats: boolean]; result: void };
 }
