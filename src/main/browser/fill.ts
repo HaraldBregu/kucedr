@@ -66,9 +66,9 @@ export async function fillLogin(tab: BrowserTab, id: string): Promise<boolean> {
 		if (!canFill(login.url, tab.view.webContents.getURL()))
 			throw new Error('This saved password is for a different, secure site.');
 		const found = (await tab.view.webContents.executeJavaScript(LOCATE, true)) as boolean;
-		if (!found) throw new Error('No password field is visible on this page.');
+		if (!found) throw new Error('No sign-in field is visible on this page.');
 		if (login.username) await type(tab, 'username', login.username);
-		await type(tab, 'password', login.password.toString('utf8'));
+		if (await type(tab, 'password', login.password.toString('utf8'))) tab.filled = true;
 	} finally {
 		login.password.fill(0);
 	}
