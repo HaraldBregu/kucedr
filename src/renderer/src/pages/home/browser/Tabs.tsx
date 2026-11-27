@@ -213,7 +213,7 @@ export function BrowserTabs({
 							.showContextMenu(
 								tabs.map((tab) => ({
 									id: tab.targetId,
-									label: ((tab.url !== 'about:blank' && tab.title) || tab.url || 'New tab').slice(0, 80),
+									label: ((tab.url !== 'about:blank' && (tab.title || tab.url)) || 'New tab').slice(0, 80),
 								}))
 							)
 							.then((targetId) => {
