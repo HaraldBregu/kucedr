@@ -34,5 +34,6 @@ export function verdict(
 	}
 	if (leaks(request.url) || request.uploadData?.some((part) => part.bytes && leaks(part.bytes.toString('latin1'))))
 		return 'secret';
+	if (tracker(url.hostname, request.resourceType, top)) return 'tracker';
 	return undefined;
 }
