@@ -58,11 +58,7 @@ export function createTab(
 		tab.error = error instanceof Error ? error.message : String(error);
 		changed();
 	});
-	contents.setWebRTCIPHandlingPolicy(
-		isPrivacyEnabled() || route === 'tor' || route === 'proxy'
-			? 'disable_non_proxied_udp'
-			: 'default_public_interface_only'
-	);
+	contents.setWebRTCIPHandlingPolicy(webrtc(isPrivacyEnabled() || route === 'tor' || route === 'proxy'));
 	contents.debugger.attach('1.3');
 	void contents.debugger
 		.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true })
