@@ -2854,6 +2854,35 @@
 		"block": "Blocca",
 		"close": "Chiudi"
 	},
+	"browserPane": {
+		"routes": {
+			"private": {
+				"label": "Privata",
+				"hint": "Scheda privata: accessi, cronologia e cookie non vengono conservati, e tutto viene cancellato alla chiusura."
+			},
+			"tor": {
+				"label": "Tor",
+				"hint": "Scheda Tor: le pagine si caricano tramite Tor e i siti non vedono il tuo indirizzo di rete. Non è Tor Browser, quindi non affidarti a essa per l'anonimato. I download sono disattivati. La ricerca web e il recupero delle pagine dell'assistente non usano questa scheda; passano dalla rete normale."
+			},
+			"proxy": {
+				"label": "Proxy",
+				"hint": "Scheda proxy: le pagine si caricano tramite il proxy impostato in Impostazioni → Browser. Nulla viene conservato dopo la chiusura. La ricerca web e il recupero delle pagine dell'assistente non usano questa scheda; passano dalla rete normale."
+			}
+		},
+		"routeTab": "Scheda {{route}}",
+		"newRouted": "Nuova scheda privata, Tor o proxy",
+		"newPrivate": "Nuova scheda privata",
+		"newTor": "Nuova scheda Tor",
+		"newProxy": "Nuova scheda proxy",
+		"blocked": {
+			"local": "Rete locale",
+			"secret": "Chiave o token salvato",
+			"route": "Connessione non pronta",
+			"download": "Download",
+			"onion": "Indirizzo onion, aprilo in una scheda Tor"
+		},
+		"onionOutsideTor": "Gli indirizzi onion si aprono solo in una scheda Tor, così l'indirizzo non viene cercato sulla rete normale. Apri una nuova scheda Tor dal pulsante con la maschera accanto a Nuova scheda e inseriscilo lì."
+	},
 	"inferenceSettings": {
 		"title": "Impostazioni Inferenza",
 		"description": "Configura modello e parametri.",
