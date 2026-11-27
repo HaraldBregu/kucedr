@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { useSpaces } from '@/spaces/context';
+import { DEFAULT_WORKSPACE } from '@shared/workspaces_types';
 import {
 	Select,
 	SelectContent,
