@@ -353,6 +353,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 									setPendingAction({ kind, parentPath: '' });
 								}}><Icon />{label}</DropdownMenuItem>
 							))}
+							<DropdownMenuItem onSelect={() => importEntries('')}><FolderInput />{t('workspaceSidebar.importFrom', 'Import from…')}</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 					</SidebarMenuItem>
