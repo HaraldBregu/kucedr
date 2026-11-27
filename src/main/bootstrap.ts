@@ -80,7 +80,7 @@ export function bootstrapServices(): BootstrapResult {
 		},
 		{
 			backup: () => forkSync<StoragePushResult>('backup'),
-			restore: () => forkSync<StoragePullResult>('restore'),
+			restore: () => holdRestoredCode(() => forkSync<StoragePullResult>('restore')),
 			lock: withStorageLock,
 			preventSuspension: preventStorageSuspension,
 		}
