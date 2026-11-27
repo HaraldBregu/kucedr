@@ -402,9 +402,17 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 									.showContextMenu([
 										{ id: 'new-chat', label: t('navigationBar.newChat', 'New chat') },
 										{ id: 'rename', label: t('common.rename', 'Rename') },
+										...(workspaceItems.length ? [{ type: 'separator' as const }, ...workspaceItems] : []),
+										{ type: 'separator' as const },
 										{ id: 'delete', label: t('common.delete', 'Delete') },
 									])
 									.then((action) => {
+										if (action?.startsWith('workspace:'))
+											moveToWorkspace(
+												sessions.filter((session) => assignments[session.id] === category.id).map((session) => session.id),
+												action.slice(10),
+												category
+											);
 										if (action === 'new-chat') startChat(category.id);
 										if (action === 'rename') setEditingCategoryId(category.id);
 										if (action === 'delete') deleteCategory(category.id);
