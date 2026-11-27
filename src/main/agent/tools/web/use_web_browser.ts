@@ -77,17 +77,13 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 	if (session.closed) throw new Error('Browser run has ended.');
 	if (session.context) return session.context;
 	if (!session.starting) {
-		const dir = profile();
-		const remove = (): Promise<void> =>
-			dir.then((created) => rm(created, { recursive: true, force: true })).catch(() => undefined);
-		session.starting = dir.then((created) => chromium.launchPersistentContext(created, {
+		session.starting = chromium.launchPersistentContext('', {
 			channel: 'chrome',
 			headless: true,
 			viewport: null,
 			timeout: DEFAULT_TIMEOUT_MS,
-			args: [`--host-resolver-rules=${ONION_RULES}`],
-		})).then(async (launched) => {
-			launched.on('close', () => void remove());
+			args: [`--host-resolver-rules=${ONION_RULES}`, `--webrtc-ip-handling-policy=${webrtc(false)}`],
+		}).then(async (launched) => {
 			if (session.closed || signal?.aborted) {
 				await launched.close();
 				signal?.throwIfAborted();
