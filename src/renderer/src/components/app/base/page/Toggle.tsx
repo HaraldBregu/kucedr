@@ -7,6 +7,20 @@ import { usePageContext } from './hooks/use-page-context';
 export function Toggle({ showTitle = false, middleContent }: { showTitle?: boolean; middleContent?: ReactNode }): ReactElement {
 	const { state, isMobile, toggleSidebar } = usePageContext();
 	const navigate = useNavigate();
+	const navigationHistory = <>
+		<Button type="button" variant="ghost" size="icon" aria-label="Go back" title="Go back"
+			onClick={() => navigate(-1)}
+			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
+			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
+			<ArrowLeft className="size-4" strokeWidth={1.8} />
+		</Button>
+		<Button type="button" variant="ghost" size="icon" aria-label="Go forward" title="Go forward"
+			onClick={() => navigate(1)}
+			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
+			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
+			<ArrowRight className="size-4" strokeWidth={1.8} />
+		</Button>
+	</>;
 	return (
 		<div className={`flex items-center ${middleContent ? 'gap-2' : '-space-x-2'} ${showTitle ? 'w-full' : ''}`}>
 		<Button type="button" variant="ghost" size="icon" data-slot="split-pane-toggle"
@@ -20,34 +34,7 @@ export function Toggle({ showTitle = false, middleContent }: { showTitle?: boole
 		{showTitle && <span className="ml-4 mr-3 text-sm font-medium">Kucedr</span>}
 		{showTitle && <span className="min-w-0 flex-1" />}
 		{middleContent}
-		{middleContent && <div className="flex items-center -space-x-2">
-		<Button type="button" variant="ghost" size="icon" aria-label="Go back" title="Go back"
-			onClick={() => navigate(-1)}
-			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
-			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
-			<ArrowLeft className="size-4" strokeWidth={1.8} />
-		</Button>
-		<Button type="button" variant="ghost" size="icon" aria-label="Go forward" title="Go forward"
-			onClick={() => navigate(1)}
-			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
-			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
-			<ArrowRight className="size-4" strokeWidth={1.8} />
-		</Button>
-		</div>}
-		{!middleContent && <>
-		<Button type="button" variant="ghost" size="icon" aria-label="Go back" title="Go back"
-			onClick={() => navigate(-1)}
-			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
-			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
-			<ArrowLeft className="size-4" strokeWidth={1.8} />
-		</Button>
-		<Button type="button" variant="ghost" size="icon" aria-label="Go forward" title="Go forward"
-			onClick={() => navigate(1)}
-			className="size-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground"
-			style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
-			<ArrowRight className="size-4" strokeWidth={1.8} />
-		</Button>
-		</>}
+		{middleContent ? <div className="flex items-center -space-x-2">{navigationHistory}</div> : navigationHistory}
 		</div>
 	);
 }
