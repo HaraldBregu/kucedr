@@ -61,11 +61,14 @@ const SCRIPT = `((payloadJson) => {
 			const ac = (el.getAttribute('autocomplete') || '').toLowerCase();
 			if (/username|email|tel/.test(ac)) return true;
 			if (ac === 'off' && el.type === 'text') { /* still allow by name */ }
-			const words = [el.name, el.id, el.getAttribute('aria-label'), el.placeholder].join(' ');
-			if (!nameHints.test(words)) return false;
-			// only when the form also has a password field, so plain search boxes are ignored
-			const form = el.form || document;
-			return Boolean(form.querySelector('input[type=password]'));
+			const hinted = nameHints.test([el.name, el.id, el.getAttribute('aria-label'), el.placeholder].join(' '));
+			const isText = (input) => ['text', 'email', 'tel', ''].includes(input.type);
+			const fields = [...(el.form || document).querySelectorAll('input')].filter(visible);
+			const password = fields.findIndex((input, i) => i > fields.indexOf(el) && input.type === 'password');
+			// with a password field after it: a field named like a username, or the one right before the password
+			if (password >= 0) return hinted || fields.slice(0, password).reverse().find(isText) === el;
+			// a sign-in split over two pages: the only text field of its form, so plain search boxes are ignored
+			return hinted && Boolean(el.form) && fields.filter(isText).length === 1;
 		};
 		// Below the field, or above it when there is no room; kept inside the window.
 		af.position = () => {
