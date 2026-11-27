@@ -55,9 +55,9 @@ const WorkspaceDetailsPage: React.FC = () => {
 			}
 		);
 	};
-	const remove = (): void => {
+	const remove = (deleteChats: boolean): void => {
 		setDeleting(false);
-		void attempt(window.workspaces.remove(workspace.id)).then((removed) => {
+		void attempt(window.workspaces.remove(workspace.id, deleteChats)).then((removed) => {
 			if (removed) void navigate('/settings/workspaces');
 		});
 	};
