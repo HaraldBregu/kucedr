@@ -1720,7 +1720,9 @@
 				"addFolders": "Add folders",
 				"empty": "Add folders to start backing up.",
 				"folder": "Selected folder",
-				"removeFolder": "Remove folder"
+				"removeFolder": "Remove folder",
+				"includeWorkspaces": "Include workspaces",
+				"includeWorkspacesDescription": "Also back up the folder of every workspace, including ones you add later."
 			},
 			"syncSaved": "Storage settings saved.",
 			"autoSync": {
