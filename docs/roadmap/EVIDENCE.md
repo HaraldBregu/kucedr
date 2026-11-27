@@ -1,7 +1,8 @@
 # 25. Cases and evidence
 
 Part of the [Roadmap](README.md). Status: proposal, written 2026-11-27 for the
-[investigation desk](../mission/TARGET.md).
+[investigation desk](../mission/TARGET.md). 25.1 and 25.2 built 2026-11-27
+([Target: first implementation plan](../TARGET_PLAN.md)).
 
 What a page looked like, where it came from, when, and over which route, kept so someone else can
 check it. The buyers are investigation firms, due-diligence boutiques and AML consultants
