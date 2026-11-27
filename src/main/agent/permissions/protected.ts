@@ -8,6 +8,7 @@ import { currentWorkspace } from '../../workspaces/current';
 import { readWorkspaces } from '../../workspaces/read';
 import { resolveWorkspace } from '../../workspaces/resolve';
 import { browserProfiles } from './browsers';
+import { otherSessions } from './others';
 
 export function protectedRoots(): { read: string[]; write: string[]; writable: string[] } {
 	const home = os.homedir();
