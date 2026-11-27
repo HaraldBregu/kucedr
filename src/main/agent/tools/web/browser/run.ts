@@ -220,14 +220,19 @@ export async function run(params: BrowserRun, signal?: AbortSignal): Promise<str
 					captureBeyondViewport: true,
 				});
 			} else shot = await capture(tab);
-			const file = await saveMedia('browser', 'png', shot.data, params.directory, signal);
-			return JSON.stringify({ targetId: tab.id, path: file });
+			return save(tab, params.ref ? 'screenshot-element' : params.fullPage ? 'screenshot-full' : 'screenshot', shot.data);
 		}
 		case 'pdf': {
 			const tab = await current();
 			const data = await tab.view.webContents.printToPDF({});
-			const file = await saveMedia('browser', 'pdf', data.toString('base64'), params.directory, signal);
-			return JSON.stringify({ targetId: tab.id, path: file });
+			return save(tab, 'pdf', data.toString('base64'));
+		}
+		case 'archive': {
+			const tab = await current();
+			const { data } = (await tab.view.webContents.debugger.sendCommand('Page.captureSnapshot', {
+				format: 'mhtml',
+			})) as { data: string };
+			return save(tab, 'archive', Buffer.from(data).toString('base64'));
 		}
 		case 'console': {
 			const tab = await current();
