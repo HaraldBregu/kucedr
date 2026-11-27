@@ -6,7 +6,7 @@
 
 Each browser pane tab has a **route**: `direct` (today's tabs), `private`, `tor` or `proxy`. The route is fixed when the tab opens. One request check (the shield) runs on every pane session.
 
-Not in this pass: tracker blocking (13.1, waits for the block-list decision), untrusted content marking (13.10), the network view (13.8, waits for the Privacy centre), built-in Tor (11.4), WireGuard profiles (12.3), proxies that need a username and password (Chromium's SOCKS client has no password support; HTTP proxy sign-in comes later), and routes in background runs.
+Not in this pass: ad blocking (the ad part of 13.1), untrusted content marking (13.10), the network view (13.8, waits for the Privacy centre), built-in Tor (11.4), WireGuard profiles (12.3), proxies that need a username and password (Chromium's SOCKS client has no password support; HTTP proxy sign-in comes later), and routes in background runs.
 
 ## Routes
 
