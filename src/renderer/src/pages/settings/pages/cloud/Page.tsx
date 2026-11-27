@@ -98,6 +98,10 @@ const CloudPage: React.FC = () => {
 	}, [applyOperationStatus, loadVersion, t]);
 
 	const storage = draft ?? settings;
+	const workspaceFolders = workspaces.filter((workspace) => workspace.id !== DEFAULT_WORKSPACE);
+	const hasFolders =
+		Boolean(storage?.paths.length) ||
+		Boolean(storage?.includeWorkspaces && workspaceFolders.some((workspace) => !workspace.missing));
 	const selectedService = services.find((service) => service.name === storage?.serviceId);
 	const selectedProvider = providers.find((provider) => provider.id === storage?.providerId);
 	const runningOperation = operationStatus?.state === 'running' ? operationStatus : undefined;
