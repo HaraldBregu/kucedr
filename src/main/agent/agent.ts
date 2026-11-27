@@ -209,7 +209,12 @@ export class Agent {
 		const workspace = currentWorkspace();
 		if (workspace.id !== DEFAULT_WORKSPACE && !existsSync(workspace.files))
 			throw new Error('This workspace folder was not found. Locate it to continue.');
-		const sessionId = resolveSessionId(options.sessionId, workspace.sessions, category);
+		const sessionId = resolveSessionId(
+			options.sessionId,
+			workspace.sessions,
+			category,
+			workspace.id
+		);
 		const runId = options.runId ?? randomUUID();
 		const profile = AGENT_TOOL_PROFILES[normalizedAgentId] ?? 'chat';
 		const profileModel =
