@@ -11,7 +11,7 @@ export function chatOverride(): Store<{ llm?: AgentMediaModelSettings }> | undef
 	let store = stores.get(workspace.id);
 	if (!store) {
 		store = new Store<{ llm?: AgentMediaModelSettings }>({
-			name: 'chat',
+			name: `chat-${workspace.id}`,
 			cwd: workspace.settings,
 			accessPropertiesByDotNotation: false,
 		});
