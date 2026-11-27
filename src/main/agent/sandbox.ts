@@ -287,8 +287,8 @@ export class ExecSandbox {
 		return {
 			config,
 			fingerprint: process.platform === 'win32'
-				? JSON.stringify({ allowRead, allowWrite, denyRead, denyWrite })
-				: 'sandbox-runtime-v2',
+				? JSON.stringify({ allowRead, allowWrite, denyRead, denyWrite, network: config.network })
+				: JSON.stringify({ network: config.network }),
 		};
 	}
 
