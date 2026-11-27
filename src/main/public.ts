@@ -1,6 +1,8 @@
 import { lookup } from 'node:dns/promises';
 import { privateAddress } from './private';
 import { requireUnrestrictedNetwork } from './privacy/state';
+import { local } from './shield/local';
+import { onion } from './shield/onion';
 
 export interface PublicUrl {
 	url: URL;
