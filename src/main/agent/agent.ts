@@ -508,7 +508,12 @@ export class Agent {
 
 	compactSession(sessionId: string): Promise<AgentCompactSessionResult> {
 		const config = this.config;
-		const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
+		const resolvedSessionId = resolveStoredSessionId(
+			sessionId,
+			config.workspace.sessions,
+			'main',
+			config.workspace.id
+		);
 		if (sessionType(config.workspace.sessions, resolvedSessionId) !== 'main')
 			return Promise.reject(new Error('Only main chat sessions can be compacted.'));
 		return this.scheduler.run(
@@ -596,7 +601,12 @@ export class Agent {
 	editUserMessage(sessionId: string, userOffsetFromEnd: number, content?: string): Promise<boolean> {
 		const config = this.config;
 		const memory = this.memory;
-		const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
+		const resolvedSessionId = resolveStoredSessionId(
+			sessionId,
+			config.workspace.sessions,
+			'main',
+			config.workspace.id
+		);
 		return this.scheduler.run(
 			resolvedSessionId,
 			async () => {
@@ -620,7 +630,12 @@ export class Agent {
 	clearMessages(sessionId: string): Promise<void> {
 		const config = this.config;
 		const memory = this.memory;
-		const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
+		const resolvedSessionId = resolveStoredSessionId(
+			sessionId,
+			config.workspace.sessions,
+			'main',
+			config.workspace.id
+		);
 		const completions = this.cancelSession(resolvedSessionId);
 		return this.scheduler.run(
 			resolvedSessionId,
@@ -637,7 +652,12 @@ export class Agent {
 	deleteSession(sessionId: string): Promise<void> {
 		const config = this.config;
 		const memory = this.memory;
-		const resolvedSessionId = resolveStoredSessionId(sessionId, config.workspace.sessions);
+		const resolvedSessionId = resolveStoredSessionId(
+			sessionId,
+			config.workspace.sessions,
+			'main',
+			config.workspace.id
+		);
 		const completions = this.cancelSession(resolvedSessionId);
 		registry.terminate(resolvedSessionId);
 		return this.scheduler.run(
