@@ -12,8 +12,10 @@ see the user's network address.
 - **Private tabs (12.1).** Each private tab has its own in-memory session (shared only with its
   popups), wiped when its last tab closes, kept out of history and tab restore, and never offered
   saved passwords.
-- **Proxy tabs (12.2).** Settings → Browser → Connections takes `socks5://host:port` or
-  `http://host:port`. Proxy tabs use it with no direct fallback. Proxies that need a username and
+- **Proxy tabs (12.2).** Settings → Browser → Connections takes `socks5://host:port`,
+  `http://host:port` or `https://host:port`. Proxy tabs use it with no direct fallback. Every tab
+  goes through it only with Privacy Mode ([Privacy](PRIVACY.md), 1.10), which uses the address only
+  when it is `socks5://127.0.0.1:port` and otherwise blocks online access. Proxies that need a username and
   password are not supported yet (Chromium's SOCKS client has no password support).
 - **Names resolve on the proxy (2026-11-27).** `socks4://` and `socks4a://` are refused, on save
   and when a saved address is read back (it is then treated as no proxy), because SOCKS4 looks names
