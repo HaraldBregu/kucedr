@@ -11,9 +11,27 @@ export let privacyTransportInstalled = false;
 export function installPrivacyTransport(proxy: string | undefined): void {
 	if (proxy) {
 		const remoteDnsProxy = `socks5h://${new URL(proxy).host}`;
-		http.globalAgent = new SocksProxyAgent(remoteDnsProxy);
-		Object.assign(https, { globalAgent: new SocksProxyAgent(remoteDnsProxy) });
-		setGlobalDispatcher(new Socks5ProxyAgent(proxy));
+		for (const [module, local] of [
+			[http, new http.Agent()],
+			[https, new https.Agent()],
+		] as const) {
+			const agent = new SocksProxyAgent(remoteDnsProxy);
+			const connect = agent.connect.bind(agent);
+			Object.assign(agent, {
+				connect: (...[request, options]: Parameters<typeof connect>) =>
+					loopback(options.host ?? '') ? local : connect(request, options),
+			});
+			Object.assign(module, { globalAgent: agent });
+		}
+		const direct = new Agent();
+		setGlobalDispatcher(
+			new Socks5ProxyAgent(proxy).compose(
+				(dispatch) => (options, handler) =>
+					loopback(new URL(String(options.origin)).hostname)
+						? direct.dispatch(options, handler)
+						: dispatch(options, handler)
+			)
+		);
 	} else {
 		http.globalAgent = new http.Agent();
 		https.globalAgent = new https.Agent();
