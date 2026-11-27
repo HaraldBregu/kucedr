@@ -21,7 +21,7 @@ The agent's browser can open `.onion` addresses, shown in the browser pane like 
   en-US (`Intl`, `navigator.language`, `navigator.languages`, `Accept-Language`), and a Chrome user
   agent with no app or Electron token and the version cut to `Chrome/152.0.0.0`. This covers the
   page, its frames and their workers; shared workers are off and service workers never start. No
-  client hints are sent, as in every tab. If the time zone, language or user agent cannot be set,
+  client hints are sent, as in every tab, and `navigator.userAgentData` lists no brands. If the time zone, language or user agent cannot be set,
   the tab fails. Private and proxy tabs keep the machine's values: a private tab shows the user's
   own address anyway, and wrong dates would break sites. Checked in the built app with a logging
   SOCKS5 server as Tor: the page, a cross-site frame and a worker in each reported `UTC`, `en-US`
