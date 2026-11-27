@@ -11,7 +11,7 @@ export function buildWorkspace(id: string, root: string, files: string): Workspa
 		library: path.join(root, 'library'),
 		memory: path.join(root, 'memory'),
 		rag: path.join(root, 'rag'),
-		browser: path.join(root, 'browser'),
+		browser: id === DEFAULT_WORKSPACE ? path.join(root, 'browser') : path.join(root, 'browser', id),
 		coder: path.join(root, 'coder'),
 		settings: path.join(root, 'settings'),
 		partition: id === DEFAULT_WORKSPACE ? 'persist:agent-browser' : `persist:agent-browser-${id}`,
