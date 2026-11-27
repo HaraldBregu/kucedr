@@ -110,6 +110,8 @@ lockChanged.on('change', (state: LockState) => {
 	eventBus.broadcast(AppChannels.lockChanged, state);
 	if (!state.locked) return;
 	voiceWindow.end();
+	for (const tab of paneShown.values()) tab.view.setVisible(false);
+	paneShown.clear();
 	for (const { window } of openAppWindows.values()) {
 		if (!window.isDestroyed()) window.hide();
 	}
