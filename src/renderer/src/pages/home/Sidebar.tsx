@@ -26,6 +26,7 @@ import { playSound } from '@/lib/sounds/play';
 import type { AgentSessionSearchResult } from '@shared/agent_types';
 import type { OpenExtension } from './components/ExtensionPage';
 import { scoped } from '@/spaces/scoped';
+import { useSpaces } from '@/spaces/context';
 import { ChatFinder } from './Finder';
 import { Spaces } from './Spaces';
 import { stored } from './stored';
