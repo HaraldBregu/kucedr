@@ -486,6 +486,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 						? [{ id: 'uncategorize', label: t('settings.chatHistory.removeFromCategory', 'Remove from category') }]
 						: []),
 					{ id: 'new-category', label: t('settings.chatHistory.moveToNewCategory', 'Move to new category') },
+					...(workspaceItems.length ? [{ type: 'separator' as const }, ...workspaceItems] : []),
 					{ type: 'separator' as const },
 					{ id: 'archive', label: t('settings.chatHistory.archive') },
 					{ id: 'delete', label: t('common.delete', 'Delete') },
