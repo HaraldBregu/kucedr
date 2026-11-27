@@ -577,6 +577,18 @@ export class Agent {
 		);
 	}
 
+	moveSession(sessionId: string, workspaceId: string): Promise<void> {
+		const workspace = currentWorkspace();
+		const target = resolveWorkspace(workspaceId);
+		if (sessionWorkspace(workspace.sessions, sessionId) !== workspace.id)
+			return Promise.reject(new Error('Assistant session not found.'));
+		return this.scheduler.run(
+			sessionId,
+			async () => moveStoredSession(sessionId, workspace.sessions, target.id),
+			{ priority: 'high' }
+		);
+	}
+
 	categorizeSession(sessionId: string, category: string | null): Promise<void> {
 		const root = currentWorkspace().sessions;
 		return this.scheduler.run(
