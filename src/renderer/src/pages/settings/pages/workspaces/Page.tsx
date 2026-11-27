@@ -52,7 +52,7 @@ const WorkspacesPage: React.FC = () => {
 						key={workspace.id}
 						title={
 							<span className="flex min-w-0 items-center gap-2">
-								<Space workspace={workspace} title={workspace.name} />
+								<Space workspace={workspace} />
 							</span>
 						}
 						description={<span className="break-all">{workspace.folder}</span>}
