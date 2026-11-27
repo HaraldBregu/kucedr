@@ -20,7 +20,8 @@ check it. The buyers are investigation firms, due-diligence boutiques and AML co
 - **Cases.** A workspace is a picked folder with its own chats, browser sign-ins, tasks and
   permission rules ([Workspaces](WORKSPACES.md)). Memory, knowledge and the Library are shared.
 - **Record.** Each chat's `run.jsonl` has one timestamped line per run event
-  (`src/main/agent/session/session_append_run.ts`). The vault does not encrypt it.
+  (`src/main/agent/session/session_append_run.ts`). With the vault on, each line is sealed on its
+  own; it is not yet tamper-evident or per case.
 - **Verification and writing.** Fact-check mode, the `deep-research` skill, the `docx`, `pdf` and
   `doc-coauthoring` skills, and workspace export to Markdown, HTML and PDF.
 
