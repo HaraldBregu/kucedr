@@ -23,6 +23,7 @@ export function guard(browsing: Session, routed: boolean, open: () => boolean): 
 		}
 		const deny = (why: BrowserBlocked['reason']): void => {
 			const tab = tabFor(details.webContents);
+			if (tab && why === 'dangerous' && details.resourceType === 'mainFrame') tab.danger = details.url;
 			if (tab) block(tab, details.url, why);
 			callback({ cancel: true });
 		};
