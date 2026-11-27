@@ -61,7 +61,7 @@ the proxy: a chat to a mock model at `model.example.test` reached it through the
 request. Fetch to `localhost` and `[::1]`, HTTP and a WebSocket to `127.0.0.1` went direct; Fetch,
 HTTP and a WebSocket to other names went through the proxy as names.
 
-Outbound paths while Privacy Mode is on, audited 2026-11-27:
+Outbound paths while Privacy Mode is on, audited from the code 2026-11-27:
 
 - Proxied: the app window, plugin app views, export windows and every browser pane tab (direct and
   private tabs included; Tor tabs are refused), through the session proxy, the startup proxy flags
