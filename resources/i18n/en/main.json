@@ -263,7 +263,7 @@
 			"description": "Browse the shortcuts available in Kucedr, the workspace editor, and browser tabs.",
 			"groups": { "app": "Application", "chat": "Chat", "workspace": "Workspace editor", "browser": "Browser" },
 			"keys": {
-				"commandMenu": "Open command menu", "settings": "Open settings", "newChat": "Start a new chat", "focusComposer": "Focus chat composer", "chatHistory": "Open chat history", "newWindow": "Open a new window", "zoomReset": "Reset zoom", "zoomIn": "Zoom in", "zoomOut": "Zoom out", "back": "Go back", "forward": "Go forward",
+				"commandMenu": "Open command menu", "settings": "Open settings", "newChat": "Start a new chat", "focusComposer": "Focus chat composer", "chatHistory": "Open chat history", "newWindow": "Open a new window", "lockNow": "Lock the app", "zoomReset": "Reset zoom", "zoomIn": "Zoom in", "zoomOut": "Zoom out", "back": "Go back", "forward": "Go forward",
 				"editorUndo": "Undo", "editorRedo": "Redo", "editorHeading1": "Heading 1", "editorHeading2": "Heading 2", "editorHeading3": "Heading 3", "editorBold": "Bold", "editorItalic": "Italic", "editorUnderline": "Underline", "editorStrikethrough": "Strikethrough", "editorInlineCode": "Inline code", "editorClearFormatting": "Clear formatting", "editorBulletedList": "Bulleted list", "editorNumberedList": "Numbered list", "editorTaskList": "Task list", "editorQuote": "Block quote", "editorCodeBlock": "Code block", "editorSave": "Save file", "editorLink": "Insert link", "editorInsertFile": "Insert file", "browserMoveTabLeft": "Move tab left", "browserMoveTabRight": "Move tab right"
 			}
 		},
