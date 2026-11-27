@@ -12,6 +12,7 @@ export const SNAPSHOT_SCRIPT = `(() => {
 			((style.overflowX !== 'visible' && rect.width === 0) || (style.overflowY !== 'visible' && rect.height === 0));
 		const result = el.getAttribute('aria-hidden') === 'true' || style.display === 'none' ||
 			style.visibility === 'hidden' || style.visibility === 'collapse' || Number(style.opacity) === 0 ||
+			style.contentVisibility === 'hidden' || (style.display !== 'contents' && !el.checkVisibility()) ||
 			clipped || hidden(el.parentElement);
 		hiddenCache.set(el, result);
 		return result;
