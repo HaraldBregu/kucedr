@@ -3,18 +3,18 @@ import type { BrowserRoute } from '../../../../../shared/browser';
 
 export const ROUTE_LOOKS: Record<Exclude<BrowserRoute, 'direct'>, { label: string; icon: LucideIcon; hint: string }> = {
 	private: {
-		label: 'Private',
+		label: 'browserPane.routes.private.label',
 		icon: VenetianMask,
-		hint: 'Private tab: no logins, history or cookies are kept, and everything is wiped when it closes.',
+		hint: 'browserPane.routes.private.hint',
 	},
 	tor: {
-		label: 'Tor',
+		label: 'browserPane.routes.tor.label',
 		icon: Waypoints,
-		hint: 'Tor tab: pages load through Tor and sites do not see your network address. This is not Tor Browser, so do not rely on it for anonymity. Downloads are off.',
+		hint: 'browserPane.routes.tor.hint',
 	},
 	proxy: {
-		label: 'Proxy',
+		label: 'browserPane.routes.proxy.label',
 		icon: Network,
-		hint: 'Proxy tab: pages load through the proxy set in Settings → Browser. Nothing is kept after it closes.',
+		hint: 'browserPane.routes.proxy.hint',
 	},
 };
