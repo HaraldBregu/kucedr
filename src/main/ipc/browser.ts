@@ -242,6 +242,10 @@ export class BrowserIpc implements IpcModule<BrowserIpcDeps> {
 			const tab = findTab(targetId.parse(id));
 			if (tab) answerPermission(tab, z.enum(['allow', 'block', 'dismiss']).parse(answer));
 		});
+		trusted.command(BrowserChannels.dangerContinue, (id) => {
+			const tab = findTab(targetId.parse(id));
+			if (tab) pass(tab);
+		});
 		trusted.query(BrowserChannels.connections, () => connections());
 		trusted.command(BrowserChannels.connectionsSet, (value) => {
 			connections(checkConnections(value));
