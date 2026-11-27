@@ -223,7 +223,10 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	if (location.pathname.startsWith('/settings/workspaces/')) {
 		items[0] = { ...items[0], path: current.path };
-		items.push({ label: t('settings.workspaces.title') === items[0].label ? workspaceLabel : workspaceLabel });
+		const workspace = workspaces.find((item) => item.id === location.pathname.split('/')[3]);
+		items.push({
+			label: workspace?.id === DEFAULT_WORKSPACE ? t('spaces.personal') : (workspace?.name ?? t('settings.workspaces.notFound')),
+		});
 	}
 
 	if (location.pathname.startsWith('/settings/skills/skilldetails/')) {
