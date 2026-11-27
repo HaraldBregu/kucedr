@@ -1,5 +1,6 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import type { AgentSessionSearchResult } from '../../../shared/agent_types';
+import { DEFAULT_WORKSPACE } from '../../../shared/workspaces_types';
 import { unseal } from '../../vault/unseal';
 import { infoFile } from './session_info_file';
 import { isUuid } from './session_is_uuid';
