@@ -20,6 +20,7 @@ export function tabs(): BrowserPaneState {
 			route: tab.route,
 			...(tab.error ? { error: tab.error } : {}),
 			...(tab.blocked.length ? { blocked: [...tab.blocked] } : {}),
+			...(tab.trackers ? { trackers: tab.trackers } : {}),
 			...(tab.download
 				? { download: { file: tab.download.file, site: tab.download.site, state: tab.download.state } }
 				: {}),
