@@ -2085,8 +2085,21 @@
 			"deleteHint": "Shows everything that will be removed before anything is deleted. Chats move to Personal unless you choose to delete them. The folder and its files are kept.",
 			"deleteTitle": "Delete {{name}}?",
 			"deleteType": "Type {{name}} to confirm.",
-			"deleteDescription_one": "{{count}} chat, the browser data, scheduled tasks and settings of this workspace are deleted. The folder and its files are kept.",
-			"deleteDescription_other": "{{count}} chats, the browser data, scheduled tasks and settings of this workspace are deleted. The folder and its files are kept."
+			"deleteIntro": "Check what happens to this workspace's data before you delete it.",
+			"deleteChats_one": "{{count}} chat",
+			"deleteChats_other": "{{count}} chats",
+			"deleteChatsToo_one": "Also delete this chat permanently",
+			"deleteChatsToo_other": "Also delete these {{count}} chats permanently",
+			"chatsMoved": "They will be moved to Personal.",
+			"chatsDeleted": "They will be deleted and can't be recovered.",
+			"archived": "archived",
+			"deleteRemoved": "Deleted",
+			"deleteTasks_one": "{{count}} scheduled task: {{names}}",
+			"deleteTasks_other": "{{count}} scheduled tasks: {{names}}",
+			"deleteBrowser": "Browser tabs, history, passwords, bookmarks and sign-ins",
+			"deleteSettings": "This workspace's name, picture, chat model and \"always allow\" rules",
+			"deleteKept": "Kept",
+			"deleteKeptDescription": "The folder and every file in it. Memory, knowledge and the Library are shared and stay as they are."
 		},
 		"scripts": {
 			"title": "Installed scripts",
