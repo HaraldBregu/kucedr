@@ -7,7 +7,7 @@ import { getAgentProfilePermissions } from '../agent_profiles';
 export function storedPermissions(workspace: Workspace): unknown {
 	if (workspace.id === DEFAULT_WORKSPACE) return getAgentProfilePermissions('chat');
 	try {
-		return JSON.parse(readFileSync(path.join(workspace.settings, 'permissions.json'), 'utf8'));
+		return JSON.parse(readFileSync(path.join(workspace.settings, `permissions-${workspace.id}.json`), 'utf8'));
 	} catch {
 		return undefined;
 	}
