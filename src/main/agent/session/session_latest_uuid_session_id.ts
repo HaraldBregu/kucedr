@@ -7,7 +7,8 @@ import { isUuid } from './session_is_uuid';
 
 export function latestUuidSessionId(
 	sessionsPath: string,
-	category: SessionCategory
+	category: SessionCategory,
+	workspace: string
 ): string | undefined {
 	if (!existsSync(sessionsPath)) return undefined;
 	try {
