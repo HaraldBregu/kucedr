@@ -13,7 +13,6 @@ import { mediaAccess } from '../../permissions/media_access';
 import { tool } from '../tool';
 import { runBrowserPageOperation } from './browser_abort';
 import { observe } from './browser/observe';
-import { profile } from './browser/profile';
 import { saveCapture, type CaptureKind } from './browser/record';
 import { run } from './browser/run';
 import { browserSession, browserSessions, type BrowserSession } from './browser/session';
