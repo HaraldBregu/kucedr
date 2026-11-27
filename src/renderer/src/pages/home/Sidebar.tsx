@@ -72,6 +72,14 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 	useEffect(() => localStorage.setItem(scoped('chat-categories'), JSON.stringify(categories)), [categories]);
 	useEffect(() => localStorage.setItem(scoped('chat-category-assignments'), JSON.stringify(assignments)), [assignments]);
 	useEffect(() => localStorage.setItem(scoped('chat-collapsed-groups'), JSON.stringify(collapsed)), [collapsed]);
+	useEffect(() => {
+		const onStorage = (event: StorageEvent): void => {
+			if (event.key === scoped('chat-categories')) setCategories(stored('chat-categories', []));
+			if (event.key === scoped('chat-category-assignments')) setAssignments(stored('chat-category-assignments', {}));
+		};
+		window.addEventListener('storage', onStorage);
+		return () => window.removeEventListener('storage', onStorage);
+	}, []);
 	const syncedCategories = useRef<Record<string, string | null>>({});
 	useEffect(() => {
 		for (const session of sessions) {
