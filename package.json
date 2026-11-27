@@ -182,7 +182,7 @@
 		"unzipper": "^0.12.5",
 		"use-stick-to-bottom": "^1.1.6",
 		"ws": "^8.23.0",
-		"zod": "^4.6.5"
+		"zod": "^4.6.7"
 	},
 	"devDependencies": {
 		"@electron-toolkit/eslint-config-ts": "^4.0.0",
