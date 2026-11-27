@@ -56,8 +56,9 @@ disposable and uses the chosen connection. Building it once covers both areas.
   connection. Address lookups go through the same route.
 - **Separate profile.** Private and VPN tabs never share the profile that holds the user's logins.
 - **Only the browser is routed.** What the agent reads is still sent to the model provider, and
-  search, other tools and the model connection use the normal network. The app says so where the
-  route is chosen.
+  search, other tools and the model connection use the normal network. The app says so in the Tor
+  and proxy tab hints (en, it). With Privacy Mode on, the app's own connections go through its
+  local SOCKS5 proxy too, and page fetch and background browsing are paused (1.10).
 
 ## Open decisions
 
