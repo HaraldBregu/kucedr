@@ -6,6 +6,7 @@ import {
 	Library,
 	LogOut,
 	Plug,
+	Search,
 	Settings,
 	UserRound,
 } from 'lucide-react';
@@ -31,12 +32,15 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCommandMenu } from '@/contexts/command-menu';
 import { playSound } from '@/lib/sounds/play';
+import { getShortcutLabel } from '@shared/app_types';
 import { SidebarVoiceButton } from './SidebarVoiceButton';
 
 export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
+	const { open: openCommandMenu } = useCommandMenu();
 	const navigate = useNavigate();
 	const [updateVersion, setUpdateVersion] = useState<string | null>(null);
 	const [updating, setUpdating] = useState(false);
@@ -45,6 +49,11 @@ export function AppSidebarFooter(): React.JSX.Element {
 		return window.app.onUpdateAvailable(setUpdateVersion);
 	}, []);
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
+	const shortcutPlatform = navigator.platform.startsWith('Mac')
+		? 'mac'
+		: navigator.platform.startsWith('Win')
+			? 'win'
+			: 'linux';
 	const accountItem = {
 		title: t('settings.tabs.account'),
 		description: authenticatedUser?.email ?? t('settings.sidebar.summary'),
