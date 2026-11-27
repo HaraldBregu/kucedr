@@ -519,10 +519,12 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			setHistoryLoading(true);
 			setHistoryError(false);
 		});
-		agent
-			.getSessionSnapshot(sessionId)
+		(sessionId === DEFAULT_CHAT_SESSION_ID
+			? Promise.resolve(undefined)
+			: agent.getSessionSnapshot(sessionId)
+		)
 			.then((snapshot) => {
-				if (cancelled || localInteractionRef.current) return;
+				if (!snapshot || cancelled || localInteractionRef.current) return;
 				const users = snapshot.messages.flatMap((message, index) =>
 					message.role === 'user' ? [index] : []
 				);
