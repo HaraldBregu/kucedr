@@ -1,7 +1,8 @@
 # 1. Privacy
 
 Part of the [Roadmap](README.md). Status: 1.1 in progress; 1.2 built 2026-11-23, the first
-release of 1.10 built 2026-11-24, 1.4 implemented, 1.7 built 2026-11-26, and the backup
+release of 1.10 built 2026-11-24 (local models kept off the proxy and outbound paths audited
+2026-11-27), 1.4 implemented, 1.7 built 2026-11-26, and the backup
 portability warning (1.12) built.
 
 | # | Feature | What the user gets | Builds on | Size |
