@@ -77,7 +77,7 @@ customer's own account; generated media never enters a case's evidence.
 | Data at rest | Vault (AES-256-GCM, opt-in) for sessions, memory and health notes; app lock | Off by default; `run.jsonl` not covered; protects fully only on signed builds | 1.3; gate 2 |
 | Local models | Setup with Ollama and no key (15.1) | Embeddings are remote; no recorded run of a local model using tools and the browser | 15.3; gates 3, 5 |
 | Hostile pages | Shield: secret guard, local network block, held downloads, site permission denial | Page text reaches the model unmarked; no DNS-rebinding check | 13.10, 21.5 |
-| Trust | Hardened runtime on macOS; legal pages (6.4) | Unsigned and not notarised; Electron 44.4.5 behind the current 44.x; High audit items #1 (decision), #2, #3 and #6 (partial) open ([SECURITY_AUDIT.md](../SECURITY_AUDIT.md)) | 6.1, 21.x; gate 1 |
+| Trust | Hardened runtime on macOS; legal pages (6.4) | Unsigned and not notarised; Electron 44.11.3 since 2026-11-27 (44.11.6 is newer but was days old); High audit items #1 (decision), #2, #3 and #6 (partial) open ([SECURITY_AUDIT.md](../SECURITY_AUDIT.md)) | 6.1, 21.x; gate 1 |
 | Selling | Account, `kucedr://` links, legal pages | No checkout, entitlements or licence | 9.2–9.4; new 9.6 |
 
 ## Roadmap changes
