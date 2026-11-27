@@ -14,6 +14,7 @@ export function BrowserScreen({
 	readonly danger?: ReactElement;
 }): ReactElement {
 	const box = useRef<HTMLDivElement>(null);
+	const blocked = danger !== undefined;
 
 	// ponytail: the page is a native view above the app, so each frame checks where the
 	// box is and whether an app overlay covers it; switch to observers if this ever shows in a profile
