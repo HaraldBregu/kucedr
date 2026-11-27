@@ -6,6 +6,7 @@ import { closeTab } from './close';
 import { createTab } from './create';
 import { cursor } from './cursor';
 import { locate } from './locate';
+import { saveCapture, type CaptureKind } from './record';
 import { findTab } from './find';
 import { workspaceTabs } from './local';
 import { acting, pane, type BrowserTab } from './pane';
