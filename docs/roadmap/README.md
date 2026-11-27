@@ -49,7 +49,7 @@ on an outside decision.
 | 16 | [Automation](AUTOMATION.md) | Create and edit tasks, run history, failures surfaced, catch-up, health results |
 | 17 | [Integrations](INTEGRATIONS.md) | One-click Google and Microsoft sign-in, complete mail tools, connector management |
 | 18 | [Memory and knowledge](MEMORY.md) | See and edit memory, remember and forget in chat, knowledge sources at a glance, fast knowledge retrieval |
-| 19 | [Voice](VOICE.md) | Mute and status, transcripts where available, approvals by voice |
+| 19 | [Voice](VOICE.md) | Mute and status, transcripts where available, approvals by voice, voice control of the browser |
 | 20 | [Coding page](CODING.md) | Ship or remove the coding page, same permission rules, terminal inside coding, more coding harnesses (Claude, Codex, OpenCode, Cursor, Antigravity, Grok Build, Devin CLI, Pi, Oh My Pi, Factory Droid), coding agent as a chat tool with live progress, approvals and steering |
 | 21 | [Security hardening](SECURITY.md) | The security audit items still open |
 | 22 | [Quality](QUALITY.md) | Green tests, coverage in CI, real-app checks, docs that match the app |
