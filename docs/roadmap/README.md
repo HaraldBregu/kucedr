@@ -55,6 +55,7 @@ on an outside decision.
 | 22 | [Quality](QUALITY.md) | Green tests, coverage in CI, real-app checks, docs that match the app |
 | 23 | [Browser import](BROWSER.md) | Bookmarks, history, passwords, sign-ins and settings from Chrome, Firefox and other browsers; saved passwords, addresses and form history suggested under the field; secure password store and password manager; bookmarks managed in Settings; mouse back and forward for the pane; tabs restored after a crash, browsing history, bookmarks that cannot be lost, drag tabs to reorder |
 | 24 | [Computer use](COMPUTER.md) | Desktop driver, computer tool, permissions setup, approval and Stop, one chat at a time, background control, screenshots to the model, provider computer tools, screen text marked untrusted, separate computer |
+| 25 | [Cases and evidence](EVIDENCE.md) | Capture record, page archive, captures in the case, chained case log, capture what the agent reads, claims linked to captures, evidence bundle and check, trusted timestamps, chronology and memo skill, screening connector, hostile-link mode |
 
 Features are numbered by area, for example 3.9 is the browser pane.
 
