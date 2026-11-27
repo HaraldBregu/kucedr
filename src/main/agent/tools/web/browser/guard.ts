@@ -16,8 +16,8 @@ export function guard(browsing: Session, routed: boolean, open: () => boolean): 
 		let redirectURL: string | undefined;
 		try {
 			reason = open() ? verdict(details, routed, details.webContents?.getURL()) : 'route';
-			if (reason === 'dangerous' && passed(tabFor(details.webContents), new URL(details.url).hostname))
-				reason = undefined;
+			const tab = reason === 'dangerous' ? tabFor(details.webContents) : undefined;
+			if (tab?.passed?.has(new URL(details.url).hostname) && !(tab.chat && acting.has(tab.chat))) reason = undefined;
 			if (!reason && details.resourceType === 'mainFrame' && details.method === 'GET') redirectURL = strip(details.url);
 		} catch {
 			reason = 'route';
