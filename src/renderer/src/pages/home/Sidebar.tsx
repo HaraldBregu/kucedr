@@ -656,7 +656,7 @@ export function HomeSidebar({ refreshKey, openExtension }: HomeSidebarProps): Re
 							type="button"
 							variant="ghost"
 							size="icon-sm"
-							className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground"
+							className="absolute inset-y-0 right-1 my-auto text-muted-foreground"
 							aria-label={t('settings.chatHistory.search', 'Search chats')}
 							aria-pressed={searchOpen}
 							onClick={() => {
