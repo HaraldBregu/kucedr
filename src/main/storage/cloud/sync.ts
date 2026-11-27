@@ -2,6 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { promises as fs } from 'node:fs';
 import type { StoragePullResult, StoragePushResult } from '../../../shared/storage_types';
 import { getStorageSettings } from '../../settings_store';
+import { backupPaths } from '../../backup/paths';
 import type { AuthService } from '../../cloud/service';
 import { getOrCreateDeviceId } from '../local/device';
 import { migrateLegacyStorageSettings } from '../local/migrate';
