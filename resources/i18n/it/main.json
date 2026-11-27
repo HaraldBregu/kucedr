@@ -2879,8 +2879,11 @@
 			"secret": "Chiave o token salvato",
 			"route": "Connessione non pronta",
 			"download": "Download",
-			"onion": "Indirizzo onion, aprilo in una scheda Tor"
+			"onion": "Indirizzo onion, aprilo in una scheda Tor",
+			"tracker": "Tracker"
 		},
+		"trackers_one": "{{count}} richiesta di tracciamento bloccata in questa pagina",
+		"trackers_other": "{{count}} richieste di tracciamento bloccate in questa pagina",
 		"onionOutsideTor": "Gli indirizzi onion si aprono solo in una scheda Tor, così l'indirizzo non viene cercato sulla rete normale. Apri una nuova scheda Tor dal pulsante con la maschera accanto a Nuova scheda e inseriscilo lì."
 	},
 	"inferenceSettings": {
