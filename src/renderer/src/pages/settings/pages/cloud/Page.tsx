@@ -337,7 +337,7 @@ const CloudPage: React.FC = () => {
 					{vaultEnabled && selectedProvider && !selectedProvider.hasPassphrase && <Portability />}
 					<div className="flex flex-wrap items-center gap-2">
 						<Button
-							disabled={controlsDisabled || storage.paths.length === 0}
+							disabled={controlsDisabled || !hasFolders}
 							onClick={() => void runBackup()}
 						>
 							<Upload className="size-3.5" />
