@@ -31,6 +31,8 @@ export interface DataPurgeResult {
 	remoteNamespacesDeleted?: number;
 }
 
+export const CHAT_RETENTION_DAYS: readonly number[] = [0, 7, 30, 90, 365];
+
 export interface StorageUsage {
 	areas: { name: string; bytes: number }[];
 	totalBytes: number;
