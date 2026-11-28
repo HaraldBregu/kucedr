@@ -26,8 +26,7 @@ export function restoreTabs(): void {
 			pane.order = Math.max(pane.order, item.order);
 		}
 	} catch (error) {
-		if (error instanceof VaultError) throw error;
-		aside(file);
+		if (!(error instanceof VaultError)) aside(file);
 	}
 	paneEvents.emit('change');
 }
