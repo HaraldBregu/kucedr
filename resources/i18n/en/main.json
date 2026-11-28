@@ -1395,6 +1395,17 @@
 				"reviewExtensions": "Review plugins",
 				"loadError": "Could not load configured data destinations."
 			},
+			"sites": {
+				"title": "Command network access",
+				"description": "Commands the assistant runs can never reach this computer, your local network or cloud metadata.",
+				"strict": "Only allowed sites",
+				"strictDescription": "Commands reach only the sites below. In a chat you are asked about other sites before the command runs; scheduled tasks are refused. Subdomains are included.",
+				"add": "Add a site",
+				"addAction": "Add",
+				"remove": "Remove {{host}}",
+				"loadFailed": "Could not load the allowed sites.",
+				"saveFailed": "Could not save the allowed sites."
+			},
 			"lock": {
 				"title": "App lock",
 				"description": "Ask for a passphrase when Kucedr opens and after the computer has been idle.",
