@@ -331,6 +331,10 @@ export async function pollAutofill(tab: BrowserTab): Promise<void> {
 		tab.host?.webContents.send(BrowserChannels.managePasswords, null);
 		return;
 	}
+	if (typeof state.pick === 'object' && state.pick !== null) {
+		if (state.origin && state.field) forgetFormValue(state.origin, state.field, state.pick.remove);
+		return;
+	}
 	if (state.pick !== null) {
 		const chosen = shownItems.get(tab)?.[state.pick];
 		if (chosen) await fillLogin(tab, chosen).catch(() => undefined);
@@ -338,6 +342,14 @@ export async function pollAutofill(tab: BrowserTab): Promise<void> {
 	}
 	if (state.seq === lastSeq.get(tab)) return;
 	lastSeq.set(tab, state.seq);
+	if (state.field) {
+		// The user's own earlier values for this field on this site; nothing else leaves main.
+		const values = state.origin ? formValues(state.origin, state.field) : [];
+		await probe(tab, JSON.stringify({ seq: state.seq, items: values.map((label) => ({ label })) })).catch(
+			() => undefined
+		);
+		return;
+	}
 	const logins = state.origin ? matchLogins(state.origin) : [];
 	shownItems.set(tab, logins.map((login) => login.id));
 	// Only names and sites go to the page's private world; ids and passwords stay in main.
