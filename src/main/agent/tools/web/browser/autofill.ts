@@ -72,6 +72,14 @@ const SCRIPT = `((payloadJson) => {
 			// a sign-in split over two pages: the only text field of its form, so plain search boxes are ignored
 			return hinted && Boolean(el.form) && fields.filter(isText).length === 1;
 		};
+		// An ordinary text field whose earlier values are worth suggesting: named, not a login,
+		// and not a card, one-time code or a field the site asked browsers not to remember.
+		af.fieldName = (el) => {
+			if (!(el instanceof HTMLInputElement) || !['text', 'email', 'tel', 'search', 'url', ''].includes(el.type)) return '';
+			const ac = (el.getAttribute('autocomplete') || '').toLowerCase();
+			if (ac === 'off' || /cc-|one-time-code|password/.test(ac) || af.isLogin(el)) return '';
+			return (el.name || el.id || '').slice(0, 100);
+		};
 		// Below the field, or above it when there is no room; kept inside the window.
 		af.position = () => {
 			if (!af.el || !af.el.isConnected) return af.hide();
