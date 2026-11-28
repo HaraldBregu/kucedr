@@ -94,9 +94,10 @@ Outbound paths while Privacy Mode is on, audited from the code 2026-11-27:
   command sandbox proxy never starts), stdio MCP servers (their own traffic is out of scope),
   plugin scripts, the database and backup utility processes, external OAuth and links.
 - Known gaps: Chromium sessions send loopback through the proxy too (`<-loopback>`), so whether an
-  app view reaches a local service depends on the proxy; no renderer code calls one today. Names
-  that only resolve to loopback (`localhost.`, `foo.localhost`) and other spellings (`127.1`,
-  `::ffff:127.0.0.1`) also go to the proxy from the main process. Worker threads do
+  app view reaches a local service depends on the proxy; no renderer code calls one today. Since
+  2026-11-28 the main process also sends other loopback spellings direct (`127.1`, `0x7f.1`,
+  `::ffff:127.0.0.1`). Names that only resolve to loopback (`localhost.`, `foo.localhost`) still go
+  to the proxy, because sending them direct would need a local DNS lookup. Worker threads do
   not inherit the main-process dispatcher and agents; the knowledge index and extract workers make
   no network calls today, so a worker that does would need its own transport first. Nothing stops
   traffic outside Kucedr's network clients without an OS-level egress filter.
