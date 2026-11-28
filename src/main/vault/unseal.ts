@@ -12,6 +12,6 @@ export function unseal(raw: Buffer): Buffer {
 		decipher.setAuthTag(raw.subarray(tag, data));
 		return Buffer.concat([decipher.update(raw.subarray(data)), decipher.final()]);
 	} catch {
-		throw new Error('Encrypted data could not be opened with the system keystore.');
+		throw new VaultError();
 	}
 }
