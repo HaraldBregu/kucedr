@@ -277,6 +277,7 @@ export const AppChannels = {
 	keepAwakeChanged: 'app:keep-awake-changed',
 	getLock: 'app:get-lock',
 	setLock: 'app:set-lock',
+	remoteImage: 'app:remote-image',
 	getSites: 'app:get-sites',
 	setSites: 'app:set-sites',
 	unlock: 'app:unlock',
