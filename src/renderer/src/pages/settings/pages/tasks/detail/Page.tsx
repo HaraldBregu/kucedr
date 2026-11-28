@@ -307,6 +307,17 @@ const TaskDetailsPage: React.FC = () => {
 										type="button"
 										variant="ghost"
 										size="icon-sm"
+										disabled={deletingHistoryId !== null}
+										aria-label={t('settings.cron.history.openChat')}
+										title={t('settings.cron.history.openChat')}
+										onClick={() => openChat(session.id)}
+									>
+										<MessageSquare className="size-3.5" />
+									</Button>
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon-sm"
 										disabled={deletingHistoryId !== null || openingSessionId === session.id}
 										aria-label={t('settings.cron.history.openFolder')}
 										title={t('settings.cron.history.openFolder')}
