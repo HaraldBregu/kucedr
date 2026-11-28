@@ -1,5 +1,6 @@
 import { safeStorage } from 'electron';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
+import { VaultError } from './error';
 import { sealedVaultKey } from './state';
 
 let cached: Buffer | undefined;
