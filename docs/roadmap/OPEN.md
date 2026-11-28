@@ -100,8 +100,6 @@ Built from the same list: ads, pop-ups and cookie banners (13.15), voice control
 | 15.2 | [Model downloads](LOCAL.md) | All | M |
 | 15.3 | [Local knowledge](LOCAL.md) | All | M |
 | 15.5 | [Built-in runtime](LOCAL.md) | All | L |
-| 16.2 | [Run history](AUTOMATION.md) | All | S |
-| 16.4 | [Catch-up](AUTOMATION.md) | All | S |
 | 16.6 | [Health results](AUTOMATION.md) | All | M |
 | 16.7 | [Run while closed](AUTOMATION.md) | All | L |
 | 17.1 | [One-click sign-in](INTEGRATIONS.md) | All; needs provider verification | L |
