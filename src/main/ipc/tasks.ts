@@ -35,11 +35,12 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 	register({ windows, apps, agent }: TaskIpcDependencies, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
 		const parseRequest = (request: unknown): TaskScheduleCreateRequest => {
-			const { name, description, cronExpression, prompt, toolsAllow } = (request ?? {}) as Record<
+			const { name, description, cronExpression, prompt, toolsAllow, catchUp } = (request ?? {}) as Record<
 				string,
 				unknown
 			>;
 			if (
+				(catchUp !== undefined && typeof catchUp !== 'boolean') ||
 				typeof name !== 'string' ||
 				!name.trim() ||
 				typeof prompt !== 'string' ||
