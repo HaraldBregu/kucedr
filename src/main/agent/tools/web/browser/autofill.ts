@@ -239,6 +239,14 @@ const SCRIPT = `((payloadJson) => {
 			return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden';
 		};
 		const b64 = (bytes) => btoa(String.fromCharCode(...bytes));
+		af.send = (report) => {
+			const data = new TextEncoder().encode(JSON.stringify(report));
+			const iv = crypto.getRandomValues(new Uint8Array(12));
+			crypto.subtle
+				.encrypt({ name: 'AES-GCM', iv }, af.key, data)
+				.then((sealed) => console.debug('${CAPTURE_PREFIX}' + b64(iv) + '.' + b64(new Uint8Array(sealed))))
+				.catch(() => {});
+		};
 		af.capture = () => {
 			if (!af.key) return;
 			const inputs = [...document.querySelectorAll('input')].filter(visible);
@@ -248,25 +256,36 @@ const SCRIPT = `((payloadJson) => {
 				.slice(0, inputs.indexOf(password))
 				.reverse()
 				.find((el) => ['text', 'email', 'tel', ''].includes(el.type) && el.value);
-			const data = new TextEncoder().encode(JSON.stringify({ o: location.origin, u: username ? username.value : '', p: password.value }));
-			const iv = crypto.getRandomValues(new Uint8Array(12));
-			crypto.subtle
-				.encrypt({ name: 'AES-GCM', iv }, af.key, data)
-				.then((sealed) => console.debug('${CAPTURE_PREFIX}' + b64(iv) + '.' + b64(new Uint8Array(sealed))))
-				.catch(() => {});
+			af.send({ o: location.origin, u: username ? username.value : '', p: password.value });
 		};
-		document.addEventListener('submit', (e) => { if (e.isTrusted) af.capture(); }, true);
+		// A form sent without a password: its ordinary fields' values, for form history.
+		af.captureForm = (scope) => {
+			if (!af.key || !scope) return;
+			const inputs = scope instanceof HTMLInputElement ? [scope] : [...scope.querySelectorAll('input')];
+			if (inputs.some((el) => el.type === 'password' && el.value)) return;
+			const f = inputs
+				.filter(visible)
+				.map((el) => [af.fieldName(el), el.value.trim()])
+				.filter(([name, value]) => name && value && value.length <= 200);
+			if (f.length) af.send({ o: location.origin, f });
+		};
+		document.addEventListener('submit', (e) => { if (e.isTrusted) { af.capture(); af.captureForm(e.target); } }, true);
 		document.addEventListener(
 			'click',
 			(e) => {
 				const button = e.isTrusted && e.target.closest && e.target.closest('button,input[type=submit]');
-				if (button && button.type === 'submit') af.capture();
+				if (button && button.type === 'submit') { af.capture(); af.captureForm(button.form); }
 			},
 			true
 		);
 		document.addEventListener(
 			'keydown',
-			(e) => { if (e.isTrusted && e.key === 'Enter' && e.target instanceof HTMLInputElement && !af.open) af.capture(); },
+			(e) => {
+				if (e.isTrusted && e.key === 'Enter' && e.target instanceof HTMLInputElement && !af.open) {
+					af.capture();
+					af.captureForm(e.target.form || e.target);
+				}
+			},
 			true
 		);
 	}
