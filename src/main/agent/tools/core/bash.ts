@@ -412,7 +412,7 @@ export function execTool(
 			if (!workdir) return {};
 			if (input.elevated === true) return { exec: [workdir, ...roots], host: true };
 			const exec = (input.additionalRoots ?? []).map((root) => resolveUserPath(root, workdir));
-			return { read: exec.includes(workdir) ? [] : [workdir], exec, folders: true };
+			return { read: exec.includes(workdir) ? [] : [workdir], exec, folders: true, hosts: input.allowHosts };
 		},
 		execute: async (input, signal) => {
 			// The model already knows the command, workdir and roots it sent; echoing them doubles tokens per call.
