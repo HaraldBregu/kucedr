@@ -6,7 +6,7 @@ import { soulSchema, type SoulSettings } from './schema';
 
 export async function getSoul(workspace = agentLocation()): Promise<SoulSettings | null> {
 	try {
-		return soulSchema.parse(JSON.parse(await readFile(path.join(userDataLocation(), 'soul', 'settings.json'), 'utf8')));
+		return soulSchema.parse(JSON.parse(unseal(await readFile(path.join(userDataLocation(), 'soul', 'settings.json'))).toString('utf8')));
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 	}
