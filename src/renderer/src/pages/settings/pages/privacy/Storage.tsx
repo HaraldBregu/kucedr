@@ -124,7 +124,7 @@ export function Storage(): React.JSX.Element {
 							>
 								<SelectTrigger
 									size="sm"
-									className="w-28 text-xs [&_svg]:size-3"
+									className="w-32 text-xs [&_svg]:size-3"
 									aria-label={t('settings.storageManagement.chatRetention')}
 								>
 									<SelectValue>{retention === null ? '…' : days(retention)}</SelectValue>
