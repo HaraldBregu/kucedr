@@ -474,6 +474,8 @@ export const DataChannels = {
 	exportAll: 'data:export-all',
 	previewPurge: 'data:purge:preview',
 	purge: 'data:purge',
+	getChatRetention: 'data:chat-retention:get',
+	setChatRetention: 'data:chat-retention:set',
 } as const;
 
 export const SpeechChannels = {
