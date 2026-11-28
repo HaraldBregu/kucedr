@@ -88,7 +88,7 @@ export class CoderSessions {
 	append(id: string, event: JournalEvent['event']): void {
 		appendFileSync(
 			this.file(id, '.jsonl'),
-			JSON.stringify({ event, timestamp: new Date().toISOString() }) + '\n',
+			sealLine(JSON.stringify({ event, timestamp: new Date().toISOString() })) + '\n',
 			{ mode: 0o600 }
 		);
 	}
