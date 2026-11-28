@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { readSealed } from '../vault/read';
+import { seal } from '../vault/seal';
 import path from 'node:path';
 import { currentWorkspace } from '../workspaces/current';
 import { aside } from './aside';
