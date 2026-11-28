@@ -52,7 +52,7 @@ export function saveTabs(final = false): void {
 			const tabs = JSON.stringify(list.slice(0, TAB_LIMIT));
 			if (tabs === last.get(directory)) continue;
 			last.set(directory, tabs);
-			writeFileAtomic(path.join(directory, 'tabs.json'), `{"saved":${Date.now()},"tabs":${tabs}}`);
+			writeFileAtomic(path.join(directory, 'tabs.json'), seal(`{"saved":${Date.now()},"tabs":${tabs}}`));
 		}
 	};
 	if (final) {
