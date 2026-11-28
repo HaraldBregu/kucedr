@@ -26,6 +26,7 @@ import { executionScope, type ExecutionScope } from '../execution/scope';
 import { authorizedPaths } from '../permissions/access';
 import type { ExecutionBudget } from '../execution/budget';
 import { captureAccess } from '../permissions/capture_access';
+import { getSites, listed, setSites } from '../sandbox/sites';
 import { getToolConfiguration, setToolProfileTool } from '../agent_store';
 import { isAgentToolAllowedForProfile, type AgentToolProfileId } from '../../../shared/agent_tools';
 import { getMcpOauth } from '../../mcp';
