@@ -10,7 +10,8 @@ import { acting } from './pane';
 
 // The network shield for one tab session: every request is checked before it leaves. Nothing
 // leaves before the session's connection is in place, or when a check cannot run. A page load
-// that carries tracking parameters goes to the same address without them.
+// that carries tracking parameters goes to the same address without them. Third-party requests
+// carry no cookies and cannot set any.
 export function guard(browsing: Session, routed: boolean, open: () => boolean): void {
 	browsing.webRequest.onBeforeRequest((details, callback) => {
 		let reason: BrowserBlocked['reason'] | undefined;
