@@ -131,7 +131,6 @@ Built from the same list: ads, pop-ups and cookie banners (13.15), voice control
 | 21.7 | [Broad content policy](SECURITY.md) | Inline scripts, `https:` images, `local-resource:` paths | S |
 | 21.8 | [Build hardening](SECURITY.md) | All; with 6.1 | L |
 | 21.9 | [Audit kept current](SECURITY.md) | All | S |
-| 21.10 | [Sandboxed commands reach any host](SECURITY.md) | The network allow-list | S |
 | 21.11 | [Assistant edits its own prompt](SECURITY.md) | A decision; a diff in the approval card | S |
 | 22.2 | [Coverage in CI](QUALITY.md) | All | S |
 | 22.3 | [Real-app checks](QUALITY.md) | All | M |
