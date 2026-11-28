@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { buttonVariants } from '@/components/ui/button';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../components';
 
+const MEDIA = ['text', 'image', 'sound', 'video', 'transcribe', 'voice', 'realtimeVoice'] as const;
+
 interface Destination {
 	title: string;
 	name: string;
