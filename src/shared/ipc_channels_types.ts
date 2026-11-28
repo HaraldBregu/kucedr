@@ -1044,6 +1044,14 @@ export interface DataInvokeChannelMap {
 		args: [scope: import('./data_types').DataScope, confirmationId: string];
 		result: import('./data_types').DataPurgeResult | undefined;
 	};
+	[DataChannels.getChatRetention]: {
+		args: [];
+		result: number;
+	};
+	[DataChannels.setChatRetention]: {
+		args: [days: number];
+		result: number;
+	};
 }
 
 export interface StorageInvokeChannelMap {
