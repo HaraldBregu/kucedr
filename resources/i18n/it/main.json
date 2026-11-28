@@ -2865,7 +2865,8 @@
 		"insertImage": "Inserisci immagine"
 	},
 	"remoteImage": {
-		"load": "Carica immagine"
+		"load": "Carica immagine",
+		"failed": "Immagine non disponibile, riprova"
 	},
 	"browserPermission": {
 		"label": "Permesso del sito",
