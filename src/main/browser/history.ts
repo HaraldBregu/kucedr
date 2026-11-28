@@ -1,3 +1,4 @@
+import { VaultError } from '../vault/error';
 import { readSealed } from '../vault/read';
 import { seal } from '../vault/seal';
 import path from 'node:path';
