@@ -7,9 +7,9 @@ Part of the [Roadmap](README.md). Status: proposal.
 - Scheduled tasks run on a timer while the app is open, and Settings has Tasks and Health pages.
 - Only the agent can create a task; there is no form to create or edit one
   ([FEATURES.md](../FEATURES.md)).
-- A task record keeps no run history and no last result (`src/main/tasks/tasks_types.ts`).
-- A failed run is written to the console only (`src/main/tasks/tasks_fire.ts`).
-- Runs missed while the app was closed are not caught up.
+- A task record keeps its last 20 runs with their result and chat (16.2, since 2026-11-28).
+- A failed run is shown on the task and raises a notification (16.3).
+- A task can catch up a run missed while the app was closed (16.4, since 2026-11-28).
 - There is no limit on how often a task may run ([Security audit](../SECURITY_AUDIT.md) #22).
 - A health check that needs attention is only logged (`src/main/health/run.ts`), and several of its
   settings are not applied yet ([FEATURES.md](../FEATURES.md), marked partial).
