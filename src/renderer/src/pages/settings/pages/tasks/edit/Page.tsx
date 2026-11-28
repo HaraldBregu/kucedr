@@ -40,6 +40,7 @@ const TaskEditPage: React.FC = () => {
 	const [prompt, setPrompt] = useState('');
 	const [cronExpression, setCronExpression] = useState('');
 	const [toolsAllow, setToolsAllow] = useState<string[]>([]);
+	const [catchUp, setCatchUp] = useState(false);
 	const [loading, setLoading] = useState(id !== undefined);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState<string | null>(null);
