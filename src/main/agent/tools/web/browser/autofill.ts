@@ -226,8 +226,11 @@ const SCRIPT = `((payloadJson) => {
 		});
 		af.box.addEventListener('mousedown', (e) => {
 			e.preventDefault();
+			if (!e.isTrusted) return;
+			const del = e.target.closest('[data-del]');
+			if (del) return af.remove(Number(del.dataset.del));
 			const row = e.target.closest('[data-i]');
-			if (row && e.isTrusted) af.choose(Number(row.dataset.i));
+			if (row) af.choose(Number(row.dataset.i));
 		});
 		// When the user sends a form with a password typed in, report the origin, the username field
 		// before it and the password to main, sealed with the key only main and this world know.
