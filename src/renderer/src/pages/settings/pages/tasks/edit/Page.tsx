@@ -135,6 +135,19 @@ const TaskEditPage: React.FC = () => {
 								</p>
 							</SettingsField>
 						</Card>
+						<SettingsPanel>
+							<SettingsRow
+								title={t('settings.cron.form.catchUp')}
+								description={t('settings.cron.form.catchUpDescription')}
+								actions={
+									<Switch
+										aria-label={t('settings.cron.form.catchUp')}
+										checked={catchUp}
+										onCheckedChange={setCatchUp}
+									/>
+								}
+							/>
+						</SettingsPanel>
 						<SettingsSection
 							title={t('settings.cron.form.tools')}
 							description={t('settings.cron.form.toolsDescription')}
