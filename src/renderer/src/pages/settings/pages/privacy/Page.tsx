@@ -118,6 +118,7 @@ export default function PrivacyPage(): React.JSX.Element {
 			<Lock />
 			<Encryption />
 			<Destinations />
+			<Sites />
 			<Storage />
 		</SettingsPageShell>
 	);
