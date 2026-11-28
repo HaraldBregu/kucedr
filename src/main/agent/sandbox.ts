@@ -108,6 +108,11 @@ export class ExecSandbox {
 	}
 
 	annotate(commandId: string, stderr: string): string {
+		if (refused.size > 0) {
+			const hosts = [...refused];
+			refused.clear();
+			stderr = `${stderr}\nNetwork access to ${hosts.join(', ')} was refused: commands may only reach the sites allowed in Settings > Privacy. Retry with allowHosts listing the sites the command needs to ask the user.`;
+		}
 		const annotated = SandboxManager.annotateStderrWithSandboxFailures(commandId, stderr);
 		if (annotated !== stderr) {
 			return `${annotated}\nA sandbox restriction blocked this operation. Declare the outside directory in additionalRoots to request access. A command that listens on a port or connects to a local service needs elevated.`;
