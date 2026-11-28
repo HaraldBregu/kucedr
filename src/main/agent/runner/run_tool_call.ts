@@ -278,7 +278,13 @@ export async function* runToolCall(
 	} else {
 		const capability =
 			typeof tool.capability === 'function' ? tool.capability(canonicalInput) : tool.capability;
-		const hardApproval = capability?.approval === true;
+		// Voice hears anyone in the room, so a page action it starts waits for a click.
+		const spokenPageAction =
+			security.toolProfile === 'voice' &&
+			tool.id === 'use_web_browser' &&
+			canonicalInput.action === 'act' &&
+			!['hover', 'wait', 'scroll'].includes(String(canonicalInput.kind));
+		const hardApproval = capability?.approval === true || spokenPageAction;
 		const checkPermission = (): ReturnType<typeof resolvePermission> =>
 			resolvePermission({
 				access: declaredAccess(),
