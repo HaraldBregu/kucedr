@@ -298,7 +298,7 @@ const SCRIPT = `((payloadJson) => {
 	if (payload && payload.items && payload.seq === af.seq) af.apply(payload.items);
 	const pick = af.pick;
 	af.pick = null;
-	return JSON.stringify({ seq: af.seq, origin: af.req && af.req.origin, pick, keyed: Boolean(af.key) });
+	return JSON.stringify({ seq: af.seq, origin: af.req && af.req.origin, field: af.req && af.req.field, pick, keyed: Boolean(af.key) });
 })`;
 
 interface State {
