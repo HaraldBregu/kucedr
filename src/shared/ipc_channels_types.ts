@@ -721,6 +721,11 @@ export interface AppInvokeChannelMap {
 		result: import('./app_types').AppLaunchState;
 	};
 	[AppChannels.getLock]: { args: []; result: import('./lock').LockState };
+	[AppChannels.getSites]: { args: []; result: import('./sites').CommandSites };
+	[AppChannels.setSites]: {
+		args: [sites: import('./sites').CommandSites];
+		result: import('./sites').CommandSites;
+	};
 	[AppChannels.setLock]: {
 		args: [update: import('./lock').LockUpdate];
 		result: import('./lock').LockState;
