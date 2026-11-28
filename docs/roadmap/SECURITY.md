@@ -41,7 +41,8 @@ only #17, #22 and #24 were checked in code. Rows 21.10–21.12 are the open find
   placeholder (`[EMAIL_1]`, `[CARD_1]`) and keep the encrypted mapping per chat on the machine. Real
   end-to-end encryption exists only with providers that run the model in a confidential enclave,
   which is a separate, later choice; a local model ([Local](LOCAL.md)) needs neither.
-- **21.14: what counts as sensitive.** Recommended: secrets always (patterns and stored keys);
+- **21.14: what counts as sensitive.** The levels in [Privacy](PRIVACY.md), 1.14 decide what is
+  hidden from the model: levels 3 and 4 always, level 2 by a switch. Recommended: secrets always (patterns and stored keys);
   personal details by pattern, on by a switch in Settings → Privacy; free-form detection of names
   with a local model only later, since it adds a model dependency. Also to settle: what the user
   sees in chat (the real value, with a mark that it was hidden from the model), whether the model's
