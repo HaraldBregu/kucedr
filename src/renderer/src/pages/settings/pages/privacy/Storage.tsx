@@ -118,9 +118,7 @@ export function Storage(): React.JSX.Element {
 								disabled={retention === null}
 								onValueChange={(value) => {
 									if (value !== null) {
-										void window.dataControls.setChatRetention(Number(value)).then(setRetention, () => {
-											setError(true);
-										});
+										void window.dataControls.setChatRetention(Number(value)).then(setRetention, () => undefined);
 									}
 								}}
 							>
