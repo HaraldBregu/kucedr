@@ -16,6 +16,8 @@ decision.
 | 1.14 | [Protection levels for personal data](PRIVACY.md) | All | L |
 | 23.21 | [Saved passwords that work](BROWSER.md) | Sign-in forms inside a frame | S–M |
 
+Built 2026-11-28: the command network allow-list (21.10).
+
 Built from the same list: ads, pop-ups and cookie banners (13.15), voice control of the browser
 (19.5, not run live), drag and drop from outside (10.11) and Lock Now (1.13).
 
