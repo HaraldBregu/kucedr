@@ -62,7 +62,8 @@ on an outside decision.
 | 24 | [Computer use](COMPUTER.md) | Desktop driver, computer tool, permissions setup, approval and Stop, one chat at a time, background control, screenshots to the model, provider computer tools, screen text marked untrusted, separate computer |
 | 25 | [Cases and evidence](EVIDENCE.md) | Capture record, page archive, captures in the case, chained case log, capture what the agent reads, claims linked to captures, evidence bundle and check, trusted timestamps, chronology and memo skill, screening connector, hostile-link mode |
 
-Features are numbered by area, for example 3.9 is the browser pane.
+Features are numbered by area, for example 3.9 is the browser pane. What is not built yet is listed
+on one page: [Open items](OPEN.md).
 
 ## Recommended order
 
