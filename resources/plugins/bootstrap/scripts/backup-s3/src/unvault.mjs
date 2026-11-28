@@ -16,7 +16,7 @@ export async function unvault(source, vaultKey) {
 	const start = await head(source, VAULT.length);
 	const key = Buffer.from(vaultKey, 'base64');
 	if (start.equals(VAULT)) return Readable.from([open(await fs.readFile(source), key)]);
-	if (!start.subarray(0, LINE.length).equals(LINE)) return createReadStream(source);
+	if (!start.subarray(0, LINE.length).equals(LINE) && !source.endsWith('.jsonl')) return createReadStream(source);
 	const lines = (await fs.readFile(source, 'utf8'))
 		.split('\n')
 		.map((line) =>
