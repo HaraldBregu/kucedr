@@ -27,19 +27,29 @@ export interface TaskSchedule {
 	sessionIds: string[];
 	workspaceId?: string;
 	lastRun?: { at: string; error?: string };
+	/** Newest first, at most 20. */
+	runs?: TaskRun[];
+	/** Run once at start when a scheduled time passed while the app was closed. */
+	catchUp?: boolean;
 	createdAt: string;
 	updatedAt: string;
 }
 
+export interface TaskRun {
+	at: string;
+	sessionId?: string;
+	error?: string;
+}
+
 export type TaskScheduleCreateRequest = Omit<
 	TaskSchedule,
-	'id' | 'createdAt' | 'updatedAt' | 'enabled' | 'sessionIds' | 'lastRun' | 'workspaceId'
+	'id' | 'createdAt' | 'updatedAt' | 'enabled' | 'sessionIds' | 'lastRun' | 'runs' | 'workspaceId'
 > & {
 	enabled?: boolean;
 };
 
 export type TaskScheduleUpdateRequest = Partial<
-	Omit<TaskSchedule, 'id' | 'createdAt' | 'updatedAt' | 'lastRun' | 'workspaceId'>
+	Omit<TaskSchedule, 'id' | 'createdAt' | 'updatedAt' | 'lastRun' | 'runs' | 'workspaceId'>
 >;
 
 export interface TaskRuntime {
