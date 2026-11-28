@@ -159,18 +159,38 @@ const SCRIPT = `((payloadJson) => {
 			af.items = [];
 		};
 		af.move = (d) => {
-			const count = af.items.length + 1;
+			const count = af.items.length + (af.mode === 'form' ? 0 : 1);
 			af.active = (af.active + d + count) % count;
 			af.render();
 		};
 		af.choose = (i) => {
+			if (af.mode === 'form') {
+				const el = af.el;
+				const value = af.items[i] && af.items[i].label;
+				af.close();
+				if (!el || value === undefined) return;
+				Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, value);
+				el.dispatchEvent(new Event('input', { bubbles: true }));
+				el.dispatchEvent(new Event('change', { bubbles: true }));
+				return;
+			}
 			af.pick = i === af.items.length ? 'manage' : af.all.indexOf(af.items[i]);
 			af.hide();
+		};
+		// Removing a value takes it out of the list here and asks main to forget it.
+		af.remove = (i) => {
+			const item = af.items[i];
+			if (!item) return;
+			af.pick = { remove: item.label };
+			af.all = af.all.filter((it) => it !== item);
+			if (!af.all.length) return af.close();
+			af.filter();
 		};
 		document.addEventListener(
 			'focusin',
 			(e) => {
-				if (af.isLogin(e.target)) { af.el = e.target; af.typed = false; af.seq += 1; af.req = { origin: location.origin }; }
+				if (af.isLogin(e.target)) { af.el = e.target; af.mode = 'login'; af.typed = false; af.seq += 1; af.req = { origin: location.origin }; }
+				else if (af.fieldName(e.target)) { af.el = e.target; af.mode = 'form'; af.typed = false; af.seq += 1; af.req = { origin: location.origin, field: af.fieldName(e.target) }; }
 				else if (e.target !== host) af.hide();
 			},
 			true
