@@ -2,6 +2,7 @@ import path from 'node:path';
 import { mkdir } from 'node:fs/promises';
 import { atomicWrite } from '../shared/atomic_write';
 import { userDataLocation } from '../shared/user_data_location';
+import { seal } from '../vault/seal';
 import { userSchema, type UserSettings } from './schema';
 
 export async function updateUser(settings: UserSettings): Promise<UserSettings> {
