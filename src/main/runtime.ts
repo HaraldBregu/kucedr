@@ -235,6 +235,9 @@ const menuManager = new Menu({
 	},
 });
 lockChanged.on('change', () => menuManager.create());
+voiceBrowsing.on('use', () => {
+	if (!isLocked() && !mainWindow.isVisible()) mainWindow.showOrCreate();
+});
 
 app.whenReady().then(async () => {
 	enableVaultOnFreshInstall();
