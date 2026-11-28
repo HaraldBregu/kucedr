@@ -24,6 +24,17 @@ export function readCapture(tab: BrowserTab, message: string): boolean {
 	} catch {
 		return true;
 	}
+	// A form sent without a password: the values typed into its ordinary fields.
+	if (Array.isArray(fields.f)) {
+		const entries = fields.f.filter(
+			(entry): entry is [string, string] =>
+				Array.isArray(entry) && typeof entry[0] === 'string' && typeof entry[1] === 'string'
+		);
+		void Promise.resolve()
+			.then(() => workspaceScope.run(tab.workspace, () => rememberForm(fields.o, entries)))
+			.catch(() => undefined);
+		return true;
+	}
 	const password = Buffer.from(fields.p, 'utf8');
 	if (tab.offer && tab.offer.url === fields.o && tab.offer.username === fields.u && tab.offer.password.equals(password)) {
 		password.fill(0);
