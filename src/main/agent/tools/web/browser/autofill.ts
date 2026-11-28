@@ -134,7 +134,11 @@ const SCRIPT = `((payloadJson) => {
 		// the field already held when it was focused does not.
 		af.filter = () => {
 			const text = af.typed && af.el && af.el.type !== 'password' ? af.el.value.trim().toLowerCase() : '';
-			af.items = text ? af.all.filter((it) => it.label.toLowerCase().includes(text)) : af.all;
+			af.items = !text
+				? af.all
+				: af.mode === 'form'
+					? af.all.filter((it) => it.label.toLowerCase().startsWith(text) && it.label.toLowerCase() !== text)
+					: af.all.filter((it) => it.label.toLowerCase().includes(text));
 			af.active = af.items.length ? 0 : -1;
 			af.show();
 		};
