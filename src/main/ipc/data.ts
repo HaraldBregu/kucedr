@@ -52,6 +52,15 @@ export class DataIpc implements IpcModule<DataIpcDeps> {
 			if (result.canceled || !result.filePath) return undefined;
 			return controller.exportAll(path.resolve(result.filePath));
 		});
+		const sweep = (): void => void sweepChats(agent).catch(() => undefined);
+		sweep();
+		setInterval(sweep, 60 * 60 * 1000).unref();
+		trusted.query(DataChannels.getChatRetention, () => getChatRetention());
+		trusted.command(DataChannels.setChatRetention, (days) => {
+			const saved = setChatRetention(days);
+			sweep();
+			return saved;
+		});
 		trusted.query(DataChannels.previewPurge, (input) => {
 			return controller.previewPurge(normalizeDataScope(input));
 		});
