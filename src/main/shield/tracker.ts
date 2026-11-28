@@ -20,14 +20,8 @@ const KIND: Record<string, string> = {
 
 export function tracker(host: string, resourceType: string, top: string | undefined): boolean {
 	if (resourceType === 'mainFrame') return false;
+	if (!thirdParty(host, top)) return false;
 	const name = host.toLowerCase().replace(/\.+$/, '');
-	const page = top && URL.canParse(top) ? new URL(top) : undefined;
-	if (page && /^https?:$/.test(page.protocol)) {
-		const [own, other] = [page.hostname.replace(/\.+$/, ''), name].map(
-			(value) => getDomain(value, { allowPrivateDomains: true }) ?? value
-		);
-		if (own === other) return false;
-	}
 	const { block, allow } = list();
 	const kind = KIND[resourceType] ?? 'other';
 	const parents = name.split('.').map((_, index, parts) => parts.slice(index).join('.'));
