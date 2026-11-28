@@ -25,6 +25,7 @@ export interface PermissionRequest {
 	readonly approval?: boolean;
 	readonly interactive: boolean;
 	readonly context?: FileAccessContext;
+	readonly hostAllowed?: (host: string) => boolean;
 }
 
 export interface ToolPermissionResolution {
