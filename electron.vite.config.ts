@@ -87,6 +87,12 @@ export default defineConfig({
 			react({ exclude: [/\/node_modules\//, /\/kucedr-vite-cache\/deps\//] }),
 			tsconfigPaths({ ignoreConfigErrors: true }),
 			{
+				// The dev server injects React Refresh as an inline script; built pages have none.
+				name: 'dev-inline-scripts',
+				apply: 'serve',
+				transformIndexHtml: (html) => html.replace("script-src 'self'", "script-src 'self' 'unsafe-inline'"),
+			},
+			{
 				// react-video-audio-player ships Tailwind v3 CSS whose unlayered
 				// `*, :before, :after { --tw-*: 0 }` reset overrides the app's
 				// layered Tailwind v4 utilities. Demote it to the lowest layer.
