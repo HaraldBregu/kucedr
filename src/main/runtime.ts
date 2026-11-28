@@ -65,6 +65,7 @@ import { openAppWindows } from './apps/app_render';
 import { watchIdle } from './lock/idle';
 import { getLock, isLocked, lock, lockChanged } from './lock/state';
 import { paneShown } from './agent/tools/web/browser/pane';
+import { voiceBrowsing } from './agent/realtime_voice/browsing';
 import type { LockState } from '../shared/lock';
 
 // // DIAG: bump V8 old-space heap to confirm whether crashes (Chromium OOM,
