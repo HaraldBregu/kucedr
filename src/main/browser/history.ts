@@ -37,7 +37,7 @@ export function history(next?: Visit[], now = false): Visit[] {
 	if (!list) {
 		library();
 		try {
-			list = JSON.parse(readFileSync(file, 'utf8')) as Visit[];
+			list = JSON.parse(readSealed(file)) as Visit[];
 		} catch {
 			aside(file);
 			list = [];
