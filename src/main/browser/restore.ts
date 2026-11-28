@@ -8,7 +8,7 @@ import { aside } from './aside';
 export function restoreTabs(): void {
 	const file = path.join(currentWorkspace().browser, 'tabs.json');
 	try {
-		const saved = JSON.parse(readFileSync(file, 'utf8')) as {
+		const saved = JSON.parse(readSealed(file)) as {
 			tabs: {
 				chat: string;
 				agent?: boolean;
