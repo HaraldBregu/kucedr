@@ -181,6 +181,7 @@ export class RealtimeVoiceToolRuntime {
 			}
 
 			const toolCall: ToolCall = { ...persistedToolCall };
+			if (event.name === 'use_web_browser') voiceBrowsing.emit('use');
 			for await (const runtimeEvent of runToolCall(
 				tool,
 				toolCall,
