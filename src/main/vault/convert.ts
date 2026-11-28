@@ -10,7 +10,11 @@ import { unseal } from './unseal';
 import { unsealLine } from './unseal_line';
 
 export function convertVault(): void {
-	const convert = (directory: string, deep: boolean, covered: (name: string) => boolean): void => {
+	const convert = (
+		directory: string,
+		deep: boolean,
+		covered: (file: string) => 'file' | 'lines' | undefined
+	): void => {
 		let entries: Dirent[];
 		try {
 			entries = readdirSync(directory, { withFileTypes: true });
@@ -24,17 +28,18 @@ export function convertVault(): void {
 			if (entry.name.startsWith('.')) continue;
 			const file = path.join(directory, entry.name);
 			if (entry.isDirectory() && deep) convert(file, deep, covered);
-			if (!entry.isFile() || !covered(entry.name)) continue;
+			const mode = entry.isFile() ? covered(file) : undefined;
+			if (!mode) continue;
 			const raw = readFileSync(file);
 			const stats = statSync(file);
-			if (entry.name === 'run.jsonl') {
+			if (mode === 'lines') {
 				const text = raw.toString('utf8');
 				const next = text
 					.split('\n')
 					.map((line) => (line ? sealLine(unsealLine(line)) : line))
 					.join('\n');
 				if (next === text) continue;
-				const temporary = path.join(directory, `.run.jsonl.${randomUUID()}.tmp`);
+				const temporary = path.join(directory, `.${entry.name}.${randomUUID()}.tmp`);
 				writeFileSync(temporary, next, 'utf8');
 				renameSync(temporary, file);
 			} else {
@@ -48,7 +53,19 @@ export function convertVault(): void {
 		if (changed) utimesSync(directory, times.atime, times.mtime);
 	};
 	const data = userDataLocation();
-	convert(path.join(data, 'sessions'), true, () => true);
-	convert(path.join(data, 'memory'), false, (name) => name.endsWith('.md'));
-	convert(path.join(data, 'health'), false, (name) => name === 'HEALTH.md');
+	const named =
+		(...names: string[]) =>
+		(file: string) =>
+			names.includes(path.basename(file)) ? ('file' as const) : undefined;
+	const coder = (file: string) =>
+		file.endsWith('.jsonl') ? ('lines' as const) : file.endsWith('.json') ? ('file' as const) : undefined;
+	convert(path.join(data, 'sessions'), true, (file) =>
+		path.basename(file) === 'run.jsonl' ? 'lines' : 'file'
+	);
+	convert(path.join(data, 'memory'), false, (file) => (file.endsWith('.md') ? 'file' : undefined));
+	convert(path.join(data, 'health'), false, named('HEALTH.md'));
+	for (const folder of ['user', 'soul', 'identity']) convert(path.join(data, folder), false, named('settings.json'));
+	convert(path.join(data, 'browser'), true, named('history.json', 'tabs.json', 'library.json', 'library.json.bak'));
+	convert(path.join(data, 'coder', 'sessions', 'records'), false, coder);
+	convert(path.join(data, 'coder', 'workspaces'), true, coder);
 }
