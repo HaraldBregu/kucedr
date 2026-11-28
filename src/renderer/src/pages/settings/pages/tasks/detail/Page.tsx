@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, FolderOpen, History, ListChecks, LoaderCircle, Trash2 } from 'lucide-react';
+import { AlertTriangle, FolderOpen, History, ListChecks, LoaderCircle, MessageSquare, Trash2 } from 'lucide-react';
+import { useChatSession } from '@/contexts/chat-session';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useConfirmation } from '@/components/ui/confirmation';
