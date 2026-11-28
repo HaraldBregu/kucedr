@@ -130,7 +130,6 @@ Built from the same list: ads, pop-ups and cookie banners (13.15), voice control
 | 21.1 | [Voice runs actions without asking](SECURITY.md) | With 19.3 | M |
 | 21.2 | [Workspace skills override trusted ones](SECURITY.md) | A decision | S |
 | 21.3 | [Restore can plant code](SECURITY.md) | Cloud version sync, coder harness homes | M |
-| 21.7 | [Broad content policy](SECURITY.md) | Inline scripts, `https:` images, `local-resource:` paths | S |
 | 21.8 | [Build hardening](SECURITY.md) | All; with 6.1 | L |
 | 21.9 | [Audit kept current](SECURITY.md) | All | S |
 | 21.11 | [Assistant edits its own prompt](SECURITY.md) | A decision; a diff in the approval card | S |
