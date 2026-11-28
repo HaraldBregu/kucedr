@@ -3,6 +3,7 @@ import { isIP } from 'node:net';
 import type { NetworkHostPattern } from '@anthropic-ai/sandbox-runtime';
 import { privateAddress } from '../../private';
 import { local } from '../../shield/local';
+import { covers, listed, opened, refused, siteHost } from './sites';
 
 export async function egress({ host }: NetworkHostPattern): Promise<boolean> {
 	const bare = host.replace(/^\[(.*)\]$/, '$1');
