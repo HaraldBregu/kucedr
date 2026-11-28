@@ -27,8 +27,10 @@ export function Destinations(): React.JSX.Element {
 			window.database.list(),
 			window.storage.getSettings(),
 			window.storage.listProviders(),
+			Promise.all(MEDIA.map((slot) => window.models[slot].getProviderId())),
+			window.mcp.list(),
 		]).then(
-			([chat, search, searchProviders, embeddingId, modelProviders, database, databases, sync, storage]) => {
+			([chat, search, searchProviders, embeddingId, modelProviders, database, databases, sync, storage, media, mcp]) => {
 				if (!active) return;
 				const next: Destination[] = [];
 				if (chat) {
