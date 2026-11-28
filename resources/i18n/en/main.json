@@ -2529,7 +2529,7 @@
 			"retention": "Automatic log cleanup",
 			"retentionDescription": "Logs older than 30 days are removed when Kucedr starts.",
 			"chatRetention": "Delete old chats",
-			"chatRetentionDescription": "Chats with no activity for this long are deleted, with their attachments and the memory learned from them. Pinned and running chats are kept.",
+			"chatRetentionDescription": "Chats with no activity for this long are deleted with their attachments, checked every hour. Pinned and running chats are kept.",
 			"chatRetentionOff": "Never",
 			"chatRetentionDays_one": "After {{count}} day",
 			"chatRetentionDays_other": "After {{count}} days",
