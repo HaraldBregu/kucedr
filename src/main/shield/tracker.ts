@@ -1,5 +1,5 @@
-import { getDomain } from 'tldts';
 import { list } from './list';
+import { thirdParty } from './third_party';
 
 const KIND: Record<string, string> = {
 	subFrame: 'subdocument',
