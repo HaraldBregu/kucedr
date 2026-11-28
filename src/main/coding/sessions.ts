@@ -48,7 +48,7 @@ export class CoderSessions {
 	read(id: string): CoderSession | undefined {
 		const file = this.file(id, '.json');
 		if (!existsSync(file)) return undefined;
-		const session = JSON.parse(readFileSync(file, 'utf8')) as CoderSession;
+		const session = JSON.parse(readSealed(file)) as CoderSession;
 		return isCodingSettings(session.settings) && session.runtime === session.settings.runtime
 			? session
 			: undefined;
