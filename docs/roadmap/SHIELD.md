@@ -7,7 +7,7 @@ sign-in callback; on 2026-11-27 background browsing got the pane's request rules
 checks, WebRTC policy and tracking-parameter stripping, the tracker part of 13.1 was built
 with the bundled EasyPrivacy list, the malware part of 13.12 with a bundled URLhaus list, and
 13.3 extended to the agent's type, fill, select, wait and evaluate actions, and 13.10 and 13.15
-built; the rest proposal.
+built; on 2026-11-28 the third-party cookie part of 13.6; the rest proposal.
 
 Built: every browser pane session checks each request in `onBeforeRequest`
 (`src/main/agent/tools/web/browser/guard.ts`, rules in `src/main/shield/`). Public pages cannot
