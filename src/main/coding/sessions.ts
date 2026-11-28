@@ -16,6 +16,10 @@ import type {
 	CodingSessionSnapshot,
 } from '../../shared/coding_types';
 import { isCodingSettings } from '../../shared/coding_types';
+import { readSealed } from '../vault/read';
+import { seal } from '../vault/seal';
+import { sealLine } from '../vault/seal_line';
+import { unsealLine } from '../vault/unseal_line';
 import { codingSessionsLocation } from './location';
 import { transcript, type JournalEvent } from './transcript';
 
