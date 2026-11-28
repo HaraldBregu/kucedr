@@ -26,9 +26,9 @@ export function library(next?: Library): Library {
 	if (!cached) {
 		const empty: Library = { bookmarks: [], search: DEFAULT_SEARCH };
 		const parse = (name: string): Library => {
-			const { history, ...saved } = JSON.parse(readFileSync(name, 'utf8')) as Library & { history?: Visit[] };
+			const { history, ...saved } = JSON.parse(readSealed(name)) as Library & { history?: Visit[] };
 			const moved = path.join(directory, 'history.json');
-			if (history && !existsSync(moved)) writeFileAtomic(moved, JSON.stringify(history));
+			if (history && !existsSync(moved)) writeFileAtomic(moved, seal(JSON.stringify(history)));
 			return { ...empty, ...saved };
 		};
 		try {
