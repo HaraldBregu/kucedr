@@ -23,7 +23,7 @@ export function history(next?: Visit[], now = false): Visit[] {
 	const write = (): void => {
 		clearTimeout(timers.get(file));
 		timers.delete(file);
-		writeFileAtomic(file, JSON.stringify(cached.get(file)));
+		writeFileAtomic(file, seal(JSON.stringify(cached.get(file))));
 	};
 	if (next) {
 		cached.set(
