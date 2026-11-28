@@ -34,5 +34,5 @@ profile (`src/shared/agent_tools.ts`). Every feature below keeps that rule.
 - **Memory in voice.** Recalling memory during a voice session would need a tool the realtime model
   calls itself. It is not planned until asked for.
 - **19.3** resolves audit #7; recommended on by default.
-- **Where the browser shows during voice (19.5).** To be evaluated: a window that holds only the
-  browser while the voice agent works, against the browser pane in the main window.
+- **Where the browser shows during voice (19.5).** Resolved 2026-11-28: the browser pane in the main
+  window, shown when voice uses the browser.
