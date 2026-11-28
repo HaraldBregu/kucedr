@@ -55,6 +55,13 @@ const execInputSchema = z.object({
 		.describe(
 			'Directories outside the workspace where the command needs to create, modify, or delete files. Include workdir itself when it needs write access. Relative paths resolve from workdir. Reads do not require additionalRoots.'
 		),
+	allowHosts: z
+		.array(z.string().trim().toLowerCase().regex(SITE_HOST))
+		.max(20)
+		.optional()
+		.describe(
+			'Site names the command needs to reach, such as example.com (subdomains included). Sites the user has not allowed are approved before the command runs; others are refused.'
+		),
 	env: z.record(z.string(), z.string()).optional(),
 	yieldMs: z
 		.number()
