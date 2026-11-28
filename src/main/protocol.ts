@@ -85,8 +85,11 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 						(allowAbsolutePaths && url.searchParams.get('workspace')) || DEFAULT_WORKSPACE
 					);
 					pathname = await resolveWorkspaceFile(workspace.files, pathname.replace(/^\/+/, ''));
-				} else if (process.platform === 'win32' && /^\/[A-Za-z]:/.test(pathname)) {
-					pathname = pathname.slice(1);
+				} else {
+					if (process.platform === 'win32' && /^\/[A-Za-z]:/.test(pathname)) pathname = pathname.slice(1);
+					// Absolute paths serve only the media the app shows; the link target decides, not the name.
+					pathname = await fs.realpath(pathname);
+					if (!MEDIA_FILE.test(pathname)) return new Response(null, { status: 403 });
 				}
 				const range = request.headers.get('range');
 				const partial = range ? await rangeResponse(pathname, range) : null;
