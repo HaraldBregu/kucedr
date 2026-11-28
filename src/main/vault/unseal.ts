@@ -1,4 +1,5 @@
 import { createDecipheriv } from 'node:crypto';
+import { VaultError } from './error';
 import { vaultKey } from './key';
 import { MAGIC } from './magic';
 
