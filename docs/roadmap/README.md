@@ -56,7 +56,7 @@ on an outside decision.
 | 18 | [Memory and knowledge](MEMORY.md) | See and edit memory, remember and forget in chat, knowledge sources at a glance, fast knowledge retrieval |
 | 19 | [Voice](VOICE.md) | Mute and status, transcripts where available, approvals by voice, voice control of the browser |
 | 20 | [Coding page](CODING.md) | Ship or remove the coding page, same permission rules, terminal inside coding, more coding harnesses (Claude, Codex, OpenCode, Cursor, Antigravity, Grok Build, Devin CLI, Pi, Oh My Pi, Factory Droid), coding agent as a chat tool with live progress, approvals and steering, the coding interface and module |
-| 21 | [Security hardening](SECURITY.md) | The security audit items still open |
+| 21 | [Security hardening](SECURITY.md) | The security audit items still open, sensitive data sealed before it reaches the model |
 | 22 | [Quality](QUALITY.md) | Green tests, coverage in CI, real-app checks, docs that match the app |
 | 23 | [Browser import](BROWSER.md) | Bookmarks, history, passwords, sign-ins and settings from Chrome, Firefox and other browsers; saved passwords, addresses and form history suggested under the field; secure password store and password manager; bookmarks managed in Settings; mouse back and forward for the pane; tabs restored after a crash, browsing history, bookmarks that cannot be lost, drag tabs to reorder, saved passwords that work |
 | 24 | [Computer use](COMPUTER.md) | Desktop driver, computer tool, permissions setup, approval and Stop, one chat at a time, background control, screenshots to the model, provider computer tools, screen text marked untrusted, separate computer |
