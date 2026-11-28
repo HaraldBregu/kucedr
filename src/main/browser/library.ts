@@ -1,5 +1,7 @@
-import { copyFileSync, existsSync, readFileSync } from 'node:fs';
+import { copyFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
+import { readSealed } from '../vault/read';
+import { seal } from '../vault/seal';
 import { currentWorkspace } from '../workspaces/current';
 import { aside } from './aside';
 import type { Visit } from './history';
