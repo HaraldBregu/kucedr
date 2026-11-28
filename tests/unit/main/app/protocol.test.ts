@@ -40,9 +40,14 @@ describe('protocol security', () => {
 		await expect(appHandler(request)).resolves.toMatchObject({ status: 403 });
 		expect(net.fetch).not.toHaveBeenCalled();
 
-		await mainHandler(request);
-		expect(net.fetch).toHaveBeenCalledWith(pathToFileURL(privatePath).toString(), {
-			headers: request.headers,
+		await expect(mainHandler(request)).resolves.toMatchObject({ status: 403 });
+		expect(net.fetch).not.toHaveBeenCalled();
+
+		const mediaPath = '/tmp/kucedr-photo.png';
+		const media = new Request(`local-resource://file${mediaPath}`);
+		await mainHandler(media);
+		expect(net.fetch).toHaveBeenCalledWith(pathToFileURL(mediaPath).toString(), {
+			headers: media.headers,
 		});
 		expect(session.fromPartition).toHaveBeenCalledWith(APP_SESSION_PARTITION);
 	});
