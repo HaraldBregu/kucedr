@@ -1395,6 +1395,17 @@
 				"reviewExtensions": "Controlla i plugin",
 				"loadError": "Impossibile caricare le destinazioni dei dati configurate."
 			},
+			"sites": {
+				"title": "Accesso alla rete dei comandi",
+				"description": "I comandi eseguiti dall'assistente non possono mai raggiungere questo computer, la tua rete locale o i metadati cloud.",
+				"strict": "Solo siti consentiti",
+				"strictDescription": "I comandi raggiungono solo i siti qui sotto. In una chat ti viene chiesto degli altri siti prima che il comando parta; le attività pianificate vengono rifiutate. I sottodomini sono inclusi.",
+				"add": "Aggiungi un sito",
+				"addAction": "Aggiungi",
+				"remove": "Rimuovi {{host}}",
+				"loadFailed": "Impossibile caricare i siti consentiti.",
+				"saveFailed": "Impossibile salvare i siti consentiti."
+			},
 			"lock": {
 				"title": "Blocco app",
 				"description": "Chiedi una passphrase all'apertura di Kucedr e dopo un periodo di inattività del computer.",
