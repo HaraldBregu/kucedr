@@ -49,16 +49,21 @@ export function ToolPermissionCard({
 	const sensitiveOperation = permission.reason === 'sensitive_operation';
 	const hostExecution = permission.reason === 'host_execution';
 	const destructiveOperation = permission.reason === 'destructive_operation';
+	const networkAccess = permission.reason === 'network_access';
 	const reasonKey = hostExecution
 		? 'toolPermission.hostReason'
 		: destructiveOperation
 			? 'toolPermission.destructiveReason'
-			: 'toolPermission.outsideReason';
+			: networkAccess
+				? 'toolPermission.networkReason'
+				: 'toolPermission.outsideReason';
 	const badgeKey = hostExecution
 		? 'toolPermission.hostAccess'
 		: destructiveOperation
 			? 'toolPermission.destructiveOperation'
-			: 'toolPermission.outsideLocations';
+			: networkAccess
+				? 'toolPermission.networkAccess'
+				: 'toolPermission.outsideLocations';
 
 	const respond = (decision: AgentToolPermissionDecision): void => {
 		if (responding) return;
