@@ -1172,6 +1172,8 @@
 				"instructionsPlaceholder": "What should the task do?",
 				"schedule": "Schedule",
 				"scheduleHint": "A cron expression, such as 0 9 * * * for every day at 09:00. Leave it empty to run the task only with Run now. A task runs at most once every 5 minutes.",
+				"catchUp": "Run missed runs at start",
+				"catchUpDescription": "If a scheduled time passes while Kucedr is closed, the task runs once when Kucedr starts. Times more than 31 days back are not counted.",
 				"tools": "Allowed tools",
 				"toolsDescription": "The task can use only the tools you choose. It cannot ask for approval while it runs, so tools set to Ask or Deny in Tools stay off.",
 				"saving": "Saving...",
