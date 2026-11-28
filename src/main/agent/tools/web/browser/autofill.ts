@@ -93,6 +93,21 @@ const SCRIPT = `((payloadJson) => {
 		};
 		// Rows are the matching logins, then "Manage passwords"; the last index is that footer.
 		af.render = () => {
+			if (af.mode === 'form') {
+				af.box.innerHTML =
+					'<div class="list">' +
+					af.items
+						.map(
+							(it, i) =>
+								'<div class="row' + (i === af.active ? ' on' : '') + '" role="option" data-i="' + i + '">' +
+								'<span class="text"><span class="name">' + esc(it.label) + '</span></span>' +
+								'<span class="del" role="button" aria-label="Remove" title="Remove" data-del="' + i + '">×</span></div>'
+						)
+						.join('') +
+					'</div>';
+				af.box.querySelector('.row.on')?.scrollIntoView({ block: 'nearest' });
+				return;
+			}
 			af.box.innerHTML =
 				'<div class="list">' +
 				af.items
