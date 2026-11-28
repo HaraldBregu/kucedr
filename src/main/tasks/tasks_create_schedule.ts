@@ -20,6 +20,7 @@ export function createSchedule(request: TaskScheduleCreateRequest): TaskSchedule
 		enabled: request.enabled ?? true,
 		prompt: request.prompt.trim(),
 		toolsAllow: request.toolsAllow && normalizeTools(request.toolsAllow),
+		...(request.catchUp ? { catchUp: true } : {}),
 		sessionIds: [],
 		...(workspaceId === DEFAULT_WORKSPACE ? {} : { workspaceId }),
 		createdAt: nowIso,
