@@ -16,7 +16,7 @@ export function readCapture(tab: BrowserTab, message: string): boolean {
 	if (!message.startsWith(CAPTURE_PREFIX)) return false;
 	// The agent's input counts as real input too, so nothing is captured while it drives the tab.
 	if (!tab.captureKey || (tab.chat && acting.has(tab.chat))) return true;
-	let fields: { o: string; u: string; p: string };
+	let fields: { o: string; u: string; p: string; f?: [string, string][] };
 	try {
 		const [iv, sealed] = message.slice(CAPTURE_PREFIX.length).split('.').map((part) => Buffer.from(part, 'base64'));
 		const decipher = createDecipheriv('aes-256-gcm', tab.captureKey, iv).setAuthTag(sealed.subarray(-16));
