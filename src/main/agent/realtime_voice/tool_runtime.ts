@@ -12,6 +12,7 @@ import type {
 import { rejectPendingToolPermissions } from '../permissions';
 import { parseToolArgs } from '../../shared/parse_tool_args';
 import type { RealtimeVoiceConversation } from './conversation';
+import { voiceBrowsing } from './browsing';
 
 const MAX_TOOL_CALLS = 100;
 const MAX_TOOL_OUTPUT_BYTES = 2_000_000;
