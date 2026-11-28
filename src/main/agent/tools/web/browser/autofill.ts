@@ -24,7 +24,7 @@ const KEY_ICON =
 
 const SCRIPT = `((payloadJson) => {
 	if (!window.__kucedrAutofill) {
-		const af = (window.__kucedrAutofill = { seq: 0, req: null, pick: null, all: [], items: [], active: -1, open: false, el: null });
+		const af = (window.__kucedrAutofill = { seq: 0, req: null, pick: null, all: [], items: [], active: -1, open: false, el: null, mode: 'login' });
 		const host = document.createElement('div');
 		host.style.cssText = 'position:fixed;z-index:2147483647;left:0;top:0;pointer-events:none';
 		const root = host.attachShadow({ mode: 'closed' });
