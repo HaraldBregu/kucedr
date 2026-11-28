@@ -110,6 +110,8 @@ export const app: AppApi = {
 	},
 	getLock: () => typedInvokeUnwrap(AppChannels.getLock),
 	setLock: (update) => typedInvokeUnwrap(AppChannels.setLock, update),
+	getSites: () => typedInvokeUnwrap(AppChannels.getSites),
+	setSites: (sites) => typedInvokeUnwrap(AppChannels.setSites, sites),
 	unlock: (passphrase) => typedInvokeUnwrap(AppChannels.unlock, passphrase),
 	unlockWithTouchId: () => typedInvokeUnwrap(AppChannels.unlockWithTouchId),
 	lockNow: () => typedInvokeUnwrap(AppChannels.lockNow),
