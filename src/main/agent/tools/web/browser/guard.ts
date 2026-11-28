@@ -36,4 +36,18 @@ export function guard(browsing: Session, routed: boolean, open: () => boolean): 
 			() => deny('route')
 		);
 	});
+	const foreign = (details: Electron.OnBeforeSendHeadersListenerDetails | Electron.OnHeadersReceivedListenerDetails): boolean =>
+		details.resourceType !== 'mainFrame' && thirdParty(new URL(details.url).hostname, details.webContents?.getURL());
+	const without = <T extends Record<string, unknown>>(headers: T, name: string): T =>
+		Object.fromEntries(Object.entries(headers).filter(([key]) => key.toLowerCase() !== name)) as T;
+	browsing.webRequest.onBeforeSendHeaders((details, callback) =>
+		callback({ requestHeaders: foreign(details) ? without(details.requestHeaders, 'cookie') : details.requestHeaders })
+	);
+	browsing.webRequest.onHeadersReceived((details, callback) =>
+		callback(
+			foreign(details) && details.responseHeaders
+				? { responseHeaders: without(details.responseHeaders, 'set-cookie') }
+				: {}
+		)
+	);
 }
