@@ -25,6 +25,7 @@ const TaskDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
 	const { confirm, dialog } = useConfirmation();
 	const navigate = useNavigate();
+	const chat = useChatSession();
 	const { taskId } = useParams<{ taskId: string }>();
 	const decodedTaskId = decodeURIComponent(taskId ?? '');
 	const [task, setTask] = useState<Task | null>(null);
