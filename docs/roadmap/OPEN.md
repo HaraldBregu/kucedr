@@ -23,8 +23,8 @@ Built from the same list: ads, pop-ups and cookie banners (13.15), voice control
 
 | # | Item | Left | Size |
 | --- | --- | --- | --- |
-| 1.1 | Privacy centre | Data-flow view, chat retention controls | M |
-| 1.3 | Encrypted data at rest | Audit of the remaining personal files and traces | L |
+| 1.1 | Privacy centre | Plugin traffic in the recipient view | S |
+| 1.3 | Encrypted data at rest | The plain files listed in the area file (knowledge index, task prompts, media) | L |
 | 1.4 | App lock | Windows Hello | S |
 | 1.5 | Encrypted backup | All | M |
 | 1.6 | Private chat | All | M |
