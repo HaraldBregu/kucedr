@@ -32,6 +32,7 @@ export interface ToolPermissionResolution {
 	readonly mode: PermissionMode;
 	readonly approvalTargets: string[];
 	readonly grants: PermissionGrant[];
+	readonly hosts?: readonly string[];
 	readonly reason?: ToolPermissionReason;
 	readonly persistable: boolean;
 }
