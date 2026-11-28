@@ -33,8 +33,19 @@ export function Storage(): React.JSX.Element {
 		}
 	};
 
+	const days = (value: number): string =>
+		value ? t('settings.storageManagement.chatRetentionDays', { count: value }) : t('settings.storageManagement.chatRetentionOff');
+
 	useEffect(() => {
 		let mounted = true;
+		void window.dataControls.getChatRetention().then(
+			(result) => {
+				if (mounted) setRetention(result);
+			},
+			() => {
+				if (mounted) setError(true);
+			}
+		);
 		void window.dataControls.getStorageUsage().then(
 			(result) => {
 				if (mounted) setUsage(result);
