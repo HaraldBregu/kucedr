@@ -82,7 +82,7 @@ export class CoderSessions {
 		const directory = this.workspaceSessions(session.projectId);
 		mkdirSync(directory, { recursive: true });
 		const file = existsSync(existing) ? existing : path.join(directory, session.id + '.json');
-		writeFileSync(file + '.tmp', JSON.stringify(session), { mode: 0o600 });
+		writeFileSync(file + '.tmp', seal(JSON.stringify(session)), { mode: 0o600 });
 		renameSync(file + '.tmp', file);
 	}
 	append(id: string, event: JournalEvent['event']): void {
