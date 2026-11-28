@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { agentLocation } from '../shared/agent_location';
 import { userDataLocation } from '../shared/user_data_location';
+import { unseal } from '../vault/unseal';
 import { soulSchema, type SoulSettings } from './schema';
 
 export async function getSoul(workspace = agentLocation()): Promise<SoulSettings | null> {
