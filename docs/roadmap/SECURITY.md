@@ -33,8 +33,8 @@ only #17, #22 and #24 were checked in code. Rows 21.10–21.12 are the open find
 - **21.1, 21.2 and 21.3 are recorded as "decision" in the audit.** Recommended: ask before
   side-effect actions in voice, trusted skills win, and restored code stays disabled until the user
   confirms it.
-- **21.10 and 21.11 are product decisions.** Local binding for sandboxed commands is off since
-  2026-11-25; design the network allow-list with [Network shield](SHIELD.md). Recommended: show a
+- **21.11 is a product decision.** (21.10 was decided and built 2026-11-28: the allow-list is
+  opt-in, empty by default, asks in chats and refuses in background runs.) Recommended: show a
   diff for prompt self-edits, and decide whether first-run setup should ask too.
 - **21.14: placeholders, not ciphertext.** A model cannot work on text it cannot read, so values
   encrypted in the prompt would be useless to it. Recommended: swap each value for a typed
