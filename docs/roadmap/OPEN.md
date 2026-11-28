@@ -78,7 +78,7 @@ Built from the same list: ads, pop-ups and cookie banners (13.15), voice control
 | 13.1 | [Tracker and ad blocking](SHIELD.md) | The ad list | M |
 | 13.2 | [Site rules](SHIELD.md) | All | M |
 | 13.4 | [Command and plugin limits](SHIELD.md) | All | M–L |
-| 13.6 | [Browsing hygiene](SHIELD.md) | HTTPS first, third-party cookies | S |
+| 13.6 | [Browsing hygiene](SHIELD.md) | HTTPS first (left out by decision: the http fallback broke pages on Electron 44) | S |
 | 13.7 | [Remote content in documents](SHIELD.md) | The tighter content policy | M |
 | 13.8 | [Network view](SHIELD.md) | All | M |
 | 13.9 | [Local-only switch](SHIELD.md) | All | M |
