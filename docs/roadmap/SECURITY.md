@@ -36,5 +36,16 @@ only #17, #22 and #24 were checked in code. Rows 21.10–21.12 are the open find
 - **21.10 and 21.11 are product decisions.** Local binding for sandboxed commands is off since
   2026-11-25; design the network allow-list with [Network shield](SHIELD.md). Recommended: show a
   diff for prompt self-edits, and decide whether first-run setup should ask too.
+- **21.14: placeholders, not ciphertext.** A model cannot work on text it cannot read, so values
+  encrypted in the prompt would be useless to it. Recommended: swap each value for a typed
+  placeholder (`[EMAIL_1]`, `[CARD_1]`) and keep the encrypted mapping per chat on the machine. Real
+  end-to-end encryption exists only with providers that run the model in a confidential enclave,
+  which is a separate, later choice; a local model ([Local](LOCAL.md)) needs neither.
+- **21.14: what counts as sensitive.** Recommended: secrets always (patterns and stored keys);
+  personal details by pattern, on by a switch in Settings → Privacy; free-form detection of names
+  with a local model only later, since it adds a model dependency. Also to settle: what the user
+  sees in chat (the real value, with a mark that it was hidden from the model), whether the model's
+  reasoning suffers when it needs the value itself (arithmetic on an amount, a domain in an email),
+  and whether voice and images are covered.
 - **Order.** 21.3 before hosted storage ([Payments](PAYMENTS.md), 9.1), since restore becomes a
   common path once backup is a product.
