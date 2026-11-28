@@ -45,4 +45,6 @@ export interface DataApi {
 	exportAll: () => Promise<DataExportResult | undefined>;
 	previewPurge: (scope: DataScope) => Promise<DataPurgePreview>;
 	purge: (scope: DataScope, confirmationId: string) => Promise<DataPurgeResult | undefined>;
+	getChatRetention: () => Promise<number>;
+	setChatRetention: (days: number) => Promise<number>;
 }
