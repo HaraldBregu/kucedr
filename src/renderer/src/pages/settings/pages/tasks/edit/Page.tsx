@@ -56,6 +56,7 @@ const TaskEditPage: React.FC = () => {
 				setPrompt(task.prompt);
 				setCronExpression(task.cronExpression ?? '');
 				setToolsAllow(task.toolsAllow ?? []);
+				setCatchUp(task.catchUp === true);
 			})
 			.catch((caught: unknown) => setError(caught instanceof Error ? caught.message : String(caught)))
 			.finally(() => setLoading(false));
