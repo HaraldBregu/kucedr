@@ -33,6 +33,7 @@ export interface ToolAccess {
 	readonly managed?: boolean;
 	readonly folders?: boolean;
 	readonly host?: boolean;
+	readonly hosts?: readonly string[];
 }
 
 export const EMPTY_PERMISSIONS: PermissionsSchema = {
