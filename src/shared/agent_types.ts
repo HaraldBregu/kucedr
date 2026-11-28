@@ -412,7 +412,8 @@ export type AgentRunStreamEvent =
 				| 'outside_trusted_location'
 				| 'host_execution'
 				| 'destructive_operation'
-				| 'sensitive_operation';
+				| 'sensitive_operation'
+				| 'network_access';
 			persistable: boolean;
 			allowOnce: boolean;
 			expiresAt: string;
