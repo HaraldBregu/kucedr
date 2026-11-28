@@ -22,6 +22,7 @@ export function resolvePermission({
 	approval = false,
 	interactive,
 	context,
+	hostAllowed = () => true,
 }: PermissionRequest): ToolPermissionResolution {
 	const entries = KINDS.flatMap((kind) =>
 		(access[kind] ?? []).map((target) => {
