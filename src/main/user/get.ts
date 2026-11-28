@@ -6,7 +6,7 @@ import { userSchema, type UserSettings } from './schema';
 
 export async function getUser(workspace = agentLocation()): Promise<UserSettings | null> {
 	try {
-		return userSchema.parse(JSON.parse(await readFile(path.join(userDataLocation(), 'user', 'settings.json'), 'utf8')));
+		return userSchema.parse(JSON.parse(unseal(await readFile(path.join(userDataLocation(), 'user', 'settings.json'))).toString('utf8')));
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 	}
