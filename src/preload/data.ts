@@ -10,4 +10,6 @@ export const data: DataApi = {
 	previewPurge: (scope) => typedInvokeUnwrap(DataChannels.previewPurge, scope),
 	purge: (scope, confirmationId) =>
 		typedInvokeUnwrap(DataChannels.purge, scope, confirmationId),
+	getChatRetention: () => typedInvokeUnwrap(DataChannels.getChatRetention),
+	setChatRetention: (days) => typedInvokeUnwrap(DataChannels.setChatRetention, days),
 };
