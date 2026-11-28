@@ -28,7 +28,6 @@ Built from the same list: ads, pop-ups and cookie banners (13.15), voice control
 | 1.1 | Privacy centre | Plugin traffic in the recipient view | S |
 | 1.3 | Encrypted data at rest | The plain files listed in the area file (knowledge index, task prompts, media) | L |
 | 1.4 | App lock | Windows Hello | S |
-| 1.5 | Encrypted backup | All | M |
 | 1.6 | Private chat | All | M |
 | 1.8 | Account and cloud data deletion | All | M |
 | 1.9 | Encrypted sync across devices | All | L |
