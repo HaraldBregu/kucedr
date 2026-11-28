@@ -51,7 +51,7 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 				toolsAllow.some((tool) => typeof tool !== 'string')
 			)
 				throw new Error('Invalid task.');
-			return { name, description, cronExpression, prompt, toolsAllow };
+			return { name, description, cronExpression, prompt, toolsAllow, catchUp: catchUp === true };
 		};
 		registerQueryWithEvent(TaskChannels.list, (event) => {
 			trusted.assert(event);
