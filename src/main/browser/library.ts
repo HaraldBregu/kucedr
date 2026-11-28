@@ -35,11 +35,13 @@ export function library(next?: Library): Library {
 		};
 		try {
 			cached = parse(file);
-		} catch {
+		} catch (error) {
+			if (error instanceof VaultError) throw error;
 			aside(file);
 			try {
 				cached = parse(`${file}.bak`);
-			} catch {
+			} catch (error) {
+				if (error instanceof VaultError) throw error;
 				cached = empty;
 			}
 		}
