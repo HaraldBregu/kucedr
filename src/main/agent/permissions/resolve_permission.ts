@@ -68,26 +68,36 @@ export function resolvePermission({
 				.map(({ kind, folder }) => [`${kind}:${folder}`, { kind, root: folder }] as const)
 		).values(),
 	];
+	const hosts = [...new Set(access.hosts ?? [])].filter((host) => !hostAllowed(host));
 	const sensitive = setting === 'ask' || approval || access.host === true;
-	if (!sensitive && grants.length === 0)
+	if (!sensitive && grants.length === 0 && hosts.length === 0)
 		return { mode: 'allow', approvalTargets: [], grants, persistable: false };
-	const approvalTargets = [
-		...new Set(grants.length > 0 ? grants.map(({ root }) => root) : entries.map(({ folder }) => folder)),
+	const pathTargets = [
+		...new Set(
+			grants.length > 0
+				? grants.map(({ root }) => root)
+				: hosts.length > 0
+					? []
+					: entries.map(({ folder }) => folder)
+		),
 	];
 	if (!interactive || grants.some(({ kind, root }) => kind === 'exec' && GLOB.test(root)))
 		return denied;
 	return {
 		mode: 'ask',
-		approvalTargets,
+		approvalTargets: [...pathTargets, ...hosts],
 		grants,
+		hosts,
 		reason: approval
 			? 'sensitive_operation'
 			: access.host
 				? 'host_execution'
 				: grants.length > 0
 					? 'outside_trusted_location'
-					: 'sensitive_operation',
+					: hosts.length > 0
+						? 'network_access'
+						: 'sensitive_operation',
 		persistable:
-			!sensitive && !approvalTargets.some((target) => isBroadTarget(target) || GLOB.test(target)),
+			!sensitive && !pathTargets.some((target) => isBroadTarget(target) || GLOB.test(target)),
 	};
 }
