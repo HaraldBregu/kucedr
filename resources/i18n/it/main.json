@@ -2529,7 +2529,7 @@
 			"retention": "Pulizia automatica dei log",
 			"retentionDescription": "All'avvio di Kucedr vengono rimossi i log più vecchi di 30 giorni.",
 			"chatRetention": "Elimina le chat vecchie",
-			"chatRetentionDescription": "Le chat senza attività per questo periodo vengono eliminate, con gli allegati e la memoria appresa da esse. Le chat fissate e quelle in corso restano.",
+			"chatRetentionDescription": "Le chat senza attività per questo periodo vengono eliminate con i loro allegati, con un controllo ogni ora. Le chat fissate e quelle in corso restano.",
 			"chatRetentionOff": "Mai",
 			"chatRetentionDays_one": "Dopo {{count}} giorno",
 			"chatRetentionDays_other": "Dopo {{count}} giorni",
