@@ -78,6 +78,12 @@ npx jest --selectProjects main tests/unit/main/storage tests/unit/main/ipc/stora
   tests/unit/main/preload/storage.test.ts tests/unit/main/cloud/storage-sync-schedule.test.ts
 ```
 
+Checked 2026-11-28 by running the script's `push` and `pull` against a minimal local S3 server:
+every stored object starts with `"\0kbackup"`, holds no plaintext and is 52 bytes longer than its
+file; a restore with the passphrase gives identical files; without it, with a wrong one, or after
+one byte of an object is changed, the restore stops with a clear message and leaves no file; a
+whole-sealed and a line-sealed vault file restore as plaintext when the vault key is sent.
+
 Manually: save a bucket on the Backup S3 script page, select **Backup S3** under
 Settings → Cloud, add a folder, and run Upload. Set the custom cron `*/1 * * * *` and check that
 "Next backup" appears; an invalid expression shows an inline error and keeps the previous
