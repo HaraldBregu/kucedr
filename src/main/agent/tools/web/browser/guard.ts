@@ -39,7 +39,10 @@ export function guard(browsing: Session, routed: boolean, open: () => boolean): 
 		);
 	});
 	const foreign = (details: Electron.OnBeforeSendHeadersListenerDetails | Electron.OnHeadersReceivedListenerDetails): boolean =>
-		details.resourceType !== 'mainFrame' && thirdParty(new URL(details.url).hostname, details.webContents?.getURL());
+		// ponytail: service worker requests have no tab to judge against and keep their cookies.
+		details.resourceType !== 'mainFrame' &&
+		details.webContents !== undefined &&
+		thirdParty(new URL(details.url).hostname, details.webContents.getURL());
 	const without = <T extends Record<string, unknown>>(headers: T, name: string): T =>
 		Object.fromEntries(Object.entries(headers).filter(([key]) => key.toLowerCase() !== name)) as T;
 	browsing.webRequest.onBeforeSendHeaders((details, callback) =>
