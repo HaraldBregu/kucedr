@@ -1,5 +1,6 @@
 import { copyFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
+import { VaultError } from '../vault/error';
 import { readSealed } from '../vault/read';
 import { seal } from '../vault/seal';
 import { currentWorkspace } from '../workspaces/current';
