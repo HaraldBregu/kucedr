@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { paneTabs } from '../agent/tools/web/browser/pane';
+import { seal } from '../vault/seal';
 import { writeFileAtomic } from './write';
 
 const ENTRY_LIMIT = 50;
