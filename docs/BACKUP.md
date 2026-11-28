@@ -57,7 +57,9 @@ key. The key is `scrypt(passphrase, salt, 32, N 2^17, r 8, p 1)`, derived once p
 random salt per run. Files sealed by the encrypted data folder (`"\0kvault1"`) are opened with the
 vault key (sent by `fork.ts` only for a backup with a passphrase) and their plaintext is
 encrypted, so the backup restores on another device; without the vault key they are encrypted as
-they are. Without a passphrase, files upload unchanged, as before.
+they are. Append-only files sealed line by line (`run.jsonl`, Coder transcripts: lines starting
+`v1:`; any `.jsonl` file is checked) have each sealed line opened the same way, and plain lines are
+kept (`unvault.mjs`, since 2026-11-28). Without a passphrase, files upload unchanged, as before.
 
 Restore decrypts objects that start with `"\0kbackup"` into a second temp file next to the target
 and renames it only after the tag verifies. A missing or wrong passphrase, or a changed object,
