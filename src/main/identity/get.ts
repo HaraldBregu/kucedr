@@ -6,7 +6,7 @@ import { identitySchema, type IdentitySettings } from './schema';
 
 export async function getIdentity(workspace = agentLocation()): Promise<IdentitySettings | null> {
 	try {
-		return identitySchema.parse(JSON.parse(await readFile(path.join(userDataLocation(), 'identity', 'settings.json'), 'utf8')));
+		return identitySchema.parse(JSON.parse(unseal(await readFile(path.join(userDataLocation(), 'identity', 'settings.json'))).toString('utf8')));
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 	}
