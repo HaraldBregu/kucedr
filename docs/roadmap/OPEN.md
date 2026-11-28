@@ -82,7 +82,7 @@ Built from the same list: ads, pop-ups and cookie banners (13.15), voice control
 | 13.7 | [Remote content in documents](SHIELD.md) | The tighter content policy | M |
 | 13.8 | [Network view](SHIELD.md) | All | M |
 | 13.9 | [Local-only switch](SHIELD.md) | All | M |
-| 13.12 | [Dangerous site blocking](SHIELD.md) | The phishing list | S |
+| 13.12 | [Dangerous site blocking](SHIELD.md) | The phishing list; waits on a source whose licence allows bundling | S |
 | 13.13 | [Site permission prompts](SHIELD.md) | Remembered answers per site | M |
 
 ## 14 to 18. Terminal, local models, automation, integrations, memory
