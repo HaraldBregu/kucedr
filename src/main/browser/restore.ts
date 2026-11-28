@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { readSealed } from '../vault/read';
 import { createTab } from '../agent/tools/web/browser/create';
 import { pane, paneEvents } from '../agent/tools/web/browser/pane';
 import { currentWorkspace } from '../workspaces/current';
