@@ -39,7 +39,8 @@ export function history(next?: Visit[], now = false): Visit[] {
 		library();
 		try {
 			list = JSON.parse(readSealed(file)) as Visit[];
-		} catch {
+		} catch (error) {
+			if (error instanceof VaultError) throw error;
 			aside(file);
 			list = [];
 		}
