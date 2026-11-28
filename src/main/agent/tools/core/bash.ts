@@ -169,10 +169,13 @@ async function runExec(
 	const spawnArgs = wrapped?.args ?? hostArgs;
 	const shell = wrapped ? false : !pty;
 	Object.assign(env, wrapped?.env, envInput);
+	// Runs only after the permission check, so these hosts are listed or were approved for this call.
+	if (wrapped && input.allowHosts?.length) opened.set(commandId, input.allowHosts);
 	let sandboxCleaned = false;
 	const cleanupSandbox = (): void => {
 		if (executionMode !== 'sandbox' || sandboxCleaned) return;
 		sandboxCleaned = true;
+		opened.delete(commandId);
 		sandbox.cleanup(commandId);
 	};
 
