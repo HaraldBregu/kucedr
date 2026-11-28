@@ -90,6 +90,39 @@ export function Storage(): React.JSX.Element {
 						description={t('settings.storageManagement.retentionDescription')}
 					/>
 					<SettingsRow
+						title={t('settings.storageManagement.chatRetention')}
+						description={t('settings.storageManagement.chatRetentionDescription')}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Select
+								value={retention === null ? null : String(retention)}
+								disabled={retention === null}
+								onValueChange={(value) => {
+									if (value !== null) {
+										void window.dataControls.setChatRetention(Number(value)).then(setRetention, () => {
+											setError(true);
+										});
+									}
+								}}
+							>
+								<SelectTrigger
+									size="sm"
+									className="w-28 text-xs [&_svg]:size-3"
+									aria-label={t('settings.storageManagement.chatRetention')}
+								>
+									<SelectValue>{retention === null ? '…' : days(retention)}</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{CHAT_RETENTION_DAYS.map((value) => (
+										<SelectItem key={value} value={String(value)}>
+											{days(value)}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						}
+					/>
+					<SettingsRow
 						title={t('settings.storageManagement.cleanup')}
 						actions={
 							<div className="flex flex-wrap gap-2">
