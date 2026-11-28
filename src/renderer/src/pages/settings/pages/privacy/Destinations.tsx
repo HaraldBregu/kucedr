@@ -54,6 +54,35 @@ export function Destinations(): React.JSX.Element {
 						description: t('settings.privacy.destinations.embeddingDescription'),
 					});
 				}
+				const mediaNames = [...new Set(media.filter((id): id is string => Boolean(id)))].map(
+					(id) => modelProviders.find((provider) => provider.id === id)?.name ?? id
+				);
+				if (mediaNames.length) {
+					next.push({
+						title: t('settings.privacy.destinations.media'),
+						name: mediaNames.join(', '),
+						description: t('settings.privacy.destinations.mediaDescription'),
+					});
+				}
+				const hosts = [
+					...new Set(
+						Object.values(mcp).flatMap((server) => {
+							if (server.type !== 'http') return [];
+							try {
+								return [new URL(server.url).host];
+							} catch {
+								return [];
+							}
+						})
+					),
+				];
+				if (hosts.length) {
+					next.push({
+						title: t('settings.privacy.destinations.tools'),
+						name: hosts.join(', '),
+						description: t('settings.privacy.destinations.toolsDescription'),
+					});
+				}
 				if (database.providerId && database.databaseId) {
 					const service = databases.find(
 						(item) => item.providerId === database.providerId && item.databaseId === database.databaseId
