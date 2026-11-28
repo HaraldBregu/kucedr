@@ -50,6 +50,8 @@ const SCRIPT = `((payloadJson) => {
 			'.dots{flex:none;color:var(--muted);letter-spacing:1px;font-size:11px}' +
 			'.sep{height:1px;margin:4px 6px;background:var(--line)}' +
 			'.foot{color:var(--muted);padding:7px 8px}' +
+			'.del{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:6px;color:var(--muted);font-size:15px;line-height:1}' +
+			'.del:hover{background:var(--chip);color:var(--fg)}' +
 			'</style><div class="box" role="listbox" aria-label="Saved passwords"></div>';
 		af.box = root.querySelector('.box');
 		const esc = (text) => String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
