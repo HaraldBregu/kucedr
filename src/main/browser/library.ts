@@ -19,7 +19,7 @@ export function library(next?: Library): Library {
 	const file = path.join(directory, 'library.json');
 	if (next) {
 		if (existsSync(file)) copyFileSync(file, `${file}.bak`);
-		writeFileAtomic(file, JSON.stringify({ bookmarks: next.bookmarks, search: next.search }));
+		writeFileAtomic(file, seal(JSON.stringify({ bookmarks: next.bookmarks, search: next.search })));
 		cache.set(file, next);
 	}
 	let cached = cache.get(file);
