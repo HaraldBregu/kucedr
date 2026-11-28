@@ -3,7 +3,14 @@ import { Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, buttonVariants } from '@/components/ui/button';
-import type { StorageUsage } from '@shared/data_types';
+import { CHAT_RETENTION_DAYS, type StorageUsage } from '@shared/data_types';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 import { DataControls } from '../../components/data';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../components';
 
