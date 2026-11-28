@@ -24,6 +24,8 @@ import { appDirectory } from './apps/app_directory';
 import { modeBackgroundResponse } from './agent/modes/background';
 
 const LOCAL_RESOURCE_SCHEME = 'local-resource';
+const MEDIA_FILE =
+	/\.(png|jpe?g|gif|webp|bmp|svg|ico|avif|mp4|mov|webm|m4v|mp3|wav|ogg|flac|m4a|aac|opus|pdf)$/i;
 export const APP_RESOURCE_SCHEME = 'kucedr-app';
 const MODE_BACKGROUND_SCHEME = 'kucedr-mode';
 export const APP_SESSION_PARTITION = 'persist:kucedr-apps';
