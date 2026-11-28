@@ -16,6 +16,8 @@ import { resolveExecRoots } from '../../permissions/resolve_exec_roots';
 import path from 'node:path';
 import { readOnlyShellError } from './readonly';
 import { requireUnrestrictedNetwork } from '../../../privacy/state';
+import { SITE_HOST } from '../../../../shared/sites';
+import { opened } from '../../sandbox/sites';
 
 interface ExecResult {
 	command: string;
