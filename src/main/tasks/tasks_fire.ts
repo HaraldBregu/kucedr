@@ -24,9 +24,20 @@ export function fire(scheduleId: string): TaskScheduledTask | undefined {
 	} else {
 		const controller = new AbortController();
 		running.set(scheduleId, controller);
+		const before = schedule.sessionIds.at(-1);
 		const settle = (error?: string): void => {
-			if (exists(scheduleId))
-				update(scheduleId, { lastRun: { at: new Date().toISOString(), ...(error ? { error } : {}) } });
+			if (!exists(scheduleId)) return;
+			const current = requireSchedule(scheduleId);
+			// A schedule never runs twice at once, so a new last chat belongs to this run.
+			const sessionId = current.sessionIds.at(-1);
+			const at = new Date().toISOString();
+			update(scheduleId, {
+				lastRun: { at, ...(error ? { error } : {}) },
+				runs: [
+					{ at, ...(sessionId && sessionId !== before ? { sessionId } : {}), ...(error ? { error } : {}) },
+					...(current.runs ?? []),
+				].slice(0, 20),
+			});
 		};
 		void Promise.resolve()
 			.then(() => run(schedule, controller.signal))
