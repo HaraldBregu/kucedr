@@ -105,6 +105,7 @@ import { getPrivacy, requireUnrestrictedNetwork, setPrivacy } from '../privacy/s
 import { restart } from '../privacy/restart';
 import { getVault, setVault } from '../vault/state';
 import { getLock, lock, setLock, unlock } from '../lock/state';
+import { getSites, setSites } from '../agent/sandbox/sites';
 import { unlockWithTouchId } from '../lock/touch';
 import { TrustedRenderer } from './core/trusted';
 
