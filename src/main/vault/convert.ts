@@ -65,7 +65,7 @@ export function convertVault(): void {
 	convert(path.join(data, 'memory'), false, (file) => (file.endsWith('.md') ? 'file' : undefined));
 	convert(path.join(data, 'health'), false, named('HEALTH.md'));
 	for (const folder of ['user', 'soul', 'identity']) convert(path.join(data, folder), false, named('settings.json'));
-	convert(path.join(data, 'browser'), true, named('history.json', 'tabs.json', 'library.json', 'library.json.bak'));
+	convert(path.join(data, 'browser'), true, named('history.json', 'tabs.json', 'library.json', 'library.json.bak', 'forms.json'));
 	convert(path.join(data, 'coder', 'sessions', 'records'), false, coder);
 	convert(path.join(data, 'coder', 'workspaces'), true, (file) =>
 		path.basename(path.dirname(file)) === 'sessions' ? coder(file) : undefined
