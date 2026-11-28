@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { VaultError } from '../vault/error';
 import { readSealed } from '../vault/read';
 import { createTab } from '../agent/tools/web/browser/create';
 import { pane, paneEvents } from '../agent/tools/web/browser/pane';
