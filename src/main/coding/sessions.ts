@@ -99,7 +99,7 @@ export class CoderSessions {
 		for (let i = 0; i < lines.length; i++) {
 			if (!lines[i]) continue;
 			try {
-				entries.push(JSON.parse(lines[i]) as JournalEvent);
+				entries.push(JSON.parse(unsealLine(lines[i])) as JournalEvent);
 			} catch (error) {
 				if (i < lines.length - 1) throw error;
 			}
