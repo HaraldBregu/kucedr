@@ -727,6 +727,8 @@ export class AppIpc implements IpcModule {
 
 		ipcMain.handle(AppChannels.getLock, wrapTrustedHandler(getLock, AppChannels.getLock));
 		ipcMain.handle(AppChannels.setLock, wrapTrustedHandler(setLock, AppChannels.setLock));
+		ipcMain.handle(AppChannels.getSites, wrapTrustedHandler(getSites, AppChannels.getSites));
+		ipcMain.handle(AppChannels.setSites, wrapTrustedHandler(setSites, AppChannels.setSites));
 		ipcMain.handle(AppChannels.unlock, wrapTrustedHandler(unlock, AppChannels.unlock));
 		ipcMain.handle(
 			AppChannels.unlockWithTouchId,
