@@ -214,6 +214,7 @@ const SCRIPT = `((payloadJson) => {
 				if (e.key === 'ArrowDown') { e.preventDefault(); af.move(1); }
 				else if (e.key === 'ArrowUp') { e.preventDefault(); af.move(-1); }
 				else if (e.key === 'Enter' && af.active >= 0) { e.preventDefault(); af.choose(af.active); }
+				else if (e.key === 'Delete' && e.shiftKey && af.mode === 'form' && af.active >= 0) { e.preventDefault(); af.remove(af.active); }
 				else if (e.key === 'Escape') { e.preventDefault(); af.close(); }
 				else if (e.key === 'Tab') af.close();
 			},
