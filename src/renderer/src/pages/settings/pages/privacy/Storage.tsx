@@ -20,6 +20,7 @@ export function Storage(): React.JSX.Element {
 	const [error, setError] = useState(false);
 	const [exporting, setExporting] = useState(false);
 	const [exportError, setExportError] = useState(false);
+	const [retention, setRetention] = useState<number | null>(null);
 
 	const exportAll = async (): Promise<void> => {
 		setExporting(true);
