@@ -286,6 +286,17 @@ const TaskDetailsPage: React.FC = () => {
 									<ItemTitle className="text-sm">{session.title.trim() || session.id}</ItemTitle>
 								</ItemContent>
 								<ItemActions className="ml-auto flex-none justify-end">
+									{runs.get(session.id) &&
+										(runs.get(session.id)?.error ? (
+											<Badge
+												variant="destructive"
+												title={t('settings.cron.history.failedTitle', { error: runs.get(session.id)?.error })}
+											>
+												{t('settings.cron.history.failed')}
+											</Badge>
+										) : (
+											<Badge variant="secondary">{t('settings.cron.history.succeeded')}</Badge>
+										))}
 									<time
 										className="text-xs text-muted-foreground"
 										dateTime={new Date(session.createdAtMs).toISOString()}
