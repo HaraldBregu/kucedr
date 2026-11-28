@@ -6,7 +6,7 @@ interface Sessions {
 	deleteSession(sessionId: string): Promise<void>;
 }
 
-// ponytail: sweeps the active workspace only; other workspaces are swept when they become active.
+// ponytail: sweeps the active workspace only; others are swept on the hourly run after they become active.
 export async function sweepChats(sessions: Sessions, now = Date.now()): Promise<number> {
 	const days = getChatRetention();
 	if (!days) return 0;
