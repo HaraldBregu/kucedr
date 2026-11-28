@@ -67,5 +67,7 @@ export function convertVault(): void {
 	for (const folder of ['user', 'soul', 'identity']) convert(path.join(data, folder), false, named('settings.json'));
 	convert(path.join(data, 'browser'), true, named('history.json', 'tabs.json', 'library.json', 'library.json.bak'));
 	convert(path.join(data, 'coder', 'sessions', 'records'), false, coder);
-	convert(path.join(data, 'coder', 'workspaces'), true, coder);
+	convert(path.join(data, 'coder', 'workspaces'), true, (file) =>
+		path.basename(path.dirname(file)) === 'sessions' ? coder(file) : undefined
+	);
 }
