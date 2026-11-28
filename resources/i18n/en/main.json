@@ -1444,7 +1444,7 @@
 			"providerData": "Providers still receive the prompts, files and audio you send to them.",
 			"encryption": {
 				"title": "Encrypt data on this device",
-				"description": "Chats, memory, attachments and health notes are encrypted with a key kept in the system keychain. Exports still give readable files. If the keychain entry is lost, this data cannot be recovered.",
+				"description": "Chats, coding sessions, memory, attachments, health notes, your profile and browser history, bookmarks and tabs are encrypted with a key kept in the system keychain. Exports still give readable files. If the keychain entry is lost, this data cannot be recovered.",
 				"unavailable": "The system keychain is unavailable on this device, so encryption cannot be changed.",
 				"loadFailed": "Could not load encryption.",
 				"saveFailed": "Could not change encryption."
