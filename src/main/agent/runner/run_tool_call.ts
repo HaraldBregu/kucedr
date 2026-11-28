@@ -296,6 +296,7 @@ export async function* runToolCall(
 				approval: hardApproval,
 				interactive: security.windowId !== undefined,
 				context,
+				hostAllowed: listed,
 			});
 		let resolution = checkPermission();
 		if (!capability) resolution = { ...resolution, mode: 'deny', persistable: false };
