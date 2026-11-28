@@ -160,6 +160,12 @@ const TaskDetailsPage: React.FC = () => {
 			setOpeningSessionId(null);
 		}
 	};
+	const runs = new Map((task.runs ?? []).flatMap((run) => (run.sessionId ? [[run.sessionId, run] as const] : [])));
+	const openChat = (sessionId: string): void => {
+		chat.setSessionId(sessionId);
+		navigate('/home');
+		window.dispatchEvent(new Event('kucedr:show-chat'));
+	};
 	const deleteHistory = async (sessionId: string): Promise<void> => {
 		if (!(await confirm({ title: t('settings.cron.history.delete'), description: t('settings.cron.history.confirmDelete') }))) return;
 		setDeletingHistoryId(sessionId);
