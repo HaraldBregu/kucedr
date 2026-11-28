@@ -5,6 +5,8 @@ import type { DataScope } from '../../shared/data_types';
 import type { Agent } from '../agent/agent';
 import { DataController } from '../data/data_controller';
 import { normalizeDataScope } from '../data/data_scope';
+import { getChatRetention, setChatRetention } from '../retention/state';
+import { sweepChats } from '../retention/sweep';
 import type { EventBus } from '../event_bus';
 import type { IpcModule } from './core/module';
 import type { AppRegistry } from '../apps/app_registry';
