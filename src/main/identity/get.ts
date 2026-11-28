@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { agentLocation } from '../shared/agent_location';
 import { userDataLocation } from '../shared/user_data_location';
+import { unseal } from '../vault/unseal';
 import { identitySchema, type IdentitySettings } from './schema';
 
 export async function getIdentity(workspace = agentLocation()): Promise<IdentitySettings | null> {
