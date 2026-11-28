@@ -30,7 +30,7 @@ Built from the same list: ads, pop-ups and cookie banners (13.15), voice control
 | 1.6 | Private chat | All | M |
 | 1.8 | Account and cloud data deletion | All | M |
 | 1.9 | Encrypted sync across devices | All | L |
-| 1.10 | App-wide Privacy Mode | The known gaps listed in the area file | L |
+| 1.10 | App-wide Privacy Mode | The known gaps listed in the area file (loopback spellings fixed 2026-11-28) | L |
 
 ## 3 to 7. Experience, accessibility, distribution, languages
 
