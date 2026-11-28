@@ -39,6 +39,24 @@ excluded. Per-scope export and purge remain available. The combined export does 
 provider settings or other app configuration. A complete inventory of media, plugin and tool
 traffic, plus configurable chat retention, remains open.
 
+## Plain files left (1.3)
+
+Audited from the code 2026-11-28. With encryption on, these still hold personal data as plain files:
+
+- The knowledge index (`rag/vectors.sqlite`, `rag/index*.json`): extracted text and file paths. A
+  SQLite file needs database-level encryption; sealing the text column would break full-text search.
+- The coding harness home (`coder/<runtime>/`): written by the outside coding program, not by Kucedr.
+- Scheduled task prompts (`settings/tasks*.json`).
+- The media library (generated media, recordings, browser captures and their `.json` notes): the
+  user opens these files directly.
+- Chromium partitions (cookies, cache, form data), the downloads waiting folder, password-store
+  site addresses and usernames (the passwords themselves are encrypted), mini-app stores, and
+  `.damaged-*` copies of browser files set aside before 2026-11-28.
+- Logs: URLs and errors; no prompt text found.
+
+A sealed file that the keystore cannot open is no longer set aside as damaged by the browser
+history, bookmarks and tab readers (`VaultError` in `src/main/vault/error.ts`).
+
 ## App-wide Privacy Mode
 
 First release built 2026-11-24 (`src/main/privacy`, Settings → Privacy).
