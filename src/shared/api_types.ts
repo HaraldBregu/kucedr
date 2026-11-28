@@ -671,6 +671,7 @@ export interface AppApi extends AppStorageApi {
 	onKeepAwakeChanged: (callback: (enabled: boolean) => void) => () => void;
 	getLock: () => Promise<import('./lock').LockState>;
 	setLock: (update: import('./lock').LockUpdate) => Promise<import('./lock').LockState>;
+	remoteImage: (url: string) => Promise<string>;
 	getSites: () => Promise<import('./sites').CommandSites>;
 	setSites: (sites: import('./sites').CommandSites) => Promise<import('./sites').CommandSites>;
 	unlock: (passphrase: string) => Promise<import('./lock').LockState>;
