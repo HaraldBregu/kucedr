@@ -721,6 +721,7 @@ export interface AppInvokeChannelMap {
 		result: import('./app_types').AppLaunchState;
 	};
 	[AppChannels.getLock]: { args: []; result: import('./lock').LockState };
+	[AppChannels.remoteImage]: { args: [url: string]; result: string };
 	[AppChannels.getSites]: { args: []; result: import('./sites').CommandSites };
 	[AppChannels.setSites]: {
 		args: [sites: import('./sites').CommandSites];
