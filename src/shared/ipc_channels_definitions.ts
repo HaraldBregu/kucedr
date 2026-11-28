@@ -277,6 +277,8 @@ export const AppChannels = {
 	keepAwakeChanged: 'app:keep-awake-changed',
 	getLock: 'app:get-lock',
 	setLock: 'app:set-lock',
+	getSites: 'app:get-sites',
+	setSites: 'app:set-sites',
 	unlock: 'app:unlock',
 	unlockWithTouchId: 'app:unlock-touch-id',
 	lockNow: 'app:lock-now',
