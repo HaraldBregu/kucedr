@@ -355,6 +355,7 @@ export async function* runToolCall(
 				for (const grant of resolution.grants) {
 					addPermissionRule(grant.kind, 'allow', { root: grant.root, recursive: true });
 				}
+				if (resolution.hosts?.length) setSites({ ...getSites(), hosts: [...getSites().hosts, ...resolution.hosts] });
 			}
 			permission = effectiveDecision === 'reject' ? 'deny' : 'allow';
 		}
