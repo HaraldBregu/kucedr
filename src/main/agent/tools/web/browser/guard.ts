@@ -2,6 +2,7 @@ import type { Session } from 'electron';
 import type { BrowserBlocked } from '../../../../../shared/browser';
 import { rebound } from '../../../../shield/rebound';
 import { strip } from '../../../../shield/strip';
+import { thirdParty } from '../../../../shield/third_party';
 import { verdict } from '../../../../shield/verdict';
 import { block } from './block';
 import { tabFor } from './owner';
