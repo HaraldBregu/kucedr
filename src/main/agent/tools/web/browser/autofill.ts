@@ -304,7 +304,8 @@ const SCRIPT = `((payloadJson) => {
 interface State {
 	seq: number;
 	origin: string | null;
-	pick: number | 'manage' | null;
+	field?: string | null;
+	pick: number | 'manage' | { remove: string } | null;
 	keyed: boolean;
 }
 
