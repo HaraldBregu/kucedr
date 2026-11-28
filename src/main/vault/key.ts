@@ -14,8 +14,7 @@ export function vaultKey(): Buffer {
 	} catch {
 		key = undefined;
 	}
-	if (key?.length !== 32)
-		throw new Error('Encrypted data could not be opened with the system keystore.');
+	if (key?.length !== 32) throw new VaultError();
 	cached = key;
 	return key;
 }
