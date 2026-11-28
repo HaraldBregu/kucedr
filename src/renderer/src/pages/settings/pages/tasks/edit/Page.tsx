@@ -66,7 +66,7 @@ const TaskEditPage: React.FC = () => {
 		setSaving(true);
 		setError(null);
 		try {
-			const request = { name, prompt, cronExpression, toolsAllow };
+			const request = { name, prompt, cronExpression, toolsAllow, catchUp };
 			const task = id
 				? await window.tasks.update(id, request)
 				: await window.tasks.create(request);
