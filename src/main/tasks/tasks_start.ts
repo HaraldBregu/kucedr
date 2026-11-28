@@ -12,6 +12,14 @@ export async function startTask(): Promise<void> {
 	reconcile();
 	for (const schedule of list().filter(isActiveSchedule)) {
 		activate(schedule);
+		if (
+			schedule.catchUp &&
+			schedule.cronExpression &&
+			missed(schedule.cronExpression, new Date(schedule.lastRun?.at ?? schedule.createdAt))
+		) {
+			console.info('[Task]', `Schedule ${schedule.id} missed a run while the app was closed; running it once.`);
+			fire(schedule.id);
+		}
 	}
 	console.info('[Task]', 'Task service started.');
 }
